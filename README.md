@@ -1,3 +1,3 @@
-# AGROTM - Web3 Projeto Completo
+# AGROTM-SOLANA
 
-Este é o projeto mais completo e profissional do mundo Web3, NFT, DApp, Agro e Cripto.
+Projeto Web3 com Next.js, Firebase, Web3, Tailwind e animações Framer.
