@@ -1,0 +1,1 @@
+{ "name": "agrotm-frontend", "scripts": { "dev": "next dev" } }

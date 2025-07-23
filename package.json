@@ -1,0 +1,1 @@
+{ "name": "agrotm", "private": true, "scripts": { "dev": "next dev", "build": "next build" }, "dependencies": {} }
