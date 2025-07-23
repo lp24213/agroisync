@@ -1,1 +1,14 @@
-{ "welcome": "Welcome to AGROTM" }
+{
+  "welcome": "Welcome to AGROTM",
+  "mint_nft": "Mint your AGROTM NFT",
+  "staking": "AGROTM Staking",
+  "connect_wallet": "Connect Wallet",
+  "minting": "Minting...",
+  "transaction": "Transaction",
+  "mint_error": "Error minting NFT: ",
+  "stake": "Stake",
+  "unstake": "Unstake",
+  "staking_balance": "Your staking balance",
+  "amount": "Amount",
+  "landing_subtitle": "The Web3 revolution in agribusiness, with NFTs, staking and blockchain integration."
+}

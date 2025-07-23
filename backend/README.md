@@ -1,3 +1,30 @@
-# AGROTM Backend
+# AGROTM Backend (Firebase Functions)
 
-Serviços e contratos
+## Instalação
+
+```bash
+cd backend
+pnpm install
+```
+
+## Rodar emulador local
+
+```bash
+pnpm start
+```
+
+## Build
+
+```bash
+pnpm build
+```
+
+## Deploy
+
+```bash
+pnpm deploy
+```
+
+## Variáveis de ambiente
+
+Configure o arquivo `.env` com as variáveis do `.env.example`.

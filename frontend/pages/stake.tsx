@@ -1,20 +1,18 @@
-import { useState } from "react";
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import StakingCard from '../components/StakingCard';
+import { useTranslation } from 'react-i18next';
 
-export default function StakePage() {
-  const [amount, setAmount] = useState(0);
-  const [result, setResult] = useState("");
-
-  const handleStake = async () => {
-    const reward = amount * 0.15;
-    setResult(\`Você stakou \${amount} AGROTM e ganhou \${reward} de recompensa!\`);
-  };
-
+export default function Stake() {
+  const { t } = useTranslation();
   return (
-    <div>
-      <h1>Stake Tokens</h1>
-      <input type="number" value={amount} onChange={(e) => setAmount(Number(e.target.value))} />
-      <button onClick={handleStake}>Stake</button>
-      <p>{result}</p>
+    <div className="min-h-screen flex flex-col bg-background">
+      <Header />
+      <main className="flex-1 flex flex-col items-center justify-center p-8">
+        <h2 className="text-3xl font-futuristic text-primary mb-4">{t('staking')}</h2>
+        <StakingCard />
+      </main>
+      <Footer />
     </div>
   );
 }

@@ -1,0 +1,28 @@
+{
+  "name": "agrotm-backend",
+  "version": "1.0.0",
+  "main": "functions/index.ts",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "ts-node-dev functions/index.ts",
+    "build": "tsc",
+    "lint": "eslint . --ext .ts",
+    "deploy": "firebase deploy --only functions",
+    "test": "jest"
+  },
+  "dependencies": {
+    "firebase-admin": "^11.11.0",
+    "firebase-functions": "^4.4.0",
+    "ethers": "^6.10.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.4.0",
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
+    "@types/node": "^20.11.0",
+    "@types/jest": "^29.5.0"
+  }
+}

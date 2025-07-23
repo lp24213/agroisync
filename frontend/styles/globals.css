@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background: #080818;
+  color: #fff;
+  font-family: 'Orbitron', 'sans-serif';
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background: #080818;
+}
+::-webkit-scrollbar-thumb {
+  background: #00f0ff;
+  border-radius: 8px;
+} 

@@ -1,16 +1,11 @@
 #!/bin/bash
+set -e
 
-echo "🚀 Iniciando instalação automática do AGROTM..."
+if ! command -v pnpm &> /dev/null; then
+  npm install -g pnpm
+fi
 
-npm install
-
-echo "✅ Dependências instaladas."
-
-echo "🔧 Configurando ambiente..."
-cp .env.example .env.local
-
-echo "📦 Buildando projeto..."
-npm run build
-
-echo "✅ Projeto AGROTM pronto para iniciar!"
-echo "🔥 Rode com: npm run dev"
+pnpm install
+cd backend && pnpm install
+dcd frontend && pnpm install
+cd ../contracts && echo "Instale dependências do seu framework de contratos aqui (ex: npm install, yarn, cargo)"

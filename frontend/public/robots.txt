@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://agrotm.com/sitemap.xml 
