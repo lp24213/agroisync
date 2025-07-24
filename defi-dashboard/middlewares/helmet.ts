@@ -60,7 +60,6 @@ export function helmet(options: HelmetOptions = {}) {
   const helmetOptions = { ...defaultOptions, ...options };
 
   return async function helmetMiddleware(
-    req: NextApiRequest,
     res: NextApiResponse,
     next?: () => void
   ) {
@@ -155,9 +154,8 @@ export function withHelmet(
   
   return async function enableHelmet(req: NextApiRequest, res: NextApiResponse) {
     return new Promise<void>((resolve) => {
-      helmetMiddleware(req, res, () => {
-        return resolve(handler(req, res));
-      });
+      helmetMiddleware(req, res);
+      return resolve(handler(req, res));
     });
   };
 }

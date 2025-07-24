@@ -7,22 +7,23 @@ import { blockchainAnalytics } from '@/services/blockchain-analytics';
 import { AnimatedCard } from '@/components/AnimatedCard';
 import { NeonButton } from '@/components/NeonButton';
 import { Modal } from '@/components/Modal';
-import { Loader } from '@/components/Loader';
 import {
   ArrowLeftRight,
   ChevronDown,
   Info,
-  Shield,
   Clock,
   DollarSign,
   AlertTriangle,
   CheckCircle,
   ExternalLink,
   RefreshCw,
-  Zap,
-  Globe,
-  TrendingUp
+  Globe
 } from 'lucide-react';
+// Definir tipo Token localmente se não existir
+type Token = {
+  symbol: string;
+  balance: number;
+};
 
 interface Chain {
   id: string;
@@ -126,9 +127,9 @@ const supportedChains: Chain[] = [
 ];
 
 export function CrossChainBridge() {
-  const { isConnected, account, connectWallet } = useWeb3();
-  const [fromChain, setFromChain] = useState<Chain>(supportedChains[0]);
-  const [toChain, setToChain] = useState<Chain>(supportedChains[1]);
+  const { isConnected, connectWallet } = useWeb3();
+  const [fromChain, setFromChain] = useState<Chain>(supportedChains[0]!);
+  const [toChain, setToChain] = useState<Chain>(supportedChains[1]!);
   const [amount, setAmount] = useState<string>('');
   const [selectedToken, setSelectedToken] = useState<string>('AGROTM');
   const [bridgeRoutes, setBridgeRoutes] = useState<BridgeRoute[]>([]);
@@ -199,7 +200,7 @@ export function CrossChainBridge() {
       ];
 
       setBridgeRoutes(routes);
-      setSelectedRoute(routes[0]);
+      if (routes[0]) setSelectedRoute(routes[0]);
 
       // Get bridge analysis
       const analysis = await blockchainAnalytics.analyzeCrossChainBridge(
@@ -318,7 +319,7 @@ export function CrossChainBridge() {
             <div className="flex items-center gap-4">
               <NeonButton
                 onClick={() => setShowTransactions(true)}
-                variant="outline"
+                variant="secondary"
                 size="sm"
               >
                 <Clock className="w-4 h-4 mr-2" />
@@ -357,7 +358,7 @@ export function CrossChainBridge() {
                       onChange={(e) => setFromChain(supportedChains.find(c => c.id === e.target.value)!)}
                       className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-blue-400 focus:ring-1 focus:ring-blue-400 appearance-none"
                     >
-                      {supportedChains.map(chain => (
+                      {supportedChains.map((chain: Chain) => (
                         <option key={chain.id} value={chain.id}>
                           {chain.name} ({chain.symbol})
                         </option>
@@ -372,7 +373,7 @@ export function CrossChainBridge() {
                       onChange={(e) => setSelectedToken(e.target.value)}
                       className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-blue-400 focus:ring-1 focus:ring-blue-400 appearance-none"
                     >
-                      {tokens.map(token => (
+                      {tokens.map((token: Token) => (
                         <option key={token.symbol} value={token.symbol}>
                           {token.symbol} - {token.balance}
                         </option>
@@ -404,7 +405,7 @@ export function CrossChainBridge() {
                     onChange={(e) => setToChain(supportedChains.find(c => c.id === e.target.value)!)}
                     className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-blue-400 focus:ring-1 focus:ring-blue-400 appearance-none"
                   >
-                    {supportedChains.filter(c => c.id !== fromChain.id).map(chain => (
+                    {supportedChains.filter((c: Chain) => c.id !== fromChain.id).map((chain: Chain) => (
                       <option key={chain.id} value={chain.id}>
                         {chain.name} ({chain.symbol})
                       </option>
@@ -501,7 +502,7 @@ export function CrossChainBridge() {
                         exit={{ opacity: 0, height: 0 }}
                         className="space-y-3"
                       >
-                        {bridgeRoutes.map(route => (
+                        {bridgeRoutes.map((route: BridgeRoute) => (
                           <div
                             key={route.id}
                             onClick={() => setSelectedRoute(route)}
@@ -564,7 +565,7 @@ export function CrossChainBridge() {
                       <p className="text-white">{(bridgeAnalysis.slippage * 100).toFixed(2)}%</p>
                     </div>
                   </div>
-                  {bridgeAnalysis.recommendations.length > 0 && (
+                  {bridgeAnalysis.recommendations && bridgeAnalysis.recommendations.length > 0 && (
                     <div className="mt-3">
                       <p className="text-gray-400 text-sm mb-1">Recommendations:</p>
                       <ul className="text-sm text-gray-300 space-y-1">
@@ -584,7 +585,7 @@ export function CrossChainBridge() {
               <NeonButton
                 onClick={executeBridge}
                 className="w-full"
-                size="lg"
+                size="md"
                 loading={loading}
                 disabled={!isConnected || !amount || !selectedRoute || parseFloat(amount) <= 0}
               >
@@ -618,7 +619,7 @@ export function CrossChainBridge() {
             </h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {[fromChain, toChain].map((chain, index) => (
+              {[fromChain, toChain].map((chain) => (
                 <div key={chain.id} className="space-y-4">
                   <div className="flex items-center">
                     <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-green-500 rounded-full mr-3" />
@@ -678,7 +679,7 @@ export function CrossChainBridge() {
               <p className="text-gray-400">No bridge transactions yet</p>
             </div>
           ) : (
-            transactions.map(tx => (
+            transactions.map((tx: BridgeTransaction) => (
               <div key={tx.id} className="bg-gray-800/50 rounded-lg p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center">
@@ -709,7 +710,7 @@ export function CrossChainBridge() {
                     <p className="text-white">{tx.amount} {tx.token}</p>
                   </div>
                   <a
-                    href={`${supportedChains.find(c => c.id === tx.fromChain)?.explorerUrl}/tx/${tx.txHash}`}
+                    href={`${supportedChains.find((c: Chain) => c.id === tx.fromChain)?.explorerUrl}/tx/${tx.txHash}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center text-blue-400 hover:text-blue-300 text-sm"

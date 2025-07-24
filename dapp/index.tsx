@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 const DappHome = () => {
   const [stakeAmount, setStakeAmount] = useState("");

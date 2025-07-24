@@ -170,6 +170,7 @@ export function useWeb3() {
   return {
     ...state,
     connect,
+    connectWallet: connect, // Alias para compatibilidade
     disconnect,
     switchNetwork,
     getBalance,

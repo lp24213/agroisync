@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
@@ -9,9 +9,8 @@ import {
 import { AnimatedCard } from '@/components/AnimatedCard';
 import { NeonButton } from '@/components/NeonButton';
 import { 
-  TrendingUp, TrendingDown, BarChart3, PieChart as PieChartIcon,
-  Activity, DollarSign, Users, Zap, Award, Globe, Calendar,
-  ArrowUpRight, ArrowDownRight, RefreshCw, Download, Filter
+  TrendingUp, BarChart3, Activity, DollarSign, Users, Zap, Award, Globe, 
+  ArrowUpRight, ArrowDownRight, RefreshCw, Download
 } from 'lucide-react';
 
 interface AnalyticsData {
@@ -76,9 +75,8 @@ const mockData: AnalyticsData = {
 const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4'];
 
 export function AnalyticsDashboard() {
-  const [data, setData] = useState<AnalyticsData>(mockData);
+  const [data] = useState<AnalyticsData>(mockData);
   const [selectedTimeframe, setSelectedTimeframe] = useState('6M');
-  const [selectedMetric, setSelectedMetric] = useState('revenue');
   const [loading, setLoading] = useState(false);
 
   const refreshData = async () => {
@@ -149,7 +147,7 @@ export function AnalyticsDashboard() {
 
             <NeonButton
               onClick={refreshData}
-              variant="outline"
+              variant="secondary"
               size="sm"
               loading={loading}
             >
@@ -159,7 +157,7 @@ export function AnalyticsDashboard() {
 
             <NeonButton
               onClick={exportData}
-              variant="outline"
+              variant="secondary"
               size="sm"
             >
               <Download className="w-4 h-4 mr-2" />
@@ -176,7 +174,7 @@ export function AnalyticsDashboard() {
         transition={{ delay: 0.1 }}
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8"
       >
-        {data.performance.map((metric, index) => (
+        {data.performance.map((metric, index: number) => (
           <AnimatedCard key={index} className="p-6">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center">
@@ -344,7 +342,7 @@ export function AnalyticsDashboard() {
                   dataKey="users"
                   label={({ country, percent }) => `${country} ${(percent * 100).toFixed(0)}%`}
                 >
-                  {data.geography.map((entry, index) => (
+                  {data.geography.map((_, index: number) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
@@ -390,7 +388,7 @@ export function AnalyticsDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {data.yields.map((pool, index) => (
+                {data.yields.map((pool, index: number) => (
                   <tr key={index} className="border-b border-gray-800 hover:bg-gray-800/30 transition-colors">
                     <td className="py-4 px-4">
                       <div className="flex items-center">
@@ -445,7 +443,7 @@ export function AnalyticsDashboard() {
               { type: 'nft_purchase', user: '0x3456...7890', amount: '2.5 SOL', time: '8 minutes ago' },
               { type: 'liquidity', user: '0x4567...8901', amount: '5,000 USDC', time: '12 minutes ago' },
               { type: 'carbon_offset', user: '0x5678...9012', amount: '100 tons CO2', time: '15 minutes ago' }
-            ].map((activity, index) => (
+            ].map((activity, index: number) => (
               <div key={index} className="flex items-center justify-between p-4 bg-gray-800/30 rounded-lg">
                 <div className="flex items-center">
                   <div className={`w-3 h-3 rounded-full mr-3 ${

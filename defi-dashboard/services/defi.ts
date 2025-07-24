@@ -19,7 +19,7 @@ export const getTVL = async (contractAddress: string): Promise<string> => {
     }
     
     const contract = new ethers.Contract(contractAddress, poolABI, provider);
-    const tvl = await contract.totalValueLocked();
+    const tvl = await contract.totalValueLocked?.();
     return ethers.formatEther(tvl);
   } catch (error) {
     console.error('Error getting TVL:', error);
@@ -100,9 +100,9 @@ export const getTokenDetails = async (tokenAddress: string): Promise<{name: stri
     ];
     
     const contract = new ethers.Contract(tokenAddress, erc20ABI, provider);
-    const name = await contract.name();
-    const symbol = await contract.symbol();
-    const decimals = await contract.decimals();
+    const name = await contract.name?.();
+    const symbol = await contract.symbol?.();
+    const decimals = await contract.decimals?.();
     
     return { name, symbol, decimals };
   } catch (error) {

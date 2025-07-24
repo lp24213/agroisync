@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react'
 
+interface AnalyticsRow {
+  date: string;
+  users: number;
+  transactions: number;
+}
+
 export default function AnalyticsPanel() {
-  const [data, setData] = useState([])
+  const [data, setData] = useState<AnalyticsRow[]>([])
 
   useEffect(() => {
     setData([
@@ -23,7 +29,7 @@ export default function AnalyticsPanel() {
           </tr>
         </thead>
         <tbody>
-          {data.map((row, i) => (
+          {data.map((row: AnalyticsRow, i: number) => (
             <tr key={i} className="border-b border-blue-800">
               <td className="p-3">{row.date}</td>
               <td className="p-3">{row.users}</td>

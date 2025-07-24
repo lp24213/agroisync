@@ -1,7 +1,6 @@
 "use client";
 import { ReactNode, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { NeonButton } from "./NeonButton";
 
 interface ModalProps {
   isOpen: boolean;

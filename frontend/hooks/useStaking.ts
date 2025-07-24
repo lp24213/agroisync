@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { ethers } from "ethers";
 
 export function useStaking(account: string | null) {
   const [balance, setBalance] = useState("0");

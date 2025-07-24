@@ -1,5 +1,3 @@
-import React from "react";
-
 const DocsSite = () => {
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white px-8 py-12">

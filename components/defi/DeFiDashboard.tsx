@@ -20,7 +20,6 @@ interface Pool {
 export function DeFiDashboard() {
   const [pools, setPools] = useState<Pool[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedPool, setSelectedPool] = useState<Pool | null>(null);
 
   useEffect(() => {
     const fetchPools = async () => {
@@ -99,7 +98,7 @@ export function DeFiDashboard() {
         <h2 className="text-2xl font-bold gradient-text">Liquidity Pools</h2>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-          {pools.map((pool, index) => (
+          {pools.map((pool: Pool, index: number) => (
             <motion.div
               key={pool.id}
               initial={{ opacity: 0, y: 20 }}
@@ -146,13 +145,13 @@ export function DeFiDashboard() {
                     <NeonButton 
                       size="sm" 
                       className="flex-1"
-                      onClick={() => setSelectedPool(pool)}
+                      onClick={() => {}}
                     >
                       Stake
                     </NeonButton>
                     <NeonButton 
                       size="sm" 
-                      variant="outline" 
+                      variant="secondary" 
                       className="flex-1"
                       disabled={pool.userStaked === 0}
                     >

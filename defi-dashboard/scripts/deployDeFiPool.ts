@@ -7,7 +7,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // Import contract ABI and bytecode
-import { abi } from "../contracts/DeFiPool.json";
 // Note: In a real deployment, you would need the bytecode as well
 // This is a simplified example for demonstration purposes
 

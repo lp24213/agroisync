@@ -14,6 +14,12 @@ interface Pool {
   userStaked: number;
   userRewards: number;
   isActive: boolean;
+  lockPeriod: number;
+  riskLevel: string;
+  minStake: number;
+  maxStake?: number;
+  description?: string;
+  isVerified?: boolean;
 }
 
 interface PoolsState {
@@ -23,7 +29,7 @@ interface PoolsState {
 }
 
 export function useDeFiPools() {
-  const { provider, signer, account, isConnected } = useWeb3();
+  const { signer, account, isConnected } = useWeb3();
   const [state, setState] = useState<PoolsState>({
     pools: [],
     loading: true,
@@ -48,7 +54,13 @@ export function useDeFiPools() {
           tvl: 1250000,
           userStaked: 0,
           userRewards: 0,
-          isActive: true
+          isActive: true,
+          lockPeriod: 30, // Added
+          riskLevel: "High", // Added
+          minStake: 100, // Added
+          maxStake: 10000, // Added
+          description: "A high-risk, high-reward pool for experienced traders.", // Added
+          isVerified: true // Added
         },
         {
           id: "2",
@@ -60,7 +72,13 @@ export function useDeFiPools() {
           tvl: 850000,
           userStaked: 0,
           userRewards: 0,
-          isActive: true
+          isActive: true,
+          lockPeriod: 60, // Added
+          riskLevel: "Medium", // Added
+          minStake: 10, // Added
+          maxStake: 1000, // Added
+          description: "A medium-risk pool for investors looking for stable returns.", // Added
+          isVerified: true // Added
         },
         {
           id: "3",
@@ -72,7 +90,13 @@ export function useDeFiPools() {
           tvl: 650000,
           userStaked: 0,
           userRewards: 0,
-          isActive: true
+          isActive: true,
+          lockPeriod: 90, // Added
+          riskLevel: "Low", // Added
+          minStake: 1, // Added
+          maxStake: 100, // Added
+          description: "A low-risk pool for beginners and conservative investors.", // Added
+          isVerified: true // Added
         }
       ];
 

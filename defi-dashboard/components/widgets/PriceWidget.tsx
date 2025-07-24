@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { PriceData } from '../../types';
 
 interface PriceResponse {
   [key: string]: {

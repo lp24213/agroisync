@@ -36,10 +36,10 @@ export function rateLimit(options: Options = {}) {
     tokenCount[0] += 1;
     
     const currentUsage = tokenCount[0];
-    const isRateLimited = currentUsage >= maxRequests;
+    const isRateLimited = (currentUsage ?? 0) >= maxRequests;
     
     res.setHeader('X-RateLimit-Limit', maxRequests);
-    res.setHeader('X-RateLimit-Remaining', isRateLimited ? 0 : maxRequests - currentUsage);
+    res.setHeader('X-RateLimit-Remaining', isRateLimited ? 0 : maxRequests - (currentUsage ?? 0));
     
     if (isRateLimited) {
       res.status(429).json({ error: 'Rate limit exceeded. Please try again later.' });

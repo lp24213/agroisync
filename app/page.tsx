@@ -16,7 +16,6 @@ import {
   Zap, 
   Globe, 
   Users, 
-  Award,
   ArrowRight,
   CheckCircle,
   Star,
@@ -151,12 +150,12 @@ export default function HomePage() {
               
               {isConnected ? (
                 <Link href="/dashboard">
-                  <NeonButton size="sm">
+                  <NeonButton size="md">
                     Dashboard
                   </NeonButton>
                 </Link>
               ) : (
-                <NeonButton onClick={connectWallet} size="sm">
+                <NeonButton onClick={connectWallet} size="md">
                   <Wallet className="w-4 h-4 mr-2" />
                   Connect Wallet
                 </NeonButton>
@@ -191,21 +190,21 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               {isConnected ? (
                 <Link href="/staking">
-                  <NeonButton size="lg" className="w-full sm:w-auto">
+                  <NeonButton size="md" className="w-full sm:w-auto">
                     <Coins className="w-5 h-5 mr-2" />
                     Start Staking
                   </NeonButton>
                 </Link>
               ) : (
-                <NeonButton onClick={connectWallet} size="lg" className="w-full sm:w-auto">
+                <NeonButton onClick={connectWallet} size="md" className="w-full sm:w-auto">
                   <Wallet className="w-5 h-5 mr-2" />
                   Connect Wallet
                 </NeonButton>
               )}
               
               <NeonButton 
-                variant="outline" 
-                size="lg" 
+                variant="secondary" 
+                size="md" 
                 className="w-full sm:w-auto"
                 onClick={() => scrollToSection('features')}
               >
@@ -407,19 +406,19 @@ export default function HomePage() {
               {isConnected ? (
                 <>
                   <Link href="/staking">
-                    <NeonButton size="lg" className="w-full sm:w-auto">
+                    <NeonButton size="md" className="w-full sm:w-auto">
                       <Coins className="w-5 h-5 mr-2" />
                       Start Staking
                     </NeonButton>
                   </Link>
                   <Link href="/dashboard">
-                    <NeonButton variant="outline" size="lg" className="w-full sm:w-auto">
+                    <NeonButton variant="secondary" size="md" className="w-full sm:w-auto">
                       View Dashboard
                     </NeonButton>
                   </Link>
                 </>
               ) : (
-                <NeonButton onClick={connectWallet} size="lg" className="w-full sm:w-auto">
+                <NeonButton onClick={connectWallet} size="md" className="w-full sm:w-auto">
                   <Wallet className="w-5 h-5 mr-2" />
                   Connect Wallet to Begin
                 </NeonButton>

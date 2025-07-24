@@ -18,7 +18,6 @@ import {
   Calculator,
   Award,
   Lock,
-  Unlock,
   Plus,
   Minus
 } from 'lucide-react';
@@ -30,17 +29,16 @@ interface StakeModalData {
 }
 
 export default function StakingPage() {
-  const { isConnected, account, balance, connectWallet } = useWeb3();
+  const { isConnected, connectWallet } = useWeb3();
   const { 
     pools, 
-    userPositions, 
     loading, 
-    stakeTokens, 
-    unstakeTokens, 
+    stakeInPool, 
+    unstakeFromPool, 
     claimRewards 
   } = useDeFiPools();
 
-  const [selectedPool, setSelectedPool] = useState<string>('');
+  const [selectedPool] = useState<string>('');
   const [stakeAmount, setStakeAmount] = useState<string>('');
   const [showStakeModal, setShowStakeModal] = useState(false);
   const [stakeModalData, setStakeModalData] = useState<StakeModalData | null>(null);
@@ -64,12 +62,7 @@ export default function StakingPage() {
 
   const handleStakeAction = (poolId: string, action: 'stake' | 'unstake') => {
     const pool = pools.find(p => p.id === poolId);
-    const userPosition = userPositions.find(p => p.poolId === poolId);
-    
-    const maxAmount = action === 'stake' 
-      ? balance || 0 
-      : userPosition?.stakedAmount || 0;
-
+    const maxAmount = pool ? (action === 'stake' ? pool.minStake : pool.userStaked) : 0;
     setStakeModalData({ poolId, action, maxAmount });
     setShowStakeModal(true);
     setStakeAmount('');
@@ -83,9 +76,9 @@ export default function StakingPage() {
       const amount = parseFloat(stakeAmount);
       
       if (stakeModalData.action === 'stake') {
-        await stakeTokens(stakeModalData.poolId, amount);
+        await stakeInPool(stakeModalData.poolId, amount.toString());
       } else {
-        await unstakeTokens(stakeModalData.poolId, amount);
+        await unstakeFromPool(stakeModalData.poolId, amount.toString());
       }
       
       setShowStakeModal(false);
@@ -124,7 +117,7 @@ export default function StakingPage() {
             Connect your wallet to start earning rewards through AGROTM staking pools.
           </p>
           
-          <NeonButton onClick={connectWallet} size="lg" className="w-full">
+          <NeonButton onClick={connectWallet} size="md" className="w-full">
             Connect Wallet
           </NeonButton>
         </motion.div>
@@ -153,9 +146,9 @@ export default function StakingPage() {
             </div>
             
             <div className="text-right">
-              <p className="text-sm text-gray-400">Available Balance</p>
+              <p className="text-sm text-gray-400">Available Pools</p>
               <p className="text-xl font-semibold text-white">
-                {balance?.toFixed(4)} SOL
+                {pools.length}
               </p>
             </div>
           </div>
@@ -175,7 +168,7 @@ export default function StakingPage() {
               <div>
                 <p className="text-sm text-gray-400 mb-1">Total Staked</p>
                 <p className="text-2xl font-bold text-white">
-                  ${userPositions.reduce((sum, pos) => sum + pos.stakedAmount, 0).toLocaleString()}
+                  ${pools.reduce((sum: number, pool) => sum + (pool.userStaked || 0), 0).toLocaleString()}
                 </p>
               </div>
               <Lock className="w-8 h-8 text-blue-400" />
@@ -187,7 +180,7 @@ export default function StakingPage() {
               <div>
                 <p className="text-sm text-gray-400 mb-1">Pending Rewards</p>
                 <p className="text-2xl font-bold text-white">
-                  ${userPositions.reduce((sum, pos) => sum + pos.pendingRewards, 0).toLocaleString()}
+                  ${pools.reduce((sum: number, pool) => sum + (pool.userRewards || 0), 0).toLocaleString()}
                 </p>
               </div>
               <Award className="w-8 h-8 text-yellow-400" />
@@ -199,7 +192,7 @@ export default function StakingPage() {
               <div>
                 <p className="text-sm text-gray-400 mb-1">Active Pools</p>
                 <p className="text-2xl font-bold text-white">
-                  {userPositions.length}
+                  {pools.length}
                 </p>
               </div>
               <Zap className="w-8 h-8 text-green-400" />
@@ -241,7 +234,6 @@ export default function StakingPage() {
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {pools.map((pool) => {
-                const userPosition = userPositions.find(p => p.poolId === pool.id);
                 
                 return (
                   <motion.div
@@ -286,19 +278,19 @@ export default function StakingPage() {
                           </p>
                         </div>
 
-                        {userPosition && (
+                        {pool.userStaked && (
                           <>
                             <div>
                               <p className="text-xs text-gray-400 mb-1">Your Stake</p>
                               <p className="text-sm font-semibold text-green-400">
-                                ${userPosition.stakedAmount.toLocaleString()}
+                                ${pool.userStaked.toLocaleString()}
                               </p>
                             </div>
                             
                             <div>
                               <p className="text-xs text-gray-400 mb-1">Pending Rewards</p>
                               <p className="text-sm font-semibold text-yellow-400">
-                                ${userPosition.pendingRewards.toLocaleString()}
+                                ${pool.userRewards.toLocaleString()}
                               </p>
                             </div>
                           </>
@@ -316,11 +308,11 @@ export default function StakingPage() {
                           Stake
                         </NeonButton>
 
-                        {userPosition && userPosition.stakedAmount > 0 && (
+                        {pool.userStaked && pool.userStaked > 0 && (
                           <>
                             <NeonButton
                               onClick={() => handleStakeAction(pool.id, 'unstake')}
-                              variant="outline"
+                              variant="secondary"
                               size="sm"
                               className="flex-1"
                               disabled={isProcessing}
@@ -329,7 +321,7 @@ export default function StakingPage() {
                               Unstake
                             </NeonButton>
 
-                            {userPosition.pendingRewards > 0 && (
+                            {pool.userRewards && pool.userRewards > 0 && (
                               <NeonButton
                                 onClick={() => handleClaimRewards(pool.id)}
                                 variant="secondary"
@@ -412,7 +404,7 @@ export default function StakingPage() {
               <div className="flex space-x-3">
                 <NeonButton
                   onClick={() => setShowStakeModal(false)}
-                  variant="outline"
+                  variant="secondary"
                   className="flex-1"
                   disabled={isProcessing}
                 >

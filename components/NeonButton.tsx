@@ -1,14 +1,16 @@
 "use client";
-import { motion } from "framer-motion";
-import { ReactNode, ButtonHTMLAttributes } from "react";
+import { motion, MotionStyle, HTMLMotionProps } from "framer-motion";
+import { ReactNode } from "react";
 
-interface NeonButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+type NeonButtonProps = HTMLMotionProps<"button"> & {
   children: ReactNode;
-  variant?: "primary" | "secondary" | "outline" | "ghost";
-  size?: "sm" | "md" | "lg";
+  variant?: "primary" | "secondary";
+  size?: "md" | "sm";
   loading?: boolean;
   icon?: ReactNode;
-}
+  className?: string;
+  disabled?: boolean;
+};
 
 export function NeonButton({
   children,
@@ -35,6 +37,8 @@ export function NeonButton({
     lg: "px-6 py-3 text-lg"
   };
 
+  // Extrair style de props para evitar conflito de tipos
+  const { style, onDrag, ...rest } = props;
   return (
     <motion.button
       whileHover={{ scale: 1.05 }}
@@ -46,7 +50,8 @@ export function NeonButton({
         ${className}
       `}
       disabled={disabled || loading}
-      {...props}
+      {...(style ? { style: style as MotionStyle } : {})}
+      {...rest}
     >
       {loading && (
         <div className="loading-spinner mr-2" />

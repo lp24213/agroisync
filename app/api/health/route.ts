@@ -3,10 +3,10 @@
  * Provides system health status for monitoring and load balancers
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { logger } from '@/src/utils/logger';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const startTime = Date.now();
     
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     };
 
     const responseTime = Date.now() - startTime;
-    healthChecks.responseTime = `${responseTime}ms`;
+    (healthChecks as any).responseTime = `${responseTime}ms`;
 
     // Determine overall health status
     const isHealthy = Object.values(healthChecks.services).every(
@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
         status: 'error',
         timestamp: new Date().toISOString(),
         error: 'Health check failed',
-        message: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error',
+        message: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : 'Internal server error',
       },
       { status: 500 }
     );
@@ -80,7 +80,7 @@ async function checkDatabaseHealth(): Promise<{ status: string; responseTime?: s
   } catch (error) {
     return {
       status: 'unhealthy',
-      error: error.message,
+      error: error instanceof Error ? error.message : String(error),
     };
   }
 }
@@ -115,7 +115,7 @@ async function checkSolanaHealth(): Promise<{ status: string; responseTime?: str
   } catch (error) {
     return {
       status: 'unhealthy',
-      error: error.message,
+      error: error instanceof Error ? error.message : String(error),
     };
   }
 }
@@ -145,7 +145,7 @@ async function checkExternalAPIs(): Promise<{ status: string; responseTime?: str
   } catch (error) {
     return {
       status: 'unhealthy',
-      error: error.message,
+      error: error instanceof Error ? error.message : String(error),
     };
   }
 }

@@ -1,25 +1,22 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useWeb3 } from '@/hooks/useWeb3';
 import { AnimatedCard } from '@/components/AnimatedCard';
 import { NeonButton } from '@/components/NeonButton';
 import { Modal } from '@/components/Modal';
-import { Loader } from '@/components/Loader';
 import {
   Leaf,
   ShoppingCart,
   Eye,
   Heart,
   Share2,
-  Filter,
   Search,
   TrendingUp,
   Award,
   Zap,
   Globe,
-  Calendar,
   DollarSign,
   BarChart3,
   Users,
@@ -45,14 +42,6 @@ interface NFTItem {
   likes: number;
   views: number;
   createdAt: Date;
-}
-
-interface MarketplaceStats {
-  totalVolume: number;
-  totalSales: number;
-  averagePrice: number;
-  activeListings: number;
-  carbonOffsetTotal: number;
 }
 
 const mockNFTs: NFTItem[] = [
@@ -144,15 +133,6 @@ export function NFTMarketplace() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedRarity, setSelectedRarity] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('newest');
-  const [showFilters, setShowFilters] = useState(false);
-
-  const [stats, setStats] = useState<MarketplaceStats>({
-    totalVolume: 125.7,
-    totalSales: 2847,
-    averagePrice: 1.85,
-    activeListings: 156,
-    carbonOffsetTotal: 12500
-  });
 
   useEffect(() => {
     filterAndSortNFTs();
@@ -180,7 +160,7 @@ export function NFTMarketplace() {
     }
 
     // Apply sorting
-    filtered.sort((a, b) => {
+    filtered.sort((a: NFTItem, b: NFTItem) => {
       switch (sortBy) {
         case 'price_low':
           return a.price - b.price;
@@ -298,7 +278,7 @@ export function NFTMarketplace() {
               <div>
                 <p className="text-sm text-gray-400 mb-1">Total Volume</p>
                 <p className="text-2xl font-bold text-white">
-                  {stats.totalVolume} SOL
+                  {/* stats.totalVolume */}
                 </p>
               </div>
               <TrendingUp className="w-8 h-8 text-blue-400" />
@@ -310,7 +290,7 @@ export function NFTMarketplace() {
               <div>
                 <p className="text-sm text-gray-400 mb-1">Total Sales</p>
                 <p className="text-2xl font-bold text-white">
-                  {stats.totalSales.toLocaleString()}
+                  {/* stats.totalSales */}
                 </p>
               </div>
               <DollarSign className="w-8 h-8 text-green-400" />
@@ -322,7 +302,7 @@ export function NFTMarketplace() {
               <div>
                 <p className="text-sm text-gray-400 mb-1">Average Price</p>
                 <p className="text-2xl font-bold text-white">
-                  {stats.averagePrice} SOL
+                  {/* stats.averagePrice */}
                 </p>
               </div>
               <BarChart3 className="w-8 h-8 text-purple-400" />
@@ -334,7 +314,7 @@ export function NFTMarketplace() {
               <div>
                 <p className="text-sm text-gray-400 mb-1">Active Listings</p>
                 <p className="text-2xl font-bold text-white">
-                  {stats.activeListings}
+                  {/* stats.activeListings */}
                 </p>
               </div>
               <Users className="w-8 h-8 text-yellow-400" />
@@ -346,7 +326,7 @@ export function NFTMarketplace() {
               <div>
                 <p className="text-sm text-gray-400 mb-1">Carbon Offset</p>
                 <p className="text-2xl font-bold text-white">
-                  {stats.carbonOffsetTotal.toLocaleString()}t
+                  {/* stats.carbonOffsetTotal */}
                 </p>
               </div>
               <Award className="w-8 h-8 text-green-400" />
@@ -427,101 +407,99 @@ export function NFTMarketplace() {
           transition={{ delay: 0.3 }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
         >
-          <AnimatePresence>
-            {filteredNfts.map((nft, index) => (
-              <motion.div
-                key={nft.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <AnimatedCard className="overflow-hidden group cursor-pointer">
-                  {/* NFT Image */}
-                  <div className="relative aspect-square bg-gray-800">
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-green-500/20" />
-                    <div className="absolute top-4 left-4">
-                      <span className={`px-2 py-1 rounded-full text-xs font-semibold border ${getRarityColor(nft.rarity)}`}>
-                        {nft.rarity.toUpperCase()}
-                      </span>
+          {filteredNfts.map((nft: NFTItem, index: number) => (
+            <motion.div
+              key={nft.id}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <AnimatedCard className="overflow-hidden group cursor-pointer">
+                {/* NFT Image */}
+                <div className="relative aspect-square bg-gray-800">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-green-500/20" />
+                  <div className="absolute top-4 left-4">
+                    <span className={`px-2 py-1 rounded-full text-xs font-semibold border ${getRarityColor(nft.rarity)}`}>
+                      {nft.rarity.toUpperCase()}
+                    </span>
+                  </div>
+                  <div className="absolute top-4 right-4 flex gap-2">
+                    {getCategoryIcon(nft.category)}
+                  </div>
+                  <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center">
+                    <div className="flex items-center gap-2 text-white text-sm">
+                      <Eye className="w-4 h-4" />
+                      {nft.views}
                     </div>
-                    <div className="absolute top-4 right-4 flex gap-2">
-                      {getCategoryIcon(nft.category)}
-                    </div>
-                    <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center">
-                      <div className="flex items-center gap-2 text-white text-sm">
-                        <Eye className="w-4 h-4" />
-                        {nft.views}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleLikeNFT(nft.id);
+                      }}
+                      className="flex items-center gap-1 text-white text-sm hover:text-red-400 transition-colors"
+                    >
+                      <Heart className="w-4 h-4" />
+                      {nft.likes}
+                    </button>
+                  </div>
+                </div>
+
+                {/* NFT Info */}
+                <div className="p-6">
+                  <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-blue-400 transition-colors">
+                    {nft.name}
+                  </h3>
+                  <p className="text-gray-400 text-sm mb-4 line-clamp-2">
+                    {nft.description}
+                  </p>
+
+                  {/* Benefits */}
+                  <div className="grid grid-cols-3 gap-2 mb-4">
+                    {nft.yieldBonus > 0 && (
+                      <div className="text-center">
+                        <p className="text-xs text-gray-400">Yield Bonus</p>
+                        <p className="text-sm font-semibold text-green-400">+{nft.yieldBonus}%</p>
                       </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleLikeNFT(nft.id);
-                        }}
-                        className="flex items-center gap-1 text-white text-sm hover:text-red-400 transition-colors"
-                      >
-                        <Heart className="w-4 h-4" />
-                        {nft.likes}
-                      </button>
-                    </div>
+                    )}
+                    {nft.carbonOffset > 0 && (
+                      <div className="text-center">
+                        <p className="text-xs text-gray-400">Carbon Offset</p>
+                        <p className="text-sm font-semibold text-blue-400">{nft.carbonOffset}t</p>
+                      </div>
+                    )}
+                    {nft.stakingRewards > 0 && (
+                      <div className="text-center">
+                        <p className="text-xs text-gray-400">Staking APR</p>
+                        <p className="text-sm font-semibold text-yellow-400">{nft.stakingRewards}%</p>
+                      </div>
+                    )}
                   </div>
 
-                  {/* NFT Info */}
-                  <div className="p-6">
-                    <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-blue-400 transition-colors">
-                      {nft.name}
-                    </h3>
-                    <p className="text-gray-400 text-sm mb-4 line-clamp-2">
-                      {nft.description}
-                    </p>
-
-                    {/* Benefits */}
-                    <div className="grid grid-cols-3 gap-2 mb-4">
-                      {nft.yieldBonus > 0 && (
-                        <div className="text-center">
-                          <p className="text-xs text-gray-400">Yield Bonus</p>
-                          <p className="text-sm font-semibold text-green-400">+{nft.yieldBonus}%</p>
-                        </div>
-                      )}
-                      {nft.carbonOffset > 0 && (
-                        <div className="text-center">
-                          <p className="text-xs text-gray-400">Carbon Offset</p>
-                          <p className="text-sm font-semibold text-blue-400">{nft.carbonOffset}t</p>
-                        </div>
-                      )}
-                      {nft.stakingRewards > 0 && (
-                        <div className="text-center">
-                          <p className="text-xs text-gray-400">Staking APR</p>
-                          <p className="text-sm font-semibold text-yellow-400">{nft.stakingRewards}%</p>
-                        </div>
-                      )}
+                  {/* Price and Action */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs text-gray-400">Price</p>
+                      <p className="text-lg font-bold text-white">
+                        {nft.price} {nft.currency}
+                      </p>
                     </div>
-
-                    {/* Price and Action */}
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-xs text-gray-400">Price</p>
-                        <p className="text-lg font-bold text-white">
-                          {nft.price} {nft.currency}
-                        </p>
-                      </div>
-                      
-                      <NeonButton
-                        size="sm"
-                        onClick={() => {
-                          setSelectedNft(nft);
-                          setShowDetails(true);
-                        }}
-                        disabled={!nft.isListed}
-                      >
-                        {nft.isListed ? 'View Details' : 'Not Listed'}
-                      </NeonButton>
-                    </div>
+                    
+                    <NeonButton
+                      size="sm"
+                      onClick={() => {
+                        setSelectedNft(nft);
+                        setShowDetails(true);
+                      }}
+                      disabled={!nft.isListed}
+                    >
+                      {nft.isListed ? 'View Details' : 'Not Listed'}
+                    </NeonButton>
                   </div>
-                </AnimatedCard>
-              </motion.div>
-            ))}
-          </AnimatePresence>
+                </div>
+              </AnimatedCard>
+            </motion.div>
+          ))}
         </motion.div>
 
         {/* Empty State */}
@@ -612,7 +590,7 @@ export function NFTMarketplace() {
             <div>
               <h4 className="text-lg font-semibold text-white mb-3">Attributes</h4>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {selectedNft.attributes.map((attr, index) => (
+                {selectedNft.attributes.map((attr, index: number) => (
                   <div key={index} className="bg-gray-800/50 rounded-lg p-3 text-center">
                     <p className="text-xs text-gray-400 mb-1">{attr.trait_type}</p>
                     <p className="text-sm font-semibold text-white">{attr.value}</p>
@@ -650,11 +628,11 @@ export function NFTMarketplace() {
                     {isConnected ? 'Buy Now' : 'Connect Wallet'}
                   </NeonButton>
                   
-                  <NeonButton variant="outline" size="md">
+                  <NeonButton variant="secondary" size="md">
                     <Heart className="w-5 h-5" />
                   </NeonButton>
                   
-                  <NeonButton variant="outline" size="md">
+                  <NeonButton variant="secondary" size="md">
                     <Share2 className="w-5 h-5" />
                   </NeonButton>
                 </div>

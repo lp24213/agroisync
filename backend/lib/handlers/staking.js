@@ -15,23 +15,13 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getStaked = exports.unstake = exports.stake = void 0;
 const functions = __importStar(require("firebase-functions"));
@@ -47,28 +37,34 @@ const stakingAbi = [
 const stakingAddress = process.env.STAKING_CONTRACT_ADDRESS;
 const stakingContract = new ethers_1.ethers.Contract(stakingAddress, stakingAbi, wallet);
 // Stake
-exports.stake = functions.https.onCall(async (data, context) => {
+exports.stake = functions.https.onCall(async (data) => {
     const { amount } = data;
     if (!amount)
         throw new functions.https.HttpsError('invalid-argument', 'amount é obrigatório');
+    if (!stakingContract.stake)
+        throw new functions.https.HttpsError('internal', 'Método stake não disponível no contrato');
     const tx = await stakingContract.stake(ethers_1.ethers.parseUnits(amount, 18));
     await tx.wait();
     return { txHash: tx.hash };
 });
 // Unstake
-exports.unstake = functions.https.onCall(async (data, context) => {
+exports.unstake = functions.https.onCall(async (data) => {
     const { amount } = data;
     if (!amount)
         throw new functions.https.HttpsError('invalid-argument', 'amount é obrigatório');
+    if (!stakingContract.unstake)
+        throw new functions.https.HttpsError('internal', 'Método unstake não disponível no contrato');
     const tx = await stakingContract.unstake(ethers_1.ethers.parseUnits(amount, 18));
     await tx.wait();
     return { txHash: tx.hash };
 });
 // Query staked balance
-exports.getStaked = functions.https.onCall(async (data, context) => {
+exports.getStaked = functions.https.onCall(async (data) => {
     const { user } = data;
     if (!user)
         throw new functions.https.HttpsError('invalid-argument', 'user é obrigatório');
+    if (!stakingContract.stakedBalance)
+        throw new functions.https.HttpsError('internal', 'Método stakedBalance não disponível no contrato');
     const balance = await stakingContract.stakedBalance(user);
     return { user, balance: balance.toString() };
 });

@@ -1,27 +1,20 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { useWeb3 } from '@/hooks/useWeb3';
 import { AnimatedCard } from '@/components/AnimatedCard';
 import { NeonButton } from '@/components/NeonButton';
 import { Modal } from '@/components/Modal';
 import {
   Vote,
-  Users,
   Clock,
   CheckCircle,
   XCircle,
-  TrendingUp,
-  BarChart3,
-  Calendar,
-  Shield,
   AlertTriangle,
-  ExternalLink,
-  MessageSquare,
+  Minus,
   ThumbsUp,
-  ThumbsDown,
-  Minus
+  ThumbsDown
 } from 'lucide-react';
 
 interface Proposal {
@@ -92,13 +85,13 @@ const mockProposals: Proposal[] = [
 ];
 
 export function GovernanceVoting() {
-  const { isConnected, account, connectWallet } = useWeb3();
+  const { isConnected, connectWallet } = useWeb3();
   const [proposals, setProposals] = useState<Proposal[]>(mockProposals);
   const [selectedProposal, setSelectedProposal] = useState<Proposal | null>(null);
   const [showVoteModal, setShowVoteModal] = useState(false);
   const [voteChoice, setVoteChoice] = useState<'for' | 'against' | 'abstain'>('for');
   const [voteReason, setVoteReason] = useState('');
-  const [userVotingPower, setUserVotingPower] = useState(25000);
+  const [userVotingPower] = useState(25000);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<'all' | 'active' | 'passed' | 'rejected'>('all');
 

@@ -30,8 +30,8 @@ interface DashboardStats {
 }
 
 export default function DashboardPage() {
-  const { isConnected, account, balance, connectWallet } = useWeb3();
-  const { pools, userPositions, loading: poolsLoading } = useDeFiPools();
+  const { isConnected, account, connectWallet } = useWeb3();
+  const { pools } = useDeFiPools();
   const [stats, setStats] = useState<DashboardStats>({
     totalValue: 0,
     totalStaked: 0,
@@ -41,16 +41,16 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (isConnected && userPositions.length > 0) {
+    if (isConnected && pools.length > 0) {
       calculateStats();
     }
     setLoading(false);
-  }, [isConnected, userPositions]);
+  }, [isConnected, pools]);
 
   const calculateStats = () => {
-    const totalStaked = userPositions.reduce((sum, pos) => sum + pos.stakedAmount, 0);
-    const totalRewards = userPositions.reduce((sum, pos) => sum + pos.pendingRewards, 0);
-    const totalValue = totalStaked + totalRewards + (balance || 0);
+    const totalStaked = pools.reduce((sum: number, pool) => sum + (pool.userStaked || 0), 0);
+    const totalRewards = pools.reduce((sum: number, pool) => sum + (pool.userRewards || 0), 0);
+    const totalValue = totalStaked + totalRewards;
     const portfolioChange = Math.random() * 20 - 10; // Simulated change
 
     setStats({
@@ -89,7 +89,7 @@ export default function DashboardPage() {
           
           <NeonButton
             onClick={connectWallet}
-            size="lg"
+            size="md"
             className="w-full"
           >
             <Wallet className="w-5 h-5 mr-2" />
@@ -121,7 +121,8 @@ export default function DashboardPage() {
               <div className="text-right">
                 <p className="text-sm text-gray-400">Wallet Balance</p>
                 <p className="text-lg font-semibold text-white">
-                  {balance?.toFixed(4)} SOL
+                  {/* balance?.toFixed(4) */}
+                  SOL
                 </p>
               </div>
               <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" />
@@ -164,7 +165,7 @@ export default function DashboardPage() {
                   ${stats.totalStaked.toLocaleString()}
                 </p>
                 <p className="text-sm text-gray-400 mt-1">
-                  {userPositions.length} positions
+                  {pools.length} positions
                 </p>
               </div>
               <Coins className="w-8 h-8 text-green-400" />
@@ -225,7 +226,7 @@ export default function DashboardPage() {
               DeFi Positions
             </h2>
             
-            <NeonButton size="sm" variant="outline">
+            <NeonButton size="md" variant="secondary">
               <Zap className="w-4 h-4 mr-2" />
               Auto-Compound
             </NeonButton>
@@ -244,19 +245,19 @@ export default function DashboardPage() {
             <h3 className="text-lg font-semibold text-white mb-4">Quick Actions</h3>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <NeonButton variant="outline" className="w-full">
+              <NeonButton variant="secondary" className="w-full">
                 Stake More
               </NeonButton>
               
-              <NeonButton variant="outline" className="w-full">
+              <NeonButton variant="secondary" className="w-full">
                 Claim All Rewards
               </NeonButton>
               
-              <NeonButton variant="outline" className="w-full">
+              <NeonButton variant="secondary" className="w-full">
                 Bridge Assets
               </NeonButton>
               
-              <NeonButton variant="outline" className="w-full">
+              <NeonButton variant="secondary" className="w-full">
                 View Analytics
               </NeonButton>
             </div>
