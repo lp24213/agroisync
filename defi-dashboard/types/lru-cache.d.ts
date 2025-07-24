@@ -1,33 +1,37 @@
 declare module 'lru-cache' {
-  interface LRUOptions {
-    max?: number;
-    ttl?: number;
-    maxAge?: number;
-    updateAgeOnGet?: boolean;
-    updateAgeOnHas?: boolean;
-    dispose?: (key: any, value: any) => void;
-    noDisposeOnSet?: boolean;
-    stale?: boolean;
-  }
+  export default class LRU<K, V> {
+    constructor(options?: {
+      max?: number;
+      maxAge?: number;
+      length?: (value: V, key: K) => number;
+      dispose?: (key: K, value: V) => void;
+      stale?: boolean;
+      noDisposeOnSet?: boolean;
+      updateAgeOnGet?: boolean;
+      ttl?: number;
+    });
 
-  class LRU<K = any, V = any> {
-    constructor(options?: LRUOptions | number);
     set(key: K, value: V, maxAge?: number): boolean;
     get(key: K): V | undefined;
     peek(key: K): V | undefined;
     has(key: K): boolean;
     delete(key: K): boolean;
     clear(): void;
-    keys(): IterableIterator<K>;
-    values(): IterableIterator<V>;
-    entries(): IterableIterator<[K, V]>;
-    forEach(callbackFn: (value: V, key: K, cache: LRU<K, V>) => void, thisArg?: any): void;
-    size: number;
-    max: number;
-    ttl: number;
-    maxAge: number;
-    [Symbol.iterator](): IterableIterator<[K, V]>;
+    keys(): K[];
+    values(): V[];
+    length: number;
+    itemCount: number;
+    forEach(
+      callbackFn: (value: V, key: K, cache: this) => void,
+      thisArg?: any
+    ): void;
+    rforEach(
+      callbackFn: (value: V, key: K, cache: this) => void,
+      thisArg?: any
+    ): void;
+    dump(): Array<{ k: K; v: V; e?: number }>;
+    load(cacheEntries: Array<{ k: K; v: V; e?: number }>): void;
+    prune(): void;
+    reset(): void;
   }
-
-  export = LRU;
 }

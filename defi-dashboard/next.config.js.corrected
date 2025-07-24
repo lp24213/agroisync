@@ -1,0 +1,21 @@
+const withPWA = require('next-pwa');
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  images: {
+    domains: ["cdn.pixabay.com", "images.unsplash.com"]
+  },
+  i18n: {
+    locales: ['en', 'pt', 'zh'],
+    defaultLocale: 'en',
+    localeDetection: true
+  }
+};
+
+module.exports = withPWA({
+  dest: 'public',
+  register: true,
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === 'development',
+})(nextConfig);

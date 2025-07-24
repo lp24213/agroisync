@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "env": {
+    "NEXT_PUBLIC_RPC_URL": "@next_public_rpc_url",
+    "NEXT_PUBLIC_DEFI_POOL_ADDRESS": "@next_public_defi_pool_address"
+  },
+  "build": {
+    "env": {
+      "NEXT_PUBLIC_RPC_URL": "@next_public_rpc_url",
+      "NEXT_PUBLIC_DEFI_POOL_ADDRESS": "@next_public_defi_pool_address"
+    }
+  }
+}
