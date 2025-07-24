@@ -1,0 +1,50 @@
+[features]
+seeds = false
+skip-lint = false
+
+[programs.localnet]
+agrotm_staking = "AGRoTMStakingProgram11111111111111111111111"
+agrotm_token = "AGRoTMTokenProgram11111111111111111111111111"
+
+[programs.devnet]
+agrotm_staking = "AGRoTMStakingProgram11111111111111111111111"
+agrotm_token = "AGRoTMTokenProgram11111111111111111111111111"
+
+[programs.mainnet]
+agrotm_staking = "AGRoTMStakingProgram11111111111111111111111"
+agrotm_token = "AGRoTMTokenProgram11111111111111111111111111"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
+
+[test]
+startup_wait = 5000
+shutdown_wait = 2000
+upgradeable = false
+
+[[test.genesis]]
+address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+program = "metadata.so"
+
+[test.validator]
+url = "https://api.mainnet-beta.solana.com"
+clone = [
+  { address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s" },
+]
+bind_address = "0.0.0.0"
+rpc_port = 8899
+websocket_port = 8900
+ledger = ".anchor/test-ledger"
+startup_wait = 5000
+shutdown_wait = 2000
+limit_ledger_size = 10000000
+
+[build]
+exclude = ["node_modules", "target", "dist"]
