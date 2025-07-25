@@ -13,4 +13,4 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Trigger Azure DB failover
         run: |
-          az postgres flexible-server failover --name agrotm-db --resource-group agrotm-rg 
+          az postgres flexible-server failover --name agrotm-db --resource-group agrotm-rg

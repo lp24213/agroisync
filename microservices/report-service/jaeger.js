@@ -12,4 +12,4 @@ const config = {
 const options = {};
 const tracer = initTracer(config, options);
 
-module.exports = tracer; 
+module.exports = tracer;

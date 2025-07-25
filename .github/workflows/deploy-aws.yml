@@ -32,4 +32,4 @@ jobs:
           task-definition: ecs-task-def.json
           service: agrotm-service
           cluster: agrotm-cluster
-          wait-for-service-stability: true 
+          wait-for-service-stability: true

@@ -41,7 +41,7 @@ const DeFiDashboard: React.FC = () => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
-      maximumFractionDigits: 0
+      maximumFractionDigits: 0,
     }).format(tvl);
   };
 
@@ -53,13 +53,22 @@ const DeFiDashboard: React.FC = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Pool Name
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Token
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Total Value Locked (TVL)
                 </th>
               </tr>
@@ -84,7 +93,8 @@ const DeFiDashboard: React.FC = () => {
       </div>
       <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
         <p className="text-sm text-gray-500">
-          Data refreshes automatically every few minutes. Last updated: {new Date().toLocaleTimeString()}
+          Data refreshes automatically every few minutes. Last updated:{' '}
+          {new Date().toLocaleTimeString()}
         </p>
       </div>
     </div>

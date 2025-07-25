@@ -77,7 +77,7 @@ class BlockchainAnalyticsService {
   constructor() {
     this.connection = new Connection(
       process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com',
-      'confirmed'
+      'confirmed',
     );
     this.cache = new Map();
     this.wsConnections = new Map();
@@ -92,32 +92,34 @@ class BlockchainAnalyticsService {
     if (cached) return cached;
 
     try {
-      const [
-        recentBlockhash,
-        performanceSamples,
-        supply
-      ] = await Promise.all([
+      const [recentBlockhash, performanceSamples, supply] = await Promise.all([
         this.connection.getLatestBlockhash(),
         this.connection.getRecentPerformanceSamples(10),
-        this.connection.getSupply()
+        this.connection.getSupply(),
       ]);
 
       // Calculate network health based on performance samples
-      const avgTps = performanceSamples.reduce((sum, sample) => 
-        sum + sample.numTransactions / sample.samplePeriodSecs, 0) / performanceSamples.length;
+      const avgTps =
+        performanceSamples.reduce(
+          (sum, sample) => sum + sample.numTransactions / sample.samplePeriodSecs,
+          0,
+        ) / performanceSamples.length;
 
       const metrics: OnChainMetrics = {
-        totalTransactions: performanceSamples.reduce((sum, sample) => sum + sample.numTransactions, 0),
+        totalTransactions: performanceSamples.reduce(
+          (sum, sample) => sum + sample.numTransactions,
+          0,
+        ),
         totalVolume: await this.calculateTotalVolume(),
         uniqueUsers: await this.getUniqueUsersCount(),
         averageTransactionSize: await this.getAverageTransactionSize(),
         networkHealth: Math.min(avgTps / 1000, 1), // Normalize to 0-1
-        gasEfficiency: await this.calculateGasEfficiency()
+        gasEfficiency: await this.calculateGasEfficiency(),
       };
 
       this.setCache(cacheKey, metrics);
       logger.info('On-chain metrics calculated', { avgTps, networkHealth: metrics.networkHealth });
-      
+
       return metrics;
     } catch (error) {
       logger.error('Failed to get on-chain metrics', { error });
@@ -144,12 +146,15 @@ class BlockchainAnalyticsService {
         impermanentLoss: this.calculateImpermanentLoss(historicalData),
         volumeToLiquidityRatio: poolInfo.volume24h / poolInfo.totalLiquidity,
         priceImpact: await this.calculatePriceImpact(poolAddress, 1000),
-        optimalTradeSize: this.calculateOptimalTradeSize(poolInfo)
+        optimalTradeSize: this.calculateOptimalTradeSize(poolInfo),
       };
 
       this.setCache(cacheKey, analysis);
-      logger.info('Liquidity analysis completed', { poolAddress, totalLiquidity: analysis.totalLiquidity });
-      
+      logger.info('Liquidity analysis completed', {
+        poolAddress,
+        totalLiquidity: analysis.totalLiquidity,
+      });
+
       return analysis;
     } catch (error) {
       logger.error('Liquidity analysis failed', { error, poolAddress });
@@ -167,7 +172,7 @@ class BlockchainAnalyticsService {
 
       // Analyze transaction patterns for MEV risks
       const suspiciousPatterns = await this.detectSuspiciousPatterns(transactionData);
-      
+
       if (suspiciousPatterns.sandwichAttack) {
         detectedThreats.push('Potential sandwich attack detected');
         riskLevel = 'high';
@@ -187,7 +192,7 @@ class BlockchainAnalyticsService {
         riskLevel,
         detectedThreats,
         protectionStrategies: this.generateProtectionStrategies(detectedThreats),
-        estimatedSavings: this.calculatePotentialSavings(transactionData, detectedThreats)
+        estimatedSavings: this.calculatePotentialSavings(transactionData, detectedThreats),
       };
 
       logger.info('MEV analysis completed', { riskLevel, threatsCount: detectedThreats.length });
@@ -199,7 +204,7 @@ class BlockchainAnalyticsService {
         riskLevel: 'medium',
         detectedThreats: ['Analysis unavailable'],
         protectionStrategies: ['Use private mempool', 'Implement time delays'],
-        estimatedSavings: 0
+        estimatedSavings: 0,
       };
     }
   }
@@ -210,7 +215,7 @@ class BlockchainAnalyticsService {
   async analyzeCrossChainBridge(
     sourceChain: string,
     targetChain: string,
-    amount: number
+    amount: number,
   ): Promise<CrossChainAnalysis> {
     const cacheKey = `bridge_${sourceChain}_${targetChain}_${amount}`;
     const cached = this.getFromCache(cacheKey);
@@ -218,7 +223,7 @@ class BlockchainAnalyticsService {
 
     try {
       const bridgeData = await this.getBridgeData(sourceChain, targetChain);
-      
+
       const analysis: CrossChainAnalysis = {
         sourceChain,
         targetChain,
@@ -226,16 +231,16 @@ class BlockchainAnalyticsService {
         estimatedTime: bridgeData.estimatedTime || 300, // 5 minutes default
         fees: this.calculateBridgeFees(amount, bridgeData),
         slippage: this.calculateBridgeSlippage(amount, bridgeData),
-        recommendations: this.generateBridgeRecommendations(bridgeData, amount)
+        recommendations: this.generateBridgeRecommendations(bridgeData, amount),
       };
 
       this.setCache(cacheKey, analysis);
-      logger.info('Cross-chain analysis completed', { 
-        sourceChain, 
-        targetChain, 
-        fees: analysis.fees 
+      logger.info('Cross-chain analysis completed', {
+        sourceChain,
+        targetChain,
+        fees: analysis.fees,
       });
-      
+
       return analysis;
     } catch (error) {
       logger.error('Cross-chain analysis failed', { error, sourceChain, targetChain });
@@ -252,16 +257,11 @@ class BlockchainAnalyticsService {
     if (cached) return cached;
 
     try {
-      const [
-        tokenInfo,
-        priceData,
-        holderData,
-        liquidityData
-      ] = await Promise.all([
+      const [tokenInfo, priceData, holderData, liquidityData] = await Promise.all([
         this.getTokenInfo(tokenAddress),
         this.getTokenPrice(tokenAddress),
         this.getTokenHolders(tokenAddress),
-        this.getTokenLiquidity(tokenAddress)
+        this.getTokenLiquidity(tokenAddress),
       ]);
 
       const metrics: TokenMetrics = {
@@ -273,16 +273,16 @@ class BlockchainAnalyticsService {
         holders: holderData.count,
         concentration: this.calculateConcentration(holderData.distribution),
         liquidityScore: this.calculateLiquidityScore(liquidityData),
-        volatilityIndex: this.calculateVolatility(priceData.history)
+        volatilityIndex: this.calculateVolatility(priceData.history),
       };
 
       this.setCache(cacheKey, metrics);
-      logger.info('Token analysis completed', { 
-        symbol: metrics.symbol, 
+      logger.info('Token analysis completed', {
+        symbol: metrics.symbol,
         price: metrics.price,
-        holders: metrics.holders 
+        holders: metrics.holders,
       });
-      
+
       return metrics;
     } catch (error) {
       logger.error('Token analysis failed', { error, tokenAddress });
@@ -296,26 +296,21 @@ class BlockchainAnalyticsService {
   async assessRisk(
     tokenAddress: string,
     poolAddress?: string,
-    amount?: number
+    amount?: number,
   ): Promise<RiskAssessment> {
     try {
-      const [
-        tokenMetrics,
-        contractAudit,
-        liquidityAnalysis,
-        marketData
-      ] = await Promise.all([
+      const [tokenMetrics, contractAudit, liquidityAnalysis, marketData] = await Promise.all([
         this.analyzeToken(tokenAddress),
         this.auditSmartContract(tokenAddress),
         poolAddress ? this.analyzeLiquidity(poolAddress) : null,
-        this.getMarketRiskData(tokenAddress)
+        this.getMarketRiskData(tokenAddress),
       ]);
 
       const riskFactors = {
         smartContractRisk: contractAudit.riskScore,
         liquidityRisk: liquidityAnalysis ? this.calculateLiquidityRisk(liquidityAnalysis) : 0.3,
         marketRisk: this.calculateMarketRisk(tokenMetrics, marketData),
-        regulatoryRisk: this.calculateRegulatoryRisk(tokenAddress)
+        regulatoryRisk: this.calculateRegulatoryRisk(tokenAddress),
       };
 
       const riskScore = Object.values(riskFactors).reduce((sum, risk) => sum + risk, 0) / 4;
@@ -326,15 +321,15 @@ class BlockchainAnalyticsService {
         riskScore,
         factors: riskFactors,
         recommendations: this.generateRiskRecommendations(riskFactors),
-        mitigationStrategies: this.generateMitigationStrategies(riskFactors)
+        mitigationStrategies: this.generateMitigationStrategies(riskFactors),
       };
 
-      logger.info('Risk assessment completed', { 
-        tokenAddress, 
-        overallRisk, 
-        riskScore 
+      logger.info('Risk assessment completed', {
+        tokenAddress,
+        overallRisk,
+        riskScore,
       });
-      
+
       return assessment;
     } catch (error) {
       logger.error('Risk assessment failed', { error, tokenAddress });
@@ -349,14 +344,16 @@ class BlockchainAnalyticsService {
     try {
       for (const address of addresses) {
         const ws = new WebSocket(`wss://api.mainnet-beta.solana.com`);
-        
+
         ws.onopen = () => {
-          ws.send(JSON.stringify({
-            jsonrpc: '2.0',
-            id: 1,
-            method: 'accountSubscribe',
-            params: [address, { encoding: 'jsonParsed' }]
-          }));
+          ws.send(
+            JSON.stringify({
+              jsonrpc: '2.0',
+              id: 1,
+              method: 'accountSubscribe',
+              params: [address, { encoding: 'jsonParsed' }],
+            }),
+          );
         };
 
         ws.onmessage = (event) => {
@@ -365,7 +362,7 @@ class BlockchainAnalyticsService {
             callback({
               address,
               data: data.params.result,
-              timestamp: Date.now()
+              timestamp: Date.now(),
             });
           }
         };
@@ -424,7 +421,7 @@ class BlockchainAnalyticsService {
     return {
       totalLiquidity: Math.random() * 1000000,
       volume24h: Math.random() * 500000,
-      fees24h: Math.random() * 5000
+      fees24h: Math.random() * 5000,
     };
   }
 
@@ -433,7 +430,7 @@ class BlockchainAnalyticsService {
     return Array.from({ length: 24 }, (_, i) => ({
       timestamp: Date.now() - i * 3600000,
       liquidity: Math.random() * 1000000,
-      volume: Math.random() * 50000
+      volume: Math.random() * 50000,
     }));
   }
 
@@ -464,7 +461,7 @@ class BlockchainAnalyticsService {
     return {
       sandwichAttack: Math.random() < 0.1,
       frontRunning: Math.random() < 0.2,
-      arbitrage: Math.random() < 0.3
+      arbitrage: Math.random() < 0.3,
     };
   }
 
@@ -474,7 +471,7 @@ class BlockchainAnalyticsService {
       'Implement commit-reveal schemes',
       'Add random delays to transactions',
       'Use flashloan protection',
-      'Implement slippage protection'
+      'Implement slippage protection',
     ];
     return strategies.slice(0, Math.max(2, threats.length));
   }
@@ -489,12 +486,12 @@ class BlockchainAnalyticsService {
       health: 0.95,
       estimatedTime: 300,
       baseFee: 0.001,
-      variableFee: 0.003
+      variableFee: 0.003,
     };
   }
 
   private calculateBridgeFees(amount: number, bridgeData: any): number {
-    return bridgeData.baseFee + (amount * bridgeData.variableFee);
+    return bridgeData.baseFee + amount * bridgeData.variableFee;
   }
 
   private calculateBridgeSlippage(amount: number, bridgeData: any): number {
@@ -506,7 +503,7 @@ class BlockchainAnalyticsService {
       'Consider splitting large transactions',
       'Monitor bridge health before transfer',
       'Use official bridge interfaces only',
-      'Verify destination address carefully'
+      'Verify destination address carefully',
     ];
   }
 
@@ -514,7 +511,7 @@ class BlockchainAnalyticsService {
     // Simulate token info
     return {
       symbol: 'TOKEN',
-      supply: Math.random() * 1000000000
+      supply: Math.random() * 1000000000,
     };
   }
 
@@ -522,21 +519,21 @@ class BlockchainAnalyticsService {
     return {
       price: Math.random() * 100,
       volume24h: Math.random() * 1000000,
-      history: Array.from({ length: 24 }, () => Math.random() * 100)
+      history: Array.from({ length: 24 }, () => Math.random() * 100),
     };
   }
 
   private async getTokenHolders(tokenAddress: string): Promise<any> {
     return {
       count: Math.floor(Math.random() * 10000),
-      distribution: Array.from({ length: 100 }, () => Math.random())
+      distribution: Array.from({ length: 100 }, () => Math.random()),
     };
   }
 
   private async getTokenLiquidity(tokenAddress: string): Promise<any> {
     return {
       totalLiquidity: Math.random() * 1000000,
-      pools: Math.floor(Math.random() * 10) + 1
+      pools: Math.floor(Math.random() * 10) + 1,
     };
   }
 
@@ -551,9 +548,9 @@ class BlockchainAnalyticsService {
 
   private calculateVolatility(priceHistory: number[]): number {
     if (priceHistory.length < 2) return 0;
-    const returns = priceHistory.slice(1).map((price, i) => 
-      (price - priceHistory[i]) / priceHistory[i]
-    );
+    const returns = priceHistory
+      .slice(1)
+      .map((price, i) => (price - priceHistory[i]) / priceHistory[i]);
     const variance = returns.reduce((sum, ret) => sum + ret * ret, 0) / returns.length;
     return Math.sqrt(variance);
   }
@@ -562,14 +559,14 @@ class BlockchainAnalyticsService {
     // Simulate contract audit
     return {
       riskScore: Math.random() * 0.5, // 0-0.5 risk
-      issues: Math.floor(Math.random() * 3)
+      issues: Math.floor(Math.random() * 3),
     };
   }
 
   private async getMarketRiskData(tokenAddress: string): Promise<any> {
     return {
       volatility: Math.random() * 0.5,
-      correlation: Math.random() * 2 - 1
+      correlation: Math.random() * 2 - 1,
     };
   }
 
@@ -612,7 +609,7 @@ class BlockchainAnalyticsService {
       'Diversify portfolio across multiple assets',
       'Use stop-loss orders for risk management',
       'Monitor market conditions regularly',
-      'Implement position sizing strategies'
+      'Implement position sizing strategies',
     ];
   }
 
@@ -637,7 +634,7 @@ class BlockchainAnalyticsService {
       uniqueUsers: 25000,
       averageTransactionSize: 500,
       networkHealth: 0.95,
-      gasEfficiency: 0.85
+      gasEfficiency: 0.85,
     };
   }
 
@@ -649,11 +646,14 @@ class BlockchainAnalyticsService {
       impermanentLoss: 1.2,
       volumeToLiquidityRatio: 0.3,
       priceImpact: 0.02,
-      optimalTradeSize: 10000
+      optimalTradeSize: 10000,
     };
   }
 
-  private getFallbackCrossChainAnalysis(sourceChain: string, targetChain: string): CrossChainAnalysis {
+  private getFallbackCrossChainAnalysis(
+    sourceChain: string,
+    targetChain: string,
+  ): CrossChainAnalysis {
     return {
       sourceChain,
       targetChain,
@@ -661,7 +661,7 @@ class BlockchainAnalyticsService {
       estimatedTime: 300,
       fees: 0.01,
       slippage: 0.02,
-      recommendations: ['Use official bridges', 'Verify addresses']
+      recommendations: ['Use official bridges', 'Verify addresses'],
     };
   }
 
@@ -675,7 +675,7 @@ class BlockchainAnalyticsService {
       holders: 1000,
       concentration: 0.3,
       liquidityScore: 0.7,
-      volatilityIndex: 0.2
+      volatilityIndex: 0.2,
     };
   }
 
@@ -687,10 +687,10 @@ class BlockchainAnalyticsService {
         smartContractRisk: 0.4,
         liquidityRisk: 0.5,
         marketRisk: 0.6,
-        regulatoryRisk: 0.3
+        regulatoryRisk: 0.3,
       },
       recommendations: ['Proceed with caution', 'Monitor closely'],
-      mitigationStrategies: ['Diversify investments', 'Use risk management tools']
+      mitigationStrategies: ['Diversify investments', 'Use risk management tools'],
     };
   }
 }

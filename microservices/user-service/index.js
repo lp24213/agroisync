@@ -7,7 +7,7 @@ app.use(metrics);
 const { getSecret } = require('./secrets');
 
 app.get('/health', (req, res) => res.send('OK'));
-app.get('/users', (req, res) => res.json([{ id: 1, name: 'Alice' }]))
+app.get('/users', (req, res) => res.json([{ id: 1, name: 'Alice' }]));
 app.post('/users', (req, res) => {
   // lógica de criação
   res.status(201).json({ id: 2, ...req.body });
@@ -21,4 +21,4 @@ app.post('/users', (req, res) => {
   }
 })();
 
-app.listen(4000, () => logger.info('User service running on port 4000')); 
+app.listen(4000, () => logger.info('User service running on port 4000'));

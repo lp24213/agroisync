@@ -17,7 +17,7 @@ import {
   CheckCircle,
   ExternalLink,
   RefreshCw,
-  Globe
+  Globe,
 } from 'lucide-react';
 // Definir tipo Token localmente se não existir
 type Token = {
@@ -74,7 +74,7 @@ const supportedChains: Chain[] = [
     nativeCurrency: 'SOL',
     bridgeSupported: true,
     gasPrice: 0.000005,
-    blockTime: 0.4
+    blockTime: 0.4,
   },
   {
     id: 'ethereum',
@@ -86,7 +86,7 @@ const supportedChains: Chain[] = [
     nativeCurrency: 'ETH',
     bridgeSupported: true,
     gasPrice: 0.02,
-    blockTime: 12
+    blockTime: 12,
   },
   {
     id: 'polygon',
@@ -98,7 +98,7 @@ const supportedChains: Chain[] = [
     nativeCurrency: 'MATIC',
     bridgeSupported: true,
     gasPrice: 0.001,
-    blockTime: 2
+    blockTime: 2,
   },
   {
     id: 'bsc',
@@ -110,7 +110,7 @@ const supportedChains: Chain[] = [
     nativeCurrency: 'BNB',
     bridgeSupported: true,
     gasPrice: 0.003,
-    blockTime: 3
+    blockTime: 3,
   },
   {
     id: 'avalanche',
@@ -122,8 +122,8 @@ const supportedChains: Chain[] = [
     nativeCurrency: 'AVAX',
     bridgeSupported: true,
     gasPrice: 0.025,
-    blockTime: 1
-  }
+    blockTime: 1,
+  },
 ];
 
 export function CrossChainBridge() {
@@ -145,7 +145,7 @@ export function CrossChainBridge() {
     { symbol: 'SOL', name: 'Solana', balance: 12.8 },
     { symbol: 'USDC', name: 'USD Coin', balance: 5420.0 },
     { symbol: 'ETH', name: 'Ethereum', balance: 2.5 },
-    { symbol: 'BTC', name: 'Bitcoin', balance: 0.15 }
+    { symbol: 'BTC', name: 'Bitcoin', balance: 0.15 },
   ];
 
   useEffect(() => {
@@ -171,7 +171,7 @@ export function CrossChainBridge() {
           security: 'high',
           protocol: 'Wormhole',
           maxAmount: 100000,
-          minAmount: 1
+          minAmount: 1,
         },
         {
           id: 'allbridge',
@@ -183,7 +183,7 @@ export function CrossChainBridge() {
           security: 'high',
           protocol: 'Allbridge',
           maxAmount: 50000,
-          minAmount: 5
+          minAmount: 5,
         },
         {
           id: 'portal',
@@ -195,8 +195,8 @@ export function CrossChainBridge() {
           security: 'medium',
           protocol: 'Portal Bridge',
           maxAmount: 25000,
-          minAmount: 10
-        }
+          minAmount: 10,
+        },
       ];
 
       setBridgeRoutes(routes);
@@ -206,7 +206,7 @@ export function CrossChainBridge() {
       const analysis = await blockchainAnalytics.analyzeCrossChainBridge(
         fromChain.id,
         toChain.id,
-        parseFloat(amount)
+        parseFloat(amount),
       );
       setBridgeAnalysis(analysis);
     } catch (error) {
@@ -236,26 +236,26 @@ export function CrossChainBridge() {
         token: selectedToken,
         status: 'pending',
         txHash: `0x${Math.random().toString(16).substr(2, 64)}`,
-        estimatedCompletion: new Date(Date.now() + selectedRoute.estimatedTime * 1000)
+        estimatedCompletion: new Date(Date.now() + selectedRoute.estimatedTime * 1000),
       };
 
-      setTransactions(prev => [transaction, ...prev]);
-      
+      setTransactions((prev) => [transaction, ...prev]);
+
       // Simulate status updates
       setTimeout(() => {
-        setTransactions(prev => prev.map(tx => 
-          tx.id === transaction.id 
-            ? { ...tx, status: 'processing' }
-            : tx
-        ));
+        setTransactions((prev) =>
+          prev.map((tx) => (tx.id === transaction.id ? { ...tx, status: 'processing' } : tx)),
+        );
       }, 2000);
 
       setTimeout(() => {
-        setTransactions(prev => prev.map(tx => 
-          tx.id === transaction.id 
-            ? { ...tx, status: 'completed', actualCompletion: new Date() }
-            : tx
-        ));
+        setTransactions((prev) =>
+          prev.map((tx) =>
+            tx.id === transaction.id
+              ? { ...tx, status: 'completed', actualCompletion: new Date() }
+              : tx,
+          ),
+        );
       }, selectedRoute.estimatedTime * 1000);
 
       setAmount('');
@@ -269,30 +269,44 @@ export function CrossChainBridge() {
 
   const getSecurityColor = (security: string) => {
     switch (security) {
-      case 'high': return 'text-green-400';
-      case 'medium': return 'text-yellow-400';
-      case 'low': return 'text-red-400';
-      default: return 'text-gray-400';
+      case 'high':
+        return 'text-green-400';
+      case 'medium':
+        return 'text-yellow-400';
+      case 'low':
+        return 'text-red-400';
+      default:
+        return 'text-gray-400';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'text-green-400';
-      case 'processing': return 'text-blue-400';
-      case 'pending': return 'text-yellow-400';
-      case 'failed': return 'text-red-400';
-      default: return 'text-gray-400';
+      case 'completed':
+        return 'text-green-400';
+      case 'processing':
+        return 'text-blue-400';
+      case 'pending':
+        return 'text-yellow-400';
+      case 'failed':
+        return 'text-red-400';
+      default:
+        return 'text-gray-400';
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'completed': return <CheckCircle className="w-4 h-4" />;
-      case 'processing': return <RefreshCw className="w-4 h-4 animate-spin" />;
-      case 'pending': return <Clock className="w-4 h-4" />;
-      case 'failed': return <AlertTriangle className="w-4 h-4" />;
-      default: return <Clock className="w-4 h-4" />;
+      case 'completed':
+        return <CheckCircle className="w-4 h-4" />;
+      case 'processing':
+        return <RefreshCw className="w-4 h-4 animate-spin" />;
+      case 'pending':
+        return <Clock className="w-4 h-4" />;
+      case 'failed':
+        return <AlertTriangle className="w-4 h-4" />;
+      default:
+        return <Clock className="w-4 h-4" />;
     }
   };
 
@@ -317,20 +331,12 @@ export function CrossChainBridge() {
             </div>
 
             <div className="flex items-center gap-4">
-              <NeonButton
-                onClick={() => setShowTransactions(true)}
-                variant="secondary"
-                size="sm"
-              >
+              <NeonButton onClick={() => setShowTransactions(true)} variant="secondary" size="sm">
                 <Clock className="w-4 h-4 mr-2" />
                 History ({transactions.length})
               </NeonButton>
 
-              {!isConnected && (
-                <NeonButton onClick={connectWallet}>
-                  Connect Wallet
-                </NeonButton>
-              )}
+              {!isConnected && <NeonButton onClick={connectWallet}>Connect Wallet</NeonButton>}
             </div>
           </div>
         </div>
@@ -348,14 +354,14 @@ export function CrossChainBridge() {
             <div className="space-y-6">
               {/* From Chain */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-3">
-                  From
-                </label>
+                <label className="block text-sm font-medium text-gray-300 mb-3">From</label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="relative">
                     <select
                       value={fromChain.id}
-                      onChange={(e) => setFromChain(supportedChains.find(c => c.id === e.target.value)!)}
+                      onChange={(e) =>
+                        setFromChain(supportedChains.find((c) => c.id === e.target.value)!)
+                      }
                       className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-blue-400 focus:ring-1 focus:ring-blue-400 appearance-none"
                     >
                       {supportedChains.map((chain: Chain) => (
@@ -396,20 +402,22 @@ export function CrossChainBridge() {
 
               {/* To Chain */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-3">
-                  To
-                </label>
+                <label className="block text-sm font-medium text-gray-300 mb-3">To</label>
                 <div className="relative">
                   <select
                     value={toChain.id}
-                    onChange={(e) => setToChain(supportedChains.find(c => c.id === e.target.value)!)}
+                    onChange={(e) =>
+                      setToChain(supportedChains.find((c) => c.id === e.target.value)!)
+                    }
                     className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-blue-400 focus:ring-1 focus:ring-blue-400 appearance-none"
                   >
-                    {supportedChains.filter((c: Chain) => c.id !== fromChain.id).map((chain: Chain) => (
-                      <option key={chain.id} value={chain.id}>
-                        {chain.name} ({chain.symbol})
-                      </option>
-                    ))}
+                    {supportedChains
+                      .filter((c: Chain) => c.id !== fromChain.id)
+                      .map((chain: Chain) => (
+                        <option key={chain.id} value={chain.id}>
+                          {chain.name} ({chain.symbol})
+                        </option>
+                      ))}
                   </select>
                   <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
                 </div>
@@ -417,9 +425,7 @@ export function CrossChainBridge() {
 
               {/* Amount */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-3">
-                  Amount
-                </label>
+                <label className="block text-sm font-medium text-gray-300 mb-3">Amount</label>
                 <div className="relative">
                   <input
                     type="number"
@@ -432,7 +438,7 @@ export function CrossChainBridge() {
                   />
                   <button
                     onClick={() => {
-                      const token = tokens.find(t => t.symbol === selectedToken);
+                      const token = tokens.find((t) => t.symbol === selectedToken);
                       if (token) setAmount(token.balance.toString());
                     }}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-400 text-sm hover:text-blue-300"
@@ -442,7 +448,8 @@ export function CrossChainBridge() {
                 </div>
                 {selectedToken && (
                   <p className="text-xs text-gray-400 mt-1">
-                    Balance: {tokens.find(t => t.symbol === selectedToken)?.balance} {selectedToken}
+                    Balance: {tokens.find((t) => t.symbol === selectedToken)?.balance}{' '}
+                    {selectedToken}
                   </p>
                 )}
               </div>
@@ -451,15 +458,15 @@ export function CrossChainBridge() {
               {bridgeRoutes.length > 0 && (
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <label className="text-sm font-medium text-gray-300">
-                      Bridge Route
-                    </label>
+                    <label className="text-sm font-medium text-gray-300">Bridge Route</label>
                     <button
                       onClick={() => setShowRoutes(!showRoutes)}
                       className="text-blue-400 text-sm hover:text-blue-300 flex items-center"
                     >
                       {showRoutes ? 'Hide' : 'Show'} All Routes
-                      <ChevronDown className={`w-4 h-4 ml-1 transition-transform ${showRoutes ? 'rotate-180' : ''}`} />
+                      <ChevronDown
+                        className={`w-4 h-4 ml-1 transition-transform ${showRoutes ? 'rotate-180' : ''}`}
+                      />
                     </button>
                   </div>
 
@@ -467,7 +474,9 @@ export function CrossChainBridge() {
                     <div className="bg-gray-800/50 rounded-lg p-4 mb-4">
                       <div className="flex items-center justify-between mb-2">
                         <h4 className="font-semibold text-white">{selectedRoute.protocol}</h4>
-                        <span className={`text-sm font-semibold ${getSecurityColor(selectedRoute.security)}`}>
+                        <span
+                          className={`text-sm font-semibold ${getSecurityColor(selectedRoute.security)}`}
+                        >
                           {selectedRoute.security.toUpperCase()} SECURITY
                         </span>
                       </div>
@@ -475,15 +484,14 @@ export function CrossChainBridge() {
                         <div>
                           <p className="text-gray-400">Time</p>
                           <p className="text-white flex items-center">
-                            <Clock className="w-4 h-4 mr-1" />
-                            ~{Math.round(selectedRoute.estimatedTime / 60)}m
+                            <Clock className="w-4 h-4 mr-1" />~
+                            {Math.round(selectedRoute.estimatedTime / 60)}m
                           </p>
                         </div>
                         <div>
                           <p className="text-gray-400">Fees</p>
                           <p className="text-white flex items-center">
-                            <DollarSign className="w-4 h-4 mr-1" />
-                            ${selectedRoute.fees.toFixed(3)}
+                            <DollarSign className="w-4 h-4 mr-1" />${selectedRoute.fees.toFixed(3)}
                           </p>
                         </div>
                         <div>
@@ -514,14 +522,18 @@ export function CrossChainBridge() {
                           >
                             <div className="flex items-center justify-between mb-2">
                               <h4 className="font-semibold text-white">{route.protocol}</h4>
-                              <span className={`text-xs font-semibold ${getSecurityColor(route.security)}`}>
+                              <span
+                                className={`text-xs font-semibold ${getSecurityColor(route.security)}`}
+                              >
                                 {route.security.toUpperCase()}
                               </span>
                             </div>
                             <div className="grid grid-cols-3 gap-4 text-sm">
                               <div>
                                 <p className="text-gray-400">Time</p>
-                                <p className="text-white">~{Math.round(route.estimatedTime / 60)}m</p>
+                                <p className="text-white">
+                                  ~{Math.round(route.estimatedTime / 60)}m
+                                </p>
                               </div>
                               <div>
                                 <p className="text-gray-400">Fees</p>
@@ -550,7 +562,9 @@ export function CrossChainBridge() {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                     <div>
                       <p className="text-gray-400">Health Score</p>
-                      <p className="text-white">{(bridgeAnalysis.bridgeHealth * 100).toFixed(1)}%</p>
+                      <p className="text-white">
+                        {(bridgeAnalysis.bridgeHealth * 100).toFixed(1)}%
+                      </p>
                     </div>
                     <div>
                       <p className="text-gray-400">Est. Time</p>
@@ -617,7 +631,7 @@ export function CrossChainBridge() {
               <Globe className="w-6 h-6 mr-2 text-blue-400" />
               Chain Comparison
             </h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[fromChain, toChain].map((chain) => (
                 <div key={chain.id} className="space-y-4">
@@ -628,7 +642,7 @@ export function CrossChainBridge() {
                       <p className="text-sm text-gray-400">{chain.symbol}</p>
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-gray-400">Gas Price</p>
@@ -639,7 +653,7 @@ export function CrossChainBridge() {
                       <p className="text-white">{chain.blockTime}s</p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-400">Bridge Support</span>
                     {chain.bridgeSupported ? (
@@ -648,7 +662,7 @@ export function CrossChainBridge() {
                       <AlertTriangle className="w-4 h-4 text-red-400" />
                     )}
                   </div>
-                  
+
                   <a
                     href={chain.explorerUrl}
                     target="_blank"
@@ -689,10 +703,11 @@ export function CrossChainBridge() {
                     </span>
                   </div>
                   <span className="text-sm text-gray-400">
-                    {tx.actualCompletion?.toLocaleString() || tx.estimatedCompletion.toLocaleString()}
+                    {tx.actualCompletion?.toLocaleString() ||
+                      tx.estimatedCompletion.toLocaleString()}
                   </span>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <div>
                     <p className="text-sm text-gray-400">From</p>
@@ -703,11 +718,13 @@ export function CrossChainBridge() {
                     <p className="text-white capitalize">{tx.toChain}</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-gray-400">Amount</p>
-                    <p className="text-white">{tx.amount} {tx.token}</p>
+                    <p className="text-white">
+                      {tx.amount} {tx.token}
+                    </p>
                   </div>
                   <a
                     href={`${supportedChains.find((c: Chain) => c.id === tx.fromChain)?.explorerUrl}/tx/${tx.txHash}`}

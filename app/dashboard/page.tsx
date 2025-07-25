@@ -11,15 +11,15 @@ import { APRWidget } from '@/components/widgets/APRWidget';
 import { AnimatedCard } from '@/components/AnimatedCard';
 import { NeonButton } from '@/components/NeonButton';
 import { Loader } from '@/components/Loader';
-import { 
-  TrendingUp, 
-  Wallet, 
-  DollarSign, 
-  BarChart3, 
+import {
+  TrendingUp,
+  Wallet,
+  DollarSign,
+  BarChart3,
   Coins,
   Activity,
   Shield,
-  Zap
+  Zap,
 } from 'lucide-react';
 
 interface DashboardStats {
@@ -79,19 +79,13 @@ export default function DashboardPage() {
         >
           <div className="mb-8">
             <Wallet className="w-16 h-16 text-blue-400 mx-auto mb-4" />
-            <h1 className="text-3xl font-bold text-white mb-2">
-              Connect Your Wallet
-            </h1>
+            <h1 className="text-3xl font-bold text-white mb-2">Connect Your Wallet</h1>
             <p className="text-gray-400">
               Connect your wallet to access your AGROTM dashboard and start earning rewards.
             </p>
           </div>
-          
-          <NeonButton
-            onClick={connectWallet}
-            size="md"
-            className="w-full"
-          >
+
+          <NeonButton onClick={connectWallet} size="md" className="w-full">
             <Wallet className="w-5 h-5 mr-2" />
             Connect Wallet
           </NeonButton>
@@ -116,7 +110,7 @@ export default function DashboardPage() {
                 Welcome back, {account?.slice(0, 6)}...{account?.slice(-4)}
               </p>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               <div className="text-right">
                 <p className="text-sm text-gray-400">Wallet Balance</p>
@@ -146,11 +140,14 @@ export default function DashboardPage() {
                 <p className="text-2xl font-bold text-white">
                   ${stats.totalValue.toLocaleString()}
                 </p>
-                <p className={`text-sm flex items-center mt-1 ${
-                  stats.portfolioChange >= 0 ? 'text-green-400' : 'text-red-400'
-                }`}>
+                <p
+                  className={`text-sm flex items-center mt-1 ${
+                    stats.portfolioChange >= 0 ? 'text-green-400' : 'text-red-400'
+                  }`}
+                >
                   <TrendingUp className="w-4 h-4 mr-1" />
-                  {stats.portfolioChange >= 0 ? '+' : ''}{stats.portfolioChange.toFixed(2)}%
+                  {stats.portfolioChange >= 0 ? '+' : ''}
+                  {stats.portfolioChange.toFixed(2)}%
                 </p>
               </div>
               <DollarSign className="w-8 h-8 text-blue-400" />
@@ -164,9 +161,7 @@ export default function DashboardPage() {
                 <p className="text-2xl font-bold text-white">
                   ${stats.totalStaked.toLocaleString()}
                 </p>
-                <p className="text-sm text-gray-400 mt-1">
-                  {pools.length} positions
-                </p>
+                <p className="text-sm text-gray-400 mt-1">{pools.length} positions</p>
               </div>
               <Coins className="w-8 h-8 text-green-400" />
             </div>
@@ -179,9 +174,7 @@ export default function DashboardPage() {
                 <p className="text-2xl font-bold text-white">
                   ${stats.totalRewards.toLocaleString()}
                 </p>
-                <p className="text-sm text-blue-400 mt-1">
-                  Ready to claim
-                </p>
+                <p className="text-sm text-blue-400 mt-1">Ready to claim</p>
               </div>
               <Activity className="w-8 h-8 text-yellow-400" />
             </div>
@@ -192,9 +185,7 @@ export default function DashboardPage() {
               <div>
                 <p className="text-sm text-gray-400 mb-1">Security Score</p>
                 <p className="text-2xl font-bold text-white">98%</p>
-                <p className="text-sm text-green-400 mt-1">
-                  Excellent
-                </p>
+                <p className="text-sm text-green-400 mt-1">Excellent</p>
               </div>
               <Shield className="w-8 h-8 text-purple-400" />
             </div>
@@ -225,13 +216,13 @@ export default function DashboardPage() {
               <BarChart3 className="w-6 h-6 mr-2 text-blue-400" />
               DeFi Positions
             </h2>
-            
+
             <NeonButton size="md" variant="secondary">
               <Zap className="w-4 h-4 mr-2" />
               Auto-Compound
             </NeonButton>
           </div>
-          
+
           <DeFiDashboard />
         </motion.div>
 
@@ -243,20 +234,20 @@ export default function DashboardPage() {
         >
           <AnimatedCard className="p-6">
             <h3 className="text-lg font-semibold text-white mb-4">Quick Actions</h3>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <NeonButton variant="secondary" className="w-full">
                 Stake More
               </NeonButton>
-              
+
               <NeonButton variant="secondary" className="w-full">
                 Claim All Rewards
               </NeonButton>
-              
+
               <NeonButton variant="secondary" className="w-full">
                 Bridge Assets
               </NeonButton>
-              
+
               <NeonButton variant="secondary" className="w-full">
                 View Analytics
               </NeonButton>

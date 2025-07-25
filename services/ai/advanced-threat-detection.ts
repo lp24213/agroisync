@@ -65,7 +65,7 @@ export class AdvancedThreatDetection extends EventEmitter {
     await this.initializeMLModels();
     await this.loadBehavioralBaselines();
     await this.startContinuousLearning();
-    
+
     this.logger.info('Advanced Threat Detection initialized with AI capabilities');
   }
 
@@ -74,7 +74,8 @@ export class AdvancedThreatDetection extends EventEmitter {
       {
         id: 'apt-lateral-movement',
         name: 'APT Lateral Movement Detection',
-        description: 'Advanced persistent threat lateral movement using living-off-the-land techniques',
+        description:
+          'Advanced persistent threat lateral movement using living-off-the-land techniques',
         severity: 'critical',
         confidence: 0.95,
         indicators: ['psexec.exe', 'wmic.exe', 'powershell.exe', 'cmd.exe'],
@@ -88,16 +89,16 @@ export class AdvancedThreatDetection extends EventEmitter {
             pattern: 'rapid_process_creation_cross_hosts',
             weight: 0.8,
             threshold: 5,
-            timeWindow: 300000
+            timeWindow: 300000,
           },
           {
             type: 'network',
             pattern: 'unusual_smb_traffic_patterns',
             weight: 0.7,
             threshold: 10,
-            timeWindow: 600000
-          }
-        ]
+            timeWindow: 600000,
+          },
+        ],
       },
       {
         id: 'zero-day-exploit',
@@ -116,9 +117,9 @@ export class AdvancedThreatDetection extends EventEmitter {
             pattern: 'abnormal_memory_allocation_patterns',
             weight: 0.9,
             threshold: 3,
-            timeWindow: 60000
-          }
-        ]
+            timeWindow: 60000,
+          },
+        ],
       },
       {
         id: 'ai-poisoning-attack',
@@ -137,10 +138,10 @@ export class AdvancedThreatDetection extends EventEmitter {
             pattern: 'ml_model_performance_degradation',
             weight: 0.85,
             threshold: 2,
-            timeWindow: 1800000
-          }
-        ]
-      }
+            timeWindow: 1800000,
+          },
+        ],
+      },
     ];
 
     for (const pattern of patterns) {
@@ -156,29 +157,29 @@ export class AdvancedThreatDetection extends EventEmitter {
         purpose: 'Behavioral sequence analysis',
         accuracy: 0.96,
         falsePositiveRate: 0.02,
-        trainingData: 'enterprise_behavioral_logs_2024'
+        trainingData: 'enterprise_behavioral_logs_2024',
       },
       'cnn-exploit-detection': {
         type: 'CNN',
         purpose: 'Binary exploit pattern recognition',
         accuracy: 0.94,
         falsePositiveRate: 0.03,
-        trainingData: 'exploit_samples_database'
+        trainingData: 'exploit_samples_database',
       },
       'transformer-threat-intelligence': {
         type: 'Transformer',
         purpose: 'Natural language threat intelligence analysis',
         accuracy: 0.97,
         falsePositiveRate: 0.01,
-        trainingData: 'threat_reports_corpus'
+        trainingData: 'threat_reports_corpus',
       },
       'adversarial-detection-net': {
         type: 'GAN-Detector',
         purpose: 'Adversarial attack detection',
         accuracy: 0.93,
         falsePositiveRate: 0.04,
-        trainingData: 'adversarial_examples_dataset'
-      }
+        trainingData: 'adversarial_examples_dataset',
+      },
     };
 
     for (const [modelId, config] of Object.entries(models)) {
@@ -189,21 +190,21 @@ export class AdvancedThreatDetection extends EventEmitter {
   private async loadBehavioralBaselines(): Promise<void> {
     // Load behavioral baselines for anomaly detection
     const baselines = {
-      'network_traffic': {
+      network_traffic: {
         normal_bandwidth: { mean: 1024000, stddev: 204800 },
         connection_patterns: { typical_ports: [80, 443, 22, 3389], unusual_threshold: 0.1 },
-        protocol_distribution: { tcp: 0.7, udp: 0.25, icmp: 0.05 }
+        protocol_distribution: { tcp: 0.7, udp: 0.25, icmp: 0.05 },
       },
-      'process_behavior': {
+      process_behavior: {
         creation_rate: { mean: 50, stddev: 15 },
         memory_usage: { mean: 512000000, stddev: 102400000 },
-        cpu_utilization: { mean: 0.3, stddev: 0.1 }
+        cpu_utilization: { mean: 0.3, stddev: 0.1 },
       },
-      'user_behavior': {
+      user_behavior: {
         login_times: { typical_hours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17] },
         access_patterns: { files_per_hour: 25, applications_per_day: 8 },
-        geographic_locations: { allowed_countries: ['US', 'CA', 'UK'] }
-      }
+        geographic_locations: { allowed_countries: ['US', 'CA', 'UK'] },
+      },
     };
 
     for (const [category, baseline] of Object.entries(baselines)) {
@@ -235,7 +236,7 @@ export class AdvancedThreatDetection extends EventEmitter {
         behavioralAnalysis,
         patternMatching,
         anomalyDetection,
-        threatIntelligence
+        threatIntelligence,
       ]);
 
       // Generate comprehensive analysis result
@@ -248,12 +249,11 @@ export class AdvancedThreatDetection extends EventEmitter {
         evidenceChain: this.buildEvidenceChain(event, ensembleResult),
         attackVector: this.identifyAttackVector(ensembleResult),
         killChainStage: this.mapToKillChain(ensembleResult),
-        timeToContainment: this.estimateContainmentTime(ensembleResult)
+        timeToContainment: this.estimateContainmentTime(ensembleResult),
       };
 
       this.emit('analysis:completed', { event, result });
       return result;
-
     } catch (error) {
       this.logger.error(`AI analysis failed for event ${event.id}:`, error);
       throw error;
@@ -263,25 +263,25 @@ export class AdvancedThreatDetection extends EventEmitter {
   private async performBehavioralAnalysis(event: any): Promise<any> {
     // LSTM-based behavioral sequence analysis
     const model = this.mlModels.get('lstm-behavioral-analysis');
-    
+
     // Extract behavioral features
     const features = this.extractBehavioralFeatures(event);
-    
+
     // Simulate LSTM analysis (replace with actual ML inference)
     const behavioralScore = this.calculateBehavioralAnomalyScore(features);
-    
+
     return {
       type: 'behavioral',
       score: behavioralScore,
       confidence: model?.accuracy || 0.9,
-      features: features
+      features: features,
     };
   }
 
   private async performPatternMatching(event: any): Promise<any> {
     // CNN-based pattern recognition
     const matches: any[] = [];
-    
+
     for (const pattern of this.threatPatterns.values()) {
       const matchScore = await this.calculatePatternMatch(event, pattern);
       if (matchScore > 0.7) {
@@ -289,7 +289,7 @@ export class AdvancedThreatDetection extends EventEmitter {
           patternId: pattern.id,
           score: matchScore,
           severity: pattern.severity,
-          mitreTactics: pattern.mitreTactics
+          mitreTactics: pattern.mitreTactics,
         });
       }
     }
@@ -297,21 +297,22 @@ export class AdvancedThreatDetection extends EventEmitter {
     return {
       type: 'pattern_matching',
       matches: matches,
-      highestScore: Math.max(...matches.map(m => m.score), 0)
+      highestScore: Math.max(...matches.map((m) => m.score), 0),
     };
   }
 
   private async performAnomalyDetection(event: any): Promise<any> {
     // Statistical and ML-based anomaly detection
     const anomalies: any[] = [];
-    
+
     for (const [category, baseline] of this.behavioralBaselines.entries()) {
       const anomalyScore = this.calculateAnomalyScore(event, category, baseline);
-      if (anomalyScore > 2.0) { // 2 standard deviations
+      if (anomalyScore > 2.0) {
+        // 2 standard deviations
         anomalies.push({
           category: category,
           score: anomalyScore,
-          severity: this.mapAnomalyToSeverity(anomalyScore)
+          severity: this.mapAnomalyToSeverity(anomalyScore),
         });
       }
     }
@@ -319,26 +320,26 @@ export class AdvancedThreatDetection extends EventEmitter {
     return {
       type: 'anomaly_detection',
       anomalies: anomalies,
-      overallAnomalyScore: anomalies.reduce((sum, a) => sum + a.score, 0) / anomalies.length || 0
+      overallAnomalyScore: anomalies.reduce((sum, a) => sum + a.score, 0) / anomalies.length || 0,
     };
   }
 
   private async performThreatIntelligenceAnalysis(event: any): Promise<any> {
     // Transformer-based threat intelligence analysis
     const model = this.mlModels.get('transformer-threat-intelligence');
-    
+
     // Extract threat intelligence features
     const tiFeatures = this.extractThreatIntelligenceFeatures(event);
-    
+
     // Simulate transformer analysis
     const tiScore = this.calculateThreatIntelligenceScore(tiFeatures);
-    
+
     return {
       type: 'threat_intelligence',
       score: tiScore,
       confidence: model?.accuracy || 0.95,
       indicators: tiFeatures.indicators,
-      attribution: tiFeatures.attribution
+      attribution: tiFeatures.attribution,
     };
   }
 
@@ -348,7 +349,7 @@ export class AdvancedThreatDetection extends EventEmitter {
       behavioral: 0.3,
       pattern_matching: 0.25,
       anomaly_detection: 0.2,
-      threat_intelligence: 0.25
+      threat_intelligence: 0.25,
     };
 
     let totalScore = 0;
@@ -357,9 +358,10 @@ export class AdvancedThreatDetection extends EventEmitter {
 
     for (const analysis of analyses) {
       const weight = weights[analysis.type as keyof typeof weights] || 0.1;
-      totalScore += (analysis.score || analysis.highestScore || analysis.overallAnomalyScore || 0) * weight;
+      totalScore +=
+        (analysis.score || analysis.highestScore || analysis.overallAnomalyScore || 0) * weight;
       totalConfidence += (analysis.confidence || 0.8) * weight;
-      
+
       if (analysis.matches && analysis.matches.length > 0) {
         threatId = analysis.matches[0].patternId;
       }
@@ -369,7 +371,7 @@ export class AdvancedThreatDetection extends EventEmitter {
       threatId: threatId,
       confidence: Math.min(totalConfidence, 1.0),
       riskScore: Math.min(totalScore * 100, 100),
-      analyses: analyses
+      analyses: analyses,
     };
   }
 
@@ -379,7 +381,7 @@ export class AdvancedThreatDetection extends EventEmitter {
       networkConnections: event.networkActivity?.connections || 0,
       fileOperations: event.fileActivity?.operations || 0,
       registryModifications: event.registryActivity?.modifications || 0,
-      memoryAllocations: event.memoryActivity?.allocations || 0
+      memoryAllocations: event.memoryActivity?.allocations || 0,
     };
   }
 
@@ -387,13 +389,14 @@ export class AdvancedThreatDetection extends EventEmitter {
     // Simplified behavioral anomaly calculation
     let score = 0;
     const baseline = this.behavioralBaselines.get('process_behavior');
-    
+
     if (baseline) {
       const processRate = features.processCreationRate;
-      const deviation = Math.abs(processRate - baseline.creation_rate.mean) / baseline.creation_rate.stddev;
+      const deviation =
+        Math.abs(processRate - baseline.creation_rate.mean) / baseline.creation_rate.stddev;
       score = Math.min(deviation / 3, 1); // Normalize to 0-1
     }
-    
+
     return score;
   }
 
@@ -444,7 +447,9 @@ export class AdvancedThreatDetection extends EventEmitter {
     switch (category) {
       case 'network_traffic':
         const bandwidth = event.networkActivity?.bandwidth || 0;
-        return Math.abs(bandwidth - baseline.normal_bandwidth.mean) / baseline.normal_bandwidth.stddev;
+        return (
+          Math.abs(bandwidth - baseline.normal_bandwidth.mean) / baseline.normal_bandwidth.stddev
+        );
       case 'process_behavior':
         const processRate = event.processActivity?.rate || 0;
         return Math.abs(processRate - baseline.creation_rate.mean) / baseline.creation_rate.stddev;
@@ -466,25 +471,25 @@ export class AdvancedThreatDetection extends EventEmitter {
       sourceIPs: event.networkActivity?.sourceIPs || [],
       domains: event.networkActivity?.domains || [],
       fileHashes: event.fileActivity?.hashes || [],
-      attribution: event.attribution || 'unknown'
+      attribution: event.attribution || 'unknown',
     };
   }
 
   private calculateThreatIntelligenceScore(features: any): number {
     // Simplified TI scoring
     let score = 0;
-    
+
     if (features.indicators.length > 0) score += 0.3;
     if (features.sourceIPs.length > 0) score += 0.2;
     if (features.domains.length > 0) score += 0.2;
     if (features.fileHashes.length > 0) score += 0.3;
-    
+
     return score;
   }
 
   private predictImpact(analysis: any): string {
     const riskScore = analysis.riskScore;
-    
+
     if (riskScore > 80) return 'Critical business impact - immediate containment required';
     if (riskScore > 60) return 'High impact - rapid response needed';
     if (riskScore > 40) return 'Medium impact - investigation and monitoring required';
@@ -494,7 +499,7 @@ export class AdvancedThreatDetection extends EventEmitter {
   private generateRecommendations(analysis: any): string[] {
     const recommendations: string[] = [];
     const riskScore = analysis.riskScore;
-    
+
     if (riskScore > 80) {
       recommendations.push('Immediate network isolation of affected systems');
       recommendations.push('Activate incident response team');
@@ -508,13 +513,13 @@ export class AdvancedThreatDetection extends EventEmitter {
       recommendations.push('Continue monitoring');
       recommendations.push('Update threat intelligence feeds');
     }
-    
+
     return recommendations;
   }
 
   private buildEvidenceChain(event: any, analysis: any): Evidence[] {
     const evidence: Evidence[] = [];
-    
+
     // Build comprehensive evidence chain
     if (event.processActivity) {
       evidence.push({
@@ -523,10 +528,10 @@ export class AdvancedThreatDetection extends EventEmitter {
         confidence: 0.9,
         timestamp: new Date(),
         source: 'endpoint_detection',
-        correlation: ['behavioral_analysis']
+        correlation: ['behavioral_analysis'],
       });
     }
-    
+
     if (event.networkActivity) {
       evidence.push({
         type: 'network_activity',
@@ -534,10 +539,10 @@ export class AdvancedThreatDetection extends EventEmitter {
         confidence: 0.85,
         timestamp: new Date(),
         source: 'network_monitoring',
-        correlation: ['traffic_analysis']
+        correlation: ['traffic_analysis'],
       });
     }
-    
+
     return evidence;
   }
 
@@ -550,13 +555,22 @@ export class AdvancedThreatDetection extends EventEmitter {
   private mapToKillChain(analysis: any): string {
     // Map to MITRE ATT&CK kill chain stages
     const stages = [
-      'reconnaissance', 'resource_development', 'initial_access',
-      'execution', 'persistence', 'privilege_escalation',
-      'defense_evasion', 'credential_access', 'discovery',
-      'lateral_movement', 'collection', 'command_and_control',
-      'exfiltration', 'impact'
+      'reconnaissance',
+      'resource_development',
+      'initial_access',
+      'execution',
+      'persistence',
+      'privilege_escalation',
+      'defense_evasion',
+      'credential_access',
+      'discovery',
+      'lateral_movement',
+      'collection',
+      'command_and_control',
+      'exfiltration',
+      'impact',
     ];
-    
+
     const riskScore = analysis.riskScore;
     if (riskScore > 80) return 'impact';
     if (riskScore > 60) return 'lateral_movement';
@@ -567,7 +581,7 @@ export class AdvancedThreatDetection extends EventEmitter {
   private estimateContainmentTime(analysis: any): number {
     // Estimate time to containment in minutes
     const riskScore = analysis.riskScore;
-    
+
     if (riskScore > 80) return 15; // 15 minutes for critical
     if (riskScore > 60) return 60; // 1 hour for high
     if (riskScore > 40) return 240; // 4 hours for medium
@@ -591,17 +605,17 @@ export class AdvancedThreatDetection extends EventEmitter {
 
   async getModelMetrics(): Promise<any> {
     const metrics: any = {};
-    
+
     for (const [modelId, config] of this.mlModels.entries()) {
       metrics[modelId] = {
         accuracy: config.accuracy,
         falsePositiveRate: config.falsePositiveRate,
         lastUpdated: new Date(),
         threatsCaught: Math.floor(Math.random() * 1000),
-        averageConfidence: 0.92
+        averageConfidence: 0.92,
       };
     }
-    
+
     return metrics;
   }
 }

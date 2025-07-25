@@ -14,4 +14,4 @@ Uma descrição clara e concisa do que você quer que aconteça.
 Uma descrição clara e concisa de qualquer solução alternativa ou recurso que você considerou.
 
 **Informações adicionais**
-Adicione qualquer outra informação relevante ou contexto sobre a solicitação aqui. 
+Adicione qualquer outra informação relevante ou contexto sobre a solicitação aqui.

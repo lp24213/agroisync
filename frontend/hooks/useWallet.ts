@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 declare global {
   interface Window {
@@ -13,13 +13,13 @@ export function useWallet() {
     if (typeof window === 'undefined') return;
     if (window.ethereum) {
       try {
-        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         setAccount(accounts[0]);
       } catch (err) {
-        alert("Permissão da carteira negada ou erro ao conectar.");
+        alert('Permissão da carteira negada ou erro ao conectar.');
       }
     } else {
-      alert("Metamask não encontrada");
+      alert('Metamask não encontrada');
     }
   }
 
@@ -35,4 +35,4 @@ export function useWallet() {
   }, []);
 
   return { connectWallet, account };
-} 
+}

@@ -20,4 +20,4 @@ paths:
                   type: object
       responses:
         '200':
-          description: Resultado da query/mutation 
+          description: Resultado da query/mutation

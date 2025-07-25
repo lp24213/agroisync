@@ -15,4 +15,4 @@ jobs:
           aws-region: us-east-1
       - name: Trigger RDS failover
         run: |
-          aws rds failover-db-cluster --db-cluster-identifier agrotm-cluster 
+          aws rds failover-db-cluster --db-cluster-identifier agrotm-cluster

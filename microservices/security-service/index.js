@@ -16,4 +16,4 @@ app.post('/block-ip', async (req, res) => {
   res.json({ status: 'blocked', ip: req.body.ip });
 });
 
-app.listen(4006, () => logger.info('Security service running on port 4006')); 
+app.listen(4006, () => logger.info('Security service running on port 4006'));

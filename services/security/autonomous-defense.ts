@@ -42,30 +42,30 @@ export class AutonomousDefenseSystem extends EventEmitter {
 
   private async loadDefenseCapabilities(): Promise<void> {
     const capabilities = {
-      'network_isolation': {
+      network_isolation: {
         automated: true,
         executionTime: 30,
         effectiveness: 0.95,
-        riskLevel: 'low'
+        riskLevel: 'low',
       },
-      'endpoint_quarantine': {
+      endpoint_quarantine: {
         automated: true,
         executionTime: 60,
-        effectiveness: 0.90,
-        riskLevel: 'medium'
+        effectiveness: 0.9,
+        riskLevel: 'medium',
       },
-      'threat_blocking': {
+      threat_blocking: {
         automated: true,
         executionTime: 5,
         effectiveness: 0.85,
-        riskLevel: 'low'
+        riskLevel: 'low',
       },
-      'system_hardening': {
+      system_hardening: {
         automated: false,
         executionTime: 1800,
-        effectiveness: 0.80,
-        riskLevel: 'high'
-      }
+        effectiveness: 0.8,
+        riskLevel: 'high',
+      },
     };
 
     for (const [name, config] of Object.entries(capabilities)) {
@@ -88,7 +88,7 @@ export class AutonomousDefenseSystem extends EventEmitter {
       actions: [],
       status: 'pending',
       startTime: new Date(),
-      effectiveness: 0
+      effectiveness: 0,
     };
 
     // Determine appropriate actions based on threat
@@ -125,7 +125,7 @@ export class AutonomousDefenseSystem extends EventEmitter {
           severity: threatData.severity,
           automated: true,
           executed: false,
-          timestamp: new Date()
+          timestamp: new Date(),
         });
         actions.push({
           id: `quarantine-${Date.now()}`,
@@ -134,7 +134,7 @@ export class AutonomousDefenseSystem extends EventEmitter {
           severity: threatData.severity,
           automated: true,
           executed: false,
-          timestamp: new Date()
+          timestamp: new Date(),
         });
         break;
 
@@ -146,7 +146,7 @@ export class AutonomousDefenseSystem extends EventEmitter {
           severity: threatData.severity,
           automated: true,
           executed: false,
-          timestamp: new Date()
+          timestamp: new Date(),
         });
         break;
 
@@ -158,7 +158,7 @@ export class AutonomousDefenseSystem extends EventEmitter {
           severity: threatData.severity,
           automated: true,
           executed: false,
-          timestamp: new Date()
+          timestamp: new Date(),
         });
         break;
     }
@@ -185,7 +185,6 @@ export class AutonomousDefenseSystem extends EventEmitter {
       action.executed = true;
       action.result = 'success';
       this.logger.info(`Defense action completed: ${action.id}`);
-
     } catch (error) {
       action.executed = false;
       action.result = `failed: ${error}`;
@@ -195,19 +194,19 @@ export class AutonomousDefenseSystem extends EventEmitter {
 
   private async executeNetworkIsolation(target: string): Promise<void> {
     // Simulate network isolation
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     this.logger.info(`Network isolation applied to: ${target}`);
   }
 
   private async executeIPBlock(target: string): Promise<void> {
     // Simulate IP blocking
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
     this.logger.info(`IP blocked: ${target}`);
   }
 
   private async executeFileQuarantine(target: string): Promise<void> {
     // Simulate file quarantine
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     this.logger.info(`File quarantined: ${target}`);
   }
 
@@ -244,9 +243,9 @@ export class AutonomousDefenseSystem extends EventEmitter {
   }
 
   private async monitorResponseProgress(response: ThreatResponse): Promise<void> {
-    const completedActions = response.actions.filter(a => a.executed).length;
+    const completedActions = response.actions.filter((a) => a.executed).length;
     const totalActions = response.actions.length;
-    
+
     if (completedActions === totalActions) {
       response.status = 'completed';
       response.endTime = new Date();
@@ -254,9 +253,11 @@ export class AutonomousDefenseSystem extends EventEmitter {
   }
 
   private calculateEffectiveness(response: ThreatResponse): number {
-    const successfulActions = response.actions.filter(a => a.executed && a.result === 'success').length;
+    const successfulActions = response.actions.filter(
+      (a) => a.executed && a.result === 'success',
+    ).length;
     const totalActions = response.actions.length;
-    
+
     return totalActions > 0 ? successfulActions / totalActions : 0;
   }
 
@@ -267,18 +268,20 @@ export class AutonomousDefenseSystem extends EventEmitter {
 
   async getDefenseMetrics(): Promise<any> {
     const totalResponses = this.activeResponses.size;
-    const completedResponses = Array.from(this.activeResponses.values())
-      .filter(r => r.status === 'completed').length;
-    
-    const avgEffectiveness = Array.from(this.activeResponses.values())
-      .reduce((sum, r) => sum + r.effectiveness, 0) / totalResponses || 0;
+    const completedResponses = Array.from(this.activeResponses.values()).filter(
+      (r) => r.status === 'completed',
+    ).length;
+
+    const avgEffectiveness =
+      Array.from(this.activeResponses.values()).reduce((sum, r) => sum + r.effectiveness, 0) /
+        totalResponses || 0;
 
     return {
       totalResponses,
       completedResponses,
       averageEffectiveness: avgEffectiveness,
       autonomousActionRate: 0.95,
-      responseTime: 15 // seconds
+      responseTime: 15, // seconds
     };
   }
 }

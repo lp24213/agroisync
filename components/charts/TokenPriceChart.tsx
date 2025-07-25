@@ -1,7 +1,14 @@
-import { useEffect, useState } from "react";
-import { Line } from "react-chartjs-2";
-import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement, Tooltip } from "chart.js";
-import "chartjs-adapter-date-fns";
+import { useEffect, useState } from 'react';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  Tooltip,
+} from 'chart.js';
+import 'chartjs-adapter-date-fns';
 
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip);
 
@@ -14,21 +21,21 @@ const TokenPriceChart = () => {
       const now = Date.now();
       const prices = Array.from({ length: 20 }, (_, i) => ({
         x: now - (19 - i) * 3600 * 1000,
-        y: (Math.random() * 0.15 + 0.85).toFixed(2)
+        y: (Math.random() * 0.15 + 0.85).toFixed(2),
       }));
 
       setChartData({
-        labels: prices.map(p => new Date(p.x)),
+        labels: prices.map((p) => new Date(p.x)),
         datasets: [
           {
-            label: "AGRTM Token",
-            data: prices.map(p => p.y),
-            borderColor: "#00ffff",
-            backgroundColor: "rgba(0, 255, 255, 0.1)",
+            label: 'AGRTM Token',
+            data: prices.map((p) => p.y),
+            borderColor: '#00ffff',
+            backgroundColor: 'rgba(0, 255, 255, 0.1)',
             tension: 0.4,
             pointRadius: 2,
-          }
-        ]
+          },
+        ],
       });
     };
 
@@ -46,22 +53,22 @@ const TokenPriceChart = () => {
           responsive: true,
           plugins: {
             tooltip: {
-              mode: "index",
+              mode: 'index',
               intersect: false,
             },
           },
           scales: {
             x: {
-              type: "time",
-              time: { unit: "hour" },
-              ticks: { color: "#00ffff" },
-              grid: { color: "#333" },
+              type: 'time',
+              time: { unit: 'hour' },
+              ticks: { color: '#00ffff' },
+              grid: { color: '#333' },
             },
             y: {
-              ticks: { color: "#00ffff" },
-              grid: { color: "#333" },
-            }
-          }
+              ticks: { color: '#00ffff' },
+              grid: { color: '#333' },
+            },
+          },
         }}
       />
     </div>

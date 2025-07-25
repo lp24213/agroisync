@@ -1,7 +1,7 @@
 /**
  * Agrotm-Solana - Ponto de entrada principal
  * Aplicação descentralizada para o setor agroindustrial usando Solana
- * 
+ *
  * @author AGROTM Team
  * @version 1.0.0
  */
@@ -15,13 +15,13 @@ async function main() {
     logger.info('🌱 Iniciando Agrotm-Solana...');
     logger.info(`Ambiente: ${config.NODE_ENV}`);
     logger.info(`Rede Solana: ${config.SOLANA_NETWORK}`);
-    
+
     // Inicializar aplicação
     const app = await initializeApp();
-    
+
     logger.info('✅ Agrotm-Solana iniciado com sucesso!');
     logger.info('🚀 Bem-vindo ao futuro da agricultura descentralizada!');
-    
+
     return app;
   } catch (error) {
     logger.error('❌ Erro ao inicializar Agrotm-Solana:', error);

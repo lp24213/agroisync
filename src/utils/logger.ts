@@ -27,9 +27,9 @@ export class Logger {
       error: 0,
       warn: 1,
       info: 2,
-      debug: 3
+      debug: 3,
     };
-    
+
     return levels[level] <= levels[this.logLevel];
   }
 
@@ -37,7 +37,7 @@ export class Logger {
     const timestamp = new Date().toISOString();
     const contextStr = this.context ? `[${this.context}] ` : '';
     const dataStr = data ? ` ${JSON.stringify(data)}` : '';
-    
+
     return `${timestamp} [${level.toUpperCase()}] ${contextStr}${message}${dataStr}`;
   }
 
@@ -95,9 +95,7 @@ export class Logger {
 }
 
 // Instância global do logger
-export const logger = new Logger(
-  (process.env.LOG_LEVEL as LogLevel) || 'info'
-);
+export const logger = new Logger((process.env.LOG_LEVEL as LogLevel) || 'info');
 
 // Factory function para criar loggers com contexto
 export function createLogger(context: string): Logger {

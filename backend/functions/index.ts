@@ -1,2 +1,2 @@
 export * from './handlers/nft';
-export * from './handlers/staking'; 
+export * from './handlers/staking';

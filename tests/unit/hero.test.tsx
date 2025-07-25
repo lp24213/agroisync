@@ -7,4 +7,4 @@ describe('Home Landing', () => {
     const { getByText } = render(<Home />);
     expect(getByText(/AGROTM/i)).toBeInTheDocument();
   });
-}); 
+});

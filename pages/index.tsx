@@ -1,9 +1,9 @@
-import React from "react";
-import dynamic from "next/dynamic";
-import { motion } from "framer-motion";
-import Head from "next/head";
+import React from 'react';
+import dynamic from 'next/dynamic';
+import { motion } from 'framer-motion';
+import Head from 'next/head';
 
-const Intro = dynamic(() => import("@/components/intro/IntroVideo"), { ssr: false });
+const Intro = dynamic(() => import('@/components/intro/IntroVideo'), { ssr: false });
 
 export default function Home() {
   return (

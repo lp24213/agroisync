@@ -49,20 +49,20 @@ export class SIEMIntegration extends EventEmitter {
         endpoint: process.env.SPLUNK_ENDPOINT || 'https://splunk.company.com:8089',
         apiKey: process.env.SPLUNK_API_KEY || '',
         username: process.env.SPLUNK_USERNAME,
-        password: process.env.SPLUNK_PASSWORD
+        password: process.env.SPLUNK_PASSWORD,
       },
       elastic: {
         type: 'elastic',
         endpoint: process.env.ELASTIC_ENDPOINT || 'https://elasticsearch.company.com:9200',
         apiKey: process.env.ELASTIC_API_KEY || '',
-        index: process.env.ELASTIC_INDEX || 'security-*'
+        index: process.env.ELASTIC_INDEX || 'security-*',
       },
       sentinel: {
         type: 'sentinel',
         endpoint: process.env.SENTINEL_ENDPOINT || 'https://management.azure.com',
         apiKey: process.env.SENTINEL_API_KEY || '',
-        workspace: process.env.SENTINEL_WORKSPACE_ID
-      }
+        workspace: process.env.SENTINEL_WORKSPACE_ID,
+      },
     };
 
     for (const [name, config] of Object.entries(defaultConfigs)) {
@@ -80,22 +80,22 @@ export class SIEMIntegration extends EventEmitter {
         query: 'EventCode=4625 OR action=failed_login',
         timeRange: '-15m',
         fields: ['timestamp', 'user', 'source_ip', 'destination'],
-        threshold: 5
+        threshold: 5,
       },
       {
         id: 'malware-detection',
         name: 'Malware Detection',
         query: 'signature_name=*malware* OR threat_type=malware',
         timeRange: '-5m',
-        fields: ['timestamp', 'file_hash', 'file_path', 'host', 'severity']
+        fields: ['timestamp', 'file_hash', 'file_path', 'host', 'severity'],
       },
       {
         id: 'network-anomalies',
         name: 'Network Anomalies',
         query: 'anomaly_score>80 OR traffic_type=suspicious',
         timeRange: '-10m',
-        fields: ['timestamp', 'source_ip', 'destination_ip', 'port', 'protocol']
-      }
+        fields: ['timestamp', 'source_ip', 'destination_ip', 'port', 'protocol'],
+      },
     ];
 
     for (const query of defaultQueries) {
@@ -145,10 +145,10 @@ export class SIEMIntegration extends EventEmitter {
 
   private async executeSplunkQuery(config: SIEMConfig, query: SIEMQuery): Promise<any[]> {
     const searchQuery = `search ${query.query} earliest=${query.timeRange} | head 1000`;
-    
+
     // Mock implementation - replace with actual Splunk API calls
     this.logger.debug(`Executing Splunk query: ${searchQuery}`);
-    
+
     // Simulate API response
     return [];
   }
@@ -159,25 +159,25 @@ export class SIEMIntegration extends EventEmitter {
         bool: {
           must: [
             { query_string: { query: query.query } },
-            { range: { '@timestamp': { gte: query.timeRange } } }
-          ]
-        }
+            { range: { '@timestamp': { gte: query.timeRange } } },
+          ],
+        },
       },
       size: 1000,
-      _source: query.fields
+      _source: query.fields,
     };
 
     this.logger.debug(`Executing Elastic query:`, elasticQuery);
-    
+
     // Mock implementation - replace with actual Elasticsearch API calls
     return [];
   }
 
   private async executeSentinelQuery(config: SIEMConfig, query: SIEMQuery): Promise<any[]> {
     const kqlQuery = `${query.query} | where TimeGenerated >= ago(15m) | limit 1000`;
-    
+
     this.logger.debug(`Executing Sentinel KQL query: ${kqlQuery}`);
-    
+
     // Mock implementation - replace with actual Azure Sentinel API calls
     return [];
   }
@@ -206,8 +206,8 @@ export class SIEMIntegration extends EventEmitter {
       context: {
         query: query.name,
         siem: siemName,
-        original_query: query.query
-      }
+        original_query: query.query,
+      },
     };
   }
 
@@ -223,20 +223,20 @@ export class SIEMIntegration extends EventEmitter {
     const typeMapping: Record<string, string> = {
       'failed-logins': 'authentication_failure',
       'malware-detection': 'malware_detection',
-      'network-anomalies': 'network_anomaly'
+      'network-anomalies': 'network_anomaly',
     };
     return typeMapping[queryId] || 'security_event';
   }
 
   private extractIndicators(result: any): string[] {
     const indicators: string[] = [];
-    
+
     // Extract common IOCs
     if (result.source_ip) indicators.push(result.source_ip);
     if (result.file_hash) indicators.push(result.file_hash);
     if (result.domain) indicators.push(result.domain);
     if (result.url) indicators.push(result.url);
-    
+
     return indicators;
   }
 

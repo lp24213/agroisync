@@ -20,8 +20,20 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/users', auth, createProxyMiddleware({ target: 'http://localhost:4000', changeOrigin: true }));
-app.use('/payments', auth, createProxyMiddleware({ target: 'http://localhost:4001', changeOrigin: true }));
-app.use('/notify', auth, createProxyMiddleware({ target: 'http://localhost:4002', changeOrigin: true }));
+app.use(
+  '/users',
+  auth,
+  createProxyMiddleware({ target: 'http://localhost:4000', changeOrigin: true }),
+);
+app.use(
+  '/payments',
+  auth,
+  createProxyMiddleware({ target: 'http://localhost:4001', changeOrigin: true }),
+);
+app.use(
+  '/notify',
+  auth,
+  createProxyMiddleware({ target: 'http://localhost:4002', changeOrigin: true }),
+);
 
-app.listen(3005, () => logger.info('API Gateway running on port 3005')); 
+app.listen(3005, () => logger.info('API Gateway running on port 3005'));

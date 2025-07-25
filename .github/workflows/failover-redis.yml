@@ -9,4 +9,4 @@ jobs:
     steps:
       - name: Trigger Redis failover
         run: |
-          echo "Triggering Redis failover (manual via Redis Sentinel or cloud provider API)" 
+          echo "Triggering Redis failover (manual via Redis Sentinel or cloud provider API)"

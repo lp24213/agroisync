@@ -9,13 +9,13 @@ import { NeonButton } from '@/components/NeonButton';
 import { PriceWidget } from '@/components/widgets/PriceWidget';
 import { TVLWidget } from '@/components/widgets/TVLWidget';
 import { APRWidget } from '@/components/widgets/APRWidget';
-import { 
-  Leaf, 
-  TrendingUp, 
-  Shield, 
-  Zap, 
-  Globe, 
-  Users, 
+import {
+  Leaf,
+  TrendingUp,
+  Shield,
+  Zap,
+  Globe,
+  Users,
   ArrowRight,
   CheckCircle,
   Star,
@@ -23,24 +23,27 @@ import {
   Lock,
   Coins,
   Wallet,
-  ChevronDown
+  ChevronDown,
 } from 'lucide-react';
 
 const features = [
   {
     icon: Leaf,
     title: 'Sustainable Agriculture',
-    description: 'Supporting eco-friendly farming practices through blockchain technology and DeFi incentives.',
+    description:
+      'Supporting eco-friendly farming practices through blockchain technology and DeFi incentives.',
   },
   {
     icon: Shield,
     title: 'Secure & Audited',
-    description: 'Smart contracts audited by leading security firms with multi-signature protection.',
+    description:
+      'Smart contracts audited by leading security firms with multi-signature protection.',
   },
   {
     icon: TrendingUp,
     title: 'High Yield Farming',
-    description: 'Earn competitive APRs through our optimized staking and liquidity provision protocols.',
+    description:
+      'Earn competitive APRs through our optimized staking and liquidity provision protocols.',
   },
   {
     icon: Globe,
@@ -55,7 +58,8 @@ const features = [
   {
     icon: Zap,
     title: 'Lightning Fast',
-    description: 'Built on Solana for instant transactions with minimal fees and maximum efficiency.',
+    description:
+      'Built on Solana for instant transactions with minimal fees and maximum efficiency.',
   },
 ];
 
@@ -147,12 +151,10 @@ export default function HomePage() {
               >
                 Roadmap
               </button>
-              
+
               {isConnected ? (
                 <Link href="/dashboard">
-                  <NeonButton size="md">
-                    Dashboard
-                  </NeonButton>
+                  <NeonButton size="md">Dashboard</NeonButton>
                 </Link>
               ) : (
                 <NeonButton onClick={connectWallet} size="md">
@@ -177,14 +179,15 @@ export default function HomePage() {
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
               The Future of
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-green-400">
-                {' '}Agriculture{' '}
+                {' '}
+                Agriculture{' '}
               </span>
               DeFi
             </h1>
-            
+
             <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
-              Revolutionizing sustainable farming through blockchain technology. 
-              Stake, farm, and earn while supporting eco-friendly agricultural practices.
+              Revolutionizing sustainable farming through blockchain technology. Stake, farm, and
+              earn while supporting eco-friendly agricultural practices.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -201,10 +204,10 @@ export default function HomePage() {
                   Connect Wallet
                 </NeonButton>
               )}
-              
-              <NeonButton 
-                variant="secondary" 
-                size="md" 
+
+              <NeonButton
+                variant="secondary"
+                size="md"
                 className="w-full sm:w-auto"
                 onClick={() => scrollToSection('features')}
               >
@@ -253,11 +256,9 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold text-white mb-4">
-              Why Choose AGROTM?
-            </h2>
+            <h2 className="text-4xl font-bold text-white mb-4">Why Choose AGROTM?</h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Experience the next generation of agricultural DeFi with cutting-edge features 
+              Experience the next generation of agricultural DeFi with cutting-edge features
               designed for maximum yield and sustainability.
             </p>
           </motion.div>
@@ -273,12 +274,8 @@ export default function HomePage() {
               >
                 <AnimatedCard className="p-6 h-full">
                   <feature.icon className="w-12 h-12 text-blue-400 mb-4" />
-                  <h3 className="text-xl font-semibold text-white mb-3">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-300">
-                    {feature.description}
-                  </p>
+                  <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
+                  <p className="text-gray-300">{feature.description}</p>
                 </AnimatedCard>
               </motion.div>
             ))}
@@ -287,7 +284,10 @@ export default function HomePage() {
       </section>
 
       {/* Stats Section */}
-      <section id="stats" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-900/20 to-green-900/20">
+      <section
+        id="stats"
+        className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-900/20 to-green-900/20"
+      >
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -296,9 +296,7 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold text-white mb-4">
-              Platform Statistics
-            </h2>
+            <h2 className="text-4xl font-bold text-white mb-4">Platform Statistics</h2>
             <p className="text-xl text-gray-300">
               Join thousands of users earning rewards through sustainable agriculture
             </p>
@@ -315,12 +313,8 @@ export default function HomePage() {
               >
                 <AnimatedCard className="p-6 text-center">
                   <stat.icon className="w-12 h-12 text-blue-400 mx-auto mb-4" />
-                  <h3 className="text-3xl font-bold text-white mb-2">
-                    {stat.value}
-                  </h3>
-                  <p className="text-gray-300">
-                    {stat.label}
-                  </p>
+                  <h3 className="text-3xl font-bold text-white mb-2">{stat.value}</h3>
+                  <p className="text-gray-300">{stat.label}</p>
                 </AnimatedCard>
               </motion.div>
             ))}
@@ -338,9 +332,7 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold text-white mb-4">
-              Development Roadmap
-            </h2>
+            <h2 className="text-4xl font-bold text-white mb-4">Development Roadmap</h2>
             <p className="text-xl text-gray-300">
               Our journey towards revolutionizing agricultural DeFi
             </p>
@@ -357,27 +349,19 @@ export default function HomePage() {
               >
                 <AnimatedCard className="p-6 h-full">
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-sm font-semibold text-blue-400">
-                      {item.quarter}
-                    </span>
+                    <span className="text-sm font-semibold text-blue-400">{item.quarter}</span>
                     {item.status === 'completed' && (
                       <CheckCircle className="w-5 h-5 text-green-400" />
                     )}
                     {item.status === 'in-progress' && (
                       <div className="w-5 h-5 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
                     )}
-                    {item.status === 'upcoming' && (
-                      <Star className="w-5 h-5 text-gray-400" />
-                    )}
+                    {item.status === 'upcoming' && <Star className="w-5 h-5 text-gray-400" />}
                   </div>
-                  
-                  <h3 className="text-lg font-semibold text-white mb-3">
-                    {item.title}
-                  </h3>
-                  
-                  <p className="text-gray-300 text-sm">
-                    {item.description}
-                  </p>
+
+                  <h3 className="text-lg font-semibold text-white mb-3">{item.title}</h3>
+
+                  <p className="text-gray-300 text-sm">{item.description}</p>
                 </AnimatedCard>
               </motion.div>
             ))}
@@ -394,12 +378,10 @@ export default function HomePage() {
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl font-bold text-white mb-6">
-              Ready to Start Earning?
-            </h2>
+            <h2 className="text-4xl font-bold text-white mb-6">Ready to Start Earning?</h2>
             <p className="text-xl text-gray-300 mb-8">
-              Join the agricultural revolution and start earning rewards today. 
-              Connect your wallet and begin your DeFi journey with AGROTM.
+              Join the agricultural revolution and start earning rewards today. Connect your wallet
+              and begin your DeFi journey with AGROTM.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -436,7 +418,7 @@ export default function HomePage() {
               <Leaf className="w-8 h-8 text-blue-400 mr-2" />
               <span className="text-xl font-bold text-white">AGROTM</span>
             </div>
-            
+
             <p className="text-gray-400 text-sm">
               © 2024 AGROTM. Building the future of sustainable agriculture.
             </p>

@@ -17,4 +17,4 @@ Veja o README principal do monorepo.
 
 ## Suporte
 
-- Consulte o whitepaper e docs para detalhes técnicos 
+- Consulte o whitepaper e docs para detalhes técnicos

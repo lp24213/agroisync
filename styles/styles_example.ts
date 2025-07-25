@@ -1,2 +1,4 @@
 // styles helper/example file
-export const example = () => { console.log('styles OK') };
+export const example = () => {
+  console.log('styles OK');
+};

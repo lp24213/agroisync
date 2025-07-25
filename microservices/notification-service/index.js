@@ -12,4 +12,4 @@ app.post('/notify', (req, res) => {
   res.status(201).json({ status: 'sent', ...req.body });
 });
 
-app.listen(4002, () => logger.info('Notification service running on port 4002')); 
+app.listen(4002, () => logger.info('Notification service running on port 4002'));

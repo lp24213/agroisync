@@ -1,29 +1,37 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
 type HelmetOptions = {
-  contentSecurityPolicy?: boolean | {
-    directives?: {
-      [key: string]: string[] | boolean;
-    };
-  };
+  contentSecurityPolicy?:
+    | boolean
+    | {
+        directives?: {
+          [key: string]: string[] | boolean;
+        };
+      };
   xssFilter?: boolean;
-  frameguard?: boolean | {
-    action?: 'deny' | 'sameorigin';
-  };
-  hsts?: boolean | {
-    maxAge?: number;
-    includeSubDomains?: boolean;
-    preload?: boolean;
-  };
+  frameguard?:
+    | boolean
+    | {
+        action?: 'deny' | 'sameorigin';
+      };
+  hsts?:
+    | boolean
+    | {
+        maxAge?: number;
+        includeSubDomains?: boolean;
+        preload?: boolean;
+      };
   noSniff?: boolean;
-  referrerPolicy?: boolean | {
-    policy?: string;
-  };
+  referrerPolicy?:
+    | boolean
+    | {
+        policy?: string;
+      };
 };
 
 /**
  * Helmet middleware for Next.js API routes to set security headers
- * 
+ *
  * @param options Helmet configuration options
  * @returns Middleware function
  */
@@ -59,10 +67,7 @@ export function helmet(options: HelmetOptions = {}) {
 
   const helmetOptions = { ...defaultOptions, ...options };
 
-  return async function helmetMiddleware(
-    res: NextApiResponse,
-    next?: () => void
-  ) {
+  return async function helmetMiddleware(res: NextApiResponse, next?: () => void) {
     // Set Content-Security-Policy header
     if (helmetOptions.contentSecurityPolicy) {
       const csp = helmetOptions.contentSecurityPolicy;
@@ -76,16 +81,16 @@ export function helmet(options: HelmetOptions = {}) {
             return key;
           })
           .join('; ');
-        
+
         res.setHeader('Content-Security-Policy', directives);
       }
     }
-    
+
     // Set X-XSS-Protection header
     if (helmetOptions.xssFilter) {
       res.setHeader('X-XSS-Protection', '1; mode=block');
     }
-    
+
     // Set X-Frame-Options header
     if (helmetOptions.frameguard) {
       const frameguard = helmetOptions.frameguard;
@@ -95,34 +100,34 @@ export function helmet(options: HelmetOptions = {}) {
         res.setHeader('X-Frame-Options', 'DENY');
       }
     }
-    
+
     // Set Strict-Transport-Security header
     if (helmetOptions.hsts) {
       const hsts = helmetOptions.hsts;
       let value = '';
-      
+
       if (typeof hsts === 'object') {
         value = `max-age=${hsts.maxAge || 15552000}`;
-        
+
         if (hsts.includeSubDomains) {
           value += '; includeSubDomains';
         }
-        
+
         if (hsts.preload) {
           value += '; preload';
         }
       } else {
         value = 'max-age=15552000; includeSubDomains; preload';
       }
-      
+
       res.setHeader('Strict-Transport-Security', value);
     }
-    
+
     // Set X-Content-Type-Options header
     if (helmetOptions.noSniff) {
       res.setHeader('X-Content-Type-Options', 'nosniff');
     }
-    
+
     // Set Referrer-Policy header
     if (helmetOptions.referrerPolicy) {
       const referrerPolicy = helmetOptions.referrerPolicy;
@@ -132,7 +137,7 @@ export function helmet(options: HelmetOptions = {}) {
         res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
       }
     }
-    
+
     if (next) {
       next();
     }
@@ -141,17 +146,17 @@ export function helmet(options: HelmetOptions = {}) {
 
 /**
  * Helper function to apply Helmet middleware to a Next.js API route
- * 
+ *
  * @param handler API route handler
  * @param options Helmet options
  * @returns Helmet-enabled API route handler
  */
 export function withHelmet(
   handler: (req: NextApiRequest, res: NextApiResponse) => Promise<void>,
-  options: HelmetOptions = {}
+  options: HelmetOptions = {},
 ) {
   const helmetMiddleware = helmet(options);
-  
+
   return async function enableHelmet(req: NextApiRequest, res: NextApiResponse) {
     return new Promise<void>((resolve) => {
       helmetMiddleware(req, res);

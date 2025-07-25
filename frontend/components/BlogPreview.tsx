@@ -35,7 +35,9 @@ export default function BlogPreview() {
         ))}
       </div>
       <div className="text-right mt-3">
-        <Link href="/blog" className="text-neon underline hover:text-primary">Ver todos os artigos →</Link>
+        <Link href="/blog" className="text-neon underline hover:text-primary">
+          Ver todos os artigos →
+        </Link>
       </div>
     </div>
   );

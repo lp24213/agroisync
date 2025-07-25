@@ -9,4 +9,4 @@ const IntroVideo: React.FC = () => (
   </div>
 );
 
-export default IntroVideo; 
+export default IntroVideo;

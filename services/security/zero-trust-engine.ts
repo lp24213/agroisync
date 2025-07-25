@@ -109,7 +109,7 @@ export class ZeroTrustEngine extends EventEmitter {
     await this.initializeDeviceProfiles();
     await this.initializeUserProfiles();
     await this.startContinuousAssessment();
-    
+
     this.logger.info('Zero Trust Engine initialized with advanced security policies');
   }
 
@@ -128,26 +128,26 @@ export class ZeroTrustEngine extends EventEmitter {
             type: 'user',
             operator: 'in_range',
             value: ['admin', 'privileged'],
-            weight: 0.4
+            weight: 0.4,
           },
           {
             type: 'device',
             operator: 'equals',
             value: 'managed',
-            weight: 0.3
+            weight: 0.3,
           },
           {
             type: 'location',
             operator: 'contains',
             value: ['corporate_network', 'approved_locations'],
-            weight: 0.2
+            weight: 0.2,
           },
           {
             type: 'behavior',
             operator: 'greater_than',
             value: 0.8,
-            weight: 0.1
-          }
+            weight: 0.1,
+          },
         ],
         actions: [
           {
@@ -155,10 +155,10 @@ export class ZeroTrustEngine extends EventEmitter {
             parameters: {
               mfa_required: true,
               approval_required: true,
-              session_timeout: 3600
-            }
-          }
-        ]
+              session_timeout: 3600,
+            },
+          },
+        ],
       },
       {
         id: 'anomalous-behavior-detection',
@@ -173,30 +173,30 @@ export class ZeroTrustEngine extends EventEmitter {
             type: 'behavior',
             operator: 'less_than',
             value: 0.5,
-            weight: 0.6
+            weight: 0.6,
           },
           {
             type: 'risk',
             operator: 'greater_than',
             value: 0.7,
-            weight: 0.4
-          }
+            weight: 0.4,
+          },
         ],
         actions: [
           {
             type: 'monitor',
             parameters: {
               enhanced_logging: true,
-              real_time_analysis: true
-            }
+              real_time_analysis: true,
+            },
           },
           {
             type: 'challenge',
             parameters: {
-              step_up_auth: true
-            }
-          }
-        ]
+              step_up_auth: true,
+            },
+          },
+        ],
       },
       {
         id: 'untrusted-device-policy',
@@ -211,20 +211,20 @@ export class ZeroTrustEngine extends EventEmitter {
             type: 'device',
             operator: 'equals',
             value: 'unmanaged',
-            weight: 0.5
+            weight: 0.5,
           },
           {
             type: 'location',
             operator: 'not_equals',
             value: 'corporate_network',
-            weight: 0.3
+            weight: 0.3,
           },
           {
             type: 'time',
             operator: 'not_equals',
             value: 'business_hours',
-            weight: 0.2
-          }
+            weight: 0.2,
+          },
         ],
         actions: [
           {
@@ -232,11 +232,11 @@ export class ZeroTrustEngine extends EventEmitter {
             parameters: {
               limited_access: true,
               sandbox_environment: true,
-              monitoring_level: 'high'
-            }
-          }
-        ]
-      }
+              monitoring_level: 'high',
+            },
+          },
+        ],
+      },
     ];
 
     for (const policy of policies) {
@@ -247,13 +247,13 @@ export class ZeroTrustEngine extends EventEmitter {
   private async initializeDeviceProfiles(): Promise<void> {
     // Initialize device trust profiles
     const deviceTypes = ['managed_workstation', 'managed_mobile', 'unmanaged_device', 'iot_device'];
-    
+
     for (const deviceType of deviceTypes) {
       this.deviceProfiles.set(deviceType, {
         trustLevel: this.getDeviceTrustLevel(deviceType),
         securityControls: this.getDeviceSecurityControls(deviceType),
         allowedResources: this.getDeviceAllowedResources(deviceType),
-        monitoringLevel: this.getDeviceMonitoringLevel(deviceType)
+        monitoringLevel: this.getDeviceMonitoringLevel(deviceType),
       });
     }
   }
@@ -261,13 +261,13 @@ export class ZeroTrustEngine extends EventEmitter {
   private async initializeUserProfiles(): Promise<void> {
     // Initialize user risk profiles
     const userRoles = ['admin', 'privileged', 'standard', 'guest', 'service_account'];
-    
+
     for (const role of userRoles) {
       this.userProfiles.set(role, {
         baseRiskScore: this.getUserBaseRiskScore(role),
         allowedActions: this.getUserAllowedActions(role),
         requiredControls: this.getUserRequiredControls(role),
-        sessionLimits: this.getUserSessionLimits(role)
+        sessionLimits: this.getUserSessionLimits(role),
       });
     }
   }
@@ -292,63 +292,62 @@ export class ZeroTrustEngine extends EventEmitter {
     try {
       // Calculate current trust score
       const trustScore = await this.calculateTrustScore(request);
-      
+
       // Assess risk factors
       const riskAssessment = await this.riskEngine.assessRisk(request);
-      
+
       // Evaluate applicable policies
       const policyDecisions = await this.evaluatePolicies(request, trustScore, riskAssessment);
-      
+
       // Make final access decision
       const decision = await this.makeAccessDecision(policyDecisions, trustScore, riskAssessment);
-      
+
       // Log and audit the decision
       await this.auditAccessDecision(request, decision, trustScore, riskAssessment);
-      
-      this.emit('access:evaluated', { request, decision, trustScore });
-      
-      return decision;
 
+      this.emit('access:evaluated', { request, decision, trustScore });
+
+      return decision;
     } catch (error) {
       this.logger.error(`Zero trust evaluation failed for request ${request.id}:`, error);
-      
+
       // Fail secure - deny access on error
       return {
         decision: 'deny',
         reason: 'evaluation_error',
-        actions: ['log_incident', 'notify_security_team']
+        actions: ['log_incident', 'notify_security_team'],
       };
     }
   }
 
   private async calculateTrustScore(request: AccessRequest): Promise<TrustScore> {
     const factors: TrustFactor[] = [];
-    
+
     // User trust factor
     const userTrust = await this.calculateUserTrust(request.userId, request.context);
     factors.push(userTrust);
-    
+
     // Device trust factor
     const deviceTrust = await this.calculateDeviceTrust(request.deviceId, request.context);
     factors.push(deviceTrust);
-    
+
     // Location trust factor
     const locationTrust = await this.calculateLocationTrust(request.context.location);
     factors.push(locationTrust);
-    
+
     // Behavioral trust factor
     const behaviorTrust = await this.calculateBehaviorTrust(request.userId, request.context);
     factors.push(behaviorTrust);
-    
+
     // Context trust factor
     const contextTrust = await this.calculateContextTrust(request.context);
     factors.push(contextTrust);
-    
+
     // Calculate weighted overall score
     const totalWeight = factors.reduce((sum, factor) => sum + factor.weight, 0);
-    const weightedScore = factors.reduce((sum, factor) => sum + (factor.score * factor.weight), 0);
+    const weightedScore = factors.reduce((sum, factor) => sum + factor.score * factor.weight, 0);
     const overallScore = totalWeight > 0 ? weightedScore / totalWeight : 0;
-    
+
     const trustScore: TrustScore = {
       overall: overallScore,
       user: userTrust.score,
@@ -357,106 +356,113 @@ export class ZeroTrustEngine extends EventEmitter {
       behavior: behaviorTrust.score,
       context: contextTrust.score,
       factors: factors,
-      lastCalculated: new Date()
+      lastCalculated: new Date(),
     };
-    
+
     // Cache the trust score
     this.trustScores.set(`${request.userId}:${request.deviceId}`, trustScore);
-    
+
     return trustScore;
   }
 
   private async calculateUserTrust(userId: string, context: AccessContext): Promise<TrustFactor> {
     const userProfile = this.userProfiles.get('standard') || {}; // Simplified
     const baseScore = userProfile.baseRiskScore || 0.7;
-    
+
     let adjustments = 0;
     const evidence: string[] = [];
-    
+
     // MFA completion
     if (context.mfaCompleted) {
       adjustments += 0.2;
       evidence.push('MFA completed');
     }
-    
+
     // Recent security training
     adjustments += 0.1;
     evidence.push('Security training up to date');
-    
+
     // No recent security incidents
     adjustments += 0.1;
     evidence.push('No recent security incidents');
-    
+
     const finalScore = Math.min(baseScore + adjustments, 1.0);
-    
+
     return {
       name: 'user_trust',
       score: finalScore,
       weight: 0.3,
       confidence: 0.9,
-      evidence: evidence
+      evidence: evidence,
     };
   }
 
-  private async calculateDeviceTrust(deviceId: string, context: AccessContext): Promise<TrustFactor> {
+  private async calculateDeviceTrust(
+    deviceId: string,
+    context: AccessContext,
+  ): Promise<TrustFactor> {
     let score = 0.5; // Base score for unknown devices
     const evidence: string[] = [];
-    
+
     if (context.deviceTrusted) {
       score = 0.9;
       evidence.push('Device is managed and trusted');
     } else {
       evidence.push('Device is unmanaged or untrusted');
     }
-    
+
     // Additional device security checks would go here
     // - Endpoint protection status
     // - OS patch level
     // - Certificate validation
     // - Device compliance status
-    
+
     return {
       name: 'device_trust',
       score: score,
       weight: 0.25,
       confidence: 0.85,
-      evidence: evidence
+      evidence: evidence,
     };
   }
 
   private async calculateLocationTrust(location: GeoLocation): Promise<TrustFactor> {
     const trustedCountries = ['US', 'CA', 'UK', 'DE', 'AU'];
     const trustedRegions = ['corporate_offices', 'approved_remote_locations'];
-    
+
     let score = 0.3; // Base score for unknown locations
     const evidence: string[] = [];
-    
+
     if (trustedCountries.includes(location.country)) {
       score += 0.4;
       evidence.push(`Access from trusted country: ${location.country}`);
     }
-    
+
     // Additional location-based checks
-    if (location.accuracy < 100) { // High accuracy GPS
+    if (location.accuracy < 100) {
+      // High accuracy GPS
       score += 0.1;
       evidence.push('High accuracy location data');
     }
-    
+
     return {
       name: 'location_trust',
       score: Math.min(score, 1.0),
       weight: 0.15,
       confidence: 0.8,
-      evidence: evidence
+      evidence: evidence,
     };
   }
 
-  private async calculateBehaviorTrust(userId: string, context: AccessContext): Promise<TrustFactor> {
+  private async calculateBehaviorTrust(
+    userId: string,
+    context: AccessContext,
+  ): Promise<TrustFactor> {
     const baseline = this.behavioralBaselines.get(userId) || this.getDefaultBehavioralBaseline();
-    
+
     let score = 0.7; // Base behavioral score
     const evidence: string[] = [];
-    
+
     // Time-based analysis
     const currentHour = context.timeOfDay;
     if (baseline.typicalHours.includes(currentHour)) {
@@ -466,88 +472,107 @@ export class ZeroTrustEngine extends EventEmitter {
       score -= 0.1;
       evidence.push('Access during unusual hours');
     }
-    
+
     // Day of week analysis
     const isWeekend = context.dayOfWeek === 0 || context.dayOfWeek === 6;
     if (!isWeekend && baseline.weekdayAccess) {
       score += 0.1;
       evidence.push('Weekday access pattern matches baseline');
     }
-    
+
     return {
       name: 'behavior_trust',
       score: Math.max(Math.min(score, 1.0), 0.0),
       weight: 0.2,
       confidence: 0.75,
-      evidence: evidence
+      evidence: evidence,
     };
   }
 
   private async calculateContextTrust(context: AccessContext): Promise<TrustFactor> {
     let score = 0.5;
     const evidence: string[] = [];
-    
+
     // VPN usage
     if (context.vpnUsed) {
       score += 0.2;
       evidence.push('VPN connection detected');
     }
-    
+
     // User agent analysis
     if (this.isKnownUserAgent(context.userAgent)) {
       score += 0.1;
       evidence.push('Known user agent');
     }
-    
+
     return {
       name: 'context_trust',
       score: Math.min(score, 1.0),
       weight: 0.1,
       confidence: 0.7,
-      evidence: evidence
+      evidence: evidence,
     };
   }
 
-  private async evaluatePolicies(request: AccessRequest, trustScore: TrustScore, riskAssessment: any): Promise<any[]> {
+  private async evaluatePolicies(
+    request: AccessRequest,
+    trustScore: TrustScore,
+    riskAssessment: any,
+  ): Promise<any[]> {
     const decisions: any[] = [];
-    
+
     for (const policy of this.policies.values()) {
       if (!policy.enabled) continue;
-      
+
       const policyMatch = await this.evaluatePolicy(policy, request, trustScore, riskAssessment);
       if (policyMatch.matches) {
         decisions.push({
           policyId: policy.id,
           priority: policy.priority,
           actions: policy.actions,
-          confidence: policyMatch.confidence
+          confidence: policyMatch.confidence,
         });
       }
     }
-    
+
     // Sort by priority
     return decisions.sort((a, b) => a.priority - b.priority);
   }
 
-  private async evaluatePolicy(policy: ZeroTrustPolicy, request: AccessRequest, trustScore: TrustScore, riskAssessment: any): Promise<any> {
+  private async evaluatePolicy(
+    policy: ZeroTrustPolicy,
+    request: AccessRequest,
+    trustScore: TrustScore,
+    riskAssessment: any,
+  ): Promise<any> {
     let totalScore = 0;
     let totalWeight = 0;
-    
+
     for (const condition of policy.conditions) {
-      const conditionMet = await this.evaluateCondition(condition, request, trustScore, riskAssessment);
+      const conditionMet = await this.evaluateCondition(
+        condition,
+        request,
+        trustScore,
+        riskAssessment,
+      );
       totalScore += conditionMet ? condition.weight : 0;
       totalWeight += condition.weight;
     }
-    
+
     const confidence = totalWeight > 0 ? totalScore / totalWeight : 0;
-    
+
     return {
       matches: confidence > 0.7, // Policy threshold
-      confidence: confidence
+      confidence: confidence,
     };
   }
 
-  private async evaluateCondition(condition: PolicyCondition, request: AccessRequest, trustScore: TrustScore, riskAssessment: any): Promise<boolean> {
+  private async evaluateCondition(
+    condition: PolicyCondition,
+    request: AccessRequest,
+    trustScore: TrustScore,
+    riskAssessment: any,
+  ): Promise<boolean> {
     switch (condition.type) {
       case 'user':
         return this.evaluateUserCondition(condition, request);
@@ -602,32 +627,41 @@ export class ZeroTrustEngine extends EventEmitter {
     }
   }
 
-  private async makeAccessDecision(policyDecisions: any[], trustScore: TrustScore, riskAssessment: any): Promise<any> {
+  private async makeAccessDecision(
+    policyDecisions: any[],
+    trustScore: TrustScore,
+    riskAssessment: any,
+  ): Promise<any> {
     // Default to allow if no policies match
     if (policyDecisions.length === 0) {
       return {
         decision: 'allow',
         reason: 'no_policies_matched',
         trustScore: trustScore.overall,
-        actions: ['log_access']
+        actions: ['log_access'],
       };
     }
-    
+
     // Apply highest priority policy
     const primaryPolicy = policyDecisions[0];
     const primaryAction = primaryPolicy.actions[0];
-    
+
     return {
       decision: primaryAction.type,
       reason: `policy_${primaryPolicy.policyId}`,
       trustScore: trustScore.overall,
       riskScore: riskAssessment.overallRisk,
       actions: primaryPolicy.actions,
-      policyId: primaryPolicy.policyId
+      policyId: primaryPolicy.policyId,
     };
   }
 
-  private async auditAccessDecision(request: AccessRequest, decision: any, trustScore: TrustScore, riskAssessment: any): Promise<void> {
+  private async auditAccessDecision(
+    request: AccessRequest,
+    decision: any,
+    trustScore: TrustScore,
+    riskAssessment: any,
+  ): Promise<void> {
     const auditRecord = {
       timestamp: new Date(),
       requestId: request.id,
@@ -640,9 +674,9 @@ export class ZeroTrustEngine extends EventEmitter {
       trustScore: trustScore.overall,
       riskScore: riskAssessment.overallRisk,
       policyId: decision.policyId,
-      context: request.context
+      context: request.context,
     };
-    
+
     // Store audit record
     this.logger.info('Zero Trust access decision audited', auditRecord);
     this.emit('audit:recorded', auditRecord);
@@ -651,84 +685,84 @@ export class ZeroTrustEngine extends EventEmitter {
   // Helper methods
   private getDeviceTrustLevel(deviceType: string): number {
     const trustLevels: Record<string, number> = {
-      'managed_workstation': 0.9,
-      'managed_mobile': 0.8,
-      'unmanaged_device': 0.3,
-      'iot_device': 0.2
+      managed_workstation: 0.9,
+      managed_mobile: 0.8,
+      unmanaged_device: 0.3,
+      iot_device: 0.2,
     };
     return trustLevels[deviceType] || 0.1;
   }
 
   private getDeviceSecurityControls(deviceType: string): string[] {
     const controls: Record<string, string[]> = {
-      'managed_workstation': ['endpoint_protection', 'disk_encryption', 'patch_management'],
-      'managed_mobile': ['mobile_device_management', 'app_wrapping', 'remote_wipe'],
-      'unmanaged_device': ['limited_access', 'enhanced_monitoring'],
-      'iot_device': ['network_segmentation', 'firmware_validation']
+      managed_workstation: ['endpoint_protection', 'disk_encryption', 'patch_management'],
+      managed_mobile: ['mobile_device_management', 'app_wrapping', 'remote_wipe'],
+      unmanaged_device: ['limited_access', 'enhanced_monitoring'],
+      iot_device: ['network_segmentation', 'firmware_validation'],
     };
     return controls[deviceType] || [];
   }
 
   private getDeviceAllowedResources(deviceType: string): string[] {
     const resources: Record<string, string[]> = {
-      'managed_workstation': ['all_resources'],
-      'managed_mobile': ['mobile_apps', 'email', 'limited_file_access'],
-      'unmanaged_device': ['web_portal', 'limited_applications'],
-      'iot_device': ['specific_apis', 'telemetry_endpoints']
+      managed_workstation: ['all_resources'],
+      managed_mobile: ['mobile_apps', 'email', 'limited_file_access'],
+      unmanaged_device: ['web_portal', 'limited_applications'],
+      iot_device: ['specific_apis', 'telemetry_endpoints'],
     };
     return resources[deviceType] || [];
   }
 
   private getDeviceMonitoringLevel(deviceType: string): string {
     const levels: Record<string, string> = {
-      'managed_workstation': 'standard',
-      'managed_mobile': 'enhanced',
-      'unmanaged_device': 'high',
-      'iot_device': 'continuous'
+      managed_workstation: 'standard',
+      managed_mobile: 'enhanced',
+      unmanaged_device: 'high',
+      iot_device: 'continuous',
     };
     return levels[deviceType] || 'high';
   }
 
   private getUserBaseRiskScore(role: string): number {
     const scores: Record<string, number> = {
-      'admin': 0.9,
-      'privileged': 0.8,
-      'standard': 0.7,
-      'guest': 0.4,
-      'service_account': 0.6
+      admin: 0.9,
+      privileged: 0.8,
+      standard: 0.7,
+      guest: 0.4,
+      service_account: 0.6,
     };
     return scores[role] || 0.5;
   }
 
   private getUserAllowedActions(role: string): string[] {
     const actions: Record<string, string[]> = {
-      'admin': ['all_actions'],
-      'privileged': ['read', 'write', 'execute', 'admin_functions'],
-      'standard': ['read', 'write', 'execute'],
-      'guest': ['read'],
-      'service_account': ['api_access', 'automated_functions']
+      admin: ['all_actions'],
+      privileged: ['read', 'write', 'execute', 'admin_functions'],
+      standard: ['read', 'write', 'execute'],
+      guest: ['read'],
+      service_account: ['api_access', 'automated_functions'],
     };
     return actions[role] || ['read'];
   }
 
   private getUserRequiredControls(role: string): string[] {
     const controls: Record<string, string[]> = {
-      'admin': ['mfa', 'privileged_access_management', 'session_recording'],
-      'privileged': ['mfa', 'approval_workflow'],
-      'standard': ['mfa'],
-      'guest': ['enhanced_monitoring', 'limited_session'],
-      'service_account': ['certificate_auth', 'api_key_rotation']
+      admin: ['mfa', 'privileged_access_management', 'session_recording'],
+      privileged: ['mfa', 'approval_workflow'],
+      standard: ['mfa'],
+      guest: ['enhanced_monitoring', 'limited_session'],
+      service_account: ['certificate_auth', 'api_key_rotation'],
     };
     return controls[role] || [];
   }
 
   private getUserSessionLimits(role: string): any {
     const limits: Record<string, any> = {
-      'admin': { maxDuration: 3600, maxConcurrent: 2, idleTimeout: 900 },
-      'privileged': { maxDuration: 7200, maxConcurrent: 3, idleTimeout: 1800 },
-      'standard': { maxDuration: 28800, maxConcurrent: 5, idleTimeout: 3600 },
-      'guest': { maxDuration: 3600, maxConcurrent: 1, idleTimeout: 900 },
-      'service_account': { maxDuration: -1, maxConcurrent: 10, idleTimeout: -1 }
+      admin: { maxDuration: 3600, maxConcurrent: 2, idleTimeout: 900 },
+      privileged: { maxDuration: 7200, maxConcurrent: 3, idleTimeout: 1800 },
+      standard: { maxDuration: 28800, maxConcurrent: 5, idleTimeout: 3600 },
+      guest: { maxDuration: 3600, maxConcurrent: 1, idleTimeout: 900 },
+      service_account: { maxDuration: -1, maxConcurrent: 10, idleTimeout: -1 },
     };
     return limits[role] || { maxDuration: 3600, maxConcurrent: 1, idleTimeout: 900 };
   }
@@ -738,13 +772,13 @@ export class ZeroTrustEngine extends EventEmitter {
       typicalHours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
       weekdayAccess: true,
       typicalLocations: ['office', 'home'],
-      averageSessionDuration: 4 * 3600 * 1000 // 4 hours in milliseconds
+      averageSessionDuration: 4 * 3600 * 1000, // 4 hours in milliseconds
     };
   }
 
   private isKnownUserAgent(userAgent: string): boolean {
     const knownAgents = ['Chrome', 'Firefox', 'Safari', 'Edge'];
-    return knownAgents.some(agent => userAgent.includes(agent));
+    return knownAgents.some((agent) => userAgent.includes(agent));
   }
 
   private async updateAllTrustScores(): Promise<void> {
@@ -771,14 +805,14 @@ export class ZeroTrustEngine extends EventEmitter {
     return {
       totalUsers: this.userProfiles.size,
       totalDevices: this.deviceProfiles.size,
-      activePolicies: Array.from(this.policies.values()).filter(p => p.enabled).length,
+      activePolicies: Array.from(this.policies.values()).filter((p) => p.enabled).length,
       averageTrustScore: 0.75,
       riskDistribution: {
         low: 0.6,
         medium: 0.3,
         high: 0.08,
-        critical: 0.02
-      }
+        critical: 0.02,
+      },
     };
   }
 }
@@ -795,7 +829,7 @@ class RiskAssessmentEngine {
         severity: 'medium',
         score: 0.3,
         description: 'Access from untrusted location',
-        mitigation: 'Require additional authentication'
+        mitigation: 'Require additional authentication',
       });
       riskScore += 0.3;
     }
@@ -807,7 +841,7 @@ class RiskAssessmentEngine {
         severity: 'low',
         score: 0.2,
         description: 'Access during unusual hours',
-        mitigation: 'Enhanced monitoring'
+        mitigation: 'Enhanced monitoring',
       });
       riskScore += 0.2;
     }
@@ -819,7 +853,7 @@ class RiskAssessmentEngine {
         severity: 'high',
         score: 0.4,
         description: 'Untrusted device access',
-        mitigation: 'Quarantine and limited access'
+        mitigation: 'Quarantine and limited access',
       });
       riskScore += 0.4;
     }
@@ -827,7 +861,7 @@ class RiskAssessmentEngine {
     return {
       overallRisk: Math.min(riskScore, 1.0),
       riskFactors: riskFactors,
-      recommendation: this.getRiskRecommendation(riskScore)
+      recommendation: this.getRiskRecommendation(riskScore),
     };
   }
 

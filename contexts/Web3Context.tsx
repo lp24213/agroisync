@@ -1,6 +1,6 @@
-"use client";
-import { createContext, useContext, ReactNode } from "react";
-import { useWeb3 } from "@/hooks/useWeb3";
+'use client';
+import { createContext, useContext, ReactNode } from 'react';
+import { useWeb3 } from '@/hooks/useWeb3';
 
 interface Web3ContextType {
   provider: any;
@@ -22,17 +22,13 @@ const Web3Context = createContext<Web3ContextType | null>(null);
 export function Web3Provider({ children }: { children: ReactNode }) {
   const web3Data = useWeb3();
 
-  return (
-    <Web3Context.Provider value={web3Data}>
-      {children}
-    </Web3Context.Provider>
-  );
+  return <Web3Context.Provider value={web3Data}>{children}</Web3Context.Provider>;
 }
 
 export function useWeb3Context() {
   const context = useContext(Web3Context);
   if (!context) {
-    throw new Error("useWeb3Context deve ser usado dentro de Web3Provider");
+    throw new Error('useWeb3Context deve ser usado dentro de Web3Provider');
   }
   return context;
 }

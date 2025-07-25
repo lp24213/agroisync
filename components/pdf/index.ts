@@ -1,1 +1,1 @@
-export { default as PDFViewer } from './PdfViewer'; 
+export { default as PDFViewer } from './PdfViewer';

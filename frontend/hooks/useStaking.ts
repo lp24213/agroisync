@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 export function useStaking(account: string | null) {
-  const [balance, setBalance] = useState("0");
+  const [balance, setBalance] = useState('0');
 
   useEffect(() => {
     if (account) {
       // Aqui você pode integrar com o contrato real
-      setBalance("1000"); // Simulação
+      setBalance('1000'); // Simulação
     }
   }, [account]);
 
@@ -20,4 +20,4 @@ export function useStaking(account: string | null) {
   }
 
   return { stake, unstake, balance };
-} 
+}

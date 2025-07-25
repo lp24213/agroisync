@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
 interface AnalyticsRow {
   date: string;
@@ -7,15 +7,15 @@ interface AnalyticsRow {
 }
 
 export default function AnalyticsPanel() {
-  const [data, setData] = useState<AnalyticsRow[]>([])
+  const [data, setData] = useState<AnalyticsRow[]>([]);
 
   useEffect(() => {
     setData([
       { date: '2025-07-01', users: 1340, transactions: 785 },
       { date: '2025-07-02', users: 1480, transactions: 920 },
       { date: '2025-07-03', users: 1622, transactions: 1043 },
-    ])
-  }, [])
+    ]);
+  }, []);
 
   return (
     <div className="p-8 text-white">
@@ -39,5 +39,5 @@ export default function AnalyticsPanel() {
         </tbody>
       </table>
     </div>
-  )
+  );
 }

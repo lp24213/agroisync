@@ -7,4 +7,4 @@ describe('PdfViewer', () => {
     render(<PdfViewer file="/whitepaper.pdf" />);
     expect(screen.getByTitle('PDF Viewer')).toBeInTheDocument();
   });
-}); 
+});

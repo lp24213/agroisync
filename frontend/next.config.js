@@ -18,22 +18,20 @@ const nextConfig = {
     return [
       {
         source: '/:path*',
-        has: [
-          { type: 'host', value: 'http://:host*' },
-        ],
+        has: [{ type: 'host', value: 'http://:host*' }],
         destination: 'https://:host:/:path*',
         permanent: true,
       },
     ];
   },
   images: {
-    domains: ["cdn.pixabay.com", "images.unsplash.com"]
+    domains: ['cdn.pixabay.com', 'images.unsplash.com'],
   },
   i18n: {
     locales: ['en', 'pt', 'zh'],
     defaultLocale: 'en',
-    localeDetection: true
-  }
+    localeDetection: true,
+  },
 };
 
 module.exports = nextConfig;

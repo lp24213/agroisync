@@ -1,14 +1,14 @@
-"use client";
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { AnimatedCard } from "../AnimatedCard";
+'use client';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { AnimatedCard } from '../AnimatedCard';
 
 interface APRWidgetProps {
   poolId?: string;
   className?: string;
 }
 
-export function APRWidget({ poolId, className = "" }: APRWidgetProps) {
+export function APRWidget({ poolId, className = '' }: APRWidgetProps) {
   const [apr, setApr] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -16,11 +16,11 @@ export function APRWidget({ poolId, className = "" }: APRWidgetProps) {
     const fetchAPR = async () => {
       try {
         // Simulação de API - substitua por integração real com pools DeFi
-        await new Promise(resolve => setTimeout(resolve, 600));
+        await new Promise((resolve) => setTimeout(resolve, 600));
         const mockAPR = 15.5 + Math.random() * 10;
         setApr(mockAPR);
       } catch (error) {
-        console.error("Erro ao buscar APR:", error);
+        console.error('Erro ao buscar APR:', error);
       } finally {
         setLoading(false);
       }
@@ -28,7 +28,7 @@ export function APRWidget({ poolId, className = "" }: APRWidgetProps) {
 
     fetchAPR();
     const interval = setInterval(fetchAPR, 45000); // Atualiza a cada 45s
-    
+
     return () => clearInterval(interval);
   }, [poolId]);
 
@@ -37,9 +37,9 @@ export function APRWidget({ poolId, className = "" }: APRWidgetProps) {
   };
 
   const getAPRColor = (value: number) => {
-    if (value >= 20) return "text-success-green";
-    if (value >= 10) return "text-warning-yellow";
-    return "text-neon-blue";
+    if (value >= 20) return 'text-success-green';
+    if (value >= 10) return 'text-warning-yellow';
+    return 'text-neon-blue';
   };
 
   if (loading) {
@@ -59,7 +59,7 @@ export function APRWidget({ poolId, className = "" }: APRWidgetProps) {
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm text-gray-400 font-medium">Average APR</p>
-          <motion.p 
+          <motion.p
             className={`text-2xl font-bold ${apr ? getAPRColor(apr) : 'text-white'}`}
             initial={{ scale: 1 }}
             animate={{ scale: [1, 1.05, 1] }}
@@ -68,14 +68,16 @@ export function APRWidget({ poolId, className = "" }: APRWidgetProps) {
           >
             {apr ? formatAPR(apr) : '--'}
           </motion.p>
-          <p className="text-xs text-gray-500">
-            Annual Percentage Rate
-          </p>
+          <p className="text-xs text-gray-500">Annual Percentage Rate</p>
         </div>
-        
+
         <div className="w-12 h-12 rounded-full bg-warning-yellow/20 flex items-center justify-center">
           <svg className="w-6 h-6 text-warning-yellow" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/>
+            <path
+              fillRule="evenodd"
+              d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+              clipRule="evenodd"
+            />
           </svg>
         </div>
       </div>

@@ -34,4 +34,4 @@ router.get('/metrics', async (req, res) => {
   res.end(await client.register.metrics());
 });
 
-module.exports = router; 
+module.exports = router;

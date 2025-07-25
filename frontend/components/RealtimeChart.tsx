@@ -15,10 +15,13 @@ export default function RealtimeChart() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setData((old) => [...old.slice(1), {
-        time: new Date().toLocaleTimeString(),
-        value: 1000 + Math.round(Math.sin(Date.now() / 10000) * 50 + Math.random() * 30),
-      }]);
+      setData((old) => [
+        ...old.slice(1),
+        {
+          time: new Date().toLocaleTimeString(),
+          value: 1000 + Math.round(Math.sin(Date.now() / 10000) * 50 + Math.random() * 30),
+        },
+      ]);
     }, 1000);
     return () => clearInterval(interval);
   }, []);
@@ -31,9 +34,16 @@ export default function RealtimeChart() {
           <XAxis dataKey="time" hide />
           <YAxis domain={[900, 1100]} hide />
           <Tooltip contentStyle={{ background: '#0a0a0a', border: 'none', color: '#00f0ff' }} />
-          <Line type="monotone" dataKey="value" stroke="#00f0ff" strokeWidth={3} dot={false} isAnimationActive />
+          <Line
+            type="monotone"
+            dataKey="value"
+            stroke="#00f0ff"
+            strokeWidth={3}
+            dot={false}
+            isAnimationActive
+          />
         </LineChart>
       </ResponsiveContainer>
     </GlassCard>
   );
-} 
+}

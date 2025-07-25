@@ -69,14 +69,14 @@ export class ResponseOrchestrator extends EventEmitter {
         id: 'critical-escalation',
         severity: 'critical',
         timeThreshold: 300000, // 5 minutes
-        actions: ['notify-ciso', 'activate-crisis-team', 'external-notification']
+        actions: ['notify-ciso', 'activate-crisis-team', 'external-notification'],
       },
       {
         id: 'high-escalation',
         severity: 'high',
         timeThreshold: 900000, // 15 minutes
-        actions: ['notify-security-manager', 'page-on-call']
-      }
+        actions: ['notify-security-manager', 'page-on-call'],
+      },
     ];
 
     for (const rule of rules) {
@@ -91,24 +91,24 @@ export class ResponseOrchestrator extends EventEmitter {
         type: 'email',
         config: {
           smtp: process.env.SMTP_SERVER,
-          recipients: ['security@company.com', 'soc@company.com']
-        }
+          recipients: ['security@company.com', 'soc@company.com'],
+        },
       },
       {
         id: 'slack',
         type: 'slack',
         config: {
           webhook: process.env.SLACK_WEBHOOK,
-          channel: '#security-alerts'
-        }
+          channel: '#security-alerts',
+        },
       },
       {
         id: 'teams',
         type: 'teams',
         config: {
-          webhook: process.env.TEAMS_WEBHOOK
-        }
-      }
+          webhook: process.env.TEAMS_WEBHOOK,
+        },
+      },
     ];
 
     for (const channel of channels) {
@@ -125,7 +125,7 @@ export class ResponseOrchestrator extends EventEmitter {
       actions: this.extractActions(execution),
       metrics: this.calculateMetrics(execution),
       recommendations: this.generateRecommendations(execution),
-      compliance: this.mapCompliance(execution)
+      compliance: this.mapCompliance(execution),
     };
 
     this.logger.info(`Generated response report: ${report.id}`);
@@ -133,30 +133,34 @@ export class ResponseOrchestrator extends EventEmitter {
   }
 
   private generateSummary(execution: PlaybookExecution): string {
-    const completedSteps = execution.steps.filter(s => s.status === 'completed').length;
+    const completedSteps = execution.steps.filter((s) => s.status === 'completed').length;
     const totalSteps = execution.steps.length;
-    const duration = execution.endTime ? 
-      execution.endTime.getTime() - execution.startTime.getTime() : 0;
+    const duration = execution.endTime
+      ? execution.endTime.getTime() - execution.startTime.getTime()
+      : 0;
 
-    return `Incident response completed with ${completedSteps}/${totalSteps} steps successful. ` +
-           `Total response time: ${Math.round(duration / 1000)} seconds. ` +
-           `Automation rate: ${Math.round(execution.metrics.automationRate * 100)}%.`;
+    return (
+      `Incident response completed with ${completedSteps}/${totalSteps} steps successful. ` +
+      `Total response time: ${Math.round(duration / 1000)} seconds. ` +
+      `Automation rate: ${Math.round(execution.metrics.automationRate * 100)}%.`
+    );
   }
 
   private extractActions(execution: PlaybookExecution): ResponseAction[] {
-    return execution.steps.map(step => ({
+    return execution.steps.map((step) => ({
       type: step.type,
       description: step.name,
-      status: step.status === 'completed' ? 'completed' : 
-              step.status === 'failed' ? 'failed' : 'partial',
+      status:
+        step.status === 'completed' ? 'completed' : step.status === 'failed' ? 'failed' : 'partial',
       timestamp: new Date(execution.startTime.getTime() + (step.duration || 0)),
-      evidence: step.output ? [JSON.stringify(step.output)] : []
+      evidence: step.output ? [JSON.stringify(step.output)] : [],
     }));
   }
 
   private calculateMetrics(execution: PlaybookExecution): ResponseMetrics {
-    const totalTime = execution.endTime ? 
-      execution.endTime.getTime() - execution.startTime.getTime() : 0;
+    const totalTime = execution.endTime
+      ? execution.endTime.getTime() - execution.startTime.getTime()
+      : 0;
 
     return {
       detectionTime: 0, // Would be calculated from event timestamp
@@ -164,13 +168,13 @@ export class ResponseOrchestrator extends EventEmitter {
       containmentTime: this.getStepDuration(execution, 'containment'),
       recoveryTime: this.getStepDuration(execution, 'recovery'),
       totalIncidentTime: totalTime,
-      automationRate: execution.metrics.automationRate
+      automationRate: execution.metrics.automationRate,
     };
   }
 
   private getStepDuration(execution: PlaybookExecution, type: string): number {
     return execution.steps
-      .filter(s => s.type === type)
+      .filter((s) => s.type === type)
       .reduce((total, step) => total + (step.duration || 0), 0);
   }
 
@@ -178,14 +182,15 @@ export class ResponseOrchestrator extends EventEmitter {
     const recommendations: string[] = [];
 
     // Analyze failed steps
-    const failedSteps = execution.steps.filter(s => s.status === 'failed');
+    const failedSteps = execution.steps.filter((s) => s.status === 'failed');
     if (failedSteps.length > 0) {
       recommendations.push('Review and improve failed automation steps');
       recommendations.push('Consider manual backup procedures for critical steps');
     }
 
     // Analyze response time
-    if (execution.metrics.mttr > 1800000) { // 30 minutes
+    if (execution.metrics.mttr > 1800000) {
+      // 30 minutes
       recommendations.push('Optimize playbook for faster response times');
     }
 
@@ -204,14 +209,14 @@ export class ResponseOrchestrator extends EventEmitter {
     mappings.push({
       framework: 'NIST',
       controls: this.mapNISTControls(execution),
-      status: this.assessComplianceStatus(execution, 'NIST')
+      status: this.assessComplianceStatus(execution, 'NIST'),
     });
 
     // ISO 27001 mapping
     mappings.push({
       framework: 'ISO27001',
       controls: this.mapISO27001Controls(execution),
-      status: this.assessComplianceStatus(execution, 'ISO27001')
+      status: this.assessComplianceStatus(execution, 'ISO27001'),
     });
 
     return mappings;
@@ -219,7 +224,7 @@ export class ResponseOrchestrator extends EventEmitter {
 
   private mapNISTControls(execution: PlaybookExecution): string[] {
     const controls: string[] = [];
-    
+
     for (const step of execution.steps) {
       switch (step.type) {
         case 'investigation':
@@ -245,7 +250,7 @@ export class ResponseOrchestrator extends EventEmitter {
 
   private mapISO27001Controls(execution: PlaybookExecution): string[] {
     const controls: string[] = [];
-    
+
     for (const step of execution.steps) {
       switch (step.type) {
         case 'investigation':
@@ -263,8 +268,11 @@ export class ResponseOrchestrator extends EventEmitter {
     return [...new Set(controls)];
   }
 
-  private assessComplianceStatus(execution: PlaybookExecution, framework: string): 'compliant' | 'non_compliant' | 'partial' {
-    const completedSteps = execution.steps.filter(s => s.status === 'completed').length;
+  private assessComplianceStatus(
+    execution: PlaybookExecution,
+    framework: string,
+  ): 'compliant' | 'non_compliant' | 'partial' {
+    const completedSteps = execution.steps.filter((s) => s.status === 'completed').length;
     const totalSteps = execution.steps.length;
     const completionRate = completedSteps / totalSteps;
 
@@ -301,7 +309,10 @@ export class ResponseOrchestrator extends EventEmitter {
     }
   }
 
-  private async executeEscalationAction(action: string, execution: PlaybookExecution): Promise<void> {
+  private async executeEscalationAction(
+    action: string,
+    execution: PlaybookExecution,
+  ): Promise<void> {
     switch (action) {
       case 'notify-ciso':
         await this.notifyCISO(execution);
@@ -336,8 +347,8 @@ export class ResponseOrchestrator extends EventEmitter {
     return {
       executionId: execution.id,
       failureReason: 'Playbook execution failed',
-      failedSteps: execution.steps.filter(s => s.status === 'failed'),
-      timestamp: new Date()
+      failedSteps: execution.steps.filter((s) => s.status === 'failed'),
+      timestamp: new Date(),
     };
   }
 
@@ -351,7 +362,11 @@ export class ResponseOrchestrator extends EventEmitter {
     }
   }
 
-  private async sendToChannel(channel: NotificationChannel, type: string, data: any): Promise<void> {
+  private async sendToChannel(
+    channel: NotificationChannel,
+    type: string,
+    data: any,
+  ): Promise<void> {
     switch (channel.type) {
       case 'email':
         await this.sendEmail(channel, type, data);

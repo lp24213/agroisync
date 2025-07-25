@@ -4,4 +4,4 @@ export default function Footer() {
       © {new Date().getFullYear()} AGROTM – Web3 Agro Revolution. Todos os direitos reservados.
     </footer>
   );
-} 
+}

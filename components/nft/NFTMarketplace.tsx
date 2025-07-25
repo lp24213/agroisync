@@ -20,7 +20,7 @@ import {
   DollarSign,
   BarChart3,
   Users,
-  Star
+  Star,
 } from 'lucide-react';
 
 interface NFTItem {
@@ -60,7 +60,7 @@ const mockNFTs: NFTItem[] = [
       { trait_type: 'Size', value: '100 Acres' },
       { trait_type: 'Soil Quality', value: 'Premium' },
       { trait_type: 'Water Access', value: 'River' },
-      { trait_type: 'Climate', value: 'Temperate' }
+      { trait_type: 'Climate', value: 'Temperate' },
     ],
     carbonOffset: 50,
     yieldBonus: 15,
@@ -68,7 +68,7 @@ const mockNFTs: NFTItem[] = [
     isListed: true,
     likes: 234,
     views: 1567,
-    createdAt: new Date('2024-01-15')
+    createdAt: new Date('2024-01-15'),
   },
   {
     id: '2',
@@ -85,7 +85,7 @@ const mockNFTs: NFTItem[] = [
       { trait_type: 'Efficiency', value: '+25%' },
       { trait_type: 'Fuel Type', value: 'Electric' },
       { trait_type: 'AI Level', value: 'Advanced' },
-      { trait_type: 'Durability', value: 'High' }
+      { trait_type: 'Durability', value: 'High' },
     ],
     carbonOffset: 30,
     yieldBonus: 10,
@@ -93,7 +93,7 @@ const mockNFTs: NFTItem[] = [
     isListed: true,
     likes: 156,
     views: 892,
-    createdAt: new Date('2024-02-01')
+    createdAt: new Date('2024-02-01'),
   },
   {
     id: '3',
@@ -110,7 +110,7 @@ const mockNFTs: NFTItem[] = [
       { trait_type: 'CO2 Offset', value: '100 tons' },
       { trait_type: 'Verification', value: 'Gold Standard' },
       { trait_type: 'Project Type', value: 'Reforestation' },
-      { trait_type: 'Location', value: 'Brazil' }
+      { trait_type: 'Location', value: 'Brazil' },
     ],
     carbonOffset: 100,
     yieldBonus: 0,
@@ -118,8 +118,8 @@ const mockNFTs: NFTItem[] = [
     isListed: true,
     likes: 89,
     views: 445,
-    createdAt: new Date('2024-02-10')
-  }
+    createdAt: new Date('2024-02-10'),
+  },
 ];
 
 export function NFTMarketplace() {
@@ -143,20 +143,21 @@ export function NFTMarketplace() {
 
     // Apply search filter
     if (searchTerm) {
-      filtered = filtered.filter(nft =>
-        nft.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        nft.description.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(
+        (nft) =>
+          nft.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          nft.description.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
 
     // Apply category filter
     if (selectedCategory !== 'all') {
-      filtered = filtered.filter(nft => nft.category === selectedCategory);
+      filtered = filtered.filter((nft) => nft.category === selectedCategory);
     }
 
     // Apply rarity filter
     if (selectedRarity !== 'all') {
-      filtered = filtered.filter(nft => nft.rarity === selectedRarity);
+      filtered = filtered.filter((nft) => nft.rarity === selectedRarity);
     }
 
     // Apply sorting
@@ -189,14 +190,14 @@ export function NFTMarketplace() {
     setLoading(true);
     try {
       // Simulate NFT purchase
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       // Update NFT status
-      setNfts(prev => prev.map(item =>
-        item.id === nft.id
-          ? { ...item, owner: account!, isListed: false }
-          : item
-      ));
+      setNfts((prev) =>
+        prev.map((item) =>
+          item.id === nft.id ? { ...item, owner: account!, isListed: false } : item,
+        ),
+      );
 
       setShowDetails(false);
       // Show success message
@@ -208,31 +209,40 @@ export function NFTMarketplace() {
   };
 
   const handleLikeNFT = (nftId: string) => {
-    setNfts(prev => prev.map(nft =>
-      nft.id === nftId
-        ? { ...nft, likes: nft.likes + 1 }
-        : nft
-    ));
+    setNfts((prev) =>
+      prev.map((nft) => (nft.id === nftId ? { ...nft, likes: nft.likes + 1 } : nft)),
+    );
   };
 
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
-      case 'common': return 'text-gray-400 border-gray-400';
-      case 'rare': return 'text-blue-400 border-blue-400';
-      case 'epic': return 'text-purple-400 border-purple-400';
-      case 'legendary': return 'text-yellow-400 border-yellow-400';
-      default: return 'text-gray-400 border-gray-400';
+      case 'common':
+        return 'text-gray-400 border-gray-400';
+      case 'rare':
+        return 'text-blue-400 border-blue-400';
+      case 'epic':
+        return 'text-purple-400 border-purple-400';
+      case 'legendary':
+        return 'text-yellow-400 border-yellow-400';
+      default:
+        return 'text-gray-400 border-gray-400';
     }
   };
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case 'farm': return <Leaf className="w-4 h-4" />;
-      case 'equipment': return <Zap className="w-4 h-4" />;
-      case 'land': return <Globe className="w-4 h-4" />;
-      case 'carbon': return <Award className="w-4 h-4" />;
-      case 'harvest': return <BarChart3 className="w-4 h-4" />;
-      default: return <Leaf className="w-4 h-4" />;
+      case 'farm':
+        return <Leaf className="w-4 h-4" />;
+      case 'equipment':
+        return <Zap className="w-4 h-4" />;
+      case 'land':
+        return <Globe className="w-4 h-4" />;
+      case 'carbon':
+        return <Award className="w-4 h-4" />;
+      case 'harvest':
+        return <BarChart3 className="w-4 h-4" />;
+      default:
+        return <Leaf className="w-4 h-4" />;
     }
   };
 
@@ -251,16 +261,10 @@ export function NFTMarketplace() {
                 <ShoppingCart className="w-8 h-8 mr-3 text-blue-400" />
                 NFT Marketplace
               </h1>
-              <p className="text-gray-400 mt-1">
-                Trade agricultural NFTs and carbon credits
-              </p>
+              <p className="text-gray-400 mt-1">Trade agricultural NFTs and carbon credits</p>
             </div>
 
-            {!isConnected && (
-              <NeonButton onClick={connectWallet}>
-                Connect Wallet
-              </NeonButton>
-            )}
+            {!isConnected && <NeonButton onClick={connectWallet}>Connect Wallet</NeonButton>}
           </div>
         </div>
       </motion.div>
@@ -277,9 +281,7 @@ export function NFTMarketplace() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-400 mb-1">Total Volume</p>
-                <p className="text-2xl font-bold text-white">
-                  {/* stats.totalVolume */}
-                </p>
+                <p className="text-2xl font-bold text-white">{/* stats.totalVolume */}</p>
               </div>
               <TrendingUp className="w-8 h-8 text-blue-400" />
             </div>
@@ -289,9 +291,7 @@ export function NFTMarketplace() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-400 mb-1">Total Sales</p>
-                <p className="text-2xl font-bold text-white">
-                  {/* stats.totalSales */}
-                </p>
+                <p className="text-2xl font-bold text-white">{/* stats.totalSales */}</p>
               </div>
               <DollarSign className="w-8 h-8 text-green-400" />
             </div>
@@ -301,9 +301,7 @@ export function NFTMarketplace() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-400 mb-1">Average Price</p>
-                <p className="text-2xl font-bold text-white">
-                  {/* stats.averagePrice */}
-                </p>
+                <p className="text-2xl font-bold text-white">{/* stats.averagePrice */}</p>
               </div>
               <BarChart3 className="w-8 h-8 text-purple-400" />
             </div>
@@ -313,9 +311,7 @@ export function NFTMarketplace() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-400 mb-1">Active Listings</p>
-                <p className="text-2xl font-bold text-white">
-                  {/* stats.activeListings */}
-                </p>
+                <p className="text-2xl font-bold text-white">{/* stats.activeListings */}</p>
               </div>
               <Users className="w-8 h-8 text-yellow-400" />
             </div>
@@ -325,9 +321,7 @@ export function NFTMarketplace() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-400 mb-1">Carbon Offset</p>
-                <p className="text-2xl font-bold text-white">
-                  {/* stats.carbonOffsetTotal */}
-                </p>
+                <p className="text-2xl font-bold text-white">{/* stats.carbonOffsetTotal */}</p>
               </div>
               <Award className="w-8 h-8 text-green-400" />
             </div>
@@ -420,7 +414,9 @@ export function NFTMarketplace() {
                 <div className="relative aspect-square bg-gray-800">
                   <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-green-500/20" />
                   <div className="absolute top-4 left-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold border ${getRarityColor(nft.rarity)}`}>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-semibold border ${getRarityColor(nft.rarity)}`}
+                    >
                       {nft.rarity.toUpperCase()}
                     </span>
                   </div>
@@ -450,9 +446,7 @@ export function NFTMarketplace() {
                   <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-blue-400 transition-colors">
                     {nft.name}
                   </h3>
-                  <p className="text-gray-400 text-sm mb-4 line-clamp-2">
-                    {nft.description}
-                  </p>
+                  <p className="text-gray-400 text-sm mb-4 line-clamp-2">{nft.description}</p>
 
                   {/* Benefits */}
                   <div className="grid grid-cols-3 gap-2 mb-4">
@@ -471,7 +465,9 @@ export function NFTMarketplace() {
                     {nft.stakingRewards > 0 && (
                       <div className="text-center">
                         <p className="text-xs text-gray-400">Staking APR</p>
-                        <p className="text-sm font-semibold text-yellow-400">{nft.stakingRewards}%</p>
+                        <p className="text-sm font-semibold text-yellow-400">
+                          {nft.stakingRewards}%
+                        </p>
                       </div>
                     )}
                   </div>
@@ -484,7 +480,7 @@ export function NFTMarketplace() {
                         {nft.price} {nft.currency}
                       </p>
                     </div>
-                    
+
                     <NeonButton
                       size="sm"
                       onClick={() => {
@@ -530,7 +526,9 @@ export function NFTMarketplace() {
               <div className="aspect-square bg-gray-800 rounded-lg relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-green-500/20 rounded-lg" />
                 <div className="absolute top-4 left-4">
-                  <span className={`px-3 py-1 rounded-full text-sm font-semibold border ${getRarityColor(selectedNft.rarity)}`}>
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-semibold border ${getRarityColor(selectedNft.rarity)}`}
+                  >
                     {selectedNft.rarity.toUpperCase()}
                   </span>
                 </div>
@@ -564,21 +562,27 @@ export function NFTMarketplace() {
                       <div className="text-center">
                         <TrendingUp className="w-6 h-6 text-green-400 mx-auto mb-1" />
                         <p className="text-xs text-gray-400">Yield Bonus</p>
-                        <p className="text-sm font-semibold text-green-400">+{selectedNft.yieldBonus}%</p>
+                        <p className="text-sm font-semibold text-green-400">
+                          +{selectedNft.yieldBonus}%
+                        </p>
                       </div>
                     )}
                     {selectedNft.carbonOffset > 0 && (
                       <div className="text-center">
                         <Award className="w-6 h-6 text-blue-400 mx-auto mb-1" />
                         <p className="text-xs text-gray-400">Carbon Offset</p>
-                        <p className="text-sm font-semibold text-blue-400">{selectedNft.carbonOffset}t CO2</p>
+                        <p className="text-sm font-semibold text-blue-400">
+                          {selectedNft.carbonOffset}t CO2
+                        </p>
                       </div>
                     )}
                     {selectedNft.stakingRewards > 0 && (
                       <div className="text-center">
                         <Star className="w-6 h-6 text-yellow-400 mx-auto mb-1" />
                         <p className="text-xs text-gray-400">Staking APR</p>
-                        <p className="text-sm font-semibold text-yellow-400">{selectedNft.stakingRewards}%</p>
+                        <p className="text-sm font-semibold text-yellow-400">
+                          {selectedNft.stakingRewards}%
+                        </p>
                       </div>
                     )}
                   </div>
@@ -612,7 +616,8 @@ export function NFTMarketplace() {
                   <div className="text-right">
                     <p className="text-sm text-gray-400">USD Value</p>
                     <p className="text-lg font-semibold text-gray-300">
-                      ≈ ${(selectedNft.price * (selectedNft.currency === 'SOL' ? 100 : 1)).toFixed(2)}
+                      ≈ $
+                      {(selectedNft.price * (selectedNft.currency === 'SOL' ? 100 : 1)).toFixed(2)}
                     </p>
                   </div>
                 </div>
@@ -627,11 +632,11 @@ export function NFTMarketplace() {
                     <ShoppingCart className="w-5 h-5 mr-2" />
                     {isConnected ? 'Buy Now' : 'Connect Wallet'}
                   </NeonButton>
-                  
+
                   <NeonButton variant="secondary" size="md">
                     <Heart className="w-5 h-5" />
                   </NeonButton>
-                  
+
                   <NeonButton variant="secondary" size="md">
                     <Share2 className="w-5 h-5" />
                   </NeonButton>

@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 const DappHome = () => {
-  const [stakeAmount, setStakeAmount] = useState("");
+  const [stakeAmount, setStakeAmount] = useState('');
 
   const handleStake = () => {
-    alert("Staking " + stakeAmount + " AGRTM via MetaMask...");
+    alert('Staking ' + stakeAmount + ' AGRTM via MetaMask...');
     // Aqui conectaria com Web3
   };
 
@@ -33,10 +33,18 @@ const DappHome = () => {
         <div className="bg-[#111] p-6 rounded-xl shadow-lg">
           <h2 className="text-xl mb-2">Your Staking Stats</h2>
           <ul className="text-sm space-y-1">
-            <li><strong>Wallet:</strong> 0xYourWallet...</li>
-            <li><strong>Staked:</strong> 3,200 AGRTM</li>
-            <li><strong>APR:</strong> 18% annually</li>
-            <li><strong>Rewards:</strong> 192 AGRTM</li>
+            <li>
+              <strong>Wallet:</strong> 0xYourWallet...
+            </li>
+            <li>
+              <strong>Staked:</strong> 3,200 AGRTM
+            </li>
+            <li>
+              <strong>APR:</strong> 18% annually
+            </li>
+            <li>
+              <strong>Rewards:</strong> 192 AGRTM
+            </li>
           </ul>
         </div>
       </div>

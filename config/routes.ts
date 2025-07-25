@@ -1,1 +1,1 @@
-export const ROUTES = { home: "/", admin: "/admin", login: "/login" };
+export const ROUTES = { home: '/', admin: '/admin', login: '/login' };

@@ -1,12 +1,15 @@
 # DeFi Dashboard Implementation Plan
 
 ## Overview
+
 This document outlines the comprehensive plan to improve the DeFi Dashboard project and prepare it for GitHub. The plan addresses missing files, code improvements, styling enhancements, testing, and GitHub preparation.
 
 ## 1. Create Missing Essential Files
 
 ### 1.1 Create index.tsx
+
 Create a main page that integrates the DeFiDashboard component and PriceWidget:
+
 ```tsx
 import React from 'react';
 import { NextPage } from 'next';
@@ -36,7 +39,9 @@ export default Home;
 ```
 
 ### 1.2 Create .gitignore
+
 Create a standard .gitignore file for a Next.js project:
+
 ```
 # dependencies
 /node_modules
@@ -77,7 +82,9 @@ yarn-error.log*
 ```
 
 ### 1.3 Create .env.example
+
 Create an example environment file:
+
 ```
 # Ethereum RPC URL
 RPC_URL=https://mainnet.infura.io/v3/YOUR_INFURA_KEY
@@ -92,6 +99,7 @@ COINGECKO_API_KEY=your_api_key_here
 ## 2. Generate Missing Contract ABI File
 
 Create the missing DeFiPool.json ABI file:
+
 ```json
 {
   "abi": [
@@ -198,6 +206,7 @@ Create the missing DeFiPool.json ABI file:
 ## 3. Update Dependencies in package.json
 
 Update the outdated dependencies:
+
 ```json
 {
   "name": "defi-dashboard",
@@ -238,7 +247,9 @@ Update the outdated dependencies:
 ## 4. Fix Code Issues and Improve Error Handling
 
 ### 4.1 Fix PriceWidget.tsx
+
 Update to use the local API endpoint:
+
 ```tsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -269,7 +280,7 @@ const PriceWidget: React.FC = () => {
     };
 
     fetchPriceData();
-    
+
     // Refresh price data every 60 seconds
     const interval = setInterval(fetchPriceData, 60000);
     return () => clearInterval(interval);
@@ -306,7 +317,9 @@ export default PriceWidget;
 ```
 
 ### 4.2 Fix services/defi.ts
+
 Update with proper error handling and fix potential issues:
+
 ```typescript
 import { ethers } from 'ethers';
 import { abi as poolABI } from '../contracts/DeFiPool.json';
@@ -327,7 +340,7 @@ export const getTVL = async (contractAddress: string): Promise<string> => {
     if (!provider || !contractAddress) {
       throw new Error('Provider or contract address not available');
     }
-    
+
     const contract = new ethers.Contract(contractAddress, poolABI, provider);
     const tvl = await contract.totalValueLocked();
     return ethers.utils.formatEther(tvl);
@@ -352,19 +365,19 @@ export const getDeFiPools = async (): Promise<DeFiPool[]> => {
       console.log('Using mock data for DeFi pools');
       return mockPools;
     }
-    
+
     const provider = getProvider();
     if (!provider) {
       throw new Error('Provider not available');
     }
-    
+
     const contractAddress = process.env.DEFI_POOL_ADDRESS;
     const contract = new ethers.Contract(contractAddress, poolABI, provider);
-    
+
     // This would need to be adjusted based on the actual contract implementation
     // For now, we'll return mock data
     return mockPools;
-    
+
     // Uncomment and adjust when contract is properly implemented
     /*
     const poolCount = await contract.poolCount();
@@ -397,19 +410,19 @@ export const getTokenDetails = async (tokenAddress: string) => {
     if (!provider || !tokenAddress) {
       throw new Error('Provider or token address not available');
     }
-    
+
     // ERC20 ABI for name, symbol, decimals
     const erc20ABI = [
       'function name() view returns (string)',
       'function symbol() view returns (string)',
       'function decimals() view returns (uint8)',
     ];
-    
+
     const contract = new ethers.Contract(tokenAddress, erc20ABI, provider);
     const name = await contract.name();
     const symbol = await contract.symbol();
     const decimals = await contract.decimals();
-    
+
     return { name, symbol, decimals };
   } catch (error) {
     console.error('Error getting token details:', error);
@@ -421,6 +434,7 @@ export const getTokenDetails = async (tokenAddress: string) => {
 ## 5. Add Proper TypeScript Typing
 
 Update the DeFiContext.tsx with proper TypeScript typing:
+
 ```typescript
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { fetchDeFiPools } from '../services/defi';
@@ -474,32 +488,34 @@ export const useDeFi = (): DeFiContextType => {
 ## 6. Implement Styling with Tailwind CSS
 
 ### 6.1 Add Tailwind CSS Configuration
+
 Create tailwind.config.js:
+
 ```js
 module.exports = {
-  content: [
-    './pages/**/*.{js,ts,jsx,tsx}',
-    './components/**/*.{js,ts,jsx,tsx}',
-  ],
+  content: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {},
   },
   plugins: [],
-}
+};
 ```
 
 Create postcss.config.js:
+
 ```js
 module.exports = {
   plugins: {
     tailwindcss: {},
     autoprefixer: {},
   },
-}
+};
 ```
 
 ### 6.2 Create Global Styles
+
 Create styles/globals.css:
+
 ```css
 @tailwind base;
 @tailwind components;
@@ -510,7 +526,12 @@ body {
   @apply bg-gray-50;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   @apply font-semibold;
 }
 
@@ -518,7 +539,8 @@ table {
   @apply w-full border-collapse;
 }
 
-th, td {
+th,
+td {
   @apply p-3 border border-gray-200;
 }
 
@@ -531,7 +553,8 @@ tr:hover {
 }
 ```
 
-Create pages/_app.tsx:
+Create pages/\_app.tsx:
+
 ```tsx
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
@@ -546,7 +569,9 @@ export default MyApp;
 ## 7. Add Unit Tests
 
 ### 7.1 Create Jest Configuration
+
 Create jest.config.js:
+
 ```js
 module.exports = {
   preset: 'ts-jest',
@@ -569,13 +594,16 @@ module.exports = {
 ```
 
 Create jest.setup.js:
+
 ```js
 // Optional: configure or set up a testing framework before each test
 // If you delete this file, remove `setupFilesAfterEnv` from `jest.config.js`
 ```
 
 ### 7.2 Create Test Files
-Create __tests__/components/PriceWidget.test.tsx:
+
+Create **tests**/components/PriceWidget.test.tsx:
+
 ```tsx
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
@@ -601,12 +629,12 @@ describe('PriceWidget', () => {
     mockedAxios.get.mockResolvedValueOnce({
       data: {
         bitcoin: { usd: 50000 },
-        ethereum: { usd: 3000 }
-      }
+        ethereum: { usd: 3000 },
+      },
     });
 
     render(<PriceWidget />);
-    
+
     // Wait for the component to update
     await waitFor(() => {
       expect(screen.getByText(/bitcoin/i)).toBeInTheDocument();
@@ -621,7 +649,7 @@ describe('PriceWidget', () => {
     mockedAxios.get.mockRejectedValueOnce(new Error('API Error'));
 
     render(<PriceWidget />);
-    
+
     // Wait for the component to update
     await waitFor(() => {
       expect(screen.getByText(/failed to fetch price data/i)).toBeInTheDocument();
@@ -633,6 +661,7 @@ describe('PriceWidget', () => {
 ## 8. Set Up GitHub Repository Files
 
 ### 8.1 Create CONTRIBUTING.md
+
 ```markdown
 # Contributing to DeFi Dashboard
 
@@ -685,6 +714,7 @@ By contributing to this project, you agree that your contributions will be licen
 ```
 
 ### 8.2 Create CHANGELOG.md
+
 ```markdown
 # Changelog
 
@@ -696,6 +726,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Initial project setup
 - DeFi Dashboard component
 - Price Widget component
@@ -706,12 +737,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2023-07-24
 
 ### Added
+
 - Initial release
 ```
 
 ## 9. Prepare for Deployment
 
 ### 9.1 Create next.config.js
+
 ```js
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -726,7 +759,9 @@ module.exports = nextConfig;
 ```
 
 ### 9.2 Create Vercel Configuration
+
 Create vercel.json:
+
 ```json
 {
   "version": 2,
@@ -748,6 +783,7 @@ Create vercel.json:
 ## 10. Push to GitHub
 
 ### 10.1 Initialize Git Repository
+
 ```bash
 git init
 git add .
@@ -755,10 +791,12 @@ git commit -m "Initial commit: DeFi Dashboard project"
 ```
 
 ### 10.2 Create GitHub Repository
+
 1. Go to GitHub and create a new repository
 2. Follow the instructions to push an existing repository
 
 ### 10.3 Push to GitHub
+
 ```bash
 git remote add origin https://github.com/yourusername/defi-dashboard.git
 git branch -M main

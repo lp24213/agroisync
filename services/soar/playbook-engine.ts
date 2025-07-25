@@ -78,7 +78,7 @@ export class PlaybookEngine extends EventEmitter {
         tags: ['malware', 'incident-response'],
         triggers: [
           { type: 'event_type', condition: 'equals', value: 'malware_detection' },
-          { type: 'severity', condition: 'gte', value: 'high' }
+          { type: 'severity', condition: 'gte', value: 'high' },
         ],
         steps: [
           {
@@ -90,8 +90,8 @@ export class PlaybookEngine extends EventEmitter {
             retries: 3,
             action: {
               type: 'network_isolation',
-              parameters: { host: '{{event.source_ip}}' }
-            }
+              parameters: { host: '{{event.source_ip}}' },
+            },
           },
           {
             id: 'collect-artifacts',
@@ -102,8 +102,8 @@ export class PlaybookEngine extends EventEmitter {
             retries: 2,
             action: {
               type: 'forensic_collection',
-              parameters: { host: '{{event.source_ip}}', artifacts: ['memory', 'disk', 'network'] }
-            }
+              parameters: { host: '{{event.source_ip}}', artifacts: ['memory', 'disk', 'network'] },
+            },
           },
           {
             id: 'notify-team',
@@ -117,11 +117,11 @@ export class PlaybookEngine extends EventEmitter {
               parameters: {
                 channels: ['email', 'slack'],
                 severity: '{{event.severity}}',
-                message: 'Malware detected and contained on {{event.source_ip}}'
-              }
-            }
-          }
-        ]
+                message: 'Malware detected and contained on {{event.source_ip}}',
+              },
+            },
+          },
+        ],
       },
       {
         id: 'phishing-response',
@@ -133,9 +133,7 @@ export class PlaybookEngine extends EventEmitter {
         priority: 2,
         enabled: true,
         tags: ['phishing', 'email-security'],
-        triggers: [
-          { type: 'event_type', condition: 'equals', value: 'phishing_detection' }
-        ],
+        triggers: [{ type: 'event_type', condition: 'equals', value: 'phishing_detection' }],
         steps: [
           {
             id: 'block-sender',
@@ -146,8 +144,8 @@ export class PlaybookEngine extends EventEmitter {
             retries: 2,
             action: {
               type: 'email_block',
-              parameters: { sender: '{{event.sender}}', domain: '{{event.sender_domain}}' }
-            }
+              parameters: { sender: '{{event.sender}}', domain: '{{event.sender_domain}}' },
+            },
           },
           {
             id: 'quarantine-emails',
@@ -158,11 +156,11 @@ export class PlaybookEngine extends EventEmitter {
             retries: 1,
             action: {
               type: 'email_quarantine',
-              parameters: { subject_pattern: '{{event.subject}}', timeframe: '24h' }
-            }
-          }
-        ]
-      }
+              parameters: { subject_pattern: '{{event.subject}}', timeframe: '24h' },
+            },
+          },
+        ],
+      },
     ];
 
     for (const playbook of defaultPlaybooks) {
@@ -176,9 +174,7 @@ export class PlaybookEngine extends EventEmitter {
     for (const playbook of this.playbooks.values()) {
       if (!playbook.enabled) continue;
 
-      const matches = playbook.triggers.every(trigger => 
-        this.evaluateTrigger(trigger, event)
-      );
+      const matches = playbook.triggers.every((trigger) => this.evaluateTrigger(trigger, event));
 
       if (matches) {
         matching.push(playbook);
@@ -203,10 +199,14 @@ export class PlaybookEngine extends EventEmitter {
 
   private evaluateCondition(actual: any, condition: string, expected: any): boolean {
     switch (condition) {
-      case 'equals': return actual === expected;
-      case 'contains': return actual.includes(expected);
-      case 'matches': return new RegExp(expected).test(actual);
-      default: return false;
+      case 'equals':
+        return actual === expected;
+      case 'contains':
+        return actual.includes(expected);
+      case 'matches':
+        return new RegExp(expected).test(actual);
+      default:
+        return false;
     }
   }
 
@@ -216,10 +216,14 @@ export class PlaybookEngine extends EventEmitter {
     const expectedLevel = severityLevels[expected as keyof typeof severityLevels];
 
     switch (condition) {
-      case 'equals': return actualLevel === expectedLevel;
-      case 'gte': return actualLevel >= expectedLevel;
-      case 'lte': return actualLevel <= expectedLevel;
-      default: return false;
+      case 'equals':
+        return actualLevel === expectedLevel;
+      case 'gte':
+        return actualLevel >= expectedLevel;
+      case 'lte':
+        return actualLevel <= expectedLevel;
+      default:
+        return false;
     }
   }
 
@@ -243,8 +247,8 @@ export class PlaybookEngine extends EventEmitter {
         manualSteps: 0,
         successRate: 0,
         mttr: 0,
-        automationRate: 0
-      }
+        automationRate: 0,
+      },
     };
 
     this.executions.set(execution.id, execution);
@@ -271,14 +275,14 @@ export class PlaybookEngine extends EventEmitter {
   private async executeStep(
     stepDef: PlaybookStepDefinition,
     event: SOAREvent,
-    execution: PlaybookExecution
+    execution: PlaybookExecution,
   ): Promise<PlaybookStep> {
     const step: PlaybookStep = {
       id: stepDef.id,
       name: stepDef.name,
       type: stepDef.type,
       status: 'running',
-      automated: stepDef.automated
+      automated: stepDef.automated,
     };
 
     const startTime = Date.now();
@@ -322,7 +326,7 @@ export class PlaybookEngine extends EventEmitter {
 
   private substituteVariables(parameters: any, event: SOAREvent): any {
     const substituted = JSON.parse(JSON.stringify(parameters));
-    
+
     const substitute = (obj: any): any => {
       if (typeof obj === 'string') {
         return obj.replace(/\{\{([^}]+)\}\}/g, (match, path) => {

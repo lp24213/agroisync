@@ -28,4 +28,4 @@ paths:
                   type: string
       responses:
         '201':
-          description: E-mail enviado 
+          description: E-mail enviado

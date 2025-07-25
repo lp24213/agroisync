@@ -16,12 +16,19 @@ export default function AboutPage() {
       <div className="min-h-screen flex flex-col bg-background">
         <Navbar />
         <main className="flex-1 flex flex-col items-center justify-center px-4">
-          <h1 className="text-4xl font-futuristic text-primary mt-12 mb-4 drop-shadow-neon">Sobre o AGROTM</h1>
+          <h1 className="text-4xl font-futuristic text-primary mt-12 mb-4 drop-shadow-neon">
+            Sobre o AGROTM
+          </h1>
           <GlassCard className="mb-8 w-full max-w-3xl text-center">
             <h2 className="text-2xl text-primary font-futuristic mb-2">Missão</h2>
-            <p className="text-white/80 mb-4">Revolucionar o agronegócio global com tecnologia blockchain, NFTs e DeFi, promovendo transparência, inclusão e inovação.</p>
+            <p className="text-white/80 mb-4">
+              Revolucionar o agronegócio global com tecnologia blockchain, NFTs e DeFi, promovendo
+              transparência, inclusão e inovação.
+            </p>
             <h2 className="text-2xl text-primary font-futuristic mb-2">Valores</h2>
-            <p className="text-white/80">Inovação, sustentabilidade, inclusão, transparência e excelência.</p>
+            <p className="text-white/80">
+              Inovação, sustentabilidade, inclusão, transparência e excelência.
+            </p>
           </GlassCard>
           <h2 className="text-2xl text-primary font-futuristic mb-6">Equipe</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl mb-12">
@@ -33,7 +40,11 @@ export default function AboutPage() {
                 transition={{ delay: i * 0.2, duration: 0.7 }}
               >
                 <GlassCard className="flex flex-col items-center">
-                  <img src={member.img} alt={member.name} className="w-28 h-28 rounded-full mb-4 shadow-neon" />
+                  <img
+                    src={member.img}
+                    alt={member.name}
+                    className="w-28 h-28 rounded-full mb-4 shadow-neon"
+                  />
                   <span className="text-primary text-xl font-futuristic mb-1">{member.name}</span>
                   <span className="text-white/80 text-lg mb-1">{member.role}</span>
                 </GlassCard>
@@ -45,4 +56,4 @@ export default function AboutPage() {
       </div>
     </ThemeProvider>
   );
-} 
+}

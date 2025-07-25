@@ -29,4 +29,4 @@ paths:
                   type: string
       responses:
         '201':
-          description: Relatório gerado 
+          description: Relatório gerado

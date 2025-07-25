@@ -7,4 +7,4 @@ scrape_configs:
       - targets: ['app:3000']
   - job_name: 'postgres'
     static_configs:
-      - targets: ['db:9187'] 
+      - targets: ['db:9187']

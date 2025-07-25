@@ -14,7 +14,7 @@ import {
   AlertTriangle,
   Minus,
   ThumbsUp,
-  ThumbsDown
+  ThumbsDown,
 } from 'lucide-react';
 
 interface Proposal {
@@ -49,7 +49,8 @@ const mockProposals: Proposal[] = [
   {
     id: 'prop-001',
     title: 'Increase Staking Rewards by 2%',
-    description: 'Proposal to increase the annual staking rewards from 12% to 14% to incentivize more participation in the network.',
+    description:
+      'Proposal to increase the annual staking rewards from 12% to 14% to incentivize more participation in the network.',
     proposer: '0x1234...5678',
     status: 'active',
     startTime: new Date(Date.now() - 86400000),
@@ -62,12 +63,13 @@ const mockProposals: Proposal[] = [
     category: 'protocol',
     impact: 'medium',
     executionDelay: 172800,
-    minVotingPower: 1000
+    minVotingPower: 1000,
   },
   {
     id: 'prop-002',
     title: 'Treasury Allocation for Marketing',
-    description: 'Allocate 500,000 AGROTM tokens from treasury for Q1 2024 marketing initiatives and partnerships.',
+    description:
+      'Allocate 500,000 AGROTM tokens from treasury for Q1 2024 marketing initiatives and partnerships.',
     proposer: '0x9876...4321',
     status: 'active',
     startTime: new Date(Date.now() - 172800000),
@@ -80,8 +82,8 @@ const mockProposals: Proposal[] = [
     category: 'treasury',
     impact: 'high',
     executionDelay: 259200,
-    minVotingPower: 5000
-  }
+    minVotingPower: 5000,
+  },
 ];
 
 export function GovernanceVoting() {
@@ -97,41 +99,58 @@ export function GovernanceVoting() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'text-blue-400 bg-blue-400/20';
-      case 'passed': return 'text-green-400 bg-green-400/20';
-      case 'rejected': return 'text-red-400 bg-red-400/20';
-      case 'pending': return 'text-yellow-400 bg-yellow-400/20';
-      default: return 'text-gray-400 bg-gray-400/20';
+      case 'active':
+        return 'text-blue-400 bg-blue-400/20';
+      case 'passed':
+        return 'text-green-400 bg-green-400/20';
+      case 'rejected':
+        return 'text-red-400 bg-red-400/20';
+      case 'pending':
+        return 'text-yellow-400 bg-yellow-400/20';
+      default:
+        return 'text-gray-400 bg-gray-400/20';
     }
   };
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'treasury': return 'text-purple-400 bg-purple-400/20';
-      case 'protocol': return 'text-blue-400 bg-blue-400/20';
-      case 'governance': return 'text-green-400 bg-green-400/20';
-      case 'partnership': return 'text-orange-400 bg-orange-400/20';
-      default: return 'text-gray-400 bg-gray-400/20';
+      case 'treasury':
+        return 'text-purple-400 bg-purple-400/20';
+      case 'protocol':
+        return 'text-blue-400 bg-blue-400/20';
+      case 'governance':
+        return 'text-green-400 bg-green-400/20';
+      case 'partnership':
+        return 'text-orange-400 bg-orange-400/20';
+      default:
+        return 'text-gray-400 bg-gray-400/20';
     }
   };
 
   const getImpactColor = (impact: string) => {
     switch (impact) {
-      case 'low': return 'text-green-400';
-      case 'medium': return 'text-yellow-400';
-      case 'high': return 'text-orange-400';
-      case 'critical': return 'text-red-400';
-      default: return 'text-gray-400';
+      case 'low':
+        return 'text-green-400';
+      case 'medium':
+        return 'text-yellow-400';
+      case 'high':
+        return 'text-orange-400';
+      case 'critical':
+        return 'text-red-400';
+      default:
+        return 'text-gray-400';
     }
   };
 
   const calculateProgress = (proposal: Proposal) => {
     const total = proposal.votesFor + proposal.votesAgainst + proposal.abstain;
-    return total > 0 ? {
-      for: (proposal.votesFor / total) * 100,
-      against: (proposal.votesAgainst / total) * 100,
-      abstain: (proposal.abstain / total) * 100
-    } : { for: 0, against: 0, abstain: 0 };
+    return total > 0
+      ? {
+          for: (proposal.votesFor / total) * 100,
+          against: (proposal.votesAgainst / total) * 100,
+          abstain: (proposal.abstain / total) * 100,
+        }
+      : { for: 0, against: 0, abstain: 0 };
   };
 
   const isQuorumMet = (proposal: Proposal) => {
@@ -141,12 +160,12 @@ export function GovernanceVoting() {
   const getTimeRemaining = (endTime: Date) => {
     const now = new Date();
     const diff = endTime.getTime() - now.getTime();
-    
+
     if (diff <= 0) return 'Ended';
-    
+
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    
+
     if (days > 0) return `${days}d ${hours}h`;
     return `${hours}h`;
   };
@@ -157,9 +176,9 @@ export function GovernanceVoting() {
     setLoading(true);
     try {
       // Simulate vote submission
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const updatedProposals = proposals.map(p => {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      const updatedProposals = proposals.map((p) => {
         if (p.id === selectedProposal.id) {
           const newProposal = { ...p };
           if (voteChoice === 'for') {
@@ -174,7 +193,7 @@ export function GovernanceVoting() {
         }
         return p;
       });
-      
+
       setProposals(updatedProposals);
       setShowVoteModal(false);
       setVoteReason('');
@@ -185,9 +204,7 @@ export function GovernanceVoting() {
     }
   };
 
-  const filteredProposals = proposals.filter(p => 
-    filter === 'all' || p.status === filter
-  );
+  const filteredProposals = proposals.filter((p) => filter === 'all' || p.status === filter);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
@@ -219,11 +236,7 @@ export function GovernanceVoting() {
                 </div>
               )}
 
-              {!isConnected && (
-                <NeonButton onClick={connectWallet}>
-                  Connect Wallet
-                </NeonButton>
-              )}
+              {!isConnected && <NeonButton onClick={connectWallet}>Connect Wallet</NeonButton>}
             </div>
           </div>
         </div>
@@ -231,13 +244,9 @@ export function GovernanceVoting() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Filters */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <div className="flex flex-wrap gap-2">
-            {['all', 'active', 'passed', 'rejected'].map(status => (
+            {['all', 'active', 'passed', 'rejected'].map((status) => (
               <button
                 key={status}
                 onClick={() => setFilter(status as any)}
@@ -271,19 +280,19 @@ export function GovernanceVoting() {
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(proposal.status)}`}>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(proposal.status)}`}
+                        >
                           {proposal.status.toUpperCase()}
                         </span>
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getCategoryColor(proposal.category)}`}>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-semibold ${getCategoryColor(proposal.category)}`}
+                        >
                           {proposal.category.toUpperCase()}
                         </span>
                       </div>
-                      <h3 className="text-lg font-semibold text-white mb-2">
-                        {proposal.title}
-                      </h3>
-                      <p className="text-gray-400 text-sm line-clamp-3">
-                        {proposal.description}
-                      </p>
+                      <h3 className="text-lg font-semibold text-white mb-2">{proposal.title}</h3>
+                      <p className="text-gray-400 text-sm line-clamp-3">{proposal.description}</p>
                     </div>
                   </div>
 
@@ -295,21 +304,12 @@ export function GovernanceVoting() {
                         {proposal.totalVotes.toLocaleString()} votes
                       </span>
                     </div>
-                    
+
                     <div className="w-full bg-gray-800 rounded-full h-2 mb-2">
                       <div className="flex h-full rounded-full overflow-hidden">
-                        <div 
-                          className="bg-green-500" 
-                          style={{ width: `${progress.for}%` }}
-                        />
-                        <div 
-                          className="bg-red-500" 
-                          style={{ width: `${progress.against}%` }}
-                        />
-                        <div 
-                          className="bg-gray-500" 
-                          style={{ width: `${progress.abstain}%` }}
-                        />
+                        <div className="bg-green-500" style={{ width: `${progress.for}%` }} />
+                        <div className="bg-red-500" style={{ width: `${progress.against}%` }} />
+                        <div className="bg-gray-500" style={{ width: `${progress.abstain}%` }} />
                       </div>
                     </div>
 
@@ -356,7 +356,9 @@ export function GovernanceVoting() {
                   {/* Impact & Actions */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
-                      <AlertTriangle className={`w-4 h-4 mr-1 ${getImpactColor(proposal.impact)}`} />
+                      <AlertTriangle
+                        className={`w-4 h-4 mr-1 ${getImpactColor(proposal.impact)}`}
+                      />
                       <span className={`text-sm font-semibold ${getImpactColor(proposal.impact)}`}>
                         {proposal.impact.toUpperCase()} IMPACT
                       </span>
@@ -399,9 +401,7 @@ export function GovernanceVoting() {
         {selectedProposal && (
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-semibold text-white mb-2">
-                {selectedProposal.title}
-              </h3>
+              <h3 className="text-lg font-semibold text-white mb-2">{selectedProposal.title}</h3>
               <p className="text-gray-400 text-sm">
                 Your voting power: {userVotingPower.toLocaleString()} AGROTM
               </p>
@@ -413,8 +413,8 @@ export function GovernanceVoting() {
               {[
                 { value: 'for', label: 'For', icon: ThumbsUp, color: 'green' },
                 { value: 'against', label: 'Against', icon: ThumbsDown, color: 'red' },
-                { value: 'abstain', label: 'Abstain', icon: Minus, color: 'gray' }
-              ].map(option => (
+                { value: 'abstain', label: 'Abstain', icon: Minus, color: 'gray' },
+              ].map((option) => (
                 <button
                   key={option.value}
                   onClick={() => setVoteChoice(option.value as any)}
@@ -452,11 +452,7 @@ export function GovernanceVoting() {
               >
                 Cancel
               </button>
-              <NeonButton
-                onClick={submitVote}
-                loading={loading}
-                className="flex-1"
-              >
+              <NeonButton onClick={submitVote} loading={loading} className="flex-1">
                 Submit Vote
               </NeonButton>
             </div>

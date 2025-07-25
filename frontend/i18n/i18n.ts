@@ -11,14 +11,12 @@ const resources = {
   zh: { translation: zh },
 };
 
-i18n
-  .use(initReactI18next)
-  .init({
-    resources,
-    lng: 'pt',
-    fallbackLng: 'en',
-    interpolation: { escapeValue: false },
-    react: { useSuspense: false },
-  });
+i18n.use(initReactI18next).init({
+  resources,
+  lng: 'pt',
+  fallbackLng: 'en',
+  interpolation: { escapeValue: false },
+  react: { useSuspense: false },
+});
 
-export default i18n; 
+export default i18n;

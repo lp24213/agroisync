@@ -32,20 +32,23 @@
 4. Monitoramento ativo (Sentry, Prometheus, Grafana)
 
 ## Microserviços
+
 - Cada serviço roda isolado, pode ser escalado individualmente.
 - Comunicação via HTTP/REST (pode evoluir para gRPC ou mensageria).
 
 ## Observabilidade
+
 - Logs estruturados (Pino)
 - Tracing e erros (Sentry)
 - Métricas (Prometheus)
 - Dashboards (Grafana)
 
 ## Segurança
+
 - Variáveis de ambiente seguras
 - Dependabot, CODEOWNERS, SECURITY.md
 - Política de disclosure
 
 ---
 
-> Para detalhes de endpoints, veja `openapi.yaml` e `/docs`. 
+> Para detalhes de endpoints, veja `openapi.yaml` e `/docs`.

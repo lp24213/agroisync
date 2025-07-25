@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Initial project setup
 - DeFi Dashboard component with Tailwind CSS styling
 - Price Widget component with real-time price data
@@ -21,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2023-07-24
 
 ### Added
+
 - Initial release with core functionality
 - DeFi Dashboard with pool information display
 - Price Widget for cryptocurrency price display

@@ -4,7 +4,7 @@ export default async function handler(req, res) {
     { time: '11:00', price: 0.91 },
     { time: '12:00', price: 0.93 },
     { time: '13:00', price: 0.89 },
-    { time: '14:00', price: 0.92 }
-  ]
-  res.status(200).json(data)
+    { time: '14:00', price: 0.92 },
+  ];
+  res.status(200).json(data);
 }

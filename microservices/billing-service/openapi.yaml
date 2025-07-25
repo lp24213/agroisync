@@ -26,4 +26,4 @@ paths:
                   type: string
       responses:
         '201':
-          description: Cobrança gerada 
+          description: Cobrança gerada

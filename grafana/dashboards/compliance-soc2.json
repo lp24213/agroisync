@@ -5,21 +5,17 @@
     {
       "type": "stat",
       "title": "SOC2 Controls Passed",
-      "targets": [
-        { "expr": "sum(soc2_controls_passed_total)", "legendFormat": "passed" }
-      ],
+      "targets": [{ "expr": "sum(soc2_controls_passed_total)", "legendFormat": "passed" }],
       "datasource": "Prometheus"
     },
     {
       "type": "stat",
       "title": "SOC2 Violations",
-      "targets": [
-        { "expr": "sum(soc2_violations_total)", "legendFormat": "violations" }
-      ],
+      "targets": [{ "expr": "sum(soc2_violations_total)", "legendFormat": "violations" }],
       "datasource": "Prometheus"
     }
   ],
   "schemaVersion": 16,
   "version": 1,
   "refresh": "10s"
-} 
+}

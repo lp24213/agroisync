@@ -11,4 +11,4 @@ app.post('/payments', (req, res) => {
   res.status(201).json({ status: 'success', ...req.body });
 });
 
-app.listen(4001, () => logger.info('Payment service running on port 4001')); 
+app.listen(4001, () => logger.info('Payment service running on port 4001'));

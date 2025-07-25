@@ -21,14 +21,8 @@ declare module 'lru-cache' {
     values(): V[];
     length: number;
     itemCount: number;
-    forEach(
-      callbackFn: (value: V, key: K, cache: this) => void,
-      thisArg?: any
-    ): void;
-    rforEach(
-      callbackFn: (value: V, key: K, cache: this) => void,
-      thisArg?: any
-    ): void;
+    forEach(callbackFn: (value: V, key: K, cache: this) => void, thisArg?: any): void;
+    rforEach(callbackFn: (value: V, key: K, cache: this) => void, thisArg?: any): void;
     dump(): Array<{ k: K; v: V; e?: number }>;
     load(cacheEntries: Array<{ k: K; v: V; e?: number }>): void;
     prune(): void;

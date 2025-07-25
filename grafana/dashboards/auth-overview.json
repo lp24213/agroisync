@@ -5,13 +5,11 @@
     {
       "type": "stat",
       "title": "Logins",
-      "targets": [
-        { "expr": "sum(auth_logins_total)", "legendFormat": "logins" }
-      ],
+      "targets": [{ "expr": "sum(auth_logins_total)", "legendFormat": "logins" }],
       "datasource": "Prometheus"
     }
   ],
   "schemaVersion": 16,
   "version": 1,
   "refresh": "10s"
-} 
+}

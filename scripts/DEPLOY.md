@@ -1,10 +1,12 @@
 # Deploy AGROTM
 
 ## 1. GitHub
+
 - Crie um repositório: agrotm-site
 - Faça push do projeto completo
 
 ## 2. Vercel
+
 - Acesse https://vercel.com
 - Clique em "New Project" e importe o repositório GitHub
 - Configure:

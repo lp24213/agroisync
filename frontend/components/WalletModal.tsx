@@ -36,11 +36,13 @@ export default function WalletModal({ open, onClose }: { open: boolean; onClose:
                   </button>
                 ))}
               </div>
-              <button onClick={onClose} className="mt-6 text-primary hover:underline">Fechar</button>
+              <button onClick={onClose} className="mt-6 text-primary hover:underline">
+                Fechar
+              </button>
             </GlassCard>
           </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
   );
-} 
+}

@@ -7,7 +7,10 @@ import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
 
-const ExampleExperimentalChart = dynamic(() => import('../components/ui/experimental/ExampleExperimentalChart'), { ssr: false });
+const ExampleExperimentalChart = dynamic(
+  () => import('../components/ui/experimental/ExampleExperimentalChart'),
+  { ssr: false },
+);
 
 export default function Home() {
   const { t } = useTranslation();
@@ -25,7 +28,10 @@ export default function Home() {
           {t('welcome', 'Bem-vindo ao AGROTM')}
         </motion.h1>
         <p className="text-lg mb-8 text-center max-w-xl animate-fade-in">
-          {t('landing_subtitle', 'A revolução Web3 no agronegócio, com NFTs, staking e integração blockchain.')}
+          {t(
+            'landing_subtitle',
+            'A revolução Web3 no agronegócio, com NFTs, staking e integração blockchain.',
+          )}
         </p>
         {/* MintNFT Widget */}
         <MintNFT />
@@ -40,4 +46,3 @@ export default function Home() {
     </div>
   );
 }
-

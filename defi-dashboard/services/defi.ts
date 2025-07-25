@@ -17,7 +17,7 @@ export const getTVL = async (contractAddress: string): Promise<string> => {
     if (!provider || !contractAddress) {
       throw new Error('Provider or contract address not available');
     }
-    
+
     const contract = new ethers.Contract(contractAddress, poolABI, provider);
     const tvl = await contract.totalValueLocked?.();
     return ethers.formatEther(tvl);
@@ -42,23 +42,23 @@ export const getDeFiPools = async (): Promise<DeFiPool[]> => {
       console.log('Using mock data for DeFi pools');
       return mockPools;
     }
-    
+
     const provider = getProvider();
     if (!provider) {
       throw new Error('Provider not available');
     }
-    
+
     const contractAddress = process.env.NEXT_PUBLIC_DEFI_POOL_ADDRESS;
     if (!contractAddress) {
       throw new Error('Contract address not available');
     }
-    
+
     const contract = new ethers.Contract(contractAddress, poolABI, provider);
-    
+
     // This would need to be adjusted based on the actual contract implementation
     // For now, we'll return mock data
     return mockPools;
-    
+
     // Uncomment and adjust when contract is properly implemented
     /*
     const poolCount = await contract.poolCount();
@@ -85,25 +85,27 @@ export const getDeFiPools = async (): Promise<DeFiPool[]> => {
 };
 
 // Function to get token details
-export const getTokenDetails = async (tokenAddress: string): Promise<{name: string, symbol: string, decimals: number}> => {
+export const getTokenDetails = async (
+  tokenAddress: string,
+): Promise<{ name: string; symbol: string; decimals: number }> => {
   try {
     const provider = getProvider();
     if (!provider || !tokenAddress) {
       throw new Error('Provider or token address not available');
     }
-    
+
     // ERC20 ABI for name, symbol, decimals
     const erc20ABI = [
       'function name() view returns (string)',
       'function symbol() view returns (string)',
       'function decimals() view returns (uint8)',
     ];
-    
+
     const contract = new ethers.Contract(tokenAddress, erc20ABI, provider);
     const name = await contract.name?.();
     const symbol = await contract.symbol?.();
     const decimals = await contract.decimals?.();
-    
+
     return { name, symbol, decimals };
   } catch (error) {
     console.error('Error getting token details:', error);

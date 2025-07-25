@@ -6,4 +6,4 @@ Como participantes deste projeto, nos comprometemos a respeitar todas as pessoas
 - Não serão tolerados comportamentos abusivos, discriminatórios ou ofensivos.
 - Reporte violações para security@agrotm.com.
 
-Inspirado pelo [Contributor Covenant](https://www.contributor-covenant.org/). 
+Inspirado pelo [Contributor Covenant](https://www.contributor-covenant.org/).

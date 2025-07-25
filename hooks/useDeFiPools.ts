@@ -1,7 +1,7 @@
-"use client";
-import { useState, useEffect, useCallback } from "react";
-import { ethers } from "ethers";
-import { useWeb3 } from "./useWeb3";
+'use client';
+import { useState, useEffect, useCallback } from 'react';
+import { ethers } from 'ethers';
+import { useWeb3 } from './useWeb3';
 
 interface Pool {
   id: string;
@@ -33,71 +33,71 @@ export function useDeFiPools() {
   const [state, setState] = useState<PoolsState>({
     pools: [],
     loading: true,
-    error: null
+    error: null,
   });
 
   const fetchPools = useCallback(async () => {
-    setState(prev => ({ ...prev, loading: true, error: null }));
+    setState((prev) => ({ ...prev, loading: true, error: null }));
 
     try {
       // Simulação de API - substitua por integração real com contratos
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       const mockPools: Pool[] = [
         {
-          id: "1",
-          name: "AGRO/USDC",
-          address: "0x1234567890123456789012345678901234567890",
-          token0: "AGRO",
-          token1: "USDC",
+          id: '1',
+          name: 'AGRO/USDC',
+          address: '0x1234567890123456789012345678901234567890',
+          token0: 'AGRO',
+          token1: 'USDC',
           apr: 24.5,
           tvl: 1250000,
           userStaked: 0,
           userRewards: 0,
           isActive: true,
           lockPeriod: 30, // Added
-          riskLevel: "High", // Added
+          riskLevel: 'High', // Added
           minStake: 100, // Added
           maxStake: 10000, // Added
-          description: "A high-risk, high-reward pool for experienced traders.", // Added
-          isVerified: true // Added
+          description: 'A high-risk, high-reward pool for experienced traders.', // Added
+          isVerified: true, // Added
         },
         {
-          id: "2",
-          name: "AGRO/SOL",
-          address: "0x2345678901234567890123456789012345678901",
-          token0: "AGRO",
-          token1: "SOL",
+          id: '2',
+          name: 'AGRO/SOL',
+          address: '0x2345678901234567890123456789012345678901',
+          token0: 'AGRO',
+          token1: 'SOL',
           apr: 18.3,
           tvl: 850000,
           userStaked: 0,
           userRewards: 0,
           isActive: true,
           lockPeriod: 60, // Added
-          riskLevel: "Medium", // Added
+          riskLevel: 'Medium', // Added
           minStake: 10, // Added
           maxStake: 1000, // Added
-          description: "A medium-risk pool for investors looking for stable returns.", // Added
-          isVerified: true // Added
+          description: 'A medium-risk pool for investors looking for stable returns.', // Added
+          isVerified: true, // Added
         },
         {
-          id: "3",
-          name: "AGRO/BTC",
-          address: "0x3456789012345678901234567890123456789012",
-          token0: "AGRO",
-          token1: "BTC",
+          id: '3',
+          name: 'AGRO/BTC',
+          address: '0x3456789012345678901234567890123456789012',
+          token0: 'AGRO',
+          token1: 'BTC',
           apr: 31.2,
           tvl: 650000,
           userStaked: 0,
           userRewards: 0,
           isActive: true,
           lockPeriod: 90, // Added
-          riskLevel: "Low", // Added
+          riskLevel: 'Low', // Added
           minStake: 1, // Added
           maxStake: 100, // Added
-          description: "A low-risk pool for beginners and conservative investors.", // Added
-          isVerified: true // Added
-        }
+          description: 'A low-risk pool for beginners and conservative investors.', // Added
+          isVerified: true, // Added
+        },
       ];
 
       // Se conectado, buscar posições do usuário
@@ -116,134 +116,136 @@ export function useDeFiPools() {
       setState({
         pools: mockPools,
         loading: false,
-        error: null
+        error: null,
       });
     } catch (error: any) {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         loading: false,
-        error: error.message || "Erro ao buscar pools"
+        error: error.message || 'Erro ao buscar pools',
       }));
     }
   }, [isConnected, account]);
 
-  const stakeInPool = useCallback(async (poolId: string, amount: string) => {
-    if (!signer) throw new Error("Carteira não conectada");
+  const stakeInPool = useCallback(
+    async (poolId: string, amount: string) => {
+      if (!signer) throw new Error('Carteira não conectada');
 
-    try {
-      const pool = state.pools.find(p => p.id === poolId);
-      if (!pool) throw new Error("Pool não encontrado");
+      try {
+        const pool = state.pools.find((p) => p.id === poolId);
+        if (!pool) throw new Error('Pool não encontrado');
 
-      // Simulação - substitua por chamada real ao contrato
-      const contractABI = [
-        "function stake(uint256 amount) external",
-        "function approve(address spender, uint256 amount) external returns (bool)"
-      ];
+        // Simulação - substitua por chamada real ao contrato
+        const contractABI = [
+          'function stake(uint256 amount) external',
+          'function approve(address spender, uint256 amount) external returns (bool)',
+        ];
 
-      const poolContract = new ethers.Contract(pool.address, contractABI, signer);
-      const amountWei = ethers.parseEther(amount);
+        const poolContract = new ethers.Contract(pool.address, contractABI, signer);
+        const amountWei = ethers.parseEther(amount);
 
-      // Primeiro aprovar o token (se necessário)
-      // const tokenContract = new ethers.Contract(tokenAddress, erc20ABI, signer);
-      // await tokenContract.approve(pool.address, amountWei);
+        // Primeiro aprovar o token (se necessário)
+        // const tokenContract = new ethers.Contract(tokenAddress, erc20ABI, signer);
+        // await tokenContract.approve(pool.address, amountWei);
 
-      // Fazer stake
-      const tx = await poolContract.stake(amountWei);
-      await tx.wait();
+        // Fazer stake
+        const tx = await poolContract.stake(amountWei);
+        await tx.wait();
 
-      // Atualizar estado local
-      setState(prev => ({
-        ...prev,
-        pools: prev.pools.map(p => 
-          p.id === poolId 
-            ? { ...p, userStaked: p.userStaked + parseFloat(amount) }
-            : p
-        )
-      }));
+        // Atualizar estado local
+        setState((prev) => ({
+          ...prev,
+          pools: prev.pools.map((p) =>
+            p.id === poolId ? { ...p, userStaked: p.userStaked + parseFloat(amount) } : p,
+          ),
+        }));
 
-      return tx;
-    } catch (error: any) {
-      throw new Error(error.message || "Erro ao fazer stake");
-    }
-  }, [signer, state.pools]);
+        return tx;
+      } catch (error: any) {
+        throw new Error(error.message || 'Erro ao fazer stake');
+      }
+    },
+    [signer, state.pools],
+  );
 
-  const unstakeFromPool = useCallback(async (poolId: string, amount: string) => {
-    if (!signer) throw new Error("Carteira não conectada");
+  const unstakeFromPool = useCallback(
+    async (poolId: string, amount: string) => {
+      if (!signer) throw new Error('Carteira não conectada');
 
-    try {
-      const pool = state.pools.find(p => p.id === poolId);
-      if (!pool) throw new Error("Pool não encontrado");
+      try {
+        const pool = state.pools.find((p) => p.id === poolId);
+        if (!pool) throw new Error('Pool não encontrado');
 
-      const contractABI = [
-        "function unstake(uint256 amount) external"
-      ];
+        const contractABI = ['function unstake(uint256 amount) external'];
 
-      const poolContract = new ethers.Contract(pool.address, contractABI, signer);
-      const amountWei = ethers.parseEther(amount);
+        const poolContract = new ethers.Contract(pool.address, contractABI, signer);
+        const amountWei = ethers.parseEther(amount);
 
-      const tx = await poolContract.unstake(amountWei);
-      await tx.wait();
+        const tx = await poolContract.unstake(amountWei);
+        await tx.wait();
 
-      // Atualizar estado local
-      setState(prev => ({
-        ...prev,
-        pools: prev.pools.map(p => 
-          p.id === poolId 
-            ? { ...p, userStaked: Math.max(0, p.userStaked - parseFloat(amount)) }
-            : p
-        )
-      }));
+        // Atualizar estado local
+        setState((prev) => ({
+          ...prev,
+          pools: prev.pools.map((p) =>
+            p.id === poolId
+              ? { ...p, userStaked: Math.max(0, p.userStaked - parseFloat(amount)) }
+              : p,
+          ),
+        }));
 
-      return tx;
-    } catch (error: any) {
-      throw new Error(error.message || "Erro ao fazer unstake");
-    }
-  }, [signer, state.pools]);
+        return tx;
+      } catch (error: any) {
+        throw new Error(error.message || 'Erro ao fazer unstake');
+      }
+    },
+    [signer, state.pools],
+  );
 
-  const claimRewards = useCallback(async (poolId: string) => {
-    if (!signer) throw new Error("Carteira não conectada");
+  const claimRewards = useCallback(
+    async (poolId: string) => {
+      if (!signer) throw new Error('Carteira não conectada');
 
-    try {
-      const pool = state.pools.find(p => p.id === poolId);
-      if (!pool) throw new Error("Pool não encontrado");
+      try {
+        const pool = state.pools.find((p) => p.id === poolId);
+        if (!pool) throw new Error('Pool não encontrado');
 
-      const contractABI = [
-        "function claimRewards() external"
-      ];
+        const contractABI = ['function claimRewards() external'];
 
-      const poolContract = new ethers.Contract(pool.address, contractABI, signer);
-      const tx = await poolContract.claimRewards();
-      await tx.wait();
+        const poolContract = new ethers.Contract(pool.address, contractABI, signer);
+        const tx = await poolContract.claimRewards();
+        await tx.wait();
 
-      // Atualizar estado local
-      setState(prev => ({
-        ...prev,
-        pools: prev.pools.map(p => 
-          p.id === poolId 
-            ? { ...p, userRewards: 0 }
-            : p
-        )
-      }));
+        // Atualizar estado local
+        setState((prev) => ({
+          ...prev,
+          pools: prev.pools.map((p) => (p.id === poolId ? { ...p, userRewards: 0 } : p)),
+        }));
 
-      return tx;
-    } catch (error: any) {
-      throw new Error(error.message || "Erro ao reivindicar recompensas");
-    }
-  }, [signer, state.pools]);
+        return tx;
+      } catch (error: any) {
+        throw new Error(error.message || 'Erro ao reivindicar recompensas');
+      }
+    },
+    [signer, state.pools],
+  );
 
-  const getPoolAPR = useCallback(async (poolId: string): Promise<number> => {
-    try {
-      const pool = state.pools.find(p => p.id === poolId);
-      if (!pool) return 0;
+  const getPoolAPR = useCallback(
+    async (poolId: string): Promise<number> => {
+      try {
+        const pool = state.pools.find((p) => p.id === poolId);
+        if (!pool) return 0;
 
-      // Aqui você faria cálculo real do APR baseado em dados on-chain
-      // const apr = await calculateAPR(pool.address);
-      return pool.apr;
-    } catch (error) {
-      console.error("Erro ao calcular APR:", error);
-      return 0;
-    }
-  }, [state.pools]);
+        // Aqui você faria cálculo real do APR baseado em dados on-chain
+        // const apr = await calculateAPR(pool.address);
+        return pool.apr;
+      } catch (error) {
+        console.error('Erro ao calcular APR:', error);
+        return 0;
+      }
+    },
+    [state.pools],
+  );
 
   const getTotalUserValue = useCallback(() => {
     return state.pools.reduce((total, pool) => total + pool.userStaked, 0);
@@ -272,6 +274,6 @@ export function useDeFiPools() {
     getPoolAPR,
     getTotalUserValue,
     getTotalUserRewards,
-    refetch: fetchPools
+    refetch: fetchPools,
   };
 }

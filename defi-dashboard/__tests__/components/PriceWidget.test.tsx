@@ -22,12 +22,12 @@ describe('PriceWidget', () => {
     mockedAxios.get.mockResolvedValueOnce({
       data: {
         bitcoin: { usd: 50000 },
-        ethereum: { usd: 3000 }
-      }
+        ethereum: { usd: 3000 },
+      },
     });
 
     render(<PriceWidget />);
-    
+
     // Wait for the component to update
     await waitFor(() => {
       expect(screen.getByText(/bitcoin/i)).toBeInTheDocument();
@@ -42,7 +42,7 @@ describe('PriceWidget', () => {
     mockedAxios.get.mockRejectedValueOnce(new Error('API Error'));
 
     render(<PriceWidget />);
-    
+
     // Wait for the component to update
     await waitFor(() => {
       expect(screen.getByText(/failed to fetch price data/i)).toBeInTheDocument();

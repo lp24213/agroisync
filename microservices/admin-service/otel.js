@@ -15,4 +15,4 @@ registerInstrumentations({
   instrumentations: [new ExpressInstrumentation()],
 });
 
-module.exports = provider.getTracer('admin-service'); 
+module.exports = provider.getTracer('admin-service');

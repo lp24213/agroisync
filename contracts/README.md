@@ -41,4 +41,5 @@ Veja instruções acima em inglês. Para dúvidas, consulte a documentação ofi
 ---
 
 ## 中文
-deploy、验证和集成请参考上方英文说明。如有疑问请查阅Solidity、OpenZeppelin和Anchor官方文档。 
+
+deploy、验证和集成请参考上方英文说明。如有疑问请查阅Solidity、OpenZeppelin和Anchor官方文档。

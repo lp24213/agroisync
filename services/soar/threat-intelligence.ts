@@ -66,7 +66,7 @@ export class ThreatIntelligence extends EventEmitter {
         apiKey: process.env.MISP_API_KEY,
         format: 'json',
         updateInterval: 3600000, // 1 hour
-        enabled: true
+        enabled: true,
       },
       {
         id: 'otx',
@@ -76,7 +76,7 @@ export class ThreatIntelligence extends EventEmitter {
         apiKey: process.env.OTX_API_KEY,
         format: 'json',
         updateInterval: 1800000, // 30 minutes
-        enabled: true
+        enabled: true,
       },
       {
         id: 'virustotal',
@@ -86,8 +86,8 @@ export class ThreatIntelligence extends EventEmitter {
         apiKey: process.env.VT_API_KEY,
         format: 'json',
         updateInterval: 900000, // 15 minutes
-        enabled: true
-      }
+        enabled: true,
+      },
     ];
 
     for (const feed of defaultFeeds) {
@@ -113,10 +113,10 @@ export class ThreatIntelligence extends EventEmitter {
   private async updateFeed(feed: ThreatFeed): Promise<void> {
     try {
       this.logger.info(`Updating threat feed: ${feed.name}`);
-      
+
       const data = await this.fetchFeedData(feed);
       const newIOCs = await this.parseFeedData(feed, data);
-      
+
       let updatedCount = 0;
       for (const ioc of newIOCs) {
         if (this.addOrUpdateIOC(ioc)) {
@@ -126,9 +126,11 @@ export class ThreatIntelligence extends EventEmitter {
 
       if (updatedCount > 0) {
         this.logger.info(`Updated ${updatedCount} IOCs from ${feed.name}`);
-        this.emit('ioc:updated', newIOCs.map(ioc => ioc.value));
+        this.emit(
+          'ioc:updated',
+          newIOCs.map((ioc) => ioc.value),
+        );
       }
-
     } catch (error) {
       this.logger.error(`Error updating feed ${feed.name}:`, error);
     }
@@ -168,7 +170,7 @@ export class ThreatIntelligence extends EventEmitter {
 
   private async parseFeedData(feed: ThreatFeed, data: any): Promise<IOC[]> {
     const iocs: IOC[] = [];
-    
+
     // Parse based on feed format
     switch (feed.format) {
       case 'json':
@@ -182,7 +184,7 @@ export class ThreatIntelligence extends EventEmitter {
 
   private parseJSONFeed(feed: ThreatFeed, data: any): IOC[] {
     const iocs: IOC[] = [];
-    
+
     // Generic JSON parsing logic
     if (Array.isArray(data)) {
       for (const item of data) {
@@ -190,7 +192,7 @@ export class ThreatIntelligence extends EventEmitter {
         if (ioc) iocs.push(ioc);
       }
     }
-    
+
     return iocs;
   }
 
@@ -210,7 +212,7 @@ export class ThreatIntelligence extends EventEmitter {
       firstSeen: new Date(item.first_seen || Date.now()),
       lastSeen: new Date(item.last_seen || Date.now()),
       tags: item.tags || [],
-      context: item.context || {}
+      context: item.context || {},
     };
   }
 
@@ -225,18 +227,18 @@ export class ThreatIntelligence extends EventEmitter {
 
   private addOrUpdateIOC(ioc: IOC): boolean {
     const existing = this.iocs.get(ioc.value);
-    
+
     if (!existing) {
       this.iocs.set(ioc.value, ioc);
       return true;
     }
-    
+
     // Update if newer or higher confidence
     if (ioc.lastSeen > existing.lastSeen || ioc.confidence > existing.confidence) {
       this.iocs.set(ioc.value, { ...existing, ...ioc });
       return true;
     }
-    
+
     return false;
   }
 
@@ -255,8 +257,8 @@ export class ThreatIntelligence extends EventEmitter {
             severity: ioc.severity,
             source: ioc.source,
             tags: ioc.tags,
-            context: ioc.context
-          }
+            context: ioc.context,
+          },
         });
 
         // Escalate severity if high-confidence threat
@@ -269,7 +271,7 @@ export class ThreatIntelligence extends EventEmitter {
     // Add enrichment data
     enrichedEvent.context = {
       ...enrichedEvent.context,
-      threat_intelligence: enrichments
+      threat_intelligence: enrichments,
     };
 
     // Check for known threat actors
@@ -286,9 +288,7 @@ export class ThreatIntelligence extends EventEmitter {
 
     for (const actor of this.threatActors.values()) {
       // Check if event indicators match known actor IOCs
-      const matchingIOCs = event.indicators.filter(indicator => 
-        actor.iocs.includes(indicator)
-      );
+      const matchingIOCs = event.indicators.filter((indicator) => actor.iocs.includes(indicator));
 
       if (matchingIOCs.length > 0) {
         matches.push(actor);
@@ -303,9 +303,8 @@ export class ThreatIntelligence extends EventEmitter {
 
     for (const ioc of this.iocs.values()) {
       if (type && ioc.type !== type) continue;
-      
-      if (ioc.value.includes(query) || 
-          ioc.tags.some(tag => tag.includes(query))) {
+
+      if (ioc.value.includes(query) || ioc.tags.some((tag) => tag.includes(query))) {
         results.push(ioc);
       }
     }
@@ -314,13 +313,13 @@ export class ThreatIntelligence extends EventEmitter {
   }
 
   async getIOCsByType(type: IOC['type']): Promise<IOC[]> {
-    return Array.from(this.iocs.values()).filter(ioc => ioc.type === type);
+    return Array.from(this.iocs.values()).filter((ioc) => ioc.type === type);
   }
 
   async addCustomIOC(ioc: Omit<IOC, 'source'>): Promise<void> {
     const customIOC: IOC = {
       ...ioc,
-      source: 'custom'
+      source: 'custom',
     };
 
     this.iocs.set(customIOC.value, customIOC);
@@ -343,7 +342,7 @@ export class ThreatIntelligence extends EventEmitter {
       total_iocs: this.iocs.size,
       by_type: {} as Record<string, number>,
       by_severity: {} as Record<string, number>,
-      by_source: {} as Record<string, number>
+      by_source: {} as Record<string, number>,
     };
 
     for (const ioc of this.iocs.values()) {

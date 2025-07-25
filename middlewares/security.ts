@@ -26,7 +26,7 @@ const rateLimitConfig = {
       userAgent: req.get('User-Agent'),
       path: req.path,
     });
-    
+
     res.status(429).json(rateLimitConfig.message);
   },
 };
@@ -76,21 +76,9 @@ const helmetConfig = {
         'https://vercel.live',
         'https://cdn.jsdelivr.net',
       ],
-      styleSrc: [
-        "'self'",
-        "'unsafe-inline'",
-        'https://fonts.googleapis.com',
-      ],
-      fontSrc: [
-        "'self'",
-        'https://fonts.gstatic.com',
-      ],
-      imgSrc: [
-        "'self'",
-        'data:',
-        'https:',
-        'blob:',
-      ],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+      imgSrc: ["'self'", 'data:', 'https:', 'blob:'],
       connectSrc: [
         "'self'",
         'https://api.coingecko.com',
@@ -127,7 +115,7 @@ const adminWhitelist = [
 // Request validation middleware
 export function validateRequest(req: NextRequest): NextResponse | null {
   const { pathname } = req.nextUrl;
-  
+
   // Validate content type for POST/PUT requests
   if (['POST', 'PUT', 'PATCH'].includes(req.method)) {
     const contentType = req.headers.get('content-type');
@@ -137,11 +125,8 @@ export function validateRequest(req: NextRequest): NextResponse | null {
         contentType,
         path: pathname,
       });
-      
-      return NextResponse.json(
-        { error: 'Content-Type must be application/json' },
-        { status: 400 }
-      );
+
+      return NextResponse.json({ error: 'Content-Type must be application/json' }, { status: 400 });
     }
   }
 
@@ -149,34 +134,28 @@ export function validateRequest(req: NextRequest): NextResponse | null {
   if (pathname.startsWith('/api/protected/')) {
     const apiKey = req.headers.get('x-api-key');
     const validApiKey = process.env.API_KEY;
-    
+
     if (!apiKey || apiKey !== validApiKey) {
       logger.warn('Invalid API key', {
         path: pathname,
         providedKey: apiKey ? 'present' : 'missing',
       });
-      
-      return NextResponse.json(
-        { error: 'Invalid or missing API key' },
-        { status: 401 }
-      );
+
+      return NextResponse.json({ error: 'Invalid or missing API key' }, { status: 401 });
     }
   }
 
   // Admin endpoint protection
   if (pathname.startsWith('/api/admin/')) {
     const clientIP = getClientIP(req);
-    
+
     if (!adminWhitelist.includes(clientIP)) {
       logger.warn('Unauthorized admin access attempt', {
         ip: clientIP,
         path: pathname,
       });
-      
-      return NextResponse.json(
-        { error: 'Access denied' },
-        { status: 403 }
-      );
+
+      return NextResponse.json({ error: 'Access denied' }, { status: 403 });
     }
   }
 
@@ -187,15 +166,15 @@ export function validateRequest(req: NextRequest): NextResponse | null {
 export function getClientIP(req: NextRequest): string {
   const forwarded = req.headers.get('x-forwarded-for');
   const realIP = req.headers.get('x-real-ip');
-  
+
   if (forwarded) {
     return forwarded.split(',')[0].trim();
   }
-  
+
   if (realIP) {
     return realIP;
   }
-  
+
   return req.ip || 'unknown';
 }
 
@@ -208,11 +187,11 @@ export function sanitizeInput(data: any): any {
       .replace(/on\w+\s*=/gi, '')
       .trim();
   }
-  
+
   if (Array.isArray(data)) {
     return data.map(sanitizeInput);
   }
-  
+
   if (data && typeof data === 'object') {
     const sanitized: any = {};
     for (const [key, value] of Object.entries(data)) {
@@ -220,7 +199,7 @@ export function sanitizeInput(data: any): any {
     }
     return sanitized;
   }
-  
+
   return data;
 }
 
@@ -230,7 +209,7 @@ export function logRequest(req: NextRequest): void {
   const { method, url } = req;
   const userAgent = req.headers.get('user-agent') || 'unknown';
   const clientIP = getClientIP(req);
-  
+
   logger.info('Request received', {
     method,
     url,
@@ -266,11 +245,11 @@ export function handleSecurityError(error: Error, req: NextRequest): NextRespons
   });
 
   return NextResponse.json(
-    { 
+    {
       error: 'Internal security error',
-      message: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
+      message: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong',
     },
-    { status: 500 }
+    { status: 500 },
   );
 }
 
@@ -294,19 +273,19 @@ export function securityMiddleware(req: NextRequest): NextResponse | null {
 
     // Add security headers
     const response = NextResponse.next();
-    
+
     // Security headers
     response.headers.set('X-Content-Type-Options', 'nosniff');
     response.headers.set('X-Frame-Options', 'DENY');
     response.headers.set('X-XSS-Protection', '1; mode=block');
     response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
     response.headers.set('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
-    
+
     // HSTS header for HTTPS
     if (req.nextUrl.protocol === 'https:') {
       response.headers.set(
         'Strict-Transport-Security',
-        'max-age=31536000; includeSubDomains; preload'
+        'max-age=31536000; includeSubDomains; preload',
       );
     }
 

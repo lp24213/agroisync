@@ -13,4 +13,4 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Trigger CosmosDB failover
         run: |
-          az cosmosdb failover-priority-change --name agrotm-cosmosdb --resource-group agrotm-rg --failover-policies region1 region2 
+          az cosmosdb failover-priority-change --name agrotm-cosmosdb --resource-group agrotm-rg --failover-policies region1 region2

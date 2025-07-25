@@ -20,4 +20,4 @@ paths:
                   type: object
       responses:
         '200':
-          description: Resultado da chamada gRPC 
+          description: Resultado da chamada gRPC

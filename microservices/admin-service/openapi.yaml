@@ -21,4 +21,4 @@ paths:
       summary: Estatísticas administrativas
       responses:
         '200':
-          description: Estatísticas retornadas 
+          description: Estatísticas retornadas

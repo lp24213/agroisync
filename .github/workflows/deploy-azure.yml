@@ -20,4 +20,4 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: agrotm-app
-          images: $AZURE_CONTAINER_REGISTRY.azurecr.io/agrotm-app:$GITHUB_SHA 
+          images: $AZURE_CONTAINER_REGISTRY.azurecr.io/agrotm-app:$GITHUB_SHA

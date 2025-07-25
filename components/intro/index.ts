@@ -1,1 +1,1 @@
-export { default as IntroVideo } from './IntroVideo'; 
+export { default as IntroVideo } from './IntroVideo';

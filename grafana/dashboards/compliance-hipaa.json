@@ -5,21 +5,17 @@
     {
       "type": "stat",
       "title": "PHI Accesses",
-      "targets": [
-        { "expr": "sum(hipaa_phi_accesses_total)", "legendFormat": "accesses" }
-      ],
+      "targets": [{ "expr": "sum(hipaa_phi_accesses_total)", "legendFormat": "accesses" }],
       "datasource": "Prometheus"
     },
     {
       "type": "stat",
       "title": "HIPAA Violations",
-      "targets": [
-        { "expr": "sum(hipaa_violations_total)", "legendFormat": "violations" }
-      ],
+      "targets": [{ "expr": "sum(hipaa_violations_total)", "legendFormat": "violations" }],
       "datasource": "Prometheus"
     }
   ],
   "schemaVersion": 16,
   "version": 1,
   "refresh": "10s"
-} 
+}

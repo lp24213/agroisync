@@ -63,7 +63,7 @@ class AIAnalyticsService {
     cropType: string,
     location: string,
     soilData: any,
-    weatherData: any
+    weatherData: any,
   ): Promise<CropPrediction> {
     const cacheKey = `crop_${cropType}_${location}`;
     const cached = this.getFromCache(cacheKey);
@@ -72,7 +72,7 @@ class AIAnalyticsService {
     try {
       const prompt = this.buildCropPredictionPrompt(cropType, location, soilData, weatherData);
       const analysis = await this.callAIModel(prompt);
-      
+
       const prediction: CropPrediction = {
         cropType,
         predictedYield: analysis.yield || 0,
@@ -82,13 +82,17 @@ class AIAnalyticsService {
         recommendations: analysis.recommendations || [
           'Monitor soil moisture levels',
           'Apply precision fertilization',
-          'Implement integrated pest management'
-        ]
+          'Implement integrated pest management',
+        ],
       };
 
       this.setCache(cacheKey, prediction);
-      logger.info('Crop yield prediction generated', { cropType, location, confidence: prediction.confidence });
-      
+      logger.info('Crop yield prediction generated', {
+        cropType,
+        location,
+        confidence: prediction.confidence,
+      });
+
       return prediction;
     } catch (error) {
       logger.error('Crop prediction failed', { error, cropType, location });
@@ -121,13 +125,16 @@ class AIAnalyticsService {
         keyFactors: analysis.factors || [
           'Market sentiment',
           'Trading volume',
-          'Technical indicators'
-        ]
+          'Technical indicators',
+        ],
       };
 
       this.setCache(cacheKey, marketAnalysis);
-      logger.info('Market analysis completed', { tokenSymbol, sentiment: marketAnalysis.sentiment });
-      
+      logger.info('Market analysis completed', {
+        tokenSymbol,
+        sentiment: marketAnalysis.sentiment,
+      });
+
       return marketAnalysis;
     } catch (error) {
       logger.error('Market analysis failed', { error, tokenSymbol });
@@ -141,7 +148,7 @@ class AIAnalyticsService {
   async optimizeYieldStrategy(
     userPortfolio: any,
     riskTolerance: string,
-    timeHorizon: string
+    timeHorizon: string,
   ): Promise<YieldOptimization[]> {
     const cacheKey = `yield_opt_${JSON.stringify(userPortfolio)}_${riskTolerance}`;
     const cached = this.getFromCache(cacheKey);
@@ -151,19 +158,20 @@ class AIAnalyticsService {
       const prompt = this.buildYieldOptimizationPrompt(userPortfolio, riskTolerance, timeHorizon);
       const analysis = await this.callAIModel(prompt);
 
-      const optimizations: YieldOptimization[] = analysis.strategies?.map((strategy: any) => ({
-        poolId: strategy.poolId,
-        currentAPR: strategy.currentAPR,
-        optimizedAPR: strategy.optimizedAPR,
-        strategy: strategy.description,
-        riskLevel: strategy.riskLevel,
-        timeframe: strategy.timeframe,
-        expectedGains: strategy.expectedGains
-      })) || [];
+      const optimizations: YieldOptimization[] =
+        analysis.strategies?.map((strategy: any) => ({
+          poolId: strategy.poolId,
+          currentAPR: strategy.currentAPR,
+          optimizedAPR: strategy.optimizedAPR,
+          strategy: strategy.description,
+          riskLevel: strategy.riskLevel,
+          timeframe: strategy.timeframe,
+          expectedGains: strategy.expectedGains,
+        })) || [];
 
       this.setCache(cacheKey, optimizations);
       logger.info('Yield optimization completed', { strategiesCount: optimizations.length });
-      
+
       return optimizations;
     } catch (error) {
       logger.error('Yield optimization failed', { error });
@@ -193,13 +201,13 @@ class AIAnalyticsService {
         mitigationStrategies: analysis.strategies || [
           'Implement drought-resistant varieties',
           'Optimize irrigation scheduling',
-          'Use protective covers'
-        ]
+          'Use protective covers',
+        ],
       };
 
       this.setCache(cacheKey, impact);
       logger.info('Weather impact analysis completed', { region, impact: impact.cropImpact });
-      
+
       return impact;
     } catch (error) {
       logger.error('Weather analysis failed', { error, region });
@@ -213,19 +221,21 @@ class AIAnalyticsService {
   async generateFarmingRecommendations(
     farmerProfile: any,
     cropData: any,
-    marketConditions: any
+    marketConditions: any,
   ): Promise<string[]> {
     try {
       const prompt = this.buildRecommendationPrompt(farmerProfile, cropData, marketConditions);
       const analysis = await this.callAIModel(prompt);
 
-      return analysis.recommendations || [
-        'Diversify crop portfolio to reduce risk',
-        'Implement precision agriculture techniques',
-        'Monitor market trends for optimal selling timing',
-        'Invest in sustainable farming practices',
-        'Consider crop insurance options'
-      ];
+      return (
+        analysis.recommendations || [
+          'Diversify crop portfolio to reduce risk',
+          'Implement precision agriculture techniques',
+          'Monitor market trends for optimal selling timing',
+          'Invest in sustainable farming practices',
+          'Consider crop insurance options',
+        ]
+      );
     } catch (error) {
       logger.error('Recommendation generation failed', { error });
       return this.getFallbackRecommendations();
@@ -237,7 +247,7 @@ class AIAnalyticsService {
     const response = await fetch(`${this.baseUrl}/chat/completions`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${this.apiKey}`,
+        Authorization: `Bearer ${this.apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -245,16 +255,17 @@ class AIAnalyticsService {
         messages: [
           {
             role: 'system',
-            content: 'You are an expert agricultural AI analyst specializing in crop prediction, market analysis, and yield optimization for DeFi agriculture platforms.'
+            content:
+              'You are an expert agricultural AI analyst specializing in crop prediction, market analysis, and yield optimization for DeFi agriculture platforms.',
           },
           {
             role: 'user',
-            content: prompt
-          }
+            content: prompt,
+          },
         ],
         temperature: 0.3,
-        max_tokens: 1000
-      })
+        max_tokens: 1000,
+      }),
     });
 
     if (!response.ok) {
@@ -265,7 +276,12 @@ class AIAnalyticsService {
     return JSON.parse(data.choices[0].message.content);
   }
 
-  private buildCropPredictionPrompt(cropType: string, location: string, soilData: any, weatherData: any): string {
+  private buildCropPredictionPrompt(
+    cropType: string,
+    location: string,
+    soilData: any,
+    weatherData: any,
+  ): string {
     return `Analyze the following agricultural data and provide a detailed crop yield prediction:
     
     Crop Type: ${cropType}
@@ -296,7 +312,11 @@ class AIAnalyticsService {
     - factors (array of key market factors)`;
   }
 
-  private buildYieldOptimizationPrompt(portfolio: any, riskTolerance: string, timeHorizon: string): string {
+  private buildYieldOptimizationPrompt(
+    portfolio: any,
+    riskTolerance: string,
+    timeHorizon: string,
+  ): string {
     return `Optimize yield farming strategy for the following portfolio:
     
     Portfolio: ${JSON.stringify(portfolio)}
@@ -317,7 +337,11 @@ class AIAnalyticsService {
     - conditions, impact (positive/negative/neutral), severity (0-1), affectedCrops, strategies`;
   }
 
-  private buildRecommendationPrompt(farmerProfile: any, cropData: any, marketConditions: any): string {
+  private buildRecommendationPrompt(
+    farmerProfile: any,
+    cropData: any,
+    marketConditions: any,
+  ): string {
     return `Generate personalized farming recommendations:
     
     Farmer Profile: ${JSON.stringify(farmerProfile)}
@@ -332,7 +356,7 @@ class AIAnalyticsService {
     return {
       currentPrice: Math.random() * 100,
       volume24h: Math.random() * 1000000,
-      priceChange24h: (Math.random() - 0.5) * 20
+      priceChange24h: (Math.random() - 0.5) * 20,
     };
   }
 
@@ -342,7 +366,7 @@ class AIAnalyticsService {
       temperature: Math.random() * 30 + 10,
       humidity: Math.random() * 100,
       precipitation: Math.random() * 50,
-      windSpeed: Math.random() * 20
+      windSpeed: Math.random() * 20,
     };
   }
 
@@ -366,7 +390,7 @@ class AIAnalyticsService {
       confidence: 0.7,
       optimalHarvestDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
       riskFactors: ['Weather variability', 'Market conditions'],
-      recommendations: ['Monitor regularly', 'Follow best practices']
+      recommendations: ['Monitor regularly', 'Follow best practices'],
     };
   }
 
@@ -379,7 +403,7 @@ class AIAnalyticsService {
       volatility: 0.15,
       sentiment: 'neutral',
       confidence: 0.6,
-      keyFactors: ['Market conditions', 'Trading volume']
+      keyFactors: ['Market conditions', 'Trading volume'],
     };
   }
 
@@ -392,8 +416,8 @@ class AIAnalyticsService {
         strategy: 'Diversified staking',
         riskLevel: 'medium',
         timeframe: '30 days',
-        expectedGains: 2.7
-      }
+        expectedGains: 2.7,
+      },
     ];
   }
 
@@ -404,7 +428,7 @@ class AIAnalyticsService {
       cropImpact: 'neutral',
       severity: 0.5,
       affectedCrops: ['General crops'],
-      mitigationStrategies: ['Standard practices']
+      mitigationStrategies: ['Standard practices'],
     };
   }
 
@@ -413,7 +437,7 @@ class AIAnalyticsService {
       'Diversify your agricultural portfolio',
       'Monitor market trends regularly',
       'Implement sustainable farming practices',
-      'Consider risk management strategies'
+      'Consider risk management strategies',
     ];
   }
 }

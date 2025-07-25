@@ -13,4 +13,4 @@ jobs:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
       - name: Trigger Cloud SQL failover
         run: |
-          gcloud sql instances failover agrotm-sql-instance 
+          gcloud sql instances failover agrotm-sql-instance

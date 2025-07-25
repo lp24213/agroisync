@@ -14,4 +14,4 @@ jobs:
       - name: Restore MongoDB from Azure Blob
         run: echo "Restaurando MongoDB do Azure Blob..."
       - name: Notify team
-        run: echo "Disaster recovery executado com sucesso." 
+        run: echo "Disaster recovery executado com sucesso."

@@ -8,7 +8,7 @@ import { securityMiddleware } from '@/middlewares/security';
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  
+
   // Apply security middleware to all requests
   const securityResponse = securityMiddleware(request);
   if (securityResponse && securityResponse.status !== 200) {
@@ -38,11 +38,11 @@ export function middleware(request: NextRequest) {
 
 function handleApiRoutes(request: NextRequest): NextResponse {
   const response = NextResponse.next();
-  
+
   // Add API-specific headers
   response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate');
   response.headers.set('Pragma', 'no-cache');
-  
+
   addSecurityHeaders(response);
   return response;
 }
@@ -57,32 +57,39 @@ function handleProtectedRoutes(request: NextRequest): NextResponse {
 
 function handleStaticAssets(request: NextRequest): NextResponse {
   const response = NextResponse.next();
-  
+
   // Add caching headers for static assets
   response.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
-  
+
   addSecurityHeaders(response);
   return response;
 }
 
 function isProtectedRoute(pathname: string): boolean {
-  const protectedRoutes = [
-    '/dashboard',
-    '/staking',
-    '/profile',
-    '/admin',
-  ];
-  
-  return protectedRoutes.some(route => pathname.startsWith(route));
+  const protectedRoutes = ['/dashboard', '/staking', '/profile', '/admin'];
+
+  return protectedRoutes.some((route) => pathname.startsWith(route));
 }
 
 function isStaticAsset(pathname: string): boolean {
   const staticExtensions = [
-    '.js', '.css', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico',
-    '.woff', '.woff2', '.ttf', '.eot', '.webp', '.avif'
+    '.js',
+    '.css',
+    '.png',
+    '.jpg',
+    '.jpeg',
+    '.gif',
+    '.svg',
+    '.ico',
+    '.woff',
+    '.woff2',
+    '.ttf',
+    '.eot',
+    '.webp',
+    '.avif',
   ];
-  
-  return staticExtensions.some(ext => pathname.endsWith(ext));
+
+  return staticExtensions.some((ext) => pathname.endsWith(ext));
 }
 
 function addSecurityHeaders(response: NextResponse): void {
@@ -93,7 +100,7 @@ function addSecurityHeaders(response: NextResponse): void {
   response.headers.set('X-XSS-Protection', '1; mode=block');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   response.headers.set('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
-  
+
   // Performance headers
   response.headers.set('X-Powered-By', 'AGROTM');
 }

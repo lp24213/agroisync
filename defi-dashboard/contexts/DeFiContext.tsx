@@ -7,7 +7,7 @@ const DeFiContext = createContext<DeFiContextType>({
   pools: [],
   loading: false,
   error: null,
-  fetchPools: async () => {}
+  fetchPools: async () => {},
 });
 
 interface DeFiProviderProps {
@@ -42,14 +42,10 @@ export const DeFiProvider: React.FC<DeFiProviderProps> = ({ children }) => {
     pools,
     loading,
     error,
-    fetchPools
+    fetchPools,
   };
 
-  return (
-    <DeFiContext.Provider value={contextValue}>
-      {children}
-    </DeFiContext.Provider>
-  );
+  return <DeFiContext.Provider value={contextValue}>{children}</DeFiContext.Provider>;
 };
 
 export const useDeFi = (): DeFiContextType => {

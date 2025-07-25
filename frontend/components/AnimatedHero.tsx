@@ -18,10 +18,13 @@ export default function AnimatedHero() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 1 }}
       >
-        A revolução Web3 no agronegócio. NFTs, staking, DeFi e integração blockchain com design de outro mundo.
+        A revolução Web3 no agronegócio. NFTs, staking, DeFi e integração blockchain com design de
+        outro mundo.
       </motion.p>
       <GlassCard className="mt-4 animate-pulse-neon">
-        <span className="text-primary text-lg font-futuristic">Conecte sua carteira e comece agora!</span>
+        <span className="text-primary text-lg font-futuristic">
+          Conecte sua carteira e comece agora!
+        </span>
       </GlassCard>
       <div className="absolute -z-10 top-0 left-0 w-full h-full pointer-events-none">
         <motion.div
@@ -32,4 +35,4 @@ export default function AnimatedHero() {
       </div>
     </section>
   );
-} 
+}

@@ -21,4 +21,4 @@ declare global {
       toContainHTML(html: string): R;
     }
   }
-} 
+}

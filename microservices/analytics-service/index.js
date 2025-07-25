@@ -12,4 +12,4 @@ app.get('/analytics', (req, res) => {
   res.json({ metric: 'visits', value: 123 });
 });
 
-app.listen(4004, () => logger.info('Analytics service running on port 4004')); 
+app.listen(4004, () => logger.info('Analytics service running on port 4004'));

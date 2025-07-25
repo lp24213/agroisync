@@ -11,12 +11,15 @@ export default function StakingCard() {
 
   return (
     <div className="bg-gray-900 p-6 rounded-2xl shadow-xl flex flex-col items-center">
-      <div className="mb-4 text-white/80">{t('staking_balance', 'Seu saldo em staking')}: <span className="text-primary">{balance}</span></div>
+      <div className="mb-4 text-white/80">
+        {t('staking_balance', 'Seu saldo em staking')}:{' '}
+        <span className="text-primary">{balance}</span>
+      </div>
       <input
         type="number"
         min="0"
         value={amount}
-        onChange={e => setAmount(e.target.value)}
+        onChange={(e) => setAmount(e.target.value)}
         className="mb-4 px-4 py-2 rounded-xl bg-background text-primary border border-primary focus:outline-none"
         placeholder={t('amount', 'Quantidade')}
       />
@@ -36,4 +39,4 @@ export default function StakingCard() {
       </div>
     </div>
   );
-} 
+}

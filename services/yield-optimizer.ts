@@ -77,24 +77,24 @@ class YieldOptimizerService {
     userPortfolio: any,
     riskTolerance: 'conservative' | 'moderate' | 'aggressive',
     timeHorizon: number,
-    targetYield: number
+    targetYield: number,
   ): Promise<OptimizationResult> {
     try {
-      logger.info('Starting yield optimization', { 
+      logger.info('Starting yield optimization', {
         portfolioValue: userPortfolio.totalValue,
         riskTolerance,
         timeHorizon,
-        targetYield
+        targetYield,
       });
 
       // Analyze current market conditions
       const marketAnalysis = await this.analyzeMarketConditions();
-      
+
       // Get AI recommendations
       const aiRecommendations = await aiAnalytics.optimizeYieldStrategy(
         userPortfolio,
         riskTolerance,
-        `${timeHorizon} days`
+        `${timeHorizon} days`,
       );
 
       // Analyze blockchain metrics
@@ -102,7 +102,7 @@ class YieldOptimizerService {
 
       // Find current strategy
       const currentStrategy = this.findCurrentStrategy(userPortfolio);
-      
+
       // Generate optimal strategy
       const recommendedStrategy = await this.generateOptimalStrategy(
         userPortfolio,
@@ -111,7 +111,7 @@ class YieldOptimizerService {
         targetYield,
         marketAnalysis,
         aiRecommendations,
-        onChainMetrics
+        onChainMetrics,
       );
 
       // Calculate potential gains
@@ -119,14 +119,14 @@ class YieldOptimizerService {
         currentStrategy,
         recommendedStrategy,
         userPortfolio.totalValue,
-        timeHorizon
+        timeHorizon,
       );
 
       // Determine required actions
       const actionRequired = this.generateActionPlan(
         currentStrategy,
         recommendedStrategy,
-        userPortfolio
+        userPortfolio,
       );
 
       const result: OptimizationResult = {
@@ -135,13 +135,13 @@ class YieldOptimizerService {
         potentialGains,
         riskAdjustment: this.calculateRiskAdjustment(currentStrategy, recommendedStrategy),
         timeToOptimal: this.estimateOptimizationTime(currentStrategy, recommendedStrategy),
-        actionRequired
+        actionRequired,
       };
 
       logger.info('Yield optimization completed', {
         potentialGains: result.potentialGains,
         riskAdjustment: result.riskAdjustment,
-        actionsCount: result.actionRequired.length
+        actionsCount: result.actionRequired.length,
       });
 
       return result;
@@ -156,22 +156,19 @@ class YieldOptimizerService {
    */
   async optimizePortfolio(
     userPortfolio: any,
-    constraints: any = {}
+    constraints: any = {},
   ): Promise<PortfolioOptimization> {
     try {
       const currentYield = this.calculateCurrentYield(userPortfolio);
       const riskScore = await this.calculatePortfolioRisk(userPortfolio);
-      
+
       // Generate optimal allocation using Modern Portfolio Theory
-      const optimalAllocation = await this.calculateOptimalAllocation(
-        userPortfolio,
-        constraints
-      );
+      const optimalAllocation = await this.calculateOptimalAllocation(userPortfolio, constraints);
 
       // Create optimized strategies
       const optimizedStrategies = await this.createOptimizedStrategies(
         optimalAllocation,
-        userPortfolio.totalValue
+        userPortfolio.totalValue,
       );
 
       const optimizedYield = this.calculateOptimizedYield(optimizedStrategies);
@@ -186,14 +183,14 @@ class YieldOptimizerService {
         strategies: optimizedStrategies,
         rebalanceRecommendations: this.generateRebalanceRecommendations(
           userPortfolio,
-          optimizedStrategies
-        )
+          optimizedStrategies,
+        ),
       };
 
       logger.info('Portfolio optimization completed', {
         currentYield,
         optimizedYield,
-        improvement: optimizedYield - currentYield
+        improvement: optimizedYield - currentYield,
       });
 
       return optimization;
@@ -209,11 +206,11 @@ class YieldOptimizerService {
   async setupAutoOptimization(
     userId: string,
     settings: AutoCompoundSettings,
-    riskManagement: RiskManagement
+    riskManagement: RiskManagement,
   ): Promise<string> {
     try {
       const optimizationId = `auto_${userId}_${Date.now()}`;
-      
+
       const autoOptimization = {
         id: optimizationId,
         userId,
@@ -225,8 +222,8 @@ class YieldOptimizerService {
         performance: {
           totalGains: 0,
           executionCount: 0,
-          successRate: 0
-        }
+          successRate: 0,
+        },
       };
 
       this.activeOptimizations.set(optimizationId, autoOptimization);
@@ -238,7 +235,7 @@ class YieldOptimizerService {
       logger.info('Auto-optimization setup completed', {
         optimizationId,
         userId,
-        frequency: settings.frequency
+        frequency: settings.frequency,
       });
 
       return optimizationId;
@@ -251,10 +248,7 @@ class YieldOptimizerService {
   /**
    * Execute yield optimization strategy
    */
-  async executeOptimization(
-    optimizationId: string,
-    userPortfolio: any
-  ): Promise<boolean> {
+  async executeOptimization(optimizationId: string, userPortfolio: any): Promise<boolean> {
     try {
       const optimization = this.activeOptimizations.get(optimizationId);
       if (!optimization) {
@@ -262,15 +256,12 @@ class YieldOptimizerService {
       }
 
       // Check risk management rules
-      const riskCheck = await this.checkRiskManagement(
-        userPortfolio,
-        optimization.riskManagement
-      );
+      const riskCheck = await this.checkRiskManagement(userPortfolio, optimization.riskManagement);
 
       if (!riskCheck.passed) {
         logger.warn('Risk management check failed', {
           optimizationId,
-          reasons: riskCheck.reasons
+          reasons: riskCheck.reasons,
         });
         return false;
       }
@@ -278,14 +269,14 @@ class YieldOptimizerService {
       // Get current optimal strategy
       const optimalStrategy = await this.getCurrentOptimalStrategy(
         userPortfolio,
-        optimization.settings
+        optimization.settings,
       );
 
       // Execute rebalancing
       const executionResult = await this.executeRebalancing(
         userPortfolio,
         optimalStrategy,
-        optimization.settings
+        optimization.settings,
       );
 
       // Update performance metrics
@@ -293,14 +284,12 @@ class YieldOptimizerService {
 
       // Schedule next execution
       optimization.lastExecution = Date.now();
-      optimization.nextExecution = this.calculateNextExecution(
-        optimization.settings.frequency
-      );
+      optimization.nextExecution = this.calculateNextExecution(optimization.settings.frequency);
 
       logger.info('Optimization executed successfully', {
         optimizationId,
         gains: executionResult.gains,
-        gasUsed: executionResult.gasUsed
+        gasUsed: executionResult.gasUsed,
       });
 
       return true;
@@ -325,7 +314,8 @@ class YieldOptimizerService {
       // Evaluate each opportunity
       for (const pool of newPools) {
         const strategy = await this.evaluatePoolStrategy(pool);
-        if (strategy.expectedAPY > 15) { // High yield threshold
+        if (strategy.expectedAPY > 15) {
+          // High yield threshold
           opportunities.push(strategy);
         }
       }
@@ -351,7 +341,7 @@ class YieldOptimizerService {
 
       logger.info('Yield opportunities monitored', {
         totalOpportunities: opportunities.length,
-        highYieldCount: opportunities.filter(o => o.expectedAPY > 25).length
+        highYieldCount: opportunities.filter((o) => o.expectedAPY > 25).length,
       });
 
       return opportunities.slice(0, 10); // Return top 10 opportunities
@@ -364,10 +354,7 @@ class YieldOptimizerService {
   /**
    * Advanced risk management with dynamic adjustments
    */
-  async manageRisk(
-    portfolioId: string,
-    marketConditions: any
-  ): Promise<string[]> {
+  async manageRisk(portfolioId: string, marketConditions: any): Promise<string[]> {
     try {
       const actions: string[] = [];
       const portfolio = await this.getPortfolio(portfolioId);
@@ -379,7 +366,7 @@ class YieldOptimizerService {
 
       // Check portfolio health
       const healthCheck = await this.checkPortfolioHealth(portfolio);
-      
+
       // Monitor for stop-loss triggers
       if (healthCheck.currentDrawdown > riskProfile.maxDrawdown) {
         actions.push('Execute emergency stop-loss');
@@ -412,7 +399,7 @@ class YieldOptimizerService {
       logger.info('Risk management completed', {
         portfolioId,
         actionsCount: actions.length,
-        riskLevel: healthCheck.riskLevel
+        riskLevel: healthCheck.riskLevel,
       });
 
       return actions;
@@ -437,7 +424,7 @@ class YieldOptimizerService {
         lockPeriod: 0,
         autoCompound: true,
         protocols: ['Compound', 'Aave', 'Yearn'],
-        allocation: { USDC: 40, USDT: 30, DAI: 30 }
+        allocation: { USDC: 40, USDT: 30, DAI: 30 },
       },
       {
         id: 'moderate_defi',
@@ -450,7 +437,7 @@ class YieldOptimizerService {
         lockPeriod: 7,
         autoCompound: true,
         protocols: ['Uniswap', 'SushiSwap', 'Curve'],
-        allocation: { ETH: 30, BTC: 20, USDC: 25, DeFi: 25 }
+        allocation: { ETH: 30, BTC: 20, USDC: 25, DeFi: 25 },
       },
       {
         id: 'aggressive_farming',
@@ -463,11 +450,11 @@ class YieldOptimizerService {
         lockPeriod: 30,
         autoCompound: true,
         protocols: ['PancakeSwap', 'TraderJoe', 'Raydium'],
-        allocation: { NewTokens: 50, LP: 30, Staking: 20 }
-      }
+        allocation: { NewTokens: 50, LP: 30, Staking: 20 },
+      },
     ];
 
-    strategies.forEach(strategy => {
+    strategies.forEach((strategy) => {
       this.strategies.set(strategy.id, strategy);
     });
   }
@@ -478,7 +465,7 @@ class YieldOptimizerService {
       volatility: Math.random() * 0.5,
       trend: Math.random() > 0.5 ? 'bullish' : 'bearish',
       liquidityIndex: Math.random(),
-      riskSentiment: Math.random()
+      riskSentiment: Math.random(),
     };
   }
 
@@ -495,13 +482,13 @@ class YieldOptimizerService {
     targetYield: number,
     marketAnalysis: any,
     aiRecommendations: any,
-    onChainMetrics: any
+    onChainMetrics: any,
   ): Promise<YieldStrategy> {
     // Generate optimal strategy based on all inputs
     const strategies = Array.from(this.strategies.values());
-    
+
     // Filter by risk tolerance
-    const filteredStrategies = strategies.filter(s => {
+    const filteredStrategies = strategies.filter((s) => {
       if (riskTolerance === 'conservative') return s.riskLevel === 'low';
       if (riskTolerance === 'moderate') return s.riskLevel === 'medium';
       return s.riskLevel === 'high';
@@ -519,10 +506,11 @@ class YieldOptimizerService {
     current: YieldStrategy,
     recommended: YieldStrategy,
     portfolioValue: number,
-    timeHorizon: number
+    timeHorizon: number,
   ): number {
     const currentReturn = portfolioValue * (current.expectedAPY / 100) * (timeHorizon / 365);
-    const recommendedReturn = portfolioValue * (recommended.expectedAPY / 100) * (timeHorizon / 365);
+    const recommendedReturn =
+      portfolioValue * (recommended.expectedAPY / 100) * (timeHorizon / 365);
     return recommendedReturn - currentReturn;
   }
 
@@ -539,26 +527,27 @@ class YieldOptimizerService {
   private generateActionPlan(
     current: YieldStrategy,
     recommended: YieldStrategy,
-    portfolio: any
+    portfolio: any,
   ): string[] {
     const actions = [];
-    
+
     if (current.id !== recommended.id) {
       actions.push(`Switch from ${current.name} to ${recommended.name}`);
       actions.push('Rebalance portfolio allocation');
     }
-    
+
     if (recommended.autoCompound && !current.autoCompound) {
       actions.push('Enable auto-compounding');
     }
-    
+
     actions.push('Monitor performance metrics');
     return actions;
   }
 
   private calculateCurrentYield(portfolio: any): number {
-    return portfolio.positions?.reduce((total: number, pos: any) => 
-      total + (pos.amount * pos.apy), 0) || 0;
+    return (
+      portfolio.positions?.reduce((total: number, pos: any) => total + pos.amount * pos.apy, 0) || 0
+    );
   }
 
   private async calculatePortfolioRisk(portfolio: any): Promise<number> {
@@ -572,33 +561,35 @@ class YieldOptimizerService {
       stablecoins: 0.3,
       bluechip: 0.4,
       defi: 0.2,
-      farming: 0.1
+      farming: 0.1,
     };
   }
 
-  private async createOptimizedStrategies(allocation: any, totalValue: number): Promise<YieldStrategy[]> {
+  private async createOptimizedStrategies(
+    allocation: any,
+    totalValue: number,
+  ): Promise<YieldStrategy[]> {
     const strategies = Array.from(this.strategies.values());
     return strategies.slice(0, 3); // Return top 3 strategies
   }
 
   private calculateOptimizedYield(strategies: YieldStrategy[]): number {
-    return strategies.reduce((total, strategy) => total + strategy.expectedAPY, 0) / strategies.length;
+    return (
+      strategies.reduce((total, strategy) => total + strategy.expectedAPY, 0) / strategies.length
+    );
   }
 
   private calculateDiversificationScore(strategies: YieldStrategy[]): number {
     // Calculate diversification based on protocol and asset distribution
-    const protocols = new Set(strategies.flatMap(s => s.protocols));
+    const protocols = new Set(strategies.flatMap((s) => s.protocols));
     return Math.min(protocols.size / 10, 1); // Normalize to 0-1
   }
 
-  private generateRebalanceRecommendations(
-    current: any,
-    optimized: YieldStrategy[]
-  ): string[] {
+  private generateRebalanceRecommendations(current: any, optimized: YieldStrategy[]): string[] {
     return [
       'Gradually shift allocation over 7 days',
       'Monitor gas costs for optimal execution',
-      'Consider market timing for rebalancing'
+      'Consider market timing for rebalancing',
     ];
   }
 
@@ -606,7 +597,7 @@ class YieldOptimizerService {
     const intervals = {
       daily: 24 * 60 * 60 * 1000,
       weekly: 7 * 24 * 60 * 60 * 1000,
-      monthly: 30 * 24 * 60 * 60 * 1000
+      monthly: 30 * 24 * 60 * 60 * 1000,
     };
     return Date.now() + intervals[frequency as keyof typeof intervals];
   }
@@ -619,11 +610,14 @@ class YieldOptimizerService {
   private async checkRiskManagement(portfolio: any, riskManagement: RiskManagement): Promise<any> {
     return {
       passed: true,
-      reasons: []
+      reasons: [],
     };
   }
 
-  private async getCurrentOptimalStrategy(portfolio: any, settings: AutoCompoundSettings): Promise<YieldStrategy> {
+  private async getCurrentOptimalStrategy(
+    portfolio: any,
+    settings: AutoCompoundSettings,
+  ): Promise<YieldStrategy> {
     const strategies = Array.from(this.strategies.values());
     return strategies[0]; // Simplified
   }
@@ -631,11 +625,11 @@ class YieldOptimizerService {
   private async executeRebalancing(
     portfolio: any,
     strategy: YieldStrategy,
-    settings: AutoCompoundSettings
+    settings: AutoCompoundSettings,
   ): Promise<any> {
     return {
       gains: Math.random() * 1000,
-      gasUsed: Math.random() * 0.1
+      gasUsed: Math.random() * 0.1,
     };
   }
 
@@ -644,8 +638,7 @@ class YieldOptimizerService {
     if (optimization) {
       optimization.performance.totalGains += result.gains;
       optimization.performance.executionCount += 1;
-      optimization.performance.successRate = 
-        optimization.performance.executionCount > 0 ? 0.95 : 0; // Simplified
+      optimization.performance.successRate = optimization.performance.executionCount > 0 ? 0.95 : 0; // Simplified
     }
   }
 
@@ -689,7 +682,7 @@ class YieldOptimizerService {
     return {
       currentDrawdown: Math.random() * 0.2,
       unrealizedGains: Math.random() * 0.3,
-      riskLevel: 'medium'
+      riskLevel: 'medium',
     };
   }
 

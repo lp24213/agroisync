@@ -1,11 +1,13 @@
 # Instruções para Corrigir o Erro de Build no Vercel
 
 ## Problema Identificado
+
 O build do projeto no Vercel está falhando devido a problemas na configuração do Next.js e versões incompatíveis de dependências.
 
 ## Correções Necessárias
 
 ### 1. Corrigir o arquivo `next.config.js`
+
 O arquivo atual tem uma duplicação de configuração do PWA, o que pode causar conflitos.
 
 **Solução**: Substitua o conteúdo do arquivo `next.config.js` no diretório `frontend` pelo conteúdo do arquivo `next.config.js.corrected` que foi criado.
@@ -16,6 +18,7 @@ copy next.config.js.corrected frontend\next.config.js -Force
 ```
 
 ### 2. Atualizar as dependências no `package.json`
+
 As versões muito recentes de algumas dependências podem ser incompatíveis com o Vercel.
 
 **Solução**: Substitua o conteúdo do arquivo `package.json` no diretório `frontend` pelo conteúdo do arquivo `package.json.corrected` que foi criado.
@@ -26,6 +29,7 @@ copy package.json.corrected frontend\package.json -Force
 ```
 
 ### 3. Reinstalar as dependências
+
 Após atualizar o `package.json`, é necessário reinstalar as dependências.
 
 ```bash
@@ -35,6 +39,7 @@ npm install
 ```
 
 ### 4. Fazer commit e push das alterações
+
 Após aplicar as correções e verificar que tudo está funcionando corretamente, faça commit e push das alterações.
 
 ```bash
@@ -46,6 +51,7 @@ git push origin main
 ```
 
 ### 5. Verificar o build no Vercel
+
 Após enviar as alterações para o GitHub, verifique se o build no Vercel está funcionando corretamente.
 
 ## Explicação das Correções

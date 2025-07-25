@@ -26,4 +26,4 @@ paths:
                   type: object
       responses:
         '200':
-          description: Webhook recebido 
+          description: Webhook recebido

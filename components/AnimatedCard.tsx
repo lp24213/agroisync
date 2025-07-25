@@ -1,6 +1,6 @@
-"use client";
-import { motion } from "framer-motion";
-import { ReactNode } from "react";
+'use client';
+import { motion } from 'framer-motion';
+import { ReactNode } from 'react';
 
 interface AnimatedCardProps {
   children: ReactNode;
@@ -9,11 +9,11 @@ interface AnimatedCardProps {
   hover?: boolean;
 }
 
-export function AnimatedCard({ 
-  children, 
-  className = "", 
-  delay = 0, 
-  hover = true 
+export function AnimatedCard({
+  children,
+  className = '',
+  delay = 0,
+  hover = true,
 }: AnimatedCardProps) {
   return (
     <motion.div

@@ -5,21 +5,17 @@
     {
       "type": "stat",
       "title": "Right to Access Requests",
-      "targets": [
-        { "expr": "sum(gdpr_access_requests_total)", "legendFormat": "access" }
-      ],
+      "targets": [{ "expr": "sum(gdpr_access_requests_total)", "legendFormat": "access" }],
       "datasource": "Prometheus"
     },
     {
       "type": "stat",
       "title": "Right to Erasure Requests",
-      "targets": [
-        { "expr": "sum(gdpr_erasure_requests_total)", "legendFormat": "erasure" }
-      ],
+      "targets": [{ "expr": "sum(gdpr_erasure_requests_total)", "legendFormat": "erasure" }],
       "datasource": "Prometheus"
     }
   ],
   "schemaVersion": 16,
   "version": 1,
   "refresh": "10s"
-} 
+}

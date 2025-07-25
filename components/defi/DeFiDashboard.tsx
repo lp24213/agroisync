@@ -1,11 +1,11 @@
-"use client";
-import { useState, useEffect } from "react";
-import { AnimatedCard } from "../AnimatedCard";
-import { NeonButton } from "../NeonButton";
-import { PriceWidget } from "../widgets/PriceWidget";
-import { TVLWidget } from "../widgets/TVLWidget";
-import { APRWidget } from "../widgets/APRWidget";
-import { motion } from "framer-motion";
+'use client';
+import { useState, useEffect } from 'react';
+import { AnimatedCard } from '../AnimatedCard';
+import { NeonButton } from '../NeonButton';
+import { PriceWidget } from '../widgets/PriceWidget';
+import { TVLWidget } from '../widgets/TVLWidget';
+import { APRWidget } from '../widgets/APRWidget';
+import { motion } from 'framer-motion';
 
 interface Pool {
   id: string;
@@ -25,39 +25,39 @@ export function DeFiDashboard() {
     const fetchPools = async () => {
       try {
         // Simulação de API - substitua por integração real
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         const mockPools: Pool[] = [
           {
-            id: "1",
-            name: "AGRO/USDC",
+            id: '1',
+            name: 'AGRO/USDC',
             apr: 24.5,
             tvl: 1250000,
             userStaked: 0,
-            token0: "AGRO",
-            token1: "USDC"
+            token0: 'AGRO',
+            token1: 'USDC',
           },
           {
-            id: "2", 
-            name: "AGRO/SOL",
+            id: '2',
+            name: 'AGRO/SOL',
             apr: 18.3,
             tvl: 850000,
             userStaked: 0,
-            token0: "AGRO",
-            token1: "SOL"
+            token0: 'AGRO',
+            token1: 'SOL',
           },
           {
-            id: "3",
-            name: "AGRO/BTC",
+            id: '3',
+            name: 'AGRO/BTC',
             apr: 31.2,
             tvl: 650000,
             userStaked: 0,
-            token0: "AGRO",
-            token1: "BTC"
-          }
+            token0: 'AGRO',
+            token1: 'BTC',
+          },
         ];
         setPools(mockPools);
       } catch (error) {
-        console.error("Erro ao buscar pools:", error);
+        console.error('Erro ao buscar pools:', error);
       } finally {
         setLoading(false);
       }
@@ -96,7 +96,7 @@ export function DeFiDashboard() {
       {/* Pools Grid */}
       <div className="space-y-6">
         <h2 className="text-2xl font-bold gradient-text">Liquidity Pools</h2>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {pools.map((pool: Pool, index: number) => (
             <motion.div
@@ -136,22 +136,20 @@ export function DeFiDashboard() {
                   {pool.userStaked > 0 && (
                     <div className="p-3 bg-neon-blue/10 rounded-lg border border-neon-blue/20">
                       <p className="text-xs text-gray-400">Your Position</p>
-                      <p className="text-sm font-semibold text-neon-blue">${pool.userStaked.toFixed(2)}</p>
+                      <p className="text-sm font-semibold text-neon-blue">
+                        ${pool.userStaked.toFixed(2)}
+                      </p>
                     </div>
                   )}
 
                   {/* Actions */}
                   <div className="flex space-x-2">
-                    <NeonButton 
-                      size="sm" 
-                      className="flex-1"
-                      onClick={() => {}}
-                    >
+                    <NeonButton size="sm" className="flex-1" onClick={() => {}}>
                       Stake
                     </NeonButton>
-                    <NeonButton 
-                      size="sm" 
-                      variant="secondary" 
+                    <NeonButton
+                      size="sm"
+                      variant="secondary"
                       className="flex-1"
                       disabled={pool.userStaked === 0}
                     >

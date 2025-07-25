@@ -11,4 +11,4 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   // Simula hash de transação
   const tx = '0x' + Math.random().toString(16).slice(2, 66);
   res.status(200).json({ tx });
-} 
+}

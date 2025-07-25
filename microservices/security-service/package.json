@@ -10,4 +10,4 @@
     "@opentelemetry/instrumentation": "^0.45.0",
     "@opentelemetry/instrumentation-express": "^0.45.0"
   }
-} 
+}

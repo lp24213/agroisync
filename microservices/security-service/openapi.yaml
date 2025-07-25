@@ -30,4 +30,4 @@ paths:
                   type: string
       responses:
         '200':
-          description: IP bloqueado 
+          description: IP bloqueado

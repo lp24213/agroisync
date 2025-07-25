@@ -1,8 +1,8 @@
-import Head from 'next/head'
+import Head from 'next/head';
 
-export default function SEO({ title, description }: { title: string, description: string }) {
-  const finalTitle = title ? `${title} | AGROTM` : 'AGROTM – O futuro cripto do agro'
-  const finalDescription = description || 'O ecossistema Web3 mais completo da América Latina'
+export default function SEO({ title, description }: { title: string; description: string }) {
+  const finalTitle = title ? `${title} | AGROTM` : 'AGROTM – O futuro cripto do agro';
+  const finalDescription = description || 'O ecossistema Web3 mais completo da América Latina';
 
   return (
     <Head>
@@ -16,5 +16,5 @@ export default function SEO({ title, description }: { title: string, description
       <meta property="og:image" content="/logo.png" />
       <link rel="icon" href="/favicon.ico" />
     </Head>
-  )
+  );
 }

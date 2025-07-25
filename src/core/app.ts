@@ -17,33 +17,35 @@ export interface AppInstance {
 
 export async function initializeApp(): Promise<AppInstance> {
   logger.info('🔧 Inicializando core da aplicação...');
-  
+
   // Validar variáveis de ambiente
   validateEnvironment();
-  
+
   // Conectar à rede Solana
   const connection = new Connection(config.SOLANA_RPC_URL, 'confirmed');
-  
+
   // Verificar conexão
   try {
     const version = await connection.getVersion();
-    logger.info(`✅ Conectado à Solana ${config.SOLANA_NETWORK} - Versão: ${version['solana-core']}`);
+    logger.info(
+      `✅ Conectado à Solana ${config.SOLANA_NETWORK} - Versão: ${version['solana-core']}`,
+    );
   } catch (error) {
     logger.error('❌ Falha ao conectar com Solana:', error);
     throw new Error('Não foi possível conectar à rede Solana');
   }
-  
+
   // Configurar Program ID
   const programId = new PublicKey(config.PROGRAM_ID);
   logger.info(`📋 Program ID: ${programId.toString()}`);
-  
+
   const app: AppInstance = {
     connection,
     programId,
     isInitialized: true,
-    network: config.SOLANA_NETWORK
+    network: config.SOLANA_NETWORK,
   };
-  
+
   logger.info('✅ Core da aplicação inicializado com sucesso');
   return app;
 }
@@ -55,21 +57,21 @@ export async function getAppHealth(app: AppInstance): Promise<{
   try {
     const slot = await app.connection.getSlot();
     const blockTime = await app.connection.getBlockTime(slot);
-    
+
     return {
       status: 'healthy',
       details: {
         network: app.network,
         currentSlot: slot,
         blockTime: blockTime ? new Date(blockTime * 1000).toISOString() : null,
-        programId: app.programId.toString()
-      }
+        programId: app.programId.toString(),
+      },
     };
   } catch (error) {
     logger.error('Health check failed:', error);
     return {
       status: 'unhealthy',
-      details: { error: error instanceof Error ? error.message : 'Unknown error' }
+      details: { error: error instanceof Error ? error.message : 'Unknown error' },
     };
   }
 }

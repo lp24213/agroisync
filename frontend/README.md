@@ -28,6 +28,3 @@ vercel --prod
 ## Variáveis de ambiente
 
 Configure o arquivo `.env` com as variáveis do `.env.example`.
-
-
-

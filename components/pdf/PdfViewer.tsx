@@ -13,4 +13,4 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ file }) => (
   />
 );
 
-export default PDFViewer; 
+export default PDFViewer;

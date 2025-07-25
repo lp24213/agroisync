@@ -3,13 +3,22 @@
 import React, { useState, useEffect } from 'react';
 
 // Inline component definitions to resolve imports
-const AnimatedCard: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
-  <div className={`bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg transition-all duration-300 hover:border-cyan-400/50 hover:shadow-lg hover:shadow-cyan-400/20 ${className}`}>
+const AnimatedCard: React.FC<{ children: React.ReactNode; className?: string }> = ({
+  children,
+  className = '',
+}) => (
+  <div
+    className={`bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg transition-all duration-300 hover:border-cyan-400/50 hover:shadow-lg hover:shadow-cyan-400/20 ${className}`}
+  >
     {children}
   </div>
 );
 
-const NeonButton: React.FC<{ children: React.ReactNode; variant?: 'primary' | 'secondary'; onClick?: () => void }> = ({ children, variant = 'primary', onClick }) => (
+const NeonButton: React.FC<{
+  children: React.ReactNode;
+  variant?: 'primary' | 'secondary';
+  onClick?: () => void;
+}> = ({ children, variant = 'primary', onClick }) => (
   <button
     onClick={onClick}
     className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
@@ -80,8 +89,8 @@ export const ComplianceDashboard: React.FC = () => {
           trends: [
             { period: '2024-01', score: 87 },
             { period: '2023-12', score: 85 },
-            { period: '2023-11', score: 82 }
-          ]
+            { period: '2023-11', score: 82 },
+          ],
         },
         controls: [
           {
@@ -91,7 +100,7 @@ export const ComplianceDashboard: React.FC = () => {
             status: 'compliant',
             evidence: ['Asset inventory report', 'Automated discovery scan'],
             lastTested: '2024-01-10',
-            risk: 'medium'
+            risk: 'medium',
           },
           {
             id: 'PR.AC-1',
@@ -100,9 +109,9 @@ export const ComplianceDashboard: React.FC = () => {
             status: 'partial',
             evidence: ['IAM audit report'],
             lastTested: '2024-01-08',
-            risk: 'high'
-          }
-        ]
+            risk: 'high',
+          },
+        ],
       },
       {
         id: 'iso27001',
@@ -116,8 +125,8 @@ export const ComplianceDashboard: React.FC = () => {
           trends: [
             { period: '2024-01', score: 92 },
             { period: '2023-12', score: 90 },
-            { period: '2023-11', score: 88 }
-          ]
+            { period: '2023-11', score: 88 },
+          ],
         },
         controls: [
           {
@@ -127,10 +136,10 @@ export const ComplianceDashboard: React.FC = () => {
             status: 'compliant',
             evidence: ['Security policy document', 'Board approval'],
             lastTested: '2024-01-05',
-            risk: 'low'
-          }
-        ]
-      }
+            risk: 'low',
+          },
+        ],
+      },
     ];
 
     setFrameworks(mockFrameworks);
@@ -139,24 +148,33 @@ export const ComplianceDashboard: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'compliant': return 'text-green-400';
-      case 'partial': return 'text-yellow-400';
-      case 'non_compliant': return 'text-red-400';
-      default: return 'text-gray-400';
+      case 'compliant':
+        return 'text-green-400';
+      case 'partial':
+        return 'text-yellow-400';
+      case 'non_compliant':
+        return 'text-red-400';
+      default:
+        return 'text-gray-400';
     }
   };
 
   const getRiskColor = (risk: string) => {
     switch (risk) {
-      case 'low': return 'bg-green-500/20 text-green-400';
-      case 'medium': return 'bg-yellow-500/20 text-yellow-400';
-      case 'high': return 'bg-orange-500/20 text-orange-400';
-      case 'critical': return 'bg-red-500/20 text-red-400';
-      default: return 'bg-gray-500/20 text-gray-400';
+      case 'low':
+        return 'bg-green-500/20 text-green-400';
+      case 'medium':
+        return 'bg-yellow-500/20 text-yellow-400';
+      case 'high':
+        return 'bg-orange-500/20 text-orange-400';
+      case 'critical':
+        return 'bg-red-500/20 text-red-400';
+      default:
+        return 'bg-gray-500/20 text-gray-400';
     }
   };
 
-  const selectedFrameworkData = frameworks.find(f => f.id === selectedFramework);
+  const selectedFrameworkData = frameworks.find((f) => f.id === selectedFramework);
 
   if (loading) {
     return (
@@ -228,7 +246,7 @@ export const ComplianceDashboard: React.FC = () => {
             <div className="h-64 flex items-end space-x-4">
               {selectedFrameworkData.metrics.trends.map((trend, index) => (
                 <div key={index} className="flex-1 flex flex-col items-center">
-                  <div 
+                  <div
                     className="w-full bg-gradient-to-t from-cyan-500/20 to-cyan-400/40 rounded-t"
                     style={{ height: `${(trend.score / 100) * 200}px` }}
                   ></div>
@@ -265,7 +283,9 @@ export const ComplianceDashboard: React.FC = () => {
                         </span>
                       </td>
                       <td className="py-3 px-4">
-                        <span className={`px-2 py-1 rounded text-xs capitalize ${getRiskColor(control.risk)}`}>
+                        <span
+                          className={`px-2 py-1 rounded text-xs capitalize ${getRiskColor(control.risk)}`}
+                        >
                           {control.risk}
                         </span>
                       </td>
@@ -273,7 +293,7 @@ export const ComplianceDashboard: React.FC = () => {
                       <td className="py-3 px-4">
                         <div className="flex flex-wrap gap-1">
                           {control.evidence.map((evidence, index) => (
-                            <span 
+                            <span
                               key={index}
                               className="px-2 py-1 bg-gray-700 text-gray-300 rounded text-xs"
                             >
@@ -291,9 +311,7 @@ export const ComplianceDashboard: React.FC = () => {
 
           {/* Framework Description */}
           <AnimatedCard className="p-6">
-            <h3 className="text-xl font-semibold text-white mb-4">
-              {selectedFrameworkData.name}
-            </h3>
+            <h3 className="text-xl font-semibold text-white mb-4">{selectedFrameworkData.name}</h3>
             <p className="text-gray-400 mb-4">{selectedFrameworkData.description}</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -310,11 +328,15 @@ export const ComplianceDashboard: React.FC = () => {
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="text-gray-400">Total Controls:</span>
-                    <span className="text-white">{selectedFrameworkData.metrics.controls.total}</span>
+                    <span className="text-white">
+                      {selectedFrameworkData.metrics.controls.total}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Last Assessment:</span>
-                    <span className="text-white">{selectedFrameworkData.metrics.lastAssessment}</span>
+                    <span className="text-white">
+                      {selectedFrameworkData.metrics.lastAssessment}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Next Review:</span>

@@ -10,4 +10,4 @@ app.post('/billing', (req, res) => {
   res.status(201).json({ status: 'billed', ...req.body });
 });
 
-app.listen(4005, () => logger.info('Billing service running on port 4005')); 
+app.listen(4005, () => logger.info('Billing service running on port 4005'));

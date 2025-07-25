@@ -1,19 +1,16 @@
 module.exports = {
-  content: [
-    "./pages/**/*.{js,ts,jsx,tsx}",
-    "./components/**/*.{js,ts,jsx,tsx}"
-  ],
+  content: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
-        primary: "#00f0ff",
-        background: "#080818",
-        accent: "#0ff1ce",
+        primary: '#00f0ff',
+        background: '#080818',
+        accent: '#0ff1ce',
         glass: 'rgba(20, 20, 30, 0.6)',
-        glassLight: 'rgba(40, 40, 60, 0.3)'
+        glassLight: 'rgba(40, 40, 60, 0.3)',
       },
       fontFamily: {
-        futuristic: ["Orbitron", "sans-serif"]
+        futuristic: ['Orbitron', 'sans-serif'],
       },
       boxShadow: {
         glass: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
@@ -21,7 +18,8 @@ module.exports = {
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-glass': 'linear-gradient(135deg, rgba(0,240,255,0.08) 0%, rgba(8,8,24,0.95) 100%)',
+        'gradient-glass':
+          'linear-gradient(135deg, rgba(0,240,255,0.08) 0%, rgba(8,8,24,0.95) 100%)',
       },
       animation: {
         'pulse-neon': 'pulseNeon 2s infinite',
@@ -35,4 +33,4 @@ module.exports = {
     },
   },
   plugins: [require('tailwindcss'), require('autoprefixer')],
-}; 
+};

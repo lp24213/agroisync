@@ -8,18 +8,18 @@ import { AnimatedCard } from '@/components/AnimatedCard';
 import { NeonButton } from '@/components/NeonButton';
 import { Modal } from '@/components/Modal';
 import { Loader } from '@/components/Loader';
-import { 
-  Coins, 
-  TrendingUp, 
-  Clock, 
-  Shield, 
+import {
+  Coins,
+  TrendingUp,
+  Clock,
+  Shield,
   Zap,
   Info,
   Calculator,
   Award,
   Lock,
   Plus,
-  Minus
+  Minus,
 } from 'lucide-react';
 
 interface StakeModalData {
@@ -30,13 +30,7 @@ interface StakeModalData {
 
 export default function StakingPage() {
   const { isConnected, connectWallet } = useWeb3();
-  const { 
-    pools, 
-    loading, 
-    stakeInPool, 
-    unstakeFromPool, 
-    claimRewards 
-  } = useDeFiPools();
+  const { pools, loading, stakeInPool, unstakeFromPool, claimRewards } = useDeFiPools();
 
   const [selectedPool] = useState<string>('');
   const [stakeAmount, setStakeAmount] = useState<string>('');
@@ -52,7 +46,7 @@ export default function StakingPage() {
   }, [stakeAmount, selectedPool]);
 
   const calculateProjectedRewards = () => {
-    const pool = pools.find(p => p.id === selectedPool);
+    const pool = pools.find((p) => p.id === selectedPool);
     if (!pool || !stakeAmount) return;
 
     const amount = parseFloat(stakeAmount);
@@ -61,7 +55,7 @@ export default function StakingPage() {
   };
 
   const handleStakeAction = (poolId: string, action: 'stake' | 'unstake') => {
-    const pool = pools.find(p => p.id === poolId);
+    const pool = pools.find((p) => p.id === poolId);
     const maxAmount = pool ? (action === 'stake' ? pool.minStake : pool.userStaked) : 0;
     setStakeModalData({ poolId, action, maxAmount });
     setShowStakeModal(true);
@@ -74,13 +68,13 @@ export default function StakingPage() {
     setIsProcessing(true);
     try {
       const amount = parseFloat(stakeAmount);
-      
+
       if (stakeModalData.action === 'stake') {
         await stakeInPool(stakeModalData.poolId, amount.toString());
       } else {
         await unstakeFromPool(stakeModalData.poolId, amount.toString());
       }
-      
+
       setShowStakeModal(false);
       setStakeAmount('');
     } catch (error) {
@@ -110,13 +104,11 @@ export default function StakingPage() {
           className="text-center max-w-md mx-auto"
         >
           <Coins className="w-16 h-16 text-blue-400 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold text-white mb-2">
-            Start Staking
-          </h1>
+          <h1 className="text-3xl font-bold text-white mb-2">Start Staking</h1>
           <p className="text-gray-400 mb-8">
             Connect your wallet to start earning rewards through AGROTM staking pools.
           </p>
-          
+
           <NeonButton onClick={connectWallet} size="md" className="w-full">
             Connect Wallet
           </NeonButton>
@@ -144,12 +136,10 @@ export default function StakingPage() {
                 Stake your tokens and earn rewards in AGROTM ecosystem
               </p>
             </div>
-            
+
             <div className="text-right">
               <p className="text-sm text-gray-400">Available Pools</p>
-              <p className="text-xl font-semibold text-white">
-                {pools.length}
-              </p>
+              <p className="text-xl font-semibold text-white">{pools.length}</p>
             </div>
           </div>
         </div>
@@ -168,7 +158,10 @@ export default function StakingPage() {
               <div>
                 <p className="text-sm text-gray-400 mb-1">Total Staked</p>
                 <p className="text-2xl font-bold text-white">
-                  ${pools.reduce((sum: number, pool) => sum + (pool.userStaked || 0), 0).toLocaleString()}
+                  $
+                  {pools
+                    .reduce((sum: number, pool) => sum + (pool.userStaked || 0), 0)
+                    .toLocaleString()}
                 </p>
               </div>
               <Lock className="w-8 h-8 text-blue-400" />
@@ -180,7 +173,10 @@ export default function StakingPage() {
               <div>
                 <p className="text-sm text-gray-400 mb-1">Pending Rewards</p>
                 <p className="text-2xl font-bold text-white">
-                  ${pools.reduce((sum: number, pool) => sum + (pool.userRewards || 0), 0).toLocaleString()}
+                  $
+                  {pools
+                    .reduce((sum: number, pool) => sum + (pool.userRewards || 0), 0)
+                    .toLocaleString()}
                 </p>
               </div>
               <Award className="w-8 h-8 text-yellow-400" />
@@ -191,9 +187,7 @@ export default function StakingPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-400 mb-1">Active Pools</p>
-                <p className="text-2xl font-bold text-white">
-                  {pools.length}
-                </p>
+                <p className="text-2xl font-bold text-white">{pools.length}</p>
               </div>
               <Zap className="w-8 h-8 text-green-400" />
             </div>
@@ -204,10 +198,10 @@ export default function StakingPage() {
               <div>
                 <p className="text-sm text-gray-400 mb-1">Avg APR</p>
                 <p className="text-2xl font-bold text-white">
-                  {pools.length > 0 
+                  {pools.length > 0
                     ? (pools.reduce((sum, pool) => sum + pool.apr, 0) / pools.length).toFixed(1)
-                    : '0'
-                  }%
+                    : '0'}
+                  %
                 </p>
               </div>
               <TrendingUp className="w-8 h-8 text-purple-400" />
@@ -234,7 +228,6 @@ export default function StakingPage() {
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {pools.map((pool) => {
-                
                 return (
                   <motion.div
                     key={pool.id}
@@ -247,17 +240,13 @@ export default function StakingPage() {
                         <div>
                           <h3 className="text-lg font-semibold text-white flex items-center">
                             {pool.name}
-                            {pool.isVerified && (
-                              <Shield className="w-4 h-4 ml-2 text-green-400" />
-                            )}
+                            {pool.isVerified && <Shield className="w-4 h-4 ml-2 text-green-400" />}
                           </h3>
                           <p className="text-gray-400 text-sm">{pool.description}</p>
                         </div>
-                        
+
                         <div className="text-right">
-                          <p className="text-2xl font-bold text-blue-400">
-                            {pool.apr.toFixed(1)}%
-                          </p>
+                          <p className="text-2xl font-bold text-blue-400">{pool.apr.toFixed(1)}%</p>
                           <p className="text-xs text-gray-400">APR</p>
                         </div>
                       </div>
@@ -269,7 +258,7 @@ export default function StakingPage() {
                             ${pool.tvl.toLocaleString()}
                           </p>
                         </div>
-                        
+
                         <div>
                           <p className="text-xs text-gray-400 mb-1">Lock Period</p>
                           <p className="text-sm font-semibold text-white flex items-center">
@@ -286,7 +275,7 @@ export default function StakingPage() {
                                 ${pool.userStaked.toLocaleString()}
                               </p>
                             </div>
-                            
+
                             <div>
                               <p className="text-xs text-gray-400 mb-1">Pending Rewards</p>
                               <p className="text-sm font-semibold text-yellow-400">
@@ -340,9 +329,8 @@ export default function StakingPage() {
                       <div className="mt-4 pt-4 border-t border-gray-700">
                         <div className="flex items-center text-xs text-gray-400">
                           <Info className="w-3 h-3 mr-1" />
-                          Risk Level: {pool.riskLevel} | 
-                          Min Stake: ${pool.minStake} | 
-                          Max Stake: ${pool.maxStake?.toLocaleString() || 'Unlimited'}
+                          Risk Level: {pool.riskLevel} | Min Stake: ${pool.minStake} | Max Stake: $
+                          {pool.maxStake?.toLocaleString() || 'Unlimited'}
                         </div>
                       </div>
                     </AnimatedCard>
@@ -410,7 +398,7 @@ export default function StakingPage() {
                 >
                   Cancel
                 </NeonButton>
-                
+
                 <NeonButton
                   onClick={executeStakeAction}
                   className="flex-1"

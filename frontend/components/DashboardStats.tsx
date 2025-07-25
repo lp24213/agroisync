@@ -19,12 +19,18 @@ export default function DashboardStats() {
           transition={{ delay: i * 0.15, duration: 0.7 }}
         >
           <GlassCard className="flex flex-col items-center text-center">
-            <span className="text-primary text-2xl font-futuristic mb-2 drop-shadow-neon">{stat.value}</span>
+            <span className="text-primary text-2xl font-futuristic mb-2 drop-shadow-neon">
+              {stat.value}
+            </span>
             <span className="text-white/80 text-lg mb-1">{stat.label}</span>
-            <span className={`text-sm ${stat.change.startsWith('+') ? 'text-green-400' : 'text-red-400'}`}>{stat.change}</span>
+            <span
+              className={`text-sm ${stat.change.startsWith('+') ? 'text-green-400' : 'text-red-400'}`}
+            >
+              {stat.change}
+            </span>
           </GlassCard>
         </motion.div>
       ))}
     </div>
   );
-} 
+}

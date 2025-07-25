@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion } from 'framer-motion';
 
 export default function GlowEffect() {
   return (
@@ -7,5 +7,5 @@ export default function GlowEffect() {
       animate={{ scale: [1, 1.4, 1], opacity: [0.2, 0.3, 0.2] }}
       transition={{ repeat: Infinity, duration: 6, ease: 'easeInOut' }}
     />
-  )
+  );
 }

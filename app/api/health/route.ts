@@ -9,7 +9,7 @@ import { logger } from '@/src/utils/logger';
 export async function GET() {
   try {
     const startTime = Date.now();
-    
+
     // Basic health checks
     const healthChecks = {
       status: 'healthy',
@@ -34,7 +34,7 @@ export async function GET() {
 
     // Determine overall health status
     const isHealthy = Object.values(healthChecks.services).every(
-      service => service.status === 'healthy'
+      (service) => service.status === 'healthy',
     );
 
     const status = isHealthy ? 200 : 503;
@@ -51,27 +51,34 @@ export async function GET() {
     return NextResponse.json(healthChecks, { status });
   } catch (error) {
     logger.error('Health check failed', { error });
-    
+
     return NextResponse.json(
       {
         status: 'error',
         timestamp: new Date().toISOString(),
         error: 'Health check failed',
-        message: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : 'Internal server error',
+        message:
+          process.env.NODE_ENV === 'development' && error instanceof Error
+            ? error.message
+            : 'Internal server error',
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
-async function checkDatabaseHealth(): Promise<{ status: string; responseTime?: string; error?: string }> {
+async function checkDatabaseHealth(): Promise<{
+  status: string;
+  responseTime?: string;
+  error?: string;
+}> {
   try {
     const startTime = Date.now();
-    
+
     // Add your database health check here
     // For now, we'll simulate a successful check
-    await new Promise(resolve => setTimeout(resolve, 10));
-    
+    await new Promise((resolve) => setTimeout(resolve, 10));
+
     const responseTime = Date.now() - startTime;
     return {
       status: 'healthy',
@@ -85,10 +92,14 @@ async function checkDatabaseHealth(): Promise<{ status: string; responseTime?: s
   }
 }
 
-async function checkSolanaHealth(): Promise<{ status: string; responseTime?: string; error?: string }> {
+async function checkSolanaHealth(): Promise<{
+  status: string;
+  responseTime?: string;
+  error?: string;
+}> {
   try {
     const startTime = Date.now();
-    
+
     // Check Solana RPC endpoint
     const rpcUrl = process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com';
     const response = await fetch(rpcUrl, {
@@ -120,21 +131,23 @@ async function checkSolanaHealth(): Promise<{ status: string; responseTime?: str
   }
 }
 
-async function checkExternalAPIs(): Promise<{ status: string; responseTime?: string; error?: string }> {
+async function checkExternalAPIs(): Promise<{
+  status: string;
+  responseTime?: string;
+  error?: string;
+}> {
   try {
     const startTime = Date.now();
-    
+
     // Check external API endpoints (e.g., CoinGecko)
     const checks = await Promise.allSettled([
-      fetch('https://api.coingecko.com/api/v3/ping', { 
+      fetch('https://api.coingecko.com/api/v3/ping', {
         method: 'GET',
-        signal: AbortSignal.timeout(5000) 
+        signal: AbortSignal.timeout(5000),
       }),
     ]);
 
-    const allSuccessful = checks.every(
-      check => check.status === 'fulfilled' && check.value.ok
-    );
+    const allSuccessful = checks.every((check) => check.status === 'fulfilled' && check.value.ok);
 
     const responseTime = Date.now() - startTime;
 

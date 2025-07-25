@@ -26,4 +26,4 @@ jobs:
       - name: Restore database
         run: |
           chmod +x scripts/restore-postgres.sh
-          ./scripts/restore-postgres.sh ./backups/$(basename ${{ github.event.inputs.backup_file }}) 
+          ./scripts/restore-postgres.sh ./backups/$(basename ${{ github.event.inputs.backup_file }})

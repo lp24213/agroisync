@@ -5,21 +5,17 @@
     {
       "type": "stat",
       "title": "Card Data Accesses",
-      "targets": [
-        { "expr": "sum(pci_card_data_accesses_total)", "legendFormat": "accesses" }
-      ],
+      "targets": [{ "expr": "sum(pci_card_data_accesses_total)", "legendFormat": "accesses" }],
       "datasource": "Prometheus"
     },
     {
       "type": "stat",
       "title": "PCI Violations",
-      "targets": [
-        { "expr": "sum(pci_violations_total)", "legendFormat": "violations" }
-      ],
+      "targets": [{ "expr": "sum(pci_violations_total)", "legendFormat": "violations" }],
       "datasource": "Prometheus"
     }
   ],
   "schemaVersion": 16,
   "version": 1,
   "refresh": "10s"
-} 
+}

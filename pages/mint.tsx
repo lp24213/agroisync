@@ -1,30 +1,30 @@
-import { useState } from 'react'
-import { ethers } from 'ethers'
+import { useState } from 'react';
+import { ethers } from 'ethers';
 
 export default function MintNFT() {
-  const [minted, setMinted] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [minted, setMinted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const mint = async () => {
     try {
-      if (!window.ethereum) throw new Error('MetaMask não detectado')
-      const provider = new ethers.BrowserProvider(window.ethereum)
-      const signer = await provider.getSigner()
+      if (!window.ethereum) throw new Error('MetaMask não detectado');
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
       const contract = new ethers.Contract(
         '0x000000000000000000000000000000000000dEaD', // contrato exemplo
         ['function mint() public'], // ABI mínima
-        signer
-      )
-      setLoading(true)
-      const tx = await contract.mint()
-      await tx.wait()
-      setMinted(true)
+        signer,
+      );
+      setLoading(true);
+      const tx = await contract.mint();
+      await tx.wait();
+      setMinted(true);
     } catch (err) {
-      alert(err.message)
+      alert(err.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="flex flex-col items-center mt-12">
@@ -37,5 +37,5 @@ export default function MintNFT() {
       </button>
       {minted && <p className="mt-4 text-green-400 font-bold">✅ NFT Mintado com sucesso!</p>}
     </div>
-  )
+  );
 }

@@ -1,13 +1,13 @@
-"use client";
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { AnimatedCard } from "../AnimatedCard";
+'use client';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { AnimatedCard } from '../AnimatedCard';
 
 interface TVLWidgetProps {
   className?: string;
 }
 
-export function TVLWidget({ className = "" }: TVLWidgetProps) {
+export function TVLWidget({ className = '' }: TVLWidgetProps) {
   const [tvl, setTvl] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -15,11 +15,11 @@ export function TVLWidget({ className = "" }: TVLWidgetProps) {
     const fetchTVL = async () => {
       try {
         // Simulação de API - substitua por integração real com DeFiLlama, TheGraph, etc
-        await new Promise(resolve => setTimeout(resolve, 800));
+        await new Promise((resolve) => setTimeout(resolve, 800));
         const mockTVL = 2750000 + Math.random() * 100000;
         setTvl(mockTVL);
       } catch (error) {
-        console.error("Erro ao buscar TVL:", error);
+        console.error('Erro ao buscar TVL:', error);
       } finally {
         setLoading(false);
       }
@@ -27,7 +27,7 @@ export function TVLWidget({ className = "" }: TVLWidgetProps) {
 
     fetchTVL();
     const interval = setInterval(fetchTVL, 60000); // Atualiza a cada 1 minuto
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -55,7 +55,7 @@ export function TVLWidget({ className = "" }: TVLWidgetProps) {
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm text-gray-400 font-medium">Total Value Locked</p>
-          <motion.p 
+          <motion.p
             className="text-2xl font-bold gradient-text"
             initial={{ scale: 1 }}
             animate={{ scale: [1, 1.05, 1] }}
@@ -64,14 +64,16 @@ export function TVLWidget({ className = "" }: TVLWidgetProps) {
           >
             {tvl ? formatTVL(tvl) : '--'}
           </motion.p>
-          <p className="text-xs text-gray-500">
-            Across all pools and farms
-          </p>
+          <p className="text-xs text-gray-500">Across all pools and farms</p>
         </div>
-        
+
         <div className="w-12 h-12 rounded-full bg-success-green/20 flex items-center justify-center">
           <svg className="w-6 h-6 text-success-green" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"/>
+            <path
+              fillRule="evenodd"
+              d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"
+              clipRule="evenodd"
+            />
           </svg>
         </div>
       </div>

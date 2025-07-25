@@ -15,4 +15,4 @@ registerInstrumentations({
   instrumentations: [new ExpressInstrumentation()],
 });
 
-module.exports = provider.getTracer('notification-service'); 
+module.exports = provider.getTracer('notification-service');

@@ -3,7 +3,10 @@
 
 const getSecret = async (key) => {
   if (process.env.SECRETS_PROVIDER === 'aws') {
-    const { SecretsManagerClient, GetSecretValueCommand } = require('@aws-sdk/client-secrets-manager');
+    const {
+      SecretsManagerClient,
+      GetSecretValueCommand,
+    } = require('@aws-sdk/client-secrets-manager');
     const client = new SecretsManagerClient({ region: process.env.AWS_REGION });
     const data = await client.send(new GetSecretValueCommand({ SecretId: key }));
     return data.SecretString;
@@ -24,4 +27,4 @@ const getSecret = async (key) => {
   }
 };
 
-module.exports = { getSecret }; 
+module.exports = { getSecret };

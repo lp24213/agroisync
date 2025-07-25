@@ -1,1 +1,1 @@
-require('./otel'); 
+require('./otel');

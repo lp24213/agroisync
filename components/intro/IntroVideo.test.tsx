@@ -7,4 +7,4 @@ describe('IntroVideo', () => {
     render(<IntroVideo />);
     expect(screen.getByRole('video')).toBeInTheDocument();
   });
-}); 
+});

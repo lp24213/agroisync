@@ -9,4 +9,4 @@ jobs:
     steps:
       - name: Trigger MongoDB Atlas failover
         run: |
-          echo "Triggering MongoDB Atlas failover (manual via Atlas UI or API)" 
+          echo "Triggering MongoDB Atlas failover (manual via Atlas UI or API)"

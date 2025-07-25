@@ -31,4 +31,4 @@ paths:
                   type: string
       responses:
         '201':
-          description: Usuário criado 
+          description: Usuário criado

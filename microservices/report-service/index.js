@@ -20,4 +20,4 @@ app.post('/reports', (req, res) => {
   res.status(201).json({ id: 2, ...req.body });
 });
 
-app.listen(4003, () => logger.info('Report service running on port 4003')); 
+app.listen(4003, () => logger.info('Report service running on port 4003'));

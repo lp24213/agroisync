@@ -8,7 +8,7 @@ module.exports = {
     './hooks/**/*.{ts,tsx}',
     './contexts/**/*.{ts,tsx}',
     './services/**/*.{ts,tsx}',
-    './shared/**/*.{ts,tsx}'
+    './shared/**/*.{ts,tsx}',
   ],
   theme: {
     extend: {
@@ -22,37 +22,37 @@ module.exports = {
         'neon-purple': '#8b5cf6',
         'success-green': '#10b981',
         'warning-yellow': '#f59e0b',
-        'error-red': '#ef4444'
+        'error-red': '#ef4444',
       },
       fontFamily: {
-        'sans': ['Inter', 'system-ui', 'sans-serif'],
-        'mono': ['JetBrains Mono', 'monospace']
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
       },
       boxShadow: {
-        'neon': '0 0 20px rgba(0, 212, 255, 0.3)',
+        neon: '0 0 20px rgba(0, 212, 255, 0.3)',
         'neon-strong': '0 0 30px rgba(0, 212, 255, 0.6)',
-        'card': '0 4px 20px rgba(0, 0, 0, 0.3)'
+        card: '0 4px 20px rgba(0, 0, 0, 0.3)',
       },
       animation: {
         'pulse-neon': 'pulse-neon 2s ease-in-out infinite',
-        'float': 'float 3s ease-in-out infinite',
-        'glow': 'glow 2s ease-in-out infinite alternate'
+        float: 'float 3s ease-in-out infinite',
+        glow: 'glow 2s ease-in-out infinite alternate',
       },
       keyframes: {
         'pulse-neon': {
           '0%, 100%': { boxShadow: '0 0 20px rgba(0, 212, 255, 0.3)' },
-          '50%': { boxShadow: '0 0 30px rgba(0, 212, 255, 0.8)' }
+          '50%': { boxShadow: '0 0 30px rgba(0, 212, 255, 0.8)' },
         },
-        'float': {
+        float: {
           '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-10px)' }
+          '50%': { transform: 'translateY(-10px)' },
         },
-        'glow': {
-          'from': { textShadow: '0 0 10px rgba(0, 212, 255, 0.5)' },
-          'to': { textShadow: '0 0 20px rgba(0, 212, 255, 0.8)' }
-        }
-      }
-    }
+        glow: {
+          from: { textShadow: '0 0 10px rgba(0, 212, 255, 0.5)' },
+          to: { textShadow: '0 0 20px rgba(0, 212, 255, 0.8)' },
+        },
+      },
+    },
   },
-  plugins: []
+  plugins: [],
 };

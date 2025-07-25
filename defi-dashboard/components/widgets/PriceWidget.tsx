@@ -26,7 +26,7 @@ const PriceWidget: React.FC = () => {
     };
 
     fetchPriceData();
-    
+
     // Refresh price data every 60 seconds
     const interval = setInterval(fetchPriceData, 60000);
     return () => clearInterval(interval);

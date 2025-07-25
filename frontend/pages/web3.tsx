@@ -47,7 +47,12 @@ export default function Web3Page() {
       <main className="flex-1 flex flex-col items-center justify-center p-8">
         <h1 className="text-3xl font-futuristic text-primary mb-6">Integração Web3 & Metamask</h1>
         {!account ? (
-          <button onClick={connectWallet} className="px-6 py-3 bg-primary rounded-xl font-futuristic text-black hover:bg-accent mb-4">Conectar Carteira</button>
+          <button
+            onClick={connectWallet}
+            className="px-6 py-3 bg-primary rounded-xl font-futuristic text-black hover:bg-accent mb-4"
+          >
+            Conectar Carteira
+          </button>
         ) : (
           <div className="bg-gray-900 p-6 rounded-2xl shadow-xl flex flex-col items-center">
             <div className="mb-2 text-lg text-primary">Carteira conectada:</div>
@@ -61,4 +66,4 @@ export default function Web3Page() {
       <Footer />
     </div>
   );
-} 
+}

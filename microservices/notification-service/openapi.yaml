@@ -26,4 +26,4 @@ paths:
                   type: string
       responses:
         '201':
-          description: Notificação enviada 
+          description: Notificação enviada

@@ -7,4 +7,4 @@
 - [ ] Scripts de failover/disaster recovery executados
 - [ ] Causa raiz identificada
 - [ ] Serviços restaurados
-- [ ] Pós-incidente documentado 
+- [ ] Pós-incidente documentado
