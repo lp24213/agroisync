@@ -1,0 +1,33 @@
+{
+  "id": null,
+  "title": "Security KPIs",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Blocked IPs",
+      "targets": [
+        { "expr": "sum(security_blocked_ips_total)", "legendFormat": "blocked" }
+      ],
+      "datasource": "Prometheus"
+    },
+    {
+      "type": "stat",
+      "title": "Security Alerts",
+      "targets": [
+        { "expr": "sum(security_alerts_total)", "legendFormat": "alerts" }
+      ],
+      "datasource": "Prometheus"
+    },
+    {
+      "type": "stat",
+      "title": "DDoS Attempts",
+      "targets": [
+        { "expr": "sum(security_ddos_attempts_total)", "legendFormat": "ddos" }
+      ],
+      "datasource": "Prometheus"
+    }
+  ],
+  "schemaVersion": 16,
+  "version": 1,
+  "refresh": "10s"
+} 

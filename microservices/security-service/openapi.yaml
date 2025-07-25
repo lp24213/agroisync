@@ -1,0 +1,33 @@
+openapi: 3.0.3
+info:
+  title: Security Service API
+  version: 1.0.0
+  description: API de segurança e monitoramento
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+  /alerts:
+    get:
+      summary: Lista alertas de segurança
+      responses:
+        '200':
+          description: Lista de alertas
+  /block-ip:
+    post:
+      summary: Bloqueia IP suspeito
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ip:
+                  type: string
+      responses:
+        '200':
+          description: IP bloqueado 

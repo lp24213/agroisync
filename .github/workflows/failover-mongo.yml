@@ -1,0 +1,12 @@
+name: MongoDB Atlas Failover
+
+on:
+  workflow_dispatch:
+
+jobs:
+  failover:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger MongoDB Atlas failover
+        run: |
+          echo "Triggering MongoDB Atlas failover (manual via Atlas UI or API)" 

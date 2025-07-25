@@ -1,8 +1,31 @@
-const withPWA = require('next-pwa');
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload',
+          },
+        ],
+      },
+    ];
+  },
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [
+          { type: 'host', value: 'http://:host*' },
+        ],
+        destination: 'https://:host:/:path*',
+        permanent: true,
+      },
+    ];
+  },
   images: {
     domains: ["cdn.pixabay.com", "images.unsplash.com"]
   },
@@ -13,9 +36,4 @@ const nextConfig = {
   }
 };
 
-module.exports = withPWA({
-  dest: 'public',
-  register: true,
-  skipWaiting: true,
-  disable: process.env.NODE_ENV === 'development',
-})(nextConfig);
+module.exports = nextConfig;

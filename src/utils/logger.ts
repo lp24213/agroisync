@@ -13,7 +13,7 @@ export interface LogEntry {
   context?: string;
 }
 
-class Logger {
+export class Logger {
   private logLevel: LogLevel;
   private context?: string;
 

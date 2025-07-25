@@ -1,0 +1,29 @@
+name: Restore Postgres
+
+on:
+  workflow_dispatch:
+    inputs:
+      backup_file:
+        description: 'Arquivo de backup no S3 (ex: backups/backup-2024-07-25-0300.sql)'
+        required: true
+        type: string
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Download backup from S3
+        run: |
+          mkdir -p ./backups
+          aws s3 cp s3://agrotm-backups/${{ github.event.inputs.backup_file }} ./backups/
+      - name: Restore database
+        run: |
+          chmod +x scripts/restore-postgres.sh
+          ./scripts/restore-postgres.sh ./backups/$(basename ${{ github.event.inputs.backup_file }}) 

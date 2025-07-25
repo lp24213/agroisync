@@ -1,0 +1,36 @@
+openapi: 3.0.3
+info:
+  title: AGROTM API
+  version: 1.0.0
+  description: API REST para a plataforma AGROTM
+servers:
+  - url: https://api.agrotm.com
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+  /users:
+    get:
+      summary: Lista usuários
+      responses:
+        '200':
+          description: Lista de usuários
+    post:
+      summary: Cria usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+      responses:
+        '201':
+          description: Usuário criado 

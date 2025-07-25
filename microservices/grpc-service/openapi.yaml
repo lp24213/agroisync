@@ -1,0 +1,23 @@
+openapi: 3.0.3
+info:
+  title: gRPC Service API
+  version: 1.0.0
+  description: API gRPC (documentação REST-like)
+paths:
+  /grpc:
+    post:
+      summary: Executa chamada gRPC
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                method:
+                  type: string
+                payload:
+                  type: object
+      responses:
+        '200':
+          description: Resultado da chamada gRPC 

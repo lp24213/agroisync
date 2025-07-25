@@ -1,0 +1,31 @@
+openapi: 3.0.3
+info:
+  title: Email Service API
+  version: 1.0.0
+  description: API de envio de e-mails
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+  /email:
+    post:
+      summary: Envia e-mail
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                to:
+                  type: string
+                subject:
+                  type: string
+                body:
+                  type: string
+      responses:
+        '201':
+          description: E-mail enviado 

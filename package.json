@@ -25,28 +25,13 @@
     "contracts"
   ],
   "scripts": {
-    "start": "node dist/index.js",
-    "dev": "turbo run dev --parallel",
-    "build": "turbo run build && npm run build:src",
-    "build:src": "tsc && node dist/index.js",
-    "lint": "turbo run lint && npm run lint:src",
-    "lint:src": "eslint src/**/*.{ts,tsx} --fix",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
-    "type-check": "tsc --noEmit",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "format": "prettier --write .",
     "clean": "rm -rf dist .next .turbo node_modules/.cache",
-    "deploy": "npm run build && bash ./scripts/deploy.sh",
-    "security:audit": "npm audit --audit-level=moderate",
-    "security:fix": "npm audit fix",
-    "docs:generate": "typedoc src --out docs",
-    "frontend:dev": "cd frontend && npm run dev",
-    "frontend:build": "cd frontend && npm run build",
-    "frontend:lint": "cd frontend && npm run lint",
-    "backend:dev": "cd backend && npm run start",
-    "backend:build": "cd backend && npm run build",
-    "backend:lint": "cd backend && npm run lint",
-    "contracts:build": "cd contracts && anchor build",
-    "contracts:deploy": "cd contracts && anchor deploy",
-    "contracts:test": "cd contracts && anchor test"
+    "upgrade": "npx npm-check-updates -u && npm install"
   },
   "dependencies": {
     "@shadcn/ui": "latest",
@@ -80,7 +65,8 @@
     "string.prototype.trim": "^1.2.10",
     "tailwindcss": "^3.4.3",
     "uuid": "^9.0.1",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "ethers": "^6.14.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

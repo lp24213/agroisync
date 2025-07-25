@@ -1,0 +1,25 @@
+{
+  "id": null,
+  "title": "LGPD Compliance",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Data Access Requests",
+      "targets": [
+        { "expr": "sum(lgpd_data_access_requests_total)", "legendFormat": "requests" }
+      ],
+      "datasource": "Prometheus"
+    },
+    {
+      "type": "stat",
+      "title": "Data Deletion Requests",
+      "targets": [
+        { "expr": "sum(lgpd_data_deletion_requests_total)", "legendFormat": "deletions" }
+      ],
+      "datasource": "Prometheus"
+    }
+  ],
+  "schemaVersion": 16,
+  "version": 1,
+  "refresh": "10s"
+} 

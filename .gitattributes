@@ -1,0 +1,16 @@
+* text=auto
+*.js linguist-language=JavaScript
+*.ts linguist-language=TypeScript
+*.tsx linguist-language=TypeScript
+*.jsx linguist-language=JavaScript
+*.json linguist-language=JSON
+*.md linguist-language=Markdown
+*.sol linguist-language=Solidity
+*.rs linguist-language=Rust
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg text 

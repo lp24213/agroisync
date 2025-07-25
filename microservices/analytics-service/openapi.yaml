@@ -1,0 +1,18 @@
+openapi: 3.0.3
+info:
+  title: Analytics Service API
+  version: 1.0.0
+  description: API de analytics
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+  /analytics:
+    get:
+      summary: Consulta métricas de analytics
+      responses:
+        '200':
+          description: Métricas retornadas 

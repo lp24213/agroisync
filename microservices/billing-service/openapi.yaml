@@ -1,0 +1,29 @@
+openapi: 3.0.3
+info:
+  title: Billing Service API
+  version: 1.0.0
+  description: API de billing
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+  /billing:
+    post:
+      summary: Gera cobrança
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                to:
+                  type: string
+      responses:
+        '201':
+          description: Cobrança gerada 

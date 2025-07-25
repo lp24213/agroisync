@@ -3,16 +3,102 @@
 @tailwind utilities;
 
 body {
-  background: #080818;
-  color: #fff;
-  font-family: 'Orbitron', 'sans-serif';
+  background: #0a0a0a;
+  color: #e0e0e0;
+  font-family: 'Orbitron', 'Inter', 'sans-serif';
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 ::-webkit-scrollbar {
   width: 8px;
-  background: #080818;
+  background: #181818;
 }
 ::-webkit-scrollbar-thumb {
   background: #00f0ff;
   border-radius: 8px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #00f0ff;
+  font-family: 'Orbitron', 'Inter', 'sans-serif';
+  letter-spacing: 1px;
+}
+
+a {
+  color: #00f0ff;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+a:hover {
+  color: #0ff1ce;
+}
+
+button, .neon-btn {
+  background: #00f0ff;
+  color: #0a0a0a;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Orbitron', 'Inter', 'sans-serif';
+  font-weight: 700;
+  box-shadow: 0 0 16px #00f0ff, 0 0 32px #00f0ff44;
+  transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+  padding: 0.75em 2em;
+  cursor: pointer;
+}
+button:hover, .neon-btn:hover {
+  background: #0ff1ce;
+  color: #0a0a0a;
+  box-shadow: 0 0 32px #00f0ff, 0 0 64px #00f0ff88;
+}
+
+.card, .glass-card {
+  background: rgba(20, 20, 30, 0.7);
+  border-radius: 18px;
+  box-shadow: 0 0 32px #00f0ff22, 0 4px 32px #000a;
+  border: 1.5px solid #00f0ff33;
+  padding: 2em;
+  margin: 1em 0;
+  transition: box-shadow 0.2s, border 0.2s;
+}
+.card:hover, .glass-card:hover {
+  box-shadow: 0 0 64px #00f0ff66, 0 8px 64px #000a;
+  border: 1.5px solid #00f0ff;
+}
+
+input, select, textarea {
+  background: #181818;
+  color: #00f0ff;
+  border: 1.5px solid #00f0ff44;
+  border-radius: 10px;
+  padding: 0.75em 1em;
+  font-family: 'Orbitron', 'Inter', 'sans-serif';
+  transition: border 0.2s, box-shadow 0.2s;
+}
+input:focus, select:focus, textarea:focus {
+  border: 1.5px solid #00f0ff;
+  box-shadow: 0 0 8px #00f0ff88;
+  outline: none;
+}
+
+.neon-glow {
+  text-shadow: 0 0 8px #00f0ff, 0 0 16px #00f0ff;
+  color: #00f0ff;
+}
+
+::-webkit-input-placeholder { color: #00f0ff99; }
+::-moz-placeholder { color: #00f0ff99; }
+:-ms-input-placeholder { color: #00f0ff99; }
+::placeholder { color: #00f0ff99; }
+
+@media (max-width: 600px) {
+  .card, .glass-card {
+    padding: 1em;
+  }
+  button, .neon-btn {
+    padding: 0.5em 1.2em;
+    font-size: 1em;
+  }
 } 

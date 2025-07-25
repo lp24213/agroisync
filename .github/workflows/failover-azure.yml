@@ -1,0 +1,16 @@
+name: Azure DB Failover
+
+on:
+  workflow_dispatch:
+
+jobs:
+  failover:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Trigger Azure DB failover
+        run: |
+          az postgres flexible-server failover --name agrotm-db --resource-group agrotm-rg 

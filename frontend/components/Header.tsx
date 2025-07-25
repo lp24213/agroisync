@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
+import ThemeToggle from './ThemeToggle';
 
 export default function Header() {
   const { i18n } = useTranslation();
@@ -12,7 +13,7 @@ export default function Header() {
           <span className="font-futuristic text-xl text-primary">AGROTM</span>
         </div>
       </Link>
-      <nav className="flex gap-8 font-futuristic text-md">
+      <nav className="flex gap-8 font-futuristic text-md items-center">
         <Link href="/nft" className="hover:text-accent">NFT</Link>
         <Link href="/stake" className="hover:text-accent">Staking</Link>
         <select
@@ -24,7 +25,10 @@ export default function Header() {
           <option value="en">EN</option>
           <option value="zh">中文</option>
         </select>
+        <div className="ml-4">
+          <ThemeToggle />
+        </div>
       </nav>
     </header>
   );
-} 
+}
