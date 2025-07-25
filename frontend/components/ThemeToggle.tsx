@@ -1,14 +1,14 @@
 import { useTheme } from './ThemeProvider';
 
 export default function ThemeToggle() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, nextTheme } = useTheme();
   return (
     <button
-      onClick={toggleTheme}
+      onClick={nextTheme}
       className="p-2 rounded-full bg-glass shadow-neon transition-all duration-300 hover:scale-110 focus:outline-none"
       aria-label="Alternar tema"
     >
-      {theme === 'dark' ? (
+      {theme === 'neon' || theme === 'cyberpunk' ? (
         <svg width="24" height="24" fill="#00f0ff" viewBox="0 0 24 24">
           <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" />
         </svg>
