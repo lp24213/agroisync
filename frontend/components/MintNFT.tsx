@@ -20,8 +20,12 @@ export default function MintNFT() {
       if (!res.ok) throw new Error('Erro ao mintar NFT');
       const data = await res.json();
       setTxHash(data.tx);
-    } catch (err: any) {
-      alert(t('mint_error', 'Erro ao mintar NFT: ') + (err?.message || err));
+    } catch (err: unknown) {
+      let msg = '';
+      if (err instanceof Error) msg = err.message;
+      else if (typeof err === 'string') msg = err;
+      else msg = 'Erro desconhecido';
+      alert(t('mint_error', 'Erro ao mintar NFT: ') + msg);
     }
     setMinting(false);
   }

@@ -17,7 +17,8 @@ export default function Web3Page() {
     try {
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
       setAccount(accounts[0]);
-    } catch (err: any) {
+    } catch {
+      // Erro tratado genericamente pois não é utilizado o objeto 'err'
       setError('Permissão negada ou erro ao conectar.');
     }
   }
