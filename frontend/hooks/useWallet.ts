@@ -6,7 +6,9 @@ declare global {
   }
 }
 
-export function useWallet() {
+import type { ToastProps } from '../components/Toast';
+
+export function useWallet(setToast: (toast: ToastProps) => void) {
   const [account, setAccount] = useState<string | null>(null);
 
   async function connectWallet() {
@@ -16,10 +18,18 @@ export function useWallet() {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         setAccount(accounts[0]);
       } catch (err) {
-        alert('Permissão da carteira negada ou erro ao conectar.');
+        setToast({
+          message: 'Permissão da carteira negada ou erro ao conectar.',
+          type: 'error',
+          onClose: () => setToast(null as any),
+        });
       }
     } else {
-      alert('Metamask não encontrada');
+      setToast({
+        message: 'Metamask não encontrada',
+        type: 'warning',
+        onClose: () => setToast(null as any),
+      });
     }
   }
 

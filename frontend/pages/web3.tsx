@@ -7,6 +7,11 @@ export default function Web3Page() {
   const [account, setAccount] = useState<string | null>(null);
   const [balance, setBalance] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const timeout = setTimeout(() => setLoading(false), 1200);
+    return () => clearTimeout(timeout);
+  }, []);
 
   async function connectWallet() {
     setError('');

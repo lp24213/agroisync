@@ -13,6 +13,17 @@ export default function Onboarding() {
   const [step, setStep] = useState(0);
   return (
     <div className="w-full max-w-lg mx-auto bg-glass p-6 rounded-2xl shadow-xl mt-8 animate-fade-in">
+      {/* Avatar Farmer Premium */}
+      <picture>
+        <source srcSet="/assets/img/avatar-farmer-premium.png" type="image/png" />
+        <img
+          src="/assets/img/avatar-farmer-premium.png"
+          alt="Avatar Farmer Premium Neon"
+          title="Avatar Farmer Premium - AGROTM"
+          className="w-full max-w-xs rounded-full mb-6 shadow-lg object-cover animate-fade-in mx-auto"
+          loading="lazy"
+        />
+      </picture>
       <h2 className="text-2xl font-bold mb-4 text-neon">Onboarding Gamificado 🚀</h2>
       <motion.div
         initial={{ opacity: 0, y: 20 }}

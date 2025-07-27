@@ -3,14 +3,88 @@
 @tailwind utilities;
 
 body {
-  background: #0a0a0a;
+  background: linear-gradient(135deg, #080818 0%, #151522 100%);
   color: #e0e0e0;
   font-family: 'Orbitron', 'Inter', 'sans-serif';
   min-height: 100vh;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  overflow-x: hidden;
 }
+
+.glass, .bg-glass {
+  background: rgba(20,20,30,0.65);
+  backdrop-filter: blur(16px) saturate(160%);
+  border: 1.5px solid rgba(0,240,255,0.18);
+  box-shadow: 0 8px 32px 0 rgba(0,240,255,0.12), 0 0 32px #0ff1ce22;
+}
+
+.glass-strong {
+  background: rgba(0,240,255,0.10);
+  backdrop-filter: blur(32px) saturate(180%);
+  border: 2px solid #00f0ff44;
+  box-shadow: 0 8px 64px 0 rgba(0,240,255,0.15);
+}
+
+.neon-glow {
+  text-shadow:
+    0 0 8px #00f0ff,
+    0 0 16px #0ff1ce,
+    0 0 32px #a259ff;
+}
+
+.neon-btn, button {
+  background: linear-gradient(90deg, #00f0ff 0%, #0ff1ce 50%, #a259ff 100%);
+  color: #0a0a0a;
+  border: none;
+  border-radius: 16px;
+  font-family: 'Orbitron', 'Inter', 'sans-serif';
+  font-weight: 700;
+  box-shadow:
+    0 0 16px #00f0ff,
+    0 0 32px #a259ff55,
+    0 0 32px #0ff1ce44;
+  transition:
+    background 0.2s,
+    box-shadow 0.2s,
+    color 0.2s;
+  padding: 0.75em 2em;
+  cursor: pointer;
+  outline: none;
+}
+
+.neon-btn:hover, button:hover {
+  background: linear-gradient(90deg, #a259ff 0%, #0ff1ce 50%, #00f0ff 100%);
+  color: #fffbe6;
+  box-shadow:
+    0 0 32px #a259ff,
+    0 0 32px #00f0ff77;
+}
+
+.card-premium {
+  background: rgba(20,20,30,0.65);
+  border-radius: 2rem;
+  box-shadow: 0 8px 32px 0 rgba(0,240,255,0.15);
+  border: 1.5px solid #00f0ff44;
+  backdrop-filter: blur(18px) saturate(170%);
+}
+
+input, textarea, select {
+  background: rgba(20,20,30,0.65);
+  color: #e0e0e0;
+  border: 1.5px solid #0ff1ce66;
+  border-radius: 12px;
+  padding: 0.7em 1.2em;
+  font-family: 'Orbitron', 'Inter', 'sans-serif';
+  transition: border 0.2s, box-shadow 0.2s;
+}
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border: 1.5px solid #00f0ff;
+  box-shadow: 0 0 8px #00f0ff99;
+}
+
 
 ::-webkit-scrollbar {
   width: 8px;

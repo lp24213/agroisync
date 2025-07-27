@@ -1,0 +1,52 @@
+openapi: 3.0.3
+info:
+  title: AGROTM API
+  description: API REST para AGROTM com endpoints MongoDB, healthcheck e métricas.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+paths:
+  /api/test-mongodb:
+    get:
+      summary: Healthcheck MongoDB
+      description: Retorna status de conexão e coleções do banco.
+      responses:
+        '200':
+          description: Conexão bem-sucedida
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  collections:
+                    type: array
+                    items:
+                      type: object
+        '500':
+          description: Erro de conexão
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  error:
+                    type: string
+  /api/metrics:
+    get:
+      summary: Métricas Prometheus
+      description: Exibe métricas customizadas para Prometheus.
+      responses:
+        '200':
+          description: Métricas em formato texto
+          content:
+            text/plain:
+              schema:
+                type: string

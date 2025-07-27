@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import type { ToastProps } from '../components/Toast';
 
-export function useStaking(account: string | null) {
+export function useStaking(account: string | null, setToast: (toast: ToastProps) => void) {
   const [balance, setBalance] = useState('0');
 
   useEffect(() => {
@@ -12,11 +13,19 @@ export function useStaking(account: string | null) {
 
   async function stake(amount: string) {
     // Integração real com contrato de staking
-    alert(`Stake de ${amount} AGROTM`);
+    setToast({
+      message: `Stake de ${amount} AGROTM realizado com sucesso!`,
+      type: 'success',
+      onClose: () => setToast(null as any),
+    });
   }
 
   async function unstake(amount: string) {
-    alert(`Unstake de ${amount} AGROTM`);
+    setToast({
+      message: `Unstake de ${amount} AGROTM realizado!`,
+      type: 'info',
+      onClose: () => setToast(null as any),
+    });
   }
 
   return { stake, unstake, balance };

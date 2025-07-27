@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import Skeleton from '../components/Skeleton';
 import { ThemeProvider } from '../components/ThemeProvider';
 import Navbar from '../components/Navbar';
 import GlassCard from '../components/GlassCard';
@@ -26,6 +28,12 @@ const posts = [
 ];
 
 export default function BlogPage() {
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const timeout = setTimeout(() => setLoading(false), 1200);
+    return () => clearTimeout(timeout);
+  }, []);
+
   return (
     <ThemeProvider>
       <div className="min-h-screen flex flex-col bg-background">
@@ -35,28 +43,37 @@ export default function BlogPage() {
             Blog & Notícias
           </h1>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl">
-            {posts.map((post, i) => (
-              <motion.div
-                key={post.title}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.2, duration: 0.7 }}
-              >
-                <GlassCard className="flex flex-col items-start">
-                  <img
-                    src={post.image}
-                    alt={post.title}
-                    className="w-full h-40 object-cover rounded-xl mb-4 shadow-neon"
-                  />
-                  <span className="text-primary text-xl font-futuristic mb-1">{post.title}</span>
-                  <span className="text-white/60 text-sm mb-2">{post.date}</span>
-                  <p className="text-white/80 mb-2">{post.excerpt}</p>
-                  <button className="mt-2 px-6 py-2 bg-primary text-black rounded-xl font-futuristic shadow-neon hover:bg-accent transition-all">
-                    Ler mais
-                  </button>
-                </GlassCard>
-              </motion.div>
-            ))}
+            {loading
+              ? Array.from({ length: 3 }).map((_, i) => (
+                  <GlassCard key={i} className="flex flex-col items-center text-center">
+                    <Skeleton width="w-32" height="h-32" className="mb-4" />
+                    <Skeleton width="w-40" height="h-8" className="mb-2" />
+                    <Skeleton width="w-24" height="h-4" className="mb-1" />
+                    <Skeleton width="w-44" height="h-6" className="mb-2" />
+                  </GlassCard>
+                ))
+              : posts.map((post, i) => (
+                  <motion.div
+                    key={post.title}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.15, duration: 0.7 }}
+                  >
+                    <GlassCard className="flex flex-col items-start">
+                      <img
+                        src={post.image}
+                        alt={post.title}
+                        className="w-full h-40 object-cover rounded-xl mb-4 shadow-neon"
+                      />
+                      <span className="text-primary text-xl font-futuristic mb-1">{post.title}</span>
+                      <span className="text-white/60 text-sm mb-2">{post.date}</span>
+                      <p className="text-white/80 mb-2">{post.excerpt}</p>
+                      <button className="mt-2 px-6 py-2 bg-primary text-black rounded-xl font-futuristic shadow-neon hover:bg-accent transition-all">
+                        Ler mais
+                      </button>
+                    </GlassCard>
+                  </motion.div>
+                ))}
           </div>
         </main>
         <Footer />

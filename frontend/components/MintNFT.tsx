@@ -2,9 +2,11 @@
 import { useWallet } from '../hooks/useWallet';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Toast, ToastProps } from './Toast';
 
 export default function MintNFT() {
-  const { connectWallet, account } = useWallet();
+  const [toast, setToast] = useState<ToastProps | null>(null);
+  const { connectWallet, account } = useWallet(setToast);
   const [minting, setMinting] = useState(false);
   const [txHash, setTxHash] = useState('');
   const { t } = useTranslation();
@@ -25,13 +27,28 @@ export default function MintNFT() {
       if (err instanceof Error) msg = err.message;
       else if (typeof err === 'string') msg = err;
       else msg = 'Erro desconhecido';
-      alert(t('mint_error', 'Erro ao mintar NFT: ') + msg);
+      setToast({
+        message: t('mint_error', 'Erro ao mintar NFT: ') + msg,
+        type: 'error',
+        onClose: () => setToast(null),
+      });
     }
     setMinting(false);
   }
 
   return (
     <div className="bg-gray-900 p-6 rounded-2xl shadow-xl flex flex-col items-center">
+      {/* NFT Minting Neon Premium */}
+      <picture>
+        <source srcSet="/assets/img/nft-minting-neon.png" type="image/png" />
+        <img
+          src="/assets/img/nft-minting-neon.png"
+          alt="NFT Minting AGROTM Neon"
+          title="NFT Minting - AGROTM"
+          className="w-full max-w-xs rounded-xl mb-6 shadow-lg object-cover animate-fade-in"
+          loading="lazy"
+        />
+      </picture>
       {!account ? (
         <button
           onClick={connectWallet}

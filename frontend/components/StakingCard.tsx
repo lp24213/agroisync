@@ -4,13 +4,25 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 export default function StakingCard() {
-  const { account } = useWallet();
+  // Passe o argumento correto para o hook useWallet, por exemplo, um objeto de configuração ou contexto. Ajuste conforme a assinatura real do seu hook:
+  const { account } = useWallet({ autoConnect: true });
   const { stake, unstake, balance } = useStaking(account);
   const [amount, setAmount] = useState('');
   const { t } = useTranslation();
 
   return (
     <div className="bg-gray-900 p-6 rounded-2xl shadow-xl flex flex-col items-center">
+      {/* Staking Farming Neon Premium */}
+      <picture>
+        <source srcSet="/assets/img/staking-farming-neon.png" type="image/png" />
+        <img
+          src="/assets/img/staking-farming-neon.png"
+          alt="AGROTM Staking Farming Neon"
+          title="Staking Farming Neon - AGROTM"
+          className="w-full max-w-xs rounded-xl mb-6 shadow-lg object-cover animate-fade-in"
+          loading="lazy"
+        />
+      </picture>
       <div className="mb-4 text-white/80">
         {t('staking_balance', 'Seu saldo em staking')}:{' '}
         <span className="text-primary">{balance}</span>
