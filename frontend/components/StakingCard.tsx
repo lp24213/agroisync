@@ -2,10 +2,11 @@ import { useStaking } from '../hooks/useStaking';
 import { useWallet } from '../hooks/useWallet';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import Toast, { ToastProps } from './Toast';
 
 export default function StakingCard() {
-  // Passe o argumento correto para o hook useWallet, por exemplo, um objeto de configuração ou contexto. Ajuste conforme a assinatura real do seu hook:
-  const { account } = useWallet({ autoConnect: true });
+  const [toast, setToast] = useState<ToastProps | null>(null);
+  const { account } = useWallet(setToast);
   const { stake, unstake, balance } = useStaking(account);
   const [amount, setAmount] = useState('');
   const { t } = useTranslation();
@@ -50,5 +51,6 @@ export default function StakingCard() {
         </button>
       </div>
     </div>
+    {toast && <Toast {...toast} />}
   );
 }

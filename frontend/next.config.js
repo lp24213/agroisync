@@ -30,7 +30,7 @@ const nextConfig = {
   i18n: {
     locales: ['en', 'pt', 'zh'],
     defaultLocale: 'en',
-    localeDetection: true,
+    localeDetection: false, // Corrigido para booleano conforme Next.js >=12.1.0
   },
 };
 
