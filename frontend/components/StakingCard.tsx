@@ -7,7 +7,7 @@ import Toast, { ToastProps } from './Toast';
 export default function StakingCard() {
   const [toast, setToast] = useState<ToastProps | null>(null);
   const { account } = useWallet(setToast);
-  const { stake, unstake, balance } = useStaking(account);
+  const { stake, unstake, balance } = useStaking(account, setToast);
   const [amount, setAmount] = useState('');
   const { t } = useTranslation();
 
