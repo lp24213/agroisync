@@ -75,76 +75,17 @@ export const ComplianceDashboard: React.FC = () => {
   }, []);
 
   const loadComplianceData = async () => {
-    // Mock data - replace with actual API calls
-    const mockFrameworks: ComplianceFramework[] = [
-      {
-        id: 'nist',
-        name: 'NIST Cybersecurity Framework',
-        description: 'National Institute of Standards and Technology Framework',
-        metrics: {
-          framework: 'NIST',
-          score: 87,
-          controls: { total: 108, compliant: 94, partial: 10, nonCompliant: 4 },
-          lastAssessment: '2024-01-15',
-          trends: [
-            { period: '2024-01', score: 87 },
-            { period: '2023-12', score: 85 },
-            { period: '2023-11', score: 82 },
-          ],
-        },
-        controls: [
-          {
-            id: 'ID.AM-1',
-            name: 'Physical devices and systems within the organization are inventoried',
-            description: 'Maintain an accurate inventory of all physical devices',
-            status: 'compliant',
-            evidence: ['Asset inventory report', 'Automated discovery scan'],
-            lastTested: '2024-01-10',
-            risk: 'medium',
-          },
-          {
-            id: 'PR.AC-1',
-            name: 'Identities and credentials are issued, managed, verified, revoked',
-            description: 'Identity and access management processes',
-            status: 'partial',
-            evidence: ['IAM audit report'],
-            lastTested: '2024-01-08',
-            risk: 'high',
-          },
-        ],
-      },
-      {
-        id: 'iso27001',
-        name: 'ISO 27001',
-        description: 'International Standard for Information Security Management',
-        metrics: {
-          framework: 'ISO27001',
-          score: 92,
-          controls: { total: 114, compliant: 105, partial: 7, nonCompliant: 2 },
-          lastAssessment: '2024-01-12',
-          trends: [
-            { period: '2024-01', score: 92 },
-            { period: '2023-12', score: 90 },
-            { period: '2023-11', score: 88 },
-          ],
-        },
-        controls: [
-          {
-            id: 'A.5.1.1',
-            name: 'Information security policies',
-            description: 'Set of policies for information security',
-            status: 'compliant',
-            evidence: ['Security policy document', 'Board approval'],
-            lastTested: '2024-01-05',
-            risk: 'low',
-          },
-        ],
-      },
-    ];
+    setLoading(true);
+    try {
+      // Integração real: buscar frameworks de compliance do backend
+      const res = await fetch('/api/compliance/frameworks');
+      const data = await res.json();
+      setFrameworks(data.frameworks);
+    } catch (err) {
+      console.error('Erro ao buscar frameworks de compliance:', err);
+      setFrameworks([]);
+    }
 
-    setFrameworks(mockFrameworks);
-    setLoading(false);
-  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -350,4 +291,7 @@ export const ComplianceDashboard: React.FC = () => {
       )}
     </div>
   );
-};
+}
+
+export default ComplianceDashboard;
+

@@ -44,88 +44,24 @@ interface NFTItem {
   createdAt: Date;
 }
 
-const mockNFTs: NFTItem[] = [
-  {
-    id: '1',
-    name: 'Organic Farm Genesis',
-    description: 'A premium organic farm NFT that provides 15% yield bonus and carbon credits',
-    image: '/nft/farm-genesis.jpg',
-    price: 2.5,
-    currency: 'SOL',
-    creator: '0x1234...5678',
-    owner: '0x1234...5678',
-    category: 'farm',
-    rarity: 'legendary',
-    attributes: [
-      { trait_type: 'Size', value: '100 Acres' },
-      { trait_type: 'Soil Quality', value: 'Premium' },
-      { trait_type: 'Water Access', value: 'River' },
-      { trait_type: 'Climate', value: 'Temperate' },
-    ],
-    carbonOffset: 50,
-    yieldBonus: 15,
-    stakingRewards: 12,
-    isListed: true,
-    likes: 234,
-    views: 1567,
-    createdAt: new Date('2024-01-15'),
-  },
-  {
-    id: '2',
-    name: 'Smart Tractor Pro',
-    description: 'AI-powered farming equipment that increases efficiency by 25%',
-    image: '/nft/tractor-pro.jpg',
-    price: 1.8,
-    currency: 'SOL',
-    creator: '0x2345...6789',
-    owner: '0x2345...6789',
-    category: 'equipment',
-    rarity: 'epic',
-    attributes: [
-      { trait_type: 'Efficiency', value: '+25%' },
-      { trait_type: 'Fuel Type', value: 'Electric' },
-      { trait_type: 'AI Level', value: 'Advanced' },
-      { trait_type: 'Durability', value: 'High' },
-    ],
-    carbonOffset: 30,
-    yieldBonus: 10,
-    stakingRewards: 8,
-    isListed: true,
-    likes: 156,
-    views: 892,
-    createdAt: new Date('2024-02-01'),
-  },
-  {
-    id: '3',
-    name: 'Carbon Credit Certificate',
-    description: 'Verified carbon offset certificate representing 100 tons of CO2',
-    image: '/nft/carbon-certificate.jpg',
-    price: 500,
-    currency: 'AGROTM',
-    creator: '0x3456...7890',
-    owner: '0x3456...7890',
-    category: 'carbon',
-    rarity: 'rare',
-    attributes: [
-      { trait_type: 'CO2 Offset', value: '100 tons' },
-      { trait_type: 'Verification', value: 'Gold Standard' },
-      { trait_type: 'Project Type', value: 'Reforestation' },
-      { trait_type: 'Location', value: 'Brazil' },
-    ],
-    carbonOffset: 100,
-    yieldBonus: 0,
-    stakingRewards: 15,
-    isListed: true,
-    likes: 89,
-    views: 445,
-    createdAt: new Date('2024-02-10'),
-  },
-];
+// Busca real de NFTs via Solana ou backend
+async function fetchNFTs(): Promise<NFTItem[]> {
+  // Exemplo: usando API pública do Solana ou endpoint backend
+  try {
+    const res = await fetch('/api/nfts'); // Ajuste para sua API real
+    if (!res.ok) throw new Error('Erro ao buscar NFTs reais');
+    const data = await res.json();
+    return data.nfts as NFTItem[];
+  } catch (err) {
+    console.error('Erro ao buscar NFTs reais:', err);
+    return [];
+  }
+}
 
 export function NFTMarketplace() {
   const { isConnected, account, connectWallet } = useWeb3();
-  const [nfts, setNfts] = useState<NFTItem[]>(mockNFTs);
-  const [filteredNfts, setFilteredNfts] = useState<NFTItem[]>(mockNFTs);
+  const [nfts, setNfts] = useState<NFTItem[]>([]);
+  const [filteredNfts, setFilteredNfts] = useState<NFTItem[]>([]);
   const [selectedNft, setSelectedNft] = useState<NFTItem | null>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -133,6 +69,15 @@ export function NFTMarketplace() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedRarity, setSelectedRarity] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('newest');
+
+  // Buscar NFTs reais ao montar o componente
+  useEffect(() => {
+    setLoading(true);
+    fetchNFTs().then((realNfts) => {
+      setNfts(realNfts);
+      setLoading(false);
+    });
+  }, []);
 
   useEffect(() => {
     filterAndSortNFTs();

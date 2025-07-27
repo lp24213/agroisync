@@ -8,27 +8,28 @@ interface APRWidgetProps {
   className?: string;
 }
 
-export function APRWidget({ poolId, className = '' }: APRWidgetProps) {
+export function APRWidget({ poolId, className }: APRWidgetProps): JSX.Element {
   const [apr, setApr] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAPR = async () => {
+      setLoading(true);
+      let aprValue = null;
       try {
-        // Simulação de API - substitua por integração real com pools DeFi
-        await new Promise((resolve) => setTimeout(resolve, 600));
-        const mockAPR = 15.5 + Math.random() * 10;
-        setApr(mockAPR);
-      } catch (error) {
-        console.error('Erro ao buscar APR:', error);
-      } finally {
-        setLoading(false);
+        // Exemplo: buscar APR real de endpoint backend
+        const res = await fetch('/api/defi/apr'); // Ajuste para sua API real
+        const data = await res.json();
+        aprValue = data.apr;
+      } catch (err) {
+        console.error('Erro ao buscar APR real:', err);
       }
+      setApr(aprValue);
+      setLoading(false);
     };
 
     fetchAPR();
     const interval = setInterval(fetchAPR, 45000); // Atualiza a cada 45s
-
     return () => clearInterval(interval);
   }, [poolId]);
 

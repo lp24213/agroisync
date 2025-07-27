@@ -13,16 +13,19 @@ export function TVLWidget({ className = '' }: TVLWidgetProps) {
 
   useEffect(() => {
     const fetchTVL = async () => {
-      try {
-        // Simulação de API - substitua por integração real com DeFiLlama, TheGraph, etc
-        await new Promise((resolve) => setTimeout(resolve, 800));
-        const mockTVL = 2750000 + Math.random() * 100000;
-        setTvl(mockTVL);
-      } catch (error) {
-        console.error('Erro ao buscar TVL:', error);
-      } finally {
+        // Integração real com DeFiLlama
+        let tvlValue = null;
+        setLoading(true);
+        try {
+          // Substitua 'agrotm' pelo id real do protocolo/token na DeFiLlama
+          const res = await fetch('https://api.llama.fi/tvl/agrotm');
+          const data = await res.json();
+          tvlValue = data.tvl;
+        } catch (err) {
+          console.error('Erro ao buscar TVL real:', err);
+        }
+        setTvl(tvlValue);
         setLoading(false);
-      }
     };
 
     fetchTVL();

@@ -16,13 +16,22 @@ export function PriceWidget({ token = 'AGRO', className = '' }: PriceWidgetProps
   useEffect(() => {
     const fetchPrice = async () => {
       try {
-        // Simulação de API - substitua por integração real (CoinGecko, Chainlink, etc)
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        const mockPrice = 0.0245 + (Math.random() - 0.5) * 0.001;
-        const mockChange = (Math.random() - 0.5) * 10;
+        // Integração real com CoinGecko
+        let priceValue = null;
+        let changeValue = null;
+        setLoading(true);
+        try {
+          // Substitua 'agrotm' pelo id real do token na CoinGecko
+          const res = await fetch('https://api.coingecko.com/api/v3/coins/agrotm');
+          const data = await res.json();
+          priceValue = data.market_data.current_price.usd;
+          changeValue = data.market_data.price_change_percentage_24h;
+        } catch (err) {
+          console.error('Erro ao buscar preço real:', err);
+        }
+        setPrice(priceValue);
+        setChange24h(changeValue);
 
-        setPrice(mockPrice);
-        setChange24h(mockChange);
       } catch (error) {
         console.error('Erro ao buscar preço:', error);
       } finally {

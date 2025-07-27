@@ -19,4 +19,6 @@ const nextConfig = {
   },
 };
 
+// Atenção: Para produção, remova EITHER 'pages/index.tsx' OU 'app/page.tsx'.
+// O Next.js não permite ambas as rotas raiz. Escolha apenas uma abordagem (App Router ou Pages Router).
 module.exports = withPWA(nextConfig);

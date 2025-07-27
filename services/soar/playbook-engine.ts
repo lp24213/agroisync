@@ -65,108 +65,24 @@ export class PlaybookEngine extends EventEmitter {
   }
 
   private async loadDefaultPlaybooks(): Promise<void> {
-    const defaultPlaybooks: Playbook[] = [
-      {
-        id: 'malware-response',
-        name: 'Malware Incident Response',
-        description: 'Automated response to malware detection',
-        version: '1.0',
-        framework: 'NIST',
-        compliance: ['NIST-800-61', 'ISO-27035'],
-        priority: 1,
-        enabled: true,
-        tags: ['malware', 'incident-response'],
-        triggers: [
-          { type: 'event_type', condition: 'equals', value: 'malware_detection' },
-          { type: 'severity', condition: 'gte', value: 'high' },
-        ],
-        steps: [
-          {
-            id: 'isolate-host',
-            name: 'Isolate Infected Host',
-            type: 'containment',
-            automated: true,
-            timeout: 300,
-            retries: 3,
-            action: {
-              type: 'network_isolation',
-              parameters: { host: '{{event.source_ip}}' },
-            },
-          },
-          {
-            id: 'collect-artifacts',
-            name: 'Collect Forensic Artifacts',
-            type: 'investigation',
-            automated: true,
-            timeout: 600,
-            retries: 2,
-            action: {
-              type: 'forensic_collection',
-              parameters: { host: '{{event.source_ip}}', artifacts: ['memory', 'disk', 'network'] },
-            },
-          },
-          {
-            id: 'notify-team',
-            name: 'Notify Security Team',
-            type: 'notification',
-            automated: true,
-            timeout: 60,
-            retries: 1,
-            action: {
-              type: 'send_notification',
-              parameters: {
-                channels: ['email', 'slack'],
-                severity: '{{event.severity}}',
-                message: 'Malware detected and contained on {{event.source_ip}}',
-              },
-            },
-          },
-        ],
-      },
-      {
-        id: 'phishing-response',
-        name: 'Phishing Email Response',
-        description: 'Automated phishing email investigation and response',
-        version: '1.0',
-        framework: 'MITRE',
-        compliance: ['NIST-800-61'],
-        priority: 2,
-        enabled: true,
-        tags: ['phishing', 'email-security'],
-        triggers: [{ type: 'event_type', condition: 'equals', value: 'phishing_detection' }],
-        steps: [
-          {
-            id: 'block-sender',
-            name: 'Block Sender Domain',
-            type: 'containment',
-            automated: true,
-            timeout: 120,
-            retries: 2,
-            action: {
-              type: 'email_block',
-              parameters: { sender: '{{event.sender}}', domain: '{{event.sender_domain}}' },
-            },
-          },
-          {
-            id: 'quarantine-emails',
-            name: 'Quarantine Similar Emails',
-            type: 'containment',
-            automated: true,
-            timeout: 300,
-            retries: 1,
-            action: {
-              type: 'email_quarantine',
-              parameters: { subject_pattern: '{{event.subject}}', timeframe: '24h' },
-            },
-          },
-        ],
-      },
-    ];
-
-    for (const playbook of defaultPlaybooks) {
-      this.playbooks.set(playbook.id, playbook);
+    // Integração real: buscar playbooks do backend, arquivo ou banco de dados
+    try {
+      const playbooks = await this.fetchPlaybooksFromBackend();
+      for (const playbook of playbooks) {
+        this.playbooks.set(playbook.id, playbook);
+      }
+      this.logger.info('Playbooks carregados do backend com sucesso.');
+    } catch (err) {
+      this.logger.error('Erro ao carregar playbooks do backend:', err);
     }
   }
+
+  // TODO: Implementar integração real com backend, arquivo ou banco de dados
+  private async fetchPlaybooksFromBackend(): Promise<Playbook[]> {
+    // Implemente a busca real de playbooks aqui
+    return [];
+  }
+
 
   async findMatchingPlaybooks(event: SOAREvent): Promise<Playbook[]> {
     const matching: Playbook[] = [];

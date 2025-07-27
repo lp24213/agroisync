@@ -1,0 +1,21 @@
+{
+  "name": "AGROTM",
+  "short_name": "AGROTM",
+  "description": "DeFi para o agronegócio.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#00060f",
+  "theme_color": "#00eaff",
+  "icons": [
+    {
+      "src": "/assets/logo.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/assets/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    }
+  ]
+}
