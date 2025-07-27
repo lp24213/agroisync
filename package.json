@@ -33,7 +33,7 @@
     "clean": "rm -rf dist .next .turbo node_modules/.cache",
     "upgrade": "npx npm-check-updates -u && npm install",
     "analyze": "ANALYZE=true next build",
-    "prepare": "husky install",
+
     "prune": "npm prune --production"
   },
   "dependencies": {
