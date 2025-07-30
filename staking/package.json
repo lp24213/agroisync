@@ -21,13 +21,13 @@
     "next": "^14.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "@solana/web3.js": "^1.90.0",
+    "@solana/web3.js": "^1.98.0",
     "@solana/wallet-adapter-react": "^0.15.35",
     "@solana/wallet-adapter-react-ui": "^0.9.35",
     "@solana/wallet-adapter-base": "^0.9.23",
     "@solana/wallet-adapter-wallets": "^0.19.32",
     "@solana/spl-token": "^0.4.0",
-    "axios": "^1.6.0",
+    "axios": "^1.8.2",
     "react-hook-form": "^7.49.0",
     "react-hot-toast": "^2.4.1",
     "framer-motion": "^11.0.0",
@@ -40,7 +40,7 @@
     "decimal.js": "^10.4.3",
     "big.js": "^6.2.1",
     "html2canvas": "^1.4.1",
-    "jspdf": "^2.5.1",
+    "jspdf": "^3.0.1",
     "chart.js": "^4.4.0",
     "react-chartjs-2": "^5.2.0",
     "@radix-ui/react-dialog": "^1.0.5",
@@ -77,4 +77,4 @@
     "node": ">=18.17.0",
     "npm": ">=9.0.0"
   }
-} 
+}
