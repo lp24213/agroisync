@@ -32,7 +32,7 @@
     "@solana/wallet-adapter-base": "0.9.23",
     "@solana/wallet-adapter-wallets": "0.19.32",
     "@solana/spl-token": "0.4.0",
-    "ethers": "6.11.0",
+    "ethers": "6.15.0",
     "wagmi": "2.5.0",
     "viem": "2.7.0",
     "@rainbow-me/rainbowkit": "2.0.0",
