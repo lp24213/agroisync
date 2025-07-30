@@ -44,10 +44,4 @@ jobs:
       - name: Notify Discord
         if: success()
         run: |
-          curl -H "Content-Type: application/json" -d '{"content":"Deploy finalizado com sucesso!"}' ${{ secrets.DISCORD_WEBHOOK_URL }}
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ github.ref }}
-          prerelease: false 
+          curl -H "Content-Type: application/json" -d '{"content":"Deploy finalizado com sucesso!"}' ${{ secrets.DISCORD_WEBHOOK_URL }} 
