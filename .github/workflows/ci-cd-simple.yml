@@ -1,0 +1,61 @@
+name: CI/CD AGROTM
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Install dependencies (cache)
+        run: pnpm install
+
+      - name: Lint code
+        run: pnpm lint
+
+      - name: Run tests
+        run: pnpm test
+
+      - name: Build project
+        run: pnpm build
+
+      - name: Deploy frontend to Vercel (Free)
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          NEXT_PUBLIC_APP_URL: https://agrotm.com
+
+      - name: Deploy backend to Railway (Free)
+        run: echo "Railway deployment would happen here"
+
+      - name: Notify Discord (on success)
+        if: success()
+        run: |
+          curl -H "Content-Type: application/json" -d '{"content":"✅ AGROTM: Deploy finalizado com sucesso!"}' ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+      - name: Notify Discord (on failure)
+        if: failure()
+        run: |
+          curl -H "Content-Type: application/json" -d '{"content":"🚨 AGROTM: Falha no deploy! Corrija o erro e tente novamente."}' ${{ secrets.DISCORD_WEBHOOK_URL }} 
