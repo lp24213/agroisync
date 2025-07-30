@@ -1,23 +1,215 @@
-name: Deploy Azure
+name: Deploy to Azure
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+          - development
+
+env:
+  AZURE_REGISTRY: agrotmregistry
+  AZURE_CONTAINER_APP: agrotm-solana
+  AZURE_RESOURCE_GROUP: agrotm-rg
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'production' }}
+    
     steps:
-      - uses: actions/checkout@v4
-      - name: Azure Login
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-      - name: Build and push Docker image
-        run: |
-          az acr build --registry $AZURE_CONTAINER_REGISTRY --image agrotm-app:$GITHUB_SHA .
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: agrotm-app
-          images: $AZURE_CONTAINER_REGISTRY.azurecr.io/agrotm-app:$GITHUB_SHA
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+      
+    - name: Log in to Azure Container Registry
+      uses: azure/docker-login@v1
+      with:
+        login-server: ${{ env.AZURE_REGISTRY }}.azurecr.io
+        username: ${{ secrets.AZURE_REGISTRY_USERNAME }}
+        password: ${{ secrets.AZURE_REGISTRY_PASSWORD }}
+        
+    - name: Build and push image to Azure Container Registry
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        tags: |
+          ${{ env.AZURE_REGISTRY }}.azurecr.io/${{ env.AZURE_CONTAINER_APP }}:${{ github.sha }}
+          ${{ env.AZURE_REGISTRY }}.azurecr.io/${{ env.AZURE_CONTAINER_APP }}:latest
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        
+    - name: Deploy to Azure Container Apps
+      uses: azure/container-apps-deploy-action@v1
+      with:
+        appSourcePath: ${{ github.workspace }}
+        acrName: ${{ env.AZURE_REGISTRY }}
+        acrUsername: ${{ secrets.AZURE_REGISTRY_USERNAME }}
+        acrPassword: ${{ secrets.AZURE_REGISTRY_PASSWORD }}
+        containerAppName: ${{ env.AZURE_CONTAINER_APP }}
+        resourceGroupName: ${{ env.AZURE_RESOURCE_GROUP }}
+        imageToDeploy: ${{ env.AZURE_REGISTRY }}.azurecr.io/${{ env.AZURE_CONTAINER_APP }}:${{ github.sha }}
+        
+    - name: Update Azure Front Door
+      run: |
+        # Update Front Door routing rules
+        az network front-door routing-rule update \
+          --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+          --front-door-name agrotm-frontdoor \
+          --name defaultRoutingRule \
+          --backend-pool agrotm-backend-pool
+          
+    - name: Update Azure DNS
+      run: |
+        # Update DNS records if needed
+        az network dns record-set a update \
+          --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+          --zone-name agrotm.com \
+          --name www \
+          --set aRecords[0].ipv4Address=${{ secrets.AZURE_APP_IP }}
+      if: ${{ github.event.inputs.environment == 'production' }}
+      
+    - name: Run health checks
+      run: |
+        # Wait for application to be healthy
+        sleep 30
+        
+        # Run health checks
+        curl -f ${{ secrets.HEALTH_CHECK_URL }} || exit 1
+        
+        # Run smoke tests
+        npm run test:smoke
+        
+    - name: Scale up application
+      run: |
+        # Scale up the container app
+        az containerapp revision set-mode \
+          --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+          --name ${{ env.AZURE_CONTAINER_APP }} \
+          --mode multiple \
+          --revision-suffix ${{ github.sha }}
+          
+    - name: Monitor deployment
+      run: |
+        # Monitor deployment for 5 minutes
+        for i in {1..30}; do
+          echo "Checking deployment status... ($i/30)"
+          
+          # Check container app status
+          APP_STATUS=$(az containerapp show \
+            --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+            --name ${{ env.AZURE_CONTAINER_APP }} \
+            --query "properties.runningStatus" \
+            --output tsv)
+            
+          if [ "$APP_STATUS" = "Running" ]; then
+            echo "Container app is running and healthy"
+            break
+          fi
+          
+          sleep 10
+        done
+        
+        if [ "$APP_STATUS" != "Running" ]; then
+          echo "Container app failed to start"
+          exit 1
+        fi
+        
+    - name: Run post-deployment tests
+      run: |
+        # Run integration tests
+        npm run test:integration
+        
+        # Run performance tests
+        npm run test:performance
+        
+        # Run security tests
+        npm run test:security
+        
+    - name: Update deployment status
+      run: |
+        # Update deployment status in database
+        curl -X POST ${{ secrets.DEPLOYMENT_WEBHOOK_URL }} \
+          -H "Content-Type: application/json" \
+          -d "{\"status\": \"success\", \"environment\": \"${{ github.event.inputs.environment || 'production' }}\", \"commit\": \"${{ github.sha }}\", \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}"
+          
+    - name: Create deployment record
+      run: |
+        # Create deployment record in monitoring system
+        az monitor log-analytics workspace query \
+          --workspace ${{ secrets.AZURE_LOG_ANALYTICS_WORKSPACE }} \
+          --analytics-query "ContainerAppConsoleLogs_CL | where ContainerAppName_s == '${{ env.AZURE_CONTAINER_APP }}' | where TimeGenerated > ago(1h) | summarize count() by bin(TimeGenerated, 1m)" \
+          --output table
+          
+    - name: Notify deployment success
+      uses: 8398a7/action-slack@v3
+      with:
+        status: success
+        channel: '#deployments'
+        webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+        text: |
+          ✅ Azure deployment successful!
+          Environment: ${{ github.event.inputs.environment || 'production' }}
+          Commit: ${{ github.sha }}
+          URL: ${{ secrets.AZURE_APP_URL }}
+      if: success()
+      
+    - name: Notify deployment failure
+      uses: 8398a7/action-slack@v3
+      with:
+        status: failure
+        channel: '#deployments'
+        webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+        text: |
+          ❌ Azure deployment failed!
+          Environment: ${{ github.event.inputs.environment || 'production' }}
+          Commit: ${{ github.sha }}
+          Check the logs for details.
+      if: failure()
+      
+    - name: Rollback on failure
+      run: |
+        # Rollback to previous revision if deployment fails
+        PREVIOUS_REVISION=$(az containerapp revision list \
+          --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+          --name ${{ env.AZURE_CONTAINER_APP }} \
+          --query "[1].name" \
+          --output tsv)
+          
+        az containerapp revision activate \
+          --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+          --name ${{ env.AZURE_CONTAINER_APP }} \
+          --revision $PREVIOUS_REVISION
+          
+        echo "Rolled back to previous revision"
+      if: failure()
+      
+    - name: Clean up old images
+      run: |
+        # Keep only last 10 images
+        az acr repository show-manifests \
+          --name ${{ env.AZURE_REGISTRY }} \
+          --repository ${{ env.AZURE_CONTAINER_APP }} \
+          --orderby time_desc \
+          --query "[10:].digest" \
+          --output tsv | \
+        xargs -I {} az acr repository delete \
+          --name ${{ env.AZURE_REGISTRY }} \
+          --image ${{ env.AZURE_CONTAINER_APP }}@{} \
+          --yes 

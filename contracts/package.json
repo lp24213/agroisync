@@ -1,21 +1,58 @@
 {
-  "name": "agrotm-contracts",
+  "name": "agrotm-solana-contracts",
   "version": "1.0.0",
-  "private": true,
-  "main": "index.js",
+  "description": "Solana smart contracts for Agrotm DeFi platform",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "hardhat compile",
-    "test": "hardhat test",
-    "deploy": "hardhat run scripts/deploy.js"
+    "build": "anchor build",
+    "deploy": "anchor deploy",
+    "test": "anchor test",
+    "test:local": "anchor test --provider.cluster localnet",
+    "test:devnet": "anchor test --provider.cluster devnet",
+    "test:mainnet": "anchor test --provider.cluster mainnet",
+    "lint": "cargo clippy",
+    "format": "cargo fmt",
+    "clean": "anchor clean",
+    "verify": "anchor verify",
+    "upgrade": "anchor upgrade",
+    "idl": "anchor idl",
+    "idl:parse": "anchor idl parse",
+    "idl:write": "anchor idl write",
+    "idl:set": "anchor idl set",
+    "idl:upgrade": "anchor idl upgrade",
+    "idl:remove": "anchor idl remove"
   },
   "dependencies": {
-    "ethers": "^6.14.0",
-    "hardhat": "^2.17.1",
-    "@nomiclabs/hardhat-ethers": "^2.2.3",
-    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
-    "dotenv": "^16.3.1"
+    "@coral-xyz/anchor": "^0.29.0",
+    "@solana/web3.js": "^1.87.6",
+    "@solana/spl-token": "^0.3.9",
+    "@solana/spl-associated-token-account": "^0.3.0",
+    "@solana/spl-token-registry": "^0.2.0",
+    "@project-serum/anchor": "^0.26.0",
+    "@project-serum/serum": "^0.13.65",
+    "@project-serum/borsh": "^0.2.5",
+    "bs58": "^5.0.0",
+    "bn.js": "^5.2.1"
   },
   "devDependencies": {
-    "typescript": "^5.1.6"
-  }
-}
+    "@types/bn.js": "^5.1.5",
+    "@types/bs58": "^4.0.4",
+    "typescript": "^5.3.3",
+    "ts-node": "^10.9.1",
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": [
+    "solana",
+    "anchor",
+    "smart-contracts",
+    "defi",
+    "blockchain",
+    "rust"
+  ],
+  "author": "Agrotm Team",
+  "license": "MIT"
+} 

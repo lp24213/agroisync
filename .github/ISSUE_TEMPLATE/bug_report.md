@@ -1,31 +1,54 @@
 ---
-name: Bug Report
-about: Relate um bug para ajudar a melhorar o projeto
-labels: bug
+name: Bug report
+about: Create a report to help us improve
+title: '[BUG] '
+labels: ['bug', 'needs-triage']
+assignees: ['agrotm-team']
 ---
 
-**Descreva o bug**
-Uma descrição clara e concisa do que é o bug.
+## Bug Description
+A clear and concise description of what the bug is.
 
-**Como reproduzir**
-Passos para reproduzir o comportamento:
+## Steps to Reproduce
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error
 
-1. Vá para '...'
-2. Clique em '...'
-3. Role até '...'
-4. Veja o erro
+## Expected Behavior
+A clear and concise description of what you expected to happen.
 
-**Comportamento esperado**
-Descreva o que era esperado acontecer.
+## Actual Behavior
+A clear and concise description of what actually happened.
 
-**Capturas de tela**
-Se aplicável, adicione capturas de tela para ajudar a explicar seu problema.
+## Screenshots
+If applicable, add screenshots to help explain your problem.
 
-**Ambiente:**
+## Environment
+- **OS**: [e.g. Windows 10, macOS 12.0, Ubuntu 20.04]
+- **Browser**: [e.g. Chrome 96, Firefox 95, Safari 15]
+- **Node.js Version**: [e.g. 18.17.0]
+- **Package Manager**: [e.g. npm 9.0.0, yarn 1.22.0]
+- **AGROTM Version**: [e.g. 1.0.0]
 
-- SO: [ex: Windows, Mac, Linux]
-- Navegador [ex: Chrome, Safari]
-- Versão do projeto [ex: 1.0.0]
+## Additional Context
+Add any other context about the problem here.
 
-**Informações adicionais**
-Adicione qualquer outra informação relevante sobre o problema aqui.
+## Console Errors
+If there are any console errors, please paste them here:
+
+```
+Error message here
+```
+
+## Network Tab
+If the issue is related to network requests, please check the Network tab in your browser's developer tools and share any relevant information.
+
+## Reproduction Repository
+If you have a minimal reproduction repository, please provide a link to it.
+
+## Checklist
+- [ ] I have searched the existing issues for duplicates
+- [ ] I have provided all the requested information
+- [ ] I can reproduce this issue consistently
+- [ ] This issue is not a feature request 

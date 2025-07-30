@@ -1,8 +1,0 @@
-{
-  "title": "AGROTM Compliance & Audit",
-  "panels": [
-    { "type": "table", "title": "Logins Suspeitos", "query": "event:login AND status:fail" },
-    { "type": "bar", "title": "Acessos por País", "query": "geoip.country_name:*" },
-    { "type": "pie", "title": "Distribuição de Roles", "query": "role:*" }
-  ]
-}

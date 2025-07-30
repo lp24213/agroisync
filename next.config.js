@@ -1,24 +1,32 @@
-const withPWA = require('next-pwa');
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  experimental: {
+    appDir: true,
+  },
   images: {
-    domains: ['cdn.pixabay.com', 'images.unsplash.com'],
+    domains: ['localhost', 'agrotm.com'],
   },
-  i18n: {
-    locales: ['en', 'pt', 'zh'],
-    defaultLocale: 'en',
-    localeDetection: false,
+  env: {
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001',
+    NEXT_PUBLIC_SOLANA_RPC_URL: process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com',
   },
-  pwa: {
-    dest: 'public',
-    register: true,
-    skipWaiting: true,
-    disable: process.env.NODE_ENV === 'development',
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/:path*`,
+      },
+    ];
+  },
+  webpack: (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+      net: false,
+      tls: false,
+    };
+    return config;
   },
 };
 
-// Atenção: Para produção, remova EITHER 'pages/index.tsx' OU 'app/page.tsx'.
-// O Next.js não permite ambas as rotas raiz. Escolha apenas uma abordagem (App Router ou Pages Router).
-module.exports = withPWA(nextConfig);
+module.exports = nextConfig;

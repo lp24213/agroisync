@@ -1,15 +1,44 @@
-/**
- * Prettier Configuration for AGROTM Solana
- * Code formatting rules for consistent style
- */
-
 module.exports = {
   semi: true,
+  trailingComma: 'es5',
   singleQuote: true,
-  printWidth: 100,
+  printWidth: 80,
   tabWidth: 2,
-  trailingComma: 'all',
+  useTabs: false,
   bracketSpacing: true,
-  arrowParens: 'always',
-  endOfLine: 'auto',
-};
+  bracketSameLine: false,
+  arrowParens: 'avoid',
+  endOfLine: 'lf',
+  quoteProps: 'as-needed',
+  jsxSingleQuote: false,
+  proseWrap: 'preserve',
+  htmlWhitespaceSensitivity: 'css',
+  embeddedLanguageFormatting: 'auto',
+  overrides: [
+    {
+      files: '*.json',
+      options: {
+        printWidth: 120,
+      },
+    },
+    {
+      files: '*.md',
+      options: {
+        printWidth: 100,
+        proseWrap: 'always',
+      },
+    },
+    {
+      files: '*.yml',
+      options: {
+        printWidth: 120,
+      },
+    },
+    {
+      files: '*.yaml',
+      options: {
+        printWidth: 120,
+      },
+    },
+  ],
+}; 

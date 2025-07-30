@@ -1,6 +1,0 @@
-Contact: mailto:security@agrotm.com
-Encryption: https://agrotm.com/pgp-key.txt
-Acknowledgements: https://agrotm.com/hall-of-fame
-Preferred-Languages: en,pt
-Policy: https://agrotm.com/security-policy
-Hiring: https://agrotm.com/jobs

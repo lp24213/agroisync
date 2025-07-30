@@ -1,1 +1,58 @@
-* @luisp 
+# These owners will be the default owners for everything in
+# the repo. Unless a later match takes precedence,
+# @global-owner1 and @global-owner2 will be requested for
+# review when someone opens a pull request.
+
+* @agrotm-team
+
+# Order is important; the last matching pattern takes precedence
+# over more general patterns.
+
+# Core team owns the main application code
+/app/ @agrotm-core-team
+/components/ @agrotm-core-team
+/hooks/ @agrotm-core-team
+/utils/ @agrotm-core-team
+/types/ @agrotm-core-team
+
+# Security team owns security-related files
+/middlewares/security.ts @agrotm-security-team
+/services/security/ @agrotm-security-team
+/docs/security/ @agrotm-security-team
+
+# DevOps team owns infrastructure and deployment
+/.github/workflows/ @agrotm-devops-team
+/docker-compose*.yml @agrotm-devops-team
+/Dockerfile @agrotm-devops-team
+/vercel.json @agrotm-devops-team
+
+# Documentation team owns docs
+/docs/ @agrotm-docs-team
+/README.md @agrotm-docs-team
+/CHANGELOG.md @agrotm-docs-team
+
+# Smart contracts team owns blockchain code
+/contracts/ @agrotm-blockchain-team
+/src/contracts/ @agrotm-blockchain-team
+
+# Frontend team owns UI components
+/frontend/ @agrotm-frontend-team
+/components/ui/ @agrotm-frontend-team
+/styles/ @agrotm-frontend-team
+
+# Backend team owns API and services
+/backend/ @agrotm-backend-team
+/microservices/ @agrotm-backend-team
+/services/ @agrotm-backend-team
+
+# Testing team owns test files
+/tests/ @agrotm-testing-team
+/__tests__/ @agrotm-testing-team
+*.test.* @agrotm-testing-team
+*.spec.* @agrotm-testing-team
+
+# Configuration files
+package.json @agrotm-core-team
+tsconfig.json @agrotm-core-team
+next.config.js @agrotm-core-team
+tailwind.config.js @agrotm-frontend-team 

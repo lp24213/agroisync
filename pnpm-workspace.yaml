@@ -2,4 +2,7 @@ packages:
   - 'frontend'
   - 'backend'
   - 'contracts'
-  - 'docs-site'
+  - 'api'
+  - 'staking'
+  - 'defi-dashboard'
+  - 'microservices/*' 

@@ -1,37 +1,23 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'Strict-Transport-Security',
-            value: 'max-age=63072000; includeSubDomains; preload',
-          },
-        ],
-      },
-    ];
-  },
-  async redirects() {
-    return [
-      {
-        source: '/:path*',
-        has: [{ type: 'host', value: 'http://:host*' }],
-        destination: 'https://:host:/:path*',
-        permanent: true,
-      },
-    ];
+  experimental: {
+    appDir: true,
   },
   images: {
-    domains: ['cdn.pixabay.com', 'images.unsplash.com'],
+    domains: ['localhost', 'agrotm.com'],
   },
-  i18n: {
-    locales: ['en', 'pt', 'zh'],
-    defaultLocale: 'en',
-    localeDetection: false, // Corrigido para booleano conforme Next.js >=12.1.0
+  env: {
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+    NEXT_PUBLIC_SOLANA_RPC_URL: process.env.NEXT_PUBLIC_SOLANA_RPC_URL,
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${process.env.NEXT_PUBLIC_API_URL}/api/:path*`,
+      },
+    ];
   },
 };
 
-module.exports = nextConfig;
+module.exports = nextConfig; 

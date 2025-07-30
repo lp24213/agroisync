@@ -1,58 +1,35 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: 'class',
   content: [
-    './app/**/*.{ts,tsx,js,jsx}',
-    './components/**/*.{ts,tsx,js,jsx}',
-    './pages/**/*.{ts,tsx,js,jsx}',
-    './hooks/**/*.{ts,tsx}',
-    './contexts/**/*.{ts,tsx}',
-    './services/**/*.{ts,tsx}',
-    './shared/**/*.{ts,tsx}',
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
       colors: {
-        'matte-black': '#0a0a0a',
-        'dark-gray': '#1a1a1a',
-        'medium-gray': '#2a2a2a',
-        'light-gray': '#3a3a3a',
-        'neon-blue': '#00d4ff',
-        'neon-blue-dark': '#0099cc',
-        'neon-purple': '#8b5cf6',
-        'success-green': '#10b981',
-        'warning-yellow': '#f59e0b',
-        'error-red': '#ef4444',
-      },
-      fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
-      },
-      boxShadow: {
-        neon: '0 0 20px rgba(0, 212, 255, 0.3)',
-        'neon-strong': '0 0 30px rgba(0, 212, 255, 0.6)',
-        card: '0 4px 20px rgba(0, 0, 0, 0.3)',
+        'agro-green': '#10b981',
+        'agro-blue': '#3b82f6',
+        'agro-purple': '#8b5cf6',
+        'agro-dark': '#0f172a',
+        'agro-darker': '#020617',
       },
       animation: {
-        'pulse-neon': 'pulse-neon 2s ease-in-out infinite',
-        float: 'float 3s ease-in-out infinite',
-        glow: 'glow 2s ease-in-out infinite alternate',
+        'fade-in': 'fadeIn 0.5s ease-in-out',
+        'slide-up': 'slideUp 0.5s ease-out',
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       keyframes: {
-        'pulse-neon': {
-          '0%, 100%': { boxShadow: '0 0 20px rgba(0, 212, 255, 0.3)' },
-          '50%': { boxShadow: '0 0 30px rgba(0, 212, 255, 0.8)' },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
         },
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-10px)' },
-        },
-        glow: {
-          from: { textShadow: '0 0 10px rgba(0, 212, 255, 0.5)' },
-          to: { textShadow: '0 0 20px rgba(0, 212, 255, 0.8)' },
+        slideUp: {
+          '0%': { transform: 'translateY(20px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
         },
       },
     },
   },
   plugins: [],
-};
+} 

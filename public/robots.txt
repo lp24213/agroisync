@@ -1,3 +1,5 @@
 User-agent: *
-Disallow:
-Sitemap: /sitemap.xml
+Allow: /
+
+# Sitemap
+Sitemap: https://agrotm.com/sitemap.xml

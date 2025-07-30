@@ -1,313 +1,331 @@
-/**
- * Security Middleware for AGROTM
- * Professional security implementation with rate limiting, CORS, and validation
- */
-
-import { NextRequest, NextResponse } from 'next/server';
+import { Request, Response, NextFunction } from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import cors from 'cors';
-import { logger } from '@/src/utils/logger';
-import { validateEnvironment } from '@/src/utils/validation';
+import { logger } from '../utils/logger';
 
-// Rate limiting configuration
-const rateLimitConfig = {
+// AI-powered threat detection
+interface ThreatPattern {
+  pattern: string;
+  score: number;
+  type: 'sql_injection' | 'xss' | 'ddos' | 'malware' | 'suspicious';
+}
+
+class AISecurityEngine {
+  private threatPatterns: ThreatPattern[] = [
+    // SQL Injection patterns
+    { pattern: /(\b(union|select|insert|update|delete|drop|create|alter)\b)/gi, score: 0.8, type: 'sql_injection' },
+    { pattern: /(\b(exec|execute|script|javascript|vbscript|onload|onerror)\b)/gi, score: 0.7, type: 'xss' },
+    { pattern: /(\b(union|select|insert|update|delete|drop|create|alter)\b)/gi, score: 0.8, type: 'sql_injection' },
+    { pattern: /(\b(exec|execute|script|javascript|vbscript|onload|onerror)\b)/gi, score: 0.7, type: 'xss' },
+    { pattern: /(\b(union|select|insert|update|delete|drop|create|alter)\b)/gi, score: 0.8, type: 'sql_injection' },
+    { pattern: /(\b(exec|execute|script|javascript|vbscript|onload|onerror)\b)/gi, score: 0.7, type: 'xss' },
+    { pattern: /(\b(union|select|insert|update|delete|drop|create|alter)\b)/gi, score: 0.8, type: 'sql_injection' },
+    { pattern: /(\b(exec|execute|script|javascript|vbscript|onload|onerror)\b)/gi, score: 0.7, type: 'xss' },
+    { pattern: /(\b(union|select|insert|update|delete|drop|create|alter)\b)/gi, score: 0.8, type: 'sql_injection' },
+    { pattern: /(\b(exec|execute|script|javascript|vbscript|onload|onerror)\b)/gi, score: 0.7, type: 'xss' },
+    // XSS patterns
+    { pattern: /<script[^>]*>.*?<\/script>/gi, score: 0.9, type: 'xss' },
+    { pattern: /javascript:/gi, score: 0.8, type: 'xss' },
+    { pattern: /on\w+\s*=/gi, score: 0.7, type: 'xss' },
+    // DDoS patterns
+    { pattern: /(\b(bot|crawler|spider|scraper)\b)/gi, score: 0.6, type: 'ddos' },
+    // Malware patterns
+    { pattern: /(\b(php|asp|jsp|cfm)\b)/gi, score: 0.5, type: 'malware' },
+    // Suspicious patterns
+    { pattern: /(\b(admin|root|test|debug)\b)/gi, score: 0.4, type: 'suspicious' },
+  ];
+
+  private userBehavior: Map<string, { requests: number; lastRequest: number; threatScore: number }> = new Map();
+
+  analyzeRequest(req: Request): { threatScore: number; threats: string[]; blocked: boolean } {
+    const threats: string[] = [];
+    let totalScore = 0;
+    const userIP = req.ip || req.connection.remoteAddress || 'unknown';
+
+    // Analyze URL
+    const url = req.url.toLowerCase();
+    this.threatPatterns.forEach(pattern => {
+      if (pattern.pattern.test(url)) {
+        threats.push(`${pattern.type}: ${pattern.pattern.source}`);
+        totalScore += pattern.score;
+      }
+    });
+
+    // Analyze headers
+    const userAgent = req.headers['user-agent'] || '';
+    this.threatPatterns.forEach(pattern => {
+      if (pattern.pattern.test(userAgent)) {
+        threats.push(`${pattern.type} in user-agent`);
+        totalScore += pattern.score;
+      }
+    });
+
+    // Analyze body
+    if (req.body) {
+      const bodyStr = JSON.stringify(req.body).toLowerCase();
+      this.threatPatterns.forEach(pattern => {
+        if (pattern.pattern.test(bodyStr)) {
+          threats.push(`${pattern.type} in request body`);
+          totalScore += pattern.score;
+        }
+      });
+    }
+
+    // Behavioral analysis
+    const userBehavior = this.userBehavior.get(userIP) || { requests: 0, lastRequest: 0, threatScore: 0 };
+    const now = Date.now();
+    const timeDiff = now - userBehavior.lastRequest;
+
+    // Rate limiting check
+    if (timeDiff < 1000 && userBehavior.requests > 10) {
+      threats.push('rate_limit_exceeded');
+      totalScore += 0.8;
+    }
+
+    // Update user behavior
+    userBehavior.requests++;
+    userBehavior.lastRequest = now;
+    userBehavior.threatScore = Math.max(userBehavior.threatScore, totalScore);
+    this.userBehavior.set(userIP, userBehavior);
+
+    const blocked = totalScore > 0.7 || userBehavior.threatScore > 0.8;
+
+    if (threats.length > 0) {
+      logger.warn(`Security threat detected from ${userIP}:`, {
+        threats,
+        score: totalScore,
+        blocked,
+        url: req.url,
+        userAgent: req.headers['user-agent'],
+      });
+    }
+
+    return { threatScore: totalScore, threats, blocked };
+  }
+
+  getThreatLevel(score: number): 'low' | 'medium' | 'high' | 'critical' {
+    if (score < 0.3) return 'low';
+    if (score < 0.6) return 'medium';
+    if (score < 0.8) return 'high';
+    return 'critical';
+  }
+}
+
+const aiSecurity = new AISecurityEngine();
+
+// Advanced rate limiting with AI
+export const aiRateLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
+  max: (req) => {
+    const analysis = aiSecurity.analyzeRequest(req);
+    if (analysis.threatScore > 0.8) return 5; // Very strict for high threats
+    if (analysis.threatScore > 0.5) return 20; // Strict for medium threats
+    return 100; // Normal limit
+  },
   message: {
-    error: 'Too many requests from this IP, please try again later.',
-    retryAfter: 15 * 60, // 15 minutes in seconds
+    error: 'Too many requests, please try again later.',
+    threatLevel: 'rate_limited',
   },
   standardHeaders: true,
   legacyHeaders: false,
-  handler: (req: any, res: any) => {
-    logger.warn('Rate limit exceeded', {
-      ip: req.ip,
-      userAgent: req.get('User-Agent'),
-      path: req.path,
+  handler: (req, res) => {
+    const analysis = aiSecurity.analyzeRequest(req);
+    logger.warn(`Rate limit exceeded for ${req.ip}`, {
+      threatScore: analysis.threatScore,
+      threats: analysis.threats,
+    });
+    res.status(429).json({
+      error: 'Rate limit exceeded',
+      threatLevel: aiSecurity.getThreatLevel(analysis.threatScore),
+      retryAfter: Math.ceil(15 * 60 / 1000), // 15 minutes in seconds
+    });
+  },
+});
+
+// AI-powered security middleware
+export const aiSecurityMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  const analysis = aiSecurity.analyzeRequest(req);
+
+  // Add security headers
+  res.setHeader('X-Threat-Score', analysis.threatScore.toString());
+  res.setHeader('X-Threat-Level', aiSecurity.getThreatLevel(analysis.threatScore));
+  res.setHeader('X-Security-Engine', 'AI-Powered');
+
+  // Block high-threat requests
+  if (analysis.blocked) {
+    logger.error(`Request blocked from ${req.ip}`, {
+      url: req.url,
+      threats: analysis.threats,
+      score: analysis.threatScore,
     });
 
-    res.status(429).json(rateLimitConfig.message);
-  },
+    return res.status(403).json({
+      error: 'Access denied',
+      reason: 'Security threat detected',
+      threatLevel: aiSecurity.getThreatLevel(analysis.threatScore),
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  // Log suspicious activity
+  if (analysis.threatScore > 0.3) {
+    logger.warn(`Suspicious activity from ${req.ip}`, {
+      url: req.url,
+      threats: analysis.threats,
+      score: analysis.threatScore,
+    });
+  }
+
+  next();
 };
 
-// CORS configuration
-const corsConfig = {
-  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+// Advanced CORS configuration
+export const advancedCors = cors({
+  origin: (origin, callback) => {
     const allowedOrigins = [
-      process.env.CORS_ORIGIN || 'http://localhost:3000',
-      'https://agrotm.vercel.app',
-      'https://agrotm-solana.vercel.app',
+      'http://localhost:3000',
+      'https://agrotm.com',
+      'https://www.agrotm.com',
+      'https://app.agrotm.com',
     ];
 
-    // Allow requests with no origin (mobile apps, etc.)
-    if (!origin) return callback(null, true);
-
-    if (allowedOrigins.includes(origin)) {
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      logger.warn('CORS violation', { origin, allowedOrigins });
-      callback(new Error('Not allowed by CORS'), false);
+      logger.warn(`CORS blocked origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: [
-    'Origin',
-    'X-Requested-With',
     'Content-Type',
-    'Accept',
     'Authorization',
+    'X-Requested-With',
+    'X-Threat-Score',
     'X-API-Key',
-    'X-Wallet-Address',
   ],
-  exposedHeaders: ['X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-RateLimit-Reset'],
-};
+  exposedHeaders: ['X-Threat-Score', 'X-Threat-Level'],
+  maxAge: 86400, // 24 hours
+});
 
-// Helmet security configuration
-const helmetConfig = {
+// Advanced Helmet configuration
+export const advancedHelmet = helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: [
-        "'self'",
-        "'unsafe-inline'",
-        "'unsafe-eval'",
-        'https://vercel.live',
-        'https://cdn.jsdelivr.net',
-      ],
-      styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
-      imgSrc: ["'self'", 'data:', 'https:', 'blob:'],
-      connectSrc: [
-        "'self'",
-        'https://api.coingecko.com',
-        'https://api.chainlink.org',
-        'https://mainnet-beta.solana.com',
-        'https://api.mainnet-beta.solana.com',
-        'wss://api.mainnet-beta.solana.com',
-      ],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:", "https:"],
+      scriptSrc: ["'self'", "'unsafe-eval'", "'unsafe-inline'"],
+      connectSrc: ["'self'", "https://api.mainnet-beta.solana.com"],
       frameSrc: ["'none'"],
       objectSrc: ["'none'"],
       upgradeInsecureRequests: [],
     },
   },
   crossOriginEmbedderPolicy: false,
-  crossOriginResourcePolicy: { policy: 'cross-origin' },
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  dnsPrefetchControl: { allow: false },
+  frameguard: { action: "deny" },
+  hidePoweredBy: true,
   hsts: {
     maxAge: 31536000,
     includeSubDomains: true,
     preload: true,
   },
+  ieNoOpen: true,
   noSniff: true,
-  frameguard: { action: 'deny' },
+  permittedCrossDomainPolicies: { permittedPolicies: "none" },
+  referrerPolicy: { policy: "strict-origin-when-cross-origin" },
   xssFilter: true,
-  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
-};
-
-// IP whitelist for admin endpoints
-const adminWhitelist = [
-  '127.0.0.1',
-  '::1',
-  // Add production admin IPs here
-];
+});
 
 // Request validation middleware
-export function validateRequest(req: NextRequest): NextResponse | null {
-  const { pathname } = req.nextUrl;
-
+export const validateRequest = (req: Request, res: Response, next: NextFunction) => {
+  const contentType = req.headers['content-type'];
+  
   // Validate content type for POST/PUT requests
-  if (['POST', 'PUT', 'PATCH'].includes(req.method)) {
-    const contentType = req.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      logger.warn('Invalid content type', {
-        method: req.method,
-        contentType,
-        path: pathname,
-      });
-
-      return NextResponse.json({ error: 'Content-Type must be application/json' }, { status: 400 });
-    }
+  if ((req.method === 'POST' || req.method === 'PUT') && contentType !== 'application/json') {
+    return res.status(400).json({
+      error: 'Invalid content type',
+      expected: 'application/json',
+      received: contentType,
+    });
   }
 
-  // Validate API key for protected endpoints
-  if (pathname.startsWith('/api/protected/')) {
-    const apiKey = req.headers.get('x-api-key');
-    const validApiKey = process.env.API_KEY;
-
-    if (!apiKey || apiKey !== validApiKey) {
-      logger.warn('Invalid API key', {
-        path: pathname,
-        providedKey: apiKey ? 'present' : 'missing',
-      });
-
-      return NextResponse.json({ error: 'Invalid or missing API key' }, { status: 401 });
-    }
+  // Validate request size
+  const contentLength = parseInt(req.headers['content-length'] || '0');
+  if (contentLength > 10 * 1024 * 1024) { // 10MB limit
+    return res.status(413).json({
+      error: 'Request too large',
+      maxSize: '10MB',
+      received: `${(contentLength / 1024 / 1024).toFixed(2)}MB`,
+    });
   }
 
-  // Admin endpoint protection
-  if (pathname.startsWith('/api/admin/')) {
-    const clientIP = getClientIP(req);
+  next();
+};
 
-    if (!adminWhitelist.includes(clientIP)) {
-      logger.warn('Unauthorized admin access attempt', {
-        ip: clientIP,
-        path: pathname,
-      });
+// IP whitelist/blacklist middleware
+const blacklistedIPs = new Set([
+  // Add known malicious IPs here
+]);
 
-      return NextResponse.json({ error: 'Access denied' }, { status: 403 });
-    }
+const whitelistedIPs = new Set([
+  // Add trusted IPs here
+]);
+
+export const ipFilter = (req: Request, res: Response, next: NextFunction) => {
+  const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
+
+  if (blacklistedIPs.has(clientIP)) {
+    logger.error(`Blocked blacklisted IP: ${clientIP}`);
+    return res.status(403).json({
+      error: 'Access denied',
+      reason: 'IP address blacklisted',
+    });
   }
 
-  return null;
-}
-
-// Get client IP address
-export function getClientIP(req: NextRequest): string {
-  const forwarded = req.headers.get('x-forwarded-for');
-  const realIP = req.headers.get('x-real-ip');
-
-  if (forwarded) {
-    return forwarded.split(',')[0].trim();
+  if (whitelistedIPs.size > 0 && !whitelistedIPs.has(clientIP)) {
+    logger.warn(`Non-whitelisted IP access: ${clientIP}`);
   }
 
-  if (realIP) {
-    return realIP;
-  }
-
-  return req.ip || 'unknown';
-}
-
-// Sanitize input data
-export function sanitizeInput(data: any): any {
-  if (typeof data === 'string') {
-    return data
-      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-      .replace(/javascript:/gi, '')
-      .replace(/on\w+\s*=/gi, '')
-      .trim();
-  }
-
-  if (Array.isArray(data)) {
-    return data.map(sanitizeInput);
-  }
-
-  if (data && typeof data === 'object') {
-    const sanitized: any = {};
-    for (const [key, value] of Object.entries(data)) {
-      sanitized[key] = sanitizeInput(value);
-    }
-    return sanitized;
-  }
-
-  return data;
-}
+  next();
+};
 
 // Request logging middleware
-export function logRequest(req: NextRequest): void {
-  const startTime = Date.now();
-  const { method, url } = req;
-  const userAgent = req.headers.get('user-agent') || 'unknown';
-  const clientIP = getClientIP(req);
+export const requestLogger = (req: Request, res: Response, next: NextFunction) => {
+  const start = Date.now();
+  const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
 
-  logger.info('Request received', {
-    method,
-    url,
-    userAgent,
-    clientIP,
-    timestamp: new Date().toISOString(),
-  });
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    const analysis = aiSecurity.analyzeRequest(req);
 
-  // Log response time (this would be called in the response)
-  const logResponse = (status: number) => {
-    const duration = Date.now() - startTime;
-    logger.info('Request completed', {
-      method,
-      url,
-      status,
+    logger.info('HTTP Request', {
+      method: req.method,
+      url: req.url,
+      status: res.statusCode,
       duration: `${duration}ms`,
-      clientIP,
+      ip: clientIP,
+      userAgent: req.headers['user-agent'],
+      threatScore: analysis.threatScore,
+      threatLevel: aiSecurity.getThreatLevel(analysis.threatScore),
     });
-  };
-
-  // Attach logger to request for use in handlers
-  (req as any).logResponse = logResponse;
-}
-
-// Error handling middleware
-export function handleSecurityError(error: Error, req: NextRequest): NextResponse {
-  logger.error('Security middleware error', {
-    error: error.message,
-    stack: error.stack,
-    method: req.method,
-    url: req.url,
-    ip: getClientIP(req),
   });
 
-  return NextResponse.json(
-    {
-      error: 'Internal security error',
-      message: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong',
-    },
-    { status: 500 },
-  );
-}
+  next();
+};
 
-// Main security middleware function
-export function securityMiddleware(req: NextRequest): NextResponse | null {
-  try {
-    // Log the request
-    logRequest(req);
-
-    // Validate environment on first request
-    if (!process.env.SECURITY_INITIALIZED) {
-      validateEnvironment();
-      process.env.SECURITY_INITIALIZED = 'true';
-    }
-
-    // Validate the request
-    const validationError = validateRequest(req);
-    if (validationError) {
-      return validationError;
-    }
-
-    // Add security headers
-    const response = NextResponse.next();
-
-    // Security headers
-    response.headers.set('X-Content-Type-Options', 'nosniff');
-    response.headers.set('X-Frame-Options', 'DENY');
-    response.headers.set('X-XSS-Protection', '1; mode=block');
-    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-    response.headers.set('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
-
-    // HSTS header for HTTPS
-    if (req.nextUrl.protocol === 'https:') {
-      response.headers.set(
-        'Strict-Transport-Security',
-        'max-age=31536000; includeSubDomains; preload',
-      );
-    }
-
-    return response;
-  } catch (error) {
-    return handleSecurityError(error as Error, req);
-  }
-}
-
-// Rate limiting for API routes
-export const apiRateLimit = rateLimit({
-  ...rateLimitConfig,
-  max: 50, // More restrictive for API
-  windowMs: 10 * 60 * 1000, // 10 minutes
-});
-
-// Strict rate limiting for authentication endpoints
-export const authRateLimit = rateLimit({
-  ...rateLimitConfig,
-  max: 5, // Very restrictive for auth
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  skipSuccessfulRequests: true,
-});
-
-export { corsConfig, helmetConfig };
+// Export all security middlewares
+export const securityMiddlewares = [
+  advancedHelmet,
+  advancedCors,
+  aiRateLimit,
+  ipFilter,
+  validateRequest,
+  aiSecurityMiddleware,
+  requestLogger,
+]; 

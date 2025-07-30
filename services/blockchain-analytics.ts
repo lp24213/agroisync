@@ -1,698 +1,262 @@
-/**
- * Advanced Blockchain Analytics Service for AGROTM
- * Real-time on-chain analytics, MEV protection, and cross-chain monitoring
- */
+import { logger } from '@/utils/logger';
 
-import { Connection, PublicKey, AccountInfo } from '@solana/web3.js';
-import { logger } from '@/src/utils/logger';
+interface Transaction {
+  id: string;
+  hash: string;
+  from: string;
+  to: string;
+  amount: number;
+  token: string;
+  timestamp: Date;
+  status: 'pending' | 'confirmed' | 'failed';
+  gasUsed?: number;
+  gasPrice?: number;
+}
 
-export interface OnChainMetrics {
+interface AnalyticsData {
   totalTransactions: number;
   totalVolume: number;
-  uniqueUsers: number;
   averageTransactionSize: number;
-  networkHealth: number;
-  gasEfficiency: number;
+  uniqueUsers: number;
+  topTokens: Array<{
+    symbol: string;
+    volume: number;
+    transactions: number;
+  }>;
+  dailyStats: Array<{
+    date: string;
+    transactions: number;
+    volume: number;
+  }>;
 }
 
-export interface LiquidityAnalysis {
-  poolId: string;
-  totalLiquidity: number;
-  liquidityChange24h: number;
-  impermanentLoss: number;
-  volumeToLiquidityRatio: number;
-  priceImpact: number;
-  optimalTradeSize: number;
-}
+class BlockchainAnalytics {
+  private mockTransactions: Transaction[] = [
+    {
+      id: '1',
+      hash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+      from: '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
+      to: '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b7',
+      amount: 1000,
+      token: 'AGRO',
+      timestamp: new Date('2024-01-15T10:30:00Z'),
+      status: 'confirmed',
+      gasUsed: 21000,
+      gasPrice: 20,
+    },
+    {
+      id: '2',
+      hash: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
+      from: '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b8',
+      to: '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b9',
+      amount: 500,
+      token: 'USDC',
+      timestamp: new Date('2024-01-15T11:15:00Z'),
+      status: 'confirmed',
+      gasUsed: 65000,
+      gasPrice: 25,
+    },
+  ];
 
-export interface MEVProtection {
-  isProtected: boolean;
-  riskLevel: 'low' | 'medium' | 'high';
-  detectedThreats: string[];
-  protectionStrategies: string[];
-  estimatedSavings: number;
-}
-
-export interface CrossChainAnalysis {
-  sourceChain: string;
-  targetChain: string;
-  bridgeHealth: number;
-  estimatedTime: number;
-  fees: number;
-  slippage: number;
-  recommendations: string[];
-}
-
-export interface TokenMetrics {
-  address: string;
-  symbol: string;
-  price: number;
-  marketCap: number;
-  volume24h: number;
-  holders: number;
-  concentration: number;
-  liquidityScore: number;
-  volatilityIndex: number;
-}
-
-export interface RiskAssessment {
-  overallRisk: 'low' | 'medium' | 'high' | 'critical';
-  riskScore: number;
-  factors: {
-    smartContractRisk: number;
-    liquidityRisk: number;
-    marketRisk: number;
-    regulatoryRisk: number;
-  };
-  recommendations: string[];
-  mitigationStrategies: string[];
-}
-
-class BlockchainAnalyticsService {
-  private connection: Connection;
-  private cache: Map<string, { data: any; timestamp: number }>;
-  private cacheTimeout: number = 2 * 60 * 1000; // 2 minutes for real-time data
-  private wsConnections: Map<string, WebSocket>;
-
-  constructor() {
-    this.connection = new Connection(
-      process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com',
-      'confirmed',
-    );
-    this.cache = new Map();
-    this.wsConnections = new Map();
-  }
-
-  /**
-   * Get comprehensive on-chain metrics
-   */
-  async getOnChainMetrics(): Promise<OnChainMetrics> {
-    const cacheKey = 'onchain_metrics';
-    const cached = this.getFromCache(cacheKey);
-    if (cached) return cached;
-
+  async getTransactionHistory(
+    address?: string,
+    limit: number = 50,
+    offset: number = 0
+  ): Promise<Transaction[]> {
     try {
-      const [recentBlockhash, performanceSamples, supply] = await Promise.all([
-        this.connection.getLatestBlockhash(),
-        this.connection.getRecentPerformanceSamples(10),
-        this.connection.getSupply(),
-      ]);
-
-      // Calculate network health based on performance samples
-      const avgTps =
-        performanceSamples.reduce(
-          (sum, sample) => sum + sample.numTransactions / sample.samplePeriodSecs,
-          0,
-        ) / performanceSamples.length;
-
-      const metrics: OnChainMetrics = {
-        totalTransactions: performanceSamples.reduce(
-          (sum, sample) => sum + sample.numTransactions,
-          0,
-        ),
-        totalVolume: await this.calculateTotalVolume(),
-        uniqueUsers: await this.getUniqueUsersCount(),
-        averageTransactionSize: await this.getAverageTransactionSize(),
-        networkHealth: Math.min(avgTps / 1000, 1), // Normalize to 0-1
-        gasEfficiency: await this.calculateGasEfficiency(),
-      };
-
-      this.setCache(cacheKey, metrics);
-      logger.info('On-chain metrics calculated', { avgTps, networkHealth: metrics.networkHealth });
-
-      return metrics;
-    } catch (error) {
-      logger.error('Failed to get on-chain metrics', { error });
-      return this.getFallbackMetrics();
+      logger.info('Fetching transaction history', { address, limit, offset });
+      
+      // Simular delay de rede
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      let filteredTransactions = this.mockTransactions;
+      
+      if (address) {
+        filteredTransactions = this.mockTransactions.filter(
+          tx => tx.from.toLowerCase() === address.toLowerCase() || 
+                tx.to.toLowerCase() === address.toLowerCase()
+        );
+      }
+      
+      return filteredTransactions
+        .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
+        .slice(offset, offset + limit);
+    } catch (error: any) {
+      logger.error('Error fetching transaction history', error);
+      throw new Error('Failed to fetch transaction history');
     }
   }
 
-  /**
-   * Analyze liquidity pools for optimal trading
-   */
-  async analyzeLiquidity(poolAddress: string): Promise<LiquidityAnalysis> {
-    const cacheKey = `liquidity_${poolAddress}`;
-    const cached = this.getFromCache(cacheKey);
-    if (cached) return cached;
-
+  async getAnalyticsData(timeRange: '24h' | '7d' | '30d' | '1y' = '7d'): Promise<AnalyticsData> {
     try {
-      const poolInfo = await this.getPoolInfo(poolAddress);
-      const historicalData = await this.getPoolHistoricalData(poolAddress);
-
-      const analysis: LiquidityAnalysis = {
-        poolId: poolAddress,
-        totalLiquidity: poolInfo.totalLiquidity,
-        liquidityChange24h: this.calculateLiquidityChange(historicalData),
-        impermanentLoss: this.calculateImpermanentLoss(historicalData),
-        volumeToLiquidityRatio: poolInfo.volume24h / poolInfo.totalLiquidity,
-        priceImpact: await this.calculatePriceImpact(poolAddress, 1000),
-        optimalTradeSize: this.calculateOptimalTradeSize(poolInfo),
-      };
-
-      this.setCache(cacheKey, analysis);
-      logger.info('Liquidity analysis completed', {
-        poolAddress,
-        totalLiquidity: analysis.totalLiquidity,
-      });
-
-      return analysis;
-    } catch (error) {
-      logger.error('Liquidity analysis failed', { error, poolAddress });
-      return this.getFallbackLiquidityAnalysis(poolAddress);
-    }
-  }
-
-  /**
-   * MEV protection and sandwich attack detection
-   */
-  async analyzeMEVRisk(transactionData: any): Promise<MEVProtection> {
-    try {
-      const detectedThreats: string[] = [];
-      let riskLevel: 'low' | 'medium' | 'high' = 'low';
-
-      // Analyze transaction patterns for MEV risks
-      const suspiciousPatterns = await this.detectSuspiciousPatterns(transactionData);
-
-      if (suspiciousPatterns.sandwichAttack) {
-        detectedThreats.push('Potential sandwich attack detected');
-        riskLevel = 'high';
-      }
-
-      if (suspiciousPatterns.frontRunning) {
-        detectedThreats.push('Front-running risk identified');
-        riskLevel = riskLevel === 'high' ? 'high' : 'medium';
-      }
-
-      if (suspiciousPatterns.arbitrage) {
-        detectedThreats.push('Arbitrage opportunity detected');
-      }
-
-      const protection: MEVProtection = {
-        isProtected: detectedThreats.length === 0,
-        riskLevel,
-        detectedThreats,
-        protectionStrategies: this.generateProtectionStrategies(detectedThreats),
-        estimatedSavings: this.calculatePotentialSavings(transactionData, detectedThreats),
-      };
-
-      logger.info('MEV analysis completed', { riskLevel, threatsCount: detectedThreats.length });
-      return protection;
-    } catch (error) {
-      logger.error('MEV analysis failed', { error });
+      logger.info('Fetching analytics data', { timeRange });
+      
+      // Simular delay de rede
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Simular dados de analytics
+      const totalTransactions = 156789;
+      const totalVolume = 12500000;
+      const averageTransactionSize = totalVolume / totalTransactions;
+      const uniqueUsers = 25430;
+      
+      const topTokens = [
+        { symbol: 'AGRO', volume: 5000000, transactions: 78901 },
+        { symbol: 'USDC', volume: 3000000, transactions: 45678 },
+        { symbol: 'SOL', volume: 2000000, transactions: 23456 },
+        { symbol: 'BTC', volume: 1500000, transactions: 8754 },
+      ];
+      
+      const dailyStats = [
+        { date: '2024-01-09', transactions: 1234, volume: 98765 },
+        { date: '2024-01-10', transactions: 1456, volume: 112345 },
+        { date: '2024-01-11', transactions: 1678, volume: 134567 },
+        { date: '2024-01-12', transactions: 1890, volume: 156789 },
+        { date: '2024-01-13', transactions: 2102, volume: 178901 },
+        { date: '2024-01-14', transactions: 2324, volume: 201234 },
+        { date: '2024-01-15', transactions: 2546, volume: 223456 },
+      ];
+      
       return {
-        isProtected: false,
-        riskLevel: 'medium',
-        detectedThreats: ['Analysis unavailable'],
-        protectionStrategies: ['Use private mempool', 'Implement time delays'],
-        estimatedSavings: 0,
+        totalTransactions,
+        totalVolume,
+        averageTransactionSize,
+        uniqueUsers,
+        topTokens,
+        dailyStats,
       };
+    } catch (error: any) {
+      logger.error('Error fetching analytics data', error);
+      throw new Error('Failed to fetch analytics data');
     }
   }
 
-  /**
-   * Cross-chain bridge analysis and optimization
-   */
-  async analyzeCrossChainBridge(
-    sourceChain: string,
-    targetChain: string,
+  async getTransactionDetails(hash: string): Promise<Transaction | null> {
+    try {
+      logger.info('Fetching transaction details', { hash });
+      
+      // Simular delay de rede
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      return this.mockTransactions.find(tx => tx.hash === hash) || null;
+    } catch (error: any) {
+      logger.error('Error fetching transaction details', error);
+      throw new Error('Failed to fetch transaction details');
+    }
+  }
+
+  async getAddressAnalytics(address: string): Promise<{
+    totalTransactions: number;
+    totalVolume: number;
+    averageTransactionSize: number;
+    firstTransaction: Date | null;
+    lastTransaction: Date | null;
+    mostUsedTokens: Array<{ symbol: string; count: number }>;
+  }> {
+    try {
+      logger.info('Fetching address analytics', { address });
+      
+      // Simular delay de rede
+      await new Promise(resolve => setTimeout(resolve, 400));
+      
+      const addressTransactions = this.mockTransactions.filter(
+        tx => tx.from.toLowerCase() === address.toLowerCase() || 
+              tx.to.toLowerCase() === address.toLowerCase()
+      );
+      
+      const totalTransactions = addressTransactions.length;
+      const totalVolume = addressTransactions.reduce((sum, tx) => sum + tx.amount, 0);
+      const averageTransactionSize = totalTransactions > 0 ? totalVolume / totalTransactions : 0;
+      
+      const timestamps = addressTransactions.map(tx => tx.timestamp);
+      const firstTransaction = timestamps.length > 0 ? new Date(Math.min(...timestamps.map(t => t.getTime()))) : null;
+      const lastTransaction = timestamps.length > 0 ? new Date(Math.max(...timestamps.map(t => t.getTime()))) : null;
+      
+      // Contar tokens mais usados
+      const tokenCounts: { [key: string]: number } = {};
+      addressTransactions.forEach(tx => {
+        tokenCounts[tx.token] = (tokenCounts[tx.token] || 0) + 1;
+      });
+      
+      const mostUsedTokens = Object.entries(tokenCounts)
+        .map(([symbol, count]) => ({ symbol, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5);
+      
+      return {
+        totalTransactions,
+        totalVolume,
+        averageTransactionSize,
+        firstTransaction,
+        lastTransaction,
+        mostUsedTokens,
+      };
+    } catch (error: any) {
+      logger.error('Error fetching address analytics', error);
+      throw new Error('Failed to fetch address analytics');
+    }
+  }
+
+  async getGasEstimate(
+    from: string,
+    to: string,
     amount: number,
-  ): Promise<CrossChainAnalysis> {
-    const cacheKey = `bridge_${sourceChain}_${targetChain}_${amount}`;
-    const cached = this.getFromCache(cacheKey);
-    if (cached) return cached;
-
+    token: string
+  ): Promise<{
+    gasLimit: number;
+    gasPrice: number;
+    estimatedCost: number;
+  }> {
     try {
-      const bridgeData = await this.getBridgeData(sourceChain, targetChain);
-
-      const analysis: CrossChainAnalysis = {
-        sourceChain,
-        targetChain,
-        bridgeHealth: bridgeData.health || 0.95,
-        estimatedTime: bridgeData.estimatedTime || 300, // 5 minutes default
-        fees: this.calculateBridgeFees(amount, bridgeData),
-        slippage: this.calculateBridgeSlippage(amount, bridgeData),
-        recommendations: this.generateBridgeRecommendations(bridgeData, amount),
+      logger.info('Estimating gas', { from, to, amount, token });
+      
+      // Simular delay de rede
+      await new Promise(resolve => setTimeout(resolve, 150));
+      
+      // Simulação de estimativa de gas
+      const baseGasLimit = 21000;
+      const tokenGasMultiplier = token === 'AGRO' ? 1.2 : 1.0;
+      const gasLimit = Math.round(baseGasLimit * tokenGasMultiplier);
+      const gasPrice = 20; // Gwei
+      const estimatedCost = gasLimit * gasPrice * 1e-9; // Convert to ETH
+      
+      return {
+        gasLimit,
+        gasPrice,
+        estimatedCost,
       };
-
-      this.setCache(cacheKey, analysis);
-      logger.info('Cross-chain analysis completed', {
-        sourceChain,
-        targetChain,
-        fees: analysis.fees,
-      });
-
-      return analysis;
-    } catch (error) {
-      logger.error('Cross-chain analysis failed', { error, sourceChain, targetChain });
-      return this.getFallbackCrossChainAnalysis(sourceChain, targetChain);
+    } catch (error: any) {
+      logger.error('Error estimating gas', error);
+      throw new Error('Failed to estimate gas');
     }
   }
 
-  /**
-   * Comprehensive token analysis
-   */
-  async analyzeToken(tokenAddress: string): Promise<TokenMetrics> {
-    const cacheKey = `token_${tokenAddress}`;
-    const cached = this.getFromCache(cacheKey);
-    if (cached) return cached;
-
+  async getNetworkStatus(): Promise<{
+    isHealthy: boolean;
+    blockHeight: number;
+    averageBlockTime: number;
+    pendingTransactions: number;
+    networkLoad: 'low' | 'medium' | 'high';
+  }> {
     try {
-      const [tokenInfo, priceData, holderData, liquidityData] = await Promise.all([
-        this.getTokenInfo(tokenAddress),
-        this.getTokenPrice(tokenAddress),
-        this.getTokenHolders(tokenAddress),
-        this.getTokenLiquidity(tokenAddress),
-      ]);
-
-      const metrics: TokenMetrics = {
-        address: tokenAddress,
-        symbol: tokenInfo.symbol,
-        price: priceData.price,
-        marketCap: priceData.price * tokenInfo.supply,
-        volume24h: priceData.volume24h,
-        holders: holderData.count,
-        concentration: this.calculateConcentration(holderData.distribution),
-        liquidityScore: this.calculateLiquidityScore(liquidityData),
-        volatilityIndex: this.calculateVolatility(priceData.history),
+      logger.info('Fetching network status');
+      
+      // Simular delay de rede
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      return {
+        isHealthy: true,
+        blockHeight: 12345678,
+        averageBlockTime: 0.4, // seconds
+        pendingTransactions: 1234,
+        networkLoad: 'medium',
       };
-
-      this.setCache(cacheKey, metrics);
-      logger.info('Token analysis completed', {
-        symbol: metrics.symbol,
-        price: metrics.price,
-        holders: metrics.holders,
-      });
-
-      return metrics;
-    } catch (error) {
-      logger.error('Token analysis failed', { error, tokenAddress });
-      return this.getFallbackTokenMetrics(tokenAddress);
+    } catch (error: any) {
+      logger.error('Error fetching network status', error);
+      throw new Error('Failed to fetch network status');
     }
-  }
-
-  /**
-   * Comprehensive risk assessment
-   */
-  async assessRisk(
-    tokenAddress: string,
-    poolAddress?: string,
-    amount?: number,
-  ): Promise<RiskAssessment> {
-    try {
-      const [tokenMetrics, contractAudit, liquidityAnalysis, marketData] = await Promise.all([
-        this.analyzeToken(tokenAddress),
-        this.auditSmartContract(tokenAddress),
-        poolAddress ? this.analyzeLiquidity(poolAddress) : null,
-        this.getMarketRiskData(tokenAddress),
-      ]);
-
-      const riskFactors = {
-        smartContractRisk: contractAudit.riskScore,
-        liquidityRisk: liquidityAnalysis ? this.calculateLiquidityRisk(liquidityAnalysis) : 0.3,
-        marketRisk: this.calculateMarketRisk(tokenMetrics, marketData),
-        regulatoryRisk: this.calculateRegulatoryRisk(tokenAddress),
-      };
-
-      const riskScore = Object.values(riskFactors).reduce((sum, risk) => sum + risk, 0) / 4;
-      const overallRisk = this.categorizeRisk(riskScore);
-
-      const assessment: RiskAssessment = {
-        overallRisk,
-        riskScore,
-        factors: riskFactors,
-        recommendations: this.generateRiskRecommendations(riskFactors),
-        mitigationStrategies: this.generateMitigationStrategies(riskFactors),
-      };
-
-      logger.info('Risk assessment completed', {
-        tokenAddress,
-        overallRisk,
-        riskScore,
-      });
-
-      return assessment;
-    } catch (error) {
-      logger.error('Risk assessment failed', { error, tokenAddress });
-      return this.getFallbackRiskAssessment();
-    }
-  }
-
-  /**
-   * Real-time monitoring with WebSocket connections
-   */
-  async startRealTimeMonitoring(addresses: string[], callback: (data: any) => void): Promise<void> {
-    try {
-      for (const address of addresses) {
-        const ws = new WebSocket(`wss://api.mainnet-beta.solana.com`);
-
-        ws.onopen = () => {
-          ws.send(
-            JSON.stringify({
-              jsonrpc: '2.0',
-              id: 1,
-              method: 'accountSubscribe',
-              params: [address, { encoding: 'jsonParsed' }],
-            }),
-          );
-        };
-
-        ws.onmessage = (event) => {
-          const data = JSON.parse(event.data);
-          if (data.method === 'accountNotification') {
-            callback({
-              address,
-              data: data.params.result,
-              timestamp: Date.now(),
-            });
-          }
-        };
-
-        this.wsConnections.set(address, ws);
-      }
-
-      logger.info('Real-time monitoring started', { addressCount: addresses.length });
-    } catch (error) {
-      logger.error('Failed to start real-time monitoring', { error });
-    }
-  }
-
-  /**
-   * Stop real-time monitoring
-   */
-  stopRealTimeMonitoring(address?: string): void {
-    if (address) {
-      const ws = this.wsConnections.get(address);
-      if (ws) {
-        ws.close();
-        this.wsConnections.delete(address);
-      }
-    } else {
-      // Close all connections
-      for (const [addr, ws] of this.wsConnections) {
-        ws.close();
-      }
-      this.wsConnections.clear();
-    }
-  }
-
-  // Private helper methods
-  private async calculateTotalVolume(): Promise<number> {
-    // Simulate volume calculation
-    return Math.random() * 10000000;
-  }
-
-  private async getUniqueUsersCount(): Promise<number> {
-    // Simulate unique users count
-    return Math.floor(Math.random() * 50000) + 10000;
-  }
-
-  private async getAverageTransactionSize(): Promise<number> {
-    // Simulate average transaction size
-    return Math.random() * 1000 + 100;
-  }
-
-  private async calculateGasEfficiency(): Promise<number> {
-    // Simulate gas efficiency calculation
-    return Math.random() * 0.3 + 0.7;
-  }
-
-  private async getPoolInfo(poolAddress: string): Promise<any> {
-    // Simulate pool info retrieval
-    return {
-      totalLiquidity: Math.random() * 1000000,
-      volume24h: Math.random() * 500000,
-      fees24h: Math.random() * 5000,
-    };
-  }
-
-  private async getPoolHistoricalData(poolAddress: string): Promise<any[]> {
-    // Simulate historical data
-    return Array.from({ length: 24 }, (_, i) => ({
-      timestamp: Date.now() - i * 3600000,
-      liquidity: Math.random() * 1000000,
-      volume: Math.random() * 50000,
-    }));
-  }
-
-  private calculateLiquidityChange(historicalData: any[]): number {
-    if (historicalData.length < 2) return 0;
-    const latest = historicalData[0].liquidity;
-    const previous = historicalData[historicalData.length - 1].liquidity;
-    return ((latest - previous) / previous) * 100;
-  }
-
-  private calculateImpermanentLoss(historicalData: any[]): number {
-    // Simplified impermanent loss calculation
-    return Math.random() * 5; // 0-5% loss
-  }
-
-  private async calculatePriceImpact(poolAddress: string, amount: number): Promise<number> {
-    // Simulate price impact calculation
-    return Math.min(amount / 100000, 0.1); // Max 10% impact
-  }
-
-  private calculateOptimalTradeSize(poolInfo: any): number {
-    // Calculate optimal trade size to minimize slippage
-    return poolInfo.totalLiquidity * 0.01; // 1% of liquidity
-  }
-
-  private async detectSuspiciousPatterns(transactionData: any): Promise<any> {
-    // Simulate pattern detection
-    return {
-      sandwichAttack: Math.random() < 0.1,
-      frontRunning: Math.random() < 0.2,
-      arbitrage: Math.random() < 0.3,
-    };
-  }
-
-  private generateProtectionStrategies(threats: string[]): string[] {
-    const strategies = [
-      'Use private mempool services',
-      'Implement commit-reveal schemes',
-      'Add random delays to transactions',
-      'Use flashloan protection',
-      'Implement slippage protection',
-    ];
-    return strategies.slice(0, Math.max(2, threats.length));
-  }
-
-  private calculatePotentialSavings(transactionData: any, threats: string[]): number {
-    return threats.length * Math.random() * 100; // Simulate savings
-  }
-
-  private async getBridgeData(sourceChain: string, targetChain: string): Promise<any> {
-    // Simulate bridge data
-    return {
-      health: 0.95,
-      estimatedTime: 300,
-      baseFee: 0.001,
-      variableFee: 0.003,
-    };
-  }
-
-  private calculateBridgeFees(amount: number, bridgeData: any): number {
-    return bridgeData.baseFee + amount * bridgeData.variableFee;
-  }
-
-  private calculateBridgeSlippage(amount: number, bridgeData: any): number {
-    return Math.min(amount / 1000000, 0.05); // Max 5% slippage
-  }
-
-  private generateBridgeRecommendations(bridgeData: any, amount: number): string[] {
-    return [
-      'Consider splitting large transactions',
-      'Monitor bridge health before transfer',
-      'Use official bridge interfaces only',
-      'Verify destination address carefully',
-    ];
-  }
-
-  private async getTokenInfo(tokenAddress: string): Promise<any> {
-    // Simulate token info
-    return {
-      symbol: 'TOKEN',
-      supply: Math.random() * 1000000000,
-    };
-  }
-
-  private async getTokenPrice(tokenAddress: string): Promise<any> {
-    return {
-      price: Math.random() * 100,
-      volume24h: Math.random() * 1000000,
-      history: Array.from({ length: 24 }, () => Math.random() * 100),
-    };
-  }
-
-  private async getTokenHolders(tokenAddress: string): Promise<any> {
-    return {
-      count: Math.floor(Math.random() * 10000),
-      distribution: Array.from({ length: 100 }, () => Math.random()),
-    };
-  }
-
-  private async getTokenLiquidity(tokenAddress: string): Promise<any> {
-    return {
-      totalLiquidity: Math.random() * 1000000,
-      pools: Math.floor(Math.random() * 10) + 1,
-    };
-  }
-
-  private calculateConcentration(distribution: number[]): number {
-    // Calculate Gini coefficient for concentration
-    return Math.random() * 0.8; // 0-0.8 concentration
-  }
-
-  private calculateLiquidityScore(liquidityData: any): number {
-    return Math.min(liquidityData.totalLiquidity / 1000000, 1);
-  }
-
-  private calculateVolatility(priceHistory: number[]): number {
-    if (priceHistory.length < 2) return 0;
-    const returns = priceHistory
-      .slice(1)
-      .map((price, i) => (price - priceHistory[i]) / priceHistory[i]);
-    const variance = returns.reduce((sum, ret) => sum + ret * ret, 0) / returns.length;
-    return Math.sqrt(variance);
-  }
-
-  private async auditSmartContract(tokenAddress: string): Promise<any> {
-    // Simulate contract audit
-    return {
-      riskScore: Math.random() * 0.5, // 0-0.5 risk
-      issues: Math.floor(Math.random() * 3),
-    };
-  }
-
-  private async getMarketRiskData(tokenAddress: string): Promise<any> {
-    return {
-      volatility: Math.random() * 0.5,
-      correlation: Math.random() * 2 - 1,
-    };
-  }
-
-  private calculateLiquidityRisk(analysis: LiquidityAnalysis): number {
-    return Math.max(0, 1 - analysis.totalLiquidity / 1000000);
-  }
-
-  private calculateMarketRisk(metrics: TokenMetrics, marketData: any): number {
-    return metrics.volatilityIndex * 0.7 + marketData.volatility * 0.3;
-  }
-
-  private calculateRegulatoryRisk(tokenAddress: string): number {
-    // Simulate regulatory risk assessment
-    return Math.random() * 0.3;
-  }
-
-  private categorizeRisk(riskScore: number): 'low' | 'medium' | 'high' | 'critical' {
-    if (riskScore < 0.3) return 'low';
-    if (riskScore < 0.6) return 'medium';
-    if (riskScore < 0.8) return 'high';
-    return 'critical';
-  }
-
-  private generateRiskRecommendations(factors: any): string[] {
-    const recommendations = [];
-    if (factors.smartContractRisk > 0.5) {
-      recommendations.push('Conduct thorough smart contract audit');
-    }
-    if (factors.liquidityRisk > 0.5) {
-      recommendations.push('Monitor liquidity levels closely');
-    }
-    if (factors.marketRisk > 0.5) {
-      recommendations.push('Implement volatility protection measures');
-    }
-    return recommendations;
-  }
-
-  private generateMitigationStrategies(factors: any): string[] {
-    return [
-      'Diversify portfolio across multiple assets',
-      'Use stop-loss orders for risk management',
-      'Monitor market conditions regularly',
-      'Implement position sizing strategies',
-    ];
-  }
-
-  // Cache management
-  private getFromCache(key: string): any {
-    const cached = this.cache.get(key);
-    if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
-      return cached.data;
-    }
-    return null;
-  }
-
-  private setCache(key: string, data: any): void {
-    this.cache.set(key, { data, timestamp: Date.now() });
-  }
-
-  // Fallback methods
-  private getFallbackMetrics(): OnChainMetrics {
-    return {
-      totalTransactions: 1000000,
-      totalVolume: 50000000,
-      uniqueUsers: 25000,
-      averageTransactionSize: 500,
-      networkHealth: 0.95,
-      gasEfficiency: 0.85,
-    };
-  }
-
-  private getFallbackLiquidityAnalysis(poolAddress: string): LiquidityAnalysis {
-    return {
-      poolId: poolAddress,
-      totalLiquidity: 1000000,
-      liquidityChange24h: 2.5,
-      impermanentLoss: 1.2,
-      volumeToLiquidityRatio: 0.3,
-      priceImpact: 0.02,
-      optimalTradeSize: 10000,
-    };
-  }
-
-  private getFallbackCrossChainAnalysis(
-    sourceChain: string,
-    targetChain: string,
-  ): CrossChainAnalysis {
-    return {
-      sourceChain,
-      targetChain,
-      bridgeHealth: 0.9,
-      estimatedTime: 300,
-      fees: 0.01,
-      slippage: 0.02,
-      recommendations: ['Use official bridges', 'Verify addresses'],
-    };
-  }
-
-  private getFallbackTokenMetrics(tokenAddress: string): TokenMetrics {
-    return {
-      address: tokenAddress,
-      symbol: 'UNKNOWN',
-      price: 1.0,
-      marketCap: 1000000,
-      volume24h: 100000,
-      holders: 1000,
-      concentration: 0.3,
-      liquidityScore: 0.7,
-      volatilityIndex: 0.2,
-    };
-  }
-
-  private getFallbackRiskAssessment(): RiskAssessment {
-    return {
-      overallRisk: 'medium',
-      riskScore: 0.5,
-      factors: {
-        smartContractRisk: 0.4,
-        liquidityRisk: 0.5,
-        marketRisk: 0.6,
-        regulatoryRisk: 0.3,
-      },
-      recommendations: ['Proceed with caution', 'Monitor closely'],
-      mitigationStrategies: ['Diversify investments', 'Use risk management tools'],
-    };
   }
 }
 
-export const blockchainAnalytics = new BlockchainAnalyticsService();
+export const blockchainAnalytics = new BlockchainAnalytics();
+export default blockchainAnalytics; 
