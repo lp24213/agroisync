@@ -10,19 +10,94 @@ updates:
       timezone: "America/Sao_Paulo"
     open-pull-requests-limit: 10
     reviewers:
-      - "agrotm-team"
+      - "luispaulodeoliveira"
     assignees:
-      - "agrotm-devops"
+      - "luispaulodeoliveira"
     commit-message:
-      prefix: "deps"
+      prefix: "chore"
       include: "scope"
     labels:
       - "dependencies"
       - "npm"
     ignore:
-      # Ignore updates to packages that don't support Node 18
-      - dependency-name: "*"
+      # Ignore major version updates for critical packages
+      - dependency-name: "@types/*"
         update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "next"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@solana/web3.js"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@coral-xyz/anchor"
+        update-types: ["version-update:semver-major"]
+
+  # Enable version updates for npm in frontend directory
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/Sao_Paulo"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "luispaulodeoliveira"
+    assignees:
+      - "luispaulodeoliveira"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "frontend"
+      - "npm"
+
+  # Enable version updates for npm in backend directory
+  - package-ecosystem: "npm"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/Sao_Paulo"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "luispaulodeoliveira"
+    assignees:
+      - "luispaulodeoliveira"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "backend"
+      - "npm"
+
+  # Enable version updates for npm in contracts directory
+  - package-ecosystem: "npm"
+    directory: "/contracts"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/Sao_Paulo"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "luispaulodeoliveira"
+    assignees:
+      - "luispaulodeoliveira"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "contracts"
+      - "npm"
 
   # Enable version updates for GitHub Actions
   - package-ecosystem: "github-actions"
@@ -34,9 +109,9 @@ updates:
       timezone: "America/Sao_Paulo"
     open-pull-requests-limit: 5
     reviewers:
-      - "agrotm-team"
+      - "luispaulodeoliveira"
     assignees:
-      - "agrotm-devops"
+      - "luispaulodeoliveira"
     commit-message:
       prefix: "ci"
       include: "scope"
@@ -54,39 +129,19 @@ updates:
       timezone: "America/Sao_Paulo"
     open-pull-requests-limit: 5
     reviewers:
-      - "agrotm-team"
+      - "luispaulodeoliveira"
     assignees:
-      - "agrotm-devops"
+      - "luispaulodeoliveira"
     commit-message:
-      prefix: "docker"
+      prefix: "chore"
       include: "scope"
     labels:
       - "dependencies"
       - "docker"
 
-  # Enable version updates for pip (Python dependencies)
-  - package-ecosystem: "pip"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "America/Sao_Paulo"
-    open-pull-requests-limit: 5
-    reviewers:
-      - "agrotm-team"
-    assignees:
-      - "agrotm-devops"
-    commit-message:
-      prefix: "python"
-      include: "scope"
-    labels:
-      - "dependencies"
-      - "python"
-
-  # Enable version updates for cargo (Rust dependencies)
+  # Enable version updates for Rust (Cargo)
   - package-ecosystem: "cargo"
-    directory: "/"
+    directory: "/contracts"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -94,137 +149,26 @@ updates:
       timezone: "America/Sao_Paulo"
     open-pull-requests-limit: 5
     reviewers:
-      - "agrotm-team"
+      - "luispaulodeoliveira"
     assignees:
-      - "agrotm-blockchain"
+      - "luispaulodeoliveira"
     commit-message:
-      prefix: "rust"
+      prefix: "chore"
       include: "scope"
     labels:
       - "dependencies"
       - "rust"
+      - "cargo"
+    ignore:
+      # Ignore major version updates for critical Rust packages
+      - dependency-name: "anchor-lang"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "anchor-spl"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "solana-program"
+        update-types: ["version-update:semver-major"]
 
-  # Enable version updates for composer (PHP dependencies)
-  - package-ecosystem: "composer"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "America/Sao_Paulo"
-    open-pull-requests-limit: 5
-    reviewers:
-      - "agrotm-team"
-    assignees:
-      - "agrotm-backend"
-    commit-message:
-      prefix: "php"
-      include: "scope"
-    labels:
-      - "dependencies"
-      - "php"
-
-  # Enable version updates for maven (Java dependencies)
-  - package-ecosystem: "maven"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "America/Sao_Paulo"
-    open-pull-requests-limit: 5
-    reviewers:
-      - "agrotm-team"
-    assignees:
-      - "agrotm-backend"
-    commit-message:
-      prefix: "java"
-      include: "scope"
-    labels:
-      - "dependencies"
-      - "java"
-
-  # Enable version updates for gradle (Java dependencies)
-  - package-ecosystem: "gradle"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "America/Sao_Paulo"
-    open-pull-requests-limit: 5
-    reviewers:
-      - "agrotm-team"
-    assignees:
-      - "agrotm-backend"
-    commit-message:
-      prefix: "gradle"
-      include: "scope"
-    labels:
-      - "dependencies"
-      - "gradle"
-
-  # Enable version updates for nuget (.NET dependencies)
-  - package-ecosystem: "nuget"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "America/Sao_Paulo"
-    open-pull-requests-limit: 5
-    reviewers:
-      - "agrotm-team"
-    assignees:
-      - "agrotm-backend"
-    commit-message:
-      prefix: "dotnet"
-      include: "scope"
-    labels:
-      - "dependencies"
-      - "dotnet"
-
-  # Enable version updates for bundler (Ruby dependencies)
-  - package-ecosystem: "bundler"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "America/Sao_Paulo"
-    open-pull-requests-limit: 5
-    reviewers:
-      - "agrotm-team"
-    assignees:
-      - "agrotm-backend"
-    commit-message:
-      prefix: "ruby"
-      include: "scope"
-    labels:
-      - "dependencies"
-      - "ruby"
-
-  # Enable version updates for go modules
-  - package-ecosystem: "gomod"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "America/Sao_Paulo"
-    open-pull-requests-limit: 5
-    reviewers:
-      - "agrotm-team"
-    assignees:
-      - "agrotm-backend"
-    commit-message:
-      prefix: "go"
-      include: "scope"
-    labels:
-      - "dependencies"
-      - "go"
-
-  # Enable version updates for terraform
+  # Enable version updates for Terraform
   - package-ecosystem: "terraform"
     directory: "/"
     schedule:
@@ -234,12 +178,33 @@ updates:
       timezone: "America/Sao_Paulo"
     open-pull-requests-limit: 5
     reviewers:
-      - "agrotm-team"
+      - "luispaulodeoliveira"
     assignees:
-      - "agrotm-devops"
+      - "luispaulodeoliveira"
     commit-message:
-      prefix: "terraform"
+      prefix: "chore"
       include: "scope"
     labels:
       - "dependencies"
-      - "terraform" 
+      - "terraform"
+
+  # Enable version updates for Python (if any)
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/Sao_Paulo"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "luispaulodeoliveira"
+    assignees:
+      - "luispaulodeoliveira"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "python"
+      - "pip" 

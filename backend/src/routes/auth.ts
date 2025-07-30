@@ -1,142 +1,127 @@
-import express from 'express';
+import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { logger } from '../../utils/logger';
+import { logger } from '../../../utils/logger';
 
-const router = express.Router();
+const router = Router();
 
-// Mock user database
-const users = [
-  {
-    id: 1,
-    email: 'user@agrotm.com',
-    password: '$2a$10$rQZ8K9L2M1N0P.Q.R.S.T.U.V.W.X.Y.Z',
-    walletAddress: 'Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS',
-  },
-];
-
-// Register
+// Register endpoint
 router.post('/register', async (req, res) => {
   try {
     const { email, password, walletAddress } = req.body;
 
-    // Check if user already exists
-    const existingUser = users.find(user => user.email === email);
-    if (existingUser) {
-      return res.status(400).json({ error: 'User already exists' });
+    // Basic validation
+    if (!email || !password || !walletAddress) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required fields',
+        code: 'MISSING_FIELDS',
+      });
     }
 
-    // Hash password
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    // Create new user
-    const newUser = {
-      id: users.length + 1,
+    // Mock user creation (in real app, save to database)
+    const hashedPassword = await bcrypt.hash(password, 12);
+    
+    logger.info('User registration attempt', {
       email,
-      password: hashedPassword,
       walletAddress,
-    };
-
-    users.push(newUser);
-
-    // Generate JWT token
-    const token = jwt.sign(
-      { userId: newUser.id, email: newUser.email },
-      process.env.JWT_SECRET || 'your-secret-key',
-      { expiresIn: '24h' }
-    );
-
-    logger.info(`New user registered: ${email}`);
+      timestamp: new Date().toISOString(),
+    });
 
     res.status(201).json({
+      success: true,
       message: 'User registered successfully',
-      token,
-      user: {
-        id: newUser.id,
-        email: newUser.email,
-        walletAddress: newUser.walletAddress,
+      data: {
+        email,
+        walletAddress,
       },
     });
   } catch (error) {
     logger.error('Registration error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+      code: 'INTERNAL_ERROR',
+    });
   }
 });
 
-// Login
+// Login endpoint
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find user
-    const user = users.find(u => u.email === email);
-    if (!user) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        error: 'Email and password are required',
+        code: 'MISSING_CREDENTIALS',
+      });
     }
 
-    // Check password
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
-
-    // Generate JWT token
+    // Mock authentication (in real app, verify against database)
     const token = jwt.sign(
-      { userId: user.id, email: user.email },
-      process.env.JWT_SECRET || 'your-secret-key',
+      { email, userId: 'mock-user-id' },
+      process.env.JWT_SECRET || 'fallback-secret',
       { expiresIn: '24h' }
     );
 
-    logger.info(`User logged in: ${email}`);
+    logger.info('User login attempt', {
+      email,
+      timestamp: new Date().toISOString(),
+    });
 
     res.json({
+      success: true,
       message: 'Login successful',
-      token,
-      user: {
-        id: user.id,
-        email: user.email,
-        walletAddress: user.walletAddress,
+      data: {
+        token,
+        user: {
+          email,
+          id: 'mock-user-id',
+        },
       },
     });
   } catch (error) {
     logger.error('Login error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+      code: 'INTERNAL_ERROR',
+    });
   }
 });
 
-// Verify token middleware
-export const verifyToken = (req: any, res: any, next: any) => {
-  const token = req.headers.authorization?.split(' ')[1];
-
-  if (!token) {
-    return res.status(401).json({ error: 'Access token required' });
-  }
-
+// Verify token endpoint
+router.get('/verify', async (req, res) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-    req.user = decoded;
-    next();
+    const token = req.headers.authorization?.replace('Bearer ', '');
+
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        error: 'No token provided',
+        code: 'NO_TOKEN',
+      });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret');
+    
+    res.json({
+      success: true,
+      message: 'Token is valid',
+      data: {
+        user: decoded,
+      },
+    });
   } catch (error) {
-    return res.status(401).json({ error: 'Invalid token' });
+    logger.error('Token verification error:', error);
+    res.status(401).json({
+      success: false,
+      error: 'Invalid token',
+      code: 'INVALID_TOKEN',
+    });
   }
-};
-
-// Get user profile
-router.get('/profile', verifyToken, (req, res) => {
-  const user = users.find(u => u.id === req.user.userId);
-  
-  if (!user) {
-    return res.status(404).json({ error: 'User not found' });
-  }
-
-  res.json({
-    user: {
-      id: user.id,
-      email: user.email,
-      walletAddress: user.walletAddress,
-    },
-  });
 });
 
 export default router; 

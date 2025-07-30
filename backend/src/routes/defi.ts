@@ -1,260 +1,290 @@
-import express from 'express';
-import { verifyToken } from './auth';
-import { logger } from '../../utils/logger';
+import { Router } from 'express';
+import { logger } from '../../../utils/logger';
 
-const router = express.Router();
+const router = Router();
 
-// Mock DeFi data
-const liquidityPools = [
-  {
-    id: 1,
-    name: 'SOL-USDC Pool',
-    token0: 'SOL',
-    token1: 'USDC',
-    token0Address: 'So11111111111111111111111111111111111111112',
-    token1Address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    totalLiquidity: 2500000,
-    volume24h: 125000,
-    feeRate: 0.003,
-    apy: 45.2,
-    isActive: true,
-  },
-  {
-    id: 2,
-    name: 'AGROTM-SOL Pool',
-    token0: 'AGROTM',
-    token1: 'SOL',
-    token0Address: 'AgroTM111111111111111111111111111111111111111',
-    token1Address: 'So11111111111111111111111111111111111111112',
-    totalLiquidity: 850000,
-    volume24h: 45000,
-    feeRate: 0.003,
-    apy: 38.7,
-    isActive: true,
-  },
-  {
-    id: 3,
-    name: 'RAY-USDC Pool',
-    token0: 'RAY',
-    token1: 'USDC',
-    token0Address: '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R',
-    token1Address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    totalLiquidity: 1200000,
-    volume24h: 89000,
-    feeRate: 0.003,
-    apy: 42.1,
-    isActive: true,
-  },
-];
-
-const yieldFarms = [
-  {
-    id: 1,
-    name: 'SOL-USDC Farm',
-    poolId: 1,
-    rewardToken: 'AGROTM',
-    rewardRate: 100,
-    totalStaked: 1800000,
-    apy: 65.3,
-    isActive: true,
-  },
-  {
-    id: 2,
-    name: 'AGROTM-SOL Farm',
-    poolId: 2,
-    rewardToken: 'AGROTM',
-    rewardRate: 150,
-    totalStaked: 650000,
-    apy: 78.9,
-    isActive: true,
-  },
-];
-
-// Get all liquidity pools
-router.get('/pools', (req, res) => {
+// Get DeFi pools
+router.get('/pools', async (req, res) => {
   try {
-    logger.info('Fetching liquidity pools');
+    const mockPools = [
+      {
+        id: 1,
+        name: 'SOL-USDC Pool',
+        token0: 'SOL',
+        token1: 'USDC',
+        totalLiquidity: 2500000,
+        volume24h: 125000,
+        apy: 45.2,
+        fee: 0.3,
+        tvl: 2500000,
+      },
+      {
+        id: 2,
+        name: 'AGROTM-SOL Pool',
+        token0: 'AGROTM',
+        token1: 'SOL',
+        totalLiquidity: 850000,
+        volume24h: 45000,
+        apy: 38.7,
+        fee: 0.3,
+        tvl: 850000,
+      },
+      {
+        id: 3,
+        name: 'AGROTM-USDC Pool',
+        token0: 'AGROTM',
+        token1: 'USDC',
+        totalLiquidity: 1200000,
+        volume24h: 75000,
+        apy: 42.1,
+        fee: 0.3,
+        tvl: 1200000,
+      },
+    ];
+
     res.json({
       success: true,
-      data: liquidityPools,
+      data: mockPools,
     });
   } catch (error) {
-    logger.error('Error fetching liquidity pools:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    logger.error('Error fetching DeFi pools:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+      code: 'INTERNAL_ERROR',
+    });
   }
 });
 
-// Get specific liquidity pool
-router.get('/pools/:id', (req, res) => {
+// Get pool details
+router.get('/pools/:id', async (req, res) => {
   try {
     const poolId = parseInt(req.params.id);
-    const pool = liquidityPools.find(p => p.id === poolId);
+    
+    const mockPool = {
+      id: poolId,
+      name: 'SOL-USDC Pool',
+      token0: 'SOL',
+      token1: 'USDC',
+      totalLiquidity: 2500000,
+      volume24h: 125000,
+      apy: 45.2,
+      fee: 0.3,
+      tvl: 2500000,
+      price0: 100,
+      price1: 1,
+      priceChange24h: 2.5,
+      liquidityDistribution: [
+        { range: '0.1x - 1x', liquidity: 500000 },
+        { range: '1x - 10x', liquidity: 1500000 },
+        { range: '10x - 100x', liquidity: 500000 },
+      ],
+    };
 
-    if (!pool) {
-      return res.status(404).json({ error: 'Pool not found' });
-    }
-
-    logger.info(`Fetching liquidity pool: ${poolId}`);
     res.json({
       success: true,
-      data: pool,
+      data: mockPool,
     });
   } catch (error) {
-    logger.error('Error fetching liquidity pool:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-// Get yield farms
-router.get('/farms', (req, res) => {
-  try {
-    logger.info('Fetching yield farms');
-    res.json({
-      success: true,
-      data: yieldFarms,
+    logger.error('Error fetching pool details:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+      code: 'INTERNAL_ERROR',
     });
-  } catch (error) {
-    logger.error('Error fetching yield farms:', error);
-    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
 // Add liquidity
-router.post('/add-liquidity', verifyToken, (req, res) => {
+router.post('/add-liquidity', async (req, res) => {
   try {
-    const { poolId, token0Amount, token1Amount } = req.body;
-    const userId = req.user.userId;
+    const { poolId, amount0, amount1, walletAddress } = req.body;
 
-    const pool = liquidityPools.find(p => p.id === poolId);
-    if (!pool) {
-      return res.status(404).json({ error: 'Pool not found' });
+    if (!poolId || !amount0 || !amount1 || !walletAddress) {
+      return res.status(400).json({
+        success: false,
+        error: 'Pool ID, amounts, and wallet address are required',
+        code: 'MISSING_FIELDS',
+      });
     }
 
-    // Simulate liquidity addition
-    const liquidityTokens = Math.sqrt(token0Amount * token1Amount);
+    logger.info('Add liquidity attempt', {
+      poolId,
+      amount0,
+      amount1,
+      walletAddress,
+      timestamp: new Date().toISOString(),
+    });
 
-    logger.info(`User ${userId} added liquidity to pool ${poolId}`);
+    // Mock liquidity addition transaction
+    const mockTransaction = {
+      txHash: 'mock-liquidity-hash-' + Date.now(),
+      status: 'pending',
+      poolId,
+      amount0,
+      amount1,
+      walletAddress,
+      lpTokens: amount0 * 0.5, // Mock LP token calculation
+    };
 
     res.status(201).json({
       success: true,
-      message: 'Liquidity added successfully',
-      data: {
-        liquidityTokens,
-        poolId,
-        token0Amount,
-        token1Amount,
-      },
+      message: 'Liquidity addition transaction initiated',
+      data: mockTransaction,
     });
   } catch (error) {
-    logger.error('Error adding liquidity:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    logger.error('Add liquidity error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+      code: 'INTERNAL_ERROR',
+    });
   }
 });
 
 // Remove liquidity
-router.post('/remove-liquidity', verifyToken, (req, res) => {
+router.post('/remove-liquidity', async (req, res) => {
   try {
-    const { poolId, liquidityTokens } = req.body;
-    const userId = req.user.userId;
+    const { poolId, lpTokens, walletAddress } = req.body;
 
-    const pool = liquidityPools.find(p => p.id === poolId);
-    if (!pool) {
-      return res.status(404).json({ error: 'Pool not found' });
+    if (!poolId || !lpTokens || !walletAddress) {
+      return res.status(400).json({
+        success: false,
+        error: 'Pool ID, LP tokens, and wallet address are required',
+        code: 'MISSING_FIELDS',
+      });
     }
 
-    // Simulate liquidity removal
-    const token0Amount = liquidityTokens * 0.5; // Simplified calculation
-    const token1Amount = liquidityTokens * 0.5;
+    logger.info('Remove liquidity attempt', {
+      poolId,
+      lpTokens,
+      walletAddress,
+      timestamp: new Date().toISOString(),
+    });
 
-    logger.info(`User ${userId} removed liquidity from pool ${poolId}`);
+    // Mock liquidity removal transaction
+    const mockTransaction = {
+      txHash: 'mock-remove-liquidity-hash-' + Date.now(),
+      status: 'pending',
+      poolId,
+      lpTokens,
+      walletAddress,
+      amount0: lpTokens * 2, // Mock token amounts
+      amount1: lpTokens * 200,
+    };
 
     res.json({
       success: true,
-      message: 'Liquidity removed successfully',
-      data: {
-        token0Amount,
-        token1Amount,
-        poolId,
-      },
+      message: 'Liquidity removal transaction initiated',
+      data: mockTransaction,
     });
   } catch (error) {
-    logger.error('Error removing liquidity:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    logger.error('Remove liquidity error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+      code: 'INTERNAL_ERROR',
+    });
   }
 });
 
 // Swap tokens
-router.post('/swap', verifyToken, (req, res) => {
+router.post('/swap', async (req, res) => {
   try {
-    const { tokenIn, tokenOut, amountIn, slippage } = req.body;
-    const userId = req.user.userId;
+    const { poolId, tokenIn, tokenOut, amountIn, walletAddress } = req.body;
 
-    // Simulate swap calculation
-    const amountOut = amountIn * 0.997; // Simplified calculation with 0.3% fee
+    if (!poolId || !tokenIn || !tokenOut || !amountIn || !walletAddress) {
+      return res.status(400).json({
+        success: false,
+        error: 'Pool ID, tokens, amount, and wallet address are required',
+        code: 'MISSING_FIELDS',
+      });
+    }
 
-    logger.info(`User ${userId} swapped ${amountIn} ${tokenIn} for ${amountOut} ${tokenOut}`);
-
-    res.json({
-      success: true,
-      message: 'Swap successful',
-      data: {
-        tokenIn,
-        tokenOut,
-        amountIn,
-        amountOut,
-        slippage,
-      },
+    logger.info('Swap attempt', {
+      poolId,
+      tokenIn,
+      tokenOut,
+      amountIn,
+      walletAddress,
+      timestamp: new Date().toISOString(),
     });
-  } catch (error) {
-    logger.error('Error swapping tokens:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
 
-// Get DeFi statistics
-router.get('/stats', (req, res) => {
-  try {
-    const totalValueLocked = liquidityPools.reduce((sum, pool) => sum + pool.totalLiquidity, 0);
-    const totalVolume24h = liquidityPools.reduce((sum, pool) => sum + pool.volume24h, 0);
-    const averageApy = yieldFarms.reduce((sum, farm) => sum + farm.apy, 0) / yieldFarms.length;
-
-    logger.info('Fetching DeFi statistics');
-
-    res.json({
-      success: true,
-      data: {
-        totalValueLocked,
-        totalVolume24h,
-        averageApy,
-        totalPools: liquidityPools.length,
-        totalFarms: yieldFarms.length,
-      },
-    });
-  } catch (error) {
-    logger.error('Error fetching DeFi statistics:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-// Get token prices
-router.get('/prices', (req, res) => {
-  try {
-    const prices = {
-      SOL: 98.45,
-      USDC: 1.00,
-      AGROTM: 0.25,
-      RAY: 2.34,
+    // Mock swap transaction
+    const mockTransaction = {
+      txHash: 'mock-swap-hash-' + Date.now(),
+      status: 'pending',
+      poolId,
+      tokenIn,
+      tokenOut,
+      amountIn,
+      amountOut: amountIn * 0.997, // Mock swap calculation with fee
+      walletAddress,
+      priceImpact: 0.1, // Mock price impact
     };
 
-    logger.info('Fetching token prices');
+    res.json({
+      success: true,
+      message: 'Swap transaction initiated',
+      data: mockTransaction,
+    });
+  } catch (error) {
+    logger.error('Swap error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+      code: 'INTERNAL_ERROR',
+    });
+  }
+});
+
+// Get user positions
+router.get('/positions', async (req, res) => {
+  try {
+    const { walletAddress } = req.query;
+
+    if (!walletAddress) {
+      return res.status(400).json({
+        success: false,
+        error: 'Wallet address is required',
+        code: 'MISSING_WALLET_ADDRESS',
+      });
+    }
+
+    const mockPositions = [
+      {
+        id: 1,
+        poolId: 1,
+        poolName: 'SOL-USDC Pool',
+        lpTokens: 1000,
+        token0Amount: 500,
+        token1Amount: 50000,
+        value: 100000,
+        unclaimedFees: 25.5,
+      },
+      {
+        id: 2,
+        poolId: 2,
+        poolName: 'AGROTM-SOL Pool',
+        lpTokens: 500,
+        token0Amount: 2500,
+        token1Amount: 25,
+        value: 50000,
+        unclaimedFees: 12.3,
+      },
+    ];
 
     res.json({
       success: true,
-      data: prices,
+      data: mockPositions,
     });
   } catch (error) {
-    logger.error('Error fetching token prices:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    logger.error('Error fetching user positions:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+      code: 'INTERNAL_ERROR',
+    });
   }
 });
 

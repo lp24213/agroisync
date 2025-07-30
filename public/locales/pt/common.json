@@ -1,4 +1,139 @@
 {
-  "welcome": "Bem-vindo ao AGROTM",
-  "description": "Plataforma DeFi descentralizada para o agronegócio."
+  "app": {
+    "name": "AGROTM",
+    "tagline": "Plataforma DeFi para Agricultura",
+    "description": "Revolucionando a agricultura com tecnologia blockchain"
+  },
+  "navigation": {
+    "home": "Início",
+    "dashboard": "Painel",
+    "staking": "Staking",
+    "farming": "Yield Farming",
+    "nfts": "NFTs",
+    "governance": "Governança",
+    "analytics": "Analytics",
+    "about": "Sobre",
+    "contact": "Contato"
+  },
+  "actions": {
+    "connect": "Conectar Carteira",
+    "disconnect": "Desconectar",
+    "stake": "Fazer Staking",
+    "unstake": "Remover Staking",
+    "claim": "Resgatar Recompensas",
+    "buy": "Comprar",
+    "sell": "Vender",
+    "mint": "Cunhar NFT",
+    "vote": "Votar",
+    "create": "Criar",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "previous": "Anterior"
+  },
+  "dashboard": {
+    "title": "Painel",
+    "portfolio": "Portfólio",
+    "totalValue": "Valor Total Bloqueado",
+    "rewards": "Recompensas",
+    "apy": "APY",
+    "balance": "Saldo",
+    "recentTransactions": "Transações Recentes",
+    "stakingPools": "Pools de Staking",
+    "yieldFarms": "Farms de Yield"
+  },
+  "staking": {
+    "title": "Staking",
+    "stakeTokens": "Fazer Staking de Tokens",
+    "unstakeTokens": "Remover Staking de Tokens",
+    "claimRewards": "Resgatar Recompensas",
+    "stakedAmount": "Quantidade em Staking",
+    "rewardsEarned": "Recompensas Ganhas",
+    "lockPeriod": "Período de Bloqueio",
+    "apy": "APY",
+    "totalStaked": "Total em Staking",
+    "availableToStake": "Disponível para Staking"
+  },
+  "farming": {
+    "title": "Yield Farming",
+    "farmTokens": "Farm de Tokens",
+    "harvestRewards": "Colher Recompensas",
+    "liquidity": "Liquidez",
+    "rewardsPerDay": "Recompensas por Dia",
+    "totalValue": "Valor Total",
+    "yourShare": "Sua Participação"
+  },
+  "nfts": {
+    "title": "NFTs",
+    "marketplace": "Marketplace",
+    "myCollection": "Minha Coleção",
+    "mintNFT": "Cunhar NFT",
+    "buyNFT": "Comprar NFT",
+    "sellNFT": "Vender NFT",
+    "price": "Preço",
+    "rarity": "Raridade",
+    "attributes": "Atributos"
+  },
+  "governance": {
+    "title": "Governança",
+    "proposals": "Propostas",
+    "createProposal": "Criar Proposta",
+    "vote": "Votar",
+    "votingPower": "Poder de Voto",
+    "quorum": "Quórum",
+    "executed": "Executada",
+    "pending": "Pendente",
+    "defeated": "Derrotada"
+  },
+  "common": {
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "warning": "Aviso",
+    "info": "Informação",
+    "confirm": "Confirmar",
+    "cancel": "Cancelar",
+    "close": "Fechar",
+    "search": "Pesquisar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "refresh": "Atualizar",
+    "copy": "Copiar",
+    "share": "Compartilhar"
+  },
+  "errors": {
+    "walletNotConnected": "Carteira não conectada",
+    "insufficientBalance": "Saldo insuficiente",
+    "transactionFailed": "Transação falhou",
+    "networkError": "Erro de rede",
+    "userRejected": "Usuário rejeitou a transação",
+    "unknownError": "Erro desconhecido ocorreu"
+  },
+  "success": {
+    "walletConnected": "Carteira conectada com sucesso",
+    "transactionConfirmed": "Transação confirmada",
+    "stakeSuccessful": "Staking realizado com sucesso",
+    "unstakeSuccessful": "Remoção de staking realizada com sucesso",
+    "claimSuccessful": "Recompensas resgatadas com sucesso",
+    "nftMinted": "NFT cunhado com sucesso"
+  },
+  "time": {
+    "seconds": "segundos",
+    "minutes": "minutos",
+    "hours": "horas",
+    "days": "dias",
+    "weeks": "semanas",
+    "months": "meses",
+    "years": "anos"
+  },
+  "currency": {
+    "usd": "USD",
+    "eth": "ETH",
+    "sol": "SOL",
+    "agrotm": "AGROTM"
+  }
 }

@@ -1,149 +1,109 @@
 version: '3.8'
 
 services:
-  # Frontend Application
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=http://backend:3001
-      - NEXT_PUBLIC_SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
-    depends_on:
-      - backend
-    networks:
-      - agrotm-network
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: agrotm-mongodb
     restart: unless-stopped
-
-  # Backend API
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    ports:
-      - "3001:3001"
     environment:
-      - NODE_ENV=production
-      - PORT=3001
-      - DATABASE_URL=postgresql://postgres:password@postgres:5432/agrotm
-      - REDIS_URL=redis://redis:6379
-      - JWT_SECRET=your-super-secret-jwt-key
-      - SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
-      - FRONTEND_URL=http://frontend:3000
-    depends_on:
-      - postgres
-      - redis
-    networks:
-      - agrotm-network
-    restart: unless-stopped
-
-  # API Gateway
-  api-gateway:
-    build:
-      context: ./api
-      dockerfile: Dockerfile
+      MONGO_INITDB_ROOT_USERNAME: agrotm
+      MONGO_INITDB_ROOT_PASSWORD: agrotm123
+      MONGO_INITDB_DATABASE: agrotm
     ports:
-      - "3002:3002"
-    environment:
-      - NODE_ENV=production
-      - PORT=3002
-      - BACKEND_URL=http://backend:3001
-    depends_on:
-      - backend
-    networks:
-      - agrotm-network
-    restart: unless-stopped
-
-  # Staking Module
-  staking:
-    build:
-      context: ./staking
-      dockerfile: Dockerfile
-    ports:
-      - "3003:3003"
-    environment:
-      - NODE_ENV=production
-      - PORT=3003
-      - BACKEND_URL=http://backend:3001
-    depends_on:
-      - backend
-    networks:
-      - agrotm-network
-    restart: unless-stopped
-
-  # DeFi Dashboard
-  defi-dashboard:
-    build:
-      context: ./defi-dashboard
-      dockerfile: Dockerfile
-    ports:
-      - "3004:3004"
-    environment:
-      - NODE_ENV=production
-      - PORT=3004
-      - BACKEND_URL=http://backend:3001
-    depends_on:
-      - backend
-    networks:
-      - agrotm-network
-    restart: unless-stopped
-
-  # PostgreSQL Database
-  postgres:
-    image: postgres:15-alpine
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_DB=agrotm
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
+      - "27017:27017"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mongodb_data:/data/db
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       - agrotm-network
-    restart: unless-stopped
 
   # Redis Cache
   redis:
-    image: redis:7-alpine
+    image: redis:7.2-alpine
+    container_name: agrotm-redis
+    restart: unless-stopped
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
     networks:
       - agrotm-network
-    restart: unless-stopped
 
-  # Nginx Reverse Proxy
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: agrotm-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      MONGODB_URI: mongodb://agrotm:agrotm123@mongodb:27017/agrotm?authSource=admin
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: your-super-secret-jwt-key-change-this-in-production
+      SOLANA_NETWORK: devnet
+      SOLANA_DEVNET_RPC: https://api.devnet.solana.com
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongodb
+      - redis
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - agrotm-network
+
+  # Frontend Application
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: agrotm-frontend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:3001/api
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - agrotm-network
+
+  # Nginx Reverse Proxy (Optional)
   nginx:
     image: nginx:alpine
+    container_name: agrotm-nginx
+    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/ssl:/etc/nginx/ssl
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
     depends_on:
       - frontend
       - backend
-      - api-gateway
-      - staking
-      - defi-dashboard
     networks:
       - agrotm-network
-    restart: unless-stopped
 
-  # Prometheus Monitoring
+  # Monitoring - Prometheus
   prometheus:
     image: prom/prometheus:latest
+    container_name: agrotm-prometheus
+    restart: unless-stopped
     ports:
       - "9090:9090"
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -154,72 +114,35 @@ services:
       - '--web.enable-lifecycle'
     networks:
       - agrotm-network
-    restart: unless-stopped
 
-  # Grafana Dashboard
+  # Monitoring - Grafana
   grafana:
     image: grafana/grafana:latest
-    ports:
-      - "3005:3000"
+    container_name: agrotm-grafana
+    restart: unless-stopped
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+      GF_SECURITY_ADMIN_PASSWORD: admin123
+      GF_USERS_ALLOW_SIGN_UP: false
+    ports:
+      - "3002:3000"
     volumes:
       - grafana_data:/var/lib/grafana
-      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
-      - ./grafana/datasources:/etc/grafana/provisioning/datasources
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources:ro
     depends_on:
       - prometheus
     networks:
       - agrotm-network
-    restart: unless-stopped
-
-  # Elasticsearch for Logging
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
-    ports:
-      - "9200:9200"
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    volumes:
-      - elasticsearch_data:/usr/share/elasticsearch/data
-    networks:
-      - agrotm-network
-    restart: unless-stopped
-
-  # Kibana for Log Visualization
-  kibana:
-    image: docker.elastic.co/kibana/kibana:8.11.0
-    ports:
-      - "5601:5601"
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    depends_on:
-      - elasticsearch
-    networks:
-      - agrotm-network
-    restart: unless-stopped
-
-  # Filebeat for Log Collection
-  filebeat:
-    image: docker.elastic.co/beats/filebeat:8.11.0
-    volumes:
-      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    depends_on:
-      - elasticsearch
-    networks:
-      - agrotm-network
-    restart: unless-stopped
 
 volumes:
-  postgres_data:
+  mongodb_data:
+    driver: local
   redis_data:
+    driver: local
   prometheus_data:
+    driver: local
   grafana_data:
-  elasticsearch_data:
+    driver: local
 
 networks:
   agrotm-network:

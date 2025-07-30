@@ -1,0 +1,345 @@
+[toolchain]
+channel = "1.70.0"
+components = ["rustfmt", "clippy"]
+targets = ["x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc", "x86_64-apple-darwin"]
+
+[profile.release]
+overflow-checks = true
+lto = "fat"
+codegen-units = 1
+opt-level = 3
+debug = false
+strip = "symbols"
+
+[profile.dev]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.test]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.bench]
+opt-level = 3
+debug = false
+overflow-checks = false
+lto = "fat"
+codegen-units = 1
+
+[profile.doc]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.check]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.build-override]
+opt-level = 3
+debug = false
+overflow-checks = false
+lto = "fat"
+codegen-units = 1
+
+[profile.dev-override]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.test-override]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.bench-override]
+opt-level = 3
+debug = false
+overflow-checks = false
+lto = "fat"
+codegen-units = 1
+
+[profile.doc-override]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.check-override]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.build-override.package."*"]
+opt-level = 3
+debug = false
+overflow-checks = false
+lto = "fat"
+codegen-units = 1
+
+[profile.dev-override.package."*"]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.test-override.package."*"]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.bench-override.package."*"]
+opt-level = 3
+debug = false
+overflow-checks = false
+lto = "fat"
+codegen-units = 1
+
+[profile.doc-override.package."*"]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.check-override.package."*"]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.build-override.package.agrotm]
+opt-level = 3
+debug = false
+overflow-checks = false
+lto = "fat"
+codegen-units = 1
+
+[profile.dev-override.package.agrotm]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.test-override.package.agrotm]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.bench-override.package.agrotm]
+opt-level = 3
+debug = false
+overflow-checks = false
+lto = "fat"
+codegen-units = 1
+
+[profile.doc-override.package.agrotm]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.check-override.package.agrotm]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.build-override.package.agrotm-token]
+opt-level = 3
+debug = false
+overflow-checks = false
+lto = "fat"
+codegen-units = 1
+
+[profile.dev-override.package.agrotm-token]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.test-override.package.agrotm-token]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.bench-override.package.agrotm-token]
+opt-level = 3
+debug = false
+overflow-checks = false
+lto = "fat"
+codegen-units = 1
+
+[profile.doc-override.package.agrotm-token]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.check-override.package.agrotm-token]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.build-override.package.agrotm-staking]
+opt-level = 3
+debug = false
+overflow-checks = false
+lto = "fat"
+codegen-units = 1
+
+[profile.dev-override.package.agrotm-staking]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.test-override.package.agrotm-staking]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.bench-override.package.agrotm-staking]
+opt-level = 3
+debug = false
+overflow-checks = false
+lto = "fat"
+codegen-units = 1
+
+[profile.doc-override.package.agrotm-staking]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.check-override.package.agrotm-staking]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.build-override.package.agrotm-nft]
+opt-level = 3
+debug = false
+overflow-checks = false
+lto = "fat"
+codegen-units = 1
+
+[profile.dev-override.package.agrotm-nft]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.test-override.package.agrotm-nft]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.bench-override.package.agrotm-nft]
+opt-level = 3
+debug = false
+overflow-checks = false
+lto = "fat"
+codegen-units = 1
+
+[profile.doc-override.package.agrotm-nft]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.check-override.package.agrotm-nft]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.build-override.package.agrotm-marketplace]
+opt-level = 3
+debug = false
+overflow-checks = false
+lto = "fat"
+codegen-units = 1
+
+[profile.dev-override.package.agrotm-marketplace]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.test-override.package.agrotm-marketplace]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.bench-override.package.agrotm-marketplace]
+opt-level = 3
+debug = false
+overflow-checks = false
+lto = "fat"
+codegen-units = 1
+
+[profile.doc-override.package.agrotm-marketplace]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.check-override.package.agrotm-marketplace]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.build-override.package.agrotm-oracle]
+opt-level = 3
+debug = false
+overflow-checks = false
+lto = "fat"
+codegen-units = 1
+
+[profile.dev-override.package.agrotm-oracle]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.test-override.package.agrotm-oracle]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.bench-override.package.agrotm-oracle]
+opt-level = 3
+debug = false
+overflow-checks = false
+lto = "fat"
+codegen-units = 1
+
+[profile.doc-override.package.agrotm-oracle]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.check-override.package.agrotm-oracle]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.build-override.package.agrotm-governance]
+opt-level = 3
+debug = false
+overflow-checks = false
+lto = "fat"
+codegen-units = 1
+
+[profile.dev-override.package.agrotm-governance]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.test-override.package.agrotm-governance]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.bench-override.package.agrotm-governance]
+opt-level = 3
+debug = false
+overflow-checks = false
+lto = "fat"
+codegen-units = 1
+
+[profile.doc-override.package.agrotm-governance]
+opt-level = 0
+debug = true
+overflow-checks = true
+
+[profile.check-override.package.agrotm-governance]
+opt-level = 0
+debug = true
+overflow-checks = true 

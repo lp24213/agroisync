@@ -1,0 +1,151 @@
+name: "CodeQL Config"
+
+queries:
+  # Use these queries for JavaScript/TypeScript
+  - uses: security-and-quality
+  - uses: security-extended
+  - uses: security-experimental
+
+  # Custom queries for blockchain security
+  - name: Blockchain Security
+    description: "Custom queries for blockchain and Web3 security"
+    queries:
+      - uses: security-and-quality
+      - uses: security-extended
+      - uses: security-experimental
+    paths:
+      - contracts/
+      - frontend/src/blockchain/
+      - backend/src/blockchain/
+
+  # Custom queries for API security
+  - name: API Security
+    description: "Custom queries for API security"
+    queries:
+      - uses: security-and-quality
+      - uses: security-extended
+    paths:
+      - backend/src/api/
+      - frontend/src/api/
+
+paths-ignore:
+  - '**/node_modules'
+  - '**/dist'
+  - '**/build'
+  - '**/.next'
+  - '**/coverage'
+  - '**/test-results'
+  - '**/playwright-report'
+  - '**/cypress/videos'
+  - '**/cypress/screenshots'
+  - '**/.git'
+  - '**/target'
+  - '**/artifacts'
+  - '**/cache'
+  - '**/out'
+  - '**/.turbo'
+  - '**/storybook-static'
+  - '**/.storybook'
+  - '**/docs'
+  - '**/scripts'
+  - '**/migrations'
+  - '**/seeds'
+  - '**/fixtures'
+  - '**/examples'
+  - '**/demos'
+  - '**/samples'
+  - '**/templates'
+  - '**/stubs'
+  - '**/mocks'
+  - '**/fakes'
+  - '**/doubles'
+  - '**/test-utils'
+  - '**/test-helpers'
+  - '**/test-data'
+  - '**/test-fixtures'
+  - '**/test-mocks'
+  - '**/test-stubs'
+  - '**/test-doubles'
+  - '**/test-fakes'
+  - '**/test-utils'
+  - '**/test-helpers'
+  - '**/test-data'
+  - '**/test-fixtures'
+  - '**/test-mocks'
+  - '**/test-stubs'
+  - '**/test-doubles'
+  - '**/test-fakes'
+
+paths:
+  - frontend/src/
+  - backend/src/
+  - contracts/
+  - components/
+  - hooks/
+  - lib/
+  - utils/
+  - services/
+  - contexts/
+  - types/
+  - shared/
+
+# Disable specific queries that are not relevant
+disable-default-queries: false
+
+# Additional query suites
+query-suites:
+  - security-and-quality
+  - security-extended
+  - security-experimental
+
+# Custom query filters
+query-filters:
+  - include:
+      tags contain: security
+  - exclude:
+      tags contain: experimental
+  - exclude:
+      tags contain: deprecated
+
+# Analysis timeout
+analysis-timeout: 3600
+
+# Memory settings
+memory: 8192
+
+# Threads
+threads: 4
+
+# Debug mode
+debug: false
+
+# Verbose logging
+verbose: false
+
+# Additional options
+additional-packs:
+  - codeql/javascript-queries
+  - codeql/typescript-queries
+
+# Custom query pack
+query-pack: ./custom-queries
+
+# Results format
+results-format: sarif-latest
+
+# Upload results
+upload-results: true
+
+# Create database
+create-database: true
+
+# Database location
+database-location: ./codeql-db
+
+# Source archive
+source-archive: ./source-archive
+
+# Custom environment variables
+env:
+  CODEQL_EXTRACTOR_JAVASCRIPT_ROOT: ./codeql-extractors/javascript
+  CODEQL_EXTRACTOR_TYPESCRIPT_ROOT: ./codeql-extractors/typescript 

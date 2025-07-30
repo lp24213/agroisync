@@ -1,266 +1,216 @@
-import express from 'express';
-import { verifyToken } from './auth';
-import { logger } from '../../utils/logger';
+import { Router } from 'express';
+import { logger } from '../../../utils/logger';
 
-const router = express.Router();
+const router = Router();
 
-// Mock staking data
-const stakingPools = [
-  {
-    id: 1,
-    name: 'SOL Staking Pool',
-    token: 'SOL',
-    apy: 12.5,
-    totalStaked: 1250000,
-    participants: 15420,
-    minStake: 1,
-    maxStake: 10000,
-    lockPeriod: '30 days',
-    risk: 'Low',
-    color: '#9945FF',
-  },
-  {
-    id: 2,
-    name: 'AGROTM Staking Pool',
-    token: 'AGROTM',
-    apy: 18.2,
-    totalStaked: 850000,
-    participants: 8920,
-    minStake: 100,
-    maxStake: 50000,
-    lockPeriod: '90 days',
-    risk: 'Medium',
-    color: '#22C55E',
-  },
-  {
-    id: 3,
-    name: 'RAY Staking Pool',
-    token: 'RAY',
-    apy: 15.8,
-    totalStaked: 450000,
-    participants: 5670,
-    minStake: 10,
-    maxStake: 25000,
-    lockPeriod: '60 days',
-    risk: 'Medium',
-    color: '#FF6B6B',
-  },
-];
-
-const userStakes = [
-  {
-    id: 1,
-    userId: 1,
-    poolId: 1,
-    amount: 45.67,
-    startDate: new Date('2024-01-01'),
-    endDate: new Date('2024-02-01'),
-    isActive: true,
-    earned: 2.34,
-  },
-  {
-    id: 2,
-    userId: 1,
-    poolId: 2,
-    amount: 1234.56,
-    startDate: new Date('2024-01-15'),
-    endDate: new Date('2024-04-15'),
-    isActive: true,
-    earned: 45.67,
-  },
-];
-
-// Get all staking pools
-router.get('/pools', (req, res) => {
+// Get staking pools
+router.get('/pools', async (req, res) => {
   try {
-    logger.info('Fetching staking pools');
+    const mockPools = [
+      {
+        id: 1,
+        name: 'AGROTM Staking Pool',
+        token: 'AGROTM',
+        totalStaked: 1000000,
+        apy: 12.5,
+        minStake: 100,
+        maxStake: 100000,
+        lockPeriod: 30,
+        rewards: 125000,
+      },
+      {
+        id: 2,
+        name: 'SOL Staking Pool',
+        token: 'SOL',
+        totalStaked: 500000,
+        apy: 8.2,
+        minStake: 1,
+        maxStake: 50000,
+        lockPeriod: 7,
+        rewards: 41000,
+      },
+    ];
+
     res.json({
       success: true,
-      data: stakingPools,
+      data: mockPools,
     });
   } catch (error) {
     logger.error('Error fetching staking pools:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+      code: 'INTERNAL_ERROR',
+    });
   }
 });
 
-// Get specific staking pool
-router.get('/pools/:id', (req, res) => {
+// Get user staking positions
+router.get('/positions', async (req, res) => {
   try {
-    const poolId = parseInt(req.params.id);
-    const pool = stakingPools.find(p => p.id === poolId);
+    const { walletAddress } = req.query;
 
-    if (!pool) {
-      return res.status(404).json({ error: 'Pool not found' });
+    if (!walletAddress) {
+      return res.status(400).json({
+        success: false,
+        error: 'Wallet address is required',
+        code: 'MISSING_WALLET_ADDRESS',
+      });
     }
 
-    logger.info(`Fetching staking pool: ${poolId}`);
+    const mockPositions = [
+      {
+        id: 1,
+        poolId: 1,
+        poolName: 'AGROTM Staking Pool',
+        stakedAmount: 5000,
+        rewardsEarned: 625,
+        startDate: '2024-01-15T10:30:00Z',
+        endDate: '2024-02-15T10:30:00Z',
+        status: 'active',
+      },
+    ];
+
     res.json({
       success: true,
-      data: pool,
+      data: mockPositions,
     });
   } catch (error) {
-    logger.error('Error fetching staking pool:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-// Get user stakes
-router.get('/user-stakes', verifyToken, (req, res) => {
-  try {
-    const userId = req.user.userId;
-    const userStakeData = userStakes.filter(stake => stake.userId === userId);
-
-    logger.info(`Fetching user stakes for user: ${userId}`);
-    res.json({
-      success: true,
-      data: userStakeData,
+    logger.error('Error fetching staking positions:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+      code: 'INTERNAL_ERROR',
     });
-  } catch (error) {
-    logger.error('Error fetching user stakes:', error);
-    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
 // Stake tokens
-router.post('/stake', verifyToken, (req, res) => {
+router.post('/stake', async (req, res) => {
   try {
-    const { poolId, amount } = req.body;
-    const userId = req.user.userId;
+    const { poolId, amount, walletAddress } = req.body;
 
-    // Validate pool exists
-    const pool = stakingPools.find(p => p.id === poolId);
-    if (!pool) {
-      return res.status(404).json({ error: 'Pool not found' });
-    }
-
-    // Validate amount
-    if (amount < pool.minStake || amount > pool.maxStake) {
-      return res.status(400).json({ 
-        error: `Amount must be between ${pool.minStake} and ${pool.maxStake} ${pool.token}` 
+    if (!poolId || !amount || !walletAddress) {
+      return res.status(400).json({
+        success: false,
+        error: 'Pool ID, amount, and wallet address are required',
+        code: 'MISSING_FIELDS',
       });
     }
 
-    // Create new stake
-    const newStake = {
-      id: userStakes.length + 1,
-      userId,
+    logger.info('Staking attempt', {
       poolId,
-      amount: parseFloat(amount),
-      startDate: new Date(),
-      endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
-      isActive: true,
-      earned: 0,
+      amount,
+      walletAddress,
+      timestamp: new Date().toISOString(),
+    });
+
+    // Mock staking transaction
+    const mockTransaction = {
+      txHash: 'mock-transaction-hash-' + Date.now(),
+      status: 'pending',
+      poolId,
+      amount,
+      walletAddress,
     };
-
-    userStakes.push(newStake);
-
-    logger.info(`User ${userId} staked ${amount} ${pool.token} in pool ${poolId}`);
 
     res.status(201).json({
       success: true,
-      message: 'Staking successful',
-      data: newStake,
+      message: 'Staking transaction initiated',
+      data: mockTransaction,
     });
   } catch (error) {
-    logger.error('Error staking tokens:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    logger.error('Staking error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+      code: 'INTERNAL_ERROR',
+    });
   }
 });
 
 // Unstake tokens
-router.post('/unstake', verifyToken, (req, res) => {
+router.post('/unstake', async (req, res) => {
   try {
-    const { stakeId } = req.body;
-    const userId = req.user.userId;
+    const { positionId, walletAddress } = req.body;
 
-    const stakeIndex = userStakes.findIndex(s => s.id === stakeId && s.userId === userId);
-    
-    if (stakeIndex === -1) {
-      return res.status(404).json({ error: 'Stake not found' });
+    if (!positionId || !walletAddress) {
+      return res.status(400).json({
+        success: false,
+        error: 'Position ID and wallet address are required',
+        code: 'MISSING_FIELDS',
+      });
     }
 
-    const stake = userStakes[stakeIndex];
-    
-    // Check if lock period has passed
-    if (new Date() < stake.endDate) {
-      return res.status(400).json({ error: 'Lock period has not ended yet' });
-    }
+    logger.info('Unstaking attempt', {
+      positionId,
+      walletAddress,
+      timestamp: new Date().toISOString(),
+    });
 
-    // Mark stake as inactive
-    userStakes[stakeIndex].isActive = false;
-
-    logger.info(`User ${userId} unstaked ${stake.amount} tokens from stake ${stakeId}`);
+    // Mock unstaking transaction
+    const mockTransaction = {
+      txHash: 'mock-unstake-hash-' + Date.now(),
+      status: 'pending',
+      positionId,
+      walletAddress,
+    };
 
     res.json({
       success: true,
-      message: 'Unstaking successful',
-      data: {
-        amount: stake.amount,
-        earned: stake.earned,
-      },
+      message: 'Unstaking transaction initiated',
+      data: mockTransaction,
     });
   } catch (error) {
-    logger.error('Error unstaking tokens:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    logger.error('Unstaking error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+      code: 'INTERNAL_ERROR',
+    });
   }
 });
 
 // Claim rewards
-router.post('/claim-rewards', verifyToken, (req, res) => {
+router.post('/claim-rewards', async (req, res) => {
   try {
-    const { stakeId } = req.body;
-    const userId = req.user.userId;
+    const { positionId, walletAddress } = req.body;
 
-    const stake = userStakes.find(s => s.id === stakeId && s.userId === userId);
-    
-    if (!stake) {
-      return res.status(404).json({ error: 'Stake not found' });
+    if (!positionId || !walletAddress) {
+      return res.status(400).json({
+        success: false,
+        error: 'Position ID and wallet address are required',
+        code: 'MISSING_FIELDS',
+      });
     }
 
-    if (stake.earned <= 0) {
-      return res.status(400).json({ error: 'No rewards to claim' });
-    }
+    logger.info('Reward claim attempt', {
+      positionId,
+      walletAddress,
+      timestamp: new Date().toISOString(),
+    });
 
-    const earnedAmount = stake.earned;
-    stake.earned = 0;
-
-    logger.info(`User ${userId} claimed ${earnedAmount} rewards from stake ${stakeId}`);
+    // Mock reward claim transaction
+    const mockTransaction = {
+      txHash: 'mock-claim-hash-' + Date.now(),
+      status: 'pending',
+      positionId,
+      walletAddress,
+      claimedAmount: 125.5,
+    };
 
     res.json({
       success: true,
-      message: 'Rewards claimed successfully',
-      data: {
-        claimed: earnedAmount,
-      },
+      message: 'Reward claim transaction initiated',
+      data: mockTransaction,
     });
   } catch (error) {
-    logger.error('Error claiming rewards:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-// Get staking statistics
-router.get('/stats', (req, res) => {
-  try {
-    const totalValueLocked = stakingPools.reduce((sum, pool) => sum + pool.totalStaked, 0);
-    const averageApy = stakingPools.reduce((sum, pool) => sum + pool.apy, 0) / stakingPools.length;
-    const totalParticipants = stakingPools.reduce((sum, pool) => sum + pool.participants, 0);
-
-    logger.info('Fetching staking statistics');
-
-    res.json({
-      success: true,
-      data: {
-        totalValueLocked,
-        averageApy,
-        totalParticipants,
-        totalPools: stakingPools.length,
-      },
+    logger.error('Reward claim error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+      code: 'INTERNAL_ERROR',
     });
-  } catch (error) {
-    logger.error('Error fetching staking statistics:', error);
-    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

@@ -1,34 +1,298 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["**/.env.*local"],
+  "globalDependencies": [
+    "**/.env.*local",
+    "**/.env",
+    "**/tsconfig.json",
+    "**/package.json"
+  ],
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
-    },
-    "lint": {
-      "dependsOn": ["^lint"]
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**",
+        "dist/**",
+        "build/**",
+        "out/**"
+      ],
+      "env": [
+        "NEXT_PUBLIC_APP_URL",
+        "NEXT_PUBLIC_API_URL",
+        "NEXT_PUBLIC_APP_NAME",
+        "NEXT_PUBLIC_APP_VERSION"
+      ]
     },
     "dev": {
       "cache": false,
       "persistent": true
     },
     "start": {
+      "dependsOn": ["build"],
+      "cache": false
+    },
+    "lint": {
+      "dependsOn": ["^lint"],
+      "outputs": []
+    },
+    "lint:fix": {
+      "dependsOn": ["^lint:fix"],
+      "outputs": []
+    },
+    "type-check": {
+      "dependsOn": ["^type-check"],
+      "outputs": []
+    },
+    "test": {
+      "dependsOn": ["^test"],
+      "outputs": ["coverage/**"],
+      "inputs": [
+        "src/**/*.tsx",
+        "src/**/*.ts",
+        "test/**/*.ts",
+        "test/**/*.tsx",
+        "**/*.test.ts",
+        "**/*.test.tsx",
+        "**/*.spec.ts",
+        "**/*.spec.tsx"
+      ]
+    },
+    "test:watch": {
+      "dependsOn": ["^test:watch"],
       "cache": false,
       "persistent": true
     },
-    "test": {
-      "dependsOn": ["^build"],
+    "test:coverage": {
+      "dependsOn": ["^test:coverage"],
       "outputs": ["coverage/**"]
     },
-    "type-check": {
-      "dependsOn": ["^type-check"]
+    "test:e2e": {
+      "dependsOn": ["^test:e2e"],
+      "outputs": ["test-results/**", "playwright-report/**"]
+    },
+    "format": {
+      "dependsOn": ["^format"],
+      "outputs": []
+    },
+    "format:check": {
+      "dependsOn": ["^format:check"],
+      "outputs": []
     },
     "clean": {
+      "cache": false,
+      "outputs": []
+    },
+    "analyze": {
+      "dependsOn": ["build"],
+      "outputs": ["analyze/**"]
+    },
+    "security:audit": {
+      "dependsOn": ["^security:audit"],
+      "outputs": []
+    },
+    "security:fix": {
+      "dependsOn": ["^security:fix"],
+      "outputs": []
+    },
+    "db:migrate": {
+      "dependsOn": ["^db:migrate"],
+      "outputs": []
+    },
+    "db:seed": {
+      "dependsOn": ["db:migrate", "^db:seed"],
+      "outputs": []
+    },
+    "db:reset": {
+      "dependsOn": ["^db:reset"],
+      "outputs": []
+    },
+    "contracts:build": {
+      "dependsOn": ["^contracts:build"],
+      "outputs": ["target/**", "dist/**", "artifacts/**"]
+    },
+    "contracts:test": {
+      "dependsOn": ["contracts:build", "^contracts:test"],
+      "outputs": ["coverage/**"]
+    },
+    "contracts:deploy": {
+      "dependsOn": ["contracts:build", "^contracts:deploy"],
+      "outputs": []
+    },
+    "frontend:dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "frontend:build": {
+      "dependsOn": ["^frontend:build"],
+      "outputs": [".next/**", "!.next/cache/**", "out/**"]
+    },
+    "backend:dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "backend:build": {
+      "dependsOn": ["^backend:build"],
+      "outputs": ["dist/**", "build/**"]
+    },
+    "install:all": {
+      "cache": false,
+      "outputs": []
+    },
+    "prepare": {
+      "cache": false,
+      "outputs": []
+    },
+    "postinstall": {
+      "cache": false,
+      "outputs": []
+    },
+    "pre-commit": {
+      "dependsOn": ["lint", "type-check", "test"],
+      "outputs": []
+    }
+  },
+  "tasks": {
+    "build": {
+      "description": "Build the application",
+      "cache": true
+    },
+    "dev": {
+      "description": "Start development server",
+      "cache": false,
+      "persistent": true
+    },
+    "start": {
+      "description": "Start production server",
       "cache": false
     },
-    "install": {
+    "lint": {
+      "description": "Run ESLint",
+      "cache": true
+    },
+    "lint:fix": {
+      "description": "Fix ESLint errors",
+      "cache": true
+    },
+    "type-check": {
+      "description": "Run TypeScript type checking",
+      "cache": true
+    },
+    "test": {
+      "description": "Run tests",
+      "cache": true
+    },
+    "test:watch": {
+      "description": "Run tests in watch mode",
+      "cache": false,
+      "persistent": true
+    },
+    "test:coverage": {
+      "description": "Run tests with coverage",
+      "cache": true
+    },
+    "test:e2e": {
+      "description": "Run end-to-end tests",
+      "cache": true
+    },
+    "format": {
+      "description": "Format code with Prettier",
+      "cache": true
+    },
+    "format:check": {
+      "description": "Check code formatting",
+      "cache": true
+    },
+    "clean": {
+      "description": "Clean build artifacts",
       "cache": false
+    },
+    "analyze": {
+      "description": "Analyze bundle size",
+      "cache": true
+    },
+    "security:audit": {
+      "description": "Run security audit",
+      "cache": true
+    },
+    "security:fix": {
+      "description": "Fix security vulnerabilities",
+      "cache": true
+    },
+    "db:migrate": {
+      "description": "Run database migrations",
+      "cache": false
+    },
+    "db:seed": {
+      "description": "Seed database",
+      "cache": false
+    },
+    "db:reset": {
+      "description": "Reset database",
+      "cache": false
+    },
+    "contracts:build": {
+      "description": "Build smart contracts",
+      "cache": true
+    },
+    "contracts:test": {
+      "description": "Test smart contracts",
+      "cache": true
+    },
+    "contracts:deploy": {
+      "description": "Deploy smart contracts",
+      "cache": false
+    },
+    "frontend:dev": {
+      "description": "Start frontend development server",
+      "cache": false,
+      "persistent": true
+    },
+    "frontend:build": {
+      "description": "Build frontend",
+      "cache": true
+    },
+    "backend:dev": {
+      "description": "Start backend development server",
+      "cache": false,
+      "persistent": true
+    },
+    "backend:build": {
+      "description": "Build backend",
+      "cache": true
+    },
+    "install:all": {
+      "description": "Install all dependencies",
+      "cache": false
+    },
+    "prepare": {
+      "description": "Prepare project for development",
+      "cache": false
+    },
+    "postinstall": {
+      "description": "Post-installation tasks",
+      "cache": false
+    },
+    "pre-commit": {
+      "description": "Pre-commit hooks",
+      "cache": true
     }
+  },
+  "globalEnv": [
+    "NODE_ENV",
+    "NEXT_PUBLIC_APP_URL",
+    "NEXT_PUBLIC_API_URL",
+    "NEXT_PUBLIC_APP_NAME",
+    "NEXT_PUBLIC_APP_VERSION",
+    "DATABASE_URL",
+    "REDIS_URL",
+    "JWT_SECRET",
+    "SOLANA_RPC_URL",
+    "ETHEREUM_RPC_URL"
+  ],
+  "experimentalFeatures": {
+    "cache": true,
+    "remoteCache": true,
+    "parallelExecution": true,
+    "outputLogs": "errors-only"
   }
 } 

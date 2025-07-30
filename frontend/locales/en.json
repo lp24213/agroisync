@@ -1,0 +1,292 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "refresh": "Refresh",
+    "copy": "Copy",
+    "download": "Download",
+    "upload": "Upload",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "wallet": "Wallet",
+    "balance": "Balance",
+    "amount": "Amount",
+    "price": "Price",
+    "total": "Total",
+    "available": "Available",
+    "staked": "Staked",
+    "rewards": "Rewards",
+    "apy": "APY",
+    "tvl": "TVL",
+    "volume": "Volume",
+    "marketCap": "Market Cap",
+    "circulatingSupply": "Circulating Supply",
+    "maxSupply": "Max Supply"
+  },
+  "navigation": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "staking": "Staking",
+    "farming": "Farming",
+    "swap": "Swap",
+    "nft": "NFT Marketplace",
+    "governance": "Governance",
+    "analytics": "Analytics",
+    "docs": "Documentation",
+    "about": "About",
+    "contact": "Contact",
+    "settings": "Settings",
+    "profile": "Profile",
+    "portfolio": "Portfolio",
+    "transactions": "Transactions",
+    "rewards": "Rewards",
+    "vaults": "Vaults",
+    "pools": "Liquidity Pools"
+  },
+  "home": {
+    "hero": {
+      "title": "The Future of DeFi Agriculture",
+      "subtitle": "Earn high yields through innovative farming strategies and NFT-backed agricultural investments",
+      "cta": "Start Farming",
+      "learnMore": "Learn More",
+      "stats": {
+        "tvl": "Total Value Locked",
+        "users": "Active Users",
+        "rewards": "Total Rewards Distributed",
+        "pools": "Active Pools"
+      }
+    },
+    "features": {
+      "title": "Why Choose AGROTM?",
+      "subtitle": "Revolutionary DeFi platform combining agriculture and blockchain technology",
+      "items": {
+        "yield": {
+          "title": "High Yield Farming",
+          "description": "Earn up to 500% APY through our innovative farming strategies"
+        },
+        "nft": {
+          "title": "NFT-Backed Assets",
+          "description": "Invest in real agricultural assets through our NFT marketplace"
+        },
+        "security": {
+          "title": "Audited & Secure",
+          "description": "Multi-audited smart contracts with insurance coverage"
+        },
+        "governance": {
+          "title": "Community Governance",
+          "description": "Participate in platform decisions through our DAO"
+        }
+      }
+    },
+    "stats": {
+      "title": "Platform Statistics",
+      "subtitle": "Real-time data from the AGROTM ecosystem"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back",
+    "overview": "Portfolio Overview",
+    "quickActions": "Quick Actions",
+    "recentActivity": "Recent Activity",
+    "performance": "Performance",
+    "assets": "Your Assets",
+    "rewards": "Your Rewards",
+    "staking": "Staking Positions",
+    "farming": "Farming Positions",
+    "nfts": "Your NFTs",
+    "transactions": "Recent Transactions",
+    "charts": {
+      "portfolio": "Portfolio Value",
+      "rewards": "Rewards Earned",
+      "performance": "Performance vs Market"
+    }
+  },
+  "staking": {
+    "title": "Staking",
+    "description": "Stake your AGROTM tokens to earn rewards and participate in governance",
+    "stake": "Stake Tokens",
+    "unstake": "Unstake Tokens",
+    "claim": "Claim Rewards",
+    "reStake": "Re-stake Rewards",
+    "lockPeriod": "Lock Period",
+    "rewardsRate": "Rewards Rate",
+    "totalStaked": "Total Staked",
+    "yourStake": "Your Stake",
+    "availableRewards": "Available Rewards",
+    "lockPeriods": {
+      "flexible": "Flexible",
+      "30days": "30 Days",
+      "90days": "90 Days",
+      "180days": "180 Days",
+      "365days": "365 Days"
+    },
+    "benefits": {
+      "title": "Staking Benefits",
+      "rewards": "Earn daily rewards",
+      "governance": "Voting power in DAO",
+      "fees": "Share in protocol fees",
+      "nft": "Access to exclusive NFTs"
+    }
+  },
+  "farming": {
+    "title": "Yield Farming",
+    "description": "Provide liquidity and earn high yields through our farming pools",
+    "deposit": "Deposit",
+    "withdraw": "Withdraw",
+    "harvest": "Harvest Rewards",
+    "compound": "Compound Rewards",
+    "pool": "Pool",
+    "tvl": "Total Value Locked",
+    "apy": "APY",
+    "yourShare": "Your Share",
+    "earned": "Earned",
+    "pools": {
+      "agrotmEth": "AGROTM-ETH",
+      "agrotmUsdc": "AGROTM-USDC",
+      "agrotmUsdt": "AGROTM-USDT",
+      "ethUsdc": "ETH-USDC",
+      "ethUsdt": "ETH-USDT"
+    }
+  },
+  "nft": {
+    "title": "NFT Marketplace",
+    "description": "Trade agricultural NFTs and invest in real-world assets",
+    "buy": "Buy NFT",
+    "sell": "Sell NFT",
+    "mint": "Mint NFT",
+    "collection": "Collection",
+    "price": "Price",
+    "owner": "Owner",
+    "rarity": "Rarity",
+    "attributes": "Attributes",
+    "history": "Trading History",
+    "collections": {
+      "farmland": "Farmland NFTs",
+      "equipment": "Equipment NFTs",
+      "crops": "Crop NFTs",
+      "animals": "Animal NFTs"
+    },
+    "filters": {
+      "all": "All",
+      "farmland": "Farmland",
+      "equipment": "Equipment",
+      "crops": "Crops",
+      "animals": "Animals",
+      "priceRange": "Price Range",
+      "rarity": "Rarity"
+    }
+  },
+  "swap": {
+    "title": "Swap",
+    "description": "Trade tokens with the best rates and lowest fees",
+    "swap": "Swap",
+    "from": "From",
+    "to": "To",
+    "slippage": "Slippage Tolerance",
+    "gasFee": "Gas Fee",
+    "priceImpact": "Price Impact",
+    "minimumReceived": "Minimum Received",
+    "route": "Route",
+    "settings": "Settings",
+    "max": "Max",
+    "balance": "Balance",
+    "connectWallet": "Connect Wallet to Swap"
+  },
+  "governance": {
+    "title": "Governance",
+    "description": "Participate in platform decisions through our decentralized governance",
+    "proposals": "Proposals",
+    "createProposal": "Create Proposal",
+    "vote": "Vote",
+    "votingPower": "Voting Power",
+    "quorum": "Quorum",
+    "executed": "Executed",
+    "pending": "Pending",
+    "active": "Active",
+    "defeated": "Defeated",
+    "succeeded": "Succeeded",
+    "for": "For",
+    "against": "Against",
+    "abstain": "Abstain"
+  },
+  "wallet": {
+    "connect": "Connect Wallet",
+    "disconnect": "Disconnect",
+    "connected": "Connected",
+    "connecting": "Connecting...",
+    "error": "Connection Error",
+    "unsupported": "Unsupported Network",
+    "switchNetwork": "Switch Network",
+    "addToken": "Add Token to Wallet",
+    "copyAddress": "Copy Address",
+    "viewOnExplorer": "View on Explorer",
+    "supportedWallets": {
+      "metamask": "MetaMask",
+      "walletconnect": "WalletConnect",
+      "coinbase": "Coinbase Wallet",
+      "phantom": "Phantom",
+      "solflare": "Solflare"
+    }
+  },
+  "errors": {
+    "networkError": "Network Error",
+    "insufficientBalance": "Insufficient Balance",
+    "transactionFailed": "Transaction Failed",
+    "userRejected": "Transaction Rejected",
+    "slippageTooHigh": "Slippage Too High",
+    "poolNotFound": "Pool Not Found",
+    "invalidAmount": "Invalid Amount",
+    "walletNotConnected": "Wallet Not Connected",
+    "unsupportedNetwork": "Unsupported Network",
+    "gasEstimationFailed": "Gas Estimation Failed"
+  },
+  "success": {
+    "transactionConfirmed": "Transaction Confirmed",
+    "tokensStaked": "Tokens Staked Successfully",
+    "tokensUnstaked": "Tokens Unstaked Successfully",
+    "rewardsClaimed": "Rewards Claimed Successfully",
+    "liquidityAdded": "Liquidity Added Successfully",
+    "liquidityRemoved": "Liquidity Removed Successfully",
+    "nftMinted": "NFT Minted Successfully",
+    "nftPurchased": "NFT Purchased Successfully",
+    "proposalCreated": "Proposal Created Successfully",
+    "voteSubmitted": "Vote Submitted Successfully"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "notifications": "Notifications",
+    "security": "Security",
+    "privacy": "Privacy",
+    "about": "About",
+    "help": "Help & Support",
+    "themes": {
+      "light": "Light",
+      "dark": "Dark",
+      "auto": "Auto"
+    },
+    "notifications": {
+      "email": "Email Notifications",
+      "push": "Push Notifications",
+      "transaction": "Transaction Notifications",
+      "rewards": "Rewards Notifications",
+      "governance": "Governance Notifications"
+    }
+  }
+} 

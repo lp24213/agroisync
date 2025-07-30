@@ -1,0 +1,231 @@
+{
+  "success": true,
+  "error": null,
+  "results": {
+    "detectors": [
+      {
+        "elements": [
+          {
+            "type": "function",
+            "name": "withdrawFunds",
+            "source_mapping": {
+              "start": 1245,
+              "length": 421,
+              "filename_relative": "contracts/FarmToken.sol",
+              "filename_absolute": "/workspace/contracts/FarmToken.sol",
+              "filename_short": "contracts/FarmToken.sol",
+              "is_dependency": false,
+              "lines": [42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52]
+            },
+            "type_specific_fields": {
+              "parent": {
+                "type": "contract",
+                "name": "FarmToken"
+              },
+              "signature": "withdrawFunds(uint256)"
+            }
+          }
+        ],
+        "description": "FarmToken.withdrawFunds(uint256) (contracts/FarmToken.sol#42-52) sends eth to arbitrary user\nDangerous calls:\n- address(msg.sender).transfer(_amount) (contracts/FarmToken.sol#50)\n",
+        "markdown": "FarmToken.withdrawFunds(uint256) (contracts/FarmToken.sol#42-52) sends eth to arbitrary user\nDangerous calls:\n- address(msg.sender).transfer(_amount) (contracts/FarmToken.sol#50)\n",
+        "first_markdown_element": "contracts/FarmToken.sol#42-52",
+        "id": "arbitrary-send",
+        "check": "arbitrary-send",
+        "impact": "High",
+        "confidence": "Medium"
+      },
+      {
+        "elements": [
+          {
+            "type": "function",
+            "name": "setTokenPrice",
+            "source_mapping": {
+              "start": 2145,
+              "length": 221,
+              "filename_relative": "contracts/FarmToken.sol",
+              "filename_absolute": "/workspace/contracts/FarmToken.sol",
+              "filename_short": "contracts/FarmToken.sol",
+              "is_dependency": false,
+              "lines": [72, 73, 74, 75, 76, 77]
+            },
+            "type_specific_fields": {
+              "parent": {
+                "type": "contract",
+                "name": "FarmToken"
+              },
+              "signature": "setTokenPrice(uint256)"
+            }
+          }
+        ],
+        "description": "FarmToken.setTokenPrice(uint256) (contracts/FarmToken.sol#72-77) should emit an event for:\n\t- tokenPrice = _newPrice (contracts/FarmToken.sol#76)\n",
+        "markdown": "FarmToken.setTokenPrice(uint256) (contracts/FarmToken.sol#72-77) should emit an event for:\n\t- tokenPrice = _newPrice (contracts/FarmToken.sol#76)\n",
+        "first_markdown_element": "contracts/FarmToken.sol#72-77",
+        "id": "events-maths",
+        "check": "events-maths",
+        "impact": "Low",
+        "confidence": "Medium"
+      },
+      {
+        "elements": [
+          {
+            "type": "variable",
+            "name": "tokenPrice",
+            "source_mapping": {
+              "start": 345,
+              "length": 25,
+              "filename_relative": "contracts/FarmToken.sol",
+              "filename_absolute": "/workspace/contracts/FarmToken.sol",
+              "filename_short": "contracts/FarmToken.sol",
+              "is_dependency": false,
+              "lines": [15]
+            },
+            "type_specific_fields": {
+              "parent": {
+                "type": "contract",
+                "name": "FarmToken"
+              },
+              "type": "uint256"
+            }
+          }
+        ],
+        "description": "FarmToken.tokenPrice (contracts/FarmToken.sol#15) should be constant\n",
+        "markdown": "FarmToken.tokenPrice (contracts/FarmToken.sol#15) should be constant\n",
+        "first_markdown_element": "contracts/FarmToken.sol#15",
+        "id": "constable-states",
+        "check": "constable-states",
+        "impact": "Optimization",
+        "confidence": "High"
+      },
+      {
+        "elements": [
+          {
+            "type": "function",
+            "name": "buyTokens",
+            "source_mapping": {
+              "start": 845,
+              "length": 395,
+              "filename_relative": "contracts/FarmToken.sol",
+              "filename_absolute": "/workspace/contracts/FarmToken.sol",
+              "filename_short": "contracts/FarmToken.sol",
+              "is_dependency": false,
+              "lines": [30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40]
+            },
+            "type_specific_fields": {
+              "parent": {
+                "type": "contract",
+                "name": "FarmToken"
+              },
+              "signature": "buyTokens()"
+            }
+          }
+        ],
+        "description": "FarmToken.buyTokens() (contracts/FarmToken.sol#30-40) uses a dangerous strict equality:\n\t- require(bool,string)(msg.value % tokenPrice == 0,Amount must be divisible by token price) (contracts/FarmToken.sol#33)\n",
+        "markdown": "FarmToken.buyTokens() (contracts/FarmToken.sol#30-40) uses a dangerous strict equality:\n\t- require(bool,string)(msg.value % tokenPrice == 0,Amount must be divisible by token price) (contracts/FarmToken.sol#33)\n",
+        "first_markdown_element": "contracts/FarmToken.sol#30-40",
+        "id": "incorrect-equality",
+        "check": "incorrect-equality",
+        "impact": "Medium",
+        "confidence": "High"
+      },
+      {
+        "elements": [
+          {
+            "type": "function",
+            "name": "withdrawFunds",
+            "source_mapping": {
+              "start": 1245,
+              "length": 421,
+              "filename_relative": "contracts/FarmToken.sol",
+              "filename_absolute": "/workspace/contracts/FarmToken.sol",
+              "filename_short": "contracts/FarmToken.sol",
+              "is_dependency": false,
+              "lines": [42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52]
+            },
+            "type_specific_fields": {
+              "parent": {
+                "type": "contract",
+                "name": "FarmToken"
+              },
+              "signature": "withdrawFunds(uint256)"
+            }
+          }
+        ],
+        "description": "FarmToken.withdrawFunds(uint256) (contracts/FarmToken.sol#42-52) uses a dangerous strict equality:\n\t- require(bool,string)(userBalances[msg.sender] == _amount,Insufficient balance) (contracts/FarmToken.sol#46)\n",
+        "markdown": "FarmToken.withdrawFunds(uint256) (contracts/FarmToken.sol#42-52) uses a dangerous strict equality:\n\t- require(bool,string)(userBalances[msg.sender] == _amount,Insufficient balance) (contracts/FarmToken.sol#46)\n",
+        "first_markdown_element": "contracts/FarmToken.sol#42-52",
+        "id": "incorrect-equality",
+        "check": "incorrect-equality",
+        "impact": "Medium",
+        "confidence": "High"
+      },
+      {
+        "elements": [
+          {
+            "type": "function",
+            "name": "buyTokens",
+            "source_mapping": {
+              "start": 845,
+              "length": 395,
+              "filename_relative": "contracts/FarmToken.sol",
+              "filename_absolute": "/workspace/contracts/FarmToken.sol",
+              "filename_short": "contracts/FarmToken.sol",
+              "is_dependency": false,
+              "lines": [30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40]
+            },
+            "type_specific_fields": {
+              "parent": {
+                "type": "contract",
+                "name": "FarmToken"
+              },
+              "signature": "buyTokens()"
+            }
+          }
+        ],
+        "description": "FarmToken.buyTokens() (contracts/FarmToken.sol#30-40) uses timestamp for comparisons\nDangerous comparisons:\n\t- require(bool,string)(block.timestamp >= saleStartTime,Token sale has not started yet) (contracts/FarmToken.sol#32)\n",
+        "markdown": "FarmToken.buyTokens() (contracts/FarmToken.sol#30-40) uses timestamp for comparisons\nDangerous comparisons:\n\t- require(bool,string)(block.timestamp >= saleStartTime,Token sale has not started yet) (contracts/FarmToken.sol#32)\n",
+        "first_markdown_element": "contracts/FarmToken.sol#30-40",
+        "id": "timestamp",
+        "check": "timestamp",
+        "impact": "Low",
+        "confidence": "Medium"
+      }
+    ]
+  },
+  "recommendations": [
+    "Considere usar SafeMath para operações matemáticas para evitar overflows e underflows",
+    "Implemente um padrão de Pausable para permitir congelar o contrato em caso de emergência",
+    "Adicione eventos para todas as mudanças de estado importantes para melhorar a transparência",
+    "Evite usar comparações de igualdade estrita (==) para valores financeiros",
+    "Implemente um mecanismo de controle de acesso mais robusto como OpenZeppelin's AccessControl",
+    "Considere usar o padrão ReentrancyGuard para proteger contra ataques de reentrada",
+    "Adicione testes de unidade abrangentes para todas as funções do contrato"
+  ],
+  "remediation_actions": [
+    {
+      "issue_id": "arbitrary-send",
+      "action": "Implementar um padrão de retirada (pull pattern) em vez de envio direto (push pattern) para transferências de ETH"
+    },
+    {
+      "issue_id": "events-maths",
+      "action": "Adicionar evento TokenPriceChanged para emitir quando o preço do token for alterado"
+    },
+    {
+      "issue_id": "constable-states",
+      "action": "Marcar variáveis que não mudam como 'constant' ou 'immutable' para economizar gas"
+    },
+    {
+      "issue_id": "incorrect-equality",
+      "action": "Substituir comparações de igualdade estrita (==) por comparações de desigualdade (>=) para valores financeiros"
+    },
+    {
+      "issue_id": "timestamp",
+      "action": "Considerar o uso de oráculos externos para timestamps críticos ou implementar tolerância de tempo"
+    }
+  ],
+  "scan_info": {
+    "contract_analyzed": "FarmToken.sol",
+    "slither_version": "0.9.3",
+    "solc_version": "0.8.17",
+    "scan_date": "2023-11-15T14:30:45Z"
+  }
+}

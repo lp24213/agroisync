@@ -1,8 +1,46 @@
 module.exports = {
   semi: true,
-  trailingComma: 'es5',
+  trailingComma: 'all',
   singleQuote: true,
-  printWidth: 80,
+  printWidth: 100,
   tabWidth: 2,
   useTabs: false,
+  bracketSpacing: true,
+  bracketSameLine: false,
+  arrowParens: 'avoid',
+  endOfLine: 'lf',
+  quoteProps: 'as-needed',
+  jsxSingleQuote: true,
+  proseWrap: 'preserve',
+  htmlWhitespaceSensitivity: 'css',
+  embeddedLanguageFormatting: 'auto',
+  singleAttributePerLine: false,
+  overrides: [
+    {
+      files: '*.json',
+      options: {
+        printWidth: 80,
+        tabWidth: 2,
+      },
+    },
+    {
+      files: '*.md',
+      options: {
+        printWidth: 80,
+        proseWrap: 'always',
+      },
+    },
+    {
+      files: '*.yml',
+      options: {
+        tabWidth: 2,
+      },
+    },
+    {
+      files: '*.yaml',
+      options: {
+        tabWidth: 2,
+      },
+    },
+  ],
 }; 

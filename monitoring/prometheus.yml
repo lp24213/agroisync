@@ -1,0 +1,238 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - "rules/*.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # AGROTM Frontend
+  - job_name: 'agrotm-frontend'
+    static_configs:
+      - targets: ['frontend:3000']
+    metrics_path: '/api/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # AGROTM Backend
+  - job_name: 'agrotm-backend'
+    static_configs:
+      - targets: ['backend:3001']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # Node.js Applications
+  - job_name: 'nodejs'
+    static_configs:
+      - targets: ['frontend:3000', 'backend:3001']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # PostgreSQL Database
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres:5432']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # Redis Cache
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:6379']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # Nginx
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx:80']
+    metrics_path: '/nginx_status'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # Solana Validator
+  - job_name: 'solana-validator'
+    static_configs:
+      - targets: ['solana-validator:8899']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # Ethereum Node (if using local)
+  - job_name: 'ethereum'
+    static_configs:
+      - targets: ['ganache:8545']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # Blackbox Exporter for HTTP checks
+  - job_name: 'blackbox'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+        - https://agrotm.com
+        - https://api.agrotm.com
+        - https://staging.agrotm.com
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox:9115
+
+  # Custom AGROTM Metrics
+  - job_name: 'agrotm-custom'
+    static_configs:
+      - targets: ['backend:3001']
+    metrics_path: '/api/metrics/custom'
+    scrape_interval: 60s
+    scrape_timeout: 15s
+    params:
+      token: ['your-metrics-token']
+
+  # Blockchain Metrics
+  - job_name: 'blockchain-metrics'
+    static_configs:
+      - targets: ['backend:3001']
+    metrics_path: '/api/metrics/blockchain'
+    scrape_interval: 60s
+    scrape_timeout: 15s
+
+  # User Activity Metrics
+  - job_name: 'user-activity'
+    static_configs:
+      - targets: ['backend:3001']
+    metrics_path: '/api/metrics/users'
+    scrape_interval: 300s
+    scrape_timeout: 30s
+
+  # Financial Metrics
+  - job_name: 'financial-metrics'
+    static_configs:
+      - targets: ['backend:3001']
+    metrics_path: '/api/metrics/financial'
+    scrape_interval: 300s
+    scrape_timeout: 30s
+
+  # NFT Metrics
+  - job_name: 'nft-metrics'
+    static_configs:
+      - targets: ['backend:3001']
+    metrics_path: '/api/metrics/nft'
+    scrape_interval: 300s
+    scrape_timeout: 30s
+
+  # Staking Metrics
+  - job_name: 'staking-metrics'
+    static_configs:
+      - targets: ['backend:3001']
+    metrics_path: '/api/metrics/staking'
+    scrape_interval: 300s
+    scrape_timeout: 30s
+
+  # External APIs Health Check
+  - job_name: 'external-apis'
+    static_configs:
+      - targets: ['backend:3001']
+    metrics_path: '/api/metrics/external'
+    scrape_interval: 300s
+    scrape_timeout: 30s
+
+  # Security Metrics
+  - job_name: 'security-metrics'
+    static_configs:
+      - targets: ['backend:3001']
+    metrics_path: '/api/metrics/security'
+    scrape_interval: 600s
+    scrape_timeout: 30s
+
+  # Performance Metrics
+  - job_name: 'performance-metrics'
+    static_configs:
+      - targets: ['frontend:3000']
+    metrics_path: '/api/metrics/performance'
+    scrape_interval: 300s
+    scrape_timeout: 30s
+
+  # Error Tracking
+  - job_name: 'error-tracking'
+    static_configs:
+      - targets: ['backend:3001']
+    metrics_path: '/api/metrics/errors'
+    scrape_interval: 60s
+    scrape_timeout: 15s
+
+  # Database Performance
+  - job_name: 'database-performance'
+    static_configs:
+      - targets: ['postgres:5432']
+    metrics_path: '/metrics'
+    scrape_interval: 60s
+    scrape_timeout: 15s
+
+  # Cache Performance
+  - job_name: 'cache-performance'
+    static_configs:
+      - targets: ['redis:6379']
+    metrics_path: '/metrics'
+    scrape_interval: 60s
+    scrape_timeout: 15s
+
+  # Network Performance
+  - job_name: 'network-performance'
+    static_configs:
+      - targets: ['nginx:80']
+    metrics_path: '/nginx_status'
+    scrape_interval: 60s
+    scrape_timeout: 15s
+
+  # Application Health
+  - job_name: 'app-health'
+    static_configs:
+      - targets: ['frontend:3000', 'backend:3001']
+    metrics_path: '/health'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # Resource Usage
+  - job_name: 'resource-usage'
+    static_configs:
+      - targets: ['frontend:3000', 'backend:3001']
+    metrics_path: '/metrics'
+    scrape_interval: 60s
+    scrape_timeout: 15s
+
+  # Business Metrics
+  - job_name: 'business-metrics'
+    static_configs:
+      - targets: ['backend:3001']
+    metrics_path: '/api/metrics/business'
+    scrape_interval: 600s
+    scrape_timeout: 30s
+
+  # Compliance Metrics
+  - job_name: 'compliance-metrics'
+    static_configs:
+      - targets: ['backend:3001']
+    metrics_path: '/api/metrics/compliance'
+    scrape_interval: 3600s
+    scrape_timeout: 60s 

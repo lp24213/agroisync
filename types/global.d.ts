@@ -10,6 +10,15 @@ declare global {
       request: (args: any) => Promise<any>;
       publicKey?: { toString: () => string };
     };
+    ethereum?: {
+      isMetaMask?: boolean;
+      isConnected?: boolean;
+      request: (args: any) => Promise<any>;
+      on: (eventName: string, handler: (...args: any[]) => void) => void;
+      removeListener: (eventName: string, handler: (...args: any[]) => void) => void;
+      selectedAddress?: string;
+      chainId?: string;
+    };
   }
 }
 

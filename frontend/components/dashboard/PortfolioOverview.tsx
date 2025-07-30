@@ -1,143 +1,324 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, MoreVertical } from 'lucide-react';
+import { LineChart, Line, AreaChart, Area, PieChart, Pie, Cell, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { TrendingUp, TrendingDown, DollarSign, Coins, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 
 const portfolioData = [
-  { name: 'SOL', value: 45.2, color: '#9945FF', amount: 123.45, change: 12.5 },
-  { name: 'AGROTM', value: 28.7, color: '#22C55E', amount: 5678.90, change: 8.2 },
-  { name: 'USDC', value: 15.3, color: '#2775CA', amount: 2345.67, change: 0.1 },
-  { name: 'RAY', value: 10.8, color: '#FF6B6B', amount: 89.12, change: -2.3 },
+  { name: 'Jan', value: 20000, staked: 12000, rewards: 800 },
+  { name: 'Feb', value: 22000, staked: 13500, rewards: 950 },
+  { name: 'Mar', value: 24000, staked: 15000, rewards: 1100 },
+  { name: 'Apr', value: 23500, staked: 14800, rewards: 1050 },
+  { name: 'May', value: 25000, staked: 16000, rewards: 1200 },
+  { name: 'Jun', value: 24567, staked: 15234, rewards: 1156 },
+];
+
+const assetAllocation = [
+  { name: 'AGROTM Staked', value: 62, color: '#22c55e' },
+  { name: 'AGROTM Liquid', value: 23, color: '#3b82f6' },
+  { name: 'Other Tokens', value: 15, color: '#f59e0b' },
+];
+
+const recentTransactions = [
+  {
+    id: 1,
+    type: 'stake',
+    amount: '5,000 AGROTM',
+    value: '$750.00',
+    timestamp: '2 hours ago',
+    status: 'completed',
+    change: '+2.5%'
+  },
+  {
+    id: 2,
+    type: 'reward',
+    amount: '150 AGROTM',
+    value: '$22.50',
+    timestamp: '1 day ago',
+    status: 'completed',
+    change: '+1.2%'
+  },
+  {
+    id: 3,
+    type: 'unstake',
+    amount: '2,000 AGROTM',
+    value: '$300.00',
+    timestamp: '3 days ago',
+    status: 'completed',
+    change: '-0.8%'
+  },
 ];
 
 export function PortfolioOverview() {
-  const [selectedPeriod, setSelectedPeriod] = useState('7d');
+  const [timeframe, setTimeframe] = useState('6M');
+  const [selectedMetric, setSelectedMetric] = useState('total');
 
-  const totalValue = portfolioData.reduce((sum, item) => sum + item.amount, 0);
-  const totalChange = portfolioData.reduce((sum, item) => sum + item.change, 0) / portfolioData.length;
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value);
+  };
+
+  const formatPercentage = (value: number) => {
+    return `${value > 0 ? '+' : ''}${value.toFixed(1)}%`;
+  };
+
+  const getTotalValue = () => {
+    const latest = portfolioData[portfolioData.length - 1];
+    return latest.value;
+  };
+
+  const getTotalChange = () => {
+    const first = portfolioData[0];
+    const last = portfolioData[portfolioData.length - 1];
+    return ((last.value - first.value) / first.value) * 100;
+  };
 
   return (
-    <div className="card">
-      <div className="flex items-center justify-between mb-6">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-white">Portfolio Overview</h3>
-          <p className="text-sm text-gray-400">Your asset allocation and performance</p>
+          <h2 className="text-2xl font-bold text-white">Portfolio Overview</h2>
+          <p className="text-gray-400">Track your investments and performance</p>
         </div>
         <div className="flex items-center space-x-2">
-          <select
-            value={selectedPeriod}
-            onChange={(e) => setSelectedPeriod(e.target.value)}
-            className="bg-white/5 border border-white/10 rounded-lg px-3 py-1 text-sm text-white"
-          >
-            <option value="24h">24h</option>
-            <option value="7d">7d</option>
-            <option value="30d">30d</option>
-            <option value="1y">1y</option>
-          </select>
-          <button className="p-2 hover:bg-white/5 rounded-lg transition-colors">
-            <MoreVertical className="h-4 w-4 text-gray-400" />
-          </button>
+          {['1M', '3M', '6M', '1Y'].map((period) => (
+            <button
+              key={period}
+              onClick={() => setTimeframe(period)}
+              className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                timeframe === period
+                  ? 'bg-primary-500 text-white'
+                  : 'text-gray-400 hover:text-white hover:bg-white/10'
+              }`}
+            >
+              {period}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Portfolio Value */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between">
+      {/* Portfolio Value Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="card"
+      >
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <p className="text-sm text-gray-400">Total Portfolio Value</p>
-            <p className="text-2xl font-bold text-white">${totalValue.toLocaleString()}</p>
+            <h3 className="text-lg font-semibold text-white">Total Portfolio Value</h3>
+            <p className="text-gray-400">Current market value of all assets</p>
           </div>
-          <div className="flex items-center">
-            {totalChange >= 0 ? (
-              <TrendingUp className="h-4 w-4 text-green-400 mr-1" />
-            ) : (
-              <TrendingDown className="h-4 w-4 text-red-400 mr-1" />
-            )}
-            <span className={`text-sm font-medium ${
-              totalChange >= 0 ? 'text-green-400' : 'text-red-400'
+          <div className="text-right">
+            <div className="text-3xl font-bold text-white">{formatCurrency(getTotalValue())}</div>
+            <div className={`flex items-center text-sm ${
+              getTotalChange() >= 0 ? 'text-green-400' : 'text-red-400'
             }`}>
-              {totalChange >= 0 ? '+' : ''}{totalChange.toFixed(1)}%
-            </span>
+              {getTotalChange() >= 0 ? (
+                <ArrowUpRight className="w-4 h-4 mr-1" />
+              ) : (
+                <ArrowDownRight className="w-4 h-4 mr-1" />
+              )}
+              {formatPercentage(getTotalChange())}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Pie Chart */}
-      <div className="mb-6">
-        <div className="relative w-full h-48 flex items-center justify-center">
-          <svg className="w-full h-full" viewBox="0 0 100 100">
-            {portfolioData.map((item, index) => {
-              const previousTotal = portfolioData
-                .slice(0, index)
-                .reduce((sum, prevItem) => sum + prevItem.value, 0);
-              const startAngle = (previousTotal / 100) * 360;
-              const endAngle = ((previousTotal + item.value) / 100) * 360;
-              
-              const x1 = 50 + 35 * Math.cos((startAngle - 90) * Math.PI / 180);
-              const y1 = 50 + 35 * Math.sin((startAngle - 90) * Math.PI / 180);
-              const x2 = 50 + 35 * Math.cos((endAngle - 90) * Math.PI / 180);
-              const y2 = 50 + 35 * Math.sin((endAngle - 90) * Math.PI / 180);
-              
-              const largeArcFlag = item.value > 50 ? 1 : 0;
-              
-              return (
-                <path
-                  key={item.name}
-                  d={`M 50 50 L ${x1} ${y1} A 35 35 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
-                  fill={item.color}
-                  className="transition-all duration-300 hover:opacity-80"
-                />
-              );
-            })}
-          </svg>
-          <div className="absolute text-center">
-            <p className="text-sm text-gray-400">Total</p>
-            <p className="text-lg font-bold text-white">100%</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Asset List */}
-      <div className="space-y-3">
-        {portfolioData.map((item, index) => (
-          <motion.div
-            key={item.name}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.1 }}
-            className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors"
-          >
-            <div className="flex items-center space-x-3">
-              <div
-                className="w-4 h-4 rounded-full"
-                style={{ backgroundColor: item.color }}
+        {/* Performance Chart */}
+        <div className="h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={portfolioData}>
+              <defs>
+                <linearGradient id="portfolioGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor="#22c55e" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis 
+                dataKey="name" 
+                stroke="#9ca3af"
+                fontSize={12}
               />
-              <div>
-                <p className="text-sm font-medium text-white">{item.name}</p>
-                <p className="text-xs text-gray-400">{item.value.toFixed(1)}%</p>
+              <YAxis 
+                stroke="#9ca3af"
+                fontSize={12}
+                tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+              />
+              <Tooltip 
+                contentStyle={{
+                  backgroundColor: '#1f2937',
+                  border: '1px solid #374151',
+                  borderRadius: '8px',
+                  color: '#fff'
+                }}
+                formatter={(value: number) => [formatCurrency(value), 'Portfolio Value']}
+              />
+              <Area
+                type="monotone"
+                dataKey="value"
+                stroke="#22c55e"
+                strokeWidth={2}
+                fill="url(#portfolioGradient)"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </motion.div>
+
+      {/* Asset Allocation & Recent Activity */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Asset Allocation */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+          className="card"
+        >
+          <h3 className="text-lg font-semibold text-white mb-4">Asset Allocation</h3>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={assetAllocation}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={100}
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  {assetAllocation.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip 
+                  contentStyle={{
+                    backgroundColor: '#1f2937',
+                    border: '1px solid #374151',
+                    borderRadius: '8px',
+                    color: '#fff'
+                  }}
+                  formatter={(value: number) => [`${value}%`, 'Allocation']}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="mt-4 space-y-2">
+            {assetAllocation.map((asset, index) => (
+              <div key={index} className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div 
+                    className="w-3 h-3 rounded-full mr-2"
+                    style={{ backgroundColor: asset.color }}
+                  />
+                  <span className="text-sm text-gray-300">{asset.name}</span>
+                </div>
+                <span className="text-sm font-medium text-white">{asset.value}%</span>
               </div>
-            </div>
-            <div className="text-right">
-              <p className="text-sm font-medium text-white">
-                ${item.amount.toLocaleString()}
-              </p>
-              <div className="flex items-center">
-                {item.change >= 0 ? (
-                  <TrendingUp className="h-3 w-3 text-green-400 mr-1" />
-                ) : (
-                  <TrendingDown className="h-3 w-3 text-red-400 mr-1" />
-                )}
-                <span className={`text-xs ${
-                  item.change >= 0 ? 'text-green-400' : 'text-red-400'
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Recent Transactions */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3 }}
+          className="card"
+        >
+          <h3 className="text-lg font-semibold text-white mb-4">Recent Transactions</h3>
+          <div className="space-y-3">
+            {recentTransactions.map((tx) => (
+              <div key={tx.id} className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                <div className="flex items-center">
+                  <div className={`w-2 h-2 rounded-full mr-3 ${
+                    tx.type === 'stake' ? 'bg-green-400' :
+                    tx.type === 'reward' ? 'bg-blue-400' : 'bg-yellow-400'
+                  }`} />
+                  <div>
+                    <p className="text-sm font-medium text-white capitalize">{tx.type}</p>
+                    <p className="text-xs text-gray-400">{tx.timestamp}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-medium text-white">{tx.amount}</p>
+                  <p className="text-xs text-gray-400">{tx.value}</p>
+                </div>
+                <div className={`text-sm font-medium ${
+                  tx.change.startsWith('+') ? 'text-green-400' : 'text-red-400'
                 }`}>
-                  {item.change >= 0 ? '+' : ''}{item.change.toFixed(1)}%
-                </span>
+                  {tx.change}
+                </div>
               </div>
-            </div>
-          </motion.div>
-        ))}
+            ))}
+          </div>
+          <button className="w-full mt-4 text-sm text-primary-400 hover:text-primary-300 transition-colors">
+            View All Transactions
+          </button>
+        </motion.div>
       </div>
+
+      {/* Performance Metrics */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="grid grid-cols-1 md:grid-cols-3 gap-6"
+      >
+        <div className="card">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-400">Total Staked</p>
+              <p className="text-2xl font-bold text-white">$15,234</p>
+            </div>
+            <div className="p-2 bg-green-500/20 rounded-lg">
+              <Coins className="w-6 h-6 text-green-400" />
+            </div>
+          </div>
+          <div className="mt-2 flex items-center text-green-400 text-sm">
+            <TrendingUp className="w-4 h-4 mr-1" />
+            +8.3%
+          </div>
+        </div>
+
+        <div className="card">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-400">Total Rewards</p>
+              <p className="text-2xl font-bold text-white">$1,156</p>
+            </div>
+            <div className="p-2 bg-blue-500/20 rounded-lg">
+              <DollarSign className="w-6 h-6 text-blue-400" />
+            </div>
+          </div>
+          <div className="mt-2 flex items-center text-green-400 text-sm">
+            <TrendingUp className="w-4 h-4 mr-1" />
+            +12.5%
+          </div>
+        </div>
+
+        <div className="card">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-400">APY</p>
+              <p className="text-2xl font-bold text-white">15.3%</p>
+            </div>
+            <div className="p-2 bg-yellow-500/20 rounded-lg">
+              <TrendingUp className="w-6 h-6 text-yellow-400" />
+            </div>
+          </div>
+          <div className="mt-2 flex items-center text-green-400 text-sm">
+            <TrendingUp className="w-4 h-4 mr-1" />
+            +2.1%
+          </div>
+        </div>
+      </motion.div>
     </div>
   );
 } 

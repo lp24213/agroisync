@@ -1,277 +1,382 @@
-# 🌱 Agrotm Solana DeFi Platform
+# AGROTM - Revolutionary DeFi & NFT Platform for Agriculture
 
-Uma plataforma DeFi completa construída na blockchain Solana, focada em agricultura sustentável e finanças descentralizadas.
+[![AGROTM Logo](https://agrotm.com/logo.png)](https://agrotm.com)
 
-## 🚀 Características Principais
+> **AGROTM** is a cutting-edge DeFi and NFT platform built on Solana blockchain, revolutionizing agricultural finance through decentralized technology.
 
-- **DeFi Completo**: Staking, yield farming, pools de liquidez
-- **Blockchain Solana**: Alta performance e baixas taxas
-- **Interface Moderna**: React + Next.js + Tailwind CSS
-- **Arquitetura Modular**: Microserviços escaláveis
-- **Monitoramento Avançado**: Prometheus + Grafana + ELK Stack
-- **Segurança Robusta**: Auditoria de segurança e compliance
-- **Multi-idioma**: Suporte para EN, PT, ZH
+## 🚀 Features
 
-## 🏗️ Arquitetura
+- **🌾 Agricultural DeFi**: Staking, liquidity pools, and yield farming for agricultural tokens
+- **🎨 NFT Marketplace**: Digital assets representing real agricultural products
+- **🔗 Cross-Chain Integration**: Solana and Ethereum support
+- **📊 Real-time Analytics**: Advanced dashboard with live data
+- **🔐 Secure Authentication**: Web3 wallet integration
+- **📱 Mobile-First Design**: Responsive PWA with offline support
+- **🌍 Multi-Language**: Internationalization support
+- **⚡ High Performance**: Optimized for speed and scalability
+
+## 🏗️ Architecture
 
 ```
 agrotm-solana/
-├── frontend/          # Next.js Frontend (Porta 3000)
-├── backend/           # Node.js API (Porta 3001)
-├── api/              # API Gateway (Porta 3002)
-├── staking/          # Módulo Staking (Porta 3003)
-├── defi-dashboard/   # Dashboard DeFi (Porta 3004)
-├── contracts/        # Smart Contracts Solana
-├── microservices/    # Microserviços adicionais
-├── components/       # Componentes React reutilizáveis
-├── hooks/           # React Hooks customizados
-├── services/        # Serviços de negócio
-├── types/           # Definições TypeScript
-├── utils/           # Utilitários
-└── public/          # Arquivos estáticos
+├── frontend/                 # Next.js React application
+├── backend/                  # Node.js Express API
+├── contracts/               # Solana smart contracts
+├── .github/workflows/       # CI/CD pipelines
+├── docs/                    # Documentation
+├── scripts/                 # Build and deployment scripts
+└── utils/                   # Shared utilities
 ```
 
-## 🛠️ Tecnologias
+## 🛠️ Tech Stack
 
 ### Frontend
-- **Next.js 14** - Framework React
-- **TypeScript** - Tipagem estática
-- **Tailwind CSS** - Framework CSS
-- **Solana Web3.js** - Integração blockchain
-- **React Query** - Gerenciamento de estado
-- **Framer Motion** - Animações
+- **Next.js 14** - React framework with App Router
+- **TypeScript** - Type-safe JavaScript
+- **Tailwind CSS** - Utility-first CSS framework
+- **Framer Motion** - Animation library
+- **TanStack Query** - Data fetching and caching
+- **Zustand** - State management
+- **Web3.js** - Blockchain interaction
 
 ### Backend
-- **Node.js** - Runtime JavaScript
-- **Express.js** - Framework web
-- **TypeScript** - Tipagem estática
-- **PostgreSQL** - Banco de dados principal
-- **Redis** - Cache e sessões
-- **JWT** - Autenticação
+- **Node.js** - JavaScript runtime
+- **Express.js** - Web framework
+- **MongoDB** - NoSQL database
+- **Redis** - Caching and sessions
+- **JWT** - Authentication
+- **Winston** - Logging
+- **Jest** - Testing
 
 ### Blockchain
-- **Solana** - Blockchain principal
-- **Anchor** - Framework de smart contracts
-- **Rust** - Linguagem dos contratos
-- **SPL Tokens** - Tokens Solana
+- **Solana** - Primary blockchain
+- **Anchor** - Solana development framework
+- **@solana/web3.js** - Solana JavaScript SDK
+- **SPL Token** - Token standard
 
 ### DevOps
-- **Docker** - Containerização
-- **Docker Compose** - Orquestração
-- **Prometheus** - Monitoramento
-- **Grafana** - Dashboards
-- **ELK Stack** - Logs e analytics
-- **Nginx** - Reverse proxy
+- **GitHub Actions** - CI/CD
+- **Vercel** - Frontend deployment
+- **Railway** - Backend deployment
+- **Docker** - Containerization
+- **Lighthouse CI** - Performance monitoring
 
-## 🚀 Instalação e Execução
+## 📦 Installation
 
-### Pré-requisitos
-- Node.js 18+
-- npm 8+
-- Docker e Docker Compose
-- Solana CLI (opcional)
+### Prerequisites
 
-### Instalação Rápida
+- Node.js 20.x or higher
+- pnpm 8.x or higher
+- MongoDB 6.x or higher
+- Redis 7.x or higher
+- Solana CLI tools
+
+### Quick Start
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/agrotm-solana.git
+   cd agrotm-solana
+   ```
+
+2. **Install dependencies**
+   ```bash
+   pnpm install
+   ```
+
+3. **Set up environment variables**
+   ```bash
+   cp env.example .env.local
+   # Edit .env.local with your configuration
+   ```
+
+4. **Start development servers**
+   ```bash
+   # Start frontend
+   pnpm frontend:dev
+   
+   # Start backend (in another terminal)
+   pnpm backend:dev
+   ```
+
+5. **Access the application**
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:3001
+   - API Documentation: http://localhost:3001/api-docs
+
+## 🔧 Development
+
+### Available Scripts
 
 ```bash
-# Clone o repositório
-git clone https://github.com/agrotm/agrotm-solana.git
-cd agrotm-solana
+# Development
+pnpm dev                    # Start both frontend and backend
+pnpm frontend:dev          # Start frontend only
+pnpm backend:dev           # Start backend only
 
-# Instale todas as dependências
-npm run install:all
+# Building
+pnpm build                 # Build frontend
+pnpm backend:build         # Build backend
 
-# Execute em modo desenvolvimento
-npm run dev
+# Testing
+pnpm test                  # Run all tests
+pnpm test:watch           # Run tests in watch mode
+pnpm test:coverage        # Generate coverage report
+pnpm test:e2e             # Run end-to-end tests
+
+# Linting and Formatting
+pnpm lint                  # Run ESLint
+pnpm lint:fix             # Fix ESLint errors
+pnpm format               # Format code with Prettier
+pnpm format:check         # Check code formatting
+
+# Type Checking
+pnpm type-check           # Run TypeScript compiler
+
+# Security
+pnpm security:audit       # Run security audit
+pnpm security:fix         # Fix security vulnerabilities
+
+# Database
+pnpm db:migrate           # Run database migrations
+pnpm db:seed              # Seed database with test data
+pnpm db:reset             # Reset database
+
+# Docker
+pnpm docker:build         # Build Docker image
+pnpm docker:run           # Run Docker container
+pnpm docker:compose       # Start with Docker Compose
 ```
 
-### Execução com Docker
+### Project Structure
+
+```
+frontend/
+├── app/                   # Next.js App Router pages
+├── components/            # Reusable React components
+├── hooks/                 # Custom React hooks
+├── lib/                   # Utility libraries
+├── services/              # API services
+├── styles/                # Global styles
+├── types/                 # TypeScript type definitions
+└── utils/                 # Helper functions
+
+backend/
+├── src/
+│   ├── config/            # Configuration files
+│   ├── controllers/       # Route controllers
+│   ├── middleware/        # Express middleware
+│   ├── models/            # Database models
+│   ├── routes/            # API routes
+│   ├── services/          # Business logic
+│   └── utils/             # Helper functions
+├── __tests__/             # Test files
+└── scripts/               # Build and deployment scripts
+
+contracts/
+├── programs/              # Solana programs
+├── tests/                 # Contract tests
+└── migrations/            # Deployment scripts
+```
+
+## 🌐 API Documentation
+
+### Authentication Endpoints
+
+```http
+POST /api/auth/register
+POST /api/auth/login
+GET  /api/auth/verify
+```
+
+### Staking Endpoints
+
+```http
+GET  /api/staking/pools
+GET  /api/staking/positions
+POST /api/staking/stake
+POST /api/staking/unstake
+POST /api/staking/claim-rewards
+```
+
+### DeFi Endpoints
+
+```http
+GET  /api/defi/pools
+GET  /api/defi/pools/:id
+POST /api/defi/add-liquidity
+POST /api/defi/remove-liquidity
+POST /api/defi/swap
+GET  /api/defi/positions
+```
+
+### Health Check
+
+```http
+GET /health
+```
+
+## 🔐 Environment Variables
+
+Copy `env.example` to `.env.local` and configure:
 
 ```bash
-# Construa e execute todos os serviços
-docker-compose up -d
-
-# Visualize os logs
-docker-compose logs -f
-
-# Pare todos os serviços
-docker-compose down
-```
-
-### Execução Individual
-
-```bash
-# Frontend apenas
-npm run dev:frontend
-
-# Backend apenas
-npm run dev:backend
-
-# Todos os módulos
-npm run dev:api
-npm run dev:staking
-npm run dev:dashboard
-```
-
-## 📊 Monitoramento
-
-### Dashboards Disponíveis
-- **Grafana**: http://localhost:3005 (admin/admin)
-- **Prometheus**: http://localhost:9090
-- **Kibana**: http://localhost:5601
-- **Elasticsearch**: http://localhost:9200
-
-### Métricas Monitoradas
-- Performance da aplicação
-- Métricas de blockchain
-- Uso de recursos
-- Logs e erros
-- Métricas de negócio
-
-## 🔧 Scripts Disponíveis
-
-### Desenvolvimento
-```bash
-npm run dev              # Executa frontend + backend
-npm run dev:frontend     # Apenas frontend
-npm run dev:backend      # Apenas backend
-npm run dev:api          # API Gateway
-npm run dev:staking      # Módulo Staking
-npm run dev:dashboard    # DeFi Dashboard
-```
-
-### Build e Deploy
-```bash
-npm run build           # Build de todos os módulos
-npm run start           # Executa em produção
-npm run docker:build    # Build Docker
-npm run docker:up       # Executa com Docker
-```
-
-### Qualidade de Código
-```bash
-npm run lint            # Verifica código
-npm run lint:fix        # Corrige automaticamente
-npm run type-check      # Verifica tipos TypeScript
-npm run test            # Executa testes
-npm run format          # Formata código
-```
-
-### Manutenção
-```bash
-npm run clean           # Limpa arquivos temporários
-npm run security:audit  # Auditoria de segurança
-npm run install:all     # Instala todas as dependências
-```
-
-## 🌐 Portas dos Serviços
-
-| Serviço | Porta | Descrição |
-|---------|-------|-----------|
-| Frontend | 3000 | Interface principal |
-| Backend | 3001 | API principal |
-| API Gateway | 3002 | Gateway de APIs |
-| Staking | 3003 | Módulo de staking |
-| DeFi Dashboard | 3004 | Dashboard DeFi |
-| Grafana | 3005 | Dashboards de monitoramento |
-| Prometheus | 9090 | Métricas |
-| Kibana | 5601 | Visualização de logs |
-| Elasticsearch | 9200 | Busca de logs |
-| PostgreSQL | 5432 | Banco de dados |
-| Redis | 6379 | Cache |
-
-## 🔐 Configuração de Ambiente
-
-Crie um arquivo `.env` na raiz do projeto:
-
-```env
-# Aplicação
+# Application
 NODE_ENV=development
-PORT=3000
+PORT=3001
 
-# Banco de Dados
-DATABASE_URL=postgresql://postgres:password@localhost:5432/agrotm
+# Database
+MONGODB_URI=mongodb://localhost:27017/agrotm
 REDIS_URL=redis://localhost:6379
 
-# Solana
-SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
-SOLANA_WS_URL=wss://api.mainnet-beta.solana.com
-
-# JWT
+# Authentication
 JWT_SECRET=your-super-secret-jwt-key
 
-# APIs Externas
-NEXT_PUBLIC_API_URL=http://localhost:3001
-NEXT_PUBLIC_SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
+# Solana
+SOLANA_NETWORK=devnet
+SOLANA_DEVNET_RPC=https://api.devnet.solana.com
 
-# Monitoramento
-PROMETHEUS_URL=http://localhost:9090
-GRAFANA_URL=http://localhost:3005
+# Deployment
+VERCEL_TOKEN=your-vercel-token
+VERCEL_ORG_ID=your-vercel-org-id
+VERCEL_PROJECT_ID=your-vercel-project-id
+RAILWAY_TOKEN=your-railway-token
+RAILWAY_SERVICE=your-railway-service-name
 ```
 
-## 📁 Estrutura de Arquivos
+## 🚀 Deployment
 
-```
-agrotm-solana/
-├── 📂 app/                    # Next.js App Router
-│   ├── 📂 api/               # APIs do Next.js
-│   ├── 📂 dashboard/         # Página do dashboard
-│   └── 📂 staking/           # Página de staking
-├── 📂 components/            # Componentes React
-│   ├── 📂 ui/               # Componentes de interface
-│   ├── 📂 layout/           # Componentes de layout
-│   ├── 📂 sections/         # Seções da página
-│   ├── 📂 dashboard/        # Componentes do dashboard
-│   ├── 📂 forms/            # Formulários
-│   ├── 📂 modals/           # Modais
-│   ├── 📂 analytics/        # Componentes de analytics
-│   ├── 📂 widgets/          # Widgets
-│   └── 📂 soar/             # Componentes SOAR
-├── 📂 frontend/             # Módulo Frontend
-├── 📂 backend/              # Módulo Backend
-├── 📂 api/                  # Módulo API Gateway
-├── 📂 staking/              # Módulo Staking
-├── 📂 defi-dashboard/       # Módulo DeFi Dashboard
-├── 📂 contracts/            # Smart Contracts Solana
-├── 📂 microservices/        # Microserviços
-├── 📂 hooks/               # React Hooks
-├── 📂 services/            # Serviços de negócio
-├── 📂 types/               # Definições TypeScript
-├── 📂 utils/               # Utilitários
-├── 📂 public/              # Arquivos públicos
-│   ├── 📂 assets/          # Assets estáticos
-│   ├── 📂 locales/         # Internacionalização
-│   └── 📂 videos/          # Vídeos
-└── 📂 .github/             # GitHub Actions
+### Frontend (Vercel)
+
+1. Connect your GitHub repository to Vercel
+2. Configure environment variables in Vercel dashboard
+3. Deploy automatically on push to main branch
+
+### Backend (Railway)
+
+1. Connect your GitHub repository to Railway
+2. Configure environment variables in Railway dashboard
+3. Deploy automatically on push to main branch
+
+### Manual Deployment
+
+```bash
+# Build for production
+pnpm build
+pnpm backend:build
+
+# Deploy to Vercel
+vercel --prod
+
+# Deploy to Railway
+railway up
 ```
 
-## 🤝 Contribuição
+## 🧪 Testing
 
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
+### Unit Tests
 
-## 📄 Licença
+```bash
+pnpm test                 # Run all tests
+pnpm test:watch          # Run tests in watch mode
+pnpm test:coverage       # Generate coverage report
+```
 
-Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
+### Integration Tests
 
-## 🆘 Suporte
+```bash
+pnpm test:integration    # Run integration tests
+```
 
-- **Documentação**: [docs.agrotm.com](https://docs.agrotm.com)
-- **Issues**: [GitHub Issues](https://github.com/agrotm/agrotm-solana/issues)
-- **Discord**: [Agrotm Community](https://discord.gg/agrotm)
+### End-to-End Tests
+
+```bash
+pnpm test:e2e            # Run E2E tests with Cypress
+pnpm test:e2e:open       # Open Cypress UI
+```
+
+### Contract Tests
+
+```bash
+pnpm contracts:test      # Test Solana programs
+```
+
+## 📊 Monitoring
+
+### Performance
+
+- **Lighthouse CI** - Performance monitoring
+- **Vercel Analytics** - Frontend analytics
+- **Railway Metrics** - Backend monitoring
+
+### Error Tracking
+
+- **Sentry** - Error monitoring and performance tracking
+- **Winston** - Structured logging
+
+### Health Checks
+
+- **Health Endpoint** - `/health`
+- **Database Connection** - MongoDB and Redis
+- **Web3 Connection** - Solana RPC
+
+## 🔒 Security
+
+### Implemented Security Measures
+
+- **Rate Limiting** - API request throttling
+- **CORS Protection** - Cross-origin resource sharing
+- **Helmet.js** - Security headers
+- **Input Sanitization** - XSS protection
+- **JWT Authentication** - Secure token-based auth
+- **HTTPS Only** - Secure communication
+- **Content Security Policy** - XSS and injection protection
+
+### Security Best Practices
+
+- Regular dependency updates
+- Security audits with `pnpm audit`
+- Environment variable protection
+- Input validation and sanitization
+- Secure session management
+- Database query protection
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Development Guidelines
+
+- Follow TypeScript best practices
+- Write comprehensive tests
+- Update documentation
+- Follow the existing code style
+- Use conventional commits
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+- **Documentation**: [docs.agrotm.com](https://docs.agrotm.com)
+- **Discord**: [discord.gg/agrotm](https://discord.gg/agrotm)
 - **Email**: support@agrotm.com
+- **Issues**: [GitHub Issues](https://github.com/your-username/agrotm-solana/issues)
 
-## 🔗 Links Úteis
+## 🙏 Acknowledgments
 
-- [Website](https://agrotm.com)
-- [Whitepaper](https://agrotm.com/whitepaper.pdf)
-- [Documentação](https://docs.agrotm.com)
-- [API Docs](https://api.agrotm.com/docs)
-- [Status](https://status.agrotm.com)
+- Solana Foundation for blockchain infrastructure
+- Vercel for hosting and deployment
+- Railway for backend hosting
+- Open source community for amazing tools and libraries
 
 ---
 
-**Desenvolvido com ❤️ pela equipe Agrotm**
+**Made with ❤️ by the AGROTM Team**
+
+[Website](https://agrotm.com) • [Twitter](https://twitter.com/agrotm) • [Discord](https://discord.gg/agrotm) • [GitHub](https://github.com/your-username/agrotm-solana)

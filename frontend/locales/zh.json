@@ -1,0 +1,292 @@
+{
+  "common": {
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "cancel": "取消",
+    "confirm": "确认",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "view": "查看",
+    "close": "关闭",
+    "back": "返回",
+    "next": "下一步",
+    "previous": "上一步",
+    "search": "搜索",
+    "filter": "筛选",
+    "sort": "排序",
+    "refresh": "刷新",
+    "copy": "复制",
+    "download": "下载",
+    "upload": "上传",
+    "connect": "连接",
+    "disconnect": "断开",
+    "wallet": "钱包",
+    "balance": "余额",
+    "amount": "数量",
+    "price": "价格",
+    "total": "总计",
+    "available": "可用",
+    "staked": "质押",
+    "rewards": "奖励",
+    "apy": "年化收益率",
+    "tvl": "总锁仓价值",
+    "volume": "交易量",
+    "marketCap": "市值",
+    "circulatingSupply": "流通供应量",
+    "maxSupply": "最大供应量"
+  },
+  "navigation": {
+    "home": "首页",
+    "dashboard": "仪表板",
+    "staking": "质押",
+    "farming": "挖矿",
+    "swap": "兑换",
+    "nft": "NFT市场",
+    "governance": "治理",
+    "analytics": "分析",
+    "docs": "文档",
+    "about": "关于",
+    "contact": "联系",
+    "settings": "设置",
+    "profile": "个人资料",
+    "portfolio": "投资组合",
+    "transactions": "交易记录",
+    "rewards": "奖励",
+    "vaults": "金库",
+    "pools": "流动性池"
+  },
+  "home": {
+    "hero": {
+      "title": "DeFi农业的未来",
+      "subtitle": "通过创新的挖矿策略和NFT支持的农业投资获得高收益",
+      "cta": "开始挖矿",
+      "learnMore": "了解更多",
+      "stats": {
+        "tvl": "总锁仓价值",
+        "users": "活跃用户",
+        "rewards": "已分配奖励",
+        "pools": "活跃池"
+      }
+    },
+    "features": {
+      "title": "为什么选择AGROTM？",
+      "subtitle": "革命性的DeFi平台，结合农业和区块链技术",
+      "items": {
+        "yield": {
+          "title": "高收益挖矿",
+          "description": "通过我们创新的挖矿策略获得高达500%的年化收益率"
+        },
+        "nft": {
+          "title": "NFT支持的资产",
+          "description": "通过我们的NFT市场投资真实农业资产"
+        },
+        "security": {
+          "title": "审计和安全",
+          "description": "多重审计的智能合约，具有保险覆盖"
+        },
+        "governance": {
+          "title": "社区治理",
+          "description": "通过我们的DAO参与平台决策"
+        }
+      }
+    },
+    "stats": {
+      "title": "平台统计",
+      "subtitle": "AGROTM生态系统的实时数据"
+    }
+  },
+  "dashboard": {
+    "title": "仪表板",
+    "welcome": "欢迎回来",
+    "overview": "投资组合概览",
+    "quickActions": "快速操作",
+    "recentActivity": "最近活动",
+    "performance": "表现",
+    "assets": "您的资产",
+    "rewards": "您的奖励",
+    "staking": "质押头寸",
+    "farming": "挖矿头寸",
+    "nfts": "您的NFT",
+    "transactions": "最近交易",
+    "charts": {
+      "portfolio": "投资组合价值",
+      "rewards": "获得的奖励",
+      "performance": "与市场表现对比"
+    }
+  },
+  "staking": {
+    "title": "质押",
+    "description": "质押您的AGROTM代币以获得奖励并参与治理",
+    "stake": "质押代币",
+    "unstake": "解除质押",
+    "claim": "领取奖励",
+    "reStake": "重新质押奖励",
+    "lockPeriod": "锁定期",
+    "rewardsRate": "奖励率",
+    "totalStaked": "总质押量",
+    "yourStake": "您的质押",
+    "availableRewards": "可用奖励",
+    "lockPeriods": {
+      "flexible": "灵活",
+      "30days": "30天",
+      "90days": "90天",
+      "180days": "180天",
+      "365days": "365天"
+    },
+    "benefits": {
+      "title": "质押好处",
+      "rewards": "获得每日奖励",
+      "governance": "DAO投票权",
+      "fees": "分享协议费用",
+      "nft": "获得独家NFT"
+    }
+  },
+  "farming": {
+    "title": "收益挖矿",
+    "description": "提供流动性并通过我们的挖矿池获得高收益",
+    "deposit": "存入",
+    "withdraw": "提取",
+    "harvest": "收获奖励",
+    "compound": "复投奖励",
+    "pool": "池",
+    "tvl": "总锁仓价值",
+    "apy": "年化收益率",
+    "yourShare": "您的份额",
+    "earned": "已赚取",
+    "pools": {
+      "agrotmEth": "AGROTM-ETH",
+      "agrotmUsdc": "AGROTM-USDC",
+      "agrotmUsdt": "AGROTM-USDT",
+      "ethUsdc": "ETH-USDC",
+      "ethUsdt": "ETH-USDT"
+    }
+  },
+  "nft": {
+    "title": "NFT市场",
+    "description": "交易农业NFT并投资现实世界资产",
+    "buy": "购买NFT",
+    "sell": "出售NFT",
+    "mint": "铸造NFT",
+    "collection": "收藏",
+    "price": "价格",
+    "owner": "所有者",
+    "rarity": "稀有度",
+    "attributes": "属性",
+    "history": "交易历史",
+    "collections": {
+      "farmland": "农田NFT",
+      "equipment": "设备NFT",
+      "crops": "作物NFT",
+      "animals": "动物NFT"
+    },
+    "filters": {
+      "all": "全部",
+      "farmland": "农田",
+      "equipment": "设备",
+      "crops": "作物",
+      "animals": "动物",
+      "priceRange": "价格范围",
+      "rarity": "稀有度"
+    }
+  },
+  "swap": {
+    "title": "兑换",
+    "description": "以最佳汇率和最低费用交易代币",
+    "swap": "兑换",
+    "from": "从",
+    "to": "到",
+    "slippage": "滑点容忍度",
+    "gasFee": "燃料费",
+    "priceImpact": "价格影响",
+    "minimumReceived": "最少收到",
+    "route": "路由",
+    "settings": "设置",
+    "max": "最大",
+    "balance": "余额",
+    "connectWallet": "连接钱包进行兑换"
+  },
+  "governance": {
+    "title": "治理",
+    "description": "通过我们的去中心化治理参与平台决策",
+    "proposals": "提案",
+    "createProposal": "创建提案",
+    "vote": "投票",
+    "votingPower": "投票权",
+    "quorum": "法定人数",
+    "executed": "已执行",
+    "pending": "待处理",
+    "active": "活跃",
+    "defeated": "失败",
+    "succeeded": "成功",
+    "for": "赞成",
+    "against": "反对",
+    "abstain": "弃权"
+  },
+  "wallet": {
+    "connect": "连接钱包",
+    "disconnect": "断开连接",
+    "connected": "已连接",
+    "connecting": "连接中...",
+    "error": "连接错误",
+    "unsupported": "不支持的网络",
+    "switchNetwork": "切换网络",
+    "addToken": "添加代币到钱包",
+    "copyAddress": "复制地址",
+    "viewOnExplorer": "在浏览器中查看",
+    "supportedWallets": {
+      "metamask": "MetaMask",
+      "walletconnect": "WalletConnect",
+      "coinbase": "Coinbase钱包",
+      "phantom": "Phantom",
+      "solflare": "Solflare"
+    }
+  },
+  "errors": {
+    "networkError": "网络错误",
+    "insufficientBalance": "余额不足",
+    "transactionFailed": "交易失败",
+    "userRejected": "交易被拒绝",
+    "slippageTooHigh": "滑点过高",
+    "poolNotFound": "未找到池",
+    "invalidAmount": "无效数量",
+    "walletNotConnected": "钱包未连接",
+    "unsupportedNetwork": "不支持的网络",
+    "gasEstimationFailed": "燃料估算失败"
+  },
+  "success": {
+    "transactionConfirmed": "交易确认",
+    "tokensStaked": "代币质押成功",
+    "tokensUnstaked": "代币解除质押成功",
+    "rewardsClaimed": "奖励领取成功",
+    "liquidityAdded": "流动性添加成功",
+    "liquidityRemoved": "流动性移除成功",
+    "nftMinted": "NFT铸造成功",
+    "nftPurchased": "NFT购买成功",
+    "proposalCreated": "提案创建成功",
+    "voteSubmitted": "投票提交成功"
+  },
+  "settings": {
+    "title": "设置",
+    "language": "语言",
+    "theme": "主题",
+    "notifications": "通知",
+    "security": "安全",
+    "privacy": "隐私",
+    "about": "关于",
+    "help": "帮助和支持",
+    "themes": {
+      "light": "浅色",
+      "dark": "深色",
+      "auto": "自动"
+    },
+    "notifications": {
+      "email": "邮件通知",
+      "push": "推送通知",
+      "transaction": "交易通知",
+      "rewards": "奖励通知",
+      "governance": "治理通知"
+    }
+  }
+} 

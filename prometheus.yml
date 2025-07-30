@@ -12,103 +12,73 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
-  # Frontend Application
-  - job_name: 'frontend'
-    static_configs:
-      - targets: ['frontend:3000']
-    metrics_path: '/api/metrics'
-    scrape_interval: 30s
-
-  # Backend API
-  - job_name: 'backend'
+  # AGROTM Backend API
+  - job_name: 'agrotm-backend'
     static_configs:
       - targets: ['backend:3001']
     metrics_path: '/metrics'
     scrape_interval: 30s
+    scrape_timeout: 10s
 
-  # API Gateway
-  - job_name: 'api-gateway'
+  # AGROTM Frontend (if metrics are exposed)
+  - job_name: 'agrotm-frontend'
     static_configs:
-      - targets: ['api-gateway:3002']
+      - targets: ['frontend:3000']
     metrics_path: '/metrics'
     scrape_interval: 30s
+    scrape_timeout: 10s
 
-  # Staking Module
-  - job_name: 'staking'
-    static_configs:
-      - targets: ['staking:3003']
-    metrics_path: '/metrics'
-    scrape_interval: 30s
-
-  # DeFi Dashboard
-  - job_name: 'defi-dashboard'
-    static_configs:
-      - targets: ['defi-dashboard:3004']
-    metrics_path: '/metrics'
-    scrape_interval: 30s
-
-  # Node.js Applications
+  # Node.js applications
   - job_name: 'nodejs'
     static_configs:
-      - targets: ['backend:3001', 'api-gateway:3002', 'staking:3003', 'defi-dashboard:3004']
+      - targets: ['backend:3001']
     metrics_path: '/metrics'
     scrape_interval: 30s
+    scrape_timeout: 10s
 
-  # PostgreSQL Database
-  - job_name: 'postgres'
+  # MongoDB (if mongodb_exporter is running)
+  - job_name: 'mongodb'
     static_configs:
-      - targets: ['postgres:5432']
-    metrics_path: '/metrics'
-    scrape_interval: 60s
+      - targets: ['mongodb:27017']
+    scrape_interval: 30s
+    scrape_timeout: 10s
 
-  # Redis Cache
+  # Redis (if redis_exporter is running)
   - job_name: 'redis'
     static_configs:
       - targets: ['redis:6379']
-    metrics_path: '/metrics'
-    scrape_interval: 60s
+    scrape_interval: 30s
+    scrape_timeout: 10s
 
-  # Nginx
+  # Nginx (if nginx_exporter is running)
   - job_name: 'nginx'
     static_configs:
       - targets: ['nginx:80']
-    metrics_path: '/nginx_status'
+    metrics_path: '/metrics'
     scrape_interval: 30s
+    scrape_timeout: 10s
 
-  # Docker Containers
+  # Docker containers
   - job_name: 'docker'
     static_configs:
       - targets: ['localhost:9323']
     scrape_interval: 30s
+    scrape_timeout: 10s
 
-  # System Metrics
-  - job_name: 'node-exporter'
+  # System metrics
+  - job_name: 'node'
     static_configs:
-      - targets: ['node-exporter:9100']
+      - targets: ['localhost:9100']
     scrape_interval: 30s
+    scrape_timeout: 10s
 
-  # Blackbox Exporter for HTTP checks
-  - job_name: 'blackbox'
-    metrics_path: /probe
-    params:
-      module: [http_2xx]
-    static_configs:
-      - targets:
-        - http://frontend:3000
-        - http://backend:3001/health
-        - http://api-gateway:3002/health
-        - http://staking:3003/health
-        - http://defi-dashboard:3004/health
-    relabel_configs:
-      - source_labels: [__address__]
-        target_label: __param_target
-      - source_labels: [__param_target]
-        target_label: instance
-      - target_label: __address__
-        replacement: blackbox:9115
-
+# Alerting rules
 alerting:
   alertmanagers:
     - static_configs:
         - targets:
-          # - alertmanager:9093 
+          # - alertmanager:9093
+
+# Recording rules
+rule_files:
+  - "rules/*.yml" 

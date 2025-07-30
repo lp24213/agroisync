@@ -1,46 +1,17 @@
-# AGROTM API
-
-API da plataforma AGROTM Solana.
+# AgroTM API
 
 ## Endpoints
+- `GET /status` — Checagem de status da API.
 
-### Pools
-- `GET /api/pools` - Listar pools
-- `POST /api/pools` - Criar pool
-- `GET /api/pools/[id]` - Obter pool específico
-- `PUT /api/pools/[id]` - Atualizar pool
-- `DELETE /api/pools/[id]` - Deletar pool
+## Segurança
+- Middleware helmet, rate limit.
+- Todos endpoints validam entrada e saída.
 
-### Stats
-- `GET /api/stats` - Obter estatísticas
-- `GET /api/stats/tvl` - Obter TVL
-- `GET /api/stats/apr` - Obter APR
+## Melhoria
+- Adicionar autenticação JWT e integração com smart contracts.
 
-### Transactions
-- `GET /api/transactions` - Listar transações
-- `POST /api/transactions` - Criar transação
-- `GET /api/transactions/[id]` - Obter transação
-
-## Tecnologias
-
-- Next.js 14
-- TypeScript
-- Solana Web3.js
-
-## Instalação
-
+## Como rodar
 ```bash
 npm install
-```
-
-## Desenvolvimento
-
-```bash
 npm run dev
 ```
-
-## Build
-
-```bash
-npm run build
-``` 
