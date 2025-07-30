@@ -2,8 +2,7 @@
   "extends": [
     "config:base",
     ":semanticCommits",
-    ":semanticCommitTypeAll(chore)",
-    ":semanticCommitScope(deps)"
+    ":semanticCommitTypeAll(chore)"
   ],
   "schedule": ["before 4am on monday"],
   "timezone": "America/Sao_Paulo",
@@ -14,15 +13,34 @@
       "automerge": true
     },
     {
-      "matchPackageNames": ["@types/*"],
+      "matchPackageNames": ["@types/node"],
+      "matchCurrentVersion": "!/^0/",
       "automerge": true
     },
     {
-      "matchPackageNames": ["typescript", "next", "react", "react-dom"],
+      "matchPackageNames": ["typescript"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": false
+    },
+    {
+      "matchPackageNames": ["next"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": false
+    },
+    {
+      "matchPackageNames": ["react", "react-dom"],
+      "matchCurrentVersion": "!/^0/",
       "automerge": false
     }
   ],
-  "assignees": ["luispaulodeoliveira"],
-  "reviewers": ["luispaulodeoliveira"],
-  "labels": ["dependencies", "renovate"]
+  "assignees": ["@agrotm-team"],
+  "reviewers": ["@agrotm-team"],
+  "labels": ["dependencies"],
+  "commitMessageAction": "Update",
+  "commitMessageTopic": "{{depName}}",
+  "commitMessageExtra": "to {{newVersion}}",
+  "recreateClosed": true,
+  "rebaseWhen": "behind-base-branch",
+  "prHourlyLimit": 2,
+  "prConcurrentLimit": 10
 } 

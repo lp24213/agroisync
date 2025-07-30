@@ -32,7 +32,15 @@
     "analyze": "pnpm --filter frontend analyze",
     "prepare": "husky install",
     "pre-commit": "lint-staged",
-    "postinstall": "husky install"
+    "postinstall": "husky install",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "db:seed": "pnpm --filter backend seed",
+    "db:migrate": "pnpm --filter backend migrate",
+    "monitoring:start": "docker-compose -f docker-compose.monitoring.yml up -d",
+    "monitoring:stop": "docker-compose -f docker-compose.monitoring.yml down"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",

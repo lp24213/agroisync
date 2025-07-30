@@ -1,211 +1,22 @@
 import * as Sentry from '@sentry/nextjs';
 
-const SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
-
 Sentry.init({
-  dsn: SENTRY_DSN,
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
   environment: process.env.NODE_ENV,
-  release: process.env.NEXT_PUBLIC_APP_VERSION || '2.0.0',
-  
-  // Performance monitoring
-  tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
-  
-  // Session tracking
-  autoSessionTracking: true,
-  
-  // Error sampling
-  sampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
-  
-  // Ignore specific errors
-  ignoreErrors: [
-    // Network errors
-    'Network Error',
-    'Failed to fetch',
-    'Request timeout',
-    'Connection refused',
-    
-    // Browser-specific errors
-    'ResizeObserver loop limit exceeded',
-    'Script error.',
-    'Script error',
-    
-    // Wallet connection errors
-    'User rejected the request',
-    'User rejected the transaction',
-    'User cancelled the operation',
-    
-    // Blockchain errors
-    'Transaction failed',
-    'Insufficient funds',
-    'Gas estimation failed',
-    
-    // Third-party errors
-    'Google Analytics',
-    'Facebook Pixel',
-    'Hotjar',
-    
-    // Development errors
-    'React DevTools',
-    'Redux DevTools',
-    'Webpack DevTools'
-  ],
-  
-  // Ignore specific URLs
-  denyUrls: [
-    // Development URLs
-    /localhost/,
-    /127\.0\.0\.1/,
-    /0\.0\.0\.0/,
-    
-    // Browser extensions
-    /chrome-extension/,
-    /moz-extension/,
-    /safari-extension/,
-    
-    // Analytics and monitoring
-    /google-analytics/,
-    /facebook\.com/,
-    /hotjar\.com/,
-    
-    // CDN and static assets
-    /cdn\./,
-    /static\./,
-    /assets\./
-  ],
-  
-  // Before send function to filter events
-  beforeSend(event, hint) {
-    // Don't send events in development
-    if (process.env.NODE_ENV === 'development') {
-      return null;
-    }
-    
-    // Filter out specific error types
-    if (event.exception) {
-      const exception = event.exception.values?.[0];
-      if (exception) {
-        // Filter out network errors
-        if (exception.type === 'NetworkError' || 
-            exception.value?.includes('Network Error') ||
-            exception.value?.includes('Failed to fetch')) {
-          return null;
-        }
-        
-        // Filter out user cancellation errors
-        if (exception.value?.includes('User rejected') ||
-            exception.value?.includes('User cancelled')) {
-          return null;
-        }
-        
-        // Filter out blockchain errors
-        if (exception.value?.includes('Transaction failed') ||
-            exception.value?.includes('Insufficient funds')) {
-          return null;
-        }
-      }
-    }
-    
-    // Add custom context
-    event.tags = {
-      ...event.tags,
-      environment: process.env.NODE_ENV,
-      version: process.env.NEXT_PUBLIC_APP_VERSION,
-      platform: 'web'
-    };
-    
-    // Add user context if available
-    if (typeof window !== 'undefined') {
-      const user = localStorage.getItem('agrotm_user');
-      if (user) {
-        try {
-          const userData = JSON.parse(user);
-          event.user = {
-            id: userData.id,
-            email: userData.email,
-            wallet_address: userData.wallet_address
-          };
-        } catch (error) {
-          // Ignore parsing errors
-        }
-      }
-    }
-    
-    return event;
-  },
-  
-  // Integrations
+  tracesSampleRate: 1.0,
+  profilesSampleRate: 1.0,
   integrations: [
-    // Browser integrations
     new Sentry.BrowserTracing({
-      // Routing instrumentation for Next.js
-      routingInstrumentation: Sentry.nextjsRouterInstrumentation(),
-      
-      // Performance monitoring
-      tracingOrigins: [
-        'localhost',
-        'agrotm.com',
-        'staging.agrotm.com',
-        'api.agrotm.com'
-      ]
+      tracePropagationTargets: ['localhost', 'agrotm.com'],
     }),
-    
-    // Session replay (only in production)
-    ...(process.env.NODE_ENV === 'production' ? [
-      new Sentry.Replay({
-        maskAllText: false,
-        blockAllMedia: false,
-        maskAllInputs: true,
-        blockClass: 'sentry-block',
-        blockSelector: '[data-sentry-block]',
-        maskTextClass: 'sentry-mask',
-        maskTextSelector: '[data-sentry-mask]'
-      })
-    ] : [])
   ],
-  
-  // Transport options
-  transport: Sentry.makeBrowserTransport,
-  
-  // Debug mode
-  debug: process.env.NODE_ENV === 'development',
-  
-  // Attach stack traces
-  attachStacktrace: true,
-  
-  // Normalize URLs
-  normalizeDepth: 3,
-  
-  // Max breadcrumbs
-  maxBreadcrumbs: 50,
-  
-  // Send default PII
-  sendDefaultPii: false,
-  
-  // Include local variables
-  includeLocalVariables: true,
-  
-  // Instrumentation options
-  instrumenter: 'sentry',
-  
-  // Profiling
-  profilesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
-  
-  // Replay options
-  replaysSessionSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
-  replaysOnErrorSampleRate: process.env.NODE_ENV === 'production' ? 1.0 : 1.0,
-  
-  // Custom context
-  initialScope: {
-    tags: {
-      platform: 'web',
-      framework: 'nextjs',
-      version: process.env.NEXT_PUBLIC_APP_VERSION || '2.0.0'
-    },
-    user: {
-      ip_address: '{{auto}}'
+  beforeSend(event) {
+    if (process.env.NODE_ENV === 'development') {
+      return null
     }
-  }
-});
+    return event
+  },
+})
 
 // Custom error boundary
 export function captureException(error: Error, context?: any) {

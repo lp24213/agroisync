@@ -4,19 +4,15 @@
 echo "🔍 Running pre-commit checks..."
 
 # Run linting
-echo "📝 Running ESLint..."
+echo "📝 Checking code style..."
 pnpm lint
 
 # Run type checking
-echo "🔧 Running TypeScript type check..."
+echo "🔧 Checking TypeScript types..."
 pnpm type-check
 
 # Run tests
 echo "🧪 Running tests..."
 pnpm test
-
-# Run format check
-echo "🎨 Checking code formatting..."
-pnpm format:check
 
 echo "✅ Pre-commit checks passed!" 

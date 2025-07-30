@@ -45,3 +45,9 @@ end_of_line = lf
 [*.ps1]
 indent_size = 2
 end_of_line = crlf 
+
+[*.{css,scss}]
+indent_size = 2
+
+[*.html]
+indent_size = 2 
