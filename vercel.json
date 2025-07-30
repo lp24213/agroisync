@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "agrotm-solana",
+  "name": "agrotm-solana-v2",
   "builds": [
     {
       "src": "frontend/package.json",
@@ -25,4 +25,4 @@
       "maxDuration": 30
     }
   }
-} 
+}
