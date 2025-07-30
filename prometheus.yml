@@ -78,7 +78,6 @@ alerting:
     - static_configs:
         - targets:
           # - alertmanager:9093
-
 # Recording rules
-rule_files:
-  - "rules/*.yml" 
+# rule_files:
+#   - "rules/*.yml"

@@ -38,4 +38,9 @@ jobs:
           NEXT_PUBLIC_APP_URL: https://agrotm.com
 
       - name: Deploy backend to Railway
-        run: echo "Railway deployment would happen here"
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.RAILWAY_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"service\": \"${{ secrets.RAILWAY_SERVICE }}\"}" \
+            https://api.railway.app/v2/deployments
