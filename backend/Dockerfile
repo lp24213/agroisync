@@ -14,7 +14,7 @@ COPY package*.json ./
 RUN npm install -g pnpm
 
 # Install all dependencies (including dev dependencies for build)
-RUN pnpm install --frozen-lockfile && \
+RUN pnpm install --no-frozen-lockfile && \
     pnpm store prune
 
 # Copy source code

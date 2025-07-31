@@ -35,7 +35,7 @@ jobs:
       - name: Install dependencies
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Run linting
         env:
