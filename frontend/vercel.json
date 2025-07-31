@@ -1,8 +1,8 @@
 {
   "version": 2,
   "projectId": "prj_2QKqXqXqXqXqXqXqXqXqXqXq",
-  "buildCommand": "pnpm build",
+  "buildCommand": "npm run build",
   "outputDirectory": ".next",
-  "installCommand": "pnpm install --frozen-lockfile",
+  "installCommand": "npm ci --omit=dev",
   "framework": "nextjs"
 }
