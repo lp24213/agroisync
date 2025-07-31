@@ -23,7 +23,7 @@
     "idl:remove": "anchor idl remove"
   },
   "dependencies": {
-    "@coral-xyz/anchor": "^0.29.0",
+    "@coral-xyz/anchor": "^0.31.1",
     "@solana/web3.js": "^1.90.0",
     "@solana/spl-token": "^0.4.0",
     "bs58": "^5.0.0",
