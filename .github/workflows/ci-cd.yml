@@ -101,7 +101,18 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
+      - name: Get previous deployment info
+        id: previous-deployment
+        run: |
+          # Get previous deployment URL for rollback
+          PREVIOUS_URL=$(curl -s -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            "https://api.vercel.com/v1/deployments?teamId=${{ secrets.VERCEL_ORG_ID }}&projectId=${{ secrets.VERCEL_PROJECT_ID }}&limit=2" | \
+            jq -r '.deployments[1].url // empty')
+          echo "previous_url=$PREVIOUS_URL" >> $GITHUB_OUTPUT
+          echo "Previous deployment URL: $PREVIOUS_URL"
+
       - name: Deploy to Vercel
+        id: deploy-vercel
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
@@ -109,7 +120,61 @@ jobs:
           working-directory: ./frontend
           vercel-args: '--prod'
 
+      - name: Wait for deployment to be ready
+        run: |
+          DEPLOYMENT_URL="${{ steps.deploy-vercel.outputs.preview-url }}"
+          echo "Waiting for deployment to be ready: $DEPLOYMENT_URL"
+
+          # Wait up to 5 minutes for deployment to be ready
+          for i in {1..30}; do
+            if curl -f -s "$DEPLOYMENT_URL" > /dev/null; then
+              echo "Deployment is ready!"
+              break
+            fi
+            echo "Waiting... ($i/30)"
+            sleep 10
+          done
+
+      - name: Health check
+        id: health-check
+        run: |
+          DEPLOYMENT_URL="${{ steps.deploy-vercel.outputs.preview-url }}"
+          echo "Running health check on: $DEPLOYMENT_URL"
+
+          # Health check with timeout
+          if curl -f -s --max-time 30 "$DEPLOYMENT_URL/health" > /dev/null; then
+            echo "Health check passed"
+            echo "status=success" >> $GITHUB_OUTPUT
+          else
+            echo "Health check failed"
+            echo "status=failed" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Rollback on health check failure
+        if: steps.health-check.outputs.status == 'failed'
+        run: |
+          echo "Health check failed, initiating rollback..."
+
+          # Get the previous deployment ID
+          PREVIOUS_DEPLOYMENT_ID=$(curl -s -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            "https://api.vercel.com/v1/deployments?teamId=${{ secrets.VERCEL_ORG_ID }}&projectId=${{ secrets.VERCEL_PROJECT_ID }}&limit=2" | \
+            jq -r '.deployments[1].id // empty')
+
+          if [ ! -z "$PREVIOUS_DEPLOYMENT_ID" ]; then
+            echo "Rolling back to deployment: $PREVIOUS_DEPLOYMENT_ID"
+
+            # Promote previous deployment to production
+            curl -X POST \
+              -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+              "https://api.vercel.com/v1/deployments/$PREVIOUS_DEPLOYMENT_ID/promote"
+
+            echo "Rollback completed"
+          else
+            echo "No previous deployment found for rollback"
+          fi
+
       - name: Deploy to Railway
+        if: steps.health-check.outputs.status == 'success'
         run: |
           npm install -g @railway/cli@latest
           railway login --token ${{ secrets.RAILWAY_TOKEN }}
@@ -117,3 +182,23 @@ jobs:
           railway up --service agrotm-backend --detach
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Notify deployment success
+        if: steps.health-check.outputs.status == 'success'
+        run: |
+          echo "✅ Deployment successful!"
+          echo "Frontend URL: ${{ steps.deploy-vercel.outputs.preview-url }}"
+          echo "Backend deployed to Railway"
+
+      - name: Notify deployment failure
+        if: failure() || steps.health-check.outputs.status == 'failed'
+        run: |
+          echo "❌ Deployment failed!"
+          echo "Rollback initiated if available"
+
+          # Send notification to Discord/Slack if webhook is configured
+          if [ ! -z "${{ secrets.DISCORD_WEBHOOK_URL }}" ]; then
+            curl -H "Content-Type: application/json" \
+              -d '{"content":"🚨 AGROTM deployment failed! Rollback initiated."}' \
+              "${{ secrets.DISCORD_WEBHOOK_URL }}"
+          fi

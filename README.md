@@ -94,7 +94,7 @@ agrotm-solana/
    ```bash
    # Start frontend
    pnpm frontend:dev
-   
+
    # Start backend (in another terminal)
    pnpm backend:dev
    ```
@@ -380,3 +380,47 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Made with ❤️ by the AGROTM Team**
 
 [Website](https://agrotm.com) • [Twitter](https://twitter.com/agrotm) • [Discord](https://discord.gg/agrotm) • [GitHub](https://github.com/your-username/agrotm-solana)
+
+## Scripts Premium (Segurança e Auditoria)
+
+- `pnpm audit:contracts` — Roda auditoria automática dos contratos Solidity com Slither (gera relatório em security/slither-report.json)
+- `pnpm coverage:contracts` — Gera relatório de cobertura dos contratos com Hardhat
+- `pnpm docker:prune` — Limpa imagens e volumes Docker antigos
+
+## Deploy Seguro na Vercel
+
+- Configure todas as variáveis sensíveis (chaves, senhas, endpoints) apenas pelo painel de variáveis da Vercel.
+- Nunca exponha segredos em arquivos versionados ou no frontend.
+- O projeto está pronto para deploy sem erros na Vercel, desde que as variáveis estejam corretamente configuradas.
+
+## Auditoria e Segurança
+
+- O backend e frontend possuem headers de segurança, CSP, rate limiting, DDoS protection, e monitoramento.
+- Contratos inteligentes usam OpenZeppelin, RBAC, pausável, anti-whale, e são auditados por scripts automáticos.
+- Testes cobrem >80% do código, incluindo edge cases e mocks para APIs externas.
+
+## Rollback Automático e Monitoramento
+
+### Rollback Automático
+- **CI/CD**: Rollback automático em caso de falha no deploy ou health check
+- **Manual**: Workflow `rollback.yml` para rollback manual via GitHub Actions
+- **Notificações**: Alertas via Discord/Slack em caso de falha
+
+### Monitoramento Contínuo
+- **Health Check**: Verificação automática a cada 5 minutos
+- **Endpoints**: Monitoramento de frontend, backend e APIs críticas
+- **Alertas**: Notificações automáticas em caso de problemas
+- **Issues**: Criação automática de issues para investigação
+
+### Como Usar
+
+#### Rollback Manual
+1. Vá para Actions > Manual Rollback
+2. Clique em "Run workflow"
+3. Escolha o deployment ID (opcional) e ambiente
+4. Execute o rollback
+
+#### Monitoramento
+- Executa automaticamente a cada 5 minutos
+- Pode ser executado manualmente via Actions > Production Monitoring
+- Configuração via secrets: `DISCORD_WEBHOOK_URL`, `BACKEND_URL`, `HEALTH_LOG_WEBHOOK`

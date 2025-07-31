@@ -1,0 +1,129 @@
+name: Manual Rollback
+
+on:
+  workflow_dispatch:
+    inputs:
+      deployment_id:
+        description: 'Deployment ID to rollback to (optional, will use previous if not provided)'
+        required: false
+        type: string
+      environment:
+        description: 'Environment to rollback'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - preview
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get deployment ID
+        id: get-deployment
+        run: |
+          if [ ! -z "${{ github.event.inputs.deployment_id }}" ]; then
+            DEPLOYMENT_ID="${{ github.event.inputs.deployment_id }}"
+            echo "Using provided deployment ID: $DEPLOYMENT_ID"
+          else
+            # Get the previous deployment ID
+            DEPLOYMENT_ID=$(curl -s -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+              "https://api.vercel.com/v1/deployments?teamId=${{ secrets.VERCEL_ORG_ID }}&projectId=${{ secrets.VERCEL_PROJECT_ID }}&limit=2" | \
+              jq -r '.deployments[1].id // empty')
+            echo "Using previous deployment ID: $DEPLOYMENT_ID"
+          fi
+
+          if [ -z "$DEPLOYMENT_ID" ]; then
+            echo "❌ No deployment ID found for rollback"
+            exit 1
+          fi
+
+          echo "deployment_id=$DEPLOYMENT_ID" >> $GITHUB_OUTPUT
+
+      - name: Verify deployment exists
+        run: |
+          DEPLOYMENT_ID="${{ steps.get-deployment.outputs.deployment_id }}"
+
+          # Check if deployment exists and get its status
+          DEPLOYMENT_INFO=$(curl -s -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            "https://api.vercel.com/v1/deployments/$DEPLOYMENT_ID")
+
+          DEPLOYMENT_STATUS=$(echo "$DEPLOYMENT_INFO" | jq -r '.ready // false')
+          DEPLOYMENT_URL=$(echo "$DEPLOYMENT_INFO" | jq -r '.url // empty')
+
+          if [ "$DEPLOYMENT_STATUS" != "true" ]; then
+            echo "❌ Deployment $DEPLOYMENT_ID is not ready for rollback"
+            exit 1
+          fi
+
+          echo "✅ Deployment $DEPLOYMENT_ID is ready"
+          echo "URL: $DEPLOYMENT_URL"
+
+      - name: Execute rollback
+        run: |
+          DEPLOYMENT_ID="${{ steps.get-deployment.outputs.deployment_id }}"
+          ENVIRONMENT="${{ github.event.inputs.environment }}"
+
+          echo "🔄 Rolling back to deployment $DEPLOYMENT_ID in $ENVIRONMENT environment..."
+
+          if [ "$ENVIRONMENT" = "production" ]; then
+            # Promote to production
+            curl -X POST \
+              -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+              "https://api.vercel.com/v1/deployments/$DEPLOYMENT_ID/promote"
+          else
+            # For preview, we can't promote, but we can get the URL
+            DEPLOYMENT_URL=$(curl -s -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+              "https://api.vercel.com/v1/deployments/$DEPLOYMENT_ID" | \
+              jq -r '.url // empty')
+            echo "Preview deployment available at: $DEPLOYMENT_URL"
+          fi
+
+          echo "✅ Rollback completed successfully!"
+
+      - name: Health check after rollback
+        if: github.event.inputs.environment == 'production'
+        run: |
+          # Wait a bit for the rollback to propagate
+          sleep 30
+
+          # Get the production URL
+          PROD_URL=$(curl -s -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            "https://api.vercel.com/v1/deployments?teamId=${{ secrets.VERCEL_ORG_ID }}&projectId=${{ secrets.VERCEL_PROJECT_ID }}&limit=1" | \
+            jq -r '.deployments[0].url // empty')
+
+          echo "Running health check on: $PROD_URL"
+
+          if curl -f -s --max-time 30 "$PROD_URL/health" > /dev/null; then
+            echo "✅ Health check passed after rollback"
+          else
+            echo "❌ Health check failed after rollback"
+            exit 1
+          fi
+
+      - name: Notify rollback success
+        run: |
+          echo "✅ Rollback completed successfully!"
+
+          # Send notification to Discord/Slack if webhook is configured
+          if [ ! -z "${{ secrets.DISCORD_WEBHOOK_URL }}" ]; then
+            curl -H "Content-Type: application/json" \
+              -d '{"content":"✅ AGROTM rollback completed successfully!"}' \
+              "${{ secrets.DISCORD_WEBHOOK_URL }}"
+          fi
+
+      - name: Notify rollback failure
+        if: failure()
+        run: |
+          echo "❌ Rollback failed!"
+
+          # Send notification to Discord/Slack if webhook is configured
+          if [ ! -z "${{ secrets.DISCORD_WEBHOOK_URL }}" ]; then
+            curl -H "Content-Type: application/json" \
+              -d '{"content":"❌ AGROTM rollback failed!"}' \
+              "${{ secrets.DISCORD_WEBHOOK_URL }}"
+          fi

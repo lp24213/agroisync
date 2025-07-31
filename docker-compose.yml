@@ -10,8 +10,6 @@ services:
       MONGO_INITDB_ROOT_USERNAME: agrotm
       MONGO_INITDB_ROOT_PASSWORD: agrotm123
       MONGO_INITDB_DATABASE: agrotm
-    ports:
-      - "27017:27017"
     volumes:
       - mongodb_data:/data/db
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
@@ -23,8 +21,6 @@ services:
     image: redis:7.2-alpine
     container_name: agrotm-redis
     restart: unless-stopped
-    ports:
-      - "6379:6379"
     volumes:
       - redis_data:/data
     networks:
@@ -146,4 +142,4 @@ volumes:
 
 networks:
   agrotm-network:
-    driver: bridge 
+    driver: bridge

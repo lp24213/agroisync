@@ -17,7 +17,10 @@
     "dev": "echo 'Dev disabled'",
     "clean": "echo 'Clean disabled'",
     "preinstall": "echo 'Preinstall disabled'",
-    "postinstall": "echo 'Postinstall disabled'"
+    "postinstall": "echo 'Postinstall disabled'",
+    "audit:contracts": "slither contracts/ethereum/contracts/ --json > security/slither-report.json || true",
+    "coverage:contracts": "npx hardhat coverage --network hardhat",
+    "docker:prune": "docker system prune -af --volumes"
   },
   "devDependencies": {
     "turbo": "^1.13.4"

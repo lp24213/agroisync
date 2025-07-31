@@ -1,133 +1,68 @@
-# 🔐 Configuração de Secrets do GitHub Actions
+# Configuração de Secrets do GitHub para AGROTM
 
-## 📋 Secrets Necessários
+## Secrets Obrigatórios
 
-Para que o pipeline CI/CD funcione corretamente, você precisa configurar os seguintes secrets no GitHub:
+### Vercel (Frontend)
+- `VERCEL_TOKEN`: Token de API da Vercel
+- `VERCEL_ORG_ID`: ID da organização da Vercel
+- `VERCEL_PROJECT_ID`: ID do projeto da Vercel
 
-### 🚀 Vercel (Frontend)
-1. **VERCEL_TOKEN**
-   - Vá para [Vercel Dashboard](https://vercel.com/account/tokens)
-   - Clique em "Create Token"
-   - Nome: `AGROTM-GitHub-Actions`
-   - Expiration: `No expiration`
-   - Copie o token gerado
+### Railway (Backend)
+- `RAILWAY_TOKEN`: Token de API da Railway
 
-2. **VERCEL_ORG_ID**
-   - Vá para [Vercel Dashboard](https://vercel.com/account)
-   - Clique em "Settings" → "General"
-   - Copie o "Team ID" (Organization ID)
+## Secrets Opcionais (Recomendados)
 
-3. **VERCEL_PROJECT_ID**
-   - Vá para o projeto no [Vercel Dashboard](https://vercel.com/dashboard)
-   - Clique em "Settings" → "General"
-   - Copie o "Project ID"
+### Notificações e Monitoramento
+- `DISCORD_WEBHOOK_URL`: Webhook do Discord para notificações de deploy/rollback
+- `BACKEND_URL`: URL do backend para health checks (ex: https://agrotm-backend.railway.app)
+- `HEALTH_LOG_WEBHOOK`: Webhook opcional para logs de saúde (pode ser o mesmo do Discord)
 
-### 🚂 Railway (Backend)
-4. **RAILWAY_TOKEN**
-   - Vá para [Railway Dashboard](https://railway.app/account/tokens)
-   - Clique em "New Token"
-   - Nome: `AGROTM-GitHub-Actions`
-   - Copie o token gerado
+## Como Configurar
 
-### 🔔 Discord (Notificações)
-5. **DISCORD_WEBHOOK_URL**
-   - Vá para o canal do Discord
-   - Clique com botão direito → "Edit Channel"
-   - Vá para "Integrations" → "Webhooks"
-   - Clique em "New Webhook"
-   - Nome: `AGROTM-Deployments`
-   - Copie a URL do webhook
-
-### 🔒 Segurança
-6. **SNYK_TOKEN** (Opcional)
-   - Vá para [Snyk Dashboard](https://app.snyk.io/account)
-   - Clique em "Account Settings" → "Auth Token"
-   - Copie o token
-
-### 🌐 Domínios
-7. **DOMAIN_NAMES** (Opcional)
-   - `agrotm.com` (produção)
-   - `staging.agrotm.com` (staging)
-   - `api.agrotm.com` (API)
-
-## ⚙️ Como Configurar
-
-### Método 1: Interface Web do GitHub
-1. Vá para o repositório no GitHub
-2. Clique em "Settings" → "Secrets and variables" → "Actions"
+1. Vá para seu repositório no GitHub
+2. Clique em Settings > Secrets and variables > Actions
 3. Clique em "New repository secret"
 4. Adicione cada secret com o nome e valor correspondente
 
-### Método 2: GitHub CLI
-```bash
-# Instalar GitHub CLI
-gh auth login
+## Como Obter os Tokens
 
-# Adicionar secrets
-gh secret set VERCEL_TOKEN --body "seu_token_aqui"
-gh secret set VERCEL_ORG_ID --body "seu_org_id_aqui"
-gh secret set VERCEL_PROJECT_ID --body "seu_project_id_aqui"
-gh secret set RAILWAY_TOKEN --body "seu_railway_token_aqui"
-gh secret set DISCORD_WEBHOOK_URL --body "sua_webhook_url_aqui"
-gh secret set SNYK_TOKEN --body "seu_snyk_token_aqui"
-```
+### Vercel Token
+1. Acesse https://vercel.com/account/tokens
+2. Clique em "Create Token"
+3. Dê um nome (ex: "AGROTM Deploy")
+4. Copie o token gerado
 
-## 🧪 Testando a Configuração
+### Vercel Org/Project ID
+1. Vá para o projeto na Vercel
+2. Clique em Settings > General
+3. Copie o "Project ID"
+4. Para Org ID, vá em Settings > General da organização
 
-### 1. Verificar Secrets
-```bash
-# Listar secrets (apenas nomes, não valores)
-gh secret list
-```
+### Railway Token
+1. Acesse https://railway.app/account/tokens
+2. Clique em "New Token"
+3. Dê um nome (ex: "AGROTM Backend")
+4. Copie o token gerado
 
-### 2. Testar Pipeline
-1. Faça um push para a branch `develop`
-2. Vá para "Actions" no GitHub
-3. Verifique se o pipeline executa sem erros
+### Discord Webhook
+1. Vá para o canal do Discord
+2. Clique com botão direito > Edit Channel > Integrations > Webhooks
+3. Clique em "New Webhook"
+4. Copie a URL do webhook
 
-### 3. Verificar Deploy
-- Staging: `https://staging.agrotm.com`
-- Produção: `https://agrotm.com`
+## Testando a Configuração
 
-## 🔧 Troubleshooting
+Após configurar os secrets:
 
-### Erro: "Secret not found"
-- Verifique se o nome do secret está correto
-- Confirme se foi adicionado no repositório correto
+1. Faça um push para a branch main
+2. Vá para Actions no GitHub
+3. Verifique se o workflow CI/CD executa sem erros
+4. Teste o rollback manual: Actions > Manual Rollback > Run workflow
+5. Teste o monitoramento: Actions > Production Monitoring > Run workflow
 
-### Erro: "Invalid token"
-- Gere um novo token
-- Verifique se o token não expirou
-- Confirme as permissões do token
+## Segurança
 
-### Erro: "Environment not found"
-- Crie o ambiente `production` no GitHub
-- Ou remova a linha `environment: production` do workflow
-
-## 📝 Checklist
-
-- [ ] VERCEL_TOKEN configurado
-- [ ] VERCEL_ORG_ID configurado
-- [ ] VERCEL_PROJECT_ID configurado
-- [ ] RAILWAY_TOKEN configurado
-- [ ] DISCORD_WEBHOOK_URL configurado
-- [ ] SNYK_TOKEN configurado (opcional)
-- [ ] Ambiente `production` criado no GitHub
-- [ ] Pipeline testado com sucesso
-- [ ] Deploy funcionando
-
-## 🚨 Segurança
-
-- **Nunca** commite secrets no código
-- Use sempre variáveis de ambiente
-- Rotacione tokens regularmente
-- Monitore logs de acesso
+- Nunca compartilhe os tokens
 - Use tokens com permissões mínimas necessárias
-
-## 📞 Suporte
-
-Se encontrar problemas:
-1. Verifique os logs do GitHub Actions
-2. Confirme se todos os secrets estão configurados
-3. Teste cada serviço individualmente
-4. Consulte a documentação oficial de cada serviço 
+- Revogue tokens antigos regularmente
+- Monitore o uso dos tokens

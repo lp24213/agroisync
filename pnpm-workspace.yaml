@@ -11,4 +11,5 @@ packages:
   - 'enterprise'
   - 'microservices/*'
   - 'go/microservices/*'
-  - 'python/scripts/*' 
+  - 'python/scripts/*'
+  - 'security'
