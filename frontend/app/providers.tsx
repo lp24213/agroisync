@@ -5,7 +5,11 @@ import { Toaster } from 'react-hot-toast';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
-import { PhantomWalletAdapter, SolflareWalletAdapter, TorusWalletAdapter } from '@solana/wallet-adapter-wallets';
+import {
+  PhantomWalletAdapter,
+  SolflareWalletAdapter,
+  TorusWalletAdapter,
+} from '@solana/wallet-adapter-wallets';
 import { clusterApiUrl } from '@solana/web3.js';
 import { useMemo, ReactNode } from 'react';
 import { Web3Provider } from '@/contexts/Web3Context';
@@ -29,14 +33,10 @@ const queryClient = new QueryClient({
 export function Providers({ children }: ProvidersProps) {
   const network = WalletAdapterNetwork.Mainnet;
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
-  
+
   const wallets = useMemo(
-    () => [
-      new PhantomWalletAdapter(),
-      new SolflareWalletAdapter(),
-      new TorusWalletAdapter(),
-    ],
-    []
+    () => [new PhantomWalletAdapter(), new SolflareWalletAdapter(), new TorusWalletAdapter()],
+    [],
   );
 
   return (
@@ -49,7 +49,7 @@ export function Providers({ children }: ProvidersProps) {
             <WalletModalProvider>
               {children}
               <Toaster
-                position="top-right"
+                position='top-right'
                 toastOptions={{
                   duration: 4000,
                   style: {

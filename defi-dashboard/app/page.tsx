@@ -6,11 +6,9 @@ export default function DefiDashboardPage() {
           DeFi Dashboard
         </h1>
         <div className="bg-white rounded-lg shadow p-6">
-          <p className="text-gray-600">
-            DeFi Dashboard - Coming Soon
-          </p>
+          <p className="text-gray-600">DeFi Dashboard - Coming Soon</p>
         </div>
       </div>
     </div>
   );
-} 
+}

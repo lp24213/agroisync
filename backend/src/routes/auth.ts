@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { logger } from '../../../utils/logger';
+
+import { logger } from '../utils/logger';
 
 const router = Router();
 
@@ -20,8 +20,8 @@ router.post('/register', async (req, res) => {
     }
 
     // Mock user creation (in real app, save to database)
-    const hashedPassword = await bcrypt.hash(password, 12);
-    
+    // const _hashedPassword = await bcrypt.hash(password, 12);
+
     logger.info('User registration attempt', {
       email,
       walletAddress,
@@ -63,7 +63,7 @@ router.post('/login', async (req, res) => {
     const token = jwt.sign(
       { email, userId: 'mock-user-id' },
       process.env.JWT_SECRET || 'fallback-secret',
-      { expiresIn: '24h' }
+      { expiresIn: '24h' },
     );
 
     logger.info('User login attempt', {
@@ -105,8 +105,11 @@ router.get('/verify', async (req, res) => {
       });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret');
-    
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || 'fallback-secret',
+    );
+
     res.json({
       success: true,
       message: 'Token is valid',
@@ -124,4 +127,4 @@ router.get('/verify', async (req, res) => {
   }
 });
 
-export default router; 
+export default router;

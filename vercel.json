@@ -1,28 +1,8 @@
 {
   "version": 2,
-  "name": "agrotm-solana-v2",
-  "builds": [
-    {
-      "src": "frontend/package.json",
-      "use": "@vercel/next"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  },
-  "build": {
-    "env": {
-      "NODE_VERSION": "20.10.0"
-    }
-  }
+  "projectId": "prj_2QKqXqXqXqXqXqXqXqXqXqXq",
+  "buildCommand": "cd frontend && pnpm build",
+  "outputDirectory": "frontend/.next",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "framework": "nextjs"
 }

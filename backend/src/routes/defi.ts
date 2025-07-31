@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { logger } from '../../../utils/logger';
+
+import { logger } from '../utils/logger';
 
 const router = Router();
 
@@ -59,8 +60,8 @@ router.get('/pools', async (req, res) => {
 // Get pool details
 router.get('/pools/:id', async (req, res) => {
   try {
-    const poolId = parseInt(req.params.id);
-    
+    const poolId = parseInt(req.params.id, 10);
+
     const mockPool = {
       id: poolId,
       name: 'SOL-USDC Pool',
@@ -288,4 +289,4 @@ router.get('/positions', async (req, res) => {
   }
 });
 
-export default router; 
+export default router;

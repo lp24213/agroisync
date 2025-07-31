@@ -22,25 +22,30 @@ const LanguageSelector: React.FC = () => {
   };
 
   return (
-    <div className="relative">
+    <div className='relative'>
       <select
         value={currentLanguage}
         onChange={handleLanguageChange}
-        className="appearance-none bg-transparent border border-cyber-purple rounded-lg px-3 py-2 pr-8 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyber-purple focus:border-transparent"
+        className='appearance-none bg-transparent border border-cyber-purple rounded-lg px-3 py-2 pr-8 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyber-purple focus:border-transparent'
       >
         {Object.entries(languages).map(([code, { name, flag }]) => (
-          <option key={code} value={code} className="bg-gray-900 text-white">
+          <option key={code} value={code} className='bg-gray-900 text-white'>
             {flag} {name}
           </option>
         ))}
       </select>
-      <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-        <svg className="w-4 h-4 text-cyber-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+      <div className='absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none'>
+        <svg
+          className='w-4 h-4 text-cyber-purple'
+          fill='none'
+          stroke='currentColor'
+          viewBox='0 0 24 24'
+        >
+          <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M19 9l-7 7-7-7' />
         </svg>
       </div>
     </div>
   );
 };
 
-export default LanguageSelector; 
+export default LanguageSelector;

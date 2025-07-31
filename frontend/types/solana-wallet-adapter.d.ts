@@ -107,18 +107,18 @@ declare module '@solana/wallet-adapter-react' {
 
 declare module '@solana/wallet-adapter-base' {
   export type WalletName<T extends string = string> = T & { __brand__: 'WalletName' };
-  
+
   export enum WalletReadyState {
     Installed = 'Installed',
     NotDetected = 'NotDetected',
     Loadable = 'Loadable',
-    Unsupported = 'Unsupported'
+    Unsupported = 'Unsupported',
   }
 
   export enum WalletAdapterNetwork {
     Mainnet = 'mainnet-beta',
     Testnet = 'testnet',
-    Devnet = 'devnet'
+    Devnet = 'devnet',
   }
 
   export interface WalletAdapterEvents {
@@ -167,7 +167,7 @@ declare module '@solana/wallet-adapter-base' {
 
 declare module '@solana/wallet-adapter-wallets' {
   import { Adapter } from '@solana/wallet-adapter-base';
-  
+
   export class PhantomWalletAdapter implements Adapter {
     name: any;
     url: string;

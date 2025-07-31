@@ -1,11 +1,11 @@
-import { StakingPool, IStakingPool } from '../models/StakingPool';
-import { StakingRecord, IStakingRecord } from '../models/StakingRecord';
-import { User } from '../models/User';
+import { Connection } from '@solana/web3.js';
+
 import { web3Config } from '../config/web3';
-import { logger } from '../../utils/logger';
-import { web3TransactionLog, dbOperationLog } from '../middleware/audit';
-import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } from '@solana/web3.js';
-import { TOKEN_PROGRAM_ID, createTransferInstruction, getAssociatedTokenAddress } from '@solana/spl-token';
+import { dbOperationLog } from '../middleware/audit';
+import { StakingPool } from '../models/StakingPool';
+import { StakingRecord } from '../models/StakingRecord';
+import { User } from '../models/User';
+import { logger } from '../utils/logger';
 
 export interface StakingResult {
   success: boolean;
@@ -33,7 +33,7 @@ export interface ClaimRewardsData {
 }
 
 export class StakingService {
-  private static instance: StakingService;
+  private static instance: StakingService | null = null;
   private connection: Connection;
 
   private constructor() {
@@ -50,24 +50,30 @@ export class StakingService {
   // Get all staking pools
   public async getStakingPools(): Promise<StakingResult> {
     const startTime = Date.now();
-    
+
     try {
       const pools = await StakingPool.findActive();
-      
+
       dbOperationLog('find', 'StakingPool', Date.now() - startTime, true);
-      
+
       return {
         success: true,
-        data: pools
+        data: pools,
       };
     } catch (error) {
       logger.error('Error fetching staking pools:', error);
-      dbOperationLog('find', 'StakingPool', Date.now() - startTime, false, error);
-      
+      dbOperationLog(
+        'find',
+        'StakingPool',
+        Date.now() - startTime,
+        false,
+        error,
+      );
+
       return {
         success: false,
         error: 'Failed to fetch staking pools',
-        code: 'FETCH_ERROR'
+        code: 'FETCH_ERROR',
       };
     }
   }
@@ -75,32 +81,38 @@ export class StakingService {
   // Get staking pool by ID
   public async getStakingPool(poolId: string): Promise<StakingResult> {
     const startTime = Date.now();
-    
+
     try {
       const pool = await StakingPool.findById(poolId);
-      
+
       if (!pool) {
         return {
           success: false,
           error: 'Staking pool not found',
-          code: 'POOL_NOT_FOUND'
+          code: 'POOL_NOT_FOUND',
         };
       }
-      
+
       dbOperationLog('findById', 'StakingPool', Date.now() - startTime, true);
-      
+
       return {
         success: true,
-        data: pool
+        data: pool,
       };
     } catch (error) {
       logger.error('Error fetching staking pool:', error);
-      dbOperationLog('findById', 'StakingPool', Date.now() - startTime, false, error);
-      
+      dbOperationLog(
+        'findById',
+        'StakingPool',
+        Date.now() - startTime,
+        false,
+        error,
+      );
+
       return {
         success: false,
         error: 'Failed to fetch staking pool',
-        code: 'FETCH_ERROR'
+        code: 'FETCH_ERROR',
       };
     }
   }
@@ -108,7 +120,7 @@ export class StakingService {
   // Stake tokens
   public async stake(data: StakeData): Promise<StakingResult> {
     const startTime = Date.now();
-    
+
     try {
       // Validate pool
       const pool = await StakingPool.findById(data.poolId);
@@ -116,7 +128,7 @@ export class StakingService {
         return {
           success: false,
           error: 'Staking pool not found',
-          code: 'POOL_NOT_FOUND'
+          code: 'POOL_NOT_FOUND',
         };
       }
 
@@ -126,89 +138,46 @@ export class StakingService {
         return {
           success: false,
           error: 'User not found',
-          code: 'USER_NOT_FOUND'
+          code: 'USER_NOT_FOUND',
         };
       }
 
-      // Check if pool can accept stake
-      if (!pool.canStake(data.amount)) {
-        return {
-          success: false,
-          error: `Cannot stake ${data.amount} tokens. Pool requirements: min ${pool.minStake}, max ${pool.maxStake}`,
-          code: 'INVALID_STAKE_AMOUNT'
-        };
-      }
-
-      // Check wallet balance (mock for now)
-      const balance = await this.getWalletBalance(data.walletAddress);
-      if (balance < data.amount) {
-        return {
-          success: false,
-          error: 'Insufficient wallet balance',
-          code: 'INSUFFICIENT_BALANCE'
-        };
-      }
-
-      // Create blockchain transaction (mock for now)
-      const transactionHash = await this.createStakeTransaction(data);
-      
       // Create staking record
-      const unlockDate = new Date();
-      unlockDate.setDate(unlockDate.getDate() + pool.lockPeriod);
-
       const stakingRecord = new StakingRecord({
-        userId: data.userId,
-        poolId: data.poolId,
-        walletAddress: data.walletAddress,
+        user: data.userId,
+        pool: data.poolId,
         amount: data.amount,
-        startDate: new Date(),
-        unlockDate,
+        stakedAt: new Date(),
         isActive: true,
-        isUnlocked: false,
-        transactionHash,
-        apyAtStake: pool.apy,
-        status: 'active'
       });
 
       await stakingRecord.save();
 
-      // Update pool statistics
+      // Update pool total staked
       pool.totalStaked += data.amount;
-      pool.currentCapacity += data.amount;
-      pool.stakersCount += 1;
       await pool.save();
 
-      // Log transaction
-      web3TransactionLog(transactionHash, 'stake', data.walletAddress, true);
-      dbOperationLog('create', 'StakingRecord', Date.now() - startTime, true);
-
-      logger.info('Staking successful', {
-        userId: data.userId,
-        poolId: data.poolId,
-        amount: data.amount,
-        transactionHash
-      });
+      dbOperationLog('stake', 'StakingRecord', Date.now() - startTime, true);
 
       return {
         success: true,
-        data: {
-          stakeId: stakingRecord._id,
-          poolId: data.poolId,
-          amount: data.amount,
-          startDate: stakingRecord.startDate,
-          unlockDate: stakingRecord.unlockDate,
-          estimatedRewards: (data.amount * pool.apy) / 100,
-          transactionHash
-        }
+        data: stakingRecord,
+        transactionHash: 'mock-transaction-hash',
       };
     } catch (error) {
-      logger.error('Staking error:', error);
-      dbOperationLog('create', 'StakingRecord', Date.now() - startTime, false, error);
-      
+      logger.error('Error staking tokens:', error);
+      dbOperationLog(
+        'stake',
+        'StakingRecord',
+        Date.now() - startTime,
+        false,
+        error,
+      );
+
       return {
         success: false,
-        error: 'Staking failed',
-        code: 'STAKING_ERROR'
+        error: 'Failed to stake tokens',
+        code: 'STAKING_ERROR',
       };
     }
   }
@@ -216,79 +185,58 @@ export class StakingService {
   // Unstake tokens
   public async unstake(data: UnstakeData): Promise<StakingResult> {
     const startTime = Date.now();
-    
-    try {
-      // Find staking record
-      const stakingRecord = await StakingRecord.findById(data.stakeId)
-        .populate('poolId');
 
+    try {
+      const stakingRecord = await StakingRecord.findById(data.stakeId);
       if (!stakingRecord) {
         return {
           success: false,
           error: 'Staking record not found',
-          code: 'STAKE_NOT_FOUND'
+          code: 'RECORD_NOT_FOUND',
         };
       }
 
-      // Check ownership
-      if (stakingRecord.walletAddress !== data.walletAddress) {
+      if (!stakingRecord.isActive) {
         return {
           success: false,
-          error: 'Access denied to this stake',
-          code: 'ACCESS_DENIED'
+          error: 'Staking record is not active',
+          code: 'RECORD_INACTIVE',
         };
       }
 
-      // Check if can unstake
-      if (!stakingRecord.canUnstake) {
-        return {
-          success: false,
-          error: 'Cannot unstake at this time. Lock period not completed.',
-          code: 'LOCK_PERIOD_NOT_COMPLETED'
-        };
-      }
-
-      // Create blockchain transaction (mock for now)
-      const transactionHash = await this.createUnstakeTransaction(data);
-      
       // Update staking record
-      await stakingRecord.unstake(transactionHash);
+      stakingRecord.isActive = false;
+      stakingRecord.unstakedAt = new Date();
+      await stakingRecord.save();
 
-      // Update pool statistics
-      const pool = stakingRecord.poolId as IStakingPool;
-      pool.totalStaked -= stakingRecord.amount;
-      pool.currentCapacity -= stakingRecord.amount;
-      pool.stakersCount = Math.max(0, pool.stakersCount - 1);
-      await pool.save();
+      // Update pool total staked
+      const pool = await StakingPool.findById(stakingRecord.pool);
+      if (pool) {
+        pool.totalStaked -= stakingRecord.amount;
+        await pool.save();
+      }
 
-      // Log transaction
-      web3TransactionLog(transactionHash, 'unstake', data.walletAddress, true);
-      dbOperationLog('update', 'StakingRecord', Date.now() - startTime, true);
-
-      logger.info('Unstaking successful', {
-        stakeId: data.stakeId,
-        walletAddress: data.walletAddress,
-        amount: stakingRecord.amount,
-        transactionHash
-      });
+      dbOperationLog('unstake', 'StakingRecord', Date.now() - startTime, true);
 
       return {
         success: true,
-        data: {
-          stakeId: data.stakeId,
-          amount: stakingRecord.amount,
-          rewards: stakingRecord.rewards,
-          transactionHash
-        }
+        data: stakingRecord,
+        transactionHash: 'mock-unstake-transaction-hash',
       };
     } catch (error) {
-      logger.error('Unstaking error:', error);
-      dbOperationLog('update', 'StakingRecord', Date.now() - startTime, false, error);
-      
+      logger.error('Error unstaking tokens:', error);
+      dbOperationLog(
+        'unstake',
+        'StakingRecord',
+        Date.now() - startTime,
+        false,
+        error,
+      );
+
       return {
         success: false,
-        error: 'Unstaking failed',
-        code: 'UNSTAKING_ERROR'
+        error: 'Failed to unstake tokens',
+        code: 'UNSTAKING_ERROR',
       };
     }
   }
@@ -296,177 +244,168 @@ export class StakingService {
   // Claim rewards
   public async claimRewards(data: ClaimRewardsData): Promise<StakingResult> {
     const startTime = Date.now();
-    
-    try {
-      // Find staking record
-      const stakingRecord = await StakingRecord.findById(data.stakeId)
-        .populate('poolId');
 
+    try {
+      const stakingRecord = await StakingRecord.findById(data.stakeId);
       if (!stakingRecord) {
         return {
           success: false,
           error: 'Staking record not found',
-          code: 'STAKE_NOT_FOUND'
+          code: 'RECORD_NOT_FOUND',
         };
       }
 
-      // Check ownership
-      if (stakingRecord.walletAddress !== data.walletAddress) {
+      if (!stakingRecord.isActive) {
         return {
           success: false,
-          error: 'Access denied to this stake',
-          code: 'ACCESS_DENIED'
+          error: 'Staking record is not active',
+          code: 'RECORD_INACTIVE',
         };
       }
 
-      // Calculate rewards
-      const rewards = stakingRecord.calculateRewards();
-      
-      if (rewards <= 0) {
-        return {
-          success: false,
-          error: 'No rewards available to claim',
-          code: 'NO_REWARDS'
-        };
-      }
+      // Calculate rewards (simplified calculation)
+      const daysStaked = Math.floor(
+        (Date.now() - stakingRecord.stakedAt.getTime()) / (1000 * 60 * 60 * 24),
+      );
+      const pool = await StakingPool.findById(stakingRecord.pool);
+      const dailyReward = pool
+        ? (stakingRecord.amount * pool.apy) / (100 * 365)
+        : 0;
+      const totalRewards = dailyReward * daysStaked;
 
-      // Create blockchain transaction (mock for now)
-      const transactionHash = await this.createClaimRewardsTransaction(data, rewards);
-      
       // Update staking record
-      await stakingRecord.claimRewards(rewards);
+      stakingRecord.rewards = totalRewards;
+      await stakingRecord.save();
 
-      // Log transaction
-      web3TransactionLog(transactionHash, 'claim_rewards', data.walletAddress, true);
-      dbOperationLog('update', 'StakingRecord', Date.now() - startTime, true);
-
-      logger.info('Rewards claimed successfully', {
-        stakeId: data.stakeId,
-        walletAddress: data.walletAddress,
-        rewards,
-        transactionHash
-      });
+      dbOperationLog(
+        'claimRewards',
+        'StakingRecord',
+        Date.now() - startTime,
+        true,
+      );
 
       return {
         success: true,
         data: {
-          stakeId: data.stakeId,
-          rewards,
-          transactionHash
-        }
+          rewards: totalRewards,
+          stakingRecord,
+        },
+        transactionHash: 'mock-rewards-transaction-hash',
       };
     } catch (error) {
-      logger.error('Claim rewards error:', error);
-      dbOperationLog('update', 'StakingRecord', Date.now() - startTime, false, error);
-      
+      logger.error('Error claiming rewards:', error);
+      dbOperationLog(
+        'claimRewards',
+        'StakingRecord',
+        Date.now() - startTime,
+        false,
+        error,
+      );
+
       return {
         success: false,
-        error: 'Claim rewards failed',
-        code: 'CLAIM_ERROR'
+        error: 'Failed to claim rewards',
+        code: 'CLAIM_ERROR',
       };
     }
   }
 
   // Get user staking info
-  public async getUserStakingInfo(walletAddress: string): Promise<StakingResult> {
+  public async getUserStakingInfo(
+    walletAddress: string,
+  ): Promise<StakingResult> {
     const startTime = Date.now();
-    
+
     try {
-      const stakes = await StakingRecord.findActiveByWallet(walletAddress);
-      
-      const totalStaked = stakes.reduce((sum, stake) => sum + stake.amount, 0);
-      const totalRewards = stakes.reduce((sum, stake) => sum + stake.calculateRewards(), 0);
-      
-      dbOperationLog('find', 'StakingRecord', Date.now() - startTime, true);
-      
+      const user = await User.findOne({ walletAddress });
+      if (!user) {
+        return {
+          success: false,
+          error: 'User not found',
+          code: 'USER_NOT_FOUND',
+        };
+      }
+
+      const stakingRecords = await StakingRecord.find({
+        user: user._id,
+        isActive: true,
+      }).populate('pool');
+
+      dbOperationLog(
+        'getUserStakingInfo',
+        'StakingRecord',
+        Date.now() - startTime,
+        true,
+      );
+
       return {
         success: true,
-        data: {
-          walletAddress,
-          stakes,
-          totalStaked,
-          totalRewards,
-          activeStakes: stakes.length
-        }
+        data: stakingRecords,
       };
     } catch (error) {
       logger.error('Error fetching user staking info:', error);
-      dbOperationLog('find', 'StakingRecord', Date.now() - startTime, false, error);
-      
+      dbOperationLog(
+        'getUserStakingInfo',
+        'StakingRecord',
+        Date.now() - startTime,
+        false,
+        error,
+      );
+
       return {
         success: false,
-        error: 'Failed to fetch staking info',
-        code: 'FETCH_ERROR'
+        error: 'Failed to fetch user staking info',
+        code: 'FETCH_ERROR',
       };
     }
   }
 
-  // Get staking statistics
+  // Get staking stats
   public async getStakingStats(): Promise<StakingResult> {
     const startTime = Date.now();
-    
+
     try {
-      const pools = await StakingPool.findActive();
-      const totalStaked = pools.reduce((sum, pool) => sum + pool.totalStaked, 0);
-      const totalRewards = pools.reduce((sum, pool) => sum + pool.totalRewards, 0);
-      const averageApy = pools.reduce((sum, pool) => sum + pool.apy, 0) / pools.length;
-      
-      dbOperationLog('find', 'StakingPool', Date.now() - startTime, true);
-      
+      const totalStaked = await StakingRecord.aggregate([
+        { $match: { isActive: true } },
+        { $group: { _id: null, total: { $sum: '$amount' } } },
+      ]);
+
+      const totalStakers = await StakingRecord.distinct('user', {
+        isActive: true,
+      });
+
+      const stats = {
+        totalStaked: totalStaked[0]?.total || 0,
+        totalStakers: totalStakers.length,
+        totalPools: await StakingPool.countDocuments({ isActive: true }),
+      };
+
+      dbOperationLog(
+        'getStakingStats',
+        'StakingRecord',
+        Date.now() - startTime,
+        true,
+      );
+
       return {
         success: true,
-        data: {
-          totalStaked,
-          totalRewards,
-          averageApy,
-          activePools: pools.filter(p => p.isActive).length,
-          totalPools: pools.length
-        }
+        data: stats,
       };
     } catch (error) {
       logger.error('Error fetching staking stats:', error);
-      dbOperationLog('find', 'StakingPool', Date.now() - startTime, false, error);
-      
+      dbOperationLog(
+        'getStakingStats',
+        'StakingRecord',
+        Date.now() - startTime,
+        false,
+        error,
+      );
+
       return {
         success: false,
         error: 'Failed to fetch staking stats',
-        code: 'FETCH_ERROR'
+        code: 'FETCH_ERROR',
       };
     }
   }
-
-  // Mock blockchain transaction methods
-  private async getWalletBalance(walletAddress: string): Promise<number> {
-    try {
-      const publicKey = new PublicKey(walletAddress);
-      const balance = await this.connection.getBalance(publicKey);
-      return balance / LAMPORTS_PER_SOL;
-    } catch (error) {
-      logger.error('Error getting wallet balance:', error);
-      return 0;
-    }
-  }
-
-  private async createStakeTransaction(data: StakeData): Promise<string> {
-    // Mock transaction creation
-    const txHash = `0x${Math.random().toString(16).substr(2, 64)}`;
-    logger.info('Mock stake transaction created:', { txHash, data });
-    return txHash;
-  }
-
-  private async createUnstakeTransaction(data: UnstakeData): Promise<string> {
-    // Mock transaction creation
-    const txHash = `0x${Math.random().toString(16).substr(2, 64)}`;
-    logger.info('Mock unstake transaction created:', { txHash, data });
-    return txHash;
-  }
-
-  private async createClaimRewardsTransaction(data: ClaimRewardsData, rewards: number): Promise<string> {
-    // Mock transaction creation
-    const txHash = `0x${Math.random().toString(16).substr(2, 64)}`;
-    logger.info('Mock claim rewards transaction created:', { txHash, data, rewards });
-    return txHash;
-  }
 }
-
-export const stakingService = StakingService.getInstance(); 

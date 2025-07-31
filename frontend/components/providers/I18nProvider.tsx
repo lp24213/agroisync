@@ -13,7 +13,7 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
     // Detectar idioma do navegador ou localStorage
     const savedLanguage = localStorage.getItem('i18nextLng');
     const browserLanguage = navigator.language.split('-')[0];
-    
+
     if (savedLanguage && ['en', 'pt', 'zh'].includes(savedLanguage)) {
       i18n.changeLanguage(savedLanguage);
     } else if (['en', 'pt', 'zh'].includes(browserLanguage)) {
@@ -21,11 +21,7 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
     }
   }, []);
 
-  return (
-    <I18nextProvider i18n={i18n}>
-      {children}
-    </I18nextProvider>
-  );
+  return <I18nextProvider i18n={i18n}>{children}</I18nextProvider>;
 };
 
-export default I18nProvider; 
+export default I18nProvider;

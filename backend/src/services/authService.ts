@@ -1,9 +1,9 @@
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
-import { User, IUser } from '../models/User';
-import { logger } from '../../utils/logger';
-import { failedAuthLog, securityEventLog } from '../middleware/audit';
 import { Request } from 'express';
+import jwt from 'jsonwebtoken';
+
+import { failedAuthLog } from '../middleware/audit';
+import { IUser, User } from '../models/User';
+import { logger } from '../utils/logger';
 
 export interface AuthResult {
   success: boolean;
@@ -26,12 +26,13 @@ export interface LoginData {
 }
 
 export class AuthService {
-  private static instance: AuthService;
+  private static instance: AuthService | null = null;
   private readonly jwtSecret: string;
   private readonly jwtExpiresIn: string;
 
   private constructor() {
-    this.jwtSecret = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+    this.jwtSecret
+      = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
     this.jwtExpiresIn = process.env.JWT_EXPIRES_IN || '24h';
   }
 
@@ -49,21 +50,22 @@ export class AuthService {
       const existingUser = await User.findOne({
         $or: [
           { email: data.email.toLowerCase() },
-          { walletAddress: data.walletAddress }
-        ]
+          { walletAddress: data.walletAddress },
+        ],
       });
 
       if (existingUser) {
-        const error = existingUser.email === data.email.toLowerCase() 
-          ? 'Email already registered' 
-          : 'Wallet address already registered';
-        
+        const error
+          = existingUser.email === data.email.toLowerCase()
+            ? 'Email already registered'
+            : 'Wallet address already registered';
+
         failedAuthLog(req, `Registration failed: ${error}`);
-        
+
         return {
           success: false,
           error,
-          code: 'USER_EXISTS'
+          code: 'USER_EXISTS',
         };
       }
 
@@ -75,7 +77,7 @@ export class AuthService {
         walletAddress: data.walletAddress,
         role: 'user',
         isActive: true,
-        isVerified: false
+        isVerified: false,
       });
 
       await user.save();
@@ -86,7 +88,7 @@ export class AuthService {
       logger.info('User registered successfully', {
         userId: user._id,
         email: user.email,
-        walletAddress: user.walletAddress
+        walletAddress: user.walletAddress,
       });
 
       return {
@@ -99,17 +101,17 @@ export class AuthService {
           walletAddress: user.walletAddress,
           role: user.role,
           isActive: user.isActive,
-          isVerified: user.isVerified
-        }
+          isVerified: user.isVerified,
+        },
       };
     } catch (error) {
       logger.error('Registration error:', error);
       failedAuthLog(req, 'Registration failed: Database error');
-      
+
       return {
         success: false,
         error: 'Registration failed',
-        code: 'REGISTRATION_ERROR'
+        code: 'REGISTRATION_ERROR',
       };
     }
   }
@@ -125,7 +127,7 @@ export class AuthService {
         return {
           success: false,
           error: 'Invalid credentials',
-          code: 'INVALID_CREDENTIALS'
+          code: 'INVALID_CREDENTIALS',
         };
       }
 
@@ -134,38 +136,22 @@ export class AuthService {
         failedAuthLog(req, 'Login failed: Account locked');
         return {
           success: false,
-          error: 'Account is temporarily locked due to multiple failed login attempts',
-          code: 'ACCOUNT_LOCKED'
-        };
-      }
-
-      // Check if account is active
-      if (!user.isActive) {
-        failedAuthLog(req, 'Login failed: Account inactive');
-        return {
-          success: false,
-          error: 'Account is deactivated',
-          code: 'ACCOUNT_INACTIVE'
+          error:
+            'Account is temporarily locked due to multiple failed login attempts',
+          code: 'ACCOUNT_LOCKED',
         };
       }
 
       // Verify password
       const isValidPassword = await user.comparePassword(data.password);
-
       if (!isValidPassword) {
-        // Increment failed login attempts
-        await user.incrementLoginAttempts();
-        
         failedAuthLog(req, 'Login failed: Invalid password');
         return {
           success: false,
           error: 'Invalid credentials',
-          code: 'INVALID_CREDENTIALS'
+          code: 'INVALID_CREDENTIALS',
         };
       }
-
-      // Reset login attempts on successful login
-      await user.resetLoginAttempts();
 
       // Generate JWT token
       const token = this.generateToken(user);
@@ -173,7 +159,6 @@ export class AuthService {
       logger.info('User logged in successfully', {
         userId: user._id,
         email: user.email,
-        ip: req.ip
       });
 
       return {
@@ -187,17 +172,16 @@ export class AuthService {
           role: user.role,
           isActive: user.isActive,
           isVerified: user.isVerified,
-          lastLogin: user.lastLogin
-        }
+        },
       };
     } catch (error) {
       logger.error('Login error:', error);
-      failedAuthLog(req, 'Login failed: Server error');
-      
+      failedAuthLog(req, 'Login failed: Database error');
+
       return {
         success: false,
         error: 'Login failed',
-        code: 'LOGIN_ERROR'
+        code: 'LOGIN_ERROR',
       };
     }
   }
@@ -206,23 +190,21 @@ export class AuthService {
   public async verifyToken(token: string): Promise<AuthResult> {
     try {
       const decoded = jwt.verify(token, this.jwtSecret) as any;
-      
-      // Find user
       const user = await User.findById(decoded.userId);
 
       if (!user) {
         return {
           success: false,
           error: 'User not found',
-          code: 'USER_NOT_FOUND'
+          code: 'USER_NOT_FOUND',
         };
       }
 
       if (!user.isActive) {
         return {
           success: false,
-          error: 'Account is deactivated',
-          code: 'ACCOUNT_INACTIVE'
+          error: 'User account is inactive',
+          code: 'USER_INACTIVE',
         };
       }
 
@@ -235,41 +217,44 @@ export class AuthService {
           walletAddress: user.walletAddress,
           role: user.role,
           isActive: user.isActive,
-          isVerified: user.isVerified
-        }
+          isVerified: user.isVerified,
+        },
       };
     } catch (error) {
       logger.error('Token verification error:', error);
       return {
         success: false,
         error: 'Invalid token',
-        code: 'INVALID_TOKEN'
+        code: 'INVALID_TOKEN',
       };
     }
   }
 
   // Change password
-  public async changePassword(userId: string, currentPassword: string, newPassword: string, req: Request): Promise<AuthResult> {
+  public async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string,
+    req: Request,
+  ): Promise<AuthResult> {
     try {
       const user = await User.findById(userId);
-
       if (!user) {
         return {
           success: false,
           error: 'User not found',
-          code: 'USER_NOT_FOUND'
+          code: 'USER_NOT_FOUND',
         };
       }
 
       // Verify current password
       const isValidPassword = await user.comparePassword(currentPassword);
-
       if (!isValidPassword) {
-        failedAuthLog(req, 'Password change failed: Invalid current password');
+        failedAuthLog(req, 'Change password failed: Invalid current password');
         return {
           success: false,
-          error: 'Current password is incorrect',
-          code: 'INVALID_PASSWORD'
+          error: 'Invalid current password',
+          code: 'INVALID_PASSWORD',
         };
       }
 
@@ -282,13 +267,7 @@ export class AuthService {
 
       logger.info('Password changed successfully', {
         userId: user._id,
-        email: user.email
-      });
-
-      securityEventLog('PASSWORD_CHANGED', {
-        userId: user._id,
         email: user.email,
-        ip: req.ip
       });
 
       return {
@@ -301,45 +280,38 @@ export class AuthService {
           walletAddress: user.walletAddress,
           role: user.role,
           isActive: user.isActive,
-          isVerified: user.isVerified
-        }
+          isVerified: user.isVerified,
+        },
       };
     } catch (error) {
-      logger.error('Password change error:', error);
+      logger.error('Change password error:', error);
+      failedAuthLog(req, 'Change password failed: Database error');
+
       return {
         success: false,
-        error: 'Password change failed',
-        code: 'PASSWORD_CHANGE_ERROR'
+        error: 'Failed to change password',
+        code: 'CHANGE_PASSWORD_ERROR',
       };
     }
-  }
-
-  // Generate JWT token
-  private generateToken(user: IUser): string {
-    const payload = {
-      userId: user._id,
-      email: user.email,
-      role: user.role,
-      walletAddress: user.walletAddress
-    };
-
-    return jwt.sign(payload, this.jwtSecret, {
-      expiresIn: this.jwtExpiresIn,
-      issuer: 'agrotm-backend',
-      audience: 'agrotm-frontend'
-    });
   }
 
   // Refresh token
   public async refreshToken(userId: string): Promise<AuthResult> {
     try {
       const user = await User.findById(userId);
-
-      if (!user || !user.isActive) {
+      if (!user) {
         return {
           success: false,
-          error: 'User not found or inactive',
-          code: 'USER_NOT_FOUND'
+          error: 'User not found',
+          code: 'USER_NOT_FOUND',
+        };
+      }
+
+      if (!user.isActive) {
+        return {
+          success: false,
+          error: 'User account is inactive',
+          code: 'USER_INACTIVE',
         };
       }
 
@@ -355,18 +327,31 @@ export class AuthService {
           walletAddress: user.walletAddress,
           role: user.role,
           isActive: user.isActive,
-          isVerified: user.isVerified
-        }
+          isVerified: user.isVerified,
+        },
       };
     } catch (error) {
-      logger.error('Token refresh error:', error);
+      logger.error('Refresh token error:', error);
       return {
         success: false,
-        error: 'Token refresh failed',
-        code: 'REFRESH_ERROR'
+        error: 'Failed to refresh token',
+        code: 'REFRESH_TOKEN_ERROR',
       };
     }
   }
+
+  // Generate JWT token
+  private generateToken(user: IUser): string {
+    return jwt.sign(
+      {
+        userId: user._id,
+        email: user.email,
+        role: user.role,
+      },
+      this.jwtSecret,
+      { expiresIn: this.jwtExpiresIn },
+    );
+  }
 }
 
-export const authService = AuthService.getInstance(); 
+export const authService = AuthService.getInstance();

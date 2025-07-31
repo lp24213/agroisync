@@ -1,6 +1,6 @@
 declare module '@chakra-ui/react' {
   import { ReactNode } from 'react';
-  
+
   export interface ChakraProviderProps {
     children: ReactNode;
     theme?: any;
@@ -9,9 +9,9 @@ declare module '@chakra-ui/react' {
     resetCSS?: boolean;
     disableGlobalStyle?: boolean;
   }
-  
+
   export function ChakraProvider(props: ChakraProviderProps): JSX.Element;
-  
+
   // Export other commonly used components
   export const Box: any;
   export const Button: any;

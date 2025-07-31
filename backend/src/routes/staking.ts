@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { logger } from '../../../utils/logger';
+
+import { logger } from '../utils/logger';
 
 const router = Router();
 
@@ -214,4 +215,4 @@ router.post('/claim-rewards', async (req, res) => {
   }
 });
 
-export default router; 
+export default router;

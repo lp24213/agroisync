@@ -2,11 +2,11 @@
 
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Search, 
-  Filter, 
-  Download, 
-  Eye, 
+import {
+  Search,
+  Filter,
+  Download,
+  Eye,
   ExternalLink,
   ArrowUpRight,
   ArrowDownRight,
@@ -15,7 +15,7 @@ import {
   XCircle,
   AlertCircle,
   Hash,
-  Copy
+  Copy,
 } from 'lucide-react';
 
 const transactions = [
@@ -31,7 +31,7 @@ const transactions = [
     gasPrice: '25 Gwei',
     hash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
     pool: 'Flexible Staking',
-    apy: '8.5%'
+    apy: '8.5%',
   },
   {
     id: '0xabcdef1234567890...',
@@ -45,7 +45,7 @@ const transactions = [
     gasPrice: '25 Gwei',
     hash: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
     pool: '90-Day Lock',
-    apy: '15.7%'
+    apy: '15.7%',
   },
   {
     id: '0x7890abcdef123456...',
@@ -59,7 +59,7 @@ const transactions = [
     gasPrice: '25 Gwei',
     hash: '0x7890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456',
     pool: '30-Day Lock',
-    apy: '12.3%'
+    apy: '12.3%',
   },
   {
     id: '0x4567890abcdef123...',
@@ -73,7 +73,7 @@ const transactions = [
     gasPrice: '25 Gwei',
     hash: '0x4567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef123',
     pool: 'DEX Swap',
-    apy: 'N/A'
+    apy: 'N/A',
   },
   {
     id: '0xdef1234567890abc...',
@@ -87,7 +87,7 @@ const transactions = [
     gasPrice: '25 Gwei',
     hash: '0xdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abc',
     pool: '180-Day Lock',
-    apy: '18.2%'
+    apy: '18.2%',
   },
   {
     id: '0x234567890abcdef1...',
@@ -101,8 +101,8 @@ const transactions = [
     gasPrice: '25 Gwei',
     hash: '0x234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1',
     pool: 'Flexible Staking',
-    apy: '8.5%'
-  }
+    apy: '8.5%',
+  },
 ];
 
 const transactionTypes = [
@@ -110,14 +110,14 @@ const transactionTypes = [
   { value: 'stake', label: 'Stake', color: 'bg-green-500' },
   { value: 'unstake', label: 'Unstake', color: 'bg-red-500' },
   { value: 'reward', label: 'Reward', color: 'bg-blue-500' },
-  { value: 'swap', label: 'Swap', color: 'bg-purple-500' }
+  { value: 'swap', label: 'Swap', color: 'bg-purple-500' },
 ];
 
 const statusTypes = [
   { value: 'all', label: 'All Status', color: 'bg-gray-500' },
   { value: 'completed', label: 'Completed', color: 'bg-green-500' },
   { value: 'pending', label: 'Pending', color: 'bg-yellow-500' },
-  { value: 'failed', label: 'Failed', color: 'bg-red-500' }
+  { value: 'failed', label: 'Failed', color: 'bg-red-500' },
 ];
 
 export function RecentTransactions() {
@@ -128,12 +128,13 @@ export function RecentTransactions() {
 
   const filteredTransactions = useMemo(() => {
     return transactions.filter(tx => {
-      const matchesSearch = tx.hash.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           tx.pool.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           tx.amount.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch =
+        tx.hash.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        tx.pool.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        tx.amount.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesType = selectedType === 'all' || tx.type === selectedType;
       const matchesStatus = selectedStatus === 'all' || tx.status === selectedStatus;
-      
+
       return matchesSearch && matchesType && matchesStatus;
     });
   }, [searchTerm, selectedType, selectedStatus]);
@@ -142,7 +143,7 @@ export function RecentTransactions() {
     const date = new Date(dateString);
     const now = new Date();
     const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
-    
+
     if (diffInHours < 1) {
       return 'Just now';
     } else if (diffInHours < 24) {
@@ -155,28 +156,28 @@ export function RecentTransactions() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'completed':
-        return <CheckCircle className="w-4 h-4 text-green-400" />;
+        return <CheckCircle className='w-4 h-4 text-green-400' />;
       case 'pending':
-        return <Clock className="w-4 h-4 text-yellow-400" />;
+        return <Clock className='w-4 h-4 text-yellow-400' />;
       case 'failed':
-        return <XCircle className="w-4 h-4 text-red-400" />;
+        return <XCircle className='w-4 h-4 text-red-400' />;
       default:
-        return <AlertCircle className="w-4 h-4 text-gray-400" />;
+        return <AlertCircle className='w-4 h-4 text-gray-400' />;
     }
   };
 
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'stake':
-        return <ArrowUpRight className="w-4 h-4 text-green-400" />;
+        return <ArrowUpRight className='w-4 h-4 text-green-400' />;
       case 'unstake':
-        return <ArrowDownRight className="w-4 h-4 text-red-400" />;
+        return <ArrowDownRight className='w-4 h-4 text-red-400' />;
       case 'reward':
-        return <ArrowUpRight className="w-4 h-4 text-blue-400" />;
+        return <ArrowUpRight className='w-4 h-4 text-blue-400' />;
       case 'swap':
-        return <ArrowUpRight className="w-4 h-4 text-purple-400" />;
+        return <ArrowUpRight className='w-4 h-4 text-purple-400' />;
       default:
-        return <ArrowUpRight className="w-4 h-4 text-gray-400" />;
+        return <ArrowUpRight className='w-4 h-4 text-gray-400' />;
     }
   };
 
@@ -186,65 +187,65 @@ export function RecentTransactions() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className='flex items-center justify-between'>
         <div>
-          <h2 className="text-2xl font-bold text-white">Recent Transactions</h2>
-          <p className="text-gray-400">Track your transaction history and status</p>
+          <h2 className='text-2xl font-bold text-white'>Recent Transactions</h2>
+          <p className='text-gray-400'>Track your transaction history and status</p>
         </div>
-        <div className="flex items-center space-x-3">
-          <button className="btn-outline flex items-center">
-            <Download className="w-4 h-4 mr-2" />
+        <div className='flex items-center space-x-3'>
+          <button className='btn-outline flex items-center'>
+            <Download className='w-4 h-4 mr-2' />
             Export
           </button>
         </div>
       </div>
 
       {/* Filters */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="card"
-      >
-        <div className="flex flex-col lg:flex-row gap-4">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className='card'>
+        <div className='flex flex-col lg:flex-row gap-4'>
           {/* Search */}
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <div className='flex-1'>
+            <div className='relative'>
+              <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400' />
               <input
-                type="text"
-                placeholder="Search transactions..."
+                type='text'
+                placeholder='Search transactions...'
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary-500"
+                onChange={e => setSearchTerm(e.target.value)}
+                className='w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary-500'
               />
             </div>
           </div>
 
           {/* Type Filter */}
-          <div className="flex items-center space-x-2">
-            <Filter className="w-4 h-4 text-gray-400" />
+          <div className='flex items-center space-x-2'>
+            <Filter className='w-4 h-4 text-gray-400' />
             <select
               value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value)}
-              className="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-primary-500"
+              onChange={e => setSelectedType(e.target.value)}
+              className='px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-primary-500'
             >
               {transactionTypes.map(type => (
-                <option key={type.value} value={type.value}>{type.label}</option>
+                <option key={type.value} value={type.value}>
+                  {type.label}
+                </option>
               ))}
             </select>
           </div>
 
           {/* Status Filter */}
-          <div className="flex items-center space-x-2">
+          <div className='flex items-center space-x-2'>
             <select
               value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-              className="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-primary-500"
+              onChange={e => setSelectedStatus(e.target.value)}
+              className='px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-primary-500'
             >
               {statusTypes.map(status => (
-                <option key={status.value} value={status.value}>{status.label}</option>
+                <option key={status.value} value={status.value}>
+                  {status.label}
+                </option>
               ))}
             </select>
           </div>
@@ -256,9 +257,9 @@ export function RecentTransactions() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="card"
+        className='card'
       >
-        <div className="space-y-4">
+        <div className='space-y-4'>
           {filteredTransactions.map((tx, index) => (
             <motion.div
               key={tx.id}
@@ -272,34 +273,38 @@ export function RecentTransactions() {
               }`}
               onClick={() => setSelectedTransaction(selectedTransaction === tx.id ? null : tx.id)}
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
+              <div className='flex items-center justify-between'>
+                <div className='flex items-center space-x-3'>
                   {getTypeIcon(tx.type)}
                   <div>
-                    <p className="text-sm font-medium text-white capitalize">{tx.type}</p>
-                    <p className="text-xs text-gray-400">{tx.pool}</p>
+                    <p className='text-sm font-medium text-white capitalize'>{tx.type}</p>
+                    <p className='text-xs text-gray-400'>{tx.pool}</p>
                   </div>
                 </div>
-                
-                <div className="text-right">
-                  <p className="text-sm font-medium text-white">{tx.amount}</p>
-                  <p className="text-xs text-gray-400">{tx.value}</p>
+
+                <div className='text-right'>
+                  <p className='text-sm font-medium text-white'>{tx.amount}</p>
+                  <p className='text-xs text-gray-400'>{tx.value}</p>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className='flex items-center space-x-2'>
                   {getStatusIcon(tx.status)}
-                  <span className={`text-xs px-2 py-1 rounded-full ${
-                    tx.status === 'completed' ? 'bg-green-500/20 text-green-400' :
-                    tx.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' :
-                    'bg-red-500/20 text-red-400'
-                  }`}>
+                  <span
+                    className={`text-xs px-2 py-1 rounded-full ${
+                      tx.status === 'completed'
+                        ? 'bg-green-500/20 text-green-400'
+                        : tx.status === 'pending'
+                          ? 'bg-yellow-500/20 text-yellow-400'
+                          : 'bg-red-500/20 text-red-400'
+                    }`}
+                  >
                     {tx.status}
                   </span>
                 </div>
 
-                <div className="text-right">
-                  <p className="text-xs text-gray-400">{formatDate(tx.timestamp)}</p>
-                  <p className="text-xs text-gray-400">Block #{tx.blockNumber}</p>
+                <div className='text-right'>
+                  <p className='text-xs text-gray-400'>{formatDate(tx.timestamp)}</p>
+                  <p className='text-xs text-gray-400'>Block #{tx.blockNumber}</p>
                 </div>
               </div>
 
@@ -309,61 +314,67 @@ export function RecentTransactions() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="mt-4 pt-4 border-t border-white/10"
+                  className='mt-4 pt-4 border-t border-white/10'
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-gray-400">Transaction Hash:</span>
-                        <div className="flex items-center space-x-2">
-                          <span className="text-xs text-white font-mono">{tx.hash.slice(0, 20)}...</span>
+                  <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                    <div className='space-y-2'>
+                      <div className='flex items-center justify-between'>
+                        <span className='text-xs text-gray-400'>Transaction Hash:</span>
+                        <div className='flex items-center space-x-2'>
+                          <span className='text-xs text-white font-mono'>
+                            {tx.hash.slice(0, 20)}...
+                          </span>
                           <button
                             onClick={() => copyToClipboard(tx.hash)}
-                            className="p-1 hover:bg-white/10 rounded"
+                            className='p-1 hover:bg-white/10 rounded'
                           >
-                            <Copy className="w-3 h-3 text-gray-400" />
+                            <Copy className='w-3 h-3 text-gray-400' />
                           </button>
                         </div>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-gray-400">Gas Used:</span>
-                        <span className="text-xs text-white">{tx.gasUsed}</span>
+                      <div className='flex items-center justify-between'>
+                        <span className='text-xs text-gray-400'>Gas Used:</span>
+                        <span className='text-xs text-white'>{tx.gasUsed}</span>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-gray-400">Gas Price:</span>
-                        <span className="text-xs text-white">{tx.gasPrice}</span>
+                      <div className='flex items-center justify-between'>
+                        <span className='text-xs text-gray-400'>Gas Price:</span>
+                        <span className='text-xs text-white'>{tx.gasPrice}</span>
                       </div>
                     </div>
-                    
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-gray-400">APY:</span>
-                        <span className="text-xs text-green-400">{tx.apy}</span>
+
+                    <div className='space-y-2'>
+                      <div className='flex items-center justify-between'>
+                        <span className='text-xs text-gray-400'>APY:</span>
+                        <span className='text-xs text-green-400'>{tx.apy}</span>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-gray-400">Pool:</span>
-                        <span className="text-xs text-white">{tx.pool}</span>
+                      <div className='flex items-center justify-between'>
+                        <span className='text-xs text-gray-400'>Pool:</span>
+                        <span className='text-xs text-white'>{tx.pool}</span>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-gray-400">Status:</span>
-                        <span className={`text-xs px-2 py-1 rounded-full ${
-                          tx.status === 'completed' ? 'bg-green-500/20 text-green-400' :
-                          tx.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' :
-                          'bg-red-500/20 text-red-400'
-                        }`}>
+                      <div className='flex items-center justify-between'>
+                        <span className='text-xs text-gray-400'>Status:</span>
+                        <span
+                          className={`text-xs px-2 py-1 rounded-full ${
+                            tx.status === 'completed'
+                              ? 'bg-green-500/20 text-green-400'
+                              : tx.status === 'pending'
+                                ? 'bg-yellow-500/20 text-yellow-400'
+                                : 'bg-red-500/20 text-red-400'
+                          }`}
+                        >
                           {tx.status}
                         </span>
                       </div>
                     </div>
                   </div>
-                  
-                  <div className="mt-4 flex items-center justify-between">
-                    <button className="flex items-center text-xs text-primary-400 hover:text-primary-300 transition-colors">
-                      <Hash className="w-3 h-3 mr-1" />
+
+                  <div className='mt-4 flex items-center justify-between'>
+                    <button className='flex items-center text-xs text-primary-400 hover:text-primary-300 transition-colors'>
+                      <Hash className='w-3 h-3 mr-1' />
                       View on Explorer
                     </button>
-                    <button className="flex items-center text-xs text-primary-400 hover:text-primary-300 transition-colors">
-                      <Eye className="w-3 h-3 mr-1" />
+                    <button className='flex items-center text-xs text-primary-400 hover:text-primary-300 transition-colors'>
+                      <Eye className='w-3 h-3 mr-1' />
                       View Details
                     </button>
                   </div>
@@ -374,14 +385,14 @@ export function RecentTransactions() {
         </div>
 
         {filteredTransactions.length === 0 && (
-          <div className="text-center py-8">
-            <p className="text-gray-400">No transactions found</p>
+          <div className='text-center py-8'>
+            <p className='text-gray-400'>No transactions found</p>
           </div>
         )}
 
         {filteredTransactions.length > 0 && (
-          <div className="mt-6 pt-4 border-t border-white/10">
-            <button className="w-full text-sm text-primary-400 hover:text-primary-300 transition-colors">
+          <div className='mt-6 pt-4 border-t border-white/10'>
+            <button className='w-full text-sm text-primary-400 hover:text-primary-300 transition-colors'>
               View All Transactions
             </button>
           </div>
@@ -393,48 +404,53 @@ export function RecentTransactions() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-6"
+        className='grid grid-cols-1 md:grid-cols-3 gap-6'
       >
-        <div className="card">
-          <div className="flex items-center justify-between">
+        <div className='card'>
+          <div className='flex items-center justify-between'>
             <div>
-              <p className="text-sm text-gray-400">Total Transactions</p>
-              <p className="text-2xl font-bold text-white">{transactions.length}</p>
+              <p className='text-sm text-gray-400'>Total Transactions</p>
+              <p className='text-2xl font-bold text-white'>{transactions.length}</p>
             </div>
-            <div className="p-2 bg-blue-500/20 rounded-lg">
-              <Hash className="w-6 h-6 text-blue-400" />
+            <div className='p-2 bg-blue-500/20 rounded-lg'>
+              <Hash className='w-6 h-6 text-blue-400' />
             </div>
           </div>
         </div>
 
-        <div className="card">
-          <div className="flex items-center justify-between">
+        <div className='card'>
+          <div className='flex items-center justify-between'>
             <div>
-              <p className="text-sm text-gray-400">Success Rate</p>
-              <p className="text-2xl font-bold text-white">
-                {Math.round((transactions.filter(tx => tx.status === 'completed').length / transactions.length) * 100)}%
+              <p className='text-sm text-gray-400'>Success Rate</p>
+              <p className='text-2xl font-bold text-white'>
+                {Math.round(
+                  (transactions.filter(tx => tx.status === 'completed').length /
+                    transactions.length) *
+                    100,
+                )}
+                %
               </p>
             </div>
-            <div className="p-2 bg-green-500/20 rounded-lg">
-              <CheckCircle className="w-6 h-6 text-green-400" />
+            <div className='p-2 bg-green-500/20 rounded-lg'>
+              <CheckCircle className='w-6 h-6 text-green-400' />
             </div>
           </div>
         </div>
 
-        <div className="card">
-          <div className="flex items-center justify-between">
+        <div className='card'>
+          <div className='flex items-center justify-between'>
             <div>
-              <p className="text-sm text-gray-400">Total Gas Used</p>
-              <p className="text-2xl font-bold text-white">
+              <p className='text-sm text-gray-400'>Total Gas Used</p>
+              <p className='text-2xl font-bold text-white'>
                 {transactions.reduce((sum, tx) => sum + parseFloat(tx.gasUsed), 0).toFixed(4)} ETH
               </p>
             </div>
-            <div className="p-2 bg-purple-500/20 rounded-lg">
-              <ExternalLink className="w-6 h-6 text-purple-400" />
+            <div className='p-2 bg-purple-500/20 rounded-lg'>
+              <ExternalLink className='w-6 h-6 text-purple-400' />
             </div>
           </div>
         </div>
       </motion.div>
     </div>
   );
-} 
+}

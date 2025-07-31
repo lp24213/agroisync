@@ -1,24 +1,27 @@
 import { Request, Response } from 'express';
-import { authService } from '../services/authService';
+
 import { auditLog } from '../middleware/audit';
-import { validate, validationSchemas } from '../middleware/validation';
-import { logger } from '../../utils/logger';
+import { authService } from '../services/authService';
+import { logger } from '../utils/logger';
 
 export class AuthController {
   // Register new user
   public static async register(req: Request, res: Response): Promise<void> {
     const auditMiddleware = auditLog('user.register', 'auth');
-    
+
     auditMiddleware(req, res, async () => {
       try {
         const { email, password, username, walletAddress } = req.body;
 
-        const result = await authService.register({
-          email,
-          password,
-          username,
-          walletAddress
-        }, req);
+        const result = await authService.register(
+          {
+            email,
+            password,
+            username,
+            walletAddress,
+          },
+          req,
+        );
 
         if (result.success) {
           res.status(201).json({
@@ -26,14 +29,14 @@ export class AuthController {
             message: 'User registered successfully',
             data: {
               token: result.token,
-              user: result.user
-            }
+              user: result.user,
+            },
           });
         } else {
           res.status(400).json({
             success: false,
             error: result.error,
-            code: result.code
+            code: result.code,
           });
         }
       } catch (error) {
@@ -41,7 +44,7 @@ export class AuthController {
         res.status(500).json({
           success: false,
           error: 'Internal server error',
-          code: 'INTERNAL_ERROR'
+          code: 'INTERNAL_ERROR',
         });
       }
     });
@@ -50,15 +53,18 @@ export class AuthController {
   // Login user
   public static async login(req: Request, res: Response): Promise<void> {
     const auditMiddleware = auditLog('user.login', 'auth');
-    
+
     auditMiddleware(req, res, async () => {
       try {
         const { email, password } = req.body;
 
-        const result = await authService.login({
-          email,
-          password
-        }, req);
+        const result = await authService.login(
+          {
+            email,
+            password,
+          },
+          req,
+        );
 
         if (result.success) {
           res.json({
@@ -66,15 +72,15 @@ export class AuthController {
             message: 'Login successful',
             data: {
               token: result.token,
-              user: result.user
-            }
+              user: result.user,
+            },
           });
         } else {
           const statusCode = result.code === 'ACCOUNT_LOCKED' ? 423 : 401;
           res.status(statusCode).json({
             success: false,
             error: result.error,
-            code: result.code
+            code: result.code,
           });
         }
       } catch (error) {
@@ -82,7 +88,7 @@ export class AuthController {
         res.status(500).json({
           success: false,
           error: 'Internal server error',
-          code: 'INTERNAL_ERROR'
+          code: 'INTERNAL_ERROR',
         });
       }
     });
@@ -92,30 +98,32 @@ export class AuthController {
   public static async getProfile(req: any, res: Response): Promise<void> {
     try {
       const userId = req.user?.userId;
-      
+
       if (!userId) {
         res.status(401).json({
           success: false,
           error: 'Authentication required',
-          code: 'AUTH_REQUIRED'
+          code: 'AUTH_REQUIRED',
         });
         return;
       }
 
-      const result = await authService.verifyToken(req.headers.authorization?.split(' ')[1] || '');
+      const result = await authService.verifyToken(
+        req.headers.authorization?.split(' ')[1] || '',
+      );
 
       if (result.success && result.user) {
         res.json({
           success: true,
           data: {
-            user: result.user
-          }
+            user: result.user,
+          },
         });
       } else {
         res.status(401).json({
           success: false,
           error: 'Invalid or expired token',
-          code: 'INVALID_TOKEN'
+          code: 'INVALID_TOKEN',
         });
       }
     } catch (error) {
@@ -123,7 +131,7 @@ export class AuthController {
       res.status(500).json({
         success: false,
         error: 'Internal server error',
-        code: 'INTERNAL_ERROR'
+        code: 'INTERNAL_ERROR',
       });
     }
   }
@@ -131,7 +139,7 @@ export class AuthController {
   // Change password
   public static async changePassword(req: any, res: Response): Promise<void> {
     const auditMiddleware = auditLog('user.password_change', 'auth');
-    
+
     auditMiddleware(req, res, async () => {
       try {
         const userId = req.user?.userId;
@@ -141,12 +149,17 @@ export class AuthController {
           res.status(401).json({
             success: false,
             error: 'Authentication required',
-            code: 'AUTH_REQUIRED'
+            code: 'AUTH_REQUIRED',
           });
           return;
         }
 
-        const result = await authService.changePassword(userId, currentPassword, newPassword, req);
+        const result = await authService.changePassword(
+          userId,
+          currentPassword,
+          newPassword,
+          req,
+        );
 
         if (result.success) {
           res.json({
@@ -154,14 +167,14 @@ export class AuthController {
             message: 'Password changed successfully',
             data: {
               token: result.token,
-              user: result.user
-            }
+              user: result.user,
+            },
           });
         } else {
           res.status(400).json({
             success: false,
             error: result.error,
-            code: result.code
+            code: result.code,
           });
         }
       } catch (error) {
@@ -169,7 +182,7 @@ export class AuthController {
         res.status(500).json({
           success: false,
           error: 'Internal server error',
-          code: 'INTERNAL_ERROR'
+          code: 'INTERNAL_ERROR',
         });
       }
     });
@@ -184,7 +197,7 @@ export class AuthController {
         res.status(401).json({
           success: false,
           error: 'Authentication required',
-          code: 'AUTH_REQUIRED'
+          code: 'AUTH_REQUIRED',
         });
         return;
       }
@@ -197,14 +210,14 @@ export class AuthController {
           message: 'Token refreshed successfully',
           data: {
             token: result.token,
-            user: result.user
-          }
+            user: result.user,
+          },
         });
       } else {
         res.status(401).json({
           success: false,
           error: result.error,
-          code: result.code
+          code: result.code,
         });
       }
     } catch (error) {
@@ -212,7 +225,7 @@ export class AuthController {
       res.status(500).json({
         success: false,
         error: 'Internal server error',
-        code: 'INTERNAL_ERROR'
+        code: 'INTERNAL_ERROR',
       });
     }
   }
@@ -220,7 +233,7 @@ export class AuthController {
   // Logout (client-side token invalidation)
   public static async logout(req: any, res: Response): Promise<void> {
     const auditMiddleware = auditLog('user.logout', 'auth');
-    
+
     auditMiddleware(req, res, async () => {
       try {
         const userId = req.user?.userId;
@@ -228,20 +241,20 @@ export class AuthController {
         if (userId) {
           logger.info('User logged out', {
             userId,
-            ip: req.ip
+            ip: req.ip,
           });
         }
 
         res.json({
           success: true,
-          message: 'Logout successful'
+          message: 'Logout successful',
         });
       } catch (error) {
         logger.error('Logout controller error:', error);
         res.status(500).json({
           success: false,
           error: 'Internal server error',
-          code: 'INTERNAL_ERROR'
+          code: 'INTERNAL_ERROR',
         });
       }
     });
@@ -256,7 +269,7 @@ export class AuthController {
         res.status(401).json({
           success: false,
           error: 'Token required',
-          code: 'TOKEN_REQUIRED'
+          code: 'TOKEN_REQUIRED',
         });
         return;
       }
@@ -267,14 +280,14 @@ export class AuthController {
         res.json({
           success: true,
           data: {
-            user: result.user
-          }
+            user: result.user,
+          },
         });
       } else {
         res.status(401).json({
           success: false,
           error: result.error,
-          code: result.code
+          code: result.code,
         });
       }
     } catch (error) {
@@ -282,8 +295,8 @@ export class AuthController {
       res.status(500).json({
         success: false,
         error: 'Internal server error',
-        code: 'INTERNAL_ERROR'
+        code: 'INTERNAL_ERROR',
       });
     }
   }
-} 
+}

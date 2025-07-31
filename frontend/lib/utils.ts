@@ -1,7 +1,7 @@
-import { type ClassValue, clsx } from 'clsx';
+import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-export function cn(...inputs: ClassValue[]): string {
+export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
@@ -30,7 +30,7 @@ export function shortenAddress(address: string | undefined, chars = 4): string {
 
 export function debounce<T extends (...args: any[]) => any>(
   func: T,
-  wait: number
+  wait: number,
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout;
   return (...args: Parameters<T>) => {
@@ -41,7 +41,7 @@ export function debounce<T extends (...args: any[]) => any>(
 
 export function throttle<T extends (...args: any[]) => any>(
   func: T,
-  limit: number
+  limit: number,
 ): (...args: Parameters<T>) => void {
   let inThrottle: boolean;
   return (...args: Parameters<T>) => {
@@ -96,8 +96,16 @@ export function copyToClipboard(text: string): Promise<void> {
 
 export function getRandomColor(): string {
   const colors = [
-    '#22c55e', '#3b82f6', '#8b5cf6', '#f59e0b', '#ef4444',
-    '#06b6d4', '#84cc16', '#f97316', '#ec4899', '#6366f1'
+    '#22c55e',
+    '#3b82f6',
+    '#8b5cf6',
+    '#f59e0b',
+    '#ef4444',
+    '#06b6d4',
+    '#84cc16',
+    '#f97316',
+    '#ec4899',
+    '#6366f1',
   ];
   return colors[Math.floor(Math.random() * colors.length)];
 }
@@ -132,4 +140,4 @@ export function getTimeAgo(date: Date): string {
   if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
   if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)}d ago`;
   return `${Math.floor(diffInSeconds / 2592000)}mo ago`;
-} 
+}

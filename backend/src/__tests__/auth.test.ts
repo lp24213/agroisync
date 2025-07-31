@@ -1,9 +1,9 @@
-import request from 'supertest';
-import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
+import mongoose from 'mongoose';
+import request from 'supertest';
+
 import app from '../index';
 import { User } from '../models/User';
-import { authService } from '../services/authService';
 
 let mongoServer: MongoMemoryServer;
 
@@ -31,7 +31,7 @@ describe('Auth API', () => {
         email: 'test@agrotm.com',
         password: 'TestPass123!',
         username: 'testuser',
-        walletAddress: 'Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS'
+        walletAddress: 'Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS',
       };
 
       const response = await request(app)
@@ -42,7 +42,9 @@ describe('Auth API', () => {
       expect(response.body.success).toBe(true);
       expect(response.body.data.token).toBeDefined();
       expect(response.body.data.user.email).toBe(userData.email);
-      expect(response.body.data.user.walletAddress).toBe(userData.walletAddress);
+      expect(response.body.data.user.walletAddress).toBe(
+        userData.walletAddress,
+      );
       expect(response.body.data.user.password).toBeUndefined(); // Password should not be returned
     });
 
@@ -50,7 +52,7 @@ describe('Auth API', () => {
       const userData = {
         email: 'invalid-email',
         password: 'TestPass123!',
-        walletAddress: 'Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS'
+        walletAddress: 'Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS',
       };
 
       const response = await request(app)
@@ -66,7 +68,7 @@ describe('Auth API', () => {
       const userData = {
         email: 'test@agrotm.com',
         password: 'weak',
-        walletAddress: 'Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS'
+        walletAddress: 'Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS',
       };
 
       const response = await request(app)
@@ -82,7 +84,7 @@ describe('Auth API', () => {
       const userData = {
         email: 'test@agrotm.com',
         password: 'TestPass123!',
-        walletAddress: 'invalid-wallet'
+        walletAddress: 'invalid-wallet',
       };
 
       const response = await request(app)
@@ -98,14 +100,11 @@ describe('Auth API', () => {
       const userData = {
         email: 'test@agrotm.com',
         password: 'TestPass123!',
-        walletAddress: 'Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS'
+        walletAddress: 'Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS',
       };
 
       // Register first user
-      await request(app)
-        .post('/api/auth/register')
-        .send(userData)
-        .expect(201);
+      await request(app).post('/api/auth/register').send(userData).expect(201);
 
       // Try to register with same email
       const response = await request(app)
@@ -124,18 +123,16 @@ describe('Auth API', () => {
       const userData = {
         email: 'test@agrotm.com',
         password: 'TestPass123!',
-        walletAddress: 'Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS'
+        walletAddress: 'Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS',
       };
 
-      await request(app)
-        .post('/api/auth/register')
-        .send(userData);
+      await request(app).post('/api/auth/register').send(userData);
     });
 
     it('should login successfully with correct credentials', async () => {
       const loginData = {
         email: 'test@agrotm.com',
-        password: 'TestPass123!'
+        password: 'TestPass123!',
       };
 
       const response = await request(app)
@@ -151,7 +148,7 @@ describe('Auth API', () => {
     it('should reject login with incorrect password', async () => {
       const loginData = {
         email: 'test@agrotm.com',
-        password: 'wrongpassword'
+        password: 'wrongpassword',
       };
 
       const response = await request(app)
@@ -166,7 +163,7 @@ describe('Auth API', () => {
     it('should reject login with non-existent email', async () => {
       const loginData = {
         email: 'nonexistent@agrotm.com',
-        password: 'TestPass123!'
+        password: 'TestPass123!',
       };
 
       const response = await request(app)
@@ -187,7 +184,7 @@ describe('Auth API', () => {
       const userData = {
         email: 'test@agrotm.com',
         password: 'TestPass123!',
-        walletAddress: 'Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS'
+        walletAddress: 'Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS',
       };
 
       const registerResponse = await request(app)
@@ -205,13 +202,13 @@ describe('Auth API', () => {
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.user.email).toBe('test@agrotm.com');
-      expect(response.body.data.user.walletAddress).toBe('Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS');
+      expect(response.body.data.user.walletAddress).toBe(
+        'Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS',
+      );
     });
 
     it('should reject request without token', async () => {
-      const response = await request(app)
-        .get('/api/auth/profile')
-        .expect(401);
+      const response = await request(app).get('/api/auth/profile').expect(401);
 
       expect(response.body.success).toBe(false);
       expect(response.body.code).toBe('MISSING_TOKEN');
@@ -230,14 +227,14 @@ describe('Auth API', () => {
 
   describe('POST /api/auth/change-password', () => {
     let authToken: string;
-    let userId: string;
+    // let _userId: string;
 
     beforeEach(async () => {
       // Create and login a test user
       const userData = {
         email: 'test@agrotm.com',
         password: 'TestPass123!',
-        walletAddress: 'Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS'
+        walletAddress: 'Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS',
       };
 
       const registerResponse = await request(app)
@@ -245,13 +242,13 @@ describe('Auth API', () => {
         .send(userData);
 
       authToken = registerResponse.body.data.token;
-      userId = registerResponse.body.data.user.id;
+      // _userId = registerResponse.body.data.user.id;
     });
 
     it('should change password successfully', async () => {
       const changePasswordData = {
         currentPassword: 'TestPass123!',
-        newPassword: 'NewPass456!'
+        newPassword: 'NewPass456!',
       };
 
       const response = await request(app)
@@ -267,7 +264,7 @@ describe('Auth API', () => {
     it('should reject change password with incorrect current password', async () => {
       const changePasswordData = {
         currentPassword: 'WrongPass123!',
-        newPassword: 'NewPass456!'
+        newPassword: 'NewPass456!',
       };
 
       const response = await request(app)
@@ -289,7 +286,7 @@ describe('Auth API', () => {
       const userData = {
         email: 'test@agrotm.com',
         password: 'TestPass123!',
-        walletAddress: 'Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS'
+        walletAddress: 'Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS',
       };
 
       const registerResponse = await request(app)
@@ -319,4 +316,4 @@ describe('Auth API', () => {
       expect(response.body.code).toBe('INVALID_TOKEN');
     });
   });
-}); 
+});

@@ -28,20 +28,20 @@ i18n
     resources,
     fallbackLng: 'en',
     debug: process.env.NODE_ENV === 'development',
-    
+
     interpolation: {
       escapeValue: false, // React already escapes values
     },
-    
+
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],
     },
-    
+
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json',
     },
-    
+
     react: {
       useSuspense: false,
     },
@@ -66,4 +66,4 @@ export const useLanguage = () => {
   };
 
   return { changeLanguage };
-}; 
+};

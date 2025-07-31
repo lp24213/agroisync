@@ -1,8 +1,8 @@
+import cors from 'cors';
+import { NextFunction, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
 import slowDown from 'express-slow-down';
 import helmet from 'helmet';
-import cors from 'cors';
-import { Request, Response, NextFunction } from 'express';
 
 // CORS Configuration
 export const corsOptions: cors.CorsOptions = {
@@ -28,28 +28,35 @@ export const corsOptions: cors.CorsOptions = {
 export const helmetConfig = helmet({
   contentSecurityPolicy: {
     directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-      fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      imgSrc: ["'self'", "data:", "https:"],
-      scriptSrc: ["'self'"],
-      connectSrc: ["'self'", "https://api.agrotm.com"],
-      frameSrc: ["'none'"],
-      objectSrc: ["'none'"],
+      defaultSrc: ['\'self\''],
+      styleSrc: ['\'self\'', '\'unsafe-inline\'', 'https://fonts.googleapis.com'],
+      fontSrc: ['\'self\'', 'https://fonts.gstatic.com'],
+      imgSrc: ['\'self\'', 'data:', 'https:'],
+      scriptSrc: ['\'self\''],
+      connectSrc: ['\'self\'', 'https://api.agrotm.com'],
+      frameSrc: ['\'none\''],
+      objectSrc: ['\'none\''],
       upgradeInsecureRequests: [],
     },
   },
   crossOriginEmbedderPolicy: false,
-  crossOriginResourcePolicy: { policy: "cross-origin" },
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
 });
 
 // Security Headers
-export const securityHeaders = (req: Request, res: Response, next: NextFunction) => {
+export const securityHeaders = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('X-XSS-Protection', '1; mode=block');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  res.setHeader(
+    'Permissions-Policy',
+    'camera=(), microphone=(), geolocation=()',
+  );
   next();
 };
 
@@ -97,26 +104,40 @@ export const createSpeedLimiters = () => {
 };
 
 // DDoS Protection
-export const ddosProtection = (req: Request, res: Response, next: NextFunction) => {
-  const clientIP = req.ip || req.connection.remoteAddress;
+export const ddosProtection = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  // const _clientIP = req.ip || req.connection.remoteAddress;
   const userAgent = req.get('User-Agent') || '';
-  
+
   // Block suspicious user agents
   const suspiciousAgents = [
-    'bot', 'crawler', 'spider', 'scraper', 'curl', 'wget', 'python',
-    'java', 'perl', 'ruby', 'php', 'go-http-client'
+    'bot',
+    'crawler',
+    'spider',
+    'scraper',
+    'curl',
+    'wget',
+    'python',
+    'java',
+    'perl',
+    'ruby',
+    'php',
+    'go-http-client',
   ];
-  
-  const isSuspicious = suspiciousAgents.some(agent => 
-    userAgent.toLowerCase().includes(agent)
+
+  const isSuspicious = suspiciousAgents.some((agent) =>
+    userAgent.toLowerCase().includes(agent),
   );
-  
+
   if (isSuspicious && !userAgent.includes('agrotm')) {
     return res.status(403).json({
       error: 'Access denied',
       code: 'SUSPICIOUS_USER_AGENT',
     });
   }
-  
+
   next();
-}; 
+};

@@ -54,7 +54,7 @@ declare module 'react-query' {
   export function useQuery(
     queryKey: any,
     queryFn: () => Promise<any>,
-    options?: UseQueryOptions
+    options?: UseQueryOptions,
   ): UseQueryResult;
 
   export interface UseMutationOptions {
@@ -76,7 +76,7 @@ declare module 'react-query' {
 
   export function useMutation(
     mutationFn: (variables: any) => Promise<any>,
-    options?: UseMutationOptions
+    options?: UseMutationOptions,
   ): UseMutationResult;
 
   export function useQueryClient(): QueryClient;

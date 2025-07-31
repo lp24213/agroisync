@@ -9,7 +9,13 @@ declare module 'react-hot-toast' {
     };
     className?: string;
     style?: React.CSSProperties;
-    position?: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
+    position?:
+      | 'top-left'
+      | 'top-center'
+      | 'top-right'
+      | 'bottom-left'
+      | 'bottom-center'
+      | 'bottom-right';
     iconTheme?: {
       primary: string;
       secondary: string;
@@ -23,7 +29,13 @@ declare module 'react-hot-toast' {
     icon?: React.ReactNode;
     duration?: number;
     pauseDuration: number;
-    position?: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
+    position?:
+      | 'top-left'
+      | 'top-center'
+      | 'top-right'
+      | 'bottom-left'
+      | 'bottom-center'
+      | 'bottom-right';
     ariaProps: {
       role: 'status' | 'alert';
       'aria-live': 'assertive' | 'off' | 'polite';
@@ -40,7 +52,13 @@ declare module 'react-hot-toast' {
   }
 
   export interface ToasterProps {
-    position?: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
+    position?:
+      | 'top-left'
+      | 'top-center'
+      | 'top-right'
+      | 'bottom-left'
+      | 'bottom-center'
+      | 'bottom-right';
     toastOptions?: ToastOptions;
     reverseOrder?: boolean;
     gutter?: number;
@@ -63,7 +81,7 @@ declare module 'react-hot-toast' {
         success: string | ((data: T) => string);
         error: string | ((err: any) => string);
       },
-      options?: ToastOptions
+      options?: ToastOptions,
     ) => Promise<T>;
   };
 
@@ -75,7 +93,10 @@ declare module 'react-hot-toast' {
       updateHeight: (toastId: string, height: number) => void;
       startPause: () => void;
       endPause: () => void;
-      calculateOffset: (toast: Toast, opts?: { reverseOrder?: boolean; gutter?: number; defaultPosition?: string }) => number;
+      calculateOffset: (
+        toast: Toast,
+        opts?: { reverseOrder?: boolean; gutter?: number; defaultPosition?: string },
+      ) => number;
     };
   };
   export const useToasterStore: (toastOptions?: ToastOptions) => {

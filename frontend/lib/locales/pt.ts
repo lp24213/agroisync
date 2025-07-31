@@ -97,7 +97,8 @@ export default {
   home: {
     hero: {
       title: 'Revolucionando a Agricultura através da Inovação DeFi',
-      subtitle: 'A plataforma DeFi mais avançada do mundo para o setor agrícola, construída na blockchain Solana',
+      subtitle:
+        'A plataforma DeFi mais avançada do mundo para o setor agrícola, construída na blockchain Solana',
       cta: 'Começar Agora',
       ctaSecondary: 'Saiba Mais',
       stats: {
@@ -124,11 +125,13 @@ export default {
       },
       dao: {
         title: 'Governança DAO',
-        description: 'Participe das decisões da plataforma através do sistema de governança descentralizada',
+        description:
+          'Participe das decisões da plataforma através do sistema de governança descentralizada',
       },
       analytics: {
         title: 'Analytics Avançados',
-        description: 'Acompanhe seus investimentos com analytics em tempo real e insights detalhados',
+        description:
+          'Acompanhe seus investimentos com analytics em tempo real e insights detalhados',
       },
       security: {
         title: 'Segurança Robusta',
@@ -138,9 +141,12 @@ export default {
     about: {
       title: 'Sobre o AGROTM',
       subtitle: 'Conectando agricultura tradicional com inovação blockchain',
-      description: 'O AGROTM é a primeira plataforma DeFi completa focada no setor agrícola, oferecendo soluções inovadoras para tokenização, staking, yield farming e muito mais.',
-      mission: 'Nossa missão é democratizar o acesso ao financiamento agrícola e criar um ecossistema sustentável e transparente para o setor.',
-      vision: 'Ser a plataforma líder mundial em DeFi agrícola, conectando produtores, investidores e consumidores em um ecossistema blockchain inovador.',
+      description:
+        'O AGROTM é a primeira plataforma DeFi completa focada no setor agrícola, oferecendo soluções inovadoras para tokenização, staking, yield farming e muito mais.',
+      mission:
+        'Nossa missão é democratizar o acesso ao financiamento agrícola e criar um ecossistema sustentável e transparente para o setor.',
+      vision:
+        'Ser a plataforma líder mundial em DeFi agrícola, conectando produtores, investidores e consumidores em um ecossistema blockchain inovador.',
     },
     roadmap: {
       title: 'Roadmap',
@@ -185,12 +191,14 @@ export default {
     team: {
       title: 'Nossa Equipe',
       subtitle: 'Especialistas em blockchain e agricultura',
-      description: 'Nossa equipe combina décadas de experiência em blockchain, DeFi e agricultura para criar a plataforma mais inovadora do setor.',
+      description:
+        'Nossa equipe combina décadas de experiência em blockchain, DeFi e agricultura para criar a plataforma mais inovadora do setor.',
     },
     partners: {
       title: 'Parceiros',
       subtitle: 'Construindo o futuro juntos',
-      description: 'Trabalhamos com os melhores parceiros do setor para oferecer soluções de qualidade e confiança.',
+      description:
+        'Trabalhamos com os melhores parceiros do setor para oferecer soluções de qualidade e confiança.',
     },
     cta: {
       title: 'Pronto para começar?',
@@ -594,4 +602,4 @@ export default {
     },
     copyright: '© 2024 AGROTM. Todos os direitos reservados.',
   },
-} as const; 
+} as const;

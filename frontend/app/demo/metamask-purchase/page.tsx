@@ -1,26 +1,29 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import { Card } from '@/components/ui/Card';
-import { useWeb3 } from '@/contexts/Web3Context';
 import BuyWithCommission from '@/components/BuyWithCommission';
-import { motion } from 'framer-motion';
-import { cn } from '@/lib/utils';
+import { Card } from '@/components/ui/Card';
+import { Input } from '@/components/ui/Input';
+import { useWeb3 } from '@/contexts/Web3Context';
+import React, { useState } from 'react';
 
 // Toast hook replacement
 const useToast = () => {
-  return (options: { title: string; description?: string; status: string; duration?: number; isClosable?: boolean }) => {
+  return (options: {
+    title: string;
+    description?: string;
+    status: string;
+    duration?: number;
+    isClosable?: boolean;
+  }) => {
     // Simple alert replacement for now
     alert(`${options.title}${options.description ? '\n' + options.description : ''}`);
   };
 };
 
 const MetaMaskPurchaseDemoPage: React.FC = () => {
-  const { connected, connect, account } = useWeb3();
+  const { isConnected, connect, account } = useWeb3();
   const toast = useToast();
-  
+
   // Estado para os parâmetros de compra
   const [purchaseParams, setPurchaseParams] = useState({
     tokenType: 'ERC20',
@@ -30,32 +33,35 @@ const MetaMaskPurchaseDemoPage: React.FC = () => {
     price: '0.01',
     sellerAddress: '0x0987654321098765432109876543210987654321', // Endereço de exemplo
   });
-  
+
   // Endereço do contrato de comissão (simulado)
   const commissionContractAddress = '0x9876543210987654321098765432109876543210';
-  
+
   // Função para atualizar os parâmetros de compra
   const handleParamChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setPurchaseParams(prev => ({
       ...prev,
-      [name]: name === 'price' || name === 'amount' || name === 'tokenId' 
-        ? name === 'price' ? value : parseInt(value) 
-        : value
+      [name]:
+        name === 'price' || name === 'amount' || name === 'tokenId'
+          ? name === 'price'
+            ? value
+            : parseInt(value)
+          : value,
     }));
   };
-  
+
   // Função para lidar com o sucesso da compra
-  const handleSuccess = (txHash: string) => {
+  const handleSuccess = () => {
     toast({
       title: 'Compra realizada com sucesso!',
-      description: `Hash da transação: ${txHash.substring(0, 10)}...`,
+      description: 'Transação confirmada!',
       status: 'success',
       duration: 5000,
       isClosable: true,
     });
   };
-  
+
   // Função para lidar com erro na compra
   const handleError = (error: Error) => {
     toast({
@@ -66,132 +72,135 @@ const MetaMaskPurchaseDemoPage: React.FC = () => {
       isClosable: true,
     });
   };
-  
+
   return (
-    <div className="container mx-auto py-8 px-4 max-w-7xl">
-      <h1 className="text-3xl font-bold mb-2">Demonstração de Compra com MetaMask</h1>
-      <p className="mb-6 text-gray-600">
+    <div className='container mx-auto py-8 px-4 max-w-7xl'>
+      <h1 className='text-3xl font-bold mb-2'>Demonstração de Compra com MetaMask</h1>
+      <p className='mb-6 text-gray-600'>
         Esta página demonstra como usar o sistema de compra com comissão automática via MetaMask.
       </p>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
         {/* Painel de configuração */}
         <Card>
-          <div className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Configurar Parâmetros</h3>
-            <div className="space-y-4">
+          <div className='p-6'>
+            <h3 className='text-lg font-semibold mb-4'>Configurar Parâmetros</h3>
+            <div className='space-y-4'>
               <div>
-                <label className="block text-sm font-medium mb-2">Tipo de Token</label>
-                <select 
-                  name="tokenType" 
-                  value={purchaseParams.tokenType} 
+                <label className='block text-sm font-medium mb-2'>Tipo de Token</label>
+                <select
+                  name='tokenType'
+                  value={purchaseParams.tokenType}
                   onChange={handleParamChange}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent'
                 >
-                  <option value="ERC20">Token (ERC-20)</option>
-                  <option value="ERC721">NFT (ERC-721)</option>
-                  <option value="ERC1155">Multi-Token (ERC-1155)</option>
+                  <option value='ERC20'>Token (ERC-20)</option>
+                  <option value='ERC721'>NFT (ERC-721)</option>
+                  <option value='ERC1155'>Multi-Token (ERC-1155)</option>
                 </select>
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium mb-2">Endereço do Token</label>
-                <Input 
-                  name="tokenAddress" 
-                  value={purchaseParams.tokenAddress} 
+                <label className='block text-sm font-medium mb-2'>Endereço do Token</label>
+                <Input
+                  name='tokenAddress'
+                  value={purchaseParams.tokenAddress}
                   onChange={handleParamChange}
-                  placeholder="0x..."
+                  placeholder='0x...'
                 />
               </div>
-              
-              {(purchaseParams.tokenType === 'ERC721' || purchaseParams.tokenType === 'ERC1155') && (
+
+              {(purchaseParams.tokenType === 'ERC721' ||
+                purchaseParams.tokenType === 'ERC1155') && (
                 <div>
-                  <label className="block text-sm font-medium mb-2">ID do Token</label>
-                  <Input 
-                    name="tokenId" 
-                    type="number" 
-                    value={purchaseParams.tokenId} 
+                  <label className='block text-sm font-medium mb-2'>ID do Token</label>
+                  <Input
+                    name='tokenId'
+                    type='number'
+                    value={purchaseParams.tokenId}
                     onChange={handleParamChange}
                     min={1}
                   />
                 </div>
               )}
-              
+
               {(purchaseParams.tokenType === 'ERC20' || purchaseParams.tokenType === 'ERC1155') && (
                 <div>
-                  <label className="block text-sm font-medium mb-2">Quantidade</label>
-                  <Input 
-                    name="amount" 
-                    type="number" 
-                    value={purchaseParams.amount} 
+                  <label className='block text-sm font-medium mb-2'>Quantidade</label>
+                  <Input
+                    name='amount'
+                    type='number'
+                    value={purchaseParams.amount}
                     onChange={handleParamChange}
                     min={1}
                   />
                 </div>
               )}
-              
+
               <div>
-                <label className="block text-sm font-medium mb-2">Preço (ETH)</label>
-                <Input 
-                  name="price" 
-                  type="text" 
-                  value={purchaseParams.price} 
+                <label className='block text-sm font-medium mb-2'>Preço (ETH)</label>
+                <Input
+                  name='price'
+                  type='text'
+                  value={purchaseParams.price}
                   onChange={handleParamChange}
-                  placeholder="0.01"
+                  placeholder='0.01'
                 />
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium mb-2">Endereço do Vendedor</label>
-                <Input 
-                  name="sellerAddress" 
-                  value={purchaseParams.sellerAddress} 
+                <label className='block text-sm font-medium mb-2'>Endereço do Vendedor</label>
+                <Input
+                  name='sellerAddress'
+                  value={purchaseParams.sellerAddress}
                   onChange={handleParamChange}
-                  placeholder="0x..."
+                  placeholder='0x...'
                 />
               </div>
-              
-              <div className="pt-2">
-                <p className="text-sm text-gray-600">
-                  Contrato de Comissão: {commissionContractAddress.substring(0, 6)}...{commissionContractAddress.substring(38)}
+
+              <div className='pt-2'>
+                <p className='text-sm text-gray-600'>
+                  Contrato de Comissão: {commissionContractAddress.substring(0, 6)}...
+                  {commissionContractAddress.substring(38)}
                 </p>
               </div>
             </div>
           </div>
         </Card>
-        
+
         {/* Componente de compra */}
         <Card>
-          <div className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Comprar com Comissão</h3>
+          <div className='p-6'>
+            <h3 className='text-lg font-semibold mb-4'>Comprar com Comissão</h3>
             <BuyWithCommission
-              contractAddress={commissionContractAddress}
+              type={purchaseParams.tokenType === 'ERC20' ? 'token' : 'nft'}
               tokenAddress={purchaseParams.tokenAddress}
-              tokenType={purchaseParams.tokenType as 'ERC20' | 'ERC721' | 'ERC1155'}
               tokenId={purchaseParams.tokenId}
-              amount={purchaseParams.amount}
+              amount={purchaseParams.amount.toString()}
               sellerAddress={purchaseParams.sellerAddress}
               price={purchaseParams.price}
               onSuccess={handleSuccess}
-              onError={handleError}
             />
           </div>
         </Card>
       </div>
-      
-      <div className="mt-12 p-6 bg-blue-50 rounded-md">
-        <h3 className="text-lg font-semibold mb-4 text-blue-700">Como funciona?</h3>
-        <p className="mb-3">
-          Este sistema permite que usuários comprem tokens ou NFTs com uma comissão automática enviada para o administrador da plataforma.
+
+      <div className='mt-12 p-6 bg-blue-50 rounded-md'>
+        <h3 className='text-lg font-semibold mb-4 text-blue-700'>Como funciona?</h3>
+        <p className='mb-3'>
+          Este sistema permite que usuários comprem tokens ou NFTs com uma comissão automática
+          enviada para o administrador da plataforma.
         </p>
-        <p className="mb-3">
-          Quando uma compra é realizada, o valor é dividido automaticamente: uma parte (comissão) vai para o administrador e o restante vai para o vendedor.
+        <p className='mb-3'>
+          Quando uma compra é realizada, o valor é dividido automaticamente: uma parte (comissão)
+          vai para o administrador e o restante vai para o vendedor.
         </p>
-        <p className="mb-3">
-          O contrato inteligente garante que essa divisão seja feita de forma segura e transparente, sem necessidade de intermediários.
+        <p className='mb-3'>
+          O contrato inteligente garante que essa divisão seja feita de forma segura e transparente,
+          sem necessidade de intermediários.
         </p>
-        <hr className="my-4" />
-        <p className="font-bold">Fluxo da transação:</p>
+        <hr className='my-4' />
+        <p className='font-bold'>Fluxo da transação:</p>
         <ol style={{ paddingLeft: '20px', marginTop: '8px' }}>
           <li>Usuário conecta sua carteira MetaMask</li>
           <li>Usuário seleciona o token/NFT e confirma a compra</li>

@@ -97,7 +97,8 @@ export default {
   home: {
     hero: {
       title: 'Revolutionizing Agriculture through DeFi Innovation',
-      subtitle: 'The world\'s most advanced DeFi platform for the agricultural sector, built on Solana blockchain',
+      subtitle:
+        "The world's most advanced DeFi platform for the agricultural sector, built on Solana blockchain",
       cta: 'Get Started',
       ctaSecondary: 'Learn More',
       stats: {
@@ -138,9 +139,12 @@ export default {
     about: {
       title: 'About AGROTM',
       subtitle: 'Connecting traditional agriculture with blockchain innovation',
-      description: 'AGROTM is the first complete DeFi platform focused on the agricultural sector, offering innovative solutions for tokenization, staking, yield farming, and much more.',
-      mission: 'Our mission is to democratize access to agricultural financing and create a sustainable and transparent ecosystem for the sector.',
-      vision: 'To be the world\'s leading agricultural DeFi platform, connecting producers, investors, and consumers in an innovative blockchain ecosystem.',
+      description:
+        'AGROTM is the first complete DeFi platform focused on the agricultural sector, offering innovative solutions for tokenization, staking, yield farming, and much more.',
+      mission:
+        'Our mission is to democratize access to agricultural financing and create a sustainable and transparent ecosystem for the sector.',
+      vision:
+        "To be the world's leading agricultural DeFi platform, connecting producers, investors, and consumers in an innovative blockchain ecosystem.",
     },
     roadmap: {
       title: 'Roadmap',
@@ -185,12 +189,14 @@ export default {
     team: {
       title: 'Our Team',
       subtitle: 'Blockchain and agriculture experts',
-      description: 'Our team combines decades of experience in blockchain, DeFi, and agriculture to create the most innovative platform in the sector.',
+      description:
+        'Our team combines decades of experience in blockchain, DeFi, and agriculture to create the most innovative platform in the sector.',
     },
     partners: {
       title: 'Partners',
       subtitle: 'Building the future together',
-      description: 'We work with the best partners in the sector to provide quality and reliable solutions.',
+      description:
+        'We work with the best partners in the sector to provide quality and reliable solutions.',
     },
     cta: {
       title: 'Ready to get started?',
@@ -483,7 +489,7 @@ export default {
     rememberMe: 'Remember Me',
     createAccount: 'Create Account',
     alreadyHaveAccount: 'Already have an account?',
-    dontHaveAccount: 'Don\'t have an account?',
+    dontHaveAccount: "Don't have an account?",
     connectWallet: 'Connect Wallet',
     disconnectWallet: 'Disconnect Wallet',
     walletConnected: 'Wallet Connected',
@@ -493,7 +499,7 @@ export default {
     error: {
       invalidEmail: 'Invalid email',
       invalidPassword: 'Invalid password',
-      passwordsDontMatch: 'Passwords don\'t match',
+      passwordsDontMatch: "Passwords don't match",
       userNotFound: 'User not found',
       wrongPassword: 'Wrong password',
       emailAlreadyExists: 'Email already exists',
@@ -594,4 +600,4 @@ export default {
     },
     copyright: '© 2024 AGROTM. All rights reserved.',
   },
-} as const; 
+} as const;

@@ -2,8 +2,15 @@ declare module '@solana/web3.js' {
   export class PublicKey {
     constructor(value: string | Buffer | Uint8Array | number[]);
     static isOnCurve(pubkey: string | Buffer | Uint8Array): boolean;
-    static createWithSeed(fromPublicKey: PublicKey, seed: string, programId: PublicKey): Promise<PublicKey>;
-    static findProgramAddress(seeds: (Buffer | Uint8Array)[], programId: PublicKey): Promise<[PublicKey, number]>;
+    static createWithSeed(
+      fromPublicKey: PublicKey,
+      seed: string,
+      programId: PublicKey,
+    ): Promise<PublicKey>;
+    static findProgramAddress(
+      seeds: (Buffer | Uint8Array)[],
+      programId: PublicKey,
+    ): Promise<[PublicKey, number]>;
     equals(publicKey: PublicKey): boolean;
     toBase58(): string;
     toBuffer(): Buffer;
@@ -30,11 +37,7 @@ declare module '@solana/web3.js' {
   }
 
   export class SystemProgram {
-    static transfer(params: {
-      fromPubkey: PublicKey;
-      toPubkey: PublicKey;
-      lamports: number;
-    }): any;
+    static transfer(params: { fromPubkey: PublicKey; toPubkey: PublicKey; lamports: number }): any;
     static createAccount(params: {
       fromPubkey: PublicKey;
       newAccountPubkey: PublicKey;

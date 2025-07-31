@@ -1,12 +1,13 @@
 import mongoose from 'mongoose';
 import { createClient } from 'redis';
-import { logger } from '../../../utils/logger';
+
+import { logger } from '../utils/logger';
 
 // MongoDB Configuration
 export const connectMongoDB = async (): Promise<void> => {
   try {
     const mongoUri = process.env.MONGODB_URI;
-    
+
     if (!mongoUri) {
       throw new Error('MONGODB_URI environment variable is not defined');
     }
@@ -29,7 +30,7 @@ export const connectMongoDB = async (): Promise<void> => {
 // Redis Configuration
 export const createRedisClient = () => {
   const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
-  
+
   const client = createClient({
     url: redisUrl,
     socket: {
@@ -82,4 +83,4 @@ export const gracefulShutdown = async (): Promise<void> => {
     logger.error('❌ Error during graceful shutdown:', error);
     process.exit(1);
   }
-}; 
+};

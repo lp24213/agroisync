@@ -2,8 +2,29 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { LineChart, Line, AreaChart, Area, PieChart, Pie, Cell, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-import { TrendingUp, TrendingDown, DollarSign, Coins, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import {
+  LineChart,
+  Line,
+  AreaChart,
+  Area,
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+} from 'recharts';
+import {
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
+  Coins,
+  ArrowUpRight,
+  ArrowDownRight,
+} from 'lucide-react';
 
 const portfolioData = [
   { name: 'Jan', value: 20000, staked: 12000, rewards: 800 },
@@ -28,7 +49,7 @@ const recentTransactions = [
     value: '$750.00',
     timestamp: '2 hours ago',
     status: 'completed',
-    change: '+2.5%'
+    change: '+2.5%',
   },
   {
     id: 2,
@@ -37,7 +58,7 @@ const recentTransactions = [
     value: '$22.50',
     timestamp: '1 day ago',
     status: 'completed',
-    change: '+1.2%'
+    change: '+1.2%',
   },
   {
     id: 3,
@@ -46,7 +67,7 @@ const recentTransactions = [
     value: '$300.00',
     timestamp: '3 days ago',
     status: 'completed',
-    change: '-0.8%'
+    change: '-0.8%',
   },
 ];
 
@@ -79,15 +100,15 @@ export function PortfolioOverview() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className='flex items-center justify-between'>
         <div>
-          <h2 className="text-2xl font-bold text-white">Portfolio Overview</h2>
-          <p className="text-gray-400">Track your investments and performance</p>
+          <h2 className='text-2xl font-bold text-white'>Portfolio Overview</h2>
+          <p className='text-gray-400'>Track your investments and performance</p>
         </div>
-        <div className="flex items-center space-x-2">
-          {['1M', '3M', '6M', '1Y'].map((period) => (
+        <div className='flex items-center space-x-2'>
+          {['1M', '3M', '6M', '1Y'].map(period => (
             <button
               key={period}
               onClick={() => setTimeframe(period)}
@@ -104,25 +125,23 @@ export function PortfolioOverview() {
       </div>
 
       {/* Portfolio Value Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="card"
-      >
-        <div className="flex items-center justify-between mb-6">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className='card'>
+        <div className='flex items-center justify-between mb-6'>
           <div>
-            <h3 className="text-lg font-semibold text-white">Total Portfolio Value</h3>
-            <p className="text-gray-400">Current market value of all assets</p>
+            <h3 className='text-lg font-semibold text-white'>Total Portfolio Value</h3>
+            <p className='text-gray-400'>Current market value of all assets</p>
           </div>
-          <div className="text-right">
-            <div className="text-3xl font-bold text-white">{formatCurrency(getTotalValue())}</div>
-            <div className={`flex items-center text-sm ${
-              getTotalChange() >= 0 ? 'text-green-400' : 'text-red-400'
-            }`}>
+          <div className='text-right'>
+            <div className='text-3xl font-bold text-white'>{formatCurrency(getTotalValue())}</div>
+            <div
+              className={`flex items-center text-sm ${
+                getTotalChange() >= 0 ? 'text-green-400' : 'text-red-400'
+              }`}
+            >
               {getTotalChange() >= 0 ? (
-                <ArrowUpRight className="w-4 h-4 mr-1" />
+                <ArrowUpRight className='w-4 h-4 mr-1' />
               ) : (
-                <ArrowDownRight className="w-4 h-4 mr-1" />
+                <ArrowDownRight className='w-4 h-4 mr-1' />
               )}
               {formatPercentage(getTotalChange())}
             </div>
@@ -130,41 +149,37 @@ export function PortfolioOverview() {
         </div>
 
         {/* Performance Chart */}
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
+        <div className='h-64'>
+          <ResponsiveContainer width='100%' height='100%'>
             <AreaChart data={portfolioData}>
               <defs>
-                <linearGradient id="portfolioGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3}/>
-                  <stop offset="95%" stopColor="#22c55e" stopOpacity={0}/>
+                <linearGradient id='portfolioGradient' x1='0' y1='0' x2='0' y2='1'>
+                  <stop offset='5%' stopColor='#22c55e' stopOpacity={0.3} />
+                  <stop offset='95%' stopColor='#22c55e' stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-              <XAxis 
-                dataKey="name" 
-                stroke="#9ca3af"
+              <CartesianGrid strokeDasharray='3 3' stroke='#374151' />
+              <XAxis dataKey='name' stroke='#9ca3af' fontSize={12} />
+              <YAxis
+                stroke='#9ca3af'
                 fontSize={12}
+                tickFormatter={value => `$${(value / 1000).toFixed(0)}k`}
               />
-              <YAxis 
-                stroke="#9ca3af"
-                fontSize={12}
-                tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
-              />
-              <Tooltip 
+              <Tooltip
                 contentStyle={{
                   backgroundColor: '#1f2937',
                   border: '1px solid #374151',
                   borderRadius: '8px',
-                  color: '#fff'
+                  color: '#fff',
                 }}
                 formatter={(value: number) => [formatCurrency(value), 'Portfolio Value']}
               />
               <Area
-                type="monotone"
-                dataKey="value"
-                stroke="#22c55e"
+                type='monotone'
+                dataKey='value'
+                stroke='#22c55e'
                 strokeWidth={2}
-                fill="url(#portfolioGradient)"
+                fill='url(#portfolioGradient)'
               />
             </AreaChart>
           </ResponsiveContainer>
@@ -172,54 +187,54 @@ export function PortfolioOverview() {
       </motion.div>
 
       {/* Asset Allocation & Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
         {/* Asset Allocation */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
-          className="card"
+          className='card'
         >
-          <h3 className="text-lg font-semibold text-white mb-4">Asset Allocation</h3>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
+          <h3 className='text-lg font-semibold text-white mb-4'>Asset Allocation</h3>
+          <div className='h-64'>
+            <ResponsiveContainer width='100%' height='100%'>
               <PieChart>
                 <Pie
                   data={assetAllocation}
-                  cx="50%"
-                  cy="50%"
+                  cx='50%'
+                  cy='50%'
                   innerRadius={60}
                   outerRadius={100}
                   paddingAngle={5}
-                  dataKey="value"
+                  dataKey='value'
                 >
                   {assetAllocation.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip 
+                <Tooltip
                   contentStyle={{
                     backgroundColor: '#1f2937',
                     border: '1px solid #374151',
                     borderRadius: '8px',
-                    color: '#fff'
+                    color: '#fff',
                   }}
                   formatter={(value: number) => [`${value}%`, 'Allocation']}
                 />
               </PieChart>
             </ResponsiveContainer>
           </div>
-          <div className="mt-4 space-y-2">
+          <div className='mt-4 space-y-2'>
             {assetAllocation.map((asset, index) => (
-              <div key={index} className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div 
-                    className="w-3 h-3 rounded-full mr-2"
+              <div key={index} className='flex items-center justify-between'>
+                <div className='flex items-center'>
+                  <div
+                    className='w-3 h-3 rounded-full mr-2'
                     style={{ backgroundColor: asset.color }}
                   />
-                  <span className="text-sm text-gray-300">{asset.name}</span>
+                  <span className='text-sm text-gray-300'>{asset.name}</span>
                 </div>
-                <span className="text-sm font-medium text-white">{asset.value}%</span>
+                <span className='text-sm font-medium text-white'>{asset.value}%</span>
               </div>
             ))}
           </div>
@@ -230,35 +245,45 @@ export function PortfolioOverview() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3 }}
-          className="card"
+          className='card'
         >
-          <h3 className="text-lg font-semibold text-white mb-4">Recent Transactions</h3>
-          <div className="space-y-3">
-            {recentTransactions.map((tx) => (
-              <div key={tx.id} className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
-                <div className="flex items-center">
-                  <div className={`w-2 h-2 rounded-full mr-3 ${
-                    tx.type === 'stake' ? 'bg-green-400' :
-                    tx.type === 'reward' ? 'bg-blue-400' : 'bg-yellow-400'
-                  }`} />
+          <h3 className='text-lg font-semibold text-white mb-4'>Recent Transactions</h3>
+          <div className='space-y-3'>
+            {recentTransactions.map(tx => (
+              <div
+                key={tx.id}
+                className='flex items-center justify-between p-3 bg-white/5 rounded-lg'
+              >
+                <div className='flex items-center'>
+                  <div
+                    className={`w-2 h-2 rounded-full mr-3 ${
+                      tx.type === 'stake'
+                        ? 'bg-green-400'
+                        : tx.type === 'reward'
+                          ? 'bg-blue-400'
+                          : 'bg-yellow-400'
+                    }`}
+                  />
                   <div>
-                    <p className="text-sm font-medium text-white capitalize">{tx.type}</p>
-                    <p className="text-xs text-gray-400">{tx.timestamp}</p>
+                    <p className='text-sm font-medium text-white capitalize'>{tx.type}</p>
+                    <p className='text-xs text-gray-400'>{tx.timestamp}</p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-sm font-medium text-white">{tx.amount}</p>
-                  <p className="text-xs text-gray-400">{tx.value}</p>
+                <div className='text-right'>
+                  <p className='text-sm font-medium text-white'>{tx.amount}</p>
+                  <p className='text-xs text-gray-400'>{tx.value}</p>
                 </div>
-                <div className={`text-sm font-medium ${
-                  tx.change.startsWith('+') ? 'text-green-400' : 'text-red-400'
-                }`}>
+                <div
+                  className={`text-sm font-medium ${
+                    tx.change.startsWith('+') ? 'text-green-400' : 'text-red-400'
+                  }`}
+                >
                   {tx.change}
                 </div>
               </div>
             ))}
           </div>
-          <button className="w-full mt-4 text-sm text-primary-400 hover:text-primary-300 transition-colors">
+          <button className='w-full mt-4 text-sm text-primary-400 hover:text-primary-300 transition-colors'>
             View All Transactions
           </button>
         </motion.div>
@@ -269,56 +294,56 @@ export function PortfolioOverview() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-6"
+        className='grid grid-cols-1 md:grid-cols-3 gap-6'
       >
-        <div className="card">
-          <div className="flex items-center justify-between">
+        <div className='card'>
+          <div className='flex items-center justify-between'>
             <div>
-              <p className="text-sm text-gray-400">Total Staked</p>
-              <p className="text-2xl font-bold text-white">$15,234</p>
+              <p className='text-sm text-gray-400'>Total Staked</p>
+              <p className='text-2xl font-bold text-white'>$15,234</p>
             </div>
-            <div className="p-2 bg-green-500/20 rounded-lg">
-              <Coins className="w-6 h-6 text-green-400" />
+            <div className='p-2 bg-green-500/20 rounded-lg'>
+              <Coins className='w-6 h-6 text-green-400' />
             </div>
           </div>
-          <div className="mt-2 flex items-center text-green-400 text-sm">
-            <TrendingUp className="w-4 h-4 mr-1" />
+          <div className='mt-2 flex items-center text-green-400 text-sm'>
+            <TrendingUp className='w-4 h-4 mr-1' />
             +8.3%
           </div>
         </div>
 
-        <div className="card">
-          <div className="flex items-center justify-between">
+        <div className='card'>
+          <div className='flex items-center justify-between'>
             <div>
-              <p className="text-sm text-gray-400">Total Rewards</p>
-              <p className="text-2xl font-bold text-white">$1,156</p>
+              <p className='text-sm text-gray-400'>Total Rewards</p>
+              <p className='text-2xl font-bold text-white'>$1,156</p>
             </div>
-            <div className="p-2 bg-blue-500/20 rounded-lg">
-              <DollarSign className="w-6 h-6 text-blue-400" />
+            <div className='p-2 bg-blue-500/20 rounded-lg'>
+              <DollarSign className='w-6 h-6 text-blue-400' />
             </div>
           </div>
-          <div className="mt-2 flex items-center text-green-400 text-sm">
-            <TrendingUp className="w-4 h-4 mr-1" />
+          <div className='mt-2 flex items-center text-green-400 text-sm'>
+            <TrendingUp className='w-4 h-4 mr-1' />
             +12.5%
           </div>
         </div>
 
-        <div className="card">
-          <div className="flex items-center justify-between">
+        <div className='card'>
+          <div className='flex items-center justify-between'>
             <div>
-              <p className="text-sm text-gray-400">APY</p>
-              <p className="text-2xl font-bold text-white">15.3%</p>
+              <p className='text-sm text-gray-400'>APY</p>
+              <p className='text-2xl font-bold text-white'>15.3%</p>
             </div>
-            <div className="p-2 bg-yellow-500/20 rounded-lg">
-              <TrendingUp className="w-6 h-6 text-yellow-400" />
+            <div className='p-2 bg-yellow-500/20 rounded-lg'>
+              <TrendingUp className='w-6 h-6 text-yellow-400' />
             </div>
           </div>
-          <div className="mt-2 flex items-center text-green-400 text-sm">
-            <TrendingUp className="w-4 h-4 mr-1" />
+          <div className='mt-2 flex items-center text-green-400 text-sm'>
+            <TrendingUp className='w-4 h-4 mr-1' />
             +2.1%
           </div>
         </div>
       </motion.div>
     </div>
   );
-} 
+}

@@ -1,30 +1,30 @@
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
 import compression from 'compression';
-import morgan from 'morgan';
+import cors from 'cors';
 import { config } from 'dotenv';
-import { logger, stream } from '../../utils/logger';
+import express from 'express';
+import morgan from 'morgan';
+
+import { logger, stream } from '../utils/logger';
 
 // Import configurations
-import { connectMongoDB, createRedisClient, gracefulShutdown } from './config/database';
-import { 
-  corsOptions, 
-  createRateLimiters, 
-  createSpeedLimiters, 
-  helmetConfig, 
-  securityHeaders, 
-  ddosProtection 
+import {
+  connectMongoDB,
+  createRedisClient,
+  gracefulShutdown,
+} from './config/database';
+import {
+  corsOptions,
+  createRateLimiters,
+  createSpeedLimiters,
+  ddosProtection,
+  helmetConfig,
+  securityHeaders,
 } from './config/security';
 import { web3Config } from './config/web3';
-
-// Import middleware
 import { sanitizeInput } from './middleware/validation';
-
-// Import routes
 import authRoutes from './routes/auth';
-import stakingRoutes from './routes/staking';
 import defiRoutes from './routes/defi';
+import stakingRoutes from './routes/staking';
 
 // Load environment variables
 config();
@@ -51,16 +51,20 @@ app.use(generalSpeedLimiter);
 app.use(compression());
 
 // Body parsing middleware with limits
-app.use(express.json({ 
-  limit: '10mb',
-  verify: (req: any, res, buf) => {
-    req.rawBody = buf;
-  }
-}));
-app.use(express.urlencoded({ 
-  extended: true, 
-  limit: '10mb' 
-}));
+app.use(
+  express.json({
+    limit: '10mb',
+    verify: (req: any, res, buf) => {
+      req.rawBody = buf;
+    },
+  }),
+);
+app.use(
+  express.urlencoded({
+    extended: true,
+    limit: '10mb',
+  }),
+);
 
 // Logging middleware
 app.use(morgan('combined', { stream }));
@@ -80,8 +84,8 @@ app.get('/health', async (req, res) => {
       services: {
         database: 'unknown',
         redis: 'unknown',
-        web3: 'unknown'
-      }
+        web3: 'unknown',
+      },
     };
 
     // Check database connection
@@ -114,15 +118,19 @@ app.get('/health', async (req, res) => {
       logger.error('Web3 health check failed:', error);
     }
 
-    const statusCode = Object.values(health.services).every(service => service === 'connected') ? 200 : 503;
-    
+    const statusCode = Object.values(health.services).every(
+      (service) => service === 'connected',
+    )
+      ? 200
+      : 503;
+
     res.status(statusCode).json(health);
   } catch (error) {
     logger.error('Health check error:', error);
     res.status(503).json({
       status: 'ERROR',
       timestamp: new Date().toISOString(),
-      error: 'Health check failed'
+      error: 'Health check failed',
     });
   }
 });
@@ -157,17 +165,17 @@ app.get('/api/defi/pools', generalLimiter, async (req, res) => {
         apy: 38.7,
       },
     ];
-    
+
     res.json({
       success: true,
       data: mockPools,
     });
   } catch (error) {
     logger.error('Error fetching DeFi pools:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       error: 'Internal server error',
-      code: 'INTERNAL_ERROR'
+      code: 'INTERNAL_ERROR',
     });
   }
 });
@@ -182,52 +190,60 @@ app.get('/api/stats/overview', generalLimiter, async (req, res) => {
       securityScore: 9.8,
       supportedTokens: 150,
     };
-    
+
     res.json({
       success: true,
       data: mockStats,
     });
   } catch (error) {
     logger.error('Error fetching stats overview:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       error: 'Internal server error',
-      code: 'INTERNAL_ERROR'
+      code: 'INTERNAL_ERROR',
     });
   }
 });
 
 // Error handling middleware
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  logger.error('Unhandled error:', {
-    error: err.message,
-    stack: err.stack,
-    url: req.url,
-    method: req.method,
-    ip: req.ip,
-    userAgent: req.get('User-Agent')
-  });
+app.use(
+  (
+    err: any,
+    req: express.Request,
+    res: express.Response,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _next: express.NextFunction,
+  ) => {
+    logger.error('Unhandled error:', {
+      error: err.message,
+      stack: err.stack,
+      url: req.url,
+      method: req.method,
+      ip: req.ip,
+      userAgent: req.get('User-Agent'),
+    });
 
-  // Don't leak error details in production
-  const errorResponse = {
-    success: false,
-    error: NODE_ENV === 'development' ? err.message : 'Internal server error',
-    code: 'INTERNAL_ERROR'
-  };
+    // Don't leak error details in production
+    const errorResponse = {
+      success: false,
+      error: NODE_ENV === 'development' ? err.message : 'Internal server error',
+      code: 'INTERNAL_ERROR',
+    };
 
-  if (NODE_ENV === 'development') {
-    errorResponse.stack = err.stack;
-  }
+    if (NODE_ENV === 'development') {
+      errorResponse.stack = err.stack;
+    }
 
-  res.status(500).json(errorResponse);
-});
+    res.status(500).json(errorResponse);
+  },
+);
 
 // 404 handler
 app.use('*', (req, res) => {
   logger.warn('Route not found:', {
     url: req.originalUrl,
     method: req.method,
-    ip: req.ip
+    ip: req.ip,
   });
 
   res.status(404).json({
@@ -254,7 +270,7 @@ process.on('unhandledRejection', (reason, promise) => {
   logger.error('Unhandled Rejection at:', {
     promise,
     reason,
-    stack: reason instanceof Error ? reason.stack : undefined
+    stack: reason instanceof Error ? reason.stack : undefined,
   });
 });
 
@@ -262,32 +278,33 @@ process.on('unhandledRejection', (reason, promise) => {
 process.on('uncaughtException', (error) => {
   logger.error('Uncaught Exception:', {
     error: error.message,
-    stack: error.stack
+    stack: error.stack,
   });
   process.exit(1);
 });
 
 // Start server
-const server = app.listen(PORT, async () => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _server = app.listen(PORT, async () => {
   logger.info('🚀 AGROTM Backend Server Starting...');
   logger.info(`📍 Environment: ${NODE_ENV}`);
   logger.info(`🌐 Server running on port ${PORT}`);
   logger.info(`🔗 Health check: http://localhost:${PORT}/health`);
   logger.info(`📊 API Documentation: http://localhost:${PORT}/api-docs`);
-  
+
   // Initialize services
   try {
     // Connect to MongoDB
     await connectMongoDB();
-    
+
     // Initialize Redis
     const redisClient = createRedisClient();
     await redisClient.connect();
     await redisClient.disconnect();
-    
+
     // Initialize Web3
     await web3Config.healthCheck();
-    
+
     logger.info('✅ All services initialized successfully');
   } catch (error) {
     logger.error('❌ Service initialization failed:', error);
@@ -296,4 +313,4 @@ const server = app.listen(PORT, async () => {
 });
 
 // Export for testing
-export default app; 
+export default app;

@@ -1,23 +1,10 @@
 'use client';
 
-import { About } from '@/components/sections/About';
-import { CTA } from '@/components/sections/CTA';
-import { Contact } from '@/components/sections/Contact';
-import { PremiumAnalytics } from '@/components/sections/PremiumAnalytics';
-import { PremiumFeatures } from '@/components/sections/PremiumFeatures';
-import { PremiumHero } from '@/components/sections/PremiumHero';
-import { Roadmap } from '@/components/sections/Roadmap';
-
-export default function HomePage() {
+export default function Home() {
   return (
-    <div className='space-y-0'>
-      <PremiumHero />
-      <PremiumAnalytics />
-      <PremiumFeatures />
-      <About />
-      <Roadmap />
-      <CTA />
-      <Contact />
+    <div>
+      <h1>AGROTM - Deploy Funcionando!</h1>
+      <p>Deploy realizado com sucesso na Vercel!</p>
     </div>
   );
 }

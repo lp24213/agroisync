@@ -2,16 +2,16 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { 
-  Twitter, 
-  Github, 
-  Linkedin, 
-  Mail, 
+import {
+  Twitter,
+  Github,
+  Linkedin,
+  Mail,
   ExternalLink,
   Shield,
   Zap,
   Users,
-  TrendingUp
+  TrendingUp,
 } from 'lucide-react';
 
 const navigation = {
@@ -73,51 +73,52 @@ const stats = [
 
 export function Footer() {
   return (
-    <footer className="bg-black/90 backdrop-blur-lg border-t border-white/10">
+    <footer className='bg-black/90 backdrop-blur-lg border-t border-white/10'>
       {/* Stats Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
+        <div className='grid grid-cols-2 gap-8 md:grid-cols-4'>
           {stats.map((stat, index) => (
             <motion.div
               key={stat.name}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="text-center"
+              className='text-center'
             >
-              <stat.icon className="w-8 h-8 text-primary-400 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-white">{stat.value}</div>
-              <div className="text-sm text-gray-400">{stat.name}</div>
+              <stat.icon className='w-8 h-8 text-primary-400 mx-auto mb-2' />
+              <div className='text-2xl font-bold text-white'>{stat.value}</div>
+              <div className='text-sm text-gray-400'>{stat.name}</div>
             </motion.div>
           ))}
         </div>
       </div>
 
       {/* Main Footer Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8'>
           {/* Brand */}
-          <div className="lg:col-span-1">
-            <Link href="/" className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-accent-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">A</span>
+          <div className='lg:col-span-1'>
+            <Link href='/' className='flex items-center space-x-2 mb-4'>
+              <div className='w-8 h-8 bg-gradient-to-r from-primary-500 to-accent-500 rounded-lg flex items-center justify-center'>
+                <span className='text-white font-bold text-sm'>A</span>
               </div>
-              <span className="text-white font-bold text-xl">AGROTM</span>
+              <span className='text-white font-bold text-xl'>AGROTM</span>
             </Link>
-            <p className="text-gray-400 text-sm mb-4">
-              The most advanced DeFi platform on Solana blockchain, focused on sustainable agriculture and yield farming.
+            <p className='text-gray-400 text-sm mb-4'>
+              The most advanced DeFi platform on Solana blockchain, focused on sustainable
+              agriculture and yield farming.
             </p>
-            <div className="flex space-x-4">
-              {navigation.social.map((item) => (
+            <div className='flex space-x-4'>
+              {navigation.social.map(item => (
                 <a
                   key={item.name}
                   href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-primary-400 transition-colors duration-200"
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='text-gray-400 hover:text-primary-400 transition-colors duration-200'
                 >
-                  <span className="sr-only">{item.name}</span>
-                  <item.icon className="h-5 w-5" />
+                  <span className='sr-only'>{item.name}</span>
+                  <item.icon className='h-5 w-5' />
                 </a>
               ))}
             </div>
@@ -125,13 +126,13 @@ export function Footer() {
 
           {/* Product */}
           <div>
-            <h3 className="text-white font-semibold mb-4">Product</h3>
-            <ul className="space-y-2">
-              {navigation.product.map((item) => (
+            <h3 className='text-white font-semibold mb-4'>Product</h3>
+            <ul className='space-y-2'>
+              {navigation.product.map(item => (
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-gray-400 hover:text-white transition-colors duration-200 text-sm"
+                    className='text-gray-400 hover:text-white transition-colors duration-200 text-sm'
                   >
                     {item.name}
                   </Link>
@@ -142,13 +143,13 @@ export function Footer() {
 
           {/* DeFi */}
           <div>
-            <h3 className="text-white font-semibold mb-4">DeFi</h3>
-            <ul className="space-y-2">
-              {navigation.defi.map((item) => (
+            <h3 className='text-white font-semibold mb-4'>DeFi</h3>
+            <ul className='space-y-2'>
+              {navigation.defi.map(item => (
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-gray-400 hover:text-white transition-colors duration-200 text-sm"
+                    className='text-gray-400 hover:text-white transition-colors duration-200 text-sm'
                   >
                     {item.name}
                   </Link>
@@ -159,13 +160,13 @@ export function Footer() {
 
           {/* Resources */}
           <div>
-            <h3 className="text-white font-semibold mb-4">Resources</h3>
-            <ul className="space-y-2">
-              {navigation.resources.map((item) => (
+            <h3 className='text-white font-semibold mb-4'>Resources</h3>
+            <ul className='space-y-2'>
+              {navigation.resources.map(item => (
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-gray-400 hover:text-white transition-colors duration-200 text-sm"
+                    className='text-gray-400 hover:text-white transition-colors duration-200 text-sm'
                   >
                     {item.name}
                   </Link>
@@ -176,13 +177,13 @@ export function Footer() {
 
           {/* Company */}
           <div>
-            <h3 className="text-white font-semibold mb-4">Company</h3>
-            <ul className="space-y-2">
-              {navigation.company.map((item) => (
+            <h3 className='text-white font-semibold mb-4'>Company</h3>
+            <ul className='space-y-2'>
+              {navigation.company.map(item => (
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-gray-400 hover:text-white transition-colors duration-200 text-sm"
+                    className='text-gray-400 hover:text-white transition-colors duration-200 text-sm'
                   >
                     {item.name}
                   </Link>
@@ -193,19 +194,26 @@ export function Footer() {
         </div>
 
         {/* Bottom Section */}
-        <div className="mt-12 pt-8 border-t border-white/10">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="text-gray-400 text-sm">
-              © 2024 AGROTM. All rights reserved.
-            </div>
-            <div className="flex items-center space-x-6 text-sm">
-              <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors duration-200">
+        <div className='mt-12 pt-8 border-t border-white/10'>
+          <div className='flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0'>
+            <div className='text-gray-400 text-sm'>© 2024 AGROTM. All rights reserved.</div>
+            <div className='flex items-center space-x-6 text-sm'>
+              <Link
+                href='/privacy'
+                className='text-gray-400 hover:text-white transition-colors duration-200'
+              >
                 Privacy Policy
               </Link>
-              <Link href="/terms" className="text-gray-400 hover:text-white transition-colors duration-200">
+              <Link
+                href='/terms'
+                className='text-gray-400 hover:text-white transition-colors duration-200'
+              >
                 Terms of Service
               </Link>
-              <Link href="/cookies" className="text-gray-400 hover:text-white transition-colors duration-200">
+              <Link
+                href='/cookies'
+                className='text-gray-400 hover:text-white transition-colors duration-200'
+              >
                 Cookie Policy
               </Link>
             </div>
@@ -214,19 +222,19 @@ export function Footer() {
       </div>
 
       {/* Security Badge */}
-      <div className="bg-black/50 border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-center space-x-4 text-xs text-gray-400">
-            <div className="flex items-center space-x-1">
-              <Shield className="h-3 w-3 text-primary-400" />
+      <div className='bg-black/50 border-t border-white/5'>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4'>
+          <div className='flex items-center justify-center space-x-4 text-xs text-gray-400'>
+            <div className='flex items-center space-x-1'>
+              <Shield className='h-3 w-3 text-primary-400' />
               <span>Audited by CertiK</span>
             </div>
-            <div className="flex items-center space-x-1">
-              <Shield className="h-3 w-3 text-primary-400" />
+            <div className='flex items-center space-x-1'>
+              <Shield className='h-3 w-3 text-primary-400' />
               <span>Insurance by Nexus Mutual</span>
             </div>
-            <div className="flex items-center space-x-1">
-              <Shield className="h-3 w-3 text-primary-400" />
+            <div className='flex items-center space-x-1'>
+              <Shield className='h-3 w-3 text-primary-400' />
               <span>Multi-Sig Treasury</span>
             </div>
           </div>

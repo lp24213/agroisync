@@ -1,16 +1,38 @@
-import { Request, Response, NextFunction } from 'express';
-import mongoSanitize from 'express-mongo-sanitize';
-import hpp from 'hpp';
+import { NextFunction, Request, Response } from 'express';
+import { ZodSchema } from 'zod';
 
-// Input sanitization middleware
-export const sanitizeInput = (req: Request, res: Response, next: NextFunction) => {
-  // Remove MongoDB operators from query strings
-  mongoSanitize.sanitize(req.query);
-  mongoSanitize.sanitize(req.body);
-  
-  // Remove HTTP Parameter Pollution
-  hpp()(req, res, next);
-};
+import { logger } from '../utils/logger';
+
+export function validateBody(schema: ZodSchema<any>) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    try {
+      schema.parse(req.body);
+      next();
+    } catch (_error) {
+      logger.warn('Payload inválido', { error: _error });
+      return res
+        .status(400)
+        .json({ error: 'Payload inválido', details: _error.errors });
+    }
+  };
+}
+
+export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
+  // Exemplo premium: remove scripts e tags perigosas de todos os campos string
+  const sanitize = (obj: any) => {
+    for (const key in obj) {
+      if (typeof obj[key] === 'string') {
+        obj[key] = obj[key]
+          .replace(/<script.*?>.*?<\/script>/gi, '')
+          .replace(/<.*?>/g, '');
+      } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+        sanitize(obj[key]);
+      }
+    }
+  };
+  sanitize(req.body);
+  next();
+}
 
 // Validation middleware for common patterns
 export const validateEmail = (email: string): boolean => {
@@ -43,7 +65,7 @@ export const validateRequest = (schema: any) => {
         });
       }
       next();
-    } catch (error) {
+    } catch {
       return res.status(500).json({
         success: false,
         error: 'Validation middleware error',
@@ -51,4 +73,4 @@ export const validateRequest = (schema: any) => {
       });
     }
   };
-}; 
+};

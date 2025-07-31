@@ -6,11 +6,9 @@ export default function StakingPage() {
           Staking Platform
         </h1>
         <div className="bg-white rounded-lg shadow p-6">
-          <p className="text-gray-600">
-            Staking Platform - Coming Soon
-          </p>
+          <p className="text-gray-600">Staking Platform - Coming Soon</p>
         </div>
       </div>
     </div>
   );
-} 
+}
