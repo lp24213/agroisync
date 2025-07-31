@@ -18,7 +18,8 @@
     "reinstall": "pnpm run clean && pnpm install",
     "docker:build": "docker build -t agrotm-backend .",
     "docker:run": "docker run -p 3001:3001 agrotm-backend",
-    "docker:security": "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image agrotm-backend"
+    "docker:security": "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image agrotm-backend",
+    "postinstall": "echo 'Backend dependencies installed successfully'"
   },
   "dependencies": {
     "express": "^4.18.2",

@@ -10,9 +10,12 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
+# Install pnpm
+RUN npm install -g pnpm
+
 # Install all dependencies (including dev dependencies for build)
-RUN npm ci --audit=false && \
-    npm cache clean --force
+RUN pnpm install --frozen-lockfile && \
+    pnpm store prune
 
 # Copy source code
 COPY . .
@@ -38,6 +41,7 @@ RUN addgroup --system --gid 1001 nodejs && \
 COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nodejs:nodejs /app/index.js ./
 COPY --from=builder --chown=nodejs:nodejs /app/package*.json ./
+COPY --from=builder --chown=nodejs:nodejs /app/pnpm-lock.yaml ./
 
 # Set proper permissions
 RUN chown -R nodejs:nodejs /app && \

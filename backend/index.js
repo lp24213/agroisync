@@ -109,6 +109,8 @@ app.use(
   cors({
     origin: process.env.FRONTEND_URL || [
       'http://localhost:3000',
+      'https://agrotmsol.com.br',
+      'https://www.agrotmsol.com.br',
       'https://agrotm-solana.vercel.app',
     ],
     credentials: true,
