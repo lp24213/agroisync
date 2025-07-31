@@ -8,7 +8,6 @@ const morgan = require('morgan');
 const winston = require('winston');
 const hpp = require('hpp');
 const mongoSanitize = require('express-mongo-sanitize');
-const xss = require('xss-clean');
 const { body, validationResult } = require('express-validator');
 require('dotenv').config();
 
@@ -108,7 +107,6 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Security middleware
 app.use(hpp()); // Protect against HTTP Parameter Pollution
 app.use(mongoSanitize()); // Prevent NoSQL injection
-app.use(xss()); // Prevent XSS attacks
 
 // Compression middleware
 app.use(compression());
@@ -181,7 +179,6 @@ app.get('/api', (req, res) => {
     features: [
       'Premium Security',
       'Rate Limiting',
-      'XSS Protection',
       'NoSQL Injection Protection',
       'Compression',
       'Logging',
