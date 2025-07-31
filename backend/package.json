@@ -11,7 +11,7 @@
     "lint": "echo 'Backend lint disabled'"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^5.1.0"
   },
   "engines": {
     "node": ">=20.0.0"
