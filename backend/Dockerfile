@@ -1,43 +1,32 @@
 # Use Node.js 20 Alpine for smaller image size
-FROM node:20-alpine AS base
+FROM node:20-alpine
 
-# Install dependencies only when needed
-FROM base AS deps
-RUN apk add --no-cache libc6-compat
+# Set working directory
 WORKDIR /app
 
-# Install dependencies based on the preferred package manager
-COPY package.json pnpm-lock.yaml* ./
-RUN npm install -g pnpm && pnpm install --frozen-lockfile
+# Copy package files
+COPY package*.json ./
 
-# Rebuild the source code only when needed
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+# Install dependencies (using npm install instead of npm ci for better compatibility)
+RUN npm install --production --no-optional
+
+# Copy source code
 COPY . .
 
-# Build the application
-RUN npm install -g pnpm && pnpm build
-
-# Production image, copy all the files and run the app
-FROM base AS runner
-WORKDIR /app
-
-ENV NODE_ENV=production
-
+# Create non-root user
 RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN adduser --system --uid 1001 nodejs
 
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+# Change ownership of the app directory
+RUN chown -R nodejs:nodejs /app
+USER nodejs
 
-RUN npm install -g pnpm && pnpm install --frozen-lockfile --prod
-
-USER nextjs
-
+# Expose port
 EXPOSE 3001
 
+# Set environment variables
+ENV NODE_ENV=production
 ENV PORT=3001
 
-CMD ["pnpm", "start"]
+# Start the application
+CMD ["node", "index.js"]
