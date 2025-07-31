@@ -28,23 +28,31 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
         run: npm ci
 
       - name: Run linting
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
         run: npm run lint
 
       - name: Run tests
-        run: npm test
         env:
           NODE_ENV: test
           JWT_SECRET: ${{ env.JWT_SECRET }}
-          MONGODB_URI: ${{ env.MONGODB_URI }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        run: npm test
 
       - name: Build application
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
         run: npm run build
 
       - name: Deploy to Railway
         if: github.ref == 'refs/heads/main'
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
         run: |
           echo "Deploying to Railway..."
           

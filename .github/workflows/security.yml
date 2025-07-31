@@ -34,6 +34,8 @@ jobs:
           cache: 'npm'
 
       - name: Backend Security Audit
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
         run: |
           cd backend
           npm ci --omit=dev
@@ -41,6 +43,8 @@ jobs:
           npm run security:check
 
       - name: Frontend Security Audit
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
         run: |
           cd frontend
           npm ci --omit=dev
