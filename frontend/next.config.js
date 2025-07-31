@@ -3,24 +3,22 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
   },
   images: {
-    domains: ['localhost'],
-    unoptimized: true,
+    domains: ['localhost', 'agrotm.com', 'via.placeholder.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
   },
-  output: 'standalone',
-  trailingSlash: true,
-  generateBuildId: async () => {
-    return 'build-' + Date.now();
-  },
-  // Disable SSR for problematic pages
-  experimental: {
-    workerThreads: false,
-    cpus: 1,
+  env: {
+    CUSTOM_KEY: 'my-value',
   },
   async headers() {
     return [
@@ -35,6 +33,22 @@ const nextConfig = {
         ],
       },
     ];
+  },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        crypto: false,
+      };
+    }
+    return config;
+  },
+  experimental: {
+    appDir: true,
+    serverComponentsExternalPackages: ['@prisma/client'],
   },
 };
 

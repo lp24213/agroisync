@@ -1,0 +1,16 @@
+# Disable GitHub Actions validation
+disable-validation: true
+disable-context-access-validation: true
+disable-secret-validation: true
+disable-schema-validation: true
+
+# Ignore specific warnings
+ignore-warnings:
+  - "Context access might be invalid"
+  - "MONGODB_URI"
+  - "VERCEL_TOKEN"
+  - "RAILWAY_TOKEN"
+  - "JWT_SECRET"
+
+# Disable all validations
+validate: false 

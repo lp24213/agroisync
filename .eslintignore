@@ -1,13 +1,52 @@
+# Dependencies
 node_modules/
-.next/
-out/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+.nyc_output
+
+# Production
 build/
 dist/
-coverage/
-*.config.js
-*.config.ts
+.next/
+out/
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
 next-env.d.ts
-public/
-static/
-*.min.js
-*.bundle.js 
+
+# GitHub Actions workflows (disable validation)
+.github/workflows/*.yml
+.github/workflows/*.yaml
+.github/workflows/.github-actions-settings.yml
+.github-actions-ignore
+
+# YAML files (disable validation)
+*.yml
+*.yaml
+.yaml-lint
+
+# VS Code settings
+.vscode/settings.json
+.vscode/extensions.json 

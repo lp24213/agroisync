@@ -10,12 +10,12 @@
     "test:watch": "jest --watch",
     "lint": "eslint . --fix",
     "lint:check": "eslint .",
-    "security": "npm audit --audit-level=moderate",
-    "security:fix": "npm audit fix",
-    "security:check": "npm audit --audit-level=low",
+    "security": "pnpm audit --audit-level=moderate",
+    "security:fix": "pnpm audit fix",
+    "security:check": "pnpm audit --audit-level=low",
     "build": "echo 'No build step required for Node.js backend'",
-    "clean": "rm -rf node_modules package-lock.json",
-    "reinstall": "npm run clean && npm install",
+    "clean": "rm -rf node_modules pnpm-lock.yaml",
+    "reinstall": "pnpm run clean && pnpm install",
     "docker:build": "docker build -t agrotm-backend .",
     "docker:run": "docker run -p 3001:3001 agrotm-backend",
     "docker:security": "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image agrotm-backend"
@@ -52,7 +52,7 @@
   },
   "engines": {
     "node": ">=20.0.0",
-    "npm": ">=7.0.0"
+    "pnpm": ">=8.0.0"
   },
   "husky": {
     "hooks": {

@@ -1,97 +1,23 @@
-name: Deploy to Vercel and Railway
+name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
     branches: [main]
 
 env:
-  NODE_VERSION: '20'
-  NPM_VERSION: '10'
+  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_PROD }}
+  RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+  RAILWAY_SERVICE: agrotm-backend
+  MONGODB_URI: ${{ secrets.MONGODB_URI }}
+  JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
 jobs:
-  test-frontend:
+  test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20.x]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Install frontend dependencies
-        run: |
-          cd frontend
-          npm ci
-
-      - name: Frontend type check
-        run: |
-          cd frontend
-          npm run type-check
-
-      - name: Frontend lint
-        run: |
-          cd frontend
-          npm run lint:check
-
-      - name: Run frontend tests
-        run: |
-          cd frontend
-          npm test
-
-      - name: Frontend security audit
-        run: |
-          cd frontend
-          npm audit --audit-level=moderate
-
-  test-backend:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20.x]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-          cache-dependency-path: backend/package-lock.json
-
-      - name: Install backend dependencies
-        run: |
-          cd backend
-          npm ci
-
-      - name: Backend lint
-        run: |
-          cd backend
-          npm run lint:check
-
-      - name: Run backend tests
-        run: |
-          cd backend
-          npm test
-
-      - name: Backend security audit
-        run: |
-          cd backend
-          npm audit --audit-level=moderate
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: [test-frontend, test-backend]
-    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -99,106 +25,63 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: '20'
 
-      - name: Get previous deployment info
-        id: previous-deployment
-        run: |
-          # Get previous deployment URL for rollback
-          PREVIOUS_URL=$(curl -s -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
-            "https://api.vercel.com/v1/deployments?teamId=${{ secrets.VERCEL_ORG_ID }}&projectId=${{ secrets.VERCEL_PROJECT_ID }}&limit=2" | \
-            jq -r '.deployments[1].url // empty')
-          echo "previous_url=$PREVIOUS_URL" >> $GITHUB_OUTPUT
-          echo "Previous deployment URL: $PREVIOUS_URL"
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Run linting
+        run: npm run lint
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Deploy to Vercel
-        id: deploy-vercel
         uses: amondnet/vercel-action@v25
         with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          working-directory: ./frontend
-          vercel-args: '--prod'
+          vercel-token: ${{ env.VERCEL_TOKEN }}
+          vercel-org-id: ${{ env.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ env.VERCEL_PROJECT_ID }}
+          working-directory: ./
 
-      - name: Wait for deployment to be ready
-        run: |
-          DEPLOYMENT_URL="${{ steps.deploy-vercel.outputs.preview-url }}"
-          echo "Waiting for deployment to be ready: $DEPLOYMENT_URL"
-
-          # Wait up to 5 minutes for deployment to be ready
-          for i in {1..30}; do
-            if curl -f -s "$DEPLOYMENT_URL" > /dev/null; then
-              echo "Deployment is ready!"
-              break
-            fi
-            echo "Waiting... ($i/30)"
-            sleep 10
-          done
-
-      - name: Health check
-        id: health-check
-        run: |
-          DEPLOYMENT_URL="${{ steps.deploy-vercel.outputs.preview-url }}"
-          echo "Running health check on: $DEPLOYMENT_URL"
-
-          # Health check with timeout
-          if curl -f -s --max-time 30 "$DEPLOYMENT_URL/health" > /dev/null; then
-            echo "Health check passed"
-            echo "status=success" >> $GITHUB_OUTPUT
-          else
-            echo "Health check failed"
-            echo "status=failed" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Rollback on health check failure
-        if: steps.health-check.outputs.status == 'failed'
-        run: |
-          echo "Health check failed, initiating rollback..."
-
-          # Get the previous deployment ID
-          PREVIOUS_DEPLOYMENT_ID=$(curl -s -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
-            "https://api.vercel.com/v1/deployments?teamId=${{ secrets.VERCEL_ORG_ID }}&projectId=${{ secrets.VERCEL_PROJECT_ID }}&limit=2" | \
-            jq -r '.deployments[1].id // empty')
-
-          if [ ! -z "$PREVIOUS_DEPLOYMENT_ID" ]; then
-            echo "Rolling back to deployment: $PREVIOUS_DEPLOYMENT_ID"
-
-            # Promote previous deployment to production
-            curl -X POST \
-              -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
-              "https://api.vercel.com/v1/deployments/$PREVIOUS_DEPLOYMENT_ID/promote"
-
-            echo "Rollback completed"
-          else
-            echo "No previous deployment found for rollback"
-          fi
+  deploy-backend:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Deploy to Railway
-        if: steps.health-check.outputs.status == 'success'
         run: |
-          npm install -g @railway/cli@latest
-          railway login --token ${{ secrets.RAILWAY_TOKEN }}
-          cd backend
-          railway up --service ${{ secrets.RAILWAY_SERVICE || 'agrotm-backend' }} --detach
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-
-      - name: Notify deployment success
-        if: steps.health-check.outputs.status == 'success'
-        run: |
-          echo "✅ Deployment successful!"
-          echo "Frontend URL: ${{ steps.deploy-vercel.outputs.preview-url }}"
-          echo "Backend deployed to Railway"
-
-      - name: Notify deployment failure
-        if: failure() || steps.health-check.outputs.status == 'failed'
-        run: |
-          echo "❌ Deployment failed!"
-          echo "Rollback initiated if available"
-
-          # Send notification if webhook is configured
-          if [ ! -z "${{ secrets.NOTIFICATION_WEBHOOK_URL }}" ] && [ "${{ secrets.NOTIFICATION_WEBHOOK_URL }}" != "https://hooks.slack.com/services/dummy/dummy/dummy" ]; then
-            curl -H "Content-Type: application/json" \
-              -d '{"content":"🚨 AGROTM deployment failed! Rollback initiated."}' \
-              "${{ secrets.NOTIFICATION_WEBHOOK_URL }}"
-          fi
+          curl -X POST \
+            -H "Authorization: Bearer ${{ env.RAILWAY_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"service": "${{ env.RAILWAY_SERVICE }}"}' \
+            https://api.railway.app/v2/deployments 

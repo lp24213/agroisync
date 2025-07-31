@@ -6,6 +6,13 @@ on:
     - cron: '*/5 * * * *'
   workflow_dispatch:
 
+env:
+  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_PROD }}
+  BACKEND_URL: ${{ secrets.BACKEND_URL }}
+  NOTIFICATION_WEBHOOK_URL: ${{ secrets.NOTIFICATION_WEBHOOK_URL }}
+
 jobs:
   health-check:
     runs-on: ubuntu-latest
@@ -14,8 +21,8 @@ jobs:
         id: frontend-health
         run: |
           # Get production URL from Vercel API
-          PROD_URL=$(curl -s -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
-            "https://api.vercel.com/v1/deployments?teamId=${{ secrets.VERCEL_ORG_ID }}&projectId=${{ secrets.VERCEL_PROJECT_ID }}&limit=1" | \
+          PROD_URL=$(curl -s -H "Authorization: Bearer ${{ env.VERCEL_TOKEN }}" \
+            "https://api.vercel.com/v1/deployments?teamId=${{ env.VERCEL_ORG_ID }}&projectId=${{ env.VERCEL_PROJECT_ID }}&limit=1" | \
             jq -r '.deployments[0].url // empty')
 
           if [ -z "$PROD_URL" ]; then
@@ -45,7 +52,7 @@ jobs:
         id: backend-health
         run: |
           # Check backend health endpoint
-          BACKEND_URL="${{ secrets.BACKEND_URL }}"
+          BACKEND_URL="${{ env.BACKEND_URL }}"
 
           if [ -z "$BACKEND_URL" ]; then
             echo "⚠️ Backend URL not configured, skipping backend health check"
@@ -74,8 +81,8 @@ jobs:
         id: api-health
         run: |
           # Check critical API endpoints
-          PROD_URL=$(curl -s -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
-            "https://api.vercel.com/v1/deployments?teamId=${{ secrets.VERCEL_ORG_ID }}&projectId=${{ secrets.VERCEL_PROJECT_ID }}&limit=1" | \
+          PROD_URL=$(curl -s -H "Authorization: Bearer ${{ env.VERCEL_TOKEN }}" \
+            "https://api.vercel.com/v1/deployments?teamId=${{ env.VERCEL_ORG_ID }}&projectId=${{ env.VERCEL_PROJECT_ID }}&limit=1" | \
             jq -r '.deployments[0].url // empty')
 
           if [ -z "$PROD_URL" ]; then
@@ -98,45 +105,24 @@ jobs:
             fi
           done
 
-          echo "✅ All API endpoints are healthy"
           echo "status=success" >> $GITHUB_OUTPUT
 
-      - name: Alert on health check failure
-        if: steps.frontend-health.outputs.status == 'failed' || steps.backend-health.outputs.status == 'failed' || steps.api-health.outputs.status == 'failed'
+      - name: Send health report
         run: |
-          echo "🚨 Health check failed!"
+          FRONTEND_STATUS="${{ steps.frontend-health.outputs.status }}"
+          BACKEND_STATUS="${{ steps.backend-health.outputs.status }}"
+          API_STATUS="${{ steps.api-health.outputs.status }}"
 
-                    # Send alert if webhook is configured
-          if [ ! -z "${{ secrets.NOTIFICATION_WEBHOOK_URL }}" ] && [ "${{ secrets.NOTIFICATION_WEBHOOK_URL }}" != "https://hooks.slack.com/services/dummy/dummy/dummy" ]; then
-            FRONTEND_STATUS="${{ steps.frontend-health.outputs.status }}"
-            BACKEND_STATUS="${{ steps.backend-health.outputs.status }}"
-            API_STATUS="${{ steps.api-health.outputs.status }}"
+          echo "Health Report:"
+          echo "- Frontend: $FRONTEND_STATUS"
+          echo "- Backend: $BACKEND_STATUS"
+          echo "- API: $API_STATUS"
 
-            MESSAGE="🚨 AGROTM Production Alert!\n"
-            MESSAGE+="Frontend: $FRONTEND_STATUS\n"
-            MESSAGE+="Backend: $BACKEND_STATUS\n"
-            MESSAGE+="API: $API_STATUS\n"
-            MESSAGE+="Time: $(date -u)"
-
-            curl -H "Content-Type: application/json" \
-              -d "{\"content\":\"$MESSAGE\"}" \
-              "${{ secrets.NOTIFICATION_WEBHOOK_URL }}"
-          fi
-
-          # Create issue for manual investigation
-          gh issue create \
-            --title "🚨 Production Health Check Failed" \
-            --body "Health check failed at $(date -u). Please investigate immediately." \
-            --label "urgent,production,health-check"
-
-      - name: Log successful health check
-        if: success()
-        run: |
-          echo "✅ All health checks passed at $(date -u)"
-
-          # Optional: Log to external service
-          if [ ! -z "${{ secrets.HEALTH_LOG_WEBHOOK }}" ] && [ "${{ secrets.HEALTH_LOG_WEBHOOK }}" != "https://hooks.slack.com/services/dummy/dummy/dummy" ]; then
-            curl -H "Content-Type: application/json" \
-              -d "{\"status\":\"healthy\",\"timestamp\":\"$(date -u -Iseconds)\"}" \
-              "${{ secrets.HEALTH_LOG_WEBHOOK }}"
+          # Send notification if webhook is configured
+          if [ ! -z "${{ env.NOTIFICATION_WEBHOOK_URL }}" ] && [ "${{ env.NOTIFICATION_WEBHOOK_URL }}" != "https://hooks.slack.com/services/dummy/dummy/dummy" ]; then
+            if [ "$FRONTEND_STATUS" = "failed" ] || [ "$BACKEND_STATUS" = "failed" ] || [ "$API_STATUS" = "failed" ]; then
+              curl -H "Content-Type: application/json" \
+                -d "{\"content\":\"⚠️ AGROTM Health Check Failed\\nFrontend: $FRONTEND_STATUS\\nBackend: $BACKEND_STATUS\\nAPI: $API_STATUS\"}" \
+                "${{ env.NOTIFICATION_WEBHOOK_URL }}"
+            fi
           fi

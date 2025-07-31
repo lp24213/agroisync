@@ -19,10 +19,10 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "clean": "rm -rf .next out dist",
-    "reinstall": "npm run clean && npm install",
-    "security": "npm audit --audit-level=moderate",
-    "security:fix": "npm audit fix",
-    "security:check": "npm audit --audit-level=low",
+    "reinstall": "pnpm run clean && pnpm install",
+    "security": "pnpm audit --audit-level=moderate",
+    "security:fix": "pnpm audit fix",
+    "security:check": "pnpm audit --audit-level=low",
     "docker:build": "docker build -t agrotm-frontend .",
     "docker:run": "docker run -p 3000:3000 agrotm-frontend",
     "docker:security": "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image agrotm-frontend"
@@ -96,7 +96,7 @@
   },
   "engines": {
     "node": ">=20.0.0",
-    "npm": ">=7.0.0"
+    "pnpm": ">=8.0.0"
   },
   "browserslist": {
     "production": [

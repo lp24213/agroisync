@@ -6,7 +6,7 @@ startCommand = "pnpm start"
 healthcheckPath = "/health"
 healthcheckTimeout = 300
 restartPolicyType = "on_failure"
-restartPolicyMaxRetries = 10
+restartPolicyMaxRetries = 3
 
 [deploy.envs]
 NODE_ENV = "production"
