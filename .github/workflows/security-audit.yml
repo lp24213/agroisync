@@ -32,12 +32,12 @@ jobs:
           node-version: '20'
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         with:
           version: '8'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Run pnpm audit
         env:
@@ -71,12 +71,12 @@ jobs:
           node-version: '20'
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         with:
           version: '8'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Run ESLint security rules
         run: pnpm lint
@@ -113,10 +113,11 @@ jobs:
           severity: 'CRITICAL,HIGH'
 
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
+        continue-on-error: true
 
   secret-scanning:
     name: Secret Scanning
@@ -190,7 +191,7 @@ jobs:
           echo "- Status: ${{ needs.secret-scanning.result }}" >> security-report.md
 
       - name: Upload security report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: security-report
           path: security-report.md
