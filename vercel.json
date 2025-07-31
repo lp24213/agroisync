@@ -1,19 +1,6 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "frontend/package.json",
-      "use": "@vercel/next",
-      "config": {
-        "installCommand": "pnpm install --no-frozen-lockfile",
-        "buildCommand": "pnpm build"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/frontend/$1"
-    }
-  ]
+  "buildCommand": "cd frontend && pnpm build",
+  "installCommand": "cd frontend && pnpm install --no-frozen-lockfile",
+  "outputDirectory": "frontend/.next"
 }
