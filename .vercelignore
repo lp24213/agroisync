@@ -16,3 +16,8 @@ tests/
 __tests__/
 *.test.*
 *.spec.*
+backend/
+contracts/
+staking/
+defi-dashboard/
+api/
