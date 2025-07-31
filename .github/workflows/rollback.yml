@@ -110,7 +110,7 @@ jobs:
           echo "✅ Rollback completed successfully!"
 
           # Send notification if webhook is configured
-          if [ ! -z "${{ secrets.NOTIFICATION_WEBHOOK_URL }}" ]; then
+          if [ ! -z "${{ secrets.NOTIFICATION_WEBHOOK_URL }}" ] && [ "${{ secrets.NOTIFICATION_WEBHOOK_URL }}" != "https://hooks.slack.com/services/dummy/dummy/dummy" ]; then
             curl -H "Content-Type: application/json" \
               -d '{"content":"✅ AGROTM rollback completed successfully!"}' \
               "${{ secrets.NOTIFICATION_WEBHOOK_URL }}"
@@ -122,7 +122,7 @@ jobs:
           echo "❌ Rollback failed!"
 
           # Send notification if webhook is configured
-          if [ ! -z "${{ secrets.NOTIFICATION_WEBHOOK_URL }}" ]; then
+          if [ ! -z "${{ secrets.NOTIFICATION_WEBHOOK_URL }}" ] && [ "${{ secrets.NOTIFICATION_WEBHOOK_URL }}" != "https://hooks.slack.com/services/dummy/dummy/dummy" ]; then
             curl -H "Content-Type: application/json" \
               -d '{"content":"❌ AGROTM rollback failed!"}' \
               "${{ secrets.NOTIFICATION_WEBHOOK_URL }}"

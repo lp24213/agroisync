@@ -107,7 +107,7 @@ jobs:
           echo "🚨 Health check failed!"
 
                     # Send alert if webhook is configured
-          if [ ! -z "${{ secrets.NOTIFICATION_WEBHOOK_URL }}" ]; then
+          if [ ! -z "${{ secrets.NOTIFICATION_WEBHOOK_URL }}" ] && [ "${{ secrets.NOTIFICATION_WEBHOOK_URL }}" != "https://hooks.slack.com/services/dummy/dummy/dummy" ]; then
             FRONTEND_STATUS="${{ steps.frontend-health.outputs.status }}"
             BACKEND_STATUS="${{ steps.backend-health.outputs.status }}"
             API_STATUS="${{ steps.api-health.outputs.status }}"
@@ -135,7 +135,7 @@ jobs:
           echo "✅ All health checks passed at $(date -u)"
 
           # Optional: Log to external service
-          if [ ! -z "${{ secrets.HEALTH_LOG_WEBHOOK }}" ]; then
+          if [ ! -z "${{ secrets.HEALTH_LOG_WEBHOOK }}" ] && [ "${{ secrets.HEALTH_LOG_WEBHOOK }}" != "https://hooks.slack.com/services/dummy/dummy/dummy" ]; then
             curl -H "Content-Type: application/json" \
               -d "{\"status\":\"healthy\",\"timestamp\":\"$(date -u -Iseconds)\"}" \
               "${{ secrets.HEALTH_LOG_WEBHOOK }}"
