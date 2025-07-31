@@ -20,16 +20,8 @@ jobs:
       - name: Check frontend health
         id: frontend-health
         run: |
-          # Get production URL from Vercel API
-          PROD_URL=$(curl -s -H "Authorization: Bearer ${{ env.VERCEL_TOKEN }}" \
-            "https://api.vercel.com/v1/deployments?teamId=${{ env.VERCEL_ORG_ID }}&projectId=${{ env.VERCEL_PROJECT_ID }}&limit=1" | \
-            jq -r '.deployments[0].url // empty')
-
-          if [ -z "$PROD_URL" ]; then
-            echo "❌ Could not get production URL"
-            echo "status=failed" >> $GITHUB_OUTPUT
-            exit 1
-          fi
+          # Use the production URL directly since we know it
+          PROD_URL="https://agrotmsol.com.br"
 
           echo "Checking frontend health: $PROD_URL"
 
@@ -80,16 +72,8 @@ jobs:
       - name: Check API endpoints
         id: api-health
         run: |
-          # Check critical API endpoints
-          PROD_URL=$(curl -s -H "Authorization: Bearer ${{ env.VERCEL_TOKEN }}" \
-            "https://api.vercel.com/v1/deployments?teamId=${{ env.VERCEL_ORG_ID }}&projectId=${{ env.VERCEL_PROJECT_ID }}&limit=1" | \
-            jq -r '.deployments[0].url // empty')
-
-          if [ -z "$PROD_URL" ]; then
-            echo "❌ Could not get production URL for API check"
-            echo "status=failed" >> $GITHUB_OUTPUT
-            exit 1
-          fi
+          # Use the production URL directly since we know it
+          PROD_URL="https://agrotmsol.com.br"
 
           # Check critical endpoints
           ENDPOINTS=("/api/defi/pools" "/api/stats/overview")
