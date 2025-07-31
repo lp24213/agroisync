@@ -49,15 +49,15 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3000'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://agrotmsol.com.br'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: '/',
-    title: 'AGROTM - Next-Generation DeFi Platform',
+    url: 'https://agrotmsol.com.br',
+    title: 'AGROTM.SOL - Next-Generation DeFi Platform',
     description:
       'Experience the future of decentralized finance with AGROTM. High-performance staking, yield farming, and portfolio management.',
     siteName: 'AGROTM',
@@ -72,8 +72,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AGROTM - Next-Generation DeFi Platform',
-    description: 'Experience the future of decentralized finance with AGROTM.',
+    title: 'AGROTM.SOL - Next-Generation DeFi Platform',
+    description: 'Experience the future of decentralized finance with AGROTM.SOL.',
     images: ['/og-image.jpg'],
     creator: '@agrotm',
   },

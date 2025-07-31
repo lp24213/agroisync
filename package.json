@@ -1,7 +1,7 @@
 {
   "name": "agrotm-sol",
   "version": "1.0.0",
-  "description": "AGROTM - Revolutionary DeFi & NFT Platform for Agriculture",
+  "description": "AGROTM.SOL - Revolutionary DeFi & NFT Platform for Agriculture - https://agrotmsol.com.br",
   "private": true,
   "scripts": {
     "build": "cd frontend && pnpm build",
