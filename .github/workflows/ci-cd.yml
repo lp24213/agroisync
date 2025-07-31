@@ -54,7 +54,6 @@ jobs:
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: luis-paulos-projects-146dd88b
           working-directory: ./frontend
           vercel-args: '--prod'
         env:
