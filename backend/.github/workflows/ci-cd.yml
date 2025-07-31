@@ -1,4 +1,4 @@
-name: AGROTM Backend CI/CD
+name: AGROTM.SOL Backend CI/CD
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: CI/CD AGROTM Simple
+name: CI/CD AGROTM.SOL
 
 on:
   push:

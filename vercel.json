@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "name": "agrotm-sol",
   "buildCommand": "cd frontend && pnpm install && pnpm build",
   "outputDirectory": "frontend/.next",
   "installCommand": "cd frontend && pnpm install",

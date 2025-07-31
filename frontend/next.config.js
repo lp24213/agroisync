@@ -19,6 +19,7 @@ const nextConfig = {
   },
   env: {
     CUSTOM_KEY: 'my-value',
+    NEXT_PUBLIC_APP_NAME: 'AGROTM.SOL',
   },
   async headers() {
     return [
