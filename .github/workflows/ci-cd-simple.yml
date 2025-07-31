@@ -1,130 +1,23 @@
 # DISABLED - Using ci-cd.yml instead
-# name: CI/CD AGROTM.SOL
+# This workflow is disabled to avoid conflicts with the main CI/CD pipeline
+name: DISABLED - CI/CD Simple
 
-# on:
-#   push:
-#     branches: [main]
+on:
+  # Disabled - no triggers
+  workflow_dispatch:
+    # Manual trigger only for emergencies
+    inputs:
+      emergency:
+        description: 'Emergency deployment only'
+        required: true
+        default: 'false'
 
-# env:
-#   VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-#   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-#   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_PROD }}
-#   RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-#   RAILWAY_SERVICE: agrotm-backend
-#   NOTIFICATION_WEBHOOK_URL: ${{ secrets.NOTIFICATION_WEBHOOK_URL }}
-
-# jobs:
-#   deploy:
-#     runs-on: ubuntu-latest
-#     continue-on-error: true
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
-
-#       - name: Setup Node.js
-#         uses: actions/setup-node@v4
-#         with:
-#           node-version: 20
-
-#       - name: Setup PNPM
-#         uses: pnpm/action-setup@v3
-#         with:
-#           version: 8
-
-#       - name: Install dependencies
-#         run: |
-#           cd frontend
-#           pnpm install --no-frozen-lockfile || echo "⚠️ Frontend install failed, but continuing..."
-#         continue-on-error: true
-
-#       - name: Build project
-#         run: |
-#           cd frontend
-#           pnpm build || echo "⚠️ Frontend build failed, but continuing..."
-#         continue-on-error: true
-
-#       - name: Deploy frontend to Vercel
-#         id: vercel-deploy
-#         uses: amondnet/vercel-action@v25
-#         with:
-#           vercel-token: ${{ env.VERCEL_TOKEN }}
-#           vercel-org-id: ${{ env.VERCEL_ORG_ID }}
-#           vercel-project-id: ${{ env.VERCEL_PROJECT_ID }}
-#           working-directory: ./frontend
-#         env:
-#           VERCEL_TOKEN: ${{ env.VERCEL_TOKEN }}
-#           VERCEL_ORG_ID: ${{ env.VERCEL_ORG_ID }}
-#           VERCEL_PROJECT_ID: ${{ env.VERCEL_PROJECT_ID }}
-#           NEXT_PUBLIC_APP_URL: https://agrotmsol.com.br
-#         continue-on-error: true
-
-#       - name: Deploy backend to Railway
-#         id: railway-deploy
-#         run: |
-#           SERVICE_NAME="${{ env.RAILWAY_SERVICE }}"
-
-#           echo "Deploying to Railway service: $SERVICE_NAME"
-
-#           # Deploy using Railway webhook (simpler and more reliable)
-#           if [ ! -z "${{ env.RAILWAY_TOKEN }}" ]; then
-#             echo "✅ Railway token configured, deployment will be triggered automatically"
-#             echo "deployment_status=success" >> $GITHUB_OUTPUT
-#           else
-#             echo "⚠️ Railway token not configured, skipping backend deployment"
-#             echo "deployment_status=skipped" >> $GITHUB_OUTPUT
-#           fi
-#         continue-on-error: true
-
-#       - name: Wait for deployments
-#         run: |
-#           echo "⏳ Waiting for deployments to complete..."
-#           sleep 60
-
-#       - name: Health check
-#         run: |
-#           # Use the production URL directly since we know it
-#           DEPLOYMENT_URL="https://agrotmsol.com.br"
-          
-#           echo "Running health check on: $DEPLOYMENT_URL"
-
-#           # Wait a bit more for deployment to be ready
-#           sleep 30
-
-#           # Try multiple health check endpoints
-#           if curl -f -s --max-time 30 "$DEPLOYMENT_URL/api/health" > /dev/null; then
-#             echo "✅ Health check passed at /api/health"
-#           elif curl -f -s --max-time 30 "$DEPLOYMENT_URL/health" > /dev/null; then
-#             echo "✅ Health check passed at /health"
-#           elif curl -f -s --max-time 30 "$DEPLOYMENT_URL/" > /dev/null; then
-#             echo "✅ Health check passed at root /"
-#           else
-#             echo "⚠️ Health check failed, but deployment might still be processing"
-#             echo "This is normal for new deployments that take time to propagate"
-#           fi
-#         continue-on-error: true
-
-#       - name: Notify deployment success
-#         if: success()
-#         run: |
-#           echo "✅ Deployment completed successfully!"
-
-#           # Send notification if webhook is configured
-#           if [ ! -z "${{ env.NOTIFICATION_WEBHOOK_URL }}" ] && [ "${{ env.NOTIFICATION_WEBHOOK_URL }}" != "https://hooks.slack.com/services/dummy/dummy/dummy" ]; then
-#             curl -H "Content-Type: application/json" \
-#               -d '{"content":"✅ AGROTM deployment completed successfully!"}' \
-#               "${{ env.NOTIFICATION_WEBHOOK_URL }}" || echo "⚠️ Failed to send success notification"
-#           fi
-#         continue-on-error: true
-
-#       - name: Notify deployment failure
-#         if: failure()
-#         run: |
-#           echo "❌ Deployment failed!"
-
-#           # Send notification if webhook is configured
-#           if [ ! -z "${{ env.NOTIFICATION_WEBHOOK_URL }}" ] && [ "${{ env.NOTIFICATION_WEBHOOK_URL }}" != "https://hooks.slack.com/services/dummy/dummy/dummy" ]; then
-#             curl -H "Content-Type: application/json" \
-#               -d '{"content":"❌ AGROTM deployment failed!"}' \
-#               "${{ env.NOTIFICATION_WEBHOOK_URL }}" || echo "⚠️ Failed to send failure notification"
-#           fi
-#         continue-on-error: true
+jobs:
+  disabled:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Workflow Disabled
+        run: |
+          echo "This workflow is disabled to avoid conflicts"
+          echo "Use ci-cd.yml instead"
+          exit 0
