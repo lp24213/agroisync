@@ -1,8 +1,7 @@
 {
   "version": 2,
-  "projectId": "prj_2QKqXqXqXqXqXqXqXqXqXqXq",
-  "buildCommand": "cd frontend && pnpm build",
+  "buildCommand": "cd frontend && npm run build",
   "outputDirectory": "frontend/.next",
-  "installCommand": "pnpm install --frozen-lockfile",
+  "installCommand": "cd frontend && npm ci",
   "framework": "nextjs"
 }

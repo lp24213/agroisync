@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "projectId": "luis-paulos-projects-146dd88b",
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
   "installCommand": "npm ci --omit=dev",
