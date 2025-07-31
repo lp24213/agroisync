@@ -13,9 +13,9 @@
 ## Secrets Opcionais (Recomendados)
 
 ### Notificações e Monitoramento
-- `DISCORD_WEBHOOK_URL`: Webhook do Discord para notificações de deploy/rollback
+- `NOTIFICATION_WEBHOOK_URL`: Webhook para notificações de deploy/rollback (Slack, Teams, etc.)
 - `BACKEND_URL`: URL do backend para health checks (ex: https://agrotm-backend.railway.app)
-- `HEALTH_LOG_WEBHOOK`: Webhook opcional para logs de saúde (pode ser o mesmo do Discord)
+- `HEALTH_LOG_WEBHOOK`: Webhook opcional para logs de saúde (pode ser o mesmo do webhook de notificação)
 
 ## Como Configurar
 
@@ -44,11 +44,10 @@
 3. Dê um nome (ex: "AGROTM Backend")
 4. Copie o token gerado
 
-### Discord Webhook
-1. Vá para o canal do Discord
-2. Clique com botão direito > Edit Channel > Integrations > Webhooks
-3. Clique em "New Webhook"
-4. Copie a URL do webhook
+### Webhook de Notificação
+1. Configure webhook no seu sistema preferido (Slack, Teams, etc.)
+2. Copie a URL do webhook
+3. Use a URL no secret `NOTIFICATION_WEBHOOK_URL`
 
 ## Testando a Configuração
 

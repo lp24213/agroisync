@@ -196,9 +196,9 @@ jobs:
           echo "❌ Deployment failed!"
           echo "Rollback initiated if available"
 
-          # Send notification to Discord/Slack if webhook is configured
-          if [ ! -z "${{ secrets.DISCORD_WEBHOOK_URL }}" ]; then
+          # Send notification if webhook is configured
+          if [ ! -z "${{ secrets.NOTIFICATION_WEBHOOK_URL }}" ]; then
             curl -H "Content-Type: application/json" \
               -d '{"content":"🚨 AGROTM deployment failed! Rollback initiated."}' \
-              "${{ secrets.DISCORD_WEBHOOK_URL }}"
+              "${{ secrets.NOTIFICATION_WEBHOOK_URL }}"
           fi

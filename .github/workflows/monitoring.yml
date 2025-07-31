@@ -106,8 +106,8 @@ jobs:
         run: |
           echo "🚨 Health check failed!"
 
-          # Send alert to Discord/Slack
-          if [ ! -z "${{ secrets.DISCORD_WEBHOOK_URL }}" ]; then
+                    # Send alert if webhook is configured
+          if [ ! -z "${{ secrets.NOTIFICATION_WEBHOOK_URL }}" ]; then
             FRONTEND_STATUS="${{ steps.frontend-health.outputs.status }}"
             BACKEND_STATUS="${{ steps.backend-health.outputs.status }}"
             API_STATUS="${{ steps.api-health.outputs.status }}"
@@ -120,7 +120,7 @@ jobs:
 
             curl -H "Content-Type: application/json" \
               -d "{\"content\":\"$MESSAGE\"}" \
-              "${{ secrets.DISCORD_WEBHOOK_URL }}"
+              "${{ secrets.NOTIFICATION_WEBHOOK_URL }}"
           fi
 
           # Create issue for manual investigation

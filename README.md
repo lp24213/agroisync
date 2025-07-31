@@ -404,7 +404,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ### Rollback Automático
 - **CI/CD**: Rollback automático em caso de falha no deploy ou health check
 - **Manual**: Workflow `rollback.yml` para rollback manual via GitHub Actions
-- **Notificações**: Alertas via Discord/Slack em caso de falha
+- **Notificações**: Alertas via webhook em caso de falha
 
 ### Monitoramento Contínuo
 - **Health Check**: Verificação automática a cada 5 minutos
@@ -423,4 +423,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 #### Monitoramento
 - Executa automaticamente a cada 5 minutos
 - Pode ser executado manualmente via Actions > Production Monitoring
-- Configuração via secrets: `DISCORD_WEBHOOK_URL`, `BACKEND_URL`, `HEALTH_LOG_WEBHOOK`
+- Configuração via secrets: `NOTIFICATION_WEBHOOK_URL`, `BACKEND_URL`, `HEALTH_LOG_WEBHOOK`
