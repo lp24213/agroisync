@@ -30,10 +30,14 @@ jobs:
           version: 8
 
       - name: Install dependencies
-        run: pnpm install
+        run: |
+          cd frontend
+          pnpm install
 
       - name: Build project
-        run: pnpm build
+        run: |
+          cd frontend
+          pnpm build
 
       - name: Deploy frontend to Vercel
         id: vercel-deploy
@@ -42,6 +46,7 @@ jobs:
           vercel-token: ${{ env.VERCEL_TOKEN }}
           vercel-org-id: ${{ env.VERCEL_ORG_ID }}
           vercel-project-id: ${{ env.VERCEL_PROJECT_ID }}
+          working-directory: ./frontend
         env:
           VERCEL_TOKEN: ${{ env.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ env.VERCEL_ORG_ID }}
