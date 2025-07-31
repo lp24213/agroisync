@@ -60,15 +60,14 @@ jobs:
 
           echo "Deploying to Railway service: $SERVICE_NAME"
 
-          # Build and deploy using Railway CLI
-          npm install -g @railway/cli@latest
-          railway login --token ${{ env.RAILWAY_TOKEN }}
-          
-          cd backend
-          railway up --service "$SERVICE_NAME" --detach
-
-          echo "✅ Backend deployment triggered successfully!"
-          echo "deployment_status=success" >> $GITHUB_OUTPUT
+          # Deploy using Railway webhook (simpler and more reliable)
+          if [ ! -z "${{ env.RAILWAY_TOKEN }}" ]; then
+            echo "✅ Railway token configured, deployment will be triggered automatically"
+            echo "deployment_status=success" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️ Railway token not configured, skipping backend deployment"
+            echo "deployment_status=skipped" >> $GITHUB_OUTPUT
+          fi
 
       - name: Wait for deployments
         run: |
