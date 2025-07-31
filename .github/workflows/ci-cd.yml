@@ -27,18 +27,29 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
       - name: Install dependencies
-        run: npm ci
+        run: |
+          cd frontend
+          pnpm install
 
       - name: Run tests
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
-        run: npm test
+        run: |
+          cd frontend
+          pnpm test
 
       - name: Run linting
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
-        run: npm run lint
+        run: |
+          cd frontend
+          pnpm run lint
 
   build:
     runs-on: ubuntu-latest
@@ -52,13 +63,22 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
       - name: Install dependencies
-        run: npm ci
+        run: |
+          cd frontend
+          pnpm install
 
       - name: Build application
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
-        run: npm run build
+        run: |
+          cd frontend
+          pnpm run build
 
   deploy-frontend:
     runs-on: ubuntu-latest

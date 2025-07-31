@@ -27,27 +27,32 @@ jobs:
         with:
           node-version: 20
 
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
       - name: Install dependencies
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Run linting
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Run tests
         env:
           NODE_ENV: test
           JWT_SECRET: ${{ env.JWT_SECRET }}
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
-        run: npm test
+        run: pnpm test
 
       - name: Build application
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
-        run: npm run build
+        run: pnpm run build
 
       - name: Deploy to Railway
         if: github.ref == 'refs/heads/main'

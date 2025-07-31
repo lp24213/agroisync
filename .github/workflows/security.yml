@@ -31,25 +31,29 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
 
       - name: Backend Security Audit
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
         run: |
           cd backend
-          npm ci --omit=dev
-          npm audit --audit-level=moderate
-          npm run security:check
+          pnpm install --frozen-lockfile
+          pnpm audit --audit-level=moderate
+          pnpm run security:check
 
       - name: Frontend Security Audit
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
         run: |
           cd frontend
-          npm ci --omit=dev
-          npm audit --audit-level=moderate
-          npm run security:check
+          pnpm install --frozen-lockfile
+          pnpm audit --audit-level=moderate
+          pnpm run security:check
 
       - name: Dependency Check
         uses: dependency-check/Dependency-Check_Action@main
@@ -75,22 +79,26 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
 
       - name: Install ESLint Security Plugin
         run: |
-          cd backend && npm install eslint-plugin-security --save-dev
-          cd ../frontend && npm install eslint-plugin-security --save-dev
+          cd backend && pnpm add eslint-plugin-security --save-dev
+          cd ../frontend && pnpm add eslint-plugin-security --save-dev
 
       - name: Backend Security Lint
         run: |
           cd backend
-          npm run lint:check
+          pnpm run lint:check
 
       - name: Frontend Security Lint
         run: |
           cd frontend
-          npm run lint:check
+          pnpm run lint:check
 
   container-security:
     runs-on: ubuntu-latest
