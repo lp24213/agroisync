@@ -1,5 +1,24 @@
-# Multi-stage build for premium production image
-FROM node:20-alpine AS base
+# Multi-stage build for maximum security
+FROM node:20-alpine AS builder
+
+# Install build dependencies
+RUN apk add --no-cache python3 make g++
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies (including dev dependencies for build)
+RUN npm ci --audit=false && \
+    npm cache clean --force
+
+# Copy source code
+COPY . .
+
+# Production stage with Alpine for better compatibility
+FROM node:20-alpine AS production
 
 # Install security updates and essential packages
 RUN apk update && apk upgrade && \
@@ -15,15 +34,10 @@ WORKDIR /app
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nodejs
 
-# Copy package files
-COPY package*.json ./
-
-# Install dependencies using npm ci for production
-RUN npm ci --omit=dev --no-optional --audit=false && \
-    npm cache clean --force
-
-# Copy source code
-COPY . .
+# Copy built application from builder stage
+COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nodejs:nodejs /app/index.js ./
+COPY --from=builder --chown=nodejs:nodejs /app/package*.json ./
 
 # Set proper permissions
 RUN chown -R nodejs:nodejs /app && \
@@ -32,13 +46,13 @@ RUN chown -R nodejs:nodejs /app && \
 # Switch to non-root user
 USER nodejs
 
-# Expose port
-EXPOSE 3001
-
 # Set environment variables
 ENV NODE_ENV=production
 ENV PORT=3001
 ENV NPM_CONFIG_LOGLEVEL=warn
+
+# Expose port
+EXPOSE 3001
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \

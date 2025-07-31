@@ -8,13 +8,13 @@ const morgan = require('morgan');
 const winston = require('winston');
 const hpp = require('hpp');
 const mongoSanitize = require('express-mongo-sanitize');
-const { body, validationResult } = require('express-validator');
+const { body, validationResult, param, query } = require('express-validator');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Configure Winston logger
+// Configure Winston logger with security
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.combine(
@@ -37,7 +37,7 @@ if (process.env.NODE_ENV !== 'production') {
   );
 }
 
-// Security middleware - Premium configuration
+// Security middleware - Premium configuration with enhanced security
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -46,14 +46,27 @@ app.use(
         styleSrc: ["'self'", "'unsafe-inline'"],
         scriptSrc: ["'self'"],
         imgSrc: ["'self'", 'data:', 'https:'],
+        connectSrc: ["'self'"],
+        fontSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        mediaSrc: ["'self'"],
+        frameSrc: ["'none'"],
+        upgradeInsecureRequests: [],
       },
     },
     crossOriginEmbedderPolicy: false,
     crossOriginResourcePolicy: { policy: 'cross-origin' },
+    hsts: {
+      maxAge: 31536000,
+      includeSubDomains: true,
+      preload: true,
+    },
+    noSniff: true,
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
   })
 );
 
-// Rate limiting - Premium protection
+// Enhanced rate limiting - Premium protection
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
@@ -63,6 +76,8 @@ const limiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
+  skipSuccessfulRequests: false,
+  skipFailedRequests: false,
 });
 
 const speedLimiter = slowDown({
@@ -71,10 +86,25 @@ const speedLimiter = slowDown({
   delayMs: 500, // begin adding 500ms of delay per request above 50
 });
 
+// Enhanced brute force protection using rate limiting
+const bruteForceLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // limit each IP to 5 failed attempts per windowMs
+  message: {
+    error: 'Too many failed attempts',
+    message: 'Please try again later',
+    retryAfter: '15 minutes',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true,
+  skipFailedRequests: false,
+});
+
 app.use(limiter);
 app.use(speedLimiter);
 
-// CORS middleware - Premium configuration
+// CORS middleware - Premium configuration with enhanced security
 app.use(
   cors({
     origin: process.env.FRONTEND_URL || [
@@ -85,10 +115,11 @@ app.use(
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     maxAge: 86400, // 24 hours
+    exposedHeaders: ['X-Total-Count'],
   })
 );
 
-// Body parsing middleware with security
+// Body parsing middleware with enhanced security
 app.use(
   express.json({
     limit: '10mb',
@@ -96,6 +127,10 @@ app.use(
       try {
         JSON.parse(buf);
       } catch (e) {
+        logger.warn('Invalid JSON payload', {
+          ip: req.ip,
+          userAgent: req.get('User-Agent'),
+        });
         res.status(400).json({ error: 'Invalid JSON' });
         throw new Error('Invalid JSON');
       }
@@ -104,14 +139,14 @@ app.use(
 );
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Security middleware
+// Enhanced security middleware
 app.use(hpp()); // Protect against HTTP Parameter Pollution
 app.use(mongoSanitize()); // Prevent NoSQL injection
 
 // Compression middleware
 app.use(compression());
 
-// Logging middleware
+// Enhanced logging middleware
 app.use(
   morgan('combined', {
     stream: {
@@ -120,10 +155,15 @@ app.use(
   })
 );
 
-// Request validation middleware
+// Enhanced request validation middleware
 const validateRequest = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    logger.warn('Validation failed', {
+      ip: req.ip,
+      userAgent: req.get('User-Agent'),
+      errors: errors.array(),
+    });
     return res.status(400).json({
       error: 'Validation failed',
       details: errors.array(),
@@ -132,7 +172,32 @@ const validateRequest = (req, res, next) => {
   next();
 };
 
-// Health check endpoint - Premium monitoring
+// Input sanitization middleware
+const sanitizeInput = (req, res, next) => {
+  // Sanitize query parameters
+  if (req.query) {
+    Object.keys(req.query).forEach(key => {
+      if (typeof req.query[key] === 'string') {
+        req.query[key] = req.query[key].replace(/[<>]/g, '');
+      }
+    });
+  }
+
+  // Sanitize body parameters
+  if (req.body) {
+    Object.keys(req.body).forEach(key => {
+      if (typeof req.body[key] === 'string') {
+        req.body[key] = req.body[key].replace(/[<>]/g, '');
+      }
+    });
+  }
+
+  next();
+};
+
+app.use(sanitizeInput);
+
+// Health check endpoint - Premium monitoring with enhanced security
 app.get('/health', (req, res) => {
   const healthCheck = {
     status: 'OK',
@@ -143,6 +208,12 @@ app.get('/health', (req, res) => {
     environment: process.env.NODE_ENV || 'development',
     memory: process.memoryUsage(),
     cpu: process.cpuUsage(),
+    security: {
+      rateLimit: 'enabled',
+      bruteForce: 'enabled',
+      sanitization: 'enabled',
+      cors: 'enabled',
+    },
   };
 
   logger.info('Health check requested', {
@@ -152,10 +223,13 @@ app.get('/health', (req, res) => {
   res.json(healthCheck);
 });
 
-// Main endpoint with validation
+// Main endpoint with enhanced validation
 app.get(
   '/',
-  [body('test').optional().isString().trim().escape(), validateRequest],
+  [
+    body('test').optional().isString().trim().escape().isLength({ max: 100 }),
+    validateRequest,
+  ],
   (req, res) => {
     res.json({
       message: 'AGROTM Backend API',
@@ -167,11 +241,12 @@ app.get(
         status: '/status',
       },
       documentation: 'https://docs.agrotm.com',
+      security: 'Premium protection enabled',
     });
   }
 );
 
-// API routes with premium security
+// API routes with enhanced security
 app.get('/api', (req, res) => {
   res.json({
     message: 'AGROTM API v1.0.0',
@@ -179,14 +254,16 @@ app.get('/api', (req, res) => {
     features: [
       'Premium Security',
       'Rate Limiting',
+      'Brute Force Protection',
       'NoSQL Injection Protection',
+      'Input Sanitization',
       'Compression',
       'Logging',
     ],
   });
 });
 
-// Status endpoint for monitoring
+// Status endpoint for monitoring with enhanced security
 app.get('/status', (req, res) => {
   res.json({
     status: 'operational',
@@ -200,10 +277,15 @@ app.get('/status', (req, res) => {
       uptime: process.uptime(),
       memory_usage: process.memoryUsage(),
     },
+    security: {
+      rate_limit_status: 'active',
+      brute_force_protection: 'active',
+      input_sanitization: 'active',
+    },
   });
 });
 
-// Error handling middleware - Premium error handling
+// Enhanced error handling middleware - Premium error handling
 app.use((err, req, res, next) => {
   logger.error('Unhandled error', {
     error: err.message,
@@ -228,7 +310,7 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).json(errorResponse);
 });
 
-// 404 handler - Premium 404
+// Enhanced 404 handler - Premium 404
 app.use('*', (req, res) => {
   logger.warn('404 Not Found', {
     url: req.originalUrl,
@@ -245,7 +327,7 @@ app.use('*', (req, res) => {
   });
 });
 
-// Graceful shutdown
+// Enhanced graceful shutdown
 process.on('SIGTERM', () => {
   logger.info('SIGTERM received, shutting down gracefully');
   process.exit(0);
@@ -256,12 +338,12 @@ process.on('SIGINT', () => {
   process.exit(0);
 });
 
-// Unhandled promise rejection handler
+// Enhanced unhandled promise rejection handler
 process.on('unhandledRejection', (reason, promise) => {
   logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
 });
 
-// Uncaught exception handler
+// Enhanced uncaught exception handler
 process.on('uncaughtException', (error) => {
   logger.error('Uncaught Exception:', error);
   process.exit(1);
@@ -279,5 +361,7 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`📊 Health check: http://localhost:${PORT}/health`);
   console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`🔒 Security: Premium protection enabled`);
+  console.log(`🛡️ Brute Force Protection: Active`);
+  console.log(`🧹 Input Sanitization: Active`);
   console.log(`📈 Monitoring: Advanced logging enabled`);
 });

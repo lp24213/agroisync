@@ -1,0 +1,117 @@
+name: Security Audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 2 * * 1' # Every Monday at 2 AM
+
+jobs:
+  security-audit:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.x]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Backend Security Audit
+        run: |
+          cd backend
+          npm ci --omit=dev
+          npm audit --audit-level=moderate
+          npm run security:check
+
+      - name: Frontend Security Audit
+        run: |
+          cd frontend
+          npm ci --omit=dev
+          npm audit --audit-level=moderate
+          npm run security:check
+
+      - name: Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'AGROTM'
+          path: '.'
+          format: 'HTML'
+          out: 'reports'
+
+      - name: Upload Security Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-report
+          path: reports/
+
+  code-security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install ESLint Security Plugin
+        run: |
+          cd backend && npm install eslint-plugin-security --save-dev
+          cd ../frontend && npm install eslint-plugin-security --save-dev
+
+      - name: Backend Security Lint
+        run: |
+          cd backend
+          npm run lint:check
+
+      - name: Frontend Security Lint
+        run: |
+          cd frontend
+          npm run lint:check
+
+  container-security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Backend Image
+        run: |
+          cd backend
+          docker build -t agrotm-backend .
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'agrotm-backend:latest'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  secrets-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run TruffleHog
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: .
+          base: HEAD~1
+          head: HEAD
