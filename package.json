@@ -4,10 +4,9 @@
   "description": "AGROTM.SOL - Revolutionary DeFi & NFT Platform for Agriculture - https://agrotmsol.com.br",
   "private": true,
   "scripts": {
-    "build:frontend": "cd frontend && npm run build",
-    "build:backend": "cd backend && npm run build",
-    "start": "turbo run start",
-    "dev": "turbo run dev",
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm install && npm run build",
+    "start": "cd frontend && npm start",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "type-check": "turbo run type-check",
@@ -26,10 +25,7 @@
   "devDependencies": {
     "turbo": "^1.13.4"
   },
-  "engines": {
-    "node": ">=20.0.0",
-    "npm": ">=9.0.0"
-  },
+  "engines": { "node": "20.x" },
   "repository": {
     "type": "git",
     "url": "https://github.com/lp24213/agrotm-solana.git"
