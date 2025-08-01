@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 interface Web3ContextType {
   isConnected: boolean;
@@ -39,26 +39,10 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
     setError(null);
 
     try {
-      // Check if MetaMask is installed
-      if (typeof window.ethereum === 'undefined') {
-        throw new Error('MetaMask is not installed');
-      }
-
-      // Request account access
-      const accounts = await window.ethereum.request({
-        method: 'eth_requestAccounts',
-      });
-
-      if (accounts.length > 0) {
-        setAccount(accounts[0]);
-        setIsConnected(true);
-
-        // Get chain ID
-        const chainId = await window.ethereum.request({
-          method: 'eth_chainId',
-        });
-        setChainId(parseInt(chainId, 16));
-      }
+      // Simulate connection for now
+      setAccount('0x1234567890123456789012345678901234567890');
+      setIsConnected(true);
+      setChainId(1);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to connect');
     } finally {
@@ -75,63 +59,11 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
 
   const switchNetwork = async (targetChainId: number) => {
     try {
-      await window.ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: `0x${targetChainId.toString(16)}` }],
-      });
+      setChainId(targetChainId);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to switch network');
     }
   };
-
-  useEffect(() => {
-    // Check if already connected
-    const checkConnection = async () => {
-      if (typeof window.ethereum !== 'undefined') {
-        try {
-          const accounts = await window.ethereum.request({
-            method: 'eth_accounts',
-          });
-
-          if (accounts.length > 0) {
-            setAccount(accounts[0]);
-            setIsConnected(true);
-
-            const chainId = await window.ethereum.request({
-              method: 'eth_chainId',
-            });
-            setChainId(parseInt(chainId, 16));
-          }
-        } catch (err) {
-          console.error('Error checking connection:', err);
-        }
-      }
-    };
-
-    checkConnection();
-
-    // Listen for account changes
-    if (typeof window.ethereum !== 'undefined') {
-      window.ethereum.on('accountsChanged', (accounts: string[]) => {
-        if (accounts.length > 0) {
-          setAccount(accounts[0]);
-          setIsConnected(true);
-        } else {
-          disconnect();
-        }
-      });
-
-      window.ethereum.on('chainChanged', (chainId: string) => {
-        setChainId(parseInt(chainId, 16));
-      });
-    }
-
-    return () => {
-      if (typeof window.ethereum !== 'undefined') {
-        window.ethereum.removeAllListeners();
-      }
-    };
-  }, []);
 
   const value: Web3ContextType = {
     isConnected,
@@ -146,14 +78,3 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
 
   return <Web3Context.Provider value={value}>{children}</Web3Context.Provider>;
 };
-
-// Extend Window interface for TypeScript
-declare global {
-  interface Window {
-    ethereum?: {
-      request: (args: { method: string; params?: any[] }) => Promise<any>;
-      on: (event: string, callback: (...args: any[]) => void) => void;
-      removeAllListeners: () => void;
-    };
-  }
-}
