@@ -5,8 +5,8 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "pnpm start",
-    "healthcheckPath": "/",
+    "startCommand": "npm start",
+    "healthcheckPath": "/health",
     "healthcheckTimeout": 300
   }
 } 
