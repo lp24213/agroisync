@@ -1,14 +1,11 @@
 #!/bin/bash
+set -e
 
-# Install pnpm if not available or version is too old
-if ! command -v pnpm &> /dev/null || [[ $(pnpm --version) < "8.0.0" ]]; then
-    echo "Installing pnpm..."
-    npm install -g pnpm@8.15.0
-fi
+echo "Installing dependencies..."
+pnpm install
 
-# Install dependencies
-pnpm install --no-frozen-lockfile
-
-# Build the frontend
+echo "Building frontend..."
 cd frontend
 pnpm build
+
+echo "Build completed successfully!"

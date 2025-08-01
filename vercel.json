@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "cd frontend && pnpm install && pnpm run build",
+  "buildCommand": "pnpm install && pnpm build",
   "outputDirectory": "frontend/.next",
   "installCommand": "echo 'Installation handled in buildCommand'"
 }

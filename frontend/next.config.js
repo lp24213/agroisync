@@ -8,9 +8,9 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  experimental: {
-    appDir: true,
-  },
+  poweredByHeader: false,
+  compress: true,
+  generateEtags: false,
 };
 
 module.exports = nextConfig;
