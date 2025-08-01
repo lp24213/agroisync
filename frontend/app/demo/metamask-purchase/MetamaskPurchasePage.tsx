@@ -1,8 +1,8 @@
 'use client';
 
-import BuyWithCommission from '@/components/BuyWithCommission';
-import { Card } from '@/components/ui/Card';
-import { Input } from '@/components/ui/Input';
+import BuyWithCommission from '../../../components/BuyWithCommission';
+import { Card } from '../../../components/ui/Card';
+import { Input } from '../../../components/ui/Input';
 
 import React, { useState } from 'react';
 

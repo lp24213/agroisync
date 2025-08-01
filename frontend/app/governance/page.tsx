@@ -1,7 +1,7 @@
 'use client';
 
-import { ProposalFilter } from '@/components/governance/ProposalFilter';
-import { Button } from '@/components/ui/Button';
+import { ProposalFilter } from '../../components/governance/ProposalFilter';
+import { Button } from '../../components/ui/Button';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   AlertCircle,

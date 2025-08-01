@@ -1,6 +1,6 @@
 'use client';
 
-import { SecurityEventType, SecurityMonitor } from '@/lib/security/monitoring';
+import { SecurityEventType, SecurityMonitor } from '../../lib/security/monitoring';
 import { motion } from 'framer-motion';
 import {
   AlertCircle,

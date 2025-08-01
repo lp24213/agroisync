@@ -1,9 +1,9 @@
 'use client';
 
-import BuyWithCommission from '@/components/BuyWithCommission';
-import { Button } from '@/components/ui/Button';
-import { useWeb3 } from '@/hooks/useWeb3';
-import { cn } from '@/lib/utils';
+import BuyWithCommission from '../../../components/BuyWithCommission';
+import { Button } from '../../../components/ui/Button';
+import { useWeb3 } from '../../../hooks/useWeb3';
+import { cn } from '../../../lib/utils';
 import React, { useState } from 'react';
 
 // Modal hook replacement

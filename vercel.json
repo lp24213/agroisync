@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
-  "outputDirectory": ".next",
-  "installCommand": "npm install",
+  "buildCommand": "cd frontend && npm run build",
+  "outputDirectory": "frontend/.next",
+  "installCommand": "cd frontend && npm install",
   "framework": "nextjs",
   "functions": {
-    "app/**/*.tsx": {
+    "frontend/app/**/*.tsx": {
       "maxDuration": 30
     }
   },
@@ -53,4 +53,4 @@
       "NEXT_TELEMETRY_DISABLED": "1"
     }
   }
-}
+} 

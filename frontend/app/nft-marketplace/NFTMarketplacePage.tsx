@@ -1,9 +1,9 @@
 'use client';
 
-import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
-import { Input } from '@/components/ui/Input';
-import { cn } from '@/lib/utils';
+import { Button } from '../../components/ui/Button';
+import { Card } from '../../components/ui/Card';
+import { Input } from '../../components/ui/Input';
+import { cn } from '../../lib/utils';
 import React, { useState } from 'react';
 
 // Interfaces
