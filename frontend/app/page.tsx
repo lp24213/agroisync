@@ -2,21 +2,44 @@
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center">
-      <div className="text-center text-white p-8">
-        <h1 className="text-6xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #1e3a8a 0%, #7c3aed 50%, #3730a3 100%)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontFamily: 'Arial, sans-serif'
+    }}>
+      <div style={{
+        textAlign: 'center',
+        color: 'white',
+        padding: '2rem'
+      }}>
+        <h1 style={{
+          fontSize: '3rem',
+          fontWeight: 'bold',
+          marginBottom: '1rem',
+          background: 'linear-gradient(45deg, #06b6d4, #3b82f6)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text'
+        }}>
           AGROTM.SOL
         </h1>
-        <p className="text-2xl mb-2 text-cyan-300">Next-Generation DeFi Platform</p>
-        <p className="text-lg text-gray-300 mb-8">Deploy realizado com sucesso na Vercel!</p>
-        <div className="flex justify-center space-x-4">
-          <div className="bg-green-500 text-white px-4 py-2 rounded-lg">
+        <p style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: '#06b6d4' }}>
+          Next-Generation DeFi Platform
+        </p>
+        <p style={{ fontSize: '1.125rem', marginBottom: '2rem', color: '#d1d5db' }}>
+          Deploy realizado com sucesso na Vercel!
+        </p>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
+          <div style={{ backgroundColor: '#10b981', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.5rem' }}>
             ✅ Frontend Online
           </div>
-          <div className="bg-blue-500 text-white px-4 py-2 rounded-lg">
+          <div style={{ backgroundColor: '#3b82f6', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.5rem' }}>
             🚀 Vercel Deploy
           </div>
-          <div className="bg-purple-500 text-white px-4 py-2 rounded-lg">
+          <div style={{ backgroundColor: '#8b5cf6', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.5rem' }}>
             🔒 SSL Ativo
           </div>
         </div>

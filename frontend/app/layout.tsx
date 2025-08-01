@@ -1,25 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter, Orbitron, Space_Grotesk } from 'next/font/google';
 import { Providers } from './providers';
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
-});
-
-const orbitron = Orbitron({
-  subsets: ['latin'],
-  variable: '--font-orbitron',
-  display: 'swap',
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
-  variable: '--font-space-grotesk',
-  display: 'swap',
-});
 
 export const metadata: Metadata = {
   title: {
@@ -98,7 +79,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang='en'>
-      <body className={`${inter.variable} ${orbitron.variable} ${spaceGrotesk.variable}`}>
+      <body>
         <Providers>
           {children}
         </Providers>
