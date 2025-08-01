@@ -61,4 +61,4 @@ jobs:
         uses: railwayapp/railway-action@v1.2.11
         with:
           railwayToken: ${{ secrets.RAILWAY_TOKEN }}
-          serviceName: agrotm-solana 
+          serviceName: agrotm.sol 

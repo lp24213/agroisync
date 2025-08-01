@@ -2,7 +2,7 @@
 
 ## ✅ Status: DEPLOYMENT READY WITH TURBO
 
-O projeto foi completamente corrigido e está pronto para deploy em Vercel e Railway **COM TURBO FUNCIONANDO**.
+O projeto **agrotm.sol** foi completamente corrigido e está pronto para deploy em Vercel e Railway **COM TURBO FUNCIONANDO**.
 
 ## 🔧 Correções Realizadas
 
@@ -26,6 +26,7 @@ O projeto foi completamente corrigido e está pronto para deploy em Vercel e Rai
 - ✅ `railway.json` configurado para Turbo
 - ✅ `nixpacks.toml` configurado
 - ✅ Start command: `pnpm start`
+- ✅ Nome do projeto: `agrotm.sol`
 
 ### 5. **Environment Variables**
 - ✅ `railway.env` com variáveis essenciais
@@ -34,6 +35,7 @@ O projeto foi completamente corrigido e está pronto para deploy em Vercel e Rai
 ### 6. **GitHub Actions**
 - ✅ Workflow automático para Vercel e Railway
 - ✅ Build com Turbo automatizado
+- ✅ Nome do serviço: `agrotm.sol`
 
 ## 🚀 Como Deployar
 
@@ -46,6 +48,7 @@ O projeto foi completamente corrigido e está pronto para deploy em Vercel e Rai
 1. Conecte o repositório no Railway
 2. Configure as variáveis de ambiente
 3. Deploy automático a cada push
+4. Nome do serviço: `agrotm.sol`
 
 ### Manual
 ```bash
@@ -98,4 +101,4 @@ agrotm.sol/
 - ✅ Remote caching (opcional)
 - ✅ Workspace management
 
-**O projeto está 100% funcional com Turbo e pronto para produção!** 🚀 
+**O projeto agrotm.sol está 100% funcional com Turbo e pronto para produção!** 🚀 
