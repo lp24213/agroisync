@@ -4,8 +4,15 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["frontend/.next/**", "frontend/out/**", ".next/**", "out/**"],
-      "cache": true
+      "outputs": ["frontend/.next/**", "frontend/out/**", ".next/**", "out/**", "dist/**"]
+    },
+    "build:frontend": {
+      "dependsOn": ["^build"],
+      "outputs": ["frontend/.next/**", "frontend/out/**", ".next/**", "out/**"]
+    },
+    "build:backend": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
     },
     "start": {
       "dependsOn": ["build"],
@@ -20,10 +27,6 @@
       "dependsOn": ["^lint"],
       "outputs": []
     },
-    "test": {
-      "dependsOn": ["^test"],
-      "outputs": []
-    },
     "type-check": {
       "dependsOn": ["^type-check"],
       "outputs": []
@@ -33,6 +36,14 @@
       "outputs": []
     },
     "clean": {
+      "cache": false
+    },
+    "test": {
+      "dependsOn": ["^test"],
+      "outputs": []
+    },
+    "deploy": {
+      "dependsOn": ["build"],
       "cache": false
     }
   }

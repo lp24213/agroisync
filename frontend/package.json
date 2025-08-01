@@ -12,7 +12,8 @@
     "type-check": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "clean": "rm -rf .next"
+    "clean": "rm -rf .next",
+    "postinstall": "echo 'Frontend dependencies installed successfully'"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
@@ -31,6 +32,7 @@
     "axios": "^1.6.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "critters": "^0.0.23",
     "date-fns": "^2.30.0",
     "dompurify": "^3.0.5",
     "framer-motion": "^10.16.4",
@@ -69,5 +71,20 @@
   "engines": {
     "node": ">=20.0.0",
     "npm": ">=9.0.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lp24213/agrotm-solana.git"
+  },
+  "keywords": [
+    "agrotm",
+    "solana",
+    "blockchain",
+    "defi",
+    "nft",
+    "nextjs",
+    "react"
+  ],
+  "author": "AGROTM Team",
+  "license": "MIT"
 }

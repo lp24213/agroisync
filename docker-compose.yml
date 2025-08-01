@@ -15,6 +15,11 @@ services:
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       - agrotm-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # Redis Cache
   redis:
@@ -25,56 +30,72 @@ services:
       - redis_data:/data
     networks:
       - agrotm-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # Backend API
   backend:
     build:
-      context: ./backend
+      context: .
       dockerfile: Dockerfile
+      target: backend-runner
     container_name: agrotm-backend
     restart: unless-stopped
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
       PORT: 3001
       MONGODB_URI: mongodb://agrotm:agrotm123@mongodb:27017/agrotm?authSource=admin
       REDIS_URL: redis://redis:6379
       JWT_SECRET: your-super-secret-jwt-key-change-this-in-production
       SOLANA_NETWORK: devnet
       SOLANA_DEVNET_RPC: https://api.devnet.solana.com
+      ALLOWED_ORIGINS: http://localhost:3000,https://agrotmsol.com.br
     ports:
       - "3001:3001"
     depends_on:
-      - mongodb
-      - redis
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - agrotm-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # Frontend Application
   frontend:
     build:
-      context: ./frontend
+      context: .
       dockerfile: Dockerfile
+      target: frontend-runner
     container_name: agrotm-frontend
     restart: unless-stopped
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
       NEXT_PUBLIC_API_URL: http://localhost:3001/api
       NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NEXT_PUBLIC_SOLANA_RPC_URL: https://api.devnet.solana.com
+      NEXT_PUBLIC_ETHEREUM_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/your-api-key
     ports:
       - "3000:3000"
     depends_on:
-      - backend
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-      - /app/.next
+      backend:
+        condition: service_healthy
     networks:
       - agrotm-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
-  # Nginx Reverse Proxy (Optional)
+  # Nginx Reverse Proxy
   nginx:
     image: nginx:alpine
     container_name: agrotm-nginx
@@ -86,10 +107,17 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
     depends_on:
-      - frontend
-      - backend
+      frontend:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
     networks:
       - agrotm-network
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # Monitoring - Prometheus
   prometheus:
@@ -116,11 +144,11 @@ services:
     image: grafana/grafana:latest
     container_name: agrotm-grafana
     restart: unless-stopped
-    environment:
-      GF_SECURITY_ADMIN_PASSWORD: admin123
-      GF_USERS_ALLOW_SIGN_UP: false
     ports:
       - "3002:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: false
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
@@ -143,3 +171,6 @@ volumes:
 networks:
   agrotm-network:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

@@ -3,60 +3,233 @@ name: Deploy to Vercel and Railway
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 env:
   VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_PROD }}
   RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+  RAILWAY_SERVICE: agrotm-solana
 
 jobs:
-  deploy-vercel:
+  validate-secrets:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - name: Validate required secrets
+        run: |
+          echo "🔍 Validating deployment secrets..."
+          for secret in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID RAILWAY_TOKEN; do
+            if [ -z "${!secret}" ]; then
+              echo "❌ Missing required secret: $secret"
+              exit 1
+            else
+              echo "✅ $secret is configured"
+            fi
+          done
+          echo "✅ All secrets are properly configured"
+
+  deploy-vercel:
+    needs: validate-secrets
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      url: ${{ steps.vercel-url.outputs.url }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
           
       - name: Install frontend dependencies
         run: |
           cd frontend
-          npm install
+          npm ci --prefer-offline --no-audit
+        env:
+          NODE_ENV: production
+          NEXT_TELEMETRY_DISABLED: 1
         
       - name: Build frontend
         run: |
           cd frontend
           npm run build
+        env:
+          NODE_ENV: production
+          NEXT_TELEMETRY_DISABLED: 1
         
       - name: Deploy to Vercel
+        id: deploy-vercel
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ env.VERCEL_TOKEN }}
           vercel-org-id: ${{ env.VERCEL_ORG_ID }}
           vercel-project-id: ${{ env.VERCEL_PROJECT_ID }}
           working-directory: ./frontend
-          vercel-args: '--prod'
+          vercel-args: '--prod --yes'
+        env:
+          VERCEL_TOKEN: ${{ env.VERCEL_TOKEN }}
+          
+      - name: Get Vercel deployment URL
+        id: vercel-url
+        run: |
+          VERCEL_URL="${{ steps.deploy-vercel.outputs.preview-url }}"
+          if [ -n "$VERCEL_URL" ]; then
+            echo "url=$VERCEL_URL" >> $GITHUB_OUTPUT
+            echo "✅ Vercel deployment URL: $VERCEL_URL"
+          else
+            echo "url=https://agrotm-solana.vercel.app" >> $GITHUB_OUTPUT
+            echo "✅ Using default Vercel URL"
+          fi
           
   deploy-railway:
+    needs: validate-secrets
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      url: ${{ steps.railway-url.outputs.url }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
           
       - name: Install Railway CLI
-        run: npm install -g @railway/cli
+        run: npm install -g @railway/cli@latest
+        
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          npm ci --prefer-offline --no-audit --production
+        env:
+          NODE_ENV: production
         
       - name: Deploy to Railway
         run: |
+          echo "🚀 Deploying to Railway..."
           railway login --token ${{ env.RAILWAY_TOKEN }}
           cd backend
-          railway up --service agrotm-solana
+          railway up --service ${{ env.RAILWAY_SERVICE }} --detach
         env:
-          RAILWAY_TOKEN: ${{ env.RAILWAY_TOKEN }} 
+          RAILWAY_TOKEN: ${{ env.RAILWAY_TOKEN }}
+          RAILWAY_SERVICE: ${{ env.RAILWAY_SERVICE }}
+          
+      - name: Wait for Railway deployment
+        run: |
+          echo "⏳ Waiting for Railway deployment to complete..."
+          sleep 45
+          
+      - name: Get Railway service URL
+        id: railway-url
+        run: |
+          railway login --token ${{ env.RAILWAY_TOKEN }}
+          cd backend
+          SERVICE_URL=$(railway status --service ${{ env.RAILWAY_SERVICE }} --json | jq -r '.service.url // empty' 2>/dev/null || echo "")
+          if [ -n "$SERVICE_URL" ] && [ "$SERVICE_URL" != "null" ]; then
+            echo "url=$SERVICE_URL" >> $GITHUB_OUTPUT
+            echo "✅ Railway service URL: $SERVICE_URL"
+          else
+            echo "⚠️ Could not retrieve Railway service URL, using default"
+            echo "url=https://${{ env.RAILWAY_SERVICE }}.railway.app" >> $GITHUB_OUTPUT
+          fi
+        env:
+          RAILWAY_TOKEN: ${{ env.RAILWAY_TOKEN }}
+          RAILWAY_SERVICE: ${{ env.RAILWAY_SERVICE }}
+
+  health-check:
+    needs: [deploy-vercel, deploy-railway]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Health check Vercel deployment
+        run: |
+          echo "🔍 Checking Vercel deployment health..."
+          VERCEL_URL="${{ needs.deploy-vercel.outputs.url }}"
+          if [ -n "$VERCEL_URL" ] && [ "$VERCEL_URL" != "null" ]; then
+            for i in {1..5}; do
+              if curl -f -s --max-time 30 "$VERCEL_URL" > /dev/null; then
+                echo "✅ Vercel deployment is healthy: $VERCEL_URL"
+                break
+              else
+                echo "⚠️ Health check attempt $i/5 failed for Vercel"
+                if [ $i -eq 5 ]; then
+                  echo "❌ Vercel health check failed after 5 attempts"
+                  exit 1
+                fi
+                sleep 10
+              fi
+            done
+          else
+            echo "⚠️ Vercel URL not available for health check"
+          fi
+          
+      - name: Health check Railway deployment
+        run: |
+          echo "🔍 Checking Railway deployment health..."
+          RAILWAY_URL="${{ needs.deploy-railway.outputs.url }}"
+          if [ -n "$RAILWAY_URL" ] && [ "$RAILWAY_URL" != "null" ]; then
+            for i in {1..5}; do
+              if curl -f -s --max-time 30 "$RAILWAY_URL/health" > /dev/null; then
+                echo "✅ Railway deployment is healthy: $RAILWAY_URL/health"
+                break
+              else
+                echo "⚠️ Health check attempt $i/5 failed for Railway"
+                if [ $i -eq 5 ]; then
+                  echo "❌ Railway health check failed after 5 attempts"
+                  exit 1
+                fi
+                sleep 10
+              fi
+            done
+          else
+            echo "⚠️ Railway URL not available for health check"
+          fi
+
+  notify-success:
+    needs: [deploy-vercel, deploy-railway, health-check]
+    if: success()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Notify deployment success
+        run: |
+          echo "🎉 Deployment completed successfully!"
+          VERCEL_URL="${{ needs.deploy-vercel.outputs.url }}"
+          RAILWAY_URL="${{ needs.deploy-railway.outputs.url }}"
+          if [ -n "$VERCEL_URL" ] && [ "$VERCEL_URL" != "null" ]; then
+            echo "Frontend: $VERCEL_URL"
+          else
+            echo "Frontend: URL not available"
+          fi
+          if [ -n "$RAILWAY_URL" ] && [ "$RAILWAY_URL" != "null" ]; then
+            echo "Backend: $RAILWAY_URL"
+          else
+            echo "Backend: URL not available"
+          fi
+          echo "✅ All services are healthy and running!"
+          
+  notify-failure:
+    needs: [deploy-vercel, deploy-railway, health-check]
+    if: failure()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Notify deployment failure
+        run: |
+          echo "❌ Deployment failed!"
+          echo "Check the logs above for more details."
+          echo "🔍 Common issues:"
+          echo "  - Missing environment variables"
+          echo "  - Build errors in frontend/backend"
+          echo "  - Network connectivity issues"
+          echo "  - Service configuration problems" 
