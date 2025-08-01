@@ -1,32 +1,31 @@
-# Ignore everything except frontend
+# Ignore everything except what we need
 *
+!.vercelignore
+!vercel.json
+!package.json
 !frontend/
-!frontend/**
+!frontend/package.json
+!frontend/next.config.js
+!frontend/tsconfig.json
+!frontend/app/
+!frontend/components/
+!frontend/lib/
+!frontend/hooks/
+!frontend/contexts/
+!frontend/types/
+!frontend/styles/
+!frontend/locales/
+!frontend/middleware/
+!frontend/contracts/
+!frontend/public/
+!frontend/tailwind.config.js
+!frontend/postcss.config.js
+!frontend/package-lock.json
 
-# Ignore specific files in frontend
-frontend/node_modules/
-frontend/.next/
-frontend/.env*
-frontend/*.log
-frontend/coverage/
-frontend/.nyc_output/
-frontend/.vscode/
-frontend/.idea/
-frontend/*.md
-frontend/scripts/
-frontend/docs/
-frontend/tests/
-frontend/__tests__/
-frontend/*.test.*
-frontend/*.spec.*
-
-# Ignore root files
+# Ignore specific files
 node_modules
 .git
-.env
-.env.local
-.env.production
-README.md
+.env*
 *.log
 coverage
 .nyc_output
@@ -45,3 +44,5 @@ staking/
 defi-dashboard/
 api/
 dao/
+pnpm-lock.yaml
+frontend/pnpm-lock.yaml
