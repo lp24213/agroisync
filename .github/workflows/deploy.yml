@@ -53,21 +53,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 8
+          cache: 'npm'
           
       - name: Install dependencies
         run: |
           cd frontend
-          pnpm install --frozen-lockfile
+          npm ci
+          npm install -g @vercel/cli
         
       - name: Build frontend
         run: |
           cd frontend
-          pnpm run build
+          npm run build
         
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v25
@@ -89,21 +86,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 8
+          cache: 'npm'
           
       - name: Install backend dependencies
         run: |
           cd backend
-          pnpm install --frozen-lockfile
+          npm ci
         
       - name: Build backend
         run: |
           cd backend
-          pnpm run build
+          npm run build
         
       - name: Deploy to Railway
         run: |

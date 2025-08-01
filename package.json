@@ -4,12 +4,15 @@
   "description": "AGROTM.SOL - Revolutionary DeFi & NFT Platform for Agriculture - https://agrotmsol.com.br",
   "private": true,
   "scripts": {
-    "build": "turbo run build",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
     "start": "turbo run start",
     "dev": "turbo run dev",
-    "lint": "turbo run lint",
+    "lint": "npm run lint:frontend && npm run lint:backend",
+    "lint:frontend": "cd frontend && npm run lint",
+    "lint:backend": "cd backend && npm run lint",
     "lint:fix": "turbo run lint:fix",
-
     "type-check": "turbo run type-check",
     "format": "turbo run format",
     "format:check": "turbo run format:check",
@@ -25,7 +28,7 @@
   },
   "engines": {
     "node": ">=20.0.0",
-    "pnpm": ">=8.0.0"
+    "npm": ">=9.0.0"
   },
-  "packageManager": "pnpm@8.15.0"
+  "packageManager": "npm@9.0.0"
 }
