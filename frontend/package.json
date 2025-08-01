@@ -13,7 +13,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "clean": "rm -rf .next",
-    "postinstall": "echo 'Frontend dependencies installed successfully'"
+    "postinstall": "echo 'Frontend dependencies installed successfully'",
+    "vercel-build": "next build"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",

@@ -23,6 +23,11 @@ const nextConfig = {
   // Output configuration
   output: 'standalone',
   
+  // Experimental features
+  experimental: {
+    appDir: true,
+  },
+  
   // Headers for security
   async headers() {
     return [

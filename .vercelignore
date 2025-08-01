@@ -1,3 +1,26 @@
+# Ignore everything except frontend
+*
+!frontend/
+!frontend/**
+
+# Ignore specific files in frontend
+frontend/node_modules/
+frontend/.next/
+frontend/.env*
+frontend/*.log
+frontend/coverage/
+frontend/.nyc_output/
+frontend/.vscode/
+frontend/.idea/
+frontend/*.md
+frontend/scripts/
+frontend/docs/
+frontend/tests/
+frontend/__tests__/
+frontend/*.test.*
+frontend/*.spec.*
+
+# Ignore root files
 node_modules
 .git
 .env
