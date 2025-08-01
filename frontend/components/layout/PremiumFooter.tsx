@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import {
-  Discord,
+  // Discord,
   Github,
   Globe,
   Linkedin,
@@ -10,7 +10,7 @@ import {
   MapPin,
   Phone,
   Sparkles,
-  Telegram,
+  // Telegram,
   Twitter,
   Youtube,
 } from 'lucide-react';
@@ -53,8 +53,8 @@ const footerLinks = {
 
 const socialLinks = [
   { name: 'Twitter', href: 'https://twitter.com/agrotm', icon: Twitter },
-  { name: 'Discord', href: 'https://discord.gg/agrotm', icon: Discord },
-  { name: 'Telegram', href: 'https://t.me/agrotm', icon: Telegram },
+  // { name: 'Discord', href: 'https://discord.gg/agrotm', icon: Discord },
+  // { name: 'Telegram', href: 'https://t.me/agrotm', icon: Telegram },
   { name: 'GitHub', href: 'https://github.com/agrotm', icon: Github },
   { name: 'YouTube', href: 'https://youtube.com/agrotm', icon: Youtube },
   { name: 'LinkedIn', href: 'https://linkedin.com/company/agrotm', icon: Linkedin },

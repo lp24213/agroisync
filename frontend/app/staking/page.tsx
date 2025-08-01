@@ -2,20 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  TrendingUp,
-  Lock,
-  Users,
-  Zap,
-  ArrowRight,
-  Star,
-  Shield,
-  ChevronUp,
-  ChevronDown,
-  Clock,
-  BarChart3,
-} from 'lucide-react';
-import { StakingForm } from '@/components/forms/StakingForm';
+import { TrendingUp, Users, Zap, ArrowRight, Star, Shield, Clock, BarChart3 } from 'lucide-react';
 
 const stakingPools = [
   {

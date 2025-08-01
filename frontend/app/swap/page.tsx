@@ -11,7 +11,6 @@ import {
   ChevronDown,
   Zap,
   Clock,
-  TrendingUp,
 } from 'lucide-react';
 
 const tokens = [
@@ -68,7 +67,7 @@ export default function SwapPage() {
   const [showSettings, setShowSettings] = useState(false);
   const [priceImpact, setPriceImpact] = useState('0.12');
   const [isLoading, setIsLoading] = useState(false);
-  const [swapRoute, setSwapRoute] = useState([
+  const [swapRoute] = useState([
     { protocol: 'Jupiter', percentage: 80 },
     { protocol: 'Raydium', percentage: 20 },
   ]);

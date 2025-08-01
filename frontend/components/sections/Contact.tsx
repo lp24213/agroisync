@@ -62,7 +62,7 @@ export function Contact() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className='text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl mb-6'
           >
-            We're Here to <span className='gradient-text'>Help</span>
+            We&apos;re Here to <span className='gradient-text'>Help</span>
           </motion.h2>
 
           <motion.p

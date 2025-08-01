@@ -124,7 +124,7 @@ export function isAllowedOrigin(origin: string): boolean {
 export function addAllowedOrigin(origin: string): void {
   if (!ALLOWED_ORIGINS.includes(origin)) {
     ALLOWED_ORIGINS.push(origin);
-    console.log(`Added ${origin} to allowed CORS origins`);
+    logger.info(`Added ${origin} to allowed CORS origins`);
   }
 }
 
@@ -135,7 +135,7 @@ export function removeAllowedOrigin(origin: string): void {
   const index = ALLOWED_ORIGINS.indexOf(origin);
   if (index !== -1) {
     ALLOWED_ORIGINS.splice(index, 1);
-    console.log(`Removed ${origin} from allowed CORS origins`);
+    logger.info(`Removed ${origin} from allowed CORS origins`);
   }
 }
 

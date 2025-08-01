@@ -242,7 +242,7 @@ const NFTMarketplacePage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('recent');
   const [filterRarity, setFilterRarity] = useState('all');
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 10 });
+  const [priceRange] = useState({ min: 0, max: 10 });
 
   // Filtrar NFTs baseado nos critérios
   const filteredNFTs = nfts.filter(nft => {

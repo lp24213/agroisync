@@ -48,7 +48,15 @@ export function SecurityDashboard() {
     data: 'SECURE',
     monitoring: 'ACTIVE',
   });
-  const [recentEvents, setRecentEvents] = useState<any[]>([]);
+  const [recentEvents, setRecentEvents] = useState<
+    Array<{
+      id: string;
+      type: SecurityEventType;
+      ip: string;
+      threatLevel: string;
+      timestamp: string;
+    }>
+  >([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [alertsEnabled, setAlertsEnabled] = useState(true);
 
@@ -263,11 +271,11 @@ export function SecurityDashboard() {
           <div className='bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6'>
             <h3 className='text-lg font-semibold text-white mb-6'>Top Threat IPs</h3>
             <div className='space-y-4'>
-              {stats.topThreatIPs.slice(0, 5).map((threat, index) => (
+              {stats.topThreatIPs.slice(0, 5).map(threat => (
                 <div key={threat.ip} className='flex items-center justify-between'>
                   <div className='flex items-center space-x-3'>
                     <div className='w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center'>
-                      <span className='text-red-400 text-sm font-bold'>{index + 1}</span>
+                      <span className='text-red-400 text-sm font-bold'>1</span>
                     </div>
                     <div>
                       <div className='text-white font-medium'>{threat.ip}</div>

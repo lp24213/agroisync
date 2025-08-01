@@ -126,15 +126,15 @@ async function runScenarioTest(scenario) {
   try {
     const result = await autocannon(config);
     
-    console.log('\n📊 Results:');
-    console.log(`✅ Average Latency: ${result.latency.average}ms`);
-    console.log(`📈 Requests/sec: ${result.requests.average}`);
-    console.log(`📉 Error Rate: ${result.errors}%`);
-    console.log(`🔄 Total Requests: ${result.requests.total}`);
-    console.log(`⏱️  Total Duration: ${result.duration}s`);
-    console.log(`📊 2xx Responses: ${result['2xx']}`);
-    console.log(`❌ 4xx Responses: ${result['4xx']}`);
-    console.log(`💥 5xx Responses: ${result['5xx']}`);
+      console.log('\n📊 Results:');
+  console.log(`✅ Average Latency: ${result.latency.average}ms`);
+  console.log(`📈 Requests/sec: ${result.requests.average}`);
+  console.log(`📉 Error Rate: ${result.errors}%`);
+  console.log(`🔄 Total Requests: ${result.requests.total}`);
+  console.log(`⏱️  Total Duration: ${result.duration}s`);
+  console.log(`📊 2xx Responses: ${result['2xx']}`);
+  console.log(`❌ 4xx Responses: ${result['4xx']}`);
+  console.log(`💥 5xx Responses: ${result['5xx']}`);
 
     // Performance analysis
     const avgLatency = result.latency.average;
@@ -144,34 +144,34 @@ async function runScenarioTest(scenario) {
     console.log('\n🎯 Performance Analysis:');
     
     if (avgLatency < 100) {
-      console.log('✅ Latency: Excellent (< 100ms)');
-    } else if (avgLatency < 500) {
-      console.log('🟡 Latency: Good (100-500ms)');
-    } else if (avgLatency < 1000) {
-      console.log('🟠 Latency: Acceptable (500-1000ms)');
-    } else {
-      console.log('🔴 Latency: Poor (> 1000ms)');
-    }
+              console.log('✅ Latency: Excellent (< 100ms)');
+      } else if (avgLatency < 500) {
+        console.log('🟡 Latency: Good (100-500ms)');
+      } else if (avgLatency < 1000) {
+        console.log('🟠 Latency: Acceptable (500-1000ms)');
+      } else {
+        console.log('🔴 Latency: Poor (> 1000ms)');
+      }
 
     if (requestsPerSec > 1000) {
-      console.log('✅ Throughput: Excellent (> 1000 req/s)');
-    } else if (requestsPerSec > 500) {
-      console.log('🟡 Throughput: Good (500-1000 req/s)');
-    } else if (requestsPerSec > 100) {
-      console.log('🟠 Throughput: Acceptable (100-500 req/s)');
-    } else {
-      console.log('🔴 Throughput: Poor (< 100 req/s)');
-    }
+              console.log('✅ Throughput: Excellent (> 1000 req/s)');
+      } else if (requestsPerSec > 500) {
+        console.log('🟡 Throughput: Good (500-1000 req/s)');
+      } else if (requestsPerSec > 100) {
+        console.log('🟠 Throughput: Acceptable (100-500 req/s)');
+      } else {
+        console.log('🔴 Throughput: Poor (< 100 req/s)');
+      }
 
     if (errorRate < 1) {
-      console.log('✅ Error Rate: Excellent (< 1%)');
-    } else if (errorRate < 5) {
-      console.log('🟡 Error Rate: Good (1-5%)');
-    } else if (errorRate < 10) {
-      console.log('🟠 Error Rate: Acceptable (5-10%)');
-    } else {
-      console.log('🔴 Error Rate: Poor (> 10%)');
-    }
+              console.log('✅ Error Rate: Excellent (< 1%)');
+      } else if (errorRate < 5) {
+        console.log('🟡 Error Rate: Good (1-5%)');
+      } else if (errorRate < 10) {
+        console.log('🟠 Error Rate: Acceptable (5-10%)');
+      } else {
+        console.log('🔴 Error Rate: Poor (> 10%)');
+      }
 
     return result;
   } catch (error) {

@@ -5,17 +5,7 @@ import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import {
-  Coins,
-  Lock,
-  Unlock,
-  Calculator,
-  TrendingUp,
-  Clock,
-  AlertCircle,
-  CheckCircle,
-  Info,
-} from 'lucide-react';
+import { Coins, Lock, Unlock, TrendingUp, Clock, AlertCircle } from 'lucide-react';
 
 const stakingSchema = z.object({
   amount: z
@@ -135,15 +125,6 @@ export function StakingForm({
 
   const onSubmit = (data: StakingFormData) => {
     onStake(data);
-  };
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(value);
   };
 
   const formatNumber = (value: number) => {

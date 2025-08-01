@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { useWeb3 } from '../../contexts/Web3Context';
+// import { useWeb3 } from '../../contexts/Web3Context';
 import {
   Wallet,
   ChevronDown,
@@ -22,12 +22,16 @@ interface WalletConnectProps {
 
 export function WalletConnect({ className = '', variant = 'default' }: WalletConnectProps) {
   const { connected: solanaConnected, wallet, disconnect: disconnectSolana } = useWallet();
-  const {
-    isConnected: ethConnected,
-    account: ethAccount,
-    connect: connectEth,
-    disconnect: disconnectEth,
-  } = useWeb3();
+  // const {
+  //   isConnected: ethConnected,
+  //   account: ethAccount,
+  //   connect: connectEth,
+  //   disconnect: disconnectEth,
+  // } = useWeb3();
+  const ethConnected = false;
+  const ethAccount = '';
+  const connectEth = () => {};
+  const disconnectEth = () => {};
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [activeChain, setActiveChain] = useState<'solana' | 'ethereum' | null>(null);
@@ -43,14 +47,22 @@ export function WalletConnect({ className = '', variant = 'default' }: WalletCon
   }, [solanaConnected, ethConnected]);
 
   const handleCopyAddress = async () => {
-    const address = solanaConnected ? wallet?.adapter.publicKey?.toString() : ethAccount;
+    const address = solanaConnected
+      ? wallet &&
+        typeof wallet === 'object' &&
+        'adapter' in wallet &&
+        wallet.adapter &&
+        typeof wallet.adapter.publicKey?.toString === 'function'
+        ? wallet.adapter.publicKey.toString()
+        : undefined
+      : ethAccount;
     if (address) {
       try {
         await navigator.clipboard.writeText(address);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
-      } catch (error) {
-        console.error('Failed to copy address:', error);
+      } catch {
+        // console.error('Failed to copy address:', error);
       }
     }
   };
@@ -106,7 +118,15 @@ export function WalletConnect({ className = '', variant = 'default' }: WalletCon
             <div className='w-2 h-2 bg-green-400 rounded-full'></div>
             <span className='text-sm text-white'>
               {solanaConnected
-                ? getShortAddress(wallet?.adapter.publicKey?.toString())
+                ? getShortAddress(
+                    wallet &&
+                      typeof wallet === 'object' &&
+                      'adapter' in wallet &&
+                      wallet.adapter &&
+                      typeof wallet.adapter.publicKey?.toString === 'function'
+                      ? wallet.adapter.publicKey.toString()
+                      : undefined,
+                  )
                 : getShortAddress(ethAccount)}
             </span>
             <ChevronDown className='w-4 h-4 text-gray-400' />
@@ -173,7 +193,15 @@ export function WalletConnect({ className = '', variant = 'default' }: WalletCon
                 <div className='flex items-center justify-between p-2 bg-white/5 rounded'>
                   <span className='text-xs text-gray-400'>Connected</span>
                   <span className='text-xs text-white font-mono'>
-                    {getShortAddress(wallet?.adapter.publicKey?.toString())}
+                    {getShortAddress(
+                      wallet &&
+                        typeof wallet === 'object' &&
+                        'adapter' in wallet &&
+                        wallet.adapter &&
+                        typeof wallet.adapter.publicKey?.toString === 'function'
+                        ? wallet.adapter.publicKey.toString()
+                        : undefined,
+                    )}
                   </span>
                 </div>
                 <button
@@ -258,7 +286,15 @@ export function WalletConnect({ className = '', variant = 'default' }: WalletCon
             <div className='w-2 h-2 bg-green-400 rounded-full'></div>
             <span className='text-sm text-white'>
               {solanaConnected
-                ? getShortAddress(wallet?.adapter.publicKey?.toString())
+                ? getShortAddress(
+                    wallet &&
+                      typeof wallet === 'object' &&
+                      'adapter' in wallet &&
+                      wallet.adapter &&
+                      typeof wallet.adapter.publicKey?.toString === 'function'
+                      ? wallet.adapter.publicKey.toString()
+                      : undefined,
+                  )
                 : getShortAddress(ethAccount)}
             </span>
           </div>
@@ -308,7 +344,7 @@ export function WalletConnect({ className = '', variant = 'default' }: WalletCon
 interface WalletMenuContentProps {
   solanaConnected: boolean;
   ethConnected: boolean;
-  wallet: any;
+  wallet: unknown;
   ethAccount: string | null;
   activeChain: 'solana' | 'ethereum' | null;
   onCopyAddress: () => void;
@@ -323,7 +359,7 @@ interface WalletMenuContentProps {
 
 function WalletMenuContent({
   solanaConnected,
-  ethConnected,
+
   wallet,
   ethAccount,
   activeChain,
@@ -336,7 +372,15 @@ function WalletMenuContent({
   getChainIcon,
   getChainName,
 }: WalletMenuContentProps) {
-  const address = solanaConnected ? wallet?.adapter.publicKey?.toString() : ethAccount;
+  const address = solanaConnected
+    ? wallet &&
+      typeof wallet === 'object' &&
+      'adapter' in wallet &&
+      wallet.adapter &&
+      typeof wallet.adapter.publicKey?.toString === 'function'
+      ? wallet.adapter.publicKey.toString()
+      : undefined
+    : ethAccount;
 
   return (
     <div className='space-y-4'>

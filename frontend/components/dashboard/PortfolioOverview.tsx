@@ -1,10 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
-  LineChart,
-  Line,
   AreaChart,
   Area,
   PieChart,
@@ -15,16 +13,8 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
 } from 'recharts';
-import {
-  TrendingUp,
-  TrendingDown,
-  DollarSign,
-  Coins,
-  ArrowUpRight,
-  ArrowDownRight,
-} from 'lucide-react';
+import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 
 const portfolioData = [
   { name: 'Jan', value: 20000, staked: 12000, rewards: 800 },
@@ -73,7 +63,6 @@ const recentTransactions = [
 
 export function PortfolioOverview() {
   const [timeframe, setTimeframe] = useState('6M');
-  const [selectedMetric, setSelectedMetric] = useState('total');
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -163,7 +152,7 @@ export function PortfolioOverview() {
               <YAxis
                 stroke='#9ca3af'
                 fontSize={12}
-                tickFormatter={value => `$${(value / 1000).toFixed(0)}k`}
+                tickFormatter={(value: number) => `$${(value / 1000).toFixed(0)}k`}
               />
               <Tooltip
                 contentStyle={{
@@ -303,7 +292,7 @@ export function PortfolioOverview() {
               <p className='text-2xl font-bold text-white'>$15,234</p>
             </div>
             <div className='p-2 bg-green-500/20 rounded-lg'>
-              <Coins className='w-6 h-6 text-green-400' />
+              <div className='w-6 h-6 text-green-400' />
             </div>
           </div>
           <div className='mt-2 flex items-center text-green-400 text-sm'>

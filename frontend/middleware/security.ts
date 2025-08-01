@@ -57,9 +57,7 @@ const SECURITY_CONFIG = {
   ],
 
   // Blocked IPs (example)
-  BLOCKED_IPS: [
-    // Add known malicious IPs here
-  ],
+  BLOCKED_IPS: [] as string[],
 
   // Suspicious patterns
   SUSPICIOUS_PATTERNS: [
@@ -100,8 +98,6 @@ const isBlockedIP = (ip: string): boolean => {
 
 const checkRateLimit = (ip: string): boolean => {
   const now = Date.now();
-  const windowStart = now - SECURITY_CONFIG.RATE_LIMIT.WINDOW_MS;
-
   const clientData = rateLimitStore.get(ip);
 
   if (!clientData || clientData.resetTime < now) {
@@ -161,19 +157,19 @@ const generateCSPHeader = (): string => {
     .join('; ');
 };
 
-const sanitizeHeaders = (headers: Headers): void => {
-  // Remove potentially dangerous headers
-  const dangerousHeaders = [
-    'x-forwarded-host',
-    'x-forwarded-proto',
-    'x-real-ip',
-    'cf-connecting-ip',
-  ];
+// Remove potentially dangerous headers function (unused but kept for future use)
+// const sanitizeHeaders = (headers: Headers): void => {
+//   const dangerousHeaders = [
+//     'x-forwarded-host',
+//     'x-forwarded-proto',
+//     'x-real-ip',
+//     'cf-connecting-ip',
+//   ];
 
-  dangerousHeaders.forEach(header => {
-    headers.delete(header);
-  });
-};
+//   dangerousHeaders.forEach(header => {
+//     headers.delete(header);
+//   });
+// };
 
 // Main security middleware
 export function securityMiddleware(request: NextRequest): NextResponse | null {
@@ -304,13 +300,11 @@ export default function middleware(request: NextRequest): NextResponse {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
+    // Match all request paths except for the ones starting with:
+    // - api (API routes)
+    // - _next/static (static files)
+    // - _next/image (image optimization files)
+    // - favicon.ico (favicon file)
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 };

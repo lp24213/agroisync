@@ -37,7 +37,7 @@ export function formatCurrency(
       maximumFractionDigits,
     }).format(value);
   } catch (error) {
-    console.error('Error formatting currency:', error);
+    // Fallback formatting for currency
     return `${currency} ${value.toFixed(2)}`;
   }
 }
@@ -60,7 +60,7 @@ export function formatPercentage(
       maximumFractionDigits: decimals,
     }).format(value);
   } catch (error) {
-    console.error('Error formatting percentage:', error);
+    // Fallback formatting for percentage
     return `${(value * 100).toFixed(decimals)}%`;
   }
 }
@@ -97,7 +97,7 @@ export function formatNumber(
       }).format(value);
     }
   } catch (error) {
-    console.error('Error formatting number:', error);
+    // Fallback formatting for number
     return value.toString();
   }
 }
@@ -119,7 +119,7 @@ export function formatNumberFull(
       maximumFractionDigits: decimals,
     }).format(value);
   } catch (error) {
-    console.error('Error formatting number:', error);
+    // Fallback formatting for number
     return value.toFixed(decimals);
   }
 }
@@ -143,7 +143,7 @@ export function formatDate(
     const dateObj = typeof date === 'string' ? new Date(date) : date;
     return new Intl.DateTimeFormat(locale, options).format(dateObj);
   } catch (error) {
-    console.error('Error formatting date:', error);
+    // Fallback formatting for date
     return date.toString();
   }
 }
@@ -166,7 +166,7 @@ export function formatTime(
     const dateObj = typeof date === 'string' ? new Date(date) : date;
     return new Intl.DateTimeFormat(locale, options).format(dateObj);
   } catch (error) {
-    console.error('Error formatting time:', error);
+    // Fallback formatting for time
     return date.toString();
   }
 }
@@ -285,7 +285,7 @@ export function formatRelativeTime(
     
     return formatDate(dateObj, { month: 'short', day: 'numeric' }, locale);
   } catch (error) {
-    console.error('Error formatting relative time:', error);
+    // Fallback formatting for relative time
     return 'unknown';
   }
 }

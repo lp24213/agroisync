@@ -412,28 +412,28 @@ export function formatPercentage(
 /**
  * Check if value is a valid number
  */
-export function isValidNumber(value: any): boolean {
+export function isValidNumber(value: unknown): boolean {
   return typeof value === 'number' && !isNaN(value) && isFinite(value);
 }
 
 /**
  * Check if value is a valid positive number
  */
-export function isValidPositiveNumber(value: any): boolean {
+export function isValidPositiveNumber(value: unknown): boolean {
   return isValidNumber(value) && value > 0;
 }
 
 /**
  * Check if value is a valid integer
  */
-export function isValidInteger(value: any): boolean {
+export function isValidInteger(value: unknown): boolean {
   return Number.isInteger(value);
 }
 
 /**
  * Check if value is a valid positive integer
  */
-export function isValidPositiveInteger(value: any): boolean {
+export function isValidPositiveInteger(value: unknown): boolean {
   return isValidInteger(value) && value > 0;
 }
 

@@ -62,8 +62,8 @@ export function CTA() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className='text-xl text-gray-300 max-w-3xl mx-auto mb-12'
           >
-            Join thousands of users who are already earning passive income with AGROTM's advanced
-            DeFi protocols. Start your journey to financial freedom today.
+            Join thousands of users who are already earning passive income with AGROTM&apos;s
+            advanced DeFi protocols. Start your journey to financial freedom today.
           </motion.p>
 
           {/* Benefits Grid */}

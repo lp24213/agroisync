@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   LineChart,
@@ -11,14 +11,7 @@ import {
   CartesianGrid,
   Tooltip,
 } from 'recharts';
-import {
-  TrendingUp,
-  TrendingDown,
-  DollarSign,
-  BarChart3,
-  ArrowUpRight,
-  ArrowDownRight,
-} from 'lucide-react';
+import { DollarSign, BarChart3, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 
 const priceData = [
   { time: '00:00', price: 0.145, volume: 1250000 },
@@ -51,7 +44,7 @@ const timeframes = [
 
 export function PriceWidget() {
   const [selectedTimeframe, setSelectedTimeframe] = useState('24H');
-  const [isPositive, setIsPositive] = useState(marketData.priceChangePercent > 0);
+  const [isPositive] = useState(marketData.priceChangePercent > 0);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -141,7 +134,7 @@ export function PriceWidget() {
             </defs>
             <CartesianGrid strokeDasharray='3 3' stroke='#374151' />
             <XAxis dataKey='time' stroke='#9ca3af' fontSize={10} />
-            <YAxis stroke='#9ca3af' fontSize={10} tickFormatter={value => `$${value}`} />
+            <YAxis stroke='#9ca3af' fontSize={10} tickFormatter={(value: number) => `$${value}`} />
             <Tooltip
               contentStyle={{
                 backgroundColor: '#1f2937',

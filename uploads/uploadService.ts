@@ -135,7 +135,7 @@ class UploadService {
         const result = await this.uploadBuffer(file.buffer, file.metadata);
         results.push(result);
       } catch (error) {
-        console.error(`Failed to upload ${file.metadata.originalName}:`, error);
+        logger.error(`Failed to upload ${file.metadata.originalName}:`, error);
         throw error;
       }
     }
@@ -305,22 +305,124 @@ class UploadService {
   }
 
   /**
-   * Upload to IPFS
+   * Upload to IPFS with premium features
    */
   private async uploadToIPFS(buffer: Buffer, key: string, metadata: FileMetadata): Promise<string> {
-    // This would integrate with IPFS client
-    // For now, returning a mock IPFS hash
-    const ipfsHash = this.calculateHash(buffer).slice(0, 46); // IPFS hash length
-    return `ipfs://${ipfsHash}`;
+    try {
+      // Create form data for IPFS upload
+      const formData = new FormData();
+      const blob = new Blob([buffer], { type: metadata.mimeType });
+      formData.append('file', blob, metadata.originalName);
+      formData.append('pin', 'true');
+      formData.append('metadata', JSON.stringify({
+        name: metadata.originalName,
+        description: metadata.description || 'AGROTM Asset',
+        category: metadata.category,
+        uploadedBy: metadata.uploadedBy,
+        tags: metadata.tags || [],
+        created: new Date().toISOString()
+      }));
+
+      // Upload to multiple IPFS gateways for redundancy
+      const gateways = [
+        'https://ipfs.infura.io:5001/api/v0/add',
+        'https://ipfs.pinata.cloud/api/v1/pinFileToIPFS',
+        'https://api.web3.storage/upload'
+      ];
+
+      const uploadPromises = gateways.map(async (gateway) => {
+        try {
+          const response = await fetch(gateway, {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'Authorization': `Bearer ${process.env.IPFS_API_KEY || ''}`
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error(`IPFS upload failed: ${response.statusText}`);
+          }
+
+          const result = await response.json();
+          return result.Hash || result.cid || result.ipfsHash;
+        } catch (error) {
+          logger.error(`IPFS upload failed for gateway ${gateway}`, error);
+          return null;
+        }
+      });
+
+      // Wait for at least one successful upload
+      const results = await Promise.allSettled(uploadPromises);
+      const successfulUploads = results
+        .filter((result): result is PromiseFulfilledResult<string> => 
+          result.status === 'fulfilled' && result.value !== null
+        )
+        .map(result => result.value);
+
+      if (successfulUploads.length === 0) {
+        throw new Error('All IPFS upload attempts failed');
+      }
+
+      // Return the first successful hash
+      const ipfsHash = successfulUploads[0];
+      logger.info('File uploaded to IPFS successfully', { hash: ipfsHash, fileName: metadata.originalName });
+      
+      return `ipfs://${ipfsHash}`;
+    } catch (error) {
+      logger.error('IPFS upload failed', { error, fileName: metadata.originalName });
+      throw new Error(`IPFS upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   }
 
   /**
-   * Upload to Cloudinary
+   * Upload to Cloudinary with premium features
    */
   private async uploadToCloudinary(buffer: Buffer, key: string, metadata: FileMetadata): Promise<string> {
-    // This would integrate with Cloudinary SDK
-    // For now, returning a mock Cloudinary URL
-    return `https://res.cloudinary.com/agrotm/image/upload/v1/${key}`;
+    try {
+      // Import Cloudinary SDK dynamically
+      const { v2: cloudinary } = await import('cloudinary');
+      
+      // Configure Cloudinary
+      cloudinary.config({
+        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+        api_key: process.env.CLOUDINARY_API_KEY,
+        api_secret: process.env.CLOUDINARY_API_SECRET
+      });
+
+      // Convert buffer to base64
+      const base64Data = buffer.toString('base64');
+      const dataURI = `data:${metadata.mimeType};base64,${base64Data}`;
+
+      // Upload to Cloudinary with optimization
+      const result = await cloudinary.uploader.upload(dataURI, {
+        public_id: key,
+        folder: `agrotm/${metadata.category}`,
+        resource_type: 'auto',
+        transformation: [
+          { quality: 'auto:good' },
+          { fetch_format: 'auto' }
+        ],
+        metadata: {
+          originalName: metadata.originalName,
+          uploadedBy: metadata.uploadedBy,
+          category: metadata.category,
+          hash: this.calculateHash(buffer),
+          tags: metadata.tags || []
+        }
+      });
+
+      logger.info('File uploaded to Cloudinary successfully', { 
+        publicId: result.public_id, 
+        url: result.secure_url,
+        fileName: metadata.originalName 
+      });
+
+      return result.secure_url;
+    } catch (error) {
+      logger.error('Cloudinary upload failed', { error, fileName: metadata.originalName });
+      throw new Error(`Cloudinary upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   }
 
   /**
@@ -358,7 +460,7 @@ class UploadService {
    */
   private async deleteFromIPFS(key: string): Promise<void> {
     // IPFS files are immutable, so we just log the deletion
-    console.log(`IPFS file deletion requested for key: ${key}`);
+    logger.info(`IPFS file deletion requested for key: ${key}`);
   }
 
   /**
@@ -366,7 +468,7 @@ class UploadService {
    */
   private async deleteFromCloudinary(key: string): Promise<void> {
     // This would integrate with Cloudinary SDK
-    console.log(`Cloudinary file deletion requested for key: ${key}`);
+    logger.info(`Cloudinary file deletion requested for key: ${key}`);
   }
 
   /**
@@ -412,7 +514,7 @@ class UploadService {
         category: (response.Metadata.category as any) || 'document'
       };
     } catch (error) {
-      console.error('Error getting S3 file info:', error);
+      logger.error('Error getting S3 file info:', error);
       return null;
     }
   }

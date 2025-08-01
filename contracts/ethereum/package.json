@@ -25,7 +25,9 @@
     "gas-report": "REPORT_GAS=true hardhat test",
     "lint": "solhint 'contracts/**/*.sol'",
     "lint:fix": "solhint 'contracts/**/*.sol' --fix",
-    "format": "prettier --write 'contracts/**/*.sol'"
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write 'contracts/**/*.sol'",
+    "format:check": "prettier --check 'contracts/**/*.sol'"
   },
   "keywords": [
     "ethereum",

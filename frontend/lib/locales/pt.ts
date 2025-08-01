@@ -393,7 +393,7 @@ export default {
     proposals: 'Propostas',
     myVotes: 'Meus Votos',
     create: 'Criar Proposta',
-    vote: 'Votar',
+    // vote: 'Votar',
     delegate: 'Delegar',
     stats: {
       totalProposals: 'Total de Propostas',

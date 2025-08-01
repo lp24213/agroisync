@@ -116,7 +116,7 @@ async function trackHoneypotAccess(botId: string, path: string, req: NextRequest
     await considerBlockingBot(botId, ip);
   }
   
-  console.warn(`Honeypot accessed: ${path} by ${ip} (Bot ID: ${botId})`);
+      logger.warn(`Honeypot accessed: ${path} by ${ip} (Bot ID: ${botId})`);
 }
 
 /**
@@ -142,11 +142,11 @@ async function considerBlockingBot(botId: string, ip: string) {
         }),
       });
     } catch (error) {
-      console.error('Failed to notify security team:', error);
+      logger.error('Failed to notify security team:', error);
     }
   }
   
-  console.warn(`Bot ${botId} (IP: ${ip}) added to blocklist after multiple honeypot accesses`);
+      logger.warn(`Bot ${botId} (IP: ${ip}) added to blocklist after multiple honeypot accesses`);
 }
 
 /**
@@ -347,7 +347,7 @@ export async function getHoneypotStats() {
         const data = JSON.parse(accessData);
         pathCounts[data.path] = (pathCounts[data.path] || 0) + 1;
       } catch (error) {
-        console.error('Error parsing access data:', error);
+        logger.error('Error parsing access data:', error);
       }
     }
   }
@@ -383,5 +383,5 @@ export async function cleanupOldHoneypotData() {
     }
   }
   
-  console.log(`Cleaned up old honeypot data older than 30 days`);
+      logger.info(`Cleaned up old honeypot data older than 30 days`);
 }

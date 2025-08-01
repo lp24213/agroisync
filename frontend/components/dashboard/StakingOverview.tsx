@@ -14,19 +14,7 @@ import {
   Tooltip,
   Legend,
 } from 'recharts';
-import {
-  Coins,
-  TrendingUp,
-  Clock,
-  Lock,
-  Unlock,
-  Plus,
-  Minus,
-  DollarSign,
-  Calendar,
-  Target,
-  Zap,
-} from 'lucide-react';
+import { Coins, TrendingUp, Lock, Unlock, Plus, Minus, DollarSign, Target } from 'lucide-react';
 
 const stakingPools = [
   {
@@ -316,7 +304,7 @@ export function StakingOverview() {
                 <YAxis
                   stroke='#9ca3af'
                   fontSize={12}
-                  tickFormatter={value => `$${(value / 1000).toFixed(0)}k`}
+                  tickFormatter={(value: number) => `$${(value / 1000).toFixed(0)}k`}
                 />
                 <Tooltip
                   contentStyle={{
@@ -366,7 +354,11 @@ export function StakingOverview() {
                   textAnchor='end'
                   height={80}
                 />
-                <YAxis stroke='#9ca3af' fontSize={12} tickFormatter={value => `${value}%`} />
+                <YAxis
+                  stroke='#9ca3af'
+                  fontSize={12}
+                  tickFormatter={(value: number) => `${value}%`}
+                />
                 <Tooltip
                   contentStyle={{
                     backgroundColor: '#1f2937',

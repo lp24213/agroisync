@@ -391,7 +391,7 @@ export default {
     proposals: 'Proposals',
     myVotes: 'My Votes',
     create: 'Create Proposal',
-    vote: 'Vote',
+    // vote: 'Vote',
     delegate: 'Delegate',
     stats: {
       totalProposals: 'Total Proposals',

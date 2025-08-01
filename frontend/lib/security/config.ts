@@ -399,11 +399,12 @@ export const SecurityUtils = {
   // Get environment-specific config
   getConfig: (key: string) => {
     const keys = key.split('.');
-    let value: any = SECURITY_CONFIG;
+    let value: unknown = SECURITY_CONFIG;
 
     for (const k of keys) {
-      value = value?.[k];
-      if (value === undefined) {
+      if (typeof value === 'object' && value !== null && k in value) {
+        value = (value as Record<string, unknown>)[k];
+      } else {
         throw new Error(`Configuration key not found: ${key}`);
       }
     }

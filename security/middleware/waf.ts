@@ -62,7 +62,7 @@ export function wafMiddleware(req: NextRequest) {
     response.headers.set('X-Request-ID', requestId);
     return response;
   } catch (error) {
-    console.error(`[WAF] Error processing request ${requestId}:`, error);
+    logger.error(`[WAF] Error processing request ${requestId}:`, error);
     return blockRequest(requestId, 'Internal security error');
   }
 }
@@ -175,7 +175,7 @@ export function sanitizeObject(obj: any): any {
  * Bloqueia a requisição e retorna uma resposta de erro
  */
 function blockRequest(requestId: string, reason: string) {
-  console.warn(`[WAF] Blocked request ${requestId}: ${reason}`);
+      logger.warn(`[WAF] Blocked request ${requestId}: ${reason}`);
   
   return NextResponse.json(
     { error: 'Security violation detected', requestId },
@@ -193,7 +193,7 @@ function blockRequest(requestId: string, reason: string) {
  */
 function logAttack(requestId: string, source: string, field: string, attackType: string, value: string) {
   // Aqui você pode implementar o registro em um sistema de logs como Sentry, Datadog, etc.
-  console.error(`[WAF] Attack detected! RequestID: ${requestId}, Source: ${source}, Field: ${field}, Type: ${attackType}`);
+      logger.error(`[WAF] Attack detected! RequestID: ${requestId}, Source: ${source}, Field: ${field}, Type: ${attackType}`);
   
   // Exemplo de envio para um serviço de monitoramento (implementação simplificada)
   try {
@@ -210,10 +210,10 @@ function logAttack(requestId: string, source: string, field: string, attackType:
           attackType,
           value: value.substring(0, 200), // Limitar tamanho do valor para o log
         }),
-      }).catch(err => console.error('Failed to send security log:', err));
+      }).catch(err => logger.error('Failed to send security log:', err));
     }
   } catch (error) {
-    console.error('Error logging attack:', error);
+    logger.error('Error logging attack:', error);
   }
 }
 

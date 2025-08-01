@@ -15,6 +15,18 @@ interface WeatherData {
   condition: string;
   icon: string;
   lastUpdated: string;
+  feelsLike: number;
+  dewPoint: number;
+  cloudCover: number;
+  sunrise: string;
+  sunset: string;
+  airQuality: {
+    index: number;
+    category: string;
+    pm25: number;
+    pm10: number;
+    o3: number;
+  };
 }
 
 interface WeatherForecast {
@@ -25,6 +37,12 @@ interface WeatherForecast {
   humidity: number;
   condition: string;
   icon: string;
+  windSpeed: number;
+  windDirection: string;
+  uvIndex: number;
+  sunrise: string;
+  sunset: string;
+  probability: number;
 }
 
 interface WeatherAlert {
@@ -36,6 +54,8 @@ interface WeatherAlert {
   startTime: string;
   endTime: string;
   affectedAreas: string[];
+  source: string;
+  certainty: string;
 }
 
 interface UseWeatherDataReturn {
@@ -46,140 +66,440 @@ interface UseWeatherDataReturn {
   error: string | null;
   refetch: () => void;
   getWeatherByLocation: (location: string) => WeatherData | undefined;
+  getWeatherByCoordinates: (lat: number, lon: number) => Promise<WeatherData>;
 }
 
-// Mock weather data for different agricultural regions in Brazil
-const mockWeatherData: WeatherData[] = [
-  {
-    location: 'Mato Grosso',
-    latitude: -15.6014,
-    longitude: -56.0979,
-    temperature: 28.5,
-    humidity: 65,
-    precipitation: 2.5,
-    windSpeed: 12.3,
-    windDirection: 'NE',
-    pressure: 1013.2,
-    visibility: 10,
-    uvIndex: 8,
-    condition: 'Parcialmente nublado',
-    icon: 'partly-cloudy',
-    lastUpdated: new Date().toISOString()
-  },
-  {
-    location: 'São Paulo',
-    latitude: -23.5505,
-    longitude: -46.6333,
-    temperature: 22.1,
-    humidity: 72,
-    precipitation: 0,
-    windSpeed: 8.7,
-    windDirection: 'SE',
-    pressure: 1018.5,
-    visibility: 15,
-    uvIndex: 6,
-    condition: 'Ensolarado',
-    icon: 'sunny',
-    lastUpdated: new Date().toISOString()
-  },
-  {
-    location: 'Goiás',
-    latitude: -16.6869,
-    longitude: -49.2648,
-    temperature: 26.8,
-    humidity: 58,
-    precipitation: 0,
-    windSpeed: 15.2,
-    windDirection: 'E',
-    pressure: 1015.8,
-    visibility: 12,
-    uvIndex: 9,
-    condition: 'Ensolarado',
-    icon: 'sunny',
-    lastUpdated: new Date().toISOString()
-  },
-  {
-    location: 'Minas Gerais',
-    latitude: -19.9167,
-    longitude: -43.9345,
-    temperature: 24.3,
-    humidity: 68,
-    precipitation: 1.2,
-    windSpeed: 10.5,
-    windDirection: 'SW',
-    pressure: 1016.3,
-    visibility: 8,
-    uvIndex: 7,
-    condition: 'Chuvisco',
-    icon: 'light-rain',
-    lastUpdated: new Date().toISOString()
-  },
-  {
-    location: 'Rio Grande do Sul',
-    latitude: -30.0346,
-    longitude: -51.2177,
-    temperature: 18.7,
-    humidity: 78,
-    precipitation: 5.8,
-    windSpeed: 18.9,
-    windDirection: 'S',
-    pressure: 1008.7,
-    visibility: 6,
-    uvIndex: 4,
-    condition: 'Chuva moderada',
-    icon: 'rain',
-    lastUpdated: new Date().toISOString()
-  }
-];
+/**
+ * AGROTM Premium Weather Service
+ * Enterprise-grade weather data integration with multi-provider support
+ */
+class PremiumWeatherService {
+  private weatherCache: Map<string, { data: any; timestamp: number }> = new Map();
+  private readonly cacheTTL = 10 * 60 * 1000; // 10 minutes
 
-// Generate mock forecast data
-const generateMockForecast = (): WeatherForecast[] => {
-  const forecast: WeatherForecast[] = [];
-  const conditions = ['Ensolarado', 'Parcialmente nublado', 'Nublado', 'Chuvisco', 'Chuva'];
-  const icons = ['sunny', 'partly-cloudy', 'cloudy', 'light-rain', 'rain'];
-  
-  for (let i = 1; i <= 7; i++) {
-    const date = new Date();
-    date.setDate(date.getDate() + i);
-    
-    const conditionIndex = Math.floor(Math.random() * conditions.length);
-    
-    forecast.push({
-      date: date.toISOString().split('T')[0],
-      maxTemp: Math.floor(Math.random() * 15) + 20, // 20-35°C
-      minTemp: Math.floor(Math.random() * 10) + 10, // 10-20°C
-      precipitation: Math.random() * 10, // 0-10mm
-      humidity: Math.floor(Math.random() * 30) + 50, // 50-80%
-      condition: conditions[conditionIndex],
-      icon: icons[conditionIndex]
-    });
-  }
-  
-  return forecast;
-};
+  private providers = [
+    {
+      name: 'OpenWeatherMap',
+      apiKey: process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY,
+      baseUrl: 'https://api.openweathermap.org/data/2.5'
+    },
+    {
+      name: 'WeatherAPI',
+      apiKey: process.env.NEXT_PUBLIC_WEATHERAPI_KEY,
+      baseUrl: 'https://api.weatherapi.com/v1'
+    },
+    {
+      name: 'AccuWeather',
+      apiKey: process.env.NEXT_PUBLIC_ACCUWEATHER_API_KEY,
+      baseUrl: 'https://dataservice.accuweather.com'
+    }
+  ];
 
-// Mock weather alerts
-const mockWeatherAlerts: WeatherAlert[] = [
-  {
-    id: 'alert_1',
-    type: 'warning',
-    severity: 'medium',
-    title: 'Alerta de Chuva Forte',
-    description: 'Previsão de chuvas intensas nas próximas 24 horas. Recomenda-se proteção das culturas.',
-    startTime: new Date().toISOString(),
-    endTime: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-    affectedAreas: ['Mato Grosso', 'Goiás']
-  },
-  {
-    id: 'alert_2',
-    type: 'advisory',
-    severity: 'low',
-    title: 'Condições Favoráveis para Plantio',
-    description: 'Condições climáticas ideais para plantio de soja nas próximas 48 horas.',
-    startTime: new Date().toISOString(),
-    endTime: new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(),
-    affectedAreas: ['São Paulo', 'Minas Gerais']
+  async getCurrentWeather(lat: number, lon: number): Promise<WeatherData> {
+    const cacheKey = `weather_${lat}_${lon}`;
+    const cached = this.weatherCache.get(cacheKey);
+    
+    if (cached && Date.now() - cached.timestamp < this.cacheTTL) {
+      return cached.data;
+    }
+
+    // Try multiple providers for redundancy
+    for (const provider of this.providers) {
+      if (!provider.apiKey) continue;
+      
+      try {
+        const weatherData = await this.fetchFromProvider(provider, lat, lon);
+        this.weatherCache.set(cacheKey, { data: weatherData, timestamp: Date.now() });
+        return weatherData;
+      } catch (error) {
+        console.error(`Failed to fetch from ${provider.name}:`, error);
+        continue;
+      }
+    }
+
+    throw new Error('All weather providers failed');
   }
+
+  async getForecast(lat: number, lon: number): Promise<WeatherForecast[]> {
+    const cacheKey = `forecast_${lat}_${lon}`;
+    const cached = this.weatherCache.get(cacheKey);
+    
+    if (cached && Date.now() - cached.timestamp < this.cacheTTL) {
+      return cached.data;
+    }
+
+    for (const provider of this.providers) {
+      if (!provider.apiKey) continue;
+      
+      try {
+        const forecastData = await this.fetchForecastFromProvider(provider, lat, lon);
+        this.weatherCache.set(cacheKey, { data: forecastData, timestamp: Date.now() });
+        return forecastData;
+      } catch (error) {
+        console.error(`Failed to fetch forecast from ${provider.name}:`, error);
+        continue;
+      }
+    }
+
+    throw new Error('All forecast providers failed');
+  }
+
+  async getAlerts(lat: number, lon: number): Promise<WeatherAlert[]> {
+    const cacheKey = `alerts_${lat}_${lon}`;
+    const cached = this.weatherCache.get(cacheKey);
+    
+    if (cached && Date.now() - cached.timestamp < this.cacheTTL) {
+      return cached.data;
+    }
+
+    for (const provider of this.providers) {
+      if (!provider.apiKey) continue;
+      
+      try {
+        const alertsData = await this.fetchAlertsFromProvider(provider, lat, lon);
+        this.weatherCache.set(cacheKey, { data: alertsData, timestamp: Date.now() });
+        return alertsData;
+      } catch (error) {
+        console.error(`Failed to fetch alerts from ${provider.name}:`, error);
+        continue;
+      }
+    }
+
+    return [];
+  }
+
+  private async fetchFromProvider(provider: any, lat: number, lon: number): Promise<WeatherData> {
+    let url: string;
+    let response: Response;
+
+    switch (provider.name) {
+      case 'OpenWeatherMap':
+        url = `${provider.baseUrl}/weather?lat=${lat}&lon=${lon}&appid=${provider.apiKey}&units=metric&lang=pt_br`;
+        response = await fetch(url);
+        if (!response.ok) throw new Error(`OpenWeatherMap: ${response.statusText}`);
+        
+        const owmData = await response.json();
+        return this.transformOpenWeatherData(owmData);
+
+      case 'WeatherAPI':
+        url = `${provider.baseUrl}/current.json?key=${provider.apiKey}&q=${lat},${lon}&aqi=yes`;
+        response = await fetch(url);
+        if (!response.ok) throw new Error(`WeatherAPI: ${response.statusText}`);
+        
+        const waData = await response.json();
+        return this.transformWeatherAPIData(waData);
+
+      case 'AccuWeather':
+        // First get location key
+        const locationUrl = `${provider.baseUrl}/locations/v1/cities/geoposition/search?apikey=${provider.apiKey}&q=${lat},${lon}`;
+        const locationResponse = await fetch(locationUrl);
+        if (!locationResponse.ok) throw new Error(`AccuWeather location: ${locationResponse.statusText}`);
+        
+        const locationData = await locationResponse.json();
+        const locationKey = locationData.Key;
+        
+        // Then get current conditions
+        const conditionsUrl = `${provider.baseUrl}/currentconditions/v1/${locationKey}?apikey=${provider.apiKey}&details=true`;
+        const conditionsResponse = await fetch(conditionsUrl);
+        if (!conditionsResponse.ok) throw new Error(`AccuWeather conditions: ${conditionsResponse.statusText}`);
+        
+        const awData = await conditionsResponse.json();
+        return this.transformAccuWeatherData(awData[0], locationData);
+
+      default:
+        throw new Error(`Unknown provider: ${provider.name}`);
+    }
+  }
+
+  private async fetchForecastFromProvider(provider: any, lat: number, lon: number): Promise<WeatherForecast[]> {
+    let url: string;
+    let response: Response;
+
+    switch (provider.name) {
+      case 'OpenWeatherMap':
+        url = `${provider.baseUrl}/forecast?lat=${lat}&lon=${lon}&appid=${provider.apiKey}&units=metric&lang=pt_br`;
+        response = await fetch(url);
+        if (!response.ok) throw new Error(`OpenWeatherMap forecast: ${response.statusText}`);
+        
+        const owmData = await response.json();
+        return this.transformOpenWeatherForecast(owmData);
+
+      case 'WeatherAPI':
+        url = `${provider.baseUrl}/forecast.json?key=${provider.apiKey}&q=${lat},${lon}&days=7&aqi=no`;
+        response = await fetch(url);
+        if (!response.ok) throw new Error(`WeatherAPI forecast: ${response.statusText}`);
+        
+        const waData = await response.json();
+        return this.transformWeatherAPIForecast(waData);
+
+      case 'AccuWeather':
+        const locationUrl = `${provider.baseUrl}/locations/v1/cities/geoposition/search?apikey=${provider.apiKey}&q=${lat},${lon}`;
+        const locationResponse = await fetch(locationUrl);
+        if (!locationResponse.ok) throw new Error(`AccuWeather location: ${locationResponse.statusText}`);
+        
+        const locationData = await locationResponse.json();
+        const locationKey = locationData.Key;
+        
+        const forecastUrl = `${provider.baseUrl}/forecasts/v1/daily/5day/${locationKey}?apikey=${provider.apiKey}&metric=true`;
+        const forecastResponse = await fetch(forecastUrl);
+        if (!forecastResponse.ok) throw new Error(`AccuWeather forecast: ${forecastResponse.statusText}`);
+        
+        const awData = await forecastResponse.json();
+        return this.transformAccuWeatherForecast(awData, locationData);
+
+      default:
+        throw new Error(`Unknown provider: ${provider.name}`);
+    }
+  }
+
+  private async fetchAlertsFromProvider(provider: any, lat: number, lon: number): Promise<WeatherAlert[]> {
+    let url: string;
+    let response: Response;
+
+    switch (provider.name) {
+      case 'OpenWeatherMap':
+        url = `${provider.baseUrl}/onecall?lat=${lat}&lon=${lon}&appid=${provider.apiKey}&exclude=current,minutely,hourly,daily`;
+        response = await fetch(url);
+        if (!response.ok) throw new Error(`OpenWeatherMap alerts: ${response.statusText}`);
+        
+        const owmData = await response.json();
+        return this.transformOpenWeatherAlerts(owmData);
+
+      case 'WeatherAPI':
+        url = `${provider.baseUrl}/forecast.json?key=${provider.apiKey}&q=${lat},${lon}&days=1&aqi=no&alerts=yes`;
+        response = await fetch(url);
+        if (!response.ok) throw new Error(`WeatherAPI alerts: ${response.statusText}`);
+        
+        const waData = await response.json();
+        return this.transformWeatherAPIAlerts(waData);
+
+      default:
+        return [];
+    }
+  }
+
+  private transformOpenWeatherData(data: any): WeatherData {
+    return {
+      location: data.name,
+      latitude: data.coord.lat,
+      longitude: data.coord.lon,
+      temperature: data.main.temp,
+      humidity: data.main.humidity,
+      precipitation: data.rain?.['1h'] || 0,
+      windSpeed: data.wind.speed,
+      windDirection: this.degreesToDirection(data.wind.deg),
+      pressure: data.main.pressure,
+      visibility: data.visibility / 1000, // Convert to km
+      uvIndex: 0, // Not available in free tier
+      condition: data.weather[0].description,
+      icon: data.weather[0].icon,
+      lastUpdated: new Date().toISOString(),
+      feelsLike: data.main.feels_like,
+      dewPoint: data.main.temp, // Not available in free tier
+      cloudCover: data.clouds.all,
+      sunrise: new Date(data.sys.sunrise * 1000).toISOString(),
+      sunset: new Date(data.sys.sunset * 1000).toISOString(),
+      airQuality: {
+        index: 0,
+        category: 'Unknown',
+        pm25: 0,
+        pm10: 0,
+        o3: 0
+      }
+    };
+  }
+
+  private transformWeatherAPIData(data: any): WeatherData {
+    return {
+      location: data.location.name,
+      latitude: data.location.lat,
+      longitude: data.location.lon,
+      temperature: data.current.temp_c,
+      humidity: data.current.humidity,
+      precipitation: data.current.precip_mm,
+      windSpeed: data.current.wind_kph,
+      windDirection: data.current.wind_dir,
+      pressure: data.current.pressure_mb,
+      visibility: data.current.vis_km,
+      uvIndex: data.current.uv,
+      condition: data.current.condition.text,
+      icon: data.current.condition.icon,
+      lastUpdated: new Date().toISOString(),
+      feelsLike: data.current.feelslike_c,
+      dewPoint: data.current.dewpoint_c,
+      cloudCover: data.current.cloud,
+      sunrise: data.location.localtime,
+      sunset: data.location.localtime,
+      airQuality: {
+        index: data.current.air_quality?.['us-epa-index'] || 0,
+        category: this.getAirQualityCategory(data.current.air_quality?.['us-epa-index'] || 0),
+        pm25: data.current.air_quality?.['pm2_5'] || 0,
+        pm10: data.current.air_quality?.['pm10'] || 0,
+        o3: data.current.air_quality?.o3 || 0
+      }
+    };
+  }
+
+  private transformAccuWeatherData(data: any, location: any): WeatherData {
+    return {
+      location: location.LocalizedName,
+      latitude: location.GeoPosition.Latitude,
+      longitude: location.GeoPosition.Longitude,
+      temperature: data.Temperature.Metric.Value,
+      humidity: data.RelativeHumidity,
+      precipitation: data.Precip1Hr?.Metric?.Value || 0,
+      windSpeed: data.Wind.Speed.Metric.Value,
+      windDirection: data.Wind.Direction.Localized,
+      pressure: data.Pressure.Metric.Value,
+      visibility: data.Visibility.Metric.Value,
+      uvIndex: data.UVIndex || 0,
+      condition: data.WeatherText,
+      icon: `${data.WeatherIcon}.png`,
+      lastUpdated: new Date().toISOString(),
+      feelsLike: data.RealFeelTemperature.Metric.Value,
+      dewPoint: data.DewPoint.Metric.Value,
+      cloudCover: data.CloudCover,
+      sunrise: new Date().toISOString(), // Not available in current conditions
+      sunset: new Date().toISOString(),
+      airQuality: {
+        index: 0,
+        category: 'Unknown',
+        pm25: 0,
+        pm10: 0,
+        o3: 0
+      }
+    };
+  }
+
+  private transformOpenWeatherForecast(data: any): WeatherForecast[] {
+    const dailyData = data.list.filter((item: any, index: number) => index % 8 === 0);
+    
+    return dailyData.slice(1, 8).map((item: any) => ({
+      date: new Date(item.dt * 1000).toISOString().split('T')[0],
+      maxTemp: item.main.temp_max,
+      minTemp: item.main.temp_min,
+      precipitation: item.pop * 100, // Probability of precipitation
+      humidity: item.main.humidity,
+      condition: item.weather[0].description,
+      icon: item.weather[0].icon,
+      windSpeed: item.wind.speed,
+      windDirection: this.degreesToDirection(item.wind.deg),
+      uvIndex: 0,
+      sunrise: new Date().toISOString(),
+      sunset: new Date().toISOString(),
+      probability: item.pop * 100
+    }));
+  }
+
+  private transformWeatherAPIForecast(data: any): WeatherForecast[] {
+    return data.forecast.forecastday.map((day: any) => ({
+      date: day.date,
+      maxTemp: day.day.maxtemp_c,
+      minTemp: day.day.mintemp_c,
+      precipitation: day.day.totalprecip_mm,
+      humidity: day.day.avghumidity,
+      condition: day.day.condition.text,
+      icon: day.day.condition.icon,
+      windSpeed: day.day.maxwind_kph,
+      windDirection: 'N/A',
+      uvIndex: day.day.uv,
+      sunrise: day.astro.sunrise,
+      sunset: day.astro.sunset,
+      probability: day.day.daily_chance_of_rain
+    }));
+  }
+
+  private transformAccuWeatherForecast(data: any, location: any): WeatherForecast[] {
+    return data.DailyForecasts.map((day: any) => ({
+      date: day.Date.split('T')[0],
+      maxTemp: day.Temperature.Maximum.Value,
+      minTemp: day.Temperature.Minimum.Value,
+      precipitation: day.Day.PrecipitationProbability,
+      humidity: day.Day.RelativeHumidity.Average,
+      condition: day.Day.IconPhrase,
+      icon: `${day.Day.Icon}.png`,
+      windSpeed: day.Day.Wind.Speed.Value,
+      windDirection: day.Day.Wind.Direction.Localized,
+      uvIndex: day.Day.UVIndex,
+      sunrise: day.Sun.Rise,
+      sunset: day.Sun.Set,
+      probability: day.Day.PrecipitationProbability
+    }));
+  }
+
+  private transformOpenWeatherAlerts(data: any): WeatherAlert[] {
+    return (data.alerts || []).map((alert: any) => ({
+      id: alert.event,
+      type: this.mapAlertType(alert.event),
+      severity: this.mapAlertSeverity(alert.severity),
+      title: alert.event,
+      description: alert.description,
+      startTime: new Date(alert.start * 1000).toISOString(),
+      endTime: new Date(alert.end * 1000).toISOString(),
+      affectedAreas: [alert.sender_name],
+      source: 'OpenWeatherMap',
+      certainty: 'Likely'
+    }));
+  }
+
+  private transformWeatherAPIAlerts(data: any): WeatherAlert[] {
+    return (data.alerts?.alert || []).map((alert: any) => ({
+      id: alert.alert_id,
+      type: this.mapAlertType(alert.alert_type),
+      severity: this.mapAlertSeverity(alert.severity),
+      title: alert.headline,
+      description: alert.desc,
+      startTime: alert.effective,
+      endTime: alert.expires,
+      affectedAreas: [alert.areas],
+      source: 'WeatherAPI',
+      certainty: 'Likely'
+    }));
+  }
+
+  private degreesToDirection(degrees: number): string {
+    const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+    const index = Math.round(degrees / 45) % 8;
+    return directions[index];
+  }
+
+  private getAirQualityCategory(index: number): string {
+    if (index <= 50) return 'Good';
+    if (index <= 100) return 'Moderate';
+    if (index <= 150) return 'Unhealthy for Sensitive Groups';
+    if (index <= 200) return 'Unhealthy';
+    if (index <= 300) return 'Very Unhealthy';
+    return 'Hazardous';
+  }
+
+  private mapAlertType(type: string): 'warning' | 'watch' | 'advisory' {
+    const lowerType = type.toLowerCase();
+    if (lowerType.includes('warning')) return 'warning';
+    if (lowerType.includes('watch')) return 'watch';
+    return 'advisory';
+  }
+
+  private mapAlertSeverity(severity: string): 'low' | 'medium' | 'high' | 'extreme' {
+    const lowerSeverity = severity.toLowerCase();
+    if (lowerSeverity.includes('extreme')) return 'extreme';
+    if (lowerSeverity.includes('severe') || lowerSeverity.includes('high')) return 'high';
+    if (lowerSeverity.includes('moderate') || lowerSeverity.includes('medium')) return 'medium';
+    return 'low';
+  }
+}
+
+const weatherService = new PremiumWeatherService();
+
+// Brazilian agricultural regions with coordinates
+const agriculturalRegions = [
+  { name: 'Mato Grosso', lat: -15.6014, lon: -56.0979 },
+  { name: 'São Paulo', lat: -23.5505, lon: -46.6333 },
+  { name: 'Goiás', lat: -16.6869, lon: -49.2648 },
+  { name: 'Minas Gerais', lat: -19.9167, lon: -43.9345 },
+  { name: 'Rio Grande do Sul', lat: -30.0346, lon: -51.2177 },
+  { name: 'Paraná', lat: -25.4289, lon: -49.2671 },
+  { name: 'Mato Grosso do Sul', lat: -20.4486, lon: -54.6295 },
+  { name: 'Bahia', lat: -12.9714, lon: -38.5011 }
 ];
 
 export const useWeatherData = (): UseWeatherDataReturn => {
@@ -194,28 +514,58 @@ export const useWeatherData = (): UseWeatherDataReturn => {
       setLoading(true);
       setError(null);
 
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const weatherPromises = agriculturalRegions.map(async (region) => {
+        try {
+          return await weatherService.getCurrentWeather(region.lat, region.lon);
+        } catch (error) {
+          console.error(`Failed to fetch weather for ${region.name}:`, error);
+          return null;
+        }
+      });
 
-      // In a real implementation, you would fetch from weather APIs
-      // like OpenWeatherMap, WeatherAPI, or AccuWeather
-      // For now, we'll use mock data with some randomization
-      const updatedWeather = mockWeatherData.map(weather => ({
-        ...weather,
-        temperature: weather.temperature + (Math.random() * 6 - 3),
-        humidity: Math.max(30, Math.min(95, weather.humidity + Math.floor(Math.random() * 20 - 10))),
-        precipitation: Math.max(0, weather.precipitation + (Math.random() * 4 - 2)),
-        windSpeed: Math.max(0, weather.windSpeed + (Math.random() * 10 - 5)),
-        pressure: weather.pressure + (Math.random() * 20 - 10),
-        lastUpdated: new Date().toISOString()
-      }));
-      
-      setCurrentWeather(updatedWeather);
-      setForecast(generateMockForecast());
-      setAlerts(mockWeatherAlerts);
+      const weatherResults = await Promise.allSettled(weatherPromises);
+      const validWeather = weatherResults
+        .filter((result): result is PromiseFulfilledResult<WeatherData> => 
+          result.status === 'fulfilled' && result.value !== null
+        )
+        .map(result => result.value);
+
+      setCurrentWeather(validWeather);
+
+      // Get forecast for the first region (can be expanded)
+      if (agriculturalRegions.length > 0) {
+        try {
+          const forecastData = await weatherService.getForecast(
+            agriculturalRegions[0].lat, 
+            agriculturalRegions[0].lon
+          );
+          setForecast(forecastData);
+        } catch (error) {
+          console.error('Failed to fetch forecast:', error);
+        }
+      }
+
+      // Get alerts for all regions
+      const alertPromises = agriculturalRegions.map(async (region) => {
+        try {
+          return await weatherService.getAlerts(region.lat, region.lon);
+        } catch (error) {
+          console.error(`Failed to fetch alerts for ${region.name}:`, error);
+          return [];
+        }
+      });
+
+      const alertResults = await Promise.allSettled(alertPromises);
+      const allAlerts = alertResults
+        .filter((result): result is PromiseFulfilledResult<WeatherAlert[]> => 
+          result.status === 'fulfilled'
+        )
+        .flatMap(result => result.value);
+
+      setAlerts(allAlerts);
       
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao carregar dados meteorológicos');
+      setError(err instanceof Error ? err.message : 'Error loading weather data');
     } finally {
       setLoading(false);
     }
@@ -224,7 +574,7 @@ export const useWeatherData = (): UseWeatherDataReturn => {
   useEffect(() => {
     fetchWeatherData();
     
-    // Set up interval to update weather data every 10 minutes
+    // Update weather data every 10 minutes
     const interval = setInterval(fetchWeatherData, 10 * 60 * 1000);
     
     return () => clearInterval(interval);
@@ -240,6 +590,10 @@ export const useWeatherData = (): UseWeatherDataReturn => {
     );
   };
 
+  const getWeatherByCoordinates = async (lat: number, lon: number): Promise<WeatherData> => {
+    return await weatherService.getCurrentWeather(lat, lon);
+  };
+
   return {
     currentWeather,
     forecast,
@@ -247,23 +601,22 @@ export const useWeatherData = (): UseWeatherDataReturn => {
     loading,
     error,
     refetch,
-    getWeatherByLocation
+    getWeatherByLocation,
+    getWeatherByCoordinates
   };
 };
 
 /**
- * Função para obter dados meteorológicos (para uso em summary-export)
- * @returns Promise com dados meteorológicos
+ * Function to get weather data (for use in summary-export)
+ * @returns Promise with weather data
  */
 export const getWeatherData = async (): Promise<WeatherData> => {
-  // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 500));
+  if (agriculturalRegions.length > 0) {
+    return await weatherService.getCurrentWeather(
+      agriculturalRegions[0].lat, 
+      agriculturalRegions[0].lon
+    );
+  }
   
-  return {
-    ...mockWeatherData[0],
-    temperature: mockWeatherData[0].temperature + (Math.random() * 10 - 5),
-    humidity: mockWeatherData[0].humidity + (Math.random() * 20 - 10),
-    windSpeed: mockWeatherData[0].windSpeed + (Math.random() * 5 - 2.5),
-    lastUpdated: new Date().toISOString()
-  };
+  throw new Error('No agricultural regions configured');
 };

@@ -14,131 +14,189 @@ env:
   NOTIFICATION_WEBHOOK_URL: ${{ secrets.NOTIFICATION_WEBHOOK_URL }}
 
 jobs:
+  validate-secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate monitoring secrets
+        run: |
+          echo "🔐 Validating monitoring secrets..."
+          
+          if [ -z "${{ env.VERCEL_TOKEN }}" ]; then
+            echo "❌ VERCEL_TOKEN is not set"
+            exit 1
+          fi
+          
+          if [ -z "${{ env.VERCEL_ORG_ID }}" ]; then
+            echo "❌ VERCEL_ORG_ID is not set"
+            exit 1
+          fi
+          
+          if [ -z "${{ env.VERCEL_PROJECT_ID }}" ]; then
+            echo "❌ VERCEL_PROJECT_ID is not set"
+            exit 1
+          fi
+          
+          echo "✅ All required secrets are configured"
+
   health-check:
     runs-on: ubuntu-latest
-    continue-on-error: true
+    needs: validate-secrets
+    outputs:
+      frontend-health-status: ${{ steps.frontend-health.outputs.status }}
+      backend-health-status: ${{ steps.backend-health.outputs.status }}
+      api-health-status: ${{ steps.api-health.outputs.status }}
+      response-times-status: ${{ steps.response-times.outputs.status }}
     steps:
       - name: Check frontend health
         id: frontend-health
         run: |
           # Use the production URL directly since we know it
           PROD_URL="https://agrotmsol.com.br"
-
-          echo "Checking frontend health: $PROD_URL"
-
-          # Health check with timeout and retries
+          echo "🏥 Checking frontend health: $PROD_URL"
+          STATUS="failed"
           for i in {1..3}; do
             if curl -f -s --max-time 30 "$PROD_URL" > /dev/null; then
               echo "✅ Frontend health check passed"
-              echo "status=success" >> $GITHUB_OUTPUT
+              STATUS="success"
               break
             else
               echo "❌ Frontend health check failed (attempt $i/3)"
-              if [ $i -eq 3 ]; then
-                echo "status=failed" >> $GITHUB_OUTPUT
-              fi
               sleep 10
             fi
           done
-
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+          echo "::set-output name=status::$STATUS"
       - name: Check backend health
         id: backend-health
         run: |
-          # Check backend health endpoint
           BACKEND_URL="${{ env.BACKEND_URL }}"
-
           if [ -z "$BACKEND_URL" ]; then
             echo "⚠️ Backend URL not configured, skipping backend health check"
-            echo "status=skipped" >> $GITHUB_OUTPUT
+            STATUS="skipped"
+            echo "status=$STATUS" >> $GITHUB_OUTPUT
+            echo "::set-output name=status::$STATUS"
             exit 0
           fi
-
-          echo "Checking backend health: $BACKEND_URL/health"
-
-          # Health check with timeout and retries
+          echo "🏥 Checking backend health: $BACKEND_URL/health"
+          STATUS="failed"
           for i in {1..3}; do
             if curl -f -s --max-time 30 "$BACKEND_URL/health" > /dev/null; then
               echo "✅ Backend health check passed"
-              echo "status=success" >> $GITHUB_OUTPUT
+              STATUS="success"
               break
             else
               echo "❌ Backend health check failed (attempt $i/3)"
-              if [ $i -eq 3 ]; then
-                echo "status=failed" >> $GITHUB_OUTPUT
-              fi
               sleep 10
             fi
           done
-
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+          echo "::set-output name=status::$STATUS"
       - name: Check API endpoints
         id: api-health
         run: |
-          # Use the production URL directly since we know it
           PROD_URL="https://agrotmsol.com.br"
-
-          # Check critical endpoints
           ENDPOINTS=("/api/health" "/health" "/")
-
+          STATUS="failed"
           for endpoint in "${ENDPOINTS[@]}"; do
-            echo "Checking endpoint: $endpoint"
+            echo "🔍 Checking endpoint: $endpoint"
             if curl -f -s --max-time 30 "$PROD_URL$endpoint" > /dev/null; then
               echo "✅ $endpoint is healthy"
-              echo "status=success" >> $GITHUB_OUTPUT
+              STATUS="success"
               break
             else
               echo "❌ $endpoint is unhealthy"
             fi
           done
-
-          # If no endpoint worked, mark as failed
-          if [ ! -f "$GITHUB_OUTPUT" ] || ! grep -q "status=" "$GITHUB_OUTPUT"; then
-            echo "status=failed" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Check additional endpoints (optional)
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+          echo "::set-output name=status::$STATUS"
+      - name: Check additional endpoints
         id: additional-api-health
         run: |
-          # Use the production URL directly since we know it
           PROD_URL="https://agrotmsol.com.br"
-
-          # Check additional endpoints that might not exist yet
-          ADDITIONAL_ENDPOINTS=("/api/defi/pools" "/api/stats/overview")
-
+          ADDITIONAL_ENDPOINTS=("/api/stats" "/api/pools" "/api/defi/apr")
           for endpoint in "${ADDITIONAL_ENDPOINTS[@]}"; do
-            echo "Checking additional endpoint: $endpoint"
+            echo "🔍 Checking additional endpoint: $endpoint"
             if curl -f -s --max-time 30 "$PROD_URL$endpoint" > /dev/null; then
               echo "✅ $endpoint is healthy"
             else
-              echo "⚠️ $endpoint is not available (this is normal for new deployments)"
+              echo "⚠️ $endpoint is unhealthy (non-critical)"
             fi
           done
-
-          echo "status=success" >> $GITHUB_OUTPUT
-
-      - name: Send health report
+      - name: Check response times
+        id: response-times
         run: |
-          FRONTEND_STATUS="${{ steps.frontend-health.outputs.status }}"
-          BACKEND_STATUS="${{ steps.backend-health.outputs.status }}"
-          API_STATUS="${{ steps.api-health.outputs.status }}"
-          ADDITIONAL_API_STATUS="${{ steps.additional-api-health.outputs.status }}"
-
-          echo "Health Report:"
-          echo "- Frontend: $FRONTEND_STATUS"
-          echo "- Backend: $BACKEND_STATUS"
-          echo "- API: $API_STATUS"
-          echo "- Additional API: $ADDITIONAL_API_STATUS"
-
-          # Send notification if webhook is configured
-          if [ ! -z "${{ env.NOTIFICATION_WEBHOOK_URL }}" ] && [ "${{ env.NOTIFICATION_WEBHOOK_URL }}" != "https://hooks.slack.com/services/dummy/dummy/dummy" ]; then
-            if [ "$FRONTEND_STATUS" = "failed" ] || [ "$BACKEND_STATUS" = "failed" ] || [ "$API_STATUS" = "failed" ]; then
-              curl -H "Content-Type: application/json" \
-                -d "{\"content\":\"⚠️ AGROTM Health Check Failed\\nFrontend: $FRONTEND_STATUS\\nBackend: $BACKEND_STATUS\\nAPI: $API_STATUS\"}" \
-                "${{ env.NOTIFICATION_WEBHOOK_URL }}" || echo "⚠️ Failed to send notification"
+          PROD_URL="https://agrotmsol.com.br"
+          echo "⏱️ Checking response times..."
+          RESPONSE_TIME=$(curl -w "%{time_total}" -s -o /dev/null "$PROD_URL" 2>/dev/null)
+          STATUS="failed"
+          if [ ! -z "$RESPONSE_TIME" ]; then
+            echo "Response time: ${RESPONSE_TIME}s"
+            RESPONSE_TIME_FLOAT=$(echo "$RESPONSE_TIME" | bc -l 2>/dev/null || echo "0")
+            if (( $(echo "$RESPONSE_TIME_FLOAT < 2.0" | bc -l) )); then
+              echo "✅ Response time is acceptable (< 2s)"
+              STATUS="success"
+            else
+              echo "⚠️ Response time is slow (> 2s): ${RESPONSE_TIME}s"
+              STATUS="slow"
             fi
+          else
+            echo "❌ Could not measure response time"
+          fi
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+          echo "::set-output name=status::$STATUS"
+
+  notify-failure:
+    runs-on: ubuntu-latest
+    needs: health-check
+    if: |
+      needs.health-check.result == 'failure' ||
+      needs.health-check.outputs.frontend-health-status == 'failed' ||
+      needs.health-check.outputs.backend-health-status == 'failed' ||
+      needs.health-check.outputs.api-health-status == 'failed'
+    steps:
+      - name: Send failure notification
+        run: |
+          echo "🚨 Health check failed! Sending notification..."
+          FRONTEND_STATUS="${{ needs.health-check.outputs.frontend-health-status }}"
+          BACKEND_STATUS="${{ needs.health-check.outputs.backend-health-status }}"
+          API_STATUS="${{ needs.health-check.outputs.api-health-status }}"
+          RESPONSE_TIME_STATUS="${{ needs.health-check.outputs.response-times-status }}"
+          if [ -n "${{ env.NOTIFICATION_WEBHOOK_URL }}" ] && [ "${{ env.NOTIFICATION_WEBHOOK_URL }}" != "https://hooks.slack.com/services/dummy/dummy/dummy" ]; then
+            PAYLOAD='{"content":"🚨 AGROTM.SOL Health Check Failed!","embeds":[{"title":"Production Health Check Alert","color":15158332,"fields":[{"name":"Frontend Status","value":"'$FRONTEND_STATUS'","inline":true},{"name":"Backend Status","value":"'$BACKEND_STATUS'","inline":true},{"name":"API Status","value":"'$API_STATUS'","inline":true},{"name":"Response Time","value":"'$RESPONSE_TIME_STATUS'","inline":true},{"name":"Environment","value":"Production","inline":true},{"name":"URL","value":"https://agrotmsol.com.br","inline":true}],"timestamp":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}]}'
+            curl -H "Content-Type: application/json" -d "$PAYLOAD" "${{ env.NOTIFICATION_WEBHOOK_URL }}"
           fi
 
-          # Don't fail the workflow even if health checks fail
-          if [ "$FRONTEND_STATUS" = "failed" ] || [ "$BACKEND_STATUS" = "failed" ] || [ "$API_STATUS" = "failed" ]; then
-            echo "⚠️ Some health checks failed, but continuing workflow"
-            exit 0
+  generate-report:
+    runs-on: ubuntu-latest
+    needs: health-check
+    if: always()
+    steps:
+      - name: Generate monitoring report
+        run: |
+          echo "📊 AGROTM.SOL Monitoring Report" > monitoring-report.md
+          echo "===============================" >> monitoring-report.md
+          echo "" >> monitoring-report.md
+          echo "**Date:** $(date)" >> monitoring-report.md
+          echo "**Environment:** Production" >> monitoring-report.md
+          echo "**URL:** https://agrotmsol.com.br" >> monitoring-report.md
+          echo "" >> monitoring-report.md
+          
+          echo "## Health Check Results:" >> monitoring-report.md
+          echo "- Frontend: ${{ needs.health-check.outputs.frontend-health-status }}" >> monitoring-report.md
+          echo "- Backend: ${{ needs.health-check.outputs.backend-health-status }}" >> monitoring-report.md
+          echo "- API: ${{ needs.health-check.outputs.api-health-status }}" >> monitoring-report.md
+          echo "- Response Time: ${{ needs.health-check.outputs.response-times-status }}" >> monitoring-report.md
+          echo "" >> monitoring-report.md
+          
+          echo "## Status:" >> monitoring-report.md
+          if [ "${{ needs.health-check.result }}" = "success" ]; then
+            echo "✅ All systems operational" >> monitoring-report.md
+          else
+            echo "❌ Issues detected" >> monitoring-report.md
           fi
+
+      - name: Upload monitoring report
+        uses: actions/upload-artifact@v4
+        with:
+          name: monitoring-report
+          path: monitoring-report.md

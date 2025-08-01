@@ -101,16 +101,14 @@ export const useNFTStats = (): UseNFTStatsReturn => {
       await new Promise(resolve => setTimeout(resolve, 800));
 
       if (connected && publicKey) {
-        // In a real implementation, you would calculate stats from blockchain data
-        // For now, we'll use mock data with some randomization
-        const randomizedStats = {
-          ...mockStats,
-          totalValue: mockStats.totalValue + Math.floor(Math.random() * 1000000 - 500000),
-          monthlyGrowth: mockStats.monthlyGrowth + (Math.random() * 10 - 5),
-          weeklyGrowth: mockStats.weeklyGrowth + (Math.random() * 2 - 1)
-        };
+        // Fetch real NFT stats from blockchain
+        const response = await fetch(`/api/nft/stats?address=${publicKey.toString()}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch NFT stats');
+        }
         
-        setStats(randomizedStats);
+        const data = await response.json();
+        setStats(data.stats);
       } else {
         setStats(null);
       }
@@ -142,13 +140,16 @@ export const useNFTStats = (): UseNFTStatsReturn => {
  * @returns Promise com estatísticas de NFTs
  */
 export const getNFTStats = async (): Promise<NFTStats> => {
-  // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 300));
-  
-  return {
-    ...mockStats,
-    totalValue: mockStats.totalValue + Math.floor(Math.random() * 1000000 - 500000),
-    monthlyGrowth: mockStats.monthlyGrowth + (Math.random() * 10 - 5),
-    weeklyGrowth: mockStats.weeklyGrowth + (Math.random() * 2 - 1)
-  };
+  try {
+    const response = await fetch('/api/nft/stats');
+    if (!response.ok) {
+      throw new Error('Failed to fetch NFT stats');
+    }
+    
+    const data = await response.json();
+    return data.stats;
+  } catch (error) {
+    logger.error('Error fetching NFT stats:', error);
+    throw error;
+  }
 };

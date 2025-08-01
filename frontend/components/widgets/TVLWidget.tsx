@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   AreaChart,
@@ -66,7 +66,6 @@ const topPools = [
 
 export function TVLWidget() {
   const [selectedMetric, setSelectedMetric] = useState('tvl');
-  const [isPositive, setIsPositive] = useState(protocolStats.tvlChangePercent > 0);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -199,7 +198,7 @@ export function TVLWidget() {
             <YAxis
               stroke='#9ca3af'
               fontSize={10}
-              tickFormatter={value =>
+              tickFormatter={(value: number) =>
                 selectedMetric === 'tvl' ? `$${(value / 1e6).toFixed(0)}M` : value.toString()
               }
             />
@@ -261,7 +260,7 @@ export function TVLWidget() {
       <div className='mt-4 pt-4 border-t border-white/10'>
         <h4 className='text-sm font-medium text-white mb-3'>Top Liquidity Pools</h4>
         <div className='space-y-2'>
-          {topPools.map((pool, index) => (
+          {topPools.map(pool => (
             <div
               key={pool.name}
               className='flex items-center justify-between p-2 bg-white/5 rounded-lg'

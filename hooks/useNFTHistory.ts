@@ -1,6 +1,77 @@
 import { useState, useEffect } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { PublicKey } from '@solana/web3.js';
 import { format, subDays } from 'date-fns';
+import { logger } from '../utils/logger';
+
+// Real blockchain data fetching functions
+const fetchNFTSalesHistory = async (connection: any, publicKey: PublicKey): Promise<NFTSale[]> => {
+  try {
+    // Fetch NFT sales events from blockchain
+    const signatures = await connection.getSignaturesForAddress(publicKey, { limit: 100 });
+    
+    const sales: NFTSale[] = [];
+    for (const sig of signatures) {
+      const tx = await connection.getTransaction(sig.signature);
+      if (tx?.meta?.logMessages?.some(log => log.includes('NFT_SALE'))) {
+        // Parse NFT sale event
+        const saleEvent = parseNFTSaleEvent(tx);
+        if (saleEvent) {
+          sales.push(saleEvent);
+        }
+      }
+    }
+    
+    return sales;
+  } catch (error) {
+    logger.error('Error fetching NFT sales history:', error);
+    return [];
+  }
+};
+
+const fetchNFTValuationHistory = async (connection: any, publicKey: PublicKey): Promise<NFTValuationHistory[]> => {
+  try {
+    // Fetch NFT valuation data from blockchain analytics
+    const response = await fetch(`/api/nft/valuation-history?address=${publicKey.toString()}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch valuation history');
+    }
+    
+    const data = await response.json();
+    return data.history || [];
+  } catch (error) {
+    logger.error('Error fetching NFT valuation history:', error);
+    return [];
+  }
+};
+
+const parseNFTSaleEvent = (transaction: any): NFTSale | null => {
+  try {
+    // Parse transaction logs to extract NFT sale information
+    const logs = transaction.meta?.logMessages || [];
+    const saleLog = logs.find(log => log.includes('NFT_SALE'));
+    
+    if (saleLog) {
+      // Extract sale data from log
+      const saleData = JSON.parse(saleLog.split('NFT_SALE:')[1] || '{}');
+      return {
+        id: saleData.id || `sale_${Date.now()}`,
+        nftId: saleData.nftId || '',
+        nftName: saleData.nftName || 'Unknown NFT',
+        nftType: saleData.nftType || 'Unknown',
+        price: saleData.price || 0,
+        date: format(new Date(saleData.timestamp || Date.now()), 'yyyy-MM-dd'),
+        buyer: saleData.buyer || 'Unknown',
+        seller: saleData.seller || 'Unknown'
+      };
+    }
+    
+    return null;
+  } catch (error) {
+    logger.error('Error parsing NFT sale event:', error);
+    return null;
+  }
+};
 
 interface NFTSale {
   id: string;
@@ -113,10 +184,13 @@ export const useNFTHistory = (): UseNFTHistoryReturn => {
       await new Promise(resolve => setTimeout(resolve, 1200));
 
       if (connected && publicKey) {
-        // In a real implementation, you would fetch historical data from the blockchain
-        // For now, we'll use mock data
-        setSales(generateMockSales());
-        setValuationHistory(generateMockValuationHistory());
+        // Fetch real NFT sales history from blockchain
+        const salesData = await fetchNFTSalesHistory(connection, publicKey);
+        setSales(salesData);
+        
+        // Fetch real valuation history from blockchain analytics
+        const valuationData = await fetchNFTValuationHistory(connection, publicKey);
+        setValuationHistory(valuationData);
       } else {
         setSales([]);
         setValuationHistory([]);

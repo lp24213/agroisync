@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   LineChart,
@@ -59,7 +59,6 @@ const stakingPools = [
 
 export function APRWidget() {
   const [selectedPool, setSelectedPool] = useState('flexible');
-  const [timeframe, setTimeframe] = useState('6M');
 
   const currentPool =
     stakingPools.find(pool => pool.name.toLowerCase().includes(selectedPool)) || stakingPools[0];
@@ -139,7 +138,7 @@ export function APRWidget() {
           <LineChart data={getChartData()}>
             <CartesianGrid strokeDasharray='3 3' stroke='#374151' />
             <XAxis dataKey='date' stroke='#9ca3af' fontSize={10} />
-            <YAxis stroke='#9ca3af' fontSize={10} tickFormatter={value => `${value}%`} />
+            <YAxis stroke='#9ca3af' fontSize={10} tickFormatter={(value: number) => `${value}%`} />
             <Tooltip
               contentStyle={{
                 backgroundColor: '#1f2937',

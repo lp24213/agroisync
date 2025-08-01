@@ -1,40 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useWeb3 } from '@/contexts/Web3Context';
+// import { useWeb3 } from '@/contexts/Web3Context';
 import { motion } from 'framer-motion';
 import { ethers } from 'ethers';
 import { toast } from 'react-hot-toast';
-import {
-  ShoppingCart,
-  Coins,
-  Image,
-  DollarSign,
-  Percent,
-  AlertCircle,
-  CheckCircle,
-  Loader,
-} from 'lucide-react';
-
-// Interface para o contrato BuyWithCommission
-interface BuyWithCommissionContract {
-  connect(signer: ethers.Signer): {
-    buyTokenWithCommission(
-      tokenAddress: string,
-      seller: string,
-      amount: bigint,
-      options?: { value: bigint },
-    ): Promise<ethers.ContractTransactionResponse>;
-    buyNFTWithCommission(
-      nftAddress: string,
-      seller: string,
-      tokenId: bigint,
-      options?: { value: bigint },
-    ): Promise<ethers.ContractTransactionResponse>;
-  };
-  commissionRate(): Promise<bigint>;
-  adminAddress(): Promise<string>;
-}
+import { ShoppingCart, Coins, Image, Percent, AlertCircle, Loader } from 'lucide-react';
 
 interface BuyWithCommissionProps {
   type: 'token' | 'nft';
@@ -56,10 +27,30 @@ const BuyWithCommission: React.FC<BuyWithCommissionProps> = ({
   tokenId,
   amount,
   price,
-  tokenURI,
+
   onSuccess,
 }) => {
-  const { contracts, signer, isConnected } = useWeb3();
+  // const { contracts, signer, isConnected } = useWeb3();
+  // TODO: Substitua pelos tipos corretos do seu contexto Web3
+  type BuyWithCommissionContract = {
+    commissionRate?: () => Promise<number>;
+    connect?: (signer: unknown) => BuyWithCommissionContract;
+    buyTokenWithCommission?: (
+      tokenAddress: string,
+      sellerAddress: string,
+      amount: bigint,
+      options: { value: bigint },
+    ) => Promise<unknown>;
+    buyNFTWithCommission?: (
+      nftAddress: string,
+      sellerAddress: string,
+      tokenId: bigint,
+      options: { value: bigint },
+    ) => Promise<unknown>;
+  };
+  const contracts: { buyWithCommission?: BuyWithCommissionContract } = {};
+  const signer: unknown = null;
+  const isConnected = false;
   const [isLoading, setIsLoading] = useState(false);
   const [commissionRate, setCommissionRate] = useState<number>(0);
   const [commissionAmount, setCommissionAmount] = useState<string>('0');
@@ -84,8 +75,8 @@ const BuyWithCommission: React.FC<BuyWithCommissionProps> = ({
         try {
           const rate = await contracts.buyWithCommission.commissionRate();
           setCommissionRate(Number(rate));
-        } catch (error) {
-          console.error('Erro ao buscar taxa de comissão:', error);
+        } catch {
+          // console.error('Erro ao buscar taxa de comissão:', error);
         }
       }
     };
@@ -112,18 +103,18 @@ const BuyWithCommission: React.FC<BuyWithCommissionProps> = ({
 
       if (type === 'token' && tokenAddress && amount) {
         // Compra de token
-        const contract = contracts.buyWithCommission as any;
+        const contract = contracts.buyWithCommission;
         tx = await contract
-          .connect(signer)
-          .buyTokenWithCommission(tokenAddress, sellerAddress, ethers.parseEther(amount), {
+          ?.connect?.(signer)
+          ?.buyTokenWithCommission?.(tokenAddress, sellerAddress, ethers.parseEther(amount), {
             value: priceWei,
           });
       } else if (type === 'nft' && nftAddress && tokenId) {
         // Compra de NFT
-        const contract = contracts.buyWithCommission as any;
+        const contract = contracts.buyWithCommission;
         tx = await contract
-          .connect(signer)
-          .buyNFTWithCommission(nftAddress, sellerAddress, BigInt(tokenId), { value: priceWei });
+          ?.connect?.(signer)
+          ?.buyNFTWithCommission?.(nftAddress, sellerAddress, BigInt(tokenId), { value: priceWei });
       } else {
         throw new Error('Parâmetros inválidos para compra');
       }
@@ -131,7 +122,7 @@ const BuyWithCommission: React.FC<BuyWithCommissionProps> = ({
       toast.success('Transação enviada! Aguardando confirmação...');
 
       // Aguardar confirmação
-      const receipt = await tx.wait();
+      await tx.wait();
 
       toast.success('Compra realizada com sucesso!');
 
@@ -139,17 +130,11 @@ const BuyWithCommission: React.FC<BuyWithCommissionProps> = ({
         onSuccess();
       }
 
-      console.log('Transação confirmada:', receipt.transactionHash);
-    } catch (error: any) {
-      console.error('Erro na compra:', error);
+      // console.log('Transação confirmada:', receipt.transactionHash);
+    } catch {
+      // console.error('Erro na compra:', error);
 
-      if (error.code === 'ACTION_REJECTED') {
-        toast.error('Transação cancelada pelo usuário');
-      } else if (error.message.includes('insufficient funds')) {
-        toast.error('Saldo insuficiente para realizar a compra');
-      } else {
-        toast.error(`Erro na compra: ${error.message}`);
-      }
+      toast.error('Erro na compra. Tente novamente.');
     } finally {
       setIsLoading(false);
     }

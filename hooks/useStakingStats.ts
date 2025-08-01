@@ -53,18 +53,16 @@ export const useStakingStats = (): UseStakingStatsReturn => {
       await new Promise(resolve => setTimeout(resolve, 600));
 
       if (connected && publicKey) {
-        // In a real implementation, you would fetch stats from blockchain
-        // For now, we'll use mock data with some randomization
-        const randomizedStats = {
-          ...mockStats,
-          totalStaked: mockStats.totalStaked + Math.floor(Math.random() * 2000000 - 1000000),
-          stakingGrowth: mockStats.stakingGrowth + (Math.random() * 5 - 2.5),
-          weeklyGrowth: mockStats.weeklyGrowth + (Math.random() * 2 - 1)
-        };
+        // Fetch real staking stats from blockchain
+        const response = await fetch(`/api/staking/stats?address=${publicKey.toString()}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch staking stats');
+        }
         
-        setStats(randomizedStats);
+        const data = await response.json();
+        setStats(data.stats);
       } else {
-        setStats(mockStats); // Return mock data even when not connected for demo
+        setStats(null);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao carregar estatísticas de staking');
@@ -94,15 +92,18 @@ export const useStakingStats = (): UseStakingStatsReturn => {
  * @returns Promise com estatísticas de staking
  */
 export const getStakingStats = async (): Promise<StakingStats> => {
-  // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 300));
-  
-  return {
-    ...mockStats,
-    totalStaked: mockStats.totalStaked + Math.floor(Math.random() * 2000000 - 1000000),
-    stakingGrowth: mockStats.stakingGrowth + (Math.random() * 5 - 2.5),
-    weeklyGrowth: mockStats.weeklyGrowth + (Math.random() * 2 - 1)
-  };
+  try {
+    const response = await fetch('/api/staking/stats');
+    if (!response.ok) {
+      throw new Error('Failed to fetch staking stats');
+    }
+    
+    const data = await response.json();
+    return data.stats;
+  } catch (error) {
+    logger.error('Error fetching staking stats:', error);
+    throw error;
+  }
 };
 
 export default useStakingStats;

@@ -16,23 +16,14 @@ export function useUserGrowth(period: '7d' | '30d' | '90d' = '30d') {
     const fetchGrowthData = async () => {
       setLoading(true);
       try {
-        // Simulação de dados de crescimento
-        const mockData: UserGrowthData[] = [];
-        const days = period === '7d' ? 7 : period === '30d' ? 30 : 90;
-        
-        for (let i = days - 1; i >= 0; i--) {
-          const date = new Date();
-          date.setDate(date.getDate() - i);
-          
-          mockData.push({
-            date: date.toISOString().split('T')[0],
-            newUsers: Math.floor(Math.random() * 50) + 10,
-            activeUsers: Math.floor(Math.random() * 200) + 100,
-            totalUsers: 1000 + (days - i) * 25
-          });
+        // Fetch real user growth data from backend analytics
+        const response = await fetch(`/api/users/growth?period=${period}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch user growth data');
         }
         
-        setData(mockData);
+        const data = await response.json();
+        setData(data.growth);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Erro ao carregar dados de crescimento');
       } finally {

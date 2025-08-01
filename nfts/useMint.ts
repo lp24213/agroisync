@@ -75,22 +75,78 @@ export const useMint = () => {
     };
   }, []);
 
-  // Upload file to IPFS
+  // Upload file to IPFS with premium features
   const uploadToIPFS = useCallback(async (file: File): Promise<string> => {
     try {
-      // In a real implementation, this would use IPFS
-      // For now, we'll simulate the upload
+      // Validate file size and type
+      const maxSize = 10 * 1024 * 1024; // 10MB
+      if (file.size > maxSize) {
+        throw new Error('File size exceeds 10MB limit');
+      }
+
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+      if (!allowedTypes.includes(file.type)) {
+        throw new Error('Unsupported file type. Please use JPEG, PNG, GIF, or WebP');
+      }
+
+      // Create form data for IPFS upload
       const formData = new FormData();
       formData.append('file', file);
-      
-      // Mock IPFS upload
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          const hash = btoa(file.name + Date.now()).substring(0, 46);
-          resolve(`ipfs://${hash}`);
-        }, 1000);
+      formData.append('pin', 'true');
+      formData.append('metadata', JSON.stringify({
+        name: file.name,
+        description: 'AGROTM NFT Asset',
+        created: new Date().toISOString()
+      }));
+
+      // Upload to multiple IPFS gateways for redundancy
+      const gateways = [
+        'https://ipfs.infura.io:5001/api/v0/add',
+        'https://ipfs.pinata.cloud/api/v1/pinFileToIPFS',
+        'https://api.web3.storage/upload'
+      ];
+
+      const uploadPromises = gateways.map(async (gateway) => {
+        try {
+          const response = await fetch(gateway, {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'Authorization': `Bearer ${process.env.NEXT_PUBLIC_IPFS_API_KEY || ''}`
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error(`Upload failed: ${response.statusText}`);
+          }
+
+          const result = await response.json();
+          return result.Hash || result.cid || result.ipfsHash;
+        } catch (error) {
+          logger.error(`IPFS upload failed for gateway ${gateway}`, error);
+          return null;
+        }
       });
+
+      // Wait for at least one successful upload
+      const results = await Promise.allSettled(uploadPromises);
+      const successfulUploads = results
+        .filter((result): result is PromiseFulfilledResult<string> => 
+          result.status === 'fulfilled' && result.value !== null
+        )
+        .map(result => result.value);
+
+      if (successfulUploads.length === 0) {
+        throw new Error('All IPFS upload attempts failed');
+      }
+
+      // Return the first successful hash
+      const ipfsHash = successfulUploads[0];
+      logger.info('File uploaded to IPFS successfully', { hash: ipfsHash, fileName: file.name });
+      
+      return `ipfs://${ipfsHash}`;
     } catch (error) {
+      logger.error('IPFS upload failed', { error, fileName: file.name });
       throw new Error(`Failed to upload to IPFS: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }, []);
@@ -108,7 +164,7 @@ export const useMint = () => {
     }
   }, [uploadToIPFS]);
 
-  // Mint NFT on blockchain
+  // Mint NFT on blockchain with premium features
   const mintOnBlockchain = useCallback(async (
     metadataURI: string, 
     supply: number, 
@@ -118,37 +174,76 @@ export const useMint = () => {
     try {
       const signer = provider.getSigner();
       
-      // Mock contract interaction
-      // In a real implementation, this would call the actual NFT contract
-      const mockContract = {
-        mint: async (to: string, tokenURI: string, supply: number, price: string) => {
-          // Simulate transaction
-          const mockTx = {
-            hash: `0x${Math.random().toString(16).substring(2)}`,
-            wait: async () => ({
-              status: 1,
-              blockNumber: Math.floor(Math.random() * 1000000) + 1
-            })
-          };
-          
-          return mockTx;
-        }
-      };
-
-      const tx = await mockContract.mint(account!, metadataURI, supply, price);
-      const receipt = await tx.wait();
-      
-      if (receipt.status === 0) {
-        throw new Error('Transaction failed');
+      // Get contract instance
+      const contractAddress = process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS;
+      if (!contractAddress) {
+        throw new Error('NFT contract address not configured');
       }
 
-      const tokenId = `AGROTM-${Date.now()}-${Math.random().toString(36).substring(2)}`;
+      // Import contract ABI
+      const contractABI = [
+        'function mint(address to, string memory tokenURI, uint256 supply, uint256 price) external returns (uint256)',
+        'function tokenURI(uint256 tokenId) external view returns (string memory)',
+        'function ownerOf(uint256 tokenId) external view returns (address)',
+        'function totalSupply() external view returns (uint256)',
+        'event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)',
+        'event Minted(address indexed to, uint256 indexed tokenId, string tokenURI)'
+      ];
+
+      const contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+      // Estimate gas before minting
+      const gasEstimate = await contract.estimateGas.mint(account!, metadataURI, supply, ethers.utils.parseEther(price));
+      const gasPrice = await provider.getGasPrice();
+      
+      // Add 20% buffer for gas estimation
+      const gasLimit = gasEstimate.mul(120).div(100);
+
+      // Prepare transaction
+      const mintTx = await contract.mint(account!, metadataURI, supply, ethers.utils.parseEther(price), {
+        gasLimit,
+        gasPrice: gasPrice.mul(110).div(100) // 10% gas price buffer
+      });
+
+      // Wait for transaction confirmation
+      const receipt = await mintTx.wait(3); // Wait for 3 confirmations
+      
+      if (receipt.status === 0) {
+        throw new Error('Transaction failed on blockchain');
+      }
+
+      // Extract token ID from events
+      const mintEvent = receipt.events?.find(event => event.event === 'Minted');
+      const tokenId = mintEvent?.args?.tokenId?.toString() || `AGROTM-${Date.now()}-${Math.random().toString(36).substring(2)}`;
+
+      // Log successful mint
+      logger.info('NFT minted successfully', {
+        tokenId,
+        transactionHash: mintTx.hash,
+        metadataURI,
+        supply,
+        price,
+        gasUsed: receipt.gasUsed.toString(),
+        blockNumber: receipt.blockNumber
+      });
+
+      // Emit analytics event
+      if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag('event', 'nft_minted', {
+          token_id: tokenId,
+          transaction_hash: mintTx.hash,
+          supply: supply,
+          price: price,
+          gas_used: receipt.gasUsed.toString()
+        });
+      }
       
       return {
         tokenId,
-        transactionHash: tx.hash
+        transactionHash: mintTx.hash
       };
     } catch (error) {
+      logger.error('Blockchain minting failed', { error, metadataURI, supply, price });
       throw new Error(`Blockchain minting failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }, [account]);
@@ -356,7 +451,7 @@ export const useMint = () => {
       const fees = calculateFees(metadata, supply);
       return fees.gasEstimate;
     } catch (error) {
-      console.error('Error estimating gas:', error);
+      logger.error('Error estimating gas:', error);
       return '0';
     }
   }, [calculateFees]);
@@ -372,7 +467,7 @@ export const useMint = () => {
       
       return balance.gte(requiredAmount);
     } catch (error) {
-      console.error('Error checking balance:', error);
+      logger.error('Error checking balance:', error);
       return false;
     }
   }, [provider, account, calculateFees]);
@@ -387,25 +482,30 @@ export const useMint = () => {
     if (!account) return [];
 
     try {
-      // In a real implementation, this would query the blockchain or API
-      // For now, return mock data
-      return [
-        {
-          tokenId: 'AGROTM-1234567890-abc123',
-          transactionHash: '0x1234567890abcdef',
-          timestamp: Date.now() - 86400000, // 1 day ago
-          metadata: {
-            name: 'Sample Farm Land',
-            description: 'A sample agricultural NFT',
-            image: 'ipfs://sample-hash',
-            attributes: [],
-            category: 'Farm Land',
-            rarity: 'Common'
-          }
-        }
-      ];
+      // Query blockchain for minting history
+      const contract = new ethers.Contract(
+        process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS || '',
+        ['event NFTMinted(address indexed owner, uint256 indexed tokenId, string metadata)'],
+        provider
+      );
+
+      const filter = contract.filters.NFTMinted(account);
+      const events = await contract.queryFilter(filter);
+      
+      return events.map(event => ({
+        tokenId: event.args?.tokenId?.toString() || '',
+        transactionHash: event.transactionHash,
+        timestamp: (await event.getBlock())?.timestamp || 0,
+        metadata: JSON.parse(event.args?.metadata || '{}')
+      }));
+      return events.map(event => ({
+        tokenId: event.args?.tokenId?.toString() || '',
+        transactionHash: event.transactionHash,
+        timestamp: (await event.getBlock())?.timestamp || 0,
+        metadata: JSON.parse(event.args?.metadata || '{}')
+      }));
     } catch (error) {
-      console.error('Error fetching minting history:', error);
+      logger.error('Error fetching minting history:', error);
       return [];
     }
   }, [account]);

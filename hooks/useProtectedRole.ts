@@ -39,26 +39,15 @@ export function useProtectedRole() {
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     try {
-      // Simulação de busca de role do usuário
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Mock de role baseado no endereço da carteira
-      const mockRole: UserRole = {
-        id: '1',
-        name: 'user',
-        permissions: ['read', 'stake', 'unstake', 'claim'],
-        isActive: true,
-      };
-
-      // Se o endereço terminar com números pares, dar role de admin
-      const lastChar = publicKey.slice(-1);
-      if (parseInt(lastChar, 16) % 2 === 0) {
-        mockRole.name = 'admin';
-        mockRole.permissions.push('admin', 'manage_pools', 'view_analytics');
+      // Fetch real user role from backend authentication service
+      const response = await fetch(`/api/auth/role?address=${publicKey}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch user role');
       }
-
+      
+      const data = await response.json();
       setState({
-        userRole: mockRole,
+        userRole: data.role,
         loading: false,
         error: null,
         isAuthenticated: true,

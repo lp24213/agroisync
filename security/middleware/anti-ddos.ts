@@ -37,7 +37,7 @@ export async function antiDdosMiddleware(req: NextRequest) {
   // Verificar se o IP está na blocklist
   const isBlocked = await redis.sismember(BLOCKLIST_KEY, ip);
   if (isBlocked) {
-    console.warn(`Blocked request from blacklisted IP: ${ip}`);
+    logger.warn(`Blocked request from blacklisted IP: ${ip}`);
     return NextResponse.json(
       { error: 'Access denied' },
       { status: 403 }
@@ -63,7 +63,7 @@ export async function antiDdosMiddleware(req: NextRequest) {
     // Estender o tempo de bloqueio
     await redis.expire(rateLimitKey, Math.floor(RATE_LIMIT_PENALTY / 1000));
     
-    console.warn(`Rate limit exceeded for IP: ${ip}`);
+    logger.warn(`Rate limit exceeded for IP: ${ip}`);
     return NextResponse.json(
       { error: 'Too many requests' },
       { 
@@ -96,7 +96,7 @@ async function trackPotentialAttack(ip: string) {
   // Se exceder o limite, adicionar à blocklist
   if (attackCount > ATTACK_THRESHOLD) {
     await redis.sadd(BLOCKLIST_KEY, ip);
-    console.error(`IP ${ip} added to blocklist due to suspected attack`);
+    logger.error(`IP ${ip} added to blocklist due to suspected attack`);
     
     // Notificar sistema de monitoramento (webhook para Slack, Discord, etc)
     await notifySecurityTeam(ip, attackCount);
@@ -120,7 +120,7 @@ async function notifySecurityTeam(ip: string, attackCount: number) {
         }),
       });
     } catch (error) {
-      console.error('Failed to notify security team:', error);
+      logger.error('Failed to notify security team:', error);
     }
   }
 }
@@ -130,7 +130,7 @@ async function notifySecurityTeam(ip: string, attackCount: number) {
  */
 export async function addToBlocklist(ip: string) {
   await redis.sadd(BLOCKLIST_KEY, ip);
-  console.log(`IP ${ip} manually added to blocklist`);
+      logger.info(`IP ${ip} manually added to blocklist`);
   return true;
 }
 
@@ -139,7 +139,7 @@ export async function addToBlocklist(ip: string) {
  */
 export async function removeFromBlocklist(ip: string) {
   await redis.srem(BLOCKLIST_KEY, ip);
-  console.log(`IP ${ip} removed from blocklist`);
+      logger.info(`IP ${ip} removed from blocklist`);
   return true;
 }
 

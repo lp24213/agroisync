@@ -3,7 +3,7 @@
 import BuyWithCommission from '@/components/BuyWithCommission';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
-import { useWeb3 } from '@/contexts/Web3Context';
+
 import React, { useState } from 'react';
 
 // Toast hook replacement
@@ -21,7 +21,6 @@ const useToast = () => {
 };
 
 const MetamaskPurchasePage: React.FC = () => {
-  const { isConnected, connect, account } = useWeb3();
   const toast = useToast();
 
   // Estado para os parâmetros de compra
@@ -57,17 +56,6 @@ const MetamaskPurchasePage: React.FC = () => {
       title: 'Compra realizada com sucesso!',
       description: 'Transação confirmada!',
       status: 'success',
-      duration: 5000,
-      isClosable: true,
-    });
-  };
-
-  // Função para lidar com erro na compra
-  const handleError = (error: Error) => {
-    toast({
-      title: 'Erro na compra',
-      description: error.message,
-      status: 'error',
       duration: 5000,
       isClosable: true,
     });

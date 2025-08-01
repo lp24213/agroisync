@@ -19,25 +19,14 @@ export function useUserActivity(userId?: string) {
     const fetchActivities = async () => {
       setLoading(true);
       try {
-        // Simulação de dados
-        const mockActivities: UserActivity[] = [
-          {
-            id: '1',
-            userId,
-            type: 'login',
-            timestamp: new Date(),
-            details: { ip: '192.168.1.1', userAgent: 'Mozilla/5.0...' }
-          },
-          {
-            id: '2',
-            userId,
-            type: 'transaction',
-            timestamp: new Date(Date.now() - 3600000),
-            details: { amount: '100', token: 'AGROTM' }
-          }
-        ];
+        // Fetch real user activity from backend
+        const response = await fetch(`/api/users/${userId}/activity`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch user activity');
+        }
         
-        setActivities(mockActivities);
+        const data = await response.json();
+        setActivities(data.activities);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Erro ao carregar atividades');
       } finally {

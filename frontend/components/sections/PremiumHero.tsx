@@ -247,7 +247,7 @@ export function PremiumHero() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
               className='relative w-full max-w-4xl mx-4 aspect-video bg-black rounded-2xl overflow-hidden'
-              onClick={e => e.stopPropagation()}
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
             >
               <div className='absolute inset-0 flex items-center justify-center'>
                 <div className='text-white text-center'>

@@ -198,23 +198,77 @@ class ContractDeployer {
   }
 
   private async buildSolanaProgram(programPath: string): Promise<any> {
-    // This would integrate with Anchor build process
-    // For now, returning mock data
-    return {
-      success: true,
-      programId: '11111111111111111111111111111111',
-      idl: {},
-      programPath: path.join(programPath, 'target/deploy/program.so')
-    };
+    try {
+      // Integrate with Anchor build process
+      const { execSync } = require('child_process');
+      
+      // Run Anchor build command
+      execSync('anchor build', { 
+        cwd: programPath, 
+        stdio: 'pipe' 
+      });
+      
+      // Read the generated program ID
+      const idlPath = path.join(programPath, 'target/idl/agrotm.json');
+      const idl = JSON.parse(fs.readFileSync(idlPath, 'utf8'));
+      
+      // Read the program keypair
+      const keypairPath = path.join(programPath, 'target/deploy/agrotm-keypair.json');
+      const keypairData = JSON.parse(fs.readFileSync(keypairPath, 'utf8'));
+      const programId = new PublicKey(keypairData);
+      
+      return {
+        success: true,
+        programId: programId.toString(),
+        idl,
+        programPath: path.join(programPath, 'target/deploy/agrotm.so')
+      };
+    } catch (error) {
+      console.error('Failed to build Solana program:', error);
+      throw error;
+    }
   }
 
   private async compileContract(source: string, name: string): Promise<any> {
-    // This would integrate with Solidity compiler
-    // For now, returning mock data
-    return {
-      abi: [],
-      bytecode: '0x'
-    };
+    try {
+      // Integrate with Solidity compiler
+      const solc = require('solc');
+      
+      const input = {
+        language: 'Solidity',
+        sources: {
+          [name]: {
+            content: source
+          }
+        },
+        settings: {
+          outputSelection: {
+            '*': {
+              '*': ['*']
+            }
+          }
+        }
+      };
+      
+      const output = JSON.parse(solc.compile(JSON.stringify(input)));
+      
+      if (output.errors) {
+        const errors = output.errors.filter((error: any) => error.severity === 'error');
+        if (errors.length > 0) {
+          throw new Error(`Compilation failed: ${errors.map((e: any) => e.formattedMessage).join(', ')}`);
+        }
+      }
+      
+      const contract = output.contracts[name][name];
+      
+      return {
+        abi: contract.abi,
+        bytecode: contract.evm.bytecode.object
+      };
+    } catch (error) {
+      console.error('Failed to compile contract:', error);
+      throw error;
+    }
   }
 
   private saveDeploymentAddresses(network: string, addresses: { [key: string]: string }): void {

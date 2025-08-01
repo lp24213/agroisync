@@ -158,7 +158,7 @@ export function Features() {
           viewport={{ once: true, margin: '-100px' }}
           className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
         >
-          {features.map((feature, index) => (
+          {features.map(feature => (
             <motion.div key={feature.name} variants={itemVariants} className='group relative'>
               <div className='card hover:scale-105 transition-all duration-300 h-full'>
                 {/* Icon */}
@@ -215,8 +215,8 @@ export function Features() {
           <div className='bg-gradient-to-r from-primary-500/10 to-accent-500/10 border border-primary-500/20 rounded-2xl p-8'>
             <h3 className='text-2xl font-bold text-white mb-4'>Ready to Start Earning?</h3>
             <p className='text-gray-300 mb-6 max-w-2xl mx-auto'>
-              Join thousands of users who are already earning passive income with AGROTM's advanced
-              DeFi protocols.
+              Join thousands of users who are already earning passive income with AGROTM&apos;s
+              advanced DeFi protocols.
             </p>
             <div className='flex flex-col sm:flex-row gap-4 justify-center'>
               <button className='btn-primary'>Start Staking Now</button>

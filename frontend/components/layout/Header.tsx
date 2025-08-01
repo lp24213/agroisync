@@ -6,9 +6,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Wallet, ChevronDown } from 'lucide-react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { useWeb3 } from '@/contexts/Web3Context';
+
 import { useTranslation } from 'react-i18next';
-import { LanguageSelector } from '@/components/ui/LanguageSelector';
+// import { LanguageSelector } from '@/components/ui/LanguageSelector';
 
 const navigation = [
   { name: 'navigation.home', href: '/' },
@@ -31,7 +31,7 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDefiOpen, setIsDefiOpen] = useState(false);
   const { connected } = useWallet();
-  const { isConnected: isWeb3Connected } = useWeb3();
+
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -114,7 +114,7 @@ export function Header() {
           {/* Wallet Connection & Language Selector */}
           <div className='flex items-center space-x-4'>
             {/* Language Selector */}
-            <LanguageSelector />
+            {/* <LanguageSelector /> */}
 
             {/* Solana Wallet */}
             <WalletMultiButton className='bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300' />

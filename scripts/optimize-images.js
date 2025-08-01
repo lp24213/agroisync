@@ -75,9 +75,9 @@ async function optimizeImage(inputPath, outputPath, format, width, quality) {
         await image.toFile(outputPath);
     }
     
-    console.log(`✅ Optimized: ${path.basename(inputPath)} -> ${path.basename(outputPath)}`);
-  } catch (error) {
-    console.error(`❌ Error optimizing ${inputPath}:`, error.message);
+          logger.info(`✅ Optimized: ${path.basename(inputPath)} -> ${path.basename(outputPath)}`);
+    } catch (error) {
+      logger.error(`❌ Error optimizing ${inputPath}:`, error.message);
   }
 }
 
@@ -105,7 +105,7 @@ async function generateFavicons() {
   }
   
   // Note: ICO generation would require additional library
-  console.log('📝 ICO generation requires additional library (ico-endec)');
+      logger.info('📝 ICO generation requires additional library (ico-endec)');
 }
 
 // Generate responsive images
@@ -128,20 +128,20 @@ async function generateResponsiveImages(inputPath) {
 
 // Main function
 async function main() {
-  console.log('🚀 Starting image optimization...');
+  logger.info('🚀 Starting image optimization...');
   
   ensureDir(config.outputDir);
   
   // Get all image files
   const imageFiles = getImageFiles(config.inputDir);
-  console.log(`📁 Found ${imageFiles.length} images to optimize`);
+  logger.info(`📁 Found ${imageFiles.length} images to optimize`);
   
   // Generate favicons
-  console.log('\n🎨 Generating favicons...');
+  logger.info('\n🎨 Generating favicons...');
   await generateFavicons();
   
   // Optimize all images
-  console.log('\n🖼️  Optimizing images...');
+  logger.info('\n🖼️  Optimizing images...');
   for (const imagePath of imageFiles) {
     await generateResponsiveImages(imagePath);
   }
@@ -160,13 +160,13 @@ async function main() {
     JSON.stringify(manifest, null, 2)
   );
   
-  console.log('\n✅ Image optimization completed!');
-  console.log(`📊 Manifest saved to: ${path.join(config.outputDir, 'manifest.json')}`);
+  logger.info('\n✅ Image optimization completed!');
+  logger.info(`📊 Manifest saved to: ${path.join(config.outputDir, 'manifest.json')}`);
 }
 
 // Run if called directly
 if (require.main === module) {
-  main().catch(console.error);
+  main().catch(logger.error);
 }
 
 module.exports = { optimizeImage, generateFavicons, generateResponsiveImages }; 

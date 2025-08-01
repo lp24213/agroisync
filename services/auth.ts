@@ -147,8 +147,8 @@ class AdvancedAuth {
         return { success: false, error: 'Account is inactive' };
       }
 
-      // Verify password (in real implementation, you'd get the hashed password from database)
-      const isValidPassword = await cryptoService.verifyPassword(password, 'mock-hash');
+      // Verify password with real hash from database
+      const isValidPassword = await cryptoService.verifyPassword(password, user.passwordHash || '');
       if (!isValidPassword) {
         user.loginAttempts++;
         
@@ -326,9 +326,24 @@ class AdvancedAuth {
   }
 
   private verifyTwoFactorCode(user: User, code: string): boolean {
-    // This is a simplified implementation
-    // In production, use a proper TOTP library
-    return code === '123456'; // Mock verification
+    try {
+      // Use proper TOTP verification with user's secret
+      if (!user.twoFactorSecret) {
+        return false;
+      }
+      
+      // Import TOTP library dynamically
+      const { authenticator } = require('otplib');
+      
+      // Verify the code against user's secret
+      return authenticator.verify({
+        token: code,
+        secret: user.twoFactorSecret
+      });
+    } catch (error) {
+      logger.error('2FA verification failed', { error, userId: user.id });
+      return false;
+    }
   }
 
   private isValidEmail(email: string): boolean {

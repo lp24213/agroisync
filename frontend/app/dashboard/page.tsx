@@ -67,14 +67,14 @@ const farmingPools = [
 
 export default function DashboardPage() {
   const [selectedTimeframe, setSelectedTimeframe] = useState('7D');
-  const [isLoading, setIsLoading] = useState(false);
 
   const timeframes = ['1H', '24H', '7D', '30D', '1Y', 'ALL'];
 
   useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => setIsLoading(false), 1000);
-    return () => clearTimeout(timer);
+    // Loading simulation removed for now
+    // setIsLoading(true);
+    // const timer = setTimeout(() => setIsLoading(false), 1000);
+    // return () => clearTimeout(timer);
   }, [selectedTimeframe]);
 
   return (
@@ -95,7 +95,7 @@ export default function DashboardPage() {
             transition={{ delay: 0.1 }}
             className='text-gray-400'
           >
-            Welcome back! Here's your portfolio overview.
+            Welcome back! Here&apos;s your portfolio overview.
           </motion.p>
         </div>
 
@@ -136,7 +136,7 @@ export default function DashboardPage() {
 
             {/* Asset Distribution Chart */}
             <div className='h-32 flex items-end space-x-2'>
-              {portfolioData.assets.map((asset, index) => (
+              {portfolioData.assets.map(asset => (
                 <div
                   key={asset.name}
                   className='flex-1 bg-gradient-to-t from-green-500/30 to-emerald-500/30 rounded-t transition-all duration-300 hover:opacity-80 cursor-pointer'
@@ -147,7 +147,7 @@ export default function DashboardPage() {
 
             {/* Asset List */}
             <div className='mt-4 space-y-2'>
-              {portfolioData.assets.map((asset, index) => (
+              {portfolioData.assets.map(asset => (
                 <div key={asset.name} className='flex items-center justify-between'>
                   <div className='flex items-center space-x-3'>
                     <div className={`w-3 h-3 bg-gradient-to-r ${asset.color} rounded-full`} />
@@ -250,7 +250,7 @@ export default function DashboardPage() {
             </div>
 
             <div className='space-y-4'>
-              {farmingPools.map((pool, index) => (
+              {farmingPools.map(pool => (
                 <div key={pool.name} className='p-4 bg-white/5 rounded-xl border border-white/10'>
                   <div className='flex items-center justify-between mb-3'>
                     <h4 className='font-semibold text-white'>{pool.name}</h4>
@@ -292,7 +292,7 @@ export default function DashboardPage() {
           </div>
 
           <div className='space-y-3'>
-            {recentTransactions.map((tx, index) => (
+            {recentTransactions.map((transaction, index) => (
               <div
                 key={index}
                 className='flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10'
@@ -300,28 +300,28 @@ export default function DashboardPage() {
                 <div className='flex items-center space-x-4'>
                   <div
                     className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                      tx.status === 'success' ? 'bg-green-500/20' : 'bg-yellow-500/20'
+                      transaction.status === 'success' ? 'bg-green-500/20' : 'bg-yellow-500/20'
                     }`}
                   >
                     <Activity
                       className={`w-5 h-5 ${
-                        tx.status === 'success' ? 'text-green-400' : 'text-yellow-400'
+                        transaction.status === 'success' ? 'text-green-400' : 'text-yellow-400'
                       }`}
                     />
                   </div>
                   <div>
-                    <div className='font-medium text-white'>{tx.type}</div>
-                    <div className='text-sm text-gray-400'>{tx.time}</div>
+                    <div className='font-medium text-white'>{transaction.type}</div>
+                    <div className='text-sm text-gray-400'>{transaction.time}</div>
                   </div>
                 </div>
                 <div className='text-right'>
-                  <div className='font-medium text-white'>{tx.amount}</div>
+                  <div className='font-medium text-white'>{transaction.amount}</div>
                   <div
                     className={`text-sm ${
-                      tx.status === 'success' ? 'text-green-400' : 'text-yellow-400'
+                      transaction.status === 'success' ? 'text-green-400' : 'text-yellow-400'
                     }`}
                   >
-                    {tx.status}
+                    {transaction.status}
                   </div>
                 </div>
               </div>

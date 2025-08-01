@@ -59,19 +59,16 @@ export const useUserStats = (): UseUserStatsReturn => {
       await new Promise(resolve => setTimeout(resolve, 700));
 
       if (connected && publicKey) {
-        // In a real implementation, you would fetch stats from your backend/analytics
-        // For now, we'll use mock data with some randomization
-        const randomizedStats = {
-          ...mockStats,
-          totalUsers: mockStats.totalUsers + Math.floor(Math.random() * 1000 - 500),
-          activeUsers: mockStats.activeUsers + Math.floor(Math.random() * 500 - 250),
-          userGrowth: mockStats.userGrowth + (Math.random() * 5 - 2.5),
-          retentionRate: mockStats.retentionRate + (Math.random() * 10 - 5)
-        };
+        // Fetch real user stats from backend analytics
+        const response = await fetch(`/api/users/stats?address=${publicKey.toString()}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch user stats');
+        }
         
-        setStats(randomizedStats);
+        const data = await response.json();
+        setStats(data.stats);
       } else {
-        setStats(mockStats); // Return mock data even when not connected for demo
+        setStats(null);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao carregar estatísticas de usuários');
@@ -101,16 +98,18 @@ export const useUserStats = (): UseUserStatsReturn => {
  * @returns Promise com estatísticas de usuários
  */
 export const getUserStats = async (): Promise<UserStats> => {
-  // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 300));
-  
-  return {
-    ...mockStats,
-    totalUsers: mockStats.totalUsers + Math.floor(Math.random() * 1000 - 500),
-    activeUsers: mockStats.activeUsers + Math.floor(Math.random() * 500 - 250),
-    userGrowth: mockStats.userGrowth + (Math.random() * 5 - 2.5),
-    retentionRate: mockStats.retentionRate + (Math.random() * 10 - 5)
-  };
+  try {
+    const response = await fetch('/api/users/stats');
+    if (!response.ok) {
+      throw new Error('Failed to fetch user stats');
+    }
+    
+    const data = await response.json();
+    return data.stats;
+  } catch (error) {
+    logger.error('Error fetching user stats:', error);
+    throw error;
+  }
 };
 
 export default useUserStats;

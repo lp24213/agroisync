@@ -125,31 +125,15 @@ export const useNFTValuation = (): UseNFTValuationReturn => {
       await new Promise(resolve => setTimeout(resolve, 1500));
 
       if (connected && publicKey) {
-        // In a real implementation, you would fetch valuations from AI/ML services
-        // and market data APIs. For now, we'll use mock data
-        setValuations(generateMockValuations());
+        // Fetch real NFT valuations from AI/ML services and market data APIs
+        const response = await fetch(`/api/nft/valuation?address=${publicKey.toString()}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch NFT valuations');
+        }
         
-        // Add some randomization to market trends
-        const updatedTrends = {
-          farmland: {
-            trend: mockMarketTrends.farmland.trend,
-            percentage: mockMarketTrends.farmland.percentage + (Math.random() * 4 - 2)
-          },
-          machinery: {
-            trend: mockMarketTrends.machinery.trend,
-            percentage: mockMarketTrends.machinery.percentage + (Math.random() * 2 - 1)
-          },
-          commodities: {
-            trend: mockMarketTrends.commodities.trend,
-            percentage: mockMarketTrends.commodities.percentage + (Math.random() * 6 - 3)
-          },
-          certificates: {
-            trend: mockMarketTrends.certificates.trend,
-            percentage: mockMarketTrends.certificates.percentage + (Math.random() * 8 - 4)
-          }
-        } as MarketTrends;
-        
-        setMarketTrends(updatedTrends);
+        const data = await response.json();
+        setValuations(data.valuations);
+        setMarketTrends(data.marketTrends);
       } else {
         setValuations([]);
         setMarketTrends(mockMarketTrends);

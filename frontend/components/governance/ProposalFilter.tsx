@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Filter } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 interface ProposalFilterProps {
   onSearch: (term: string) => void;
@@ -19,7 +19,6 @@ export function ProposalFilter({
   currentSort,
 }: ProposalFilterProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -29,7 +28,7 @@ export function ProposalFilter({
 
   const handleFilterClick = (status: string) => {
     onFilter(status);
-    setIsFilterOpen(false);
+    // setIsFilterOpen(false);
   };
 
   return (

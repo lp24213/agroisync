@@ -59,12 +59,12 @@ const timeframes = ['1H', '24H', '7D', '30D', '1Y', 'ALL'];
 
 export function PremiumAnalytics() {
   const [selectedTimeframe, setSelectedTimeframe] = useState('7D');
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => setIsLoading(false), 1000);
-    return () => clearTimeout(timer);
+    // Loading simulation removed for now
+    // setIsLoading(true);
+    // const timer = setTimeout(() => setIsLoading(false), 1000);
+    // return () => clearTimeout(timer);
   }, [selectedTimeframe]);
 
   return (
@@ -140,12 +140,12 @@ export function PremiumAnalytics() {
 
         {/* Metrics Grid */}
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16'>
-          {metrics.map((metric, index) => (
+          {metrics.map(metric => (
             <motion.div
               key={metric.title}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
               className='group relative'
             >
               <div className='bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300'>
@@ -208,7 +208,7 @@ export function PremiumAnalytics() {
             <div className='h-64 flex items-end space-x-2'>
               {chartData.tvl.map((value, index) => (
                 <div
-                  key={index}
+                  key={`tvl-${index}`}
                   className='flex-1 bg-gradient-to-t from-green-500 to-emerald-600 rounded-t transition-all duration-300 hover:opacity-80'
                   style={{ height: `${(value / 3.2) * 100}%` }}
                 />
@@ -246,7 +246,7 @@ export function PremiumAnalytics() {
             <div className='h-64 flex items-end space-x-2'>
               {chartData.users.map((value, index) => (
                 <div
-                  key={index}
+                  key={`users-${index}`}
                   className='flex-1 bg-gradient-to-t from-blue-500 to-cyan-600 rounded-t transition-all duration-300 hover:opacity-80'
                   style={{ height: `${(value / 50) * 100}%` }}
                 />

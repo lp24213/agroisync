@@ -2,7 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Toaster } from 'react-hot-toast';
-import { useMemo, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { Web3Provider } from '../contexts/Web3Context';
 
 interface ProvidersProps {

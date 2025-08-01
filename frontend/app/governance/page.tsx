@@ -405,7 +405,7 @@ const ProposalCard = ({ proposal, onVote }: ProposalCardProps) => {
     }, 1500);
   };
 
-  const getStatusColor = status => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case 'active':
         return 'text-agro-blue';
@@ -420,7 +420,7 @@ const ProposalCard = ({ proposal, onVote }: ProposalCardProps) => {
     }
   };
 
-  const getStatusIcon = status => {
+  const getStatusIcon = (status: string) => {
     switch (status) {
       case 'active':
         return <Vote className='h-5 w-5 text-agro-blue' />;
@@ -440,7 +440,7 @@ const ProposalCard = ({ proposal, onVote }: ProposalCardProps) => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  const formatNumber = num => {
+  const formatNumber = (num: number) => {
     return num.toLocaleString();
   };
 
@@ -673,8 +673,8 @@ export default function GovernancePage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all'); // all, active, passed, rejected, pending
   const [sortBy, setSortBy] = useState('newest'); // newest, oldest, most_votes
-  const [userVotingPower, setUserVotingPower] = useState(50000);
-  const [totalProposals, setTotalProposals] = useState({
+  const [userVotingPower] = useState(50000);
+  const [totalProposals] = useState({
     active: proposals.filter(p => p.status === 'active').length,
     passed: proposals.filter(p => p.status === 'passed').length,
     rejected: proposals.filter(p => p.status === 'rejected').length,
@@ -869,7 +869,7 @@ export default function GovernancePage() {
         <div className='space-y-6'>
           {activeProposals.length > 0 ? (
             activeProposals.map(proposal => (
-              <ProposalCard key={proposal.id} proposal={proposal} onVote={handleVote} />
+              <ProposalCard key={proposal.id} proposal={proposal as Proposal} onVote={handleVote} />
             ))
           ) : (
             <div className='text-center py-12 bg-agro-dark/30 rounded-lg'>
@@ -914,9 +914,10 @@ export default function GovernancePage() {
                     <h3 className='text-lg font-bold text-white'>Voting</h3>
                   </div>
                   <p className='text-gray-300 text-sm'>
-                    Each proposal has a voting period of 7 days. You can vote "For", "Against", or
-                    "Abstain". For a proposal to pass, it must reach quorum (minimum participation)
-                    and have more "For" votes than "Against".
+                    Each proposal has a voting period of 7 days. You can vote &quot;For&quot;,
+                    &quot;Against&quot;, or &quot;Abstain&quot;. For a proposal to pass, it must
+                    reach quorum (minimum participation) and have more &quot;For&quot; votes than
+                    &quot;Against&quot;.
                   </p>
                 </div>
 

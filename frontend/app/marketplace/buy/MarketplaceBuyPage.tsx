@@ -145,10 +145,10 @@ const mockMarketplaceItems: MarketplaceItem[] = [
 ];
 
 // Endereço do contrato BuyWithCommission (simulado)
-const COMMISSION_CONTRACT_ADDRESS = '0x9876543210987654321098765432109876543210';
+// const COMMISSION_CONTRACT_ADDRESS = '0x9876543210987654321098765432109876543210';
 
 const MarketplaceBuyPage: React.FC = () => {
-  const { isConnected, connect } = useWeb3();
+  const { isConnected } = useWeb3();
   const [selectedItem, setSelectedItem] = useState<MarketplaceItem | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [purchaseSuccess, setPurchaseSuccess] = useState<{ txHash: string; itemId: string } | null>(
@@ -173,10 +173,10 @@ const MarketplaceBuyPage: React.FC = () => {
   };
 
   // Função para lidar com erro na compra
-  const handlePurchaseError = (error: Error) => {
-    console.error('Erro na compra:', error);
-    // Aqui você pode adicionar uma notificação de erro
-  };
+  // const handlePurchaseError = (error: Error) => {
+  //   console.error('Erro na compra:', error);
+  //   // Aqui você pode adicionar uma notificação de erro
+  // };
 
   return (
     <div className='container mx-auto py-8 px-4 max-w-7xl'>
@@ -269,21 +269,22 @@ const MarketplaceBuyPage: React.FC = () => {
           <ModalBody>
             {selectedItem && (
               <BuyWithCommission
-                contractAddress={COMMISSION_CONTRACT_ADDRESS}
+                // contractAddress={COMMISSION_CONTRACT_ADDRESS}
+                type={selectedItem.type === 'token' ? 'token' : 'nft'}
                 tokenAddress={selectedItem.tokenAddress}
-                tokenType={
-                  selectedItem.type === 'token'
-                    ? 'ERC20'
-                    : selectedItem.type === 'nft'
-                      ? 'ERC721'
-                      : 'ERC1155'
-                }
+                // tokenType={
+                //   selectedItem.type === 'token'
+                //     ? 'ERC20'
+                //     : selectedItem.type === 'nft'
+                //       ? 'ERC721'
+                //       : 'ERC1155'
+                // }
                 tokenId={selectedItem.tokenId}
                 amount={selectedItem.amount?.toString()}
                 sellerAddress={selectedItem.sellerAddress}
                 price={selectedItem.price}
                 onSuccess={() => handlePurchaseSuccess('tx-hash-placeholder')}
-                onError={handlePurchaseError}
+                // onError={handlePurchaseError}
               />
             )}
           </ModalBody>

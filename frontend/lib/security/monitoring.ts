@@ -82,10 +82,10 @@ export interface SecurityEvent {
   userAgent: string;
   userId?: string;
   sessionId?: string;
-  details: Record<string, any>;
+  details: Record<string, unknown>;
   threatLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   source: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 // In-memory event store (use database in production)
@@ -96,13 +96,6 @@ const blockedIPs = new Map<string, { reason: string; timestamp: number; duration
 // Utility functions
 const generateEventId = (): string => {
   return crypto.randomBytes(16).toString('hex');
-};
-
-const calculateThreatLevel = (score: number): 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' => {
-  if (score >= MONITORING_CONFIG.THREAT_LEVELS.CRITICAL) return 'CRITICAL';
-  if (score >= MONITORING_CONFIG.THREAT_LEVELS.HIGH) return 'HIGH';
-  if (score >= MONITORING_CONFIG.THREAT_LEVELS.MEDIUM) return 'MEDIUM';
-  return 'LOW';
 };
 
 const updateThreatScore = (ip: string, score: number): void => {
@@ -226,10 +219,10 @@ export class SecurityMonitor {
 
     // Additional scoring based on details
     if (event.details.frequency) {
-      score += event.details.frequency * 2;
+      score += (event.details.frequency as number) * 2;
     }
 
-    if (event.details.payloadSize && event.details.payloadSize > 1024 * 1024) {
+    if (event.details.payloadSize && (event.details.payloadSize as number) > 1024 * 1024) {
       score += 3; // Large payload
     }
 

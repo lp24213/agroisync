@@ -36,6 +36,8 @@ pnpm-debug.log*
 
 # Local env files
 .env*.local
+.env.production
+.env.staging
 
 # Vercel
 .vercel

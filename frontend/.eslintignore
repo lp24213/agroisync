@@ -1,0 +1,18 @@
+# Arquivos públicos (gerados automaticamente)
+public/sw.js
+public/workbox-*.js
+
+# Arquivos de tipos de terceiros
+types/*.d.ts
+
+# Arquivos de build
+.next/
+out/
+dist/
+
+# Arquivos de dependências
+node_modules/
+
+# Arquivos de configuração
+*.config.js
+*.config.ts 

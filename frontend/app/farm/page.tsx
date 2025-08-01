@@ -2,19 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  ArrowUpDown,
-  RefreshCw,
-  ChevronDown,
-  Plus,
-  Minus,
-  Info,
-  Clock,
-  Zap,
-  TrendingUp,
-  Filter,
-  Search,
-} from 'lucide-react';
+import { ArrowUpDown, RefreshCw, TrendingUp, Search } from 'lucide-react';
 
 // Types
 interface Token {
@@ -462,7 +450,23 @@ const FarmCard = ({ farm, onStake, onUnstake, onHarvest }: FarmCardProps) => {
 
 export default function FarmPage() {
   const [activeFarms, setActiveFarms] = useState(farms);
-  const [userFarms, setUserFarms] = useState([]);
+  const [userFarms, setUserFarms] = useState<
+    Array<{
+      id: number;
+      name: string;
+      type: string;
+      apr: number;
+      tvl: number;
+      multiplier: string;
+      token1: { symbol: string; color: string };
+      token2: { symbol: string; color: string };
+      userStaked: number;
+      userStakedValue: number;
+      earned: number;
+      earnedValue: number;
+      featured: boolean;
+    }>
+  >([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all'); // all, staked, featured
   const [sortBy, setSortBy] = useState('apr'); // apr, tvl, earned
@@ -480,7 +484,7 @@ export default function FarmPage() {
 
     const earnedValue = farms.reduce((acc, farm) => acc + farm.earnedValue, 0);
     setTotalEarned(earnedValue);
-  }, [farms]);
+  }, []);
 
   // Filter and sort farms
   useEffect(() => {

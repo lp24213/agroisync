@@ -72,9 +72,9 @@ class WelcomeEmailService {
       };
 
       await this.transporter.sendMail(mailOptions);
-      console.log(`Welcome email sent to ${data.userEmail}`);
-    } catch (error) {
-      console.error('Error sending welcome email:', error);
+          logger.info(`Welcome email sent to ${data.userEmail}`);
+  } catch (error) {
+    logger.error('Error sending welcome email:', error);
       throw error;
     }
   }
@@ -100,9 +100,9 @@ class WelcomeEmailService {
       };
 
       await this.transporter.sendMail(mailOptions);
-      console.log(`KYC approved email sent to ${data.userEmail}`);
-    } catch (error) {
-      console.error('Error sending KYC approved email:', error);
+          logger.info(`KYC approved email sent to ${data.userEmail}`);
+  } catch (error) {
+    logger.error('Error sending KYC approved email:', error);
       throw error;
     }
   }
@@ -129,9 +129,9 @@ class WelcomeEmailService {
       };
 
       await this.transporter.sendMail(mailOptions);
-      console.log(`KYC rejected email sent to ${data.userEmail}`);
-    } catch (error) {
-      console.error('Error sending KYC rejected email:', error);
+          logger.info(`KYC rejected email sent to ${data.userEmail}`);
+  } catch (error) {
+    logger.error('Error sending KYC rejected email:', error);
       throw error;
     }
   }
@@ -156,9 +156,9 @@ class WelcomeEmailService {
       };
 
       await this.transporter.sendMail(mailOptions);
-      console.log(`Account verified email sent to ${data.userEmail}`);
-    } catch (error) {
-      console.error('Error sending account verified email:', error);
+          logger.info(`Account verified email sent to ${data.userEmail}`);
+  } catch (error) {
+    logger.error('Error sending account verified email:', error);
       throw error;
     }
   }
@@ -185,9 +185,9 @@ class WelcomeEmailService {
       };
 
       await this.transporter.sendMail(mailOptions);
-      console.log(`Referral bonus email sent to ${data.userEmail}`);
-    } catch (error) {
-      console.error('Error sending referral bonus email:', error);
+          logger.info(`Referral bonus email sent to ${data.userEmail}`);
+  } catch (error) {
+    logger.error('Error sending referral bonus email:', error);
       throw error;
     }
   }
@@ -214,9 +214,9 @@ class WelcomeEmailService {
       };
 
       await this.transporter.sendMail(mailOptions);
-      console.log(`First stake email sent to ${data.userEmail}`);
-    } catch (error) {
-      console.error('Error sending first stake email:', error);
+          logger.info(`First stake email sent to ${data.userEmail}`);
+  } catch (error) {
+    logger.error('Error sending first stake email:', error);
       throw error;
     }
   }
@@ -244,9 +244,9 @@ class WelcomeEmailService {
       };
 
       await this.transporter.sendMail(mailOptions);
-      console.log(`First NFT email sent to ${data.userEmail}`);
-    } catch (error) {
-      console.error('Error sending first NFT email:', error);
+          logger.info(`First NFT email sent to ${data.userEmail}`);
+  } catch (error) {
+    logger.error('Error sending first NFT email:', error);
       throw error;
     }
   }
@@ -505,7 +505,7 @@ The AGROTM Team
       await this.transporter.verify();
       return true;
     } catch (error) {
-      console.error('Email service connection failed:', error);
+      logger.error('Email service connection failed:', error);
       return false;
     }
   }

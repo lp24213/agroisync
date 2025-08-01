@@ -2,17 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import {
-  Twitter,
-  Github,
-  Linkedin,
-  Mail,
-  ExternalLink,
-  Shield,
-  Zap,
-  Users,
-  TrendingUp,
-} from 'lucide-react';
+import { Twitter, Github, Linkedin, Mail, Shield, Zap, Users, TrendingUp } from 'lucide-react';
 
 const navigation = {
   product: [
