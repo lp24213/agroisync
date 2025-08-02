@@ -7,13 +7,7 @@
     "dev": "ts-node-dev src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "test": "echo 'Tests disabled for deployment'",
-    "lint": "echo 'Lint disabled for deployment'",
-    "lint:fix": "echo 'Lint disabled for deployment'",
-    "type-check": "echo 'Type check disabled for deployment'",
-    "format": "echo 'Format disabled for deployment'",
-    "format:check": "echo 'Format check disabled for deployment'",
-    "postinstall": "echo 'Backend dependencies installed successfully'",
+    "postinstall": "npm run build",
     "health": "curl -f http://localhost:$PORT/health || exit 1"
   },
   "dependencies": {
