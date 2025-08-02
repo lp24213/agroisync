@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { Suspense } from "react";
-import { Layout } from "@/components/layout/Layout";
-import { Web3Provider } from "@/contexts/Web3Context";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { Layout } from "../components/layout/Layout";
+import { Web3Provider } from "../contexts/Web3Context";
+import { AuthProvider } from "../contexts/AuthContext";
+import { LoadingSpinner } from "../components/ui/LoadingSpinner";
 import "./globals.css";
 
 const inter = Inter({ 

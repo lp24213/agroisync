@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Card } from '@/components/ui/Card';
-import { validation } from '@/utils/validation';
+import { Card } from '../ui/Card';
+import { validation } from '../../lib/utils';
 import { motion } from 'framer-motion';
 
 interface Stat {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '../ui/Button';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -36,7 +36,7 @@ export function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-agro-darker/80 backdrop-blur-md border-b border-gray-800/50 relative overflow-hidden">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-agro-darker/80 backdrop-blur-md border-b border-gray-800/50 overflow-hidden">
       {/* Scanlines Effect */}
       <div className="absolute inset-0 z-0 scanlines opacity-5"></div>
       

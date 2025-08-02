@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { HeroSection } from "@/components/sections/HeroSection";
-import { FeaturesSection } from "@/components/sections/FeaturesSection";
-import { StatsSection } from "@/components/sections/StatsSection";
-import { CTASection } from "@/components/sections/CTASection";
-import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
-import { PartnersSection } from "@/components/sections/PartnersSection";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { Hero } from "../components/sections/Hero";
+import { Features } from "../components/sections/Features";
+import { Stats } from "../components/sections/Stats";
+import { CTA } from "../components/sections/CTA";
+import { About } from "../components/sections/About";
+import { Contact } from "../components/sections/Contact";
+import { LoadingSpinner } from "../components/ui/LoadingSpinner";
 
 export const metadata: Metadata = {
   title: "AGROTM Solana - Revolucione a Agricultura com DeFi",
@@ -121,42 +121,42 @@ export default function HomePage() {
         {/* Hero Section */}
         <section className="relative w-full">
           <Suspense fallback={<SectionLoading />}>
-            <HeroSection />
+            <Hero />
           </Suspense>
         </section>
 
         {/* Features Section */}
         <section className="relative w-full py-20 bg-agro-dark/50">
           <Suspense fallback={<SectionLoading />}>
-            <FeaturesSection />
+            <Features />
           </Suspense>
         </section>
 
         {/* Stats Section */}
         <section className="relative w-full py-16 bg-gradient-to-r from-agro-primary/10 to-agro-secondary/10">
           <Suspense fallback={<SectionLoading />}>
-            <StatsSection />
+            <Stats />
           </Suspense>
         </section>
 
-        {/* Testimonials Section */}
+        {/* About Section */}
         <section className="relative w-full py-20 bg-agro-dark/30">
           <Suspense fallback={<SectionLoading />}>
-            <TestimonialsSection />
+            <About />
           </Suspense>
         </section>
 
-        {/* Partners Section */}
+        {/* Contact Section */}
         <section className="relative w-full py-16 bg-agro-dark/50">
           <Suspense fallback={<SectionLoading />}>
-            <PartnersSection />
+            <Contact />
           </Suspense>
         </section>
 
         {/* Call to Action Section */}
         <section className="relative w-full py-20 bg-gradient-to-br from-agro-primary/20 via-agro-secondary/20 to-agro-accent/20">
           <Suspense fallback={<SectionLoading />}>
-            <CTASection />
+            <CTA />
           </Suspense>
         </section>
       </div>

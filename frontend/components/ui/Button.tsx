@@ -2,7 +2,7 @@
 
 import React, { memo, forwardRef, useState, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
 import { Loader2, Check, AlertCircle } from 'lucide-react';
 
 /**

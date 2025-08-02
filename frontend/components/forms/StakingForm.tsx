@@ -6,7 +6,7 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
-import { validation } from '@/utils/validation';
+import { validation } from '../../lib/utils';
 import { cn } from '@/lib/utils';
 
 /**

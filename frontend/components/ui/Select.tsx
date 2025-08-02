@@ -2,7 +2,7 @@
 
 import React, { memo, forwardRef, useState, useRef, useEffect, useId } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
 
 /**
  * Select Component - Premium custom select with enhanced UX and accessibility

@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
+import { Button } from '../ui/Button';
+import { Card } from '../ui/Card';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 

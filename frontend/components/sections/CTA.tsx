@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '../ui/Button';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export function CTA() {

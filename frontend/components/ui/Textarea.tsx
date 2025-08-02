@@ -2,7 +2,7 @@
 
 import React, { memo, forwardRef, useState, useRef, useEffect, useId, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
 
 /**
  * Textarea Component - Premium multi-line text input with enhanced UX

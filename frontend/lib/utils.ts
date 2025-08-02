@@ -1,5 +1,5 @@
-import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
 
 /**
  * Utility library for AGROTM platform
@@ -13,9 +13,59 @@ import { twMerge } from 'tailwind-merge';
  * @param inputs - Class values to combine
  * @returns Merged class string
  */
-export function cn(...inputs: ClassValue[]): string {
-  return twMerge(clsx(inputs));
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
 }
+
+// Validation utilities
+export const validation = {
+  formatCurrency: (value: number): string => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    }).format(value);
+  },
+
+  formatPercentage: (value: number): string => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'percent',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value / 100);
+  },
+
+  formatNumber: (value: number): string => {
+    return new Intl.NumberFormat('pt-BR', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    }).format(value);
+  },
+
+  formatCompactNumber: (value: number): string => {
+    return new Intl.NumberFormat('pt-BR', {
+      notation: 'compact',
+      compactDisplay: 'short',
+    }).format(value);
+  },
+
+  validateEmail: (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  },
+
+  validateWalletAddress: (address: string): boolean => {
+    // Basic Solana address validation (base58, 32-44 characters)
+    const solanaRegex = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+    return solanaRegex.test(address);
+  },
+
+  validateAmount: (amount: string): boolean => {
+    const num = parseFloat(amount);
+    return !isNaN(num) && num > 0;
+  },
+};
 
 /**
  * Type-safe object key checker
@@ -560,8 +610,8 @@ export function flatten<T>(array: T[][]): T[] {
  * @returns Deep flattened array
  */
 export function deepFlatten<T>(array: unknown[]): T[] {
-  return array.reduce((flat, item) => {
-    return flat.concat(Array.isArray(item) ? deepFlatten(item) : item);
+  return array.reduce((flat: T[], item) => {
+    return flat.concat(Array.isArray(item) ? deepFlatten<T>(item) : item as T);
   }, [] as T[]);
 }
 
@@ -630,8 +680,8 @@ export function isNotEmpty(value: unknown): boolean {
  * @returns Value at path or undefined
  */
 export function get(obj: Record<string, unknown>, path: string): unknown {
-  return path.split('.').reduce((current, key) => {
-    return current && typeof current === 'object' && key in current
+  return path.split('.').reduce((current: unknown, key: string) => {
+    return current && typeof current === 'object' && key in (current as Record<string, unknown>)
       ? (current as Record<string, unknown>)[key]
       : undefined;
   }, obj);
@@ -697,7 +747,7 @@ export function deepMerge<T extends Record<string, unknown>>(
  * @returns True if object
  */
 function isObject(item: unknown): item is Record<string, unknown> {
-  return item && typeof item === 'object' && !Array.isArray(item);
+  return Boolean(item && typeof item === 'object' && !Array.isArray(item));
 }
 
 /**
@@ -746,7 +796,7 @@ export class EventEmitter<T extends Record<string, unknown[]>> {
 export class StateMachine<T extends string, E extends string> {
   private currentState: T;
   private transitions: Map<T, Map<E, T>> = new Map();
-  private onStateChange?: (from: T, to: T, event: E) => void;
+  private stateChangeCallback?: (from: T, to: T, event: E) => void;
 
   constructor(initialState: T) {
     this.currentState = initialState;
@@ -773,7 +823,7 @@ export class StateMachine<T extends string, E extends string> {
     const toState = this.transitions.get(this.currentState)!.get(event)!;
     
     this.currentState = toState;
-    this.onStateChange?.(fromState, toState, event);
+    this.stateChangeCallback?.(fromState, toState, event);
     
     return true;
   }
@@ -783,7 +833,7 @@ export class StateMachine<T extends string, E extends string> {
   }
 
   onStateChange(callback: (from: T, to: T, event: E) => void): void {
-    this.onStateChange = callback;
+    this.stateChangeCallback = callback;
   }
 }
 

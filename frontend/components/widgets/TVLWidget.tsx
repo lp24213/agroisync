@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Card } from '@/components/ui/Card';
-import { validation } from '@/utils/validation';
+import { validation } from '../../lib/utils';
 
 interface TVLWidgetProps {
   tvl: number;

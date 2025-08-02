@@ -4,9 +4,9 @@
   "description": "AGROTM Backend API - Simple and Reliable",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
     "dev": "nodemon index.js",
     "build": "echo 'No build step required'",
+    "start": "node index.js",
     "test": "echo 'Tests disabled for deployment'",
     "lint": "echo 'Lint disabled for deployment'",
     "lint:fix": "echo 'Lint disabled for deployment'",
@@ -30,8 +30,7 @@
     "nodemon": "^3.0.2"
   },
   "engines": {
-    "node": ">=20.0.0",
-    "npm": ">=9.0.0"
+    "node": "20.x"
   },
   "keywords": [
     "agrotm",

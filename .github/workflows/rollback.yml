@@ -1,271 +1,38 @@
-name: AGROTM.SOL Manual Rollback
+name: Rollback Deployment
 
 on:
   workflow_dispatch:
     inputs:
       deployment_id:
-        description: 'Deployment ID to rollback to (opcional, usará o anterior se não informado)'
-        required: false
-        type: string
-      environment:
-        description: 'Ambiente para rollback'
+        description: 'Deployment ID to rollback to'
         required: true
-        default: 'production'
-        type: choice
-        options:
-          - production
-          - preview
-      force_rollback:
-        description: 'Forçar rollback mesmo se health check falhar'
-        required: false
-        default: false
-        type: boolean
-
-env:
-  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_PROD }}
-  RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-  RAILWAY_SERVICE: agrotm-solana
-  NOTIFICATION_WEBHOOK_URL: ${{ secrets.NOTIFICATION_WEBHOOK_URL }}
+        type: string
 
 jobs:
   rollback:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Instalar dependências
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq curl
-
-      - name: Validar secrets
-        run: |
-          set -e
-          for VAR in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID RAILWAY_TOKEN; do
-            if [ -z "${!VAR}" ]; then
-              echo "❌ $VAR não está definido"
-              exit 1
-            fi
-          done
-          echo "✅ Todos os secrets obrigatórios estão configurados"
-
-      - name: Validar ambiente
-        run: |
-          ENVIRONMENT="${{ github.event.inputs.environment }}"
-          echo "🎯 Rollback para: $ENVIRONMENT"
-          if [ "$ENVIRONMENT" = "production" ]; then
-            echo "⚠️ ROLLBACK EM PRODUÇÃO - Isso afetará usuários reais"
-          fi
-
-      - name: Obter deployment ID
-        id: get_deployment
-        run: |
-          set -e
-          if [ -n "${{ github.event.inputs.deployment_id }}" ]; then
-            DEPLOYMENT_ID="${{ github.event.inputs.deployment_id }}"
-            echo "Usando deployment ID informado: $DEPLOYMENT_ID"
-          else
-            echo "Buscando deployment anterior..."
-            DEPLOYMENTS_RESPONSE=$(curl -s -w "%{http_code}" \
-              -H "Authorization: Bearer $VERCEL_TOKEN" \
-              "https://api.vercel.com/v1/deployments?teamId=$VERCEL_ORG_ID&projectId=$VERCEL_PROJECT_ID&limit=5")
-            HTTP_CODE="${DEPLOYMENTS_RESPONSE: -3}"
-            DEPLOYMENTS_BODY="${DEPLOYMENTS_RESPONSE%???}"
-            if [ "$HTTP_CODE" != "200" ]; then
-              echo "❌ Falha ao buscar deployments: HTTP $HTTP_CODE"
-              echo "Response: $DEPLOYMENTS_BODY"
-              exit 1
-            fi
-            DEPLOYMENT_ID=$(echo "$DEPLOYMENTS_BODY" | jq -r '.deployments[1].id // empty')
-            if [ -z "$DEPLOYMENT_ID" ]; then
-              echo "❌ Nenhum deployment anterior encontrado para rollback"
-              exit 1
-            fi
-            echo "Usando deployment anterior: $DEPLOYMENT_ID"
-          fi
-          echo "deployment_id=$DEPLOYMENT_ID" >> $GITHUB_OUTPUT
-          echo "::set-output name=deployment_id::$DEPLOYMENT_ID"
-
-      - name: Verificar deployment
-        id: verify_deployment
-        run: |
-          set -e
-          DEPLOYMENT_ID="${{ steps.get_deployment.outputs.deployment_id }}"
-          echo "🔍 Verificando deployment $DEPLOYMENT_ID..."
-          DEPLOYMENT_RESPONSE=$(curl -s -w "%{http_code}" \
-            -H "Authorization: Bearer $VERCEL_TOKEN" \
-            "https://api.vercel.com/v1/deployments/$DEPLOYMENT_ID")
-          HTTP_CODE="${DEPLOYMENT_RESPONSE: -3}"
-          DEPLOYMENT_BODY="${DEPLOYMENT_RESPONSE%???}"
-          if [ "$HTTP_CODE" != "200" ]; then
-            echo "❌ Falha ao buscar info do deployment: HTTP $HTTP_CODE"
-            echo "Response: $DEPLOYMENT_BODY"
-            exit 1
-          fi
-          DEPLOYMENT_STATUS=$(echo "$DEPLOYMENT_BODY" | jq -r '.ready // false')
-          DEPLOYMENT_URL=$(echo "$DEPLOYMENT_BODY" | jq -r '.url // empty')
-          DEPLOYMENT_STATE=$(echo "$DEPLOYMENT_BODY" | jq -r '.state // empty')
-          echo "URL: $DEPLOYMENT_URL"
-          echo "State: $DEPLOYMENT_STATE"
-          if [ "$DEPLOYMENT_STATUS" != "true" ]; then
-            echo "❌ Deployment $DEPLOYMENT_ID não está pronto para rollback"
-            exit 1
-          fi
-          echo "✅ Deployment $DEPLOYMENT_ID pronto para rollback"
-          echo "deployment_url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
-          echo "::set-output name=deployment_url::$DEPLOYMENT_URL"
-
-      - name: Rollback frontend (Vercel)
-        id: rollback_frontend
-        run: |
-          set -e
-          DEPLOYMENT_ID="${{ steps.get_deployment.outputs.deployment_id }}"
-          ENVIRONMENT="${{ github.event.inputs.environment }}"
-          if [ "$ENVIRONMENT" = "production" ]; then
-            echo "Promovendo deployment para produção..."
-            PROMOTE_RESPONSE=$(curl -s -w "%{http_code}" -X POST \
-              -H "Authorization: Bearer $VERCEL_TOKEN" \
-              -H "Content-Type: application/json" \
-              "https://api.vercel.com/v1/deployments/$DEPLOYMENT_ID/promote")
-            HTTP_CODE="${PROMOTE_RESPONSE: -3}"
-            RESPONSE_BODY="${PROMOTE_RESPONSE%???}"
-            if [ "$HTTP_CODE" = "200" ]; then
-              echo "✅ Rollback do frontend concluído!"
-              echo "rollback_status=success" >> $GITHUB_OUTPUT
-              echo "::set-output name=rollback_status::success"
-            else
-              echo "❌ Rollback do frontend falhou: HTTP $HTTP_CODE"
-              echo "Response: $RESPONSE_BODY"
-              echo "rollback_status=failed" >> $GITHUB_OUTPUT
-              echo "::set-output name=rollback_status::failed"
-              exit 1
-            fi
-          else
-            echo "Ambiente preview - deployment disponível em: ${{ steps.verify_deployment.outputs.deployment_url }}"
-            echo "rollback_status=preview" >> $GITHUB_OUTPUT
-            echo "::set-output name=rollback_status::preview"
-          fi
-
-      - name: Rollback backend (Railway)
-        id: rollback_backend
-        run: |
-          set -e
-          SERVICE_NAME="$RAILWAY_SERVICE"
-          SERVICES_RESPONSE=$(curl -s -w "%{http_code}" \
-            -H "Authorization: Bearer $RAILWAY_TOKEN" \
-            "https://api.railway.app/v2/services")
-          HTTP_CODE="${SERVICES_RESPONSE: -3}"
-          SERVICES_BODY="${SERVICES_RESPONSE%???}"
-          if [ "$HTTP_CODE" != "200" ]; then
-            echo "❌ Falha ao buscar serviços Railway: HTTP $HTTP_CODE"
-            echo "Response: $SERVICES_BODY"
-            echo "backend_status=failed" >> $GITHUB_OUTPUT
-            echo "::set-output name=backend_status::failed"
-            exit 1
-          fi
-          SERVICE_ID=$(echo "$SERVICES_BODY" | jq -r ".services[] | select(.name == \"$SERVICE_NAME\") | .id // empty")
-          if [ -z "$SERVICE_ID" ]; then
-            echo "❌ Serviço Railway '$SERVICE_NAME' não encontrado"
-            echo "backend_status=failed" >> $GITHUB_OUTPUT
-            echo "::set-output name=backend_status::failed"
-            exit 1
-          fi
-          echo "Service ID: $SERVICE_ID"
-          RAILWAY_RESPONSE=$(curl -s -w "%{http_code}" -X POST \
-            -H "Authorization: Bearer $RAILWAY_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d "{\"serviceId\": \"$SERVICE_ID\"}" \
-            "https://api.railway.app/v2/deployments")
-          HTTP_CODE="${RAILWAY_RESPONSE: -3}"
-          RESPONSE_BODY="${RAILWAY_RESPONSE%???}"
-          if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "201" ]; then
-            echo "✅ Rollback do backend disparado!"
-            echo "backend_status=success" >> $GITHUB_OUTPUT
-            echo "::set-output name=backend_status::success"
-          else
-            echo "❌ Rollback do backend falhou: HTTP $HTTP_CODE"
-            echo "Response: $RESPONSE_BODY"
-            echo "backend_status=failed" >> $GITHUB_OUTPUT
-            echo "::set-output name=backend_status::failed"
-            exit 1
-          fi
-
-      - name: Esperar propagação do deploy
-        if: ${{ github.event.inputs.environment == 'production' }}
-        run: |
-          echo "⏳ Aguardando propagação do rollback..."
-          sleep 45
-
-      - name: Health check após rollback
-        id: health_check
-        if: ${{ github.event.inputs.environment == 'production' }}
-        run: |
-          set +e
-          PROD_URL="https://agrotmsol.com.br"
-          FORCE_ROLLBACK="${{ github.event.inputs.force_rollback }}"
-          HEALTH_CHECK_PASSED=false
-          for i in {1..3}; do
-            echo "Tentativa de health check $i/3..."
-            if curl -f -s --max-time 30 "$PROD_URL/api/health" > /dev/null; then
-              echo "✅ Health check passou em /api/health"
-              HEALTH_CHECK_PASSED=true
-              break
-            elif curl -f -s --max-time 30 "$PROD_URL/health" > /dev/null; then
-              echo "✅ Health check passou em /health"
-              HEALTH_CHECK_PASSED=true
-              break
-            elif curl -f -s --max-time 30 "$PROD_URL/" > /dev/null; then
-              echo "✅ Health check passou na raiz /"
-              HEALTH_CHECK_PASSED=true
-              break
-            else
-              echo "⚠️ Health check falhou na tentativa $i"
-              if [ $i -lt 3 ]; then
-                echo "Aguardando 10s para nova tentativa..."
-                sleep 10
-              fi
-            fi
-          done
-          if [ "$HEALTH_CHECK_PASSED" = "true" ]; then
-            echo "health_status=passed" >> $GITHUB_OUTPUT
-            echo "::set-output name=health_status::passed"
-          else
-            echo "health_status=failed" >> $GITHUB_OUTPUT
-            echo "::set-output name=health_status::failed"
-            if [ "$FORCE_ROLLBACK" = "true" ]; then
-              echo "⚠️ Health check falhou, mas force_rollback está ativado - continuando"
-            else
-              echo "❌ Health check falhou após rollback"
-              exit 1
-            fi
-          fi
-
-      - name: Notificar sucesso do rollback
-        if: ${{ success() }}
-        run: |
-          ENVIRONMENT="${{ github.event.inputs.environment }}"
-          DEPLOYMENT_ID="${{ steps.get_deployment.outputs.deployment_id }}"
-          DEPLOYMENT_URL="${{ steps.verify_deployment.outputs.deployment_url }}"
-          ROLLBACK_STATUS="${{ steps.rollback_frontend.outputs.rollback_status }}"
-          BACKEND_STATUS="${{ steps.rollback_backend.outputs.backend_status }}"
-          HEALTH_STATUS="${{ steps.health_check.outputs.health_status }}"
-          echo "✅ Rollback concluído com sucesso!"
-          if [ -n "$NOTIFICATION_WEBHOOK_URL" ] && [ "$NOTIFICATION_WEBHOOK_URL" != "https://hooks.slack.com/services/dummy/dummy/dummy" ]; then
-            PAYLOAD='{"content":"✅ AGROTM rollback concluído com sucesso!","embeds":[{"title":"Resumo do Rollback","color":3066993,"fields":[{"name":"Ambiente","value":"'$ENVIRONMENT'","inline":true},{"name":"Deployment ID","value":"'$DEPLOYMENT_ID'","inline":true},{"name":"Frontend","value":"'$ROLLBACK_STATUS'","inline":true},{"name":"Backend","value":"'$BACKEND_STATUS'","inline":true},{"name":"Health Check","value":"'$HEALTH_STATUS'","inline":true},{"name":"URL","value":"'$DEPLOYMENT_URL'","inline":false}],"timestamp":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}]}'
-            curl -H "Content-Type: application/json" -d "$PAYLOAD" "$NOTIFICATION_WEBHOOK_URL"
-          fi
-
-      - name: Notificar falha do rollback
-        if: ${{ failure() }}
-        run: |
-          ENVIRONMENT="${{ github.event.inputs.environment }}"
-          DEPLOYMENT_ID="${{ steps.get_deployment.outputs.deployment_id }}"
-          echo "❌ Rollback falhou!"
-          if [ -n "$NOTIFICATION_WEBHOOK_URL" ] && [ "$NOTIFICATION_WEBHOOK_URL" != "https://hooks.slack.com/services/dummy/dummy/dummy" ]; then
-            PAYLOAD='{"content":"❌ AGROTM rollback falhou!","embeds":[{"title":"Falha no Rollback","color":15158332,"fields":[{"name":"Ambiente","value":"'$ENVIRONMENT'","inline":true},{"name":"Deployment ID","value":"'$DEPLOYMENT_ID'","inline":true},{"name":"Status","value":"Falha em algum passo do workflow","inline":true}],"timestamp":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}]}'
-            curl -H "Content-Type: application/json" -d "$PAYLOAD" "$NOTIFICATION_WEBHOOK_URL"
-          fi
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    # Validate required secrets before proceeding
+    - name: Validate secrets
+      run: |
+        # This secret must be configured in GitHub repository settings
+        # Settings → Secrets and variables → Actions
+        if [ -z "${{ secrets.VERCEL_TOKEN }}" ]; then
+          echo "❌ VERCEL_TOKEN is not set"
+          echo "Please configure VERCEL_TOKEN in repository secrets"
+          exit 1
+        fi
+        echo "✅ VERCEL_TOKEN is configured"
+    
+    # Rollback to previous deployment using configured token
+    - name: Rollback to previous deployment
+      uses: amondnet/vercel-action@v25
+      with:
+        # Required secret (configure in GitHub repository settings)
+        vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        vercel-args: '--prod'
+        working-directory: ./frontend

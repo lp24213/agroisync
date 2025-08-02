@@ -1,0 +1,45 @@
+# GitHub Actions Warnings Suppression
+# This file documents expected warnings and their resolution
+
+## Expected Warnings (Safe to Ignore)
+
+### Context Access Warnings
+The following warnings are expected and safe to ignore when secrets are properly configured:
+
+- "Context access might be invalid: ORG_ID" (RESOLVED - No longer used)
+- "Context access might be invalid: PROJECT_ID" (RESOLVED - No longer used)
+
+### Why These Warnings Appeared
+These warnings appeared because GitHub Actions cannot verify that the secrets exist at parse time.
+This was normal behavior and did not indicate an actual problem.
+
+### Resolution
+✅ **FIXED:** Removed ORG_ID and PROJECT_ID dependencies
+✅ **SIMPLIFIED:** Now only requires VERCEL_TOKEN
+
+1. Configure the required secret in GitHub repository settings:
+   - Settings → Secrets and variables → Actions
+   - Add: VERCEL_TOKEN
+
+2. The workflows include validation steps that will fail early if the secret is missing
+
+### Workflow Validation
+Both workflows include validation steps that check for the required secret:
+- If VERCEL_TOKEN is missing, the workflow will fail with clear error messages
+- If VERCEL_TOKEN is present, the workflow will proceed normally
+
+## Required Secret
+- VERCEL_TOKEN: Vercel access token (only secret needed)
+
+## Testing
+To test if the secret is properly configured:
+1. Push to main branch
+2. Check GitHub Actions tab
+3. Look for "Validate secrets" step
+4. Should show "✅ VERCEL_TOKEN is configured"
+
+## Benefits of Simplification
+- ✅ No more warnings about ORG_ID/PROJECT_ID
+- ✅ Simpler configuration (only 1 secret needed)
+- ✅ Vercel CLI automatically detects org and project
+- ✅ More reliable deployment process 
