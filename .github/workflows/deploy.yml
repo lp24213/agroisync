@@ -60,8 +60,11 @@ jobs:
           cd backend
           npm run build
       
-      - name: Deploy to Railway
-        uses: railwayapp/railway-deploy@v1
-        with:
-          service: agrotm-backend
-          token: ${{ secrets.RAILWAY_TOKEN }} 
+      - name: Deploy to Railway via CLI
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          npm install -g @railway/cli
+          railway login --token $RAILWAY_TOKEN
+          cd backend
+          railway up --service agrotm-backend 

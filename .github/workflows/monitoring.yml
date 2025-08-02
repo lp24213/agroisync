@@ -9,15 +9,14 @@ on:
       enable_monitoring:
         description: 'Enable monitoring'
         required: true
-        default: 'false'
+        default: false
         type: boolean
 
-# DISABLED - All jobs commented out
-# jobs:
-#   monitoring:
-#     name: Monitoring Checks
-#     runs-on: ubuntu-latest
-#     if: ${{ github.event.inputs.enable_monitoring == 'true' }}
-#     steps:
-#       - name: Skip monitoring
-#         run: echo "Monitoring disabled for deployment focus"
+jobs:
+  skip-monitoring:
+    name: Skip Monitoring
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.enable_monitoring == false }}
+    steps:
+      - name: Skip monitoring
+        run: echo "Monitoring disabled for deployment focus"

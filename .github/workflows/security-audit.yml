@@ -9,15 +9,14 @@ on:
       enable_security_audit:
         description: 'Enable security audit'
         required: true
-        default: 'false'
+        default: false
         type: boolean
 
-# DISABLED - All jobs commented out
-# jobs:
-#   validate-secrets:
-#     name: Validate Security Secrets
-#     runs-on: ubuntu-latest
-#     if: ${{ github.event.inputs.enable_security_audit == 'true' }}
-#     steps:
-#       - name: Skip security audit
-#         run: echo "Security audit disabled for deployment focus"
+jobs:
+  skip-audit:
+    name: Skip Security Audit
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.enable_security_audit == false }}
+    steps:
+      - name: Skip security audit
+        run: echo "Security audit disabled for deployment focus"

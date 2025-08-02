@@ -9,15 +9,14 @@ on:
       enable_security:
         description: 'Enable security checks'
         required: true
-        default: 'false'
+        default: false
         type: boolean
 
-# DISABLED - All jobs commented out
-# jobs:
-#   security:
-#     name: Security Checks
-#     runs-on: ubuntu-latest
-#     if: ${{ github.event.inputs.enable_security == 'true' }}
-#     steps:
-#       - name: Skip security checks
-#         run: echo "Security checks disabled for deployment focus"
+jobs:
+  skip-security:
+    name: Skip Security Checks
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.enable_security == false }}
+    steps:
+      - name: Skip security checks
+        run: echo "Security checks disabled for deployment focus"
