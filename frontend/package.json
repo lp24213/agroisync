@@ -1,6 +1,6 @@
 {
   "name": "agrotm.sol-frontend",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "AGROTM Frontend - Complete Next.js Application",
   "private": true,
   "scripts": {
