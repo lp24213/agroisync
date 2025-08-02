@@ -28,9 +28,24 @@ export function Hero() {
           className="absolute w-full h-full object-cover opacity-40"
           style={{ filter: 'brightness(0.4) contrast(1.2) saturate(1.2)' }}
         >
-          <source src="/videos/agro-tech-bg.mp4" type="video/mp4" />
+          <source src="/videos/intro.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-b from-agro-darker/80 via-agro-darker to-agro-darker"></div>
+        
+        {/* Additional Background Elements */}
+        <div className="absolute inset-0 bg-gradient-to-r from-agro-blue/5 via-transparent to-agro-green/5"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_50%)]"></div>
+        
+        {/* Hero Background Image */}
+        <div className="absolute inset-0">
+          <Image 
+            src="/assets/img/hero-bg.jpg" 
+            alt="AGROTM Hero Background" 
+            fill
+            className="object-cover opacity-20"
+            priority
+          />
+        </div>
       </div>
 
       {/* Animated Grid Lines */}
@@ -74,6 +89,32 @@ export function Hero() {
             ease: "easeInOut" 
           }}
         />
+        <motion.div 
+          className="absolute top-1/2 left-1/3 w-24 h-24 rounded-full bg-agro-purple/15 blur-lg"
+          animate={{ 
+            x: [0, -20, 0], 
+            y: [0, 15, 0],
+            opacity: [0.1, 0.2, 0.1]
+          }}
+          transition={{ 
+            repeat: Infinity, 
+            duration: 12,
+            ease: "easeInOut" 
+          }}
+        />
+        <motion.div 
+          className="absolute top-3/4 right-1/3 w-20 h-20 rounded-full bg-agro-neon/10 blur-md"
+          animate={{ 
+            x: [0, 25, 0], 
+            y: [0, -10, 0],
+            opacity: [0.1, 0.3, 0.1]
+          }}
+          transition={{ 
+            repeat: Infinity, 
+            duration: 9,
+            ease: "easeInOut" 
+          }}
+        />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -85,7 +126,7 @@ export function Hero() {
           <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight cyberpunk-glitch">
             <span className="text-white text-glow-white">O Futuro da</span>
             <br />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-agro-blue via-blue-400 to-agro-green text-glow">Agricultura DeFi</span>
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-agro-blue via-blue-400 to-agro-green text-glow neon-text">Agricultura DeFi</span>
           </h1>
           
           <motion.p 

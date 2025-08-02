@@ -1,53 +1,47 @@
 'use client';
 
 import React from 'react';
-import { Card } from '../ui/Card';
 import { motion } from 'framer-motion';
+import { Card } from '../ui/Card';
+import Image from 'next/image';
 
-interface Feature {
-  id: string;
-  title: string;
-  description: string;
-  icon: string;
-}
-
-const features: Feature[] = [
+const features = [
   {
-    id: '1',
-    title: 'Staking Inteligente',
-    description: 'Stake seus tokens AGRO e ganhe recompensas automáticas com APR otimizado.',
-    icon: '🌱',
-  },
-  {
-    id: '2',
-    title: 'Yield Farming',
-    description: 'Participe de pools de liquidez e maximize seus retornos com estratégias avançadas.',
-    icon: '🚀',
-  },
-  {
-    id: '3',
-    title: 'Analytics em Tempo Real',
-    description: 'Monitore seu portfólio com dados em tempo real e insights de mercado.',
-    icon: '📊',
-  },
-  {
-    id: '4',
-    title: 'Segurança Blockchain',
-    description: 'Todas as transações são seguras e transparentes na blockchain Solana.',
-    icon: '🔒',
-  },
-  {
-    id: '5',
-    title: 'Governança DAO',
-    description: 'Participe das decisões da plataforma através do sistema de governança.',
-    icon: '🏛️',
-  },
-  {
-    id: '6',
+    icon: '/assets/icons/leaf.svg',
     title: 'Agricultura Sustentável',
-    description: 'Apoie projetos de agricultura sustentável enquanto investe em DeFi.',
-    icon: '🌍',
+    description: 'Tecnologia blockchain para rastreamento completo da cadeia agrícola, garantindo transparência e sustentabilidade.',
+    color: 'agro-green'
   },
+  {
+    icon: '/assets/icons/coin.svg',
+    title: 'DeFi & Staking',
+    description: 'Stake seus tokens AGROTM e ganhe recompensas enquanto apoia projetos agrícolas sustentáveis.',
+    color: 'agro-blue'
+  },
+  {
+    icon: '/assets/icons/nft.svg',
+    title: 'NFTs Agrícolas',
+    description: 'Tokenize propriedades rurais e ativos agrícolas como NFTs únicos e valiosos.',
+    color: 'agro-purple'
+  },
+  {
+    icon: '/assets/icons/chart.svg',
+    title: 'Analytics Avançados',
+    description: 'Dashboard completo com métricas em tempo real sobre performance agrícola e retornos DeFi.',
+    color: 'agro-yellow'
+  },
+  {
+    icon: '/assets/icons/wallet.svg',
+    title: 'Wallet Integrado',
+    description: 'Carteira digital segura integrada para gerenciar seus ativos AGROTM e NFTs.',
+    color: 'agro-red'
+  },
+  {
+    icon: '/assets/icons/check.svg',
+    title: 'Governança DAO',
+    description: 'Participe das decisões da plataforma através de votação descentralizada com tokens AGROTM.',
+    color: 'agro-neon'
+  }
 ];
 
 export function Features() {
@@ -115,7 +109,7 @@ export function Features() {
         >
           {features.map((feature, index) => (
             <motion.div
-              key={feature.id}
+              key={feature.title}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1, duration: 0.5 }}
@@ -130,7 +124,7 @@ export function Features() {
                     className="text-4xl mb-4 inline-block"
                     whileHover={{ rotate: [0, -10, 10, -10, 0], transition: { duration: 0.5 } }}
                   >
-                    <span className="text-glow">{feature.icon}</span>
+                    <Image src={feature.icon} alt={feature.title} width={64} height={64} />
                   </motion.div>
                   <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
                   <p className="text-gray-400">{feature.description}</p>

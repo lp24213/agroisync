@@ -78,6 +78,101 @@
     text-shadow: 0 0 10px rgba(59, 130, 246, 0.7), 0 0 20px rgba(59, 130, 246, 0.5);
   }
 
+  .text-glow-white {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.7), 0 0 20px rgba(255, 255, 255, 0.5);
+  }
+
+  .neon-text {
+    text-shadow: 
+      0 0 5px rgba(59, 130, 246, 0.8),
+      0 0 10px rgba(59, 130, 246, 0.6),
+      0 0 15px rgba(59, 130, 246, 0.4),
+      0 0 20px rgba(59, 130, 246, 0.2);
+  }
+
+  .cyberpunk-glitch {
+    position: relative;
+  }
+
+  .cyberpunk-glitch::before,
+  .cyberpunk-glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .cyberpunk-glitch::before {
+    animation: glitch-1 2s infinite linear alternate-reverse;
+    color: #ff0000;
+    z-index: -1;
+  }
+
+  .cyberpunk-glitch::after {
+    animation: glitch-2 3s infinite linear alternate-reverse;
+    color: #00ffff;
+    z-index: -2;
+  }
+
+  .cyberpunk-button {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(45deg, #3b82f6, #10b981);
+    border: none;
+    box-shadow: 
+      0 0 10px rgba(59, 130, 246, 0.5),
+      0 0 20px rgba(59, 130, 246, 0.3),
+      inset 0 0 10px rgba(59, 130, 246, 0.2);
+  }
+
+  .cyberpunk-button:hover {
+    box-shadow: 
+      0 0 15px rgba(59, 130, 246, 0.7),
+      0 0 30px rgba(59, 130, 246, 0.5),
+      inset 0 0 15px rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px);
+  }
+
+  .cyberpunk-button-outline {
+    background: transparent;
+    border: 2px solid #3b82f6;
+    box-shadow: 
+      0 0 10px rgba(59, 130, 246, 0.3),
+      inset 0 0 10px rgba(59, 130, 246, 0.1);
+  }
+
+  .cyberpunk-button-outline:hover {
+    box-shadow: 
+      0 0 15px rgba(59, 130, 246, 0.5),
+      inset 0 0 15px rgba(59, 130, 246, 0.2);
+    border-color: #60a5fa;
+  }
+
+  .cyberpunk-card {
+    position: relative;
+    overflow: hidden;
+    background: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    box-shadow: 
+      0 0 10px rgba(59, 130, 246, 0.2),
+      inset 0 0 10px rgba(59, 130, 246, 0.1);
+  }
+
+  .cyberpunk-card:hover {
+    box-shadow: 
+      0 0 20px rgba(59, 130, 246, 0.4),
+      inset 0 0 20px rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.4);
+  }
+
+  .cyberpunk-value {
+    font-family: 'JetBrains Mono', monospace;
+    text-shadow: 0 0 10px currentColor;
+  }
+
   .neon-box {
     box-shadow: 0 0 5px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0.3), inset 0 0 5px rgba(59, 130, 246, 0.2);
   }
@@ -224,6 +319,48 @@
   }
   80% {
     transform: translate(2px, -2px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+@keyframes glitch-1 {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+@keyframes glitch-2 {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(2px, -2px);
+  }
+  40% {
+    transform: translate(2px, 2px);
+  }
+  60% {
+    transform: translate(-2px, -2px);
+  }
+  80% {
+    transform: translate(-2px, 2px);
   }
   100% {
     transform: translate(0);
