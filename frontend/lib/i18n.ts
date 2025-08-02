@@ -1,19 +1,35 @@
-import { createI18nClient } from 'next-international/client';
-import { createI18nServer } from 'next-international/server';
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
 
-// Client-side configuration
-export const { useI18n, useScopedI18n, I18nProviderClient } = createI18nClient({
-  en: () => import('../public/locales/en/common.json'),
-  pt: () => import('../public/locales/pt/common.json'),
-  zh: () => import('../public/locales/zh/common.json'),
-});
+// Import translations
+import en from '../locales/en.json';
+import pt from '../locales/pt.json';
+import zh from '../locales/zh.json';
 
-// Server-side configuration
-export const { getI18n, getScopedI18n, I18nProviderServer } = createI18nServer({
-  en: () => import('../public/locales/en/common.json'),
-  pt: () => import('../public/locales/pt/common.json'),
-  zh: () => import('../public/locales/zh/common.json'),
-});
+const resources = {
+  en: {
+    translation: en
+  },
+  pt: {
+    translation: pt
+  },
+  zh: {
+    translation: zh
+  }
+};
+
+i18n
+  .use(initReactI18next)
+  .init({
+    resources,
+    lng: 'en', // default language
+    fallbackLng: 'en',
+    interpolation: {
+      escapeValue: false
+    }
+  });
+
+export default i18n;
 
 // Supported languages
 export const supportedLanguages = {

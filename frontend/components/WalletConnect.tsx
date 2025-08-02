@@ -49,19 +49,6 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
     }
   }, [connected, wallet, onConnect, onDisconnect]);
 
-  const handleConnect = async () => {
-    if (!wallet || !isWalletValid(wallet)) {
-      console.error('Invalid wallet');
-      return;
-    }
-
-    try {
-      await connect();
-    } catch (error) {
-      console.error('Failed to connect wallet:', error);
-    }
-  };
-
   const handleDisconnect = async () => {
     if (!wallet || !isWalletValid(wallet)) {
       console.error('Invalid wallet');
@@ -117,7 +104,6 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
   return (
     <div className={`wallet-connect ${className}`}>
       <WalletMultiButton
-        onClick={handleConnect}
         disabled={connecting}
         className="connect-btn"
       >

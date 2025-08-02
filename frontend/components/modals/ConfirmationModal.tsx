@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Modal } from '@/components/ui/Modal';
-import { Button } from '@/components/ui/Button';
-import { Alert } from '@/components/ui/Alert';
+import { Alert } from '../ui/Alert';
+import { Button } from '../ui/Button';
+import { AlertVariant } from '../../types/web3';
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -11,97 +11,112 @@ interface ConfirmationModalProps {
   onConfirm: () => void;
   title: string;
   message: string;
+  variant?: AlertVariant;
   confirmText?: string;
   cancelText?: string;
-  variant?: 'danger' | 'warning' | 'info';
   loading?: boolean;
 }
 
-export function ConfirmationModal({
+interface ModalConfig {
+  variant: AlertVariant;
+  buttonVariant: 'default' | 'destructive' | 'outline';
+  icon: string;
+}
+
+const getModalConfig = (variant: AlertVariant): ModalConfig => {
+  switch (variant) {
+    case 'danger':
+      return {
+        variant: 'error',
+        buttonVariant: 'destructive',
+        icon: '⚠️'
+      };
+    case 'warning':
+      return {
+        variant: 'warning',
+        buttonVariant: 'outline',
+        icon: '⚠️'
+      };
+    case 'info':
+      return {
+        variant: 'info',
+        buttonVariant: 'outline',
+        icon: 'ℹ️'
+      };
+    case 'success':
+      return {
+        variant: 'success',
+        buttonVariant: 'default',
+        icon: '✅'
+      };
+    default:
+      return {
+        variant: 'info',
+        buttonVariant: 'outline',
+        icon: 'ℹ️'
+      };
+  }
+};
+
+export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
   title,
   message,
-  confirmText = 'Confirmar',
-  cancelText = 'Cancelar',
-  variant = 'warning',
+  variant = 'info',
+  confirmText = 'Confirm',
+  cancelText = 'Cancel',
   loading = false
-}: ConfirmationModalProps) {
-  const handleConfirm = () => {
-    onConfirm();
-  };
+}) => {
+  if (!isOpen) return null;
 
-  const getVariantConfig = () => {
-    switch (variant) {
-      case 'danger':
-        return {
-          icon: '⚠️',
-          color: 'text-red-400',
-          bgColor: 'bg-red-500/20',
-          buttonVariant: 'secondary' as const
-        };
-      case 'warning':
-        return {
-          icon: '⚠️',
-          color: 'text-yellow-400',
-          bgColor: 'bg-yellow-500/20',
-          buttonVariant: 'secondary' as const
-        };
-      case 'info':
-        return {
-          icon: 'ℹ️',
-          color: 'text-blue-400',
-          bgColor: 'bg-blue-500/20',
-          buttonVariant: 'primary' as const
-        };
-      default:
-        return {
-          icon: '⚠️',
-          color: 'text-yellow-400',
-          bgColor: 'bg-yellow-500/20',
-          buttonVariant: 'secondary' as const
-        };
-    }
-  };
-
-  const config = getVariantConfig();
+  const config = getModalConfig(variant);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={title}>
-      <div className="space-y-6">
-        <div className="text-center">
-          <div className={`w-16 h-16 ${config.bgColor} rounded-full flex items-center justify-center mx-auto mb-4`}>
-            <span className="text-2xl">{config.icon}</span>
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      
+      <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
+        <div className="flex items-start space-x-3">
+          <div className="flex-shrink-0 text-2xl">
+            {config.icon}
           </div>
-          <p className="text-gray-400">{message}</p>
+          
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              {title}
+            </h3>
+            
+            <Alert variant={config.variant}>
+              <p className="text-sm text-gray-600">
+                {message}
+              </p>
+            </Alert>
+          </div>
         </div>
-
-        <Alert variant={variant}>
-          <p className="text-sm">
-            Esta ação não pode ser desfeita. Certifique-se de que deseja continuar.
-          </p>
-        </Alert>
-
-        <div className="flex gap-3">
+        
+        <div className="mt-6 flex justify-end space-x-3">
           <Button
             variant="outline"
             onClick={onClose}
             disabled={loading}
-            className="flex-1"
           >
             {cancelText}
           </Button>
+          
           <Button
             variant={config.buttonVariant}
-            onClick={handleConfirm}
+            onClick={onConfirm}
+            loading={loading}
             disabled={loading}
-            className="flex-1"
           >
-            {loading ? 'Processando...' : confirmText}
+            {confirmText}
           </Button>
         </div>
       </div>
-    </Modal>
+    </div>
   );
-} 
+};
+
+export default ConfirmationModal; 

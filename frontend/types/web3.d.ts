@@ -46,6 +46,9 @@ export interface Wallet {
 // Button Variant Types
 export type ButtonVariant = "contained" | "outlined" | "text" | "default" | "primary" | "secondary" | "ghost" | "destructive" | "link";
 
+// Alert Variant Types
+export type AlertVariant = "info" | "warning" | "error" | "success" | "danger";
+
 // Target Event Types
 export interface TargetEvent {
   target: {
@@ -67,4 +70,49 @@ export interface WalletWithPublicKey {
   connecting: boolean;
   connect(): Promise<void>;
   disconnect(): Promise<void>;
-} 
+}
+
+// Security Event Types
+export interface SecurityEvent {
+  id: string;
+  type: SecurityEventType;
+  ip: string;
+  threatLevel: string;
+  timestamp: string | number;
+}
+
+export type SecurityEventType = 'login' | 'logout' | 'failed_login' | 'suspicious_activity' | 'blocked_ip';
+
+// Logger Type
+export interface Logger {
+  info: (message: string, ...args: any[]) => void;
+  warn: (message: string, ...args: any[]) => void;
+  error: (message: string, ...args: any[]) => void;
+  debug: (message: string, ...args: any[]) => void;
+}
+
+// DeFi Service Types
+export interface PremiumDeFiService {
+  fetchUserPools: (publicKey: string) => Promise<any[]>;
+  [key: string]: any;
+}
+
+// Button Size Types
+export type ButtonSize = 'sm' | 'md' | 'lg' | 'xl';
+
+// Card Props Types
+export interface CardProps {
+  children: React.ReactNode;
+  className?: string;
+  [key: string]: any;
+}
+
+// Loading Spinner Types
+export interface LoadingSpinnerProps {
+  size?: SpinnerSize;
+  variant?: SpinnerVariant;
+  className?: string;
+}
+
+export type SpinnerSize = 'sm' | 'md' | 'lg';
+export type SpinnerVariant = 'default' | 'primary' | 'secondary'; 
