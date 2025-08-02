@@ -1,234 +1,204 @@
-'use client';
-
+import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Twitter, Github, Linkedin, Mail, Shield, Zap, Users, TrendingUp } from 'lucide-react';
-
-const navigation = {
-  product: [
-    { name: 'Dashboard', href: '/dashboard' },
-    { name: 'Staking', href: '/staking' },
-    { name: 'NFTs', href: '/nft-marketplace' },
-    { name: 'Governance', href: '/governance' },
-    { name: 'Analytics', href: '/analytics' },
-  ],
-  defi: [
-    { name: 'Liquidity Pools', href: '/pools' },
-    { name: 'Yield Farming', href: '/farming' },
-    { name: 'Swap', href: '/swap' },
-    { name: 'APR Calculator', href: '/calculator' },
-  ],
-  resources: [
-    { name: 'Documentation', href: '/docs' },
-    { name: 'API Reference', href: '/api' },
-    { name: 'Whitepaper', href: '/whitepaper' },
-    { name: 'Security', href: '/security' },
-  ],
-  company: [
-    { name: 'About', href: '/about' },
-    { name: 'Team', href: '/team' },
-    { name: 'Careers', href: '/careers' },
-    { name: 'Contact', href: '/contact' },
-  ],
-  social: [
-    {
-      name: 'Twitter',
-      href: 'https://twitter.com/agrotm',
-      icon: Twitter,
-    },
-    {
-      name: 'GitHub',
-      href: 'https://github.com/agrotm',
-      icon: Github,
-    },
-    {
-      name: 'LinkedIn',
-      href: 'https://linkedin.com/company/agrotm',
-      icon: Linkedin,
-    },
-    {
-      name: 'Email',
-      href: 'mailto:contact@agrotm.com',
-      icon: Mail,
-    },
-  ],
-};
-
-const stats = [
-  { name: 'Total Value Locked', value: '$2.5B+', icon: TrendingUp },
-  { name: 'Active Users', value: '50K+', icon: Users },
-  { name: 'Security Score', value: '9.8/10', icon: Shield },
-  { name: 'Average APY', value: '15.3%', icon: Zap },
-];
 
 export function Footer() {
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+  
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 300, damping: 24 }
+    }
+  };
+  
   return (
-    <footer className='bg-black/90 backdrop-blur-lg border-t border-white/10'>
-      {/* Stats Section */}
-      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
-        <div className='grid grid-cols-2 gap-8 md:grid-cols-4'>
-          {stats.map((stat, index) => (
-            <motion.div
-              key={stat.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className='text-center'
-            >
-              <stat.icon className='w-8 h-8 text-primary-400 mx-auto mb-2' />
-              <div className='text-2xl font-bold text-white'>{stat.value}</div>
-              <div className='text-sm text-gray-400'>{stat.name}</div>
-            </motion.div>
-          ))}
-        </div>
+    <footer className="bg-agro-dark border-t border-gray-800 py-12 relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0 z-0 opacity-10">
+        <div className="grid-animation"></div>
       </div>
-
-      {/* Main Footer Content */}
-      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8'>
-          {/* Brand */}
-          <div className='lg:col-span-1'>
-            <Link href='/' className='flex items-center space-x-2 mb-4'>
-              <div className='w-8 h-8 bg-gradient-to-r from-primary-500 to-accent-500 rounded-lg flex items-center justify-center'>
-                <span className='text-white font-bold text-sm'>A</span>
-              </div>
-              <span className='text-white font-bold text-xl'>AGROTM</span>
+      
+      {/* Scanlines Effect */}
+      <div className="absolute inset-0 z-1 scanlines opacity-5"></div>
+      
+      {/* Digital Rain Effect */}
+      <div className="absolute inset-0 z-0 opacity-5 digital-rain"></div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-4 gap-8"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
+          {/* Logo and Description */}
+          <motion.div className="col-span-1 md:col-span-2" variants={itemVariants}>
+            <Link href="/" className="flex items-center space-x-2 mb-4 group">
+              <motion.div 
+                className="w-8 h-8 bg-gradient-to-br from-agro-green to-agro-blue rounded-lg flex items-center justify-center relative overflow-hidden"
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
+                <span className="text-white font-bold text-sm relative z-10">A</span>
+                <motion.div 
+                  className="absolute inset-0 bg-gradient-to-r from-agro-blue via-agro-purple to-agro-green opacity-0"
+                  animate={{ opacity: [0, 0.5, 0] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                />
+              </motion.div>
+              <motion.span 
+                className="text-xl font-bold gradient-text relative"
+                whileHover={{ scale: 1.05 }}
+              >
+                AGROTM
+                <motion.span 
+                  className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-agro-blue via-agro-purple to-agro-green transform scale-x-0 origin-left"
+                  initial={{ scaleX: 0 }}
+                  whileHover={{ scaleX: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
+              </motion.span>
             </Link>
-            <p className='text-gray-400 text-sm mb-4'>
-              The most advanced DeFi platform on Solana blockchain, focused on sustainable
-              agriculture and yield farming.
+            <p className="text-gray-400 mb-4 max-w-md leading-relaxed">
+              Revolucionando a agricultura através da blockchain. Plataforma DeFi para agricultura sustentável com tecnologia de ponta e segurança garantida pela Solana.
             </p>
-            <div className='flex space-x-4'>
-              {navigation.social.map(item => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  className='text-gray-400 hover:text-primary-400 transition-colors duration-200'
-                >
-                  <span className='sr-only'>{item.name}</span>
-                  <item.icon className='h-5 w-5' />
-                </a>
-              ))}
+            
+            {/* Social Icons */}
+            <div className="flex space-x-4 mt-6">
+              <motion.a 
+                href="#" 
+                className="w-8 h-8 rounded-full bg-agro-darker border border-agro-blue/30 flex items-center justify-center text-agro-blue hover:bg-agro-blue/20 transition-colors duration-300"
+                whileHover={{ y: -3, scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <span className="text-sm">🐦</span>
+              </motion.a>
+              <motion.a 
+                href="#" 
+                className="w-8 h-8 rounded-full bg-agro-darker border border-agro-purple/30 flex items-center justify-center text-agro-purple hover:bg-agro-purple/20 transition-colors duration-300"
+                whileHover={{ y: -3, scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <span className="text-sm">💬</span>
+              </motion.a>
+              <motion.a 
+                href="#" 
+                className="w-8 h-8 rounded-full bg-agro-darker border border-agro-green/30 flex items-center justify-center text-agro-green hover:bg-agro-green/20 transition-colors duration-300"
+                whileHover={{ y: -3, scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <span className="text-sm">📘</span>
+              </motion.a>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Product */}
-          <div>
-            <h3 className='text-white font-semibold mb-4'>Product</h3>
-            <ul className='space-y-2'>
-              {navigation.product.map(item => (
-                <li key={item.name}>
-                  <Link
-                    href={item.href}
-                    className='text-gray-400 hover:text-white transition-colors duration-200 text-sm'
-                  >
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
+          {/* Quick Links */}
+          <motion.div variants={itemVariants}>
+            <h3 className="text-white font-semibold mb-4 text-glow-blue relative inline-block">
+              Quick Links
+              <motion.span 
+                className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-agro-blue to-transparent"
+                initial={{ width: 0 }}
+                whileInView={{ width: "100%" }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              />
+            </h3>
+            <ul className="space-y-3">
+              <motion.li whileHover={{ x: 5 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+                <Link href="/" className="text-gray-400 hover:text-agro-blue group flex items-center transition-colors duration-300">
+                  <span className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">›</span>
+                  <span>Home</span>
+                </Link>
+              </motion.li>
+              <motion.li whileHover={{ x: 5 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+                <Link href="/dashboard" className="text-gray-400 hover:text-agro-blue group flex items-center transition-colors duration-300">
+                  <span className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">›</span>
+                  <span>Dashboard</span>
+                </Link>
+              </motion.li>
+              <motion.li whileHover={{ x: 5 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+                <Link href="/staking" className="text-gray-400 hover:text-agro-blue group flex items-center transition-colors duration-300">
+                  <span className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">›</span>
+                  <span>Staking</span>
+                </Link>
+              </motion.li>
+              <motion.li whileHover={{ x: 5 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+                <Link href="#about" className="text-gray-400 hover:text-agro-blue group flex items-center transition-colors duration-300">
+                  <span className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">›</span>
+                  <span>About</span>
+                </Link>
+              </motion.li>
             </ul>
-          </div>
-
-          {/* DeFi */}
-          <div>
-            <h3 className='text-white font-semibold mb-4'>DeFi</h3>
-            <ul className='space-y-2'>
-              {navigation.defi.map(item => (
-                <li key={item.name}>
-                  <Link
-                    href={item.href}
-                    className='text-gray-400 hover:text-white transition-colors duration-200 text-sm'
-                  >
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          </motion.div>
 
           {/* Resources */}
-          <div>
-            <h3 className='text-white font-semibold mb-4'>Resources</h3>
-            <ul className='space-y-2'>
-              {navigation.resources.map(item => (
-                <li key={item.name}>
-                  <Link
-                    href={item.href}
-                    className='text-gray-400 hover:text-white transition-colors duration-200 text-sm'
-                  >
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
+          <motion.div variants={itemVariants}>
+            <h3 className="text-white font-semibold mb-4 text-glow-purple relative inline-block">
+              Resources
+              <motion.span 
+                className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-agro-purple to-transparent"
+                initial={{ width: 0 }}
+                whileInView={{ width: "100%" }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+              />
+            </h3>
+            <ul className="space-y-3">
+              <motion.li whileHover={{ x: 5 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+                <a href="#" className="text-gray-400 hover:text-agro-purple group flex items-center transition-colors duration-300">
+                  <span className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">›</span>
+                  <span>Whitepaper</span>
+                </a>
+              </motion.li>
+              <motion.li whileHover={{ x: 5 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+                <a href="#" className="text-gray-400 hover:text-agro-purple group flex items-center transition-colors duration-300">
+                  <span className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">›</span>
+                  <span>Documentação</span>
+                </a>
+              </motion.li>
+              <motion.li whileHover={{ x: 5 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+                <a href="#" className="text-gray-400 hover:text-agro-purple group flex items-center transition-colors duration-300">
+                  <span className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">›</span>
+                  <span>GitHub</span>
+                </a>
+              </motion.li>
             </ul>
-          </div>
+          </motion.div>
+        </motion.div>
 
-          {/* Company */}
-          <div>
-            <h3 className='text-white font-semibold mb-4'>Company</h3>
-            <ul className='space-y-2'>
-              {navigation.company.map(item => (
-                <li key={item.name}>
-                  <Link
-                    href={item.href}
-                    className='text-gray-400 hover:text-white transition-colors duration-200 text-sm'
-                  >
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        {/* Bottom Section */}
-        <div className='mt-12 pt-8 border-t border-white/10'>
-          <div className='flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0'>
-            <div className='text-gray-400 text-sm'>© 2024 AGROTM. All rights reserved.</div>
-            <div className='flex items-center space-x-6 text-sm'>
-              <Link
-                href='/privacy'
-                className='text-gray-400 hover:text-white transition-colors duration-200'
-              >
-                Privacy Policy
-              </Link>
-              <Link
-                href='/terms'
-                className='text-gray-400 hover:text-white transition-colors duration-200'
-              >
-                Terms of Service
-              </Link>
-              <Link
-                href='/cookies'
-                className='text-gray-400 hover:text-white transition-colors duration-200'
-              >
-                Cookie Policy
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Security Badge */}
-      <div className='bg-black/50 border-t border-white/5'>
-        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4'>
-          <div className='flex items-center justify-center space-x-4 text-xs text-gray-400'>
-            <div className='flex items-center space-x-1'>
-              <Shield className='h-3 w-3 text-primary-400' />
-              <span>Audited by CertiK</span>
-            </div>
-            <div className='flex items-center space-x-1'>
-              <Shield className='h-3 w-3 text-primary-400' />
-              <span>Insurance by Nexus Mutual</span>
-            </div>
-            <div className='flex items-center space-x-1'>
-              <Shield className='h-3 w-3 text-primary-400' />
-              <span>Multi-Sig Treasury</span>
-            </div>
-          </div>
-        </div>
+        <motion.div 
+          className="border-t border-gray-800/50 mt-8 pt-8 text-center relative"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.5 }}
+        >
+          {/* Decorative line */}
+          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-1/3 h-px bg-gradient-to-r from-transparent via-agro-blue to-transparent"></div>
+          
+          <p className="text-gray-400 relative inline-block">
+            © 2024 AGROTM. All rights reserved.
+            <motion.span 
+              className="absolute -bottom-1 left-0 w-full h-px bg-gradient-to-r from-agro-blue via-agro-purple to-agro-green opacity-50"
+              animate={{ opacity: [0.2, 0.5, 0.2] }}
+              transition={{ duration: 3, repeat: Infinity }}
+            />
+          </p>
+        </motion.div>
       </div>
     </footer>
   );

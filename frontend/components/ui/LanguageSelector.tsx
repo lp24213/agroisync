@@ -1,51 +1,123 @@
 'use client';
 
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { useLanguage, Locale } from '../../lib/i18n';
+import { useState } from 'react';
+import { 
+  supportedLanguages, 
+  type SupportedLanguage, 
+  getLanguageName, 
+  getLanguageFlag,
+  setLanguage 
+} from '@/lib/i18n';
 
-const LanguageSelector: React.FC = () => {
-  const { i18n } = useTranslation();
-  const { changeLanguage } = useLanguage();
+interface LanguageSelectorProps {
+  currentLanguage: SupportedLanguage;
+  className?: string;
+  variant?: 'dropdown' | 'buttons' | 'flags';
+}
 
-  const languages: Record<Locale, { name: string; flag: string }> = {
-    en: { name: 'English', flag: '🇺🇸' },
-    pt: { name: 'Português', flag: '🇧🇷' },
-    zh: { name: '中文', flag: '🇨🇳' },
+export function LanguageSelector({ 
+  currentLanguage, 
+  className = '',
+  variant = 'dropdown' 
+}: LanguageSelectorProps) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleLanguageChange = (language: SupportedLanguage) => {
+    if (language !== currentLanguage) {
+      setLanguage(language);
+    }
+    setIsOpen(false);
   };
 
-  const currentLanguage = i18n.language as Locale;
-
-  const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newLanguage = event.target.value as Locale;
-    changeLanguage(newLanguage);
-  };
-
-  return (
-    <div className='relative'>
-      <select
-        value={currentLanguage}
-        onChange={handleLanguageChange}
-        className='appearance-none bg-transparent border border-cyber-purple rounded-lg px-3 py-2 pr-8 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyber-purple focus:border-transparent'
-      >
-        {Object.entries(languages).map(([code, { name, flag }]) => (
-          <option key={code} value={code} className='bg-gray-900 text-white'>
-            {flag} {name}
-          </option>
+  if (variant === 'buttons') {
+    return (
+      <div className={`flex gap-2 ${className}`}>
+        {Object.entries(supportedLanguages).map(([code, lang]) => (
+          <button
+            key={code}
+            onClick={() => handleLanguageChange(code as SupportedLanguage)}
+            className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+              code === currentLanguage
+                ? 'bg-green-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+            }`}
+          >
+            {getLanguageFlag(code as SupportedLanguage)} {getLanguageName(code as SupportedLanguage)}
+          </button>
         ))}
-      </select>
-      <div className='absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none'>
-        <svg
-          className='w-4 h-4 text-cyber-purple'
-          fill='none'
-          stroke='currentColor'
-          viewBox='0 0 24 24'
-        >
-          <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M19 9l-7 7-7-7' />
-        </svg>
       </div>
+    );
+  }
+
+  if (variant === 'flags') {
+    return (
+      <div className={`flex gap-1 ${className}`}>
+        {Object.entries(supportedLanguages).map(([code, lang]) => (
+          <button
+            key={code}
+            onClick={() => handleLanguageChange(code as SupportedLanguage)}
+            className={`p-2 rounded-lg text-lg transition-colors ${
+              code === currentLanguage
+                ? 'bg-green-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+            }`}
+            title={getLanguageName(code as SupportedLanguage)}
+          >
+            {getLanguageFlag(code as SupportedLanguage)}
+          </button>
+        ))}
+      </div>
+    );
+  }
+
+  // Default dropdown variant
+  return (
+    <div className={`relative ${className}`}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+      >
+        <span className="text-lg">{getLanguageFlag(currentLanguage)}</span>
+        <span className="text-sm font-medium">{getLanguageName(currentLanguage)}</span>
+        <svg
+          className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {isOpen && (
+        <div className="absolute top-full left-0 mt-1 w-48 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg z-50">
+          {Object.entries(supportedLanguages).map(([code, lang]) => (
+            <button
+              key={code}
+              onClick={() => handleLanguageChange(code as SupportedLanguage)}
+              className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
+                code === currentLanguage ? 'bg-green-50 dark:bg-green-900/20' : ''
+              }`}
+            >
+              <span className="text-lg">{getLanguageFlag(code as SupportedLanguage)}</span>
+              <span className="text-sm font-medium">{getLanguageName(code as SupportedLanguage)}</span>
+              {code === currentLanguage && (
+                <svg className="w-4 h-4 ml-auto text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Backdrop */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
     </div>
   );
-};
-
-export default LanguageSelector;
+} 

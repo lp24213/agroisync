@@ -1,224 +1,245 @@
 'use client';
 
+import React from 'react';
+import { Card } from '@/components/ui/Card';
 import { motion } from 'framer-motion';
-import { CheckCircle, Clock, Star } from 'lucide-react';
 
-const roadmapItems = [
+interface RoadmapItem {
+  id: string;
+  phase: string;
+  title: string;
+  description: string;
+  status: 'completed' | 'in-progress' | 'upcoming';
+  date: string;
+}
+
+const roadmapItems: RoadmapItem[] = [
   {
-    phase: 'Phase 1',
-    title: 'Foundation & Launch',
-    description: 'Core platform development and initial launch',
+    id: '1',
+    phase: 'Fase 1',
+    title: 'Lançamento da Plataforma',
+    description: 'Staking básico e pools de liquidez iniciais',
     status: 'completed',
-    items: [
-      'Smart contract development and auditing',
-      'Platform MVP launch',
-      'Basic staking functionality',
-      'Community building',
-    ],
     date: 'Q1 2024',
   },
   {
-    phase: 'Phase 2',
-    title: 'Expansion & Features',
-    description: 'Advanced features and ecosystem expansion',
-    status: 'in-progress',
-    items: [
-      'Advanced yield farming protocols',
-      'NFT marketplace launch',
-      'Cross-chain bridge implementation',
-      'Mobile app development',
-    ],
+    id: '2',
+    phase: 'Fase 2',
+    title: 'Yield Farming Avançado',
+    description: 'Estratégias de yield farming e otimização de retornos',
+    status: 'completed',
     date: 'Q2 2024',
   },
   {
-    phase: 'Phase 3',
-    title: 'Governance & DAO',
-    description: 'Decentralized governance and community ownership',
-    status: 'upcoming',
-    items: [
-      'DAO governance implementation',
-      'Community voting system',
-      'Treasury management',
-      'Partnership expansion',
-    ],
+    id: '3',
+    phase: 'Fase 3',
+    title: 'Governança DAO',
+    description: 'Sistema de governança descentralizada e votação',
+    status: 'in-progress',
     date: 'Q3 2024',
   },
   {
-    phase: 'Phase 4',
-    title: 'Ecosystem & Innovation',
-    description: 'Advanced DeFi protocols and ecosystem growth',
+    id: '4',
+    phase: 'Fase 4',
+    title: 'Expansão Global',
+    description: 'Integração com outras blockchains e mercados globais',
     status: 'upcoming',
-    items: [
-      'Advanced DeFi protocols',
-      'AI-powered yield optimization',
-      'Institutional partnerships',
-      'Global expansion',
-    ],
     date: 'Q4 2024',
+  },
+  {
+    id: '5',
+    phase: 'Fase 5',
+    title: 'Ecosystem Completo',
+    description: 'Marketplace de NFTs agrícolas e metaverso',
+    status: 'upcoming',
+    date: 'Q1 2025',
   },
 ];
 
-const getStatusIcon = (status: string) => {
-  switch (status) {
-    case 'completed':
-      return <CheckCircle className='w-6 h-6 text-green-400' />;
-    case 'in-progress':
-      return <Clock className='w-6 h-6 text-yellow-400' />;
-    case 'upcoming':
-      return <Star className='w-6 h-6 text-blue-400' />;
-    default:
-      return <Clock className='w-6 h-6 text-gray-400' />;
-  }
-};
-
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'completed':
-      return 'border-green-500 bg-green-500/10';
-    case 'in-progress':
-      return 'border-yellow-500 bg-yellow-500/10';
-    case 'upcoming':
-      return 'border-blue-500 bg-blue-500/10';
-    default:
-      return 'border-gray-500 bg-gray-500/10';
-  }
-};
-
 export function Roadmap() {
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return 'bg-agro-green text-white';
+      case 'in-progress':
+        return 'bg-agro-blue text-white';
+      case 'upcoming':
+        return 'bg-agro-purple text-white';
+      default:
+        return 'bg-gray-500 text-white';
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return 'Concluído';
+      case 'in-progress':
+        return 'Em Progresso';
+      case 'upcoming':
+        return 'Próximo';
+      default:
+        return 'Próximo';
+    }
+  };
+
   return (
-    <section className='py-24 bg-gradient-to-b from-black to-gray-900'>
-      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
-        {/* Header */}
-        <div className='text-center mb-16'>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className='inline-flex items-center rounded-full px-4 py-2 text-sm font-medium bg-primary-500/10 text-primary-400 border border-primary-500/20 mb-6'
+    <section className="py-20 bg-agro-dark relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0 z-0 opacity-20">
+        <div className="grid-animation"></div>
+      </div>
+      
+      {/* Scanlines Effect */}
+      <div className="absolute inset-0 z-1 scanlines opacity-10"></div>
+      
+      {/* Digital Rain Effect */}
+      <div className="absolute inset-0 z-0 opacity-5 digital-rain"></div>
+      
+      {/* Floating Elements */}
+      <div className="absolute inset-0 z-0">
+        <motion.div 
+          className="absolute top-1/4 left-1/4 w-32 h-32 rounded-full bg-agro-blue/20 blur-xl"
+          animate={{ 
+            x: [0, 30, 0], 
+            y: [0, -30, 0],
+            opacity: [0.2, 0.3, 0.2]
+          }}
+          transition={{ 
+            repeat: Infinity, 
+            duration: 8,
+            ease: "easeInOut" 
+          }}
+        />
+        <motion.div 
+          className="absolute bottom-1/3 right-1/4 w-40 h-40 rounded-full bg-agro-purple/20 blur-xl"
+          animate={{ 
+            x: [0, -40, 0], 
+            y: [0, 20, 0],
+            opacity: [0.2, 0.4, 0.2]
+          }}
+          transition={{ 
+            repeat: Infinity, 
+            duration: 10,
+            ease: "easeInOut" 
+          }}
+        />
+      </div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <motion.div 
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <h2 className="text-4xl font-bold text-white mb-4 text-glow relative inline-block">
+            <span className="relative z-10">Roadmap</span>
+            <motion.span 
+              className="absolute inset-0 bg-gradient-to-r from-agro-blue via-agro-purple to-agro-green opacity-0 blur-lg"
+              animate={{ opacity: [0, 0.5, 0] }}
+              transition={{ duration: 3, repeat: Infinity }}
+            />
+          </h2>
+          <p className="text-xl text-gray-400">
+            Nossa jornada de desenvolvimento e crescimento
+          </p>
+        </motion.div>
+
+        <div className="relative">
+          {/* Timeline line */}
+          <motion.div 
+            className="absolute left-1/2 transform -translate-x-px h-full w-1 bg-gradient-to-b from-agro-blue via-agro-purple to-agro-green"
+            initial={{ height: 0 }}
+            whileInView={{ height: '100%' }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
           >
-            Development Roadmap
+            {/* Pulse effect on timeline */}
+            <motion.div 
+              className="absolute w-3 h-3 rounded-full bg-agro-neon blur-sm"
+              animate={{ 
+                y: [0, '100%'],
+                opacity: [1, 0]
+              }}
+              transition={{ 
+                duration: 8, 
+                repeat: Infinity,
+                ease: "linear" 
+              }}
+            />
           </motion.div>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className='text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl mb-6'
-          >
-            Our Journey to <span className='gradient-text'>Success</span>
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className='text-lg text-gray-300 max-w-3xl mx-auto'
-          >
-            Follow our development roadmap as we build the most advanced DeFi platform for
-            sustainable agriculture on Solana blockchain.
-          </motion.p>
-        </div>
-
-        {/* Roadmap Timeline */}
-        <div className='relative'>
-          {/* Timeline Line */}
-          <div className='absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary-500 via-accent-500 to-blue-500' />
-
-          <div className='space-y-12'>
+          <div className="space-y-12">
             {roadmapItems.map((item, index) => (
-              <motion.div
-                key={item.phase}
+              <motion.div 
+                key={item.id} 
+                className={`relative flex items-center ${
+                  index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'
+                }`}
                 initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.2 }}
                 viewport={{ once: true }}
-                className={`relative flex items-center ${
-                  index % 2 === 0 ? 'justify-start' : 'justify-end'
-                }`}
+                transition={{ duration: 0.8, delay: index * 0.2 }}
               >
-                {/* Timeline Dot */}
-                <div className='absolute left-8 transform -translate-x-1/2 z-10'>
-                  <div className={`w-4 h-4 rounded-full border-2 ${getStatusColor(item.status)}`} />
-                </div>
+                {/* Timeline dot with pulse effect */}
+                <motion.div 
+                  className={`absolute left-1/2 transform -translate-x-1/2 w-4 h-4 rounded-full ${getStatusColor(item.status)} z-10`}
+                  whileHover={{ scale: 1.5 }}
+                >
+                  <motion.div 
+                    className="absolute inset-0 rounded-full bg-white opacity-50"
+                    animate={{ scale: [1, 2], opacity: [0.5, 0] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
+                </motion.div>
 
-                {/* Content Card */}
-                <div className={`w-full max-w-md ${index % 2 === 0 ? 'ml-16' : 'mr-16'}`}>
-                  <div className='card hover:scale-105 transition-all duration-300'>
-                    {/* Header */}
-                    <div className='flex items-center justify-between mb-4'>
-                      <div className='flex items-center space-x-3'>
-                        {getStatusIcon(item.status)}
-                        <div>
-                          <div className='text-sm font-medium text-primary-400'>{item.phase}</div>
-                          <div className='text-lg font-bold text-white'>{item.title}</div>
-                        </div>
-                      </div>
-                      <div className='text-sm text-gray-400'>{item.date}</div>
-                    </div>
+                {/* Connecting line to card */}
+                <motion.div 
+                  className={`absolute top-0 ${index % 2 === 0 ? 'right-1/2' : 'left-1/2'} h-px w-[calc(8%-1rem)] bg-gradient-to-${index % 2 === 0 ? 'l' : 'r'} from-transparent ${index % 2 === 0 ? 'to-agro-blue' : 'to-agro-purple'}`}
+                  initial={{ width: 0 }}
+                  whileInView={{ width: 'calc(8%-1rem)' }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.5 + index * 0.2 }}
+                />
 
-                    {/* Description */}
-                    <p className='text-gray-300 mb-4'>{item.description}</p>
-
-                    {/* Items List */}
-                    <ul className='space-y-2'>
-                      {item.items.map((listItem, itemIndex) => (
-                        <motion.li
-                          key={itemIndex}
-                          initial={{ opacity: 0, x: -20 }}
-                          whileInView={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.5, delay: 0.3 + itemIndex * 0.1 }}
-                          className='flex items-center space-x-2 text-sm text-gray-400'
+                {/* Content */}
+                <div className={`w-5/12 ${index % 2 === 0 ? 'pr-8' : 'pl-8'}`}>
+                  <Card className="relative bg-agro-darker/80 border border-agro-blue/20 backdrop-blur-sm overflow-hidden group cyberpunk-card">
+                    {/* Card corner accents */}
+                    <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-agro-blue opacity-70"></div>
+                    <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-agro-blue opacity-70"></div>
+                    
+                    {/* Hover gradient effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-agro-blue/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    <div className="relative z-10 p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <motion.span 
+                          className="text-sm font-medium text-agro-blue text-glow-blue"
+                          whileHover={{ scale: 1.05 }}
                         >
-                          <div className='w-1.5 h-1.5 rounded-full bg-primary-400' />
-                          <span>{listItem}</span>
-                        </motion.li>
-                      ))}
-                    </ul>
-
-                    {/* Status Badge */}
-                    <div className='mt-4'>
-                      <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          item.status === 'completed'
-                            ? 'bg-green-500/10 text-green-400'
-                            : item.status === 'in-progress'
-                              ? 'bg-yellow-500/10 text-yellow-400'
-                              : 'bg-blue-500/10 text-blue-400'
-                        }`}
-                      >
-                        {item.status === 'completed'
-                          ? 'Completed'
-                          : item.status === 'in-progress'
-                            ? 'In Progress'
-                            : 'Upcoming'}
-                      </span>
+                          {item.phase}
+                        </motion.span>
+                        <motion.span 
+                          className={`px-2 py-1 rounded text-xs font-semibold ${getStatusColor(item.status)}`}
+                          whileHover={{ scale: 1.1 }}
+                          transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                        >
+                          {getStatusText(item.status)}
+                        </motion.span>
+                      </div>
+                      <h3 className="text-xl font-bold text-white mb-2 group-hover:text-glow transition-all duration-300">{item.title}</h3>
+                      <p className="text-gray-400 mb-3">{item.description}</p>
+                      <span className="text-sm text-agro-neon">{item.date}</span>
                     </div>
-                  </div>
+                  </Card>
                 </div>
               </motion.div>
             ))}
           </div>
         </div>
-
-        {/* Bottom CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className='mt-20 text-center'
-        >
-          <div className='bg-gradient-to-r from-primary-500/10 to-accent-500/10 border border-primary-500/20 rounded-2xl p-8'>
-            <h3 className='text-2xl font-bold text-white mb-4'>Join Our Journey</h3>
-            <p className='text-gray-300 mb-6 max-w-2xl mx-auto'>
-              Be part of the future of DeFi and sustainable agriculture. Follow our progress and
-              contribute to building the most advanced platform on Solana.
-            </p>
-            <div className='flex flex-col sm:flex-row gap-4 justify-center'>
-              <button className='btn-primary'>Join Community</button>
-              <button className='btn-outline'>View GitHub</button>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </section>
   );

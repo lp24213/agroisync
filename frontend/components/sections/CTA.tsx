@@ -1,144 +1,157 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { ArrowRight, Star, Users, TrendingUp, Shield } from 'lucide-react';
-
-const benefits = [
-  {
-    icon: Star,
-    text: 'Join 50K+ users earning passive income',
-  },
-  {
-    icon: TrendingUp,
-    text: 'Earn up to 25% APY on staking pools',
-  },
-  {
-    icon: Shield,
-    text: 'Audited smart contracts & insurance coverage',
-  },
-  {
-    icon: Users,
-    text: 'Active community & governance participation',
-  },
-];
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/Button';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export function CTA() {
+  const [isHovered, setIsHovered] = useState(false);
+  
   return (
-    <section className='py-24 bg-gradient-to-br from-primary-500/10 via-accent-500/5 to-purple-500/10 relative overflow-hidden'>
-      {/* Background Effects */}
-      <div className='absolute inset-0 bg-gradient-to-br from-primary-500/5 to-accent-500/5' />
-      <div className='absolute top-0 left-1/4 w-72 h-72 bg-primary-500/20 rounded-full mix-blend-multiply filter blur-3xl animate-pulse-slow' />
-      <div className='absolute bottom-0 right-1/4 w-72 h-72 bg-accent-500/20 rounded-full mix-blend-multiply filter blur-3xl animate-pulse-slow animation-delay-2000' />
-
-      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10'>
-        <div className='text-center'>
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className='inline-flex items-center rounded-full px-4 py-2 text-sm font-medium bg-white/10 text-white border border-white/20 mb-8'
-          >
-            <Star className='w-4 h-4 mr-2' />
-            Limited Time Offer
-          </motion.div>
-
-          {/* Main Heading */}
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1 }}
-            className='text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl mb-6'
-          >
-            Ready to Start <span className='gradient-text'>Earning</span>
-            <br />
-            Today?
-          </motion.h2>
-
-          {/* Subtitle */}
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className='text-xl text-gray-300 max-w-3xl mx-auto mb-12'
-          >
-            Join thousands of users who are already earning passive income with AGROTM&apos;s
-            advanced DeFi protocols. Start your journey to financial freedom today.
-          </motion.p>
-
-          {/* Benefits Grid */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12'
-          >
-            {benefits.map((benefit, index) => (
-              <motion.div
-                key={benefit.text}
+    <section className="relative py-24 overflow-hidden">
+      {/* Background with animated gradient */}
+      <div className="absolute inset-0 bg-gradient-to-r from-agro-blue/20 to-agro-green/20 z-0">
+        <div className="absolute inset-0 backdrop-blur-3xl"></div>
+      </div>
+      
+      {/* Grid overlay */}
+      <div className="absolute inset-0 z-0 opacity-10">
+        <div className="grid-animation"></div>
+      </div>
+      
+      {/* Scanlines Effect */}
+      <div className="absolute inset-0 z-1 scanlines opacity-10"></div>
+      
+      {/* Digital Rain Effect */}
+      <div className="absolute inset-0 z-0 opacity-5">
+        <div className="digital-rain"></div>
+      </div>
+      
+      {/* Glowing orbs */}
+      <motion.div 
+        className="absolute top-1/4 -left-20 w-40 h-40 rounded-full bg-agro-blue/20 blur-xl z-0"
+        animate={{ 
+          x: [0, 30, 0], 
+          opacity: [0.2, 0.3, 0.2]
+        }}
+        transition={{ 
+          repeat: Infinity, 
+          duration: 8,
+          ease: "easeInOut" 
+        }}
+      />
+      <motion.div 
+        className="absolute bottom-1/4 -right-20 w-40 h-40 rounded-full bg-agro-green/20 blur-xl z-0"
+        animate={{ 
+          x: [0, -30, 0], 
+          opacity: [0.2, 0.3, 0.2]
+        }}
+        transition={{ 
+          repeat: Infinity, 
+          duration: 10,
+          ease: "easeInOut" 
+        }}
+      />
+      
+      {/* Content */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative overflow-hidden cyberpunk-border p-0.5">
+          <div className="bg-agro-darker/90 backdrop-blur-md p-12 rounded-lg relative">
+            {/* Corner accents */}
+            <div className="absolute top-0 left-0 w-10 h-10 border-t-2 border-l-2 border-agro-blue"></div>
+            <div className="absolute top-0 right-0 w-10 h-10 border-t-2 border-r-2 border-agro-green"></div>
+            <div className="absolute bottom-0 left-0 w-10 h-10 border-b-2 border-l-2 border-agro-green"></div>
+            <div className="absolute bottom-0 right-0 w-10 h-10 border-b-2 border-r-2 border-agro-blue"></div>
+            <div className="text-center">
+              <motion.h2 
+                className="text-4xl md:text-5xl font-bold mb-6 text-glow cyberpunk-glitch"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 + index * 0.1 }}
-                className='flex items-center justify-center space-x-3 text-white'
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
               >
-                <benefit.icon className='w-5 h-5 text-primary-400 flex-shrink-0' />
-                <span className='text-sm font-medium'>{benefit.text}</span>
+                <AnimatePresence>
+                  {isHovered && (
+                    <motion.span 
+                      className="absolute inset-0 text-agro-blue opacity-30 blur-sm"
+                      initial={{ x: -4, opacity: 0 }}
+                      animate={{ x: -2, opacity: 0.3 }}
+                      exit={{ x: 0, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      Pronto para revolucionar a agricultura?
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-agro-blue to-agro-green relative z-10">
+                  Pronto para revolucionar a agricultura?
+                </span>
+              </motion.h2>
+              
+              <motion.p 
+                className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                Junte-se à revolução da agricultura DeFi e comece a ganhar recompensas
+                enquanto apoia projetos sustentáveis com tecnologia blockchain.
+              </motion.p>
+              
+              <motion.div 
+                className="flex flex-col sm:flex-row gap-6 justify-center"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+              >
+                <Button 
+                  variant="primary" 
+                  size="lg" 
+                  className="group relative overflow-hidden neon-box cyberpunk-button"
+                >
+                  <span className="relative z-10 flex items-center">
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                    Conectar Carteira
+                  </span>
+                  <span className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                  <span className="absolute -inset-0.5 bg-gradient-to-r from-agro-blue to-agro-green opacity-0 group-hover:opacity-30 blur-sm transition-all duration-300 group-hover:blur-md"></span>
+                  
+                  {/* Animated corner accents */}
+                  <span className="absolute top-0 left-0 w-2 h-0 bg-agro-blue group-hover:h-full transition-all duration-300 delay-100"></span>
+                  <span className="absolute bottom-0 right-0 w-2 h-0 bg-agro-green group-hover:h-full transition-all duration-300 delay-100"></span>
+                  <span className="absolute bottom-0 left-0 h-2 w-0 bg-agro-green group-hover:w-full transition-all duration-300 delay-200"></span>
+                  <span className="absolute top-0 right-0 h-2 w-0 bg-agro-blue group-hover:w-full transition-all duration-300 delay-200"></span>
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  className="group relative overflow-hidden border-agro-green/50 hover:border-agro-green cyberpunk-button-outline"
+                >
+                  <span className="relative z-10 flex items-center">
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Ler Whitepaper
+                  </span>
+                  <span className="absolute inset-0 bg-agro-green/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                  <span className="absolute -inset-0.5 bg-agro-green opacity-0 group-hover:opacity-30 blur-sm transition-all duration-300 group-hover:blur-md"></span>
+                  
+                  {/* Animated corner accents */}
+                  <span className="absolute top-0 left-0 w-2 h-0 bg-agro-green group-hover:h-full transition-all duration-300 delay-100"></span>
+                  <span className="absolute bottom-0 right-0 w-2 h-0 bg-agro-green group-hover:h-full transition-all duration-300 delay-100"></span>
+                  <span className="absolute bottom-0 left-0 h-2 w-0 bg-agro-green group-hover:w-full transition-all duration-300 delay-200"></span>
+                  <span className="absolute top-0 right-0 h-2 w-0 bg-agro-green group-hover:w-full transition-all duration-300 delay-200"></span>
+                </Button>
               </motion.div>
-            ))}
-          </motion.div>
-
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className='flex flex-col sm:flex-row gap-4 justify-center items-center'
-          >
-            <button className='bg-white text-black font-bold py-4 px-8 rounded-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center'>
-              Start Staking Now
-              <ArrowRight className='ml-2 h-5 w-5' />
-            </button>
-            <button className='border-2 border-white text-white font-bold py-4 px-8 rounded-lg hover:bg-white hover:text-black transition-all duration-300 transform hover:scale-105'>
-              View Documentation
-            </button>
-          </motion.div>
-
-          {/* Trust Indicators */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className='mt-16'
-          >
-            <p className='text-sm text-gray-400 mb-6'>Trusted by leading protocols</p>
-            <div className='flex items-center justify-center space-x-8 opacity-50'>
-              <div className='text-gray-400 text-sm font-medium'>Serum</div>
-              <div className='text-gray-400 text-sm font-medium'>Raydium</div>
-              <div className='text-gray-400 text-sm font-medium'>Orca</div>
-              <div className='text-gray-400 text-sm font-medium'>Jupiter</div>
             </div>
-          </motion.div>
-
-          {/* Stats */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.7 }}
-            className='mt-16 grid grid-cols-3 gap-8 max-w-2xl mx-auto'
-          >
-            <div className='text-center'>
-              <div className='text-2xl font-bold text-white'>$2.5B+</div>
-              <div className='text-sm text-gray-400'>Total Value Locked</div>
-            </div>
-            <div className='text-center'>
-              <div className='text-2xl font-bold text-white'>50K+</div>
-              <div className='text-sm text-gray-400'>Active Users</div>
-            </div>
-            <div className='text-center'>
-              <div className='text-2xl font-bold text-white'>15.3%</div>
-              <div className='text-sm text-gray-400'>Average APY</div>
-            </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

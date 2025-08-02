@@ -1,347 +1,445 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Coins, Lock, Unlock, TrendingUp, Clock, AlertCircle } from 'lucide-react';
+import React, { memo, useState, useCallback, useMemo, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Card } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Select } from '@/components/ui/Select';
+import { validation } from '@/utils/validation';
+import { cn } from '@/lib/utils';
 
-const stakingSchema = z.object({
-  amount: z
-    .string()
-    .min(1, 'Amount is required')
-    .refine(val => !isNaN(Number(val)) && Number(val) > 0, 'Amount must be a positive number'),
-  pool: z.string().min(1, 'Please select a staking pool'),
-  lockPeriod: z.string().optional(),
-});
+/**
+ * StakingForm Component - Premium staking interface with enhanced UX
+ * 
+ * @description A comprehensive staking form with validation, animations,
+ * and optimized user experience for DeFi operations.
+ * 
+ * @features
+ * - Multi-action support (stake, unstake, claim)
+ * - Real-time validation and feedback
+ * - Animated transitions and loading states
+ * - Pool information display
+ * - Error handling with user-friendly messages
+ * - Performance optimized with React.memo
+ * - TypeScript strict typing
+ * - Accessibility compliant
+ */
 
-type StakingFormData = z.infer<typeof stakingSchema>;
+type StakingAction = 'stake' | 'unstake' | 'claim';
 
-const stakingPools = [
-  {
-    id: 'flexible',
-    name: 'Flexible Staking',
-    apy: 8.5,
-    minStake: 100,
-    maxStake: 100000,
-    lockPeriod: 0,
-    description: 'No lock period, withdraw anytime',
-    color: '#22c55e',
-    icon: Unlock,
-  },
-  {
-    id: '30-day',
-    name: '30-Day Lock',
-    apy: 12.3,
-    minStake: 500,
-    maxStake: 50000,
-    lockPeriod: 30,
-    description: 'Lock for 30 days, higher rewards',
-    color: '#3b82f6',
-    icon: Lock,
-  },
-  {
-    id: '90-day',
-    name: '90-Day Lock',
-    apy: 15.7,
-    minStake: 1000,
-    maxStake: 100000,
-    lockPeriod: 90,
-    description: 'Lock for 90 days, premium rewards',
-    color: '#f59e0b',
-    icon: Lock,
-  },
-  {
-    id: '180-day',
-    name: '180-Day Lock',
-    apy: 18.2,
-    minStake: 2000,
-    maxStake: 100000,
-    lockPeriod: 180,
-    description: 'Lock for 180 days, maximum rewards',
-    color: '#8b5cf6',
-    icon: Lock,
-  },
-];
+interface Pool {
+  /** Unique identifier for the pool */
+  id: string;
+  /** Display name of the pool */
+  name: string;
+  /** Annual Percentage Rate */
+  apr: number;
+  /** Minimum stake amount */
+  minStake: number;
+  /** Maximum stake amount */
+  maxStake: number;
+  /** Lock period in days */
+  lockPeriod: number;
+  /** Total value locked in the pool */
+  tvl?: number;
+  /** Available rewards for claiming */
+  availableRewards?: number;
+  /** User's current stake in this pool */
+  userStake?: number;
+}
 
 interface StakingFormProps {
-  onStake: (data: StakingFormData) => void;
-  onCancel: () => void;
-  userBalance?: number;
-  isLoading?: boolean;
+  /** Available staking pools */
+  pools: Pool[];
+  /** Callback for stake action */
+  onStake: (poolId: string, amount: number) => Promise<void>;
+  /** Callback for unstake action */
+  onUnstake: (poolId: string, amount: number) => Promise<void>;
+  /** Callback for claim action */
+  onClaim: (poolId: string) => Promise<void>;
+  /** Whether the form is in loading state */
+  loading?: boolean;
+  /** User's wallet balance */
+  walletBalance?: number;
+  /** Success callback */
+  onSuccess?: (action: StakingAction, poolId: string, amount?: number) => void;
+  /** Error callback */
+  onError?: (error: Error, action: StakingAction) => void;
 }
 
-export function StakingForm({
-  onStake,
-  onCancel,
-  userBalance = 0,
-  isLoading = false,
-}: StakingFormProps) {
-  const [selectedPool, setSelectedPool] = useState(stakingPools[0]);
-  const [estimatedRewards, setEstimatedRewards] = useState(0);
-  const [isCalculating, setIsCalculating] = useState(false);
+const StakingForm = memo(({ 
+  pools, 
+  onStake, 
+  onUnstake, 
+  onClaim,
+  loading: externalLoading = false,
+  walletBalance = 0,
+  onSuccess,
+  onError
+}: StakingFormProps) => {
+  const [selectedPool, setSelectedPool] = useState<string>('');
+  const [amount, setAmount] = useState<string>('');
+  const [action, setAction] = useState<StakingAction>('stake');
+  const [internalLoading, setInternalLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    formState: { errors, isValid },
-  } = useForm<StakingFormData>({
-    resolver: zodResolver(stakingSchema),
-    mode: 'onChange',
-  });
+  const loading = externalLoading || internalLoading;
 
-  const watchedAmount = watch('amount');
-  const watchedPool = watch('pool');
+  // Memoized selected pool data
+  const selectedPoolData = useMemo(() => 
+    pools.find(p => p.id === selectedPool), 
+    [pools, selectedPool]
+  );
 
-  // Calculate estimated rewards
-  useEffect(() => {
-    if (watchedAmount && watchedPool) {
-      setIsCalculating(true);
-      const amount = parseFloat(watchedAmount);
-      const pool = stakingPools.find(p => p.id === watchedPool);
+  // Validation logic
+  const validateForm = useCallback(() => {
+    const newErrors: Record<string, string> = {};
 
-      if (pool && !isNaN(amount)) {
-        // Simple calculation: (amount * apy) / 100
-        const rewards = (amount * pool.apy) / 100;
-        setEstimatedRewards(rewards);
+    if (!selectedPool) {
+      newErrors.pool = 'Selecione um pool para continuar';
+    }
+
+    if (action !== 'claim') {
+      if (!amount || amount.trim() === '') {
+        newErrors.amount = 'Insira um valor';
+      } else {
+        const numAmount = parseFloat(amount);
+        
+        if (isNaN(numAmount) || numAmount <= 0) {
+          newErrors.amount = 'Valor deve ser maior que zero';
+        } else if (selectedPoolData) {
+          if (numAmount < selectedPoolData.minStake) {
+            newErrors.amount = `Valor mínimo: ${selectedPoolData.minStake}`;
+          } else if (numAmount > selectedPoolData.maxStake) {
+            newErrors.amount = `Valor máximo: ${selectedPoolData.maxStake}`;
+          } else if (action === 'stake' && numAmount > walletBalance) {
+            newErrors.amount = 'Saldo insuficiente na carteira';
+          } else if (action === 'unstake' && selectedPoolData.userStake && numAmount > selectedPoolData.userStake) {
+            newErrors.amount = 'Valor maior que o stake atual';
+          }
+        }
       }
-
-      setTimeout(() => setIsCalculating(false), 500);
     }
-  }, [watchedAmount, watchedPool]);
 
-  // Update selected pool when form value changes
-  useEffect(() => {
-    if (watchedPool) {
-      const pool = stakingPools.find(p => p.id === watchedPool);
-      if (pool) {
-        setSelectedPool(pool);
+    if (action === 'claim' && selectedPoolData?.availableRewards === 0) {
+      newErrors.claim = 'Nenhuma recompensa disponível para reivindicar';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }, [selectedPool, amount, action, selectedPoolData, walletBalance]);
+
+  // Handle form submission
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Mark all fields as touched
+    setTouched({ pool: true, amount: true, claim: true });
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    setInternalLoading(true);
+    
+    try {
+      const numAmount = action !== 'claim' ? parseFloat(amount) : 0;
+      
+      if (action === 'stake') {
+        await onStake(selectedPool, numAmount);
+      } else if (action === 'unstake') {
+        await onUnstake(selectedPool, numAmount);
+      } else if (action === 'claim') {
+        await onClaim(selectedPool);
       }
+      
+      // Reset form on success
+      setAmount('');
+      setErrors({});
+      setTouched({});
+      
+      onSuccess?.(action, selectedPool, numAmount || undefined);
+    } catch (error: any) {
+      const errorObj = error instanceof Error ? error : new Error(error.message || 'Erro desconhecido');
+      onError?.(errorObj, action);
+    } finally {
+      setInternalLoading(false);
     }
-  }, [watchedPool]);
+  }, [selectedPool, amount, action, validateForm, onStake, onUnstake, onClaim, onSuccess, onError]);
 
-  const onSubmit = (data: StakingFormData) => {
-    onStake(data);
-  };
+  // Handle action change
+  const handleActionChange = useCallback((newAction: StakingAction) => {
+    setAction(newAction);
+    setAmount('');
+    setErrors({});
+    setTouched({});
+  }, []);
 
-  const formatNumber = (value: number) => {
-    return new Intl.NumberFormat('en-US').format(value);
-  };
-
-  const getValidationError = () => {
-    if (!watchedAmount) return null;
-
-    const amount = parseFloat(watchedAmount);
-    if (isNaN(amount)) return 'Please enter a valid amount';
-
-    if (amount < selectedPool.minStake) {
-      return `Minimum stake is ${formatNumber(selectedPool.minStake)} AGROTM`;
+  // Handle amount change with validation
+  const handleAmountChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setAmount(value);
+    
+    if (touched.amount) {
+      // Re-validate on change if field was touched
+      setTimeout(validateForm, 100);
     }
+  }, [touched.amount, validateForm]);
 
-    if (amount > selectedPool.maxStake) {
-      return `Maximum stake is ${formatNumber(selectedPool.maxStake)} AGROTM`;
+  // Handle amount blur
+  const handleAmountBlur = useCallback(() => {
+    setTouched(prev => ({ ...prev, amount: true }));
+    validateForm();
+  }, [validateForm]);
+
+  // Validate on dependency changes
+  useEffect(() => {
+    if (Object.keys(touched).length > 0) {
+      validateForm();
     }
+  }, [selectedPool, action, validateForm, touched]);
 
-    if (amount > userBalance) {
-      return 'Insufficient balance';
-    }
+  // Memoized pool options
+  const poolOptions = useMemo(() => 
+    pools.map(pool => ({
+      value: pool.id,
+      label: `${pool.name} (${validation.formatPercentage(pool.apr)} APR)`,
+      disabled: false
+    })), 
+    [pools]
+  );
 
-    return null;
-  };
+  // Action button configuration
+  const actionButtons: Array<{ key: StakingAction; label: string; icon: string }> = [
+    { key: 'stake', label: 'Stake', icon: '⬆️' },
+    { key: 'unstake', label: 'Unstake', icon: '⬇️' },
+    { key: 'claim', label: 'Claim', icon: '🎁' }
+  ];
 
-  const validationError = getValidationError();
+  // Form validation state
+  const isFormValid = useMemo(() => {
+    return selectedPool && 
+           (action === 'claim' || (amount && !errors.amount)) && 
+           !errors.pool && 
+           !errors.claim;
+  }, [selectedPool, action, amount, errors]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      className='bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 max-w-md w-full'
-    >
-      <div className='flex items-center justify-between mb-6'>
-        <h2 className='text-xl font-bold text-white'>Stake AGROTM</h2>
-        <button onClick={onCancel} className='text-gray-400 hover:text-white transition-colors'>
-          ×
-        </button>
-      </div>
+    <Card className="max-w-2xl mx-auto">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="space-y-6"
+      >
+        {/* Header */}
+        <div className="text-center">
+          <motion.h2 
+            className="text-3xl font-bold text-agro-light mb-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.1 }}
+          >
+            Staking DeFi
+          </motion.h2>
+          <motion.p 
+            className="text-agro-light/60"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
+            Stake, unstake ou reivindique suas recompensas
+          </motion.p>
+        </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
-        {/* Pool Selection */}
-        <div>
-          <label className='block text-sm font-medium text-gray-300 mb-3'>
-            Select Staking Pool
-          </label>
-          <div className='grid grid-cols-2 gap-3'>
-            {stakingPools.map(pool => (
-              <button
-                key={pool.id}
-                type='button'
-                onClick={() => setValue('pool', pool.id)}
-                className={`p-3 rounded-lg border transition-all duration-200 text-left ${
-                  watchedPool === pool.id
-                    ? 'border-primary-500 bg-primary-500/20'
-                    : 'border-white/10 bg-white/5 hover:bg-white/10'
-                }`}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Action Selection */}
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-3 gap-3"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            {actionButtons.map((btn, index) => (
+              <Button
+                key={btn.key}
+                type="button"
+                variant={action === btn.key ? 'primary' : 'outline'}
+                onClick={() => handleActionChange(btn.key)}
+                className={cn(
+                  'w-full transition-all duration-200',
+                  action === btn.key && 'scale-105 shadow-lg'
+                )}
+                startIcon={<span className="text-lg">{btn.icon}</span>}
+                disabled={loading}
               >
-                <div className='flex items-center justify-between mb-2'>
-                  <pool.icon className='w-4 h-4' style={{ color: pool.color }} />
-                  <span className='text-xs font-medium text-green-400'>{pool.apy}% APY</span>
-                </div>
-                <div className='text-sm font-medium text-white'>{pool.name}</div>
-                <div className='text-xs text-gray-400 mt-1'>{pool.description}</div>
-              </button>
+                {btn.label}
+              </Button>
             ))}
-          </div>
-          {errors.pool && (
-            <p className='text-red-400 text-xs mt-2 flex items-center'>
-              <AlertCircle className='w-3 h-3 mr-1' />
-              {errors.pool.message}
-            </p>
-          )}
-        </div>
+          </motion.div>
 
-        {/* Amount Input */}
-        <div>
-          <label className='block text-sm font-medium text-gray-300 mb-2'>Amount to Stake</label>
-          <div className='relative'>
-            <input
-              type='number'
-              step='0.01'
-              placeholder='0.00'
-              {...register('amount')}
-              className='w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary-500'
+          {/* Pool Selection */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <Select
+              label="Selecionar Pool"
+              options={poolOptions}
+              value={selectedPool}
+              onChange={(e) => {
+                setSelectedPool(e.target.value);
+                setTouched(prev => ({ ...prev, pool: true }));
+              }}
+              placeholder="Escolha um pool de staking"
+              error={touched.pool ? errors.pool : undefined}
+              disabled={loading}
             />
-            <div className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm'>
-              AGROTM
-            </div>
-          </div>
+          </motion.div>
 
-          {/* Balance Info */}
-          <div className='flex items-center justify-between mt-2 text-xs text-gray-400'>
-            <span>Available: {formatNumber(userBalance)} AGROTM</span>
-            <button
-              type='button'
-              onClick={() => setValue('amount', userBalance.toString())}
-              className='text-primary-400 hover:text-primary-300 transition-colors'
-            >
-              Max
-            </button>
-          </div>
-
-          {errors.amount && (
-            <p className='text-red-400 text-xs mt-2 flex items-center'>
-              <AlertCircle className='w-3 h-3 mr-1' />
-              {errors.amount.message}
-            </p>
-          )}
-
-          {validationError && (
-            <p className='text-red-400 text-xs mt-2 flex items-center'>
-              <AlertCircle className='w-3 h-3 mr-1' />
-              {validationError}
-            </p>
-          )}
-        </div>
-
-        {/* Pool Details */}
-        {selectedPool && (
-          <div className='p-4 bg-white/5 rounded-lg border border-white/10'>
-            <div className='flex items-center justify-between mb-3'>
-              <h3 className='text-sm font-medium text-white'>{selectedPool.name}</h3>
-              <div className='flex items-center text-green-400'>
-                <TrendingUp className='w-4 h-4 mr-1' />
-                <span className='text-sm font-medium'>{selectedPool.apy}% APY</span>
-              </div>
-            </div>
-
-            <div className='grid grid-cols-2 gap-4 text-xs'>
-              <div>
-                <span className='text-gray-400'>Min Stake:</span>
-                <span className='text-white ml-1'>
-                  {formatNumber(selectedPool.minStake)} AGROTM
-                </span>
-              </div>
-              <div>
-                <span className='text-gray-400'>Max Stake:</span>
-                <span className='text-white ml-1'>
-                  {formatNumber(selectedPool.maxStake)} AGROTM
-                </span>
-              </div>
-              <div>
-                <span className='text-gray-400'>Lock Period:</span>
-                <span className='text-white ml-1'>
-                  {selectedPool.lockPeriod === 0 ? 'None' : `${selectedPool.lockPeriod} days`}
-                </span>
-              </div>
-              <div>
-                <span className='text-gray-400'>Estimated Rewards:</span>
-                <span className='text-green-400 ml-1'>
-                  {isCalculating ? '...' : `${estimatedRewards.toFixed(2)} AGROTM/year`}
-                </span>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Lock Period Warning */}
-        {selectedPool.lockPeriod > 0 && (
-          <div className='p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg'>
-            <div className='flex items-start'>
-              <Clock className='w-4 h-4 text-yellow-400 mr-2 mt-0.5' />
-              <div className='text-xs text-yellow-300'>
-                <p className='font-medium mb-1'>Lock Period Notice</p>
-                <p>
-                  Your tokens will be locked for {selectedPool.lockPeriod} days. You cannot withdraw
-                  or transfer them during this period.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Action Buttons */}
-        <div className='flex space-x-3'>
-          <button
-            type='button'
-            onClick={onCancel}
-            className='flex-1 px-4 py-3 bg-white/5 border border-white/10 text-white rounded-lg hover:bg-white/10 transition-colors'
-          >
-            Cancel
-          </button>
-          <button
-            type='submit'
-            disabled={!isValid || !!validationError || isLoading}
-            className='flex-1 px-4 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center'
-          >
-            {isLoading ? (
-              <>
-                <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2'></div>
-                Staking...
-              </>
-            ) : (
-              <>
-                <Coins className='w-4 h-4 mr-2' />
-                Stake Tokens
-              </>
+          {/* Pool Information */}
+          <AnimatePresence>
+            {selectedPoolData && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden"
+              >
+                <div className="p-6 bg-gradient-to-r from-agro-dark/50 to-agro-primary/5 rounded-lg border border-agro-primary/20">
+                  <h3 className="font-semibold text-agro-light mb-4 flex items-center gap-2">
+                    <span className="text-agro-primary">📊</span>
+                    Informações do Pool
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-agro-light/60">APR:</span>
+                        <span className="text-agro-secondary font-bold">
+                          {validation.formatPercentage(selectedPoolData.apr)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-agro-light/60">Lock Period:</span>
+                        <span className="text-agro-light">{selectedPoolData.lockPeriod} dias</span>
+                      </div>
+                      {selectedPoolData.tvl && (
+                        <div className="flex justify-between">
+                          <span className="text-agro-light/60">TVL:</span>
+                          <span className="text-agro-light">${selectedPoolData.tvl.toLocaleString()}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-agro-light/60">Min Stake:</span>
+                        <span className="text-agro-light">{selectedPoolData.minStake}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-agro-light/60">Max Stake:</span>
+                        <span className="text-agro-light">{selectedPoolData.maxStake}</span>
+                      </div>
+                      {selectedPoolData.userStake && (
+                        <div className="flex justify-between">
+                          <span className="text-agro-light/60">Seu Stake:</span>
+                          <span className="text-agro-primary font-semibold">{selectedPoolData.userStake}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  {selectedPoolData.availableRewards && action === 'claim' && (
+                    <div className="mt-4 p-3 bg-agro-secondary/10 rounded-lg border border-agro-secondary/20">
+                      <div className="flex justify-between items-center">
+                        <span className="text-agro-light/80">Recompensas Disponíveis:</span>
+                        <span className="text-agro-secondary font-bold text-lg">
+                          {selectedPoolData.availableRewards}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
             )}
-          </button>
-        </div>
+          </AnimatePresence>
 
-        {/* Terms */}
-        <div className='text-xs text-gray-400 text-center'>
-          By staking, you agree to our{' '}
-          <a href='#' className='text-primary-400 hover:text-primary-300'>
-            Terms of Service
-          </a>{' '}
-          and{' '}
-          <a href='#' className='text-primary-400 hover:text-primary-300'>
-            Privacy Policy
-          </a>
-        </div>
-      </form>
-    </motion.div>
+          {/* Amount Input */}
+          <AnimatePresence>
+            {action !== 'claim' && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ delay: 0.1 }}
+              >
+                <Input
+                  label="Quantidade"
+                  type="number"
+                  value={amount}
+                  onChange={handleAmountChange}
+                  onBlur={handleAmountBlur}
+                  placeholder="0.00"
+                  error={touched.amount ? errors.amount : undefined}
+                  helperText={
+                    selectedPoolData 
+                      ? `Min: ${selectedPoolData.minStake} | Max: ${selectedPoolData.maxStake} | Saldo: ${walletBalance}`
+                      : undefined
+                  }
+                  disabled={loading}
+                  step="0.01"
+                  min="0"
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Error Messages */}
+          <AnimatePresence>
+            {errors.claim && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg"
+              >
+                <p className="text-red-400 text-sm flex items-center gap-2">
+                  <span>⚠️</span>
+                  {errors.claim}
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Submit Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              fullWidth
+              loading={loading}
+              loadingText="Processando..."
+              disabled={!isFormValid || loading}
+              className="font-semibold"
+            >
+              {action === 'stake' && '🚀 Fazer Stake'}
+              {action === 'unstake' && '📤 Fazer Unstake'}
+              {action === 'claim' && '🎁 Reivindicar Recompensas'}
+            </Button>
+          </motion.div>
+        </form>
+      </motion.div>
+    </Card>
   );
-}
+});
+
+StakingForm.displayName = 'StakingForm';
+
+export { StakingForm };
+export type { StakingFormProps, Pool, StakingAction };
