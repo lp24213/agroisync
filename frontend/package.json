@@ -16,7 +16,11 @@
     "validate-env": "node -e \"require('./scripts/validate-env.js')\""
   },
   "dependencies": {
+    "@emotion/react": "11.14.0",
+    "@emotion/styled": "11.14.1",
     "@hookform/resolvers": "^3.3.2",
+    "@mui/icons-material": "7.2.0",
+    "@mui/material": "7.2.0",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-checkbox": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.5",
