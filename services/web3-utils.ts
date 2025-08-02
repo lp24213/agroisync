@@ -1,1 +1,0 @@
-export async function getCurrentGasPrice() { return 50; } // Exemplo de gas price Gwei

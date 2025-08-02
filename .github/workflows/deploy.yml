@@ -8,17 +8,7 @@ jobs:
   frontend:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Validate Vercel token
-        run: |
-          if [ -z "${{ secrets.VERCEL_TOKEN }}" ]; then
-            echo "❌ VERCEL_TOKEN is not set"
-            echo "Please configure VERCEL_TOKEN in repository secrets"
-            exit 1
-          fi
-          echo "✅ VERCEL_TOKEN is configured"
+      - uses: actions/checkout@v3
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -38,26 +28,14 @@ jobs:
           npm run build
       
       - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          working-directory: ./frontend
-          vercel-args: '--prod'
+        run: |
+          cd frontend
+          npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
 
   backend:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Validate Railway token
-        run: |
-          if [ -z "${{ secrets.RAILWAY_TOKEN }}" ]; then
-            echo "❌ RAILWAY_TOKEN is not set"
-            echo "Please configure RAILWAY_TOKEN in repository secrets"
-            exit 1
-          fi
-          echo "✅ RAILWAY_TOKEN is configured"
+      - uses: actions/checkout@v3
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -77,6 +55,7 @@ jobs:
           npm run build
       
       - name: Deploy to Railway
-        run: |
-          cd backend
-          npx @railway/cli@latest deploy --token=${{ secrets.RAILWAY_TOKEN }} --service=agrotm-backend 
+        uses: railwayapp/railway-deploy@v1
+        with:
+          service: agrotm-backend
+          token: ${{ secrets.RAILWAY_TOKEN }} 

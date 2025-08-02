@@ -1,316 +1,170 @@
-import compression from 'compression';
-import cors from 'cors';
-import { config } from 'dotenv';
 import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
 import morgan from 'morgan';
+import rateLimit from 'express-rate-limit';
+import dotenv from 'dotenv';
 
-import { logger, stream } from '../utils/logger';
-
-// Import configurations
-import {
-  connectMongoDB,
-  createRedisClient,
-  gracefulShutdown,
-} from './config/database';
-import {
-  corsOptions,
-  createRateLimiters,
-  createSpeedLimiters,
-  ddosProtection,
-  helmetConfig,
-  securityHeaders,
-} from './config/security';
-import { web3Config } from './config/web3';
-import { sanitizeInput } from './middleware/validation';
-import authRoutes from './routes/auth';
-import defiRoutes from './routes/defi';
-import stakingRoutes from './routes/staking';
-
-// Load environment variables
-config();
+dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
-const NODE_ENV = process.env.NODE_ENV || 'development';
+const PORT = process.env.PORT || 8080;
 
-// Initialize rate limiters and speed limiters
-const { generalLimiter, web3Limiter } = createRateLimiters();
-const { generalSpeedLimiter } = createSpeedLimiters();
-
-// Security middleware (order matters!)
-app.use(helmetConfig);
-app.use(securityHeaders);
-app.use(ddosProtection);
-app.use(cors(corsOptions));
+// Security middleware
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false,
+}));
 
 // Rate limiting
-app.use(generalLimiter);
-app.use(generalSpeedLimiter);
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: {
+    error: 'Too many requests from this IP, please try again later.',
+    timestamp: new Date().toISOString()
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use(limiter);
 
 // Compression middleware
 app.use(compression());
 
-// Body parsing middleware with limits
-app.use(
-  express.json({
-    limit: '10mb',
-    verify: (req: any, res, buf) => {
-      req.rawBody = buf;
-    },
-  }),
-);
-app.use(
-  express.urlencoded({
-    extended: true,
-    limit: '10mb',
-  }),
-);
-
 // Logging middleware
-app.use(morgan('combined', { stream }));
+app.use(morgan('combined'));
 
-// Input sanitization
-app.use(sanitizeInput);
+// CORS configuration
+const allowedOrigins = process.env.ALLOWED_ORIGINS 
+  ? process.env.ALLOWED_ORIGINS.split(',') 
+  : ['http://localhost:3000', 'https://agrotmsol.com.br', 'https://agrotm.vercel.app'];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
+
+// Body parsing middleware
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Health check endpoint
-app.get('/health', async (req, res) => {
-  try {
-    const health = {
-      status: 'OK',
-      timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
-      environment: NODE_ENV,
-      version: process.env.npm_package_version || '1.0.0',
-      services: {
-        database: 'unknown',
-        redis: 'unknown',
-        web3: 'unknown',
-      },
-    };
-
-    // Check database connection
-    try {
-      await connectMongoDB();
-      health.services.database = 'connected';
-    } catch (error) {
-      health.services.database = 'disconnected';
-      logger.error('Database health check failed:', error);
-    }
-
-    // Check Redis connection
-    try {
-      const redisClient = createRedisClient();
-      await redisClient.connect();
-      await redisClient.ping();
-      await redisClient.disconnect();
-      health.services.redis = 'connected';
-    } catch (error) {
-      health.services.redis = 'disconnected';
-      logger.error('Redis health check failed:', error);
-    }
-
-    // Check Web3 connection
-    try {
-      const web3Healthy = await web3Config.healthCheck();
-      health.services.web3 = web3Healthy ? 'connected' : 'disconnected';
-    } catch (error) {
-      health.services.web3 = 'disconnected';
-      logger.error('Web3 health check failed:', error);
-    }
-
-    const statusCode = Object.values(health.services).every(
-      (service) => service === 'connected',
-    )
-      ? 200
-      : 503;
-
-    res.status(statusCode).json(health);
-  } catch (error) {
-    logger.error('Health check error:', error);
-    res.status(503).json({
-      status: 'ERROR',
-      timestamp: new Date().toISOString(),
-      error: 'Health check failed',
-    });
-  }
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    message: 'AGROTM Backend is running',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    version: '1.0.0',
+    uptime: process.uptime(),
+    memory: process.memoryUsage(),
+    pid: process.pid
+  });
 });
 
-// API Routes with rate limiting
-app.use('/api/auth', authRoutes);
-
-// Web3 routes with stricter rate limiting
-app.use('/api/staking', web3Limiter, stakingRoutes);
-app.use('/api/defi', web3Limiter, defiRoutes);
-
-// Mock endpoints for backward compatibility (with rate limiting)
-app.get('/api/defi/pools', generalLimiter, async (req, res) => {
-  try {
-    const mockPools = [
-      {
-        id: 1,
-        name: 'SOL-USDC Pool',
-        token0: 'SOL',
-        token1: 'USDC',
-        totalLiquidity: 2500000,
-        volume24h: 125000,
-        apy: 45.2,
-      },
-      {
-        id: 2,
-        name: 'AGROTM-SOL Pool',
-        token0: 'AGROTM',
-        token1: 'SOL',
-        totalLiquidity: 850000,
-        volume24h: 45000,
-        apy: 38.7,
-      },
-    ];
-
-    res.json({
-      success: true,
-      data: mockPools,
-    });
-  } catch (error) {
-    logger.error('Error fetching DeFi pools:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error',
-      code: 'INTERNAL_ERROR',
-    });
-  }
+// API endpoints básicos
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    service: 'AGROTM API',
+    version: '1.0.0',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    endpoints: {
+      health: '/health',
+      apiHealth: '/api/health',
+      status: '/api/status'
+    }
+  });
 });
 
-app.get('/api/stats/overview', generalLimiter, async (req, res) => {
-  try {
-    const mockStats = {
-      totalValueLocked: 3500000,
-      totalUsers: 50000,
-      averageApy: 15.3,
-      totalTransactions: 1200000,
-      securityScore: 9.8,
-      supportedTokens: 150,
-    };
+app.get('/api/status', (req, res) => {
+  res.status(200).json({
+    status: 'operational',
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development',
+    timestamp: new Date().toISOString(),
+    memory: process.memoryUsage(),
+    version: '1.0.0',
+    pid: process.pid
+  });
+});
 
-    res.json({
-      success: true,
-      data: mockStats,
-    });
-  } catch (error) {
-    logger.error('Error fetching stats overview:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error',
-      code: 'INTERNAL_ERROR',
-    });
-  }
+// Root endpoint
+app.get('/', (req, res) => {
+  res.status(200).json({
+    message: 'AGROTM Backend API',
+    version: '1.0.0',
+    environment: process.env.NODE_ENV || 'development',
+    endpoints: {
+      health: '/health',
+      apiHealth: '/api/health',
+      status: '/api/status'
+    },
+    documentation: 'https://github.com/lp24213/agrotm-solana',
+    timestamp: new Date().toISOString()
+  });
 });
 
 // Error handling middleware
-app.use(
-  (
-    err: any,
-    req: express.Request,
-    res: express.Response,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _next: express.NextFunction,
-  ) => {
-    logger.error('Unhandled error:', {
-      error: err.message,
-      stack: err.stack,
-      url: req.url,
-      method: req.method,
-      ip: req.ip,
-      userAgent: req.get('User-Agent'),
-    });
-
-    // Don't leak error details in production
-    const errorResponse = {
-      success: false,
-      error: NODE_ENV === 'development' ? err.message : 'Internal server error',
-      code: 'INTERNAL_ERROR',
-    };
-
-    if (NODE_ENV === 'development') {
-      errorResponse.stack = err.stack;
-    }
-
-    res.status(500).json(errorResponse);
-  },
-);
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error('Error:', err.stack);
+  res.status(err.status || 500).json({
+    error: 'Something went wrong!',
+    message: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error',
+    timestamp: new Date().toISOString(),
+    path: req.url
+  });
+});
 
 // 404 handler
 app.use('*', (req, res) => {
-  logger.warn('Route not found:', {
-    url: req.originalUrl,
-    method: req.method,
-    ip: req.ip,
-  });
-
   res.status(404).json({
-    success: false,
-    error: 'Route not found',
-    code: 'ROUTE_NOT_FOUND',
-    path: req.originalUrl,
+    error: 'Endpoint not found',
+    message: 'The requested endpoint does not exist',
+    timestamp: new Date().toISOString(),
+    path: req.url,
+    availableEndpoints: ['/health', '/api/health', '/api/status']
   });
-});
-
-// Graceful shutdown handling
-process.on('SIGTERM', async () => {
-  logger.info('SIGTERM received, shutting down gracefully');
-  await gracefulShutdown();
-});
-
-process.on('SIGINT', async () => {
-  logger.info('SIGINT received, shutting down gracefully');
-  await gracefulShutdown();
-});
-
-// Unhandled promise rejection handler
-process.on('unhandledRejection', (reason, promise) => {
-  logger.error('Unhandled Rejection at:', {
-    promise,
-    reason,
-    stack: reason instanceof Error ? reason.stack : undefined,
-  });
-});
-
-// Uncaught exception handler
-process.on('uncaughtException', (error) => {
-  logger.error('Uncaught Exception:', {
-    error: error.message,
-    stack: error.stack,
-  });
-  process.exit(1);
 });
 
 // Start server
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const _server = app.listen(PORT, async () => {
-  logger.info('🚀 AGROTM Backend Server Starting...');
-  logger.info(`📍 Environment: ${NODE_ENV}`);
-  logger.info(`🌐 Server running on port ${PORT}`);
-  logger.info(`🔗 Health check: http://localhost:${PORT}/health`);
-  logger.info(`📊 API Documentation: http://localhost:${PORT}/api-docs`);
-
-  // Initialize services
-  try {
-    // Connect to MongoDB
-    await connectMongoDB();
-
-    // Initialize Redis
-    const redisClient = createRedisClient();
-    await redisClient.connect();
-    await redisClient.disconnect();
-
-    // Initialize Web3
-    await web3Config.healthCheck();
-
-    logger.info('✅ All services initialized successfully');
-  } catch (error) {
-    logger.error('❌ Service initialization failed:', error);
-    process.exit(1);
-  }
+const server = app.listen(PORT, () => {
+  console.log(`🚀 AGROTM Backend running on port ${PORT}`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`⏰ Started at: ${new Date().toISOString()}`);
+  console.log(`🔗 Health check: http://localhost:${PORT}/health`);
+  console.log(`📊 API status: http://localhost:${PORT}/api/status`);
 });
 
-// Export for testing
-export default app;
+// Handle server errors
+declare const process: any;
+server.on('error', (error: any) => {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+  const bind = typeof PORT === 'string' ? 'Pipe ' + PORT : 'Port ' + PORT;
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+});
