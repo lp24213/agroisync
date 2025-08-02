@@ -1,43 +1,61 @@
+import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
-import mongoose, { Document, Schema } from 'mongoose';
 
-export interface IUser extends Document {
-  email: string;
-  password: string;
-  username?: string;
-  walletAddress: string;
-  role: 'user' | 'admin' | 'super_admin';
-  isActive: boolean;
-  isVerified: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  comparePassword(candidate: string): Promise<boolean>;
-}
-
-const UserSchema = new Schema<IUser>(
-  {
-    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-    password: { type: String, required: true },
-    username: { type: String, trim: true },
-    walletAddress: { type: String, required: true, unique: true },
-    role: { type: String, enum: ['user', 'admin', 'super_admin'], default: 'user' },
-    isActive: { type: Boolean, default: true },
-    isVerified: { type: Boolean, default: false },
+// User schema
+const userSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+    trim: true
   },
-  { timestamps: true },
-);
-
-UserSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
-    return next();
+  password: {
+    type: String,
+    required: true,
+    minlength: 6
+  },
+  walletAddress: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin', 'moderator'],
+    default: 'user'
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  },
+  lastLogin: {
+    type: Date,
+    default: Date.now
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
   }
-  const salt = await bcrypt.genSalt(12);
-  this.password = await bcrypt.hash(this.password, salt);
+});
+
+// Hash password before saving
+userSchema.pre('save', async function(next) {
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, 12);
+  }
+  this.updatedAt = new Date();
   next();
 });
 
-UserSchema.methods.comparePassword = async function (candidate: string) {
-  return bcrypt.compare(candidate, this.password);
+// Compare password method
+userSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {
+  return bcrypt.compare(candidatePassword, this.password);
 };
 
-export const User = mongoose.model<IUser>('User', UserSchema);
+// Create User model
+export const User = mongoose.model('User', userSchema);

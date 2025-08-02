@@ -1,79 +1,49 @@
-import { Commitment, Connection } from '@solana/web3.js';
-
-import { logger } from '../utils/logger';
-
-// Solana Network Configuration
-const NETWORK = process.env.SOLANA_NETWORK || 'devnet';
-const COMMITMENT: Commitment = 'confirmed';
-
-// RPC Endpoints
-const RPC_ENDPOINTS = {
-  mainnet:
-    process.env.SOLANA_MAINNET_RPC || 'https://api.mainnet-beta.solana.com',
-  devnet: process.env.SOLANA_DEVNET_RPC || 'https://api.devnet.solana.com',
-  testnet: process.env.SOLANA_TESTNET_RPC || 'https://api.testnet.solana.com',
-  localnet: process.env.SOLANA_LOCALNET_RPC || 'http://localhost:8899',
-};
+import { Commitment, Connection, PublicKey } from '@solana/web3.js';
 
 // Web3 Configuration
 export const web3Config = {
+  // Solana connection
   connection: new Connection(
-    RPC_ENDPOINTS[NETWORK as keyof typeof RPC_ENDPOINTS],
-    {
-      commitment: COMMITMENT,
-      confirmTransactionInitialTimeout: 60000,
-    },
+    process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com',
+    'confirmed' as Commitment
   ),
 
-  network: NETWORK,
-  commitment: COMMITMENT,
+  // AGROTM token mint address
+  agrotmMint: new PublicKey(process.env.AGROTM_MINT_ADDRESS || '11111111111111111111111111111111'),
 
-  // Health check for Web3 connection
-  healthCheck: async (): Promise<boolean> => {
+  // Health check
+  async healthCheck(): Promise<boolean> {
     try {
-      const connection = web3Config.connection;
-      const blockHeight = await connection.getBlockHeight();
-      logger.info(`✅ Web3 health check passed. Block height: ${blockHeight}`);
-      return true;
+      const slot = await this.connection.getSlot();
+      return slot > 0;
     } catch (error) {
-      logger.error('❌ Web3 health check failed:', error);
+      console.error('Web3 health check failed:', error);
       return false;
     }
   },
 
-  // Get connection for specific network
-  getConnection: (network?: string): Connection => {
-    const targetNetwork = network || NETWORK;
-    const endpoint = RPC_ENDPOINTS[targetNetwork as keyof typeof RPC_ENDPOINTS];
-
-    if (!endpoint) {
-      throw new Error(`Invalid network: ${targetNetwork}`);
+  // Get token balance
+  async getTokenBalance(walletAddress: string, _mintAddress?: string): Promise<number> {
+    try {
+      const publicKey = new PublicKey(walletAddress);
+      
+      const balance = await this.connection.getTokenAccountBalance(publicKey);
+      return balance.value.uiAmount || 0;
+    } catch (error) {
+      console.error('Error getting token balance:', error);
+      return 0;
     }
-
-    return new Connection(endpoint, {
-      commitment: COMMITMENT,
-      confirmTransactionInitialTimeout: 60000,
-    });
   },
 
-  // Get current network info
-  getNetworkInfo: () => ({
-    network: NETWORK,
-    endpoint: RPC_ENDPOINTS[NETWORK as keyof typeof RPC_ENDPOINTS],
-    commitment: COMMITMENT,
-  }),
-};
-
-// Initialize Web3 connection
-export const initializeWeb3 = async (): Promise<void> => {
-  try {
-    const isHealthy = await web3Config.healthCheck();
-    if (!isHealthy) {
-      throw new Error('Web3 health check failed');
+  // Get SOL balance
+  async getSolBalance(walletAddress: string): Promise<number> {
+    try {
+      const publicKey = new PublicKey(walletAddress);
+      const balance = await this.connection.getBalance(publicKey);
+      return balance / 1e9; // Convert lamports to SOL
+    } catch (error) {
+      console.error('Error getting SOL balance:', error);
+      return 0;
     }
-    logger.info(`✅ Web3 initialized successfully on ${NETWORK}`);
-  } catch (error) {
-    logger.error('❌ Web3 initialization failed:', error);
-    throw error;
   }
 };

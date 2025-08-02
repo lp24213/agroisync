@@ -1,31 +1,31 @@
 import winston from 'winston';
 
-const enumerateErrorFormat = winston.format(info => {
-  if (info instanceof Error) {
-    Object.assign(info, { message: info.stack });
-  }
-  return info;
-});
-
+// Create logger instance
 export const logger = winston.createLogger({
-  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+  level: process.env.LOG_LEVEL || 'info',
   format: winston.format.combine(
-    enumerateErrorFormat(),
     winston.format.timestamp(),
-    winston.format.json(),
+    winston.format.errors({ stack: true }),
+    winston.format.json()
   ),
+  defaultMeta: { service: 'agrotm-backend' },
   transports: [
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple(),
-      ),
-    }),
-    // Adicione aqui outros transports premium, como arquivos, cloud, etc.
+    new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'logs/combined.log' }),
   ],
 });
 
-// Stream para integração com morgan
+// If we're not in production, log to console as well
+if (process.env.NODE_ENV !== 'production') {
+  logger.add(new winston.transports.Console({
+    format: winston.format.combine(
+      winston.format.colorize(),
+      winston.format.simple()
+    )
+  }));
+}
+
+// Create stream for Morgan
 export const stream = {
   write: (message: string) => {
     logger.info(message.trim());

@@ -1,1 +1,0 @@
-export async function fetchRarity(collection: string, tokenId: string) { return { rank: 8 }; }
