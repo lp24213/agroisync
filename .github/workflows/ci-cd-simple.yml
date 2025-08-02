@@ -1,23 +1,22 @@
-# DISABLED - Using ci-cd.yml instead
-# This workflow is disabled to avoid conflicts with the main CI/CD pipeline
-name: DISABLED - CI/CD Simple
+# DISABLED - CI/CD Simple
+# This workflow is temporarily disabled to focus on deployment
+name: CI/CD Simple
 
 on:
-  # Disabled - no triggers
+  # DISABLED - Only manual trigger
   workflow_dispatch:
-    # Manual trigger only for emergencies
     inputs:
-      emergency:
-        description: 'Emergency deployment only'
+      enable_cicd_simple:
+        description: 'Enable CI/CD simple'
         required: true
-        default: 'false'
+        default: false
+        type: boolean
 
 jobs:
-  disabled:
+  skip-cicd-simple:
+    name: Skip CI/CD Simple
     runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.enable_cicd_simple == false }}
     steps:
-      - name: Workflow Disabled
-        run: |
-          echo "This workflow is disabled to avoid conflicts"
-          echo "Use ci-cd.yml instead"
-          exit 0
+      - name: Skip CI/CD Simple
+        run: echo "CI/CD simple disabled for deployment focus"

@@ -1,38 +1,22 @@
-name: Rollback Deployment
+# DISABLED - Rollback Workflow
+# This workflow is temporarily disabled to focus on deployment
+name: Rollback
 
 on:
+  # DISABLED - Only manual trigger
   workflow_dispatch:
     inputs:
-      deployment_id:
-        description: 'Deployment ID to rollback to'
+      enable_rollback:
+        description: 'Enable rollback'
         required: true
-        type: string
+        default: false
+        type: boolean
 
 jobs:
-  rollback:
+  skip-rollback:
+    name: Skip Rollback
     runs-on: ubuntu-latest
-    
+    if: ${{ github.event.inputs.enable_rollback == false }}
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    # Validate required secrets before proceeding
-    - name: Validate secrets
-      run: |
-        # This secret must be configured in GitHub repository settings
-        # Settings → Secrets and variables → Actions
-        if [ -z "${{ secrets.VERCEL_TOKEN }}" ]; then
-          echo "❌ VERCEL_TOKEN is not set"
-          echo "Please configure VERCEL_TOKEN in repository secrets"
-          exit 1
-        fi
-        echo "✅ VERCEL_TOKEN is configured"
-    
-    # Rollback to previous deployment using configured token
-    - name: Rollback to previous deployment
-      uses: amondnet/vercel-action@v25
-      with:
-        # Required secret (configure in GitHub repository settings)
-        vercel-token: ${{ secrets.VERCEL_TOKEN }}
-        vercel-args: '--prod'
-        working-directory: ./frontend
+      - name: Skip rollback
+        run: echo "Rollback disabled for deployment focus"
