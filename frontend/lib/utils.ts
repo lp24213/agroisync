@@ -60,14 +60,14 @@ export const validation = {
 
   // Currency formatting
   formatCurrency: (
-    value: number,
+  value: number,
     currency: string = 'USD',
     locale: string = 'en-US'
   ): string => {
-    return new Intl.NumberFormat(locale, {
-      style: 'currency',
-      currency,
-    }).format(value);
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency,
+  }).format(value);
   },
 
   // Percentage formatting
@@ -84,34 +84,34 @@ export const validation = {
   // Relative time formatting
   formatRelativeTime: (date: Date | string): string => {
     const dateObj = typeof date === 'string' ? new Date(date) : date;
-    const now = new Date();
-    const diffInSeconds = Math.floor((now.getTime() - dateObj.getTime()) / 1000);
-
-    if (Math.abs(diffInSeconds) < 60) {
+  const now = new Date();
+  const diffInSeconds = Math.floor((now.getTime() - dateObj.getTime()) / 1000);
+  
+  if (Math.abs(diffInSeconds) < 60) {
       return `${diffInSeconds}s ago`;
-    }
-
-    const diffInMinutes = Math.floor(diffInSeconds / 60);
-    if (Math.abs(diffInMinutes) < 60) {
+  }
+  
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  if (Math.abs(diffInMinutes) < 60) {
       return `${diffInMinutes}m ago`;
-    }
-
-    const diffInHours = Math.floor(diffInMinutes / 60);
-    if (Math.abs(diffInHours) < 24) {
+  }
+  
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (Math.abs(diffInHours) < 24) {
       return `${diffInHours}h ago`;
-    }
-
-    const diffInDays = Math.floor(diffInHours / 24);
-    if (Math.abs(diffInDays) < 30) {
+  }
+  
+  const diffInDays = Math.floor(diffInHours / 24);
+  if (Math.abs(diffInDays) < 30) {
       return `${diffInDays}d ago`;
-    }
-
-    const diffInMonths = Math.floor(diffInDays / 30);
-    if (Math.abs(diffInMonths) < 12) {
+  }
+  
+  const diffInMonths = Math.floor(diffInDays / 30);
+  if (Math.abs(diffInMonths) < 12) {
       return `${diffInMonths}mo ago`;
-    }
-
-    const diffInYears = Math.floor(diffInMonths / 12);
+  }
+  
+  const diffInYears = Math.floor(diffInMonths / 12);
     return `${diffInYears}y ago`;
   },
 };
@@ -138,17 +138,17 @@ export const stringUtils = {
 
   // Generate random string
   randomString: (length: number = 8): string => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    for (let i = 0; i < length; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
   },
 
   // Slugify string
   slugify: (str: string): string => {
-    return str
+  return str
       .toLowerCase()
       .trim()
       .replace(/[^\w\s-]/g, '')
@@ -210,22 +210,23 @@ export const objectUtils = {
       }
       return clonedObj;
     }
-    return obj;
+  return obj;
   },
 
   // Merge objects
   merge: <T extends object>(target: T, ...sources: Partial<T>[]): T => {
-    return sources.reduce((merged, source) => {
+    let result = { ...target };
+    for (const source of sources) {
       for (const key in source) {
         if (source.hasOwnProperty(key)) {
           const value = source[key];
           if (value !== undefined) {
-            merged[key] = value;
+            (result as any)[key] = value;
           }
         }
       }
-      return merged;
-    }, { ...target });
+    }
+    return result;
   },
 
   // Check if object is empty

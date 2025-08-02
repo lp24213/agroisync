@@ -3,7 +3,7 @@
 import React from 'react';
 import { cn } from '../../lib/utils';
 
-interface ModalProps {
+export interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   title?: string;

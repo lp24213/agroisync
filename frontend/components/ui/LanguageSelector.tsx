@@ -3,17 +3,26 @@
 import { useState } from 'react';
 import { 
   supportedLanguages, 
-  type SupportedLanguage, 
-  getLanguageName, 
-  getLanguageFlag,
-  setLanguage 
-} from '@/lib/i18n';
+  changeLanguage 
+} from '../../lib/i18n';
 
-interface LanguageSelectorProps {
+export type SupportedLanguage = 'en' | 'pt' | 'zh';
+
+export interface LanguageSelectorProps {
   currentLanguage: SupportedLanguage;
   className?: string;
   variant?: 'dropdown' | 'buttons' | 'flags';
 }
+
+const getLanguageName = (code: SupportedLanguage): string => {
+  const lang = supportedLanguages.find(l => l.code === code);
+  return lang ? lang.name : code;
+};
+
+const getLanguageFlag = (code: SupportedLanguage): string => {
+  const lang = supportedLanguages.find(l => l.code === code);
+  return lang ? lang.flag : '🌐';
+};
 
 export function LanguageSelector({ 
   currentLanguage, 
@@ -24,7 +33,7 @@ export function LanguageSelector({
 
   const handleLanguageChange = (language: SupportedLanguage) => {
     if (language !== currentLanguage) {
-      setLanguage(language);
+      changeLanguage(language);
     }
     setIsOpen(false);
   };

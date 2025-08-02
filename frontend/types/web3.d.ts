@@ -47,7 +47,7 @@ export interface Wallet {
 export type ButtonVariant = "contained" | "outlined" | "text" | "default" | "primary" | "secondary" | "ghost" | "destructive" | "link";
 
 // Alert Variant Types
-export type AlertVariant = "info" | "warning" | "error" | "success" | "danger";
+export type AlertVariant = "info" | "warning" | "error" | "success";
 
 // Target Event Types
 export interface TargetEvent {

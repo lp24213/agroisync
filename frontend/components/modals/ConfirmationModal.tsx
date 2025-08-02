@@ -25,7 +25,7 @@ interface ModalConfig {
 
 const getModalConfig = (variant: AlertVariant): ModalConfig => {
   switch (variant) {
-    case 'danger':
+    case 'error':
       return {
         variant: 'error',
         buttonVariant: 'destructive',

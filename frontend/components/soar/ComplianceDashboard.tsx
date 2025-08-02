@@ -27,7 +27,7 @@ interface ComplianceReport {
 }
 
 export function ComplianceDashboard() {
-  const { isAdmin, hasPermission } = useProtectedRole();
+  const { userRole, hasAccess, checkPermission } = useProtectedRole();
   const [metrics, setMetrics] = React.useState<ComplianceMetric[]>([]);
   const [reports, setReports] = React.useState<ComplianceReport[]>([]);
   const [loading, setLoading] = React.useState(true);
@@ -134,7 +134,7 @@ export function ComplianceDashboard() {
     }
   };
 
-  if (!hasPermission('view_analytics')) {
+  if (!checkPermission('view_analytics')) {
     return (
       <div className="min-h-screen bg-agro-darker flex items-center justify-center">
         <Card className="max-w-md w-full">
@@ -212,7 +212,7 @@ export function ComplianceDashboard() {
           <Card>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-white">Relatórios Recentes</h2>
-              {isAdmin() && (
+              {checkPermission('admin') && (
                 <Button variant="primary" size="sm">
                   Novo Relatório
                 </Button>
@@ -242,7 +242,7 @@ export function ComplianceDashboard() {
                     )}
                   </div>
                   
-                  {isAdmin() && report.status === 'pending' && (
+                  {checkPermission('admin') && report.status === 'pending' && (
                     <div className="flex gap-2 mt-3">
                       <Button variant="primary" size="sm">Aprovar</Button>
                       <Button variant="outline" size="sm">Rejeitar</Button>

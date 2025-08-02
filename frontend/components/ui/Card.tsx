@@ -22,4 +22,5 @@ export const Card: React.FC<CardProps> = ({
   );
 };
 
+export type { CardProps } from '../../types/web3';
 export default Card;
