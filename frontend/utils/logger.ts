@@ -1,33 +1,40 @@
-import winston from 'winston';
+// Simple logger implementation without external dependencies
+export interface Logger {
+  info: (message: string, ...args: any[]) => void;
+  warn: (message: string, ...args: any[]) => void;
+  error: (message: string, ...args: any[]) => void;
+  debug: (message: string, ...args: any[]) => void;
+}
 
-const enumerateErrorFormat = winston.format(info => {
-  if (info instanceof Error) {
-    Object.assign(info, { message: info.stack });
+class ConsoleLogger implements Logger {
+  info(message: string, ...args: any[]) {
+    console.log(`[INFO] ${message}`, ...args);
   }
-  return info;
-});
 
-export const logger = winston.createLogger({
-  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
-  format: winston.format.combine(
-    enumerateErrorFormat(),
-    winston.format.timestamp(),
-    winston.format.json()
-  ),
-  transports: [
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple()
-      ),
-    }),
-    // Adicione aqui outros transports premium, como arquivos, cloud, etc.
-  ],
-});
+  warn(message: string, ...args: any[]) {
+    console.warn(`[WARN] ${message}`, ...args);
+  }
 
-// Stream para integração com morgan
-export const stream = {
-  write: (message: string) => {
-    logger.info(message.trim());
-  },
+  error(message: string, ...args: any[]) {
+    console.error(`[ERROR] ${message}`, ...args);
+  }
+
+  debug(message: string, ...args: any[]) {
+    if (process.env.NODE_ENV === 'development') {
+      console.debug(`[DEBUG] ${message}`, ...args);
+    }
+  }
+}
+
+// Export singleton instance
+export const logger = new ConsoleLogger();
+
+// Export logger factory for creating custom loggers
+export const createLogger = (prefix: string): Logger => {
+  return {
+    info: (message: string, ...args: any[]) => logger.info(`[${prefix}] ${message}`, ...args),
+    warn: (message: string, ...args: any[]) => logger.warn(`[${prefix}] ${message}`, ...args),
+    error: (message: string, ...args: any[]) => logger.error(`[${prefix}] ${message}`, ...args),
+    debug: (message: string, ...args: any[]) => logger.debug(`[${prefix}] ${message}`, ...args),
+  };
 };

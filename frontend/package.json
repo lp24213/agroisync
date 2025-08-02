@@ -61,6 +61,7 @@
     "tailwind-merge": "^2.0.0",
     "tailwindcss-animate": "^1.0.7",
     "wagmi": "^1.4.7",
+    "winston": "3.17.0",
     "xss": "^1.0.14",
     "zod": "^3.22.4"
   },
