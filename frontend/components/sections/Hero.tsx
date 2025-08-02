@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
 import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
 
 export function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -28,7 +27,7 @@ export function Hero() {
           className="absolute w-full h-full object-cover opacity-40"
           style={{ filter: 'brightness(0.4) contrast(1.2) saturate(1.2)' }}
         >
-          <source src="/videos/intro.mp4" type="video/mp4" />
+          <source src="/intro.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-b from-agro-darker/80 via-agro-darker to-agro-darker"></div>
         
@@ -38,12 +37,11 @@ export function Hero() {
         
         {/* Hero Background Image */}
         <div className="absolute inset-0">
-          <Image 
-            src="/assets/img/hero-bg.jpg" 
-            alt="AGROTM Hero Background" 
-            fill
-            className="object-cover opacity-20"
-            priority
+          <div 
+            className="w-full h-full bg-gradient-to-br from-agro-blue/10 via-agro-green/5 to-agro-purple/10"
+            style={{
+              backgroundImage: 'radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.1) 0%, transparent 50%)'
+            }}
           />
         </div>
       </div>

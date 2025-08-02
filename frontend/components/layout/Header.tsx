@@ -2,7 +2,6 @@ import React from 'react';
 import { Button } from '../ui/Button';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -49,17 +48,11 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 group">
             <motion.div 
-              className="w-8 h-8 relative overflow-hidden"
+              className="w-8 h-8 relative overflow-hidden bg-gradient-to-r from-agro-blue to-agro-green rounded-lg flex items-center justify-center"
               whileHover={{ scale: 1.1, rotate: 5 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
-              <Image 
-                src="/assets/img/agrotm-logo.svg" 
-                alt="AGROTM Logo" 
-                width={32} 
-                height={32}
-                className="w-full h-full"
-              />
+              <span className="text-white font-bold text-sm">A</span>
             </motion.div>
             <motion.span 
               className="text-xl font-bold gradient-text relative"

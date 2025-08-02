@@ -68,18 +68,11 @@ export const metadata: Metadata = {
     description: "Revolucione a agricultura com DeFi na Solana. Staking, NFTs agrícolas, governança descentralizada e sustentabilidade em uma única plataforma.",
     images: [
       {
-        url: "/assets/img/og-image.jpg",
+        url: "/assets/img/hero.png",
         width: 1200,
         height: 630,
         alt: "AGROTM Solana - Plataforma DeFi Agrícola",
-        type: "image/jpeg"
-      },
-      {
-        url: "/assets/img/og-image-square.jpg",
-        width: 1200,
-        height: 1200,
-        alt: "AGROTM Solana Logo",
-        type: "image/jpeg"
+        type: "image/png"
       }
     ]
   },
@@ -89,7 +82,7 @@ export const metadata: Metadata = {
     creator: "@agrotm_official",
     title: "AGROTM Solana - Plataforma DeFi para Agricultura Sustentável",
     description: "Revolucione a agricultura com DeFi na Solana. Staking, NFTs agrícolas, governança descentralizada e sustentabilidade.",
-    images: ["/assets/img/twitter-image.jpg"]
+    images: ["/assets/img/hero.png"]
   },
   robots: {
     index: true,
