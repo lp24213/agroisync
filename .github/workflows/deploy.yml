@@ -4,9 +4,15 @@ on:
   push:
     branches: [ "main" ]
 
+env:
+  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+  RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
 jobs:
   deploy:
-    name: Deploy to Vercel
+    name: Deploy Frontend & Backend
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -16,11 +22,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
       
-      - name: Install dependencies
+      - name: Install frontend dependencies
         run: |
           cd frontend
-          npm install
+          npm ci --production=false
       
       - name: Build frontend
         run: |
@@ -28,8 +36,48 @@ jobs:
           npm run build
       
       - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ env.VERCEL_TOKEN }}
+          vercel-org-id: ${{ env.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ env.VERCEL_PROJECT_ID }}
+          working-directory: ./frontend
+          vercel-args: '--prod'
+      
+      - name: Setup backend Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+      
+      - name: Install backend dependencies
         run: |
-          cd frontend
-          npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --yes
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }} 
+          cd backend
+          npm ci --production=false
+      
+      - name: Build backend
+        run: |
+          cd backend
+          npm run build
+      
+      - name: Deploy to Railway
+        run: |
+          npm install -g @railway/cli
+          railway login --token ${{ env.RAILWAY_TOKEN }}
+          cd backend
+          railway up --service agrotm-backend
+      
+      - name: Notify success
+        if: success()
+        run: |
+          echo "🚀 AGROTM.SOL Deploy Successful!"
+          echo "🌐 Frontend: https://agrotm-solana.vercel.app"
+          echo "🌐 Status: https://agrotm-solana.vercel.app/status"
+          echo "🧪 Test: https://agrotm-solana.vercel.app/test"
+      
+      - name: Notify failure
+        if: failure()
+        run: |
+          echo "❌ AGROTM.SOL Deploy Failed!"
+          echo "Check the logs above for details" 
