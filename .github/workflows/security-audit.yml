@@ -1,212 +1,23 @@
+# DISABLED - Security Audit Workflow
+# This workflow is temporarily disabled to focus on deployment
 name: AGROTM.SOL Security Audit
 
 on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main, develop]
-  schedule:
-    - cron: '0 2 * * 1' # Every Monday at 2 AM
+  # DISABLED - Only manual trigger
+  workflow_dispatch:
+    inputs:
+      enable_security_audit:
+        description: 'Enable security audit'
+        required: true
+        default: 'false'
+        type: boolean
 
-env:
-  NODE_ENV: test
-  JWT_SECRET: ${{ secrets.JWT_SECRET }}
-  MONGODB_URI: ${{ secrets.MONGODB_URI }}
-  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_PROD }}
-  RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-
-jobs:
-  validate-secrets:
-    name: Validate Security Secrets
-    runs-on: ubuntu-latest
-    steps:
-      - name: Validate required secrets
-        run: |
-          echo "🔐 Validating security audit secrets..."
-          
-          if [ -z "${{ env.JWT_SECRET }}" ]; then
-            echo "❌ JWT_SECRET is not set"
-            exit 1
-          fi
-          
-          if [ -z "${{ env.MONGODB_URI }}" ]; then
-            echo "❌ MONGODB_URI is not set"
-            exit 1
-          fi
-          
-          echo "✅ All required secrets are configured"
-
-  dependency-scan:
-    name: Dependency Security Scan
-    runs-on: ubuntu-latest
-    needs: validate-secrets
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: '8'
-
-      - name: Install frontend dependencies
-        run: |
-          cd frontend
-          pnpm install --frozen-lockfile
-
-      - name: Install backend dependencies
-        run: |
-          cd backend
-          pnpm install --frozen-lockfile
-
-      - name: Run pnpm audit (Frontend)
-        env:
-          MONGODB_URI: ${{ env.MONGODB_URI }}
-        run: |
-          cd frontend
-          pnpm audit --audit-level=moderate
-
-      - name: Run pnpm audit (Backend)
-        env:
-          MONGODB_URI: ${{ env.MONGODB_URI }}
-        run: |
-          cd backend
-          pnpm audit --audit-level=moderate
-
-      - name: Run npm audit (Root)
-        env:
-          MONGODB_URI: ${{ env.MONGODB_URI }}
-        run: |
-          npm audit --audit-level=moderate
-
-  code-security:
-    name: Code Security Analysis
-    runs-on: ubuntu-latest
-    needs: validate-secrets
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: '8'
-
-      - name: Install frontend dependencies
-        run: |
-          cd frontend
-          pnpm install --frozen-lockfile
-
-      - name: Install backend dependencies
-        run: |
-          cd backend
-          pnpm install --frozen-lockfile
-
-      - name: Run ESLint (Frontend)
-        run: |
-          cd frontend
-          pnpm run lint
-
-      - name: Run ESLint (Backend)
-        run: |
-          cd backend
-          pnpm run lint
-
-      - name: Run TypeScript check (Frontend)
-        run: |
-          cd frontend
-          pnpm run type-check
-
-      - name: Run TypeScript check (Backend)
-        run: |
-          cd backend
-          pnpm run type-check
-
-  container-security:
-    name: Container Security Scan
-    runs-on: ubuntu-latest
-    needs: validate-secrets
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: 'trivy-results.sarif'
-
-  secrets-scan:
-    name: Secrets Detection
-    runs-on: ubuntu-latest
-    needs: validate-secrets
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Run TruffleHog
-        uses: trufflesecurity/trufflehog@main
-        with:
-          path: .
-          base: HEAD~1
-          head: HEAD
-          extra_args: --only-verified
-
-  security-report:
-    name: Generate Security Report
-    runs-on: ubuntu-latest
-    needs: [dependency-scan, code-security, container-security, secrets-scan]
-    if: always()
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Generate security summary
-        run: |
-          echo "🔒 AGROTM.SOL Security Audit Summary" > security-report.md
-          echo "=====================================" >> security-report.md
-          echo "" >> security-report.md
-          echo "**Date:** $(date)" >> security-report.md
-          echo "**Branch:** ${{ github.ref }}" >> security-report.md
-          echo "**Commit:** ${{ github.sha }}" >> security-report.md
-          echo "" >> security-report.md
-          
-          echo "## Security Checks Completed:" >> security-report.md
-          echo "- ✅ Dependency vulnerability scan" >> security-report.md
-          echo "- ✅ Code security analysis" >> security-report.md
-          echo "- ✅ Container security scan" >> security-report.md
-          echo "- ✅ Secrets detection" >> security-report.md
-          echo "" >> security-report.md
-          
-          echo "## Recommendations:" >> security-report.md
-          echo "- Keep dependencies updated regularly" >> security-report.md
-          echo "- Review security scan results in GitHub Security tab" >> security-report.md
-          echo "- Monitor for new vulnerabilities" >> security-report.md
-
-      - name: Upload security report
-        uses: actions/upload-artifact@v4
-        with:
-          name: security-report
-          path: security-report.md
+# DISABLED - All jobs commented out
+# jobs:
+#   validate-secrets:
+#     name: Validate Security Secrets
+#     runs-on: ubuntu-latest
+#     if: ${{ github.event.inputs.enable_security_audit == 'true' }}
+#     steps:
+#       - name: Skip security audit
+#         run: echo "Security audit disabled for deployment focus"

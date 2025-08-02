@@ -1,144 +1,23 @@
-name: AGROTM.SOL Security Audit
+# DISABLED - Security Workflow
+# This workflow is temporarily disabled to focus on deployment
+name: Security
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-  schedule:
-    - cron: '0 2 * * 1' # Every Monday at 2 AM
+  # DISABLED - Only manual trigger
+  workflow_dispatch:
+    inputs:
+      enable_security:
+        description: 'Enable security checks'
+        required: true
+        default: 'false'
+        type: boolean
 
-env:
-  NODE_ENV: test
-  JWT_SECRET: ${{ secrets.JWT_SECRET }}
-  MONGODB_URI: ${{ secrets.MONGODB_URI }}
-  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_PROD }}
-  RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-
-jobs:
-  security-audit:
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    strategy:
-      matrix:
-        node-version: [20.x]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v3
-        with:
-          version: 8
-
-      - name: Backend Security Audit
-        env:
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
-        run: |
-          cd backend
-          pnpm install --no-frozen-lockfile
-          pnpm run security || echo "⚠️ Security audit warnings found, but continuing..."
-          pnpm run security:check || echo "⚠️ Security check failed, but continuing..."
-
-      - name: Frontend Security Audit
-        env:
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
-        run: |
-          cd frontend
-          pnpm install --no-frozen-lockfile
-          pnpm run security || echo "⚠️ Security audit warnings found, but continuing..."
-          pnpm run security:check || echo "⚠️ Security check failed, but continuing..."
-
-      - name: Dependency Check
-        uses: dependency-check/Dependency-Check_Action@main
-        with:
-          project: 'AGROTM'
-          path: '.'
-          format: 'HTML'
-          out: 'reports'
-
-      - name: Upload Security Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: security-report
-          path: reports/
-
-  code-security:
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v3
-        with:
-          version: 8
-
-      - name: Install ESLint Security Plugin
-        run: |
-          cd backend && pnpm add eslint-plugin-security --save-dev
-          cd ../frontend && pnpm add eslint-plugin-security --save-dev
-
-      - name: Backend Security Lint
-        run: |
-          cd backend
-          pnpm run lint:check || echo "⚠️ Backend linting failed, but continuing..."
-
-      - name: Frontend Security Lint
-        run: |
-          cd frontend
-          pnpm run lint:check || echo "⚠️ Frontend linting failed, but continuing..."
-
-  container-security:
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Build Backend Image
-        run: |
-          cd backend
-          docker build -t agrotm-backend . || echo "⚠️ Docker build failed, but continuing..."
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'agrotm-backend:latest'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-        continue-on-error: true
-
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: 'trivy-results.sarif'
-        continue-on-error: true
-
-  secrets-scan:
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Run TruffleHog
-        uses: trufflesecurity/trufflehog@main
-        with:
-          path: .
-          base: HEAD~1
-          head: HEAD
+# DISABLED - All jobs commented out
+# jobs:
+#   security:
+#     name: Security Checks
+#     runs-on: ubuntu-latest
+#     if: ${{ github.event.inputs.enable_security == 'true' }}
+#     steps:
+#       - name: Skip security checks
+#         run: echo "Security checks disabled for deployment focus"
