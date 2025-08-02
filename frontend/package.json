@@ -10,7 +10,10 @@
     "lint": "next lint",
     "type-check": "tsc --noEmit --skipLibCheck",
     "clean": "rm -rf .next out",
-    "analyze": "ANALYZE=true npm run build"
+    "analyze": "ANALYZE=true npm run build",
+    "test": "echo \"No tests specified\" && exit 0",
+    "test:health": "curl -f http://localhost:3000/api/health || exit 1",
+    "validate-env": "node -e \"require('./scripts/validate-env.js')\""
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",

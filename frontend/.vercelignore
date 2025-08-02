@@ -1,19 +1,36 @@
-node_modules
-.git
-.env
+# Frontend-specific Vercel ignore
+node_modules/
+.next/
+out/
 .env.local
-.env.production
-README.md
+.env.development
+.env.test
 *.log
-coverage
-.nyc_output
-.vscode
-.idea
+.DS_Store
+Thumbs.db
+
+# Development files
 *.md
-tests/
+*.txt
+.vscode/
+.idea/
+coverage/
+.nyc_output/
+
+# Build artifacts
+dist/
+build/
+*.tsbuildinfo
+
+# Cache
+.cache/
+.parcel-cache/
+
+# Test files
 __tests__/
 *.test.*
 *.spec.*
-.next
-out
-dist
+
+# Documentation
+docs/
+README.md

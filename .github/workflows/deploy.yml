@@ -41,6 +41,9 @@ jobs:
         npm run build
       env:
         NODE_ENV: production
+        NEXT_PUBLIC_APP_URL: https://agrotm-solana.vercel.app
+        NEXT_PUBLIC_API_URL: https://agrotm-backend.railway.app
+        NEXT_PUBLIC_RPC_ENDPOINT: https://api.mainnet-beta.solana.com
 
   test-backend:
     runs-on: ubuntu-latest
@@ -59,6 +62,11 @@ jobs:
       run: |
         cd backend
         npm ci
+    
+    - name: Type check
+      run: |
+        cd backend
+        npm run type-check
     
     - name: Build
       run: |
