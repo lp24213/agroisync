@@ -1,83 +1,98 @@
-name: Deploy AGROTM.SOL
+name: Deploy AGROTM
 
 on:
   push:
-    branches: [ "main" ]
-
-env:
-  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  deploy:
-    name: Deploy Frontend & Backend
+  test-frontend:
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
-      
-      - name: Install frontend dependencies
-        run: |
-          cd frontend
-          npm ci --production=false
-      
-      - name: Build frontend
-        run: |
-          cd frontend
-          npm run build
-      
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ env.VERCEL_TOKEN }}
-          vercel-org-id: ${{ env.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ env.VERCEL_PROJECT_ID }}
-          working-directory: ./frontend
-          vercel-args: '--prod'
-      
-      - name: Setup backend Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-          cache-dependency-path: backend/package-lock.json
-      
-      - name: Install backend dependencies
-        run: |
-          cd backend
-          npm ci --production=false
-      
-      - name: Build backend
-        run: |
-          cd backend
-          npm run build
-      
-      - name: Deploy to Railway
-        run: |
-          npm install -g @railway/cli
-          railway login --token ${{ env.RAILWAY_TOKEN }}
-          cd backend
-          railway up --service agrotm-backend
-      
-      - name: Notify success
-        if: success()
-        run: |
-          echo "🚀 AGROTM.SOL Deploy Successful!"
-          echo "🌐 Frontend: https://agrotm-solana.vercel.app"
-          echo "🌐 Status: https://agrotm-solana.vercel.app/status"
-          echo "🧪 Test: https://agrotm-solana.vercel.app/test"
-      
-      - name: Notify failure
-        if: failure()
-        run: |
-          echo "❌ AGROTM.SOL Deploy Failed!"
-          echo "Check the logs above for details" 
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js 20
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+    
+    - name: Install dependencies
+      run: |
+        cd frontend
+        npm ci
+    
+    - name: Type check
+      run: |
+        cd frontend
+        npm run type-check
+    
+    - name: Lint
+      run: |
+        cd frontend
+        npm run lint
+    
+    - name: Build
+      run: |
+        cd frontend
+        npm run build
+      env:
+        NODE_ENV: production
+
+  test-backend:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js 20
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: backend/package-lock.json
+    
+    - name: Install dependencies
+      run: |
+        cd backend
+        npm ci
+    
+    - name: Build
+      run: |
+        cd backend
+        npm run build
+      env:
+        NODE_ENV: production
+
+  deploy-vercel:
+    needs: [test-frontend, test-backend]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Deploy to Vercel
+      uses: amondnet/vercel-action@v25
+      with:
+        vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+        working-directory: ./frontend
+        vercel-args: '--prod'
+
+  deploy-railway:
+    needs: [test-frontend, test-backend]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Deploy to Railway
+      uses: railwayapp/railway-action@v1
+      with:
+        railwayToken: ${{ secrets.RAILWAY_TOKEN }}
+        serviceName: agrotm-backend 

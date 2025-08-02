@@ -1,67 +1,119 @@
-# Configuração de Secrets do GitHub para AGROTM
+# 🔑 GITHUB SECRETS SETUP - AGROTM
 
-## Secrets Obrigatórios
+## 📋 **Secrets Necessários para GitHub Actions**
 
-### Vercel (Frontend)
-- `VERCEL_TOKEN`: Token de API da Vercel
-- `VERCEL_ORG_ID`: ID da organização da Vercel
-- `VERCEL_PROJECT_ID`: ID do projeto da Vercel
+### ✅ **Vercel Secrets (OBRIGATÓRIOS)**
 
-### Railway (Backend)
-- `RAILWAY_TOKEN`: Token de API da Railway
+#### **VERCEL_TOKEN**
+- **Descrição**: Token de autenticação do Vercel
+- **Como obter**:
+  1. Acesse https://vercel.com/account/tokens
+  2. Clique em "Create Token"
+  3. Dê um nome (ex: "AGROTM Deploy")
+  4. Selecione "Full Account" scope
+  5. Copie o token gerado
 
-## Secrets Opcionais (Recomendados)
+#### **VERCEL_ORG_ID**
+- **Descrição**: ID da organização no Vercel
+- **Como obter**:
+  1. No projeto Vercel, vá em Settings > General
+  2. Copie o "Team ID" (é o mesmo que Org ID)
 
-### Notificações e Monitoramento
-- `NOTIFICATION_WEBHOOK_URL`: Webhook para notificações de deploy/rollback (Slack, Teams, etc.)
-- `BACKEND_URL`: URL do backend para health checks (ex: https://agrotm-backend.railway.app)
-- `HEALTH_LOG_WEBHOOK`: Webhook opcional para logs de saúde (pode ser o mesmo do webhook de notificação)
+### ✅ **Railway Secrets (OBRIGATÓRIOS)**
 
-## Como Configurar
+#### **RAILWAY_TOKEN**
+- **Descrição**: Token de autenticação do Railway
+- **Como obter**:
+  1. Acesse https://railway.app/account/tokens
+  2. Clique em "New Token"
+  3. Dê um nome (ex: "AGROTM Deploy")
+  4. Copie o token gerado
 
-1. Vá para seu repositório no GitHub
-2. Clique em Settings > Secrets and variables > Actions
-3. Clique em "New repository secret"
-4. Adicione cada secret com o nome e valor correspondente
+## 🔧 **Configuração no GitHub**
 
-## Como Obter os Tokens
+### **1. Acessar Secrets**
+1. Vá para o repositório no GitHub
+2. Clique em "Settings"
+3. No menu lateral, clique em "Secrets and variables" > "Actions"
 
-### Vercel Token
-1. Acesse https://vercel.com/account/tokens
-2. Clique em "Create Token"
-3. Dê um nome (ex: "AGROTM Deploy")
-4. Copie o token gerado
+### **2. Adicionar Secrets**
+Para cada secret listado acima:
+1. Clique em "New repository secret"
+2. **Name**: Digite o nome exato (ex: `VERCEL_TOKEN`)
+3. **Value**: Cole o valor correspondente
+4. Clique em "Add secret"
 
-### Vercel Org/Project ID
-1. Vá para o projeto na Vercel
-2. Clique em Settings > General
-3. Copie o "Project ID"
-4. Para Org ID, vá em Settings > General da organização
+### **3. Secrets Finais**
+```bash
+# Vercel (OBRIGATÓRIOS)
+VERCEL_TOKEN=your-vercel-token
+VERCEL_ORG_ID=your-vercel-org-id
 
-### Railway Token
-1. Acesse https://railway.app/account/tokens
-2. Clique em "New Token"
-3. Dê um nome (ex: "AGROTM Backend")
-4. Copie o token gerado
+# Railway (OBRIGATÓRIOS)
+RAILWAY_TOKEN=your-railway-token
+```
 
-### Webhook de Notificação
-1. Configure webhook no seu sistema preferido (Slack, Teams, etc.)
-2. Copie a URL do webhook
-3. Use a URL no secret `NOTIFICATION_WEBHOOK_URL`
+## 📝 **Workflow Atualizado**
 
-## Testando a Configuração
+### **Vercel Deploy**
+```yaml
+- name: Deploy to Vercel
+  uses: amondnet/vercel-action@v25
+  with:
+    vercel-token: ${{ secrets.VERCEL_TOKEN }}
+    vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+    working-directory: ./frontend
+    vercel-args: '--prod'
+```
 
-Após configurar os secrets:
+### **Railway Deploy**
+```yaml
+- name: Deploy to Railway
+  uses: railwayapp/railway-action@v1
+  with:
+    railwayToken: ${{ secrets.RAILWAY_TOKEN }}
+    serviceName: agrotm-backend
+```
 
-1. Faça um push para a branch main
-2. Vá para Actions no GitHub
-3. Verifique se o workflow CI/CD executa sem erros
-4. Teste o rollback manual: Actions > Manual Rollback > Run workflow
-5. Teste o monitoramento: Actions > Production Monitoring > Run workflow
+## ⚠️ **Troubleshooting**
 
-## Segurança
+### **Warning: Context access might be invalid: VERCEL_PROJECT_ID**
+**Solução**: **RESOLVIDO** - Removido do workflow, não é necessário.
 
-- Nunca compartilhe os tokens
-- Use tokens com permissões mínimas necessárias
-- Revogue tokens antigos regularmente
-- Monitore o uso dos tokens
+### **Railway Action Error**
+**Causa**: Action antiga ou configuração incorreta
+
+**Solução**:
+1. Use `railwayapp/railway-action@v1` (versão correta)
+2. Confirme se `serviceName` está correto
+3. Apenas `railwayToken` é necessário
+
+## ✅ **Checklist de Configuração**
+
+- ✅ **VERCEL_TOKEN**: Criado e configurado
+- ✅ **VERCEL_ORG_ID**: Criado e configurado
+- ✅ **RAILWAY_TOKEN**: Criado e configurado
+- ✅ **Workflow**: Atualizado com as configurações corretas
+- ✅ **Teste**: Workflow executado com sucesso
+
+## 🚀 **Teste do Workflow**
+
+### **1. Push para Main**
+```bash
+git add .
+git commit -m "feat: update GitHub Actions workflow"
+git push origin main
+```
+
+### **2. Monitorar Execução**
+1. Vá para https://github.com/lp24213/agrotm-solana/actions
+2. Verifique se o workflow "Deploy AGROTM" executou
+3. Confirme que todos os jobs passaram
+
+### **3. Verificar Deploy**
+- **Vercel**: https://vercel.com/dashboard
+- **Railway**: https://railway.app/dashboard
+
+---
+
+**🔑 Configure apenas os 3 secrets obrigatórios antes de fazer push para main!**
