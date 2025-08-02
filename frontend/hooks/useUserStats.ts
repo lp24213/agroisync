@@ -1,95 +1,135 @@
-import { useState, useEffect } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useState, useEffect, useCallback } from 'react';
+import { useWeb3 } from '../contexts/Web3Context';
+import { logger } from '../utils/logger';
 
-// Interface para estatísticas de usuários
 interface UserStats {
-  totalUsers: number;
-  activeUsers: number;
-  newUsersThisMonth: number;
-  userGrowth: number;
-  averageSessionTime: number;
-  retentionRate: number;
-  stakingUsers: number;
-  nftHolders: number;
-  daoParticipants: number;
-  weeklyActiveUsers: number;
-  monthlyActiveUsers: number;
+  totalTransactions: number;
+  totalVolume: number;
+  averageTransaction: number;
+  joinDate: string;
+  lastActivity: string;
+  nftCount: number;
+  stakedAmount: number;
+  rewardsEarned: number;
 }
 
-// Interface para retorno do hook
-interface UseUserStatsReturn {
-  stats: UserStats | null;
-  loading: boolean;
-  error: string | null;
-  refetch: () => void;
+interface UserActivity {
+  id: string;
+  type: 'stake' | 'unstake' | 'buy' | 'sell' | 'mint' | 'transfer';
+  amount: number;
+  timestamp: string;
+  status: 'completed' | 'pending' | 'failed';
 }
 
-// Dados mock para demonstração
-const mockStats: UserStats = {
-  totalUsers: 45280,
-  activeUsers: 12450,
-  newUsersThisMonth: 3420,
-  userGrowth: 18.5,
-  averageSessionTime: 24.5, // em minutos
-  retentionRate: 68.2,
-  stakingUsers: 8420,
-  nftHolders: 5680,
-  daoParticipants: 2340,
-  weeklyActiveUsers: 8920,
-  monthlyActiveUsers: 18450
-};
-
-/**
- * Hook para buscar estatísticas de usuários
- * @returns Objeto com estatísticas, estado de loading, erro e função de refetch
- */
-export const useUserStats = (): UseUserStatsReturn => {
-  const { connection } = useConnection();
-  const { publicKey, connected } = useWallet();
-  const [stats, setStats] = useState<UserStats | null>(null);
-  const [loading, setLoading] = useState(true);
+export const useUserStats = () => {
+  const { isConnected, publicKey } = useWeb3();
+  const [stats, setStats] = useState<UserStats>({
+    totalTransactions: 0,
+    totalVolume: 0,
+    averageTransaction: 0,
+    joinDate: '',
+    lastActivity: '',
+    nftCount: 0,
+    stakedAmount: 0,
+    rewardsEarned: 0
+  });
+  const [activities, setActivities] = useState<UserActivity[]>([]);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchUserStats = async () => {
+  const fetchStats = useCallback(async () => {
+    if (!isConnected || !publicKey) {
+      setStats({
+        totalTransactions: 0,
+        totalVolume: 0,
+        averageTransaction: 0,
+        joinDate: '',
+        lastActivity: '',
+        nftCount: 0,
+        stakedAmount: 0,
+        rewardsEarned: 0
+      });
+      setActivities([]);
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
 
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 700));
+      // Mock user stats
+      const mockStats: UserStats = {
+        totalTransactions: 45,
+        totalVolume: 125000,
+        averageTransaction: 2777.78,
+        joinDate: '2024-01-15',
+        lastActivity: '2024-03-20',
+        nftCount: 8,
+        stakedAmount: 5000,
+        rewardsEarned: 250
+      };
 
-      if (connected && publicKey) {
-        // Fetch real user stats from backend analytics
-        const response = await fetch(`/api/users/stats?address=${publicKey.toString()}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch user stats');
+      const mockActivities: UserActivity[] = [
+        {
+          id: '1',
+          type: 'stake',
+          amount: 1000,
+          timestamp: '2024-03-20T10:30:00Z',
+          status: 'completed'
+        },
+        {
+          id: '2',
+          type: 'buy',
+          amount: 500,
+          timestamp: '2024-03-19T15:45:00Z',
+          status: 'completed'
+        },
+        {
+          id: '3',
+          type: 'mint',
+          amount: 200,
+          timestamp: '2024-03-18T09:15:00Z',
+          status: 'completed'
+        },
+        {
+          id: '4',
+          type: 'unstake',
+          amount: 300,
+          timestamp: '2024-03-17T14:20:00Z',
+          status: 'completed'
+        },
+        {
+          id: '5',
+          type: 'sell',
+          amount: 750,
+          timestamp: '2024-03-16T11:30:00Z',
+          status: 'completed'
         }
-        
-        const data = await response.json();
-        setStats(data.stats);
-      } else {
-        setStats(null);
-      }
+      ];
+
+      setStats(mockStats);
+      setActivities(mockActivities);
+
+      logger.info('User stats fetched successfully');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao carregar estatísticas de usuários');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch user stats';
+      setError(errorMessage);
+      logger.error('Failed to fetch user stats:', errorMessage);
     } finally {
       setLoading(false);
     }
-  };
+  }, [isConnected, publicKey]);
 
   useEffect(() => {
-    fetchUserStats();
-  }, [connected, publicKey]);
-
-  const refetch = () => {
-    fetchUserStats();
-  };
+    fetchStats();
+  }, [fetchStats]);
 
   return {
     stats,
+    activities,
     loading,
     error,
-    refetch
+    refetch: fetchStats
   };
 };
 

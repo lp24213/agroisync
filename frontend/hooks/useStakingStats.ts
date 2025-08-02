@@ -1,89 +1,129 @@
-import { useState, useEffect } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useState, useEffect, useCallback } from 'react';
+import { useWeb3 } from '../contexts/Web3Context';
+import { logger } from '../utils/logger';
 
-// Interface para estatísticas de staking
 interface StakingStats {
   totalStaked: number;
-  totalStakers: number;
-  averageAPY: number;
-  stakingGrowth: number;
-  totalValueLocked: number;
-  activePools: number;
-  monthlyRewards: number;
-  weeklyGrowth: number;
+  totalRewards: number;
+  averageAPR: number;
+  activeStakers: number;
+  totalPools: number;
+  userStaked: number;
+  userRewards: number;
+  userAPR: number;
 }
 
-// Interface para retorno do hook
-interface UseStakingStatsReturn {
-  stats: StakingStats | null;
-  loading: boolean;
-  error: string | null;
-  refetch: () => void;
+interface StakingPool {
+  id: string;
+  name: string;
+  apr: number;
+  totalStaked: number;
+  userStaked: number;
+  rewards: number;
+  lockPeriod: number;
 }
 
-// Dados mock para demonstração
-const mockStats: StakingStats = {
-  totalStaked: 15750000,
-  totalStakers: 8420,
-  averageAPY: 15.2,
-  stakingGrowth: 12.8,
-  totalValueLocked: 18500000,
-  activePools: 6,
-  monthlyRewards: 245000,
-  weeklyGrowth: 2.3
-};
-
-/**
- * Hook para buscar estatísticas de staking
- * @returns Objeto com estatísticas, estado de loading, erro e função de refetch
- */
-export const useStakingStats = (): UseStakingStatsReturn => {
-  const { connection } = useConnection();
-  const { publicKey, connected } = useWallet();
-  const [stats, setStats] = useState<StakingStats | null>(null);
-  const [loading, setLoading] = useState(true);
+export const useStakingStats = () => {
+  const { isConnected, publicKey } = useWeb3();
+  const [stats, setStats] = useState<StakingStats>({
+    totalStaked: 0,
+    totalRewards: 0,
+    averageAPR: 0,
+    activeStakers: 0,
+    totalPools: 0,
+    userStaked: 0,
+    userRewards: 0,
+    userAPR: 0
+  });
+  const [pools, setPools] = useState<StakingPool[]>([]);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchStakingStats = async () => {
+  const fetchStats = useCallback(async () => {
+    if (!isConnected || !publicKey) {
+      setStats({
+        totalStaked: 0,
+        totalRewards: 0,
+        averageAPR: 0,
+        activeStakers: 0,
+        totalPools: 0,
+        userStaked: 0,
+        userRewards: 0,
+        userAPR: 0
+      });
+      setPools([]);
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
 
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 600));
+      // Mock staking stats
+      const mockStats: StakingStats = {
+        totalStaked: 5000000,
+        totalRewards: 250000,
+        averageAPR: 15.5,
+        activeStakers: 1250,
+        totalPools: 3,
+        userStaked: 5000,
+        userRewards: 250,
+        userAPR: 12.5
+      };
 
-      if (connected && publicKey) {
-        // Fetch real staking stats from blockchain
-        const response = await fetch(`/api/staking/stats?address=${publicKey.toString()}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch staking stats');
+      const mockPools: StakingPool[] = [
+        {
+          id: 'pool-1',
+          name: 'AGRO Token Pool',
+          apr: 12.5,
+          totalStaked: 2000000,
+          userStaked: 3000,
+          rewards: 150,
+          lockPeriod: 30
+        },
+        {
+          id: 'pool-2',
+          name: 'Liquidity Pool',
+          apr: 18.2,
+          totalStaked: 1500000,
+          userStaked: 1500,
+          rewards: 75,
+          lockPeriod: 60
+        },
+        {
+          id: 'pool-3',
+          name: 'Governance Pool',
+          apr: 20.0,
+          totalStaked: 1500000,
+          userStaked: 500,
+          rewards: 25,
+          lockPeriod: 90
         }
-        
-        const data = await response.json();
-        setStats(data.stats);
-      } else {
-        setStats(null);
-      }
+      ];
+
+      setStats(mockStats);
+      setPools(mockPools);
+
+      logger.info('Staking stats fetched successfully');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao carregar estatísticas de staking');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch staking stats';
+      setError(errorMessage);
+      logger.error('Failed to fetch staking stats:', errorMessage);
     } finally {
       setLoading(false);
     }
-  };
+  }, [isConnected, publicKey]);
 
   useEffect(() => {
-    fetchStakingStats();
-  }, [connected, publicKey]);
-
-  const refetch = () => {
-    fetchStakingStats();
-  };
+    fetchStats();
+  }, [fetchStats]);
 
   return {
     stats,
+    pools,
     loading,
     error,
-    refetch
+    refetch: fetchStats
   };
 };
 

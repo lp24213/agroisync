@@ -1,137 +1,109 @@
-import { useState, useEffect } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useState, useEffect, useCallback } from 'react';
+import { useWeb3 } from '../contexts/Web3Context';
+import { logger } from '../utils/logger';
 
 interface NFTStats {
   totalNFTs: number;
   totalValue: number;
   averageValue: number;
-  farmCount: number;
-  machineryCount: number;
-  grainLotsCount: number;
-  certificatesCount: number;
-  farmValue: number;
-  machineryValue: number;
-  grainLotsValue: number;
-  certificatesValue: number;
-  monthlyGrowth: number;
-  weeklyGrowth: number;
-  topPerformers: Array<{
-    id: string;
-    name: string;
-    type: string;
-    value: number;
-    growth: number;
-  }>;
+  topCollection: string;
+  recentMints: number;
+  floorPrice: number;
 }
 
-interface UseNFTStatsReturn {
-  stats: NFTStats | null;
-  loading: boolean;
-  error: string | null;
-  refetch: () => void;
+interface NFTCollection {
+  name: string;
+  count: number;
+  totalValue: number;
+  floorPrice: number;
 }
 
-// Mock stats data
-const mockStats: NFTStats = {
-  totalNFTs: 156,
-  totalValue: 12450000,
-  averageValue: 79807,
-  farmCount: 45,
-  machineryCount: 32,
-  grainLotsCount: 67,
-  certificatesCount: 12,
-  farmValue: 8500000,
-  machineryValue: 2800000,
-  grainLotsValue: 950000,
-  certificatesValue: 200000,
-  monthlyGrowth: 12.5,
-  weeklyGrowth: 3.2,
-  topPerformers: [
-    {
-      id: '1',
-      name: 'Fazenda São João',
-      type: 'Fazenda',
-      value: 2500000,
-      growth: 15.2
-    },
-    {
-      id: '2',
-      name: 'Trator John Deere 8R',
-      type: 'Maquinário',
-      value: 850000,
-      growth: 8.7
-    },
-    {
-      id: '3',
-      name: 'Fazenda Vista Alegre',
-      type: 'Fazenda',
-      value: 1800000,
-      growth: 11.3
-    },
-    {
-      id: '4',
-      name: 'Colheitadeira Case IH',
-      type: 'Maquinário',
-      value: 950000,
-      growth: 6.8
-    },
-    {
-      id: '5',
-      name: 'Lote de Soja Premium',
-      type: 'Lote de Grãos',
-      value: 75000,
-      growth: 22.1
-    }
-  ]
-};
-
-export const useNFTStats = (): UseNFTStatsReturn => {
-  const { connection } = useConnection();
-  const { publicKey, connected } = useWallet();
-  const [stats, setStats] = useState<NFTStats | null>(null);
-  const [loading, setLoading] = useState(true);
+export const useNFTStats = () => {
+  const { isConnected, publicKey } = useWeb3();
+  const [stats, setStats] = useState<NFTStats>({
+    totalNFTs: 0,
+    totalValue: 0,
+    averageValue: 0,
+    topCollection: '',
+    recentMints: 0,
+    floorPrice: 0
+  });
+  const [collections, setCollections] = useState<NFTCollection[]>([]);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchNFTStats = async () => {
+  const fetchStats = useCallback(async () => {
+    if (!isConnected || !publicKey) {
+      setStats({
+        totalNFTs: 0,
+        totalValue: 0,
+        averageValue: 0,
+        topCollection: '',
+        recentMints: 0,
+        floorPrice: 0
+      });
+      setCollections([]);
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
 
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // Mock NFT stats
+      const mockStats: NFTStats = {
+        totalNFTs: 25,
+        totalValue: 125000,
+        averageValue: 5000,
+        topCollection: 'AGRO Farms',
+        recentMints: 3,
+        floorPrice: 2500
+      };
 
-      if (connected && publicKey) {
-        // Fetch real NFT stats from blockchain
-        const response = await fetch(`/api/nft/stats?address=${publicKey.toString()}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch NFT stats');
+      const mockCollections: NFTCollection[] = [
+        {
+          name: 'AGRO Farms',
+          count: 12,
+          totalValue: 75000,
+          floorPrice: 3000
+        },
+        {
+          name: 'Crop Tokens',
+          count: 8,
+          totalValue: 35000,
+          floorPrice: 2000
+        },
+        {
+          name: 'Equipment NFTs',
+          count: 5,
+          totalValue: 15000,
+          floorPrice: 1500
         }
-        
-        const data = await response.json();
-        setStats(data.stats);
-      } else {
-        setStats(null);
-      }
+      ];
+
+      setStats(mockStats);
+      setCollections(mockCollections);
+
+      logger.info('NFT stats fetched successfully');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao carregar estatísticas');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch NFT stats';
+      setError(errorMessage);
+      logger.error('Failed to fetch NFT stats:', errorMessage);
     } finally {
       setLoading(false);
     }
-  };
+  }, [isConnected, publicKey]);
 
   useEffect(() => {
-    fetchNFTStats();
-  }, [connected, publicKey]);
-
-  const refetch = () => {
-    fetchNFTStats();
-  };
+    fetchStats();
+  }, [fetchStats]);
 
   return {
     stats,
+    collections,
     loading,
     error,
-    refetch
+    refetch: fetchStats
   };
 };
 

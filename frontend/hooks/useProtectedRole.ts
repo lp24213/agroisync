@@ -1,116 +1,103 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useWeb3 } from './useWeb3';
+import { useWeb3 } from '../contexts/Web3Context';
 
 interface UserRole {
   id: string;
   name: string;
   permissions: string[];
-  isActive: boolean;
+  level: number;
 }
 
-interface ProtectedRoleState {
-  userRole: UserRole | null;
-  loading: boolean;
-  error: string | null;
-  isAuthenticated: boolean;
+interface ProtectedRoleConfig {
+  requiredRole?: string;
+  requiredLevel?: number;
+  requiredPermissions?: string[];
+  fallbackComponent?: React.ReactNode;
+  redirectTo?: string;
 }
 
-export function useProtectedRole() {
+export const useProtectedRole = (config: ProtectedRoleConfig = {}) => {
   const { isConnected, publicKey } = useWeb3();
-  const [state, setState] = useState<ProtectedRoleState>({
-    userRole: null,
-    loading: false,
-    error: null,
-    isAuthenticated: false,
-  });
+  const [userRole, setUserRole] = useState<UserRole | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [hasAccess, setHasAccess] = useState(false);
 
   const fetchUserRole = useCallback(async () => {
     if (!isConnected || !publicKey) {
-      setState(prev => ({
-        ...prev,
-        userRole: null,
-        isAuthenticated: false,
-      }));
+      setUserRole(null);
+      setHasAccess(false);
       return;
     }
 
-    setState(prev => ({ ...prev, loading: true, error: null }));
-
     try {
-      // Fetch real user role from backend authentication service
-      const response = await fetch(`/api/auth/role?address=${publicKey}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch user role');
+      setLoading(true);
+      setError(null);
+
+      // Mock user role data
+      const mockRole: UserRole = {
+        id: '1',
+        name: 'Premium User',
+        permissions: ['read', 'write', 'admin'],
+        level: 3
+      };
+
+      setUserRole(mockRole);
+
+      // Check access based on config
+      let access = true;
+
+      if (config.requiredRole && mockRole.name !== config.requiredRole) {
+        access = false;
       }
-      
-      const data = await response.json();
-      setState({
-        userRole: data.role,
-        loading: false,
-        error: null,
-        isAuthenticated: true,
-      });
-    } catch (error: any) {
-      setState(prev => ({
-        ...prev,
-        loading: false,
-        error: error.message || 'Erro ao buscar role do usuário',
-        isAuthenticated: false,
-      }));
+
+      if (config.requiredLevel && mockRole.level < config.requiredLevel) {
+        access = false;
+      }
+
+      if (config.requiredPermissions) {
+        const hasAllPermissions = config.requiredPermissions.every(permission =>
+          mockRole.permissions.includes(permission)
+        );
+        if (!hasAllPermissions) {
+          access = false;
+        }
+      }
+
+      setHasAccess(access);
+
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch user role';
+      setError(errorMessage);
+      setHasAccess(false);
+    } finally {
+      setLoading(false);
     }
-  }, [isConnected, publicKey]);
+  }, [isConnected, publicKey, config]);
 
-  const hasPermission = useCallback(
-    (permission: string): boolean => {
-      if (!state.userRole || !state.userRole.isActive) {
-        return false;
-      }
-
-      return state.userRole.permissions.includes(permission);
-    },
-    [state.userRole]
-  );
-
-  const hasAnyPermission = useCallback(
-    (permissions: string[]): boolean => {
-      return permissions.some(permission => hasPermission(permission));
-    },
-    [hasPermission]
-  );
-
-  const hasAllPermissions = useCallback(
-    (permissions: string[]): boolean => {
-      return permissions.every(permission => hasPermission(permission));
-    },
-    [hasPermission]
-  );
-
-  const isAdmin = useCallback((): boolean => {
-    return hasPermission('admin');
-  }, [hasPermission]);
-
-  const isUser = useCallback((): boolean => {
-    return state.isAuthenticated && !isAdmin();
-  }, [state.isAuthenticated, isAdmin]);
-
-  const refreshRole = useCallback(async () => {
-    await fetchUserRole();
-  }, [fetchUserRole]);
-
-  // Auto-fetch role quando conectar carteira
   useEffect(() => {
     fetchUserRole();
   }, [fetchUserRole]);
 
+  const checkPermission = useCallback((permission: string): boolean => {
+    if (!userRole) return false;
+    return userRole.permissions.includes(permission);
+  }, [userRole]);
+
+  const checkLevel = useCallback((level: number): boolean => {
+    if (!userRole) return false;
+    return userRole.level >= level;
+  }, [userRole]);
+
   return {
-    ...state,
-    hasPermission,
-    hasAnyPermission,
-    hasAllPermissions,
-    isAdmin,
-    isUser,
-    refreshRole,
+    userRole,
+    hasAccess,
+    loading,
+    error,
+    checkPermission,
+    checkLevel,
+    refetch: fetchUserRole
   };
-} 
+}; 

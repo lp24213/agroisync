@@ -1,40 +1,17 @@
-// Security configuration for the application
+// Security configuration for AGROTM
+export type Environment = 'development' | 'production' | 'test' | 'staging';
 
 export interface SecurityConfig {
-  // Authentication settings
-  auth: {
-    jwtSecret: string;
-    jwtExpiresIn: string;
-    refreshTokenExpiresIn: string;
-    maxLoginAttempts: number;
-    lockoutDuration: number;
-    passwordMinLength: number;
-    requireMFA: boolean;
-  };
-  
-  // CORS settings
+  environment: Environment;
   cors: {
     origin: string | string[];
     credentials: boolean;
-    methods: string[];
-    allowedHeaders: string[];
   };
-  
-  // Rate limiting
   rateLimit: {
     windowMs: number;
-    maxRequests: number;
-    skipSuccessfulRequests: boolean;
-    skipFailedRequests: boolean;
+    max: number;
+    message: string;
   };
-  
-  // Content Security Policy
-  csp: {
-    directives: Record<string, string[]>;
-    reportOnly: boolean;
-  };
-  
-  // Helmet settings
   helmet: {
     contentSecurityPolicy: boolean;
     crossOriginEmbedderPolicy: boolean;
@@ -50,8 +27,14 @@ export interface SecurityConfig {
     referrerPolicy: boolean;
     xssFilter: boolean;
   };
-  
-  // Session settings
+  jwt: {
+    secret: string;
+    expiresIn: string;
+    refreshExpiresIn: string;
+  };
+  bcrypt: {
+    rounds: number;
+  };
   session: {
     secret: string;
     resave: boolean;
@@ -60,309 +43,181 @@ export interface SecurityConfig {
       secure: boolean;
       httpOnly: boolean;
       maxAge: number;
-      sameSite: 'strict' | 'lax' | 'none';
     };
-  };
-  
-  // API security
-  api: {
-    requireApiKey: boolean;
-    apiKeyHeader: string;
-    rateLimitByIp: boolean;
-    rateLimitByUser: boolean;
-  };
-  
-  // File upload security
-  upload: {
-    maxFileSize: number;
-    allowedMimeTypes: string[];
-    scanForViruses: boolean;
-    validateFileContent: boolean;
-  };
-  
-  // Database security
-  database: {
-    useSSL: boolean;
-    sslRejectUnauthorized: boolean;
-    connectionTimeout: number;
-    queryTimeout: number;
-  };
-  
-  // Logging and monitoring
-  monitoring: {
-    logSecurityEvents: boolean;
-    alertOnSuspiciousActivity: boolean;
-    trackFailedLogins: boolean;
-    trackApiUsage: boolean;
   };
 }
 
 // Environment-specific configurations
-const getEnvironmentConfig = (env: string): Partial<SecurityConfig> => {
-  if (env === 'development') {
-    return {
-      auth: {
-        jwtSecret: process.env.JWT_SECRET || 'dev-secret-key',
-        jwtExpiresIn: '1h',
-        refreshTokenExpiresIn: '7d',
-        maxLoginAttempts: 5,
-        lockoutDuration: 15 * 60 * 1000, // 15 minutes
-        passwordMinLength: 6,
-        requireMFA: false,
-      },
-      cors: {
-        origin: ['http://localhost:3000', 'http://localhost:3001'],
-        credentials: true,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
-      },
-      rateLimit: {
-        windowMs: 15 * 60 * 1000, // 15 minutes
-        maxRequests: 100,
-        skipSuccessfulRequests: false,
-        skipFailedRequests: false,
-      },
-      helmet: {
-        contentSecurityPolicy: false,
-        crossOriginEmbedderPolicy: false,
-        crossOriginOpenerPolicy: false,
-        crossOriginResourcePolicy: false,
-        dnsPrefetchControl: true,
-        frameguard: true,
-        hidePoweredBy: true,
-        hsts: false,
-        ieNoOpen: true,
-        noSniff: true,
-        permittedCrossDomainPolicies: true,
-        referrerPolicy: true,
-        xssFilter: true,
-      },
-      session: {
-        secret: process.env.SESSION_SECRET || 'dev-session-secret',
-        resave: false,
-        saveUninitialized: false,
-        cookie: {
-          secure: false,
-          httpOnly: true,
-          maxAge: 24 * 60 * 60 * 1000, // 24 hours
-          sameSite: 'lax',
+const getEnvironmentConfig = (env: Environment): Partial<SecurityConfig> => {
+  switch (env) {
+    case 'development':
+      return {
+        cors: {
+          origin: ['http://localhost:3000', 'http://localhost:3001'],
+          credentials: true,
         },
-      },
-      api: {
-        requireApiKey: false,
-        apiKeyHeader: 'X-API-Key',
-        rateLimitByIp: true,
-        rateLimitByUser: false,
-      },
-      upload: {
-        maxFileSize: 10 * 1024 * 1024, // 10MB
-        allowedMimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'],
-        scanForViruses: false,
-        validateFileContent: false,
-      },
-      database: {
-        useSSL: false,
-        sslRejectUnauthorized: false,
-        connectionTimeout: 5000,
-        queryTimeout: 10000,
-      },
-      monitoring: {
-        logSecurityEvents: true,
-        alertOnSuspiciousActivity: false,
-        trackFailedLogins: true,
-        trackApiUsage: false,
-      },
-    };
-  } else if (env === 'staging') {
-    return {
-      auth: {
-        jwtSecret: process.env.JWT_SECRET || 'staging-secret-key',
-        jwtExpiresIn: '30m',
-        refreshTokenExpiresIn: '7d',
-        maxLoginAttempts: 3,
-        lockoutDuration: 30 * 60 * 1000, // 30 minutes
-        passwordMinLength: 8,
-        requireMFA: true,
-      },
-      cors: {
-        origin: process.env.ALLOWED_ORIGINS?.split(',') || ['https://staging.agrotm.com'],
-        credentials: true,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
-      },
-      rateLimit: {
-        windowMs: 15 * 60 * 1000, // 15 minutes
-        maxRequests: 50,
-        skipSuccessfulRequests: false,
-        skipFailedRequests: false,
-      },
-      helmet: {
-        contentSecurityPolicy: true,
-        crossOriginEmbedderPolicy: true,
-        crossOriginOpenerPolicy: true,
-        crossOriginResourcePolicy: true,
-        dnsPrefetchControl: true,
-        frameguard: true,
-        hidePoweredBy: true,
-        hsts: true,
-        ieNoOpen: true,
-        noSniff: true,
-        permittedCrossDomainPolicies: true,
-        referrerPolicy: true,
-        xssFilter: true,
-      },
-      session: {
-        secret: process.env.SESSION_SECRET || 'staging-session-secret',
-        resave: false,
-        saveUninitialized: false,
-        cookie: {
-          secure: true,
-          httpOnly: true,
-          maxAge: 24 * 60 * 60 * 1000, // 24 hours
-          sameSite: 'strict',
+        rateLimit: {
+          windowMs: 15 * 60 * 1000, // 15 minutes
+          max: 100, // limit each IP to 100 requests per windowMs
+          message: 'Too many requests from this IP, please try again later.',
         },
-      },
-      api: {
-        requireApiKey: true,
-        apiKeyHeader: 'X-API-Key',
-        rateLimitByIp: true,
-        rateLimitByUser: true,
-      },
-      upload: {
-        maxFileSize: 5 * 1024 * 1024, // 5MB
-        allowedMimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'],
-        scanForViruses: true,
-        validateFileContent: true,
-      },
-      database: {
-        useSSL: true,
-        sslRejectUnauthorized: true,
-        connectionTimeout: 10000,
-        queryTimeout: 30000,
-      },
-      monitoring: {
-        logSecurityEvents: true,
-        alertOnSuspiciousActivity: true,
-        trackFailedLogins: true,
-        trackApiUsage: true,
-      },
-    };
-  } else if (env === 'production') {
-    return {
-      auth: {
-        jwtSecret: process.env.JWT_SECRET || 'production-secret-key',
-        jwtExpiresIn: '15m',
-        refreshTokenExpiresIn: '7d',
-        maxLoginAttempts: 3,
-        lockoutDuration: 60 * 60 * 1000, // 1 hour
-        passwordMinLength: 12,
-        requireMFA: true,
-      },
-      cors: {
-        origin: process.env.ALLOWED_ORIGINS?.split(',') || ['https://agrotm.com'],
-        credentials: true,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
-      },
-      rateLimit: {
-        windowMs: 15 * 60 * 1000, // 15 minutes
-        maxRequests: 30,
-        skipSuccessfulRequests: false,
-        skipFailedRequests: false,
-      },
-      helmet: {
-        contentSecurityPolicy: true,
-        crossOriginEmbedderPolicy: true,
-        crossOriginOpenerPolicy: true,
-        crossOriginResourcePolicy: true,
-        dnsPrefetchControl: true,
-        frameguard: true,
-        hidePoweredBy: true,
-        hsts: true,
-        ieNoOpen: true,
-        noSniff: true,
-        permittedCrossDomainPolicies: true,
-        referrerPolicy: true,
-        xssFilter: true,
-      },
-      session: {
-        secret: process.env.SESSION_SECRET || 'production-session-secret',
-        resave: false,
-        saveUninitialized: false,
-        cookie: {
-          secure: true,
-          httpOnly: true,
-          maxAge: 24 * 60 * 60 * 1000, // 24 hours
-          sameSite: 'strict',
+        helmet: {
+          contentSecurityPolicy: false,
+          crossOriginEmbedderPolicy: false,
+          crossOriginOpenerPolicy: false,
+          crossOriginResourcePolicy: false,
+          dnsPrefetchControl: true,
+          frameguard: true,
+          hidePoweredBy: true,
+          hsts: false,
+          ieNoOpen: true,
+          noSniff: true,
+          permittedCrossDomainPolicies: true,
+          referrerPolicy: true,
+          xssFilter: true,
         },
-      },
-      api: {
-        requireApiKey: true,
-        apiKeyHeader: 'X-API-Key',
-        rateLimitByIp: true,
-        rateLimitByUser: true,
-      },
-      upload: {
-        maxFileSize: 2 * 1024 * 1024, // 2MB
-        allowedMimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'],
-        scanForViruses: true,
-        validateFileContent: true,
-      },
-      database: {
-        useSSL: true,
-        sslRejectUnauthorized: true,
-        connectionTimeout: 15000,
-        queryTimeout: 60000,
-      },
-      monitoring: {
-        logSecurityEvents: true,
-        alertOnSuspiciousActivity: true,
-        trackFailedLogins: true,
-        trackApiUsage: true,
-      },
-    };
+        session: {
+          secret: 'dev-secret-key',
+          resave: false,
+          saveUninitialized: false,
+          cookie: {
+            secure: false,
+            httpOnly: true,
+            maxAge: 24 * 60 * 60 * 1000, // 24 hours
+          },
+        },
+      };
+
+    case 'staging':
+      return {
+        cors: {
+          origin: process.env.CORS_ORIGIN?.split(',') || ['https://staging.agrotm.com'],
+          credentials: true,
+        },
+        rateLimit: {
+          windowMs: 15 * 60 * 1000,
+          max: 200,
+          message: 'Too many requests from this IP, please try again later.',
+        },
+        helmet: {
+          contentSecurityPolicy: true,
+          crossOriginEmbedderPolicy: true,
+          crossOriginOpenerPolicy: true,
+          crossOriginResourcePolicy: true,
+          dnsPrefetchControl: true,
+          frameguard: true,
+          hidePoweredBy: true,
+          hsts: true,
+          ieNoOpen: true,
+          noSniff: true,
+          permittedCrossDomainPolicies: true,
+          referrerPolicy: true,
+          xssFilter: true,
+        },
+        session: {
+          secret: process.env.SESSION_SECRET || 'staging-secret-key',
+          resave: false,
+          saveUninitialized: false,
+          cookie: {
+            secure: true,
+            httpOnly: true,
+            maxAge: 24 * 60 * 60 * 1000,
+          },
+        },
+      };
+
+    case 'production':
+      return {
+        cors: {
+          origin: process.env.CORS_ORIGIN?.split(',') || ['https://agrotm.com'],
+          credentials: true,
+        },
+        rateLimit: {
+          windowMs: 15 * 60 * 1000,
+          max: 100,
+          message: 'Too many requests from this IP, please try again later.',
+        },
+        helmet: {
+          contentSecurityPolicy: true,
+          crossOriginEmbedderPolicy: true,
+          crossOriginOpenerPolicy: true,
+          crossOriginResourcePolicy: true,
+          dnsPrefetchControl: true,
+          frameguard: true,
+          hidePoweredBy: true,
+          hsts: true,
+          ieNoOpen: true,
+          noSniff: true,
+          permittedCrossDomainPolicies: true,
+          referrerPolicy: true,
+          xssFilter: true,
+        },
+        session: {
+          secret: process.env.SESSION_SECRET || 'production-secret-key',
+          resave: false,
+          saveUninitialized: false,
+          cookie: {
+            secure: true,
+            httpOnly: true,
+            maxAge: 24 * 60 * 60 * 1000,
+          },
+        },
+      };
+
+    case 'test':
+      return {
+        cors: {
+          origin: ['http://localhost:3000'],
+          credentials: true,
+        },
+        rateLimit: {
+          windowMs: 15 * 60 * 1000,
+          max: 1000,
+          message: 'Too many requests from this IP, please try again later.',
+        },
+        helmet: {
+          contentSecurityPolicy: false,
+          crossOriginEmbedderPolicy: false,
+          crossOriginOpenerPolicy: false,
+          crossOriginResourcePolicy: false,
+          dnsPrefetchControl: false,
+          frameguard: false,
+          hidePoweredBy: false,
+          hsts: false,
+          ieNoOpen: false,
+          noSniff: false,
+          permittedCrossDomainPolicies: false,
+          referrerPolicy: false,
+          xssFilter: false,
+        },
+        session: {
+          secret: 'test-secret-key',
+          resave: false,
+          saveUninitialized: false,
+          cookie: {
+            secure: false,
+            httpOnly: false,
+            maxAge: 24 * 60 * 60 * 1000,
+          },
+        },
+      };
+
+    default:
+      return {};
   }
-  
-  // Default configuration
-  return {};
 };
 
-// Default security configuration
+// Default configuration
 export const defaultSecurityConfig: SecurityConfig = {
-  auth: {
-    jwtSecret: process.env.JWT_SECRET || 'default-secret-key',
-    jwtExpiresIn: '1h',
-    refreshTokenExpiresIn: '7d',
-    maxLoginAttempts: 5,
-    lockoutDuration: 15 * 60 * 1000,
-    passwordMinLength: 8,
-    requireMFA: false,
-  },
+  environment: (process.env.NODE_ENV as Environment) || 'development',
   cors: {
-    origin: '*',
-    credentials: false,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: ['http://localhost:3000'],
+    credentials: true,
   },
   rateLimit: {
     windowMs: 15 * 60 * 1000,
-    maxRequests: 100,
-    skipSuccessfulRequests: false,
-    skipFailedRequests: false,
-  },
-  csp: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", 'data:', 'https:'],
-      connectSrc: ["'self'"],
-      fontSrc: ["'self'"],
-      objectSrc: ["'none'"],
-      mediaSrc: ["'self'"],
-      frameSrc: ["'none'"],
-    },
-    reportOnly: false,
+    max: 100,
+    message: 'Too many requests from this IP, please try again later.',
   },
   helmet: {
     contentSecurityPolicy: true,
@@ -379,53 +234,37 @@ export const defaultSecurityConfig: SecurityConfig = {
     referrerPolicy: true,
     xssFilter: true,
   },
+  jwt: {
+    secret: process.env.JWT_SECRET || 'default-jwt-secret',
+    expiresIn: '1h',
+    refreshExpiresIn: '7d',
+  },
+  bcrypt: {
+    rounds: 12,
+  },
   session: {
     secret: process.env.SESSION_SECRET || 'default-session-secret',
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false,
+      secure: process.env.NODE_ENV === 'production',
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
-      sameSite: 'lax',
     },
-  },
-  api: {
-    requireApiKey: false,
-    apiKeyHeader: 'X-API-Key',
-    rateLimitByIp: true,
-    rateLimitByUser: false,
-  },
-  upload: {
-    maxFileSize: 10 * 1024 * 1024,
-    allowedMimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'],
-    scanForViruses: false,
-    validateFileContent: false,
-  },
-  database: {
-    useSSL: false,
-    sslRejectUnauthorized: false,
-    connectionTimeout: 5000,
-    queryTimeout: 10000,
-  },
-  monitoring: {
-    logSecurityEvents: true,
-    alertOnSuspiciousActivity: false,
-    trackFailedLogins: true,
-    trackApiUsage: false,
   },
 };
 
-// Get security configuration for current environment
+// Get configuration for current environment
 export const getSecurityConfig = (): SecurityConfig => {
-  const env = process.env.NODE_ENV || 'development';
+  const env = (process.env.NODE_ENV as Environment) || 'development';
   const envConfig = getEnvironmentConfig(env);
   
   return {
     ...defaultSecurityConfig,
     ...envConfig,
+    environment: env,
   };
 };
 
-// Export the current security configuration
+// Export the configuration
 export const securityConfig = getSecurityConfig();
