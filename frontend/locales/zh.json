@@ -5,13 +5,13 @@
     "staking": "质押",
     "about": "关于",
     "contact": "联系",
-    "getStarted": "开始使用"
+    "getStarted": "开始"
   },
   "hero": {
     "title": "AGROTM",
     "subtitle": "SOLANA",
-    "tagline": "在 Solana 上通过 DeFi 革新农业",
-    "description": "全球农业综合企业最大的 Web3 平台。质押、农业 NFT、去中心化治理和可持续性在一个平台中。",
+    "tagline": "用Solana上的DeFi革命化农业",
+    "description": "全球农业综合企业最大的Web3平台。质押、农业NFT、去中心化治理和可持续性在一个平台中。",
     "enterPlatform": "进入平台",
     "learnMore": "了解更多"
   },
@@ -19,11 +19,11 @@
     "title": "主要功能",
     "sustainableStaking": {
       "title": "可持续质押",
-      "description": "质押您的代币，在支持可持续农业项目的同时赚取奖励。"
+      "description": "质押您的代币并获得奖励，同时支持可持续农业项目。"
     },
     "agriculturalNFTs": {
-      "title": "农业 NFT",
-      "description": "代币化农村财产并参与农业 NFT 市场。"
+      "title": "农业NFT",
+      "description": "代币化农村财产并参与农业NFT市场。"
     },
     "governance": {
       "title": "治理",
@@ -46,38 +46,38 @@
       "description": "多层安全保护您的投资"
     },
     "intelligentAI": {
-      "title": "智能 AI",
+      "title": "智能AI",
       "description": "基于人工智能的威胁检测系统"
     },
     "secureBlockchain": {
       "title": "安全区块链",
-      "description": "区块链技术实现完全透明和安全"
+      "description": "区块链技术确保完全透明和安全"
     }
   },
   "stakingFarming": {
-    "title": "质押 / 农场",
+    "title": "质押/挖矿",
     "description": "种植您的代币并收获可持续奖励",
     "sustainableStaking": {
       "title": "可持续质押",
-      "description": "质押您的 AGROTM 代币，在支持可持续农业项目的同时赚取奖励。"
+      "description": "质押您的AGROTM代币并获得奖励，同时支持可持续农业项目。"
     },
     "liquidityFarming": {
-      "title": "流动性农场",
-      "description": "提供流动性并通过农场系统赚取额外代币。"
+      "title": "流动性挖矿",
+      "description": "提供流动性并通过挖矿系统获得额外代币。"
     }
   },
   "nftMinting": {
-    "title": "NFT 铸造",
-    "description": "代币化农村财产并创建独特的 NFT",
+    "title": "NFT铸造",
+    "description": "代币化农村财产并创建独特的NFT",
     "createNFTs": {
-      "title": "创建您的 NFT",
-      "description": "将农村财产转化为独特且可交易的 NFT。每个 NFT 代表可持续农业综合企业的真实部分。",
-      "button": "铸造 NFT"
+      "title": "创建您的NFT",
+      "description": "将农村财产转化为独特且可交易的NFT。每个NFT代表可持续农业综合企业的真实部分。",
+      "button": "创建NFT"
     }
   },
   "contact": {
     "title": "联系我们",
-    "subtitle": "有任何问题？我们随时为您提供帮助！",
+    "subtitle": "有任何问题？我们随时为您服务！",
     "form": {
       "title": "发送消息",
       "name": "姓名",
@@ -102,10 +102,10 @@
     "error": "发送消息时出错。请重试。"
   },
   "footer": {
-    "description": "通过区块链革新农业。DeFi 平台为可持续农业提供尖端技术和 Solana 保证的安全。",
+    "description": "通过区块链革命化农业。DeFi平台用于可持续农业，采用尖端技术和Solana保证的安全。",
     "quickLinks": "快速链接",
     "resources": "资源",
-    "copyright": "© 2024 AGROTM. 保留所有权利。"
+    "copyright": "© 2024 AGROTM。保留所有权利。"
   },
   "language": {
     "title": "语言 / Language"

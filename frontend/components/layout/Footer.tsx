@@ -1,10 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
 
 export function Footer() {
-  const { t } = useTranslation();
 
   return (
     <footer className="bg-black border-t border-blue-500/30 relative overflow-hidden">
@@ -41,7 +39,7 @@ export function Footer() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.1 }}
               >
-                {t('footer.description')}
+                Revolucione a agricultura com tecnologia blockchain. AGROTM oferece soluções DeFi inovadoras para o agronegócio global.
               </motion.p>
               
               <motion.div 
@@ -106,32 +104,32 @@ export function Footer() {
               transition={{ duration: 0.6, delay: 0.3 }}
             >
               <h3 className="text-lg font-semibold text-white mb-4 text-glow">
-                {t('footer.quickLinks')}
+                Links Rápidos
               </h3>
               <ul className="space-y-2">
                 <li>
                   <Link href="/" className="text-gray-400 hover:text-blue-400 transition-colors duration-300">
-                    {t('nav.home')}
+                    Início
                   </Link>
                 </li>
                 <li>
                   <Link href="/dashboard" className="text-gray-400 hover:text-blue-400 transition-colors duration-300">
-                    {t('nav.dashboard')}
+                    Dashboard
                   </Link>
                 </li>
                 <li>
                   <Link href="/staking" className="text-gray-400 hover:text-blue-400 transition-colors duration-300">
-                    {t('nav.staking')}
+                    Staking
                   </Link>
                 </li>
                 <li>
                   <Link href="#about" className="text-gray-400 hover:text-blue-400 transition-colors duration-300">
-                    {t('nav.about')}
+                    Sobre
                   </Link>
                 </li>
                 <li>
                   <Link href="#contact" className="text-gray-400 hover:text-blue-400 transition-colors duration-300">
-                    {t('nav.contact')}
+                    Contato
                   </Link>
                 </li>
               </ul>
@@ -146,7 +144,7 @@ export function Footer() {
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               <h3 className="text-lg font-semibold text-white mb-4 text-glow">
-                {t('footer.resources')}
+                Recursos
               </h3>
               <ul className="space-y-2">
                 <li>
@@ -187,7 +185,7 @@ export function Footer() {
             transition={{ duration: 0.6, delay: 0.5 }}
           >
             <p className="text-gray-400 text-sm">
-              {t('footer.copyright')}
+              © 2024 AGROTM Solana. Todos os direitos reservados.
             </p>
             
             <div className="flex items-center space-x-6 mt-4 md:mt-0">

@@ -1,6 +1,6 @@
 {
   "nav": {
-    "home": "Home",
+    "home": "Início",
     "dashboard": "Dashboard",
     "staking": "Staking",
     "about": "Sobre",
@@ -31,15 +31,15 @@
     }
   },
   "interactiveDashboard": {
-    "title": "Interactive Dashboard",
+    "title": "Dashboard Interativo",
     "description": "Monitore seus investimentos agrícolas em tempo real com nossa interface futurista",
     "defi": "DeFi",
-    "growth": "Growth",
+    "growth": "Crescimento",
     "analytics": "Analytics",
-    "network": "Network"
+    "network": "Rede"
   },
   "cyberDefense": {
-    "title": "Cyber Defense",
+    "title": "Defesa Cibernética",
     "description": "Segurança de última geração para proteger seus ativos digitais",
     "advancedProtection": {
       "title": "Proteção Avançada",
@@ -67,12 +67,12 @@
     }
   },
   "nftMinting": {
-    "title": "NFT Minting",
+    "title": "Criação de NFTs",
     "description": "Tokenize propriedades rurais e crie NFTs únicos",
     "createNFTs": {
       "title": "Crie Seus NFTs",
       "description": "Transforme propriedades rurais em NFTs únicos e negociáveis. Cada NFT representa uma parte real do agronegócio sustentável.",
-      "button": "Mint NFT"
+      "button": "Criar NFT"
     }
   },
   "contact": {
@@ -103,8 +103,8 @@
   },
   "footer": {
     "description": "Revolucionando a agricultura através da blockchain. Plataforma DeFi para agricultura sustentável com tecnologia de ponta e segurança garantida pela Solana.",
-    "quickLinks": "Quick Links",
-    "resources": "Resources",
+    "quickLinks": "Links Rápidos",
+    "resources": "Recursos",
     "copyright": "© 2024 AGROTM. Todos os direitos reservados."
   },
   "language": {

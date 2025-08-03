@@ -43,11 +43,11 @@
     "description": "Next-generation security to protect your digital assets",
     "advancedProtection": {
       "title": "Advanced Protection",
-      "description": "Multiple layers of security to protect your investments"
+      "description": "Multiple security layers to protect your investments"
     },
     "intelligentAI": {
       "title": "Intelligent AI",
-      "description": "Threat detection systems based on artificial intelligence"
+      "description": "AI-based threat detection systems"
     },
     "secureBlockchain": {
       "title": "Secure Blockchain",
@@ -72,11 +72,11 @@
     "createNFTs": {
       "title": "Create Your NFTs",
       "description": "Transform rural properties into unique and tradable NFTs. Each NFT represents a real part of sustainable agribusiness.",
-      "button": "Mint NFT"
+      "button": "Create NFT"
     }
   },
   "contact": {
-    "title": "Contact",
+    "title": "Get in Touch",
     "subtitle": "Have any questions? We're here to help!",
     "form": {
       "title": "Send a Message",
