@@ -1,292 +1,113 @@
 {
-  "common": {
-    "loading": "Carregando...",
-    "error": "Erro",
-    "success": "Sucesso",
-    "cancel": "Cancelar",
-    "confirm": "Confirmar",
-    "save": "Salvar",
-    "delete": "Excluir",
-    "edit": "Editar",
-    "view": "Visualizar",
-    "close": "Fechar",
-    "back": "Voltar",
-    "next": "Próximo",
-    "previous": "Anterior",
-    "search": "Pesquisar",
-    "filter": "Filtrar",
-    "sort": "Ordenar",
-    "refresh": "Atualizar",
-    "copy": "Copiar",
-    "download": "Baixar",
-    "upload": "Enviar",
-    "connect": "Conectar",
-    "disconnect": "Desconectar",
-    "wallet": "Carteira",
-    "balance": "Saldo",
-    "amount": "Quantidade",
-    "price": "Preço",
-    "total": "Total",
-    "available": "Disponível",
-    "staked": "Em Stake",
-    "rewards": "Recompensas",
-    "apy": "APY",
-    "tvl": "TVL",
-    "volume": "Volume",
-    "marketCap": "Capitalização de Mercado",
-    "circulatingSupply": "Oferta Circulante",
-    "maxSupply": "Oferta Máxima"
-  },
-  "navigation": {
-    "home": "Início",
-    "dashboard": "Painel",
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
     "staking": "Staking",
-    "farming": "Farming",
-    "swap": "Troca",
-    "nft": "Mercado NFT",
-    "governance": "Governança",
-    "analytics": "Análises",
-    "docs": "Documentação",
     "about": "Sobre",
     "contact": "Contato",
-    "settings": "Configurações",
-    "profile": "Perfil",
-    "portfolio": "Portfólio",
-    "transactions": "Transações",
-    "rewards": "Recompensas",
-    "vaults": "Cofres",
-    "pools": "Pools de Liquidez"
+    "getStarted": "Começar"
   },
-  "home": {
-    "hero": {
-      "title": "O Futuro da Agricultura DeFi",
-      "subtitle": "Ganhe altos rendimentos através de estratégias inovadoras de farming e investimentos agrícolas apoiados por NFTs",
-      "cta": "Começar Farming",
-      "learnMore": "Saiba Mais",
-      "stats": {
-        "tvl": "Valor Total Bloqueado",
-        "users": "Usuários Ativos",
-        "rewards": "Recompensas Distribuídas",
-        "pools": "Pools Ativos"
-      }
+  "hero": {
+    "title": "AGROTM",
+    "subtitle": "SOLANA",
+    "tagline": "Revolucione a Agricultura com DeFi na Solana",
+    "description": "A maior plataforma Web3 para o agronegócio mundial. Staking, NFTs agrícolas, governança descentralizada e sustentabilidade em uma única plataforma.",
+    "enterPlatform": "Entrar na Plataforma",
+    "learnMore": "Saiba Mais"
+  },
+  "features": {
+    "title": "Principais Funcionalidades",
+    "sustainableStaking": {
+      "title": "Staking Sustentável",
+      "description": "Stake seus tokens e ganhe recompensas enquanto apoia projetos agrícolas sustentáveis."
     },
-    "features": {
-      "title": "Por que escolher o AGROTM?",
-      "subtitle": "Plataforma DeFi revolucionária combinando agricultura e tecnologia blockchain",
-      "items": {
-        "yield": {
-          "title": "Farming de Alto Rendimento",
-          "description": "Ganhe até 500% APY através de nossas estratégias inovadoras de farming"
-        },
-        "nft": {
-          "title": "Ativos Apoiados por NFT",
-          "description": "Invista em ativos agrícolas reais através do nosso mercado NFT"
-        },
-        "security": {
-          "title": "Auditado e Seguro",
-          "description": "Contratos inteligentes multi-auditados com cobertura de seguro"
-        },
-        "governance": {
-          "title": "Governança Comunitária",
-          "description": "Participe das decisões da plataforma através do nosso DAO"
-        }
-      }
+    "agriculturalNFTs": {
+      "title": "NFTs Agrícolas",
+      "description": "Tokenize propriedades rurais e participe do mercado de NFTs agrícolas."
     },
-    "stats": {
-      "title": "Estatísticas da Plataforma",
-      "subtitle": "Dados em tempo real do ecossistema AGROTM"
+    "governance": {
+      "title": "Governança",
+      "description": "Participe das decisões da plataforma através de votação descentralizada."
     }
   },
-  "dashboard": {
-    "title": "Painel",
-    "welcome": "Bem-vindo de volta",
-    "overview": "Visão Geral do Portfólio",
-    "quickActions": "Ações Rápidas",
-    "recentActivity": "Atividade Recente",
-    "performance": "Performance",
-    "assets": "Seus Ativos",
-    "rewards": "Suas Recompensas",
-    "staking": "Posições de Staking",
-    "farming": "Posições de Farming",
-    "nfts": "Seus NFTs",
-    "transactions": "Transações Recentes",
-    "charts": {
-      "portfolio": "Valor do Portfólio",
-      "rewards": "Recompensas Ganhas",
-      "performance": "Performance vs Mercado"
-    }
+  "interactiveDashboard": {
+    "title": "Interactive Dashboard",
+    "description": "Monitore seus investimentos agrícolas em tempo real com nossa interface futurista",
+    "defi": "DeFi",
+    "growth": "Growth",
+    "analytics": "Analytics",
+    "network": "Network"
   },
-  "staking": {
-    "title": "Staking",
-    "description": "Faça stake dos seus tokens AGROTM para ganhar recompensas e participar da governança",
-    "stake": "Fazer Stake",
-    "unstake": "Remover Stake",
-    "claim": "Resgatar Recompensas",
-    "reStake": "Re-investir Recompensas",
-    "lockPeriod": "Período de Bloqueio",
-    "rewardsRate": "Taxa de Recompensas",
-    "totalStaked": "Total em Stake",
-    "yourStake": "Seu Stake",
-    "availableRewards": "Recompensas Disponíveis",
-    "lockPeriods": {
-      "flexible": "Flexível",
-      "30days": "30 Dias",
-      "90days": "90 Dias",
-      "180days": "180 Dias",
-      "365days": "365 Dias"
+  "cyberDefense": {
+    "title": "Cyber Defense",
+    "description": "Segurança de última geração para proteger seus ativos digitais",
+    "advancedProtection": {
+      "title": "Proteção Avançada",
+      "description": "Múltiplas camadas de segurança para proteger seus investimentos"
     },
-    "benefits": {
-      "title": "Benefícios do Staking",
-      "rewards": "Ganhe recompensas diárias",
-      "governance": "Poder de voto no DAO",
-      "fees": "Compartilhe das taxas do protocolo",
-      "nft": "Acesso a NFTs exclusivos"
-    }
-  },
-  "farming": {
-    "title": "Yield Farming",
-    "description": "Forneça liquidez e ganhe altos rendimentos através dos nossos pools de farming",
-    "deposit": "Depositar",
-    "withdraw": "Sacar",
-    "harvest": "Colher Recompensas",
-    "compound": "Compor Recompensas",
-    "pool": "Pool",
-    "tvl": "Valor Total Bloqueado",
-    "apy": "APY",
-    "yourShare": "Sua Participação",
-    "earned": "Ganho",
-    "pools": {
-      "agrotmEth": "AGROTM-ETH",
-      "agrotmUsdc": "AGROTM-USDC",
-      "agrotmUsdt": "AGROTM-USDT",
-      "ethUsdc": "ETH-USDC",
-      "ethUsdt": "ETH-USDT"
-    }
-  },
-  "nft": {
-    "title": "Mercado NFT",
-    "description": "Negocie NFTs agrícolas e invista em ativos do mundo real",
-    "buy": "Comprar NFT",
-    "sell": "Vender NFT",
-    "mint": "Cunhar NFT",
-    "collection": "Coleção",
-    "price": "Preço",
-    "owner": "Proprietário",
-    "rarity": "Raridade",
-    "attributes": "Atributos",
-    "history": "Histórico de Negociação",
-    "collections": {
-      "farmland": "NFTs de Terras",
-      "equipment": "NFTs de Equipamentos",
-      "crops": "NFTs de Culturas",
-      "animals": "NFTs de Animais"
+    "intelligentAI": {
+      "title": "IA Inteligente",
+      "description": "Sistemas de detecção de ameaças baseados em inteligência artificial"
     },
-    "filters": {
-      "all": "Todos",
-      "farmland": "Terras",
-      "equipment": "Equipamentos",
-      "crops": "Culturas",
-      "animals": "Animais",
-      "priceRange": "Faixa de Preço",
-      "rarity": "Raridade"
+    "secureBlockchain": {
+      "title": "Blockchain Seguro",
+      "description": "Tecnologia blockchain para transparência e segurança total"
     }
   },
-  "swap": {
-    "title": "Troca",
-    "description": "Negocie tokens com as melhores taxas e menores taxas",
-    "swap": "Trocar",
-    "from": "De",
-    "to": "Para",
-    "slippage": "Tolerância de Slippage",
-    "gasFee": "Taxa de Gas",
-    "priceImpact": "Impacto no Preço",
-    "minimumReceived": "Mínimo Recebido",
-    "route": "Rota",
-    "settings": "Configurações",
-    "max": "Máx",
-    "balance": "Saldo",
-    "connectWallet": "Conecte a Carteira para Trocar"
-  },
-  "governance": {
-    "title": "Governança",
-    "description": "Participe das decisões da plataforma através da nossa governança descentralizada",
-    "proposals": "Propostas",
-    "createProposal": "Criar Proposta",
-    "vote": "Votar",
-    "votingPower": "Poder de Voto",
-    "quorum": "Quórum",
-    "executed": "Executada",
-    "pending": "Pendente",
-    "active": "Ativa",
-    "defeated": "Derrotada",
-    "succeeded": "Aprovada",
-    "for": "A Favor",
-    "against": "Contra",
-    "abstain": "Abster"
-  },
-  "wallet": {
-    "connect": "Conectar Carteira",
-    "disconnect": "Desconectar",
-    "connected": "Conectado",
-    "connecting": "Conectando...",
-    "error": "Erro de Conexão",
-    "unsupported": "Rede Não Suportada",
-    "switchNetwork": "Trocar Rede",
-    "addToken": "Adicionar Token à Carteira",
-    "copyAddress": "Copiar Endereço",
-    "viewOnExplorer": "Ver no Explorer",
-    "supportedWallets": {
-      "metamask": "MetaMask",
-      "walletconnect": "WalletConnect",
-      "coinbase": "Coinbase Wallet",
-      "phantom": "Phantom",
-      "solflare": "Solflare"
-    }
-  },
-  "errors": {
-    "networkError": "Erro de Rede",
-    "insufficientBalance": "Saldo Insuficiente",
-    "transactionFailed": "Transação Falhou",
-    "userRejected": "Transação Rejeitada",
-    "slippageTooHigh": "Slippage Muito Alto",
-    "poolNotFound": "Pool Não Encontrado",
-    "invalidAmount": "Quantidade Inválida",
-    "walletNotConnected": "Carteira Não Conectada",
-    "unsupportedNetwork": "Rede Não Suportada",
-    "gasEstimationFailed": "Falha na Estimativa de Gas"
-  },
-  "success": {
-    "transactionConfirmed": "Transação Confirmada",
-    "tokensStaked": "Tokens em Stake com Sucesso",
-    "tokensUnstaked": "Tokens Removidos do Stake com Sucesso",
-    "rewardsClaimed": "Recompensas Resgatadas com Sucesso",
-    "liquidityAdded": "Liquidez Adicionada com Sucesso",
-    "liquidityRemoved": "Liquidez Removida com Sucesso",
-    "nftMinted": "NFT Cunhado com Sucesso",
-    "nftPurchased": "NFT Comprado com Sucesso",
-    "proposalCreated": "Proposta Criada com Sucesso",
-    "voteSubmitted": "Voto Enviado com Sucesso"
-  },
-  "settings": {
-    "title": "Configurações",
-    "language": "Idioma",
-    "theme": "Tema",
-    "notifications": "Notificações",
-    "security": "Segurança",
-    "privacy": "Privacidade",
-    "about": "Sobre",
-    "help": "Ajuda e Suporte",
-    "themes": {
-      "light": "Claro",
-      "dark": "Escuro",
-      "auto": "Automático"
+  "stakingFarming": {
+    "title": "Staking / Farming",
+    "description": "Cultive seus tokens e colha recompensas sustentáveis",
+    "sustainableStaking": {
+      "title": "Staking Sustentável",
+      "description": "Stake seus tokens AGROTM e ganhe recompensas enquanto apoia projetos agrícolas sustentáveis."
     },
-    "notifications": {
-      "email": "Notificações por Email",
-      "push": "Notificações Push",
-      "transaction": "Notificações de Transação",
-      "rewards": "Notificações de Recompensas",
-      "governance": "Notificações de Governança"
+    "liquidityFarming": {
+      "title": "Farming de Liquidez",
+      "description": "Forneça liquidez e ganhe tokens adicionais através do sistema de farming."
     }
+  },
+  "nftMinting": {
+    "title": "NFT Minting",
+    "description": "Tokenize propriedades rurais e crie NFTs únicos",
+    "createNFTs": {
+      "title": "Crie Seus NFTs",
+      "description": "Transforme propriedades rurais em NFTs únicos e negociáveis. Cada NFT representa uma parte real do agronegócio sustentável.",
+      "button": "Mint NFT"
+    }
+  },
+  "contact": {
+    "title": "Entre em Contato",
+    "subtitle": "Tem alguma dúvida? Estamos aqui para ajudar!",
+    "form": {
+      "title": "Envie uma Mensagem",
+      "name": "Nome",
+      "email": "Email",
+      "subject": "Assunto",
+      "message": "Mensagem",
+      "sendMessage": "Enviar Mensagem",
+      "sending": "Enviando...",
+      "namePlaceholder": "Seu nome completo",
+      "emailPlaceholder": "seu@email.com",
+      "subjectPlaceholder": "Como podemos ajudar?",
+      "messagePlaceholder": "Descreva sua dúvida ou solicitação..."
+    },
+    "info": {
+      "title": "Informações de Contato",
+      "email": "Email",
+      "website": "Website",
+      "phone": "Telefone",
+      "socialMedia": "Redes Sociais"
+    },
+    "success": "Mensagem enviada com sucesso! Entraremos em contato em breve.",
+    "error": "Erro ao enviar mensagem. Tente novamente."
+  },
+  "footer": {
+    "description": "Revolucionando a agricultura através da blockchain. Plataforma DeFi para agricultura sustentável com tecnologia de ponta e segurança garantida pela Solana.",
+    "quickLinks": "Quick Links",
+    "resources": "Resources",
+    "copyright": "© 2024 AGROTM. Todos os direitos reservados."
+  },
+  "language": {
+    "title": "Idioma / Language"
   }
 }

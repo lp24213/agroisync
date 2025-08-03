@@ -11,7 +11,7 @@
   }
   
   body {
-    @apply bg-agro-darker text-white font-sans;
+    @apply bg-black text-white font-sans;
     background-image: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.03) 0%, rgba(0, 0, 0, 0) 70%);
   }
 
@@ -20,7 +20,7 @@
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-agro-darker;
+    @apply bg-black;
   }
 
   ::-webkit-scrollbar-thumb {
@@ -80,6 +80,22 @@
 
   .text-glow-white {
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.7), 0 0 20px rgba(255, 255, 255, 0.5);
+  }
+
+  .text-glow-blue {
+    text-shadow: 0 0 10px rgba(59, 130, 246, 0.7), 0 0 20px rgba(59, 130, 246, 0.5);
+  }
+
+  .text-glow-cyan {
+    text-shadow: 0 0 10px rgba(34, 211, 238, 0.7), 0 0 20px rgba(34, 211, 238, 0.5);
+  }
+
+  .text-glow-green {
+    text-shadow: 0 0 10px rgba(16, 185, 129, 0.7), 0 0 20px rgba(16, 185, 129, 0.5);
+  }
+
+  .text-glow-purple {
+    text-shadow: 0 0 10px rgba(139, 92, 246, 0.7), 0 0 20px rgba(139, 92, 246, 0.5);
   }
 
   .neon-text {

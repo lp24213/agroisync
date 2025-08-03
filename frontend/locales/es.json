@@ -1,0 +1,113 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "dashboard": "Panel",
+    "staking": "Staking",
+    "about": "Acerca de",
+    "contact": "Contacto",
+    "getStarted": "Comenzar"
+  },
+  "hero": {
+    "title": "AGROTM",
+    "subtitle": "SOLANA",
+    "tagline": "Revoluciona la Agricultura con DeFi en Solana",
+    "description": "La mayor plataforma Web3 para el agronegocio mundial. Staking, NFTs agrícolas, gobernanza descentralizada y sostenibilidad en una sola plataforma.",
+    "enterPlatform": "Entrar a la Plataforma",
+    "learnMore": "Saber Más"
+  },
+  "features": {
+    "title": "Funcionalidades Principales",
+    "sustainableStaking": {
+      "title": "Staking Sostenible",
+      "description": "Haz staking de tus tokens y gana recompensas mientras apoyas proyectos agrícolas sostenibles."
+    },
+    "agriculturalNFTs": {
+      "title": "NFTs Agrícolas",
+      "description": "Tokeniza propiedades rurales y participa en el mercado de NFTs agrícolas."
+    },
+    "governance": {
+      "title": "Gobernanza",
+      "description": "Participa en las decisiones de la plataforma a través de votación descentralizada."
+    }
+  },
+  "interactiveDashboard": {
+    "title": "Panel Interactivo",
+    "description": "Monitorea tus inversiones agrícolas en tiempo real con nuestra interfaz futurista",
+    "defi": "DeFi",
+    "growth": "Crecimiento",
+    "analytics": "Analíticas",
+    "network": "Red"
+  },
+  "cyberDefense": {
+    "title": "Defensa Cibernética",
+    "description": "Seguridad de última generación para proteger tus activos digitales",
+    "advancedProtection": {
+      "title": "Protección Avanzada",
+      "description": "Múltiples capas de seguridad para proteger tus inversiones"
+    },
+    "intelligentAI": {
+      "title": "IA Inteligente",
+      "description": "Sistemas de detección de amenazas basados en inteligencia artificial"
+    },
+    "secureBlockchain": {
+      "title": "Blockchain Seguro",
+      "description": "Tecnología blockchain para transparencia y seguridad total"
+    }
+  },
+  "stakingFarming": {
+    "title": "Staking / Farming",
+    "description": "Cultiva tus tokens y cosecha recompensas sostenibles",
+    "sustainableStaking": {
+      "title": "Staking Sostenible",
+      "description": "Haz staking de tus tokens AGROTM y gana recompensas mientras apoyas proyectos agrícolas sostenibles."
+    },
+    "liquidityFarming": {
+      "title": "Farming de Liquidez",
+      "description": "Proporciona liquidez y gana tokens adicionales a través del sistema de farming."
+    }
+  },
+  "nftMinting": {
+    "title": "Creación de NFTs",
+    "description": "Tokeniza propiedades rurales y crea NFTs únicos",
+    "createNFTs": {
+      "title": "Crea tus NFTs",
+      "description": "Transforma propiedades rurales en NFTs únicos y negociables. Cada NFT representa una parte real del agronegocio sostenible.",
+      "button": "Crear NFT"
+    }
+  },
+  "contact": {
+    "title": "Contacto",
+    "subtitle": "¿Tienes alguna pregunta? ¡Estamos aquí para ayudar!",
+    "form": {
+      "title": "Envía un Mensaje",
+      "name": "Nombre",
+      "email": "Email",
+      "subject": "Asunto",
+      "message": "Mensaje",
+      "sendMessage": "Enviar Mensaje",
+      "sending": "Enviando...",
+      "namePlaceholder": "Tu nombre completo",
+      "emailPlaceholder": "tu@email.com",
+      "subjectPlaceholder": "¿Cómo podemos ayudar?",
+      "messagePlaceholder": "Describe tu pregunta o solicitud..."
+    },
+    "info": {
+      "title": "Información de Contacto",
+      "email": "Email",
+      "website": "Sitio Web",
+      "phone": "Teléfono",
+      "socialMedia": "Redes Sociales"
+    },
+    "success": "¡Mensaje enviado con éxito! Nos pondremos en contacto pronto.",
+    "error": "Error al enviar mensaje. Inténtalo de nuevo."
+  },
+  "footer": {
+    "description": "Revolucionando la agricultura a través de la blockchain. Plataforma DeFi para agricultura sostenible con tecnología de punta y seguridad garantizada por Solana.",
+    "quickLinks": "Enlaces Rápidos",
+    "resources": "Recursos",
+    "copyright": "© 2024 AGROTM. Todos los derechos reservados."
+  },
+  "language": {
+    "title": "Idioma / Language"
+  }
+} 
