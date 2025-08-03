@@ -80,4 +80,4 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = 'Button';
 
 export { Button, buttonVariants };
-export type { ButtonVariant, ButtonSize } from '../../types/web3';
+export type { ButtonVariant } from '../../types/web3';

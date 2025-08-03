@@ -7,7 +7,7 @@
 
 // UI Components exports
 export { Button, buttonVariants } from './Button';
-export type { ButtonProps, ButtonVariant, ButtonSize } from './Button';
+export type { ButtonProps, ButtonVariant } from './Button';
 
 export { Input } from './Input';
 export type { InputProps } from './Input';
