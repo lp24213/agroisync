@@ -1,36 +1,47 @@
-# Frontend-specific Vercel ignore
+# Ignorar arquivos desnecessários para o deploy
 node_modules/
-.next/
-out/
+.git/
+.gitignore
+README.md
+*.log
 .env.local
 .env.development
 .env.test
-*.log
 .DS_Store
 Thumbs.db
 
-# Development files
+# Backend e outros serviços
+backend/
+rust/
+contracts/
+python/
+go/
+monitoring/
+security/
+docs/
+
+# Arquivos de desenvolvimento
 *.md
 *.txt
-.vscode/
-.idea/
-coverage/
-.nyc_output/
+scripts/
+uploads/
+nfts/
+oracles/
+dao/
+enterprise/
+a11y/
+agro-intel/
+ai/
+analytics/
+emails/
+graphql/
+middlewares/
+nixpacks.toml
+pnpm-workspace.yaml
+turbo.json
+turbo-deploy.json
 
-# Build artifacts
-dist/
-build/
-*.tsbuildinfo
-
-# Cache
-.cache/
-.parcel-cache/
-
-# Test files
-__tests__/
-*.test.*
-*.spec.*
-
-# Documentation
-docs/
-README.md
+# Manter apenas o frontend
+!frontend/
+!vercel.json
+!package.json

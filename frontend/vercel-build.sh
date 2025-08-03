@@ -1,23 +1,18 @@
 #!/bin/bash
 
-# AGROTM Frontend Vercel Build Script
-# Este script é executado durante o deploy no Vercel
+# Script de build para Vercel
+echo "🚀 Iniciando build para Vercel..."
 
-echo "🚀 Iniciando build do AGROTM Frontend..."
-
-# Verificar se estamos no diretório correto
-if [ ! -f "package.json" ]; then
-    echo "❌ package.json não encontrado. Certifique-se de estar no diretório frontend."
-    exit 1
-fi
+# Navegar para o diretório frontend
+cd frontend
 
 # Instalar dependências
 echo "📦 Instalando dependências..."
-npm ci --only=production
+npm install --production=false
 
 # Verificar se a instalação foi bem-sucedida
 if [ $? -ne 0 ]; then
-    echo "❌ Falha na instalação das dependências"
+    echo "❌ Erro na instalação das dependências"
     exit 1
 fi
 
@@ -27,15 +22,15 @@ npm run build
 
 # Verificar se o build foi bem-sucedido
 if [ $? -ne 0 ]; then
-    echo "❌ Falha no build"
+    echo "❌ Erro no build"
     exit 1
 fi
 
 echo "✅ Build concluído com sucesso!"
-echo "📁 Arquivos gerados em .next/"
+echo "📁 Diretório de saída: frontend/.next"
 
-# Listar arquivos importantes
-echo "📋 Arquivos de build:"
+# Listar arquivos gerados
+echo "📋 Arquivos gerados:"
 ls -la .next/
 
-echo "🎉 Deploy pronto!" 
+exit 0
