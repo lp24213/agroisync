@@ -1,0 +1,142 @@
+name: AGROTM CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  NODE_VERSION: '20'
+  NPM_VERSION: '10'
+
+jobs:
+  validate-frontend:
+    name: Validate Frontend
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+    
+    - name: Install dependencies
+      run: |
+        cd frontend
+        npm ci --prefer-offline --no-audit
+    
+    - name: Type check
+      run: |
+        cd frontend
+        npm run type-check
+    
+    - name: Lint code
+      run: |
+        cd frontend
+        npm run lint
+    
+    - name: Build application
+      run: |
+        cd frontend
+        npm run build
+      env:
+        NODE_ENV: production
+        NEXT_PUBLIC_APP_URL: https://agrotm-solana.vercel.app
+        NEXT_PUBLIC_API_URL: https://agrotm-backend.railway.app
+        NEXT_PUBLIC_RPC_ENDPOINT: https://api.mainnet-beta.solana.com
+
+  validate-backend:
+    name: Validate Backend
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: backend/package-lock.json
+    
+    - name: Install dependencies
+      run: |
+        cd backend
+        npm ci --prefer-offline --no-audit
+    
+    - name: Type check
+      run: |
+        cd backend
+        npm run type-check
+    
+    - name: Build application
+      run: |
+        cd backend
+        npm run build
+      env:
+        NODE_ENV: production
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: [validate-frontend, validate-backend]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Run security audit
+      run: |
+        cd frontend && npm audit --audit-level=moderate || true
+        cd ../backend && npm audit --audit-level=moderate || true
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [validate-frontend, validate-backend, security-scan]
+    if: github.ref == 'refs/heads/develop'
+    environment: staging
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Deploy Frontend to Vercel (Staging)
+      uses: amondnet/vercel-action@v25
+      with:
+        vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+        working-directory: ./frontend
+        vercel-args: '--target=preview'
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [validate-frontend, validate-backend, security-scan]
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Deploy Frontend to Vercel (Production)
+      uses: amondnet/vercel-action@v25
+      with:
+        vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+        working-directory: ./frontend
+        vercel-args: '--prod'
+    
+    - name: Deploy Backend to Railway
+      uses: railwayapp/railway-action@v1
+      with:
+        railwayToken: ${{ secrets.RAILWAY_TOKEN }}
+        serviceName: agrotm-backend 

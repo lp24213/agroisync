@@ -143,6 +143,8 @@ export default function RootLayout({
         {/* Preconnect to external domains for performance */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://api.solana.com" />
+        <link rel="preconnect" href="https://mainnet-beta.solana.com" />
         
         {/* DNS prefetch for better performance */}
         <link rel="dns-prefetch" href="//api.solana.com" />

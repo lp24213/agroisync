@@ -27,7 +27,7 @@ const nextConfig = {
 
   // Experimental features
   experimental: {
-    appDir: true,
+    // appDir is now stable in Next.js 14
   },
 
   // Redirects for better SEO
