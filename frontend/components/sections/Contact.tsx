@@ -98,7 +98,7 @@ export function Contact() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder={t('contact.form.emailPlaceholder')}
+                  placeholder="seu@email.com"
                   className="w-full px-4 py-3 bg-black/50 border border-blue-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-300"
                   required
                 />
@@ -106,7 +106,7 @@ export function Contact() {
               
               <div>
                 <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-2">
-                  {t('contact.form.subject')}
+                  Assunto
                 </label>
                 <input
                   type="text"
@@ -114,7 +114,7 @@ export function Contact() {
                   name="subject"
                   value={formData.subject}
                   onChange={handleChange}
-                  placeholder={t('contact.form.subjectPlaceholder')}
+                  placeholder="Assunto da mensagem"
                   className="w-full px-4 py-3 bg-black/50 border border-blue-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-300"
                   required
                 />
@@ -122,14 +122,14 @@ export function Contact() {
               
               <div>
                 <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
-                  {t('contact.form.message')}
+                  Mensagem
                 </label>
                 <textarea
                   id="message"
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
-                  placeholder={t('contact.form.messagePlaceholder')}
+                  placeholder="Sua mensagem aqui..."
                   rows={5}
                   className="w-full px-4 py-3 bg-black/50 border border-blue-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-300 resize-none"
                   required
@@ -143,7 +143,7 @@ export function Contact() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                {isSubmitting ? t('contact.form.sending') : t('contact.form.sendMessage')}
+                {isSubmitting ? 'Enviando...' : 'Enviar Mensagem'}
               </motion.button>
             </form>
           </motion.div>
@@ -161,7 +161,7 @@ export function Contact() {
             <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-cyan-400 opacity-70"></div>
             
             <h3 className="text-2xl font-bold text-cyan-400 mb-8 text-glow-cyan">
-              {t('contact.info.title')}
+              Informações de Contato
             </h3>
             
             <div className="space-y-6">
@@ -172,7 +172,7 @@ export function Contact() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">{t('contact.info.email')}</p>
+                  <p className="text-sm text-gray-400">contato@agrotm.sol</p>
                   <p className="text-white font-medium">contato@agrotm.com.br</p>
                 </div>
               </div>
@@ -184,7 +184,7 @@ export function Contact() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">{t('contact.info.website')}</p>
+                  <p className="text-sm text-gray-400">Website</p>
                   <p className="text-white font-medium">agrotm.com.br</p>
                 </div>
               </div>
@@ -196,7 +196,7 @@ export function Contact() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">{t('contact.info.phone')}</p>
+                  <p className="text-sm text-gray-400">Telefone</p>
                   <p className="text-white font-medium">(66) 99236-2830</p>
                 </div>
               </div>
@@ -208,7 +208,7 @@ export function Contact() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">{t('contact.info.socialMedia')}</p>
+                  <p className="text-sm text-gray-400">Redes Sociais</p>
                   <div className="flex space-x-3 mt-2">
                     <a href="#" className="text-blue-400 hover:text-blue-300 transition-colors">
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
