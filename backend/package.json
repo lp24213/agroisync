@@ -10,7 +10,8 @@
     "test": "echo \"No tests specified\" && exit 0",
     "test:health": "curl -f http://localhost:3001/health || exit 1",
     "clean": "rm -rf dist",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "@solana/web3.js": "^1.87.6",
@@ -52,8 +53,7 @@
   },
   "engines": {
     "node": ">=20.0.0",
-    "npm": ">=7.0.0",
-    "pnpm": ">=8.0.0"
+    "npm": ">=7.0.0"
   },
   "keywords": [
     "agrotm",

@@ -10,15 +10,14 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install pnpm
-RUN npm install -g pnpm
-
 # Install all dependencies (including dev dependencies for build)
-RUN pnpm install --no-frozen-lockfile && \
-    pnpm store prune
+RUN npm ci --only=production && npm cache clean --force
 
 # Copy source code
 COPY . .
+
+# Build the application
+RUN npm run build
 
 # Production stage with Alpine for better compatibility
 FROM node:20-alpine AS production
@@ -41,7 +40,6 @@ RUN addgroup --system --gid 1001 nodejs && \
 COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
 COPY --from=builder --chown=nodejs:nodejs /app/package*.json ./
-COPY --from=builder --chown=nodejs:nodejs /app/pnpm-lock.yaml ./
 
 # Set proper permissions
 RUN chown -R nodejs:nodejs /app && \
