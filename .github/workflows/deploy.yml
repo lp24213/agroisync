@@ -54,15 +54,13 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: Install dependencies
-        run: cd backend && npm ci
-
-      - name: Build backend
-        run: cd backend && npm run build
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
 
       - name: Deploy to Railway
-        uses: railwayapp/railway-action@v2
-        with:
-          railwayToken: ${{ secrets.RAILWAY_TOKEN }}
-          serviceName: agrotm-backend
-          workingDirectory: ./backend 
+        run: |
+          cd backend
+          railway login --token ${{ secrets.RAILWAY_TOKEN }}
+          railway up --service agrotm-backend
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }} 
