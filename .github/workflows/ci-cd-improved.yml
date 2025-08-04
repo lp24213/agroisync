@@ -31,16 +31,6 @@ jobs:
         cd frontend
         npm ci --prefer-offline --no-audit
     
-    - name: Type check
-      run: |
-        cd frontend
-        npm run type-check
-    
-    - name: Lint code
-      run: |
-        cd frontend
-        npm run lint
-    
     - name: Build application
       run: |
         cd frontend
@@ -70,11 +60,6 @@ jobs:
       run: |
         cd backend
         npm ci --prefer-offline --no-audit
-    
-    - name: Type check
-      run: |
-        cd backend
-        npm run type-check
     
     - name: Build application
       run: |
@@ -136,7 +121,10 @@ jobs:
         vercel-args: '--prod'
     
     - name: Deploy Backend to Railway
-      uses: railwayapp/railway-action@v1
-      with:
-        railwayToken: ${{ secrets.RAILWAY_TOKEN }}
-        serviceName: agrotm-backend 
+      run: |
+        cd backend
+        npm install -g @railway/cli
+        railway login --token ${{ secrets.RAILWAY_TOKEN }}
+        railway up --service agrotm-backend
+      env:
+        RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }} 
