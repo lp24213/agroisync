@@ -1,11 +1,11 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Drone, Leaf, BarChart3, Zap } from 'lucide-react';
+import { Plane, Leaf, BarChart3, Zap } from 'lucide-react';
 
 const farmFeatures = [
   {
-    icon: Drone,
+    icon: Plane,
     title: 'Monitoramento por Drones',
     description: 'Drones inteligentes monitoram sua fazenda 24/7',
     color: 'text-blue-400'
@@ -50,7 +50,7 @@ export function SmartFarmSection() {
             transition={{ duration: 0.6 }}
             className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-full px-6 py-3 mb-8"
           >
-            <Drone className="w-5 h-5 text-blue-400" />
+            <Plane className="w-5 h-5 text-blue-400" />
             <span className="text-blue-400 font-medium">Smart Farm</span>
           </motion.div>
 
