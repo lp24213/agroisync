@@ -16,6 +16,9 @@ COPY . .
 # Build the application
 RUN npm run build
 
+# Remove devDependencies after build
+RUN npm prune --production
+
 # Create logs directory
 RUN mkdir -p logs
 
