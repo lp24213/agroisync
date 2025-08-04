@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, TrendingUp, Shield, Coins } from "lucide-react";
 import { PremiumFarmerIcon } from "../ui/PremiumFarmerIcon";
+import { Logo } from "../ui/Logo";
 import Link from "next/link";
 
 export function Hero() {
@@ -14,10 +15,9 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
-            AGROTM
-            <span className="text-green-400">.SOL</span>
-          </h1>
+          <div className="mb-6 flex justify-center">
+            <Logo size="lg" />
+          </div>
           <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
             A maior plataforma para o agronegócio mundial. 
             Staking, NFTs agrícolas e governança descentralizada na Solana.

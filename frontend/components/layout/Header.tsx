@@ -2,13 +2,15 @@ import React from 'react';
 import { Button } from '../ui/Button';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LanguageSelector } from '../ui/LanguageSelector';
 import { Logo } from '../ui/Logo';
+import { supportedLanguages, changeLanguage } from '../../lib/i18n';
+import { useTranslation } from 'react-i18next';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = React.useState(false);
-  const [currentLanguage, setCurrentLanguage] = React.useState<'en' | 'pt' | 'es' | 'zh'>('pt');
+  const { i18n } = useTranslation();
+  const currentLanguage = i18n.language as 'en' | 'pt' | 'es' | 'zh';
   
   // Animation variants
   const navItemVariants = {
@@ -56,28 +58,18 @@ export function Header() {
   };
 
   const handleLanguageChange = (lang: 'en' | 'pt' | 'es' | 'zh') => {
-    setCurrentLanguage(lang);
+    changeLanguage(lang);
     setIsLanguageMenuOpen(false);
   };
 
   const getLanguageFlag = (lang: 'en' | 'pt' | 'es' | 'zh') => {
-    switch (lang) {
-      case 'en': return '🇬🇧';
-      case 'pt': return '🇧🇷';
-      case 'es': return '🇪🇸';
-      case 'zh': return '🇨🇳';
-      default: return '🇧🇷';
-    }
+    const language = supportedLanguages.find(l => l.code === lang);
+    return language ? language.flag : '🇧🇷';
   };
 
   const getLanguageName = (lang: 'en' | 'pt' | 'es' | 'zh') => {
-    switch (lang) {
-      case 'en': return 'EN';
-      case 'pt': return 'PT';
-      case 'es': return 'ES';
-      case 'zh': return 'ZH';
-      default: return 'PT';
-    }
+    const language = supportedLanguages.find(l => l.code === lang);
+    return language ? language.name : 'PT';
   };
 
   return (
@@ -93,18 +85,6 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <Logo size="md" />
-            <motion.span 
-              className="text-xl font-bold text-white relative ml-2"
-              whileHover={{ scale: 1.05 }}
-            >
-              AGROTM
-              <motion.span 
-                className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-600 transform scale-x-0 origin-left"
-                initial={{ scaleX: 0 }}
-                whileHover={{ scaleX: 1 }}
-                transition={{ duration: 0.3 }}
-              />
-            </motion.span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -115,15 +95,15 @@ export function Header() {
               whileHover="hover"
               variants={navItemVariants}
             >
-              <Link href="/" className="text-gray-300 hover:text-blue-400 transition-colors duration-300 relative group">
-                Home
-                <motion.span 
-                  className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500 transform scale-x-0 origin-left"
-                  initial={{ scaleX: 0 }}
-                  whileHover={{ scaleX: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </Link>
+                             <Link href="/" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
+                 Home
+                 <motion.span 
+                   className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
+                   initial={{ scaleX: 0 }}
+                   whileHover={{ scaleX: 1 }}
+                   transition={{ duration: 0.3 }}
+                 />
+               </Link>
             </motion.div>
             
             <motion.div
@@ -133,15 +113,15 @@ export function Header() {
               variants={navItemVariants}
               transition={{ delay: 0.1 }}
             >
-              <Link href="/dashboard" className="text-gray-300 hover:text-blue-400 transition-colors duration-300 relative group">
-                Dashboard
-                <motion.span 
-                  className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500 transform scale-x-0 origin-left"
-                  initial={{ scaleX: 0 }}
-                  whileHover={{ scaleX: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </Link>
+                             <Link href="/dashboard" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
+                 Dashboard
+                 <motion.span 
+                   className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
+                   initial={{ scaleX: 0 }}
+                   whileHover={{ scaleX: 1 }}
+                   transition={{ duration: 0.3 }}
+                 />
+               </Link>
             </motion.div>
             
             <motion.div
@@ -151,15 +131,15 @@ export function Header() {
               variants={navItemVariants}
               transition={{ delay: 0.2 }}
             >
-              <Link href="/staking" className="text-gray-300 hover:text-cyan-400 transition-colors duration-300 relative group">
-                Staking
-                <motion.span 
-                  className="absolute bottom-0 left-0 w-full h-0.5 bg-cyan-400 transform scale-x-0 origin-left"
-                  initial={{ scaleX: 0 }}
-                  whileHover={{ scaleX: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </Link>
+                             <Link href="/staking" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
+                 Staking
+                 <motion.span 
+                   className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
+                   initial={{ scaleX: 0 }}
+                   whileHover={{ scaleX: 1 }}
+                   transition={{ duration: 0.3 }}
+                 />
+               </Link>
             </motion.div>
             
             <motion.div
@@ -169,15 +149,15 @@ export function Header() {
               variants={navItemVariants}
               transition={{ delay: 0.3 }}
             >
-              <Link href="#about" className="text-gray-300 hover:text-blue-500 transition-colors duration-300 relative group">
-                About
-                <motion.span 
-                  className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500 transform scale-x-0 origin-left"
-                  initial={{ scaleX: 0 }}
-                  whileHover={{ scaleX: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </Link>
+                             <Link href="#about" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
+                 About
+                 <motion.span 
+                   className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
+                   initial={{ scaleX: 0 }}
+                   whileHover={{ scaleX: 1 }}
+                   transition={{ duration: 0.3 }}
+                 />
+               </Link>
             </motion.div>
             
             <motion.div
@@ -187,15 +167,15 @@ export function Header() {
               variants={navItemVariants}
               transition={{ delay: 0.4 }}
             >
-              <Link href="#contact" className="text-gray-300 hover:text-cyan-400 transition-colors duration-300 relative group">
-                Contact
-                <motion.span 
-                  className="absolute bottom-0 left-0 w-full h-0.5 bg-cyan-400 transform scale-x-0 origin-left"
-                  initial={{ scaleX: 0 }}
-                  whileHover={{ scaleX: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </Link>
+                             <Link href="#contact" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
+                 Contact
+                 <motion.span 
+                   className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
+                   initial={{ scaleX: 0 }}
+                   whileHover={{ scaleX: 1 }}
+                   transition={{ duration: 0.3 }}
+                 />
+               </Link>
             </motion.div>
 
             {/* Language Selector Desktop */}
@@ -237,13 +217,8 @@ export function Header() {
                     animate="visible"
                     exit="exit"
                   >
-                    <div className="p-2 space-y-1">
-                      {[
-                        { code: 'en', name: 'English', flag: '🇬🇧', nativeName: 'English' },
-                        { code: 'pt', name: 'Português', flag: '🇧🇷', nativeName: 'Português Brasil' },
-                        { code: 'es', name: 'Español', flag: '🇪🇸', nativeName: 'Español' },
-                        { code: 'zh', name: '中文', flag: '🇨🇳', nativeName: '中文' }
-                      ].map((lang) => (
+                                         <div className="p-2 space-y-1">
+                       {supportedLanguages.map((lang) => (
                         <motion.button
                           key={lang.code}
                           onClick={() => handleLanguageChange(lang.code as 'en' | 'pt' | 'es' | 'zh')}
@@ -384,13 +359,8 @@ export function Header() {
                   <motion.div variants={navItemVariants} className="mt-4">
                     <div className="px-3 py-2">
                       <p className="text-sm text-gray-400 mb-2">Idioma / Language</p>
-                      <div className="grid grid-cols-2 gap-2">
-                        {[
-                          { code: 'en', name: 'EN', flag: '🇬🇧', nativeName: 'English' },
-                          { code: 'pt', name: 'PT', flag: '🇧🇷', nativeName: 'Português' },
-                          { code: 'es', name: 'ES', flag: '🇪🇸', nativeName: 'Español' },
-                          { code: 'zh', name: 'ZH', flag: '🇨🇳', nativeName: '中文' }
-                        ].map((lang) => (
+                                             <div className="grid grid-cols-2 gap-2">
+                         {supportedLanguages.map((lang) => (
                           <motion.button
                             key={lang.code}
                             onClick={() => handleLanguageChange(lang.code as 'en' | 'pt' | 'es' | 'zh')}
