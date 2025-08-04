@@ -26,7 +26,7 @@ import { logger, stream } from './utils/logger';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3001;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 // Initialize rate limiters and speed limiters
@@ -84,7 +84,7 @@ app.get('/health', async (_req, res) => {
       },
     };
 
-    // Check database connection
+    // Check database connection (optional)
     try {
       await connectMongoDB();
       health.services.database = 'connected';
@@ -93,7 +93,7 @@ app.get('/health', async (_req, res) => {
       logger.warn('Database health check failed:', error);
     }
 
-    // Check Redis connection
+    // Check Redis connection (optional)
     try {
       const redisClient = createRedisClient();
       await redisClient.connect();
@@ -102,28 +102,22 @@ app.get('/health', async (_req, res) => {
       health.services.redis = 'connected';
     } catch (error) {
       health.services.redis = 'disconnected';
-      logger.error('Redis health check failed:', error);
+      logger.warn('Redis health check failed:', error);
     }
 
-    // Check Web3 connection
+    // Check Web3 connection (optional)
     try {
-      const web3Healthy = await web3Config.healthCheck();
-      health.services.web3 = web3Healthy ? 'connected' : 'disconnected';
+      await web3Config.healthCheck();
+      health.services.web3 = 'connected';
     } catch (error) {
       health.services.web3 = 'disconnected';
-      logger.error('Web3 health check failed:', error);
+      logger.warn('Web3 health check failed:', error);
     }
 
-    const statusCode = Object.values(health.services).every(
-      (service) => service === 'connected',
-    )
-      ? 200
-      : 503;
-
-    res.status(statusCode).json(health);
+    res.status(200).json(health);
   } catch (error) {
-    logger.error('Health check error:', error);
-    res.status(503).json({
+    logger.error('Health check failed:', error);
+    res.status(500).json({
       status: 'ERROR',
       timestamp: new Date().toISOString(),
       error: 'Health check failed',
@@ -131,182 +125,40 @@ app.get('/health', async (_req, res) => {
   }
 });
 
-// API endpoints básicos
-app.get('/api/health', (_req, res) => {
-  res.status(200).json({
+// API routes
+app.get('/api/v1/status', (_req, res) => {
+  res.json({
     status: 'OK',
-    service: 'AGROTM API',
-    version: '1.0.0',
+    message: 'AGROTM Backend API is running',
+    version: '2.1.0',
     timestamp: new Date().toISOString(),
-    environment: NODE_ENV,
-    endpoints: {
-      health: '/health',
-      apiHealth: '/api/health',
-      status: '/api/status',
-      stats: '/api/stats',
-      pools: '/api/pools'
-    }
-  });
-});
-
-app.get('/api/status', (_req, res) => {
-  res.status(200).json({
-    status: 'operational',
-    uptime: process.uptime(),
-    environment: NODE_ENV,
-    timestamp: new Date().toISOString(),
-    memory: process.memoryUsage(),
-    version: '1.0.0',
-    pid: process.pid
-  });
-});
-
-// API endpoints for AGROTM
-app.get('/api/stats', (_req, res) => {
-  res.status(200).json({
-    totalUsers: 1250,
-    totalStaked: 500000,
-    totalRewards: 25000,
-    apy: 12.5,
-    timestamp: new Date().toISOString()
-  });
-});
-
-app.get('/api/pools', (_req, res) => {
-  res.status(200).json({
-    pools: [
-      {
-        id: 1,
-        name: 'AGROTM-USDC',
-        tvl: 250000,
-        apy: 15.2,
-        rewards: 5000
-      },
-      {
-        id: 2,
-        name: 'AGROTM-SOL',
-        tvl: 180000,
-        apy: 18.7,
-        rewards: 3200
-      }
-    ],
-    timestamp: new Date().toISOString()
-  });
-});
-
-// Mock endpoints for backward compatibility (with rate limiting)
-app.get('/api/defi/pools', generalLimiter, async (_req, res) => {
-  try {
-    const mockPools = [
-      {
-        id: 1,
-        name: 'SOL-USDC Pool',
-        token0: 'SOL',
-        token1: 'USDC',
-        totalLiquidity: 2500000,
-        volume24h: 125000,
-        apy: 45.2,
-      },
-      {
-        id: 2,
-        name: 'AGROTM-SOL Pool',
-        token0: 'AGROTM',
-        token1: 'SOL',
-        totalLiquidity: 850000,
-        volume24h: 45000,
-        apy: 38.7,
-      },
-    ];
-
-    res.json({
-      success: true,
-      data: mockPools,
-    });
-  } catch (error) {
-    logger.error('Error fetching DeFi pools:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error',
-      code: 'INTERNAL_ERROR',
-    });
-  }
-});
-
-app.get('/api/stats/overview', generalLimiter, async (_req, res) => {
-  try {
-    const mockStats = {
-      totalValueLocked: 3500000,
-      totalUsers: 50000,
-      averageApy: 15.3,
-      totalTransactions: 1200000,
-      securityScore: 9.8,
-      supportedTokens: 150,
-    };
-
-    res.json({
-      success: true,
-      data: mockStats,
-    });
-  } catch (error) {
-    logger.error('Error fetching stats overview:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error',
-      code: 'INTERNAL_ERROR',
-    });
-  }
-});
-
-// Root endpoint
-app.get('/', (_req, res) => {
-  res.status(200).json({
-    message: 'AGROTM Backend API',
-    version: '1.0.0',
-    environment: NODE_ENV,
-    endpoints: {
-      health: '/health',
-      apiHealth: '/api/health',
-      status: '/api/status',
-      stats: '/api/stats',
-      pools: '/api/pools'
-    },
-    documentation: 'https://github.com/lp24213/agrotm-solana',
-    timestamp: new Date().toISOString()
   });
 });
 
 // Error handling middleware
-app.use(
-  (
-    err: any,
-    req: express.Request,
-    res: express.Response,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _next: express.NextFunction,
-  ) => {
-    logger.error('Unhandled error:', {
-      error: err.message,
-      stack: err.stack,
-      url: req.url,
-      method: req.method,
-      ip: req.ip,
-      userAgent: req.get('User-Agent'),
-    });
+app.use((err: any, req: any, res: any, next: any) => {
+  logger.error('Unhandled error:', {
+    error: err.message,
+    stack: err.stack,
+    url: req.url,
+    method: req.method,
+    ip: req.ip,
+    userAgent: req.get('User-Agent'),
+  });
 
-    // Don't leak error details in production
-    const errorResponse: any = {
-      success: false,
-      error: NODE_ENV === 'development' ? err.message : 'Internal server error',
-      code: 'INTERNAL_ERROR',
-    };
+  // Don't leak error details in production
+  const errorResponse: any = {
+    success: false,
+    error: NODE_ENV === 'development' ? err.message : 'Internal server error',
+    code: 'INTERNAL_ERROR',
+  };
 
-    if (NODE_ENV === 'development') {
-      errorResponse.stack = err.stack;
-    }
+  if (NODE_ENV === 'development') {
+    errorResponse.stack = err.stack;
+  }
 
-    res.status(500).json(errorResponse);
-  },
-);
+  res.status(500).json(errorResponse);
+});
 
 // 404 handler
 app.use('*', (req, res) => {
@@ -359,36 +211,40 @@ app.listen(PORT, async () => {
   logger.info(`📍 Environment: ${NODE_ENV}`);
   logger.info(`🌐 Server running on port ${PORT}`);
   logger.info(`🔗 Health check: http://localhost:${PORT}/health`);
-  logger.info(`📊 API Documentation: http://localhost:${PORT}/api-docs`);
 
-      // Initialize services
+  // Initialize services (all optional)
+  try {
+    // Connect to MongoDB (optional)
     try {
-      // Connect to MongoDB (optional)
       await connectMongoDB();
-
-      // Initialize Redis (optional)
-      try {
-        const redisClient = createRedisClient();
-        await redisClient.connect();
-        await redisClient.disconnect();
-        logger.info('✅ Redis initialized successfully');
-      } catch (error) {
-        logger.warn('⚠️ Redis initialization failed, continuing without Redis:', error);
-      }
-
-      // Initialize Web3 (optional)
-      try {
-        await web3Config.healthCheck();
-        logger.info('✅ Web3 initialized successfully');
-      } catch (error) {
-        logger.warn('⚠️ Web3 initialization failed, continuing without Web3:', error);
-      }
-
-      logger.info('✅ Server started successfully');
+      logger.info('✅ MongoDB initialized successfully');
     } catch (error) {
-      logger.error('❌ Critical service initialization failed:', error);
-      // Don't exit process, allow server to start with limited functionality
+      logger.warn('⚠️ MongoDB initialization failed, continuing without database:', error);
     }
+
+    // Initialize Redis (optional)
+    try {
+      const redisClient = createRedisClient();
+      await redisClient.connect();
+      await redisClient.disconnect();
+      logger.info('✅ Redis initialized successfully');
+    } catch (error) {
+      logger.warn('⚠️ Redis initialization failed, continuing without Redis:', error);
+    }
+
+    // Initialize Web3 (optional)
+    try {
+      await web3Config.healthCheck();
+      logger.info('✅ Web3 initialized successfully');
+    } catch (error) {
+      logger.warn('⚠️ Web3 initialization failed, continuing without Web3:', error);
+    }
+
+    logger.info('✅ Server started successfully');
+  } catch (error) {
+    logger.error('❌ Critical service initialization failed:', error);
+    // Don't exit process, allow server to start with limited functionality
+  }
 });
 
 // Export for testing

@@ -13,7 +13,7 @@ const nextConfig = {
     formats: ['image/webp', 'image/avif'],
   },
   
-  // Build configuration - Ignore errors for production deploy
+  // Build configuration - IGNORE ALL ERRORS FOR DEPLOY
   eslint: {
     ignoreDuringBuilds: true,
   },
