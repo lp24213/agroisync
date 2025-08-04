@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, TrendingUp, Shield, Coins } from "lucide-react";
 import { PremiumFarmerIcon } from "../ui/PremiumFarmerIcon";
+import Link from "next/link";
 
 export function Hero() {
   return (
@@ -18,7 +19,7 @@ export function Hero() {
             <span className="text-green-400">.SOL</span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-            A maior plataforma Web3 para o agronegócio mundial. 
+            A maior plataforma para o agronegócio mundial. 
             Staking, NFTs agrícolas e governança descentralizada na Solana.
           </p>
           
@@ -31,13 +32,15 @@ export function Hero() {
               Começar Agora
               <ArrowRight size={20} />
             </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white px-8 py-4 rounded-lg font-semibold transition-colors"
-            >
-              Documentação
-            </motion.button>
+            <Link href="/documentation">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white px-8 py-4 rounded-lg font-semibold transition-colors"
+              >
+                Documentação
+              </motion.button>
+            </Link>
           </div>
 
           {/* Ícone do Fazendeiro Premium */}
