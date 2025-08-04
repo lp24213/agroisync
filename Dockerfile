@@ -1,5 +1,5 @@
 # Multi-stage build for AGROTM monorepo
-FROM node:20.11.0-alpine AS base
+FROM node:24.5.0-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
