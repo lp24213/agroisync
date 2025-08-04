@@ -3,6 +3,7 @@
 import React from 'react';
 import { Header } from './Header';
 import { Footer } from './Footer';
+import '../lib/i18n'; // Initialize i18n
 
 interface LayoutProps {
   children: React.ReactNode;

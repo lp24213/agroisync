@@ -4,9 +4,10 @@ import { motion } from "framer-motion";
 
 interface LogoProps {
   size?: 'sm' | 'md' | 'lg';
+  iconOnly?: boolean;
 }
 
-export function Logo({ size = 'md' }: LogoProps) {
+export function Logo({ size = 'md', iconOnly = false }: LogoProps) {
   const sizeClasses = {
     sm: 'w-6 h-6',
     md: 'w-8 h-8',
@@ -68,9 +69,11 @@ export function Logo({ size = 'md' }: LogoProps) {
           />
         </svg>
       </div>
-      <span className={`text-cyan-400 font-bold font-display ${textSizes[size]} drop-shadow-[0_0_10px_rgba(0,255,255,0.7)]`}>
-        AGRO<span className="text-xs align-top">TM</span>
-      </span>
+      {!iconOnly && (
+        <span className={`text-cyan-400 font-bold font-display ${textSizes[size]} drop-shadow-[0_0_10px_rgba(0,255,255,0.7)]`}>
+          AGRO<span className="text-xs align-top">TM</span>
+        </span>
+      )}
     </motion.div>
   );
 } 

@@ -16,7 +16,7 @@ export function Hero() {
           transition={{ duration: 0.8 }}
         >
           <div className="mb-6 flex justify-center">
-            <Logo size="lg" />
+            <Logo size="lg" iconOnly={true} />
           </div>
           <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
             A maior plataforma para o agronegócio mundial. 
