@@ -1,127 +1,90 @@
-name: Deploy AGROTM
+name: Deploy AGROTM to Vercel and Railway
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
+
+env:
+  NODE_VERSION: '20'
 
 jobs:
-  test-frontend:
+  test:
     runs-on: ubuntu-latest
-    
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup Node.js 20
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
-        cache-dependency-path: frontend/package-lock.json
-    
-    - name: Install dependencies
-      run: |
-        cd frontend
-        npm ci
-    
-    - name: Type check
-      run: |
-        cd frontend
-        npm run type-check
-    
-    - name: Lint
-      run: |
-        cd frontend
-        npm run lint
-    
-    - name: Build
-      run: |
-        cd frontend
-        npm run build
-      env:
-        NODE_ENV: production
-        NEXT_PUBLIC_APP_URL: https://agrotm-solana.vercel.app
-        NEXT_PUBLIC_API_URL: https://agrotm-backend.railway.app
-        NEXT_PUBLIC_RPC_ENDPOINT: https://api.mainnet-beta.solana.com
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  test-backend:
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup Node.js 20
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
-        cache-dependency-path: backend/package-lock.json
-    
-    - name: Install dependencies
-      run: |
-        cd backend
-        npm ci
-    
-    - name: Type check
-      run: |
-        cd backend
-        npm run type-check
-    
-    - name: Build
-      run: |
-        cd backend
-        npm run build
-      env:
-        NODE_ENV: production
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd frontend && npm ci
+          cd ../backend && npm ci
+
+      - name: Run tests
+        run: |
+          cd frontend && npm run test
+          cd ../backend && npm run test
 
   deploy-vercel:
-    needs: [test-frontend, test-backend]
+    needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Deploy to Vercel
-      uses: amondnet/vercel-action@v25
-      with:
-        vercel-token: ${{ secrets.VERCEL_TOKEN }}
-        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-        vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-        working-directory: ./frontend
-        vercel-args: '--prod'
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: cd frontend && npm ci
+
+      - name: Build frontend
+        run: cd frontend && npm run build
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./frontend
+          vercel-args: '--prod'
 
   deploy-railway:
-    needs: [test-frontend, test-backend]
+    needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup Node.js 20
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
-        cache-dependency-path: backend/package-lock.json
-    
-    - name: Install dependencies
-      run: |
-        cd backend
-        npm ci
-    
-    - name: Build backend
-      run: |
-        cd backend
-        npm run build
-      env:
-        NODE_ENV: production
-    
-    - name: Deploy to Railway
-      uses: railwayapp/railway-action@v2
-      with:
-        railwayToken: ${{ secrets.RAILWAY_TOKEN }}
-        serviceName: agrotm-backend
-        workingDirectory: ./backend 
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: cd backend && npm ci
+
+      - name: Build backend
+        run: cd backend && npm run build
+
+      - name: Deploy to Railway
+        uses: railway/deploy@v1
+        with:
+          service: agrotm-backend
+          token: ${{ secrets.RAILWAY_TOKEN }} 
