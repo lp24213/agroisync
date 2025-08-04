@@ -3,6 +3,10 @@ name: Deploy AGROTM
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '*.md'
+      - 'docs/**'
+      - 'README.md'
 
 env:
   NODE_VERSION: '20'
@@ -10,6 +14,7 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     
     steps:
       - name: Checkout code
@@ -19,10 +24,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
 
       - name: Install frontend dependencies
-        run: cd frontend && npm ci
+        run: cd frontend && npm ci --prefer-offline
 
       - name: Build frontend
         run: cd frontend && npm run build
@@ -33,15 +37,4 @@ jobs:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           working-directory: ./frontend
-          vercel-args: '--prod'
-
-      - name: Install Railway CLI
-        run: npm install -g @railway/cli
-
-      - name: Deploy to Railway
-        run: |
-          cd backend
-          railway login --token ${{ secrets.RAILWAY_TOKEN }}
-          railway up --service agrotm-backend
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }} 
+          vercel-args: '--prod' 
