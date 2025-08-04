@@ -26,9 +26,8 @@ const nextConfig = {
     NEXT_TELEMETRY_DISABLED: '1',
   },
 
-  // Experimental features
+  // Experimental features - DISABLED optimizeCss
   experimental: {
-    optimizeCss: true,
     optimizePackageImports: ['@mui/material', '@mui/icons-material', 'lucide-react'],
   },
 
