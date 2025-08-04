@@ -1,7 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-import compression from 'compression';
-import morgan from 'morgan';
 import dotenv from 'dotenv';
 
 // Load environment variables
@@ -13,10 +11,8 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 
 // Middleware
 app.use(cors());
-app.use(compression());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-app.use(morgan('combined'));
 
 // Health check endpoint
 app.get('/health', (_req, res) => {
