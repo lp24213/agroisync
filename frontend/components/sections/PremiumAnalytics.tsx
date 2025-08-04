@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { BarChart3, TrendingUp, Users, DollarSign } from "lucide-react";
+import { InteractiveDashboard } from "../ui/InteractiveDashboard";
 
 export function PremiumAnalytics() {
   return (
@@ -19,6 +20,16 @@ export function PremiumAnalytics() {
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
             Monitore seus investimentos agrícolas com dados em tempo real
           </p>
+        </motion.div>
+
+        {/* Dashboard Interativo */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2, duration: 0.8 }}
+          className="flex justify-center mb-16"
+        >
+          <InteractiveDashboard size="lg" className="drop-shadow-[0_0_30px_rgba(0,255,255,0.3)]" />
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Image, Palette, Zap } from "lucide-react";
+import { NFTMinting } from "../ui/NFTMinting";
 
 export function NFTMintingSection() {
   return (
@@ -19,6 +20,16 @@ export function NFTMintingSection() {
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
             Crie e negocie NFTs agrícolas únicos
           </p>
+        </motion.div>
+
+        {/* NFT Minting Icon */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2, duration: 0.8 }}
+          className="flex justify-center mb-16"
+        >
+          <NFTMinting size="lg" className="drop-shadow-[0_0_30px_rgba(0,255,255,0.3)]" />
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

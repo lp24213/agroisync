@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Shield, Lock, Eye, CheckCircle } from "lucide-react";
+import { CyberDefense } from "../ui/CyberDefense";
 
 export function SecuritySection() {
   return (
@@ -19,6 +20,16 @@ export function SecuritySection() {
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
             Smart contracts auditados e infraestrutura segura
           </p>
+        </motion.div>
+
+        {/* Cyber Defense Icon */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2, duration: 0.8 }}
+          className="flex justify-center mb-16"
+        >
+          <CyberDefense size="lg" className="drop-shadow-[0_0_30px_rgba(0,255,255,0.3)]" />
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight, TrendingUp, Shield, Coins } from "lucide-react";
+import { PremiumFarmerIcon } from "../ui/PremiumFarmerIcon";
 
 export function Hero() {
   return (
@@ -38,6 +39,16 @@ export function Hero() {
               Documentação
             </motion.button>
           </div>
+
+          {/* Ícone do Fazendeiro Premium */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            className="flex justify-center mb-8"
+          >
+            <PremiumFarmerIcon size="lg" className="drop-shadow-[0_0_20px_rgba(0,255,255,0.5)]" />
+          </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
             <motion.div

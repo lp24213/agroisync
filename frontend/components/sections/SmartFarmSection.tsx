@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Leaf, Cpu, Globe } from "lucide-react";
+import { SmartFarm } from "../ui/SmartFarm";
 
 export function SmartFarmSection() {
   return (
@@ -19,6 +20,16 @@ export function SmartFarmSection() {
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
             Agricultura inteligente com IoT e blockchain
           </p>
+        </motion.div>
+
+        {/* Smart Farm Icon */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2, duration: 0.8 }}
+          className="flex justify-center mb-16"
+        >
+          <SmartFarm size="lg" className="drop-shadow-[0_0_30px_rgba(0,255,255,0.3)]" />
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

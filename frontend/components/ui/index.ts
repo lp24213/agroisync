@@ -5,35 +5,35 @@
  * This file provides a single entry point for importing UI components
  */
 
-// UI Components exports
+// UI Components
 export { Button, buttonVariants } from './Button';
-export type { ButtonProps, ButtonVariant } from './Button';
+export { Badge, badgeVariants } from './Badge';
+export { default as Modal } from './Modal';
+export { default as Logo } from './Logo';
+export { default as HeroLogo } from './HeroLogo';
+export { default as Select } from './Select';
+export { default as Input } from './Input';
+export { default as Textarea } from './Textarea';
+export { default as Alert } from './Alert';
+export { default as LoadingSpinner } from './LoadingSpinner';
+export { default as Card } from './Card';
+export { default as Toaster } from './Toaster';
+export { default as LanguageSelector } from './LanguageSelector';
 
-export { Input } from './Input';
-export type { InputProps } from './Input';
+// Premium Icons and Graphics
+export { default as PremiumFarmerIcon } from './PremiumFarmerIcon';
+export { default as InteractiveDashboard } from './InteractiveDashboard';
+export { default as CyberDefense } from './CyberDefense';
+export { default as StakingFarming } from './StakingFarming';
+export { default as NFTMinting } from './NFTMinting';
+export { default as SmartFarm } from './SmartFarm';
 
-export { Textarea } from './Textarea';
-export type { TextareaProps } from './Textarea';
-
-export { Select } from './Select';
-export type { SelectProps } from './Select';
-
-export { Card } from './Card';
-export type { CardProps } from './Card';
-
-export { Alert } from './Alert';
-export type { AlertProps } from './Alert';
-
-export { Badge } from './Badge';
+// Types
+export type { ButtonProps } from './Button';
 export type { BadgeProps } from './Badge';
-
-export { Modal } from './Modal';
 export type { ModalProps } from './Modal';
-
-export { LoadingSpinner } from './LoadingSpinner';
-export type { LoadingSpinnerProps, SpinnerVariant, SpinnerSize } from './LoadingSpinner';
-
-export { Toaster } from './Toaster';
-
-export { LanguageSelector } from './LanguageSelector';
-export type { LanguageSelectorProps } from './LanguageSelector';
+export type { SelectProps } from './Select';
+export type { InputProps } from './Input';
+export type { TextareaProps } from './Textarea';
+export type { AlertProps } from './Alert';
+export type { CardProps } from './Card';
