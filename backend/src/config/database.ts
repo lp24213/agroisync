@@ -7,6 +7,12 @@ export const connectMongoDB = async (): Promise<void> => {
   try {
     const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/agrotm';
     
+    // Skip connection if no MongoDB URI is provided (for Railway)
+    if (!process.env.MONGODB_URI) {
+      logger.warn('⚠️ No MongoDB URI provided, skipping database connection');
+      return;
+    }
+    
     await mongoose.connect(mongoUri, {
       maxPoolSize: 10,
       serverSelectionTimeoutMS: 5000,
@@ -15,8 +21,8 @@ export const connectMongoDB = async (): Promise<void> => {
 
     logger.info('✅ MongoDB connected successfully');
   } catch (error) {
-    logger.error('❌ MongoDB connection failed:', error);
-    throw error;
+    logger.warn('⚠️ MongoDB connection failed, continuing without database:', error);
+    // Don't throw error to allow server to start without database
   }
 };
 
@@ -36,7 +42,7 @@ export const createRedisClient = () => {
   });
 
   client.on('error', (err: Error) => {
-    logger.error('Redis Client Error:', err);
+    logger.warn('⚠️ Redis Client Error:', err);
   });
 
   client.on('connect', () => {

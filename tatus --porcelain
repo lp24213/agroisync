@@ -1,0 +1,5 @@
+[33mc8599f52[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m fix: update package-lock.json and fix build issues
+[33m7375dae6[m feat: rename project to agrotm.sol and complete all improvements
+[33mf3465478[m  Deployment execution setup complete - Ready for deployment
+[33m351b7dfe[m  BUILD CORRIGIDO: Removidas todas as referências à função t() - Projeto 100% funcional
+[33md667600b[m  Correções finais: Removidas referências à função t() e corrigidos erros de i18n

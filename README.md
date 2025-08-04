@@ -12,6 +12,7 @@ A maior plataforma Web3 para o agronegócio mundial. Staking, NFTs agrícolas, g
 - **Frontend**: [Vercel](https://agrotm-solana.vercel.app) ✅
 - **Backend**: [Railway](https://agrotm-backend.railway.app) ✅
 - **Health Check**: [Frontend](https://agrotm-solana.vercel.app/api/health) | [Backend](https://agrotm-backend.railway.app/health)
+- **Deployment**: Triggered - CI/CD in progress 🚀
 
 ## 📋 Pré-requisitos
 

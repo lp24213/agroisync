@@ -2,17 +2,13 @@
 
 echo "🔧 Building AGROTM Backend for Railway..."
 
-# Set Python environment
-export PYTHON=/usr/bin/python3
-export npm_config_python=/usr/bin/python3
-
 # Clean previous build
 echo "🧹 Cleaning previous build..."
-rm -rf node_modules package-lock.json dist
+rm -rf dist
 
 # Install dependencies
 echo "📦 Installing dependencies..."
-npm ci --only=production --python=/usr/bin/python3
+npm ci --only=production
 
 # Build the application
 echo "🔨 Building application..."

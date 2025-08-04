@@ -1,11 +1,11 @@
 [phases.setup]
-nixPkgs = ["python3", "make", "gcc"]
+nixPkgs = ["python3", "make", "gcc", "nodejs", "npm"]
 
 [phases.install]
-cmds = ["chmod +x build-railway.sh", "npm ci --only=production --python=/usr/bin/python3"]
+cmds = ["npm ci --only=production"]
 
 [phases.build]
-cmds = ["./build-railway.sh"]
+cmds = ["npm run build"]
 
 [start]
 cmd = "npm start" 

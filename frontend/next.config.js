@@ -3,21 +3,22 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   
-  // Output configuration for Docker
+  // Output configuration for production
   output: 'standalone',
   
   // Image optimization
   images: {
-    domains: ['localhost', 'agrotmsol.com.br', 'vercel.app'],
+    domains: ['localhost', 'agrotmsol.com.br', 'vercel.app', 'agrotm-backend.railway.app'],
     unoptimized: false,
+    formats: ['image/webp', 'image/avif'],
   },
   
-  // Build configuration
+  // Build configuration - Enable error checking for production
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
   },
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   
   // Environment variables
@@ -27,7 +28,8 @@ const nextConfig = {
 
   // Experimental features
   experimental: {
-    // appDir is now stable in Next.js 14
+    optimizeCss: true,
+    optimizePackageImports: ['@mui/material', '@mui/icons-material', 'lucide-react'],
   },
 
   // Redirects for better SEO
@@ -59,6 +61,10 @@ const nextConfig = {
             key: 'Referrer-Policy',
             value: 'origin-when-cross-origin',
           },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
         ],
       },
     ];
@@ -73,6 +79,32 @@ const nextConfig = {
         fs: false,
         net: false,
         tls: false,
+        crypto: false,
+        stream: false,
+        url: false,
+        zlib: false,
+        http: false,
+        https: false,
+        assert: false,
+        os: false,
+        path: false,
+      };
+    }
+
+    // Optimize for production
+    if (!isServer) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'vendors',
+              chunks: 'all',
+            },
+          },
+        },
       };
     }
 

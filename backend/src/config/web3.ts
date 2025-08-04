@@ -1,23 +1,25 @@
 import { Commitment, Connection, PublicKey } from '@solana/web3.js';
+import { logger } from '../utils/logger';
 
 // Web3 Configuration
 export const web3Config = {
   // Solana connection
   connection: new Connection(
-    process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com',
+    process.env.SOLANA_MAINNET_RPC || 'https://api.mainnet-beta.solana.com',
     'confirmed' as Commitment
   ),
 
   // AGROTM token mint address
-  agrotmMint: new PublicKey(process.env.AGROTM_MINT_ADDRESS || '11111111111111111111111111111111'),
+  agrotmMint: new PublicKey(process.env.AGROTM_TOKEN_ADDRESS || '11111111111111111111111111111111'),
 
   // Health check
   async healthCheck(): Promise<boolean> {
     try {
       const slot = await this.connection.getSlot();
+      logger.info('✅ Web3 health check passed, slot:', slot);
       return slot > 0;
     } catch (error) {
-      console.error('Web3 health check failed:', error);
+      logger.warn('⚠️ Web3 health check failed, continuing without Web3:', error);
       return false;
     }
   },
@@ -30,7 +32,7 @@ export const web3Config = {
       const balance = await this.connection.getTokenAccountBalance(publicKey);
       return balance.value.uiAmount || 0;
     } catch (error) {
-      console.error('Error getting token balance:', error);
+      logger.warn('⚠️ Error getting token balance:', error);
       return 0;
     }
   },
@@ -42,7 +44,7 @@ export const web3Config = {
       const balance = await this.connection.getBalance(publicKey);
       return balance / 1e9; // Convert lamports to SOL
     } catch (error) {
-      console.error('Error getting SOL balance:', error);
+      logger.warn('⚠️ Error getting SOL balance:', error);
       return 0;
     }
   }

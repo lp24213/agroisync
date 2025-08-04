@@ -21,7 +21,7 @@ export const corsOptions = {
   origin: function (origin: string | undefined, callback: Function) {
     const allowedOrigins = process.env.ALLOWED_ORIGINS 
       ? process.env.ALLOWED_ORIGINS.split(',') 
-      : ['http://localhost:3000', 'https://agrotmsol.com.br', 'https://agrotm.vercel.app'];
+      : ['http://localhost:3000', 'https://agrotm-solana.vercel.app', 'https://agrotm.vercel.app'];
     
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
@@ -98,9 +98,9 @@ export const ddosProtection = (
     // This is a basic implementation - in production, use Redis for distributed rate limiting
     next();
   } else {
-    res.status(429).json({
-      error: 'Too many requests',
-      message: 'Rate limit exceeded'
+    res.status(400).json({
+      error: 'Invalid request',
+      timestamp: new Date().toISOString()
     });
   }
 };

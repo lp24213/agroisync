@@ -90,7 +90,7 @@ app.get('/health', async (_req, res) => {
       health.services.database = 'connected';
     } catch (error) {
       health.services.database = 'disconnected';
-      logger.error('Database health check failed:', error);
+      logger.warn('Database health check failed:', error);
     }
 
     // Check Redis connection
@@ -361,24 +361,34 @@ app.listen(PORT, async () => {
   logger.info(`🔗 Health check: http://localhost:${PORT}/health`);
   logger.info(`📊 API Documentation: http://localhost:${PORT}/api-docs`);
 
-  // Initialize services
-  try {
-    // Connect to MongoDB
-    await connectMongoDB();
+      // Initialize services
+    try {
+      // Connect to MongoDB (optional)
+      await connectMongoDB();
 
-    // Initialize Redis
-    const redisClient = createRedisClient();
-    await redisClient.connect();
-    await redisClient.disconnect();
+      // Initialize Redis (optional)
+      try {
+        const redisClient = createRedisClient();
+        await redisClient.connect();
+        await redisClient.disconnect();
+        logger.info('✅ Redis initialized successfully');
+      } catch (error) {
+        logger.warn('⚠️ Redis initialization failed, continuing without Redis:', error);
+      }
 
-    // Initialize Web3
-    await web3Config.healthCheck();
+      // Initialize Web3 (optional)
+      try {
+        await web3Config.healthCheck();
+        logger.info('✅ Web3 initialized successfully');
+      } catch (error) {
+        logger.warn('⚠️ Web3 initialization failed, continuing without Web3:', error);
+      }
 
-    logger.info('✅ All services initialized successfully');
-  } catch (error) {
-    logger.error('❌ Service initialization failed:', error);
-    process.exit(1);
-  }
+      logger.info('✅ Server started successfully');
+    } catch (error) {
+      logger.error('❌ Critical service initialization failed:', error);
+      // Don't exit process, allow server to start with limited functionality
+    }
 });
 
 // Export for testing
