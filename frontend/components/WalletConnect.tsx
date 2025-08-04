@@ -47,7 +47,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
     } else if (!connected && onDisconnect) {
       onDisconnect();
     }
-  }, [connected, wallet, onConnect, onDisconnect]);
+  }, [connected, wallet, onConnect, onDisconnect, getPublicKeyString]);
 
   const handleDisconnect = async () => {
     if (!wallet || !isWalletValid(wallet)) {

@@ -50,7 +50,7 @@ export function NFTMintingSection() {
             transition={{ duration: 0.6 }}
             className="inline-flex items-center space-x-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-full px-6 py-3 mb-8"
           >
-            <Image className="w-5 h-5 text-purple-400" />
+            <Image className="w-5 h-5 text-purple-400" alt="NFT Icon" />
             <span className="text-purple-400 font-medium">NFT Minting</span>
           </motion.div>
 
