@@ -1,8 +1,12 @@
 # Multi-stage build for maximum security
 FROM node:20-alpine AS builder
 
-# Install build dependencies
-RUN apk add --no-cache python3 make g++
+# Install build dependencies including Python for node-gyp
+RUN apk add --no-cache python3 make g++ py3-pip
+
+# Set Python environment for node-gyp
+ENV PYTHON=/usr/bin/python3
+ENV npm_config_python=/usr/bin/python3
 
 # Set working directory
 WORKDIR /app
@@ -10,14 +14,14 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install all dependencies (including dev dependencies for build)
-RUN npm ci --only=production && npm cache clean --force
+# Install all dependencies with proper Python configuration
+RUN npm ci --only=production --python=/usr/bin/python3 && npm cache clean --force
 
 # Copy source code
 COPY . .
 
-# Build the application
-RUN npm run build
+# Build the application using our custom script
+RUN chmod +x build-railway.sh && ./build-railway.sh
 
 # Production stage with Alpine for better compatibility
 FROM node:20-alpine AS production

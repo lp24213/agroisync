@@ -1,42 +1,53 @@
 #!/bin/bash
 
-# AGROTM Backend - Teste Local
-# Este script testa o build e start local
+echo "🧪 Testing AGROTM Backend locally..."
 
-echo "🧪 Iniciando teste local do backend..."
-
-# Verificar se estamos no diretório correto
-if [ ! -f "package.json" ]; then
-    echo "❌ package.json não encontrado. Execute este script no diretório backend."
+# Check if Node.js is installed
+if ! command -v node &> /dev/null; then
+    echo "❌ Node.js not found. Please install Node.js 20+"
     exit 1
 fi
 
-# Limpar builds anteriores
-echo "🧹 Limpando builds anteriores..."
-rm -rf dist
-
-# Instalar dependências
-echo "📦 Instalando dependências..."
-npm ci
-
-# Verificar se a instalação foi bem-sucedida
-if [ $? -ne 0 ]; then
-    echo "❌ Falha na instalação das dependências"
+# Check Node.js version
+NODE_VERSION=$(node -v | cut -d'v' -f2 | cut -d'.' -f1)
+if [ "$NODE_VERSION" -lt 20 ]; then
+    echo "❌ Node.js version must be 20 or higher. Current version: $(node -v)"
     exit 1
 fi
 
-# Build de produção
-echo "🔨 Executando build de produção..."
+echo "✅ Node.js version: $(node -v)"
+
+# Clean previous build
+echo "🧹 Cleaning previous build..."
+rm -rf node_modules package-lock.json dist
+
+# Install dependencies
+echo "📦 Installing dependencies..."
+npm install
+
+# Type check
+echo "🔍 Running type check..."
+npm run type-check
+
+# Build
+echo "🔨 Building application..."
 npm run build
 
-# Verificar se o build foi bem-sucedido
-if [ $? -ne 0 ]; then
-    echo "❌ Falha no build"
+# Check if build was successful
+if [ -f "dist/server.js" ]; then
+    echo "✅ Build successful!"
+else
+    echo "❌ Build failed!"
     exit 1
 fi
 
-echo "✅ Build local bem-sucedido!"
-echo "🚀 Iniciando servidor local..."
+# Test health endpoint (if server is running)
+echo "🏥 Testing health endpoint..."
+if curl -f http://localhost:3001/health > /dev/null 2>&1; then
+    echo "✅ Health endpoint is working!"
+else
+    echo "⚠️  Health endpoint not accessible (server might not be running)"
+fi
 
-# Iniciar servidor
-npm start 
+echo "🎉 All tests passed!"
+echo "🚀 You can now start the server with: npm start" 

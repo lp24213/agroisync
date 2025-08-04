@@ -1,17 +1,20 @@
 {
-  "name": "agrotm-backend",
+  "name": "agrotm.sol-backend",
   "version": "1.1.0",
   "description": "AGROTM Backend API - Professional and Complete",
   "main": "dist/server.js",
   "scripts": {
     "dev": "ts-node-dev src/server.ts",
-    "build": "tsc",
+    "build": "tsc --project tsconfig.json",
     "start": "node dist/server.js",
     "test": "echo \"No tests specified\" && exit 0",
     "test:health": "curl -f http://localhost:3001/health || exit 1",
-    "clean": "rm -rf dist",
+    "clean": "rm -rf dist node_modules package-lock.json",
     "type-check": "tsc --noEmit",
-    "postinstall": "npm run build"
+    "postinstall": "npm run build",
+    "docker:build": "docker build -t agrotm-backend .",
+    "docker:run": "docker run -p 3001:3001 agrotm-backend",
+    "docker:build-simple": "docker build -f Dockerfile.simple -t agrotm-backend-simple ."
   },
   "dependencies": {
     "@solana/web3.js": "^1.87.6",
@@ -66,6 +69,6 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lp24213/agrotm-solana.git"
+    "url": "https://github.com/lp24213/agrotm.sol.git"
   }
 }

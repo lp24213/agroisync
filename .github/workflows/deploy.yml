@@ -119,7 +119,7 @@ jobs:
         NODE_ENV: production
     
     - name: Deploy to Railway
-      uses: railwayapp/railway-action@v1
+      uses: railwayapp/railway-action@v2
       with:
         railwayToken: ${{ secrets.RAILWAY_TOKEN }}
         serviceName: agrotm-backend

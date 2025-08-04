@@ -1,181 +1,87 @@
-# 🚀 Deploy AGROTM Backend no Railway
+# Railway Deployment Guide
 
-## Configuração Inicial
+## Overview
+This guide explains how to deploy the AGROTM Backend to Railway.
 
-### 1. Criar projeto no Railway
+## Prerequisites
+- Railway account
+- Railway CLI installed (`npm install -g @railway/cli`)
+- Node.js 20+ and npm 7+
+
+## Quick Deploy
+
+### Option 1: Using Railway CLI
 ```bash
-# Instalar Railway CLI
-npm install -g @railway/cli
-
-# Login no Railway
+# Login to Railway
 railway login
 
-# Criar novo projeto
-railway init
-
-# Conectar ao projeto existente
+# Link to project
 railway link
-```
 
-### 2. Configurar Variáveis de Ambiente
-
-No dashboard do Railway, configure as seguintes variáveis:
-
-```env
-# Server Configuration
-PORT=3001
-NODE_ENV=production
-
-# Database Configuration
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/agrotm?retryWrites=true&w=majority
-
-# Redis Configuration
-REDIS_URL=redis://localhost:6379
-
-# JWT Configuration
-JWT_SECRET=your-super-secret-jwt-key-change-in-production
-JWT_EXPIRES_IN=24h
-
-# Solana Configuration
-SOLANA_NETWORK=devnet
-SOLANA_MAINNET_RPC=https://api.mainnet-beta.solana.com
-SOLANA_DEVNET_RPC=https://api.devnet.solana.com
-SOLANA_TESTNET_RPC=https://api.testnet.solana.com
-
-# Security Configuration
-CORS_ORIGIN=https://agrotm.com,https://www.agrotm.com
-RATE_LIMIT_WINDOW_MS=900000
-RATE_LIMIT_MAX_REQUESTS=100
-
-# Logging Configuration
-LOG_LEVEL=info
-LOG_FORMAT=json
-
-# API Configuration
-API_VERSION=v1
-API_PREFIX=/api
-
-# Health Check Configuration
-HEALTH_CHECK_INTERVAL=30000
-HEALTH_CHECK_TIMEOUT=5000
-```
-
-### 3. Deploy Manual
-
-```bash
-# Deploy para produção
+# Deploy
 railway up
-
-# Ver logs
-railway logs
-
-# Abrir no navegador
-railway open
 ```
 
-### 4. Deploy via GitHub Actions
-
-O deploy automático está configurado no workflow `.github/workflows/ci-cd.yml`.
-
-**Secrets necessários no GitHub:**
-- `RAILWAY_TOKEN`: Token do Railway (a9861d54-80c6-4ca5-b119-ea2a64b8541d)
-
-## Estrutura de Arquivos
-
-```
-backend/
-├── railway.json          # Configuração Railway
-├── nixpacks.toml         # Configuração de build
-├── Procfile             # Comando de inicialização
-├── Dockerfile           # Container Docker
-├── .dockerignore        # Arquivos ignorados no Docker
-├── railway.toml         # Configuração adicional
-└── RAILWAY_DEPLOY.md    # Esta documentação
-```
-
-## Monitoramento
-
-### Health Check
-- **Endpoint**: `/health`
-- **Timeout**: 300s
-- **Intervalo**: 30s
-
-### Logs
+### Option 2: Using Scripts
 ```bash
-# Ver logs em tempo real
-railway logs --follow
+# Linux/Mac
+./deploy-railway.sh
 
-# Ver logs de um serviço específico
-railway logs --service agrotm-backend
+# Windows
+deploy-railway.bat
 ```
 
-### Métricas
-- CPU e memória no dashboard do Railway
-- Logs estruturados com Winston
-- Métricas de performance
+## Configuration Files
+
+### railway.toml
+- Configures build and deploy settings
+- Sets health check path to `/health`
+- Configures restart policy
+
+### nixpacks.toml
+- Configures build environment
+- Installs Python3, make, and gcc for native dependencies
+- Uses custom build script
+
+### build-railway.sh
+- Sets Python environment variables
+- Installs dependencies with proper Python configuration
+- Builds the application
+- Verifies build success
+
+## Environment Variables
+Set these in Railway dashboard:
+- `NODE_ENV=production`
+- `PORT=3001`
+- `DATABASE_URL` (if using database)
+- `JWT_SECRET`
+- `API_KEY`
 
 ## Troubleshooting
 
-### Problemas Comuns
+### Python/Node-gyp Issues
+If you encounter Python-related errors:
+1. Ensure Python3 is installed in build environment
+2. Set `PYTHON=/usr/bin/python3` environment variable
+3. Use `--python=/usr/bin/python3` flag with npm install
 
-1. **Build falha**
-   ```bash
-   # Verificar logs de build
-   railway logs --build
-   ```
+### Build Failures
+1. Check build logs in Railway dashboard
+2. Verify all dependencies are compatible
+3. Ensure TypeScript compilation succeeds
 
-2. **Aplicação não inicia**
-   ```bash
-   # Verificar variáveis de ambiente
-   railway variables
+### Health Check Failures
+1. Verify `/health` endpoint is working
+2. Check application logs
+3. Ensure port 3001 is exposed
 
-   # Verificar logs de inicialização
-   railway logs
-   ```
+## Monitoring
+- Health checks run every 30 seconds
+- Application restarts on failure (max 3 retries)
+- Logs available in Railway dashboard
 
-3. **Timeout no health check**
-   - Verificar se o endpoint `/health` está respondendo
-   - Aumentar `healthcheckTimeout` se necessário
-
-### Comandos Úteis
-
-```bash
-# Status do deploy
-railway status
-
-# Informações do projeto
-railway project
-
-# Listar serviços
-railway service list
-
-# Conectar ao shell do container
-railway shell
-
-# Reiniciar serviço
-railway service restart
-```
-
-## Segurança
-
-- ✅ **HTTPS automático** no Railway
-- ✅ **Rate limiting** configurado
-- ✅ **CORS** configurado
-- ✅ **Helmet** para headers de segurança
-- ✅ **Validação de entrada** com Zod
-- ✅ **Auditoria** de todas as operações
-
-## Performance
-
-- ✅ **Compressão** com gzip
-- ✅ **Cache** com Redis
-- ✅ **Connection pooling** MongoDB
-- ✅ **Logs estruturados** para análise
-- ✅ **Health checks** automáticos
-
-## Suporte
-
-Para suporte técnico:
-- 📧 Email: support@agrotm.com
-- 📖 Documentação: https://docs.agrotm.com
-- 🐛 Issues: https://github.com/agrotm/agrotm-solana/issues
+## Support
+For issues, check:
+1. Railway documentation
+2. Application logs
+3. Build configuration files

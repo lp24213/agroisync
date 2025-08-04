@@ -191,6 +191,28 @@ export function PremiumAnalytics() {
           ))}
         </div>
 
+        {/* Dashboard Image */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+          className='mb-16'
+        >
+          <div className='bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8'>
+            <div className='text-center mb-8'>
+              <h3 className='text-2xl font-bold text-white mb-4'>Interactive Dashboard</h3>
+              <p className='text-gray-400'>Visualize seus dados em tempo real</p>
+            </div>
+            <div className='flex justify-center'>
+              <img 
+                src='/assets/images/dashboard/interactive-dashboard.png' 
+                alt='Dashboard Interativo AGROTM' 
+                className='w-full max-w-4xl h-auto object-contain rounded-lg'
+              />
+            </div>
+          </div>
+        </motion.div>
+
         {/* Charts Section */}
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16'>
           {/* TVL Chart */}

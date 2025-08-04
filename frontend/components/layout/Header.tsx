@@ -3,6 +3,7 @@ import { Button } from '../ui/Button';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LanguageSelector } from '../ui/LanguageSelector';
+import { Logo } from '../ui/Logo';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -90,14 +91,7 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 group">
-            <motion.div 
-              className="w-8 h-8 relative overflow-hidden bg-gradient-to-r from-blue-500 to-cyan-400 rounded-lg flex items-center justify-center"
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            >
-              <span className="text-white font-bold text-sm">A</span>
-            </motion.div>
+          <Logo size="md" href="/" />
             <motion.span 
               className="text-xl font-bold text-white relative"
               whileHover={{ scale: 1.05 }}
