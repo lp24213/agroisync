@@ -8,9 +8,8 @@ env:
   NODE_VERSION: '20'
 
 jobs:
-  deploy-vercel:
+  deploy:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     
     steps:
       - name: Checkout code
@@ -22,7 +21,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: Install frontend dependencies
         run: cd frontend && npm ci
 
       - name: Build frontend
@@ -34,4 +33,15 @@ jobs:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           working-directory: ./frontend
-          vercel-args: '--prod' 
+          vercel-args: '--prod'
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway
+        run: |
+          cd backend
+          railway login --token ${{ secrets.RAILWAY_TOKEN }}
+          railway up --service agrotm-backend
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }} 
