@@ -1,74 +1,33 @@
 {
-  "name": "agrotm.sol-backend",
-  "version": "1.1.0",
-  "description": "AGROTM Backend API - Professional and Complete",
+  "name": "agrotm-backend",
+  "version": "1.0.0",
+  "description": "AGROTM Backend API",
   "main": "dist/server.js",
   "scripts": {
     "dev": "ts-node-dev src/server.ts",
-    "build": "tsc --project tsconfig.json",
+    "build": "tsc",
     "start": "node dist/server.js",
-    "test": "echo \"No tests specified\" && exit 0",
-    "test:health": "curl -f http://localhost:3001/health || exit 1",
-    "clean": "rm -rf dist node_modules package-lock.json",
-    "type-check": "tsc --noEmit",
-    "postinstall": "npm run build",
-    "docker:build": "docker build -t agrotm-backend .",
-    "docker:run": "docker run -p 3001:3001 agrotm-backend",
-    "docker:build-simple": "docker build -f Dockerfile.simple -t agrotm-backend-simple ."
+    "test": "echo \"No tests specified\" && exit 0"
   },
   "dependencies": {
-    "@solana/web3.js": "^1.87.6",
-    "axios": "^1.6.2",
-    "bcryptjs": "^2.4.3",
-    "compression": "^1.7.4",
-    "cors": "^2.8.5",
-    "dotenv": "^16.6.1",
     "express": "^4.18.2",
-    "express-rate-limit": "^7.1.5",
-    "express-slow-down": "^2.0.1",
-    "express-validator": "^7.0.1",
+    "cors": "^2.8.5",
     "helmet": "^7.1.0",
-    "joi": "^17.11.0",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.0.3",
+    "dotenv": "^16.6.1",
+    "winston": "^3.11.0",
     "morgan": "^1.10.0",
-    "redis": "^4.6.10",
-    "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.0",
-    "uuid": "^9.0.1",
-    "winston": "^3.11.0"
+    "compression": "^1.7.4"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
-    "@types/compression": "^1.7.2",
-    "@types/cors": "^2.8.13",
-    "@types/dotenv": "^6.1.1",
     "@types/express": "^4.17.17",
-    "@types/jsonwebtoken": "^9.0.5",
-    "@types/morgan": "^1.9.4",
+    "@types/cors": "^2.8.13",
     "@types/node": "^20.0.0",
-    "@types/swagger-jsdoc": "^6.0.4",
-    "@types/swagger-ui-express": "^4.1.6",
-    "@types/uuid": "^9.0.7",
-    "nodemon": "^3.0.2",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.0.0"
+    "@types/morgan": "^1.9.4",
+    "@types/compression": "^1.7.2",
+    "typescript": "^5.0.0",
+    "ts-node-dev": "^2.0.0"
   },
   "engines": {
-    "node": ">=20.0.0",
-    "npm": ">=7.0.0"
-  },
-  "keywords": [
-    "agrotm",
-    "solana",
-    "blockchain",
-    "api",
-    "backend"
-  ],
-  "author": "AGROTM Team",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/lp24213/agrotm.sol.git"
+    "node": ">=20.0.0"
   }
 }
