@@ -9,6 +9,18 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        'sans': ['Inter', 'Poppins', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        'display': ['Outfit', 'Space Grotesk', 'Inter', 'sans-serif'],
+        'heading': ['Outfit', 'Space Grotesk', 'Inter', 'sans-serif'],
+        'body': ['Inter', 'Poppins', 'sans-serif'],
+        'ui': ['Inter', 'sans-serif'],
+        'mono': ['JetBrains Mono', 'Fira Code', 'Consolas', 'monospace'],
+        'outfit': ['Outfit', 'sans-serif'],
+        'space-grotesk': ['Space Grotesk', 'sans-serif'],
+        'poppins': ['Poppins', 'sans-serif'],
+        'inter': ['Inter', 'sans-serif'],
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

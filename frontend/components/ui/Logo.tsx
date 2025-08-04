@@ -29,7 +29,7 @@ export function Logo({ size = 'md' }: LogoProps) {
       <div className={`${sizeClasses[size]} bg-green-500 rounded-lg flex items-center justify-center`}>
         <span className="text-white font-bold">A</span>
       </div>
-      <span className={`text-white font-bold ${textSizes[size]}`}>AGROTM</span>
+      <span className={`text-white font-bold font-display ${textSizes[size]}`}>AGROTM</span>
     </motion.div>
   );
 } 
