@@ -414,6 +414,58 @@ export function Header() {
                       </div>
                     </div>
                   </motion.div>
+
+                  {/* Technologies Section Mobile */}
+                  <motion.div variants={navItemVariants} className="mt-4">
+                    <div className="px-3 py-2">
+                      <p className="text-sm text-gray-400 mb-2">🛠️ Tecnologias / Tech Stack</p>
+                      <div className="space-y-2">
+                        {/* Frontend */}
+                        <div className="bg-blue-500/10 border border-blue-500/20 rounded-md p-3">
+                          <p className="text-xs text-blue-400 font-semibold mb-1">🎨 Frontend</p>
+                          <div className="flex flex-wrap gap-1">
+                            <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded">Next.js</span>
+                            <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded">React</span>
+                            <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded">TypeScript</span>
+                            <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded">Tailwind</span>
+                          </div>
+                        </div>
+                        
+                        {/* Backend */}
+                        <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-md p-3">
+                          <p className="text-xs text-cyan-400 font-semibold mb-1">⚙️ Backend</p>
+                          <div className="flex flex-wrap gap-1">
+                            <span className="text-xs bg-cyan-500/20 text-cyan-300 px-2 py-1 rounded">Node.js</span>
+                            <span className="text-xs bg-cyan-500/20 text-cyan-300 px-2 py-1 rounded">Express</span>
+                            <span className="text-xs bg-cyan-500/20 text-cyan-300 px-2 py-1 rounded">MongoDB</span>
+                            <span className="text-xs bg-cyan-500/20 text-cyan-300 px-2 py-1 rounded">Redis</span>
+                          </div>
+                        </div>
+                        
+                        {/* Blockchain */}
+                        <div className="bg-green-500/10 border border-green-500/20 rounded-md p-3">
+                          <p className="text-xs text-green-400 font-semibold mb-1">⛓️ Blockchain</p>
+                          <div className="flex flex-wrap gap-1">
+                            <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded">Solana</span>
+                            <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded">Rust</span>
+                            <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded">Anchor</span>
+                            <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded">Web3.js</span>
+                          </div>
+                        </div>
+                        
+                        {/* DevOps */}
+                        <div className="bg-purple-500/10 border border-purple-500/20 rounded-md p-3">
+                          <p className="text-xs text-purple-400 font-semibold mb-1">🚀 DevOps</p>
+                          <div className="flex flex-wrap gap-1">
+                            <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded">Docker</span>
+                            <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded">Vercel</span>
+                            <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded">Railway</span>
+                            <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded">GitHub</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
                   
                   <motion.div variants={navItemVariants} className="mt-4">
                     <Button 
