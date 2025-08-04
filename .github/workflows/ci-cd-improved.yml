@@ -82,31 +82,11 @@ jobs:
         cd frontend && npm audit --audit-level=moderate || true
         cd ../backend && npm audit --audit-level=moderate || true
 
-  deploy-staging:
-    name: Deploy to Staging
-    runs-on: ubuntu-latest
-    needs: [validate-frontend, validate-backend, security-scan]
-    if: github.ref == 'refs/heads/develop'
-    environment: staging
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Deploy Frontend to Vercel (Staging)
-      uses: amondnet/vercel-action@v25
-      with:
-        vercel-token: ${{ secrets.VERCEL_TOKEN }}
-        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-        working-directory: ./frontend
-        vercel-args: '--target=preview'
-
   deploy-production:
     name: Deploy to Production
     runs-on: ubuntu-latest
     needs: [validate-frontend, validate-backend, security-scan]
     if: github.ref == 'refs/heads/main'
-    environment: production
     
     steps:
     - name: Checkout code
