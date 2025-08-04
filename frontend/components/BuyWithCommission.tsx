@@ -159,7 +159,7 @@ const BuyWithCommission: React.FC<BuyWithCommissionProps> = ({
         {type === 'token' ? (
           <Coins className='w-6 h-6 text-blue-600' />
         ) : (
-          <Image className='w-6 h-6 text-purple-600' alt="NFT Icon" />
+          <Image className='w-6 h-6 text-purple-600' />
         )}
         <h3 className='text-lg font-semibold text-gray-900'>
           Comprar {type === 'token' ? 'Tokens' : 'NFT'}

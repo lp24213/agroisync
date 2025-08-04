@@ -288,7 +288,7 @@ const Select = memo(forwardRef<HTMLDivElement, SelectProps>(({
           )}
           aria-expanded={isOpen}
           aria-haspopup="listbox"
-          aria-invalid={error}
+          aria-invalid={error ? "true" : "false"}
           aria-describedby={cn(
             error && errorId,
             success && successId,

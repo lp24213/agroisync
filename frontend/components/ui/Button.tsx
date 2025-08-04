@@ -81,3 +81,4 @@ Button.displayName = 'Button';
 
 export { Button, buttonVariants };
 export type { ButtonVariant } from '../../types/web3';
+export default Button;
