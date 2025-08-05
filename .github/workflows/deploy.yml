@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 env:
-  NODE_VERSION: '20'
+  NODE_VERSION: '18'
 
 jobs:
   deploy:
@@ -23,19 +23,20 @@ jobs:
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
       - name: Install frontend dependencies
         run: cd frontend && npm ci --only=production --prefer-offline --no-audit
 
-      - name: Clean and build frontend
-        run: cd frontend && npm run clean && npm run build
+      - name: Build frontend
+        run: cd frontend && npm run build
 
       - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          working-directory: ./frontend
-          vercel-args: '--prod'
-          alias-domains: |
-            agrotm.sol
-            agrotmsol.com.br 
+        run: |
+          cd frontend
+          vercel --prod --confirm --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ secrets.VERCEL_ORG_ID }} --yes
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }} 
