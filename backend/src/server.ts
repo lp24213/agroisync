@@ -28,6 +28,20 @@ app.get('/health', (_req, res) => {
   });
 });
 
+// Contact endpoint
+app.get('/api/contact', (_req, res) => {
+  res.json({
+    email: 'contato@agrotm.com.br',
+    telefone: '+55 (66) 99236-2830',
+    horario: 'Seg-Sex 9h-18h',
+    suporte: {
+      disponibilidade: '24/7',
+      chat: 'Chat ao vivo',
+      resposta: 'Resposta instantânea'
+    }
+  });
+});
+
 // API routes
 app.get('/api/v1/status', (_req, res) => {
   res.json({
@@ -46,7 +60,8 @@ app.get('/', (_req, res) => {
     environment: NODE_ENV,
     endpoints: {
       health: '/health',
-      status: '/api/v1/status'
+      status: '/api/v1/status',
+      contact: '/api/contact'
     },
     timestamp: new Date().toISOString()
   });
@@ -55,7 +70,7 @@ app.get('/', (_req, res) => {
 // Error handling middleware
 app.use((err: any, req: any, res: any, next: any) => {
   console.error('Unhandled error:', err);
-  
+
   const errorResponse: any = {
     success: false,
     error: NODE_ENV === 'development' ? err.message : 'Internal server error',
@@ -82,9 +97,11 @@ app.use('*', (req, res) => {
 // Start server
 app.listen(PORT, () => {
   console.log('🚀 AGROTM Backend Server Starting...');
-  console.log(`📍 Environment: ${NODE_ENV}`);
-  console.log(`🌐 Server running on port ${PORT}`);
-  console.log(`🔗 Health check: http://localhost:${PORT}/health`);
+  console.log(`🌍 Environment: ${NODE_ENV}`);
+  console.log(`🔌 Server running on port ${PORT}`);
+  console.log(`🏥 Health check: http://localhost:${PORT}/health`);
+  console.log(`📞 Contact API: http://localhost:${PORT}/api/contact`);
+
   console.log('✅ Server started successfully');
 });
 
