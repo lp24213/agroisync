@@ -4,7 +4,8 @@
     { "src": "frontend/package.json", "use": "@vercel/next" }
   ],
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "https://agrotm-backend-production.up.railway.app/api/$1" }
+    { "source": "/api/(.*)", "destination": "https://agrotm-backend-production.up.railway.app/api/$1" },
+    { "source": "/health", "destination": "https://agrotm-backend-production.up.railway.app/health" }
   ],
   "routes": [
     { "src": "/(.*)", "dest": "frontend/$1" }
