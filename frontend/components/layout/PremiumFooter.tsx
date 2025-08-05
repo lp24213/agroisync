@@ -61,8 +61,8 @@ const socialLinks = [
 ];
 
 const contactInfo = [
-  { icon: Mail, text: 'hello@agrotm.com', href: 'mailto:hello@agrotm.com' },
-  { icon: Phone, text: '+1 (555) 123-4567', href: 'tel:+15551234567' },
+  { icon: Mail, text: 'contato@agrotm.com.br', href: 'mailto:contato@agrotm.com.br' },
+  { icon: Phone, text: '+55 (66) 99236-2830', href: 'tel:+5566992362830' },
   { icon: MapPin, text: 'Global DeFi Platform', href: '#' },
   { icon: Globe, text: 'agrotm.com', href: 'https://agrotm.com' },
 ];
