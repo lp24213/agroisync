@@ -63,15 +63,6 @@
           "value": "no-cache, no-store, must-revalidate"
         }
       ]
-    },
-    {
-      "source": "/(.*\\.(ico|png|jpg|jpeg|gif|svg|webp|avif))",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=86400"
-        }
-      ]
     }
   ],
   "redirects": [
