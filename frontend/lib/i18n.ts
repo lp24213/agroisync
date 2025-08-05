@@ -30,62 +30,314 @@ i18n
     resources: {
       en: {
         translation: {
-          welcome: "Welcome to AGROTM",
-          startNow: "Start Now",
-          documentation: "Documentation",
-          staking: "Staking Premium",
-          security: "Advanced Security",
-          nfts: "Agricultural NFTs",
+          // Navigation
           home: "Home",
           about: "About",
           contact: "Contact",
           dashboard: "Dashboard",
-          getStarted: "Get Started"
+          staking: "Staking",
+          documentation: "Documentation",
+          getStarted: "Get Started",
+          
+          // Hero Section
+          welcome: "Welcome to AGROTM",
+          heroTitle: "Revolutionize Agriculture with Blockchain Technology",
+          heroSubtitle: "AGROTM offers innovative DeFi solutions for global agribusiness",
+          startNow: "Start Now",
+          
+          // Features
+          stakingPremium: "Premium Staking",
+          advancedSecurity: "Advanced Security",
+          agriculturalNFTs: "Agricultural NFTs",
+          smartContracts: "Smart Contracts",
+          yieldFarming: "Yield Farming",
+          liquidityPools: "Liquidity Pools",
+          
+          // About Section
+          aboutTitle: "About AGROTM",
+          aboutDescription: "We are revolutionizing the agricultural sector through blockchain technology and DeFi solutions",
+          mission: "Our Mission",
+          vision: "Our Vision",
+          values: "Our Values",
+          
+          // Contact
+          contactTitle: "Get in Touch",
+          contactSubtitle: "Ready to revolutionize your agricultural business?",
+          email: "Email",
+          phone: "Phone",
+          address: "Address",
+          sendMessage: "Send Message",
+          
+          // Footer
+          quickLinks: "Quick Links",
+          resources: "Resources",
+          support: "Support",
+          privacyPolicy: "Privacy Policy",
+          termsOfService: "Terms of Service",
+          cookiePolicy: "Cookie Policy",
+          allRightsReserved: "All rights reserved",
+          
+          // Common
+          loading: "Loading...",
+          error: "Error",
+          success: "Success",
+          cancel: "Cancel",
+          save: "Save",
+          delete: "Delete",
+          edit: "Edit",
+          view: "View",
+          close: "Close",
+          back: "Back",
+          next: "Next",
+          previous: "Previous",
+          submit: "Submit",
+          reset: "Reset",
+          search: "Search",
+          filter: "Filter",
+          sort: "Sort",
+          refresh: "Refresh",
+          download: "Download",
+          upload: "Upload",
+          share: "Share",
+          copy: "Copy",
+          paste: "Paste",
+          cut: "Cut",
+          undo: "Undo",
+          redo: "Redo"
         }
       },
       pt: {
         translation: {
-          welcome: "Bem-vindo ao AGROTM",
-          startNow: "Começar Agora",
-          documentation: "Documentação",
-          staking: "Staking Premium",
-          security: "Segurança Avançada",
-          nfts: "NFTs Agrícolas",
+          // Navigation
           home: "Início",
           about: "Sobre",
           contact: "Contato",
           dashboard: "Dashboard",
-          getStarted: "Começar"
+          staking: "Staking",
+          documentation: "Documentação",
+          getStarted: "Começar",
+          
+          // Hero Section
+          welcome: "Bem-vindo ao AGROTM",
+          heroTitle: "Revolucione a Agricultura com Tecnologia Blockchain",
+          heroSubtitle: "AGROTM oferece soluções DeFi inovadoras para o agronegócio global",
+          startNow: "Começar Agora",
+          
+          // Features
+          stakingPremium: "Staking Premium",
+          advancedSecurity: "Segurança Avançada",
+          agriculturalNFTs: "NFTs Agrícolas",
+          smartContracts: "Contratos Inteligentes",
+          yieldFarming: "Yield Farming",
+          liquidityPools: "Pools de Liquidez",
+          
+          // About Section
+          aboutTitle: "Sobre o AGROTM",
+          aboutDescription: "Estamos revolucionando o setor agrícola através da tecnologia blockchain e soluções DeFi",
+          mission: "Nossa Missão",
+          vision: "Nossa Visão",
+          values: "Nossos Valores",
+          
+          // Contact
+          contactTitle: "Entre em Contato",
+          contactSubtitle: "Pronto para revolucionar seu negócio agrícola?",
+          email: "E-mail",
+          phone: "Telefone",
+          address: "Endereço",
+          sendMessage: "Enviar Mensagem",
+          
+          // Footer
+          quickLinks: "Links Rápidos",
+          resources: "Recursos",
+          support: "Suporte",
+          privacyPolicy: "Política de Privacidade",
+          termsOfService: "Termos de Serviço",
+          cookiePolicy: "Política de Cookies",
+          allRightsReserved: "Todos os direitos reservados",
+          
+          // Common
+          loading: "Carregando...",
+          error: "Erro",
+          success: "Sucesso",
+          cancel: "Cancelar",
+          save: "Salvar",
+          delete: "Excluir",
+          edit: "Editar",
+          view: "Visualizar",
+          close: "Fechar",
+          back: "Voltar",
+          next: "Próximo",
+          previous: "Anterior",
+          submit: "Enviar",
+          reset: "Resetar",
+          search: "Pesquisar",
+          filter: "Filtrar",
+          sort: "Ordenar",
+          refresh: "Atualizar",
+          download: "Baixar",
+          upload: "Enviar",
+          share: "Compartilhar",
+          copy: "Copiar",
+          paste: "Colar",
+          cut: "Recortar",
+          undo: "Desfazer",
+          redo: "Refazer"
         }
       },
       es: {
         translation: {
-          welcome: "Bienvenido a AGROTM",
-          startNow: "Comenzar Ahora",
-          documentation: "Documentación",
-          staking: "Staking Premium",
-          security: "Seguridad Avanzada",
-          nfts: "NFTs Agrícolas",
+          // Navigation
           home: "Inicio",
           about: "Acerca de",
           contact: "Contacto",
           dashboard: "Dashboard",
-          getStarted: "Comenzar"
+          staking: "Staking",
+          documentation: "Documentación",
+          getStarted: "Comenzar",
+          
+          // Hero Section
+          welcome: "Bienvenido a AGROTM",
+          heroTitle: "Revoluciona la Agricultura con Tecnología Blockchain",
+          heroSubtitle: "AGROTM ofrece soluciones DeFi innovadoras para el agronegocio global",
+          startNow: "Comenzar Ahora",
+          
+          // Features
+          stakingPremium: "Staking Premium",
+          advancedSecurity: "Seguridad Avanzada",
+          agriculturalNFTs: "NFTs Agrícolas",
+          smartContracts: "Contratos Inteligentes",
+          yieldFarming: "Yield Farming",
+          liquidityPools: "Pools de Liquidez",
+          
+          // About Section
+          aboutTitle: "Acerca de AGROTM",
+          aboutDescription: "Estamos revolucionando el sector agrícola a través de la tecnología blockchain y soluciones DeFi",
+          mission: "Nuestra Misión",
+          vision: "Nuestra Visión",
+          values: "Nuestros Valores",
+          
+          // Contact
+          contactTitle: "Ponte en Contacto",
+          contactSubtitle: "¿Listo para revolucionar tu negocio agrícola?",
+          email: "Correo",
+          phone: "Teléfono",
+          address: "Dirección",
+          sendMessage: "Enviar Mensaje",
+          
+          // Footer
+          quickLinks: "Enlaces Rápidos",
+          resources: "Recursos",
+          support: "Soporte",
+          privacyPolicy: "Política de Privacidad",
+          termsOfService: "Términos de Servicio",
+          cookiePolicy: "Política de Cookies",
+          allRightsReserved: "Todos los derechos reservados",
+          
+          // Common
+          loading: "Cargando...",
+          error: "Error",
+          success: "Éxito",
+          cancel: "Cancelar",
+          save: "Guardar",
+          delete: "Eliminar",
+          edit: "Editar",
+          view: "Ver",
+          close: "Cerrar",
+          back: "Atrás",
+          next: "Siguiente",
+          previous: "Anterior",
+          submit: "Enviar",
+          reset: "Restablecer",
+          search: "Buscar",
+          filter: "Filtrar",
+          sort: "Ordenar",
+          refresh: "Actualizar",
+          download: "Descargar",
+          upload: "Subir",
+          share: "Compartir",
+          copy: "Copiar",
+          paste: "Pegar",
+          cut: "Cortar",
+          undo: "Deshacer",
+          redo: "Rehacer"
         }
       },
       zh: {
         translation: {
-          welcome: "欢迎来到AGROTM",
-          startNow: "立即开始",
-          documentation: "文档",
-          staking: "高级质押",
-          security: "高级安全",
-          nfts: "农业NFT",
+          // Navigation
           home: "首页",
           about: "关于",
           contact: "联系",
           dashboard: "仪表板",
-          getStarted: "开始使用"
+          staking: "质押",
+          documentation: "文档",
+          getStarted: "开始使用",
+          
+          // Hero Section
+          welcome: "欢迎来到AGROTM",
+          heroTitle: "用区块链技术革新农业",
+          heroSubtitle: "AGROTM为全球农业企业提供创新的DeFi解决方案",
+          startNow: "立即开始",
+          
+          // Features
+          stakingPremium: "高级质押",
+          advancedSecurity: "高级安全",
+          agriculturalNFTs: "农业NFT",
+          smartContracts: "智能合约",
+          yieldFarming: "收益农场",
+          liquidityPools: "流动性池",
+          
+          // About Section
+          aboutTitle: "关于AGROTM",
+          aboutDescription: "我们正在通过区块链技术和DeFi解决方案革新农业部门",
+          mission: "我们的使命",
+          vision: "我们的愿景",
+          values: "我们的价值观",
+          
+          // Contact
+          contactTitle: "联系我们",
+          contactSubtitle: "准备革新您的农业业务了吗？",
+          email: "邮箱",
+          phone: "电话",
+          address: "地址",
+          sendMessage: "发送消息",
+          
+          // Footer
+          quickLinks: "快速链接",
+          resources: "资源",
+          support: "支持",
+          privacyPolicy: "隐私政策",
+          termsOfService: "服务条款",
+          cookiePolicy: "Cookie政策",
+          allRightsReserved: "版权所有",
+          
+          // Common
+          loading: "加载中...",
+          error: "错误",
+          success: "成功",
+          cancel: "取消",
+          save: "保存",
+          delete: "删除",
+          edit: "编辑",
+          view: "查看",
+          close: "关闭",
+          back: "返回",
+          next: "下一步",
+          previous: "上一步",
+          submit: "提交",
+          reset: "重置",
+          search: "搜索",
+          filter: "筛选",
+          sort: "排序",
+          refresh: "刷新",
+          download: "下载",
+          upload: "上传",
+          share: "分享",
+          copy: "复制",
+          paste: "粘贴",
+          cut: "剪切",
+          undo: "撤销",
+          redo: "重做"
         }
       }
     },
