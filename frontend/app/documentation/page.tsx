@@ -432,23 +432,7 @@ export default function DocumentationPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-black/50 border-t border-green-500/20 py-12">
-        <div className="container mx-auto px-4 text-center">
-          <div className="flex justify-center mb-6">
-            <Logo size="md" />
-          </div>
-          <p className="text-gray-400 mb-4">
-            © 2024 AGROTM.SOL - Plataforma de Agronegócio na Solana
-          </p>
-          <div className="flex justify-center space-x-6">
-            <a href="#" className="text-green-400 hover:text-green-300 transition-colors">GitHub</a>
-            <a href="#" className="text-green-400 hover:text-green-300 transition-colors">Discord</a>
-            <a href="#" className="text-green-400 hover:text-green-300 transition-colors">Twitter</a>
-            <a href="#" className="text-green-400 hover:text-green-300 transition-colors">Telegram</a>
-          </div>
-        </div>
-      </footer>
+
     </div>
   );
 } 

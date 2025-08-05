@@ -79,12 +79,8 @@
   ],
   "rewrites": [
     {
-      "source": "/api/health",
-      "destination": "/api/health"
-    },
-    {
       "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "destination": "https://agrotm-backend-production.up.railway.app/api/$1"
     }
   ],
   "cleanUrls": true,
