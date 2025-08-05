@@ -1,5 +1,5 @@
 # Multi-stage build para AGROTM Frontend
-FROM node:18-alpine AS deps
+FROM node:20-alpine AS deps
 WORKDIR /app
 
 # Copiar package.json files
@@ -11,7 +11,7 @@ RUN npm ci --only=production
 RUN cd frontend && npm ci --only=production
 
 # Etapa 2: Build
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Copiar dependências
@@ -26,7 +26,7 @@ WORKDIR /app/frontend
 RUN npm run build
 
 # Etapa 3: Produção
-FROM node:18-alpine AS production
+FROM node:20-alpine AS production
 WORKDIR /app
 
 # Instalar dependências de produção
