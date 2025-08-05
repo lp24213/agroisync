@@ -1,0 +1,3 @@
+Contact: mailto:security@agrotm.com
+Expires: 2025-07-25T23:59:59.000Z
+Policy: https://github.com/agrotm/agrotm-solana/blob/main/.github/SECURITY.md 

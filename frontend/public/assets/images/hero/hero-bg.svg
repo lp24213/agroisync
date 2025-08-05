@@ -1,0 +1,42 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="heroGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0fdf4;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#dcfce7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#bbf7d0;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="circleGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#22c55e;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#22c55e;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="url(#heroGradient)"/>
+  
+  <!-- Decorative Circles -->
+  <circle cx="200" cy="200" r="150" fill="url(#circleGradient)"/>
+  <circle cx="1720" cy="300" r="200" fill="url(#circleGradient)"/>
+  <circle cx="400" cy="800" r="180" fill="url(#circleGradient)"/>
+  <circle cx="1600" cy="900" r="120" fill="url(#circleGradient)"/>
+  
+  <!-- Grid Pattern -->
+  <defs>
+    <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
+      <path d="M 100 0 L 0 0 0 100" fill="none" stroke="#22c55e" stroke-width="1" stroke-opacity="0.1"/>
+    </pattern>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#grid)"/>
+  
+  <!-- Floating Elements -->
+  <g opacity="0.3">
+    <!-- Leaf 1 -->
+    <path d="M 300 150 Q 350 100 400 150 Q 350 200 300 150" fill="#22c55e"/>
+    <!-- Leaf 2 -->
+    <path d="M 1500 250 Q 1550 200 1600 250 Q 1550 300 1500 250" fill="#16a34a"/>
+    <!-- Leaf 3 -->
+    <path d="M 200 700 Q 250 650 300 700 Q 250 750 200 700" fill="#15803d"/>
+    <!-- Leaf 4 -->
+    <path d="M 1400 800 Q 1450 750 1500 800 Q 1450 850 1400 800" fill="#22c55e"/>
+  </g>
+</svg> 

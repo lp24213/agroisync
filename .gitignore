@@ -110,7 +110,7 @@ dist
 
 # Gatsby files
 .cache/
-public
+# public (mantido para imagens)
 
 # Storybook build outputs
 .out

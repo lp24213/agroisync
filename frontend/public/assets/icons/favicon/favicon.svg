@@ -1,0 +1,19 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="faviconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#22c55e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#15803d;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="32" height="32" rx="6" fill="url(#faviconGradient)"/>
+  
+  <!-- Leaf Icon -->
+  <path d="M8 10C8 8 10 6 12 6C14 6 16 8 16 10C16 12 14 14 12 14C10 14 8 12 8 10Z" fill="#ffffff"/>
+  <path d="M12 6C12 4 14 2 16 2C18 2 20 4 20 6C20 8 18 10 16 10C14 10 12 8 12 6Z" fill="#ffffff"/>
+  
+  <!-- Blockchain Connection -->
+  <path d="M4 22L8 18" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M20 18L24 22" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+</svg> 

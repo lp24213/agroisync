@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#020617" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    
+    <linearGradient id="blueGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.7" />
+      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0" />
+    </linearGradient>
+    
+    <linearGradient id="greenGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.7" />
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0" />
+    </linearGradient>
+    
+    <filter id="blur" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10" />
+    </filter>
+    
+    <!-- Animation Definitions -->
+    <pattern id="gridPattern" patternUnits="userSpaceOnUse" width="100" height="100" patternTransform="scale(0.5)">
+      <rect width="100" height="100" fill="none" />
+      <path d="M 100 0 L 0 0 0 100" fill="none" stroke="#3b82f6" stroke-width="0.5" stroke-opacity="0.2" />
+    </pattern>
+    
+    <!-- Particle Animation -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="url(#bgGradient)" />
+  
+  <!-- Grid Pattern with Animation -->
+  <rect width="1920" height="1080" fill="url(#gridPattern)">
+    <animateTransform 
+      attributeName="patternTransform"
+      type="translate"
+      from="0 0"
+      to="0 100"
+      dur="20s"
+      repeatCount="indefinite" />
+  </rect>
+  
+  <!-- Glowing Orbs -->
+  <g filter="url(#blur)">
+    <circle cx="400" cy="300" r="100" fill="url(#blueGlow)" opacity="0.3">
+      <animate attributeName="cy" values="300;280;300" dur="10s" repeatCount="indefinite" />
+      <animate attributeName="r" values="100;120;100" dur="15s" repeatCount="indefinite" />
+    </circle>
+    
+    <circle cx="1500" cy="700" r="150" fill="url(#greenGlow)" opacity="0.3">
+      <animate attributeName="cy" values="700;650;700" dur="12s" repeatCount="indefinite" />
+      <animate attributeName="r" values="150;180;150" dur="18s" repeatCount="indefinite" />
+    </circle>
+  </g>
+  
+  <!-- Digital Farm Elements -->
+  <!-- Stylized Field Grid -->
+  <g transform="translate(960, 540)" opacity="0.15">
+    <path d="M-400,-200 L400,-200 M-400,-100 L400,-100 M-400,0 L400,0 M-400,100 L400,100 M-400,200 L400,200" 
+          stroke="#10b981" stroke-width="1" />
+    <path d="M-400,-200 L-400,200 M-300,-200 L-300,200 M-200,-200 L-200,200 M-100,-200 L-100,200 M0,-200 L0,200 M100,-200 L100,200 M200,-200 L200,200 M300,-200 L300,200 M400,-200 L400,200" 
+          stroke="#10b981" stroke-width="1" />
+          
+    <!-- Animated Pulse Along Grid -->
+    <circle r="5" fill="#10b981" filter="url(#glow)">
+      <animateMotion path="M-400,-200 L400,-200 L400,200 L-400,200 Z" dur="10s" repeatCount="indefinite" />
+    </circle>
+  </g>
+  
+  <!-- Digital Circuit Lines -->
+  <g stroke="#3b82f6" stroke-width="1" opacity="0.2">
+    <path d="M0,540 L1920,540" />
+    <path d="M960,0 L960,1080" />
+    
+    <!-- Animated Data Points -->
+    <circle cx="960" cy="540" r="3" fill="#3b82f6">
+      <animate attributeName="cx" values="960;1200;1500;1800;1920" dur="5s" repeatCount="indefinite" />
+    </circle>
+    
+    <circle cx="960" cy="540" r="3" fill="#3b82f6">
+      <animate attributeName="cy" values="540;300;100;0" dur="4s" repeatCount="indefinite" />
+    </circle>
+  </g>
+  
+  <!-- Floating Tech Elements -->
+  <g opacity="0.3">
+    <!-- Stylized Drone -->
+    <g transform="translate(300, 200)">
+      <rect x="-15" y="-15" width="30" height="30" fill="none" stroke="#3b82f6" stroke-width="2" />
+      <circle cx="0" cy="0" r="5" fill="#3b82f6" />
+      <animateTransform 
+        attributeName="transform"
+        type="translate"
+        values="300,200; 350,250; 400,200; 350,150; 300,200"
+        dur="20s"
+        repeatCount="indefinite" />
+    </g>
+    
+    <!-- Stylized Plant Monitor -->
+    <g transform="translate(1600, 800)">
+      <path d="M0,-20 L0,20 M-10,0 L10,0" stroke="#10b981" stroke-width="2" />
+      <circle cx="0" cy="0" r="15" fill="none" stroke="#10b981" stroke-width="2" />
+      <animateTransform 
+        attributeName="transform"
+        type="translate"
+        values="1600,800; 1550,750; 1500,800; 1550,850; 1600,800"
+        dur="15s"
+        repeatCount="indefinite" />
+    </g>
+  </g>
+  
+  <!-- Data Visualization Elements -->
+  <g transform="translate(960, 900)" opacity="0.2">
+    <!-- Stylized Chart -->
+    <path d="M-300,0 L-250,-30 L-200,-10 L-150,-50 L-100,-40 L-50,-70 L0,-60 L50,-90 L100,-50 L150,-80 L200,-30 L250,-60 L300,-20" 
+          fill="none" stroke="#3b82f6" stroke-width="2" />
+          
+    <!-- Animated Data Point -->
+    <circle cx="0" cy="-60" r="4" fill="#3b82f6">
+      <animate attributeName="cx" values="-300;300;-300" dur="10s" repeatCount="indefinite" />
+      <animate attributeName="cy" values="0;-60;-90;-20;0" dur="10s" repeatCount="indefinite" />
+    </circle>
+  </g>
+  
+  <!-- Particle System -->
+  <g>
+    <circle cx="200" cy="200" r="1" fill="#3b82f6">
+      <animate attributeName="cx" values="200;300;400;500;600;700;800" dur="15s" repeatCount="indefinite" />
+      <animate attributeName="cy" values="200;300;250;400;350;450;400" dur="15s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0;1;0" dur="15s" repeatCount="indefinite" />
+    </circle>
+    
+    <circle cx="1700" cy="800" r="1" fill="#10b981">
+      <animate attributeName="cx" values="1700;1600;1500;1400;1300;1200" dur="18s" repeatCount="indefinite" />
+      <animate attributeName="cy" values="800;750;800;700;750;700" dur="18s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0;1;0" dur="18s" repeatCount="indefinite" />
+    </circle>
+    
+    <!-- More particles can be added here -->
+  </g>
+</svg>
