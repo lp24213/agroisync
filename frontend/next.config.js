@@ -11,6 +11,8 @@ const nextConfig = {
     domains: ['localhost', 'agrotmsol.com.br', 'vercel.app', 'agrotm-backend.railway.app', 'sei7vjoo.up.railway.app'],
     unoptimized: false,
     formats: ['image/webp', 'image/avif'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
   
   // Build configuration - IGNORE ALL ERRORS FOR DEPLOY
@@ -26,9 +28,22 @@ const nextConfig = {
     NEXT_TELEMETRY_DISABLED: '1',
   },
 
-  // Experimental features - DISABLED optimizeCss
+  // Experimental features
   experimental: {
     optimizePackageImports: ['@mui/material', '@mui/icons-material', 'lucide-react'],
+    turbo: {
+      rules: {
+        '*.svg': {
+          loaders: ['@svgr/webpack'],
+          as: '*.js',
+        },
+      },
+    },
+  },
+
+  // Compiler options
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
   },
 
   // Redirects for better SEO
@@ -38,6 +53,11 @@ const nextConfig = {
         source: '/home',
         destination: '/',
         permanent: true,
+      },
+      {
+        source: '/dashboard',
+        destination: '/',
+        permanent: false,
       },
     ];
   },
@@ -63,6 +83,10 @@ const nextConfig = {
           {
             key: 'X-XSS-Protection',
             value: '1; mode=block',
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()',
           },
         ],
       },
@@ -100,6 +124,11 @@ const nextConfig = {
             vendor: {
               test: /[\\/]node_modules[\\/]/,
               name: 'vendors',
+              chunks: 'all',
+            },
+            mui: {
+              test: /[\\/]node_modules[\\/]@mui[\\/]/,
+              name: 'mui',
               chunks: 'all',
             },
           },
