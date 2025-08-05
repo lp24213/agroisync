@@ -380,7 +380,15 @@ const NFTDashboard: React.FC = () => {
                       <TableRow key={nft.id} hover>
                         <TableCell>
                           <Box display="flex" alignItems="center">
-                            <Avatar src={nft.imageUrl} alt={nft.name} sx={{ mr: 2, width: 40, height: 40 }} />
+                            <Avatar 
+                              src={nft.imageUrl} 
+                              alt={nft.name} 
+                              sx={{ mr: 2, width: 40, height: 40 }}
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = '/images/nft-placeholder.svg';
+                              }}
+                            />
                             <Typography variant="body2">{nft.name}</Typography>
                           </Box>
                         </TableCell>

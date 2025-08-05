@@ -431,6 +431,10 @@ const UsersDashboard: React.FC = () => {
                               src={user.avatarUrl} 
                               alt={user.username || user.walletAddress} 
                               sx={{ mr: 2, width: 40, height: 40 }}
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = '/images/nft-placeholder.svg';
+                              }}
                             >
                               {!user.avatarUrl && (user.username?.[0] || user.walletAddress[0])}
                             </Avatar>

@@ -40,7 +40,7 @@ export default function NFTMap({ nfts = [], className = "" }: NFTMapProps) {
             className="w-full h-32 object-cover rounded mb-2"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
-              target.src = '/assets/img/nft-placeholder.png';
+              target.src = '/images/nft-placeholder.svg';
             }}
           />
           <p className="text-sm text-gray-400">Token ID: {nft.tokenId}</p>

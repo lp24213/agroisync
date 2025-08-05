@@ -331,6 +331,10 @@ const NFTMarketplacePage: React.FC = () => {
                   backgroundImage: `url(${collection.banner})`,
                   backgroundColor: collection.color,
                 }}
+                onError={(e) => {
+                  const target = e.target as HTMLDivElement;
+                  target.style.backgroundImage = 'none';
+                }}
               />
               <div className='p-4'>
                 <div className='flex items-center mb-2'>
@@ -338,6 +342,10 @@ const NFTMarketplacePage: React.FC = () => {
                     src={collection.logo}
                     alt={collection.name}
                     className='w-8 h-8 rounded-full mr-2'
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = '/images/nft-placeholder.svg';
+                    }}
                   />
                   <h3 className='font-semibold'>{collection.name}</h3>
                   {collection.verified && <span className='ml-1 text-blue-500'>✓</span>}
@@ -361,7 +369,15 @@ const NFTMarketplacePage: React.FC = () => {
           {sortedNFTs.map(nft => (
             <Card key={nft.id} className='overflow-hidden hover:shadow-lg transition-shadow'>
               <div className='relative'>
-                <img src={nft.image} alt={nft.name} className='w-full h-48 object-cover' />
+                <img 
+                  src={nft.image} 
+                  alt={nft.name} 
+                  className='w-full h-48 object-cover'
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = '/images/nft-placeholder.svg';
+                  }}
+                />
                 <div className='absolute top-2 right-2'>
                   <span
                     className={cn(
