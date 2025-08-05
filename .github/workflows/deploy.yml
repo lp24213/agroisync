@@ -1,4 +1,4 @@
-name: Deploy AGROTM Fullstack
+name: Deploy AGROTM Frontend
 
 on:
   push:
@@ -28,13 +28,9 @@ jobs:
         run: |
           npm install
           cd frontend && npm install
-          cd ../backend && npm install
 
       - name: Build frontend
         run: cd frontend && npm run build
-
-      - name: Build backend
-        run: cd backend && npm run build
 
       - name: Install Vercel CLI
         run: npm install -g vercel

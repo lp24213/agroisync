@@ -9,8 +9,20 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
+// CORS configuration
+const corsOptions = {
+  origin: [
+    'https://agrotmsol.com.br',
+    'https://www.agrotmsol.com.br',
+    'http://localhost:3000',
+    'http://localhost:3001'
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
@@ -101,6 +113,7 @@ app.listen(PORT, () => {
   console.log(`🔌 Server running on port ${PORT}`);
   console.log(`🏥 Health check: http://localhost:${PORT}/health`);
   console.log(`📞 Contact API: http://localhost:${PORT}/api/contact`);
+  console.log(`🌐 CORS enabled for: agrotmsol.com.br`);
 
   console.log('✅ Server started successfully');
 });
