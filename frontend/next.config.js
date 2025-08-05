@@ -8,7 +8,7 @@ const nextConfig = {
   
   // Image optimization
   images: {
-    domains: ['localhost', 'agrotmsol.com.br', 'vercel.app', 'agrotm-backend.railway.app', 'sei7vjoo.up.railway.app'],
+    domains: ['localhost', 'agrotmsol.com.br', 'vercel.app', 'turntable.proxy.rlwy.net'],
     unoptimized: true,
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],

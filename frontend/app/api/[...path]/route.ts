@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const RAILWAY_BACKEND_URL = 'https://sei7vjoo.up.railway.app';
+const RAILWAY_BACKEND_URL = 'https://turntable.proxy.rlwy.net:54605';
 
 export async function GET(
   request: NextRequest,

@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://sei7vjoo.up.railway.app';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://turntable.proxy.rlwy.net:54605';
 
 export interface ApiResponse<T = any> {
   success: boolean;

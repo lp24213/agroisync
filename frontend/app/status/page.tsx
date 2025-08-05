@@ -211,7 +211,7 @@ export default function StatusPage() {
               <div>
                 <h3 className="text-sm font-semibold text-gray-400 mb-2">URL do Backend:</h3>
                 <p className="text-white font-mono text-sm">
-                  https://sei7vjoo.up.railway.app
+                  https://turntable.proxy.rlwy.net:54605
                 </p>
               </div>
               <div>
