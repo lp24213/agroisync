@@ -19,8 +19,9 @@ export function Hero() {
             <Logo size="lg" iconOnly={true} />
           </div>
           <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-            🚀 A maior plataforma Web3 para o agronegócio mundial - VERSÃO 2.2.3 ATUALIZADA! 
-            Staking, NFTs agrícolas e governança descentralizada na Solana com performance otimizada.
+            🌱 Plataforma líder em tokenização agrícola global. 
+            Conectamos agricultores e investidores através de tecnologia blockchain inovadora, 
+            oferecendo soluções DeFi seguras e NFTs agrícolas de valor real.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">

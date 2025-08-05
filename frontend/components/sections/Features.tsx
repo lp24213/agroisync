@@ -7,37 +7,37 @@ import Image from 'next/image';
 
 const features = [
   {
-    icon: '/assets/icons/leaf.svg',
+    icon: '/images/leaf.svg',
     title: 'Agricultura Sustentável',
     description: 'Tecnologia blockchain para rastreamento completo da cadeia agrícola, garantindo transparência e sustentabilidade.',
     color: 'agro-green'
   },
   {
-    icon: '/assets/icons/coin.svg',
+    icon: '/images/coin.svg',
     title: 'DeFi & Staking',
     description: 'Stake seus tokens AGROTM e ganhe recompensas enquanto apoia projetos agrícolas sustentáveis.',
     color: 'agro-blue'
   },
   {
-    icon: '/assets/icons/nft.svg',
+    icon: '/images/nft.svg',
     title: 'NFTs Agrícolas',
     description: 'Tokenize propriedades rurais e ativos agrícolas como NFTs únicos e valiosos.',
     color: 'agro-purple'
   },
   {
-    icon: '/assets/icons/chart.svg',
+    icon: '/images/chart.svg',
     title: 'Analytics Avançados',
     description: 'Dashboard completo com métricas em tempo real sobre performance agrícola e retornos DeFi.',
     color: 'agro-yellow'
   },
   {
-    icon: '/assets/icons/wallet.svg',
+    icon: '/images/wallet.svg',
     title: 'Wallet Integrado',
     description: 'Carteira digital segura integrada para gerenciar seus ativos AGROTM e NFTs.',
     color: 'agro-red'
   },
   {
-    icon: '/assets/icons/check.svg',
+    icon: '/images/check.svg',
     title: 'Governança DAO',
     description: 'Participe das decisões da plataforma através de votação descentralizada com tokens AGROTM.',
     color: 'agro-neon'
