@@ -26,8 +26,13 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Health check endpoint
+// Health check endpoint for Railway
 app.get('/health', (_req, res) => {
+  res.status(200).send('OK');
+});
+
+// Detailed health check endpoint
+app.get('/health/detailed', (_req, res) => {
   res.status(200).json({
     status: 'OK',
     timestamp: new Date().toISOString(),
@@ -107,7 +112,7 @@ app.use('*', (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log('🚀 AGROTM Backend Server Starting...');
   console.log(`🌍 Environment: ${NODE_ENV}`);
   console.log(`🔌 Server running on port ${PORT}`);
@@ -116,6 +121,31 @@ app.listen(PORT, () => {
   console.log(`🌐 CORS enabled for: agrotmsol.com.br`);
 
   console.log('✅ Server started successfully');
+});
+
+// Handle server errors
+server.on('error', (error: any) => {
+  console.error('❌ Server error:', error);
+  if (error.code === 'EADDRINUSE') {
+    console.error(`Port ${PORT} is already in use`);
+  }
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('🛑 SIGTERM received, shutting down gracefully');
+  server.close(() => {
+    console.log('✅ Server closed');
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('🛑 SIGINT received, shutting down gracefully');
+  server.close(() => {
+    console.log('✅ Server closed');
+    process.exit(0);
+  });
 });
 
 // Export for testing
