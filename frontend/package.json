@@ -1,6 +1,6 @@
 {
   "name": "agrotm.sol-frontend",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "description": "AGROTM Frontend - Solana Agricultural Tokenization Platform",
   "private": true,
   "scripts": {
