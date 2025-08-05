@@ -6,20 +6,6 @@ import { Logo } from "../../components/ui/Logo";
 export default function DocumentationPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-900 via-black to-green-800">
-      {/* Header */}
-      <header className="bg-black/50 backdrop-blur-sm border-b border-green-500/20">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Logo size="lg" />
-            <nav className="hidden md:flex space-x-8">
-              <a href="#overview" className="text-green-400 hover:text-green-300 transition-colors">Visão Geral</a>
-              <a href="#getting-started" className="text-green-400 hover:text-green-300 transition-colors">Começar</a>
-              <a href="#api" className="text-green-400 hover:text-green-300 transition-colors">API</a>
-              <a href="#security" className="text-green-400 hover:text-green-300 transition-colors">Segurança</a>
-            </nav>
-          </div>
-        </div>
-      </header>
 
       {/* Hero Section */}
       <section className="py-20 text-center">
