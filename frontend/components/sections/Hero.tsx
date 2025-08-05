@@ -19,7 +19,7 @@ export function Hero() {
             <Logo size="lg" iconOnly={true} />
           </div>
           <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-            A maior plataforma para o agronegócio mundial. 
+            A maior plataforma Web3 para o agronegócio mundial. 
             Staking, NFTs agrícolas e governança descentralizada na Solana.
           </p>
           
