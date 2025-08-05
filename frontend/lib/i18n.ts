@@ -1,33 +1,33 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-// Import translations
-import en from '../locales/en.json';
-import pt from '../locales/pt.json';
-import es from '../locales/es.json';
-import zh from '../locales/zh.json';
-
-const resources = {
-  en: {
-    translation: en
-  },
-  pt: {
-    translation: pt
-  },
-  es: {
-    translation: es
-  },
-  zh: {
-    translation: zh
-  }
-};
-
 i18n
   .use(initReactI18next)
   .init({
-    resources,
-    lng: 'pt', // default language - Portuguese Brazil
-    fallbackLng: 'pt',
+    resources: {
+      en: {
+        translation: {
+          welcome: "Welcome to AGROTM",
+          startNow: "Start Now",
+          documentation: "Documentation",
+          staking: "Staking Premium",
+          security: "Advanced Security",
+          nfts: "Agricultural NFTs"
+        }
+      },
+      pt: {
+        translation: {
+          welcome: "Bem-vindo ao AGROTM",
+          startNow: "Começar Agora",
+          documentation: "Documentação",
+          staking: "Staking Premium",
+          security: "Segurança Avançada",
+          nfts: "NFTs Agrícolas"
+        }
+      }
+    },
+    lng: 'pt',
+    fallbackLng: 'en',
     interpolation: {
       escapeValue: false
     }

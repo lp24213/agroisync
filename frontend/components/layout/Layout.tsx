@@ -4,7 +4,7 @@ import React from 'react';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { CookieBanner } from '../ui/CookieBanner';
-import '../lib/i18n'; // Initialize i18n
+import '../../lib/i18n'; // Initialize i18n
 
 interface LayoutProps {
   children: React.ReactNode;
