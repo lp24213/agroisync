@@ -1,50 +1,56 @@
-# Multi-stage build para AGROTM Frontend + Backend
+# Multi-stage build para AGROTM Fullstack
 
-# Etapa 1: Dependências do Frontend
-FROM node:18-alpine AS frontend-deps
-WORKDIR /app/frontend
-COPY frontend/package*.json ./
-RUN npm ci --only=production --prefer-offline --no-audit
+# Etapa 1: Dependências
+FROM node:18-alpine AS deps
+WORKDIR /app
 
-# Etapa 2: Build do Frontend
-FROM node:18-alpine AS frontend-builder
+# Copiar package.json files
+COPY package*.json ./
+COPY frontend/package*.json ./frontend/
+COPY backend/package*.json ./backend/
+
+# Instalar dependências
+RUN npm ci --only=production
+RUN cd frontend && npm ci --only=production
+RUN cd backend && npm ci --only=production
+
+# Etapa 2: Build
+FROM node:18-alpine AS builder
+WORKDIR /app
+
+# Copiar dependências
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/frontend/node_modules ./frontend/node_modules
+COPY --from=deps /app/backend/node_modules ./backend/node_modules
+
+# Copiar código fonte
+COPY . .
+
+# Build frontend
 WORKDIR /app/frontend
-COPY frontend/package*.json ./
-RUN npm ci --prefer-offline --no-audit
-COPY frontend/ ./
 RUN npm run build
 
-# Etapa 3: Dependências do Backend
-FROM node:18-alpine AS backend-deps
+# Build backend
 WORKDIR /app/backend
-COPY backend/package*.json ./
-RUN npm ci --only=production --prefer-offline --no-audit
-
-# Etapa 4: Build do Backend
-FROM node:18-alpine AS backend-builder
-WORKDIR /app/backend
-COPY backend/package*.json ./
-RUN npm ci --prefer-offline --no-audit
-COPY backend/ ./
 RUN npm run build
 
-# Etapa 5: Produção Final
+# Etapa 3: Produção
 FROM node:18-alpine AS production
 WORKDIR /app
 
 # Instalar dependências de produção
-RUN apk add --no-cache dumb-init
+RUN apk add --no-cache dumb-init curl
 
-# Copiar frontend build
-COPY --from=frontend-builder /app/frontend/.next ./frontend/.next
-COPY --from=frontend-builder /app/frontend/public ./frontend/public
-COPY --from=frontend-builder /app/frontend/package*.json ./frontend/
-COPY --from=frontend-deps /app/frontend/node_modules ./frontend/node_modules
+# Copiar builds
+COPY --from=builder /app/frontend/.next ./frontend/.next
+COPY --from=builder /app/frontend/public ./frontend/public
+COPY --from=builder /app/frontend/package*.json ./frontend/
+COPY --from=builder /app/backend/dist ./backend/dist
+COPY --from=builder /app/backend/package*.json ./backend/
 
-# Copiar backend build
-COPY --from=backend-builder /app/backend/dist ./backend/dist
-COPY --from=backend-builder /app/backend/package*.json ./backend/
-COPY --from=backend-deps /app/backend/node_modules ./backend/node_modules
+# Copiar dependências de produção
+COPY --from=deps /app/frontend/node_modules ./frontend/node_modules
+COPY --from=deps /app/backend/node_modules ./backend/node_modules
 
 # Copiar arquivos de configuração
 COPY frontend/next.config.js ./frontend/
@@ -56,13 +62,13 @@ COPY backend/tsconfig.json ./backend/
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Expor portas
-EXPOSE 3000 3001
+# Expor porta
+EXPOSE 3000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:3001/health || exit 1
+  CMD curl -f http://localhost:3000/api/health || exit 1
 
 # Comando de inicialização
 ENTRYPOINT ["dumb-init", "--"]
-CMD ["sh", "-c", "cd backend && npm start & cd frontend && npm start"] 
+CMD ["sh", "-c", "cd frontend && npm start"] 
