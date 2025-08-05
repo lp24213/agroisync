@@ -32,7 +32,7 @@ export function Contact() {
               <Mail className="text-green-400" size={32} />
             </div>
             <h3 className="text-2xl font-bold text-white mb-4">Email</h3>
-            <p className="text-gray-400 mb-6">contato@agrotm.sol</p>
+                            <p className="text-gray-400 mb-6">contato@agrotm.com.br</p>
             <p className="text-gray-400">Suporte 24/7</p>
           </motion.div>
 
@@ -60,7 +60,7 @@ export function Contact() {
               <Phone className="text-purple-400" size={32} />
             </div>
             <h3 className="text-2xl font-bold text-white mb-4">Telefone</h3>
-            <p className="text-gray-400 mb-6">+55 11 99999-9999</p>
+                            <p className="text-gray-400 mb-6">+55 (66) 99236-2830</p>
             <p className="text-gray-400">Seg-Sex 9h-18h</p>
           </motion.div>
         </div>

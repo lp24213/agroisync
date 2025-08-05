@@ -61,6 +61,24 @@ export function Footer() {
               </motion.div>
               
               <motion.div 
+                className="flex items-center space-x-2 mb-6"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <a 
+                  href={`mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL || 'contato@agrotm.com.br'}`}
+                  className="text-blue-400 hover:text-blue-300 transition-colors duration-300"
+                >
+                  {process.env.NEXT_PUBLIC_SUPPORT_EMAIL || 'contato@agrotm.com.br'}
+                </a>
+              </motion.div>
+              
+              <motion.div 
                 className="flex space-x-4"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
