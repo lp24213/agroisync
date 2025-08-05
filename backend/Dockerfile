@@ -1,5 +1,5 @@
-# Use Node.js 20 Alpine for smaller image size
-FROM node:20-alpine
+# Multi-stage build for AGROTM Backend
+FROM node:20-alpine AS builder
 
 # Set working directory
 WORKDIR /app
@@ -7,27 +7,33 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install ALL dependencies (including devDependencies for build)
-RUN npm ci
+# Install dependencies
+RUN npm ci --only=production
 
 # Copy source code
 COPY . .
 
-# Build the application
-RUN npm run build
+# Production stage
+FROM node:20-alpine AS production
 
-# Remove devDependencies after build
-RUN npm prune --production
+# Set working directory
+WORKDIR /app
 
-# Create logs directory
-RUN mkdir -p logs
+# Copy package files
+COPY package*.json ./
+
+# Install only production dependencies
+RUN npm ci --only=production
+
+# Copy application from builder stage
+COPY --from=builder /app/server.js ./
 
 # Expose port
 EXPOSE 3001
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:3001/health || exit 1
+  CMD node -e "require('http').get('http://localhost:3001/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
 
 # Start the application
 CMD ["npm", "start"] 

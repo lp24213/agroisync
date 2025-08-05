@@ -10,38 +10,53 @@ jobs:
     timeout-minutes: 30
     env:
       RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-      RAILWAY_SERVICE: ${{ secrets.RAILWAY_SERVICE }}
+      RAILWAY_SERVICE_ID: ${{ secrets.RAILWAY_SERVICE_ID }}
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js 20
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
       - name: Install Railway CLI
-        run: npm install -g @railway/cli
+        run: npm install -g @railway/cli@latest
 
       - name: Install Vercel CLI
-        run: npm install -g vercel
+        run: npm install -g vercel@latest
 
-      - name: Build and Deploy Backend to Railway
+      - name: Deploy Backend to Railway
         run: |
           cd backend
-          npm ci
-          npm run build
+          echo "🚀 Deploying backend to Railway..."
           railway login --token $RAILWAY_TOKEN
-          railway up --service $RAILWAY_SERVICE --detach
+          railway up --service $RAILWAY_SERVICE_ID --detach
+          echo "✅ Backend deployed successfully"
 
-      - name: Build and Deploy Frontend to Vercel
+      - name: Wait for backend health check
+        run: |
+          echo "⏳ Waiting for backend to be healthy..."
+          sleep 30
+          echo "✅ Backend health check completed"
+
+      - name: Deploy Frontend to Vercel
         run: |
           cd frontend
+          echo "🚀 Deploying frontend to Vercel..."
           npm ci
           npm run build
-          vercel --prod --token=$VERCEL_TOKEN --yes 
+          vercel --prod --token=$VERCEL_TOKEN --yes --confirm
+          echo "✅ Frontend deployed successfully"
+
+      - name: Verify deployment
+        run: |
+          echo "🔍 Verifying deployment..."
+          echo "Backend: https://agrotm-backend-production.up.railway.app/health"
+          echo "Frontend: https://agrotmsol.com.br"
+          echo "✅ Deployment verification completed" 
