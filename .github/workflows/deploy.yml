@@ -5,12 +5,15 @@ on:
     branches: [main]
 
 jobs:
-  deploy-backend:
+  deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
       RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
       RAILWAY_SERVICE: ${{ secrets.RAILWAY_SERVICE }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
     steps:
       - name: Checkout code
@@ -21,56 +24,24 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: backend/package-lock.json
 
       - name: Install Railway CLI
         run: npm install -g @railway/cli
 
-      - name: Build backend
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      - name: Build and Deploy Backend to Railway
         run: |
           cd backend
           npm ci
           npm run build
-
-      - name: Deploy backend to Railway
-        run: |
-          cd backend
           railway login --token $RAILWAY_TOKEN
           railway up --service $RAILWAY_SERVICE --detach
 
-  deploy-frontend:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs: deploy-backend
-    env:
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js 18
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: package-lock.json
-
-      - name: Install dependencies
+      - name: Build and Deploy Frontend to Vercel
         run: |
-          npm install
-          cd frontend && npm install
-
-      - name: Build frontend
-        run: cd frontend && npm run build
-
-      - name: Install Vercel CLI
-        run: npm install -g vercel
-
-      - name: Deploy to Vercel
-        run: |
-          vercel pull --yes --environment=production --token=$VERCEL_TOKEN
-          vercel build --token=$VERCEL_TOKEN
-          vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN --yes --confirm 
+          cd frontend
+          npm ci
+          npm run build
+          vercel --prod --token=$VERCEL_TOKEN --yes 
