@@ -1,0 +1,52 @@
+name: Test Build AGROTM
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: |
+          npm install
+          cd frontend && npm install
+          cd ../backend && npm install
+
+      - name: Test frontend build
+        run: cd frontend && npm run build
+
+      - name: Test backend build
+        run: cd backend && npm run build
+
+      - name: Run tests
+        run: |
+          npm run test:frontend
+          npm run test:backend
+
+      - name: Verify build artifacts
+        run: |
+          if [ ! -d "frontend/.next" ]; then
+            echo "❌ Frontend build failed"
+            exit 1
+          fi
+          if [ ! -d "backend/dist" ]; then
+            echo "❌ Backend build failed"
+            exit 1
+          fi
+          echo "✅ All builds successful" 

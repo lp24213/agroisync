@@ -1,52 +1,68 @@
-# 🔧 Configuração dos GitHub Secrets para Deploy Automático
+# Configuração dos Secrets do GitHub para AGROTM
 
-## 📋 Secrets Necessários
+## Secrets Necessários
 
-Para conectar o GitHub Actions com a Vercel, você precisa configurar os seguintes secrets:
+Para que o deploy automático funcione corretamente, você precisa configurar os seguintes secrets no seu repositório GitHub:
 
 ### 1. VERCEL_TOKEN
-- **Como obter:**
-  1. Acesse: https://vercel.com/account/tokens
-  2. Clique em "Create Token"
-  3. Nome: `AGROTM_GITHUB_ACTIONS`
-  4. Expiration: `No Expiration`
-  5. Scope: `Full Account`
-  6. Copie o token gerado
+- **O que é**: Token de autenticação da Vercel
+- **Como obter**: 
+  1. Acesse [vercel.com](https://vercel.com)
+  2. Vá em Settings > Tokens
+  3. Clique em "Create Token"
+  4. Dê um nome como "AGROTM Deploy"
+  5. Copie o token gerado
 
 ### 2. VERCEL_ORG_ID
-- **Como obter:**
-  1. Acesse: https://vercel.com/account
-  2. Vá em "Settings" → "General"
-  3. Copie o "Team ID" (luis-paulos-projects-146dd88b)
+- **O que é**: ID da organização da Vercel
+- **Como obter**:
+  1. Acesse [vercel.com](https://vercel.com)
+  2. Vá em Settings > General
+  3. Copie o "Team ID" (se for team) ou "User ID" (se for pessoal)
 
-## 🔧 Como Configurar no GitHub
+### 3. VERCEL_PROJECT_ID
+- **O que é**: ID do projeto na Vercel
+- **Como obter**:
+  1. Acesse seu projeto na Vercel
+  2. Vá em Settings > General
+  3. Copie o "Project ID"
 
-1. **Acesse o repositório:** https://github.com/lp24213/agrotm.sol
-2. **Vá em Settings** → **Secrets and variables** → **Actions**
-3. **Clique em "New repository secret"**
-4. **Adicione os secrets:**
+## Como Configurar
 
-```
-Name: VERCEL_TOKEN
-Value: [cole o token da Vercel]
+1. Acesse seu repositório no GitHub
+2. Vá em Settings > Secrets and variables > Actions
+3. Clique em "New repository secret"
+4. Adicione cada secret com o nome e valor correspondente
 
-Name: VERCEL_ORG_ID  
-Value: luis-paulos-projects-146dd88b
-```
+## Verificação
 
-## ✅ Após Configurar
+Após configurar os secrets, faça um push para a branch `main`:
 
-1. Faça um push para triggerar o deploy:
 ```bash
 git add .
-git commit -m "🚀 Deploy automático configurado"
+git commit -m "Trigger deployment - AGROTM ready for production"
 git push origin main
 ```
 
-2. **Acompanhe o deploy:** https://github.com/lp24213/agrotm.sol/actions
+O deploy deve iniciar automaticamente e você pode acompanhar o progresso em:
+- GitHub: Actions tab
+- Vercel: Dashboard do projeto
 
-## 🎯 Resultado
+## Troubleshooting
 
-Após configurar os secrets, cada push na branch `main` vai triggerar automaticamente o deploy na Vercel!
+Se o deploy falhar:
 
-**Projeto:** https://vercel.com/luis-paulos-projects-146dd88b/agrotm.sol
+1. **Verifique os secrets**: Confirme se todos os secrets estão configurados corretamente
+2. **Verifique o domínio**: Confirme se o domínio `agrotmsol.com.br` está configurado na Vercel
+3. **Verifique os logs**: Acesse os logs do GitHub Actions para identificar o erro específico
+4. **Teste localmente**: Execute `npm run build:all` localmente para verificar se há problemas de build
+
+## Estrutura do Deploy
+
+O deploy inclui:
+- ✅ Frontend (Next.js) - `/frontend`
+- ✅ Backend (Node.js) - `/backend` 
+- ✅ API Routes - `/api/*`
+- ✅ Assets e imagens
+- ✅ Configurações de segurança
+- ✅ Domínio personalizado: `agrotmsol.com.br`
