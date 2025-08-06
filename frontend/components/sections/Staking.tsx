@@ -12,12 +12,12 @@ export function Staking() {
     {
       icon: Shield,
       title: 'Segurança Avançada',
-      description: 'Proteção de última geração para seus investimentos no agro.',
+      description: 'Protocolos avançados de proteção para dados e investimentos agrícolas.',
     },
     {
       icon: TrendingUp,
       title: 'Rentabilidade Otimizada',
-      description: 'Ganhe rentabilidade com ativos agrícolas digitalizados.',
+      description: 'Rentabilize seus ativos agrícolas com segurança e transparência.',
     },
     {
       icon: Lock,
@@ -56,7 +56,7 @@ export function Staking() {
               Renda Passiva com <span className="text-[#00F0FF]">Ativos Digitais</span>
             </h2>
             <p className="text-xl text-[#00F0FF] mb-8 leading-relaxed font-orbitron">
-              Renda passiva com ativos agrícolas digitalizados, com segurança e liquidez garantida.
+              Rentabilize seus ativos agrícolas com segurança e transparência.
             </p>
             <p className="text-lg text-[#00F0FF] mb-8 leading-relaxed">
               Nossa plataforma oferece oportunidades de investimento seguras e lucrativas, permitindo que você ganhe rendimentos passivos enquanto contribui para o desenvolvimento do setor agrícola.

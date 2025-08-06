@@ -11,7 +11,7 @@ export function NFTSection() {
   const { t } = useTranslation('common');
 
   return (
-    <section className="py-24 bg-[#000000] relative overflow-hidden">
+    <section className="py-24 bg-black-matte relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 z-0 opacity-20">
         <div className="grid-animation"></div>
@@ -54,8 +54,8 @@ export function NFTSection() {
               <div className="hidden w-[600px] h-[400px] bg-gradient-to-br from-[#00FF7F]/10 to-[#000000] border-2 border-[#00FF7F]/30 rounded-3xl flex items-center justify-center shadow-neon">
                 <div className="text-center">
                   <div className="text-8xl mb-4">🎨</div>
-                  <div className="text-[#00FF7F] font-orbitron text-2xl mb-2">NFT Marketplace</div>
-                  <div className="text-gray-300 text-lg">Ativos Digitais Únicos</div>
+                  <div className="text-[#00F0FF] font-orbitron text-2xl mb-2">Tokenização Agrícola</div>
+                  <div className="text-[#00F0FF] text-lg">Produtos com Rastreabilidade</div>
                 </div>
               </div>
             </motion.div>
@@ -68,11 +68,11 @@ export function NFTSection() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="lg:order-1"
           >
-            <h2 className="font-orbitron text-4xl md:text-5xl text-[#00FF7F] font-bold tracking-wide drop-shadow-neon mb-8 animate-fadeIn">
-              NFT Marketplace
+            <h2 className="font-orbitron text-4xl md:text-5xl text-[#00F0FF] font-bold tracking-wide drop-shadow-neon mb-8 animate-fadeIn">
+              Tokenização <span className="text-[#00FF7F]">Agrícola</span>
             </h2>
-            <p className="text-xl text-gray-300 leading-relaxed mb-10">
-              Crie, negocie e coleciona ativos digitais agrícolas únicos com tecnologia blockchain de última geração.
+            <p className="text-xl text-[#00F0FF] leading-relaxed mb-10">
+              Tokenização real de produtos agrícolas com rastreabilidade confiável e segurança garantida.
             </p>
             <div className="space-y-6">
               <motion.div 
@@ -82,7 +82,7 @@ export function NFTSection() {
                 className="flex items-center space-x-4"
               >
                 <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon"></div>
-                <span className="text-gray-300 font-orbitron text-lg">NFTs Únicos</span>
+                <span className="text-[#00F0FF] font-orbitron text-lg">Rastreabilidade Total</span>
               </motion.div>
               <motion.div 
                 initial={{ opacity: 0, x: -20 }}
@@ -91,7 +91,7 @@ export function NFTSection() {
                 className="flex items-center space-x-4"
               >
                 <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon"></div>
-                <span className="text-gray-300 font-orbitron text-lg">Mercado Seguro</span>
+                <span className="text-[#00F0FF] font-orbitron text-lg">Segurança Avançada</span>
               </motion.div>
               <motion.div 
                 initial={{ opacity: 0, x: -20 }}
@@ -100,7 +100,7 @@ export function NFTSection() {
                 className="flex items-center space-x-4"
               >
                 <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon"></div>
-                <span className="text-gray-300 font-orbitron text-lg">Coleções Exclusivas</span>
+                <span className="text-[#00F0FF] font-orbitron text-lg">Transparência Garantida</span>
               </motion.div>
             </div>
             
@@ -115,19 +115,19 @@ export function NFTSection() {
                 <div className="bg-[#00FF7F]/20 p-4 rounded-full w-16 h-16 mx-auto mb-3 flex items-center justify-center shadow-neon">
                   <Palette className="text-[#00FF7F]" size={32} />
                 </div>
-                <div className="text-[#00FF7F] font-orbitron text-sm">Criar</div>
+                <div className="text-[#00F0FF] font-orbitron text-sm">Criar</div>
               </div>
               <div className="text-center">
                 <div className="bg-[#00FF7F]/20 p-4 rounded-full w-16 h-16 mx-auto mb-3 flex items-center justify-center shadow-neon">
                   <Shield className="text-[#00FF7F]" size={32} />
                 </div>
-                <div className="text-[#00FF7F] font-orbitron text-sm">Seguro</div>
+                <div className="text-[#00F0FF] font-orbitron text-sm">Seguro</div>
               </div>
               <div className="text-center">
                 <div className="bg-[#00FF7F]/20 p-4 rounded-full w-16 h-16 mx-auto mb-3 flex items-center justify-center shadow-neon">
                   <Users className="text-[#00FF7F]" size={32} />
                 </div>
-                <div className="text-[#00FF7F] font-orbitron text-sm">Comunidade</div>
+                <div className="text-[#00F0FF] font-orbitron text-sm">Comunidade</div>
               </div>
             </motion.div>
           </motion.div>

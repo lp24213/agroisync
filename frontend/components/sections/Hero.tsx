@@ -35,7 +35,7 @@ export function Hero() {
               transition={{ delay: 0.2, duration: 0.8 }}
               className="font-orbitron text-4xl md:text-6xl lg:text-7xl gradient-text font-bold tracking-wide mb-6 animate-fadeIn"
             >
-              Tecnologia e Inovação para o Agronegócio do Futuro
+              Transformando o Agronegócio com Tecnologia de Ponta
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
