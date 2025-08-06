@@ -2,347 +2,409 @@
 
 import { Layout } from '../../components/layout/Layout';
 import { motion } from 'framer-motion';
-import { TrendingUp, Users, Globe, Shield, Leaf, Zap } from 'lucide-react';
-import { Card } from '../../components/ui/Card';
+import { TrendingUp, Users, Globe, Shield, Leaf, Zap, Target, Eye, Heart, Award, Rocket } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Line, Bar, Doughnut } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend
-);
+import Image from 'next/image';
 
 export default function AboutPage() {
   const { t } = useTranslation('common');
 
-  // Dados fictícios para gráficos
-  const growthData = {
-    labels: ['2023 Q1', '2023 Q2', '2023 Q3', '2023 Q4', '2024 Q1', '2024 Q2'],
-    datasets: [
-      {
-        label: 'Volume de Negociações (Milhões USD)',
-        data: [2.5, 4.2, 6.8, 12.5, 18.3, 25.7],
-        borderColor: 'rgb(34, 197, 94)',
-        backgroundColor: 'rgba(34, 197, 94, 0.1)',
-        tension: 0.4,
-      },
-    ],
-  };
-
-  const userData = {
-    labels: ['Produtores', 'Compradores', 'Traders', 'Investidores'],
-    datasets: [
-      {
-        data: [45, 30, 15, 10],
-        backgroundColor: [
-          'rgba(34, 197, 94, 0.8)',
-          'rgba(59, 130, 246, 0.8)',
-          'rgba(168, 85, 247, 0.8)',
-          'rgba(251, 146, 60, 0.8)',
-        ],
-        borderWidth: 2,
-        borderColor: '#1f2937',
-      },
-    ],
-  };
-
-  const volumeData = {
-    labels: ['Soja', 'Milho', 'Café', 'Açúcar', 'Algodão', 'Outros'],
-    datasets: [
-      {
-        label: 'Volume Projetado (Milhões USD)',
-        data: [85, 65, 45, 35, 25, 40],
-        backgroundColor: 'rgba(34, 197, 94, 0.6)',
-        borderColor: 'rgb(34, 197, 94)',
-        borderWidth: 2,
-      },
-    ],
-  };
-
-  const stats = [
+  const values = [
     {
-      icon: TrendingUp,
-      value: 'R$ 2.5B',
-      label: 'Volume Projetado 2024',
-      color: 'text-green-400',
+      icon: Shield,
+      title: 'Transparência',
+      description: 'Todas as operações são transparentes e auditáveis, garantindo confiança total em nossas transações.',
+      color: 'text-[#00FF7F]'
     },
     {
-      icon: Users,
-      value: '25K+',
-      label: 'Produtores Conectados',
-      color: 'text-blue-400',
+      icon: Zap,
+      title: 'Inovação',
+      description: 'Sempre na vanguarda da tecnologia, desenvolvendo soluções inovadoras para o agronegócio.',
+      color: 'text-[#00FF7F]'
     },
     {
       icon: Globe,
-      value: '150+',
-      label: 'Países Alcançados',
-      color: 'text-purple-400',
+      title: 'Sustentabilidade',
+      description: 'Comprometidos com práticas agrícolas sustentáveis e responsabilidade ambiental.',
+      color: 'text-[#00FF7F]'
     },
     {
-      icon: Shield,
-      value: '99.9%',
-      label: 'Uptime da Plataforma',
-      color: 'text-orange-400',
+      icon: Heart,
+      title: 'Confiança',
+      description: 'Construindo relacionamentos duradouros baseados em confiança e resultados.',
+      color: 'text-[#00FF7F]'
+    }
+  ];
+
+  const team = [
+    {
+      name: 'Dr. Carlos Silva',
+      role: 'CEO & Fundador',
+      description: 'Especialista em agronegócio com mais de 15 anos de experiência em tecnologia e inovação.',
+      image: '/assets/images/team/ceo.jpg'
     },
+    {
+      name: 'Maria Santos',
+      role: 'CTO',
+      description: 'Líder em desenvolvimento de tecnologias avançadas para o setor agrícola.',
+      image: '/assets/images/team/cto.jpg'
+    },
+    {
+      name: 'João Oliveira',
+      role: 'Diretor de Operações',
+      description: 'Especialista em operações e logística com foco em eficiência e qualidade.',
+      image: '/assets/images/team/operations.jpg'
+    },
+    {
+      name: 'Ana Costa',
+      role: 'Diretora de Marketing',
+      description: 'Estratégica de marketing digital com expertise em crescimento de startups.',
+      image: '/assets/images/team/marketing.jpg'
+    }
+  ];
+
+  const impact = [
+    {
+      icon: TrendingUp,
+      title: 'Crescimento Exponencial',
+      value: '300%',
+      description: 'Crescimento anual em volume de transações'
+    },
+    {
+      icon: Users,
+      title: 'Comunidade Ativa',
+      value: '50K+',
+      description: 'Usuários ativos na plataforma'
+    },
+    {
+      icon: Globe,
+      title: 'Alcance Global',
+      value: '25+',
+      description: 'Países atendidos'
+    },
+    {
+      icon: Award,
+      title: 'Reconhecimento',
+      value: '15+',
+      description: 'Prêmios e certificações'
+    }
   ];
 
   return (
     <Layout>
-      {/* Hero Section */}
-      <section className="pt-20 pb-16 bg-gradient-to-br from-green-900 via-black to-green-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
-          >
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-              Sobre a <span className="text-green-400">AGROTM</span>
-            </h1>
-            <p className="text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-              Revolucionando o agronegócio através da tecnologia blockchain e DeFi
-            </p>
-          </motion.div>
+      <div className="min-h-screen bg-[#000000] text-[#ffffff] relative overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="grid-animation"></div>
         </div>
-      </section>
+        
+        {/* Scanlines Effect */}
+        <div className="absolute inset-0 scanlines opacity-10"></div>
 
-      {/* Missão e Visão */}
-      <section className="py-20 bg-agro-darker">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        {/* Hero Section */}
+        <section className="pt-32 pb-20 relative z-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-center"
+            >
+              <h1 className="text-5xl md:text-7xl font-orbitron font-bold gradient-text mb-6">
+                Sobre a <span className="text-[#00FF7F]">AGROTM</span>
+              </h1>
+              <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed font-orbitron">
+                Revolucionando o agronegócio através da tecnologia avançada e inovação sustentável
+              </p>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Nossa Missão */}
+        <section className="py-20 relative z-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+              >
+                <h2 className="text-4xl md:text-5xl font-orbitron font-bold gradient-text mb-8">
+                  Nossa <span className="text-[#00FF7F]">Missão</span>
+                </h2>
+                <p className="text-lg text-gray-300 leading-relaxed mb-6">
+                  A AGROTM é uma empresa de tecnologia especializada em soluções digitais para o agronegócio. 
+                  Nossa missão é modernizar e democratizar o acesso ao mercado agrícola através de tecnologia 
+                  avançada e inovação sustentável.
+                </p>
+                <p className="text-lg text-gray-300 leading-relaxed mb-8">
+                  Conectamos produtores, compradores e investidores em uma plataforma segura e transparente, 
+                  criando um ecossistema financeiro inovador que impulsiona o crescimento do setor agrícola.
+                </p>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
+                    <span className="text-gray-300 font-orbitron">Transparência total nas operações</span>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
+                    <span className="text-gray-300 font-orbitron">Inovação tecnológica constante</span>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
+                    <span className="text-gray-300 font-orbitron">Sustentabilidade ambiental</span>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
+                    <span className="text-gray-300 font-orbitron">Crescimento inclusivo</span>
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="flex justify-center"
+              >
+                <div className="relative">
+                  <Image 
+                    src="/assets/images/about/mission.jpg" 
+                    alt="Nossa Missão" 
+                    width={500} 
+                    height={400}
+                    className="rounded-3xl shadow-neon-green"
+                    unoptimized={true}
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      target.style.display = 'none';
+                      target.nextElementSibling?.classList.remove('hidden');
+                    }}
+                  />
+                  <div className="hidden w-[500px] h-[400px] bg-gradient-to-br from-[#00FF7F]/20 to-[#000000] border-2 border-[#00FF7F]/30 rounded-3xl flex items-center justify-center shadow-neon-green">
+                    <div className="text-center">
+                      <Target className="text-[#00FF7F] mx-auto mb-4" size={64} />
+                      <div className="text-[#00FF7F] font-orbitron text-2xl">Nossa Missão</div>
+                      <div className="text-gray-300 text-lg">Inovação e Sustentabilidade</div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* Nossa Visão */}
+        <section className="py-20 relative z-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="lg:order-2"
+              >
+                <h2 className="text-4xl md:text-5xl font-orbitron font-bold gradient-text mb-8">
+                  Nossa <span className="text-[#00FF7F]">Visão</span>
+                </h2>
+                <p className="text-lg text-gray-300 leading-relaxed mb-6">
+                  Ser a plataforma líder global em soluções digitais para o agronegócio, conectando milhões 
+                  de produtores e investidores em um ecossistema inovador e sustentável.
+                </p>
+                <p className="text-lg text-gray-300 leading-relaxed mb-8">
+                  Vislumbramos um futuro onde a tecnologia democratiza o acesso ao mercado agrícola, 
+                  criando oportunidades iguais para todos os participantes da cadeia produtiva.
+                </p>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
+                    <span className="text-gray-300 font-orbitron">Liderança global no setor</span>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
+                    <span className="text-gray-300 font-orbitron">Tecnologia de ponta</span>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
+                    <span className="text-gray-300 font-orbitron">Impacto social positivo</span>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
+                    <span className="text-gray-300 font-orbitron">Sustentabilidade ambiental</span>
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="lg:order-1 flex justify-center"
+              >
+                <div className="relative">
+                  <Image 
+                    src="/assets/images/about/vision.jpg" 
+                    alt="Nossa Visão" 
+                    width={500} 
+                    height={400}
+                    className="rounded-3xl shadow-neon-green"
+                    unoptimized={true}
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      target.style.display = 'none';
+                      target.nextElementSibling?.classList.remove('hidden');
+                    }}
+                  />
+                  <div className="hidden w-[500px] h-[400px] bg-gradient-to-br from-[#00FF7F]/20 to-[#000000] border-2 border-[#00FF7F]/30 rounded-3xl flex items-center justify-center shadow-neon-green">
+                    <div className="text-center">
+                      <Eye className="text-[#00FF7F] mx-auto mb-4" size={64} />
+                      <div className="text-[#00FF7F] font-orbitron text-2xl">Nossa Visão</div>
+                      <div className="text-gray-300 text-lg">Futuro Sustentável</div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* Nossos Valores */}
+        <section className="py-20 relative z-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
+              className="text-center mb-16"
             >
-              <h2 className="text-4xl font-bold text-white mb-6">
-                Nossa <span className="text-green-400">Missão</span>
+              <h2 className="text-4xl md:text-5xl font-orbitron font-bold gradient-text mb-4">
+                Nossos <span className="text-[#00FF7F]">Valores</span>
               </h2>
-              <p className="text-lg text-gray-400 mb-6">
-                A AGROTM é uma startup de tecnologia especializada em intermediação digital de produtos agro e soluções blockchain. 
-                Nossa missão é modernizar o agronegócio com DeFi, Web3 e inteligência artificial para impulsionar a produção e o comércio global.
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto font-orbitron">
+                Construindo o futuro do agronegócio com princípios sólidos e inovação responsável
               </p>
-              <p className="text-lg text-gray-400 mb-6">
-                Lançamos a criptomoeda AGROTM, destinada a investimentos e transações seguras entre produtores, compradores e traders do agro, 
-                criando um ecossistema financeiro descentralizado e transparente.
-              </p>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-                  <span className="text-gray-300">Transparência total nas transações</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-3 h-3 bg-blue-400 rounded-full"></div>
-                  <span className="text-gray-300">Inovação tecnológica constante</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-3 h-3 bg-purple-400 rounded-full"></div>
-                  <span className="text-gray-300">Descentralização financeira</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-3 h-3 bg-orange-400 rounded-full"></div>
-                  <span className="text-gray-300">Sustentabilidade ambiental</span>
-                </div>
-              </div>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="grid grid-cols-2 gap-4"
-            >
-              {stats.map((stat, index) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {values.map((value, index) => (
                 <motion.div
-                  key={stat.label}
+                  key={value.title}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1, duration: 0.5 }}
                 >
-                  <Card className="text-center p-6 bg-agro-darker/80 border border-green-500/20">
-                    <stat.icon className={`w-8 h-8 mx-auto mb-3 ${stat.color}`} />
-                    <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
-                    <div className="text-gray-400 text-sm">{stat.label}</div>
-                  </Card>
+                  <div className="cyberpunk-card text-center p-8 backdrop-blur-sm">
+                    <value.icon className={`w-16 h-16 mx-auto mb-6 ${value.color}`} />
+                    <h3 className="text-2xl font-orbitron font-bold text-[#00FF7F] mb-4">{value.title}</h3>
+                    <p className="text-gray-300 leading-relaxed">{value.description}</p>
+                  </div>
                 </motion.div>
               ))}
-            </motion.div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Valores */}
-      <section className="py-20 bg-black">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl font-bold text-white mb-4">
-              Nossos <span className="text-green-400">Valores</span>
-            </h2>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Construindo o futuro do agronegócio com princípios sólidos
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              {
-                icon: Shield,
-                title: 'Transparência',
-                description: 'Todas as transações são públicas e verificáveis na blockchain',
-                color: 'text-green-400',
-              },
-              {
-                icon: Zap,
-                title: 'Inovação',
-                description: 'Sempre na vanguarda da tecnologia para o agronegócio',
-                color: 'text-blue-400',
-              },
-              {
-                icon: Globe,
-                title: 'Descentralização',
-                description: 'Eliminando intermediários desnecessários do processo',
-                color: 'text-purple-400',
-              },
-              {
-                icon: Leaf,
-                title: 'Sustentabilidade',
-                description: 'Promovendo práticas agrícolas sustentáveis e responsáveis',
-                color: 'text-orange-400',
-              },
-            ].map((value, index) => (
-              <motion.div
-                key={value.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-              >
-                <Card className="text-center p-6 bg-agro-darker/80 border border-green-500/20 hover:border-green-400/40 transition-colors">
-                  <value.icon className={`w-12 h-12 mx-auto mb-4 ${value.color}`} />
-                  <h3 className="text-xl font-bold text-white mb-3">{value.title}</h3>
-                  <p className="text-gray-400">{value.description}</p>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Gráficos e Estatísticas */}
-      <section className="py-20 bg-agro-darker">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl font-bold text-white mb-4">
-              Crescimento do <span className="text-green-400">Agronegócio Digital</span>
-            </h2>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Dados e projeções que mostram o potencial do mercado
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+        {/* Equipe AGROTM */}
+        <section className="py-20 relative z-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
+              className="text-center mb-16"
             >
-              <Card className="p-6 bg-agro-darker/80 border border-green-500/20">
-                <h3 className="text-xl font-bold text-white mb-4">Volume de Negociações</h3>
-                <Line data={growthData} options={{
-                  responsive: true,
-                  plugins: {
-                    legend: {
-                      labels: { color: '#9ca3af' }
-                    }
-                  },
-                  scales: {
-                    x: { ticks: { color: '#9ca3af' } },
-                    y: { ticks: { color: '#9ca3af' } }
-                  }
-                }} />
-              </Card>
+              <h2 className="text-4xl md:text-5xl font-orbitron font-bold gradient-text mb-4">
+                Equipe <span className="text-[#00FF7F]">AGROTM</span>
+              </h2>
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto font-orbitron">
+                Conheça os profissionais que estão revolucionando o agronegócio
+              </p>
             </motion.div>
 
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {team.map((member, index) => (
+                <motion.div
+                  key={member.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                >
+                  <div className="cyberpunk-card text-center p-6 backdrop-blur-sm">
+                    <div className="relative w-32 h-32 mx-auto mb-6">
+                      <Image 
+                        src={member.image} 
+                        alt={member.name} 
+                        width={128} 
+                        height={128}
+                        className="rounded-full object-cover"
+                        unoptimized={true}
+                        onError={(e) => {
+                          const target = e.currentTarget;
+                          target.style.display = 'none';
+                          target.nextElementSibling?.classList.remove('hidden');
+                        }}
+                      />
+                      <div className="hidden w-32 h-32 bg-gradient-to-br from-[#00FF7F]/20 to-[#000000] border-2 border-[#00FF7F]/30 rounded-full flex items-center justify-center shadow-neon-green">
+                        <Users className="text-[#00FF7F]" size={48} />
+                      </div>
+                    </div>
+                    <h3 className="text-xl font-orbitron font-bold text-[#00FF7F] mb-2">{member.name}</h3>
+                    <p className="text-gray-400 font-orbitron mb-3">{member.role}</p>
+                    <p className="text-gray-300 text-sm leading-relaxed">{member.description}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Impacto Tecnológico */}
+        <section className="py-20 relative z-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
+              className="text-center mb-16"
             >
-              <Card className="p-6 bg-agro-darker/80 border border-green-500/20">
-                <h3 className="text-xl font-bold text-white mb-4">Distribuição de Usuários</h3>
-                <Doughnut data={userData} options={{
-                  responsive: true,
-                  plugins: {
-                    legend: {
-                      labels: { color: '#9ca3af' }
-                    }
-                  }
-                }} />
-              </Card>
+              <h2 className="text-4xl md:text-5xl font-orbitron font-bold gradient-text mb-4">
+                Impacto <span className="text-[#00FF7F]">Tecnológico</span>
+              </h2>
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto font-orbitron">
+                Transformando o agronegócio através da inovação e tecnologia
+              </p>
             </motion.div>
-          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <Card className="p-6 bg-agro-darker/80 border border-green-500/20">
-              <h3 className="text-xl font-bold text-white mb-4 text-center">Volume Projetado por Produto</h3>
-              <Bar data={volumeData} options={{
-                responsive: true,
-                plugins: {
-                  legend: {
-                    labels: { color: '#9ca3af' }
-                  }
-                },
-                scales: {
-                  x: { ticks: { color: '#9ca3af' } },
-                  y: { ticks: { color: '#9ca3af' } }
-                }
-              }} />
-            </Card>
-          </motion.div>
-        </div>
-      </section>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {impact.map((item, index) => (
+                <motion.div
+                  key={item.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                >
+                  <div className="cyberpunk-card text-center p-8 backdrop-blur-sm">
+                    <item.icon className="w-16 h-16 mx-auto mb-6 text-[#00FF7F]" />
+                    <div className="text-4xl font-orbitron font-bold text-[#00FF7F] mb-2">{item.value}</div>
+                    <h3 className="text-xl font-orbitron font-bold text-white mb-2">{item.title}</h3>
+                    <p className="text-gray-300">{item.description}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
     </Layout>
   );
 } 
