@@ -2,8 +2,10 @@
 
 import { motion } from "framer-motion";
 import { Mail, MessageCircle, Phone } from "lucide-react";
+import { useTranslation } from 'react-i18next';
 
 export function Contact() {
+  const { t } = useTranslation();
   return (
     <section className="py-20 bg-black">
       <div className="container mx-auto px-4">
@@ -14,10 +16,10 @@ export function Contact() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl font-bold text-white mb-4">
-            Entre em Contato
+            {t('contactTitle')}
           </h2>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            Tem dúvidas? Fale conosco!
+            {t('contactSubtitle')}
           </p>
         </motion.div>
 
@@ -31,7 +33,7 @@ export function Contact() {
             <div className="bg-green-500/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
               <Mail className="text-green-400" size={32} />
             </div>
-            <h3 className="text-2xl font-bold text-white mb-4">Email</h3>
+            <h3 className="text-2xl font-bold text-white mb-4">{t('email')}</h3>
                             <p className="text-gray-400 mb-6">contato@agrotm.com.br</p>
             <p className="text-gray-400">Suporte 24/7</p>
           </motion.div>
@@ -59,7 +61,7 @@ export function Contact() {
             <div className="bg-purple-500/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
               <Phone className="text-purple-400" size={32} />
             </div>
-            <h3 className="text-2xl font-bold text-white mb-4">Telefone</h3>
+            <h3 className="text-2xl font-bold text-white mb-4">{t('phone')}</h3>
                             <p className="text-gray-400 mb-6">+55 (66) 99236-2830</p>
             <p className="text-gray-400">Seg-Sex 9h-18h</p>
           </motion.div>

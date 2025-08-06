@@ -3,8 +3,10 @@
 import React from 'react';
 import { Card } from '../ui/Card';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 export function About() {
+  const { t } = useTranslation();
   return (
     <section id="about" className="py-20 bg-agro-darker relative overflow-hidden">
       {/* Background Elements */}
@@ -54,17 +56,13 @@ export function About() {
             transition={{ duration: 0.8 }}
           >
             <h2 className="text-4xl font-bold text-white mb-6 text-glow">
-              Sobre a <span className="text-agro-green">AGROTM</span>
+              {t('aboutTitle')} <span className="text-agro-green">AGROTM</span>
             </h2>
             <p className="text-lg text-gray-400 mb-6">
-              A AGROTM é uma plataforma inovadora que combina tecnologia blockchain
-              com agricultura sustentável, criando oportunidades únicas de investimento
-              em DeFi.
+              {t('aboutDescription')}
             </p>
             <p className="text-lg text-gray-400 mb-6">
-              Nossa missão é democratizar o acesso ao financiamento agrícola
-              através da tecnologia blockchain, conectando investidores diretamente
-              a projetos agrícolas sustentáveis.
+              {t('mission')}
             </p>
             <div className="grid grid-cols-2 gap-6">
               <motion.div 
