@@ -1,92 +1,114 @@
 'use client';
 
-import { motion } from "framer-motion";
-import { Leaf, Cpu, Globe } from "lucide-react";
-import { SmartFarm } from "../ui/SmartFarm";
+import React from 'react';
+import { motion } from 'framer-motion';
+import Image from 'next/image';
+import { Zap, Shield, Leaf } from 'lucide-react';
 
-export function SmartFarmSection() {
+const SmartFarmSection: React.FC = () => {
   return (
-    <section className="py-20 bg-black-matte relative overflow-hidden">
-      {/* Background Elements */}
+    <section className="bg-black-matte py-20 px-4 relative overflow-hidden">
+      {/* Background Effects */}
       <div className="absolute inset-0 opacity-20">
         <div className="grid-animation"></div>
       </div>
-      
-      {/* Scanlines Effect */}
       <div className="absolute inset-0 scanlines opacity-10"></div>
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl font-orbitron font-bold text-[#00F0FF] mb-4">
-            Automação <span className="text-[#00FF7F]">Inteligente</span>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            Automação <span className="text-[#00bfff]">Inteligente</span>
           </h2>
-          <p className="text-xl text-[#00F0FF] max-w-2xl mx-auto">
-            Automação e inteligência artificial aplicadas ao agronegócio moderno
+          <p className="text-lg text-[#00bfff] max-w-3xl mx-auto">
+            Automação e inteligência artificial aplicadas ao agronegócio moderno.
           </p>
         </motion.div>
 
-        {/* Smart Farm Icon */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
-          className="flex justify-center mb-16"
-        >
-          <SmartFarm size="lg" className="drop-shadow-[0_0_30px_rgba(0,255,127,0.3)]" />
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Imagem Smart Farm */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="cyberpunk-card p-8 backdrop-blur-sm text-center"
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            className="relative"
           >
-            <div className="bg-[#00FF7F]/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-neon-green">
-              <Leaf className="text-[#00FF7F]" size={32} />
+            <div className="relative w-full h-[400px] rounded-2xl overflow-hidden">
+              <Image
+                src="/images/farm/smart-farm-futuristic.jpg"
+                alt="Smart Farm Futurista - Automação Inteligente"
+                fill
+                className="object-cover"
+                unoptimized={true}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
             </div>
-            <h3 className="text-2xl font-orbitron font-bold text-[#00F0FF] mb-4">Sustentável</h3>
-            <p className="text-[#00F0FF] mb-6">Práticas agrícolas responsáveis</p>
-            <div className="text-3xl font-orbitron font-bold text-[#00FF7F] mb-2">100%</div>
-            <p className="text-[#00F0FF]">Verificado</p>
           </motion.div>
 
+          {/* Conteúdo */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="cyberpunk-card p-8 backdrop-blur-sm text-center"
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            className="space-y-8"
           >
-            <div className="bg-[#00FF7F]/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-neon-green">
-              <Cpu className="text-[#00FF7F]" size={32} />
-            </div>
-            <h3 className="text-2xl font-orbitron font-bold text-[#00F0FF] mb-4">IoT</h3>
-            <p className="text-[#00F0FF] mb-6">Sensores inteligentes avançados</p>
-            <div className="text-3xl font-orbitron font-bold text-[#00FF7F] mb-2">24/7</div>
-            <p className="text-[#00F0FF]">Monitoramento</p>
-          </motion.div>
+            {/* Features */}
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-[#00bfff]/20 rounded-lg flex items-center justify-center shadow-neon-blue">
+                  <Zap className="w-6 h-6 text-[#00bfff]" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-[#00bfff] mb-2">Automação Completa</h3>
+                  <p className="text-base text-[#00bfff]">Sistemas inteligentes que otimizam todos os processos agrícolas.</p>
+                </div>
+              </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="cyberpunk-card p-8 backdrop-blur-sm text-center"
-          >
-            <div className="bg-[#00FF7F]/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-neon-green">
-              <Globe className="text-[#00FF7F]" size={32} />
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-[#00bfff]/20 rounded-lg flex items-center justify-center shadow-neon-blue">
+                  <Shield className="w-6 h-6 text-[#00bfff]" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-[#00bfff] mb-2">Monitoramento 24/7</h3>
+                  <p className="text-base text-[#00bfff]">Controle contínuo de todos os parâmetros da fazenda.</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-[#00bfff]/20 rounded-lg flex items-center justify-center shadow-neon-blue">
+                  <Leaf className="w-6 h-6 text-[#00bfff]" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-[#00bfff] mb-2">Sustentabilidade</h3>
+                  <p className="text-base text-[#00bfff]">Práticas agrícolas responsáveis e eficientes.</p>
+                </div>
+              </div>
             </div>
-            <h3 className="text-2xl font-orbitron font-bold text-[#00F0FF] mb-4">Global</h3>
-            <p className="text-[#00F0FF] mb-6">Acesso mundial integrado</p>
-            <div className="text-3xl font-orbitron font-bold text-[#00FF7F] mb-2">150+</div>
-            <p className="text-[#00F0FF]">Países</p>
+
+            {/* Estatísticas */}
+            <div className="grid grid-cols-3 gap-6 pt-8">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-[#00bfff] mb-2">100%</div>
+                <div className="text-sm text-[#00bfff]">Verificado</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-[#00bfff] mb-2">24/7</div>
+                <div className="text-sm text-[#00bfff]">Monitoramento</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-[#00bfff] mb-2">150+</div>
+                <div className="text-sm text-[#00bfff]">Países</div>
+              </div>
+            </div>
           </motion.div>
         </div>
       </div>
     </section>
   );
-} 
+};
+
+export default SmartFarmSection; 
