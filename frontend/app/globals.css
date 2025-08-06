@@ -599,3 +599,31 @@
 .animated-underline:hover::after {
   width: 100%;
 }
+
+/* AGROTM Premium Utilities */
+@layer utilities {
+  .text-neonBlue {
+    color: #00f0ff;
+  }
+  .shadow-neon {
+    box-shadow: 0 0 20px #00f0ff80;
+  }
+  .font-orbitron {
+    font-family: 'Orbitron', 'Space Grotesk', 'Outfit', sans-serif;
+  }
+  .bg-black-matte {
+    background-color: #0a0a0a;
+  }
+  .border-neonBlue {
+    border-color: #00f0ff;
+  }
+  .hover\:shadow-neon:hover {
+    box-shadow: 0 0 30px #00f0ff80;
+  }
+  .animate-fadeIn {
+    animation: fadeIn 0.8s ease-out;
+  }
+}
+
+/* Import Orbitron font */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');

@@ -10,7 +10,7 @@ export function StakingSection() {
   const { t } = useTranslation('common');
 
   return (
-    <section className="py-20 bg-agro-darker relative overflow-hidden">
+    <section className="py-20 bg-black-matte relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 z-0 opacity-20">
         <div className="grid-animation"></div>
@@ -22,58 +22,72 @@ export function StakingSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <h2 className="text-4xl font-bold text-white mb-6 text-glow">
-              {t('stakingFarming')} <span className="text-agro-purple">AGROTM</span>
+            <h2 className="font-orbitron text-4xl md:text-5xl text-neonBlue mb-6 animate-fadeIn">
+              Staking & Farming
             </h2>
-            <p className="text-lg text-gray-400 mb-6">
-              {t('stakingDescription')}
+            <p className="text-lg md:text-xl text-gray-300 leading-relaxed mb-8">
+              Earn rewards through DeFi staking and yield farming with competitive APY rates.
             </p>
             <div className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-3 h-3 bg-agro-purple rounded-full"></div>
-                <span className="text-gray-300">{t('highYieldStaking')}</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <div className="w-3 h-3 bg-agro-green rounded-full"></div>
-                <span className="text-gray-300">{t('liquidityMining')}</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <div className="w-3 h-3 bg-agro-blue rounded-full"></div>
-                <span className="text-gray-300">{t('governanceRights')}</span>
-              </div>
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+                className="flex items-center space-x-3"
+              >
+                <div className="w-3 h-3 bg-neonBlue rounded-full shadow-neon"></div>
+                <span className="text-gray-300 font-orbitron">High Yield Staking</span>
+              </motion.div>
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+                className="flex items-center space-x-3"
+              >
+                <div className="w-3 h-3 bg-neonBlue rounded-full shadow-neon"></div>
+                <span className="text-gray-300 font-orbitron">Liquidity Mining</span>
+              </motion.div>
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.6, duration: 0.6 }}
+                className="flex items-center space-x-3"
+              >
+                <div className="w-3 h-3 bg-neonBlue rounded-full shadow-neon"></div>
+                <span className="text-gray-300 font-orbitron">Governance Rights</span>
+              </motion.div>
             </div>
           </motion.div>
           
           <motion.div 
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
             className="flex justify-center"
           >
-            <Card className="bg-agro-darker/80 border border-agro-purple/20 backdrop-blur-sm overflow-hidden relative group cyberpunk-card">
-              <div className="absolute inset-0 bg-gradient-to-r from-agro-purple/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-agro-purple to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-              <div className="absolute bottom-0 right-0 w-full h-0.5 bg-gradient-to-r from-agro-purple to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-              
-              <div className="relative z-10 p-6">
-                <Image 
-                  src="/assets/images/staking/staking-farming.png" 
-                  alt="Staking & Farming" 
-                  width={400} 
-                  height={300}
-                  className="w-full h-auto rounded-lg border border-agro-purple/20"
-                  onError={(e) => {
-                    e.currentTarget.src = "/images/placeholder.svg";
-                  }}
-                />
-              </div>
-            </Card>
+            <motion.div
+              whileHover={{ scale: 1.05, rotateY: 5 }}
+              transition={{ duration: 0.3 }}
+              className="relative"
+            >
+              <Image 
+                src="/assets/images/staking/staking-farming.png" 
+                alt="AGROTM Staking & Farming" 
+                width={600} 
+                height={400}
+                className="rounded-2xl shadow-neon hover:shadow-neon transition-all duration-500"
+                unoptimized={true}
+                onError={(e) => {
+                  e.currentTarget.src = "/images/placeholder.svg";
+                }}
+              />
+            </motion.div>
           </motion.div>
         </div>
       </div>

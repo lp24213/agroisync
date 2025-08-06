@@ -20,6 +20,7 @@ module.exports = {
         'space-grotesk': ['Space Grotesk', 'sans-serif'],
         'poppins': ['Poppins', 'sans-serif'],
         'inter': ['Inter', 'sans-serif'],
+        'orbitron': ['Orbitron', 'Space Grotesk', 'Outfit', 'sans-serif'],
       },
       colors: {
         border: 'hsl(var(--border))',
@@ -71,6 +72,7 @@ module.exports = {
         'agro-gray-light': '#9ca3af',
         'agro-gray-dark': '#374151',
         'agro-neon': '#00ff88',
+        'neonBlue': '#00f0ff',
       },
       borderRadius: {
         lg: 'var(--radius)',

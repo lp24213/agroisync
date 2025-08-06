@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 interface StakingFarmingProps {
   size?: 'sm' | 'md' | 'lg';
@@ -16,106 +17,35 @@ export function StakingFarming({ size = 'md', className = '' }: StakingFarmingPr
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5 }}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
       className={`${sizeClasses[size]} ${className}`}
     >
-      <svg viewBox="0 0 120 120" className="w-full h-full">
-        {/* Frame principal */}
-        <rect
-          x="5"
-          y="5"
-          width="110"
-          height="110"
-          rx="8"
-          fill="none"
-          stroke="#00ffff"
-          strokeWidth="2"
-          className="drop-shadow-[0_0_15px_rgba(0,255,255,0.6)]"
+      <motion.div
+        whileHover={{ scale: 1.05, rotateY: 5 }}
+        transition={{ duration: 0.3 }}
+        className="relative w-full h-full"
+      >
+        <Image
+          src="/assets/images/staking/staking-farming.png"
+          alt="AGROTM Staking & Farming"
+          width={600}
+          height={400}
+          className="rounded-2xl shadow-neon hover:shadow-neon transition-all duration-500 w-full h-full object-cover"
+          unoptimized={true}
         />
         
-        {/* Título */}
-        <text x="60" y="20" textAnchor="middle" className="text-[6px] fill-cyan-400 font-bold">
-          STAKING / FARMING
-        </text>
-        
-        {/* Planta central */}
-        <path
-          d="M50 70 L60 50 L70 70 L60 80 Z"
-          fill="none"
-          stroke="#00ffff"
-          strokeWidth="2"
-          className="drop-shadow-[0_0_10px_rgba(0,255,255,0.7)]"
-        />
-        
-        {/* Planta esquerda */}
-        <path
-          d="M35 75 L40 60 L45 75 L40 80 Z"
-          fill="none"
-          stroke="#00ffff"
-          strokeWidth="1.5"
-          className="drop-shadow-[0_0_8px_rgba(0,255,255,0.6)]"
-        />
-        
-        {/* Planta direita */}
-        <path
-          d="M75 75 L80 60 L85 75 L80 80 Z"
-          fill="none"
-          stroke="#00ffff"
-          strokeWidth="1.5"
-          className="drop-shadow-[0_0_8px_rgba(0,255,255,0.6)]"
-        />
-        
-        {/* Raízes de circuito */}
-        <path
-          d="M40 80 L30 85 L40 90 M60 80 L50 85 L60 90 M80 80 L70 85 L80 90"
-          fill="none"
-          stroke="#00ffff"
-          strokeWidth="1"
-          className="drop-shadow-[0_0_5px_rgba(0,255,255,0.5)]"
-        />
-        
-        {/* Linhas de circuito no solo */}
-        <line x1="25" y1="95" x2="35" y2="95" stroke="#00ffff" strokeWidth="1" opacity="0.6" />
-        <line x1="45" y1="95" x2="55" y2="95" stroke="#00ffff" strokeWidth="1" opacity="0.6" />
-        <line x1="65" y1="95" x2="75" y2="95" stroke="#00ffff" strokeWidth="1" opacity="0.6" />
-        <line x1="85" y1="95" x2="95" y2="95" stroke="#00ffff" strokeWidth="1" opacity="0.6" />
-        
-        {/* Ícone de moedas com checkmark */}
-        <rect x="80" y="25" width="25" height="25" rx="4" fill="none" stroke="#00ffff" strokeWidth="1.5" />
-        
-        {/* Pilha de moedas */}
-        <circle cx="85" cy="35" r="3" fill="none" stroke="#00ffff" strokeWidth="1" />
-        <circle cx="90" cy="35" r="3" fill="none" stroke="#00ffff" strokeWidth="1" />
-        <circle cx="95" cy="35" r="3" fill="none" stroke="#00ffff" strokeWidth="1" />
-        <circle cx="100" cy="35" r="3" fill="none" stroke="#00ffff" strokeWidth="1" />
-        
-        {/* Checkmark */}
-        <path
-          d="M87 42 L90 45 L93 42"
-          fill="none"
-          stroke="#00ffff"
-          strokeWidth="1.5"
-          className="drop-shadow-[0_0_5px_rgba(0,255,255,0.8)]"
-        />
-        
-        {/* Linhas de conexão */}
-        <path
-          d="M70 55 Q80 50 85 35"
-          fill="none"
-          stroke="#00ffff"
-          strokeWidth="1"
-          opacity="0.4"
-          className="drop-shadow-[0_0_5px_rgba(0,255,255,0.3)]"
-        />
-        
-        {/* Partículas de fundo */}
-        <circle cx="20" cy="30" r="0.5" fill="#00ffff" opacity="0.6" />
-        <circle cx="100" cy="20" r="0.5" fill="#00ffff" opacity="0.6" />
-        <circle cx="15" cy="80" r="0.5" fill="#00ffff" opacity="0.6" />
-        <circle cx="105" cy="70" r="0.5" fill="#00ffff" opacity="0.6" />
-      </svg>
+        {/* Overlay com texto premium */}
+        <div className="absolute inset-0 bg-black/40 rounded-2xl flex flex-col justify-center items-center">
+          <h2 className="font-orbitron text-2xl md:text-3xl text-neonBlue mb-2 animate-fadeIn">
+            Staking & Farming
+          </h2>
+          <p className="text-sm md:text-base text-gray-300 leading-relaxed text-center px-4">
+            Earn rewards through DeFi staking and yield farming
+          </p>
+        </div>
+      </motion.div>
     </motion.div>
   );
 } 
