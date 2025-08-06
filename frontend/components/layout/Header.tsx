@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
+import { useTranslation } from 'next-i18next';
 import { Menu, X, Globe, ChevronDown } from 'lucide-react';
 
 const supportedLanguages = [
@@ -13,22 +14,18 @@ const supportedLanguages = [
 ];
 
 export function Header() {
+  const { t, i18n } = useTranslation('common');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
-  const [currentLanguage, setCurrentLanguage] = useState('pt');
+  const [currentLanguage, setCurrentLanguage] = useState(i18n.language || 'pt');
   const languageRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const pathname = usePathname();
 
   // Detectar idioma atual
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('agrotm-language');
-      if (saved) {
-        setCurrentLanguage(saved);
-      }
-    }
-  }, []);
+    setCurrentLanguage(i18n.language || 'pt');
+  }, [i18n.language]);
 
   // Fechar dropdown quando clicar fora
   useEffect(() => {
@@ -44,14 +41,16 @@ export function Header() {
 
   // Trocar idioma
   const handleLanguageChange = (languageCode: string) => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('agrotm-language', languageCode);
-    }
     setCurrentLanguage(languageCode);
     setIsLanguageOpen(false);
     
-    // Recarregar a página com o novo idioma
-    window.location.reload();
+    // Mudar idioma usando next-i18next
+    i18n.changeLanguage(languageCode);
+    
+    // Atualizar URL com o novo locale
+    const currentPath = pathname;
+    const newPath = currentPath.replace(`/${i18n.language}`, `/${languageCode}`);
+    router.push(newPath);
   };
 
   // Obter idioma atual
@@ -74,19 +73,19 @@ export function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <Link href="/" className="text-gray-300 hover:text-cyan-400 transition-colors">
-              Início
+              {t('header.home')}
             </Link>
             <Link href="/dashboard" className="text-gray-300 hover:text-cyan-400 transition-colors">
-              Dashboard
+              {t('header.dashboard')}
             </Link>
             <Link href="/staking" className="text-gray-300 hover:text-cyan-400 transition-colors">
-              Staking
+              {t('header.staking')}
             </Link>
             <Link href="/about" className="text-gray-300 hover:text-cyan-400 transition-colors">
-              Sobre
+              {t('header.about')}
             </Link>
             <Link href="/contact" className="text-gray-300 hover:text-cyan-400 transition-colors">
-              Contato
+              {t('header.contact')}
             </Link>
           </nav>
 
@@ -133,7 +132,7 @@ export function Header() {
               href="/dashboard"
               className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-6 py-2 rounded-lg hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 font-medium"
             >
-              Começar Agora
+              {t('header.getStarted')}
             </Link>
           </div>
 
@@ -157,35 +156,35 @@ export function Header() {
                   className="block text-gray-300 hover:text-cyan-400 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Início
+                  {t('header.home')}
                 </Link>
                 <Link
                   href="/dashboard"
                   className="block text-gray-300 hover:text-cyan-400 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Dashboard
+                  {t('header.dashboard')}
                 </Link>
                 <Link
                   href="/staking"
                   className="block text-gray-300 hover:text-cyan-400 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Staking
+                  {t('header.staking')}
                 </Link>
                 <Link
                   href="/about"
                   className="block text-gray-300 hover:text-cyan-400 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Sobre
+                  {t('header.about')}
                 </Link>
                 <Link
                   href="/contact"
                   className="block text-gray-300 hover:text-cyan-400 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Contato
+                  {t('header.contact')}
                 </Link>
               </nav>
 
@@ -220,7 +219,7 @@ export function Header() {
                   className="block w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-6 py-3 rounded-lg hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 font-medium text-center"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Começar Agora
+                  {t('header.getStarted')}
                 </Link>
               </div>
             </div>

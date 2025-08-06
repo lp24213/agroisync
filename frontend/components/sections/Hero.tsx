@@ -5,10 +5,10 @@ import { ArrowRight, TrendingUp, Shield, Coins } from "lucide-react";
 import { PremiumFarmerIcon } from "../ui/PremiumFarmerIcon";
 import { Logo } from "../ui/Logo";
 import Link from "next/link";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 export function Hero() {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-green-900 via-black to-green-800">
       <div className="container mx-auto px-4 text-center">
@@ -21,7 +21,7 @@ export function Hero() {
             <Logo size="lg" iconOnly={true} />
           </div>
           <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-            🌱 {t('heroSubtitle')}
+            🌱 {t('hero.subtitle')}
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
@@ -30,7 +30,7 @@ export function Hero() {
               whileTap={{ scale: 0.95 }}
               className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-lg font-semibold flex items-center justify-center gap-2"
             >
-              {t('startNow')}
+              {t('hero.button')}
               <ArrowRight size={20} />
             </motion.button>
             <Link href="/documentation">
@@ -39,7 +39,7 @@ export function Hero() {
                 whileTap={{ scale: 0.95 }}
                 className="border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white px-8 py-4 rounded-lg font-semibold transition-colors"
               >
-                {t('documentation')}
+                {t('hero.docButton')}
               </motion.button>
             </Link>
           </div>
@@ -64,8 +64,8 @@ export function Hero() {
               <div className="bg-green-500/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                 <TrendingUp className="text-green-400" size={32} />
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">{t('stakingPremium')}</h3>
-              <p className="text-gray-400">{t('stakingPremium')} - {t('defiStakingDesc')}</p>
+              <h3 className="text-xl font-semibold text-white mb-2">{t('features.stakingPremium.title')}</h3>
+              <p className="text-gray-400">{t('features.stakingPremium.description')}</p>
             </motion.div>
 
             <motion.div
@@ -77,8 +77,8 @@ export function Hero() {
               <div className="bg-green-500/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                 <Shield className="text-green-400" size={32} />
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">{t('advancedSecurity')}</h3>
-              <p className="text-gray-400">{t('securityDesc')}</p>
+              <h3 className="text-xl font-semibold text-white mb-2">{t('features.advancedSecurity.title')}</h3>
+              <p className="text-gray-400">{t('features.advancedSecurity.description')}</p>
             </motion.div>
 
             <motion.div
@@ -90,8 +90,8 @@ export function Hero() {
               <div className="bg-green-500/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                 <Coins className="text-green-400" size={32} />
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">{t('agriculturalNFTs')}</h3>
-              <p className="text-gray-400">{t('agriculturalNFTsDesc')}</p>
+              <h3 className="text-xl font-semibold text-white mb-2">{t('features.agriculturalNFTs.title')}</h3>
+              <p className="text-gray-400">{t('features.agriculturalNFTs.description')}</p>
             </motion.div>
           </div>
         </motion.div>

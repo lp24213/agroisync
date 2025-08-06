@@ -1,5 +1,7 @@
 'use client';
 
+import { GetStaticProps } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Layout } from '../components/layout/Layout';
 import { Hero } from '../components/sections/Hero';
 import { Features } from '../components/sections/Features';
@@ -18,3 +20,11 @@ export default function Home() {
     </Layout>
   );
 }
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale || 'pt', ['common'])),
+    },
+  };
+};
