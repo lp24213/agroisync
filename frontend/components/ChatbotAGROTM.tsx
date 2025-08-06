@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, X, Send, Clock } from 'lucide-react';
+import { MessageCircle, X, Send, Clock, Sparkles } from 'lucide-react';
 import Image from 'next/image';
 
 interface Message {
@@ -14,6 +14,12 @@ interface Message {
 
 interface ChatbotData {
   [key: string]: string;
+}
+
+interface QuickSuggestion {
+  id: string;
+  text: string;
+  category: string;
 }
 
 export function ChatbotAGROTM() {
@@ -29,6 +35,7 @@ export function ChatbotAGROTM() {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [chatbotData, setChatbotData] = useState<ChatbotData>({});
+  const [quickSuggestions, setQuickSuggestions] = useState<QuickSuggestion[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -36,9 +43,28 @@ export function ChatbotAGROTM() {
   useEffect(() => {
     fetch('/data/chatbotData.json')
       .then((res) => res.json())
-      .then((data) => setChatbotData(data))
+      .then((data) => {
+        setChatbotData(data);
+        // Gerar sugestões rápidas baseadas nos dados
+        generateQuickSuggestions(data);
+      })
       .catch((error) => console.error('Erro ao carregar dados do chatbot:', error));
   }, []);
+
+  // Gerar sugestões rápidas
+  const generateQuickSuggestions = (data: ChatbotData) => {
+    const suggestions: QuickSuggestion[] = [
+      { id: '1', text: 'Como funciona o staking?', category: 'investimentos' },
+      { id: '2', text: 'Quero criar minha conta', category: 'conta' },
+      { id: '3', text: 'Preciso de suporte técnico', category: 'suporte' },
+      { id: '4', text: 'Quero ver o dashboard', category: 'dashboard' },
+      { id: '5', text: 'Como comprar AGROTM?', category: 'investimentos' },
+      { id: '6', text: 'Quero saber sobre NFTs', category: 'nft' },
+      { id: '7', text: 'Preciso de ajuda com carteira', category: 'tecnologia' },
+      { id: '8', text: 'Quero ver os planos', category: 'planos' },
+    ];
+    setQuickSuggestions(suggestions);
+  };
 
   // Scroll automático para mensagens mais recentes
   useEffect(() => {
@@ -79,12 +105,13 @@ export function ChatbotAGROTM() {
     return bestScore >= words.length * 0.5 ? chatbotData[bestMatch] : null;
   };
 
-  const handleSendMessage = async () => {
-    if (!inputValue.trim() || isLoading) return;
+  const handleSendMessage = async (messageText?: string) => {
+    const textToSend = messageText || inputValue.trim();
+    if (!textToSend || isLoading) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
-      text: inputValue.trim(),
+      text: textToSend,
       isUser: true,
       timestamp: new Date(),
     };
@@ -127,12 +154,16 @@ export function ChatbotAGROTM() {
     window.open('https://wa.me/5566992362830', '_blank');
   };
 
+  const handleQuickSuggestion = (suggestion: QuickSuggestion) => {
+    handleSendMessage(suggestion.text);
+  };
+
   return (
     <>
       {/* Chatbot Button */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 bg-[#00FF7F] text-black p-4 rounded-full shadow-neon hover:shadow-neon transition-all duration-300"
+        className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-[#00FF7F] to-[#00cc66] text-black p-4 rounded-full shadow-neon-green hover:shadow-neon-green transition-all duration-300"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
       >
@@ -166,17 +197,17 @@ export function ChatbotAGROTM() {
               initial={{ opacity: 0, y: 100, scale: 0.8 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 100, scale: 0.8 }}
-              className="relative w-full max-w-md h-96 bg-[#000000] border border-[#00FF7F]/20 rounded-2xl shadow-neon overflow-hidden"
+              className="relative w-full max-w-md h-[500px] bg-[#000000] border border-[#00FF7F]/20 rounded-2xl shadow-neon-green overflow-hidden"
             >
               {/* Header */}
-              <div className="bg-[#00FF7F]/10 border-b border-[#00FF7F]/20 p-4 flex items-center justify-between">
+              <div className="bg-gradient-to-r from-[#00FF7F]/10 to-[#00cc66]/10 border-b border-[#00FF7F]/20 p-4 flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-[#00FF7F] rounded-full flex items-center justify-center">
-                    <MessageCircle className="w-4 h-4 text-black" />
+                  <div className="w-8 h-8 bg-gradient-to-r from-[#00FF7F] to-[#00cc66] rounded-full flex items-center justify-center">
+                    <Sparkles className="w-4 h-4 text-black" />
                   </div>
                   <div>
                     <h3 className="font-orbitron font-semibold text-[#00FF7F]">AGROTM Assistant</h3>
-                    <p className="text-xs text-[#cccccc]">Online</p>
+                    <p className="text-xs text-[#cccccc]">Online • Respostas Automáticas</p>
                   </div>
                 </div>
                 <button
@@ -188,7 +219,7 @@ export function ChatbotAGROTM() {
               </div>
 
               {/* Messages */}
-              <div className="flex-1 p-4 overflow-y-auto space-y-4 h-64">
+              <div className="flex-1 p-4 overflow-y-auto space-y-4 h-80">
                 {messages.map((message) => (
                   <motion.div
                     key={message.id}
@@ -199,7 +230,7 @@ export function ChatbotAGROTM() {
                     <div
                       className={`max-w-xs p-3 rounded-2xl ${
                         message.isUser
-                          ? 'bg-[#00FF7F] text-black'
+                          ? 'bg-gradient-to-r from-[#00FF7F] to-[#00cc66] text-black'
                           : 'bg-[#00FF7F]/10 text-[#cccccc] border border-[#00FF7F]/20'
                       }`}
                     >
@@ -231,6 +262,30 @@ export function ChatbotAGROTM() {
                 <div ref={messagesEndRef} />
               </div>
 
+              {/* Quick Suggestions */}
+              {messages.length === 1 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="p-4 border-t border-[#00FF7F]/20"
+                >
+                  <p className="text-xs text-[#00FF7F] font-orbitron mb-3">💡 Sugestões rápidas:</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {quickSuggestions.slice(0, 4).map((suggestion) => (
+                      <motion.button
+                        key={suggestion.id}
+                        onClick={() => handleQuickSuggestion(suggestion)}
+                        className="bg-[#00FF7F]/10 border border-[#00FF7F]/20 text-[#00FF7F] p-2 rounded-lg hover:bg-[#00FF7F]/20 transition-colors text-xs font-orbitron"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        {suggestion.text}
+                      </motion.button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
               {/* Input */}
               <div className="p-4 border-t border-[#00FF7F]/20">
                 <div className="flex space-x-2">
@@ -241,12 +296,12 @@ export function ChatbotAGROTM() {
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder="Digite sua mensagem..."
-                    className="flex-1 bg-[#000000] border border-[#00FF7F]/20 rounded-xl px-4 py-2 text-[#cccccc] placeholder-[#cccccc]/50 focus:outline-none focus:border-[#00FF7F] transition-colors"
+                    className="flex-1 bg-[#000000] border border-[#00FF7F]/20 rounded-xl px-4 py-2 text-[#cccccc] placeholder-[#cccccc]/50 focus:outline-none focus:border-[#00FF7F] transition-colors font-orbitron"
                   />
                   <button
-                    onClick={handleSendMessage}
+                    onClick={() => handleSendMessage()}
                     disabled={!inputValue.trim() || isLoading}
-                    className="bg-[#00FF7F] text-black p-2 rounded-xl hover:bg-[#00d4e0] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-gradient-to-r from-[#00FF7F] to-[#00cc66] text-black p-2 rounded-xl hover:shadow-neon-green transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Send className="w-4 h-4" />
                   </button>
@@ -257,7 +312,7 @@ export function ChatbotAGROTM() {
                   onClick={openWhatsApp}
                   className="w-full mt-2 bg-[#00FF7F]/10 border border-[#00FF7F]/20 text-[#00FF7F] py-2 rounded-xl hover:bg-[#00FF7F]/20 transition-colors text-sm font-orbitron"
                 >
-                  💬 Falar com atendente
+                  💬 Falar com atendente humano
                 </button>
               </div>
             </motion.div>
