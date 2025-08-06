@@ -10,7 +10,7 @@ export function Hero() {
   const { t } = useTranslation('common');
 
   return (
-    <section className="min-h-screen bg-[#000000] relative overflow-hidden flex items-center">
+    <section className="min-h-screen bg-black-matte relative overflow-hidden flex items-center">
       {/* Background Elements */}
       <div className="absolute inset-0 opacity-20">
         <div className="grid-animation"></div>
@@ -35,7 +35,7 @@ export function Hero() {
               transition={{ delay: 0.2, duration: 0.8 }}
               className="font-orbitron text-4xl md:text-6xl lg:text-7xl gradient-text font-bold tracking-wide mb-6 animate-fadeIn"
             >
-              Soluções Tecnológicas de Alta Performance
+              Tecnologia e Inovação para o Agronegócio do Futuro
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -65,7 +65,7 @@ export function Hero() {
                   whileTap={{ scale: 0.95 }}
                   className="btn-secondary text-lg px-10 py-4 rounded-xl font-orbitron font-bold transition-all duration-300"
                 >
-                  Ver Documentação
+                  Saiba Mais
                 </motion.button>
               </Link>
             </motion.div>

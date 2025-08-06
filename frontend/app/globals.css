@@ -14,14 +14,14 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    font-size: 14px; /* Reduzido de 16px para 14px (12.5% menor) */
+    font-size: 13px; /* Reduzido para visual mais sofisticado */
   }
   
   body {
-    background-color: #000000;
+    background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%);
     color: #00F0FF;
     font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-size: 0.875rem; /* Reduzido de 1rem para 0.875rem (12.5% menor) */
+    font-size: 0.8rem; /* Reduzido para visual mais sofisticado */
   }
 
   /* Headings com fonte premium */
@@ -30,6 +30,7 @@
     font-weight: 600;
     letter-spacing: -0.025em;
     color: #00F0FF;
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
   }
 
   /* Títulos principais */
@@ -37,15 +38,18 @@
     font-weight: 700;
     letter-spacing: -0.02em;
     color: #00F0FF;
-    font-size: 2.5rem; /* Reduzido de 3rem */
+    font-size: 2.2rem; /* Reduzido para visual mais sofisticado */
+    text-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
   }
 
   h2 {
-    font-size: 2rem; /* Reduzido de 2.5rem */
+    font-size: 1.8rem; /* Reduzido para visual mais sofisticado */
+    text-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
   }
 
   h3 {
-    font-size: 1.5rem; /* Reduzido de 1.875rem */
+    font-size: 1.3rem; /* Reduzido para visual mais sofisticado */
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
   }
 
   /* Código e valores técnicos */
@@ -64,6 +68,7 @@
     font-family: 'Orbitron', 'Rajdhani', 'Space Grotesk', sans-serif;
     font-weight: 600;
     color: #00F0FF;
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
   }
 
   /* Texto de corpo */
@@ -72,7 +77,7 @@
     font-weight: 400;
     line-height: 1.6;
     color: #00F0FF;
-    font-size: 0.875rem; /* Reduzido de 1rem */
+    font-size: 0.8rem; /* Reduzido para visual mais sofisticado */
   }
 
   /* Texto de interface */
@@ -85,17 +90,20 @@
   /* Links */
   a {
     color: #00F0FF;
+    text-shadow: 0 0 5px rgba(0, 240, 255, 0.2);
   }
 
   /* Parágrafos */
   p {
     color: #00F0FF;
-    font-size: 0.875rem; /* Reduzido de 1rem */
+    font-size: 0.8rem; /* Reduzido para visual mais sofisticado */
+    text-shadow: 0 0 3px rgba(0, 240, 255, 0.2);
   }
 
   /* Labels e spans */
   label, span {
     color: #00F0FF;
+    text-shadow: 0 0 3px rgba(0, 240, 255, 0.2);
   }
 
   ::-webkit-scrollbar {
@@ -121,7 +129,7 @@
   /* Verde Neon Premium Intenso com Degradê Prateado */
   .btn-primary {
     background: linear-gradient(135deg, #00FF7F 0%, #C0C0C0 50%, #00FF7F 100%);
-    color: #000000;
+    color: #00F0FF;
     font-weight: 600;
     padding: 0.75rem 1.5rem;
     border-radius: 1rem;
@@ -131,13 +139,15 @@
     border: none;
     position: relative;
     overflow: hidden;
-    font-size: 0.8rem; /* Reduzido de 0.9rem */
+    font-size: 0.75rem; /* Reduzido para visual mais sofisticado */
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
   }
   
   .btn-primary:hover {
     background: linear-gradient(135deg, #C0C0C0 0%, #00F0FF 50%, #C0C0C0 100%);
     box-shadow: 0 0 40px rgba(0, 240, 255, 0.9);
     transform: translateY(-2px);
+    text-shadow: 0 0 12px rgba(0, 240, 255, 0.6);
   }
   
   .btn-primary::before {
@@ -167,14 +177,15 @@
     font-family: 'Orbitron', 'Rajdhani', sans-serif;
     position: relative;
     overflow: hidden;
-    font-size: 0.8rem; /* Reduzido de 0.9rem */
+    font-size: 0.75rem; /* Reduzido para visual mais sofisticado */
   }
   
   .btn-secondary:hover {
     background: #00FF7F;
-    color: #000000;
+    color: #00F0FF;
     box-shadow: 0 0 40px rgba(0, 255, 127, 0.9);
     transform: translateY(-2px);
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
   }
   
   .card {
@@ -317,7 +328,7 @@
   .cyberpunk-button {
     background: linear-gradient(45deg, #00FF7F, #C0C0C0);
     border: none;
-    color: #000000;
+    color: #00F0FF;
     padding: 0.75rem 1.5rem;
     border-radius: 1rem;
     font-weight: 600;
@@ -328,12 +339,14 @@
     transition: all 0.3s ease;
     box-shadow: 0 0 25px rgba(0, 255, 127, 0.6);
     font-family: 'Orbitron', 'Rajdhani', sans-serif;
-    font-size: 0.8rem; /* Reduzido de 0.9rem */
+    font-size: 0.75rem; /* Reduzido para visual mais sofisticado */
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
   }
   
   .cyberpunk-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 0 40px rgba(0, 255, 127, 0.9);
+    text-shadow: 0 0 12px rgba(0, 240, 255, 0.6);
   }
   
   .cyberpunk-button-outline {
@@ -350,13 +363,14 @@
     transition: all 0.3s ease;
     box-shadow: 0 0 25px rgba(0, 255, 127, 0.4);
     font-family: 'Orbitron', 'Rajdhani', sans-serif;
-    font-size: 0.8rem; /* Reduzido de 0.9rem */
+    font-size: 0.75rem; /* Reduzido para visual mais sofisticado */
   }
   
   .cyberpunk-button-outline:hover {
     background: #00FF7F;
-    color: #000000;
+    color: #00F0FF;
     box-shadow: 0 0 40px rgba(0, 255, 127, 0.9);
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
   }
   
   .cyberpunk-card {
@@ -715,7 +729,7 @@
     font-family: 'Orbitron', 'Rajdhani', 'Space Grotesk', 'Outfit', sans-serif;
   }
   .bg-black-matte {
-    background-color: #000000;
+    background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%);
   }
   .border-neonGreen {
     border-color: #00FF7F;

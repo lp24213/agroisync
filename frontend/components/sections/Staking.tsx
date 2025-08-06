@@ -12,12 +12,12 @@ export function Staking() {
     {
       icon: Shield,
       title: 'Segurança Avançada',
-      description: 'Protocolos de segurança de última geração para proteger seus ativos agrícolas',
+      description: 'Proteção de última geração para seus investimentos no agro.',
     },
     {
       icon: TrendingUp,
       title: 'Rentabilidade Otimizada',
-      description: 'Algoritmos inteligentes para maximizar seus retornos de forma sustentável',
+      description: 'Ganhe rentabilidade com ativos agrícolas digitalizados.',
     },
     {
       icon: Lock,
@@ -34,7 +34,7 @@ export function Staking() {
   ];
 
   return (
-    <section className="py-20 bg-[#000000] relative overflow-hidden">
+    <section className="py-20 bg-black-matte relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 opacity-20">
         <div className="grid-animation"></div>

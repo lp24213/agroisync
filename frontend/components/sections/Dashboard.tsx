@@ -40,7 +40,7 @@ export function Dashboard() {
   ];
 
   return (
-    <section className="py-20 bg-[#000000] relative overflow-hidden">
+    <section className="py-20 bg-black-matte relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 opacity-20">
         <div className="grid-animation"></div>
