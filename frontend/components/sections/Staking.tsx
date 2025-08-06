@@ -53,12 +53,12 @@ export function Staking() {
             transition={{ duration: 0.8 }}
           >
             <h2 className="text-4xl md:text-5xl font-orbitron font-bold gradient-text mb-6">
-              Rentabilize seus <span className="text-[#00F0FF]">Ativos</span>
+              Renda Passiva com <span className="text-[#00F0FF]">Ativos Digitais</span>
             </h2>
-            <p className="text-xl text-gray-300 mb-8 leading-relaxed font-orbitron">
-              Rentabilize seus ativos agrícolas com nossa plataforma de staking segura e automatizada.
+            <p className="text-xl text-[#00F0FF] mb-8 leading-relaxed font-orbitron">
+              Renda passiva com ativos agrícolas digitalizados, com segurança e liquidez garantida.
             </p>
-            <p className="text-lg text-gray-300 mb-8 leading-relaxed">
+            <p className="text-lg text-[#00F0FF] mb-8 leading-relaxed">
               Nossa plataforma oferece oportunidades de investimento seguras e lucrativas, permitindo que você ganhe rendimentos passivos enquanto contribui para o desenvolvimento do setor agrícola.
             </p>
 
@@ -80,7 +80,7 @@ export function Staking() {
                     <h3 className="text-lg font-orbitron font-bold text-[#00FF7F] mb-2">
                       {feature.title}
                     </h3>
-                    <p className="text-gray-300 leading-relaxed">
+                    <p className="text-[#00F0FF] leading-relaxed">
                       {feature.description}
                     </p>
                   </div>
@@ -124,8 +124,8 @@ export function Staking() {
               <div className="hidden w-[600px] h-[400px] bg-gradient-to-br from-[#00FF7F]/20 to-[#000000] border-2 border-[#00FF7F]/30 rounded-3xl flex items-center justify-center shadow-neon-green">
                 <div className="text-center">
                   <Coins className="text-[#00FF7F] mx-auto mb-4" size={64} />
-                  <div className="text-[#00FF7F] font-orbitron text-2xl">Rentabilização</div>
-                  <div className="text-gray-300 text-lg">Ativos Agrícolas</div>
+                  <div className="text-[#00F0FF] font-orbitron text-2xl">Rentabilização</div>
+                  <div className="text-[#00F0FF] text-lg">Ativos Agrícolas</div>
                 </div>
               </div>
             </div>
@@ -152,7 +152,7 @@ export function Staking() {
               <div className="text-3xl font-orbitron font-bold text-[#00FF7F] mb-2">
                 {stat.value}
               </div>
-              <div className="text-gray-400 font-orbitron">
+              <div className="text-[#00F0FF] font-orbitron">
                 {stat.label}
               </div>
             </motion.div>
@@ -176,7 +176,7 @@ export function Staking() {
               <Zap className="text-[#00FF7F]" size={40} />
             </div>
             <h3 className="text-2xl font-orbitron font-bold text-[#00FF7F] mb-4">Automação Inteligente</h3>
-            <p className="text-gray-300 text-lg leading-relaxed">
+            <p className="text-[#00F0FF] text-lg leading-relaxed">
               Processos automatizados que otimizam seus investimentos sem intervenção manual
             </p>
           </motion.div>
@@ -190,7 +190,7 @@ export function Staking() {
               <Shield className="text-[#00FF7F]" size={40} />
             </div>
             <h3 className="text-2xl font-orbitron font-bold text-[#00FF7F] mb-4">Proteção Garantida</h3>
-            <p className="text-gray-300 text-lg leading-relaxed">
+            <p className="text-[#00F0FF] text-lg leading-relaxed">
               Múltiplas camadas de segurança para proteger seus ativos e transações
             </p>
           </motion.div>
@@ -204,7 +204,7 @@ export function Staking() {
               <TrendingUp className="text-[#00FF7F]" size={40} />
             </div>
             <h3 className="text-2xl font-orbitron font-bold text-[#00FF7F] mb-4">Crescimento Sustentável</h3>
-            <p className="text-gray-300 text-lg leading-relaxed">
+            <p className="text-[#00F0FF] text-lg leading-relaxed">
               Estratégias de investimento focadas em crescimento consistente e responsável
             </p>
           </motion.div>

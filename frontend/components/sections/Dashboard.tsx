@@ -59,12 +59,12 @@ export function Dashboard() {
             transition={{ duration: 0.8 }}
           >
             <h2 className="text-4xl md:text-5xl font-orbitron font-bold gradient-text mb-6">
-              Painel de <span className="text-[#00F0FF]">Análise</span>
+              Monitoramento <span className="text-[#00F0FF]">Inteligente</span>
             </h2>
-            <p className="text-xl text-gray-300 mb-8 leading-relaxed font-orbitron">
-              Painel de análise em tempo real, com métricas avançadas para gestão inteligente do agronegócio.
+            <p className="text-xl text-[#00F0FF] mb-8 leading-relaxed font-orbitron">
+              Monitoramento inteligente com dados em tempo real para decisões estratégicas no agronegócio.
             </p>
-            <p className="text-lg text-gray-300 mb-8 leading-relaxed">
+            <p className="text-lg text-[#00F0FF] mb-8 leading-relaxed">
               Monitore em tempo real o desempenho dos seus investimentos agrícolas, acompanhe tendências de mercado e tome decisões baseadas em dados precisos e atualizados.
             </p>
             
@@ -95,7 +95,7 @@ export function Dashboard() {
                   <div className="text-2xl font-orbitron font-bold text-[#00F0FF] mb-1">
                     {stat.value}
                   </div>
-                  <div className="text-gray-400 text-sm font-orbitron">
+                  <div className="text-[#00F0FF] text-sm font-orbitron">
                     {stat.title}
                   </div>
                 </motion.div>
@@ -128,8 +128,8 @@ export function Dashboard() {
               <div className="hidden w-[600px] h-[400px] bg-gradient-to-br from-[#00FF7F]/20 to-[#000000] border-2 border-[#00FF7F]/30 rounded-3xl flex items-center justify-center shadow-neon-green">
                 <div className="text-center">
                   <BarChart3 className="text-[#00FF7F] mx-auto mb-4" size={64} />
-                  <div className="text-[#00FF7F] font-orbitron text-2xl">Painel Interativo</div>
-                  <div className="text-gray-300 text-lg">Análise em Tempo Real</div>
+                  <div className="text-[#00F0FF] font-orbitron text-2xl">Painel Interativo</div>
+                  <div className="text-[#00F0FF] text-lg">Análise em Tempo Real</div>
                 </div>
               </div>
             </div>
@@ -153,7 +153,7 @@ export function Dashboard() {
               <BarChart3 className="text-[#00FF7F]" size={40} />
             </div>
             <h3 className="text-2xl font-orbitron font-bold text-[#00FF7F] mb-4">Métricas Avançadas</h3>
-            <p className="text-gray-300 text-lg leading-relaxed">
+            <p className="text-[#00F0FF] text-lg leading-relaxed">
               Análise detalhada de performance com gráficos interativos e relatórios personalizados
             </p>
           </motion.div>
@@ -167,7 +167,7 @@ export function Dashboard() {
               <Activity className="text-[#00FF7F]" size={40} />
             </div>
             <h3 className="text-2xl font-orbitron font-bold text-[#00FF7F] mb-4">Tempo Real</h3>
-            <p className="text-gray-300 text-lg leading-relaxed">
+            <p className="text-[#00F0FF] text-lg leading-relaxed">
               Monitoramento contínuo com atualizações automáticas e alertas inteligentes
             </p>
           </motion.div>
@@ -181,7 +181,7 @@ export function Dashboard() {
               <PieChart className="text-[#00FF7F]" size={40} />
             </div>
             <h3 className="text-2xl font-orbitron font-bold text-[#00FF7F] mb-4">Gestão Inteligente</h3>
-            <p className="text-gray-300 text-lg leading-relaxed">
+            <p className="text-[#00F0FF] text-lg leading-relaxed">
               Ferramentas de gestão otimizadas para maximizar a eficiência operacional
             </p>
           </motion.div>

@@ -86,7 +86,7 @@ export default function AboutPage() {
               <h1 className="text-5xl md:text-7xl font-orbitron font-bold gradient-text mb-6">
                 Sobre a <span className="text-[#00F0FF]">AGROTM SOL</span>
               </h1>
-              <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed font-orbitron">
+              <p className="text-xl md:text-2xl text-[#00F0FF] max-w-4xl mx-auto leading-relaxed font-orbitron">
                 Conectando o agronegócio ao futuro digital, com soluções seguras, escaláveis e transparentes
               </p>
             </motion.div>
@@ -106,28 +106,28 @@ export default function AboutPage() {
                 <h2 className="text-4xl md:text-5xl font-orbitron font-bold gradient-text mb-8">
                   Sobre <span className="text-[#00F0FF]">Nós</span>
                 </h2>
-                <p className="text-lg text-gray-300 leading-relaxed mb-6">
-                  A AGROTM SOL é uma plataforma pertencente à startup AGROTM, especializada na intermediação de produtos do agronegócio. Utilizamos tecnologia avançada para conectar produtores, investidores e compradores, garantindo segurança, rastreabilidade e eficiência nas negociações agrícolas.
+                <p className="text-lg text-[#00F0FF] leading-relaxed mb-6">
+                  A AGROTM SOL é uma plataforma pertencente à startup AGROTM, especializada na intermediação de produtos do agronegócio. Conectamos produtores, investidores e compradores por meio de tecnologia avançada, garantindo segurança, rastreabilidade e eficiência em cada negociação.
                 </p>
-                <p className="text-lg text-gray-300 leading-relaxed mb-8">
+                <p className="text-lg text-[#00F0FF] leading-relaxed mb-8">
                   Nossa missão é modernizar e democratizar o acesso ao mercado agrícola através de tecnologia avançada e inovação sustentável, criando um ecossistema financeiro inovador que impulsiona o crescimento do setor agrícola.
                 </p>
                 <div className="space-y-4">
                   <div className="flex items-center space-x-4">
                     <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
-                    <span className="text-gray-300 font-orbitron">Tecnologia avançada</span>
+                    <span className="text-[#00F0FF] font-orbitron">Tecnologia avançada</span>
                   </div>
                   <div className="flex items-center space-x-4">
                     <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
-                    <span className="text-gray-300 font-orbitron">Segurança e rastreabilidade</span>
+                    <span className="text-[#00F0FF] font-orbitron">Segurança e rastreabilidade</span>
                   </div>
                   <div className="flex items-center space-x-4">
                     <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
-                    <span className="text-gray-300 font-orbitron">Eficiência nas negociações</span>
+                    <span className="text-[#00F0FF] font-orbitron">Eficiência nas negociações</span>
                   </div>
                   <div className="flex items-center space-x-4">
                     <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
-                    <span className="text-gray-300 font-orbitron">Conexão global</span>
+                    <span className="text-[#00F0FF] font-orbitron">Conexão global</span>
                   </div>
                 </div>
               </motion.div>
@@ -156,8 +156,8 @@ export default function AboutPage() {
                   <div className="hidden w-[500px] h-[400px] bg-gradient-to-br from-[#00FF7F]/20 to-[#000000] border-2 border-[#00FF7F]/30 rounded-3xl flex items-center justify-center shadow-neon-green">
                     <div className="text-center">
                       <Target className="text-[#00FF7F] mx-auto mb-4" size={64} />
-                      <div className="text-[#00FF7F] font-orbitron text-2xl">AGROTM SOL</div>
-                      <div className="text-gray-300 text-lg">Plataforma de Intermediação</div>
+                      <div className="text-[#00F0FF] font-orbitron text-2xl">AGROTM SOL</div>
+                      <div className="text-[#00F0FF] text-lg">Plataforma de Intermediação</div>
                     </div>
                   </div>
                 </div>
@@ -179,7 +179,7 @@ export default function AboutPage() {
               <h2 className="text-4xl md:text-5xl font-orbitron font-bold gradient-text mb-4">
                 Nossos <span className="text-[#00F0FF]">Valores</span>
               </h2>
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto font-orbitron">
+              <p className="text-xl text-[#00F0FF] max-w-3xl mx-auto font-orbitron">
                 Construindo o futuro do agronegócio com princípios sólidos e inovação responsável
               </p>
             </motion.div>
@@ -196,7 +196,7 @@ export default function AboutPage() {
                   <div className="cyberpunk-card text-center p-8 backdrop-blur-sm">
                     <value.icon className={`w-16 h-16 mx-auto mb-6 ${value.color}`} />
                     <h3 className="text-2xl font-orbitron font-bold text-[#00FF7F] mb-4">{value.title}</h3>
-                    <p className="text-gray-300 leading-relaxed">{value.description}</p>
+                    <p className="text-[#00F0FF] leading-relaxed">{value.description}</p>
                   </div>
                 </motion.div>
               ))}
@@ -217,7 +217,7 @@ export default function AboutPage() {
               <h2 className="text-4xl md:text-5xl font-orbitron font-bold gradient-text mb-4">
                 Impacto <span className="text-[#00F0FF]">Tecnológico</span>
               </h2>
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto font-orbitron">
+              <p className="text-xl text-[#00F0FF] max-w-3xl mx-auto font-orbitron">
                 Transformando o agronegócio através da inovação e tecnologia
               </p>
             </motion.div>
@@ -234,8 +234,8 @@ export default function AboutPage() {
                   <div className="cyberpunk-card text-center p-8 backdrop-blur-sm">
                     <item.icon className="w-16 h-16 mx-auto mb-6 text-[#00FF7F]" />
                     <div className="text-4xl font-orbitron font-bold text-[#00FF7F] mb-2">{item.value}</div>
-                    <h3 className="text-xl font-orbitron font-bold text-white mb-2">{item.title}</h3>
-                    <p className="text-gray-300">{item.description}</p>
+                    <h3 className="text-xl font-orbitron font-bold text-[#00F0FF] mb-2">{item.title}</h3>
+                    <p className="text-[#00F0FF]">{item.description}</p>
                   </div>
                 </motion.div>
               ))}

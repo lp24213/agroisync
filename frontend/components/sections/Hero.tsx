@@ -35,15 +35,15 @@ export function Hero() {
               transition={{ delay: 0.2, duration: 0.8 }}
               className="font-orbitron text-4xl md:text-6xl lg:text-7xl gradient-text font-bold tracking-wide mb-6 animate-fadeIn"
             >
-              {t('hero.title', 'Conectando o Agronegócio ao Futuro Digital')}
+              Soluções Tecnológicas de Alta Performance
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.8 }}
-              className="text-xl md:text-2xl text-gray-300 mb-12 max-w-4xl mx-auto font-orbitron leading-relaxed"
+              className="text-xl md:text-2xl text-[#00F0FF] mb-12 max-w-4xl mx-auto font-orbitron leading-relaxed"
             >
-              {t('hero.subtitle', 'Soluções seguras, escaláveis e transparentes para produtores, investidores e compradores.')}
+              Conectando o campo ao futuro digital com segurança, rastreabilidade e eficiência.
             </motion.p>
             
             <motion.div
@@ -57,7 +57,7 @@ export function Hero() {
                 whileTap={{ scale: 0.95 }}
                 className="btn-primary text-lg px-10 py-4 rounded-xl font-orbitron font-bold flex items-center justify-center gap-3"
               >
-                {t('hero.button', 'Começar Agora')}
+                Começar Agora
               </motion.button>
               <Link href="/documentation">
                 <motion.button
@@ -65,7 +65,7 @@ export function Hero() {
                   whileTap={{ scale: 0.95 }}
                   className="btn-secondary text-lg px-10 py-4 rounded-xl font-orbitron font-bold transition-all duration-300"
                 >
-                  {t('hero.docButton', 'Ver Documentação')}
+                  Ver Documentação
                 </motion.button>
               </Link>
             </motion.div>
@@ -95,8 +95,8 @@ export function Hero() {
               <div className="hidden w-[600px] h-[500px] bg-gradient-to-br from-[#00FF7F]/20 to-[#000000] border-2 border-[#00FF7F]/30 rounded-3xl flex items-center justify-center shadow-neon-green">
                 <div className="text-center">
                   <div className="text-8xl mb-4">🌱</div>
-                  <div className="text-[#00FF7F] font-orbitron text-2xl">Tecnologia no Agro</div>
-                  <div className="text-gray-300 text-lg">Soluções Digitais Avançadas</div>
+                  <div className="text-[#00F0FF] font-orbitron text-2xl">Tecnologia no Agro</div>
+                  <div className="text-[#00F0FF] text-lg">Soluções Digitais Avançadas</div>
                 </div>
               </div>
             </div>
@@ -118,8 +118,8 @@ export function Hero() {
             <div className="bg-[#00FF7F]/20 p-6 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center shadow-neon-green">
               <Zap className="text-[#00FF7F]" size={40} />
             </div>
-            <h3 className="text-2xl font-orbitron font-bold text-[#00FF7F] mb-4">{t('features.innovation.title', 'Inovação Contínua')}</h3>
-            <p className="text-gray-300 text-lg leading-relaxed">{t('features.innovation.description', 'Tecnologia avançada para transformar o setor agrícola')}</p>
+            <h3 className="text-2xl font-orbitron font-bold text-[#00FF7F] mb-4">Inovação Contínua</h3>
+            <p className="text-[#00F0FF] text-lg leading-relaxed">Tecnologia avançada para transformar o setor agrícola</p>
           </motion.div>
           <motion.div
             whileHover={{ scale: 1.05, y: -8 }}
@@ -129,8 +129,8 @@ export function Hero() {
             <div className="bg-[#00FF7F]/20 p-6 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center shadow-neon-green">
               <Shield className="text-[#00FF7F]" size={40} />
             </div>
-            <h3 className="text-2xl font-orbitron font-bold text-[#00FF7F] mb-4">{t('features.advancedSecurity.title', 'Segurança Digital')}</h3>
-            <p className="text-gray-300 text-lg leading-relaxed">{t('features.advancedSecurity.description', 'Protocolos de segurança de última geração para proteger dados e transações')}</p>
+            <h3 className="text-2xl font-orbitron font-bold text-[#00FF7F] mb-4">Segurança Digital</h3>
+            <p className="text-[#00F0FF] text-lg leading-relaxed">Proteção avançada para dados, transações e ativos agrícolas</p>
           </motion.div>
           <motion.div
             whileHover={{ scale: 1.05, y: -8 }}
@@ -140,8 +140,8 @@ export function Hero() {
             <div className="bg-[#00FF7F]/20 p-6 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center shadow-neon-green">
               <Leaf className="text-[#00FF7F]" size={40} />
             </div>
-            <h3 className="text-2xl font-orbitron font-bold text-[#00FF7F] mb-4">{t('features.sustainability.title', 'Sustentabilidade')}</h3>
-            <p className="text-gray-300 text-lg leading-relaxed">{t('features.sustainability.description', 'Compromisso com práticas agrícolas responsáveis e ecológicas')}</p>
+            <h3 className="text-2xl font-orbitron font-bold text-[#00FF7F] mb-4">Sustentabilidade</h3>
+            <p className="text-[#00F0FF] text-lg leading-relaxed">Compromisso com práticas agrícolas responsáveis e ecológicas</p>
           </motion.div>
         </motion.div>
 
@@ -159,7 +159,7 @@ export function Hero() {
             className="text-center"
           >
             <div className="text-4xl font-orbitron font-bold text-[#00FF7F] mb-2">10K+</div>
-            <div className="text-gray-400 font-orbitron">{t('stats.activeUsers', 'Usuários Ativos')}</div>
+            <div className="text-[#00F0FF] font-orbitron">Usuários Ativos</div>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -168,7 +168,7 @@ export function Hero() {
             className="text-center"
           >
             <div className="text-4xl font-orbitron font-bold text-[#00FF7F] mb-2">99.9%</div>
-            <div className="text-gray-400 font-orbitron">Uptime</div>
+            <div className="text-[#00F0FF] font-orbitron">Uptime</div>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -177,7 +177,7 @@ export function Hero() {
             className="text-center"
           >
             <div className="text-4xl font-orbitron font-bold text-[#00FF7F] mb-2">25+</div>
-            <div className="text-gray-400 font-orbitron">Países</div>
+            <div className="text-[#00F0FF] font-orbitron">Países</div>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -186,7 +186,7 @@ export function Hero() {
             className="text-center"
           >
             <div className="text-4xl font-orbitron font-bold text-[#00FF7F] mb-2">24/7</div>
-            <div className="text-gray-400 font-orbitron">Suporte</div>
+            <div className="text-[#00F0FF] font-orbitron">Suporte</div>
           </motion.div>
         </motion.div>
       </div>
