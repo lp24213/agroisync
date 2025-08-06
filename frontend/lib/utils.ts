@@ -5,6 +5,43 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// Validation utilities
+export const validation = {
+  isValidEmail: (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  },
+  
+  isValidAddress: (address: string): boolean => {
+    return /^[0-9a-fA-F]{40}$/.test(address);
+  },
+  
+  isValidNumber: (value: any): boolean => {
+    return !isNaN(parseFloat(value)) && isFinite(value);
+  },
+  
+  isValidUrl: (url: string): boolean => {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  },
+  
+  isRequired: (value: any): boolean => {
+    return value !== null && value !== undefined && value !== '';
+  },
+  
+  minLength: (value: string, min: number): boolean => {
+    return value.length >= min;
+  },
+  
+  maxLength: (value: string, max: number): boolean => {
+    return value.length <= max;
+  }
+};
+
 export function formatAddress(address: string, length: number = 6): string {
   if (!address) return '';
   if (address.length <= length * 2) return address;
