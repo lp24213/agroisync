@@ -25,21 +25,16 @@ export function Header() {
 
   // Detectar idioma atual
   useEffect(() => {
-    // Carregar idioma do localStorage
     if (typeof window !== 'undefined') {
       const savedLanguage = localStorage.getItem('agrotm-language');
-      if (savedLanguage && supportedLanguages.find(lang => lang.code === savedLanguage)) {
+      if (savedLanguage) {
         setCurrentLanguage(savedLanguage);
         i18n.changeLanguage(savedLanguage);
-      } else {
-        setCurrentLanguage(i18n.language || 'pt');
       }
-    } else {
-      setCurrentLanguage(i18n.language || 'pt');
     }
-  }, [i18n.language]);
+  }, [i18n]);
 
-  // Fechar dropdown quando clicar fora
+  // Fechar menu ao clicar fora
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (languageRef.current && !languageRef.current.contains(event.target as Node)) {
@@ -48,34 +43,17 @@ export function Header() {
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  // Fechar menu mobile quando clicar fora
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (isMenuOpen && !target.closest('.mobile-menu') && !target.closest('.mobile-menu-button')) {
-        setIsMenuOpen(false);
-      }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
     };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isMenuOpen]);
+  }, []);
 
   // Trocar idioma
   const handleLanguageChange = (languageCode: string) => {
     setCurrentLanguage(languageCode);
-    setIsLanguageOpen(false);
-    
-    // Mudar idioma usando react-i18next
     i18n.changeLanguage(languageCode);
-    
-    // Salvar no localStorage
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('agrotm-language', languageCode);
-    }
+    localStorage.setItem('agrotm-language', languageCode);
+    setIsLanguageOpen(false);
   };
 
   // Obter idioma atual
@@ -119,7 +97,7 @@ export function Header() {
                 pathname === '/dashboard' ? 'text-[#00FF7F]' : ''
               }`}
             >
-              Dashboard
+              {t('header.dashboard', 'Dashboard')}
             </Link>
             <Link 
               href="/staking" 
@@ -127,7 +105,7 @@ export function Header() {
                 pathname === '/staking' ? 'text-[#00FF7F]' : ''
               }`}
             >
-              Staking
+              {t('header.staking', 'Staking')}
             </Link>
             <Link 
               href="/nft-marketplace" 
@@ -138,12 +116,12 @@ export function Header() {
               NFTs
             </Link>
             <Link 
-              href="/farm" 
+              href="/about" 
               className={`text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300 font-orbitron ${
-                pathname === '/farm' ? 'text-[#00FF7F]' : ''
+                pathname === '/about' ? 'text-[#00FF7F]' : ''
               }`}
             >
-              Farm
+              {t('header.about', 'Sobre')}
             </Link>
             <Link 
               href="/contact" 
@@ -151,7 +129,7 @@ export function Header() {
                 pathname === '/contact' ? 'text-[#00FF7F]' : ''
               }`}
             >
-              Contato
+              {t('header.contact', 'Contato')}
             </Link>
           </nav>
 
@@ -160,73 +138,72 @@ export function Header() {
             <div className="relative" ref={languageRef}>
               <button
                 onClick={() => setIsLanguageOpen(!isLanguageOpen)}
-                className="flex items-center space-x-2 text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300"
+                className="flex items-center space-x-2 text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300 font-orbitron"
               >
-                <Globe className="w-4 h-4" />
-                <span className="font-orbitron">{getCurrentLanguage().flag}</span>
-                <ChevronDown className="w-4 h-4" />
+                <Globe size={16} />
+                <span>{getCurrentLanguage().flag}</span>
+                <ChevronDown size={12} />
               </button>
               
               {isLanguageOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-[#000000] border border-[#00FF7F]/20 rounded-lg shadow-lg py-2 z-50">
+                <div className="absolute top-full right-0 mt-2 bg-[#000000]/95 backdrop-blur-md border border-[#00FF7F]/20 rounded-xl shadow-neon-green min-w-[150px]">
                   {supportedLanguages.map((language) => (
                     <button
                       key={language.code}
                       onClick={() => handleLanguageChange(language.code)}
-                      className={`w-full text-left px-4 py-2 text-sm hover:bg-[#00FF7F]/10 transition-colors duration-300 ${
+                      className={`w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-[#00FF7F]/10 transition-colors duration-300 ${
                         currentLanguage === language.code ? 'text-[#00FF7F]' : 'text-[#cccccc]'
                       }`}
                     >
-                      <span className="mr-2">{language.flag}</span>
-                      {language.name}
+                      <span>{language.flag}</span>
+                      <span className="font-orbitron">{language.name}</span>
                     </button>
                   ))}
                 </div>
               )}
             </div>
 
-            {/* CTA Button */}
             <Link href="/dashboard">
-              <button className="bg-[#00FF7F] text-black px-6 py-2 rounded-xl font-orbitron font-semibold hover:bg-[#00d4e0] transition-all duration-300 shadow-neon">
-                Acessar
+              <button className="btn-primary text-sm px-6 py-2 rounded-xl font-orbitron font-bold">
+                {t('header.getStarted', 'Começar Agora')}
               </button>
             </Link>
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden mobile-menu-button p-2 text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300"
+            className="md:hidden text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300"
           >
-            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden mobile-menu absolute top-full left-0 right-0 bg-[#000000]/95 backdrop-blur-md border-b border-[#00FF7F]/20">
-            <div className="px-4 py-6 space-y-4">
+          <div className="md:hidden bg-[#000000]/95 backdrop-blur-md border-t border-[#00FF7F]/20">
+            <nav className="flex flex-col space-y-4 py-4">
               <Link 
                 href="/dashboard" 
-                className={`block text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300 font-orbitron ${
+                className={`px-4 py-2 text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300 font-orbitron ${
                   pathname === '/dashboard' ? 'text-[#00FF7F]' : ''
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
-                Dashboard
+                {t('header.dashboard', 'Dashboard')}
               </Link>
               <Link 
                 href="/staking" 
-                className={`block text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300 font-orbitron ${
+                className={`px-4 py-2 text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300 font-orbitron ${
                   pathname === '/staking' ? 'text-[#00FF7F]' : ''
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
-                Staking
+                {t('header.staking', 'Staking')}
               </Link>
               <Link 
                 href="/nft-marketplace" 
-                className={`block text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300 font-orbitron ${
+                className={`px-4 py-2 text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300 font-orbitron ${
                   pathname === '/nft-marketplace' ? 'text-[#00FF7F]' : ''
                 }`}
                 onClick={() => setIsMenuOpen(false)}
@@ -234,44 +211,44 @@ export function Header() {
                 NFTs
               </Link>
               <Link 
-                href="/farm" 
-                className={`block text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300 font-orbitron ${
-                  pathname === '/farm' ? 'text-[#00FF7F]' : ''
+                href="/about" 
+                className={`px-4 py-2 text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300 font-orbitron ${
+                  pathname === '/about' ? 'text-[#00FF7F]' : ''
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
-                Farm
+                {t('header.about', 'Sobre')}
               </Link>
               <Link 
                 href="/contact" 
-                className={`block text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300 font-orbitron ${
+                className={`px-4 py-2 text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300 font-orbitron ${
                   pathname === '/contact' ? 'text-[#00FF7F]' : ''
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
-                Contato
+                {t('header.contact', 'Contato')}
               </Link>
               
               {/* Mobile Language Selector */}
-              <div className="pt-4 border-t border-[#00FF7F]/20">
+              <div className="px-4 py-2">
                 <div className="flex flex-wrap gap-2">
                   {supportedLanguages.map((language) => (
                     <button
                       key={language.code}
                       onClick={() => handleLanguageChange(language.code)}
-                      className={`px-3 py-2 text-sm rounded-lg transition-colors duration-300 ${
+                      className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-orbitron transition-colors duration-300 ${
                         currentLanguage === language.code 
                           ? 'bg-[#00FF7F] text-black' 
-                          : 'bg-[#00FF7F]/10 text-[#cccccc] hover:bg-[#00FF7F]/20'
+                          : 'bg-[#00FF7F]/10 text-[#cccccc] hover:text-[#00FF7F]'
                       }`}
                     >
-                      <span className="mr-2">{language.flag}</span>
-                      {language.name}
+                      <span>{language.flag}</span>
+                      <span>{language.name}</span>
                     </button>
                   ))}
                 </div>
               </div>
-            </div>
+            </nav>
           </div>
         )}
       </div>

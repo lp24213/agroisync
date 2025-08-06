@@ -9,6 +9,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap');
 
 @layer base {
   html {
@@ -23,7 +24,7 @@
 
   /* Headings com fonte premium */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Orbitron', 'Space Grotesk', 'Inter', sans-serif;
+    font-family: 'Orbitron', 'Rajdhani', 'Space Grotesk', 'Inter', sans-serif;
     font-weight: 600;
     letter-spacing: -0.025em;
     color: #ffffff;
@@ -49,7 +50,7 @@
 
   /* Texto de destaque */
   .highlight-text {
-    font-family: 'Orbitron', 'Space Grotesk', sans-serif;
+    font-family: 'Orbitron', 'Rajdhani', 'Space Grotesk', sans-serif;
     font-weight: 600;
     color: #ffffff;
   }
@@ -89,59 +90,96 @@
 }
 
 @layer components {
+  /* Verde Neon Premium */
   .btn-primary {
-    background-color: #00FF7F;
+    background: linear-gradient(135deg, #00FF7F 0%, #00cc66 100%);
     color: #000000;
     font-weight: 600;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    transition: all 0.3s;
-    box-shadow: 0 0 15px rgba(0, 255, 127, 0.5);
-    font-family: 'Inter', sans-serif;
+    padding: 0.75rem 1.5rem;
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 20px rgba(0, 255, 127, 0.4);
+    font-family: 'Orbitron', 'Rajdhani', sans-serif;
+    border: none;
+    position: relative;
+    overflow: hidden;
   }
   
   .btn-primary:hover {
-    background-color: #00cc66;
-    box-shadow: 0 0 25px rgba(0, 255, 127, 0.7);
+    background: linear-gradient(135deg, #00cc66 0%, #00FF7F 100%);
+    box-shadow: 0 0 30px rgba(0, 255, 127, 0.8);
+    transform: translateY(-2px);
+  }
+  
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+  
+  .btn-primary:hover::before {
+    left: 100%;
   }
   
   .btn-secondary {
-    background-color: transparent;
+    background: transparent;
     color: #00FF7F;
     border: 2px solid #00FF7F;
     font-weight: 600;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    transition: all 0.3s;
-    box-shadow: 0 0 15px rgba(0, 255, 127, 0.3);
-    font-family: 'Inter', sans-serif;
+    padding: 0.75rem 1.5rem;
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 20px rgba(0, 255, 127, 0.3);
+    font-family: 'Orbitron', 'Rajdhani', sans-serif;
+    position: relative;
+    overflow: hidden;
   }
   
   .btn-secondary:hover {
-    background-color: #00FF7F;
+    background: #00FF7F;
     color: #000000;
-    box-shadow: 0 0 25px rgba(0, 255, 127, 0.7);
+    box-shadow: 0 0 30px rgba(0, 255, 127, 0.8);
+    transform: translateY(-2px);
   }
   
   .card {
-    background-color: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.8);
     border: 1px solid rgba(0, 255, 127, 0.2);
-    border-radius: 0.5rem;
+    border-radius: 1rem;
     padding: 1.5rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+  }
+  
+  .card:hover {
+    border-color: rgba(0, 255, 127, 0.4);
+    box-shadow: 0 0 30px rgba(0, 255, 127, 0.2);
   }
   
   .gradient-text {
-    background: linear-gradient(135deg, #00FF7F 0%, #00cc66 100%);
+    background: linear-gradient(135deg, #00FF7F 0%, #00cc66 50%, #00FF7F 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease infinite;
+  }
+  
+  @keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
   }
   
   .cyberpunk-border {
     position: relative;
     border: 1px solid #00FF7F;
+    border-radius: 1rem;
     
     &::before {
       content: '';
@@ -154,7 +192,13 @@
       border-radius: inherit;
       z-index: -1;
       opacity: 0.5;
+      animation: border-glow 2s ease-in-out infinite alternate;
     }
+  }
+  
+  @keyframes border-glow {
+    0% { opacity: 0.3; }
+    100% { opacity: 0.8; }
   }
   
   .grid-animation {
@@ -173,21 +217,23 @@
     text-shadow: 0 0 10px #ffffff;
   }
   
-  .text-glow-blue {
+  .text-glow-green {
     text-shadow: 0 0 10px #00FF7F;
   }
   
-  .text-glow-cyan {
-    text-shadow: 0 0 10px #00FF7F;
-  }
-  
-  .neon-text {
+  .neon-text-green {
     color: #00FF7F;
     text-shadow: 
       0 0 5px #00FF7F,
       0 0 10px #00FF7F,
       0 0 15px #00FF7F,
       0 0 20px #00FF7F;
+    animation: neon-pulse 2s ease-in-out infinite alternate;
+  }
+  
+  @keyframes neon-pulse {
+    0% { text-shadow: 0 0 5px #00FF7F, 0 0 10px #00FF7F, 0 0 15px #00FF7F, 0 0 20px #00FF7F; }
+    100% { text-shadow: 0 0 10px #00FF7F, 0 0 20px #00FF7F, 0 0 30px #00FF7F, 0 0 40px #00FF7F; }
   }
   
   .cyberpunk-glitch {
@@ -213,7 +259,7 @@
   
   .cyberpunk-glitch::after {
     animation: glitch-2 0.5s infinite;
-    color: #00FF7F;
+    color: #00cc66;
     z-index: -2;
   }
   
@@ -222,7 +268,7 @@
     border: none;
     color: #000000;
     padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
+    border-radius: 1rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -230,6 +276,7 @@
     overflow: hidden;
     transition: all 0.3s ease;
     box-shadow: 0 0 20px rgba(0, 255, 127, 0.5);
+    font-family: 'Orbitron', 'Rajdhani', sans-serif;
   }
   
   .cyberpunk-button:hover {
@@ -242,7 +289,7 @@
     border: 2px solid #00FF7F;
     color: #00FF7F;
     padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
+    border-radius: 1rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -250,6 +297,7 @@
     overflow: hidden;
     transition: all 0.3s ease;
     box-shadow: 0 0 20px rgba(0, 255, 127, 0.3);
+    font-family: 'Orbitron', 'Rajdhani', sans-serif;
   }
   
   .cyberpunk-button-outline:hover {
@@ -261,7 +309,7 @@
   .cyberpunk-card {
     background: rgba(0, 0, 0, 0.8);
     border: 1px solid #00FF7F;
-    border-radius: 0.5rem;
+    border-radius: 1rem;
     padding: 1.5rem;
     position: relative;
     overflow: hidden;
@@ -290,13 +338,13 @@
   }
   
   .font-display {
-    font-family: 'Orbitron', 'Space Grotesk', 'Inter', sans-serif;
+    font-family: 'Orbitron', 'Rajdhani', 'Space Grotesk', 'Inter', sans-serif;
     font-weight: 700;
     letter-spacing: -0.02em;
   }
   
   .font-heading {
-    font-family: 'Orbitron', 'Space Grotesk', 'Inter', sans-serif;
+    font-family: 'Orbitron', 'Rajdhani', 'Space Grotesk', 'Inter', sans-serif;
     font-weight: 600;
     letter-spacing: -0.025em;
   }
@@ -598,26 +646,32 @@
 
 /* AGROTM Premium Utilities */
 @layer utilities {
-  .text-neonBlue {
+  .text-neonGreen {
     color: #00FF7F;
   }
-  .shadow-neon {
-    box-shadow: 0 0 20px #00FF7F80;
+  .shadow-neon-green {
+    box-shadow: 0 0 20px rgba(0, 255, 127, 0.5);
   }
   .font-orbitron {
-    font-family: 'Orbitron', 'Space Grotesk', 'Outfit', sans-serif;
+    font-family: 'Orbitron', 'Rajdhani', 'Space Grotesk', 'Outfit', sans-serif;
   }
   .bg-black-matte {
     background-color: #000000;
   }
-  .border-neonBlue {
+  .border-neonGreen {
     border-color: #00FF7F;
   }
-  .hover\:shadow-neon:hover {
+  .hover\:shadow-neon-green:hover {
     box-shadow: 0 0 30px rgba(0, 255, 127, 0.8);
   }
   .animate-fadeIn {
     animation: fadeIn 0.8s ease-out;
+  }
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
   }
 }
 

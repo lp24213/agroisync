@@ -28,7 +28,7 @@ export function StakingSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <h2 className="font-orbitron text-4xl md:text-5xl text-[#00FF7F] font-bold tracking-wide drop-shadow-neon mb-8 animate-fadeIn">
+            <h2 className="font-orbitron text-4xl md:text-5xl gradient-text font-bold tracking-wide mb-8 animate-fadeIn">
               Staking & Farming
             </h2>
             <p className="text-xl text-gray-300 leading-relaxed mb-10">
@@ -41,7 +41,7 @@ export function StakingSection() {
                 transition={{ delay: 0.2, duration: 0.6 }}
                 className="flex items-center space-x-4"
               >
-                <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon"></div>
+                <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
                 <span className="text-gray-300 font-orbitron text-lg">Staking Seguro</span>
               </motion.div>
               <motion.div 
@@ -50,7 +50,7 @@ export function StakingSection() {
                 transition={{ delay: 0.4, duration: 0.6 }}
                 className="flex items-center space-x-4"
               >
-                <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon"></div>
+                <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
                 <span className="text-gray-300 font-orbitron text-lg">Yield Farming</span>
               </motion.div>
               <motion.div 
@@ -59,7 +59,7 @@ export function StakingSection() {
                 transition={{ delay: 0.6, duration: 0.6 }}
                 className="flex items-center space-x-4"
               >
-                <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon"></div>
+                <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
                 <span className="text-gray-300 font-orbitron text-lg">Recompensas Automáticas</span>
               </motion.div>
             </div>
@@ -72,19 +72,19 @@ export function StakingSection() {
               className="grid grid-cols-3 gap-6 mt-12"
             >
               <div className="text-center">
-                <div className="bg-[#00FF7F]/20 p-4 rounded-full w-16 h-16 mx-auto mb-3 flex items-center justify-center shadow-neon">
+                <div className="bg-[#00FF7F]/20 p-4 rounded-full w-16 h-16 mx-auto mb-3 flex items-center justify-center shadow-neon-green">
                   <Coins className="text-[#00FF7F]" size={32} />
                 </div>
                 <div className="text-[#00FF7F] font-orbitron text-sm">Staking</div>
               </div>
               <div className="text-center">
-                <div className="bg-[#00FF7F]/20 p-4 rounded-full w-16 h-16 mx-auto mb-3 flex items-center justify-center shadow-neon">
+                <div className="bg-[#00FF7F]/20 p-4 rounded-full w-16 h-16 mx-auto mb-3 flex items-center justify-center shadow-neon-green">
                   <TrendingUp className="text-[#00FF7F]" size={32} />
                 </div>
                 <div className="text-[#00FF7F] font-orbitron text-sm">Farming</div>
               </div>
               <div className="text-center">
-                <div className="bg-[#00FF7F]/20 p-4 rounded-full w-16 h-16 mx-auto mb-3 flex items-center justify-center shadow-neon">
+                <div className="bg-[#00FF7F]/20 p-4 rounded-full w-16 h-16 mx-auto mb-3 flex items-center justify-center shadow-neon-green">
                   <Shield className="text-[#00FF7F]" size={32} />
                 </div>
                 <div className="text-[#00FF7F] font-orbitron text-sm">Seguro</div>
@@ -109,7 +109,7 @@ export function StakingSection() {
                 alt="AGROTM Staking & Farming" 
                 width={600} 
                 height={400}
-                className="rounded-3xl shadow-neon hover:scale-105 transition-transform duration-500"
+                className="rounded-3xl shadow-neon-green hover:scale-105 transition-transform duration-500"
                 unoptimized={true}
                 priority
                 onError={(e) => {
@@ -121,7 +121,7 @@ export function StakingSection() {
                 }}
               />
               {/* Fallback */}
-              <div className="hidden w-[600px] h-[400px] bg-gradient-to-br from-[#00FF7F]/10 to-[#000000] border-2 border-[#00FF7F]/30 rounded-3xl flex items-center justify-center shadow-neon">
+              <div className="hidden w-[600px] h-[400px] bg-gradient-to-br from-[#00FF7F]/10 to-[#000000] border-2 border-[#00FF7F]/30 rounded-3xl flex items-center justify-center shadow-neon-green">
                 <div className="text-center">
                   <div className="text-8xl mb-4">💰</div>
                   <div className="text-[#00FF7F] font-orbitron text-2xl mb-2">Staking & Farming</div>

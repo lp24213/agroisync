@@ -2,12 +2,23 @@
 
 import { Layout } from '../../components/layout/Layout';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 export default function CookiesPage() {
+  const { t } = useTranslation('common');
+  
   return (
     <Layout>
-      <div className="min-h-screen bg-[#000000] text-[#ffffff]">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="min-h-screen bg-[#000000] text-[#ffffff] relative overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="grid-animation"></div>
+        </div>
+        
+        {/* Scanlines Effect */}
+        <div className="absolute inset-0 scanlines opacity-10"></div>
+        
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -16,7 +27,7 @@ export default function CookiesPage() {
           >
             {/* Header */}
             <div className="text-center">
-              <h1 className="text-4xl md:text-5xl font-orbitron font-bold text-[#00FF7F] mb-4">
+              <h1 className="text-4xl md:text-5xl font-orbitron font-bold gradient-text mb-4">
                 Política de Cookies
               </h1>
               <p className="text-[#cccccc] text-lg max-w-2xl mx-auto">
@@ -30,14 +41,14 @@ export default function CookiesPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.1 }}
-                className="bg-[#000000]/50 border border-[#00FF7F]/20 rounded-xl p-8 backdrop-blur-sm"
+                className="cyberpunk-card p-8 backdrop-blur-sm"
               >
                 <h2 className="text-2xl font-orbitron font-semibold text-[#00FF7F] mb-4">
                   O que são Cookies?
                 </h2>
                 <p className="text-[#cccccc] leading-relaxed">
                   Cookies são pequenos arquivos de texto que são armazenados no seu dispositivo quando você visita nosso site. 
-                  Eles nos ajudam a fornecer uma experiência personalizada e melhorar a funcionalidade da plataforma.
+                  Eles nos ajudam a fornecer uma experiência personalizada e melhorar a funcionalidade da plataforma AGROTM.
                 </p>
               </motion.div>
 
@@ -45,7 +56,7 @@ export default function CookiesPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="bg-[#000000]/50 border border-[#00FF7F]/20 rounded-xl p-8 backdrop-blur-sm"
+                className="cyberpunk-card p-8 backdrop-blur-sm"
               >
                 <h2 className="text-2xl font-orbitron font-semibold text-[#00FF7F] mb-4">
                   Tipos de Cookies que Utilizamos
@@ -82,7 +93,7 @@ export default function CookiesPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className="bg-[#000000]/50 border border-[#00FF7F]/20 rounded-xl p-8 backdrop-blur-sm"
+                className="cyberpunk-card p-8 backdrop-blur-sm"
               >
                 <h2 className="text-2xl font-orbitron font-semibold text-[#00FF7F] mb-4">
                   Como Gerenciar Cookies
@@ -108,14 +119,14 @@ export default function CookiesPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="bg-[#000000]/50 border border-[#00FF7F]/20 rounded-xl p-8 backdrop-blur-sm"
+                className="cyberpunk-card p-8 backdrop-blur-sm"
               >
                 <h2 className="text-2xl font-orbitron font-semibold text-[#00FF7F] mb-4">
                   Atualizações desta Política
                 </h2>
                 <p className="text-[#cccccc] leading-relaxed">
-                  Podemos atualizar esta Política de Cookies periodicamente. Recomendamos que você revise esta página 
-                  regularmente para se manter informado sobre como utilizamos cookies.
+                  Podemos atualizar esta Política de Cookies periodicamente para refletir mudanças em nossas práticas ou por outros 
+                  motivos operacionais, legais ou regulamentares. Recomendamos que você revise esta política regularmente.
                 </p>
               </motion.div>
 
@@ -123,30 +134,24 @@ export default function CookiesPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.5 }}
-                className="bg-[#000000]/50 border border-[#00FF7F]/20 rounded-xl p-8 backdrop-blur-sm"
+                className="cyberpunk-card p-8 backdrop-blur-sm"
               >
                 <h2 className="text-2xl font-orbitron font-semibold text-[#00FF7F] mb-4">
                   Contato
                 </h2>
                 <p className="text-[#cccccc] leading-relaxed">
-                  Se você tiver dúvidas sobre nossa Política de Cookies, entre em contato conosco:
+                  Se você tiver dúvidas sobre esta Política de Cookies ou sobre como utilizamos cookies, entre em contato conosco:
                 </p>
-                <div className="mt-4 space-y-2 text-[#cccccc]">
-                  <p>📧 Email: contato@agrotm.com.br</p>
-                  <p>📞 Telefone: +55 (66) 99236-2830</p>
+                <div className="mt-4 space-y-2">
+                  <p className="text-[#cccccc]">
+                    <strong>Email:</strong> privacy@agrotm.com
+                  </p>
+                  <p className="text-[#cccccc]">
+                    <strong>Telefone:</strong> +55 (11) 9999-9999
+                  </p>
                 </div>
               </motion.div>
             </div>
-
-            {/* Last Updated */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="text-center text-[#888888] text-sm border-t border-[#00FF7F]/20 pt-8"
-            >
-              <p>Última atualização: Janeiro de 2024</p>
-            </motion.div>
           </motion.div>
         </div>
       </div>
