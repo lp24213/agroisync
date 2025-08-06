@@ -66,12 +66,22 @@ i18n
                       integratedWalletDesc: "Secure integrated digital wallet to manage your AGROTM assets and NFTs.",
                       daoGovernanceDesc: "Participate in platform decisions through decentralized voting with AGROTM tokens.",
           
-          // About Section
-          aboutTitle: "About AGROTM",
-          aboutDescription: "We are revolutionizing the agricultural sector through blockchain technology and DeFi solutions",
-          mission: "Our Mission",
-          vision: "Our Vision",
-          values: "Our Values",
+                                // About Section
+                      aboutTitle: "About AGROTM",
+                      aboutDescription: "We are revolutionizing the agricultural sector through blockchain technology and DeFi solutions",
+                      mission: "Our Mission",
+                      vision: "Our Vision",
+                      values: "Our Values",
+                      activeUsers: "Active Users",
+                      totalValueLocked: "Total Value Locked",
+                      sustainability: "Sustainability",
+                      sustainabilityDesc: "We support agricultural projects that promote sustainable practices",
+                      security: "Security",
+                      securityDesc: "All transactions are secure and transparent on the blockchain",
+                      growth: "Growth",
+                      growthDesc: "Attractive return opportunities for investors",
+                      impact: "Impact",
+                      impactDesc: "We contribute to a more sustainable and fair future",
           
           // Contact
           contactTitle: "Get in Touch",
@@ -157,12 +167,22 @@ i18n
                       integratedWalletDesc: "Carteira digital segura integrada para gerenciar seus ativos AGROTM e NFTs.",
                       daoGovernanceDesc: "Participe das decisões da plataforma através de votação descentralizada com tokens AGROTM.",
           
-          // About Section
-          aboutTitle: "Sobre o AGROTM",
-          aboutDescription: "Estamos revolucionando o setor agrícola através da tecnologia blockchain e soluções DeFi",
-          mission: "Nossa Missão",
-          vision: "Nossa Visão",
-          values: "Nossos Valores",
+                                // About Section
+                      aboutTitle: "Sobre o AGROTM",
+                      aboutDescription: "Estamos revolucionando o setor agrícola através da tecnologia blockchain e soluções DeFi",
+                      mission: "Nossa Missão",
+                      vision: "Nossa Visão",
+                      values: "Nossos Valores",
+                      activeUsers: "Usuários Ativos",
+                      totalValueLocked: "Total Value Locked",
+                      sustainability: "Sustentabilidade",
+                      sustainabilityDesc: "Apoiamos projetos agrícolas que promovem práticas sustentáveis",
+                      security: "Segurança",
+                      securityDesc: "Todas as transações são seguras e transparentes na blockchain",
+                      growth: "Crescimento",
+                      growthDesc: "Oportunidades de retorno atrativas para investidores",
+                      impact: "Impacto",
+                      impactDesc: "Contribuímos para um futuro mais sustentável e justo",
           
           // Contact
           contactTitle: "Entre em Contato",
@@ -248,12 +268,22 @@ i18n
                       integratedWalletDesc: "Billetera digital segura integrada para gestionar tus activos AGROTM y NFTs.",
                       daoGovernanceDesc: "Participa en las decisiones de la plataforma a través de votación descentralizada con tokens AGROTM.",
           
-          // About Section
-          aboutTitle: "Acerca de AGROTM",
-          aboutDescription: "Estamos revolucionando el sector agrícola a través de la tecnología blockchain y soluciones DeFi",
-          mission: "Nuestra Misión",
-          vision: "Nuestra Visión",
-          values: "Nuestros Valores",
+                                // About Section
+                      aboutTitle: "Acerca de AGROTM",
+                      aboutDescription: "Estamos revolucionando el sector agrícola a través de la tecnología blockchain y soluciones DeFi",
+                      mission: "Nuestra Misión",
+                      vision: "Nuestra Visión",
+                      values: "Nuestros Valores",
+                      activeUsers: "Usuarios Activos",
+                      totalValueLocked: "Total Value Locked",
+                      sustainability: "Sostenibilidad",
+                      sustainabilityDesc: "Apoyamos proyectos agrícolas que promueven prácticas sostenibles",
+                      security: "Seguridad",
+                      securityDesc: "Todas las transacciones son seguras y transparentes en la blockchain",
+                      growth: "Crecimiento",
+                      growthDesc: "Oportunidades de retorno atractivas para inversores",
+                      impact: "Impacto",
+                      impactDesc: "Contribuimos a un futuro más sostenible y justo",
           
           // Contact
           contactTitle: "Ponte en Contacto",
@@ -339,12 +369,22 @@ i18n
                       integratedWalletDesc: "安全的集成数字钱包，用于管理您的AGROTM资产和NFT。",
                       daoGovernanceDesc: "通过AGROTM代币的分散投票参与平台决策。",
           
-          // About Section
-          aboutTitle: "关于AGROTM",
-          aboutDescription: "我们正在通过区块链技术和DeFi解决方案革新农业部门",
-          mission: "我们的使命",
-          vision: "我们的愿景",
-          values: "我们的价值观",
+                                // About Section
+                      aboutTitle: "关于AGROTM",
+                      aboutDescription: "我们正在通过区块链技术和DeFi解决方案革新农业部门",
+                      mission: "我们的使命",
+                      vision: "我们的愿景",
+                      values: "我们的价值观",
+                      activeUsers: "活跃用户",
+                      totalValueLocked: "总锁定价值",
+                      sustainability: "可持续性",
+                      sustainabilityDesc: "我们支持促进可持续实践的农业项目",
+                      security: "安全性",
+                      securityDesc: "区块链上的所有交易都是安全和透明的",
+                      growth: "增长",
+                      growthDesc: "为投资者提供有吸引力的回报机会",
+                      impact: "影响",
+                      impactDesc: "我们为更可持续和公平的未来做出贡献",
           
           // Contact
           contactTitle: "联系我们",

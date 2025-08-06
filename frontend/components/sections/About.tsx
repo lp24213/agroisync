@@ -81,7 +81,7 @@ export function About() {
                 >
                   25K+
                 </motion.h3>
-                <p className="text-gray-400">Usuários Ativos</p>
+                <p className="text-gray-400">{t('activeUsers')}</p>
               </motion.div>
               <motion.div 
                 className="relative cyberpunk-stat p-4 border border-agro-blue/30 rounded-lg"
@@ -99,7 +99,7 @@ export function About() {
                 >
                   $12.5M
                 </motion.h3>
-                <p className="text-gray-400">Total Value Locked</p>
+                <p className="text-gray-400">{t('totalValueLocked')}</p>
               </motion.div>
             </div>
           </motion.div>
@@ -130,9 +130,9 @@ export function About() {
                   >
                     <span className="text-glow-green">🌱</span>
                   </motion.div>
-                  <h3 className="text-xl font-bold text-white mb-2">Sustentabilidade</h3>
+                  <h3 className="text-xl font-bold text-white mb-2">{t('sustainability')}</h3>
                   <p className="text-gray-400">
-                    Apoiamos projetos agrícolas que promovem práticas sustentáveis
+                    {t('sustainabilityDesc')}
                   </p>
                 </div>
               </Card>
@@ -157,9 +157,9 @@ export function About() {
                   >
                     <span className="text-glow-blue">🔒</span>
                   </motion.div>
-                  <h3 className="text-xl font-bold text-white mb-2">Segurança</h3>
+                  <h3 className="text-xl font-bold text-white mb-2">{t('security')}</h3>
                   <p className="text-gray-400">
-                    Todas as transações são seguras e transparentes na blockchain
+                    {t('securityDesc')}
                   </p>
                 </div>
               </Card>
@@ -184,9 +184,9 @@ export function About() {
                   >
                     <span className="text-glow-purple">📈</span>
                   </motion.div>
-                  <h3 className="text-xl font-bold text-white mb-2">Crescimento</h3>
+                  <h3 className="text-xl font-bold text-white mb-2">{t('growth')}</h3>
                   <p className="text-gray-400">
-                    Oportunidades de retorno atrativas para investidores
+                    {t('growthDesc')}
                   </p>
                 </div>
               </Card>
@@ -211,9 +211,9 @@ export function About() {
                   >
                     <span className="text-glow">🌍</span>
                   </motion.div>
-                  <h3 className="text-xl font-bold text-white mb-2">Impacto</h3>
+                  <h3 className="text-xl font-bold text-white mb-2">{t('impact')}</h3>
                   <p className="text-gray-400">
-                    Contribuímos para um futuro mais sustentável e justo
+                    {t('impactDesc')}
                   </p>
                 </div>
               </Card>

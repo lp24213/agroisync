@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { Button } from '../ui/Button';
 import Link from 'next/link';
@@ -12,7 +14,7 @@ export function Header() {
   const { t } = useTranslation();
   const { currentLanguage, changeLanguage, supportedLanguages } = useLanguage();
   
-  // Force deploy - Header component updated
+  // Force deploy - Header component updated with fixed language dropdown
   
   // Animation variants
   const navItemVariants = {
@@ -74,6 +76,21 @@ export function Header() {
     return language ? language.name : 'PT';
   };
 
+  // Close language menu when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('.language-selector')) {
+        setIsLanguageMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b border-blue-500/30 overflow-hidden">
       {/* Scanlines Effect */}
@@ -97,15 +114,15 @@ export function Header() {
               whileHover="hover"
               variants={navItemVariants}
             >
-                                            <Link href="/" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
-                 {t('home')}
-                 <motion.span 
-                   className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
-                   initial={{ scaleX: 0 }}
-                   whileHover={{ scaleX: 1 }}
-                   transition={{ duration: 0.3 }}
-                 />
-               </Link>
+              <Link href="/" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
+                {t('home')}
+                <motion.span 
+                  className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
+                  initial={{ scaleX: 0 }}
+                  whileHover={{ scaleX: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
+              </Link>
             </motion.div>
             
             <motion.div
@@ -115,15 +132,15 @@ export function Header() {
               variants={navItemVariants}
               transition={{ delay: 0.1 }}
             >
-                                                                         <Link href="/dashboard" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
-                 {t('dashboard')}
-                 <motion.span 
-                   className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
-                   initial={{ scaleX: 0 }}
-                   whileHover={{ scaleX: 1 }}
-                   transition={{ duration: 0.3 }}
-                 />
-               </Link>
+              <Link href="/dashboard" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
+                {t('dashboard')}
+                <motion.span 
+                  className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
+                  initial={{ scaleX: 0 }}
+                  whileHover={{ scaleX: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
+              </Link>
             </motion.div>
             
             <motion.div
@@ -133,15 +150,15 @@ export function Header() {
               variants={navItemVariants}
               transition={{ delay: 0.2 }}
             >
-                                                                         <Link href="/staking" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
-                 {t('staking')}
-                 <motion.span 
-                   className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
-                   initial={{ scaleX: 0 }}
-                   whileHover={{ scaleX: 1 }}
-                   transition={{ duration: 0.3 }}
-                 />
-               </Link>
+              <Link href="/staking" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
+                {t('staking')}
+                <motion.span 
+                  className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
+                  initial={{ scaleX: 0 }}
+                  whileHover={{ scaleX: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
+              </Link>
             </motion.div>
             
             <motion.div
@@ -151,15 +168,15 @@ export function Header() {
               variants={navItemVariants}
               transition={{ delay: 0.3 }}
             >
-                                                                         <Link href="#about" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
-                 {t('about')}
-                 <motion.span 
-                   className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
-                   initial={{ scaleX: 0 }}
-                   whileHover={{ scaleX: 1 }}
-                   transition={{ duration: 0.3 }}
-                 />
-               </Link>
+              <Link href="#about" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
+                {t('about')}
+                <motion.span 
+                  className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
+                  initial={{ scaleX: 0 }}
+                  whileHover={{ scaleX: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
+              </Link>
             </motion.div>
             
             <motion.div
@@ -169,23 +186,23 @@ export function Header() {
               variants={navItemVariants}
               transition={{ delay: 0.4 }}
             >
-                                                                         <Link href="#contact" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
-                 {t('contact')}
-                 <motion.span 
-                   className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
-                   initial={{ scaleX: 0 }}
-                   whileHover={{ scaleX: 1 }}
-                   transition={{ duration: 0.3 }}
-                 />
-               </Link>
+              <Link href="#contact" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
+                {t('contact')}
+                <motion.span 
+                  className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
+                  initial={{ scaleX: 0 }}
+                  whileHover={{ scaleX: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
+              </Link>
             </motion.div>
 
-            {/* Language Selector Desktop */}
+            {/* Language Selector Desktop - FIXED */}
             <motion.div
               initial="hidden"
               animate="visible"
               transition={{ delay: 0.5 }}
-              className="relative"
+              className="relative language-selector"
             >
               <motion.button
                 onClick={() => setIsLanguageMenuOpen(!isLanguageMenuOpen)}
@@ -219,8 +236,8 @@ export function Header() {
                     animate="visible"
                     exit="exit"
                   >
-                                         <div className="p-2 space-y-1">
-                       {supportedLanguages.map((lang) => (
+                    <div className="p-2 space-y-1">
+                      {supportedLanguages.map((lang) => (
                         <motion.button
                           key={lang.code}
                           onClick={() => handleLanguageChange(lang.code as 'en' | 'pt' | 'es' | 'zh')}
@@ -328,41 +345,41 @@ export function Header() {
                   }}
                 >
                   <motion.div variants={navItemVariants}>
-                                                                                   <Link href="/" className="block px-3 py-2 text-gray-300 hover:text-blue-400 transition-colors duration-300 border-l-2 border-transparent hover:border-blue-500/50 hover:bg-blue-500/5 rounded-r-md">
-                       {t('home')}
-                     </Link>
+                    <Link href="/" className="block px-3 py-2 text-gray-300 hover:text-blue-400 transition-colors duration-300 border-l-2 border-transparent hover:border-blue-500/50 hover:bg-blue-500/5 rounded-r-md">
+                      {t('home')}
+                    </Link>
                   </motion.div>
                   
                   <motion.div variants={navItemVariants}>
-                                                                                   <Link href="/dashboard" className="block px-3 py-2 text-gray-300 hover:text-blue-400 transition-colors duration-300 border-l-2 border-transparent hover:border-blue-500/50 hover:bg-blue-500/5 rounded-r-md">
-                       {t('dashboard')}
-                     </Link>
+                    <Link href="/dashboard" className="block px-3 py-2 text-gray-300 hover:text-blue-400 transition-colors duration-300 border-l-2 border-transparent hover:border-blue-500/50 hover:bg-blue-500/5 rounded-r-md">
+                      {t('dashboard')}
+                    </Link>
                   </motion.div>
                   
                   <motion.div variants={navItemVariants}>
-                                                                                   <Link href="/staking" className="block px-3 py-2 text-gray-300 hover:text-cyan-400 transition-colors duration-300 border-l-2 border-transparent hover:border-cyan-400/50 hover:bg-cyan-400/5 rounded-r-md">
-                       {t('staking')}
-                     </Link>
+                    <Link href="/staking" className="block px-3 py-2 text-gray-300 hover:text-cyan-400 transition-colors duration-300 border-l-2 border-transparent hover:border-cyan-400/50 hover:bg-cyan-400/5 rounded-r-md">
+                      {t('staking')}
+                    </Link>
                   </motion.div>
                   
                   <motion.div variants={navItemVariants}>
-                                                                                   <Link href="#about" className="block px-3 py-2 text-gray-300 hover:text-blue-500 transition-colors duration-300 border-l-2 border-transparent hover:border-blue-500/50 hover:bg-blue-500/5 rounded-r-md">
-                       {t('about')}
-                     </Link>
+                    <Link href="#about" className="block px-3 py-2 text-gray-300 hover:text-blue-500 transition-colors duration-300 border-l-2 border-transparent hover:border-blue-500/50 hover:bg-blue-500/5 rounded-r-md">
+                      {t('about')}
+                    </Link>
                   </motion.div>
                   
                   <motion.div variants={navItemVariants}>
-                                                              <Link href="#contact" className="block px-3 py-2 text-gray-300 hover:text-cyan-400 transition-colors duration-300 border-l-2 border-transparent hover:border-cyan-400/50 hover:bg-cyan-400/5 rounded-r-md">
-                       {t('contact')}
-                     </Link>
+                    <Link href="#contact" className="block px-3 py-2 text-gray-300 hover:text-cyan-400 transition-colors duration-300 border-l-2 border-transparent hover:border-cyan-400/50 hover:bg-cyan-400/5 rounded-r-md">
+                      {t('contact')}
+                    </Link>
                   </motion.div>
 
                   {/* Language Selector Mobile */}
                   <motion.div variants={navItemVariants} className="mt-4">
                     <div className="px-3 py-2">
                       <p className="text-sm text-gray-400 mb-2">Idioma / Language</p>
-                                             <div className="grid grid-cols-2 gap-2">
-                         {supportedLanguages.map((lang) => (
+                      <div className="grid grid-cols-2 gap-2">
+                        {supportedLanguages.map((lang) => (
                           <motion.button
                             key={lang.code}
                             onClick={() => handleLanguageChange(lang.code as 'en' | 'pt' | 'es' | 'zh')}
@@ -440,7 +457,7 @@ export function Header() {
                       size="sm" 
                       className="w-full bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-cyan-400 hover:to-blue-500 relative group overflow-hidden"
                     >
-                                             <span className="relative z-10">{t('getStarted')}</span>
+                      <span className="relative z-10">{t('getStarted')}</span>
                       <span className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-500 opacity-0 group-hover:opacity-30 transition-opacity duration-300"></span>
                     </Button>
                   </motion.div>
