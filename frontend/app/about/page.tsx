@@ -65,7 +65,7 @@ export default function AboutPage() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-[#000000] text-[#ffffff] relative overflow-hidden">
+      <div className="min-h-screen bg-[#000000] text-[#00F0FF] relative overflow-hidden">
         {/* Background Elements */}
         <div className="absolute inset-0 opacity-20">
           <div className="grid-animation"></div>
@@ -84,10 +84,10 @@ export default function AboutPage() {
               className="text-center"
             >
               <h1 className="text-5xl md:text-7xl font-orbitron font-bold gradient-text mb-6">
-                Sobre a <span className="text-[#00FF7F]">AGROTM SOL</span>
+                Sobre a <span className="text-[#00F0FF]">AGROTM SOL</span>
               </h1>
               <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed font-orbitron">
-                Revolucionando o agronegócio através da tecnologia avançada e inovação sustentável
+                Conectando o agronegócio ao futuro digital, com soluções seguras, escaláveis e transparentes
               </p>
             </motion.div>
           </div>
@@ -104,10 +104,10 @@ export default function AboutPage() {
                 transition={{ duration: 0.8 }}
               >
                 <h2 className="text-4xl md:text-5xl font-orbitron font-bold gradient-text mb-8">
-                  Sobre <span className="text-[#00FF7F]">Nós</span>
+                  Sobre <span className="text-[#00F0FF]">Nós</span>
                 </h2>
                 <p className="text-lg text-gray-300 leading-relaxed mb-6">
-                  A AGROTM SOL é uma plataforma pertencente à startup AGROTM, uma empresa inovadora voltada à intermediação de produtos do agronegócio, conectando produtores, investidores e compradores através de tecnologia avançada, com segurança e eficiência.
+                  A AGROTM SOL é uma plataforma pertencente à startup AGROTM, especializada na intermediação de produtos do agronegócio. Utilizamos tecnologia avançada para conectar produtores, investidores e compradores, garantindo segurança, rastreabilidade e eficiência nas negociações agrícolas.
                 </p>
                 <p className="text-lg text-gray-300 leading-relaxed mb-8">
                   Nossa missão é modernizar e democratizar o acesso ao mercado agrícola através de tecnologia avançada e inovação sustentável, criando um ecossistema financeiro inovador que impulsiona o crescimento do setor agrícola.
@@ -119,11 +119,11 @@ export default function AboutPage() {
                   </div>
                   <div className="flex items-center space-x-4">
                     <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
-                    <span className="text-gray-300 font-orbitron">Segurança e eficiência</span>
+                    <span className="text-gray-300 font-orbitron">Segurança e rastreabilidade</span>
                   </div>
                   <div className="flex items-center space-x-4">
                     <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
-                    <span className="text-gray-300 font-orbitron">Inovação sustentável</span>
+                    <span className="text-gray-300 font-orbitron">Eficiência nas negociações</span>
                   </div>
                   <div className="flex items-center space-x-4">
                     <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
@@ -177,7 +177,7 @@ export default function AboutPage() {
               className="text-center mb-16"
             >
               <h2 className="text-4xl md:text-5xl font-orbitron font-bold gradient-text mb-4">
-                Nossos <span className="text-[#00FF7F]">Valores</span>
+                Nossos <span className="text-[#00F0FF]">Valores</span>
               </h2>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto font-orbitron">
                 Construindo o futuro do agronegócio com princípios sólidos e inovação responsável
@@ -215,7 +215,7 @@ export default function AboutPage() {
               className="text-center mb-16"
             >
               <h2 className="text-4xl md:text-5xl font-orbitron font-bold gradient-text mb-4">
-                Impacto <span className="text-[#00FF7F]">Tecnológico</span>
+                Impacto <span className="text-[#00F0FF]">Tecnológico</span>
               </h2>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto font-orbitron">
                 Transformando o agronegócio através da inovação e tecnologia
