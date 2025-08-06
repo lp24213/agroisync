@@ -21,10 +21,12 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Initialize with detected language
     const detectedLang = detectLanguage() as SupportedLanguage;
+    console.log('LanguageContext: Detected language:', detectedLang);
     setCurrentLanguage(detectedLang);
     
     // Listen for language changes
     const handleLanguageChange = (event: CustomEvent) => {
+      console.log('LanguageContext: Language change event received:', event.detail.language);
       setCurrentLanguage(event.detail.language as SupportedLanguage);
     };
 
@@ -36,9 +38,16 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const handleLanguageChange = (lang: SupportedLanguage) => {
+    console.log('LanguageContext: Changing language to:', lang);
     changeLanguage(lang);
     setCurrentLanguage(lang);
   };
+
+  // Debug: Log current state
+  useEffect(() => {
+    console.log('LanguageContext: Current language:', currentLanguage);
+    console.log('LanguageContext: Supported languages:', supportedLanguages);
+  }, [currentLanguage]);
 
   return (
     <LanguageContext.Provider value={{

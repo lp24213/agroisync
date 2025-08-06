@@ -62,6 +62,7 @@ export function Header() {
   };
 
   const handleLanguageChange = (lang: 'en' | 'pt' | 'es' | 'zh') => {
+    console.log('Changing language to:', lang);
     changeLanguage(lang);
     setIsLanguageMenuOpen(false);
   };
@@ -90,6 +91,13 @@ export function Header() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  // Debug: Log current state
+  React.useEffect(() => {
+    console.log('Current language:', currentLanguage);
+    console.log('Supported languages:', supportedLanguages);
+    console.log('Language menu open:', isLanguageMenuOpen);
+  }, [currentLanguage, supportedLanguages, isLanguageMenuOpen]);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b border-blue-500/30 overflow-hidden">
@@ -197,7 +205,7 @@ export function Header() {
               </Link>
             </motion.div>
 
-            {/* Language Selector Desktop - FIXED */}
+            {/* Language Selector Desktop - ULTRA FIXED */}
             <motion.div
               initial="hidden"
               animate="visible"
@@ -205,7 +213,10 @@ export function Header() {
               className="relative language-selector"
             >
               <motion.button
-                onClick={() => setIsLanguageMenuOpen(!isLanguageMenuOpen)}
+                onClick={() => {
+                  console.log('Language button clicked, current state:', isLanguageMenuOpen);
+                  setIsLanguageMenuOpen(!isLanguageMenuOpen);
+                }}
                 className="flex items-center space-x-2 px-3 py-2 text-gray-300 hover:text-blue-400 transition-colors duration-300 border border-transparent hover:border-blue-500/30 rounded-lg"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -237,33 +248,135 @@ export function Header() {
                     exit="exit"
                   >
                     <div className="p-2 space-y-1">
-                      {supportedLanguages.map((lang) => (
-                        <motion.button
-                          key={lang.code}
-                          onClick={() => handleLanguageChange(lang.code as 'en' | 'pt' | 'es' | 'zh')}
-                          className={`w-full flex items-center space-x-3 px-3 py-2 text-left rounded-md transition-colors duration-200 ${
-                            currentLanguage === lang.code
-                              ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                              : 'text-gray-300 hover:bg-blue-500/10 hover:text-blue-400'
-                          }`}
-                          whileHover={{ x: 5 }}
-                          whileTap={{ scale: 0.95 }}
-                        >
-                          <span className="text-lg">{lang.flag}</span>
-                          <span className="text-sm font-medium">{lang.nativeName}</span>
-                          {currentLanguage === lang.code && (
-                            <motion.svg
-                              className="w-4 h-4 ml-auto text-blue-400"
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                            </motion.svg>
-                          )}
-                        </motion.button>
-                      ))}
+                      {/* Fallback languages if context is not working */}
+                      {(!supportedLanguages || supportedLanguages.length === 0) ? (
+                        <>
+                          <motion.button
+                            onClick={() => handleLanguageChange('pt')}
+                            className={`w-full flex items-center space-x-3 px-3 py-2 text-left rounded-md transition-colors duration-200 ${
+                              currentLanguage === 'pt'
+                                ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                                : 'text-gray-300 hover:bg-blue-500/10 hover:text-blue-400'
+                            }`}
+                            whileHover={{ x: 5 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            <span className="text-lg">🇧🇷</span>
+                            <span className="text-sm font-medium">Português Brasil</span>
+                            {currentLanguage === 'pt' && (
+                              <motion.svg
+                                className="w-4 h-4 ml-auto text-blue-400"
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </motion.svg>
+                            )}
+                          </motion.button>
+                          <motion.button
+                            onClick={() => handleLanguageChange('en')}
+                            className={`w-full flex items-center space-x-3 px-3 py-2 text-left rounded-md transition-colors duration-200 ${
+                              currentLanguage === 'en'
+                                ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                                : 'text-gray-300 hover:bg-blue-500/10 hover:text-blue-400'
+                            }`}
+                            whileHover={{ x: 5 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            <span className="text-lg">🇬🇧</span>
+                            <span className="text-sm font-medium">English</span>
+                            {currentLanguage === 'en' && (
+                              <motion.svg
+                                className="w-4 h-4 ml-auto text-blue-400"
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </motion.svg>
+                            )}
+                          </motion.button>
+                          <motion.button
+                            onClick={() => handleLanguageChange('es')}
+                            className={`w-full flex items-center space-x-3 px-3 py-2 text-left rounded-md transition-colors duration-200 ${
+                              currentLanguage === 'es'
+                                ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                                : 'text-gray-300 hover:bg-blue-500/10 hover:text-blue-400'
+                            }`}
+                            whileHover={{ x: 5 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            <span className="text-lg">🇪🇸</span>
+                            <span className="text-sm font-medium">Español</span>
+                            {currentLanguage === 'es' && (
+                              <motion.svg
+                                className="w-4 h-4 ml-auto text-blue-400"
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </motion.svg>
+                            )}
+                          </motion.button>
+                          <motion.button
+                            onClick={() => handleLanguageChange('zh')}
+                            className={`w-full flex items-center space-x-3 px-3 py-2 text-left rounded-md transition-colors duration-200 ${
+                              currentLanguage === 'zh'
+                                ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                                : 'text-gray-300 hover:bg-blue-500/10 hover:text-blue-400'
+                            }`}
+                            whileHover={{ x: 5 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            <span className="text-lg">🇨🇳</span>
+                            <span className="text-sm font-medium">中文</span>
+                            {currentLanguage === 'zh' && (
+                              <motion.svg
+                                className="w-4 h-4 ml-auto text-blue-400"
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </motion.svg>
+                            )}
+                          </motion.button>
+                        </>
+                      ) : (
+                        supportedLanguages.map((lang) => (
+                          <motion.button
+                            key={lang.code}
+                            onClick={() => handleLanguageChange(lang.code as 'en' | 'pt' | 'es' | 'zh')}
+                            className={`w-full flex items-center space-x-3 px-3 py-2 text-left rounded-md transition-colors duration-200 ${
+                              currentLanguage === lang.code
+                                ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                                : 'text-gray-300 hover:bg-blue-500/10 hover:text-blue-400'
+                            }`}
+                            whileHover={{ x: 5 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            <span className="text-lg">{lang.flag}</span>
+                            <span className="text-sm font-medium">{lang.nativeName}</span>
+                            {currentLanguage === lang.code && (
+                              <motion.svg
+                                className="w-4 h-4 ml-auto text-blue-400"
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </motion.svg>
+                            )}
+                          </motion.button>
+                        ))
+                      )}
                     </div>
                   </motion.div>
                 )}
@@ -379,7 +492,7 @@ export function Header() {
                     <div className="px-3 py-2">
                       <p className="text-sm text-gray-400 mb-2">Idioma / Language</p>
                       <div className="grid grid-cols-2 gap-2">
-                        {supportedLanguages.map((lang) => (
+                        {supportedLanguages && supportedLanguages.map((lang) => (
                           <motion.button
                             key={lang.code}
                             onClick={() => handleLanguageChange(lang.code as 'en' | 'pt' | 'es' | 'zh')}
