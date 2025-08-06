@@ -142,11 +142,17 @@ export default {
       title: 'Sobre o AGROTM',
       subtitle: 'Conectando agricultura tradicional com inovação blockchain',
       description:
-        'O AGROTM é a primeira plataforma DeFi completa focada no setor agrícola, oferecendo soluções inovadoras para tokenização, staking, yield farming e muito mais.',
+        'Extensão da startup AGROTM, intermediando produtos do agronegócio com blockchain. Agora com criptomoeda própria para investimentos, transações entre produtores, compradores e traders do agro.',
       mission:
-        'Nossa missão é democratizar o acesso ao financiamento agrícola e criar um ecossistema sustentável e transparente para o setor.',
+        'Nossa missão é modernizar o agronegócio com DeFi, Web3 e inteligência artificial para impulsionar a produção e o comércio global.',
       vision:
         'Ser a plataforma líder mundial em DeFi agrícola, conectando produtores, investidores e consumidores em um ecossistema blockchain inovador.',
+      values: {
+        transparency: 'Transparência',
+        innovation: 'Inovação',
+        decentralization: 'Descentralização',
+        sustainability: 'Sustentabilidade'
+      }
     },
     roadmap: {
       title: 'Roadmap',
@@ -585,7 +591,7 @@ export default {
 
   // Footer
   footer: {
-    description: 'Revolucionando a agricultura através da inovação DeFi',
+    description: 'Extensão da startup AGROTM, intermediando produtos do agronegócio com blockchain. Segurança, tecnologia e inovação para o setor agrícola.',
     links: {
       product: 'Produto',
       company: 'Empresa',

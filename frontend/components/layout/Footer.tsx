@@ -26,8 +26,18 @@ export function Footer() {
               />
             </div>
             <p className="text-gray-400 mb-6 max-w-md">
-              {t('footerDesc')}
+              Extensão da startup AGROTM, intermediando produtos do agronegócio com blockchain. Segurança, tecnologia e inovação para o setor agrícola.
             </p>
+            <div className="text-gray-400 mb-6 space-y-2">
+              <p className="flex items-center space-x-2">
+                <span>📧</span>
+                <span>contato@agrotm.com.br</span>
+              </p>
+              <p className="flex items-center space-x-2">
+                <span>📞</span>
+                <span>+55 (66) 99236-2830</span>
+              </p>
+            </div>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors">
                 <span className="sr-only">Twitter</span>

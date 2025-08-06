@@ -1,0 +1,124 @@
+<svg width="1200" height="500" viewBox="0 0 1200 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1e293b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f172a;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00ffff;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#00bfff;stop-opacity:0.8" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="500" fill="url(#bgGradient)"/>
+  
+  <!-- Grid Pattern -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#00ffff" stroke-width="0.5" opacity="0.1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="500" fill="url(#grid)"/>
+  
+  <!-- Main Content Area -->
+  <rect x="50" y="50" width="1100" height="400" rx="20" fill="rgba(0,255,255,0.05)" stroke="url(#accentGradient)" stroke-width="2"/>
+  
+  <!-- AGROTM Logo Area -->
+  <g transform="translate(100, 100)">
+    <!-- Logo Background -->
+    <rect width="200" height="80" rx="10" fill="rgba(0,255,255,0.1)" stroke="#00ffff" stroke-width="1"/>
+    
+    <!-- AGROTM Text -->
+    <text x="100" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#00ffff">AGROTM</text>
+    <text x="100" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#00bfff">STAKING PLATFORM</text>
+  </g>
+  
+  <!-- Staking Stats -->
+  <g transform="translate(350, 100)">
+    <!-- APY Display -->
+    <rect width="180" height="80" rx="10" fill="rgba(34,197,94,0.1)" stroke="#22c55e" stroke-width="1"/>
+    <text x="90" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#22c55e">18.2%</text>
+    <text x="90" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#22c55e">APY MÉDIO</text>
+  </g>
+  
+  <g transform="translate(550, 100)">
+    <!-- TVL Display -->
+    <rect width="180" height="80" rx="10" fill="rgba(59,130,246,0.1)" stroke="#3b82f6" stroke-width="1"/>
+    <text x="90" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#3b82f6">$2.5M</text>
+    <text x="90" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#3b82f6">TOTAL VALUE LOCKED</text>
+  </g>
+  
+  <g transform="translate(750, 100)">
+    <!-- Users Display -->
+    <rect width="180" height="80" rx="10" fill="rgba(168,85,247,0.1)" stroke="#a855f7" stroke-width="1"/>
+    <text x="90" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#a855f7">1,250+</text>
+    <text x="90" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#a855f7">STAKERS ATIVOS</text>
+  </g>
+  
+  <!-- Staking Pools Visualization -->
+  <g transform="translate(100, 250)">
+    <!-- Pool 1 -->
+    <rect width="150" height="100" rx="10" fill="rgba(0,255,255,0.1)" stroke="#00ffff" stroke-width="1"/>
+    <text x="75" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#00ffff">AGROTM</text>
+    <text x="75" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#22c55e">18.2%</text>
+    <text x="75" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#00bfff">APY</text>
+    <text x="75" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">30 dias lock</text>
+  </g>
+  
+  <g transform="translate(280, 250)">
+    <!-- Pool 2 -->
+    <rect width="150" height="100" rx="10" fill="rgba(34,197,94,0.1)" stroke="#22c55e" stroke-width="1"/>
+    <text x="75" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#22c55e">SOL</text>
+    <text x="75" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#22c55e">12.5%</text>
+    <text x="75" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#22c55e">APY</text>
+    <text x="75" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">7 dias lock</text>
+  </g>
+  
+  <g transform="translate(460, 250)">
+    <!-- Pool 3 -->
+    <rect width="150" height="100" rx="10" fill="rgba(59,130,246,0.1)" stroke="#3b82f6" stroke-width="1"/>
+    <text x="75" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#3b82f6">LP</text>
+    <text x="75" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#3b82f6">25.8%</text>
+    <text x="75" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#3b82f6">APY</text>
+    <text x="75" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#6b7280">Sem lock</text>
+  </g>
+  
+  <!-- Call to Action -->
+  <g transform="translate(700, 250)">
+    <rect width="300" height="100" rx="15" fill="url(#accentGradient)" opacity="0.2"/>
+    <rect width="300" height="100" rx="15" fill="none" stroke="url(#accentGradient)" stroke-width="2"/>
+    <text x="150" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#00ffff">COMEÇAR STAKING</text>
+    <text x="150" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#00bfff">Ganhe recompensas sustentáveis</text>
+    <text x="150" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#6b7280">Conecte sua carteira</text>
+  </g>
+  
+  <!-- Decorative Elements -->
+  <circle cx="150" cy="150" r="3" fill="#00ffff" opacity="0.6">
+    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="1050" cy="350" r="2" fill="#00bfff" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;0.4;0.8" dur="1.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="200" cy="400" r="2.5" fill="#22c55e" opacity="0.7">
+    <animate attributeName="opacity" values="0.7;1;0.7" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Bottom Border -->
+  <rect x="50" y="450" width="1100" height="2" fill="url(#accentGradient)"/>
+  
+  <!-- Security Badge -->
+  <g transform="translate(1050, 50)">
+    <circle cx="0" cy="0" r="25" fill="rgba(34,197,94,0.1)" stroke="#22c55e" stroke-width="1"/>
+    <text x="0" y="5" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#22c55e">🔒</text>
+    <text x="0" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#22c55e">AUDITADO</text>
+  </g>
+</svg> 
