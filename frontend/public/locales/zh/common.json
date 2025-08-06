@@ -1,139 +1,106 @@
 {
-  "app": {
-    "name": "AGROTM",
-    "tagline": "DeFi农业平台",
-    "description": "用区块链技术革新农业"
-  },
-  "navigation": {
+  "header": {
     "home": "首页",
     "dashboard": "仪表板",
     "staking": "质押",
-    "farming": "收益农场",
-    "nfts": "NFT",
-    "governance": "治理",
-    "analytics": "分析",
     "about": "关于",
-    "contact": "联系"
+    "contact": "联系",
+    "getStarted": "开始使用",
+    "documentation": "文档"
   },
-  "actions": {
-    "connect": "连接钱包",
-    "disconnect": "断开连接",
+  "hero": {
+    "title": "未来的代币化农业",
+    "subtitle": "通过区块链技术连接农民和投资者",
+    "button": "开始使用",
+    "docButton": "文档"
+  },
+  "features": {
+    "title": "为什么选择AGROTM？",
+    "description": "我们的平台将DeFi创新与农业可持续性相结合，提供独特的投资机会。",
+    "stakingPremium": {
+      "title": "高级质押",
+      "description": "质押您的AGROTM代币并获得奖励"
+    },
+    "advancedSecurity": {
+      "title": "高级安全",
+      "description": "银行级别的资产保护"
+    },
+    "agriculturalNFTs": {
+      "title": "农业NFT",
+      "description": "真实农业资产的代币化"
+    },
+    "smartContracts": {
+      "title": "智能合约",
+      "description": "完整透明的自动化"
+    },
+    "yieldFarming": {
+      "title": "收益农场",
+      "description": "通过高级策略最大化您的收益"
+    },
+    "liquidityPools": {
+      "title": "流动性池",
+      "description": "提供流动性并赚取费用"
+    }
+  },
+  "about": {
+    "title": "关于AGROTM",
+    "description1": "我们的平台将DeFi创新与农业可持续性相结合，提供独特的投资机会。",
+    "description2": "我们连接需要资本的农民和寻求可持续回报的投资者。",
+    "activeUsers": "活跃用户",
+    "totalValueLocked": "总锁定价值",
+    "sustainability": {
+      "title": "可持续性",
+      "description": "负责任的农业和积极影响"
+    },
+    "security": {
+      "title": "安全",
+      "description": "为您的投资提供最大保护"
+    },
+    "growth": {
+      "title": "增长",
+      "description": "持续扩张机会"
+    },
+    "impact": {
+      "title": "影响",
+      "description": "全球农业的真正变革"
+    }
+  },
+  "stats": {
+    "title": "令人印象深刻的数字",
+    "subtitle": "我们平台的数字",
+    "tvl": "总锁定价值",
+    "activeUsers": "活跃用户",
+    "averageAPR": "平均年化收益率",
+    "totalTransactions": "总交易量"
+  },
+  "contact": {
+    "title": "联系我们",
+    "subtitle": "我们随时为您服务",
+    "email": "电子邮件",
+    "phone": "电话",
+    "chat": "聊天",
+    "liveChat": "在线聊天",
+    "instantResponse": "即时回复",
+    "support247": "24/7支持",
+    "businessHours": "营业时间"
+  },
+  "footer": {
+    "description": "通过区块链技术连接农民和投资者",
+    "quickLinks": "快速链接",
+    "resources": "资源",
+    "copyright": "© 2024 AGROTM. 保留所有权利。",
+    "privacyPolicy": "隐私政策",
+    "termsOfService": "服务条款"
+  },
+  "transactions": {
+    "recent": "最近交易",
+    "none": "未找到交易",
     "stake": "质押",
     "unstake": "解除质押",
-    "claim": "领取奖励",
-    "buy": "购买",
-    "sell": "出售",
-    "mint": "铸造NFT",
-    "vote": "投票",
-    "create": "创建",
-    "edit": "编辑",
-    "delete": "删除",
-    "save": "保存",
-    "cancel": "取消",
-    "confirm": "确认",
-    "back": "返回",
-    "next": "下一步",
-    "previous": "上一步"
-  },
-  "dashboard": {
-    "title": "仪表板",
-    "portfolio": "投资组合",
-    "totalValue": "总锁仓价值",
-    "rewards": "奖励",
-    "apy": "年化收益率",
-    "balance": "余额",
-    "recentTransactions": "最近交易",
-    "stakingPools": "质押池",
-    "yieldFarms": "收益农场"
-  },
-  "staking": {
-    "title": "质押",
-    "stakeTokens": "质押代币",
-    "unstakeTokens": "解除质押代币",
-    "claimRewards": "领取奖励",
-    "stakedAmount": "质押金额",
-    "rewardsEarned": "已赚取奖励",
-    "lockPeriod": "锁定期",
-    "apy": "年化收益率",
-    "totalStaked": "总质押量",
-    "availableToStake": "可质押数量"
-  },
-  "farming": {
-    "title": "收益农场",
-    "farmTokens": "农场代币",
-    "harvestRewards": "收获奖励",
-    "liquidity": "流动性",
-    "rewardsPerDay": "每日奖励",
-    "totalValue": "总价值",
-    "yourShare": "您的份额"
-  },
-  "nfts": {
-    "title": "NFT",
-    "marketplace": "市场",
-    "myCollection": "我的收藏",
-    "mintNFT": "铸造NFT",
-    "buyNFT": "购买NFT",
-    "sellNFT": "出售NFT",
-    "price": "价格",
-    "rarity": "稀有度",
-    "attributes": "属性"
-  },
-  "governance": {
-    "title": "治理",
-    "proposals": "提案",
-    "createProposal": "创建提案",
-    "vote": "投票",
-    "votingPower": "投票权",
-    "quorum": "法定人数",
-    "executed": "已执行",
+    "claim": "领取",
+    "transfer": "转账",
+    "confirmed": "已确认",
     "pending": "待处理",
-    "defeated": "被否决"
-  },
-  "common": {
-    "loading": "加载中...",
-    "error": "错误",
-    "success": "成功",
-    "warning": "警告",
-    "info": "信息",
-    "confirm": "确认",
-    "cancel": "取消",
-    "close": "关闭",
-    "search": "搜索",
-    "filter": "筛选",
-    "sort": "排序",
-    "refresh": "刷新",
-    "copy": "复制",
-    "share": "分享"
-  },
-  "errors": {
-    "walletNotConnected": "钱包未连接",
-    "insufficientBalance": "余额不足",
-    "transactionFailed": "交易失败",
-    "networkError": "网络错误",
-    "userRejected": "用户拒绝交易",
-    "unknownError": "发生未知错误"
-  },
-  "success": {
-    "walletConnected": "钱包连接成功",
-    "transactionConfirmed": "交易确认",
-    "stakeSuccessful": "质押成功",
-    "unstakeSuccessful": "解除质押成功",
-    "claimSuccessful": "奖励领取成功",
-    "nftMinted": "NFT铸造成功"
-  },
-  "time": {
-    "seconds": "秒",
-    "minutes": "分钟",
-    "hours": "小时",
-    "days": "天",
-    "weeks": "周",
-    "months": "月",
-    "years": "年"
-  },
-  "currency": {
-    "usd": "美元",
-    "eth": "以太坊",
-    "sol": "索拉纳",
-    "agrotm": "AGROTM"
+    "failed": "失败"
   }
 }

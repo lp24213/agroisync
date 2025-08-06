@@ -1,139 +1,106 @@
 {
-  "app": {
-    "name": "AGROTM",
-    "tagline": "DeFi Agriculture Platform",
-    "description": "Revolutionizing agriculture with blockchain technology"
-  },
-  "navigation": {
+  "header": {
     "home": "Home",
     "dashboard": "Dashboard",
     "staking": "Staking",
-    "farming": "Yield Farming",
-    "nfts": "NFTs",
-    "governance": "Governance",
-    "analytics": "Analytics",
     "about": "About",
-    "contact": "Contact"
+    "contact": "Contact",
+    "getStarted": "Get Started",
+    "documentation": "Documentation"
   },
-  "actions": {
-    "connect": "Connect Wallet",
-    "disconnect": "Disconnect",
+  "hero": {
+    "title": "Tokenized Agriculture of the Future",
+    "subtitle": "Connecting farmers and investors through blockchain technology",
+    "button": "Get Started",
+    "docButton": "Documentation"
+  },
+  "features": {
+    "title": "Why Choose AGROTM?",
+    "description": "Our platform combines DeFi innovation with agricultural sustainability, offering unique investment opportunities.",
+    "stakingPremium": {
+      "title": "Premium Staking",
+      "description": "Stake your AGROTM tokens and earn rewards"
+    },
+    "advancedSecurity": {
+      "title": "Advanced Security",
+      "description": "Bank-level protection for your assets"
+    },
+    "agriculturalNFTs": {
+      "title": "Agricultural NFTs",
+      "description": "Tokenization of real agricultural properties"
+    },
+    "smartContracts": {
+      "title": "Smart Contracts",
+      "description": "Complete and transparent automation"
+    },
+    "yieldFarming": {
+      "title": "Yield Farming",
+      "description": "Maximize your returns with advanced strategies"
+    },
+    "liquidityPools": {
+      "title": "Liquidity Pools",
+      "description": "Provide liquidity and earn fees"
+    }
+  },
+  "about": {
+    "title": "About AGROTM",
+    "description1": "Our platform combines DeFi innovation with agricultural sustainability, offering unique investment opportunities.",
+    "description2": "We connect farmers who need capital with investors seeking sustainable returns.",
+    "activeUsers": "Active Users",
+    "totalValueLocked": "Total Value Locked",
+    "sustainability": {
+      "title": "Sustainability",
+      "description": "Responsible agriculture and positive impact"
+    },
+    "security": {
+      "title": "Security",
+      "description": "Maximum protection for your investments"
+    },
+    "growth": {
+      "title": "Growth",
+      "description": "Continuous expansion opportunities"
+    },
+    "impact": {
+      "title": "Impact",
+      "description": "Real change in global agriculture"
+    }
+  },
+  "stats": {
+    "title": "Impressive Numbers",
+    "subtitle": "Our platform in numbers",
+    "tvl": "Total Value Locked",
+    "activeUsers": "Active Users",
+    "averageAPR": "Average APR",
+    "totalTransactions": "Total Transactions"
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "subtitle": "We are here to help",
+    "email": "Email",
+    "phone": "Phone",
+    "chat": "Chat",
+    "liveChat": "Live Chat",
+    "instantResponse": "Instant Response",
+    "support247": "24/7 Support",
+    "businessHours": "Business Hours"
+  },
+  "footer": {
+    "description": "Connecting farmers and investors through blockchain technology",
+    "quickLinks": "Quick Links",
+    "resources": "Resources",
+    "copyright": "© 2024 AGROTM. All rights reserved.",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service"
+  },
+  "transactions": {
+    "recent": "Recent Transactions",
+    "none": "No transactions found",
     "stake": "Stake",
     "unstake": "Unstake",
-    "claim": "Claim Rewards",
-    "buy": "Buy",
-    "sell": "Sell",
-    "mint": "Mint NFT",
-    "vote": "Vote",
-    "create": "Create",
-    "edit": "Edit",
-    "delete": "Delete",
-    "save": "Save",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "back": "Back",
-    "next": "Next",
-    "previous": "Previous"
-  },
-  "dashboard": {
-    "title": "Dashboard",
-    "portfolio": "Portfolio",
-    "totalValue": "Total Value Locked",
-    "rewards": "Rewards",
-    "apy": "APY",
-    "balance": "Balance",
-    "recentTransactions": "Recent Transactions",
-    "stakingPools": "Staking Pools",
-    "yieldFarms": "Yield Farms"
-  },
-  "staking": {
-    "title": "Staking",
-    "stakeTokens": "Stake Tokens",
-    "unstakeTokens": "Unstake Tokens",
-    "claimRewards": "Claim Rewards",
-    "stakedAmount": "Staked Amount",
-    "rewardsEarned": "Rewards Earned",
-    "lockPeriod": "Lock Period",
-    "apy": "APY",
-    "totalStaked": "Total Staked",
-    "availableToStake": "Available to Stake"
-  },
-  "farming": {
-    "title": "Yield Farming",
-    "farmTokens": "Farm Tokens",
-    "harvestRewards": "Harvest Rewards",
-    "liquidity": "Liquidity",
-    "rewardsPerDay": "Rewards per Day",
-    "totalValue": "Total Value",
-    "yourShare": "Your Share"
-  },
-  "nfts": {
-    "title": "NFTs",
-    "marketplace": "Marketplace",
-    "myCollection": "My Collection",
-    "mintNFT": "Mint NFT",
-    "buyNFT": "Buy NFT",
-    "sellNFT": "Sell NFT",
-    "price": "Price",
-    "rarity": "Rarity",
-    "attributes": "Attributes"
-  },
-  "governance": {
-    "title": "Governance",
-    "proposals": "Proposals",
-    "createProposal": "Create Proposal",
-    "vote": "Vote",
-    "votingPower": "Voting Power",
-    "quorum": "Quorum",
-    "executed": "Executed",
+    "claim": "Claim",
+    "transfer": "Transfer",
+    "confirmed": "Confirmed",
     "pending": "Pending",
-    "defeated": "Defeated"
-  },
-  "common": {
-    "loading": "Loading...",
-    "error": "Error",
-    "success": "Success",
-    "warning": "Warning",
-    "info": "Information",
-    "confirm": "Confirm",
-    "cancel": "Cancel",
-    "close": "Close",
-    "search": "Search",
-    "filter": "Filter",
-    "sort": "Sort",
-    "refresh": "Refresh",
-    "copy": "Copy",
-    "share": "Share"
-  },
-  "errors": {
-    "walletNotConnected": "Wallet not connected",
-    "insufficientBalance": "Insufficient balance",
-    "transactionFailed": "Transaction failed",
-    "networkError": "Network error",
-    "userRejected": "User rejected transaction",
-    "unknownError": "Unknown error occurred"
-  },
-  "success": {
-    "walletConnected": "Wallet connected successfully",
-    "transactionConfirmed": "Transaction confirmed",
-    "stakeSuccessful": "Staking successful",
-    "unstakeSuccessful": "Unstaking successful",
-    "claimSuccessful": "Rewards claimed successfully",
-    "nftMinted": "NFT minted successfully"
-  },
-  "time": {
-    "seconds": "seconds",
-    "minutes": "minutes",
-    "hours": "hours",
-    "days": "days",
-    "weeks": "weeks",
-    "months": "months",
-    "years": "years"
-  },
-  "currency": {
-    "usd": "USD",
-    "eth": "ETH",
-    "sol": "SOL",
-    "agrotm": "AGROTM"
+    "failed": "Failed"
   }
 }

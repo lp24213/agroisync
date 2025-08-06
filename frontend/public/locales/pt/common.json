@@ -1,139 +1,106 @@
 {
-  "app": {
-    "name": "AGROTM",
-    "tagline": "Plataforma DeFi para Agricultura",
-    "description": "Revolucionando a agricultura com tecnologia blockchain"
-  },
-  "navigation": {
+  "header": {
     "home": "Início",
-    "dashboard": "Painel",
+    "dashboard": "Dashboard",
     "staking": "Staking",
-    "farming": "Yield Farming",
-    "nfts": "NFTs",
-    "governance": "Governança",
-    "analytics": "Analytics",
     "about": "Sobre",
-    "contact": "Contato"
+    "contact": "Contato",
+    "getStarted": "Começar Agora",
+    "documentation": "Documentação"
   },
-  "actions": {
-    "connect": "Conectar Carteira",
-    "disconnect": "Desconectar",
-    "stake": "Fazer Staking",
-    "unstake": "Remover Staking",
-    "claim": "Resgatar Recompensas",
-    "buy": "Comprar",
-    "sell": "Vender",
-    "mint": "Cunhar NFT",
-    "vote": "Votar",
-    "create": "Criar",
-    "edit": "Editar",
-    "delete": "Excluir",
-    "save": "Salvar",
-    "cancel": "Cancelar",
-    "confirm": "Confirmar",
-    "back": "Voltar",
-    "next": "Próximo",
-    "previous": "Anterior"
+  "hero": {
+    "title": "Agricultura Tokenizada do Futuro",
+    "subtitle": "Conectando agricultores e investidores através da tecnologia blockchain",
+    "button": "Começar Agora",
+    "docButton": "Documentação"
   },
-  "dashboard": {
-    "title": "Painel",
-    "portfolio": "Portfólio",
-    "totalValue": "Valor Total Bloqueado",
-    "rewards": "Recompensas",
-    "apy": "APY",
-    "balance": "Saldo",
-    "recentTransactions": "Transações Recentes",
-    "stakingPools": "Pools de Staking",
-    "yieldFarms": "Farms de Yield"
+  "features": {
+    "title": "Por que escolher a AGROTM?",
+    "description": "Nossa plataforma combina inovação DeFi com sustentabilidade agrícola, oferecendo oportunidades únicas de investimento.",
+    "stakingPremium": {
+      "title": "Staking Premium",
+      "description": "Stake seus tokens AGROTM e ganhe recompensas"
+    },
+    "advancedSecurity": {
+      "title": "Segurança Avançada",
+      "description": "Proteção de nível bancário para seus ativos"
+    },
+    "agriculturalNFTs": {
+      "title": "NFTs Agrícolas",
+      "description": "Tokenização de propriedades agrícolas reais"
+    },
+    "smartContracts": {
+      "title": "Contratos Inteligentes",
+      "description": "Automação completa e transparente"
+    },
+    "yieldFarming": {
+      "title": "Yield Farming",
+      "description": "Maximize seus retornos com estratégias avançadas"
+    },
+    "liquidityPools": {
+      "title": "Pools de Liquidez",
+      "description": "Forneça liquidez e ganhe taxas"
+    }
   },
-  "staking": {
-    "title": "Staking",
-    "stakeTokens": "Fazer Staking de Tokens",
-    "unstakeTokens": "Remover Staking de Tokens",
-    "claimRewards": "Resgatar Recompensas",
-    "stakedAmount": "Quantidade em Staking",
-    "rewardsEarned": "Recompensas Ganhas",
-    "lockPeriod": "Período de Bloqueio",
-    "apy": "APY",
-    "totalStaked": "Total em Staking",
-    "availableToStake": "Disponível para Staking"
+  "about": {
+    "title": "Sobre a AGROTM",
+    "description1": "Nossa plataforma combina inovação DeFi com sustentabilidade agrícola, oferecendo oportunidades únicas de investimento.",
+    "description2": "Conectamos agricultores que precisam de capital com investidores que buscam retornos sustentáveis.",
+    "activeUsers": "Usuários Ativos",
+    "totalValueLocked": "Valor Total Bloqueado",
+    "sustainability": {
+      "title": "Sustentabilidade",
+      "description": "Agricultura responsável e impacto positivo"
+    },
+    "security": {
+      "title": "Segurança",
+      "description": "Proteção máxima para seus investimentos"
+    },
+    "growth": {
+      "title": "Crescimento",
+      "description": "Oportunidades de expansão contínua"
+    },
+    "impact": {
+      "title": "Impacto",
+      "description": "Mudança real na agricultura global"
+    }
   },
-  "farming": {
-    "title": "Yield Farming",
-    "farmTokens": "Farm de Tokens",
-    "harvestRewards": "Colher Recompensas",
-    "liquidity": "Liquidez",
-    "rewardsPerDay": "Recompensas por Dia",
-    "totalValue": "Valor Total",
-    "yourShare": "Sua Participação"
+  "stats": {
+    "title": "Números Impressionantes",
+    "subtitle": "Nossa plataforma em números",
+    "tvl": "Valor Total Bloqueado",
+    "activeUsers": "Usuários Ativos",
+    "averageAPR": "APR Médio",
+    "totalTransactions": "Transações Totais"
   },
-  "nfts": {
-    "title": "NFTs",
-    "marketplace": "Marketplace",
-    "myCollection": "Minha Coleção",
-    "mintNFT": "Cunhar NFT",
-    "buyNFT": "Comprar NFT",
-    "sellNFT": "Vender NFT",
-    "price": "Preço",
-    "rarity": "Raridade",
-    "attributes": "Atributos"
+  "contact": {
+    "title": "Entre em Contato",
+    "subtitle": "Estamos aqui para ajudar",
+    "email": "E-mail",
+    "phone": "Telefone",
+    "chat": "Chat",
+    "liveChat": "Chat ao Vivo",
+    "instantResponse": "Resposta Instantânea",
+    "support247": "Suporte 24/7",
+    "businessHours": "Horário Comercial"
   },
-  "governance": {
-    "title": "Governança",
-    "proposals": "Propostas",
-    "createProposal": "Criar Proposta",
-    "vote": "Votar",
-    "votingPower": "Poder de Voto",
-    "quorum": "Quórum",
-    "executed": "Executada",
+  "footer": {
+    "description": "Conectando agricultores e investidores através da tecnologia blockchain",
+    "quickLinks": "Links Rápidos",
+    "resources": "Recursos",
+    "copyright": "© 2024 AGROTM. Todos os direitos reservados.",
+    "privacyPolicy": "Política de Privacidade",
+    "termsOfService": "Termos de Serviço"
+  },
+  "transactions": {
+    "recent": "Transações Recentes",
+    "none": "Nenhuma transação encontrada",
+    "stake": "Stake",
+    "unstake": "Unstake",
+    "claim": "Claim",
+    "transfer": "Transfer",
+    "confirmed": "Confirmado",
     "pending": "Pendente",
-    "defeated": "Derrotada"
-  },
-  "common": {
-    "loading": "Carregando...",
-    "error": "Erro",
-    "success": "Sucesso",
-    "warning": "Aviso",
-    "info": "Informação",
-    "confirm": "Confirmar",
-    "cancel": "Cancelar",
-    "close": "Fechar",
-    "search": "Pesquisar",
-    "filter": "Filtrar",
-    "sort": "Ordenar",
-    "refresh": "Atualizar",
-    "copy": "Copiar",
-    "share": "Compartilhar"
-  },
-  "errors": {
-    "walletNotConnected": "Carteira não conectada",
-    "insufficientBalance": "Saldo insuficiente",
-    "transactionFailed": "Transação falhou",
-    "networkError": "Erro de rede",
-    "userRejected": "Usuário rejeitou a transação",
-    "unknownError": "Erro desconhecido ocorreu"
-  },
-  "success": {
-    "walletConnected": "Carteira conectada com sucesso",
-    "transactionConfirmed": "Transação confirmada",
-    "stakeSuccessful": "Staking realizado com sucesso",
-    "unstakeSuccessful": "Remoção de staking realizada com sucesso",
-    "claimSuccessful": "Recompensas resgatadas com sucesso",
-    "nftMinted": "NFT cunhado com sucesso"
-  },
-  "time": {
-    "seconds": "segundos",
-    "minutes": "minutos",
-    "hours": "horas",
-    "days": "dias",
-    "weeks": "semanas",
-    "months": "meses",
-    "years": "anos"
-  },
-  "currency": {
-    "usd": "USD",
-    "eth": "ETH",
-    "sol": "SOL",
-    "agrotm": "AGROTM"
+    "failed": "Falhou"
   }
 }

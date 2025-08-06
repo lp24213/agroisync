@@ -2,16 +2,23 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useTranslation } from 'react-i18next';
+import { useRouter, usePathname } from 'next/navigation';
 import { Menu, X, Globe, ChevronDown } from 'lucide-react';
-import { supportedLanguages, changeLanguage } from '../../lib/i18n';
+
+const supportedLanguages = [
+  { code: 'pt', name: 'Português', flag: '🇧🇷' },
+  { code: 'en', name: 'English', flag: '🇺🇸' },
+  { code: 'es', name: 'Español', flag: '🇪🇸' },
+  { code: 'zh', name: '中文', flag: '🇨🇳' }
+];
 
 export function Header() {
-  const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('pt');
   const languageRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const pathname = usePathname();
 
   // Detectar idioma atual
   useEffect(() => {
@@ -37,9 +44,14 @@ export function Header() {
 
   // Trocar idioma
   const handleLanguageChange = (languageCode: string) => {
-    changeLanguage(languageCode);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('agrotm-language', languageCode);
+    }
     setCurrentLanguage(languageCode);
     setIsLanguageOpen(false);
+    
+    // Recarregar a página com o novo idioma
+    window.location.reload();
   };
 
   // Obter idioma atual
@@ -62,19 +74,19 @@ export function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <Link href="/" className="text-gray-300 hover:text-cyan-400 transition-colors">
-              {t('home')}
+              Início
             </Link>
             <Link href="/dashboard" className="text-gray-300 hover:text-cyan-400 transition-colors">
-              {t('dashboard')}
+              Dashboard
             </Link>
             <Link href="/staking" className="text-gray-300 hover:text-cyan-400 transition-colors">
-              {t('staking')}
+              Staking
             </Link>
             <Link href="/about" className="text-gray-300 hover:text-cyan-400 transition-colors">
-              {t('about')}
+              Sobre
             </Link>
             <Link href="/contact" className="text-gray-300 hover:text-cyan-400 transition-colors">
-              {t('contact')}
+              Contato
             </Link>
           </nav>
 
@@ -121,7 +133,7 @@ export function Header() {
               href="/dashboard"
               className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-6 py-2 rounded-lg hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 font-medium"
             >
-              {t('getStarted')}
+              Começar Agora
             </Link>
           </div>
 
@@ -145,35 +157,35 @@ export function Header() {
                   className="block text-gray-300 hover:text-cyan-400 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {t('home')}
+                  Início
                 </Link>
                 <Link
                   href="/dashboard"
                   className="block text-gray-300 hover:text-cyan-400 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {t('dashboard')}
+                  Dashboard
                 </Link>
                 <Link
                   href="/staking"
                   className="block text-gray-300 hover:text-cyan-400 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {t('staking')}
+                  Staking
                 </Link>
                 <Link
                   href="/about"
                   className="block text-gray-300 hover:text-cyan-400 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {t('about')}
+                  Sobre
                 </Link>
                 <Link
                   href="/contact"
                   className="block text-gray-300 hover:text-cyan-400 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {t('contact')}
+                  Contato
                 </Link>
               </nav>
 
@@ -208,7 +220,7 @@ export function Header() {
                   className="block w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-6 py-3 rounded-lg hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 font-medium text-center"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {t('getStarted')}
+                  Começar Agora
                 </Link>
               </div>
             </div>
