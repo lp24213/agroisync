@@ -39,6 +39,21 @@ i18n
           documentation: "Documentation",
           getStarted: "Get Started",
           
+          // Transaction Types
+          stake: "Stake",
+          unstake: "Unstake",
+          claim: "Claim",
+          transfer: "Transfer",
+          
+          // Transaction Status
+          confirmed: "Confirmed",
+          pending: "Pending",
+          failed: "Failed",
+          
+          // Dashboard
+          recentTransactions: "Recent Transactions",
+          noTransactionsFound: "No transactions found",
+          
           // Hero Section
           welcome: "Welcome to AGROTM",
           heroTitle: "Revolutionize Agriculture with Blockchain Technology",
@@ -82,6 +97,12 @@ i18n
                       growthDesc: "Attractive return opportunities for investors",
                       impact: "Impact",
                       impactDesc: "We contribute to a more sustainable and fair future",
+                      
+                      // Stats Section
+                      impressiveNumbers: "Impressive Numbers",
+                      ourPlatformInNumbers: "Our platform in numbers",
+                      averageAPR: "Average APR",
+                      totalTransactions: "Total Transactions",
           
           // Contact
           contactTitle: "Get in Touch",
@@ -140,6 +161,21 @@ i18n
           documentation: "Documentação",
           getStarted: "Começar",
           
+          // Transaction Types
+          stake: "Stake",
+          unstake: "Unstake",
+          claim: "Claim",
+          transfer: "Transfer",
+          
+          // Transaction Status
+          confirmed: "Confirmado",
+          pending: "Pendente",
+          failed: "Falhou",
+          
+          // Dashboard
+          recentTransactions: "Transações Recentes",
+          noTransactionsFound: "Nenhuma transação encontrada",
+          
           // Hero Section
           welcome: "Bem-vindo ao AGROTM",
           heroTitle: "Revolucione a Agricultura com Tecnologia Blockchain",
@@ -183,6 +219,12 @@ i18n
                       growthDesc: "Oportunidades de retorno atrativas para investidores",
                       impact: "Impacto",
                       impactDesc: "Contribuímos para um futuro mais sustentável e justo",
+                      
+                      // Stats Section
+                      impressiveNumbers: "Números Impressionantes",
+                      ourPlatformInNumbers: "Nossa plataforma em números",
+                      averageAPR: "APR Médio",
+                      totalTransactions: "Transações Totais",
           
           // Contact
           contactTitle: "Entre em Contato",
@@ -241,6 +283,21 @@ i18n
           documentation: "Documentación",
           getStarted: "Comenzar",
           
+          // Transaction Types
+          stake: "Stake",
+          unstake: "Unstake",
+          claim: "Claim",
+          transfer: "Transfer",
+          
+          // Transaction Status
+          confirmed: "Confirmado",
+          pending: "Pendiente",
+          failed: "Falló",
+          
+          // Dashboard
+          recentTransactions: "Transacciones Recientes",
+          noTransactionsFound: "No se encontraron transacciones",
+          
           // Hero Section
           welcome: "Bienvenido a AGROTM",
           heroTitle: "Revoluciona la Agricultura con Tecnología Blockchain",
@@ -284,6 +341,12 @@ i18n
                       growthDesc: "Oportunidades de retorno atractivas para inversores",
                       impact: "Impacto",
                       impactDesc: "Contribuimos a un futuro más sostenible y justo",
+                      
+                      // Stats Section
+                      impressiveNumbers: "Números Impresionantes",
+                      ourPlatformInNumbers: "Nuestra plataforma en números",
+                      averageAPR: "APR Promedio",
+                      totalTransactions: "Transacciones Totales",
           
           // Contact
           contactTitle: "Ponte en Contacto",
@@ -342,6 +405,21 @@ i18n
           documentation: "文档",
           getStarted: "开始使用",
           
+          // Transaction Types
+          stake: "质押",
+          unstake: "解质押",
+          claim: "领取",
+          transfer: "转账",
+          
+          // Transaction Status
+          confirmed: "已确认",
+          pending: "待处理",
+          failed: "失败",
+          
+          // Dashboard
+          recentTransactions: "最近交易",
+          noTransactionsFound: "未找到交易",
+          
           // Hero Section
           welcome: "欢迎来到AGROTM",
           heroTitle: "用区块链技术革新农业",
@@ -385,6 +463,12 @@ i18n
                       growthDesc: "为投资者提供有吸引力的回报机会",
                       impact: "影响",
                       impactDesc: "我们为更可持续和公平的未来做出贡献",
+                      
+                      // Stats Section
+                      impressiveNumbers: "令人印象深刻的数字",
+                      ourPlatformInNumbers: "我们平台的数字",
+                      averageAPR: "平均年化收益率",
+                      totalTransactions: "总交易量",
           
           // Contact
           contactTitle: "联系我们",

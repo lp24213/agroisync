@@ -4,6 +4,7 @@ import React from 'react';
 import { Card } from '../ui/Card';
 import { validation } from '../../lib/utils';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface Stat {
   id: string;
@@ -13,38 +14,40 @@ interface Stat {
   change?: number;
 }
 
-const stats: Stat[] = [
-  {
-    id: '1',
-    label: 'Total Value Locked',
-    value: 12500000,
-    unit: 'USD',
-    change: 2.5,
-  },
-  {
-    id: '2',
-    label: 'Usuários Ativos',
-    value: 25430,
-    unit: '',
-    change: 12.3,
-  },
-  {
-    id: '3',
-    label: 'APR Médio',
-    value: 18.5,
-    unit: '%',
-    change: -0.3,
-  },
-  {
-    id: '4',
-    label: 'Transações Totais',
-    value: 156789,
-    unit: '',
-    change: 8.7,
-  },
-];
-
 export function Stats() {
+  const { t } = useTranslation();
+
+  const stats: Stat[] = [
+    {
+      id: '1',
+      label: t('totalValueLocked'),
+      value: 12500000,
+      unit: 'USD',
+      change: 2.5,
+    },
+    {
+      id: '2',
+      label: t('activeUsers'),
+      value: 25430,
+      unit: '',
+      change: 12.3,
+    },
+    {
+      id: '3',
+      label: t('averageAPR'),
+      value: 18.5,
+      unit: '%',
+      change: -0.3,
+    },
+    {
+      id: '4',
+      label: t('totalTransactions'),
+      value: 156789,
+      unit: '',
+      change: 8.7,
+    },
+  ];
+
   return (
     <section className="py-20 bg-agro-darker relative overflow-hidden">
       {/* Background Elements */}
@@ -94,7 +97,7 @@ export function Stats() {
           transition={{ duration: 0.8 }}
         >
           <h2 className="text-4xl font-bold text-white mb-4 text-glow relative inline-block">
-            <span className="relative z-10">Números Impressionantes</span>
+            <span className="relative z-10">{t('impressiveNumbers')}</span>
             <motion.span 
               className="absolute inset-0 bg-gradient-to-r from-agro-blue via-agro-purple to-agro-green opacity-0 blur-lg"
               animate={{ opacity: [0, 0.5, 0] }}
@@ -102,7 +105,7 @@ export function Stats() {
             />
           </h2>
           <p className="text-xl text-gray-400">
-            Nossa plataforma em números
+            {t('ourPlatformInNumbers')}
           </p>
         </motion.div>
 
