@@ -5,13 +5,10 @@ import { Button } from '../ui/Button';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from '../ui/Logo';
-import { useTranslation } from 'react-i18next';
-import { supportedLanguages, changeLanguage } from '../../lib/i18n';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = React.useState(false);
-  const { t, i18n } = useTranslation();
   
   // Animation variants
   const navItemVariants = {
@@ -60,17 +57,15 @@ export function Header() {
 
   const handleLanguageChange = (lang: string) => {
     console.log('Changing language to:', lang);
-    changeLanguage(lang);
     setIsLanguageMenuOpen(false);
   };
 
   const getCurrentLanguage = () => {
-    return i18n.language || 'pt';
+    return 'pt';
   };
 
   const getCurrentLanguageInfo = () => {
-    const currentLang = getCurrentLanguage();
-    return supportedLanguages.find(lang => lang.code === currentLang) || supportedLanguages[0];
+    return { flag: '🇧🇷', name: 'Português' };
   };
 
   // Close language menu when clicking outside
@@ -114,7 +109,7 @@ export function Header() {
               variants={navItemVariants}
             >
               <Link href="/" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
-                {t('home')}
+                Início
                 <motion.span 
                   className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
                   initial={{ scaleX: 0 }}
@@ -132,7 +127,7 @@ export function Header() {
               transition={{ delay: 0.1 }}
             >
               <Link href="/dashboard" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
-                {t('dashboard')}
+                Dashboard
                 <motion.span 
                   className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
                   initial={{ scaleX: 0 }}
@@ -150,7 +145,7 @@ export function Header() {
               transition={{ delay: 0.2 }}
             >
               <Link href="/staking" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
-                {t('staking')}
+                Staking
                 <motion.span 
                   className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
                   initial={{ scaleX: 0 }}
@@ -168,7 +163,7 @@ export function Header() {
               transition={{ delay: 0.3 }}
             >
               <Link href="#about" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
-                {t('about')}
+                Sobre
                 <motion.span 
                   className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
                   initial={{ scaleX: 0 }}
@@ -186,7 +181,7 @@ export function Header() {
               transition={{ delay: 0.4 }}
             >
               <Link href="#contact" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
-                {t('contact')}
+                Contato
                 <motion.span 
                   className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
                   initial={{ scaleX: 0 }}
@@ -196,7 +191,7 @@ export function Header() {
               </Link>
             </motion.div>
 
-            {/* Language Selector Desktop - FIXED */}
+            {/* Language Selector Desktop - TEMPORARY */}
             <motion.div
               initial="hidden"
               animate="visible"
@@ -239,34 +234,25 @@ export function Header() {
                     exit="exit"
                   >
                     <div className="p-2 space-y-1">
-                      {/* ALL SUPPORTED LANGUAGES */}
-                      {supportedLanguages.map((lang) => (
-                        <motion.button
-                          key={lang.code}
-                          onClick={() => handleLanguageChange(lang.code)}
-                          className={`w-full flex items-center space-x-3 px-3 py-2 text-left rounded-md transition-colors duration-200 ${
-                            getCurrentLanguage() === lang.code
-                              ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                              : 'text-gray-300 hover:bg-blue-500/10 hover:text-blue-400'
-                          }`}
-                          whileHover={{ x: 5 }}
-                          whileTap={{ scale: 0.95 }}
+                      {/* TEMPORARY LANGUAGES */}
+                      <motion.button
+                        onClick={() => handleLanguageChange('pt')}
+                        className="w-full flex items-center space-x-3 px-3 py-2 text-left rounded-md transition-colors duration-200 bg-blue-500/20 text-blue-400 border border-blue-500/30"
+                        whileHover={{ x: 5 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <span className="text-lg">🇧🇷</span>
+                        <span className="text-sm font-medium">Português Brasil</span>
+                        <motion.svg
+                          className="w-4 h-4 ml-auto text-blue-400"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
                         >
-                          <span className="text-lg">{lang.flag}</span>
-                          <span className="text-sm font-medium">{lang.nativeName}</span>
-                          {getCurrentLanguage() === lang.code && (
-                            <motion.svg
-                              className="w-4 h-4 ml-auto text-blue-400"
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                            </motion.svg>
-                          )}
-                        </motion.button>
-                      ))}
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </motion.svg>
+                      </motion.button>
                     </div>
                   </motion.div>
                 )}
@@ -285,7 +271,7 @@ export function Header() {
                 size="sm"
                 className="bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-cyan-400 hover:to-blue-500 relative group overflow-hidden"
               >
-                <span className="relative z-10">{t('getStarted')}</span>
+                <span className="relative z-10">Começar</span>
                 <span className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-500 opacity-0 group-hover:opacity-30 transition-opacity duration-300"></span>
               </Button>
             </motion.div>
@@ -349,31 +335,31 @@ export function Header() {
                 >
                   <motion.div variants={navItemVariants}>
                     <Link href="/" className="block px-3 py-2 text-gray-300 hover:text-blue-400 transition-colors duration-300 border-l-2 border-transparent hover:border-blue-500/50 hover:bg-blue-500/5 rounded-r-md">
-                      {t('home')}
+                      Início
                     </Link>
                   </motion.div>
                   
                   <motion.div variants={navItemVariants}>
                     <Link href="/dashboard" className="block px-3 py-2 text-gray-300 hover:text-blue-400 transition-colors duration-300 border-l-2 border-transparent hover:border-blue-500/50 hover:bg-blue-500/5 rounded-r-md">
-                      {t('dashboard')}
+                      Dashboard
                     </Link>
                   </motion.div>
                   
                   <motion.div variants={navItemVariants}>
                     <Link href="/staking" className="block px-3 py-2 text-gray-300 hover:text-cyan-400 transition-colors duration-300 border-l-2 border-transparent hover:border-cyan-400/50 hover:bg-cyan-400/5 rounded-r-md">
-                      {t('staking')}
+                      Staking
                     </Link>
                   </motion.div>
                   
                   <motion.div variants={navItemVariants}>
                     <Link href="#about" className="block px-3 py-2 text-gray-300 hover:text-blue-500 transition-colors duration-300 border-l-2 border-transparent hover:border-blue-500/50 hover:bg-blue-500/5 rounded-r-md">
-                      {t('about')}
+                      Sobre
                     </Link>
                   </motion.div>
                   
                   <motion.div variants={navItemVariants}>
                     <Link href="#contact" className="block px-3 py-2 text-gray-300 hover:text-cyan-400 transition-colors duration-300 border-l-2 border-transparent hover:border-cyan-400/50 hover:bg-cyan-400/5 rounded-r-md">
-                      {t('contact')}
+                      Contato
                     </Link>
                   </motion.div>
 
@@ -382,74 +368,15 @@ export function Header() {
                     <div className="px-3 py-2">
                       <p className="text-sm text-gray-400 mb-2">Idioma / Language</p>
                       <div className="grid grid-cols-1 gap-2">
-                        {supportedLanguages.map((lang) => (
-                          <motion.button
-                            key={lang.code}
-                            onClick={() => handleLanguageChange(lang.code)}
-                            className={`flex items-center justify-center space-x-2 px-3 py-2 rounded-md transition-colors duration-200 ${
-                              getCurrentLanguage() === lang.code
-                                ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                                : 'text-gray-300 hover:bg-blue-500/10 hover:text-blue-400 border border-transparent'
-                            }`}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                          >
-                            <span className="text-lg">{lang.flag}</span>
-                            <span className="text-sm font-medium">{lang.nativeName}</span>
-                          </motion.button>
-                        ))}
-                      </div>
-                    </div>
-                  </motion.div>
-
-                  {/* Technologies Section Mobile */}
-                  <motion.div variants={navItemVariants} className="mt-4">
-                    <div className="px-3 py-2">
-                      <p className="text-sm text-gray-400 mb-2">🛠️ Tecnologias / Tech Stack</p>
-                      <div className="space-y-2">
-                        {/* Frontend */}
-                        <div className="bg-blue-500/10 border border-blue-500/20 rounded-md p-3">
-                          <p className="text-xs text-blue-400 font-semibold mb-1">🎨 Frontend</p>
-                          <div className="flex flex-wrap gap-1">
-                            <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded">Next.js</span>
-                            <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded">React</span>
-                            <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded">TypeScript</span>
-                            <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded">Tailwind</span>
-                          </div>
-                        </div>
-                        
-                        {/* Backend */}
-                        <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-md p-3">
-                          <p className="text-xs text-cyan-400 font-semibold mb-1">⚙️ Backend</p>
-                          <div className="flex flex-wrap gap-1">
-                            <span className="text-xs bg-cyan-500/20 text-cyan-300 px-2 py-1 rounded">Node.js</span>
-                            <span className="text-xs bg-cyan-500/20 text-cyan-300 px-2 py-1 rounded">Express</span>
-                            <span className="text-xs bg-cyan-500/20 text-cyan-300 px-2 py-1 rounded">MongoDB</span>
-                            <span className="text-xs bg-cyan-500/20 text-cyan-300 px-2 py-1 rounded">Redis</span>
-                          </div>
-                        </div>
-                        
-                        {/* Blockchain */}
-                        <div className="bg-green-500/10 border border-green-500/20 rounded-md p-3">
-                          <p className="text-xs text-green-400 font-semibold mb-1">⛓️ Blockchain</p>
-                          <div className="flex flex-wrap gap-1">
-                            <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded">Solana</span>
-                            <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded">Rust</span>
-                            <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded">Anchor</span>
-                            <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded">Web3.js</span>
-                          </div>
-                        </div>
-                        
-                        {/* DevOps */}
-                        <div className="bg-purple-500/10 border border-purple-500/20 rounded-md p-3">
-                          <p className="text-xs text-purple-400 font-semibold mb-1">🚀 DevOps</p>
-                          <div className="flex flex-wrap gap-1">
-                            <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded">Docker</span>
-                            <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded">Vercel</span>
-                            <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded">Railway</span>
-                            <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded">GitHub</span>
-                          </div>
-                        </div>
+                        <motion.button
+                          onClick={() => handleLanguageChange('pt')}
+                          className="flex items-center justify-center space-x-2 px-3 py-2 rounded-md transition-colors duration-200 bg-blue-500/20 text-blue-400 border border-blue-500/30"
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          <span className="text-lg">🇧🇷</span>
+                          <span className="text-sm font-medium">Português Brasil</span>
+                        </motion.button>
                       </div>
                     </div>
                   </motion.div>
@@ -460,7 +387,7 @@ export function Header() {
                       size="sm" 
                       className="w-full bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-cyan-400 hover:to-blue-500 relative group overflow-hidden"
                     >
-                      <span className="relative z-10">{t('getStarted')}</span>
+                      <span className="relative z-10">Começar</span>
                       <span className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-500 opacity-0 group-hover:opacity-30 transition-opacity duration-300"></span>
                     </Button>
                   </motion.div>
