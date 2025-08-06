@@ -48,7 +48,6 @@ export function Features() {
     }
   ];
 
-export function Features() {
   return (
     <section className="py-20 bg-agro-darker relative overflow-hidden">
       {/* Background Elements */}
