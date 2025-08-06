@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { Menu, X, Globe, ChevronDown } from 'lucide-react';
@@ -88,9 +89,13 @@ export function Header() {
         <div className="flex justify-between items-center h-16 relative">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">A</span>
-            </div>
+            <Image 
+              src="/assets/images/logo/agrotm-logo-main.png" 
+              alt="AGROTM Logo" 
+              width={32} 
+              height={32}
+              className="w-8 h-8"
+            />
             <span className="text-white font-bold text-xl">AGROTM</span>
           </Link>
 

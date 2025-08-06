@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Card } from '../ui/Card';
 import { useTranslation } from 'react-i18next';
 
-export function SecuritySection() {
+export function NFTSection() {
   const { t } = useTranslation('common');
 
   return (
@@ -28,18 +28,18 @@ export function SecuritySection() {
             transition={{ duration: 0.8 }}
             className="flex justify-center lg:order-2"
           >
-            <Card className="bg-agro-darker/80 border border-agro-green/20 backdrop-blur-sm overflow-hidden relative group cyberpunk-card">
-              <div className="absolute inset-0 bg-gradient-to-r from-agro-green/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-agro-green to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-              <div className="absolute bottom-0 right-0 w-full h-0.5 bg-gradient-to-r from-agro-green to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+            <Card className="bg-agro-darker/80 border border-agro-yellow/20 backdrop-blur-sm overflow-hidden relative group cyberpunk-card">
+              <div className="absolute inset-0 bg-gradient-to-r from-agro-yellow/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-agro-yellow to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+              <div className="absolute bottom-0 right-0 w-full h-0.5 bg-gradient-to-r from-agro-yellow to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
               
               <div className="relative z-10 p-6">
                 <Image 
-                  src="/assets/images/security/cyber-defense.png" 
-                  alt="Cyber Defense" 
+                  src="/assets/images/nft/nft-minting.png" 
+                  alt="NFT Minting" 
                   width={400} 
                   height={300}
-                  className="w-full h-auto rounded-lg border border-agro-green/20"
+                  className="w-full h-auto rounded-lg border border-agro-yellow/20"
                 />
               </div>
             </Card>
@@ -53,23 +53,23 @@ export function SecuritySection() {
             className="lg:order-1"
           >
             <h2 className="text-4xl font-bold text-white mb-6 text-glow">
-              {t('cyberDefense')} <span className="text-agro-green">AGROTM</span>
+              {t('nftMinting')} <span className="text-agro-yellow">AGROTM</span>
             </h2>
             <p className="text-lg text-gray-400 mb-6">
-              {t('securityDescription')}
+              {t('nftDescription')}
             </p>
             <div className="space-y-4">
               <div className="flex items-center space-x-3">
+                <div className="w-3 h-3 bg-agro-yellow rounded-full"></div>
+                <span className="text-gray-300">{t('uniqueAssets')}</span>
+              </div>
+              <div className="flex items-center space-x-3">
                 <div className="w-3 h-3 bg-agro-green rounded-full"></div>
-                <span className="text-gray-300">{t('advancedProtection')}</span>
+                <span className="text-gray-300">{t('agriculturalNFTs')}</span>
               </div>
               <div className="flex items-center space-x-3">
                 <div className="w-3 h-3 bg-agro-blue rounded-full"></div>
-                <span className="text-gray-300">{t('blockchainSecurity')}</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <div className="w-3 h-3 bg-agro-purple rounded-full"></div>
-                <span className="text-gray-300">{t('realTimeMonitoring')}</span>
+                <span className="text-gray-300">{t('blockchainOwnership')}</span>
               </div>
             </div>
           </motion.div>

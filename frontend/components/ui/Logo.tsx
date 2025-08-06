@@ -30,7 +30,7 @@ export function Logo({ size = 'md', iconOnly = false }: LogoProps) {
     >
       <div className={`${sizeClasses[size]} flex items-center justify-center`}>
         <Image 
-          src="/images/logo-agrotm.svg" 
+          src="/assets/images/logo/agrotm-logo-main.png" 
           alt="AGROTM Logo" 
           width={size === 'sm' ? 24 : size === 'md' ? 32 : 48}
           height={size === 'sm' ? 24 : size === 'md' ? 32 : 48}
