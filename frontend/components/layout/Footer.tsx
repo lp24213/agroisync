@@ -18,9 +18,18 @@ export function Footer() {
                 height={60}
                 className="h-8 w-auto"
                 onError={(e) => {
-                  e.currentTarget.src = "/images/logo-agrotm.svg";
+                  const target = e.currentTarget;
+                  if (target.src.includes('agrotm-logo.svg')) {
+                    target.src = "/assets/images/logo/agrotm-logo-white.svg";
+                  } else if (target.src.includes('agrotm-logo-white.svg')) {
+                    target.src = "/assets/images/logo/agrotm-logo.png";
+                  } else {
+                    target.style.display = 'none';
+                    target.nextElementSibling?.classList.remove('hidden');
+                  }
                 }}
               />
+              <span className="hidden text-2xl font-bold text-[#00F0FF] font-orbitron ml-2">AGROTM</span>
             </div>
             <p className="text-[#cccccc] mb-6 max-w-md">
               Extensão da startup AGROTM, intermediando produtos do agronegócio com blockchain. Segurança, tecnologia e inovação para o setor agrícola.

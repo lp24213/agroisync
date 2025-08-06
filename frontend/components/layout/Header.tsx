@@ -97,9 +97,18 @@ export function Header() {
               priority
               className="h-8 w-auto"
               onError={(e) => {
-                e.currentTarget.src = "/images/logo-agrotm.svg";
+                const target = e.currentTarget;
+                if (target.src.includes('agrotm-logo.svg')) {
+                  target.src = "/assets/images/logo/agrotm-logo-white.svg";
+                } else if (target.src.includes('agrotm-logo-white.svg')) {
+                  target.src = "/assets/images/logo/agrotm-logo.png";
+                } else {
+                  target.style.display = 'none';
+                  target.nextElementSibling?.classList.remove('hidden');
+                }
               }}
             />
+            <span className="hidden text-2xl font-bold text-[#00F0FF] font-orbitron">AGROTM</span>
           </Link>
 
           {/* Desktop Navigation */}

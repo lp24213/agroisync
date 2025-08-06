@@ -17,12 +17,12 @@ const navigation = [
 ];
 
 const ecosystem = [
-  { name: 'AGROTM Token', href: '/token', description: 'Native utility token' },
-  { name: 'Yield Farming', href: '/farming', description: 'Earn rewards' },
-  { name: 'Liquidity Pools', href: '/pools', description: 'Provide liquidity' },
-  { name: 'NFT Marketplace', href: '/nfts', description: 'Trade digital assets' },
-  { name: 'DAO Governance', href: '/dao', description: 'Community voting' },
-  { name: 'Analytics', href: '/analytics', description: 'Real-time data' },
+  { name: 'AGROTM Token', href: '/token', description: 'Token de utilidade nativo' },
+  { name: 'Yield Farming', href: '/farming', description: 'Ganhe recompensas' },
+  { name: 'Liquidity Pools', href: '/pools', description: 'Forneça liquidez' },
+  { name: 'NFT Marketplace', href: '/nfts', description: 'Troque ativos digitais' },
+  { name: 'DAO Governance', href: '/dao', description: 'Votação da comunidade' },
+  { name: 'Analytics', href: '/analytics', description: 'Dados em tempo real' },
 ];
 
 export function PremiumNavbar() {

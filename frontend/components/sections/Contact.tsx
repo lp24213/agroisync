@@ -25,7 +25,8 @@ export function Contact() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
+            whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(0, 240, 255, 0.8)" }}
+            transition={{ delay: 0.1, duration: 0.6 }}
             className="bg-black/70 border border-[#00F0FF] p-8 rounded-2xl text-center hover:shadow-neon transition-all duration-300"
           >
             <div className="bg-[#00F0FF]/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
@@ -39,7 +40,8 @@ export function Contact() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+            whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(0, 240, 255, 0.8)" }}
+            transition={{ delay: 0.2, duration: 0.6 }}
             className="bg-black/70 border border-[#00F0FF] p-8 rounded-2xl text-center hover:shadow-neon transition-all duration-300"
           >
             <div className="bg-[#00F0FF]/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
@@ -53,7 +55,8 @@ export function Contact() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
+            whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(0, 240, 255, 0.8)" }}
+            transition={{ delay: 0.3, duration: 0.6 }}
             className="bg-black/70 border border-[#00F0FF] p-8 rounded-2xl text-center hover:shadow-neon transition-all duration-300"
           >
             <div className="bg-[#00F0FF]/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">

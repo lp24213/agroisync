@@ -1,3 +1,8 @@
 [33mdb199be9[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m docs: add deployment success documentation with complete feature summary
 [33mc6d2574c[m feat: implement complete internationalization with images and logos - Add 4 language support (EN, PT-BR, ES, ZH) with correct flags - Implement all requested images and logos in their proper places - Add speech bubble with Brazil flag in hero section - Add shield with plant in cyber defense section - Add interactive dashboard with data visualization - Add staking/farming section with plant growth visualization - Add NFT minting section with plant-to-NFT transformation - Update theme to matte black with neon blue accents - Add contact form with contato@agrotm.com.br email - Complete responsive design with animations
 [33mdc7764e6[m  DOC: Documentação das correções para deploy Railway - Criado RAILWAY_DEPLOY_FIXES.md - Resumo completo de todos os problemas identificados - Detalhamento de todas as correções implementadas - Guia de deploy e próximos passos - Backend 100% preparado para Railway
+[33mf840c677[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Trigger deployment - AGROTM ready for production
+[33m9727405e[m  AGROTM Design Improvements - Premium Futurista Complete
+[33m132bb0b6[m Final documentation - Complete visual corrections summary
+[33m0b0413cc[m Final visual corrections - Professional AGROTM branding and content restoration
+[33m0b9974f1[m Fix all images and logo - professional image handling with fallbacks

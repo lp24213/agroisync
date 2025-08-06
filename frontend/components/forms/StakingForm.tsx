@@ -138,7 +138,7 @@ export const StakingForm: React.FC<StakingFormProps> = ({
       <div className="form-header">
         <h3 className="form-title">Staking Operations</h3>
         <p className="form-description">
-          Stake your tokens to earn rewards or unstake to withdraw
+          Stake seus tokens para ganhar recompensas ou faça unstake para retirar
         </p>
       </div>
 

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Card } from '../ui/Card';
-import { validation } from '../../lib/utils';
+import { validation } from '../../utils/validation';
 import { motion } from 'framer-motion';
 
 interface Stat {

@@ -10,21 +10,22 @@ export const Toaster: React.FC = () => {
       toastOptions={{
         duration: 4000,
         style: {
-          background: '#363636',
-          color: '#fff',
+          background: '#000000',
+          color: '#ffffff',
+          border: '1px solid #00F0FF',
         },
         // success: {
         //   duration: 3000,
         //   iconTheme: {
-        //     primary: '#4ade80',
-        //     secondary: '#fff',
+        //     primary: '#00F0FF',
+        //     secondary: '#000000',
         //   },
         // },
         // error: {
         //   duration: 5000,
         //   iconTheme: {
-        //     primary: '#ef4444',
-        //     secondary: '#fff',
+        //     primary: '#00F0FF',
+        //     secondary: '#000000',
         //   },
         // },
       }}

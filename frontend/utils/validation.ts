@@ -190,10 +190,21 @@ export const validation = {
   formatCurrency: (amount: number, currency: string = 'BRL'): string => {
     if (isNaN(amount)) return 'R$ 0,00';
     
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: currency,
-    }).format(amount);
+    // Validar código de moeda
+    const validCurrency = currency && currency.trim() ? currency.trim() : 'BRL';
+    
+    try {
+      return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: validCurrency,
+      }).format(amount);
+    } catch (error) {
+      // Fallback para BRL se o código de moeda for inválido
+      return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+      }).format(amount);
+    }
   },
 
   // Formatar porcentagem

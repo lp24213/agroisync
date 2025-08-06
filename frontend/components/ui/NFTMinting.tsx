@@ -34,10 +34,18 @@ export function NFTMinting({ size = 'md', className = '' }: NFTMintingProps) {
           height={400}
           className="rounded-2xl shadow-neon hover:shadow-neon transition-all duration-500 w-full h-full object-cover"
           unoptimized={true}
+          onError={(e) => {
+            const target = e.currentTarget;
+            if (target.src.includes('nft.png')) {
+              target.style.display = 'none';
+              target.nextElementSibling?.classList.remove('hidden');
+            }
+          }}
         />
         
-        {/* Overlay com texto premium */}
-        <div className="absolute inset-0 bg-black/40 rounded-2xl flex flex-col justify-center items-center">
+        {/* Fallback quando imagem não carrega */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#00F0FF]/20 to-[#000000] border-2 border-[#00F0FF]/30 rounded-2xl flex flex-col justify-center items-center">
+          <div className="text-6xl mb-4">🎨</div>
           <h2 className="font-orbitron text-2xl md:text-3xl text-[#00F0FF] mb-2 animate-fadeIn">
             NFT Minting
           </h2>

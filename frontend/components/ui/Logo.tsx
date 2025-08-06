@@ -36,9 +36,20 @@ export function Logo({ size = 'md', iconOnly = false }: LogoProps) {
           height={size === 'sm' ? 24 : size === 'md' ? 32 : 48}
           className="w-full h-full"
           onError={(e) => {
-            e.currentTarget.src = "/images/logo-agrotm.svg";
+            const target = e.currentTarget;
+            if (target.src.includes('agrotm-logo.svg')) {
+              target.src = "/assets/images/logo/agrotm-logo-white.svg";
+            } else if (target.src.includes('agrotm-logo-white.svg')) {
+              target.src = "/assets/images/logo/agrotm-logo.png";
+            } else {
+              target.style.display = 'none';
+              target.nextElementSibling?.classList.remove('hidden');
+            }
           }}
         />
+        <div className="w-full h-full bg-[#00F0FF] rounded-full flex items-center justify-center">
+          <span className="text-black font-bold text-xs">A</span>
+        </div>
       </div>
       {!iconOnly && (
         <span className={`text-[#00F0FF] font-orbitron font-bold ${textSizes[size]} drop-shadow-[0_0_10px_rgba(0,240,255,0.7)]`}>

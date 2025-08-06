@@ -28,9 +28,9 @@ export function Providers({ children }: ProvidersProps) {
           toastOptions={{
             duration: 4000,
             style: {
-              background: '#1f2937',
-              color: '#fff',
-              border: '1px solid #374151',
+              background: '#000000',
+              color: '#ffffff',
+              border: '1px solid #00F0FF',
             },
           }}
         />

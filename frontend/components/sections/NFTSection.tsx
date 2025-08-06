@@ -41,9 +41,20 @@ export function NFTSection() {
                 className="rounded-2xl shadow-neon hover:shadow-neon transition-all duration-500"
                 unoptimized={true}
                 onError={(e) => {
-                  e.currentTarget.src = "/assets/nft.png";
+                  const target = e.currentTarget;
+                  if (target.src.includes('nft.png')) {
+                    target.style.display = 'none';
+                    target.nextElementSibling?.classList.remove('hidden');
+                  }
                 }}
               />
+              <div className="w-[600px] h-[400px] bg-gradient-to-br from-[#00F0FF]/10 to-[#000000] border-2 border-[#00F0FF]/30 rounded-2xl flex items-center justify-center shadow-neon">
+                <div className="text-center">
+                  <div className="text-8xl mb-4">🎨</div>
+                  <div className="text-[#00F0FF] font-orbitron text-2xl mb-2">NFT Minting</div>
+                  <div className="text-[#cccccc] text-lg">Ativos Digitais Agrícolas</div>
+                </div>
+              </div>
             </motion.div>
           </motion.div>
           

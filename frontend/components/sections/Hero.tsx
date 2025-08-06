@@ -84,9 +84,20 @@ export function Hero() {
                 className="drop-shadow-[0_0_30px_rgba(0,240,255,0.6)] rounded-2xl"
                 unoptimized={true}
                 onError={(e) => {
-                  e.currentTarget.src = "/assets/hero.png";
+                  const target = e.currentTarget;
+                  if (target.src.includes('hero.png')) {
+                    target.style.display = 'none';
+                    target.nextElementSibling?.classList.remove('hidden');
+                  }
                 }}
               />
+              <div className="w-[300px] h-[300px] bg-gradient-to-br from-[#00F0FF]/20 to-[#00F0FF]/5 border-2 border-[#00F0FF]/30 rounded-2xl flex items-center justify-center">
+                <div className="text-center">
+                  <div className="text-6xl mb-4">🌾</div>
+                  <div className="text-[#00F0FF] font-orbitron text-xl">AGROTM</div>
+                  <div className="text-[#cccccc] text-sm">Premium Farming</div>
+                </div>
+              </div>
             </motion.div>
           </motion.div>
 
@@ -105,7 +116,7 @@ export function Hero() {
                 <TrendingUp className="text-[#00F0FF]" size={32} />
               </div>
               <h3 className="text-xl font-orbitron font-semibold text-[#00F0FF] mb-2">Staking Premium</h3>
-              <p className="text-[#cccccc]">Earn rewards through DeFi staking and yield farming</p>
+              <p className="text-[#cccccc]">Ganhe recompensas através de staking DeFi e yield farming</p>
             </motion.div>
 
             <motion.div
@@ -117,7 +128,7 @@ export function Hero() {
                 <Shield className="text-[#00F0FF]" size={32} />
               </div>
               <h3 className="text-xl font-orbitron font-semibold text-[#00F0FF] mb-2">Segurança Avançada</h3>
-              <p className="text-[#cccccc]">Advanced security and blockchain protection</p>
+              <p className="text-[#cccccc]">Segurança avançada e proteção blockchain</p>
             </motion.div>
 
             <motion.div
@@ -129,7 +140,7 @@ export function Hero() {
                 <Coins className="text-[#00F0FF]" size={32} />
               </div>
               <h3 className="text-xl font-orbitron font-semibold text-[#00F0FF] mb-2">NFTs Agrícolas</h3>
-              <p className="text-[#cccccc]">Create and trade agricultural digital assets</p>
+              <p className="text-[#cccccc]">Crie e negocie ativos digitais agrícolas</p>
             </motion.div>
           </motion.div>
         </motion.div>

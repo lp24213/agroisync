@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { validation } from '../../lib/utils';
+import { validation } from '../../utils/validation';
 
 interface StakingPool {
   id: string;
