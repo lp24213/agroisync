@@ -196,7 +196,7 @@ export function Header() {
               </Link>
             </motion.div>
 
-            {/* Language Selector Desktop - COMPLETE FIX */}
+            {/* Language Selector Desktop - FIXED */}
             <motion.div
               initial="hidden"
               animate="visible"
@@ -232,7 +232,7 @@ export function Header() {
               <AnimatePresence>
                 {isLanguageMenuOpen && (
                   <motion.div
-                    className="absolute top-full right-0 mt-2 w-48 bg-black/90 backdrop-blur-md border border-blue-500/30 rounded-lg shadow-xl z-50"
+                    className="absolute top-full right-0 mt-2 w-48 bg-black/95 backdrop-blur-md border border-blue-500/30 rounded-lg shadow-2xl z-[9999]"
                     variants={languageMenuVariants}
                     initial="hidden"
                     animate="visible"
