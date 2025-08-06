@@ -1,8 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 export function Footer() {
+  const { t } = useTranslation();
 
   return (
     <footer className="bg-black border-t border-blue-500/30 relative overflow-hidden">
@@ -39,7 +41,7 @@ export function Footer() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.1 }}
               >
-                Revolucione a agricultura com tecnologia blockchain. AGROTM oferece soluções DeFi inovadoras para o agronegócio global.
+                {t('heroSubtitle')}
               </motion.p>
               
               <motion.div 
@@ -140,32 +142,32 @@ export function Footer() {
               transition={{ duration: 0.6, delay: 0.3 }}
             >
               <h3 className="text-lg font-semibold text-white mb-4 text-glow">
-                Links Rápidos
+                {t('quickLinks')}
               </h3>
               <ul className="space-y-2">
                 <li>
                   <Link href="/" className="text-gray-400 hover:text-blue-400 transition-colors duration-300">
-                    Início
+                    {t('home')}
                   </Link>
                 </li>
                 <li>
                   <Link href="/dashboard" className="text-gray-400 hover:text-blue-400 transition-colors duration-300">
-                    Dashboard
+                    {t('dashboard')}
                   </Link>
                 </li>
                 <li>
                   <Link href="/staking" className="text-gray-400 hover:text-blue-400 transition-colors duration-300">
-                    Staking
+                    {t('staking')}
                   </Link>
                 </li>
                 <li>
                   <Link href="#about" className="text-gray-400 hover:text-blue-400 transition-colors duration-300">
-                    Sobre
+                    {t('about')}
                   </Link>
                 </li>
                 <li>
                   <Link href="#contact" className="text-gray-400 hover:text-blue-400 transition-colors duration-300">
-                    Contato
+                    {t('contact')}
                   </Link>
                 </li>
               </ul>
@@ -179,14 +181,14 @@ export function Footer() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              <h3 className="text-lg font-semibold text-white mb-4 text-glow">
-                Recursos
-              </h3>
+                                            <h3 className="text-lg font-semibold text-white mb-4 text-glow">
+                 {t('resources')}
+               </h3>
               <ul className="space-y-2">
                 <li>
-                  <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">
-                    Documentation
-                  </a>
+                                                        <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">
+                     {t('documentation')}
+                   </a>
                 </li>
                 <li>
                   <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">
@@ -220,20 +222,20 @@ export function Footer() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.5 }}
           >
-            <p className="text-gray-400 text-sm">
-              © 2024 AGROTM Solana. Todos os direitos reservados.
-            </p>
+                                      <p className="text-gray-400 text-sm">
+               © 2024 AGROTM Solana. {t('allRightsReserved')}.
+             </p>
             
             <div className="flex items-center space-x-6 mt-4 md:mt-0">
-              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-sm">
-                Privacy Policy
-              </a>
-              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-sm">
-                Terms of Service
-              </a>
-              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-sm">
-                Cookie Policy
-              </a>
+                                            <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-sm">
+                 {t('privacyPolicy')}
+               </a>
+                                            <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-sm">
+                 {t('termsOfService')}
+               </a>
+                                            <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-sm">
+                 {t('cookiePolicy')}
+               </a>
             </div>
           </motion.div>
         </div>
