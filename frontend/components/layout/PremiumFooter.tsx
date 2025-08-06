@@ -69,12 +69,12 @@ const contactInfo = [
 
 export function PremiumFooter() {
   return (
-    <footer className='relative bg-gradient-to-br from-black via-gray-900 to-black border-t border-white/10'>
+    <footer className='relative bg-[#000000] border-t border-[#00F0FF]/20'>
       {/* Background Elements */}
       <div className='absolute inset-0'>
         <div className='absolute bottom-0 left-0 w-full h-full'>
-          <div className='absolute bottom-20 left-20 w-96 h-96 bg-green-500/5 rounded-full blur-3xl' />
-          <div className='absolute bottom-10 right-20 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl' />
+          <div className='absolute bottom-20 left-20 w-96 h-96 bg-[#00F0FF]/5 rounded-full blur-3xl' />
+          <div className='absolute bottom-10 right-20 w-80 h-80 bg-[#00F0FF]/5 rounded-full blur-3xl' />
         </div>
       </div>
 
@@ -92,155 +92,206 @@ export function PremiumFooter() {
               >
                 <Link href='/' className='flex items-center space-x-3'>
                   <div className='relative'>
-                    <div className='w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-600 rounded-xl flex items-center justify-center'>
-                      <Sparkles className='w-7 h-7 text-white' />
+                    <div className='w-12 h-12 bg-gradient-to-br from-[#00F0FF] to-[#00d4e0] rounded-xl flex items-center justify-center'>
+                      <Sparkles className='w-7 h-7 text-black' />
                     </div>
-                    <div className='absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-pulse' />
+                    <div className='absolute -top-1 -right-1 w-3 h-3 bg-[#00F0FF] rounded-full animate-pulse' />
                   </div>
                   <div>
-                    <h3 className='text-2xl font-bold bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent'>
-                      AGROTM
-                    </h3>
-                    <p className='text-sm text-gray-400'>DeFi Agriculture</p>
+                    <h3 className='text-2xl font-orbitron font-bold text-[#00F0FF]'>AGROTM</h3>
+                    <p className='text-[#cccccc] text-sm'>Agricultura Tokenizada do Futuro</p>
                   </div>
                 </Link>
               </motion.div>
-
+              
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className='text-gray-400 mb-6 leading-relaxed'
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className='text-[#cccccc] mb-6 max-w-md'
               >
-                Revolutionizing decentralized finance with cutting-edge agricultural DeFi
-                technology. Experience the future of farming, staking, and earning.
+                Plataforma DeFi revolucionária que tokeniza ativos agrícolas e conecta agricultores ao mundo digital.
               </motion.p>
 
               {/* Contact Info */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
                 className='space-y-3'
               >
                 {contactInfo.map((contact, index) => (
-                  <Link
-                    key={index}
+                  <motion.a
+                    key={contact.text}
                     href={contact.href}
-                    className='flex items-center space-x-3 text-gray-400 hover:text-white transition-colors duration-200'
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
+                    className='flex items-center space-x-3 text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300'
                   >
-                    <contact.icon className='w-4 h-4' />
+                    <contact.icon className='w-4 h-4 text-[#00F0FF]' />
                     <span className='text-sm'>{contact.text}</span>
-                  </Link>
+                  </motion.a>
                 ))}
               </motion.div>
             </div>
 
             {/* Product Links */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-            >
-              <h4 className='text-lg font-semibold text-white mb-6'>Product</h4>
-              <ul className='space-y-3'>
-                {footerLinks.product.map(link => (
-                  <li key={link.name}>
+            <div>
+              <motion.h4
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className='text-lg font-orbitron font-semibold text-[#00F0FF] mb-4'
+              >
+                Produto
+              </motion.h4>
+              <motion.ul
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className='space-y-2'
+              >
+                {footerLinks.product.map((link, index) => (
+                  <motion.li
+                    key={link.name}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.6, delay: 0.5 + index * 0.1 }}
+                  >
                     <Link
                       href={link.href}
-                      className='text-gray-400 hover:text-white transition-colors duration-200 text-sm'
+                      className='text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300 text-sm'
                     >
                       {link.name}
                     </Link>
-                  </li>
+                  </motion.li>
                 ))}
-              </ul>
-            </motion.div>
+              </motion.ul>
+            </div>
 
             {/* Ecosystem Links */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <h4 className='text-lg font-semibold text-white mb-6'>Ecosystem</h4>
-              <ul className='space-y-3'>
-                {footerLinks.ecosystem.map(link => (
-                  <li key={link.name}>
+            <div>
+              <motion.h4
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className='text-lg font-orbitron font-semibold text-[#00F0FF] mb-4'
+              >
+                Ecossistema
+              </motion.h4>
+              <motion.ul
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                className='space-y-2'
+              >
+                {footerLinks.ecosystem.map((link, index) => (
+                  <motion.li
+                    key={link.name}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.6, delay: 0.6 + index * 0.1 }}
+                  >
                     <Link
                       href={link.href}
-                      className='text-gray-400 hover:text-white transition-colors duration-200 text-sm'
+                      className='text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300 text-sm'
                     >
                       {link.name}
                     </Link>
-                  </li>
+                  </motion.li>
                 ))}
-              </ul>
-            </motion.div>
+              </motion.ul>
+            </div>
 
             {/* Support Links */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              <h4 className='text-lg font-semibold text-white mb-6'>Support</h4>
-              <ul className='space-y-3'>
-                {footerLinks.support.map(link => (
-                  <li key={link.name}>
+            <div>
+              <motion.h4
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                className='text-lg font-orbitron font-semibold text-[#00F0FF] mb-4'
+              >
+                Suporte
+              </motion.h4>
+              <motion.ul
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+                className='space-y-2'
+              >
+                {footerLinks.support.map((link, index) => (
+                  <motion.li
+                    key={link.name}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.6, delay: 0.7 + index * 0.1 }}
+                  >
                     <Link
                       href={link.href}
-                      className='text-gray-400 hover:text-white transition-colors duration-200 text-sm'
+                      className='text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300 text-sm'
                     >
                       {link.name}
                     </Link>
-                  </li>
+                  </motion.li>
                 ))}
-              </ul>
-            </motion.div>
+              </motion.ul>
+            </div>
 
             {/* Legal Links */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              <h4 className='text-lg font-semibold text-white mb-6'>Legal</h4>
-              <ul className='space-y-3'>
-                {footerLinks.legal.map(link => (
-                  <li key={link.name}>
+            <div>
+              <motion.h4
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+                className='text-lg font-orbitron font-semibold text-[#00F0FF] mb-4'
+              >
+                Legal
+              </motion.h4>
+              <motion.ul
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.7 }}
+                className='space-y-2'
+              >
+                {footerLinks.legal.map((link, index) => (
+                  <motion.li
+                    key={link.name}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.6, delay: 0.8 + index * 0.1 }}
+                  >
                     <Link
                       href={link.href}
-                      className='text-gray-400 hover:text-white transition-colors duration-200 text-sm'
+                      className='text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300 text-sm'
                     >
                       {link.name}
                     </Link>
-                  </li>
+                  </motion.li>
                 ))}
-              </ul>
-            </motion.div>
+              </motion.ul>
+            </div>
           </div>
         </div>
 
         {/* Bottom Section */}
-        <div className='border-t border-white/10 py-8'>
+        <div className='border-t border-[#00F0FF]/20 py-8'>
           <div className='flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0'>
-            {/* Copyright */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className='text-gray-400 text-sm'
+              className='text-[#cccccc] text-sm'
             >
-              © 2024 AGROTM. All rights reserved. Built with ❤️ for the DeFi community.
-            </motion.div>
+              © 2024 AGROTM. Todos os direitos reservados.
+            </motion.p>
 
             {/* Social Links */}
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              className='flex items-center space-x-4'
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className='flex space-x-4'
             >
               {socialLinks.map((social, index) => (
                 <motion.a
@@ -248,42 +299,16 @@ export function PremiumFooter() {
                   href={social.href}
                   target='_blank'
                   rel='noopener noreferrer'
-                  initial={{ opacity: 0, scale: 0.8 }}
+                  initial={{ opacity: 0, scale: 0 }}
                   whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  className='w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl flex items-center justify-center text-gray-400 hover:text-white transition-all duration-300'
+                  transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
+                  className='w-10 h-10 bg-black/50 border border-[#00F0FF]/20 rounded-lg flex items-center justify-center text-[#00F0FF] hover:bg-[#00F0FF]/10 hover:border-[#00F0FF] transition-all duration-300'
                 >
                   <social.icon className='w-5 h-5' />
                 </motion.a>
               ))}
             </motion.div>
           </div>
-
-          {/* Newsletter Signup */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className='mt-8 pt-8 border-t border-white/10'
-          >
-            <div className='text-center'>
-              <h4 className='text-lg font-semibold text-white mb-4'>Stay Updated</h4>
-              <p className='text-gray-400 mb-6'>
-                Get the latest updates on AGROTM features and DeFi insights.
-              </p>
-              <div className='flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4 max-w-md mx-auto'>
-                <input
-                  type='email'
-                  placeholder='Enter your email'
-                  className='flex-1 w-full sm:w-auto px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-green-500 transition-colors duration-300'
-                />
-                <button className='w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 rounded-xl font-semibold text-white transition-all duration-300 hover:scale-105'>
-                  Subscribe
-                </button>
-              </div>
-            </div>
-          </motion.div>
         </div>
       </div>
     </footer>

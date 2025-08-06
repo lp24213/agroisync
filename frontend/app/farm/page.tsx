@@ -37,17 +37,17 @@ const farms = [
   {
     id: 1,
     name: 'AGROTM-SOL',
-    type: 'Liquidity Pool',
+    type: 'Pool de Liquidez',
     apr: 125.5,
     tvl: 1250000,
     multiplier: '40x',
     token1: {
       symbol: 'AGROTM',
-      color: '#22C55E',
+      color: '#00F0FF',
     },
     token2: {
       symbol: 'SOL',
-      color: '#9945FF',
+      color: '#00F0FF',
     },
     userStaked: 125.75,
     userStakedValue: 2500,
@@ -58,17 +58,17 @@ const farms = [
   {
     id: 2,
     name: 'AGROTM-USDC',
-    type: 'Liquidity Pool',
+    type: 'Pool de Liquidez',
     apr: 85.2,
     tvl: 3500000,
     multiplier: '25x',
     token1: {
       symbol: 'AGROTM',
-      color: '#22C55E',
+      color: '#00F0FF',
     },
     token2: {
       symbol: 'USDC',
-      color: '#3B82F6',
+      color: '#00F0FF',
     },
     userStaked: 500.25,
     userStakedValue: 1175.59,
@@ -79,17 +79,17 @@ const farms = [
   {
     id: 3,
     name: 'AGROTM-RAY',
-    type: 'Liquidity Pool',
+    type: 'Pool de Liquidez',
     apr: 95.8,
     tvl: 750000,
     multiplier: '30x',
     token1: {
       symbol: 'AGROTM',
-      color: '#22C55E',
+      color: '#00F0FF',
     },
     token2: {
       symbol: 'RAY',
-      color: '#FF6B6B',
+      color: '#00F0FF',
     },
     userStaked: 0,
     userStakedValue: 0,
@@ -100,17 +100,17 @@ const farms = [
   {
     id: 4,
     name: 'SOL-USDC',
-    type: 'Liquidity Pool',
+    type: 'Pool de Liquidez',
     apr: 65.3,
     tvl: 5250000,
     multiplier: '20x',
     token1: {
       symbol: 'SOL',
-      color: '#9945FF',
+      color: '#00F0FF',
     },
     token2: {
       symbol: 'USDC',
-      color: '#3B82F6',
+      color: '#00F0FF',
     },
     userStaked: 0,
     userStakedValue: 0,
@@ -121,17 +121,17 @@ const farms = [
   {
     id: 5,
     name: 'AGROTM-BONK',
-    type: 'Liquidity Pool',
+    type: 'Pool de Liquidez',
     apr: 150.7,
     tvl: 450000,
     multiplier: '45x',
     token1: {
       symbol: 'AGROTM',
-      color: '#22C55E',
+      color: '#00F0FF',
     },
     token2: {
       symbol: 'BONK',
-      color: '#F59E0B',
+      color: '#00F0FF',
     },
     userStaked: 0,
     userStakedValue: 0,
@@ -194,19 +194,19 @@ const FarmCard = ({ farm, onStake, onUnstake, onHarvest }: FarmCardProps) => {
 
   return (
     <motion.div
-      className={`cyberpunk-border p-0.5 rounded-lg overflow-hidden ${farm.featured ? 'border-agro-green' : ''}`}
+      className={`bg-black/70 border border-[#00F0FF]/20 p-0.5 rounded-lg overflow-hidden hover:shadow-neon ${farm.featured ? 'border-[#00F0FF]' : ''}`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className='bg-agro-darker/90 backdrop-blur-md rounded-lg overflow-hidden'>
+      <div className='bg-black/90 backdrop-blur-md rounded-lg overflow-hidden'>
         {/* Farm Header */}
         <div className='p-5'>
           <div className='flex justify-between items-center mb-4'>
             <div className='flex items-center space-x-3'>
               <div className='relative'>
                 <div
-                  className='w-10 h-10 rounded-full flex items-center justify-center neon-box z-10'
+                  className='w-10 h-10 rounded-full flex items-center justify-center z-10'
                   style={{
                     backgroundColor: `${farm.token1.color}20`,
                     boxShadow: `0 0 10px ${farm.token1.color}30`,
@@ -217,7 +217,7 @@ const FarmCard = ({ farm, onStake, onUnstake, onHarvest }: FarmCardProps) => {
                   </span>
                 </div>
                 <div
-                  className='w-10 h-10 rounded-full flex items-center justify-center neon-box absolute -right-4 top-0'
+                  className='w-10 h-10 rounded-full flex items-center justify-center absolute -right-4 top-0'
                   style={{
                     backgroundColor: `${farm.token2.color}20`,
                     boxShadow: `0 0 10px ${farm.token2.color}30`,
@@ -229,47 +229,47 @@ const FarmCard = ({ farm, onStake, onUnstake, onHarvest }: FarmCardProps) => {
                 </div>
               </div>
               <div>
-                <h3 className='text-xl font-bold text-white'>{farm.name}</h3>
-                <p className='text-sm text-gray-400'>{farm.type}</p>
+                <h3 className='text-xl font-orbitron font-bold text-[#ffffff]'>{farm.name}</h3>
+                <p className='text-sm text-[#cccccc]'>{farm.type}</p>
               </div>
             </div>
             {farm.featured && (
-              <span className='px-3 py-1 text-xs rounded-full bg-agro-green/20 text-agro-green font-medium'>
-                Featured
+              <span className='px-3 py-1 text-xs rounded-full bg-[#00F0FF]/20 text-[#00F0FF] font-medium'>
+                Destaque
               </span>
             )}
           </div>
 
           <div className='grid grid-cols-2 gap-4 mb-4'>
-            <div className='bg-agro-dark/30 p-3 rounded-lg'>
-              <p className='text-sm text-gray-400 mb-1'>APR</p>
+            <div className='bg-black/30 p-3 rounded-lg'>
+              <p className='text-sm text-[#cccccc] mb-1'>APR</p>
               <div className='flex items-center'>
-                <p className='text-xl font-bold text-white'>{farm.apr}%</p>
-                <TrendingUp className='h-4 w-4 text-agro-green ml-2' />
+                <p className='text-xl font-orbitron font-bold text-[#ffffff]'>{farm.apr}%</p>
+                <TrendingUp className='h-4 w-4 text-[#00F0FF] ml-2' />
               </div>
             </div>
-            <div className='bg-agro-dark/30 p-3 rounded-lg'>
-              <p className='text-sm text-gray-400 mb-1'>TVL</p>
-              <p className='text-xl font-bold text-white'>${farm.tvl.toLocaleString()}</p>
+            <div className='bg-black/30 p-3 rounded-lg'>
+              <p className='text-sm text-[#cccccc] mb-1'>TVL</p>
+              <p className='text-xl font-orbitron font-bold text-[#ffffff]'>R$ {farm.tvl.toLocaleString()}</p>
             </div>
           </div>
 
           <div className='grid grid-cols-2 gap-4 mb-4'>
-            <div className='bg-agro-dark/30 p-3 rounded-lg'>
-              <p className='text-sm text-gray-400 mb-1'>Earned</p>
+            <div className='bg-black/30 p-3 rounded-lg'>
+              <p className='text-sm text-[#cccccc] mb-1'>Ganhos</p>
               <div className='flex flex-col'>
-                <p className='text-lg font-bold text-white'>{farm.earned.toFixed(2)} AGROTM</p>
-                <p className='text-xs text-gray-400'>${farm.earnedValue.toFixed(2)}</p>
+                <p className='text-lg font-orbitron font-bold text-[#ffffff]'>{farm.earned.toFixed(2)} AGROTM</p>
+                <p className='text-xs text-[#cccccc]'>R$ {farm.earnedValue.toFixed(2)}</p>
               </div>
             </div>
-            <div className='bg-agro-dark/30 p-3 rounded-lg'>
-              <p className='text-sm text-gray-400 mb-1'>Staked</p>
+            <div className='bg-black/30 p-3 rounded-lg'>
+              <p className='text-sm text-[#cccccc] mb-1'>Staked</p>
               <div className='flex flex-col'>
-                <p className='text-lg font-bold text-white'>
+                <p className='text-lg font-orbitron font-bold text-[#ffffff]'>
                   {farm.userStaked > 0 ? farm.userStaked.toFixed(2) : '0'} LP
                 </p>
-                <p className='text-xs text-gray-400'>
-                  ${farm.userStakedValue > 0 ? farm.userStakedValue.toFixed(2) : '0'}
+                <p className='text-xs text-[#cccccc]'>
+                  R$ {farm.userStakedValue > 0 ? farm.userStakedValue.toFixed(2) : '0'}
                 </p>
               </div>
             </div>
@@ -278,26 +278,26 @@ const FarmCard = ({ farm, onStake, onUnstake, onHarvest }: FarmCardProps) => {
           <div className='flex space-x-3'>
             <motion.button
               onClick={() => setExpanded(!expanded)}
-              className='flex-1 py-3 rounded-lg bg-agro-dark/50 text-white hover:bg-agro-dark transition-colors'
+              className='flex-1 py-3 rounded-lg bg-black/50 text-[#ffffff] hover:bg-black transition-colors'
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              {expanded ? 'Hide' : 'Details'}
+              {expanded ? 'Ocultar' : 'Detalhes'}
             </motion.button>
             <motion.button
               onClick={handleHarvest}
               disabled={farm.earned <= 0 || isHarvesting}
-              className={`flex-1 py-3 rounded-lg font-medium text-white ${farm.earned <= 0 ? 'bg-gray-600 cursor-not-allowed' : 'bg-gradient-to-r from-agro-blue to-agro-green hover:opacity-90'} transition-all`}
+              className={`flex-1 py-3 rounded-lg font-medium text-[#ffffff] ${farm.earned <= 0 ? 'bg-gray-600 cursor-not-allowed' : 'bg-[#00F0FF] text-black hover:bg-[#00d4e0]'} transition-all`}
               whileHover={farm.earned > 0 && !isHarvesting ? { scale: 1.02 } : {}}
               whileTap={farm.earned > 0 && !isHarvesting ? { scale: 0.98 } : {}}
             >
               {isHarvesting ? (
                 <span className='flex items-center justify-center'>
                   <RefreshCw className='h-4 w-4 mr-2 animate-spin' />
-                  Harvesting
+                  Colhendo
                 </span>
               ) : (
-                'Harvest'
+                'Colher'
               )}
             </motion.button>
           </div>
@@ -313,25 +313,25 @@ const FarmCard = ({ farm, onStake, onUnstake, onHarvest }: FarmCardProps) => {
               transition={{ duration: 0.3 }}
               className='overflow-hidden'
             >
-              <div className='border-t border-gray-800 p-5'>
+              <div className='border-t border-[#00F0FF]/20 p-5'>
                 <div className='grid grid-cols-2 gap-4 mb-6'>
                   <div>
-                    <p className='text-sm text-gray-400 mb-2'>Multiplier</p>
-                    <p className='text-lg font-bold text-white'>{farm.multiplier}</p>
+                    <p className='text-sm text-[#cccccc] mb-2'>Multiplicador</p>
+                    <p className='text-lg font-orbitron font-bold text-[#ffffff]'>{farm.multiplier}</p>
                   </div>
                   <div>
-                    <p className='text-sm text-gray-400 mb-2'>Deposit Fee</p>
-                    <p className='text-lg font-bold text-white'>0%</p>
+                    <p className='text-sm text-[#cccccc] mb-2'>Taxa de Depósito</p>
+                    <p className='text-lg font-orbitron font-bold text-[#ffffff]'>0%</p>
                   </div>
                 </div>
 
                 {/* Stake Section */}
                 <div className='mb-6'>
-                  <h4 className='text-lg font-bold text-white mb-3'>Stake LP Tokens</h4>
-                  <div className='bg-agro-dark/30 p-4 rounded-lg mb-3'>
+                  <h4 className='text-lg font-orbitron font-bold text-[#ffffff] mb-3'>Stake Tokens LP</h4>
+                  <div className='bg-black/30 p-4 rounded-lg mb-3'>
                     <div className='flex items-center justify-between mb-2'>
-                      <span className='text-sm text-gray-400'>Stake</span>
-                      <span className='text-sm text-gray-400'>Balance: 250.00 LP</span>
+                      <span className='text-sm text-[#cccccc]'>Stake</span>
+                      <span className='text-sm text-[#cccccc]'>Saldo: 250.00 LP</span>
                     </div>
                     <div className='flex items-center space-x-2'>
                       <input
@@ -339,11 +339,11 @@ const FarmCard = ({ farm, onStake, onUnstake, onHarvest }: FarmCardProps) => {
                         value={stakeAmount}
                         onChange={e => setStakeAmount(e.target.value)}
                         placeholder='0.00'
-                        className='flex-1 bg-agro-dark/50 border border-gray-700 rounded-lg p-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-agro-blue transition-colors'
+                        className='flex-1 bg-black/50 border border-[#00F0FF]/20 rounded-lg p-2 text-[#ffffff] placeholder-[#cccccc] focus:outline-none focus:ring-2 focus:ring-[#00F0FF] transition-colors'
                       />
                       <button
                         onClick={() => setStakeAmount('250')}
-                        className='px-2 py-1 text-xs rounded bg-agro-blue/20 text-agro-blue hover:bg-agro-blue/30 transition-colors'
+                        className='px-2 py-1 text-xs rounded bg-[#00F0FF]/20 text-[#00F0FF] hover:bg-[#00F0FF]/30 transition-colors'
                       >
                         MAX
                       </button>
@@ -352,7 +352,7 @@ const FarmCard = ({ farm, onStake, onUnstake, onHarvest }: FarmCardProps) => {
                   <motion.button
                     onClick={handleStake}
                     disabled={!stakeAmount || parseFloat(stakeAmount) <= 0 || isStaking}
-                    className={`w-full py-3 rounded-lg font-medium text-white ${!stakeAmount || parseFloat(stakeAmount) <= 0 ? 'bg-gray-600 cursor-not-allowed' : 'bg-gradient-to-r from-agro-blue to-agro-green hover:opacity-90'} transition-all`}
+                    className={`w-full py-3 rounded-lg font-medium text-[#ffffff] ${!stakeAmount || parseFloat(stakeAmount) <= 0 ? 'bg-gray-600 cursor-not-allowed' : 'bg-[#00F0FF] text-black hover:bg-[#00d4e0]'} transition-all`}
                     whileHover={
                       stakeAmount && parseFloat(stakeAmount) > 0 && !isStaking
                         ? { scale: 1.02 }
@@ -367,7 +367,7 @@ const FarmCard = ({ farm, onStake, onUnstake, onHarvest }: FarmCardProps) => {
                     {isStaking ? (
                       <span className='flex items-center justify-center'>
                         <RefreshCw className='h-4 w-4 mr-2 animate-spin' />
-                        Staking
+                        Fazendo Stake
                       </span>
                     ) : (
                       'Stake'
@@ -378,11 +378,11 @@ const FarmCard = ({ farm, onStake, onUnstake, onHarvest }: FarmCardProps) => {
                 {/* Unstake Section */}
                 {farm.userStaked > 0 && (
                   <div>
-                    <h4 className='text-lg font-bold text-white mb-3'>Unstake LP Tokens</h4>
-                    <div className='bg-agro-dark/30 p-4 rounded-lg mb-3'>
+                    <h4 className='text-lg font-orbitron font-bold text-[#ffffff] mb-3'>Unstake Tokens LP</h4>
+                    <div className='bg-black/30 p-4 rounded-lg mb-3'>
                       <div className='flex items-center justify-between mb-2'>
-                        <span className='text-sm text-gray-400'>Unstake</span>
-                        <span className='text-sm text-gray-400'>
+                        <span className='text-sm text-[#cccccc]'>Unstake</span>
+                        <span className='text-sm text-[#cccccc]'>
                           Staked: {farm.userStaked.toFixed(2)} LP
                         </span>
                       </div>
@@ -392,11 +392,11 @@ const FarmCard = ({ farm, onStake, onUnstake, onHarvest }: FarmCardProps) => {
                           value={unstakeAmount}
                           onChange={e => setUnstakeAmount(e.target.value)}
                           placeholder='0.00'
-                          className='flex-1 bg-agro-dark/50 border border-gray-700 rounded-lg p-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-agro-blue transition-colors'
+                          className='flex-1 bg-black/50 border border-[#00F0FF]/20 rounded-lg p-2 text-[#ffffff] placeholder-[#cccccc] focus:outline-none focus:ring-2 focus:ring-[#00F0FF] transition-colors'
                         />
                         <button
                           onClick={() => setUnstakeAmount(farm.userStaked.toString())}
-                          className='px-2 py-1 text-xs rounded bg-agro-blue/20 text-agro-blue hover:bg-agro-blue/30 transition-colors'
+                          className='px-2 py-1 text-xs rounded bg-[#00F0FF]/20 text-[#00F0FF] hover:bg-[#00F0FF]/30 transition-colors'
                         >
                           MAX
                         </button>
@@ -410,7 +410,7 @@ const FarmCard = ({ farm, onStake, onUnstake, onHarvest }: FarmCardProps) => {
                         parseFloat(unstakeAmount) > farm.userStaked ||
                         isUnstaking
                       }
-                      className={`w-full py-3 rounded-lg font-medium text-white ${!unstakeAmount || parseFloat(unstakeAmount) <= 0 || parseFloat(unstakeAmount) > farm.userStaked ? 'bg-gray-600 cursor-not-allowed' : 'bg-gradient-to-r from-agro-blue to-agro-green hover:opacity-90'} transition-all`}
+                      className={`w-full py-3 rounded-lg font-medium text-[#ffffff] ${!unstakeAmount || parseFloat(unstakeAmount) <= 0 || parseFloat(unstakeAmount) > farm.userStaked ? 'bg-gray-600 cursor-not-allowed' : 'bg-[#00F0FF] text-black hover:bg-[#00d4e0]'} transition-all`}
                       whileHover={
                         unstakeAmount &&
                         parseFloat(unstakeAmount) > 0 &&
@@ -557,7 +557,7 @@ export default function FarmPage() {
   };
 
   return (
-    <div className='min-h-screen bg-agro-darker overflow-hidden relative'>
+    <div className='min-h-screen bg-[#000000] overflow-hidden relative'>
       {/* Background grid animation */}
       <div className='absolute inset-0 z-0 opacity-10'>
         <div className='grid-animation'></div>
@@ -565,7 +565,7 @@ export default function FarmPage() {
 
       {/* Animated orbs */}
       <motion.div
-        className='absolute top-1/4 -left-20 w-40 h-40 rounded-full bg-agro-blue/20 blur-xl z-0'
+        className='absolute top-1/4 -left-20 w-40 h-40 rounded-full bg-[#00F0FF]/20 blur-xl z-0'
         animate={{
           x: [0, 30, 0],
           opacity: [0.2, 0.3, 0.2],
@@ -577,7 +577,7 @@ export default function FarmPage() {
         }}
       />
       <motion.div
-        className='absolute bottom-1/4 -right-20 w-40 h-40 rounded-full bg-agro-green/20 blur-xl z-0'
+        className='absolute bottom-1/4 -right-20 w-40 h-40 rounded-full bg-[#00F0FF]/20 blur-xl z-0'
         animate={{
           x: [0, -30, 0],
           opacity: [0.2, 0.3, 0.2],
@@ -597,13 +597,11 @@ export default function FarmPage() {
           transition={{ duration: 0.6 }}
           className='text-center mb-12'
         >
-          <h1 className='text-5xl font-bold mb-4 text-glow'>
-            <span className='bg-clip-text text-transparent bg-gradient-to-r from-agro-blue to-agro-green'>
-              Yield Farming
-            </span>
+          <h1 className='font-orbitron text-4xl md:text-5xl text-[#00F0FF] mb-4 animate-fadeIn'>
+            Yield Farming
           </h1>
-          <p className='text-xl text-gray-300 max-w-3xl mx-auto'>
-            Stake your LP tokens and earn AGROTM rewards
+          <p className='text-lg md:text-xl text-[#cccccc] leading-relaxed max-w-3xl mx-auto'>
+            Stake seus tokens LP e ganhe recompensas AGROTM
           </p>
         </motion.div>
 
@@ -614,41 +612,41 @@ export default function FarmPage() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-10'
         >
-          <div className='cyberpunk-border p-0.5 rounded-lg overflow-hidden'>
-            <div className='bg-agro-darker/90 backdrop-blur-md p-6 rounded-lg'>
-              <p className='text-gray-400 mb-2'>Total Value Locked</p>
+          <div className='bg-black/70 border border-[#00F0FF]/20 p-0.5 rounded-lg overflow-hidden hover:shadow-neon'>
+            <div className='bg-black/90 backdrop-blur-md p-6 rounded-lg'>
+              <p className='text-[#cccccc] mb-2'>Valor Total Bloqueado</p>
               <div className='flex items-baseline'>
-                <h3 className='text-3xl font-bold text-white'>
-                  ${farms.reduce((acc, farm) => acc + farm.tvl, 0).toLocaleString()}
+                <h3 className='text-3xl font-orbitron font-bold text-[#ffffff]'>
+                  R$ {farms.reduce((acc, farm) => acc + farm.tvl, 0).toLocaleString()}
                 </h3>
-                <span className='ml-2 text-sm text-agro-green'>+5.2%</span>
+                <span className='ml-2 text-sm text-[#00F0FF]'>+5,2%</span>
               </div>
             </div>
           </div>
 
-          <div className='cyberpunk-border p-0.5 rounded-lg overflow-hidden'>
-            <div className='bg-agro-darker/90 backdrop-blur-md p-6 rounded-lg'>
-              <p className='text-gray-400 mb-2'>Your Total Staked</p>
+          <div className='bg-black/70 border border-[#00F0FF]/20 p-0.5 rounded-lg overflow-hidden hover:shadow-neon'>
+            <div className='bg-black/90 backdrop-blur-md p-6 rounded-lg'>
+              <p className='text-[#cccccc] mb-2'>Seu Total Staked</p>
               <div className='flex items-baseline'>
-                <h3 className='text-3xl font-bold text-white'>${totalStaked.toFixed(2)}</h3>
-                <span className='ml-2 text-xs text-gray-400'>across {userFarms.length} farms</span>
+                <h3 className='text-3xl font-orbitron font-bold text-[#ffffff]'>R$ {totalStaked.toFixed(2)}</h3>
+                <span className='ml-2 text-xs text-[#cccccc]'>em {userFarms.length} farms</span>
               </div>
             </div>
           </div>
 
-          <div className='cyberpunk-border p-0.5 rounded-lg overflow-hidden'>
-            <div className='bg-agro-darker/90 backdrop-blur-md p-6 rounded-lg'>
-              <p className='text-gray-400 mb-2'>Your Total Earnings</p>
+          <div className='bg-black/70 border border-[#00F0FF]/20 p-0.5 rounded-lg overflow-hidden hover:shadow-neon'>
+            <div className='bg-black/90 backdrop-blur-md p-6 rounded-lg'>
+              <p className='text-[#cccccc] mb-2'>Seus Ganhos Totais</p>
               <div className='flex items-baseline'>
-                <h3 className='text-3xl font-bold text-white'>${totalEarned.toFixed(2)}</h3>
+                <h3 className='text-3xl font-orbitron font-bold text-[#ffffff]'>R$ {totalEarned.toFixed(2)}</h3>
                 <motion.button
                   onClick={handleHarvestAll}
                   disabled={totalEarned <= 0}
-                  className={`ml-auto px-3 py-1 rounded-lg text-sm font-medium ${totalEarned <= 0 ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-gradient-to-r from-agro-blue to-agro-green text-white hover:opacity-90'}`}
+                  className={`ml-auto px-3 py-1 rounded-lg text-sm font-medium ${totalEarned <= 0 ? 'bg-gray-600 text-[#cccccc] cursor-not-allowed' : 'bg-[#00F0FF] text-black hover:bg-[#00d4e0]'}`}
                   whileHover={totalEarned > 0 ? { scale: 1.05 } : {}}
                   whileTap={totalEarned > 0 ? { scale: 0.95 } : {}}
                 >
-                  Harvest All
+                  Colher Tudo
                 </motion.button>
               </div>
             </div>
@@ -666,53 +664,53 @@ export default function FarmPage() {
             <div className='flex items-center space-x-4'>
               <div className='relative'>
                 <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                  <Search className='h-5 w-5 text-gray-400' />
+                  <Search className='h-5 w-5 text-[#00F0FF]' />
                 </div>
                 <input
                   type='text'
-                  placeholder='Search farms'
+                  placeholder='Buscar farms'
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
-                  className='pl-10 pr-4 py-2 bg-agro-dark/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-agro-blue transition-colors w-full md:w-64'
+                  className='pl-10 pr-4 py-2 bg-black/50 border border-[#00F0FF]/20 rounded-lg text-[#ffffff] placeholder-[#cccccc] focus:outline-none focus:ring-2 focus:ring-[#00F0FF] transition-colors w-full md:w-64'
                 />
               </div>
 
               <div className='flex items-center space-x-2'>
                 <button
                   onClick={() => setFilterType('all')}
-                  className={`px-3 py-1 rounded-lg text-sm ${filterType === 'all' ? 'bg-agro-blue text-white' : 'bg-agro-dark/50 text-gray-300 hover:bg-agro-dark/80'}`}
+                  className={`px-3 py-1 rounded-lg text-sm ${filterType === 'all' ? 'bg-[#00F0FF] text-black' : 'bg-black/50 text-[#cccccc] hover:bg-black/80'}`}
                 >
-                  All
+                  Todos
                 </button>
                 <button
                   onClick={() => setFilterType('staked')}
-                  className={`px-3 py-1 rounded-lg text-sm ${filterType === 'staked' ? 'bg-agro-blue text-white' : 'bg-agro-dark/50 text-gray-300 hover:bg-agro-dark/80'}`}
+                  className={`px-3 py-1 rounded-lg text-sm ${filterType === 'staked' ? 'bg-[#00F0FF] text-black' : 'bg-black/50 text-[#cccccc] hover:bg-black/80'}`}
                 >
                   Staked
                 </button>
                 <button
                   onClick={() => setFilterType('featured')}
-                  className={`px-3 py-1 rounded-lg text-sm ${filterType === 'featured' ? 'bg-agro-blue text-white' : 'bg-agro-dark/50 text-gray-300 hover:bg-agro-dark/80'}`}
+                  className={`px-3 py-1 rounded-lg text-sm ${filterType === 'featured' ? 'bg-[#00F0FF] text-black' : 'bg-black/50 text-[#cccccc] hover:bg-black/80'}`}
                 >
-                  Featured
+                  Destaque
                 </button>
               </div>
             </div>
 
             <div className='flex items-center space-x-2'>
-              <span className='text-sm text-gray-400'>Sort by:</span>
+              <span className='text-sm text-[#cccccc]'>Ordenar por:</span>
               <select
                 value={sortBy}
                 onChange={e => setSortBy(e.target.value)}
-                className='bg-agro-dark/50 border border-gray-700 rounded-lg text-white px-3 py-1 focus:outline-none focus:ring-2 focus:ring-agro-blue transition-colors text-sm'
+                className='bg-black/50 border border-[#00F0FF]/20 rounded-lg text-[#ffffff] px-3 py-1 focus:outline-none focus:ring-2 focus:ring-[#00F0FF] transition-colors text-sm'
               >
                 <option value='apr'>APR</option>
                 <option value='tvl'>TVL</option>
-                <option value='earned'>Earned</option>
+                <option value='earned'>Ganhos</option>
               </select>
               <button
                 onClick={toggleSortDirection}
-                className='p-1 rounded-lg bg-agro-dark/50 text-gray-300 hover:bg-agro-dark/80 hover:text-white transition-colors'
+                className='p-1 rounded-lg bg-black/50 text-[#cccccc] hover:bg-black/80 hover:text-[#ffffff] transition-colors'
               >
                 <ArrowUpDown className='h-5 w-5' />
               </button>
@@ -734,7 +732,7 @@ export default function FarmPage() {
             ))
           ) : (
             <div className='col-span-2 text-center py-12'>
-              <p className='text-xl text-gray-400'>No farms found matching your criteria</p>
+              <p className='text-xl text-[#cccccc]'>Nenhum farm encontrado com seus critérios</p>
             </div>
           )}
         </div>

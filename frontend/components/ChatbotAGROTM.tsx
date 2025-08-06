@@ -99,7 +99,7 @@ export function ChatbotAGROTM() {
       
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: response || "Não tenho certeza dessa resposta. Quer falar com um especialista?",
+        text: response || 'Desculpe, não entendi sua pergunta. Pode reformular ou entrar em contato conosco pelo WhatsApp: +55 (66) 99236-2830',
         isUser: false,
         timestamp: new Date(),
       };
@@ -129,145 +129,106 @@ export function ChatbotAGROTM() {
 
   return (
     <>
-      {/* Botão flutuante */}
+      {/* Chatbot Button */}
       <motion.button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full shadow-2xl hover:shadow-cyan-500/25 transition-all duration-300 flex items-center justify-center group"
+        className="fixed bottom-6 right-6 z-50 bg-[#00F0FF] text-black p-4 rounded-full shadow-neon hover:shadow-neon transition-all duration-300"
         whileHover={{ scale: 1.1 }}
-        animate={{ 
-          y: [0, -5, 0],
-        }}
-        transition={{
-          duration: 2,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
+        whileTap={{ scale: 0.9 }}
       >
-        <MessageCircle className="w-8 h-8 text-white" />
-        <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
+        <MessageCircle className="w-6 h-6" />
       </motion.button>
 
-      {/* Chat Window */}
+      {/* Chatbot Modal */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 z-50 flex items-end justify-end p-4"
-            onClick={() => setIsOpen(false)}
+            className="fixed inset-0 z-50 flex items-end justify-end p-4"
           >
+            {/* Backdrop */}
             <motion.div
-              initial={{ scale: 0.8, opacity: 0, y: 50 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.8, opacity: 0, y: 50 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="w-full max-w-md h-[500px] bg-[#0D0D0D] rounded-2xl border border-cyan-500/20 shadow-2xl overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/50"
+              onClick={() => setIsOpen(false)}
+            />
+
+            {/* Chat Window */}
+            <motion.div
+              initial={{ opacity: 0, y: 100, scale: 0.8 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 100, scale: 0.8 }}
+              className="relative w-full max-w-md h-96 bg-[#000000] border border-[#00F0FF]/20 rounded-2xl shadow-neon overflow-hidden"
             >
               {/* Header */}
-              <div className="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border-b border-cyan-500/20 p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                                         <Image 
-                       src="/assets/images/logo/agrotm-logo.svg" 
-                       alt="AGROTM Logo" 
-                       width={32} 
-                       height={32}
-                       className="w-8 h-8"
-                       onError={(e) => {
-                         e.currentTarget.src = "/images/logo-agrotm.svg";
-                       }}
-                     />
-                    <div>
-                      <h3 className="text-white font-semibold">Suporte AGROTM</h3>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                        <span className="text-cyan-400 text-sm">Online 24/7</span>
-                      </div>
-                    </div>
+              <div className="bg-[#00F0FF]/10 border-b border-[#00F0FF]/20 p-4 flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-[#00F0FF] rounded-full flex items-center justify-center">
+                    <MessageCircle className="w-4 h-4 text-black" />
                   </div>
-                  <button
-                    onClick={() => setIsOpen(false)}
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    <X className="w-6 h-6" />
-                  </button>
+                  <div>
+                    <h3 className="font-orbitron font-semibold text-[#00F0FF]">AGROTM Assistant</h3>
+                    <p className="text-xs text-[#cccccc]">Online</p>
+                  </div>
                 </div>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="text-[#cccccc] hover:text-[#00F0FF] transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
               </div>
 
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-4 h-[350px]">
+              <div className="flex-1 p-4 overflow-y-auto space-y-4 h-64">
                 {messages.map((message) => (
                   <motion.div
                     key={message.id}
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
                   >
                     <div
-                      className={`max-w-[80%] p-3 rounded-2xl ${
+                      className={`max-w-xs p-3 rounded-2xl ${
                         message.isUser
-                          ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white'
-                          : 'bg-gray-800 text-gray-100 border border-gray-700'
+                          ? 'bg-[#00F0FF] text-black'
+                          : 'bg-[#00F0FF]/10 text-[#cccccc] border border-[#00F0FF]/20'
                       }`}
                     >
                       <p className="text-sm">{message.text}</p>
-                      <div className={`flex items-center space-x-1 mt-2 ${
-                        message.isUser ? 'text-cyan-100' : 'text-gray-400'
-                      }`}>
-                        <Clock className="w-3 h-3" />
-                        <span className="text-xs">{formatTime(message.timestamp)}</span>
+                      <div className="flex items-center justify-end mt-1">
+                        <Clock className="w-3 h-3 text-[#cccccc] mr-1" />
+                        <span className="text-xs text-[#cccccc]">
+                          {formatTime(message.timestamp)}
+                        </span>
                       </div>
                     </div>
                   </motion.div>
                 ))}
-                
                 {isLoading && (
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     className="flex justify-start"
                   >
-                    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-3">
+                    <div className="bg-[#00F0FF]/10 border border-[#00F0FF]/20 p-3 rounded-2xl">
                       <div className="flex space-x-1">
-                        <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce"></div>
-                        <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                        <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                        <div className="w-2 h-2 bg-[#00F0FF] rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-[#00F0FF] rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                        <div className="w-2 h-2 bg-[#00F0FF] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                       </div>
                     </div>
                   </motion.div>
                 )}
-
-                {/* Mensagem de fallback com botão WhatsApp */}
-                {messages.length > 1 && 
-                 messages[messages.length - 1].isUser && 
-                 !findBestMatch(messages[messages.length - 1].text) && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex justify-start"
-                  >
-                    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-4 max-w-[80%]">
-                      <p className="text-sm text-gray-100 mb-3">
-                        Não tenho certeza dessa resposta. Quer falar com um especialista?
-                      </p>
-                      <button
-                        onClick={openWhatsApp}
-                        className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center space-x-2"
-                      >
-                        <span>💬</span>
-                        <span>Falar via WhatsApp</span>
-                      </button>
-                    </div>
-                  </motion.div>
-                )}
-
                 <div ref={messagesEndRef} />
               </div>
 
               {/* Input */}
-              <div className="border-t border-gray-700 p-4">
+              <div className="p-4 border-t border-[#00F0FF]/20">
                 <div className="flex space-x-2">
                   <input
                     ref={inputRef}
@@ -276,17 +237,24 @@ export function ChatbotAGROTM() {
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder="Digite sua mensagem..."
-                    className="flex-1 bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 transition-colors"
-                    disabled={isLoading}
+                    className="flex-1 bg-[#000000] border border-[#00F0FF]/20 rounded-xl px-4 py-2 text-[#cccccc] placeholder-[#cccccc]/50 focus:outline-none focus:border-[#00F0FF] transition-colors"
                   />
                   <button
                     onClick={handleSendMessage}
                     disabled={!inputValue.trim() || isLoading}
-                    className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white p-2 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-[#00F0FF] text-black p-2 rounded-xl hover:bg-[#00d4e0] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Send className="w-5 h-5" />
+                    <Send className="w-4 h-4" />
                   </button>
                 </div>
+                
+                {/* WhatsApp Button */}
+                <button
+                  onClick={openWhatsApp}
+                  className="w-full mt-2 bg-[#00F0FF]/10 border border-[#00F0FF]/20 text-[#00F0FF] py-2 rounded-xl hover:bg-[#00F0FF]/20 transition-colors text-sm font-orbitron"
+                >
+                  💬 Falar com atendente
+                </button>
               </div>
             </motion.div>
           </motion.div>

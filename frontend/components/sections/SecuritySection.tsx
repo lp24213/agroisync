@@ -10,7 +10,7 @@ export function SecuritySection() {
   const { t } = useTranslation('common');
 
   return (
-    <section className="py-20 bg-black-matte relative overflow-hidden">
+    <section className="py-20 bg-[#000000] relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 z-0 opacity-20">
         <div className="grid-animation"></div>
@@ -34,14 +34,14 @@ export function SecuritySection() {
               className="relative"
             >
               <Image 
-                src="/assets/images/security/cyber-defense.png" 
+                src="/assets/security.png" 
                 alt="AGROTM Cyber Defense" 
                 width={600} 
                 height={400}
                 className="rounded-2xl shadow-neon hover:shadow-neon transition-all duration-500"
                 unoptimized={true}
                 onError={(e) => {
-                  e.currentTarget.src = "/images/placeholder.svg";
+                  e.currentTarget.src = "/assets/security.png";
                 }}
               />
             </motion.div>
@@ -54,11 +54,11 @@ export function SecuritySection() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="lg:order-1"
           >
-            <h2 className="font-orbitron text-4xl md:text-5xl text-neonBlue mb-6 animate-fadeIn">
+            <h2 className="font-orbitron text-4xl md:text-5xl text-[#00F0FF] mb-6 animate-fadeIn">
               Cyber Defense
             </h2>
-            <p className="text-lg md:text-xl text-gray-300 leading-relaxed mb-8">
-              Advanced security and blockchain protection with cutting-edge cybersecurity technology.
+            <p className="text-lg md:text-xl text-[#cccccc] leading-relaxed mb-8">
+              Segurança avançada e proteção blockchain com tecnologia de cibersegurança de ponta.
             </p>
             <div className="space-y-4">
               <motion.div 
@@ -67,8 +67,8 @@ export function SecuritySection() {
                 transition={{ delay: 0.2, duration: 0.6 }}
                 className="flex items-center space-x-3"
               >
-                <div className="w-3 h-3 bg-neonBlue rounded-full shadow-neon"></div>
-                <span className="text-gray-300 font-orbitron">Advanced Protection</span>
+                <div className="w-3 h-3 bg-[#00F0FF] rounded-full shadow-neon"></div>
+                <span className="text-[#cccccc] font-orbitron">Proteção Avançada</span>
               </motion.div>
               <motion.div 
                 initial={{ opacity: 0, x: -20 }}
@@ -76,8 +76,8 @@ export function SecuritySection() {
                 transition={{ delay: 0.4, duration: 0.6 }}
                 className="flex items-center space-x-3"
               >
-                <div className="w-3 h-3 bg-neonBlue rounded-full shadow-neon"></div>
-                <span className="text-gray-300 font-orbitron">Blockchain Security</span>
+                <div className="w-3 h-3 bg-[#00F0FF] rounded-full shadow-neon"></div>
+                <span className="text-[#cccccc] font-orbitron">Segurança Blockchain</span>
               </motion.div>
               <motion.div 
                 initial={{ opacity: 0, x: -20 }}
@@ -85,8 +85,8 @@ export function SecuritySection() {
                 transition={{ delay: 0.6, duration: 0.6 }}
                 className="flex items-center space-x-3"
               >
-                <div className="w-3 h-3 bg-neonBlue rounded-full shadow-neon"></div>
-                <span className="text-gray-300 font-orbitron">Real-time Monitoring</span>
+                <div className="w-3 h-3 bg-[#00F0FF] rounded-full shadow-neon"></div>
+                <span className="text-[#cccccc] font-orbitron">Monitoramento em Tempo Real</span>
               </motion.div>
             </div>
           </motion.div>

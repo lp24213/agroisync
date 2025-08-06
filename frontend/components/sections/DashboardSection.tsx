@@ -10,7 +10,7 @@ export function DashboardSection() {
   const { t } = useTranslation('common');
 
   return (
-    <section className="py-20 bg-black-matte relative overflow-hidden">
+    <section className="py-20 bg-[#000000] relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 z-0 opacity-20">
         <div className="grid-animation"></div>
@@ -27,11 +27,11 @@ export function DashboardSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <h2 className="font-orbitron text-4xl md:text-5xl text-neonBlue mb-6 animate-fadeIn">
-              Interactive Dashboard
+            <h2 className="font-orbitron text-4xl md:text-5xl text-[#00F0FF] mb-6 animate-fadeIn">
+              Dashboard Interativo
             </h2>
-            <p className="text-lg md:text-xl text-gray-300 leading-relaxed mb-8">
-              Advanced analytics and real-time monitoring interface with cutting-edge Web3 technology.
+            <p className="text-lg md:text-xl text-[#cccccc] leading-relaxed mb-8">
+              Analytics avançados e interface de monitoramento em tempo real com tecnologia Web3 de ponta.
             </p>
             <div className="space-y-4">
               <motion.div 
@@ -40,8 +40,8 @@ export function DashboardSection() {
                 transition={{ delay: 0.2, duration: 0.6 }}
                 className="flex items-center space-x-3"
               >
-                <div className="w-3 h-3 bg-neonBlue rounded-full shadow-neon"></div>
-                <span className="text-gray-300 font-orbitron">Real-time Analytics</span>
+                <div className="w-3 h-3 bg-[#00F0FF] rounded-full shadow-neon"></div>
+                <span className="text-[#cccccc] font-orbitron">Analytics em Tempo Real</span>
               </motion.div>
               <motion.div 
                 initial={{ opacity: 0, x: -20 }}
@@ -49,8 +49,8 @@ export function DashboardSection() {
                 transition={{ delay: 0.4, duration: 0.6 }}
                 className="flex items-center space-x-3"
               >
-                <div className="w-3 h-3 bg-neonBlue rounded-full shadow-neon"></div>
-                <span className="text-gray-300 font-orbitron">Advanced Metrics</span>
+                <div className="w-3 h-3 bg-[#00F0FF] rounded-full shadow-neon"></div>
+                <span className="text-[#cccccc] font-orbitron">Métricas Avançadas</span>
               </motion.div>
               <motion.div 
                 initial={{ opacity: 0, x: -20 }}
@@ -58,8 +58,8 @@ export function DashboardSection() {
                 transition={{ delay: 0.6, duration: 0.6 }}
                 className="flex items-center space-x-3"
               >
-                <div className="w-3 h-3 bg-neonBlue rounded-full shadow-neon"></div>
-                <span className="text-gray-300 font-orbitron">Performance Tracking</span>
+                <div className="w-3 h-3 bg-[#00F0FF] rounded-full shadow-neon"></div>
+                <span className="text-[#cccccc] font-orbitron">Acompanhamento de Performance</span>
               </motion.div>
             </div>
           </motion.div>
@@ -77,14 +77,14 @@ export function DashboardSection() {
               className="relative"
             >
               <Image 
-                src="/assets/images/dashboard/interactive-dashboard.png" 
+                src="/assets/dashboard.png" 
                 alt="AGROTM Interactive Dashboard" 
                 width={600} 
                 height={400}
                 className="rounded-2xl shadow-neon hover:shadow-neon transition-all duration-500"
                 unoptimized={true}
                 onError={(e) => {
-                  e.currentTarget.src = "/images/placeholder.svg";
+                  e.currentTarget.src = "/assets/dashboard.png";
                 }}
               />
             </motion.div>

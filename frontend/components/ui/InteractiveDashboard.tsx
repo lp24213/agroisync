@@ -28,7 +28,7 @@ export function InteractiveDashboard({ size = 'md', className = '' }: Interactiv
         className="relative w-full h-full"
       >
         <Image
-          src="/assets/images/dashboard/interactive-dashboard.png"
+          src="/assets/dashboard.png"
           alt="AGROTM Interactive Dashboard"
           width={600}
           height={400}
@@ -38,11 +38,11 @@ export function InteractiveDashboard({ size = 'md', className = '' }: Interactiv
         
         {/* Overlay com texto premium */}
         <div className="absolute inset-0 bg-black/40 rounded-2xl flex flex-col justify-center items-center">
-          <h2 className="font-orbitron text-2xl md:text-3xl text-neonBlue mb-2 animate-fadeIn">
-            Interactive Dashboard
+          <h2 className="font-orbitron text-2xl md:text-3xl text-[#00F0FF] mb-2 animate-fadeIn">
+            Dashboard Interativo
           </h2>
-          <p className="text-sm md:text-base text-gray-300 leading-relaxed text-center px-4">
-            Advanced analytics and real-time monitoring interface
+          <p className="text-sm md:text-base text-[#cccccc] leading-relaxed text-center px-4">
+            Analytics avançados e interface de monitoramento em tempo real
           </p>
         </div>
       </motion.div>

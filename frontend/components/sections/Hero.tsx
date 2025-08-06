@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 export function Hero() {
   const { t } = useTranslation('common');
   return (
-    <section className="relative min-h-screen flex items-center justify-center bg-black-matte">
+    <section className="relative min-h-screen flex items-center justify-center bg-[#000000]">
       <div className="container mx-auto px-4 text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -25,7 +25,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8 }}
-            className="font-orbitron text-4xl md:text-6xl lg:text-7xl text-neonBlue mb-8 animate-fadeIn"
+            className="font-orbitron text-4xl md:text-6xl lg:text-7xl text-[#00F0FF] mb-8 animate-fadeIn"
           >
             AGROTM
           </motion.h1>
@@ -34,9 +34,9 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.8 }}
-            className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto font-orbitron"
+            className="text-xl md:text-2xl text-[#cccccc] mb-8 max-w-3xl mx-auto font-orbitron"
           >
-            🌱 {t('hero.subtitle')}
+            🌱 Agricultura Tokenizada do Futuro
           </motion.p>
           
           <motion.div 
@@ -46,20 +46,20 @@ export function Hero() {
             className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
           >
             <motion.button
-              whileHover={{ scale: 1.05, boxShadow: "0 0 30px #00f0ff80" }}
+              whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(0, 240, 255, 0.8)" }}
               whileTap={{ scale: 0.95 }}
-              className="bg-neonBlue hover:bg-cyan-400 text-black px-8 py-4 rounded-lg font-orbitron font-semibold flex items-center justify-center gap-2 shadow-neon transition-all duration-300"
+              className="bg-[#00F0FF] hover:bg-[#00d4e0] text-black px-8 py-4 rounded-xl font-orbitron font-semibold flex items-center justify-center gap-2 shadow-neon transition-all duration-300"
             >
-              {t('hero.button')}
+              Acessar Dashboard
               <ArrowRight size={20} />
             </motion.button>
             <Link href="/documentation">
               <motion.button
-                whileHover={{ scale: 1.05, boxShadow: "0 0 30px #00f0ff80" }}
+                whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(0, 240, 255, 0.8)" }}
                 whileTap={{ scale: 0.95 }}
-                className="border-2 border-neonBlue text-neonBlue hover:bg-neonBlue hover:text-black px-8 py-4 rounded-lg font-orbitron font-semibold transition-all duration-300 shadow-neon"
+                className="border-2 border-[#00F0FF] text-[#00F0FF] hover:bg-[#00F0FF] hover:text-black px-8 py-4 rounded-xl font-orbitron font-semibold transition-all duration-300 shadow-neon"
               >
-                {t('hero.docButton')}
+                Documentação
               </motion.button>
             </Link>
           </motion.div>
@@ -77,14 +77,14 @@ export function Hero() {
               className="relative"
             >
               <Image 
-                src="/assets/images/hero/farmer-tech-character.png" 
+                src="/assets/hero.png" 
                 alt="Premium Farmer Tech Character" 
                 width={300} 
                 height={300}
                 className="drop-shadow-[0_0_30px_rgba(0,240,255,0.6)] rounded-2xl"
                 unoptimized={true}
                 onError={(e) => {
-                  e.currentTarget.src = "/images/placeholder.svg";
+                  e.currentTarget.src = "/assets/hero.png";
                 }}
               />
             </motion.div>
@@ -99,37 +99,37 @@ export function Hero() {
             <motion.div
               whileHover={{ scale: 1.05, y: -5 }}
               transition={{ duration: 0.3 }}
-              className="text-center bg-black/70 border border-neonBlue p-6 rounded-2xl hover:shadow-neon"
+              className="text-center bg-black/70 border border-[#00F0FF] p-6 rounded-2xl hover:shadow-neon"
             >
-              <div className="bg-neonBlue/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <TrendingUp className="text-neonBlue" size={32} />
+              <div className="bg-[#00F0FF]/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <TrendingUp className="text-[#00F0FF]" size={32} />
               </div>
-              <h3 className="text-xl font-orbitron font-semibold text-neonBlue mb-2">{t('features.stakingPremium.title')}</h3>
-              <p className="text-gray-400">{t('features.stakingPremium.description')}</p>
+              <h3 className="text-xl font-orbitron font-semibold text-[#00F0FF] mb-2">Staking Premium</h3>
+              <p className="text-[#cccccc]">Earn rewards through DeFi staking and yield farming</p>
             </motion.div>
 
             <motion.div
               whileHover={{ scale: 1.05, y: -5 }}
               transition={{ duration: 0.3 }}
-              className="text-center bg-black/70 border border-neonBlue p-6 rounded-2xl hover:shadow-neon"
+              className="text-center bg-black/70 border border-[#00F0FF] p-6 rounded-2xl hover:shadow-neon"
             >
-              <div className="bg-neonBlue/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Shield className="text-neonBlue" size={32} />
+              <div className="bg-[#00F0FF]/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <Shield className="text-[#00F0FF]" size={32} />
               </div>
-              <h3 className="text-xl font-orbitron font-semibold text-neonBlue mb-2">{t('features.advancedSecurity.title')}</h3>
-              <p className="text-gray-400">{t('features.advancedSecurity.description')}</p>
+              <h3 className="text-xl font-orbitron font-semibold text-[#00F0FF] mb-2">Segurança Avançada</h3>
+              <p className="text-[#cccccc]">Advanced security and blockchain protection</p>
             </motion.div>
 
             <motion.div
               whileHover={{ scale: 1.05, y: -5 }}
               transition={{ duration: 0.3 }}
-              className="text-center bg-black/70 border border-neonBlue p-6 rounded-2xl hover:shadow-neon"
+              className="text-center bg-black/70 border border-[#00F0FF] p-6 rounded-2xl hover:shadow-neon"
             >
-              <div className="bg-neonBlue/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Coins className="text-neonBlue" size={32} />
+              <div className="bg-[#00F0FF]/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <Coins className="text-[#00F0FF]" size={32} />
               </div>
-              <h3 className="text-xl font-orbitron font-semibold text-neonBlue mb-2">{t('features.agriculturalNFTs.title')}</h3>
-              <p className="text-gray-400">{t('features.agriculturalNFTs.description')}</p>
+              <h3 className="text-xl font-orbitron font-semibold text-[#00F0FF] mb-2">NFTs Agrícolas</h3>
+              <p className="text-[#cccccc]">Create and trade agricultural digital assets</p>
             </motion.div>
           </motion.div>
         </motion.div>

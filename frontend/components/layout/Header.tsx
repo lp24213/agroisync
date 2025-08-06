@@ -84,7 +84,7 @@ export function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b border-cyan-500/20">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-[#000000]/90 backdrop-blur-md border-b border-[#00F0FF]/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 relative">
           {/* Logo */}
@@ -104,160 +104,163 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-gray-300 hover:text-cyan-400 transition-colors">
-              {t('header.home')}
+            <Link 
+              href="/dashboard" 
+              className={`text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300 font-orbitron ${
+                pathname === '/dashboard' ? 'text-[#00F0FF]' : ''
+              }`}
+            >
+              Dashboard
             </Link>
-            <Link href="/dashboard" className="text-gray-300 hover:text-cyan-400 transition-colors">
-              {t('header.dashboard')}
+            <Link 
+              href="/staking" 
+              className={`text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300 font-orbitron ${
+                pathname === '/staking' ? 'text-[#00F0FF]' : ''
+              }`}
+            >
+              Staking
             </Link>
-            <Link href="/staking" className="text-gray-300 hover:text-cyan-400 transition-colors">
-              {t('header.staking')}
+            <Link 
+              href="/nft-marketplace" 
+              className={`text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300 font-orbitron ${
+                pathname === '/nft-marketplace' ? 'text-[#00F0FF]' : ''
+              }`}
+            >
+              NFTs
             </Link>
-            <Link href="/about" className="text-gray-300 hover:text-cyan-400 transition-colors">
-              {t('header.about')}
+            <Link 
+              href="/farm" 
+              className={`text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300 font-orbitron ${
+                pathname === '/farm' ? 'text-[#00F0FF]' : ''
+              }`}
+            >
+              Farm
             </Link>
-            <Link href="/contact" className="text-gray-300 hover:text-cyan-400 transition-colors">
-              {t('header.contact')}
+            <Link 
+              href="/contact" 
+              className={`text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300 font-orbitron ${
+                pathname === '/contact' ? 'text-[#00F0FF]' : ''
+              }`}
+            >
+              Contato
             </Link>
           </nav>
 
-          {/* Desktop Actions */}
+          {/* Language Selector */}
           <div className="hidden md:flex items-center space-x-4">
-            {/* Language Selector */}
             <div className="relative" ref={languageRef}>
               <button
                 onClick={() => setIsLanguageOpen(!isLanguageOpen)}
-                className="flex items-center space-x-2 text-gray-300 hover:text-cyan-400 transition-colors"
+                className="flex items-center space-x-2 text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300"
               >
-                <Globe size={16} />
-                <span>{getCurrentLanguage().flag}</span>
-                <span className="text-sm">{getCurrentLanguage().code.toUpperCase()}</span>
-                <ChevronDown size={12} className={`transition-transform ${isLanguageOpen ? 'rotate-180' : ''}`} />
+                <Globe className="w-4 h-4" />
+                <span className="font-orbitron">{getCurrentLanguage().flag}</span>
+                <ChevronDown className="w-4 h-4" />
               </button>
-
-              {/* Language Dropdown */}
+              
               {isLanguageOpen && (
-                <div className="absolute top-full right-0 mt-2 w-48 bg-gray-900 border border-cyan-500/20 rounded-lg shadow-xl z-[9999]">
-                  <div className="py-2">
-                    {supportedLanguages.map((language) => (
-                      <button
-                        key={language.code}
-                        onClick={() => handleLanguageChange(language.code)}
-                        className={`w-full flex items-center space-x-3 px-4 py-2 text-sm hover:bg-gray-800 transition-colors ${
-                          currentLanguage === language.code ? 'text-cyan-400 bg-gray-800' : 'text-gray-300'
-                        }`}
-                      >
-                        <span className="text-lg">{language.flag}</span>
-                        <span>{language.name}</span>
-                        {currentLanguage === language.code && (
-                          <span className="ml-auto text-cyan-400">✓</span>
-                        )}
-                      </button>
-                    ))}
-                  </div>
+                <div className="absolute right-0 mt-2 w-48 bg-[#000000] border border-[#00F0FF]/20 rounded-lg shadow-lg py-2 z-50">
+                  {supportedLanguages.map((language) => (
+                    <button
+                      key={language.code}
+                      onClick={() => handleLanguageChange(language.code)}
+                      className={`w-full text-left px-4 py-2 text-sm hover:bg-[#00F0FF]/10 transition-colors duration-300 ${
+                        currentLanguage === language.code ? 'text-[#00F0FF]' : 'text-[#cccccc]'
+                      }`}
+                    >
+                      <span className="mr-2">{language.flag}</span>
+                      {language.name}
+                    </button>
+                  ))}
                 </div>
               )}
             </div>
 
-            {/* Get Started Button */}
-            <Link
-              href="/dashboard"
-              className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-6 py-2 rounded-lg hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 font-medium"
-            >
-              {t('header.getStarted')}
+            {/* CTA Button */}
+            <Link href="/dashboard">
+              <button className="bg-[#00F0FF] text-black px-6 py-2 rounded-xl font-orbitron font-semibold hover:bg-[#00d4e0] transition-all duration-300 shadow-neon">
+                Acessar
+              </button>
             </Link>
           </div>
 
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="mobile-menu-button md:hidden text-gray-300 hover:text-cyan-400 transition-colors"
+            className="md:hidden mobile-menu-button p-2 text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300"
           >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
-        {/* Mobile Menu Overlay */}
-        {isMenuOpen && (
-          <div className="md:hidden fixed inset-0 bg-black/50 z-40" onClick={() => setIsMenuOpen(false)} />
-        )}
-        
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="mobile-menu md:hidden absolute top-full left-0 right-0 bg-gray-900 border-t border-cyan-500/20 shadow-xl z-50 animate-in slide-in-from-top-2 duration-300">
+          <div className="md:hidden mobile-menu absolute top-full left-0 right-0 bg-[#000000]/95 backdrop-blur-md border-b border-[#00F0FF]/20">
             <div className="px-4 py-6 space-y-4">
-              {/* Mobile Navigation */}
-              <nav className="space-y-4">
-                <Link
-                  href="/"
-                  className="block text-gray-300 hover:text-cyan-400 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t('header.home')}
-                </Link>
-                <Link
-                  href="/dashboard"
-                  className="block text-gray-300 hover:text-cyan-400 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t('header.dashboard')}
-                </Link>
-                <Link
-                  href="/staking"
-                  className="block text-gray-300 hover:text-cyan-400 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t('header.staking')}
-                </Link>
-                <Link
-                  href="/about"
-                  className="block text-gray-300 hover:text-cyan-400 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t('header.about')}
-                </Link>
-                <Link
-                  href="/contact"
-                  className="block text-gray-300 hover:text-cyan-400 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t('header.contact')}
-                </Link>
-              </nav>
-
+              <Link 
+                href="/dashboard" 
+                className={`block text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300 font-orbitron ${
+                  pathname === '/dashboard' ? 'text-[#00F0FF]' : ''
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Dashboard
+              </Link>
+              <Link 
+                href="/staking" 
+                className={`block text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300 font-orbitron ${
+                  pathname === '/staking' ? 'text-[#00F0FF]' : ''
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Staking
+              </Link>
+              <Link 
+                href="/nft-marketplace" 
+                className={`block text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300 font-orbitron ${
+                  pathname === '/nft-marketplace' ? 'text-[#00F0FF]' : ''
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                NFTs
+              </Link>
+              <Link 
+                href="/farm" 
+                className={`block text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300 font-orbitron ${
+                  pathname === '/farm' ? 'text-[#00F0FF]' : ''
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Farm
+              </Link>
+              <Link 
+                href="/contact" 
+                className={`block text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300 font-orbitron ${
+                  pathname === '/contact' ? 'text-[#00F0FF]' : ''
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Contato
+              </Link>
+              
               {/* Mobile Language Selector */}
-              <div className="pt-4 border-t border-gray-700">
-                <h3 className="text-sm font-medium text-gray-400 mb-3">Idioma / Language</h3>
-                <div className="space-y-2">
+              <div className="pt-4 border-t border-[#00F0FF]/20">
+                <div className="flex flex-wrap gap-2">
                   {supportedLanguages.map((language) => (
                     <button
                       key={language.code}
                       onClick={() => handleLanguageChange(language.code)}
-                      className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-                        currentLanguage === language.code
-                          ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
-                          : 'text-gray-300 hover:bg-gray-800'
+                      className={`px-3 py-2 text-sm rounded-lg transition-colors duration-300 ${
+                        currentLanguage === language.code 
+                          ? 'bg-[#00F0FF] text-black' 
+                          : 'bg-[#00F0FF]/10 text-[#cccccc] hover:bg-[#00F0FF]/20'
                       }`}
                     >
-                      <span className="text-lg">{language.flag}</span>
-                      <span>{language.name}</span>
-                      {currentLanguage === language.code && (
-                        <span className="ml-auto text-cyan-400">✓</span>
-                      )}
+                      <span className="mr-2">{language.flag}</span>
+                      {language.name}
                     </button>
                   ))}
                 </div>
-              </div>
-
-              {/* Mobile Get Started Button */}
-              <div className="pt-4">
-                <Link
-                  href="/dashboard"
-                  className="block w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-6 py-3 rounded-lg hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 font-medium text-center"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t('header.getStarted')}
-                </Link>
               </div>
             </div>
           </div>

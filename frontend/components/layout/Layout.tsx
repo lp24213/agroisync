@@ -13,7 +13,7 @@ interface LayoutProps {
 export function Layout({ children }: LayoutProps) {
   return (
     <I18nProvider>
-      <div className="min-h-screen bg-black text-white relative">
+      <div className="min-h-screen bg-[#000000] text-[#ffffff] relative">
         <Header />
         <main className="pt-16 relative z-10">
           {children}

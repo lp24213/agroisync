@@ -10,9 +10,9 @@ interface NFTMintingProps {
 
 export function NFTMinting({ size = 'md', className = '' }: NFTMintingProps) {
   const sizeClasses = {
-    sm: 'w-32 h-32',
-    md: 'w-48 h-48',
-    lg: 'w-64 h-64',
+    sm: 'w-32 h-24',
+    md: 'w-48 h-36',
+    lg: 'w-64 h-48',
   };
 
   return (
@@ -28,7 +28,7 @@ export function NFTMinting({ size = 'md', className = '' }: NFTMintingProps) {
         className="relative w-full h-full"
       >
         <Image
-          src="/assets/images/nft/nft-minting.png"
+          src="/assets/nft.png"
           alt="AGROTM NFT Minting"
           width={600}
           height={400}
@@ -38,11 +38,11 @@ export function NFTMinting({ size = 'md', className = '' }: NFTMintingProps) {
         
         {/* Overlay com texto premium */}
         <div className="absolute inset-0 bg-black/40 rounded-2xl flex flex-col justify-center items-center">
-          <h2 className="font-orbitron text-2xl md:text-3xl text-neonBlue mb-2 animate-fadeIn">
+          <h2 className="font-orbitron text-2xl md:text-3xl text-[#00F0FF] mb-2 animate-fadeIn">
             NFT Minting
           </h2>
-          <p className="text-sm md:text-base text-gray-300 leading-relaxed text-center px-4">
-            Create and trade agricultural digital assets
+          <p className="text-sm md:text-base text-[#cccccc] leading-relaxed text-center px-4">
+            Crie e negocie ativos digitais agrícolas
           </p>
         </div>
       </motion.div>

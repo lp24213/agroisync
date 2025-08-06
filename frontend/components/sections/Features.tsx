@@ -4,52 +4,49 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '../ui/Card';
 import Image from 'next/image';
-import { useTranslation } from 'react-i18next';
 
 export function Features() {
-  const { t } = useTranslation('common');
-
   const features = [
     {
       icon: '/images/leaf.svg',
-      title: t('sustainableAgriculture'),
-      description: t('sustainableAgricultureDesc'),
-      color: 'agro-green'
+      title: 'Agricultura Sustentável',
+      description: 'Tecnologia blockchain para rastreabilidade e sustentabilidade agrícola',
+      color: '[#00F0FF]'
     },
     {
       icon: '/images/coin.svg',
-      title: t('defiStaking'),
-      description: t('defiStakingDesc'),
-      color: 'agro-blue'
+      title: 'Staking DeFi',
+      description: 'Ganhe recompensas através de staking e yield farming',
+      color: '[#00F0FF]'
     },
     {
       icon: '/images/nft.svg',
-      title: t('agriculturalNFTs'),
-      description: t('agriculturalNFTsDesc'),
-      color: 'agro-purple'
+      title: 'NFTs Agrícolas',
+      description: 'Tokenização de ativos agrícolas únicos',
+      color: '[#00F0FF]'
     },
     {
       icon: '/images/chart.svg',
-      title: t('advancedAnalytics'),
-      description: t('advancedAnalyticsDesc'),
-      color: 'agro-yellow'
+      title: 'Analytics Avançados',
+      description: 'Dados em tempo real e métricas de performance',
+      color: '[#00F0FF]'
     },
     {
       icon: '/images/wallet.svg',
-      title: t('integratedWallet'),
-      description: t('integratedWalletDesc'),
-      color: 'agro-red'
+      title: 'Carteira Integrada',
+      description: 'Carteira Web3 integrada para transações seguras',
+      color: '[#00F0FF]'
     },
     {
       icon: '/images/check.svg',
-      title: t('daoGovernance'),
-      description: t('daoGovernanceDesc'),
-      color: 'agro-neon'
+      title: 'Governança DAO',
+      description: 'Participação na governança descentralizada',
+      color: '[#00F0FF]'
     }
   ];
 
   return (
-    <section className="py-20 bg-agro-darker relative overflow-hidden">
+    <section className="py-20 bg-[#000000] relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 z-0 opacity-20">
         <div className="grid-animation"></div>
@@ -61,7 +58,7 @@ export function Features() {
       {/* Floating Elements */}
       <div className="absolute inset-0 z-0">
         <motion.div 
-          className="absolute top-1/3 right-1/5 w-32 h-32 rounded-full bg-agro-blue/20 blur-xl"
+          className="absolute top-1/3 right-1/5 w-32 h-32 rounded-full bg-[#00F0FF]/20 blur-xl"
           animate={{ 
             x: [0, 30, 0], 
             y: [0, -30, 0],
@@ -74,7 +71,7 @@ export function Features() {
           }}
         />
         <motion.div 
-          className="absolute bottom-1/4 left-1/5 w-40 h-40 rounded-full bg-agro-green/20 blur-xl"
+          className="absolute bottom-1/4 left-1/5 w-40 h-40 rounded-full bg-[#00F0FF]/20 blur-xl"
           animate={{ 
             x: [0, -40, 0], 
             y: [0, 20, 0],
@@ -95,46 +92,46 @@ export function Features() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="text-4xl font-bold text-white mb-4 text-glow">
-            {t('whyChooseAGROTM')} <span className="text-agro-blue">AGROTM</span>?
+          <h2 className="font-orbitron text-4xl md:text-5xl text-[#00F0FF] mb-4 animate-fadeIn">
+            Por que escolher <span className="text-[#00F0FF]">AGROTM</span>?
           </h2>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            {t('platformDescription')}
+          <p className="text-lg md:text-xl text-[#cccccc] max-w-3xl mx-auto">
+            Plataforma revolucionária que conecta agricultores e investidores através da tecnologia blockchain
           </p>
         </motion.div>
 
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, staggerChildren: 0.1 }}
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
             <motion.div
               key={feature.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1, duration: 0.5 }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              whileHover={{ scale: 1.05, y: -5 }}
             >
-              <Card className="text-center hover:transform hover:scale-105 transition-transform duration-300 bg-agro-darker/80 border border-agro-blue/20 backdrop-blur-sm overflow-hidden relative group cyberpunk-card">
-                <div className="absolute inset-0 bg-gradient-to-r from-agro-blue/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-agro-blue to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-                <div className="absolute bottom-0 right-0 w-full h-0.5 bg-gradient-to-r from-agro-blue to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-                
-                <div className="relative z-10 p-6">
-                  <motion.div 
-                    className="text-4xl mb-4 inline-block"
-                    whileHover={{ rotate: [0, -10, 10, -10, 0], transition: { duration: 0.5 } }}
-                  >
-                    <Image src={feature.icon} alt={feature.title} width={64} height={64} />
-                  </motion.div>
-                  <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
-                  <p className="text-gray-400">{feature.description}</p>
+              <Card className="h-full bg-black/70 border border-[#00F0FF]/20 hover:shadow-neon transition-all duration-300">
+                <div className="text-center p-6">
+                  <div className={`w-16 h-16 bg-[#00F0FF]/20 rounded-full flex items-center justify-center mx-auto mb-4`}>
+                    <Image
+                      src={feature.icon}
+                      alt={feature.title}
+                      width={32}
+                      height={32}
+                      className="w-8 h-8"
+                    />
+                  </div>
+                  <h3 className="text-xl font-orbitron font-semibold text-[#00F0FF] mb-3">
+                    {feature.title}
+                  </h3>
+                  <p className="text-[#cccccc] leading-relaxed">
+                    {feature.description}
+                  </p>
                 </div>
               </Card>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

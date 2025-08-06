@@ -8,48 +8,48 @@ import { Layout } from '../../components/layout/Layout';
 const stakingPools = [
   {
     id: 1,
-    name: 'SOL Staking Pool',
+    name: 'Pool de Staking SOL',
     token: 'SOL',
     apy: 12.5,
     totalStaked: 1250000,
     participants: 15420,
     minStake: 1,
     maxStake: 10000,
-    lockPeriod: '30 days',
-    risk: 'Low',
-    color: '#9945FF',
-    description: 'Stake SOL and earn rewards with our secure staking pool.',
-    features: ['Auto-compounding', 'Instant rewards', 'Flexible unstaking'],
+    lockPeriod: '30 dias',
+    risk: 'Baixo',
+    color: '#00F0FF',
+    description: 'Stake SOL e ganhe recompensas com nosso pool de staking seguro.',
+    features: ['Auto-compounding', 'Recompensas instantâneas', 'Unstaking flexível'],
   },
   {
     id: 2,
-    name: 'AGROTM Staking Pool',
+    name: 'Pool de Staking AGROTM',
     token: 'AGROTM',
     apy: 18.2,
     totalStaked: 850000,
     participants: 8920,
     minStake: 100,
     maxStake: 50000,
-    lockPeriod: '90 days',
-    risk: 'Medium',
-    color: '#22C55E',
-    description: 'High-yield staking for AGROTM token holders with bonus rewards.',
-    features: ['Bonus rewards', 'Governance rights', 'Early access to features'],
+    lockPeriod: '90 dias',
+    risk: 'Médio',
+    color: '#00F0FF',
+    description: 'Staking de alta rentabilidade para detentores de tokens AGROTM com recompensas bônus.',
+    features: ['Recompensas bônus', 'Direitos de governança', 'Acesso antecipado a recursos'],
   },
   {
     id: 3,
-    name: 'RAY Staking Pool',
+    name: 'Pool de Staking RAY',
     token: 'RAY',
     apy: 15.8,
     totalStaked: 450000,
     participants: 5670,
     minStake: 10,
     maxStake: 25000,
-    lockPeriod: '60 days',
-    risk: 'Medium',
-    color: '#FF6B6B',
-    description: 'Stake RAY tokens and participate in Raydium ecosystem rewards.',
-    features: ['Liquidity mining', 'Trading fee sharing', 'Protocol governance'],
+    lockPeriod: '60 dias',
+    risk: 'Médio',
+    color: '#00F0FF',
+    description: 'Stake tokens RAY e participe das recompensas do ecossistema Raydium.',
+    features: ['Mining de liquidez', 'Compartilhamento de taxas', 'Governança do protocolo'],
   },
 ];
 
@@ -98,15 +98,15 @@ export default function StakingPage() {
     activeTab === 'all'
       ? stakingPools
       : stakingPools.filter(pool => {
-          if (activeTab === 'low') return pool.risk === 'Low';
-          if (activeTab === 'medium') return pool.risk === 'Medium';
-          if (activeTab === 'high') return pool.risk === 'High';
+          if (activeTab === 'low') return pool.risk === 'Baixo';
+          if (activeTab === 'medium') return pool.risk === 'Médio';
+          if (activeTab === 'high') return pool.risk === 'Alto';
           return true;
         });
 
   return (
     <Layout>
-      <div className='min-h-screen bg-agro-darker overflow-hidden relative'>
+      <div className='min-h-screen bg-[#000000] overflow-hidden relative'>
       {/* Background grid animation */}
       <div className='absolute inset-0 z-0 opacity-10'>
         <div className='grid-animation'></div>
@@ -114,7 +114,7 @@ export default function StakingPage() {
 
       {/* Animated orbs */}
       <motion.div
-        className='absolute top-1/4 -left-20 w-40 h-40 rounded-full bg-agro-blue/20 blur-xl z-0'
+        className='absolute top-1/4 -left-20 w-40 h-40 rounded-full bg-[#00F0FF]/20 blur-xl z-0'
         animate={{
           x: [0, 30, 0],
           opacity: [0.2, 0.3, 0.2],
@@ -126,7 +126,7 @@ export default function StakingPage() {
         }}
       />
       <motion.div
-        className='absolute bottom-1/4 -right-20 w-40 h-40 rounded-full bg-agro-green/20 blur-xl z-0'
+        className='absolute bottom-1/4 -right-20 w-40 h-40 rounded-full bg-[#00F0FF]/20 blur-xl z-0'
         animate={{
           x: [0, -30, 0],
           opacity: [0.2, 0.3, 0.2],
@@ -146,13 +146,11 @@ export default function StakingPage() {
           transition={{ duration: 0.6 }}
           className='text-center mb-12'
         >
-          <h1 className='text-5xl font-bold mb-4 text-glow'>
-            <span className='bg-clip-text text-transparent bg-gradient-to-r from-agro-blue to-agro-green'>
-              Staking Pools
-            </span>
+          <h1 className='font-orbitron text-4xl md:text-5xl text-[#00F0FF] mb-4 animate-fadeIn'>
+            Pools de Staking
           </h1>
-          <p className='text-xl text-gray-300 max-w-3xl mx-auto'>
-            Earn passive income by staking your tokens in our secure and high-yield pools
+          <p className='text-lg md:text-xl text-[#cccccc] leading-relaxed max-w-3xl mx-auto'>
+            Ganhe renda passiva fazendo stake dos seus tokens em nossos pools seguros e de alta rentabilidade
           </p>
         </motion.div>
 
@@ -164,40 +162,40 @@ export default function StakingPage() {
           className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-12'
         >
           <motion.div
-            className='cyberpunk-border p-0.5 rounded-lg overflow-hidden'
+            className='bg-black/70 border border-[#00F0FF]/20 p-0.5 rounded-lg overflow-hidden hover:shadow-neon'
             whileHover={{ scale: 1.02 }}
             transition={{ type: 'spring', stiffness: 400, damping: 10 }}
           >
-            <div className='card text-center bg-agro-darker/90 backdrop-blur-md p-6 rounded-lg'>
-              <TrendingUp className='h-8 w-8 text-agro-blue mx-auto mb-3' />
-              <p className='text-2xl font-bold text-white'>${animatedStats.tvl.toFixed(1)}M</p>
-              <p className='text-gray-400'>Total Value Locked</p>
+            <div className='text-center bg-black/90 backdrop-blur-md p-6 rounded-lg'>
+              <TrendingUp className='h-8 w-8 text-[#00F0FF] mx-auto mb-3' />
+              <p className='text-2xl font-orbitron font-bold text-[#ffffff]'>R$ {animatedStats.tvl.toFixed(1)}M</p>
+              <p className='text-[#cccccc]'>Valor Total Bloqueado</p>
             </div>
           </motion.div>
 
           <motion.div
-            className='cyberpunk-border p-0.5 rounded-lg overflow-hidden'
+            className='bg-black/70 border border-[#00F0FF]/20 p-0.5 rounded-lg overflow-hidden hover:shadow-neon'
             whileHover={{ scale: 1.02 }}
             transition={{ type: 'spring', stiffness: 400, damping: 10 }}
           >
-            <div className='card text-center bg-agro-darker/90 backdrop-blur-md p-6 rounded-lg'>
-              <Zap className='h-8 w-8 text-agro-green mx-auto mb-3' />
-              <p className='text-2xl font-bold text-white'>{animatedStats.apy.toFixed(1)}%</p>
-              <p className='text-gray-400'>Average APY</p>
+            <div className='text-center bg-black/90 backdrop-blur-md p-6 rounded-lg'>
+              <Zap className='h-8 w-8 text-[#00F0FF] mx-auto mb-3' />
+              <p className='text-2xl font-orbitron font-bold text-[#ffffff]'>{animatedStats.apy.toFixed(1)}%</p>
+              <p className='text-[#cccccc]'>APY Médio</p>
             </div>
           </motion.div>
 
           <motion.div
-            className='cyberpunk-border p-0.5 rounded-lg overflow-hidden'
+            className='bg-black/70 border border-[#00F0FF]/20 p-0.5 rounded-lg overflow-hidden hover:shadow-neon'
             whileHover={{ scale: 1.02 }}
             transition={{ type: 'spring', stiffness: 400, damping: 10 }}
           >
-            <div className='card text-center bg-agro-darker/90 backdrop-blur-md p-6 rounded-lg'>
-              <Users className='h-8 w-8 text-agro-purple mx-auto mb-3' />
-              <p className='text-2xl font-bold text-white'>
+            <div className='text-center bg-black/90 backdrop-blur-md p-6 rounded-lg'>
+              <Users className='h-8 w-8 text-[#00F0FF] mx-auto mb-3' />
+              <p className='text-2xl font-orbitron font-bold text-[#ffffff]'>
                 {animatedStats.stakers.toLocaleString()}
               </p>
-              <p className='text-gray-400'>Active Stakers</p>
+              <p className='text-[#cccccc]'>Stakers Ativos</p>
             </div>
           </motion.div>
         </motion.div>
@@ -211,27 +209,27 @@ export default function StakingPage() {
         >
           <button
             onClick={() => setActiveTab('all')}
-            className={`px-4 py-2 rounded-full transition-all ${activeTab === 'all' ? 'bg-agro-blue text-white' : 'bg-agro-dark/50 text-gray-300 hover:bg-agro-dark'}`}
+            className={`px-4 py-2 rounded-full transition-all ${activeTab === 'all' ? 'bg-[#00F0FF] text-black' : 'bg-black/50 text-[#cccccc] hover:bg-black'}`}
           >
-            All Pools
+            Todos os Pools
           </button>
           <button
             onClick={() => setActiveTab('low')}
-            className={`px-4 py-2 rounded-full transition-all ${activeTab === 'low' ? 'bg-green-500 text-white' : 'bg-agro-dark/50 text-gray-300 hover:bg-agro-dark'}`}
+            className={`px-4 py-2 rounded-full transition-all ${activeTab === 'low' ? 'bg-[#00F0FF] text-black' : 'bg-black/50 text-[#cccccc] hover:bg-black'}`}
           >
-            Low Risk
+            Baixo Risco
           </button>
           <button
             onClick={() => setActiveTab('medium')}
-            className={`px-4 py-2 rounded-full transition-all ${activeTab === 'medium' ? 'bg-yellow-500 text-white' : 'bg-agro-dark/50 text-gray-300 hover:bg-agro-dark'}`}
+            className={`px-4 py-2 rounded-full transition-all ${activeTab === 'medium' ? 'bg-[#00F0FF] text-black' : 'bg-black/50 text-[#cccccc] hover:bg-black'}`}
           >
-            Medium Risk
+            Médio Risco
           </button>
           <button
             onClick={() => setActiveTab('high')}
-            className={`px-4 py-2 rounded-full transition-all ${activeTab === 'high' ? 'bg-red-500 text-white' : 'bg-agro-dark/50 text-gray-300 hover:bg-agro-dark'}`}
+            className={`px-4 py-2 rounded-full transition-all ${activeTab === 'high' ? 'bg-[#00F0FF] text-black' : 'bg-black/50 text-[#cccccc] hover:bg-black'}`}
           >
-            High Risk
+            Alto Risco
           </button>
         </motion.div>
 
@@ -247,8 +245,8 @@ export default function StakingPage() {
               onMouseEnter={() => setHoveredPool(pool.id as number)}
               onMouseLeave={() => setHoveredPool(null)}
             >
-              <div className='cyberpunk-border p-0.5 rounded-lg overflow-hidden'>
-                <div className='bg-agro-darker/90 backdrop-blur-md p-6 rounded-lg relative overflow-hidden'>
+              <div className='bg-black/70 border border-[#00F0FF]/20 p-0.5 rounded-lg overflow-hidden hover:shadow-neon'>
+                <div className='bg-black/90 backdrop-blur-md p-6 rounded-lg relative overflow-hidden'>
                   {/* Animated background */}
                   <div
                     className='absolute inset-0 opacity-10 z-0'
@@ -261,88 +259,88 @@ export default function StakingPage() {
                   <div className='flex items-center justify-between mb-4 relative z-10'>
                     <div className='flex items-center space-x-3'>
                       <div
-                        className='w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold neon-box'
+                        className='w-10 h-10 rounded-lg flex items-center justify-center text-black font-bold'
                         style={{
-                          backgroundColor: `${pool.color}50`,
+                          backgroundColor: `${pool.color}`,
                           boxShadow: `0 0 10px ${pool.color}50`,
                         }}
                       >
                         {pool.token.charAt(0)}
                       </div>
                       <div>
-                        <h3 className='text-lg font-semibold text-white'>{pool.name}</h3>
-                        <p className='text-sm text-gray-400'>{pool.token} Token</p>
+                        <h3 className='text-lg font-orbitron font-semibold text-[#ffffff]'>{pool.name}</h3>
+                        <p className='text-sm text-[#cccccc]'>Token {pool.token}</p>
                       </div>
                     </div>
                     <div className='text-right'>
-                      <p className='text-2xl font-bold text-glow' style={{ color: pool.color }}>
+                      <p className='text-2xl font-orbitron font-bold text-[#00F0FF]'>
                         {pool.apy}%
                       </p>
-                      <p className='text-sm text-gray-400'>APY</p>
+                      <p className='text-sm text-[#cccccc]'>APY</p>
                     </div>
                   </div>
 
                   {/* Pool Description */}
-                  <p className='text-gray-300 mb-4 relative z-10'>{pool.description}</p>
+                  <p className='text-[#cccccc] mb-4 relative z-10'>{pool.description}</p>
 
                   {/* Pool Stats */}
                   <div className='grid grid-cols-2 gap-4 mb-6 relative z-10'>
-                    <div className='bg-agro-dark/30 p-3 rounded-lg'>
+                    <div className='bg-black/30 p-3 rounded-lg'>
                       <div className='flex items-center space-x-2'>
-                        <BarChart3 className='h-4 w-4 text-gray-400' />
-                        <p className='text-sm text-gray-400'>Total Staked</p>
+                        <BarChart3 className='h-4 w-4 text-[#00F0FF]' />
+                        <p className='text-sm text-[#cccccc]'>Total Staked</p>
                       </div>
-                      <p className='text-lg font-semibold text-white mt-1'>
-                        ${(pool.totalStaked / 1000).toFixed(0)}K
+                      <p className='text-lg font-orbitron font-semibold text-[#ffffff] mt-1'>
+                        R$ {(pool.totalStaked / 1000).toFixed(0)}K
                       </p>
                     </div>
-                    <div className='bg-agro-dark/30 p-3 rounded-lg'>
+                    <div className='bg-black/30 p-3 rounded-lg'>
                       <div className='flex items-center space-x-2'>
-                        <Users className='h-4 w-4 text-gray-400' />
-                        <p className='text-sm text-gray-400'>Participants</p>
+                        <Users className='h-4 w-4 text-[#00F0FF]' />
+                        <p className='text-sm text-[#cccccc]'>Participantes</p>
                       </div>
-                      <p className='text-lg font-semibold text-white mt-1'>
+                      <p className='text-lg font-orbitron font-semibold text-[#ffffff] mt-1'>
                         {pool.participants.toLocaleString()}
                       </p>
                     </div>
-                    <div className='bg-agro-dark/30 p-3 rounded-lg'>
+                    <div className='bg-black/30 p-3 rounded-lg'>
                       <div className='flex items-center space-x-2'>
-                        <Zap className='h-4 w-4 text-gray-400' />
-                        <p className='text-sm text-gray-400'>Min Stake</p>
+                        <Zap className='h-4 w-4 text-[#00F0FF]' />
+                        <p className='text-sm text-[#cccccc]'>Min Stake</p>
                       </div>
-                      <p className='text-lg font-semibold text-white mt-1'>
+                      <p className='text-lg font-orbitron font-semibold text-[#ffffff] mt-1'>
                         {pool.minStake} {pool.token}
                       </p>
                     </div>
-                    <div className='bg-agro-dark/30 p-3 rounded-lg'>
+                    <div className='bg-black/30 p-3 rounded-lg'>
                       <div className='flex items-center space-x-2'>
-                        <Clock className='h-4 w-4 text-gray-400' />
-                        <p className='text-sm text-gray-400'>Lock Period</p>
+                        <Clock className='h-4 w-4 text-[#00F0FF]' />
+                        <p className='text-sm text-[#cccccc]'>Período de Lock</p>
                       </div>
-                      <p className='text-lg font-semibold text-white mt-1'>{pool.lockPeriod}</p>
+                      <p className='text-lg font-orbitron font-semibold text-[#ffffff] mt-1'>{pool.lockPeriod}</p>
                     </div>
                   </div>
 
                   {/* Risk Level */}
                   <div className='flex items-center justify-between mb-4 relative z-10'>
-                    <span className='text-sm text-gray-400'>Risk Level</span>
+                    <span className='text-sm text-[#cccccc]'>Nível de Risco</span>
                     <div className='flex items-center space-x-1'>
-                      {pool.risk === 'Low' && (
-                        <div className='px-3 py-1 bg-green-500/20 text-green-400 rounded-full flex items-center'>
+                      {pool.risk === 'Baixo' && (
+                        <div className='px-3 py-1 bg-[#00F0FF]/20 text-[#00F0FF] rounded-full flex items-center'>
                           <Shield className='h-4 w-4 mr-1' />
-                          <span className='text-sm font-medium'>Low</span>
+                          <span className='text-sm font-medium'>Baixo</span>
                         </div>
                       )}
-                      {pool.risk === 'Medium' && (
-                        <div className='px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded-full flex items-center'>
+                      {pool.risk === 'Médio' && (
+                        <div className='px-3 py-1 bg-[#00F0FF]/20 text-[#00F0FF] rounded-full flex items-center'>
                           <Star className='h-4 w-4 mr-1' />
-                          <span className='text-sm font-medium'>Medium</span>
+                          <span className='text-sm font-medium'>Médio</span>
                         </div>
                       )}
-                      {pool.risk === 'High' && (
-                        <div className='px-3 py-1 bg-red-500/20 text-red-400 rounded-full flex items-center'>
+                      {pool.risk === 'Alto' && (
+                        <div className='px-3 py-1 bg-[#00F0FF]/20 text-[#00F0FF] rounded-full flex items-center'>
                           <Zap className='h-4 w-4 mr-1' />
-                          <span className='text-sm font-medium'>High</span>
+                          <span className='text-sm font-medium'>Alto</span>
                         </div>
                       )}
                     </div>
@@ -350,7 +348,7 @@ export default function StakingPage() {
 
                   {/* Features */}
                   <div className='mb-6 relative z-10'>
-                    <p className='text-sm text-gray-400 mb-2'>Features</p>
+                    <p className='text-sm text-[#cccccc] mb-2'>Recursos</p>
                     <div className='space-y-1'>
                       {pool.features.map((feature, featureIndex) => (
                         <div key={featureIndex} className='flex items-center space-x-2'>
@@ -358,7 +356,7 @@ export default function StakingPage() {
                             className='w-1.5 h-1.5 rounded-full'
                             style={{ backgroundColor: pool.color }}
                           />
-                          <span className='text-sm text-gray-300'>{feature}</span>
+                          <span className='text-sm text-[#cccccc]'>{feature}</span>
                         </div>
                       ))}
                     </div>
@@ -370,24 +368,14 @@ export default function StakingPage() {
                       setSelectedPool(pool);
                       setShowStakingForm(true);
                     }}
-                    className='w-full group relative overflow-hidden neon-box'
+                    className='w-full group relative overflow-hidden bg-[#00F0FF] text-black px-6 py-3 rounded-xl hover:shadow-neon transition-all'
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    style={{
-                      backgroundColor: `${pool.color}20`,
-                      border: `1px solid ${pool.color}50`,
-                    }}
                   >
-                    <span className='relative z-10 flex items-center justify-center py-3 font-medium text-white'>
-                      Stake Now
+                    <span className='relative z-10 flex items-center justify-center font-medium'>
+                      Fazer Stake Agora
                       <ArrowRight className='ml-2 h-4 w-4' />
                     </span>
-                    <span
-                      className='absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300'
-                      style={{
-                        background: `linear-gradient(90deg, ${pool.color}00, ${pool.color}40, ${pool.color}00)`,
-                      }}
-                    ></span>
                   </motion.button>
                 </div>
               </div>
@@ -435,13 +423,13 @@ export default function StakingPage() {
                 transition={{ type: 'spring', damping: 25, stiffness: 300 }}
                 onClick={(e: React.MouseEvent) => e.stopPropagation()}
               >
-                <div className='cyberpunk-border p-0.5 rounded-lg overflow-hidden'>
-                  <div className='bg-agro-darker p-6 rounded-lg'>
+                <div className='bg-black/70 border border-[#00F0FF]/20 p-0.5 rounded-lg overflow-hidden'>
+                  <div className='bg-black p-6 rounded-lg'>
                     <div className='flex justify-between items-center mb-6'>
-                      <h2 className='text-2xl font-bold text-white'>Stake {selectedPool.token}</h2>
+                      <h2 className='text-2xl font-orbitron font-bold text-[#ffffff]'>Stake {selectedPool.token}</h2>
                       <button
                         onClick={() => setShowStakingForm(false)}
-                        className='text-gray-400 hover:text-white transition-colors'
+                        className='text-[#cccccc] hover:text-[#ffffff] transition-colors'
                       >
                         <svg
                           xmlns='http://www.w3.org/2000/svg'
@@ -461,33 +449,33 @@ export default function StakingPage() {
                     </div>
 
                     {/* Placeholder for StakingForm component */}
-                    <div className='p-4 bg-agro-dark/50 rounded-lg mb-4'>
+                    <div className='p-4 bg-black/50 rounded-lg mb-4'>
                       <div className='flex items-center justify-between mb-4'>
                         <div>
-                          <p className='text-gray-400 text-sm'>Pool</p>
-                          <p className='text-white font-semibold'>{selectedPool.name}</p>
+                          <p className='text-[#cccccc] text-sm'>Pool</p>
+                          <p className='text-[#ffffff] font-orbitron font-semibold'>{selectedPool.name}</p>
                         </div>
                         <div className='text-right'>
-                          <p className='text-gray-400 text-sm'>APY</p>
-                          <p className='text-agro-green font-bold'>{selectedPool.apy}%</p>
+                          <p className='text-[#cccccc] text-sm'>APY</p>
+                          <p className='text-[#00F0FF] font-orbitron font-bold'>{selectedPool.apy}%</p>
                         </div>
                       </div>
 
                       <div className='mb-4'>
-                        <label className='block text-sm font-medium text-gray-300 mb-2'>
-                          Amount to Stake
+                        <label className='block text-sm font-medium text-[#cccccc] mb-2'>
+                          Quantidade para Stake
                         </label>
                         <div className='relative'>
                           <input
                             type='number'
-                            className='w-full p-3 bg-agro-dark border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-agro-blue transition-colors'
+                            className='w-full p-3 bg-black border border-[#00F0FF]/20 rounded-lg text-[#ffffff] placeholder-[#cccccc] focus:outline-none focus:ring-2 focus:ring-[#00F0FF] transition-colors'
                             placeholder='0.00'
                           />
                           <div className='absolute inset-y-0 right-0 flex items-center pr-3'>
-                            <span className='text-gray-400'>{selectedPool.token}</span>
+                            <span className='text-[#cccccc]'>{selectedPool.token}</span>
                           </div>
                         </div>
-                        <p className='mt-1 text-sm text-gray-400'>
+                        <p className='mt-1 text-sm text-[#cccccc]'>
                           Min: {selectedPool.minStake} {selectedPool.token}, Max:{' '}
                           {selectedPool.maxStake} {selectedPool.token}
                         </p>
@@ -495,22 +483,22 @@ export default function StakingPage() {
 
                       <div className='mb-6'>
                         <div className='flex justify-between mb-2'>
-                          <span className='text-sm text-gray-400'>Lock Period</span>
-                          <span className='text-sm text-white'>{selectedPool.lockPeriod}</span>
+                          <span className='text-sm text-[#cccccc]'>Período de Lock</span>
+                          <span className='text-sm text-[#ffffff]'>{selectedPool.lockPeriod}</span>
                         </div>
                         <div className='flex justify-between'>
-                          <span className='text-sm text-gray-400'>Estimated Rewards</span>
-                          <span className='text-sm text-agro-green'>0.00 {selectedPool.token}</span>
+                          <span className='text-sm text-[#cccccc]'>Recompensas Estimadas</span>
+                          <span className='text-sm text-[#00F0FF]'>0.00 {selectedPool.token}</span>
                         </div>
                       </div>
 
-                      <button className='w-full py-3 bg-gradient-to-r from-agro-blue to-agro-green text-white font-medium rounded-lg hover:opacity-90 transition-opacity'>
-                        Stake Now
+                      <button className='w-full py-3 bg-[#00F0FF] text-black font-orbitron font-medium rounded-lg hover:bg-[#00d4e0] transition-all'>
+                        Fazer Stake Agora
                       </button>
                     </div>
 
-                    <p className='text-center text-sm text-gray-400'>
-                      By staking, you agree to the terms and conditions of the {selectedPool.name}.
+                    <p className='text-center text-sm text-[#cccccc]'>
+                      Ao fazer stake, você concorda com os termos e condições do {selectedPool.name}.
                     </p>
                   </div>
                 </div>

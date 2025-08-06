@@ -3,12 +3,10 @@
 import React from 'react';
 import { Card } from '../ui/Card';
 import { motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
 
 export function About() {
-  const { t } = useTranslation('common');
   return (
-    <section id="about" className="py-20 bg-agro-darker relative overflow-hidden">
+    <section id="about" className="py-20 bg-[#000000] relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 z-0 opacity-20">
         <div className="grid-animation"></div>
@@ -20,7 +18,7 @@ export function About() {
       {/* Floating Elements */}
       <div className="absolute inset-0 z-0">
         <motion.div 
-          className="absolute top-1/3 left-1/5 w-32 h-32 rounded-full bg-agro-blue/20 blur-xl"
+          className="absolute top-1/3 left-1/5 w-32 h-32 rounded-full bg-[#00F0FF]/20 blur-xl"
           animate={{ 
             x: [0, 30, 0], 
             y: [0, -30, 0],
@@ -33,7 +31,7 @@ export function About() {
           }}
         />
         <motion.div 
-          className="absolute bottom-1/4 right-1/5 w-40 h-40 rounded-full bg-agro-green/20 blur-xl"
+          className="absolute bottom-1/4 right-1/5 w-40 h-40 rounded-full bg-[#00F0FF]/20 blur-xl"
           animate={{ 
             x: [0, -40, 0], 
             y: [0, 20, 0],
@@ -55,25 +53,25 @@ export function About() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl font-bold text-white mb-6 text-glow">
-              {t('aboutTitle')} <span className="text-agro-green">AGROTM</span>
+            <h2 className="font-orbitron text-4xl md:text-5xl text-[#00F0FF] mb-6 animate-fadeIn">
+              Sobre a <span className="text-[#00F0FF]">AGROTM</span>
             </h2>
-            <p className="text-lg text-gray-400 mb-6">
-              {t('aboutDescription')}
+            <p className="text-lg md:text-xl text-[#cccccc] mb-6">
+              Plataforma revolucionária que conecta agricultores e investidores através da tecnologia blockchain, criando um ecossistema sustentável e transparente.
             </p>
-            <p className="text-lg text-gray-400 mb-6">
-              {t('mission')}
+            <p className="text-lg md:text-xl text-[#cccccc] mb-6">
+              Nossa missão é democratizar o acesso ao agronegócio, permitindo que qualquer pessoa participe do mercado agrícola através de tokens digitais.
             </p>
             <div className="grid grid-cols-2 gap-6">
               <motion.div 
-                className="relative cyberpunk-stat p-4 border border-agro-green/30 rounded-lg"
+                className="relative bg-black/70 border border-[#00F0FF]/30 rounded-lg p-4"
                 whileHover={{ scale: 1.05 }}
                 transition={{ type: "spring", stiffness: 400, damping: 10 }}
               >
-                <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-agro-green"></div>
-                <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-agro-green"></div>
+                <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[#00F0FF]"></div>
+                <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-[#00F0FF]"></div>
                 <motion.h3 
-                  className="text-2xl font-bold text-agro-green mb-2 text-glow-green"
+                  className="text-2xl font-orbitron font-bold text-[#00F0FF] mb-2"
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
@@ -81,17 +79,17 @@ export function About() {
                 >
                   25K+
                 </motion.h3>
-                <p className="text-gray-400">{t('activeUsers')}</p>
+                <p className="text-[#cccccc]">Usuários Ativos</p>
               </motion.div>
               <motion.div 
-                className="relative cyberpunk-stat p-4 border border-agro-blue/30 rounded-lg"
+                className="relative bg-black/70 border border-[#00F0FF]/30 rounded-lg p-4"
                 whileHover={{ scale: 1.05 }}
                 transition={{ type: "spring", stiffness: 400, damping: 10 }}
               >
-                <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-agro-blue"></div>
-                <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-agro-blue"></div>
+                <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[#00F0FF]"></div>
+                <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-[#00F0FF]"></div>
                 <motion.h3 
-                  className="text-2xl font-bold text-agro-blue mb-2 text-glow-blue"
+                  className="text-2xl font-orbitron font-bold text-[#00F0FF] mb-2"
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
@@ -99,125 +97,51 @@ export function About() {
                 >
                   $12.5M
                 </motion.h3>
-                <p className="text-gray-400">{t('totalValueLocked')}</p>
+                <p className="text-[#cccccc]">TVL Total</p>
               </motion.div>
             </div>
           </motion.div>
           
-          <motion.div 
-            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
+            className="relative"
           >
-            <motion.div
-              whileHover={{ y: -5, transition: { duration: 0.2 } }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1, duration: 0.5 }}
-            >
-              <Card className="bg-agro-darker/80 border border-agro-green/20 backdrop-blur-sm overflow-hidden relative group cyberpunk-card">
-                <div className="absolute inset-0 bg-gradient-to-r from-agro-green/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-agro-green to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-                <div className="absolute bottom-0 right-0 w-full h-0.5 bg-gradient-to-r from-agro-green to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-                
-                <div className="text-center relative z-10 p-6">
-                  <motion.div 
-                    className="text-3xl mb-3 inline-block"
-                    whileHover={{ rotate: [0, -10, 10, -10, 0], transition: { duration: 0.5 } }}
-                  >
-                    <span className="text-glow-green">🌱</span>
-                  </motion.div>
-                  <h3 className="text-xl font-bold text-white mb-2">{t('sustainability')}</h3>
-                  <p className="text-gray-400">
-                    {t('sustainabilityDesc')}
-                  </p>
+            <Card className="bg-black/70 border border-[#00F0FF]/20 p-8">
+              <div className="space-y-6">
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-[#00F0FF]/20 rounded-full flex items-center justify-center">
+                    <span className="text-[#00F0FF] text-2xl">🌱</span>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-orbitron font-semibold text-[#00F0FF]">Agricultura Tokenizada</h3>
+                    <p className="text-[#cccccc]">Ativos agrícolas transformados em tokens digitais</p>
+                  </div>
                 </div>
-              </Card>
-            </motion.div>
-            
-            <motion.div
-              whileHover={{ y: -5, transition: { duration: 0.2 } }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-            >
-              <Card className="bg-agro-darker/80 border border-agro-blue/20 backdrop-blur-sm overflow-hidden relative group cyberpunk-card">
-                <div className="absolute inset-0 bg-gradient-to-r from-agro-blue/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-agro-blue to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-                <div className="absolute bottom-0 right-0 w-full h-0.5 bg-gradient-to-r from-agro-blue to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
                 
-                <div className="text-center relative z-10 p-6">
-                  <motion.div 
-                    className="text-3xl mb-3 inline-block"
-                    whileHover={{ rotate: [0, -10, 10, -10, 0], transition: { duration: 0.5 } }}
-                  >
-                    <span className="text-glow-blue">🔒</span>
-                  </motion.div>
-                  <h3 className="text-xl font-bold text-white mb-2">{t('security')}</h3>
-                  <p className="text-gray-400">
-                    {t('securityDesc')}
-                  </p>
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-[#00F0FF]/20 rounded-full flex items-center justify-center">
+                    <span className="text-[#00F0FF] text-2xl">🔒</span>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-orbitron font-semibold text-[#00F0FF]">Segurança Blockchain</h3>
+                    <p className="text-[#cccccc]">Transações seguras e transparentes</p>
+                  </div>
                 </div>
-              </Card>
-            </motion.div>
-            
-            <motion.div
-              whileHover={{ y: -5, transition: { duration: 0.2 } }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-            >
-              <Card className="bg-agro-darker/80 border border-agro-purple/20 backdrop-blur-sm overflow-hidden relative group cyberpunk-card">
-                <div className="absolute inset-0 bg-gradient-to-r from-agro-purple/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-agro-purple to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-                <div className="absolute bottom-0 right-0 w-full h-0.5 bg-gradient-to-r from-agro-purple to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
                 
-                <div className="text-center relative z-10 p-6">
-                  <motion.div 
-                    className="text-3xl mb-3 inline-block"
-                    whileHover={{ rotate: [0, -10, 10, -10, 0], transition: { duration: 0.5 } }}
-                  >
-                    <span className="text-glow-purple">📈</span>
-                  </motion.div>
-                  <h3 className="text-xl font-bold text-white mb-2">{t('growth')}</h3>
-                  <p className="text-gray-400">
-                    {t('growthDesc')}
-                  </p>
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-[#00F0FF]/20 rounded-full flex items-center justify-center">
+                    <span className="text-[#00F0FF] text-2xl">📊</span>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-orbitron font-semibold text-[#00F0FF]">Analytics Avançados</h3>
+                    <p className="text-[#cccccc]">Dados em tempo real e métricas de performance</p>
+                  </div>
                 </div>
-              </Card>
-            </motion.div>
-            
-            <motion.div
-              whileHover={{ y: -5, transition: { duration: 0.2 } }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4, duration: 0.5 }}
-            >
-              <Card className="bg-agro-darker/80 border border-agro-neon/20 backdrop-blur-sm overflow-hidden relative group cyberpunk-card">
-                <div className="absolute inset-0 bg-gradient-to-r from-agro-neon/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-agro-neon to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-                <div className="absolute bottom-0 right-0 w-full h-0.5 bg-gradient-to-r from-agro-neon to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-                
-                <div className="text-center relative z-10 p-6">
-                  <motion.div 
-                    className="text-3xl mb-3 inline-block"
-                    whileHover={{ rotate: [0, -10, 10, -10, 0], transition: { duration: 0.5 } }}
-                  >
-                    <span className="text-glow">🌍</span>
-                  </motion.div>
-                  <h3 className="text-xl font-bold text-white mb-2">{t('impact')}</h3>
-                  <p className="text-gray-400">
-                    {t('impactDesc')}
-                  </p>
-                </div>
-              </Card>
-            </motion.div>
+              </div>
+            </Card>
           </motion.div>
         </div>
       </div>

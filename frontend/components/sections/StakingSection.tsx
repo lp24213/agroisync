@@ -10,7 +10,7 @@ export function StakingSection() {
   const { t } = useTranslation('common');
 
   return (
-    <section className="py-20 bg-black-matte relative overflow-hidden">
+    <section className="py-20 bg-[#000000] relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 z-0 opacity-20">
         <div className="grid-animation"></div>
@@ -27,11 +27,11 @@ export function StakingSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <h2 className="font-orbitron text-4xl md:text-5xl text-neonBlue mb-6 animate-fadeIn">
+            <h2 className="font-orbitron text-4xl md:text-5xl text-[#00F0FF] mb-6 animate-fadeIn">
               Staking & Farming
             </h2>
-            <p className="text-lg md:text-xl text-gray-300 leading-relaxed mb-8">
-              Earn rewards through DeFi staking and yield farming with competitive APY rates.
+            <p className="text-lg md:text-xl text-[#cccccc] leading-relaxed mb-8">
+              Ganhe recompensas através de staking DeFi e yield farming com taxas APY competitivas.
             </p>
             <div className="space-y-4">
               <motion.div 
@@ -40,8 +40,8 @@ export function StakingSection() {
                 transition={{ delay: 0.2, duration: 0.6 }}
                 className="flex items-center space-x-3"
               >
-                <div className="w-3 h-3 bg-neonBlue rounded-full shadow-neon"></div>
-                <span className="text-gray-300 font-orbitron">High Yield Staking</span>
+                <div className="w-3 h-3 bg-[#00F0FF] rounded-full shadow-neon"></div>
+                <span className="text-[#cccccc] font-orbitron">Staking de Alto Rendimento</span>
               </motion.div>
               <motion.div 
                 initial={{ opacity: 0, x: -20 }}
@@ -49,8 +49,8 @@ export function StakingSection() {
                 transition={{ delay: 0.4, duration: 0.6 }}
                 className="flex items-center space-x-3"
               >
-                <div className="w-3 h-3 bg-neonBlue rounded-full shadow-neon"></div>
-                <span className="text-gray-300 font-orbitron">Liquidity Mining</span>
+                <div className="w-3 h-3 bg-[#00F0FF] rounded-full shadow-neon"></div>
+                <span className="text-[#cccccc] font-orbitron">Mining de Liquidez</span>
               </motion.div>
               <motion.div 
                 initial={{ opacity: 0, x: -20 }}
@@ -58,8 +58,8 @@ export function StakingSection() {
                 transition={{ delay: 0.6, duration: 0.6 }}
                 className="flex items-center space-x-3"
               >
-                <div className="w-3 h-3 bg-neonBlue rounded-full shadow-neon"></div>
-                <span className="text-gray-300 font-orbitron">Governance Rights</span>
+                <div className="w-3 h-3 bg-[#00F0FF] rounded-full shadow-neon"></div>
+                <span className="text-[#cccccc] font-orbitron">Direitos de Governança</span>
               </motion.div>
             </div>
           </motion.div>
@@ -77,14 +77,14 @@ export function StakingSection() {
               className="relative"
             >
               <Image 
-                src="/assets/images/staking/staking-farming.png" 
+                src="/assets/staking.png" 
                 alt="AGROTM Staking & Farming" 
                 width={600} 
                 height={400}
                 className="rounded-2xl shadow-neon hover:shadow-neon transition-all duration-500"
                 unoptimized={true}
                 onError={(e) => {
-                  e.currentTarget.src = "/images/placeholder.svg";
+                  e.currentTarget.src = "/assets/staking.png";
                 }}
               />
             </motion.div>

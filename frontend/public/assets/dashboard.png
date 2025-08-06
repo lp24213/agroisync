@@ -1,0 +1,16 @@
+# Dashboard Interativo
+# Design: Interface digital minimalista com tema escuro
+# Cores: Azul/ciano brilhante sobre fundo escuro
+# Elementos:
+# - Título "INTERACTIVE DASHBOARD" em azul brilhante
+# - Painel esquerdo: gráfico de linha ondulante
+# - Painel direito: linhas horizontais (barras de progresso)
+# - Painel meio-esquerdo: mais linhas horizontais
+# - Painel central: hexágono com ícone de escudo e "CMF"
+# - Painel direito: grade de quadrados (calendário/heatmap)
+# - 4 ícones na parte inferior:
+#   * Pilha de moedas com texto "DeFi"
+#   * Planta estilizada crescendo
+#   * Gráfico de barras com seta para cima
+#   * Forma abstrata segmentada (folha geométrica)
+# Formato: PNG com transparência 

@@ -28,7 +28,7 @@ export function SmartFarm({ size = 'md', className = '' }: SmartFarmProps) {
         className="relative w-full h-full"
       >
         <Image
-          src="/assets/images/farm/smart-farm-futuristic.png"
+          src="/assets/farm.png"
           alt="AGROTM Smart Farm"
           width={600}
           height={400}
@@ -38,11 +38,11 @@ export function SmartFarm({ size = 'md', className = '' }: SmartFarmProps) {
         
         {/* Overlay com texto premium */}
         <div className="absolute inset-0 bg-black/40 rounded-2xl flex flex-col justify-center items-center">
-          <h2 className="font-orbitron text-2xl md:text-3xl text-neonBlue mb-2 animate-fadeIn">
+          <h2 className="font-orbitron text-2xl md:text-3xl text-[#00F0FF] mb-2 animate-fadeIn">
             Smart Farm
           </h2>
-          <p className="text-sm md:text-base text-gray-300 leading-relaxed text-center px-4">
-            AI-powered agricultural automation and monitoring
+          <p className="text-sm md:text-base text-[#cccccc] leading-relaxed text-center px-4">
+            Automação agrícola e monitoramento com IA
           </p>
         </div>
       </motion.div>

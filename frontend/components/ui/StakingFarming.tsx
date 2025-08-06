@@ -10,9 +10,9 @@ interface StakingFarmingProps {
 
 export function StakingFarming({ size = 'md', className = '' }: StakingFarmingProps) {
   const sizeClasses = {
-    sm: 'w-32 h-32',
-    md: 'w-48 h-48',
-    lg: 'w-64 h-64',
+    sm: 'w-32 h-24',
+    md: 'w-48 h-36',
+    lg: 'w-64 h-48',
   };
 
   return (
@@ -28,7 +28,7 @@ export function StakingFarming({ size = 'md', className = '' }: StakingFarmingPr
         className="relative w-full h-full"
       >
         <Image
-          src="/assets/images/staking/staking-farming.png"
+          src="/assets/staking.png"
           alt="AGROTM Staking & Farming"
           width={600}
           height={400}
@@ -38,11 +38,11 @@ export function StakingFarming({ size = 'md', className = '' }: StakingFarmingPr
         
         {/* Overlay com texto premium */}
         <div className="absolute inset-0 bg-black/40 rounded-2xl flex flex-col justify-center items-center">
-          <h2 className="font-orbitron text-2xl md:text-3xl text-neonBlue mb-2 animate-fadeIn">
+          <h2 className="font-orbitron text-2xl md:text-3xl text-[#00F0FF] mb-2 animate-fadeIn">
             Staking & Farming
           </h2>
-          <p className="text-sm md:text-base text-gray-300 leading-relaxed text-center px-4">
-            Earn rewards through DeFi staking and yield farming
+          <p className="text-sm md:text-base text-[#cccccc] leading-relaxed text-center px-4">
+            Ganhe recompensas através de DeFi staking e yield farming
           </p>
         </div>
       </motion.div>

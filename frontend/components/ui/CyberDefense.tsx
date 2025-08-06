@@ -28,7 +28,7 @@ export function CyberDefense({ size = 'md', className = '' }: CyberDefenseProps)
         className="relative w-full h-full"
       >
         <Image
-          src="/assets/images/security/cyber-defense.png"
+          src="/assets/security.png"
           alt="AGROTM Cyber Defense"
           width={600}
           height={400}
@@ -38,11 +38,11 @@ export function CyberDefense({ size = 'md', className = '' }: CyberDefenseProps)
         
         {/* Overlay com texto premium */}
         <div className="absolute inset-0 bg-black/40 rounded-2xl flex flex-col justify-center items-center">
-          <h2 className="font-orbitron text-2xl md:text-3xl text-neonBlue mb-2 animate-fadeIn">
+          <h2 className="font-orbitron text-2xl md:text-3xl text-[#00F0FF] mb-2 animate-fadeIn">
             Cyber Defense
           </h2>
-          <p className="text-sm md:text-base text-gray-300 leading-relaxed text-center px-4">
-            Advanced security and blockchain protection
+          <p className="text-sm md:text-base text-[#cccccc] leading-relaxed text-center px-4">
+            Segurança avançada e proteção blockchain
           </p>
         </div>
       </motion.div>
