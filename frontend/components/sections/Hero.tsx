@@ -5,7 +5,7 @@ import { ArrowRight, TrendingUp, Shield, Coins } from "lucide-react";
 import { PremiumFarmerIcon } from "../ui/PremiumFarmerIcon";
 import { Logo } from "../ui/Logo";
 import Link from "next/link";
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'react-i18next';
 
 export function Hero() {
   const { t } = useTranslation('common');

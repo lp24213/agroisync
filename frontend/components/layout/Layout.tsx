@@ -10,9 +10,9 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white relative">
       <Header />
-      <main className="pt-16">
+      <main className="pt-16 relative z-10">
         {children}
       </main>
       <Footer />

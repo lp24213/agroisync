@@ -29,6 +29,7 @@
     "hardhat": "2.26.1",
     "html2canvas": "1.4.1",
     "i18next": "25.3.2",
+    "i18next-resources-to-backend": "1.2.1",
     "ioredis": "5.7.0",
     "jspdf": "2.5.2",
     "lucide-react": "0.344.0",
