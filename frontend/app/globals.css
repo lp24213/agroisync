@@ -126,7 +126,7 @@
 }
 
 @layer components {
-  /* Botão Principal - Azul Neon Degradê Premium */
+  /* Botão Principal - Azul Metálico Degradê Premium */
   .btn-primary {
     background: linear-gradient(135deg, #00F0FF 0%, #00ccff 50%, #00F0FF 100%);
     color: #000000;
