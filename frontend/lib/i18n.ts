@@ -5,7 +5,8 @@ import { initReactI18next } from 'react-i18next';
 export const supportedLanguages = [
   { code: 'pt', name: 'Português', flag: '🇧🇷', nativeName: 'Português Brasil' },
   { code: 'en', name: 'English', flag: '🇬🇧', nativeName: 'English' },
-  { code: 'es', name: 'Español', flag: '🇪🇸', nativeName: 'Español' }
+  { code: 'es', name: 'Español', flag: '🇪🇸', nativeName: 'Español' },
+  { code: 'zh', name: '中文', flag: '🇨🇳', nativeName: '中文' }
 ];
 
 // Language detection
@@ -43,6 +44,12 @@ i18n
           heroTitle: "Revolucione a Agricultura com Tecnologia Blockchain",
           heroSubtitle: "AGROTM oferece soluções DeFi inovadoras para o agronegócio global",
           startNow: "Começar Agora",
+          stakingPremium: "Staking Premium",
+          advancedSecurity: "Segurança Avançada",
+          agriculturalNFTs: "NFTs Agrícolas",
+          smartContracts: "Contratos Inteligentes",
+          yieldFarming: "Yield Farming",
+          liquidityPools: "Pools de Liquidez",
           
           // Features Section
           whyChooseAGROTM: "Por que escolher a",
@@ -51,7 +58,6 @@ i18n
           sustainableAgricultureDesc: "Tecnologia blockchain para rastreamento completo da cadeia agrícola, garantindo transparência e sustentabilidade.",
           defiStaking: "DeFi & Staking",
           defiStakingDesc: "Stake seus tokens AGROTM e ganhe recompensas enquanto apoia projetos agrícolas sustentáveis.",
-          agriculturalNFTs: "NFTs Agrícolas",
           agriculturalNFTsDesc: "Tokenize propriedades rurais e ativos agrícolas como NFTs únicos e valiosos.",
           advancedAnalytics: "Analytics Avançados",
           advancedAnalyticsDesc: "Dashboard completo com métricas em tempo real sobre performance agrícola e retornos DeFi.",
@@ -90,6 +96,11 @@ i18n
           phone: "Telefone",
           address: "Endereço",
           sendMessage: "Enviar Mensagem",
+          chat: "Chat",
+          liveChat: "Chat ao vivo",
+          instantResponse: "Resposta instantânea",
+          support247: "Suporte 24/7",
+          businessHours: "Seg-Sex 9h-18h",
           
           // Footer
           quickLinks: "Links Rápidos",
@@ -160,6 +171,12 @@ i18n
           heroTitle: "Revolutionize Agriculture with Blockchain Technology",
           heroSubtitle: "AGROTM offers innovative DeFi solutions for global agribusiness",
           startNow: "Start Now",
+          stakingPremium: "Premium Staking",
+          advancedSecurity: "Advanced Security",
+          agriculturalNFTs: "Agricultural NFTs",
+          smartContracts: "Smart Contracts",
+          yieldFarming: "Yield Farming",
+          liquidityPools: "Liquidity Pools",
           
           // Features Section
           whyChooseAGROTM: "Why choose",
@@ -168,7 +185,6 @@ i18n
           sustainableAgricultureDesc: "Blockchain technology for complete agricultural chain tracking, ensuring transparency and sustainability.",
           defiStaking: "DeFi & Staking",
           defiStakingDesc: "Stake your AGROTM tokens and earn rewards while supporting sustainable agricultural projects.",
-          agriculturalNFTs: "Agricultural NFTs",
           agriculturalNFTsDesc: "Tokenize rural properties and agricultural assets as unique and valuable NFTs.",
           advancedAnalytics: "Advanced Analytics",
           advancedAnalyticsDesc: "Complete dashboard with real-time metrics on agricultural performance and DeFi returns.",
@@ -207,6 +223,11 @@ i18n
           phone: "Phone",
           address: "Address",
           sendMessage: "Send Message",
+          chat: "Chat",
+          liveChat: "Live Chat",
+          instantResponse: "Instant Response",
+          support247: "24/7 Support",
+          businessHours: "Mon-Fri 9AM-6PM",
           
           // Footer
           quickLinks: "Quick Links",
@@ -277,6 +298,12 @@ i18n
           heroTitle: "Revoluciona la Agricultura con Tecnología Blockchain",
           heroSubtitle: "AGROTM ofrece soluciones DeFi innovadoras para el agronegocio global",
           startNow: "Comenzar Ahora",
+          stakingPremium: "Staking Premium",
+          advancedSecurity: "Seguridad Avanzada",
+          agriculturalNFTs: "NFTs Agrícolas",
+          smartContracts: "Contratos Inteligentes",
+          yieldFarming: "Yield Farming",
+          liquidityPools: "Pools de Liquidez",
           
           // Features Section
           whyChooseAGROTM: "¿Por qué elegir",
@@ -285,7 +312,6 @@ i18n
           sustainableAgricultureDesc: "Tecnología blockchain para el seguimiento completo de la cadena agrícola, garantizando transparencia y sostenibilidad.",
           defiStaking: "DeFi & Staking",
           defiStakingDesc: "Haz staking de tus tokens AGROTM y gana recompensas mientras apoyas proyectos agrícolas sostenibles.",
-          agriculturalNFTs: "NFTs Agrícolas",
           agriculturalNFTsDesc: "Tokeniza propiedades rurales y activos agrícolas como NFTs únicos y valiosos.",
           advancedAnalytics: "Analytics Avanzados",
           advancedAnalyticsDesc: "Dashboard completo con métricas en tiempo real sobre rendimiento agrícola y retornos DeFi.",
@@ -320,10 +346,15 @@ i18n
           // Contact Section
           contactTitle: "Ponte en Contacto",
           contactSubtitle: "¿Listo para revolucionar tu negocio agrícola?",
-          email: "Correo",
+          email: "Correo electrónico",
           phone: "Teléfono",
           address: "Dirección",
           sendMessage: "Enviar Mensaje",
+          chat: "Chat",
+          liveChat: "Chat en vivo",
+          instantResponse: "Respuesta instantánea",
+          support247: "Soporte 24/7",
+          businessHours: "Lun-Vie 9h-18h",
           
           // Footer
           quickLinks: "Enlaces Rápidos",
@@ -359,7 +390,7 @@ i18n
           edit: "Editar",
           view: "Ver",
           close: "Cerrar",
-          back: "Atrás",
+          back: "Volver",
           next: "Siguiente",
           previous: "Anterior",
           submit: "Enviar",
@@ -376,6 +407,133 @@ i18n
           cut: "Cortar",
           undo: "Deshacer",
           redo: "Rehacer"
+        }
+      },
+      zh: {
+        translation: {
+          // Navigation
+          home: "首页",
+          about: "关于",
+          contact: "联系",
+          dashboard: "仪表板",
+          staking: "质押",
+          documentation: "文档",
+          getStarted: "开始使用",
+          
+          // Hero Section
+          welcome: "欢迎来到AGROTM",
+          heroTitle: "用区块链技术革新农业",
+          heroSubtitle: "AGROTM为全球农业企业提供创新的DeFi解决方案",
+          startNow: "立即开始",
+          stakingPremium: "高级质押",
+          advancedSecurity: "高级安全",
+          agriculturalNFTs: "农业NFT",
+          smartContracts: "智能合约",
+          yieldFarming: "收益农场",
+          liquidityPools: "流动性池",
+          
+          // Features Section
+          whyChooseAGROTM: "为什么选择",
+          platformDescription: "我们的平台将DeFi创新与农业可持续性相结合，提供独特的投资机会。",
+          sustainableAgriculture: "可持续农业",
+          sustainableAgricultureDesc: "区块链技术用于完整的农业链跟踪，确保透明度和可持续性。",
+          defiStaking: "DeFi & 质押",
+          defiStakingDesc: "质押您的AGROTM代币并获得奖励，同时支持可持续农业项目。",
+          agriculturalNFTsDesc: "将农村财产和农业资产代币化为独特且有价值的NFT。",
+          advancedAnalytics: "高级分析",
+          advancedAnalyticsDesc: "完整的仪表板，提供农业表现和DeFi回报的实时指标。",
+          integratedWallet: "集成钱包",
+          integratedWalletDesc: "安全的集成数字钱包，用于管理您的AGROTM资产和NFT。",
+          daoGovernance: "DAO治理",
+          daoGovernanceDesc: "通过AGROTM代币的分散投票参与平台决策。",
+          
+          // About Section
+          aboutTitle: "关于AGROTM",
+          aboutDescription: "我们正在通过区块链技术和DeFi解决方案革新农业部门",
+          mission: "我们的使命",
+          vision: "我们的愿景",
+          values: "我们的价值观",
+          activeUsers: "活跃用户",
+          totalValueLocked: "总锁定价值",
+          sustainability: "可持续性",
+          sustainabilityDesc: "我们支持促进可持续实践的农业项目",
+          security: "安全性",
+          securityDesc: "区块链上的所有交易都是安全和透明的",
+          growth: "增长",
+          growthDesc: "为投资者提供有吸引力的回报机会",
+          impact: "影响",
+          impactDesc: "我们为更可持续和公平的未来做出贡献",
+          
+          // Stats Section
+          impressiveNumbers: "令人印象深刻的数字",
+          ourPlatformInNumbers: "我们平台的数字",
+          averageAPR: "平均年化收益率",
+          totalTransactions: "总交易量",
+          
+          // Contact Section
+          contactTitle: "联系我们",
+          contactSubtitle: "准备革新您的农业业务了吗？",
+          email: "邮箱",
+          phone: "电话",
+          address: "地址",
+          sendMessage: "发送消息",
+          chat: "聊天",
+          liveChat: "在线聊天",
+          instantResponse: "即时回复",
+          support247: "24/7支持",
+          businessHours: "周一至周五 9:00-18:00",
+          
+          // Footer
+          quickLinks: "快速链接",
+          resources: "资源",
+          support: "支持",
+          privacyPolicy: "隐私政策",
+          termsOfService: "服务条款",
+          cookiePolicy: "Cookie政策",
+          allRightsReserved: "版权所有",
+          
+          // Transaction Types
+          stake: "质押",
+          unstake: "解质押",
+          claim: "领取",
+          transfer: "转账",
+          
+          // Transaction Status
+          confirmed: "已确认",
+          pending: "待处理",
+          failed: "失败",
+          
+          // Dashboard
+          recentTransactions: "最近交易",
+          noTransactionsFound: "未找到交易",
+          
+          // Common
+          loading: "加载中...",
+          error: "错误",
+          success: "成功",
+          cancel: "取消",
+          save: "保存",
+          delete: "删除",
+          edit: "编辑",
+          view: "查看",
+          close: "关闭",
+          back: "返回",
+          next: "下一步",
+          previous: "上一步",
+          submit: "提交",
+          reset: "重置",
+          search: "搜索",
+          filter: "筛选",
+          sort: "排序",
+          refresh: "刷新",
+          download: "下载",
+          upload: "上传",
+          share: "分享",
+          copy: "复制",
+          paste: "粘贴",
+          cut: "剪切",
+          undo: "撤销",
+          redo: "重做"
         }
       }
     },

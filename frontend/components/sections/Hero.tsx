@@ -65,7 +65,7 @@ export function Hero() {
                 <TrendingUp className="text-green-400" size={32} />
               </div>
               <h3 className="text-xl font-semibold text-white mb-2">{t('stakingPremium')}</h3>
-              <p className="text-gray-400">{t('stakingPremium')} - Earn rewards by staking your AGROTM tokens with enhanced security</p>
+              <p className="text-gray-400">{t('stakingPremium')} - {t('defiStakingDesc')}</p>
             </motion.div>
 
             <motion.div
@@ -78,7 +78,7 @@ export function Hero() {
                 <Shield className="text-green-400" size={32} />
               </div>
               <h3 className="text-xl font-semibold text-white mb-2">{t('advancedSecurity')}</h3>
-              <p className="text-gray-400">Audited smart contracts with advanced security protocols</p>
+              <p className="text-gray-400">{t('securityDesc')}</p>
             </motion.div>
 
             <motion.div
@@ -91,7 +91,7 @@ export function Hero() {
                 <Coins className="text-green-400" size={32} />
               </div>
               <h3 className="text-xl font-semibold text-white mb-2">{t('agriculturalNFTs')}</h3>
-              <p className="text-gray-400">Mint and trade agricultural NFTs with real-world value</p>
+              <p className="text-gray-400">{t('agriculturalNFTsDesc')}</p>
             </motion.div>
           </div>
         </motion.div>
