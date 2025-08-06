@@ -39,6 +39,37 @@ export const validation = {
   
   maxLength: (value: string, max: number): boolean => {
     return value.length <= max;
+  },
+  
+  formatNumber: (value: number, locale: string = 'pt-BR'): string => {
+    if (isNaN(value)) return '0';
+    
+    // Para valores grandes, usar abreviações
+    if (value >= 1e9) {
+      return new Intl.NumberFormat(locale, { 
+        maximumFractionDigits: 2,
+        notation: 'compact',
+        compactDisplay: 'short'
+      }).format(value);
+    } else if (value >= 1e6) {
+      return new Intl.NumberFormat(locale, { 
+        maximumFractionDigits: 2,
+        notation: 'compact',
+        compactDisplay: 'short'
+      }).format(value);
+    } else if (value >= 1e3) {
+      return new Intl.NumberFormat(locale, { 
+        maximumFractionDigits: 2,
+        notation: 'compact',
+        compactDisplay: 'short'
+      }).format(value);
+    }
+    
+    // Para valores normais, usar formatação padrão
+    return new Intl.NumberFormat(locale, { 
+      maximumFractionDigits: 2,
+      minimumFractionDigits: 0
+    }).format(value);
   }
 };
 

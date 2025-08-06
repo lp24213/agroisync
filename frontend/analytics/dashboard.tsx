@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/Badge';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { Chart } from '@/components/analytics/Chart';
 import { MetricsCard } from '@/components/analytics/MetricsCard';
-import { formatCurrency, formatPercentage, formatNumber } from '@/utils/format';
+import { formatCurrency, formatPercentage, formatNumber } from '../utils/format';
 import { cn } from '@/lib/utils';
 
 /**
