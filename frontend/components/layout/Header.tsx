@@ -5,16 +5,14 @@ import { Button } from '../ui/Button';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from '../ui/Logo';
-import { useLanguage } from '../../contexts/LanguageContext';
 import { useTranslation } from 'react-i18next';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = React.useState(false);
-  const { t } = useTranslation();
-  const { currentLanguage, changeLanguage, supportedLanguages } = useLanguage();
+  const { t, i18n } = useTranslation();
   
-  // Force deploy - Header component updated with fixed language dropdown
+  // ULTRA SIMPLE FIX - NO CONTEXT DEPENDENCY
   
   // Animation variants
   const navItemVariants = {
@@ -63,18 +61,35 @@ export function Header() {
 
   const handleLanguageChange = (lang: 'en' | 'pt' | 'es' | 'zh') => {
     console.log('Changing language to:', lang);
-    changeLanguage(lang);
+    i18n.changeLanguage(lang);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('preferred-language', lang);
+    }
     setIsLanguageMenuOpen(false);
   };
 
+  const getCurrentLanguage = () => {
+    return i18n.language || 'pt';
+  };
+
   const getLanguageFlag = (lang: 'en' | 'pt' | 'es' | 'zh') => {
-    const language = supportedLanguages.find(l => l.code === lang);
-    return language ? language.flag : '🇧🇷';
+    const flags = {
+      'pt': '🇧🇷',
+      'en': '🇬🇧',
+      'es': '🇪🇸',
+      'zh': '🇨🇳'
+    };
+    return flags[lang] || '🇧🇷';
   };
 
   const getLanguageName = (lang: 'en' | 'pt' | 'es' | 'zh') => {
-    const language = supportedLanguages.find(l => l.code === lang);
-    return language ? language.name : 'PT';
+    const names = {
+      'pt': 'PT',
+      'en': 'EN',
+      'es': 'ES',
+      'zh': 'ZH'
+    };
+    return names[lang] || 'PT';
   };
 
   // Close language menu when clicking outside
@@ -92,12 +107,7 @@ export function Header() {
     };
   }, []);
 
-  // Debug: Log current state
-  React.useEffect(() => {
-    console.log('Current language:', currentLanguage);
-    console.log('Supported languages:', supportedLanguages);
-    console.log('Language menu open:', isLanguageMenuOpen);
-  }, [currentLanguage, supportedLanguages, isLanguageMenuOpen]);
+  const currentLanguage = getCurrentLanguage();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b border-blue-500/30 overflow-hidden">
@@ -205,7 +215,7 @@ export function Header() {
               </Link>
             </motion.div>
 
-            {/* Language Selector Desktop - SIMPLE FIX */}
+            {/* Language Selector Desktop - ULTRA SIMPLE FIX */}
             <motion.div
               initial="hidden"
               animate="visible"
@@ -222,10 +232,10 @@ export function Header() {
                 whileTap={{ scale: 0.95 }}
               >
                 <span className="text-lg">
-                  {getLanguageFlag(currentLanguage)}
+                  {getLanguageFlag(currentLanguage as 'en' | 'pt' | 'es' | 'zh')}
                 </span>
                 <span className="text-sm font-medium">
-                  {getLanguageName(currentLanguage)}
+                  {getLanguageName(currentLanguage as 'en' | 'pt' | 'es' | 'zh')}
                 </span>
                 <motion.svg
                   className="w-4 h-4 transition-transform"
@@ -248,7 +258,7 @@ export function Header() {
                     exit="exit"
                   >
                     <div className="p-2 space-y-1">
-                      {/* SIMPLE HARDCODED LANGUAGES - GUARANTEED TO WORK */}
+                      {/* ULTRA SIMPLE HARDCODED LANGUAGES */}
                       <motion.button
                         onClick={() => handleLanguageChange('pt')}
                         className={`w-full flex items-center space-x-3 px-3 py-2 text-left rounded-md transition-colors duration-200 ${
