@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, Users, Zap, ArrowRight, Star, Shield, Clock, BarChart3 } from 'lucide-react';
+import { Layout } from '../../components/layout/Layout';
 
 const stakingPools = [
   {
@@ -104,7 +105,8 @@ export default function StakingPage() {
         });
 
   return (
-    <div className='min-h-screen bg-agro-darker overflow-hidden relative'>
+    <Layout>
+      <div className='min-h-screen bg-agro-darker overflow-hidden relative'>
       {/* Background grid animation */}
       <div className='absolute inset-0 z-0 opacity-10'>
         <div className='grid-animation'></div>
@@ -518,5 +520,6 @@ export default function StakingPage() {
         </AnimatePresence>
       </div>
     </div>
+    </Layout>
   );
 }
