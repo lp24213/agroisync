@@ -36,33 +36,6 @@ export default function AboutPage() {
     }
   ];
 
-  const team = [
-    {
-      name: 'Dr. Carlos Silva',
-      role: 'CEO & Fundador',
-      description: 'Especialista em agronegócio com mais de 15 anos de experiência em tecnologia e inovação.',
-      image: '/assets/images/team/ceo.jpg'
-    },
-    {
-      name: 'Maria Santos',
-      role: 'CTO',
-      description: 'Líder em desenvolvimento de tecnologias avançadas para o setor agrícola.',
-      image: '/assets/images/team/cto.jpg'
-    },
-    {
-      name: 'João Oliveira',
-      role: 'Diretor de Operações',
-      description: 'Especialista em operações e logística com foco em eficiência e qualidade.',
-      image: '/assets/images/team/operations.jpg'
-    },
-    {
-      name: 'Ana Costa',
-      role: 'Diretora de Marketing',
-      description: 'Estratégica de marketing digital com expertise em crescimento de startups.',
-      image: '/assets/images/team/marketing.jpg'
-    }
-  ];
-
   const impact = [
     {
       icon: TrendingUp,
@@ -111,7 +84,7 @@ export default function AboutPage() {
               className="text-center"
             >
               <h1 className="text-5xl md:text-7xl font-orbitron font-bold gradient-text mb-6">
-                Sobre a <span className="text-[#00FF7F]">AGROTM</span>
+                Sobre a <span className="text-[#00FF7F]">AGROTM SOL</span>
               </h1>
               <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed font-orbitron">
                 Revolucionando o agronegócio através da tecnologia avançada e inovação sustentável
@@ -120,7 +93,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Nossa Missão */}
+        {/* Sobre Nós */}
         <section className="py-20 relative z-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -131,33 +104,30 @@ export default function AboutPage() {
                 transition={{ duration: 0.8 }}
               >
                 <h2 className="text-4xl md:text-5xl font-orbitron font-bold gradient-text mb-8">
-                  Nossa <span className="text-[#00FF7F]">Missão</span>
+                  Sobre <span className="text-[#00FF7F]">Nós</span>
                 </h2>
                 <p className="text-lg text-gray-300 leading-relaxed mb-6">
-                  A AGROTM é uma empresa de tecnologia especializada em soluções digitais para o agronegócio. 
-                  Nossa missão é modernizar e democratizar o acesso ao mercado agrícola através de tecnologia 
-                  avançada e inovação sustentável.
+                  A AGROTM SOL é uma plataforma pertencente à startup AGROTM, uma empresa inovadora voltada à intermediação de produtos do agronegócio, conectando produtores, investidores e compradores através de tecnologia avançada, com segurança e eficiência.
                 </p>
                 <p className="text-lg text-gray-300 leading-relaxed mb-8">
-                  Conectamos produtores, compradores e investidores em uma plataforma segura e transparente, 
-                  criando um ecossistema financeiro inovador que impulsiona o crescimento do setor agrícola.
+                  Nossa missão é modernizar e democratizar o acesso ao mercado agrícola através de tecnologia avançada e inovação sustentável, criando um ecossistema financeiro inovador que impulsiona o crescimento do setor agrícola.
                 </p>
                 <div className="space-y-4">
                   <div className="flex items-center space-x-4">
                     <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
-                    <span className="text-gray-300 font-orbitron">Transparência total nas operações</span>
+                    <span className="text-gray-300 font-orbitron">Tecnologia avançada</span>
                   </div>
                   <div className="flex items-center space-x-4">
                     <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
-                    <span className="text-gray-300 font-orbitron">Inovação tecnológica constante</span>
+                    <span className="text-gray-300 font-orbitron">Segurança e eficiência</span>
                   </div>
                   <div className="flex items-center space-x-4">
                     <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
-                    <span className="text-gray-300 font-orbitron">Sustentabilidade ambiental</span>
+                    <span className="text-gray-300 font-orbitron">Inovação sustentável</span>
                   </div>
                   <div className="flex items-center space-x-4">
                     <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
-                    <span className="text-gray-300 font-orbitron">Crescimento inclusivo</span>
+                    <span className="text-gray-300 font-orbitron">Conexão global</span>
                   </div>
                 </div>
               </motion.div>
@@ -171,8 +141,8 @@ export default function AboutPage() {
               >
                 <div className="relative">
                   <Image 
-                    src="/assets/images/about/mission.jpg" 
-                    alt="Nossa Missão" 
+                    src="/assets/images/about/agrotm-platform.jpg" 
+                    alt="AGROTM SOL Platform" 
                     width={500} 
                     height={400}
                     className="rounded-3xl shadow-neon-green"
@@ -186,84 +156,8 @@ export default function AboutPage() {
                   <div className="hidden w-[500px] h-[400px] bg-gradient-to-br from-[#00FF7F]/20 to-[#000000] border-2 border-[#00FF7F]/30 rounded-3xl flex items-center justify-center shadow-neon-green">
                     <div className="text-center">
                       <Target className="text-[#00FF7F] mx-auto mb-4" size={64} />
-                      <div className="text-[#00FF7F] font-orbitron text-2xl">Nossa Missão</div>
-                      <div className="text-gray-300 text-lg">Inovação e Sustentabilidade</div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-
-        {/* Nossa Visão */}
-        <section className="py-20 relative z-10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-              <motion.div
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-                className="lg:order-2"
-              >
-                <h2 className="text-4xl md:text-5xl font-orbitron font-bold gradient-text mb-8">
-                  Nossa <span className="text-[#00FF7F]">Visão</span>
-                </h2>
-                <p className="text-lg text-gray-300 leading-relaxed mb-6">
-                  Ser a plataforma líder global em soluções digitais para o agronegócio, conectando milhões 
-                  de produtores e investidores em um ecossistema inovador e sustentável.
-                </p>
-                <p className="text-lg text-gray-300 leading-relaxed mb-8">
-                  Vislumbramos um futuro onde a tecnologia democratiza o acesso ao mercado agrícola, 
-                  criando oportunidades iguais para todos os participantes da cadeia produtiva.
-                </p>
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
-                    <span className="text-gray-300 font-orbitron">Liderança global no setor</span>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
-                    <span className="text-gray-300 font-orbitron">Tecnologia de ponta</span>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
-                    <span className="text-gray-300 font-orbitron">Impacto social positivo</span>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="w-4 h-4 bg-[#00FF7F] rounded-full shadow-neon-green"></div>
-                    <span className="text-gray-300 font-orbitron">Sustentabilidade ambiental</span>
-                  </div>
-                </div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-                className="lg:order-1 flex justify-center"
-              >
-                <div className="relative">
-                  <Image 
-                    src="/assets/images/about/vision.jpg" 
-                    alt="Nossa Visão" 
-                    width={500} 
-                    height={400}
-                    className="rounded-3xl shadow-neon-green"
-                    unoptimized={true}
-                    onError={(e) => {
-                      const target = e.currentTarget;
-                      target.style.display = 'none';
-                      target.nextElementSibling?.classList.remove('hidden');
-                    }}
-                  />
-                  <div className="hidden w-[500px] h-[400px] bg-gradient-to-br from-[#00FF7F]/20 to-[#000000] border-2 border-[#00FF7F]/30 rounded-3xl flex items-center justify-center shadow-neon-green">
-                    <div className="text-center">
-                      <Eye className="text-[#00FF7F] mx-auto mb-4" size={64} />
-                      <div className="text-[#00FF7F] font-orbitron text-2xl">Nossa Visão</div>
-                      <div className="text-gray-300 text-lg">Futuro Sustentável</div>
+                      <div className="text-[#00FF7F] font-orbitron text-2xl">AGROTM SOL</div>
+                      <div className="text-gray-300 text-lg">Plataforma de Intermediação</div>
                     </div>
                   </div>
                 </div>
@@ -303,62 +197,6 @@ export default function AboutPage() {
                     <value.icon className={`w-16 h-16 mx-auto mb-6 ${value.color}`} />
                     <h3 className="text-2xl font-orbitron font-bold text-[#00FF7F] mb-4">{value.title}</h3>
                     <p className="text-gray-300 leading-relaxed">{value.description}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Equipe AGROTM */}
-        <section className="py-20 relative z-10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="text-center mb-16"
-            >
-              <h2 className="text-4xl md:text-5xl font-orbitron font-bold gradient-text mb-4">
-                Equipe <span className="text-[#00FF7F]">AGROTM</span>
-              </h2>
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto font-orbitron">
-                Conheça os profissionais que estão revolucionando o agronegócio
-              </p>
-            </motion.div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {team.map((member, index) => (
-                <motion.div
-                  key={member.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1, duration: 0.5 }}
-                >
-                  <div className="cyberpunk-card text-center p-6 backdrop-blur-sm">
-                    <div className="relative w-32 h-32 mx-auto mb-6">
-                      <Image 
-                        src={member.image} 
-                        alt={member.name} 
-                        width={128} 
-                        height={128}
-                        className="rounded-full object-cover"
-                        unoptimized={true}
-                        onError={(e) => {
-                          const target = e.currentTarget;
-                          target.style.display = 'none';
-                          target.nextElementSibling?.classList.remove('hidden');
-                        }}
-                      />
-                      <div className="hidden w-32 h-32 bg-gradient-to-br from-[#00FF7F]/20 to-[#000000] border-2 border-[#00FF7F]/30 rounded-full flex items-center justify-center shadow-neon-green">
-                        <Users className="text-[#00FF7F]" size={48} />
-                      </div>
-                    </div>
-                    <h3 className="text-xl font-orbitron font-bold text-[#00FF7F] mb-2">{member.name}</h3>
-                    <p className="text-gray-400 font-orbitron mb-3">{member.role}</p>
-                    <p className="text-gray-300 text-sm leading-relaxed">{member.description}</p>
                   </div>
                 </motion.div>
               ))}
