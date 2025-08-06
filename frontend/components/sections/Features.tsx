@@ -96,7 +96,7 @@ export function Features() {
           transition={{ duration: 0.8 }}
         >
           <h2 className="text-4xl font-bold text-white mb-4 text-glow">
-            {t('whyChooseAGROTM')} <span className="text-agro-green">AGROTM</span>?
+            {t('whyChooseAGROTM')} <span className="text-agro-blue">AGROTM</span>?
           </h2>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
             {t('platformDescription')}

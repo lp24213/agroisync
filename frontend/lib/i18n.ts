@@ -45,7 +45,7 @@ i18n
           startNow: "Começar Agora",
           
           // Features Section
-          whyChooseAGROTM: "Por que escolher a AGROTM?",
+          whyChooseAGROTM: "Por que escolher a",
           platformDescription: "Nossa plataforma combina inovação DeFi com sustentabilidade agrícola, oferecendo oportunidades únicas de investimento.",
           sustainableAgriculture: "Agricultura Sustentável",
           sustainableAgricultureDesc: "Tecnologia blockchain para rastreamento completo da cadeia agrícola, garantindo transparência e sustentabilidade.",
@@ -162,7 +162,7 @@ i18n
           startNow: "Start Now",
           
           // Features Section
-          whyChooseAGROTM: "Why choose AGROTM?",
+          whyChooseAGROTM: "Why choose",
           platformDescription: "Our platform combines DeFi innovation with agricultural sustainability, offering unique investment opportunities.",
           sustainableAgriculture: "Sustainable Agriculture",
           sustainableAgricultureDesc: "Blockchain technology for complete agricultural chain tracking, ensuring transparency and sustainability.",
@@ -279,7 +279,7 @@ i18n
           startNow: "Comenzar Ahora",
           
           // Features Section
-          whyChooseAGROTM: "¿Por qué elegir AGROTM?",
+          whyChooseAGROTM: "¿Por qué elegir",
           platformDescription: "Nuestra plataforma combina innovación DeFi con sostenibilidad agrícola, ofreciendo oportunidades únicas de inversión.",
           sustainableAgriculture: "Agricultura Sostenible",
           sustainableAgricultureDesc: "Tecnología blockchain para el seguimiento completo de la cadena agrícola, garantizando transparencia y sostenibilidad.",
