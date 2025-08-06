@@ -14,14 +14,14 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    font-size: 12px; /* Reduzido para proporção elegante */
+    font-size: 12px; /* Proporção equilibrada */
   }
   
   body {
-    background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%, #000000 100%);
     color: #00F0FF;
     font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-size: 0.75rem; /* Reduzido para proporção elegante */
+    font-size: 0.75rem; /* Proporção equilibrada */
   }
 
   /* Headings com fonte premium */
@@ -38,17 +38,17 @@
     font-weight: 700;
     letter-spacing: -0.02em;
     color: #00F0FF;
-    font-size: 2rem; /* Reduzido para proporção elegante */
+    font-size: 2.2rem; /* Levemente maior para destaque */
     text-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
   }
 
   h2 {
-    font-size: 1.6rem; /* Reduzido para proporção elegante */
+    font-size: 1.4rem; /* Reduzido para proporção equilibrada */
     text-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
   }
 
   h3 {
-    font-size: 1.2rem; /* Reduzido para proporção elegante */
+    font-size: 1.1rem; /* Proporção equilibrada */
     text-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
   }
 
@@ -77,7 +77,7 @@
     font-weight: 400;
     line-height: 1.6;
     color: #00F0FF;
-    font-size: 0.75rem; /* Reduzido para proporção elegante */
+    font-size: 0.75rem; /* Proporção equilibrada */
   }
 
   /* Texto de interface */
@@ -96,7 +96,7 @@
   /* Parágrafos */
   p {
     color: #00F0FF;
-    font-size: 0.75rem; /* Reduzido para proporção elegante */
+    font-size: 0.75rem; /* Proporção equilibrada */
     text-shadow: 0 0 3px rgba(0, 240, 255, 0.2);
   }
 
@@ -126,7 +126,7 @@
 }
 
 @layer components {
-  /* Botão Principal - Azul Neon Degradê */
+  /* Botão Principal - Azul Neon Degradê Premium */
   .btn-primary {
     background: linear-gradient(135deg, #00F0FF 0%, #00ccff 50%, #00F0FF 100%);
     color: #000000;
@@ -136,16 +136,17 @@
     transition: all 0.3s ease;
     box-shadow: 0 0 25px rgba(0, 240, 255, 0.6);
     font-family: 'Orbitron', 'Rajdhani', sans-serif;
-    border: none;
+    border: 1px solid rgba(0, 255, 127, 0.3);
     position: relative;
     overflow: hidden;
-    font-size: 0.7rem; /* Reduzido para proporção elegante */
+    font-size: 0.7rem; /* Proporção equilibrada */
   }
   
   .btn-primary:hover {
     background: linear-gradient(135deg, #00FF7F 0%, #C0C0C0 50%, #00F0FF 100%);
     box-shadow: 0 0 40px rgba(0, 255, 127, 0.9);
     transform: translateY(-2px);
+    border-color: rgba(0, 255, 127, 0.6);
   }
   
   .btn-primary::before {
@@ -165,9 +166,9 @@
   
   /* Botão Secundário - Verde Neon Degradê Prateado */
   .btn-secondary {
-    background: transparent;
-    color: #00FF7F;
-    border: 2px solid #00FF7F;
+    background: linear-gradient(135deg, #00FF7F 0%, #C0C0C0 50%, #00FF7F 100%);
+    color: #00F0FF;
+    border: 1px solid rgba(0, 240, 255, 0.3);
     font-weight: 600;
     padding: 0.75rem 1.5rem;
     border-radius: 1rem;
@@ -176,14 +177,15 @@
     font-family: 'Orbitron', 'Rajdhani', sans-serif;
     position: relative;
     overflow: hidden;
-    font-size: 0.7rem; /* Reduzido para proporção elegante */
+    font-size: 0.7rem; /* Proporção equilibrada */
   }
   
   .btn-secondary:hover {
-    background: linear-gradient(135deg, #00FF7F 0%, #C0C0C0 50%, #00FF7F 100%);
+    background: linear-gradient(135deg, #00F0FF 0%, #C0C0C0 50%, #00FF7F 100%);
     color: #000000;
-    box-shadow: 0 0 40px rgba(0, 255, 127, 0.9);
+    box-shadow: 0 0 40px rgba(0, 240, 255, 0.9);
     transform: translateY(-2px);
+    border-color: rgba(0, 240, 255, 0.6);
   }
   
   .card {
@@ -337,7 +339,7 @@
     transition: all 0.3s ease;
     box-shadow: 0 0 25px rgba(0, 255, 127, 0.6);
     font-family: 'Orbitron', 'Rajdhani', sans-serif;
-    font-size: 0.7rem; /* Reduzido para proporção elegante */
+    font-size: 0.7rem; /* Proporção equilibrada */
   }
   
   .cyberpunk-button:hover {
@@ -359,7 +361,7 @@
     transition: all 0.3s ease;
     box-shadow: 0 0 25px rgba(0, 255, 127, 0.4);
     font-family: 'Orbitron', 'Rajdhani', sans-serif;
-    font-size: 0.7rem; /* Reduzido para proporção elegante */
+    font-size: 0.7rem; /* Proporção equilibrada */
   }
   
   .cyberpunk-button-outline:hover {
@@ -724,7 +726,7 @@
     font-family: 'Orbitron', 'Rajdhani', 'Space Grotesk', 'Outfit', sans-serif;
   }
   .bg-black-matte {
-    background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%, #000000 100%);
   }
   .border-neonGreen {
     border-color: #00FF7F;

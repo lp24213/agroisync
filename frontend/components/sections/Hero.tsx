@@ -41,7 +41,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.8 }}
-              className="text-xl md:text-2xl text-[#00F0FF] mb-12 max-w-4xl mx-auto font-orbitron leading-relaxed"
+              className="text-lg md:text-xl text-[#00F0FF] mb-12 max-w-4xl mx-auto font-orbitron leading-relaxed"
             >
               Conectando o campo ao futuro digital com segurança, rastreabilidade e eficiência.
             </motion.p>
@@ -94,9 +94,9 @@ export function Hero() {
               />
               <div className="hidden w-[600px] h-[500px] bg-gradient-to-br from-[#00FF7F]/20 to-[#000000] border-2 border-[#00FF7F]/30 rounded-3xl flex items-center justify-center shadow-neon-green">
                 <div className="text-center">
-                  <div className="text-8xl mb-4">🌱</div>
-                  <div className="text-[#00F0FF] font-orbitron text-2xl">Tecnologia no Agro</div>
-                  <div className="text-[#00F0FF] text-lg">Soluções Digitais Avançadas</div>
+                  <div className="text-6xl mb-4">🌱</div>
+                  <div className="text-[#00F0FF] font-orbitron text-xl">Tecnologia no Agro</div>
+                  <div className="text-[#00F0FF] text-base">Soluções Digitais Avançadas</div>
                 </div>
               </div>
             </div>
@@ -118,8 +118,8 @@ export function Hero() {
             <div className="bg-[#00FF7F]/20 p-6 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center shadow-neon-green">
               <Zap className="text-[#00FF7F]" size={40} />
             </div>
-            <h3 className="text-2xl font-orbitron font-bold text-[#00FF7F] mb-4">Inovação Contínua</h3>
-            <p className="text-[#00F0FF] text-lg leading-relaxed">Tecnologia avançada para transformar o setor agrícola</p>
+            <h3 className="text-xl font-orbitron font-bold text-[#00FF7F] mb-4">Inovação Contínua</h3>
+            <p className="text-[#00F0FF] text-base leading-relaxed">Tecnologia avançada para transformar o setor agrícola</p>
           </motion.div>
           <motion.div
             whileHover={{ scale: 1.05, y: -8 }}
@@ -129,8 +129,8 @@ export function Hero() {
             <div className="bg-[#00FF7F]/20 p-6 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center shadow-neon-green">
               <Shield className="text-[#00FF7F]" size={40} />
             </div>
-            <h3 className="text-2xl font-orbitron font-bold text-[#00FF7F] mb-4">Segurança Digital</h3>
-            <p className="text-[#00F0FF] text-lg leading-relaxed">Proteção avançada para dados, transações e ativos agrícolas</p>
+            <h3 className="text-xl font-orbitron font-bold text-[#00FF7F] mb-4">Segurança Digital</h3>
+            <p className="text-[#00F0FF] text-base leading-relaxed">Proteção avançada para dados, transações e ativos agrícolas</p>
           </motion.div>
           <motion.div
             whileHover={{ scale: 1.05, y: -8 }}
@@ -140,8 +140,8 @@ export function Hero() {
             <div className="bg-[#00FF7F]/20 p-6 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center shadow-neon-green">
               <Leaf className="text-[#00FF7F]" size={40} />
             </div>
-            <h3 className="text-2xl font-orbitron font-bold text-[#00FF7F] mb-4">Sustentabilidade</h3>
-            <p className="text-[#00F0FF] text-lg leading-relaxed">Compromisso com práticas agrícolas responsáveis e ecológicas</p>
+            <h3 className="text-xl font-orbitron font-bold text-[#00FF7F] mb-4">Sustentabilidade</h3>
+            <p className="text-[#00F0FF] text-base leading-relaxed">Compromisso com práticas agrícolas responsáveis e ecológicas</p>
           </motion.div>
         </motion.div>
 
@@ -158,8 +158,8 @@ export function Hero() {
             transition={{ delay: 1.2, duration: 0.8 }}
             className="text-center"
           >
-            <div className="text-4xl font-orbitron font-bold text-[#00FF7F] mb-2">10K+</div>
-            <div className="text-[#00F0FF] font-orbitron">Usuários Ativos</div>
+            <div className="text-3xl font-orbitron font-bold text-[#00FF7F] mb-2">10K+</div>
+            <div className="text-[#00F0FF] font-orbitron text-sm">Usuários Ativos</div>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -167,8 +167,8 @@ export function Hero() {
             transition={{ delay: 1.3, duration: 0.8 }}
             className="text-center"
           >
-            <div className="text-4xl font-orbitron font-bold text-[#00FF7F] mb-2">99.9%</div>
-            <div className="text-[#00F0FF] font-orbitron">Uptime</div>
+            <div className="text-3xl font-orbitron font-bold text-[#00FF7F] mb-2">99.9%</div>
+            <div className="text-[#00F0FF] font-orbitron text-sm">Uptime</div>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -176,8 +176,8 @@ export function Hero() {
             transition={{ delay: 1.4, duration: 0.8 }}
             className="text-center"
           >
-            <div className="text-4xl font-orbitron font-bold text-[#00FF7F] mb-2">25+</div>
-            <div className="text-[#00F0FF] font-orbitron">Países</div>
+            <div className="text-3xl font-orbitron font-bold text-[#00FF7F] mb-2">25+</div>
+            <div className="text-[#00F0FF] font-orbitron text-sm">Países</div>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -185,8 +185,8 @@ export function Hero() {
             transition={{ delay: 1.5, duration: 0.8 }}
             className="text-center"
           >
-            <div className="text-4xl font-orbitron font-bold text-[#00FF7F] mb-2">24/7</div>
-            <div className="text-[#00F0FF] font-orbitron">Suporte</div>
+            <div className="text-3xl font-orbitron font-bold text-[#00FF7F] mb-2">24/7</div>
+            <div className="text-[#00F0FF] font-orbitron text-sm">Suporte</div>
           </motion.div>
         </motion.div>
       </div>
