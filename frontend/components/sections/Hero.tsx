@@ -51,13 +51,16 @@ export function Hero() {
             transition={{ delay: 0.3, duration: 0.8 }}
             className="flex justify-center mb-8"
           >
-            <Image 
-              src="/assets/images/hero/farmer-tech-character.png" 
-              alt="Premium Farmer Tech Character" 
-              width={200} 
-              height={200}
-              className="drop-shadow-[0_0_20px_rgba(0,255,255,0.5)]"
-            />
+                         <Image 
+               src="/assets/images/hero/farmer-tech-character.png" 
+               alt="Premium Farmer Tech Character" 
+               width={200} 
+               height={200}
+               className="drop-shadow-[0_0_20px_rgba(0,255,255,0.5)]"
+               onError={(e) => {
+                 e.currentTarget.src = "/images/placeholder.svg";
+               }}
+             />
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">

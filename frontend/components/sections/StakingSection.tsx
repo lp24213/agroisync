@@ -68,6 +68,9 @@ export function StakingSection() {
                   width={400} 
                   height={300}
                   className="w-full h-auto rounded-lg border border-agro-purple/20"
+                  onError={(e) => {
+                    e.currentTarget.src = "/images/placeholder.svg";
+                  }}
                 />
               </div>
             </Card>

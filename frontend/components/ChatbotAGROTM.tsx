@@ -169,13 +169,16 @@ export function ChatbotAGROTM() {
               <div className="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border-b border-cyan-500/20 p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <Image 
-                      src="/assets/images/logo/agrotm-logo-main.png" 
-                      alt="AGROTM Logo" 
-                      width={32} 
-                      height={32}
-                      className="w-8 h-8"
-                    />
+                                         <Image 
+                       src="/assets/images/logo/agrotm-logo.svg" 
+                       alt="AGROTM Logo" 
+                       width={32} 
+                       height={32}
+                       className="w-8 h-8"
+                       onError={(e) => {
+                         e.currentTarget.src = "/images/logo-agrotm.svg";
+                       }}
+                     />
                     <div>
                       <h3 className="text-white font-semibold">Suporte AGROTM</h3>
                       <div className="flex items-center space-x-2">

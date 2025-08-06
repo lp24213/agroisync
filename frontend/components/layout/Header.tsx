@@ -88,15 +88,18 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 relative">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href="/" className="flex items-center">
             <Image 
-              src="/assets/images/logo/agrotm-logo-main.png" 
+              src="/assets/images/logo/agrotm-logo.svg" 
               alt="AGROTM Logo" 
-              width={32} 
-              height={32}
-              className="w-8 h-8"
+              width={180} 
+              height={60}
+              priority
+              className="h-8 w-auto"
+              onError={(e) => {
+                e.currentTarget.src = "/images/logo-agrotm.svg";
+              }}
             />
-            <span className="text-white font-bold text-xl">AGROTM</span>
           </Link>
 
           {/* Desktop Navigation */}

@@ -13,15 +13,17 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center space-x-2 mb-4">
+            <div className="flex items-center mb-4">
               <Image 
-                src="/assets/images/logo/agrotm-logo-main.png" 
+                src="/assets/images/logo/agrotm-logo.svg" 
                 alt="AGROTM Logo" 
-                width={32} 
-                height={32}
-                className="w-8 h-8"
+                width={180} 
+                height={60}
+                className="h-8 w-auto"
+                onError={(e) => {
+                  e.currentTarget.src = "/images/logo-agrotm.svg";
+                }}
               />
-              <span className="text-white font-bold text-xl">AGROTM</span>
             </div>
             <p className="text-gray-400 mb-6 max-w-md">
               {t('footerDesc')}

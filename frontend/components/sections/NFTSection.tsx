@@ -34,13 +34,16 @@ export function NFTSection() {
               <div className="absolute bottom-0 right-0 w-full h-0.5 bg-gradient-to-r from-agro-yellow to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
               
               <div className="relative z-10 p-6">
-                <Image 
-                  src="/assets/images/nft/nft-minting.png" 
-                  alt="NFT Minting" 
-                  width={400} 
-                  height={300}
-                  className="w-full h-auto rounded-lg border border-agro-yellow/20"
-                />
+                                 <Image 
+                   src="/assets/images/nft/nft-minting.png" 
+                   alt="NFT Minting" 
+                   width={400} 
+                   height={300}
+                   className="w-full h-auto rounded-lg border border-agro-yellow/20"
+                   onError={(e) => {
+                     e.currentTarget.src = "/images/placeholder.svg";
+                   }}
+                 />
               </div>
             </Card>
           </motion.div>

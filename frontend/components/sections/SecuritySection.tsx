@@ -40,6 +40,9 @@ export function SecuritySection() {
                   width={400} 
                   height={300}
                   className="w-full h-auto rounded-lg border border-agro-green/20"
+                  onError={(e) => {
+                    e.currentTarget.src = "/images/placeholder.svg";
+                  }}
                 />
               </div>
             </Card>
