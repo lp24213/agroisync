@@ -1,39 +1,13 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { Layout } from "../components/layout/Layout";
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import '../lib/i18n';
+import './globals.css';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "AGROTM Solana - Revolucione a Agricultura com DeFi",
-  description: "A maior plataforma Web3 para o agronegócio mundial. Staking, NFTs agrícolas, governança descentralizada e sustentabilidade na Solana.",
-  keywords: [
-    "AGROTM",
-    "Solana",
-    "DeFi",
-    "Agricultura",
-    "Blockchain",
-    "NFTs",
-    "Staking",
-    "Governança",
-    "Sustentabilidade"
-  ],
-  authors: [{ name: "AGROTM Team" }],
-  creator: "AGROTM",
-  publisher: "AGROTM",
-  openGraph: {
-    title: "AGROTM Solana - Revolucione a Agricultura com DeFi",
-    description: "A maior plataforma Web3 para o agronegócio mundial. Staking, NFTs agrícolas, governança descentralizada e sustentabilidade na Solana.",
-    type: "website",
-    locale: "pt_BR",
-    siteName: "AGROTM Solana"
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "AGROTM Solana - Revolucione a Agricultura com DeFi",
-    description: "A maior plataforma Web3 para o agronegócio mundial. Staking, NFTs agrícolas, governança descentralizada e sustentabilidade na Solana."
-  }
+  title: 'AGROTM - Agricultura Tokenizada do Futuro',
+  description: 'Conectando agricultores e investidores através da tecnologia blockchain',
 };
 
 export default function RootLayout({
@@ -44,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="pt">
       <body className={inter.className}>
-        <Layout>{children}</Layout>
+        {children}
       </body>
     </html>
   );

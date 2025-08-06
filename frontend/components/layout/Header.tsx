@@ -1,401 +1,219 @@
 'use client';
 
-import React from 'react';
-import { Button } from '../ui/Button';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Logo } from '../ui/Logo';
+import { useTranslation } from 'react-i18next';
+import { Menu, X, Globe, ChevronDown } from 'lucide-react';
+import { supportedLanguages, changeLanguage } from '../../lib/i18n';
 
 export function Header() {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const [isLanguageMenuOpen, setIsLanguageMenuOpen] = React.useState(false);
-  
-  // Animation variants
-  const navItemVariants = {
-    hidden: { opacity: 0, y: -10 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { type: "spring", stiffness: 300, damping: 24 }
-    },
-    hover: { 
-      scale: 1.05,
-      color: "#00ff88",
-      transition: { type: "spring", stiffness: 400, damping: 10 }
+  const { t } = useTranslation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
+  const [currentLanguage, setCurrentLanguage] = useState('pt');
+  const languageRef = useRef<HTMLDivElement>(null);
+
+  // Detectar idioma atual
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('agrotm-language');
+      if (saved) {
+        setCurrentLanguage(saved);
+      }
     }
-  };
-  
-  const mobileMenuVariants = {
-    hidden: { opacity: 0, height: 0, overflow: "hidden" },
-    visible: { 
-      opacity: 1, 
-      height: "auto",
-      transition: { duration: 0.3, ease: "easeInOut" }
-    },
-    exit: { 
-      opacity: 0, 
-      height: 0,
-      transition: { duration: 0.3, ease: "easeInOut" }
-    }
-  };
+  }, []);
 
-  const languageMenuVariants = {
-    hidden: { opacity: 0, scale: 0.8, y: -10 },
-    visible: { 
-      opacity: 1, 
-      scale: 1,
-      y: 0,
-      transition: { type: "spring", stiffness: 400, damping: 25 }
-    },
-    exit: { 
-      opacity: 0, 
-      scale: 0.8,
-      y: -10,
-      transition: { duration: 0.2 }
-    }
-  };
-
-  const handleLanguageChange = (lang: string) => {
-    console.log('Changing language to:', lang);
-    setIsLanguageMenuOpen(false);
-  };
-
-  const getCurrentLanguage = () => {
-    return 'pt';
-  };
-
-  const getCurrentLanguageInfo = () => {
-    return { flag: '🇧🇷', name: 'Português' };
-  };
-
-  // Close language menu when clicking outside
-  React.useEffect(() => {
+  // Fechar dropdown quando clicar fora
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (!target.closest('.language-selector')) {
-        setIsLanguageMenuOpen(false);
+      if (languageRef.current && !languageRef.current.contains(event.target as Node)) {
+        setIsLanguageOpen(false);
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const currentLanguageInfo = getCurrentLanguageInfo();
+  // Trocar idioma
+  const handleLanguageChange = (languageCode: string) => {
+    changeLanguage(languageCode);
+    setCurrentLanguage(languageCode);
+    setIsLanguageOpen(false);
+  };
+
+  // Obter idioma atual
+  const getCurrentLanguage = () => {
+    return supportedLanguages.find(lang => lang.code === currentLanguage) || supportedLanguages[0];
+  };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b border-blue-500/30 overflow-hidden">
-      {/* Scanlines Effect */}
-      <div className="absolute inset-0 z-0 scanlines opacity-10"></div>
-      
-      {/* Glowing border */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-80"></div>
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="flex items-center justify-between h-16">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b border-cyan-500/20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center">
-            <Logo size="md" />
+          <Link href="/" className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-sm">A</span>
+            </div>
+            <span className="text-white font-bold text-xl">AGROTM</span>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              whileHover="hover"
-              variants={navItemVariants}
-            >
-              <Link href="/" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
-                Início
-                <motion.span 
-                  className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
-                  initial={{ scaleX: 0 }}
-                  whileHover={{ scaleX: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </Link>
-            </motion.div>
-            
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              whileHover="hover"
-              variants={navItemVariants}
-              transition={{ delay: 0.1 }}
-            >
-              <Link href="/dashboard" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
-                Dashboard
-                <motion.span 
-                  className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
-                  initial={{ scaleX: 0 }}
-                  whileHover={{ scaleX: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </Link>
-            </motion.div>
-            
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              whileHover="hover"
-              variants={navItemVariants}
-              transition={{ delay: 0.2 }}
-            >
-              <Link href="/staking" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
-                Staking
-                <motion.span 
-                  className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
-                  initial={{ scaleX: 0 }}
-                  whileHover={{ scaleX: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </Link>
-            </motion.div>
-            
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              whileHover="hover"
-              variants={navItemVariants}
-              transition={{ delay: 0.3 }}
-            >
-              <Link href="#about" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
-                Sobre
-                <motion.span 
-                  className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
-                  initial={{ scaleX: 0 }}
-                  whileHover={{ scaleX: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </Link>
-            </motion.div>
-            
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              whileHover="hover"
-              variants={navItemVariants}
-              transition={{ delay: 0.4 }}
-            >
-              <Link href="#contact" className="text-blue-400 hover:text-cyan-300 transition-colors duration-300 relative group drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">
-                Contato
-                <motion.span 
-                  className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-300 transform scale-x-0 origin-left"
-                  initial={{ scaleX: 0 }}
-                  whileHover={{ scaleX: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </Link>
-            </motion.div>
-
-            {/* Language Selector Desktop - TEMPORARY */}
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              transition={{ delay: 0.5 }}
-              className="relative language-selector"
-            >
-              <motion.button
-                onClick={() => {
-                  console.log('Language button clicked, current state:', isLanguageMenuOpen);
-                  setIsLanguageMenuOpen(!isLanguageMenuOpen);
-                }}
-                className="flex items-center space-x-2 px-3 py-2 text-gray-300 hover:text-blue-400 transition-colors duration-300 border border-transparent hover:border-blue-500/30 rounded-lg"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span className="text-lg">
-                  {currentLanguageInfo.flag}
-                </span>
-                <span className="text-sm font-medium">
-                  {currentLanguageInfo.name}
-                </span>
-                <motion.svg
-                  className="w-4 h-4 transition-transform"
-                  animate={{ rotate: isLanguageMenuOpen ? 180 : 0 }}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </motion.svg>
-              </motion.button>
-
-              <AnimatePresence>
-                {isLanguageMenuOpen && (
-                  <motion.div
-                    className="absolute top-full right-0 mt-2 w-48 bg-black/95 backdrop-blur-md border border-blue-500/30 rounded-lg shadow-2xl z-[9999]"
-                    variants={languageMenuVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                  >
-                    <div className="p-2 space-y-1">
-                      {/* TEMPORARY LANGUAGES */}
-                      <motion.button
-                        onClick={() => handleLanguageChange('pt')}
-                        className="w-full flex items-center space-x-3 px-3 py-2 text-left rounded-md transition-colors duration-200 bg-blue-500/20 text-blue-400 border border-blue-500/30"
-                        whileHover={{ x: 5 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        <span className="text-lg">🇧🇷</span>
-                        <span className="text-sm font-medium">Português Brasil</span>
-                        <motion.svg
-                          className="w-4 h-4 ml-auto text-blue-400"
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </motion.svg>
-                      </motion.button>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-            
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              transition={{ delay: 0.6 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Button 
-                variant="primary" 
-                size="sm"
-                className="bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-cyan-400 hover:to-blue-500 relative group overflow-hidden"
-              >
-                <span className="relative z-10">Começar</span>
-                <span className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-500 opacity-0 group-hover:opacity-30 transition-opacity duration-300"></span>
-              </Button>
-            </motion.div>
+            <Link href="/" className="text-gray-300 hover:text-cyan-400 transition-colors">
+              {t('home')}
+            </Link>
+            <Link href="/dashboard" className="text-gray-300 hover:text-cyan-400 transition-colors">
+              {t('dashboard')}
+            </Link>
+            <Link href="/staking" className="text-gray-300 hover:text-cyan-400 transition-colors">
+              {t('staking')}
+            </Link>
+            <Link href="/about" className="text-gray-300 hover:text-cyan-400 transition-colors">
+              {t('about')}
+            </Link>
+            <Link href="/contact" className="text-gray-300 hover:text-cyan-400 transition-colors">
+              {t('contact')}
+            </Link>
           </nav>
 
-          {/* Mobile menu button */}
-          <motion.button
-            className="md:hidden p-2 rounded-md text-gray-400 hover:text-blue-400 hover:bg-black/50 border border-transparent hover:border-blue-500/30 transition-colors duration-300"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <motion.div
-              initial={false}
-              animate={isMenuOpen ? "open" : "closed"}
-              variants={{
-                open: { rotate: 180 },
-                closed: { rotate: 0 }
-              }}
-              transition={{ duration: 0.3 }}
-            >
-              {isMenuOpen ? (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              ) : (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center space-x-4">
+            {/* Language Selector */}
+            <div className="relative" ref={languageRef}>
+              <button
+                onClick={() => setIsLanguageOpen(!isLanguageOpen)}
+                className="flex items-center space-x-2 text-gray-300 hover:text-cyan-400 transition-colors"
+              >
+                <Globe size={16} />
+                <span>{getCurrentLanguage().flag}</span>
+                <span className="text-sm">{getCurrentLanguage().code.toUpperCase()}</span>
+                <ChevronDown size={12} className={`transition-transform ${isLanguageOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {/* Language Dropdown */}
+              {isLanguageOpen && (
+                <div className="absolute top-full right-0 mt-2 w-48 bg-gray-900 border border-cyan-500/20 rounded-lg shadow-xl z-[9999]">
+                  <div className="py-2">
+                    {supportedLanguages.map((language) => (
+                      <button
+                        key={language.code}
+                        onClick={() => handleLanguageChange(language.code)}
+                        className={`w-full flex items-center space-x-3 px-4 py-2 text-sm hover:bg-gray-800 transition-colors ${
+                          currentLanguage === language.code ? 'text-cyan-400 bg-gray-800' : 'text-gray-300'
+                        }`}
+                      >
+                        <span className="text-lg">{language.flag}</span>
+                        <span>{language.name}</span>
+                        {currentLanguage === language.code && (
+                          <span className="ml-auto text-cyan-400">✓</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               )}
-            </motion.div>
-          </motion.button>
+            </div>
+
+            {/* Get Started Button */}
+            <Link
+              href="/dashboard"
+              className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-6 py-2 rounded-lg hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 font-medium"
+            >
+              {t('getStarted')}
+            </Link>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden text-gray-300 hover:text-cyan-400 transition-colors"
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
 
-        {/* Mobile Navigation */}
-        <AnimatePresence>
-          {isMenuOpen && (
-            <motion.div 
-              className="md:hidden"
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              variants={mobileMenuVariants}
-            >
-              <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-black/90 backdrop-blur-md rounded-b-lg border-x border-b border-blue-500/30 relative overflow-hidden">
-                {/* Corner accents */}
-                <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-blue-500/50"></div>
-                <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-blue-500/50"></div>
-                
-                <motion.div 
-                  className="relative z-10"
-                  variants={{
-                    hidden: { opacity: 0 },
-                    visible: {
-                      opacity: 1,
-                      transition: {
-                        staggerChildren: 0.05
-                      }
-                    }
-                  }}
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden bg-gray-900 border-t border-cyan-500/20">
+            <div className="px-4 py-6 space-y-4">
+              {/* Mobile Navigation */}
+              <nav className="space-y-4">
+                <Link
+                  href="/"
+                  className="block text-gray-300 hover:text-cyan-400 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
                 >
-                  <motion.div variants={navItemVariants}>
-                    <Link href="/" className="block px-3 py-2 text-gray-300 hover:text-blue-400 transition-colors duration-300 border-l-2 border-transparent hover:border-blue-500/50 hover:bg-blue-500/5 rounded-r-md">
-                      Início
-                    </Link>
-                  </motion.div>
-                  
-                  <motion.div variants={navItemVariants}>
-                    <Link href="/dashboard" className="block px-3 py-2 text-gray-300 hover:text-blue-400 transition-colors duration-300 border-l-2 border-transparent hover:border-blue-500/50 hover:bg-blue-500/5 rounded-r-md">
-                      Dashboard
-                    </Link>
-                  </motion.div>
-                  
-                  <motion.div variants={navItemVariants}>
-                    <Link href="/staking" className="block px-3 py-2 text-gray-300 hover:text-cyan-400 transition-colors duration-300 border-l-2 border-transparent hover:border-cyan-400/50 hover:bg-cyan-400/5 rounded-r-md">
-                      Staking
-                    </Link>
-                  </motion.div>
-                  
-                  <motion.div variants={navItemVariants}>
-                    <Link href="#about" className="block px-3 py-2 text-gray-300 hover:text-blue-500 transition-colors duration-300 border-l-2 border-transparent hover:border-blue-500/50 hover:bg-blue-500/5 rounded-r-md">
-                      Sobre
-                    </Link>
-                  </motion.div>
-                  
-                  <motion.div variants={navItemVariants}>
-                    <Link href="#contact" className="block px-3 py-2 text-gray-300 hover:text-cyan-400 transition-colors duration-300 border-l-2 border-transparent hover:border-cyan-400/50 hover:bg-cyan-400/5 rounded-r-md">
-                      Contato
-                    </Link>
-                  </motion.div>
+                  {t('home')}
+                </Link>
+                <Link
+                  href="/dashboard"
+                  className="block text-gray-300 hover:text-cyan-400 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {t('dashboard')}
+                </Link>
+                <Link
+                  href="/staking"
+                  className="block text-gray-300 hover:text-cyan-400 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {t('staking')}
+                </Link>
+                <Link
+                  href="/about"
+                  className="block text-gray-300 hover:text-cyan-400 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {t('about')}
+                </Link>
+                <Link
+                  href="/contact"
+                  className="block text-gray-300 hover:text-cyan-400 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {t('contact')}
+                </Link>
+              </nav>
 
-                  {/* Language Selector Mobile */}
-                  <motion.div variants={navItemVariants} className="mt-4">
-                    <div className="px-3 py-2">
-                      <p className="text-sm text-gray-400 mb-2">Idioma / Language</p>
-                      <div className="grid grid-cols-1 gap-2">
-                        <motion.button
-                          onClick={() => handleLanguageChange('pt')}
-                          className="flex items-center justify-center space-x-2 px-3 py-2 rounded-md transition-colors duration-200 bg-blue-500/20 text-blue-400 border border-blue-500/30"
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                        >
-                          <span className="text-lg">🇧🇷</span>
-                          <span className="text-sm font-medium">Português Brasil</span>
-                        </motion.button>
-                      </div>
-                    </div>
-                  </motion.div>
-                  
-                  <motion.div variants={navItemVariants} className="mt-4">
-                    <Button 
-                      variant="primary" 
-                      size="sm" 
-                      className="w-full bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-cyan-400 hover:to-blue-500 relative group overflow-hidden"
+              {/* Mobile Language Selector */}
+              <div className="pt-4 border-t border-gray-700">
+                <h3 className="text-sm font-medium text-gray-400 mb-3">Idioma / Language</h3>
+                <div className="space-y-2">
+                  {supportedLanguages.map((language) => (
+                    <button
+                      key={language.code}
+                      onClick={() => handleLanguageChange(language.code)}
+                      className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+                        currentLanguage === language.code
+                          ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
+                          : 'text-gray-300 hover:bg-gray-800'
+                      }`}
                     >
-                      <span className="relative z-10">Começar</span>
-                      <span className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-500 opacity-0 group-hover:opacity-30 transition-opacity duration-300"></span>
-                    </Button>
-                  </motion.div>
-                </motion.div>
+                      <span className="text-lg">{language.flag}</span>
+                      <span>{language.name}</span>
+                      {currentLanguage === language.code && (
+                        <span className="ml-auto text-cyan-400">✓</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+
+              {/* Mobile Get Started Button */}
+              <div className="pt-4">
+                <Link
+                  href="/dashboard"
+                  className="block w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-6 py-3 rounded-lg hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 font-medium text-center"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {t('getStarted')}
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );

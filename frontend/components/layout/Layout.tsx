@@ -3,7 +3,6 @@
 import React from 'react';
 import { Header } from './Header';
 import { Footer } from './Footer';
-import { CookieBanner } from '../ui/CookieBanner';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -11,13 +10,12 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-black text-white">
       <Header />
       <main className="pt-16">
         {children}
       </main>
       <Footer />
-      <CookieBanner />
     </div>
   );
 } 
