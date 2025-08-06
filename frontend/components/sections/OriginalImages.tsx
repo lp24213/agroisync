@@ -10,37 +10,37 @@ export function OriginalImages() {
     {
       title: 'Dashboard Interativo',
       description: 'Interface avançada de analytics e monitoramento',
-      src: '/assets/dashboard.png',
+      src: '/assets/images/dashboard/interactive-dashboard.png',
       category: 'dashboard'
     },
     {
       title: 'Cyber Defense',
       description: 'Sistemas avançados de segurança e proteção',
-      src: '/assets/security.png',
+      src: '/assets/images/security/cyber-defense.png',
       category: 'security'
     },
     {
       title: 'Staking & Farming',
       description: 'Plataforma DeFi de staking e yield farming',
-      src: '/assets/staking.png',
+      src: '/assets/images/staking/staking-farming.png',
       category: 'staking'
     },
     {
       title: 'NFT Minting',
       description: 'Criação e gerenciamento de NFTs agrícolas',
-      src: '/assets/nft.png',
+      src: '/assets/images/nft/nft-minting.png',
       category: 'nft'
     },
     {
       title: 'Smart Farm',
       description: 'Tecnologia agrícola inteligente futurista',
-      src: '/assets/farm.png',
+      src: '/assets/images/farm/smart-farm-futuristic.png',
       category: 'farm'
     },
     {
       title: 'Farmer Tech Character',
       description: 'Fazendeiro premium com tecnologia avançada',
-      src: '/assets/hero.png',
+      src: '/assets/images/hero/farmer-tech-character.png',
       category: 'hero'
     }
   ];
@@ -62,11 +62,11 @@ export function OriginalImages() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="font-orbitron text-4xl md:text-5xl text-[#00F0FF] mb-4 animate-fadeIn">
-            Imagens Originais <span className="text-[#00F0FF]">AGROTM</span>
+          <h2 className="font-orbitron text-4xl md:text-5xl text-[#00FF7F] mb-4 animate-fadeIn">
+            Imagens Originais <span className="text-[#00FF7F]">AGROTM</span>
           </h2>
           <p className="text-lg md:text-xl text-[#cccccc] max-w-3xl mx-auto">
-            Galeria de imagens premium que demonstram a tecnologia e inovação da plataforma
+            Visualize as imagens originais que inspiraram o design da plataforma AGROTM
           </p>
         </motion.div>
 
@@ -80,29 +80,21 @@ export function OriginalImages() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               whileHover={{ scale: 1.05, y: -5 }}
             >
-              <Card className="text-center bg-black/70 border border-[#00F0FF]/20 backdrop-blur-sm overflow-hidden relative group hover:shadow-neon transition-all duration-300">
-                <div className="relative z-10 p-6">
-                  <motion.div 
-                    className="mb-4 inline-block"
-                    whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
-                  >
-                    <Image 
-                      src={image.src} 
-                      alt={image.title}
-                      width={300}
-                      height={200}
-                      className="rounded-2xl shadow-neon hover:shadow-neon transition-all duration-500"
-                      unoptimized={true}
-                      onError={(e) => {
-                        e.currentTarget.src = "/assets/dashboard.png";
-                      }}
-                    />
-                  </motion.div>
-                  
-                  <h3 className="text-xl font-orbitron font-semibold text-[#00F0FF] mb-2">
+              <Card className="text-center bg-black/70 border border-[#00FF7F]/20 backdrop-blur-sm overflow-hidden relative group hover:shadow-neon transition-all duration-300">
+                <div className="relative h-48 overflow-hidden">
+                  <Image
+                    src={image.src}
+                    alt={image.title}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-orbitron font-semibold text-[#00FF7F] mb-2">
                     {image.title}
                   </h3>
-                  <p className="text-[#cccccc] leading-relaxed">
+                  <p className="text-[#cccccc] text-sm">
                     {image.description}
                   </p>
                 </div>

@@ -20,7 +20,7 @@ const tokens = [
     balance: 12.345,
     price: 120.75,
     logo: '/images/sol-logo.png',
-    color: '#00F0FF',
+    color: '#00FF7F',
   },
   {
     symbol: 'AGROTM',
@@ -28,7 +28,7 @@ const tokens = [
     balance: 1250.5,
     price: 2.34,
     logo: '/images/agrotm-logo.png',
-    color: '#00F0FF',
+    color: '#00FF7F',
   },
   {
     symbol: 'USDC',
@@ -36,7 +36,7 @@ const tokens = [
     balance: 5000.0,
     price: 1.0,
     logo: '/images/usdc-logo.png',
-    color: '#00F0FF',
+    color: '#00FF7F',
   },
   {
     symbol: 'RAY',
@@ -44,7 +44,7 @@ const tokens = [
     balance: 500.75,
     price: 4.56,
     logo: '/images/ray-logo.png',
-    color: '#00F0FF',
+    color: '#00FF7F',
   },
   {
     symbol: 'BONK',
@@ -52,7 +52,7 @@ const tokens = [
     balance: 1000000.0,
     price: 0.00001234,
     logo: '/images/bonk-logo.png',
-    color: '#00F0FF',
+    color: '#00FF7F',
   },
 ];
 

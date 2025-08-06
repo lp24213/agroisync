@@ -12,19 +12,19 @@ export const Toaster: React.FC = () => {
         style: {
           background: '#000000',
           color: '#ffffff',
-          border: '1px solid #00F0FF',
+          border: '1px solid #00FF7F',
         },
         // success: {
         //   duration: 3000,
         //   iconTheme: {
-        //     primary: '#00F0FF',
+        //     primary: '#00FF7F',
         //     secondary: '#000000',
         //   },
         // },
         // error: {
         //   duration: 5000,
         //   iconTheme: {
-        //     primary: '#00F0FF',
+        //     primary: '#00FF7F',
         //     secondary: '#000000',
         //   },
         // },

@@ -27,10 +27,10 @@ export function FarmSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <h2 className="font-orbitron text-4xl md:text-5xl text-[#00F0FF] mb-6 animate-fadeIn">
+            <h2 className="font-orbitron text-4xl md:text-5xl text-[#00FF7F] font-bold tracking-wide drop-shadow-neon mb-6 animate-fadeIn">
               Smart Farm
             </h2>
-            <p className="text-lg md:text-xl text-[#cccccc] leading-relaxed mb-8">
+            <p className="text-lg md:text-xl text-gray-300 leading-relaxed mb-8">
               Automação agrícola e monitoramento com IA e tecnologia IoT de ponta.
             </p>
             <div className="space-y-4">
@@ -40,8 +40,8 @@ export function FarmSection() {
                 transition={{ delay: 0.2, duration: 0.6 }}
                 className="flex items-center space-x-3"
               >
-                <div className="w-3 h-3 bg-[#00F0FF] rounded-full shadow-neon"></div>
-                <span className="text-[#cccccc] font-orbitron">Tecnologia IoT</span>
+                <div className="w-3 h-3 bg-[#00FF7F] rounded-full shadow-neon"></div>
+                <span className="text-gray-300 font-orbitron">Tecnologia IoT</span>
               </motion.div>
               <motion.div 
                 initial={{ opacity: 0, x: -20 }}
@@ -49,8 +49,8 @@ export function FarmSection() {
                 transition={{ delay: 0.4, duration: 0.6 }}
                 className="flex items-center space-x-3"
               >
-                <div className="w-3 h-3 bg-[#00F0FF] rounded-full shadow-neon"></div>
-                <span className="text-[#cccccc] font-orbitron">Sistemas Automatizados</span>
+                <div className="w-3 h-3 bg-[#00FF7F] rounded-full shadow-neon"></div>
+                <span className="text-gray-300 font-orbitron">Sistemas Automatizados</span>
               </motion.div>
               <motion.div 
                 initial={{ opacity: 0, x: -20 }}
@@ -58,8 +58,8 @@ export function FarmSection() {
                 transition={{ delay: 0.6, duration: 0.6 }}
                 className="flex items-center space-x-3"
               >
-                <div className="w-3 h-3 bg-[#00F0FF] rounded-full shadow-neon"></div>
-                <span className="text-[#cccccc] font-orbitron">Analytics de Dados</span>
+                <div className="w-3 h-3 bg-[#00FF7F] rounded-full shadow-neon"></div>
+                <span className="text-gray-300 font-orbitron">Analytics de Dados</span>
               </motion.div>
             </div>
           </motion.div>
@@ -77,25 +77,25 @@ export function FarmSection() {
               className="relative"
             >
               <Image 
-                src="/assets/farm.png" 
+                src="/assets/images/farm/smart-farm-futuristic.png" 
                 alt="AGROTM Smart Farm" 
                 width={600} 
                 height={400}
-                className="rounded-2xl shadow-neon hover:shadow-neon transition-all duration-500"
+                className="rounded-2xl shadow-neon hover:scale-105 transition-transform duration-500"
                 unoptimized={true}
                 onError={(e) => {
                   const target = e.currentTarget;
-                  if (target.src.includes('farm.png')) {
+                  if (target.src.includes('smart-farm-futuristic.png')) {
                     target.style.display = 'none';
                     target.nextElementSibling?.classList.remove('hidden');
                   }
                 }}
               />
-              <div className="w-[600px] h-[400px] bg-gradient-to-br from-[#00F0FF]/10 to-[#000000] border-2 border-[#00F0FF]/30 rounded-2xl flex items-center justify-center shadow-neon">
+              <div className="w-[600px] h-[400px] bg-gradient-to-br from-[#00FF7F]/10 to-[#000000] border-2 border-[#00FF7F]/30 rounded-2xl flex items-center justify-center shadow-neon">
                 <div className="text-center">
                   <div className="text-8xl mb-4">🚜</div>
-                  <div className="text-[#00F0FF] font-orbitron text-2xl mb-2">Smart Farm</div>
-                  <div className="text-[#cccccc] text-lg">Tecnologia IoT Avançada</div>
+                  <div className="text-[#00FF7F] font-orbitron text-2xl mb-2">Smart Farm</div>
+                  <div className="text-gray-300 text-lg">Tecnologia IoT Avançada</div>
                 </div>
               </div>
             </motion.div>

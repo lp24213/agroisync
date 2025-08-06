@@ -25,18 +25,18 @@ export function Hero() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8 }}
-            className="font-orbitron text-4xl md:text-6xl lg:text-7xl text-[#00F0FF] mb-8 animate-fadeIn"
+            className="font-orbitron text-4xl md:text-6xl lg:text-7xl text-[#00FF7F] font-bold tracking-wide drop-shadow-neon mb-8 animate-fadeIn"
           >
-            AGROTM
+            O Futuro do Agronegócio na Blockchain
           </motion.h1>
           
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.8 }}
-            className="text-xl md:text-2xl text-[#cccccc] mb-8 max-w-3xl mx-auto font-orbitron"
+            className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto font-orbitron"
           >
-            🌱 Agricultura Tokenizada do Futuro
+            Staking, NFTs e Smart Farms com tecnologia Web3 avançada.
           </motion.p>
           
           <motion.div 
@@ -46,20 +46,20 @@ export function Hero() {
             className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
           >
             <motion.button
-              whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(0, 240, 255, 0.8)" }}
+              whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(0, 255, 127, 0.8)" }}
               whileTap={{ scale: 0.95 }}
-              className="bg-[#00F0FF] hover:bg-[#00d4e0] text-black px-8 py-4 rounded-xl font-orbitron font-semibold flex items-center justify-center gap-2 shadow-neon transition-all duration-300"
+              className="bg-[#00FF7F] text-black px-8 py-4 rounded-xl font-orbitron font-bold flex items-center justify-center gap-2 shadow-neon hover:scale-105 transition-all"
             >
-              Acessar Dashboard
+              Começar Agora
               <ArrowRight size={20} />
             </motion.button>
             <Link href="/documentation">
               <motion.button
-                whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(0, 240, 255, 0.8)" }}
+                whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(0, 255, 127, 0.8)" }}
                 whileTap={{ scale: 0.95 }}
-                className="border-2 border-[#00F0FF] text-[#00F0FF] hover:bg-[#00F0FF] hover:text-black px-8 py-4 rounded-xl font-orbitron font-semibold transition-all duration-300 shadow-neon"
+                className="border-2 border-[#00FF7F] text-[#00FF7F] hover:bg-[#00FF7F] hover:text-black px-8 py-4 rounded-xl font-orbitron font-bold transition-all duration-300 shadow-neon"
               >
-                Documentação
+                Ver Documentação
               </motion.button>
             </Link>
           </motion.div>
@@ -77,30 +77,31 @@ export function Hero() {
               className="relative"
             >
               <Image 
-                src="/assets/hero.png" 
+                src="/assets/images/hero/farmer-tech-character.png" 
                 alt="Premium Farmer Tech Character" 
                 width={300} 
                 height={300}
-                className="drop-shadow-[0_0_30px_rgba(0,240,255,0.6)] rounded-2xl"
+                className="drop-shadow-[0_0_30px_rgba(0,255,127,0.6)] rounded-2xl"
                 unoptimized={true}
                 onError={(e) => {
                   const target = e.currentTarget;
-                  if (target.src.includes('hero.png')) {
+                  if (target.src.includes('farmer-tech-character.png')) {
                     target.style.display = 'none';
                     target.nextElementSibling?.classList.remove('hidden');
                   }
                 }}
               />
-              <div className="w-[300px] h-[300px] bg-gradient-to-br from-[#00F0FF]/20 to-[#00F0FF]/5 border-2 border-[#00F0FF]/30 rounded-2xl flex items-center justify-center">
+              <div className="w-[300px] h-[300px] bg-gradient-to-br from-[#00FF7F]/20 to-[#00FF7F]/5 border-2 border-[#00FF7F]/30 rounded-2xl flex items-center justify-center">
                 <div className="text-center">
                   <div className="text-6xl mb-4">🌾</div>
-                  <div className="text-[#00F0FF] font-orbitron text-xl">AGROTM</div>
-                  <div className="text-[#cccccc] text-sm">Premium Farming</div>
+                  <div className="text-[#00FF7F] font-orbitron text-xl">AGROTM</div>
+                  <div className="text-gray-300 text-sm">Premium Farming</div>
                 </div>
               </div>
             </motion.div>
           </motion.div>
 
+          {/* Stats Cards */}
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -110,37 +111,37 @@ export function Hero() {
             <motion.div
               whileHover={{ scale: 1.05, y: -5 }}
               transition={{ duration: 0.3 }}
-              className="text-center bg-black/70 border border-[#00F0FF] p-6 rounded-2xl hover:shadow-neon"
+              className="text-center bg-black/70 border border-[#00FF7F] p-6 rounded-2xl hover:shadow-neon"
             >
-              <div className="bg-[#00F0FF]/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <TrendingUp className="text-[#00F0FF]" size={32} />
+              <div className="bg-[#00FF7F]/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <TrendingUp className="text-[#00FF7F]" size={32} />
               </div>
-              <h3 className="text-xl font-orbitron font-semibold text-[#00F0FF] mb-2">Staking Premium</h3>
-              <p className="text-[#cccccc]">Ganhe recompensas através de staking DeFi e yield farming</p>
+              <h3 className="text-xl font-orbitron font-semibold text-[#00FF7F] mb-2">Staking Premium</h3>
+              <p className="text-gray-300">Ganhe recompensas através de staking DeFi e yield farming</p>
             </motion.div>
 
             <motion.div
               whileHover={{ scale: 1.05, y: -5 }}
               transition={{ duration: 0.3 }}
-              className="text-center bg-black/70 border border-[#00F0FF] p-6 rounded-2xl hover:shadow-neon"
+              className="text-center bg-black/70 border border-[#00FF7F] p-6 rounded-2xl hover:shadow-neon"
             >
-              <div className="bg-[#00F0FF]/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Shield className="text-[#00F0FF]" size={32} />
+              <div className="bg-[#00FF7F]/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <Shield className="text-[#00FF7F]" size={32} />
               </div>
-              <h3 className="text-xl font-orbitron font-semibold text-[#00F0FF] mb-2">Segurança Avançada</h3>
-              <p className="text-[#cccccc]">Segurança avançada e proteção blockchain</p>
+              <h3 className="text-xl font-orbitron font-semibold text-[#00FF7F] mb-2">Segurança Avançada</h3>
+              <p className="text-gray-300">Segurança avançada e proteção blockchain</p>
             </motion.div>
 
             <motion.div
               whileHover={{ scale: 1.05, y: -5 }}
               transition={{ duration: 0.3 }}
-              className="text-center bg-black/70 border border-[#00F0FF] p-6 rounded-2xl hover:shadow-neon"
+              className="text-center bg-black/70 border border-[#00FF7F] p-6 rounded-2xl hover:shadow-neon"
             >
-              <div className="bg-[#00F0FF]/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Coins className="text-[#00F0FF]" size={32} />
+              <div className="bg-[#00FF7F]/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <Coins className="text-[#00FF7F]" size={32} />
               </div>
-              <h3 className="text-xl font-orbitron font-semibold text-[#00F0FF] mb-2">NFTs Agrícolas</h3>
-              <p className="text-[#cccccc]">Crie e negocie ativos digitais agrícolas</p>
+              <h3 className="text-xl font-orbitron font-semibold text-[#00FF7F] mb-2">NFTs Agrícolas</h3>
+              <p className="text-gray-300">Crie e negocie ativos digitais agrícolas</p>
             </motion.div>
           </motion.div>
         </motion.div>

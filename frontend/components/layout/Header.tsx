@@ -84,7 +84,7 @@ export function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[#000000]/90 backdrop-blur-md border-b border-[#00F0FF]/20">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-[#000000]/90 backdrop-blur-md border-b border-[#00FF7F]/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 relative">
           {/* Logo */}
@@ -108,47 +108,47 @@ export function Header() {
                 }
               }}
             />
-            <span className="hidden text-2xl font-bold text-[#00F0FF] font-orbitron">AGROTM</span>
+            <span className="hidden text-2xl font-bold text-[#00FF7F] font-orbitron">AGROTM</span>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <Link 
               href="/dashboard" 
-              className={`text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300 font-orbitron ${
-                pathname === '/dashboard' ? 'text-[#00F0FF]' : ''
+              className={`text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300 font-orbitron ${
+                pathname === '/dashboard' ? 'text-[#00FF7F]' : ''
               }`}
             >
               Dashboard
             </Link>
             <Link 
               href="/staking" 
-              className={`text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300 font-orbitron ${
-                pathname === '/staking' ? 'text-[#00F0FF]' : ''
+              className={`text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300 font-orbitron ${
+                pathname === '/staking' ? 'text-[#00FF7F]' : ''
               }`}
             >
               Staking
             </Link>
             <Link 
               href="/nft-marketplace" 
-              className={`text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300 font-orbitron ${
-                pathname === '/nft-marketplace' ? 'text-[#00F0FF]' : ''
+              className={`text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300 font-orbitron ${
+                pathname === '/nft-marketplace' ? 'text-[#00FF7F]' : ''
               }`}
             >
               NFTs
             </Link>
             <Link 
               href="/farm" 
-              className={`text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300 font-orbitron ${
-                pathname === '/farm' ? 'text-[#00F0FF]' : ''
+              className={`text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300 font-orbitron ${
+                pathname === '/farm' ? 'text-[#00FF7F]' : ''
               }`}
             >
               Farm
             </Link>
             <Link 
               href="/contact" 
-              className={`text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300 font-orbitron ${
-                pathname === '/contact' ? 'text-[#00F0FF]' : ''
+              className={`text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300 font-orbitron ${
+                pathname === '/contact' ? 'text-[#00FF7F]' : ''
               }`}
             >
               Contato
@@ -160,7 +160,7 @@ export function Header() {
             <div className="relative" ref={languageRef}>
               <button
                 onClick={() => setIsLanguageOpen(!isLanguageOpen)}
-                className="flex items-center space-x-2 text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300"
+                className="flex items-center space-x-2 text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300"
               >
                 <Globe className="w-4 h-4" />
                 <span className="font-orbitron">{getCurrentLanguage().flag}</span>
@@ -168,13 +168,13 @@ export function Header() {
               </button>
               
               {isLanguageOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-[#000000] border border-[#00F0FF]/20 rounded-lg shadow-lg py-2 z-50">
+                <div className="absolute right-0 mt-2 w-48 bg-[#000000] border border-[#00FF7F]/20 rounded-lg shadow-lg py-2 z-50">
                   {supportedLanguages.map((language) => (
                     <button
                       key={language.code}
                       onClick={() => handleLanguageChange(language.code)}
-                      className={`w-full text-left px-4 py-2 text-sm hover:bg-[#00F0FF]/10 transition-colors duration-300 ${
-                        currentLanguage === language.code ? 'text-[#00F0FF]' : 'text-[#cccccc]'
+                      className={`w-full text-left px-4 py-2 text-sm hover:bg-[#00FF7F]/10 transition-colors duration-300 ${
+                        currentLanguage === language.code ? 'text-[#00FF7F]' : 'text-[#cccccc]'
                       }`}
                     >
                       <span className="mr-2">{language.flag}</span>
@@ -187,16 +187,16 @@ export function Header() {
 
             {/* CTA Button */}
             <Link href="/dashboard">
-              <button className="bg-[#00F0FF] text-black px-6 py-2 rounded-xl font-orbitron font-semibold hover:bg-[#00d4e0] transition-all duration-300 shadow-neon">
+              <button className="bg-[#00FF7F] text-black px-6 py-2 rounded-xl font-orbitron font-semibold hover:bg-[#00d4e0] transition-all duration-300 shadow-neon">
                 Acessar
               </button>
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile menu button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden mobile-menu-button p-2 text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300"
+            className="md:hidden mobile-menu-button p-2 text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300"
           >
             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -204,12 +204,12 @@ export function Header() {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden mobile-menu absolute top-full left-0 right-0 bg-[#000000]/95 backdrop-blur-md border-b border-[#00F0FF]/20">
+          <div className="md:hidden mobile-menu absolute top-full left-0 right-0 bg-[#000000]/95 backdrop-blur-md border-b border-[#00FF7F]/20">
             <div className="px-4 py-6 space-y-4">
               <Link 
                 href="/dashboard" 
-                className={`block text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300 font-orbitron ${
-                  pathname === '/dashboard' ? 'text-[#00F0FF]' : ''
+                className={`block text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300 font-orbitron ${
+                  pathname === '/dashboard' ? 'text-[#00FF7F]' : ''
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -217,8 +217,8 @@ export function Header() {
               </Link>
               <Link 
                 href="/staking" 
-                className={`block text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300 font-orbitron ${
-                  pathname === '/staking' ? 'text-[#00F0FF]' : ''
+                className={`block text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300 font-orbitron ${
+                  pathname === '/staking' ? 'text-[#00FF7F]' : ''
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -226,8 +226,8 @@ export function Header() {
               </Link>
               <Link 
                 href="/nft-marketplace" 
-                className={`block text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300 font-orbitron ${
-                  pathname === '/nft-marketplace' ? 'text-[#00F0FF]' : ''
+                className={`block text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300 font-orbitron ${
+                  pathname === '/nft-marketplace' ? 'text-[#00FF7F]' : ''
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -235,8 +235,8 @@ export function Header() {
               </Link>
               <Link 
                 href="/farm" 
-                className={`block text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300 font-orbitron ${
-                  pathname === '/farm' ? 'text-[#00F0FF]' : ''
+                className={`block text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300 font-orbitron ${
+                  pathname === '/farm' ? 'text-[#00FF7F]' : ''
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -244,8 +244,8 @@ export function Header() {
               </Link>
               <Link 
                 href="/contact" 
-                className={`block text-[#cccccc] hover:text-[#00F0FF] transition-colors duration-300 font-orbitron ${
-                  pathname === '/contact' ? 'text-[#00F0FF]' : ''
+                className={`block text-[#cccccc] hover:text-[#00FF7F] transition-colors duration-300 font-orbitron ${
+                  pathname === '/contact' ? 'text-[#00FF7F]' : ''
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -253,7 +253,7 @@ export function Header() {
               </Link>
               
               {/* Mobile Language Selector */}
-              <div className="pt-4 border-t border-[#00F0FF]/20">
+              <div className="pt-4 border-t border-[#00FF7F]/20">
                 <div className="flex flex-wrap gap-2">
                   {supportedLanguages.map((language) => (
                     <button
@@ -261,8 +261,8 @@ export function Header() {
                       onClick={() => handleLanguageChange(language.code)}
                       className={`px-3 py-2 text-sm rounded-lg transition-colors duration-300 ${
                         currentLanguage === language.code 
-                          ? 'bg-[#00F0FF] text-black' 
-                          : 'bg-[#00F0FF]/10 text-[#cccccc] hover:bg-[#00F0FF]/20'
+                          ? 'bg-[#00FF7F] text-black' 
+                          : 'bg-[#00FF7F]/10 text-[#cccccc] hover:bg-[#00FF7F]/20'
                       }`}
                     >
                       <span className="mr-2">{language.flag}</span>

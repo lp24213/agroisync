@@ -131,12 +131,16 @@ export function ChatbotAGROTM() {
     <>
       {/* Chatbot Button */}
       <motion.button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 bg-[#00F0FF] text-black p-4 rounded-full shadow-neon hover:shadow-neon transition-all duration-300"
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed bottom-6 right-6 z-50 bg-[#00FF7F] text-black p-4 rounded-full shadow-neon hover:shadow-neon transition-all duration-300"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
       >
-        <MessageCircle className="w-6 h-6" />
+        {isOpen ? (
+          <X className="w-6 h-6" />
+        ) : (
+          <MessageCircle className="w-6 h-6" />
+        )}
       </motion.button>
 
       {/* Chatbot Modal */}
@@ -162,22 +166,22 @@ export function ChatbotAGROTM() {
               initial={{ opacity: 0, y: 100, scale: 0.8 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 100, scale: 0.8 }}
-              className="relative w-full max-w-md h-96 bg-[#000000] border border-[#00F0FF]/20 rounded-2xl shadow-neon overflow-hidden"
+              className="relative w-full max-w-md h-96 bg-[#000000] border border-[#00FF7F]/20 rounded-2xl shadow-neon overflow-hidden"
             >
               {/* Header */}
-              <div className="bg-[#00F0FF]/10 border-b border-[#00F0FF]/20 p-4 flex items-center justify-between">
+              <div className="bg-[#00FF7F]/10 border-b border-[#00FF7F]/20 p-4 flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-[#00F0FF] rounded-full flex items-center justify-center">
+                  <div className="w-8 h-8 bg-[#00FF7F] rounded-full flex items-center justify-center">
                     <MessageCircle className="w-4 h-4 text-black" />
                   </div>
                   <div>
-                    <h3 className="font-orbitron font-semibold text-[#00F0FF]">AGROTM Assistant</h3>
+                    <h3 className="font-orbitron font-semibold text-[#00FF7F]">AGROTM Assistant</h3>
                     <p className="text-xs text-[#cccccc]">Online</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="text-[#cccccc] hover:text-[#00F0FF] transition-colors"
+                  className="text-[#cccccc] hover:text-[#00FF7F] transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -195,8 +199,8 @@ export function ChatbotAGROTM() {
                     <div
                       className={`max-w-xs p-3 rounded-2xl ${
                         message.isUser
-                          ? 'bg-[#00F0FF] text-black'
-                          : 'bg-[#00F0FF]/10 text-[#cccccc] border border-[#00F0FF]/20'
+                          ? 'bg-[#00FF7F] text-black'
+                          : 'bg-[#00FF7F]/10 text-[#cccccc] border border-[#00FF7F]/20'
                       }`}
                     >
                       <p className="text-sm">{message.text}</p>
@@ -215,11 +219,11 @@ export function ChatbotAGROTM() {
                     animate={{ opacity: 1 }}
                     className="flex justify-start"
                   >
-                    <div className="bg-[#00F0FF]/10 border border-[#00F0FF]/20 p-3 rounded-2xl">
+                    <div className="bg-[#00FF7F]/10 border border-[#00FF7F]/20 p-3 rounded-2xl">
                       <div className="flex space-x-1">
-                        <div className="w-2 h-2 bg-[#00F0FF] rounded-full animate-bounce"></div>
-                        <div className="w-2 h-2 bg-[#00F0FF] rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                        <div className="w-2 h-2 bg-[#00F0FF] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                        <div className="w-2 h-2 bg-[#00FF7F] rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-[#00FF7F] rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                        <div className="w-2 h-2 bg-[#00FF7F] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                       </div>
                     </div>
                   </motion.div>
@@ -228,7 +232,7 @@ export function ChatbotAGROTM() {
               </div>
 
               {/* Input */}
-              <div className="p-4 border-t border-[#00F0FF]/20">
+              <div className="p-4 border-t border-[#00FF7F]/20">
                 <div className="flex space-x-2">
                   <input
                     ref={inputRef}
@@ -237,12 +241,12 @@ export function ChatbotAGROTM() {
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder="Digite sua mensagem..."
-                    className="flex-1 bg-[#000000] border border-[#00F0FF]/20 rounded-xl px-4 py-2 text-[#cccccc] placeholder-[#cccccc]/50 focus:outline-none focus:border-[#00F0FF] transition-colors"
+                    className="flex-1 bg-[#000000] border border-[#00FF7F]/20 rounded-xl px-4 py-2 text-[#cccccc] placeholder-[#cccccc]/50 focus:outline-none focus:border-[#00FF7F] transition-colors"
                   />
                   <button
                     onClick={handleSendMessage}
                     disabled={!inputValue.trim() || isLoading}
-                    className="bg-[#00F0FF] text-black p-2 rounded-xl hover:bg-[#00d4e0] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-[#00FF7F] text-black p-2 rounded-xl hover:bg-[#00d4e0] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Send className="w-4 h-4" />
                   </button>
@@ -251,7 +255,7 @@ export function ChatbotAGROTM() {
                 {/* WhatsApp Button */}
                 <button
                   onClick={openWhatsApp}
-                  className="w-full mt-2 bg-[#00F0FF]/10 border border-[#00F0FF]/20 text-[#00F0FF] py-2 rounded-xl hover:bg-[#00F0FF]/20 transition-colors text-sm font-orbitron"
+                  className="w-full mt-2 bg-[#00FF7F]/10 border border-[#00FF7F]/20 text-[#00FF7F] py-2 rounded-xl hover:bg-[#00FF7F]/20 transition-colors text-sm font-orbitron"
                 >
                   💬 Falar com atendente
                 </button>

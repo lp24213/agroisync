@@ -34,25 +34,25 @@ export function SecuritySection() {
               className="relative"
             >
               <Image 
-                src="/assets/security.png" 
+                src="/assets/images/security/cyber-defense.png" 
                 alt="AGROTM Cyber Defense" 
                 width={600} 
                 height={400}
-                className="rounded-2xl shadow-neon hover:shadow-neon transition-all duration-500"
+                className="rounded-2xl shadow-neon hover:scale-105 transition-transform duration-500"
                 unoptimized={true}
                 onError={(e) => {
                   const target = e.currentTarget;
-                  if (target.src.includes('security.png')) {
+                  if (target.src.includes('cyber-defense.png')) {
                     target.style.display = 'none';
                     target.nextElementSibling?.classList.remove('hidden');
                   }
                 }}
               />
-              <div className="w-[600px] h-[400px] bg-gradient-to-br from-[#00F0FF]/10 to-[#000000] border-2 border-[#00F0FF]/30 rounded-2xl flex items-center justify-center shadow-neon">
+              <div className="w-[600px] h-[400px] bg-gradient-to-br from-[#00FF7F]/10 to-[#000000] border-2 border-[#00FF7F]/30 rounded-2xl flex items-center justify-center shadow-neon">
                 <div className="text-center">
                   <div className="text-8xl mb-4">🛡️</div>
-                  <div className="text-[#00F0FF] font-orbitron text-2xl mb-2">Cyber Defense</div>
-                  <div className="text-[#cccccc] text-lg">Segurança Avançada</div>
+                  <div className="text-[#00FF7F] font-orbitron text-2xl mb-2">Cyber Defense</div>
+                  <div className="text-gray-300 text-lg">Segurança Avançada</div>
                 </div>
               </div>
             </motion.div>
@@ -65,11 +65,11 @@ export function SecuritySection() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="lg:order-1"
           >
-            <h2 className="font-orbitron text-4xl md:text-5xl text-[#00F0FF] mb-6 animate-fadeIn">
+            <h2 className="font-orbitron text-4xl md:text-5xl text-[#00FF7F] font-bold tracking-wide drop-shadow-neon mb-6 animate-fadeIn">
               Cyber Defense
             </h2>
-            <p className="text-lg md:text-xl text-[#cccccc] leading-relaxed mb-8">
-              Segurança avançada e proteção blockchain com tecnologia de cibersegurança de ponta.
+            <p className="text-lg md:text-xl text-gray-300 leading-relaxed mb-8">
+              Segurança avançada e proteção blockchain com tecnologia de ponta para seus ativos digitais.
             </p>
             <div className="space-y-4">
               <motion.div 
@@ -78,8 +78,8 @@ export function SecuritySection() {
                 transition={{ delay: 0.2, duration: 0.6 }}
                 className="flex items-center space-x-3"
               >
-                <div className="w-3 h-3 bg-[#00F0FF] rounded-full shadow-neon"></div>
-                <span className="text-[#cccccc] font-orbitron">Proteção Avançada</span>
+                <div className="w-3 h-3 bg-[#00FF7F] rounded-full shadow-neon"></div>
+                <span className="text-gray-300 font-orbitron">Proteção Avançada</span>
               </motion.div>
               <motion.div 
                 initial={{ opacity: 0, x: -20 }}
@@ -87,8 +87,8 @@ export function SecuritySection() {
                 transition={{ delay: 0.4, duration: 0.6 }}
                 className="flex items-center space-x-3"
               >
-                <div className="w-3 h-3 bg-[#00F0FF] rounded-full shadow-neon"></div>
-                <span className="text-[#cccccc] font-orbitron">Segurança Blockchain</span>
+                <div className="w-3 h-3 bg-[#00FF7F] rounded-full shadow-neon"></div>
+                <span className="text-gray-300 font-orbitron">Blockchain Seguro</span>
               </motion.div>
               <motion.div 
                 initial={{ opacity: 0, x: -20 }}
@@ -96,8 +96,8 @@ export function SecuritySection() {
                 transition={{ delay: 0.6, duration: 0.6 }}
                 className="flex items-center space-x-3"
               >
-                <div className="w-3 h-3 bg-[#00F0FF] rounded-full shadow-neon"></div>
-                <span className="text-[#cccccc] font-orbitron">Monitoramento em Tempo Real</span>
+                <div className="w-3 h-3 bg-[#00FF7F] rounded-full shadow-neon"></div>
+                <span className="text-gray-300 font-orbitron">Monitoramento 24/7</span>
               </motion.div>
             </div>
           </motion.div>

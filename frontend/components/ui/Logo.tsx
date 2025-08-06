@@ -47,12 +47,9 @@ export function Logo({ size = 'md', iconOnly = false }: LogoProps) {
             }
           }}
         />
-        <div className="w-full h-full bg-[#00F0FF] rounded-full flex items-center justify-center">
-          <span className="text-black font-bold text-xs">A</span>
-        </div>
       </div>
       {!iconOnly && (
-        <span className={`text-[#00F0FF] font-orbitron font-bold ${textSizes[size]} drop-shadow-[0_0_10px_rgba(0,240,255,0.7)]`}>
+        <span className={`text-[#00FF7F] font-orbitron font-bold ${textSizes[size]} drop-shadow-[0_0_10px_rgba(0,255,127,0.7)]`}>
           AGRO<span className="text-xs align-top">TM</span>
         </span>
       )}

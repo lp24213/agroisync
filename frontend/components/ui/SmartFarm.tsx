@@ -44,9 +44,9 @@ export function SmartFarm({ size = 'md', className = '' }: SmartFarmProps) {
         />
         
         {/* Fallback quando imagem não carrega */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#00F0FF]/20 to-[#000000] border-2 border-[#00F0FF]/30 rounded-2xl flex flex-col justify-center items-center">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#00FF7F]/20 to-[#000000] border-2 border-[#00FF7F]/30 rounded-2xl flex flex-col justify-center items-center">
           <div className="text-6xl mb-4">🚜</div>
-          <h2 className="font-orbitron text-2xl md:text-3xl text-[#00F0FF] mb-2 animate-fadeIn">
+          <h2 className="font-orbitron text-2xl md:text-3xl text-[#00FF7F] mb-2 animate-fadeIn">
             Smart Farm
           </h2>
           <p className="text-sm md:text-base text-[#cccccc] leading-relaxed text-center px-4">

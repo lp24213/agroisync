@@ -78,54 +78,54 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 240, 255, 0.3);
+    background-color: rgba(0, 255, 127, 0.3);
     border-radius: 9999px;
     border: 2px solid transparent;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(0, 240, 255, 0.5);
+    background-color: rgba(0, 255, 127, 0.5);
   }
 }
 
 @layer components {
   .btn-primary {
-    background-color: #00F0FF;
+    background-color: #00FF7F;
     color: #000000;
     font-weight: 600;
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     transition: all 0.3s;
-    box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+    box-shadow: 0 0 15px rgba(0, 255, 127, 0.5);
     font-family: 'Inter', sans-serif;
   }
   
   .btn-primary:hover {
-    background-color: #00d4e0;
-    box-shadow: 0 0 25px rgba(0, 240, 255, 0.7);
+    background-color: #00cc66;
+    box-shadow: 0 0 25px rgba(0, 255, 127, 0.7);
   }
   
   .btn-secondary {
     background-color: transparent;
-    color: #00F0FF;
-    border: 2px solid #00F0FF;
+    color: #00FF7F;
+    border: 2px solid #00FF7F;
     font-weight: 600;
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     transition: all 0.3s;
-    box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+    box-shadow: 0 0 15px rgba(0, 255, 127, 0.3);
     font-family: 'Inter', sans-serif;
   }
   
   .btn-secondary:hover {
-    background-color: #00F0FF;
+    background-color: #00FF7F;
     color: #000000;
-    box-shadow: 0 0 25px rgba(0, 240, 255, 0.7);
+    box-shadow: 0 0 25px rgba(0, 255, 127, 0.7);
   }
   
   .card {
     background-color: rgba(0, 0, 0, 0.8);
-    border: 1px solid rgba(0, 240, 255, 0.2);
+    border: 1px solid rgba(0, 255, 127, 0.2);
     border-radius: 0.5rem;
     padding: 1.5rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -133,7 +133,7 @@
   }
   
   .gradient-text {
-    background: linear-gradient(135deg, #00F0FF 0%, #00d4e0 100%);
+    background: linear-gradient(135deg, #00FF7F 0%, #00cc66 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -141,7 +141,7 @@
   
   .cyberpunk-border {
     position: relative;
-    border: 1px solid #00F0FF;
+    border: 1px solid #00FF7F;
     
     &::before {
       content: '';
@@ -150,7 +150,7 @@
       left: -2px;
       right: -2px;
       bottom: -2px;
-      background: linear-gradient(45deg, #00F0FF, transparent, #00F0FF);
+      background: linear-gradient(45deg, #00FF7F, transparent, #00FF7F);
       border-radius: inherit;
       z-index: -1;
       opacity: 0.5;
@@ -159,8 +159,8 @@
   
   .grid-animation {
     background-image: 
-      linear-gradient(rgba(0, 240, 255, 0.1) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 240, 255, 0.1) 1px, transparent 1px);
+      linear-gradient(rgba(0, 255, 127, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 255, 127, 0.1) 1px, transparent 1px);
     background-size: 20px 20px;
     animation: grid-move 20s linear infinite;
   }
@@ -174,25 +174,25 @@
   }
   
   .text-glow-blue {
-    text-shadow: 0 0 10px #00F0FF;
+    text-shadow: 0 0 10px #00FF7F;
   }
   
   .text-glow-cyan {
-    text-shadow: 0 0 10px #00F0FF;
+    text-shadow: 0 0 10px #00FF7F;
   }
   
   .neon-text {
-    color: #00F0FF;
+    color: #00FF7F;
     text-shadow: 
-      0 0 5px #00F0FF,
-      0 0 10px #00F0FF,
-      0 0 15px #00F0FF,
-      0 0 20px #00F0FF;
+      0 0 5px #00FF7F,
+      0 0 10px #00FF7F,
+      0 0 15px #00FF7F,
+      0 0 20px #00FF7F;
   }
   
   .cyberpunk-glitch {
     position: relative;
-    color: #00F0FF;
+    color: #00FF7F;
   }
   
   .cyberpunk-glitch::before,
@@ -207,18 +207,18 @@
   
   .cyberpunk-glitch::before {
     animation: glitch-1 0.5s infinite;
-    color: #00F0FF;
+    color: #00FF7F;
     z-index: -1;
   }
   
   .cyberpunk-glitch::after {
     animation: glitch-2 0.5s infinite;
-    color: #00F0FF;
+    color: #00FF7F;
     z-index: -2;
   }
   
   .cyberpunk-button {
-    background: linear-gradient(45deg, #00F0FF, #00d4e0);
+    background: linear-gradient(45deg, #00FF7F, #00cc66);
     border: none;
     color: #000000;
     padding: 0.75rem 1.5rem;
@@ -229,18 +229,18 @@
     position: relative;
     overflow: hidden;
     transition: all 0.3s ease;
-    box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+    box-shadow: 0 0 20px rgba(0, 255, 127, 0.5);
   }
   
   .cyberpunk-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 0 30px rgba(0, 240, 255, 0.8);
+    box-shadow: 0 0 30px rgba(0, 255, 127, 0.8);
   }
   
   .cyberpunk-button-outline {
     background: transparent;
-    border: 2px solid #00F0FF;
-    color: #00F0FF;
+    border: 2px solid #00FF7F;
+    color: #00FF7F;
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
     font-weight: 600;
@@ -249,44 +249,44 @@
     position: relative;
     overflow: hidden;
     transition: all 0.3s ease;
-    box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+    box-shadow: 0 0 20px rgba(0, 255, 127, 0.3);
   }
   
   .cyberpunk-button-outline:hover {
-    background: #00F0FF;
+    background: #00FF7F;
     color: #000000;
-    box-shadow: 0 0 30px rgba(0, 240, 255, 0.8);
+    box-shadow: 0 0 30px rgba(0, 255, 127, 0.8);
   }
   
   .cyberpunk-card {
     background: rgba(0, 0, 0, 0.8);
-    border: 1px solid #00F0FF;
+    border: 1px solid #00FF7F;
     border-radius: 0.5rem;
     padding: 1.5rem;
     position: relative;
     overflow: hidden;
     transition: all 0.3s ease;
-    box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+    box-shadow: 0 0 20px rgba(0, 255, 127, 0.2);
   }
   
   .cyberpunk-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 0 30px rgba(0, 240, 255, 0.4);
+    box-shadow: 0 0 30px rgba(0, 255, 127, 0.4);
   }
   
   .cyberpunk-value {
-    color: #00F0FF;
+    color: #00FF7F;
     font-weight: 700;
   }
   
   .neon-box {
-    box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+    box-shadow: 0 0 20px rgba(0, 255, 127, 0.5);
   }
   
   .glass-effect {
     background: rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 240, 255, 0.2);
+    border: 1px solid rgba(0, 255, 127, 0.2);
   }
   
   .font-display {
@@ -337,10 +337,10 @@
 
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+    box-shadow: 0 0 20px rgba(0, 255, 127, 0.5);
   }
   50% {
-    box-shadow: 0 0 30px rgba(0, 240, 255, 0.8);
+    box-shadow: 0 0 30px rgba(0, 255, 127, 0.8);
   }
 }
 
@@ -368,7 +368,7 @@
   background: linear-gradient(
     to bottom,
     transparent 50%,
-    rgba(0, 240, 255, 0.02) 50%
+    rgba(0, 255, 127, 0.02) 50%
   );
   background-size: 100% 4px;
   animation: scanline 10s linear infinite;
@@ -400,7 +400,7 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(0, 240, 255, 0.1) 50%,
+    rgba(0, 255, 127, 0.1) 50%,
     transparent 100%
   );
   animation: digital-rain-fall 3s linear infinite;
@@ -489,7 +489,7 @@
   position: absolute;
   width: 10px;
   height: 10px;
-  border-color: #00F0FF;
+  border-color: #00FF7F;
   opacity: 0.7;
   transition: all 0.3s ease;
 }
@@ -527,7 +527,7 @@
   position: absolute;
   width: 10px;
   height: 10px;
-  border-color: #00F0FF;
+  border-color: #00FF7F;
   opacity: 0.7;
   transition: all 0.3s ease;
 }
@@ -572,7 +572,7 @@
 .connecting-line {
   position: absolute;
   width: 2px;
-  background: linear-gradient(to bottom, transparent, #00F0FF, transparent);
+  background: linear-gradient(to bottom, transparent, #00FF7F, transparent);
   opacity: 0.5;
   z-index: 1;
 }
@@ -588,7 +588,7 @@
   height: 2px;
   bottom: -2px;
   left: 0;
-  background: linear-gradient(90deg, #00F0FF, #00d4e0);
+  background: linear-gradient(90deg, #00FF7F, #00cc66);
   transition: width 0.3s ease;
 }
 
@@ -599,10 +599,10 @@
 /* AGROTM Premium Utilities */
 @layer utilities {
   .text-neonBlue {
-    color: #00F0FF;
+    color: #00FF7F;
   }
   .shadow-neon {
-    box-shadow: 0 0 20px #00F0FF80;
+    box-shadow: 0 0 20px #00FF7F80;
   }
   .font-orbitron {
     font-family: 'Orbitron', 'Space Grotesk', 'Outfit', sans-serif;
@@ -611,10 +611,10 @@
     background-color: #000000;
   }
   .border-neonBlue {
-    border-color: #00F0FF;
+    border-color: #00FF7F;
   }
   .hover\:shadow-neon:hover {
-    box-shadow: 0 0 30px rgba(0, 240, 255, 0.8);
+    box-shadow: 0 0 30px rgba(0, 255, 127, 0.8);
   }
   .animate-fadeIn {
     animation: fadeIn 0.8s ease-out;

@@ -30,7 +30,7 @@ export function Providers({ children }: ProvidersProps) {
             style: {
               background: '#000000',
               color: '#ffffff',
-              border: '1px solid #00F0FF',
+              border: '1px solid #00FF7F',
             },
           }}
         />
