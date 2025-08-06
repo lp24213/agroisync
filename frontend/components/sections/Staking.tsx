@@ -89,7 +89,7 @@ const Staking: React.FC = () => {
           >
             <div className="relative w-full h-[400px] rounded-2xl overflow-hidden">
               <Image
-                src="/images/staking/staking-farming.jpg"
+                src="/assets/images/staking/staking-farming.png"
                 alt="Staking & Farming - Renda Passiva com Ativos Digitais"
                 fill
                 className="object-cover"

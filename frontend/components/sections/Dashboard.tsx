@@ -36,7 +36,7 @@ const Dashboard: React.FC = () => {
           >
             <div className="relative w-full h-[400px] rounded-2xl overflow-hidden">
               <Image
-                src="/images/dashboard/interactive-dashboard.jpg"
+                src="/assets/images/dashboard/interactive-dashboard.png"
                 alt="Dashboard Interativo - Monitoramento Inteligente"
                 fill
                 className="object-cover"

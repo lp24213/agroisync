@@ -33,7 +33,7 @@ const NFTSection: React.FC = () => {
           >
             <div className="relative w-full h-[400px] rounded-2xl overflow-hidden">
               <Image
-                src="/images/nft/nft-minting.jpg"
+                src="/assets/images/nft/nft-minting.png"
                 alt="NFT Minting - Tokenização Agrícola"
                 fill
                 className="object-cover"

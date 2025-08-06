@@ -39,7 +39,7 @@ const SmartFarmSection: React.FC = () => {
           >
             <div className="relative w-full h-[400px] rounded-2xl overflow-hidden">
               <Image
-                src="/images/farm/smart-farm-futuristic.jpg"
+                src="/assets/images/farm/smart-farm-futuristic.png"
                 alt="Smart Farm Futurista - Automação Inteligente"
                 fill
                 className="object-cover"

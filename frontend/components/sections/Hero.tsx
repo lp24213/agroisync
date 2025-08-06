@@ -83,7 +83,7 @@ const Hero: React.FC = () => {
         >
           <div className="relative w-full h-[500px] rounded-2xl overflow-hidden">
             <Image
-              src="/images/hero/farmer-tech-character.jpg"
+              src="/assets/images/hero/farmer-tech-character.png"
               alt="Farmer Tech Character - Agricultor com Tecnologia Futurista"
               fill
               className="object-cover"
