@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 export function About() {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   return (
     <section id="about" className="py-20 bg-agro-darker relative overflow-hidden">
       {/* Background Elements */}

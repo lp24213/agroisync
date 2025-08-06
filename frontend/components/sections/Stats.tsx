@@ -15,7 +15,7 @@ interface Stat {
 }
 
 export function Stats() {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   const stats: Stat[] = [
     {

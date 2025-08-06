@@ -20,7 +20,7 @@ interface RecentTransactionsProps {
 }
 
 export function RecentTransactions({ transactions }: RecentTransactionsProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   const getTypeColor = (type: string) => {
     switch (type) {

@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 
 export function Features() {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   const features = [
     {

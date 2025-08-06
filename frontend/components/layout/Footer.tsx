@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 export function Footer() {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   return (
     <footer className="bg-gray-900 border-t border-cyan-500/20">

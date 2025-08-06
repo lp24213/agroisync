@@ -24,7 +24,18 @@ export function Header() {
 
   // Detectar idioma atual
   useEffect(() => {
-    setCurrentLanguage(i18n.language || 'pt');
+    // Carregar idioma do localStorage
+    if (typeof window !== 'undefined') {
+      const savedLanguage = localStorage.getItem('agrotm-language');
+      if (savedLanguage && supportedLanguages.find(lang => lang.code === savedLanguage)) {
+        setCurrentLanguage(savedLanguage);
+        i18n.changeLanguage(savedLanguage);
+      } else {
+        setCurrentLanguage(i18n.language || 'pt');
+      }
+    } else {
+      setCurrentLanguage(i18n.language || 'pt');
+    }
   }, [i18n.language]);
 
   // Fechar dropdown quando clicar fora
@@ -57,13 +68,13 @@ export function Header() {
     setCurrentLanguage(languageCode);
     setIsLanguageOpen(false);
     
-    // Mudar idioma usando next-i18next
+    // Mudar idioma usando react-i18next
     i18n.changeLanguage(languageCode);
     
-    // Atualizar URL com o novo locale
-    const currentPath = pathname;
-    const newPath = currentPath.replace(`/${i18n.language}`, `/${languageCode}`);
-    router.push(newPath);
+    // Salvar no localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('agrotm-language', languageCode);
+    }
   };
 
   // Obter idioma atual

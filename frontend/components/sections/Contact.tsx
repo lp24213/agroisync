@@ -5,7 +5,7 @@ import { Mail, MessageCircle, Phone } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 
 export function Contact() {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   return (
     <section className="py-20 bg-black">
       <div className="container mx-auto px-4">

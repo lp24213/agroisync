@@ -22,21 +22,24 @@ const resources = {
   },
 };
 
-i18n
-  .use(initReactI18next)
-  .init({
-    resources,
-    lng: 'pt', // idioma padrão
-    fallbackLng: 'en',
-    debug: process.env.NODE_ENV === 'development',
-    
-    interpolation: {
-      escapeValue: false, // React já escapa valores
-    },
-    
-    react: {
-      useSuspense: false,
-    },
-  });
+// Verificar se já foi inicializado
+if (!i18n.isInitialized) {
+  i18n
+    .use(initReactI18next)
+    .init({
+      resources,
+      lng: 'pt', // idioma padrão
+      fallbackLng: 'en',
+      debug: process.env.NODE_ENV === 'development',
+      
+      interpolation: {
+        escapeValue: false, // React já escapa valores
+      },
+      
+      react: {
+        useSuspense: false,
+      },
+    });
+}
 
 export default i18n; 
