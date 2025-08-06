@@ -70,6 +70,21 @@ export const validation = {
       maximumFractionDigits: 2,
       minimumFractionDigits: 0
     }).format(value);
+  },
+  
+  formatPercentage: (value: number, locale: string = 'pt-BR'): string => {
+    if (isNaN(value)) return '0%';
+    
+    try {
+      return new Intl.NumberFormat(locale, {
+        style: 'percent',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(value / 100);
+    } catch (error) {
+      // Fallback para formatação básica
+      return `${value.toFixed(2)}%`;
+    }
   }
 };
 
