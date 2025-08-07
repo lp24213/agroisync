@@ -1,169 +1,116 @@
 'use client';
 
 import React from 'react';
-import { Card } from '../ui/Card';
-import { validation } from '../../utils/validation';
 import { motion } from 'framer-motion';
-
-interface Stat {
-  id: string;
-  label: string;
-  value: number;
-  unit: string;
-  change?: number;
-}
+import { Card } from '../ui/Card';
+import { TrendingUp, TrendingDown, Users, DollarSign, Shield, Zap } from 'lucide-react';
 
 export function Stats() {
-  const stats: Stat[] = [
+  const stats = [
     {
-      id: '1',
-      label: 'Valor Total Bloqueado',
-      value: 12500000,
-      unit: 'USD',
-      change: 2.5,
+      title: 'Produtores Ativos',
+      value: '500+',
+      change: '+12%',
+      isPositive: true,
+      icon: Users
     },
     {
-      id: '2',
-      label: 'Usuários Ativos',
-      value: 25430,
-      unit: '',
-      change: 12.3,
+      title: 'Volume Transacionado',
+      value: 'R$ 50M+',
+      change: '+25%',
+      isPositive: true,
+      icon: DollarSign
     },
     {
-      id: '3',
-      label: 'APR Médio',
-      value: 18.5,
-      unit: '%',
-      change: -0.3,
+      title: 'Segurança Garantida',
+      value: '99.9%',
+      change: '+0.1%',
+      isPositive: true,
+      icon: Shield
     },
     {
-      id: '4',
-      label: 'Total de Transações',
-      value: 156789,
-      unit: '',
-      change: 8.7,
-    },
+      title: 'Tecnologia Avançada',
+      value: '24/7',
+      change: '100%',
+      isPositive: true,
+      icon: Zap
+    }
   ];
 
   return (
-    <section className="py-20 bg-[#000000] relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 z-0 opacity-20">
+    <section className="py-20 bg-black-matte relative overflow-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0 opacity-20">
         <div className="grid-animation"></div>
       </div>
       
-      {/* Scanlines Effect */}
-      <div className="absolute inset-0 z-1 scanlines opacity-10"></div>
+      <div className="absolute inset-0 scanlines opacity-10"></div>
       
       {/* Floating Elements */}
-      <div className="absolute inset-0 z-0">
-        <motion.div 
-          className="absolute top-1/4 right-1/4 w-32 h-32 rounded-full bg-[#00FF7F]/20 blur-xl"
-          animate={{ 
-            x: [0, 30, 0], 
-            y: [0, -30, 0],
-            opacity: [0.2, 0.3, 0.2]
-          }}
-          transition={{ 
-            repeat: Infinity, 
-            duration: 8,
-            ease: "easeInOut" 
-          }}
-        />
-        <motion.div 
-          className="absolute bottom-1/3 left-1/4 w-40 h-40 rounded-full bg-[#00FF7F]/20 blur-xl"
-          animate={{ 
-            x: [0, -40, 0], 
-            y: [0, 20, 0],
-            opacity: [0.2, 0.4, 0.2]
-          }}
-          transition={{ 
-            repeat: Infinity, 
-            duration: 10,
-            ease: "easeInOut" 
-          }}
-        />
-      </div>
+      <div 
+        className="absolute top-1/4 right-1/4 w-32 h-32 rounded-full bg-[#00bfff]/20 blur-xl"
+        style={{ animation: 'float 6s ease-in-out infinite' }}
+      ></div>
+      
+      <div 
+        className="absolute bottom-1/3 left-1/4 w-40 h-40 rounded-full bg-[#00bfff]/20 blur-xl"
+        style={{ animation: 'float 8s ease-in-out infinite reverse' }}
+      ></div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div 
           className="text-center mb-16"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="font-orbitron text-4xl md:text-5xl text-[#00FF7F] mb-4 animate-fadeIn">
-            Números Impressionantes
+          <h2 className="font-orbitron text-4xl md:text-5xl text-[#00bfff] mb-4 animate-fadeIn">
+            Números <span className="text-[#00bfff]">Impressionantes</span>
           </h2>
-          <p className="text-lg md:text-xl text-[#cccccc] max-w-3xl mx-auto">
-            Resultados que demonstram o sucesso e crescimento da plataforma AGROTM
+          <p className="text-lg md:text-xl text-[#00bfff] max-w-3xl mx-auto">
+            Resultados que comprovam a eficiência e confiabilidade da plataforma AGROTM
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {stats.map((stat, index) => (
             <motion.div
-              key={stat.id}
+              key={stat.title}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               whileHover={{ scale: 1.05, y: -5 }}
             >
-              <Card className="bg-black/70 border border-[#00FF7F]/20 p-6 text-center hover:shadow-neon transition-all duration-300">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.2 }}
-                  className="mb-4"
-                >
-                  <div className="w-16 h-16 bg-[#00FF7F]/20 rounded-full flex items-center justify-center mx-auto">
-                    <span className="text-[#00FF7F] text-2xl">
-                      {index === 0 && '💰'}
-                      {index === 1 && '👥'}
-                      {index === 2 && '📈'}
-                      {index === 3 && '🔄'}
-                    </span>
-                  </div>
-                </motion.div>
+              <Card className="bg-black/70 border border-[#00bfff]/20 p-6 text-center hover:shadow-neon-blue transition-all duration-300">
+                <div className="w-16 h-16 bg-[#00bfff]/20 rounded-full flex items-center justify-center mx-auto">
+                  <span className="text-[#00bfff] text-2xl">
+                    <stat.icon className="w-8 h-8" />
+                  </span>
+                </div>
                 
-                <motion.h3
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.3 }}
-                  className="text-3xl font-orbitron font-bold text-[#00FF7F] mb-2"
+                <div 
+                  className="text-3xl font-orbitron font-bold text-[#00bfff] mb-2"
+                  style={{ textShadow: '0 0 10px rgba(0, 191, 255, 0.5)' }}
                 >
-                  {validation.formatCurrency(stat.value, stat.unit)}
-                </motion.h3>
+                  {stat.value}
+                </div>
                 
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.4 }}
-                  className="text-[#cccccc] font-orbitron mb-2"
-                >
-                  {stat.label}
-                </motion.p>
+                <div className="text-[#00bfff] font-medium mb-2">
+                  {stat.title}
+                </div>
                 
-                {stat.change && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: index * 0.5 }}
-                    className={`flex items-center justify-center space-x-1 ${
-                      stat.change > 0 ? 'text-green-400' : 'text-red-400'
-                    }`}
-                  >
-                    <span className="text-sm">
-                      {stat.change > 0 ? '↗' : '↘'} {Math.abs(stat.change)}%
-                    </span>
-                  </motion.div>
-                )}
+                <div className={`flex items-center justify-center gap-1 text-sm ${
+                  stat.change > 0 ? 'text-[#00bfff]' : 'text-red-400'
+                }`}>
+                  {stat.change > 0 ? (
+                    <TrendingUp className="w-4 h-4" />
+                  ) : (
+                    <TrendingDown className="w-4 h-4" />
+                  )}
+                  <span>{stat.change}</span>
+                </div>
               </Card>
             </motion.div>
           ))}

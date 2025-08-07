@@ -1,102 +1,106 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Eye, Shield, Target } from 'lucide-react';
+import { Heart, Eye, User, Zap } from 'lucide-react';
 
 const NFTSection: React.FC = () => {
-  return (
-    <section className="bg-black-matte py-20 px-4">
-      <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Tokenização <span className="text-[#00bfff]">Agrícola</span>
-          </h2>
-          <p className="text-lg text-[#00bfff] max-w-3xl mx-auto">
-            Tokenização real de produtos agrícolas com rastreabilidade confiável e segurança garantida.
-          </p>
-        </motion.div>
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
+  const features = [
+    {
+      icon: <Zap className="w-5 h-5" />,
+      title: 'Tokenização Avançada',
+      description: 'Transformação digital de commodities agrícolas'
+    },
+    {
+      icon: <Eye className="w-5 h-5" />,
+      title: 'Rastreabilidade Total',
+      description: 'Histórico completo de origem e qualidade'
+    },
+    {
+      icon: <User className="w-5 h-5" />,
+      title: 'Propriedade Digital',
+      description: 'Certificação blockchain de propriedade'
+    },
+    {
+      icon: <Heart className="w-5 h-5" />,
+      title: 'Mercado Seguro',
+      description: 'Negociação transparente e segura'
+    }
+  ];
+
+  return (
+    <section className="py-20 bg-black-matte relative overflow-hidden">
+      <div className="absolute inset-0 opacity-20">
+        <div className="grid-animation"></div>
+      </div>
+      
+      <div className="absolute inset-0 scanlines opacity-10"></div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Imagem NFT */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
+            className="text-center lg:text-left"
+          >
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-orbitron font-bold text-[#00bfff] mb-6">
+              NFTs <span className="text-[#00bfff]">Agrícolas</span>
+            </h2>
+            
+            <p className="text-lg text-[#00bfff] mb-8 max-w-2xl mx-auto lg:mx-0">
+              Tokenização de produtos agrícolas com rastreabilidade blockchain completa e marketplace seguro para negociação de ativos digitais.
+            </p>
+
+            {/* Features - CAIXAS MENORES */}
+            <div className="grid grid-cols-2 gap-4">
+              {features.map((feature, index) => (
+                <motion.div
+                  key={feature.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  className="bg-black/70 border border-[#00bfff]/20 backdrop-blur-sm p-4 rounded-lg hover:shadow-neon-blue transition-all duration-300"
+                >
+                  <div className="bg-[#00bfff]/20 p-2 rounded-lg mb-3 inline-block">
+                    <div className="text-[#00bfff]">
+                      {feature.icon}
+                    </div>
+                  </div>
+                  <h3 className="text-sm font-orbitron font-semibold text-[#00bfff] mb-1">
+                    {feature.title}
+                  </h3>
+                  <p className="text-xs text-[#00bfff]">
+                    {feature.description}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
             className="relative"
           >
-            <div className="relative w-full h-[400px] rounded-2xl overflow-hidden">
+            <div className="relative h-80 lg:h-96 rounded-2xl overflow-hidden border border-[#00bfff]/20 shadow-neon-blue">
               <Image
                 src="/assets/images/nft/nft-minting.png"
-                alt="NFT Minting - Tokenização Agrícola"
+                alt="NFTs Agrícolas - Tokenização de Commodities"
                 fill
                 className="object-cover"
                 unoptimized={true}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-            </div>
-          </motion.div>
-
-          {/* Conteúdo */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="space-y-8"
-          >
-            {/* Features */}
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-[#00bfff]/20 rounded-lg flex items-center justify-center shadow-neon-blue">
-                  <Eye className="w-6 h-6 text-[#00bfff]" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-[#00bfff] mb-2">Rastreabilidade Total</h3>
-                  <p className="text-base text-[#00bfff]">Acompanhe a origem e trajetória de cada produto agrícola.</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-[#00bfff]/20 rounded-lg flex items-center justify-center shadow-neon-blue">
-                  <Shield className="w-6 h-6 text-[#00bfff]" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-[#00bfff] mb-2">Segurança Avançada</h3>
-                  <p className="text-base text-[#00bfff]">Proteção blockchain para garantir autenticidade e integridade.</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-[#00bfff]/20 rounded-lg flex items-center justify-center shadow-neon-blue">
-                  <Target className="w-6 h-6 text-[#00bfff]" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-[#00bfff] mb-2">Transparência Garantida</h3>
-                  <p className="text-base text-[#00bfff]">Informações públicas e verificáveis sobre cada token.</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Estatísticas */}
-            <div className="grid grid-cols-3 gap-6 pt-8">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-[#00bfff] mb-2">10K+</div>
-                <div className="text-sm text-[#00bfff]">NFTs Criados</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-[#00bfff] mb-2">100%</div>
-                <div className="text-sm text-[#00bfff]">Verificados</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-[#00bfff] mb-2">24/7</div>
-                <div className="text-sm text-[#00bfff]">Disponível</div>
-              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
             </div>
           </motion.div>
         </div>
