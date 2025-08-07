@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import firebaseRoutes from './routes/firebase';
 
 // Load environment variables
 dotenv.config();
@@ -69,6 +70,9 @@ app.get('/api/v1/status', (_req, res) => {
   });
 });
 
+// Firebase routes
+app.use('/api/firebase', firebaseRoutes);
+
 // Root endpoint
 app.get('/', (_req, res) => {
   res.json({
@@ -78,7 +82,8 @@ app.get('/', (_req, res) => {
     endpoints: {
       health: '/health',
       status: '/api/v1/status',
-      contact: '/api/contact'
+      contact: '/api/contact',
+      firebase: '/api/firebase'
     },
     timestamp: new Date().toISOString()
   });
@@ -118,6 +123,7 @@ const server = app.listen(PORT, () => {
   console.log(`🔌 Server running on port ${PORT}`);
   console.log(`🏥 Health check: http://localhost:${PORT}/health`);
   console.log(`📞 Contact API: http://localhost:${PORT}/api/contact`);
+  console.log(`🔥 Firebase API: http://localhost:${PORT}/api/firebase`);
   console.log(`🌐 CORS enabled for: agrotmsol.com.br`);
 
   console.log('✅ Server started successfully');

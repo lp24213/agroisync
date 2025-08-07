@@ -1,13 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Configuração condicional para export estático
-  ...(process.env.BUILD_STATIC === 'true' && {
-    output: 'export',
-    trailingSlash: true,
-    images: {
-      unoptimized: true,
-    },
-  }),
   images: {
     domains: ['agrotmsol.com.br', 'localhost', 'vercel.app'],
     unoptimized: true,

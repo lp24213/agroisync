@@ -1,8 +1,10 @@
-[33mdb199be9[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m docs: add deployment success documentation with complete feature summary
-[33mc6d2574c[m feat: implement complete internationalization with images and logos - Add 4 language support (EN, PT-BR, ES, ZH) with correct flags - Implement all requested images and logos in their proper places - Add speech bubble with Brazil flag in hero section - Add shield with plant in cyber defense section - Add interactive dashboard with data visualization - Add staking/farming section with plant growth visualization - Add NFT minting section with plant-to-NFT transformation - Update theme to matte black with neon blue accents - Add contact form with contato@agrotm.com.br email - Complete responsive design with animations
-[33mdc7764e6[m  DOC: Documentação das correções para deploy Railway - Criado RAILWAY_DEPLOY_FIXES.md - Resumo completo de todos os problemas identificados - Detalhamento de todas as correções implementadas - Guia de deploy e próximos passos - Backend 100% preparado para Railway
-[33mf840c677[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Trigger deployment - AGROTM ready for production
-[33m9727405e[m  AGROTM Design Improvements - Premium Futurista Complete
-[33m132bb0b6[m Final documentation - Complete visual corrections summary
-[33m0b0413cc[m Final visual corrections - Professional AGROTM branding and content restoration
-[33m0b9974f1[m Fix all images and logo - professional image handling with fallbacks
+[33mbd99d5f9[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m feat: Firebase integration complete - Added Firebase Client SDK, Admin SDK, Hosting configuration, and deployment setup
+[33m51449f2e[m update - Build error fixed and deploy ready
+[33m1805beba[m Fix build errors and TypeScript issues - Complete build success
+[33mbfc10288[m update
+[33meba3d872[m  Chatbot AGROTM completo implementado - Multilíngue, voz, upload de imagens e visual futurista
+[33m986a81a6[m  CHATBOT24H: Novo componente implementado com 250+ perguntas/respostas
+[33m20e3177e[m  ATUALIZAÇÕES PREMIUM: Cor prateada + Chatbot 24h + Remoção Web3
+[33maf298621[m  AGROTM TRANSFORMADO: Site mais bonito do mundo implementado!
+[33m3117ec13[m  MELHOR VISUAL WEB3 JÁ CRIADO - Design premium, brutalista e impactante aplicado globalmente
+[33mc7ba291f[m  Cores da imagem aplicadas em TODO o projeto - Azul metálico (#00bfff) e Verde (#00FF00) em todas as páginas e componentes

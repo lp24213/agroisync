@@ -1,334 +1,225 @@
 'use client';
 
+import React from 'react';
 import { motion } from 'framer-motion';
-import {
-  Activity,
-  ArrowDownRight,
-  ArrowUpRight,
-  DollarSign,
-  Download,
-  RefreshCw,
-  Shield,
-  Star,
-  Wallet,
-  Zap,
-} from 'lucide-react';
-import { useEffect, useState } from 'react';
-
-const portfolioData = {
-  totalValue: 'R$ 124.567,89',
-  change24h: '+12,5%',
-  isPositive: true,
-  assets: [
-    {
-      name: 'AGROTM',
-      value: 'R$ 45.234,56',
-      percentage: 36.3,
-      change: '+8,2%',
-      color: 'from-[#00F0FF] to-[#00d4e0]',
-    },
-    {
-      name: 'SOL',
-      value: 'R$ 32.123,45',
-      percentage: 25.8,
-      change: '+15,7%',
-      color: 'from-[#00F0FF] to-[#00d4e0]',
-    },
-    {
-      name: 'USDC',
-      value: 'R$ 28.456,78',
-      percentage: 22.9,
-      change: '+0,1%',
-      color: 'from-[#00F0FF] to-[#00d4e0]',
-    },
-    {
-      name: 'ETH',
-      value: 'R$ 18.753,10',
-      percentage: 15.0,
-      change: '+5,3%',
-      color: 'from-[#00F0FF] to-[#00d4e0]',
-    },
-  ],
-};
-
-const recentTransactions = [
-  { type: 'Stake', amount: '+1.000 AGROTM', time: '2 min atrás', status: 'success' },
-  { type: 'Farm', amount: '+500 SOL', time: '15 min atrás', status: 'success' },
-  { type: 'Swap', amount: '-2.000 USDC', time: '1 hora atrás', status: 'success' },
-  { type: 'Harvest', amount: '+150 AGROTM', time: '3 horas atrás', status: 'success' },
-  { type: 'Unstake', amount: '-500 AGROTM', time: '1 dia atrás', status: 'pending' },
-];
-
-const farmingPools = [
-  { name: 'AGROTM-SOL LP', apy: '156,7%', tvl: 'R$ 2,4M', staked: 'R$ 12.345', rewards: '234 AGROTM' },
-  { name: 'AGROTM-USDC LP', apy: '89,2%', tvl: 'R$ 1,8M', staked: 'R$ 8.901', rewards: '156 AGROTM' },
-  { name: 'SOL-USDC LP', apy: '45,3%', tvl: 'R$ 3,2M', staked: 'R$ 5.678', rewards: '89 SOL' },
-];
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { LogOut, User, Settings, Shield, Activity, Wallet } from 'lucide-react';
+import { useProtectedRoute } from '@/hooks/useProtectedRoute';
+import { useAuth } from '@/contexts/AuthContext';
+import { AuthButton } from '@/components/auth/AuthButton';
 
 export default function DashboardPage() {
-  const [selectedTimeframe, setSelectedTimeframe] = useState('7D');
+  const { user, userProfile, loading, signOut } = useAuth();
+  const router = useRouter();
 
-  const timeframes = ['1H', '24H', '7D', '30D', '1Y', 'TUDO'];
+  // Protect this route
+  useProtectedRoute('/login');
 
-  useEffect(() => {
-    // Loading simulation removed for now
-    // setIsLoading(true);
-    // const timer = setTimeout(() => setIsLoading(false), 1000);
-    // return () => clearTimeout(timer);
-  }, [selectedTimeframe]);
+  const handleSignOut = async () => {
+    await signOut();
+    router.push('/login');
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null; // Will redirect via useProtectedRoute
+  }
 
   return (
-    <div className='min-h-screen bg-[#000000] pt-20'>
-      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
-        {/* Header */}
-        <div className='mb-8'>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className='font-orbitron text-4xl md:text-5xl text-[#00F0FF] mb-4 animate-fadeIn'
-          >
-            Dashboard
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className='text-lg md:text-xl text-[#cccccc] leading-relaxed'
-          >
-            Bem-vindo de volta! Aqui está a visão geral do seu portfólio.
-          </motion.p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
+      {/* Background Effects */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-40 left-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+      </div>
 
-        {/* Portfolio Overview */}
+      {/* Header */}
+      <motion.header
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative z-10 bg-gray-900/50 backdrop-blur-xl border-b border-gray-700"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <Link href="/" className="flex items-center space-x-3">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                AGROTM
+              </h1>
+            </Link>
+
+            <div className="flex items-center space-x-4">
+              <div className="text-right">
+                <p className="text-white font-medium">
+                  {userProfile?.fullName || user.email}
+                </p>
+                <p className="text-gray-400 text-sm">
+                  {user.email}
+                </p>
+              </div>
+              
+              <AuthButton
+                onClick={handleSignOut}
+                variant="outline"
+                size="sm"
+                icon={<LogOut size={16} />}
+              >
+                Sair
+              </AuthButton>
+            </div>
+          </div>
+        </div>
+      </motion.header>
+
+      {/* Main Content */}
+      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className='grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8'
+          className="text-center mb-12"
         >
-          {/* Total Portfolio Value */}
-          <div className='lg:col-span-2 bg-black/70 border border-[#00F0FF]/20 backdrop-blur-xl rounded-2xl p-6 hover:shadow-neon'>
-            <div className='flex items-center justify-between mb-6'>
-              <div>
-                <h3 className='text-lg font-orbitron font-semibold text-[#ffffff] mb-1'>Valor do Portfólio</h3>
-                <div className='flex items-center space-x-2'>
-                  <span className='text-3xl font-orbitron font-bold text-[#ffffff]'>{portfolioData.totalValue}</span>
-                  <div className='flex items-center space-x-1'>
-                    {portfolioData.isPositive ? (
-                      <ArrowUpRight className='w-4 h-4 text-[#00F0FF]' />
-                    ) : (
-                      <ArrowDownRight className='w-4 h-4 text-[#00F0FF]' />
-                    )}
-                    <span
-                      className={`text-sm font-medium ${
-                        portfolioData.isPositive ? 'text-[#00F0FF]' : 'text-[#00F0FF]'
-                      }`}
-                    >
-                      {portfolioData.change24h}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className='w-16 h-16 bg-[#00F0FF]/20 rounded-2xl flex items-center justify-center'>
-                <DollarSign className='w-8 h-8 text-[#00F0FF]' />
-              </div>
-            </div>
-
-            {/* Asset Distribution Chart */}
-            <div className='h-32 flex items-end space-x-2'>
-              {portfolioData.assets.map(asset => (
-                <div
-                  key={asset.name}
-                  className='flex-1 bg-[#00F0FF]/30 rounded-t transition-all duration-300 hover:opacity-80 cursor-pointer'
-                  style={{ height: `${asset.percentage}%` }}
-                />
-              ))}
-            </div>
-
-            {/* Asset List */}
-            <div className='mt-4 space-y-2'>
-              {portfolioData.assets.map(asset => (
-                <div key={asset.name} className='flex items-center justify-between'>
-                  <div className='flex items-center space-x-3'>
-                    <div className={`w-3 h-3 bg-[#00F0FF] rounded-full`} />
-                    <span className='text-sm text-[#cccccc]'>{asset.name}</span>
-                  </div>
-                  <div className='text-right'>
-                    <div className='text-sm font-medium text-[#ffffff]'>{asset.value}</div>
-                    <div className='text-xs text-[#00F0FF]'>{asset.change}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Quick Actions */}
-          <div className='bg-black/70 border border-[#00F0FF]/20 backdrop-blur-xl rounded-2xl p-6 hover:shadow-neon'>
-            <h3 className='text-lg font-orbitron font-semibold text-[#ffffff] mb-6'>Ações Rápidas</h3>
-            <div className='space-y-4'>
-              <button className='w-full flex items-center justify-between p-4 bg-[#00F0FF]/20 border border-[#00F0FF]/30 rounded-xl hover:bg-[#00F0FF]/30 transition-all duration-300'>
-                <div className='flex items-center space-x-3'>
-                  <Wallet className='w-5 h-5 text-[#00F0FF]' />
-                  <span className='text-[#ffffff] font-medium'>Conectar Carteira</span>
-                </div>
-                <ArrowUpRight className='w-4 h-4 text-[#00F0FF]' />
-              </button>
-
-              <button className='w-full flex items-center justify-between p-4 bg-black/50 border border-[#00F0FF]/20 rounded-xl hover:bg-[#00F0FF]/10 transition-all duration-300'>
-                <div className='flex items-center space-x-3'>
-                  <Star className='w-5 h-5 text-[#00F0FF]' />
-                  <span className='text-[#ffffff] font-medium'>Iniciar Farming</span>
-                </div>
-                <ArrowUpRight className='w-4 h-4 text-[#00F0FF]' />
-              </button>
-
-              <button className='w-full flex items-center justify-between p-4 bg-black/50 border border-[#00F0FF]/20 rounded-xl hover:bg-[#00F0FF]/10 transition-all duration-300'>
-                <div className='flex items-center space-x-3'>
-                  <Shield className='w-5 h-5 text-[#00F0FF]' />
-                  <span className='text-[#ffffff] font-medium'>Stake de Tokens</span>
-                </div>
-                <ArrowUpRight className='w-4 h-4 text-[#00F0FF]' />
-              </button>
-
-              <button className='w-full flex items-center justify-between p-4 bg-black/50 border border-[#00F0FF]/20 rounded-xl hover:bg-[#00F0FF]/10 transition-all duration-300'>
-                <div className='flex items-center space-x-3'>
-                  <Zap className='w-5 h-5 text-[#00F0FF]' />
-                  <span className='text-[#ffffff] font-medium'>Trocar Tokens</span>
-                </div>
-                <ArrowUpRight className='w-4 h-4 text-[#00F0FF]' />
-              </button>
-            </div>
-          </div>
+          <h2 className="text-4xl font-bold text-white mb-4">
+            Bem-vindo ao Dashboard
+          </h2>
+          <p className="text-gray-400 text-lg">
+            Gerencie sua conta e explore as funcionalidades do AGROTM
+          </p>
         </motion.div>
 
-        {/* Charts Section */}
+        {/* User Info Card */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className='grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8'
+          className="bg-gray-900/50 backdrop-blur-xl border border-gray-700 rounded-2xl p-8 mb-8"
         >
-          {/* Performance Chart */}
-          <div className='bg-black/70 border border-[#00F0FF]/20 backdrop-blur-xl rounded-2xl p-6 hover:shadow-neon'>
-            <div className='flex items-center justify-between mb-6'>
-              <h3 className='text-lg font-orbitron font-semibold text-[#ffffff]'>Performance do Portfólio</h3>
-              <div className='flex items-center space-x-2'>
-                {timeframes.map(timeframe => (
-                  <button
-                    key={timeframe}
-                    onClick={() => setSelectedTimeframe(timeframe)}
-                    className={`px-3 py-1 rounded-lg text-sm font-medium transition-all duration-300 ${
-                      selectedTimeframe === timeframe
-                        ? 'bg-[#00F0FF] text-black'
-                        : 'text-[#cccccc] hover:text-[#ffffff] hover:bg-[#00F0FF]/10'
-                    }`}
-                  >
-                    {timeframe}
-                  </button>
-                ))}
-              </div>
+          <div className="flex items-center space-x-4 mb-6">
+            <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
+              <User size={24} className="text-white" />
             </div>
-
-            <div className='h-64 flex items-end space-x-2'>
-              {Array.from({ length: 12 }).map((_, index) => (
-                <div
-                  key={index}
-                  className='flex-1 bg-[#00F0FF] rounded-t transition-all duration-300 hover:opacity-80'
-                  style={{ height: `${Math.random() * 80 + 20}%` }}
-                />
-              ))}
+            <div>
+              <h3 className="text-2xl font-bold text-white">
+                {userProfile?.fullName || 'Usuário'}
+              </h3>
+              <p className="text-gray-400">{user.email}</p>
             </div>
           </div>
 
-          {/* Farming Pools */}
-          <div className='bg-black/70 border border-[#00F0FF]/20 backdrop-blur-xl rounded-2xl p-6 hover:shadow-neon'>
-            <div className='flex items-center justify-between mb-6'>
-              <h3 className='text-lg font-orbitron font-semibold text-[#ffffff]'>Farms Ativos</h3>
-              <button className='p-2 bg-[#00F0FF]/10 rounded-lg hover:bg-[#00F0FF]/20 transition-colors duration-300'>
-                <RefreshCw className='w-4 h-4 text-[#00F0FF]' />
-              </button>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-gray-800/50 rounded-lg p-4">
+              <div className="flex items-center space-x-3">
+                <Shield className="text-green-400" size={20} />
+                <div>
+                  <p className="text-gray-400 text-sm">Status</p>
+                  <p className="text-white font-medium">
+                    {user.emailVerified ? 'Verificado' : 'Não verificado'}
+                  </p>
+                </div>
+              </div>
             </div>
 
-            <div className='space-y-4'>
-              {farmingPools.map(pool => (
-                <div key={pool.name} className='p-4 bg-black/50 rounded-xl border border-[#00F0FF]/20'>
-                  <div className='flex items-center justify-between mb-3'>
-                    <h4 className='font-orbitron font-semibold text-[#ffffff]'>{pool.name}</h4>
-                    <span className='text-[#00F0FF] font-bold'>{pool.apy}</span>
-                  </div>
-                  <div className='grid grid-cols-2 gap-4 text-sm'>
-                    <div>
-                      <span className='text-[#cccccc]'>TVL:</span>
-                      <span className='text-[#ffffff] ml-2'>{pool.tvl}</span>
-                    </div>
-                    <div>
-                      <span className='text-[#cccccc]'>Staked:</span>
-                      <span className='text-[#ffffff] ml-2'>{pool.staked}</span>
-                    </div>
-                  </div>
-                  <div className='mt-3 pt-3 border-t border-[#00F0FF]/20'>
-                    <span className='text-[#cccccc] text-sm'>Recompensas:</span>
-                    <span className='text-[#00F0FF] ml-2 font-medium'>{pool.rewards}</span>
-                  </div>
+            <div className="bg-gray-800/50 rounded-lg p-4">
+              <div className="flex items-center space-x-3">
+                <Activity className="text-blue-400" size={20} />
+                <div>
+                  <p className="text-gray-400 text-sm">Último login</p>
+                  <p className="text-white font-medium">
+                    {userProfile?.lastLoginAt 
+                      ? new Date(userProfile.lastLoginAt).toLocaleDateString('pt-BR')
+                      : 'Agora'
+                    }
+                  </p>
                 </div>
-              ))}
+              </div>
+            </div>
+
+            <div className="bg-gray-800/50 rounded-lg p-4">
+              <div className="flex items-center space-x-3">
+                <Wallet className="text-purple-400" size={20} />
+                <div>
+                  <p className="text-gray-400 text-sm">Carteira</p>
+                  <p className="text-white font-medium">
+                    {userProfile?.walletAddress ? 'Conectada' : 'Não conectada'}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </motion.div>
 
-        {/* Recent Transactions */}
+        {/* Quick Actions */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className='bg-black/70 border border-[#00F0FF]/20 backdrop-blur-xl rounded-2xl p-6 hover:shadow-neon'
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          <div className='flex items-center justify-between mb-6'>
-            <h3 className='text-lg font-orbitron font-semibold text-[#ffffff]'>Transações Recentes</h3>
-            <button className='flex items-center space-x-2 px-4 py-2 bg-[#00F0FF]/10 rounded-lg hover:bg-[#00F0FF]/20 transition-colors duration-300'>
-              <Download className='w-4 h-4 text-[#00F0FF]' />
-              <span className='text-sm text-[#00F0FF]'>Exportar</span>
-            </button>
-          </div>
-
-          <div className='space-y-3'>
-            {recentTransactions.map((transaction, index) => (
-              <div
-                key={index}
-                className='flex items-center justify-between p-4 bg-black/50 rounded-xl border border-[#00F0FF]/20'
-              >
-                <div className='flex items-center space-x-4'>
-                  <div
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                      transaction.status === 'success' ? 'bg-[#00F0FF]/20' : 'bg-[#00F0FF]/20'
-                    }`}
-                  >
-                    <Activity
-                      className={`w-5 h-5 ${
-                        transaction.status === 'success' ? 'text-[#00F0FF]' : 'text-[#00F0FF]'
-                      }`}
-                    />
-                  </div>
-                  <div>
-                    <div className='font-medium text-[#ffffff]'>{transaction.type}</div>
-                    <div className='text-sm text-[#cccccc]'>{transaction.time}</div>
-                  </div>
+          <Link href="/profile">
+            <div className="bg-gray-900/50 backdrop-blur-xl border border-gray-700 rounded-2xl p-6 hover:border-blue-500 transition-all duration-300 cursor-pointer group">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center group-hover:bg-blue-500/30 transition-colors">
+                  <User className="text-blue-400" size={24} />
                 </div>
-                <div className='text-right'>
-                  <div className='font-medium text-[#ffffff]'>{transaction.amount}</div>
-                  <div
-                    className={`text-sm ${
-                      transaction.status === 'success' ? 'text-[#00F0FF]' : 'text-[#00F0FF]'
-                    }`}
-                  >
-                    {transaction.status === 'success' ? 'Sucesso' : 'Pendente'}
-                  </div>
+                <div>
+                  <h3 className="text-white font-semibold">Perfil</h3>
+                  <p className="text-gray-400 text-sm">Editar informações pessoais</p>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          </Link>
+
+          <Link href="/settings">
+            <div className="bg-gray-900/50 backdrop-blur-xl border border-gray-700 rounded-2xl p-6 hover:border-cyan-500 transition-all duration-300 cursor-pointer group">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-cyan-500/20 rounded-lg flex items-center justify-center group-hover:bg-cyan-500/30 transition-colors">
+                  <Settings className="text-cyan-400" size={24} />
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold">Configurações</h3>
+                  <p className="text-gray-400 text-sm">Preferências da conta</p>
+                </div>
+              </div>
+            </div>
+          </Link>
+
+          <Link href="/security">
+            <div className="bg-gray-900/50 backdrop-blur-xl border border-gray-700 rounded-2xl p-6 hover:border-green-500 transition-all duration-300 cursor-pointer group">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center group-hover:bg-green-500/30 transition-colors">
+                  <Shield className="text-green-400" size={24} />
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold">Segurança</h3>
+                  <p className="text-gray-400 text-sm">Configurações de segurança</p>
+                </div>
+              </div>
+            </div>
+          </Link>
         </motion.div>
-      </div>
+
+        {/* Back to Home */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="text-center mt-12"
+        >
+          <Link href="/">
+            <AuthButton variant="secondary" size="lg">
+              Voltar para o Site
+            </AuthButton>
+          </Link>
+        </motion.div>
+      </main>
     </div>
   );
 }

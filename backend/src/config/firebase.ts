@@ -3,19 +3,19 @@ import { getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
 import { getStorage } from 'firebase-admin/storage';
 
-// Configuração do Firebase Admin SDK
+// Firebase Admin SDK Configuration
 let adminApp = null;
 let adminAuth = null;
 let adminDb = null;
 let adminStorage = null;
 
-// Verificar se já existe uma instância do admin
+// Check if Firebase Admin is already initialized
 if (!getApps().length) {
   try {
-    // Configuração para desenvolvimento (usando variáveis de ambiente)
+    // Service account configuration
     const serviceAccount = {
       type: process.env.FIREBASE_ADMIN_TYPE || 'service_account',
-      project_id: process.env.FIREBASE_ADMIN_PROJECT_ID || process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'agrotmsol-95542',
+      project_id: process.env.FIREBASE_ADMIN_PROJECT_ID || 'agrotmsol-95542',
       private_key_id: process.env.FIREBASE_ADMIN_PRIVATE_KEY_ID,
       private_key: process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, '\n'),
       client_email: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
@@ -26,7 +26,7 @@ if (!getApps().length) {
       client_x509_cert_url: process.env.FIREBASE_ADMIN_CLIENT_X509_CERT_URL,
     };
 
-    // Verificar se temos as credenciais necessárias
+    // Check if we have valid admin credentials
     const hasValidAdminConfig = serviceAccount.project_id && 
                                serviceAccount.private_key && 
                                serviceAccount.client_email;
@@ -38,18 +38,18 @@ if (!getApps().length) {
         storageBucket: process.env.FIREBASE_STORAGE_BUCKET || `agrotmsol-95542.firebasestorage.app`
       });
 
-      // Inicializar serviços do admin
+      // Initialize admin services
       adminAuth = getAuth(adminApp);
       adminDb = getFirestore(adminApp);
       adminStorage = getStorage(adminApp);
 
-      console.log('Firebase Admin SDK inicializado com sucesso');
+      console.log('✅ Firebase Admin SDK initialized successfully');
     } else {
-      console.warn('Firebase Admin SDK: Credenciais não configuradas. Usando configuração padrão.');
+      console.warn('⚠️ Firebase Admin SDK: Credentials not configured. Using default configuration.');
       
-      // Configuração alternativa para desenvolvimento
+      // Alternative configuration for development
       adminApp = initializeApp({
-        projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'agrotmsol-95542',
+        projectId: process.env.FIREBASE_ADMIN_PROJECT_ID || 'agrotmsol-95542',
         databaseURL: process.env.FIREBASE_DATABASE_URL || 'https://agrotmsol-95542-default-rtdb.asia-southeast1.firebasedatabase.app'
       });
 
@@ -58,19 +58,19 @@ if (!getApps().length) {
       adminStorage = getStorage(adminApp);
     }
   } catch (error) {
-    console.error('Erro ao inicializar Firebase Admin SDK:', error);
+    console.error('❌ Error initializing Firebase Admin SDK:', error);
   }
 } else {
-  // Usar instância existente
+  // Use existing instance
   adminApp = getApps()[0];
   adminAuth = getAuth(adminApp);
   adminDb = getFirestore(adminApp);
   adminStorage = getStorage(adminApp);
 }
 
-// Funções utilitárias do Admin SDK
-export const adminSDK = {
-  // Autenticação
+// Firebase Admin SDK utility functions
+export const firebaseAdmin = {
+  // Authentication
   auth: adminAuth,
   
   // Firestore
@@ -79,7 +79,7 @@ export const adminSDK = {
   // Storage
   storage: adminStorage,
   
-  // Funções de autenticação
+  // User management functions
   async createUser(userData: {
     email: string;
     password?: string;
@@ -95,7 +95,7 @@ export const adminSDK = {
       });
       return userRecord;
     } catch (error) {
-      console.error('Erro ao criar usuário:', error);
+      console.error('Error creating user:', error);
       throw error;
     }
   },
@@ -105,7 +105,7 @@ export const adminSDK = {
       const userRecord = await adminAuth?.getUser(uid);
       return userRecord;
     } catch (error) {
-      console.error('Erro ao buscar usuário:', error);
+      console.error('Error getting user:', error);
       throw error;
     }
   },
@@ -115,7 +115,7 @@ export const adminSDK = {
       const userRecord = await adminAuth?.updateUser(uid, updates);
       return userRecord;
     } catch (error) {
-      console.error('Erro ao atualizar usuário:', error);
+      console.error('Error updating user:', error);
       throw error;
     }
   },
@@ -123,19 +123,19 @@ export const adminSDK = {
   async deleteUser(uid: string) {
     try {
       await adminAuth?.deleteUser(uid);
-      return true;
+      return { success: true };
     } catch (error) {
-      console.error('Erro ao deletar usuário:', error);
+      console.error('Error deleting user:', error);
       throw error;
     }
   },
 
   async listUsers(maxResults?: number) {
     try {
-      const listUsersResult = await adminAuth?.listUsers(maxResults);
-      return listUsersResult;
+      const listUsersResult = await adminAuth?.listUsers(maxResults || 1000);
+      return listUsersResult.users;
     } catch (error) {
-      console.error('Erro ao listar usuários:', error);
+      console.error('Error listing users:', error);
       throw error;
     }
   },
@@ -145,7 +145,7 @@ export const adminSDK = {
       const customToken = await adminAuth?.createCustomToken(uid, additionalClaims);
       return customToken;
     } catch (error) {
-      console.error('Erro ao criar token customizado:', error);
+      console.error('Error creating custom token:', error);
       throw error;
     }
   },
@@ -155,12 +155,12 @@ export const adminSDK = {
       const decodedToken = await adminAuth?.verifyIdToken(idToken);
       return decodedToken;
     } catch (error) {
-      console.error('Erro ao verificar token:', error);
+      console.error('Error verifying ID token:', error);
       throw error;
     }
   },
 
-  // Funções do Firestore
+  // Firestore functions
   async addDocument(collection: string, data: any) {
     try {
       const docRef = await adminDb?.collection(collection).add({
@@ -170,7 +170,7 @@ export const adminSDK = {
       });
       return docRef;
     } catch (error) {
-      console.error('Erro ao adicionar documento:', error);
+      console.error('Error adding document:', error);
       throw error;
     }
   },
@@ -180,7 +180,7 @@ export const adminSDK = {
       const doc = await adminDb?.collection(collection).doc(docId).get();
       return doc?.exists ? { id: doc.id, ...doc.data() } : null;
     } catch (error) {
-      console.error('Erro ao buscar documento:', error);
+      console.error('Error getting document:', error);
       throw error;
     }
   },
@@ -191,9 +191,9 @@ export const adminSDK = {
         ...data,
         updatedAt: new Date()
       });
-      return true;
+      return { success: true };
     } catch (error) {
-      console.error('Erro ao atualizar documento:', error);
+      console.error('Error updating document:', error);
       throw error;
     }
   },
@@ -201,9 +201,9 @@ export const adminSDK = {
   async deleteDocument(collection: string, docId: string) {
     try {
       await adminDb?.collection(collection).doc(docId).delete();
-      return true;
+      return { success: true };
     } catch (error) {
-      console.error('Erro ao deletar documento:', error);
+      console.error('Error deleting document:', error);
       throw error;
     }
   },
@@ -225,11 +225,11 @@ export const adminSDK = {
 
       return documents;
     } catch (error) {
-      console.error('Erro ao consultar documentos:', error);
+      console.error('Error querying documents:', error);
       throw error;
     }
   }
 };
 
 export { adminApp, adminAuth, adminDb, adminStorage };
-export default adminSDK;
+export default firebaseAdmin;

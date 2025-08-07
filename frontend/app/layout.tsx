@@ -1,18 +1,15 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { I18nProvider } from '@/components/providers/I18nProvider';
-import { Layout } from '@/components/layout/Layout';
-import { CustomCursor } from '@/components/ui/CustomCursor';
-import { LoadingScreen } from '@/components/ui/LoadingScreen';
-import { ChatbotAGROTM } from '@/components/ChatbotAGROTM';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { Toaster } from 'react-hot-toast';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'AGROTM - Revolucionando o Agronegócio com Tecnologia',
-  description: 'A maior revolução tecnológica no agronegócio mundial. Inovação, automação e sustentabilidade integradas em uma única plataforma.',
-  keywords: 'agronegócio, tecnologia, agricultura, sustentabilidade, inovação, plataforma',
+  title: 'AGROTM - Plataforma de Agronegócio com Blockchain',
+  description: 'AGROTM é uma plataforma inovadora que combina agronegócio com tecnologia blockchain, oferecendo tokenização de ativos agrícolas, DeFi e soluções sustentáveis.',
+  keywords: 'agronegócio, blockchain, tokenização, DeFi, agricultura, sustentabilidade',
   authors: [{ name: 'AGROTM Team' }],
   creator: 'AGROTM',
   publisher: 'AGROTM',
@@ -21,27 +18,21 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://agrotm.sol'),
+  metadataBase: new URL('https://agrotmsol.com.br'),
   alternates: {
     canonical: '/',
-    languages: {
-      'pt-BR': '/pt',
-      'en-US': '/en',
-      'es-ES': '/es',
-      'zh-CN': '/zh',
-    },
   },
   openGraph: {
-    title: 'AGROTM - Revolucionando o Agronegócio com Tecnologia',
-    description: 'A maior revolução tecnológica no agronegócio mundial. Inovação, automação e sustentabilidade integradas em uma única plataforma.',
-    url: 'https://agrotm.sol',
+    title: 'AGROTM - Plataforma de Agronegócio com Blockchain',
+    description: 'AGROTM é uma plataforma inovadora que combina agronegócio com tecnologia blockchain, oferecendo tokenização de ativos agrícolas, DeFi e soluções sustentáveis.',
+    url: 'https://agrotmsol.com.br',
     siteName: 'AGROTM',
     images: [
       {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'AGROTM - Plataforma de Tecnologia Agrícola',
+        alt: 'AGROTM - Plataforma de Agronegócio com Blockchain',
       },
     ],
     locale: 'pt_BR',
@@ -49,10 +40,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AGROTM - Revolucionando o Agronegócio com Tecnologia',
-    description: 'A maior revolução tecnológica no agronegócio mundial. Inovação, automação e sustentabilidade integradas em uma única plataforma.',
-    images: ['/twitter-image.jpg'],
-    creator: '@agrotm',
+    title: 'AGROTM - Plataforma de Agronegócio com Blockchain',
+    description: 'AGROTM é uma plataforma inovadora que combina agronegócio com tecnologia blockchain, oferecendo tokenização de ativos agrícolas, DeFi e soluções sustentáveis.',
+    images: ['/og-image.jpg'],
   },
   robots: {
     index: true,
@@ -67,8 +57,6 @@ export const metadata: Metadata = {
   },
   verification: {
     google: 'your-google-verification-code',
-    yandex: 'your-yandex-verification-code',
-    yahoo: 'your-yahoo-verification-code',
   },
 };
 
@@ -78,65 +66,44 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
+    <html lang="pt-BR">
       <head>
         <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta name="theme-color" content="#000000" />
         <meta name="msapplication-TileColor" content="#000000" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
-        
-        {/* Preconnect para performance */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        
-        {/* Fontes premium */}
-        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-        
-        {/* Structured Data */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              "name": "AGROTM",
-              "url": "https://agrotm.sol",
-              "logo": "https://agrotm.sol/logo.png",
-              "description": "A maior revolução tecnológica no agronegócio mundial. Inovação, automação e sustentabilidade integradas em uma única plataforma.",
-              "foundingDate": "2024",
-              "industry": "Agronegócio",
-              "address": {
-                "@type": "PostalAddress",
-                "addressCountry": "BR",
-                "addressLocality": "São Paulo",
-                "addressRegion": "SP"
-              },
-              "contactPoint": {
-                "@type": "ContactPoint",
-                "contactType": "customer service",
-                "email": "contato@agrotm.com",
-                "availableLanguage": ["Portuguese", "English", "Spanish", "Chinese"]
-              },
-              "sameAs": [
-                "https://twitter.com/agrotm",
-                "https://linkedin.com/company/agrotm",
-                "https://github.com/agrotm"
-              ]
-            })
-          }}
-        />
       </head>
       <body className={inter.className}>
-        <I18nProvider>
-          <CustomCursor />
-          <LoadingScreen />
-          <Layout>
-            {children}
-          </Layout>
-          <ChatbotAGROTM />
-        </I18nProvider>
+        <AuthProvider>
+          {children}
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 4000,
+              style: {
+                background: '#1f2937',
+                color: '#ffffff',
+                border: '1px solid #374151',
+              },
+              success: {
+                iconTheme: {
+                  primary: '#10b981',
+                  secondary: '#ffffff',
+                },
+              },
+              error: {
+                iconTheme: {
+                  primary: '#ef4444',
+                  secondary: '#ffffff',
+                },
+              },
+            }}
+          />
+        </AuthProvider>
       </body>
     </html>
   );

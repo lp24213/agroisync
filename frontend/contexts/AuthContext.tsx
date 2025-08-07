@@ -1,107 +1,130 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  walletAddress?: string;
-}
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { User, onAuthStateChanged } from 'firebase/auth';
+import { auth } from '@/lib/firebase/config';
+import { FirebaseAuthService, UserProfile } from '@/lib/firebase/auth';
 
 interface AuthContextType {
   user: User | null;
+  userProfile: UserProfile | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
-  register: (email: string, password: string, name: string) => Promise<void>;
-  connectWallet: (address: string) => void;
+  signIn: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  signUp: (email: string, password: string, fullName: string, phone?: string) => Promise<{ success: boolean; error?: string }>;
+  signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
+  updateProfile: (updates: Partial<UserProfile>) => Promise<{ success: boolean; error?: string }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
+
+interface AuthProviderProps {
+  children: React.ReactNode;
+}
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const authService = FirebaseAuthService.getInstance();
+
   useEffect(() => {
-    // Check for existing session
-    const savedUser = localStorage.getItem('agrotm_user');
-    if (savedUser) {
-      try {
-        setUser(JSON.parse(savedUser));
-      } catch (error) {
-        console.error('Error parsing saved user:', error);
-        localStorage.removeItem('agrotm_user');
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setUser(user);
+      
+      if (user) {
+        try {
+          const profile = await authService.getCurrentUserProfile();
+          setUserProfile(profile);
+        } catch (error) {
+          console.error('Error loading user profile:', error);
+        }
+      } else {
+        setUserProfile(null);
       }
-    }
-    setLoading(false);
+      
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
-  const login = async (email: string, password: string) => {
-    setLoading(true);
+  const signIn = async (email: string, password: string) => {
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const mockUser: User = {
-        id: '1',
-        email,
-        name: email.split('@')[0],
-      };
-      
-      setUser(mockUser);
-      localStorage.setItem('agrotm_user', JSON.stringify(mockUser));
+      const result = await authService.loginWithEmail(email, password);
+      if (result.success && result.user) {
+        setUserProfile(result.user);
+      }
+      return result;
     } catch (error) {
-      console.error('Login error:', error);
-      throw error;
-    } finally {
-      setLoading(false);
+      return { success: false, error: 'Erro ao fazer login' };
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('agrotm_user');
-  };
-
-  const register = async (email: string, password: string, name: string) => {
-    setLoading(true);
+  const signUp = async (email: string, password: string, fullName: string, phone?: string) => {
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const mockUser: User = {
-        id: '1',
-        email,
-        name,
-      };
-      
-      setUser(mockUser);
-      localStorage.setItem('agrotm_user', JSON.stringify(mockUser));
+      const result = await authService.registerWithEmail(email, password, fullName, phone);
+      if (result.success && result.user) {
+        setUserProfile(result.user);
+      }
+      return result;
     } catch (error) {
-      console.error('Register error:', error);
-      throw error;
-    } finally {
-      setLoading(false);
+      return { success: false, error: 'Erro ao criar conta' };
     }
   };
 
-  const connectWallet = (address: string) => {
-    if (user) {
-      const updatedUser = { ...user, walletAddress: address };
-      setUser(updatedUser);
-      localStorage.setItem('agrotm_user', JSON.stringify(updatedUser));
+  const signOut = async () => {
+    try {
+      await authService.logout();
+      setUserProfile(null);
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
+  const resetPassword = async (email: string) => {
+    try {
+      return await authService.sendPasswordResetEmail(email);
+    } catch (error) {
+      return { success: false, error: 'Erro ao enviar email de recuperação' };
+    }
+  };
+
+  const updateProfile = async (updates: Partial<UserProfile>) => {
+    if (!user) {
+      return { success: false, error: 'Usuário não autenticado' };
+    }
+
+    try {
+      const result = await authService.updateUserProfile(user.uid, updates);
+      if (result.success) {
+        const updatedProfile = await authService.getCurrentUserProfile();
+        setUserProfile(updatedProfile);
+      }
+      return result;
+    } catch (error) {
+      return { success: false, error: 'Erro ao atualizar perfil' };
     }
   };
 
   const value: AuthContextType = {
     user,
+    userProfile,
     loading,
-    login,
-    logout,
-    register,
-    connectWallet,
+    signIn,
+    signUp,
+    signOut,
+    resetPassword,
+    updateProfile,
   };
 
   return (
@@ -109,12 +132,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-} 
+}; 

@@ -4,36 +4,74 @@ import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { Mail, Lock, User, Phone, Eye, EyeOff, ArrowRight, Check } from 'lucide-react';
 import { AuthInput } from '@/components/auth/AuthInput';
 import { AuthButton } from '@/components/auth/AuthButton';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'react-hot-toast';
 
-export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export default function SignupPage() {
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    password: '',
+    confirmPassword: '',
+  });
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   
-  const { signIn } = useAuth();
+  const { signUp } = useAuth();
   const router = useRouter();
   const passwordRef = useRef<HTMLInputElement>(null);
+  const confirmPasswordRef = useRef<HTMLInputElement>(null);
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: '' }));
+    }
+  };
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
 
-    if (!email) {
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = 'Nome completo é obrigatório';
+    } else if (formData.fullName.trim().length < 2) {
+      newErrors.fullName = 'Nome deve ter pelo menos 2 caracteres';
+    }
+
+    if (!formData.email) {
       newErrors.email = 'Email é obrigatório';
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Email inválido';
     }
 
-    if (!password) {
+    if (formData.phone && !/^\+?[\d\s\-\(\)]+$/.test(formData.phone)) {
+      newErrors.phone = 'Telefone inválido';
+    }
+
+    if (!formData.password) {
       newErrors.password = 'Senha é obrigatória';
-    } else if (password.length < 6) {
+    } else if (formData.password.length < 6) {
       newErrors.password = 'Senha deve ter pelo menos 6 caracteres';
+    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
+      newErrors.password = 'Senha deve conter letra maiúscula, minúscula e número';
+    }
+
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = 'Confirme sua senha';
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Senhas não coincidem';
+    }
+
+    if (!agreedToTerms) {
+      newErrors.terms = 'Você deve aceitar os termos e condições';
     }
 
     setErrors(newErrors);
@@ -49,14 +87,19 @@ export default function LoginPage() {
     setErrors({});
 
     try {
-      const result = await signIn(email, password);
+      const result = await signUp(
+        formData.email,
+        formData.password,
+        formData.fullName,
+        formData.phone || undefined
+      );
       
       if (result.success) {
-        toast.success('Login realizado com sucesso!');
+        toast.success('Conta criada com sucesso!');
         router.push('/dashboard');
       } else {
-        setErrors({ general: result.error || 'Erro ao fazer login' });
-        toast.error(result.error || 'Erro ao fazer login');
+        setErrors({ general: result.error || 'Erro ao criar conta' });
+        toast.error(result.error || 'Erro ao criar conta');
       }
     } catch (error) {
       setErrors({ general: 'Erro inesperado. Tente novamente.' });
@@ -105,24 +148,45 @@ export default function LoginPage() {
               AGROTM
             </h1>
           </Link>
-          <p className="text-gray-400 mt-2">Faça login na sua conta</p>
+          <p className="text-gray-400 mt-2">Crie sua conta</p>
         </motion.div>
 
-        {/* Login Form */}
+        {/* Signup Form */}
         <motion.div
           variants={itemVariants}
           className="bg-gray-900/50 backdrop-blur-xl border border-gray-700 rounded-2xl p-8 shadow-2xl"
         >
           <form onSubmit={handleSubmit} className="space-y-6">
             <AuthInput
+              label="Nome Completo"
+              type="text"
+              placeholder="Seu nome completo"
+              value={formData.fullName}
+              onChange={(value) => handleInputChange('fullName', value)}
+              error={errors.fullName}
+              required
+              icon={<User size={20} />}
+            />
+
+            <AuthInput
               label="Email"
               type="email"
               placeholder="seu@email.com"
-              value={email}
-              onChange={setEmail}
+              value={formData.email}
+              onChange={(value) => handleInputChange('email', value)}
               error={errors.email}
               required
               icon={<Mail size={20} />}
+            />
+
+            <AuthInput
+              label="Telefone (opcional)"
+              type="tel"
+              placeholder="+55 (11) 99999-9999"
+              value={formData.phone}
+              onChange={(value) => handleInputChange('phone', value)}
+              error={errors.phone}
+              icon={<Phone size={20} />}
             />
 
             <div className="relative">
@@ -131,8 +195,8 @@ export default function LoginPage() {
                 label="Senha"
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Sua senha"
-                value={password}
-                onChange={setPassword}
+                value={formData.password}
+                onChange={(value) => handleInputChange('password', value)}
                 error={errors.password}
                 required
                 icon={<Lock size={20} />}
@@ -147,6 +211,56 @@ export default function LoginPage() {
               </button>
             </div>
 
+            <div className="relative">
+              <AuthInput
+                ref={confirmPasswordRef}
+                label="Confirmar Senha"
+                type={showConfirmPassword ? 'text' : 'password'}
+                placeholder="Confirme sua senha"
+                value={formData.confirmPassword}
+                onChange={(value) => handleInputChange('confirmPassword', value)}
+                error={errors.confirmPassword}
+                required
+                icon={<Lock size={20} />}
+              />
+              
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
+              >
+                {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
+
+            {/* Terms and Conditions */}
+            <div className="flex items-start space-x-3">
+              <button
+                type="button"
+                onClick={() => setAgreedToTerms(!agreedToTerms)}
+                className={`flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
+                  agreedToTerms
+                    ? 'bg-blue-500 border-blue-500'
+                    : 'border-gray-600 hover:border-gray-500'
+                }`}
+              >
+                {agreedToTerms && <Check size={12} className="text-white" />}
+              </button>
+              <div className="text-sm text-gray-400">
+                <span>Concordo com os </span>
+                <Link href="/terms" className="text-blue-400 hover:text-blue-300">
+                  Termos de Uso
+                </Link>
+                <span> e </span>
+                <Link href="/privacy" className="text-blue-400 hover:text-blue-300">
+                  Política de Privacidade
+                </Link>
+              </div>
+            </div>
+            {errors.terms && (
+              <p className="text-red-400 text-sm">{errors.terms}</p>
+            )}
+
             {errors.general && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
@@ -157,22 +271,13 @@ export default function LoginPage() {
               </motion.div>
             )}
 
-            <div className="flex items-center justify-between">
-              <Link
-                href="/forgot-password"
-                className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
-              >
-                Esqueceu sua senha?
-              </Link>
-            </div>
-
             <AuthButton
               type="submit"
               loading={loading}
               fullWidth
               icon={<ArrowRight size={20} />}
             >
-              {loading ? 'Entrando...' : 'Entrar'}
+              {loading ? 'Criando conta...' : 'Criar conta'}
             </AuthButton>
           </form>
 
@@ -186,15 +291,15 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Sign Up Link */}
+          {/* Login Link */}
           <motion.div variants={itemVariants} className="text-center">
             <p className="text-gray-400">
-              Não tem uma conta?{' '}
+              Já tem uma conta?{' '}
               <Link
-                href="/signup"
+                href="/login"
                 className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
               >
-                Criar conta
+                Fazer login
               </Link>
             </p>
           </motion.div>
