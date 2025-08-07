@@ -13,7 +13,17 @@
     "test:health": "curl -f http://localhost:3000/api/health || exit 1",
     "analyze": "ANALYZE=true npm run build",
     "clean": "rm -rf .next out",
-    "build:analyze": "cross-env ANALYZE=true npm run build"
+    "build:analyze": "cross-env ANALYZE=true npm run build",
+    "export": "node scripts/prepare-static-build.js prepare && cross-env BUILD_STATIC=true next build && node scripts/prepare-static-build.js restore",
+    "build:static": "node scripts/prepare-static-build.js prepare && cross-env BUILD_STATIC=true next build && node scripts/prepare-static-build.js restore",
+    "deploy:firebase": "npm run build:static && firebase deploy --only hosting",
+    "deploy:firebase:all": "npm run build:static && firebase deploy",
+    "firebase:init": "firebase init",
+    "firebase:login": "firebase login",
+    "firebase:logout": "firebase logout",
+    "firebase:use": "firebase use agrotmsol-95542",
+    "firebase:emulators": "firebase emulators:start",
+    "firebase:emulators:export": "firebase emulators:export ./emulator-data"
   },
   "dependencies": {
     "@emotion/react": "^11.11.0",
@@ -28,6 +38,8 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "ethers": "^6.8.0",
+    "firebase": "12.0.0",
+    "firebase-admin": "13.4.0",
     "framer-motion": "11.18.2",
     "gsap": "^3.12.5",
     "hardhat": "2.26.1",
