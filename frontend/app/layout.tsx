@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { I18nProvider } from '@/components/providers/I18nProvider';
+import { ChatbotAGROTM } from '@/components/ChatbotAGROTM';
 import { Toaster } from 'react-hot-toast';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -82,6 +83,7 @@ export default function RootLayout({
         <I18nProvider>
           <AuthProvider>
             {children}
+            <ChatbotAGROTM />
             <Toaster
               position="top-right"
               toastOptions={{
