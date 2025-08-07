@@ -46,7 +46,7 @@ export function Features() {
   ];
 
   return (
-    <section className="py-20 bg-[#000000] relative overflow-hidden">
+    <section className="py-20 bg-premium-dark relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 z-0 opacity-20">
         <div className="grid-animation"></div>
@@ -93,10 +93,10 @@ export function Features() {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="font-orbitron text-4xl md:text-5xl text-[#00bfff] mb-4 animate-fadeIn">
-            Por que escolher <span className="text-[#00bfff]">AGROTM</span>?
+          <h2 className="font-orbitron text-4xl md:text-5xl text-neon-blue mb-4 animate-fadeIn">
+            Por que escolher <span className="text-neon-blue">AGROTM</span>?
           </h2>
-          <p className="text-lg md:text-xl text-[#cccccc] max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-white max-w-3xl mx-auto">
             Plataforma revolucionária que conecta agricultores e investidores através da tecnologia blockchain
           </p>
         </motion.div>
@@ -111,9 +111,9 @@ export function Features() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               whileHover={{ scale: 1.05, y: -5 }}
             >
-                             <Card className="h-full bg-black/70 border border-[#00bfff]/20 hover:shadow-neon transition-all duration-300">
+                             <Card className="h-full card-premium">
                  <div className="text-center p-6">
-                   <div className={`w-16 h-16 bg-[#00bfff]/20 rounded-full flex items-center justify-center mx-auto mb-4`}>
+                   <div className={`w-16 h-16 bg-neon-blue/20 rounded-full flex items-center justify-center mx-auto mb-4`}>
                      <Image
                        src={feature.icon}
                        alt={feature.title}
@@ -122,10 +122,10 @@ export function Features() {
                        className="w-8 h-8"
                      />
                    </div>
-                   <h3 className="text-xl font-orbitron font-semibold text-[#00bfff] mb-3">
+                   <h3 className="text-xl font-orbitron font-semibold text-neon-blue mb-3">
                     {feature.title}
                   </h3>
-                  <p className="text-[#cccccc] leading-relaxed">
+                                     <p className="text-white leading-relaxed">
                     {feature.description}
                   </p>
                 </div>

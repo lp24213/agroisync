@@ -36,7 +36,7 @@ const Hero: React.FC = () => {
   ];
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black-matte">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-premium-dark">
       <div className="absolute inset-0 opacity-20">
         <div className="grid-animation"></div>
       </div>
@@ -51,11 +51,11 @@ const Hero: React.FC = () => {
           transition={{ duration: 0.8 }}
             className="mb-8"
           >
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-orbitron font-bold text-[#00bfff] mb-6 animate-fadeIn">
-              AGROTM<span className="text-[#00FF00]">.SOL</span>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-orbitron font-bold text-neon-blue mb-6 animate-fadeIn">
+              AGROTM<span className="text-neon-green">.SOL</span>
             </h1>
             
-            <p className="text-xl md:text-2xl text-[#00bfff] mb-12 max-w-4xl mx-auto">
+            <p className="text-xl md:text-2xl text-white mb-12 max-w-4xl mx-auto">
               A maior plataforma para o agronegócio mundial. Staking, NFTs agrícolas e governança descentralizada na Solana.
             </p>
             

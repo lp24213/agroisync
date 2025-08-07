@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 
 export function About() {
   return (
-    <section id="about" className="py-20 bg-[#000000] relative overflow-hidden">
+    <section id="about" className="py-20 bg-premium-dark relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 z-0 opacity-20">
         <div className="grid-animation"></div>
