@@ -5,12 +5,12 @@
     "staking": "质押",
     "about": "关于",
     "contact": "联系",
-    "getStarted": "开始使用"
+    "getStarted": "立即开始"
   },
   "hero": {
     "title": "AGROTM",
     "subtitle": "SOLANA",
-    "tagline": "用Solana上的DeFi革新农业",
+    "tagline": "用Solana上的DeFi革命化农业",
     "description": "全球农业综合企业最大的技术革命。创新、自动化和可持续发展集成在一个平台中。",
     "enterPlatform": "进入平台",
     "learnMore": "了解更多",
@@ -55,7 +55,7 @@
   },
   "interactiveDashboard": {
     "title": "交互式仪表板",
-    "description": "通过我们的未来界面实时监控您的农业投资",
+    "description": "通过我们的未来主义界面实时监控您的农业投资",
     "defi": "DeFi",
     "growth": "增长",
     "analytics": "分析",
@@ -63,7 +63,7 @@
   },
   "cyberDefense": {
     "title": "网络防御",
-    "description": "下一代安全保护您的数字资产",
+    "description": "保护您数字资产的下一代安全",
     "advancedProtection": {
       "title": "高级保护",
       "description": "多层安全保护您的投资"
@@ -78,15 +78,19 @@
     }
   },
   "stakingFarming": {
-    "title": "质押/农场",
+    "title": "质押/农业",
     "description": "种植您的代币并收获可持续奖励",
     "sustainableStaking": {
       "title": "可持续质押",
       "description": "质押您的AGROTM代币并获得奖励，同时支持可持续农业项目。"
     },
     "liquidityFarming": {
-      "title": "流动性农场",
-      "description": "提供流动性并通过农场系统赚取额外代币。"
+      "title": "流动性农业",
+      "description": "提供流动性并通过农业系统获得额外代币。"
+    },
+    "stakingPools": {
+      "title": "质押池",
+      "description": "通过在我们安全高收益的池中质押您的代币来赚取被动收入"
     }
   },
   "nftMinting": {
@@ -119,7 +123,7 @@
     "description": "我们是一个创新平台，通过最先进的技术连接农民和投资者。",
     "mission": {
       "title": "我们的使命",
-      "description": "通过技术和可持续发展革新农业综合企业"
+      "description": "通过技术和可持续发展革命化农业综合企业"
     },
     "vision": {
       "title": "我们的愿景",
@@ -146,7 +150,7 @@
     }
   },
   "footer": {
-    "description": "AGROTM - 用尖端技术革新农业综合企业",
+    "description": "AGROTM - 用尖端技术革命化农业综合企业",
     "links": {
       "about": "关于",
       "services": "服务",
@@ -158,6 +162,60 @@
       "twitter": "推特",
       "linkedin": "领英",
       "github": "GitHub"
+    }
+  },
+  "language": {
+    "title": "语言 / Language"
+  },
+  "auth": {
+    "login": {
+      "title": "登录",
+      "subtitle": "登录您的账户",
+      "email": "邮箱",
+      "password": "密码",
+      "forgotPassword": "忘记密码？",
+      "submit": "登录",
+      "loading": "登录中...",
+      "noAccount": "没有账户？",
+      "createAccount": "创建账户",
+      "or": "或"
+    },
+    "signup": {
+      "title": "创建账户",
+      "subtitle": "创建您的AGROTM账户",
+      "fullName": "全名",
+      "email": "邮箱",
+      "phone": "电话",
+      "password": "密码",
+      "confirmPassword": "确认密码",
+      "submit": "创建账户",
+      "loading": "创建账户中...",
+      "hasAccount": "已有账户？",
+      "login": "登录",
+      "or": "或"
+    },
+    "forgotPassword": {
+      "title": "重置密码",
+      "subtitle": "输入您的邮箱以接收恢复链接",
+      "email": "邮箱",
+      "submit": "发送链接",
+      "loading": "发送中...",
+      "backToLogin": "返回登录",
+      "success": "恢复邮件已发送！"
+    }
+  },
+  "dashboard": {
+    "stats": {
+      "totalValueLocked": "总锁定价值",
+      "averageAPY": "平均APY",
+      "activeUsers": "活跃用户",
+      "totalStaked": "总质押量"
+    },
+    "crypto": {
+      "title": "加密货币",
+      "price": "价格",
+      "change24h": "24h",
+      "change7d": "7d"
     }
   }
 }

@@ -66,7 +66,7 @@
     "description": "Next-generation security to protect your digital assets",
     "advancedProtection": {
       "title": "Advanced Protection",
-      "description": "Multiple layers of security to protect your investments"
+      "description": "Multiple security layers to protect your investments"
     },
     "intelligentAI": {
       "title": "Intelligent AI",
@@ -87,6 +87,10 @@
     "liquidityFarming": {
       "title": "Liquidity Farming",
       "description": "Provide liquidity and earn additional tokens through the farming system."
+    },
+    "stakingPools": {
+      "title": "Staking Pools",
+      "description": "Earn passive income by staking your tokens in our secure and high-yield pools"
     }
   },
   "nftMinting": {
@@ -158,6 +162,60 @@
       "twitter": "Twitter",
       "linkedin": "LinkedIn",
       "github": "GitHub"
+    }
+  },
+  "language": {
+    "title": "Language / Idioma"
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "subtitle": "Sign in to your account",
+      "email": "Email",
+      "password": "Password",
+      "forgotPassword": "Forgot your password?",
+      "submit": "Sign In",
+      "loading": "Signing in...",
+      "noAccount": "Don't have an account?",
+      "createAccount": "Create account",
+      "or": "or"
+    },
+    "signup": {
+      "title": "Create Account",
+      "subtitle": "Create your AGROTM account",
+      "fullName": "Full Name",
+      "email": "Email",
+      "phone": "Phone",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "submit": "Create Account",
+      "loading": "Creating account...",
+      "hasAccount": "Already have an account?",
+      "login": "Sign in",
+      "or": "or"
+    },
+    "forgotPassword": {
+      "title": "Reset Password",
+      "subtitle": "Enter your email to receive the recovery link",
+      "email": "Email",
+      "submit": "Send Link",
+      "loading": "Sending...",
+      "backToLogin": "Back to login",
+      "success": "Recovery email sent!"
+    }
+  },
+  "dashboard": {
+    "stats": {
+      "totalValueLocked": "Total Value Locked",
+      "averageAPY": "Average APY",
+      "activeUsers": "Active Users",
+      "totalStaked": "Total Staked"
+    },
+    "crypto": {
+      "title": "Cryptocurrencies",
+      "price": "Price",
+      "change24h": "24h",
+      "change7d": "7d"
     }
   }
 }

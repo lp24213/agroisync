@@ -5,7 +5,7 @@
     "staking": "Staking",
     "about": "Sobre",
     "contact": "Contato",
-    "getStarted": "Começar"
+    "getStarted": "Começar Agora"
   },
   "hero": {
     "title": "AGROTM",
@@ -87,6 +87,10 @@
     "liquidityFarming": {
       "title": "Farming de Liquidez",
       "description": "Forneça liquidez e ganhe tokens adicionais através do sistema de farming."
+    },
+    "stakingPools": {
+      "title": "Pools de Staking",
+      "description": "Ganhe renda passiva fazendo stake dos seus tokens em nossos pools seguros e de alta rentabilidade"
     }
   },
   "nftMinting": {
@@ -162,5 +166,56 @@
   },
   "language": {
     "title": "Idioma / Language"
+  },
+  "auth": {
+    "login": {
+      "title": "Entrar",
+      "subtitle": "Faça login na sua conta",
+      "email": "Email",
+      "password": "Senha",
+      "forgotPassword": "Esqueceu sua senha?",
+      "submit": "Entrar",
+      "loading": "Entrando...",
+      "noAccount": "Não tem uma conta?",
+      "createAccount": "Criar conta",
+      "or": "ou"
+    },
+    "signup": {
+      "title": "Criar Conta",
+      "subtitle": "Crie sua conta AGROTM",
+      "fullName": "Nome Completo",
+      "email": "Email",
+      "phone": "Telefone",
+      "password": "Senha",
+      "confirmPassword": "Confirmar Senha",
+      "submit": "Criar Conta",
+      "loading": "Criando conta...",
+      "hasAccount": "Já tem uma conta?",
+      "login": "Fazer login",
+      "or": "ou"
+    },
+    "forgotPassword": {
+      "title": "Recuperar Senha",
+      "subtitle": "Digite seu email para receber o link de recuperação",
+      "email": "Email",
+      "submit": "Enviar Link",
+      "loading": "Enviando...",
+      "backToLogin": "Voltar ao login",
+      "success": "Email de recuperação enviado!"
+    }
+  },
+  "dashboard": {
+    "stats": {
+      "totalValueLocked": "Valor Total Bloqueado",
+      "averageAPY": "APY Médio",
+      "activeUsers": "Usuários Ativos",
+      "totalStaked": "Total em Staking"
+    },
+    "crypto": {
+      "title": "Criptomoedas",
+      "price": "Preço",
+      "change24h": "24h",
+      "change7d": "7d"
+    }
   }
 }

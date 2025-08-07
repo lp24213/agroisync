@@ -8,7 +8,9 @@ import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { AuthInput } from '@/components/auth/AuthInput';
 import { AuthButton } from '@/components/auth/AuthButton';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
+import { Logo } from '@/components/ui/Logo';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -19,6 +21,7 @@ export default function LoginPage() {
   
   const { signIn } = useAuth();
   const router = useRouter();
+  const { t } = useTranslation();
   const passwordRef = useRef<HTMLInputElement>(null);
 
   const validateForm = () => {
@@ -84,12 +87,12 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-premium-black via-black to-premium-black flex items-center justify-center p-4">
       {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-40 left-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-premium-neon-blue rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-premium-neon-green rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-40 left-40 w-80 h-80 bg-premium-neon-purple rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
       </div>
 
       <motion.div
@@ -100,22 +103,23 @@ export default function LoginPage() {
       >
         {/* Header */}
         <motion.div variants={itemVariants} className="text-center mb-8">
-          <Link href="/" className="inline-block">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-              AGROTM
-            </h1>
+          <Link href="/" className="inline-block mb-4">
+            <Logo size="lg" />
           </Link>
-          <p className="text-gray-400 mt-2">Faça login na sua conta</p>
+          <h1 className="text-3xl font-orbitron font-bold bg-gradient-to-r from-premium-neon-blue to-premium-neon-green bg-clip-text text-transparent">
+            {t('auth.login.title')}
+          </h1>
+          <p className="text-gray-400 mt-2 font-orbitron">{t('auth.login.subtitle')}</p>
         </motion.div>
 
         {/* Login Form */}
         <motion.div
           variants={itemVariants}
-          className="bg-gray-900/50 backdrop-blur-xl border border-gray-700 rounded-2xl p-8 shadow-2xl"
+          className="bg-premium-black/50 backdrop-blur-xl border border-premium-neon-blue/20 rounded-2xl p-8 shadow-2xl shadow-premium-neon-blue/10"
         >
           <form onSubmit={handleSubmit} className="space-y-6">
             <AuthInput
-              label="Email"
+              label={t('auth.login.email')}
               type="email"
               placeholder="seu@email.com"
               value={email}
@@ -128,7 +132,7 @@ export default function LoginPage() {
             <div className="relative">
               <AuthInput
                 ref={passwordRef}
-                label="Senha"
+                label={t('auth.login.password')}
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Sua senha"
                 value={password}
@@ -141,7 +145,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-premium-neon-green transition-colors"
               >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
@@ -153,16 +157,16 @@ export default function LoginPage() {
                 animate={{ opacity: 1, height: 'auto' }}
                 className="bg-red-500/10 border border-red-500/20 rounded-lg p-3"
               >
-                <p className="text-red-400 text-sm">{errors.general}</p>
+                <p className="text-red-400 text-sm font-orbitron">{errors.general}</p>
               </motion.div>
             )}
 
             <div className="flex items-center justify-between">
               <Link
                 href="/forgot-password"
-                className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
+                className="text-sm text-premium-neon-blue hover:text-premium-neon-green transition-colors font-orbitron"
               >
-                Esqueceu sua senha?
+                {t('auth.login.forgotPassword')}
               </Link>
             </div>
 
@@ -172,29 +176,29 @@ export default function LoginPage() {
               fullWidth
               icon={<ArrowRight size={20} />}
             >
-              {loading ? 'Entrando...' : 'Entrar'}
+              {loading ? t('auth.login.loading') : t('auth.login.submit')}
             </AuthButton>
           </form>
 
           {/* Divider */}
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-700"></div>
+              <div className="w-full border-t border-premium-neon-blue/20"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-gray-900/50 text-gray-400">ou</span>
+              <span className="px-2 bg-premium-black/50 text-gray-400 font-orbitron">{t('auth.login.or')}</span>
             </div>
           </div>
 
           {/* Sign Up Link */}
           <motion.div variants={itemVariants} className="text-center">
-            <p className="text-gray-400">
-              Não tem uma conta?{' '}
+            <p className="text-gray-400 font-orbitron">
+              {t('auth.login.noAccount')}{' '}
               <Link
                 href="/signup"
-                className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
+                className="text-premium-neon-blue hover:text-premium-neon-green font-medium transition-colors"
               >
-                Criar conta
+                {t('auth.login.createAccount')}
               </Link>
             </p>
           </motion.div>
@@ -202,7 +206,7 @@ export default function LoginPage() {
 
         {/* Footer */}
         <motion.div variants={itemVariants} className="text-center mt-6">
-          <p className="text-gray-500 text-sm">
+          <p className="text-gray-500 text-sm font-orbitron">
             © 2024 AGROTM. Todos os direitos reservados.
           </p>
         </motion.div>
