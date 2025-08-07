@@ -1,6 +1,6 @@
 module.exports = {
   semi: true,
-  trailingComma: 'es5',
+  trailingComma: 'none',
   singleQuote: true,
   printWidth: 80,
   tabWidth: 2,
@@ -13,32 +13,5 @@ module.exports = {
   jsxSingleQuote: false,
   proseWrap: 'preserve',
   htmlWhitespaceSensitivity: 'css',
-  embeddedLanguageFormatting: 'auto',
-  overrides: [
-    {
-      files: '*.json',
-      options: {
-        printWidth: 120,
-      },
-    },
-    {
-      files: '*.md',
-      options: {
-        printWidth: 100,
-        proseWrap: 'always',
-      },
-    },
-    {
-      files: '*.yml',
-      options: {
-        printWidth: 120,
-      },
-    },
-    {
-      files: '*.yaml',
-      options: {
-        printWidth: 120,
-      },
-    },
-  ],
+  embeddedLanguageFormatting: 'auto'
 }; 

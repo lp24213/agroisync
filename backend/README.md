@@ -1,385 +1,223 @@
-# AGROTM Solana DeFi Backend
+# AGROTM Backend API
 
-🚀 **Enterprise-grade, secure, and scalable Web3 backend for AGROTM DeFi platform**
+Backend profissional e robusto para a plataforma AGROTM - Plataforma de Agronegócio com Blockchain.
 
-## 🏗️ Architecture Overview
+## 🚀 Características
 
-This backend is built with a **Clean Architecture** approach, following **SOLID principles** and industry best practices for Web3 applications.
+- **API RESTful** completa com autenticação JWT
+- **Sistema de logging** profissional com Winston
+- **Validação de dados** com express-validator
+- **Upload de arquivos** com Multer e Sharp
+- **Rate limiting** e segurança com Helmet
+- **Compressão** de respostas
+- **Health checks** para monitoramento
+- **Testes automatizados** com Jest
+- **Docker** configurado para produção
+- **Deploy automático** no Railway
 
-### 🏛️ Architecture Layers
+## 📋 Pré-requisitos
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Presentation Layer                       │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
-│  │   Routes    │  │ Controllers │  │   Middleware        │  │
-│  └─────────────┘  └─────────────┘  └─────────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
-┌─────────────────────────────────────────────────────────────┐
-│                     Business Layer                          │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
-│  │   Services  │  │   Models    │  │   Validators        │  │
-│  └─────────────┘  └─────────────┘  └─────────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
-┌─────────────────────────────────────────────────────────────┐
-│                   Infrastructure Layer                      │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
-│  │   Database  │  │    Redis    │  │   Web3 Providers    │  │
-│  └─────────────┘  └─────────────┘  └─────────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
-```
+- Node.js >= 20.0.0
+- npm >= 8.0.0
+- PostgreSQL (opcional para desenvolvimento)
 
-## 🛡️ Security Features
+## 🛠️ Instalação
 
-### 🔐 Authentication & Authorization
-- **JWT-based authentication** with secure token management
-- **Role-based access control** (RBAC) with granular permissions
-- **Account lockout protection** after failed login attempts
-- **Session management** with Redis for scalability
-- **Two-factor authentication** support (2FA)
-
-### 🛡️ API Security
-- **Rate limiting** with configurable thresholds per endpoint
-- **DDoS protection** with suspicious activity detection
-- **Input validation & sanitization** using Joi schemas
-- **CORS protection** with whitelisted origins
-- **Security headers** (Helmet.js)
-- **SQL injection prevention** with parameterized queries
-- **XSS protection** with content sanitization
-
-### 🔒 Web3 Security
-- **Wallet address validation** for Solana addresses
-- **Transaction signature verification**
-- **Smart contract interaction security**
-- **Private key management** (never stored on server)
-- **Gas optimization** and transaction monitoring
-
-## 🚀 Performance Features
-
-### ⚡ Optimization
-- **Database indexing** for optimal query performance
-- **Redis caching** for frequently accessed data
-- **Connection pooling** for database efficiency
-- **Compression middleware** for response optimization
-- **Load balancing** ready architecture
-
-### 📊 Monitoring & Logging
-- **Structured logging** with Winston
-- **Performance monitoring** with request timing
-- **Error tracking** with detailed stack traces
-- **Audit logging** for security events
-- **Health check endpoints** for monitoring
-
-## 🏗️ Project Structure
-
-```
-backend/
-├── src/
-│   ├── config/           # Configuration files
-│   │   ├── database.ts   # MongoDB & Redis config
-│   │   ├── security.ts   # Security middleware config
-│   │   └── web3.ts       # Solana Web3 config
-│   ├── controllers/      # Request handlers
-│   │   └── authController.ts
-│   ├── middleware/       # Custom middleware
-│   │   ├── auth.ts       # Authentication middleware
-│   │   ├── validation.ts # Input validation
-│   │   └── audit.ts      # Audit logging
-│   ├── models/           # Database models
-│   │   ├── User.ts
-│   │   ├── StakingPool.ts
-│   │   └── StakingRecord.ts
-│   ├── routes/           # API routes
-│   │   ├── auth.ts
-│   │   ├── staking.ts
-│   │   └── defi.ts
-│   ├── services/         # Business logic
-│   │   ├── authService.ts
-│   │   └── stakingService.ts
-│   ├── docs/             # API documentation
-│   │   └── swagger.ts
-│   └── __tests__/        # Test files
-│       └── auth.test.ts
-├── .github/workflows/    # CI/CD pipelines
-├── package.json
-└── README.md
-```
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Node.js 18+ 
-- MongoDB 5.0+
-- Redis 6.0+
-- Solana CLI (for development)
-
-### Installation
-
-1. **Clone the repository**
+1. **Clone o repositório**
 ```bash
-git clone https://github.com/agrotm/agrotm-solana.git
-cd agrotm-solana/backend
+git clone https://github.com/lp24213/agrotm.sol.git
+cd agrotm.sol/backend
 ```
 
-2. **Install dependencies**
+2. **Instale as dependências**
 ```bash
 npm install
 ```
 
-3. **Environment setup**
+3. **Configure as variáveis de ambiente**
 ```bash
-cp .env.example .env
+cp env.example .env
+# Edite o arquivo .env com suas configurações
 ```
 
-4. **Configure environment variables**
-```env
-# Server
-NODE_ENV=development
-PORT=3001
-
-# Database
-MONGODB_URI=mongodb://localhost:27017/agrotm
-REDIS_URL=redis://localhost:6379
-
-# Security
-JWT_SECRET=your-super-secret-jwt-key-change-in-production
-JWT_EXPIRES_IN=24h
-
-# Solana
-SOLANA_NETWORK=devnet
-SOLANA_RPC_URL=https://api.devnet.solana.com
-
-# Frontend
-FRONTEND_URL=http://localhost:3000
-```
-
-5. **Start development server**
+4. **Inicie o servidor**
 ```bash
+# Desenvolvimento
 npm run dev
-```
 
-## 🧪 Testing
-
-### Run all tests
-```bash
-npm test
-```
-
-### Run specific test suites
-```bash
-# Unit tests
-npm run test:unit
-
-# Integration tests
-npm run test:integration
-
-# E2E tests
-npm run test:e2e
-
-# Performance tests
-npm run test:performance
-
-# Load tests
-npm run test:load
-```
-
-### Test coverage
-```bash
-npm run test:coverage
-```
-
-## 📚 API Documentation
-
-### Interactive Documentation
-- **Swagger UI**: `http://localhost:3001/api-docs`
-- **OpenAPI Spec**: `http://localhost:3001/api-docs.json`
-
-### Key Endpoints
-
-#### Authentication
-```
-POST /api/auth/register     # Register new user
-POST /api/auth/login        # User login
-GET  /api/auth/profile      # Get user profile
-POST /api/auth/change-password  # Change password
-POST /api/auth/refresh-token     # Refresh JWT token
-POST /api/auth/logout       # User logout
-POST /api/auth/verify-token # Verify token validity
-```
-
-#### Staking
-```
-GET  /api/staking/pools     # Get all staking pools
-GET  /api/staking/pools/:id # Get specific pool
-POST /api/staking/stake     # Stake tokens
-POST /api/staking/unstake   # Unstake tokens
-POST /api/staking/claim-rewards  # Claim rewards
-GET  /api/staking/user/:walletAddress  # Get user staking info
-GET  /api/staking/stats     # Get staking statistics
-```
-
-#### DeFi
-```
-GET  /api/defi/pools        # Get liquidity pools
-GET  /api/defi/farms        # Get yield farms
-POST /api/defi/add-liquidity    # Add liquidity
-POST /api/defi/remove-liquidity # Remove liquidity
-POST /api/defi/stake-farm   # Stake in yield farm
-POST /api/defi/unstake-farm # Unstake from farm
-GET  /api/defi/stats        # Get DeFi statistics
-```
-
-## 🔧 Development
-
-### Code Quality
-```bash
-# Lint code
-npm run lint
-
-# Fix linting issues
-npm run lint:fix
-
-# Format code
-npm run format
-
-# Type check
-npm run type-check
-```
-
-### Database Management
-```bash
-# Run migrations
-npm run db:migrate
-
-# Seed database
-npm run db:seed
-
-# Reset database
-npm run db:reset
-```
-
-### Docker Development
-```bash
-# Start all services
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Stop services
-docker-compose down
-```
-
-## 🚀 Deployment
-
-### Production Deployment
-```bash
-# Build application
-npm run build
-
-# Start production server
+# Produção
 npm start
 ```
 
-### Docker Deployment
-```bash
-# Build Docker image
-docker build -t agrotm-backend .
+## 🔧 Scripts Disponíveis
 
-# Run container
-docker run -p 3001:3001 agrotm-backend
+```bash
+# Desenvolvimento
+npm run dev          # Inicia o servidor com nodemon
+npm run build        # Build do projeto
+npm run test         # Executa os testes
+npm run test:watch   # Executa os testes em modo watch
+npm run test:coverage # Executa os testes com cobertura
+
+# Qualidade de código
+npm run lint         # Executa o ESLint
+npm run lint:fix     # Corrige problemas do ESLint
+npm run format       # Formata o código com Prettier
+
+# Segurança
+npm run security     # Verifica vulnerabilidades
+npm run security:fix # Corrige vulnerabilidades
+
+# Docker
+npm run docker:build # Build da imagem Docker
+npm run docker:run   # Executa o container Docker
+
+# Utilitários
+npm run health       # Testa o health check
 ```
 
-### Environment Variables for Production
+## 📚 Endpoints da API
+
+### Autenticação
+- `POST /api/auth/login` - Login de usuário
+- `POST /api/auth/register` - Registro de usuário
+- `POST /api/auth/refresh` - Renovar token
+- `POST /api/auth/logout` - Logout
+- `GET /api/auth/me` - Obter usuário atual
+
+### Usuários
+- `GET /api/users/profile` - Obter perfil do usuário
+- `PUT /api/users/profile` - Atualizar perfil
+- `GET /api/users/wallet` - Obter carteira do usuário
+
+### Staking
+- `GET /api/staking/pools` - Listar pools de staking
+- `GET /api/staking/pools/:id` - Obter pool específico
+- `POST /api/staking/stake` - Fazer staking
+- `POST /api/staking/unstake` - Remover staking
+- `GET /api/staking/rewards` - Obter recompensas
+- `GET /api/staking/history` - Histórico de staking
+
+### NFTs
+- `GET /api/nfts` - Listar NFTs
+- `GET /api/nfts/:id` - Obter NFT específico
+- `POST /api/nfts/mint` - Mintar NFT
+- `PUT /api/nfts/:id` - Atualizar NFT
+- `POST /api/nfts/:id/transfer` - Transferir NFT
+- `GET /api/nfts/user/:wallet` - NFTs do usuário
+
+### Analytics
+- `GET /api/analytics/dashboard` - Dados do dashboard
+- `GET /api/analytics/portfolio` - Portfólio do usuário
+- `GET /api/analytics/market` - Dados de mercado
+- `GET /api/analytics/staking` - Analytics de staking
+
+### Contato
+- `POST /api/contact` - Enviar mensagem de contato
+- `GET /api/contact/info` - Informações de contato
+- `POST /api/contact/support` - Solicitar suporte
+
+### Upload
+- `POST /api/upload/image` - Upload de imagem
+- `POST /api/upload/images` - Upload múltiplas imagens
+- `POST /api/upload/document` - Upload de documento
+- `DELETE /api/upload/:filename` - Deletar arquivo
+- `GET /api/upload/files` - Listar arquivos
+
+### Health Check
+- `GET /health` - Health check básico
+- `GET /api/health/detailed` - Health check detalhado
+- `GET /api/health/ready` - Verificação de readiness
+- `GET /api/health/live` - Verificação de liveness
+
+### Documentação
+- `GET /api/docs` - Documentação da API
+- `GET /` - Informações da API
+
+## 🔒 Segurança
+
+- **Helmet** para headers de segurança
+- **CORS** configurado
+- **Rate limiting** para prevenir abuso
+- **Validação de entrada** com express-validator
+- **Autenticação JWT** com expiração
+- **Sanitização de dados**
+- **Logs de auditoria**
+
+## 🧪 Testes
+
+```bash
+# Executar todos os testes
+npm test
+
+# Executar testes com cobertura
+npm run test:coverage
+
+# Executar testes em modo watch
+npm run test:watch
+```
+
+## 🐳 Docker
+
+```bash
+# Build da imagem
+npm run docker:build
+
+# Executar container
+npm run docker:run
+
+# Ou usar docker-compose
+docker-compose up -d
+```
+
+## 🚀 Deploy
+
+### Railway
+O projeto está configurado para deploy automático no Railway:
+
+1. Conecte seu repositório ao Railway
+2. Configure as variáveis de ambiente
+3. O deploy será automático a cada push
+
+### Variáveis de Ambiente Necessárias
+
 ```env
 NODE_ENV=production
 PORT=3001
-MONGODB_URI=mongodb://your-mongodb-uri
-REDIS_URL=redis://your-redis-uri
-JWT_SECRET=your-production-jwt-secret
-SOLANA_NETWORK=mainnet-beta
-SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
-FRONTEND_URL=https://app.agrotm.com
+JWT_SECRET=your-secret-key
+DB_HOST=your-db-host
+DB_PORT=5432
+DB_NAME=your-db-name
+DB_USER=your-db-user
+DB_PASSWORD=your-db-password
+CORS_ORIGIN=https://your-frontend-domain.com
 ```
 
-## 📊 Monitoring & Health Checks
+## 📊 Monitoramento
 
-### Health Check Endpoint
-```
-GET /health
-```
+- **Health checks** automáticos
+- **Logs estruturados** com Winston
+- **Métricas de performance**
+- **Tratamento de erros** centralizado
 
-Response:
-```json
-{
-  "status": "OK",
-  "timestamp": "2024-01-01T00:00:00.000Z",
-  "uptime": 3600,
-  "environment": "production",
-  "version": "1.0.0",
-  "services": {
-    "database": "connected",
-    "redis": "connected",
-    "web3": "connected"
-  }
-}
-```
+## 🤝 Contribuição
 
-### Metrics Endpoints
-```
-GET /metrics          # Prometheus metrics
-GET /api/stats/overview  # Application statistics
-```
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
 
-## 🔒 Security Checklist
+## 📄 Licença
 
-- [x] JWT authentication with secure tokens
-- [x] Rate limiting on all endpoints
-- [x] Input validation and sanitization
-- [x] CORS protection
-- [x] Security headers (Helmet.js)
-- [x] DDoS protection
-- [x] SQL injection prevention
-- [x] XSS protection
-- [x] Account lockout protection
-- [x] Audit logging
-- [x] Wallet address validation
-- [x] Transaction signature verification
-- [x] Environment variable security
-- [x] HTTPS enforcement
-- [x] Regular security updates
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
-## 🤝 Contributing
+## 📞 Suporte
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Development Guidelines
-- Follow TypeScript best practices
-- Write comprehensive tests
-- Update documentation
-- Follow the existing code style
-- Ensure all tests pass
-- Update security measures if needed
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🆘 Support
-
-- **Documentation**: [docs.agrotm.com](https://docs.agrotm.com)
-- **Issues**: [GitHub Issues](https://github.com/agrotm/agrotm-solana/issues)
-- **Discord**: [AGROTM Community](https://discord.gg/agrotm)
-- **Email**: support@agrotm.com
-
-## 🔄 Changelog
-
-See [CHANGELOG.md](CHANGELOG.md) for a detailed history of changes.
+- **Email**: contato@agrotm.com.br
+- **WhatsApp**: +55 (66) 99236-2830
+- **Documentação**: `/api/docs`
 
 ---
 
-**Built with ❤️ by the AGROTM Team** 
+**Desenvolvido com ❤️ para AGROTM** 
