@@ -1,132 +1,76 @@
 'use client';
 
-import { useState } from 'react';
-import { 
-  supportedLanguages, 
-  changeLanguage 
-} from '../../lib/i18n';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import { Globe, ChevronDown } from 'lucide-react';
 
-export type SupportedLanguage = 'en' | 'pt' | 'zh';
+const languages = [
+  { code: 'pt', name: 'Português', flag: '🇧🇷' },
+  { code: 'en', name: 'English', flag: '🇺🇸' },
+  { code: 'es', name: 'Español', flag: '🇪🇸' },
+  { code: 'zh', name: '中文', flag: '🇨🇳' },
+];
 
-export interface LanguageSelectorProps {
-  currentLanguage: SupportedLanguage;
-  className?: string;
-  variant?: 'dropdown' | 'buttons' | 'flags';
-}
-
-const getLanguageName = (code: SupportedLanguage): string => {
-  const lang = supportedLanguages.find(l => l.code === code);
-  return lang ? lang.name : code;
-};
-
-const getLanguageFlag = (code: SupportedLanguage): string => {
-  const lang = supportedLanguages.find(l => l.code === code);
-  return lang ? lang.flag : '🌐';
-};
-
-export function LanguageSelector({ 
-  currentLanguage, 
-  className = '',
-  variant = 'dropdown' 
-}: LanguageSelectorProps) {
+export function LanguageSelector() {
+  const { i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleLanguageChange = (language: SupportedLanguage) => {
-    if (language !== currentLanguage) {
-      changeLanguage(language);
-    }
+  const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[0];
+
+  const handleLanguageChange = (languageCode: string) => {
+    i18n.changeLanguage(languageCode);
+    localStorage.setItem('agrotm-language', languageCode);
     setIsOpen(false);
   };
 
-  if (variant === 'buttons') {
-    return (
-      <div className={`flex gap-2 ${className}`}>
-        {Object.entries(supportedLanguages).map(([code, lang]) => (
-          <button
-            key={code}
-            onClick={() => handleLanguageChange(code as SupportedLanguage)}
-            className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-              code === currentLanguage
-                ? 'bg-[#00FF00] text-black'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
-            }`}
-          >
-            {getLanguageFlag(code as SupportedLanguage)} {getLanguageName(code as SupportedLanguage)}
-          </button>
-        ))}
-      </div>
-    );
-  }
-
-  if (variant === 'flags') {
-    return (
-      <div className={`flex gap-1 ${className}`}>
-        {Object.entries(supportedLanguages).map(([code, lang]) => (
-          <button
-            key={code}
-            onClick={() => handleLanguageChange(code as SupportedLanguage)}
-            className={`p-2 rounded-lg text-lg transition-colors ${
-              code === currentLanguage
-                ? 'bg-[#00FF00] text-black'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
-            }`}
-            title={getLanguageName(code as SupportedLanguage)}
-          >
-            {getLanguageFlag(code as SupportedLanguage)}
-          </button>
-        ))}
-      </div>
-    );
-  }
-
-  // Default dropdown variant
   return (
-    <div className={`relative ${className}`}>
-      <button
+    <div className="relative">
+      <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+        className="flex items-center space-x-2 px-4 py-2 bg-premium-dark/50 border border-premium-neon-blue/30 rounded-lg text-premium-neon-blue hover:text-premium-neon-green hover:border-premium-neon-green transition-all duration-300 backdrop-blur-md"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
       >
-        <span className="text-lg">{getLanguageFlag(currentLanguage)}</span>
-        <span className="text-sm font-medium">{getLanguageName(currentLanguage)}</span>
-        <svg
-          className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+        <Globe className="w-4 h-4" />
+        <span className="text-lg">{currentLanguage.flag}</span>
+        <span className="hidden sm:block font-medium">{currentLanguage.name}</span>
+        <motion.div
+          animate={{ rotate: isOpen ? 180 : 0 }}
+          transition={{ duration: 0.2 }}
         >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
+          <ChevronDown className="w-4 h-4" />
+        </motion.div>
+      </motion.button>
 
-      {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-48 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg z-50">
-          {Object.entries(supportedLanguages).map(([code, lang]) => (
-            <button
-              key={code}
-              onClick={() => handleLanguageChange(code as SupportedLanguage)}
-              className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
-                code === currentLanguage ? 'bg-[#00FF00]/10 dark:bg-[#00FF00]/20' : ''
-              }`}
-            >
-              <span className="text-lg">{getLanguageFlag(code as SupportedLanguage)}</span>
-              <span className="text-sm font-medium">{getLanguageName(code as SupportedLanguage)}</span>
-              {code === currentLanguage && (
-                <svg className="w-4 h-4 ml-auto text-[#00FF00]" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-              )}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* Backdrop */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className="absolute top-full right-0 mt-2 w-48 bg-premium-dark/90 border border-premium-neon-blue/30 rounded-lg backdrop-blur-xl shadow-2xl shadow-premium-neon-blue/20 z-50"
+          >
+            {languages.map((language) => (
+              <motion.button
+                key={language.code}
+                onClick={() => handleLanguageChange(language.code)}
+                className={`w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-premium-neon-blue/10 transition-all duration-200 ${
+                  i18n.language === language.code
+                    ? 'text-premium-neon-green bg-premium-neon-green/10'
+                    : 'text-premium-light hover:text-premium-neon-blue'
+                }`}
+                whileHover={{ x: 5 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <span className="text-xl">{language.flag}</span>
+                <span className="font-medium">{language.name}</span>
+              </motion.button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 } 

@@ -1,7 +1,7 @@
 {
   "nav": {
     "home": "Inicio",
-    "dashboard": "Panel",
+    "dashboard": "Dashboard",
     "staking": "Staking",
     "about": "Acerca de",
     "contact": "Contacto",
@@ -11,12 +11,35 @@
     "title": "AGROTM",
     "subtitle": "SOLANA",
     "tagline": "Revoluciona la Agricultura con DeFi en Solana",
-    "description": "La mayor plataforma Web3 para el agronegocio mundial. Staking, NFTs agrícolas, gobernanza descentralizada y sostenibilidad en una sola plataforma.",
+    "description": "La plataforma Web3 más grande para el agronegocio mundial. Staking, NFTs agrícolas, gobernanza descentralizada y sostenibilidad en una sola plataforma.",
     "enterPlatform": "Entrar a la Plataforma",
-    "learnMore": "Saber Más"
+    "learnMore": "Saber Más",
+    "features": {
+      "technology": {
+        "title": "Tecnología Avanzada",
+        "description": "Soluciones digitales de vanguardia para el agronegocio"
+      },
+      "security": {
+        "title": "Seguridad Blockchain",
+        "description": "Protección total de activos agrícolas"
+      },
+      "sustainability": {
+        "title": "Sostenibilidad",
+        "description": "Prácticas agrícolas responsables"
+      },
+      "growth": {
+        "title": "Crecimiento Inteligente",
+        "description": "Maximización de resultados"
+      }
+    },
+    "stats": {
+      "farms": "Granjas Conectadas",
+      "assets": "Activos Tokenizados",
+      "uptime": "Tiempo Activo Garantizado"
+    }
   },
   "features": {
-    "title": "Funcionalidades Principales",
+    "title": "Características Principales",
     "sustainableStaking": {
       "title": "Staking Sostenible",
       "description": "Haz staking de tus tokens y gana recompensas mientras apoyas proyectos agrícolas sostenibles."
@@ -31,11 +54,11 @@
     }
   },
   "interactiveDashboard": {
-    "title": "Panel Interactivo",
+    "title": "Dashboard Interactivo",
     "description": "Monitorea tus inversiones agrícolas en tiempo real con nuestra interfaz futurista",
     "defi": "DeFi",
     "growth": "Crecimiento",
-    "analytics": "Analíticas",
+    "analytics": "Analytics",
     "network": "Red"
   },
   "cyberDefense": {
@@ -70,13 +93,13 @@
     "title": "Creación de NFTs",
     "description": "Tokeniza propiedades rurales y crea NFTs únicos",
     "createNFTs": {
-      "title": "Crea tus NFTs",
+      "title": "Crea Tus NFTs",
       "description": "Transforma propiedades rurales en NFTs únicos y negociables. Cada NFT representa una parte real del agronegocio sostenible.",
       "button": "Crear NFT"
     }
   },
   "contact": {
-    "title": "Contacto",
+    "title": "Ponte en Contacto",
     "subtitle": "¿Tienes alguna pregunta? ¡Estamos aquí para ayudar!",
     "form": {
       "title": "Envía un Mensaje",
@@ -97,17 +120,6 @@
       "website": "Sitio Web",
       "phone": "Teléfono",
       "socialMedia": "Redes Sociales"
-    },
-    "success": "¡Mensaje enviado con éxito! Nos pondremos en contacto pronto.",
-    "error": "Error al enviar mensaje. Inténtalo de nuevo."
-  },
-  "footer": {
-    "description": "Revolucionando la agricultura a través de la blockchain. Plataforma DeFi para agricultura sostenible con tecnología de punta y seguridad garantizada por Solana.",
-    "quickLinks": "Enlaces Rápidos",
-    "resources": "Recursos",
-    "copyright": "© 2024 AGROTM. Todos los derechos reservados."
-  },
-  "language": {
-    "title": "Idioma / Language"
+    }
   }
 } 

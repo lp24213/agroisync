@@ -10,10 +10,33 @@
   "hero": {
     "title": "AGROTM",
     "subtitle": "SOLANA",
-    "tagline": "用Solana上的DeFi革命化农业",
+    "tagline": "通过Solana上的DeFi革命化农业",
     "description": "全球农业综合企业最大的Web3平台。质押、农业NFT、去中心化治理和可持续性在一个平台中。",
     "enterPlatform": "进入平台",
-    "learnMore": "了解更多"
+    "learnMore": "了解更多",
+    "features": {
+      "technology": {
+        "title": "先进技术",
+        "description": "农业综合企业的尖端数字解决方案"
+      },
+      "security": {
+        "title": "区块链安全",
+        "description": "农业资产的全面保护"
+      },
+      "sustainability": {
+        "title": "可持续性",
+        "description": "负责任的农业实践"
+      },
+      "growth": {
+        "title": "智能增长",
+        "description": "结果最大化"
+      }
+    },
+    "stats": {
+      "farms": "连接农场",
+      "assets": "代币化资产",
+      "uptime": "保证运行时间"
+    }
   },
   "features": {
     "title": "主要功能",
@@ -40,30 +63,30 @@
   },
   "cyberDefense": {
     "title": "网络防御",
-    "description": "下一代安全技术保护您的数字资产",
+    "description": "下一代安全保护您的数字资产",
     "advancedProtection": {
       "title": "高级保护",
       "description": "多层安全保护您的投资"
     },
     "intelligentAI": {
       "title": "智能AI",
-      "description": "基于人工智能的威胁检测系统"
+      "description": "基于AI的威胁检测系统"
     },
     "secureBlockchain": {
       "title": "安全区块链",
-      "description": "区块链技术确保完全透明和安全"
+      "description": "区块链技术实现完全透明和安全"
     }
   },
   "stakingFarming": {
-    "title": "质押/挖矿",
-    "description": "种植您的代币并收获可持续奖励",
+    "title": "质押/农业",
+    "description": "培育您的代币并收获可持续奖励",
     "sustainableStaking": {
       "title": "可持续质押",
       "description": "质押您的AGROTM代币并获得奖励，同时支持可持续农业项目。"
     },
     "liquidityFarming": {
-      "title": "流动性挖矿",
-      "description": "提供流动性并通过挖矿系统获得额外代币。"
+      "title": "流动性农业",
+      "description": "提供流动性并通过农业系统赚取额外代币。"
     }
   },
   "nftMinting": {
@@ -77,11 +100,11 @@
   },
   "contact": {
     "title": "联系我们",
-    "subtitle": "有任何问题？我们随时为您服务！",
+    "subtitle": "有任何问题吗？我们在这里帮助您！",
     "form": {
       "title": "发送消息",
       "name": "姓名",
-      "email": "邮箱",
+      "email": "电子邮件",
       "subject": "主题",
       "message": "消息",
       "sendMessage": "发送消息",
@@ -93,13 +116,11 @@
     },
     "info": {
       "title": "联系信息",
-      "email": "邮箱",
+      "email": "电子邮件",
       "website": "网站",
       "phone": "电话",
       "socialMedia": "社交媒体"
-    },
-    "success": "消息发送成功！我们会尽快回复您。",
-    "error": "发送消息时出错。请重试。"
+    }
   },
   "footer": {
     "description": "通过区块链革命化农业。DeFi平台用于可持续农业，采用尖端技术和Solana保证的安全。",

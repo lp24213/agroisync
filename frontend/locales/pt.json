@@ -13,7 +13,30 @@
     "tagline": "Revolucione a Agricultura com DeFi na Solana",
     "description": "A maior plataforma Web3 para o agronegócio mundial. Staking, NFTs agrícolas, governança descentralizada e sustentabilidade em uma única plataforma.",
     "enterPlatform": "Entrar na Plataforma",
-    "learnMore": "Saiba Mais"
+    "learnMore": "Saiba Mais",
+    "features": {
+      "technology": {
+        "title": "Tecnologia Avançada",
+        "description": "Soluções digitais de ponta para o agronegócio"
+      },
+      "security": {
+        "title": "Segurança Blockchain",
+        "description": "Proteção total de ativos agrícolas"
+      },
+      "sustainability": {
+        "title": "Sustentabilidade",
+        "description": "Práticas agrícolas responsáveis"
+      },
+      "growth": {
+        "title": "Crescimento Inteligente",
+        "description": "Maximização de resultados"
+      }
+    },
+    "stats": {
+      "farms": "Fazendas Conectadas",
+      "assets": "Ativos Tokenizados",
+      "uptime": "Uptime Garantido"
+    }
   },
   "features": {
     "title": "Principais Funcionalidades",
@@ -97,9 +120,7 @@
       "website": "Website",
       "phone": "Telefone",
       "socialMedia": "Redes Sociais"
-    },
-    "success": "Mensagem enviada com sucesso! Entraremos em contato em breve.",
-    "error": "Erro ao enviar mensagem. Tente novamente."
+    }
   },
   "footer": {
     "description": "Revolucionando a agricultura através da blockchain. Plataforma DeFi para agricultura sustentável com tecnologia de ponta e segurança garantida pela Solana.",

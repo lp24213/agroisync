@@ -10,7 +10,7 @@ interface I18nProviderProps {
 
 export function I18nProvider({ children }: I18nProviderProps) {
   useEffect(() => {
-    // Inicializar i18n no lado do cliente
+    // Verificar se há um idioma salvo no localStorage
     if (typeof window !== 'undefined') {
       const savedLanguage = localStorage.getItem('agrotm-language');
       if (savedLanguage) {

@@ -1,43 +1,47 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
 
 // Importar arquivos de tradução
-import ptCommon from '../public/locales/pt/common.json';
-import enCommon from '../public/locales/en/common.json';
-import esCommon from '../public/locales/es/common.json';
-import zhCommon from '../public/locales/zh/common.json';
+import ptTranslations from '../locales/pt.json';
+import enTranslations from '../locales/en.json';
+import esTranslations from '../locales/es.json';
+import zhTranslations from '../locales/zh.json';
 
 const resources = {
   pt: {
-    common: ptCommon,
+    translation: ptTranslations,
   },
   en: {
-    common: enCommon,
+    translation: enTranslations,
   },
   es: {
-    common: esCommon,
+    translation: esTranslations,
   },
   zh: {
-    common: zhCommon,
+    translation: zhTranslations,
   },
 };
 
-// Verificar se já foi inicializado
 if (!i18n.isInitialized) {
   i18n
+    .use(LanguageDetector)
     .use(initReactI18next)
     .init({
       resources,
-      lng: 'pt', // idioma padrão
+      lng: 'pt', // default language
       fallbackLng: 'en',
       debug: process.env.NODE_ENV === 'development',
-      
       interpolation: {
-        escapeValue: false, // React já escapa valores
+        escapeValue: false,
       },
-      
       react: {
         useSuspense: false,
+      },
+      detection: {
+        order: ['localStorage', 'navigator', 'htmlTag'],
+        caches: ['localStorage'],
+        lookupLocalStorage: 'agrotm-language',
       },
     });
 }

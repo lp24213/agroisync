@@ -13,10 +13,33 @@
     "tagline": "Revolutionize Agriculture with DeFi on Solana",
     "description": "The largest Web3 platform for global agribusiness. Staking, agricultural NFTs, decentralized governance and sustainability in a single platform.",
     "enterPlatform": "Enter Platform",
-    "learnMore": "Learn More"
+    "learnMore": "Learn More",
+    "features": {
+      "technology": {
+        "title": "Advanced Technology",
+        "description": "Cutting-edge digital solutions for agribusiness"
+      },
+      "security": {
+        "title": "Blockchain Security",
+        "description": "Total protection of agricultural assets"
+      },
+      "sustainability": {
+        "title": "Sustainability",
+        "description": "Responsible agricultural practices"
+      },
+      "growth": {
+        "title": "Smart Growth",
+        "description": "Maximization of results"
+      }
+    },
+    "stats": {
+      "farms": "Connected Farms",
+      "assets": "Tokenized Assets",
+      "uptime": "Guaranteed Uptime"
+    }
   },
   "features": {
-    "title": "Main Features",
+    "title": "Key Features",
     "sustainableStaking": {
       "title": "Sustainable Staking",
       "description": "Stake your tokens and earn rewards while supporting sustainable agricultural projects."
@@ -43,7 +66,7 @@
     "description": "Next-generation security to protect your digital assets",
     "advancedProtection": {
       "title": "Advanced Protection",
-      "description": "Multiple security layers to protect your investments"
+      "description": "Multiple layers of security to protect your investments"
     },
     "intelligentAI": {
       "title": "Intelligent AI",
@@ -56,7 +79,7 @@
   },
   "stakingFarming": {
     "title": "Staking / Farming",
-    "description": "Grow your tokens and harvest sustainable rewards",
+    "description": "Cultivate your tokens and harvest sustainable rewards",
     "sustainableStaking": {
       "title": "Sustainable Staking",
       "description": "Stake your AGROTM tokens and earn rewards while supporting sustainable agricultural projects."
@@ -97,9 +120,7 @@
       "website": "Website",
       "phone": "Phone",
       "socialMedia": "Social Media"
-    },
-    "success": "Message sent successfully! We'll get back to you soon.",
-    "error": "Error sending message. Please try again."
+    }
   },
   "footer": {
     "description": "Revolutionizing agriculture through blockchain. DeFi platform for sustainable agriculture with cutting-edge technology and security guaranteed by Solana.",
