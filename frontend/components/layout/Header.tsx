@@ -1,238 +1,76 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { useRouter, usePathname } from 'next/navigation';
-import { useTranslation } from 'react-i18next';
-import { Menu, X, Globe, ChevronDown } from 'lucide-react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-
-const supportedLanguages = [
-  { code: 'pt', name: 'Português', flag: '🇧🇷' },
-  { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'es', name: 'Español', flag: '🇪🇸' },
-  { code: 'zh', name: '中文', flag: '🇨🇳' }
-];
+import { Logo } from '../ui/Logo';
 
 export function Header() {
-  const { t, i18n } = useTranslation('common');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
-  const [currentLanguage, setCurrentLanguage] = useState(i18n.language || 'pt');
-  const languageRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
-  const pathname = usePathname();
 
-  // Detectar idioma atual
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedLanguage = localStorage.getItem('agrotm-language');
-      if (savedLanguage) {
-        setCurrentLanguage(savedLanguage);
-        i18n.changeLanguage(savedLanguage);
-      }
-    }
-  }, [i18n]);
-
-  // Fechar menu ao clicar fora
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (languageRef.current && !languageRef.current.contains(event.target as Node)) {
-        setIsLanguageOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  // Trocar idioma
-  const handleLanguageChange = (languageCode: string) => {
-    setCurrentLanguage(languageCode);
-    i18n.changeLanguage(languageCode);
-    localStorage.setItem('agrotm-language', languageCode);
-    setIsLanguageOpen(false);
-  };
-
-  // Obter idioma atual
-  const getCurrentLanguage = () => {
-    return supportedLanguages.find(lang => lang.code === currentLanguage) || supportedLanguages[0];
-  };
+  const navigation = [
+    { name: 'Home', href: '/' },
+    { name: 'Dashboard', href: '/dashboard' },
+    { name: 'Staking', href: '/staking' },
+    { name: 'About', href: '/about' },
+    { name: 'Contact', href: '/contact' }
+  ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[#000000]/95 backdrop-blur-xl border-b border-[#00FF7F]/20">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b border-[#00bfff]/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 relative">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <motion.div
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+            className="flex items-center"
           >
-            <Link href="/" className="flex items-center">
-              <Image 
-                src="/assets/images/logo/agrotm-logo.svg" 
-                alt="AGROTM Logo" 
-                width={180} 
-                height={60}
-                priority
-                className="h-8 w-auto"
-                onError={(e) => {
-                  const target = e.currentTarget;
-                  if (target.src.includes('agrotm-logo.svg')) {
-                    target.src = "/assets/images/logo/agrotm-logo-white.svg";
-                  } else if (target.src.includes('agrotm-logo-white.svg')) {
-                    target.src = "/assets/images/logo/agrotm-logo.png";
-                  } else {
-                    target.style.display = 'none';
-                    target.nextElementSibling?.classList.remove('hidden');
-                  }
-                }}
-              />
-              <span className="hidden text-2xl font-bold text-[#00FF7F] font-orbitron">AGROTM</span>
-            </Link>
+            <Logo size="md" />
           </motion.div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Link 
-                href="/dashboard" 
-                className={`text-[#cccccc] hover:text-[#00FF7F] transition-all duration-300 font-orbitron relative group ${
-                  pathname === '/dashboard' ? 'text-[#00FF7F]' : ''
-                }`}
-              >
-                {t('header.dashboard', 'Dashboard')}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#00FF7F] to-[#00cc66] transition-all duration-300 group-hover:w-full"></span>
-              </Link>
-            </motion.div>
-            
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Link 
-                href="/staking" 
-                className={`text-[#cccccc] hover:text-[#00FF7F] transition-all duration-300 font-orbitron relative group ${
-                  pathname === '/staking' ? 'text-[#00FF7F]' : ''
-                }`}
-              >
-                {t('header.staking', 'Staking')}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#00FF7F] to-[#00cc66] transition-all duration-300 group-hover:w-full"></span>
-              </Link>
-            </motion.div>
-            
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Link 
-                href="/nft-marketplace" 
-                className={`text-[#cccccc] hover:text-[#00FF7F] transition-all duration-300 font-orbitron relative group ${
-                  pathname === '/nft-marketplace' ? 'text-[#00FF7F]' : ''
-                }`}
-              >
-                NFTs
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#00FF7F] to-[#00cc66] transition-all duration-300 group-hover:w-full"></span>
-              </Link>
-            </motion.div>
-            
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Link 
-                href="/about" 
-                className={`text-[#cccccc] hover:text-[#00FF7F] transition-all duration-300 font-orbitron relative group ${
-                  pathname === '/about' ? 'text-[#00FF7F]' : ''
-                }`}
-              >
-                {t('header.about', 'Sobre')}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#00FF7F] to-[#00cc66] transition-all duration-300 group-hover:w-full"></span>
-              </Link>
-            </motion.div>
-            
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Link 
-                href="/contact" 
-                className={`text-[#cccccc] hover:text-[#00FF7F] transition-all duration-300 font-orbitron relative group ${
-                  pathname === '/contact' ? 'text-[#00FF7F]' : ''
-                }`}
-              >
-                {t('header.contact', 'Contato')}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#00FF7F] to-[#00cc66] transition-all duration-300 group-hover:w-full"></span>
-              </Link>
-            </motion.div>
-          </nav>
-
-          {/* Language Selector */}
-          <div className="hidden md:flex items-center space-x-4">
-            <div className="relative" ref={languageRef}>
-              <motion.button
+            {navigation.map((item) => (
+              <motion.a
+                key={item.name}
+                href={item.href}
+                className="text-[#00bfff] hover:text-[#0080ff] font-medium transition-colors duration-200"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => setIsLanguageOpen(!isLanguageOpen)}
-                className="flex items-center space-x-2 text-[#cccccc] hover:text-[#00FF7F] transition-all duration-300 font-orbitron"
               >
-                <Globe size={16} />
-                <span>{getCurrentLanguage().flag}</span>
-                <ChevronDown size={12} />
-              </motion.button>
-              
-              {isLanguageOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="absolute top-full right-0 mt-2 bg-[#000000]/95 backdrop-blur-md border border-[#00FF7F]/20 rounded-xl shadow-neon-green min-w-[150px]"
-                >
-                  {supportedLanguages.map((language) => (
-                    <motion.button
-                      key={language.code}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => handleLanguageChange(language.code)}
-                      className={`w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-[#00FF7F]/10 transition-all duration-300 ${
-                        currentLanguage === language.code ? 'text-[#00FF7F]' : 'text-[#cccccc]'
-                      }`}
-                    >
-                      <span>{language.flag}</span>
-                      <span className="font-orbitron">{language.name}</span>
-                    </motion.button>
-                  ))}
-                </motion.div>
-              )}
-            </div>
+                {item.name}
+              </motion.a>
+            ))}
+          </nav>
 
-            <motion.div
+          {/* Right Side */}
+          <div className="flex items-center space-x-4">
+            {/* Language Selector */}
+            <div className="text-[#00bfff] font-medium">BR PT</div>
+            
+            {/* Get Started Button */}
+            <motion.button
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              className="btn-primary px-6 py-2 text-sm"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Link href="/dashboard">
-                <button className="btn-primary text-sm px-6 py-2 rounded-xl font-orbitron font-bold">
-                  {t('header.getStarted', 'Começar Agora')}
-                </button>
-              </Link>
-            </motion.div>
-          </div>
+              Get Started
+            </motion.button>
 
-          {/* Mobile Menu Button */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden text-[#cccccc] hover:text-[#00FF7F] transition-all duration-300"
-          >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </motion.button>
+            {/* Mobile Menu Button */}
+            <button
+              className="md:hidden p-2 text-[#00bfff]"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
@@ -241,106 +79,20 @@ export function Header() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-[#000000]/95 backdrop-blur-md border-t border-[#00FF7F]/20"
+            className="md:hidden border-t border-[#00bfff]/20"
           >
-            <nav className="flex flex-col space-y-4 py-4">
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Link 
-                  href="/dashboard" 
-                  className={`px-4 py-2 text-[#cccccc] hover:text-[#00FF7F] transition-all duration-300 font-orbitron ${
-                    pathname === '/dashboard' ? 'text-[#00FF7F]' : ''
-                  }`}
+            <div className="px-2 pt-2 pb-3 space-y-1">
+              {navigation.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  className="block px-3 py-2 text-[#00bfff] hover:text-[#0080ff] font-medium"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {t('header.dashboard', 'Dashboard')}
-                </Link>
-              </motion.div>
-              
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Link 
-                  href="/staking" 
-                  className={`px-4 py-2 text-[#cccccc] hover:text-[#00FF7F] transition-all duration-300 font-orbitron ${
-                    pathname === '/staking' ? 'text-[#00FF7F]' : ''
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t('header.staking', 'Staking')}
-                </Link>
-              </motion.div>
-              
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Link 
-                  href="/nft-marketplace" 
-                  className={`px-4 py-2 text-[#cccccc] hover:text-[#00FF7F] transition-all duration-300 font-orbitron ${
-                    pathname === '/nft-marketplace' ? 'text-[#00FF7F]' : ''
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  NFTs
-                </Link>
-              </motion.div>
-              
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Link 
-                  href="/about" 
-                  className={`px-4 py-2 text-[#cccccc] hover:text-[#00FF7F] transition-all duration-300 font-orbitron ${
-                    pathname === '/about' ? 'text-[#00FF7F]' : ''
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t('header.about', 'Sobre')}
-                </Link>
-              </motion.div>
-              
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Link 
-                  href="/contact" 
-                  className={`px-4 py-2 text-[#cccccc] hover:text-[#00FF7F] transition-all duration-300 font-orbitron ${
-                    pathname === '/contact' ? 'text-[#00FF7F]' : ''
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t('header.contact', 'Contato')}
-                </Link>
-              </motion.div>
-              
-              {/* Mobile Language Selector */}
-              <div className="px-4 py-2">
-                <div className="flex flex-wrap gap-2">
-                  {supportedLanguages.map((language) => (
-                    <motion.button
-                      key={language.code}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => handleLanguageChange(language.code)}
-                      className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-orbitron transition-all duration-300 ${
-                        currentLanguage === language.code 
-                          ? 'bg-gradient-to-r from-[#00FF7F] to-[#00cc66] text-black' 
-                          : 'bg-[#00FF7F]/10 text-[#cccccc] hover:text-[#00FF7F]'
-                      }`}
-                    >
-                      <span>{language.flag}</span>
-                      <span>{language.name}</span>
-                    </motion.button>
-                  ))}
-                </div>
-              </div>
-            </nav>
+                  {item.name}
+                </a>
+              ))}
+            </div>
           </motion.div>
         )}
       </div>

@@ -5,6 +5,12 @@ import Image from 'next/image';
 const OriginalImages: React.FC = () => {
   const professionalImages = [
     {
+      title: 'Plataforma AGROTM',
+      description: 'Sistema integrado de tecnologia agrícola com blockchain avançado',
+      src: '/assets/images/hero/farmer-tech-character.png',
+      category: 'hero'
+    },
+    {
       title: 'Interface de Monitoramento Inteligente',
       description: 'Dashboard avançado com analytics em tempo real para gestão completa do agronegócio',
       src: '/assets/images/dashboard/interactive-dashboard.png',
@@ -33,12 +39,6 @@ const OriginalImages: React.FC = () => {
       description: 'Automação inteligente e IoT aplicada ao agronegócio moderno',
       src: '/assets/images/farm/smart-farm-futuristic.png',
       category: 'farm'
-    },
-    {
-      title: 'Agricultor Digital',
-      description: 'Integração de tecnologia avançada com práticas agrícolas tradicionais',
-      src: '/assets/images/hero/farmer-tech-character.png',
-      category: 'hero'
     }
   ];
 
