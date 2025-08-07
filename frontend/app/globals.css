@@ -11,7 +11,7 @@ html {
 }
 
 body {
-  background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+  background: #000000;
   color: #00bfff;
   font-family: 'Poppins', sans-serif;
   line-height: 1.6;
@@ -47,7 +47,7 @@ p {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #00bfff 0%, #0080ff 100%);
+  background: linear-gradient(135deg, #00FF00 0%, #00CC00 100%);
   color: #000000;
   border: none;
   border-radius: 12px;
@@ -57,14 +57,14 @@ p {
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 0 20px rgba(0, 191, 255, 0.3);
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
   position: relative;
   overflow: hidden;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #0080ff 0%, #0055cc 100%);
-  box-shadow: 0 0 30px rgba(0, 191, 255, 0.5);
+  background: linear-gradient(135deg, #00CC00 0%, #009900 100%);
+  box-shadow: 0 0 30px rgba(0, 255, 0, 0.5);
   transform: translateY(-2px);
 }
 
@@ -85,8 +85,8 @@ p {
 
 .btn-secondary {
   background: transparent;
-  color: #00bfff;
-  border: 2px solid #00bfff;
+  color: #ffffff;
+  border: 2px solid #00FF00;
   border-radius: 12px;
   padding: 12px 24px;
   font-family: 'Orbitron', monospace;
@@ -94,21 +94,25 @@ p {
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 0 15px rgba(0, 191, 255, 0.2);
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
 }
 
 .btn-secondary:hover {
-  background: rgba(0, 191, 255, 0.1);
-  box-shadow: 0 0 25px rgba(0, 191, 255, 0.4);
+  background: rgba(0, 255, 0, 0.1);
+  box-shadow: 0 0 25px rgba(0, 255, 0, 0.4);
   transform: translateY(-2px);
 }
 
 .bg-black-matte {
-  background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+  background: #000000;
 }
 
 .shadow-neon-blue {
   box-shadow: 0 0 20px rgba(0, 191, 255, 0.3);
+}
+
+.shadow-neon-green {
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
 }
 
 .animate-fadeIn {
@@ -167,6 +171,18 @@ p {
   transform: translateY(-5px);
 }
 
+.text-green {
+  color: #00FF00;
+}
+
+.bg-green {
+  background-color: #00FF00;
+}
+
+.border-green {
+  border-color: #00FF00;
+}
+
 .font-orbitron {
   font-family: 'Orbitron', monospace;
 }
@@ -177,4 +193,28 @@ p {
 
 .font-poppins {
   font-family: 'Poppins', sans-serif;
+}
+
+/* Estilos globais para seguir as cores da imagem */
+a {
+  color: #00bfff;
+}
+
+a:hover {
+  color: #00FF00;
+}
+
+button {
+  font-family: 'Orbitron', monospace;
+}
+
+input, textarea, select {
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(0, 191, 255, 0.2);
+  color: #00bfff;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: #00FF00;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
 }

@@ -46,7 +46,7 @@ export function Header() {
 
           {/* Right Side */}
           <div className="flex items-center space-x-4">
-            {/* Language Selector */}
+          {/* Language Selector */}
             <div className="text-[#00bfff] font-medium">BR PT</div>
             
             {/* Get Started Button */}
@@ -62,14 +62,14 @@ export function Header() {
             </motion.button>
 
             {/* Mobile Menu Button */}
-            <button
+                    <button
               className="md:hidden p-2 text-[#00bfff]"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
-            </button>
+              </button>
           </div>
         </div>
 
@@ -87,8 +87,8 @@ export function Header() {
                   key={item.name}
                   href={item.href}
                   className="block px-3 py-2 text-[#00bfff] hover:text-[#0080ff] font-medium"
-                  onClick={() => setIsMenuOpen(false)}
-                >
+                onClick={() => setIsMenuOpen(false)}
+              >
                   {item.name}
                 </a>
               ))}

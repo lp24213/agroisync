@@ -26,7 +26,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'stake':
-        return 'bg-green-500/20 text-green-400';
+        return 'bg-[#00FF00]/20 text-[#00FF00]';
       case 'unstake':
         return 'bg-yellow-500/20 text-yellow-400';
       case 'claim':
@@ -56,7 +56,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'confirmed':
-        return 'bg-green-500/20 text-green-400';
+        return 'bg-[#00FF00]/20 text-[#00FF00]';
       case 'pending':
         return 'bg-yellow-500/20 text-yellow-400';
       case 'failed':

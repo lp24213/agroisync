@@ -384,8 +384,8 @@ export const NFTMintForm: React.FC<NFTMintFormProps> = ({
 
           {/* Farm Data (for agricultural NFTs) */}
           {formData.category.includes('Farm') && (
-            <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-              <h3 className="text-lg font-semibold text-green-800 mb-4">Farm Data</h3>
+                    <div className="mt-6 p-4 bg-[#00FF00]/10 border border-[#00FF00]/20 rounded-lg">
+          <h3 className="text-lg font-semibold text-[#00FF00] mb-4">Farm Data</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input
                   label="Location"

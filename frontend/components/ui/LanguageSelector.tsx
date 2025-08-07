@@ -47,7 +47,7 @@ export function LanguageSelector({
             onClick={() => handleLanguageChange(code as SupportedLanguage)}
             className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
               code === currentLanguage
-                ? 'bg-green-600 text-white'
+                ? 'bg-[#00FF00] text-black'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
             }`}
           >
@@ -67,7 +67,7 @@ export function LanguageSelector({
             onClick={() => handleLanguageChange(code as SupportedLanguage)}
             className={`p-2 rounded-lg text-lg transition-colors ${
               code === currentLanguage
-                ? 'bg-green-600 text-white'
+                ? 'bg-[#00FF00] text-black'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
             }`}
             title={getLanguageName(code as SupportedLanguage)}
@@ -105,13 +105,13 @@ export function LanguageSelector({
               key={code}
               onClick={() => handleLanguageChange(code as SupportedLanguage)}
               className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
-                code === currentLanguage ? 'bg-green-50 dark:bg-green-900/20' : ''
+                code === currentLanguage ? 'bg-[#00FF00]/10 dark:bg-[#00FF00]/20' : ''
               }`}
             >
               <span className="text-lg">{getLanguageFlag(code as SupportedLanguage)}</span>
               <span className="text-sm font-medium">{getLanguageName(code as SupportedLanguage)}</span>
               {code === currentLanguage && (
-                <svg className="w-4 h-4 ml-auto text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-4 h-4 ml-auto text-[#00FF00]" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
               )}

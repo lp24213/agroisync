@@ -11,37 +11,37 @@ export function Features() {
       icon: '/images/leaf.svg',
       title: 'Agricultura Sustentável',
       description: 'Tecnologia blockchain para rastreabilidade e sustentabilidade agrícola',
-      color: '[#00FF7F]'
+      color: '[#00bfff]'
     },
     {
       icon: '/images/coin.svg',
       title: 'Staking DeFi',
       description: 'Ganhe recompensas através de staking e yield farming',
-      color: '[#00FF7F]'
+      color: '[#00bfff]'
     },
     {
       icon: '/images/nft.svg',
       title: 'NFTs Agrícolas',
       description: 'Tokenização de ativos agrícolas únicos',
-      color: '[#00FF7F]'
+      color: '[#00bfff]'
     },
     {
       icon: '/images/chart.svg',
       title: 'Analytics Avançados',
       description: 'Dados em tempo real e métricas de performance',
-      color: '[#00FF7F]'
+      color: '[#00bfff]'
     },
     {
       icon: '/images/wallet.svg',
       title: 'Carteira Integrada',
       description: 'Carteira Web3 integrada para transações seguras',
-      color: '[#00FF7F]'
+      color: '[#00bfff]'
     },
     {
       icon: '/images/check.svg',
       title: 'Governança DAO',
       description: 'Participação na governança descentralizada',
-      color: '[#00FF7F]'
+      color: '[#00bfff]'
     }
   ];
 
@@ -58,7 +58,7 @@ export function Features() {
       {/* Floating Elements */}
       <div className="absolute inset-0 z-0">
         <motion.div 
-          className="absolute top-1/3 right-1/5 w-32 h-32 rounded-full bg-[#00FF7F]/20 blur-xl"
+          className="absolute top-1/3 right-1/5 w-32 h-32 rounded-full bg-[#00bfff]/20 blur-xl"
           animate={{ 
             x: [0, 30, 0], 
             y: [0, -30, 0],
@@ -71,7 +71,7 @@ export function Features() {
           }}
         />
         <motion.div 
-          className="absolute bottom-1/4 left-1/5 w-40 h-40 rounded-full bg-[#00FF7F]/20 blur-xl"
+          className="absolute bottom-1/4 left-1/5 w-40 h-40 rounded-full bg-[#00bfff]/20 blur-xl"
           animate={{ 
             x: [0, -40, 0], 
             y: [0, 20, 0],
@@ -93,8 +93,8 @@ export function Features() {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="font-orbitron text-4xl md:text-5xl text-[#00FF7F] mb-4 animate-fadeIn">
-            Por que escolher <span className="text-[#00FF7F]">AGROTM</span>?
+          <h2 className="font-orbitron text-4xl md:text-5xl text-[#00bfff] mb-4 animate-fadeIn">
+            Por que escolher <span className="text-[#00bfff]">AGROTM</span>?
           </h2>
           <p className="text-lg md:text-xl text-[#cccccc] max-w-3xl mx-auto">
             Plataforma revolucionária que conecta agricultores e investidores através da tecnologia blockchain
@@ -111,18 +111,18 @@ export function Features() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               whileHover={{ scale: 1.05, y: -5 }}
             >
-              <Card className="h-full bg-black/70 border border-[#00FF7F]/20 hover:shadow-neon transition-all duration-300">
-                <div className="text-center p-6">
-                  <div className={`w-16 h-16 bg-[#00FF7F]/20 rounded-full flex items-center justify-center mx-auto mb-4`}>
-                    <Image
-                      src={feature.icon}
-                      alt={feature.title}
-                      width={32}
-                      height={32}
-                      className="w-8 h-8"
-                    />
-                  </div>
-                  <h3 className="text-xl font-orbitron font-semibold text-[#00FF7F] mb-3">
+                             <Card className="h-full bg-black/70 border border-[#00bfff]/20 hover:shadow-neon transition-all duration-300">
+                 <div className="text-center p-6">
+                   <div className={`w-16 h-16 bg-[#00bfff]/20 rounded-full flex items-center justify-center mx-auto mb-4`}>
+                     <Image
+                       src={feature.icon}
+                       alt={feature.title}
+                       width={32}
+                       height={32}
+                       className="w-8 h-8"
+                     />
+                   </div>
+                   <h3 className="text-xl font-orbitron font-semibold text-[#00bfff] mb-3">
                     {feature.title}
                   </h3>
                   <p className="text-[#cccccc] leading-relaxed">

@@ -74,7 +74,7 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
     switch (level) {
       case 'high': return 'text-red-500';
       case 'medium': return 'text-yellow-500';
-      case 'low': return 'text-green-500';
+      case 'low': return 'text-[#00FF00]';
       default: return 'text-gray-500';
     }
   };
@@ -119,7 +119,7 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
         
         <Card className="p-4">
           <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">{stats.lowThreat}</div>
+                          <div className="text-2xl font-bold text-[#00FF00]">{stats.lowThreat}</div>
             <div className="text-sm text-gray-600">Low Threat</div>
           </div>
         </Card>

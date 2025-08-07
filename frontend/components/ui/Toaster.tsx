@@ -12,7 +12,7 @@ export const Toaster: React.FC = () => {
         style: {
           background: '#000000',
           color: '#ffffff',
-          border: '1px solid #00FF7F',
+          border: '1px solid #00bfff',
         },
         // success: {
         //   duration: 3000,

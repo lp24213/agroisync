@@ -69,11 +69,11 @@ const contactInfo = [
 
 export function PremiumFooter() {
   return (
-    <footer className='relative bg-[#000000] border-t border-[#00FF7F]/20'>
+    <footer className='relative bg-[#000000] border-t border-[#00bfff]/20'>
       {/* Background Elements */}
       <div className='absolute inset-0 overflow-hidden'>
-        <div className='absolute bottom-20 left-20 w-96 h-96 bg-[#00FF7F]/5 rounded-full blur-3xl' />
-        <div className='absolute bottom-10 right-20 w-80 h-80 bg-[#00FF7F]/5 rounded-full blur-3xl' />
+        <div className='absolute bottom-20 left-20 w-96 h-96 bg-[#00bfff]/5 rounded-full blur-3xl' />
+        <div className='absolute bottom-10 right-20 w-80 h-80 bg-[#00bfff]/5 rounded-full blur-3xl' />
       </div>
 
       <div className='relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16'>

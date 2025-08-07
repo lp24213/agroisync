@@ -111,7 +111,7 @@ export function ComplianceDashboard() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'compliant':
-        return 'text-green-400';
+        return 'text-[#00FF00]';
       case 'warning':
         return 'text-yellow-400';
       case 'non-compliant':
@@ -124,7 +124,7 @@ export function ComplianceDashboard() {
   const getStatusBgColor = (status: string) => {
     switch (status) {
       case 'compliant':
-        return 'bg-green-500/20';
+        return 'bg-[#00FF00]/20';
       case 'warning':
         return 'bg-yellow-500/20';
       case 'non-compliant':
@@ -225,7 +225,7 @@ export function ComplianceDashboard() {
                   <div className="flex items-start justify-between mb-2">
                     <h3 className="font-semibold text-white">{report.title}</h3>
                     <span className={`px-2 py-1 rounded text-xs font-semibold ${
-                      report.status === 'approved' ? 'bg-green-500/20 text-green-400' :
+                      report.status === 'approved' ? 'bg-[#00FF00]/20 text-[#00FF00]' :
                       report.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' :
                       'bg-red-500/20 text-red-400'
                     }`}>

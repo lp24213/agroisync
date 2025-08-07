@@ -473,7 +473,7 @@ const ProposalsPage: React.FC = () => {
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
           <div 
-            className={`h-2.5 rounded-full ${percentage >= 100 ? 'bg-green-600' : 'bg-blue-600'}`}
+                          className={`h-2.5 rounded-full ${percentage >= 100 ? 'bg-[#00FF00]' : 'bg-[#00bfff]'}`}
             style={{ width: `${percentage}%` }}
           ></div>
         </div>
@@ -498,7 +498,7 @@ const ProposalsPage: React.FC = () => {
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
                 <div 
-                  className={`h-2 rounded-full ${index === 0 ? 'bg-green-500' : index === 1 ? 'bg-red-500' : 'bg-yellow-500'}`}
+                  className={`h-2 rounded-full ${index === 0 ? 'bg-[#00FF00]' : index === 1 ? 'bg-red-500' : 'bg-yellow-500'}`}
                   style={{ width: `${percentage}%` }}
                 ></div>
               </div>

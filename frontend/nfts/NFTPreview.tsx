@@ -102,7 +102,7 @@ export const NFTPreview: React.FC<NFTPreviewProps> = ({
       case 'rare':
         return 'bg-blue-500 text-white';
       case 'uncommon':
-        return 'bg-green-500 text-white';
+        return 'bg-[#00FF00] text-black';
       default:
         return 'bg-gray-500 text-white';
     }
@@ -160,7 +160,7 @@ export const NFTPreview: React.FC<NFTPreviewProps> = ({
       >
         <Card className="overflow-hidden hover:shadow-lg transition-all duration-300">
           {/* NFT Image */}
-          <div className="relative aspect-square bg-gradient-to-br from-green-50 to-blue-50">
+          <div className="relative aspect-square bg-gradient-to-br from-[#00FF00]/10 to-[#00bfff]/10">
             {!imageError ? (
               <Image
                 src={nft.imageUrl}
@@ -189,7 +189,7 @@ export const NFTPreview: React.FC<NFTPreviewProps> = ({
               
               {nft.isListed && (
                 <div className="absolute top-2 right-2">
-                  <Badge variant="outline" className="bg-white text-green-600">
+                  <Badge variant="outline" className="bg-white text-[#00FF00]">
                     Listed
                   </Badge>
                 </div>
@@ -201,7 +201,7 @@ export const NFTPreview: React.FC<NFTPreviewProps> = ({
               <div className="absolute bottom-2 left-2 right-2">
                 <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-2">
                   <p className="text-sm text-gray-600">Price</p>
-                  <p className="text-lg font-bold text-green-600">
+                  <p className="text-lg font-bold text-[#00FF00]">
                     {formatPrice(nft.price)} USDC
                   </p>
                 </div>
@@ -385,7 +385,7 @@ const TransferForm: React.FC<TransferFormProps> = ({ nftId, onTransfer, onClose 
           value={recipient}
           onChange={(e) => setRecipient(e.target.value)}
           placeholder="0x..."
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00FF00]"
           required
         />
       </div>

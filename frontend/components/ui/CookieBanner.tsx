@@ -140,8 +140,8 @@ export function CookieBanner() {
                   {/* Cookies Necessários */}
                   <div className="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg border border-gray-700">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
-                        <Shield className="w-5 h-5 text-green-400" />
+                              <div className="w-10 h-10 bg-[#00FF00]/20 rounded-lg flex items-center justify-center">
+          <Shield className="w-5 h-5 text-[#00FF00]" />
                       </div>
                       <div>
                         <h4 className="font-semibold text-white">Cookies Necessários</h4>
@@ -152,7 +152,7 @@ export function CookieBanner() {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-gray-500">Sempre ativo</span>
-                      <div className="w-12 h-6 bg-green-500 rounded-full flex items-center justify-end px-1">
+                      <div className="w-12 h-6 bg-[#00FF00] rounded-full flex items-center justify-end px-1">
                         <div className="w-4 h-4 bg-white rounded-full"></div>
                       </div>
                     </div>

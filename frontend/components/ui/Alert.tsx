@@ -53,7 +53,7 @@ const Alert = memo<AlertProps>(({
   // Variant styles with enhanced cyberpunk theme
   const variants: Record<AlertVariant, string> = {
     info: 'bg-agro-primary/10 border-agro-primary/20 text-agro-primary shadow-agro-primary/5',
-    success: 'bg-green-500/10 border-green-500/20 text-green-400 shadow-green-500/5',
+    success: 'bg-[#00FF00]/10 border-[#00FF00]/20 text-[#00FF00] shadow-[#00FF00]/5',
     warning: 'bg-yellow-500/10 border-yellow-500/20 text-yellow-400 shadow-yellow-500/5',
     error: 'bg-red-500/10 border-red-500/20 text-red-400 shadow-red-500/5',
   };
