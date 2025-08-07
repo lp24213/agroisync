@@ -3,13 +3,60 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
 import { Eye, EyeOff, Mail, Phone, User, Lock, Shield, ArrowLeft, CheckCircle, XCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '../../hooks/useAuth';
 
+// Fallback translations
+const t = (key: string) => {
+  const translations: Record<string, string> = {
+    'auth.createAccount': 'Create Account',
+    'auth.joinAGROTM': 'Join the digital agriculture revolution',
+    'auth.fullName': 'Full Name',
+    'auth.fullNamePlaceholder': 'Enter your full name',
+    'auth.email': 'Email',
+    'auth.emailPlaceholder': 'Enter your email',
+    'auth.phone': 'Phone',
+    'auth.phonePlaceholder': '+5511999999999',
+    'auth.password': 'Password',
+    'auth.passwordPlaceholder': 'Enter your password',
+    'auth.confirmPassword': 'Confirm Password',
+    'auth.confirmPasswordPlaceholder': 'Confirm your password',
+    'auth.createAccount': 'Create Account',
+    'auth.creatingAccount': 'Creating account...',
+    'auth.verificationCode': 'Verification Code',
+    'auth.verificationCodePlaceholder': 'Enter verification code',
+    'auth.verifyAccount': 'Verify Account',
+    'auth.verifying': 'Verifying...',
+    'auth.resendVerification': 'Resend Code',
+    'auth.resendIn': 'Resend in',
+    'auth.alreadyHaveAccount': 'Already have an account?',
+    'auth.signIn': 'Sign In',
+    'auth.backToRegistration': 'Back to Registration',
+    'auth.registrationSuccess': 'Account created successfully! Check your email and phone.',
+    'auth.verificationSuccess': 'Account verified successfully!',
+    'auth.verificationResent': 'Code resent successfully!',
+    'auth.registrationError': 'Error creating account',
+    'auth.verificationError': 'Error verifying account',
+    'auth.resendError': 'Error resending code',
+    'auth.fullNameRequired': 'Full name is required',
+    'auth.fullNameMinLength': 'Name must be at least 2 characters',
+    'auth.emailRequired': 'Email is required',
+    'auth.emailInvalid': 'Invalid email',
+    'auth.phoneRequired': 'Phone is required',
+    'auth.phoneInvalid': 'Phone must be in international format (+5511999999999)',
+    'auth.passwordRequired': 'Password is required',
+    'auth.passwordMinLength': 'Password must be at least 8 characters',
+    'auth.confirmPasswordRequired': 'Password confirmation is required',
+    'auth.passwordsDoNotMatch': 'Passwords do not match',
+    'auth.verificationCodeRequired': 'Verification code is required',
+    'auth.recaptchaNotice': 'Security validation active',
+    'common.backToHome': 'Back to Home'
+  };
+  return translations[key] || key;
+};
+
 export default function CadastroPage() {
-  const t = useTranslations();
   const router = useRouter();
   const { registerWithEmail, sendSMSVerification, verifySMSCode, loading, error, clearError } = useAuth();
   

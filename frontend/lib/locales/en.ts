@@ -680,7 +680,6 @@ export default {
     verificationSent: 'Verification code sent to',
     verificationCode: 'Verification Code',
     verifying: 'Verifying...',
-    verifyAccount: 'Verify Account',
     resendVerification: 'Resend Code',
     resendIn: 'Resend in',
     backToRegistration: 'Back to Registration',

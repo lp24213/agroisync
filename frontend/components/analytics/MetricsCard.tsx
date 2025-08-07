@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/Badge';
 interface MetricsCardProps {
   title: string;
   value: string | number;
-  change?: number;
+  change?: number | string;
   changeLabel?: string;
   icon?: string;
   trend?: 'up' | 'down' | 'neutral';
@@ -62,6 +62,13 @@ export function MetricsCard({
     }
   };
 
+  const formatChange = (changeValue: number | string) => {
+    if (typeof changeValue === 'string') {
+      return changeValue;
+    }
+    return `${changeValue >= 0 ? '+' : ''}${changeValue}%`;
+  };
+
   return (
     <Card>
       <div className="flex items-center justify-between mb-4">
@@ -82,7 +89,7 @@ export function MetricsCard({
             <div className={`flex items-center gap-1 ${getTrendColor()}`}>
               <span>{getTrendIcon()}</span>
               <span className="text-sm font-semibold">
-                {change >= 0 ? '+' : ''}{change}%
+                {formatChange(change)}
               </span>
             </div>
             {changeLabel && (

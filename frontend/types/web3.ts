@@ -21,10 +21,12 @@ export interface Web3Provider {
 
 export interface Web3ContextType {
   account: string | null;
+  publicKey?: string | null;
   provider: Web3Provider | null;
   chainId: number | null;
   connect: () => Promise<void>;
-  disconnect: () => void;
+  disconnect: () => Promise<void>;
+  signMessage?: (message: string) => Promise<string>;
   isConnecting: boolean;
   isConnected: boolean;
   error: string | null;
@@ -104,12 +106,16 @@ export interface WeatherData {
   precipitation: number;
   visibility: number;
   timestamp: string;
+  analysis?: {
+    cropImpact: string;
+  };
 }
 
 export interface ChartData {
   label: string;
   value: number;
   color?: string;
+  name?: string;
 }
 
 export interface MetricsCardProps {
@@ -126,4 +132,65 @@ export interface Logger {
   error: (message: string, error?: any) => void;
   warn: (message: string, data?: any) => void;
   debug: (message: string, data?: any) => void;
+}
+
+// Additional missing types
+export interface TargetEvent {
+  target: {
+    value: string;
+  };
+}
+
+export interface AlertVariant {
+  variant: 'default' | 'destructive' | 'success' | 'warning';
+}
+
+export interface CardProps {
+  children: React.ReactNode;
+  className?: string;
+  title?: string;
+  description?: string;
+}
+
+export interface LoadingSpinnerProps {
+  size?: SpinnerSize;
+  variant?: SpinnerVariant;
+  className?: string;
+}
+
+export type SpinnerSize = 'sm' | 'md' | 'lg' | 'xl';
+export type SpinnerVariant = 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'error';
+
+export interface WalletAdapter {
+  name: string;
+  url: string;
+  icon: string;
+  description: string;
+}
+
+export interface Wallet {
+  name?: string;
+  adapter: WalletAdapter;
+}
+
+export interface SecurityEvent {
+  id: string;
+  type: SecurityEventType;
+  timestamp: string;
+  description: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  resolved: boolean;
+}
+
+export type SecurityEventType = 'login_attempt' | 'transaction' | 'withdrawal' | 'suspicious_activity';
+
+export interface PremiumDeFiService {
+  id: string;
+  name: string;
+  description: string;
+  apy: number;
+  tvl: number;
+  risk: 'low' | 'medium' | 'high';
+  minStake: number;
+  maxStake: number;
 } 

@@ -1,43 +1,13 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 
-interface CyberDefenseProps {
-  size?: 'sm' | 'md' | 'lg';
-  className?: string;
-}
-
-export function CyberDefense({ size = 'md', className = '' }: CyberDefenseProps) {
-  const sizeClasses = {
-    sm: 'w-16 h-16',
-    md: 'w-24 h-24',
-    lg: 'w-32 h-32',
-  };
-
-  const textSizes = {
-    sm: 'text-xs',
-    md: 'text-sm',
-    lg: 'text-base',
-  };
-
+const CyberDefense: React.FC = () => {
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5 }}
-      className={`relative ${sizeClasses[size]} ${className}`}
-    >
-      <div className="absolute inset-0 bg-gradient-to-br from-[#00bfff]/20 to-[#000000] border-2 border-[#00bfff]/30 rounded-2xl flex flex-col justify-center items-center">
-        <div className="text-center">
-          <h2 className="font-orbitron text-2xl md:text-3xl text-[#00bfff] mb-2 animate-fadeIn">
-            Cyber Defense
-          </h2>
-          <p className={`text-[#00bfff] ${textSizes[size]} font-medium`}>
-            Segurança
-          </p>
-        </div>
-      </div>
-    </motion.div>
+    <div className="w-12 h-12 bg-gradient-to-br from-red-400 to-orange-500 rounded-full flex items-center justify-center">
+      <span className="text-white font-bold text-lg">🛡️</span>
+    </div>
   );
-} 
+};
+
+export default CyberDefense; 

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Settings, Shield, Analytics, Marketing } from 'lucide-react';
+import { X, Settings, Shield, BarChart3, Megaphone } from 'lucide-react';
 
 interface CookiePreferences {
   necessary: boolean;
@@ -162,7 +162,7 @@ export function CookieBanner() {
                   <div className="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg border border-gray-700">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                        <Analytics className="w-5 h-5 text-blue-400" />
+                        <BarChart3 className="w-5 h-5 text-blue-400" />
                       </div>
                       <div>
                         <h4 className="font-semibold text-white">Cookies Analíticos</h4>
@@ -186,7 +186,7 @@ export function CookieBanner() {
                   <div className="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg border border-gray-700">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                        <Marketing className="w-5 h-5 text-purple-400" />
+                        <Megaphone className="w-5 h-5 text-purple-400" />
                       </div>
                       <div>
                         <h4 className="font-semibold text-white">Cookies de Marketing</h4>

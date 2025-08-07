@@ -3,13 +3,50 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft, Wallet, CheckCircle, XCircle, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '../../hooks/useAuth';
 
+// Fallback translations
+const t = (key: string) => {
+  const translations: Record<string, string> = {
+    'auth.welcomeBack': 'Welcome back',
+    'auth.signInToAGROTM': 'Sign in to your AGROTM account',
+    'auth.email': 'Email',
+    'auth.password': 'Password',
+    'auth.metamask': 'Metamask',
+    'auth.emailPlaceholder': 'Enter your email',
+    'auth.passwordPlaceholder': 'Enter your password',
+    'auth.rememberMe': 'Remember me',
+    'auth.forgotPassword': 'Forgot password?',
+    'auth.signIn': 'Sign In',
+    'auth.signingIn': 'Signing in...',
+    'auth.connectMetamask': 'Connect Metamask',
+    'auth.metamaskDescription': 'Connect your wallet to access your account',
+    'auth.connecting': 'Connecting...',
+    'auth.loginSuccess': 'Login successful!',
+    'auth.metamaskLoginSuccess': 'Metamask login successful!',
+    'auth.loginError': 'Login error',
+    'auth.metamaskLoginError': 'Metamask login error',
+    'auth.networkError': 'Network error. Please try again.',
+    'auth.forgotPasswordNotImplemented': 'Password recovery will be implemented soon',
+    'auth.emailRequired': 'Email is required',
+    'auth.emailInvalid': 'Invalid email',
+    'auth.passwordRequired': 'Password is required',
+    'auth.metamaskInfo': 'About Metamask',
+    'auth.metamaskInfo1': 'Make sure you have Metamask installed',
+    'auth.metamaskInfo2': 'Connect your Ethereum wallet',
+    'auth.metamaskInfo3': 'Approve the signature for authentication',
+    'auth.dontHaveAccount': "Don't have an account?",
+    'auth.createAccount': 'Create Account',
+    'auth.browseMarketplace': 'Browse Marketplace',
+    'auth.backToHome': 'Back to Home',
+    'common.backToHome': 'Back to Home'
+  };
+  return translations[key] || key;
+};
+
 export default function LoginPage() {
-  const t = useTranslations();
   const router = useRouter();
   const { loginWithEmail, loginWithMetamask, loading, error, clearError } = useAuth();
   
@@ -251,7 +288,7 @@ export default function LoginPage() {
               </div>
             )}
 
-                        {/* Submit Button */}
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}

@@ -688,7 +688,6 @@ export default {
     verificationSent: 'Código de verificação enviado para',
     verificationCode: 'Código de Verificação',
     verifying: 'Verificando...',
-    verifyAccount: 'Verificar Conta',
     resendVerification: 'Reenviar Código',
     resendIn: 'Reenviar em',
     backToRegistration: 'Voltar ao Cadastro',
