@@ -56,7 +56,7 @@ const Hero: React.FC = () => {
             </h1>
             
             <p className="text-xl md:text-2xl text-[#00bfff] mb-12 max-w-4xl mx-auto">
-              A maior plataforma Web3 para o agronegócio mundial. Staking, NFTs agrícolas e governança descentralizada na Solana.
+              A maior plataforma para o agronegócio mundial. Staking, NFTs agrícolas e governança descentralizada na Solana.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
