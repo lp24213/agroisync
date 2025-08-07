@@ -6,6 +6,7 @@ import { Layout } from '@/components/layout/Layout';
 import { CustomCursor } from '@/components/ui/CustomCursor';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
 import { Chatbot } from '@/components/ui/Chatbot';
+import { Chatbot24h } from '@/components/ui/Chatbot24h';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -136,6 +137,7 @@ export default function RootLayout({
             {children}
           </Layout>
           <Chatbot />
+          <Chatbot24h />
         </I18nProvider>
       </body>
     </html>
