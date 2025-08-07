@@ -11,7 +11,7 @@
     "title": "AGROTM",
     "subtitle": "SOLANA",
     "tagline": "Revolucione a Agricultura com DeFi na Solana",
-    "description": "A maior plataforma Web3 para o agronegócio mundial. Staking, NFTs agrícolas, governança descentralizada e sustentabilidade em uma única plataforma.",
+    "description": "A maior revolução tecnológica no agronegócio mundial. Inovação, automação e sustentabilidade integradas em uma única plataforma.",
     "enterPlatform": "Entrar na Plataforma",
     "learnMore": "Saiba Mais",
     "features": {
@@ -98,35 +98,67 @@
       "button": "Criar NFT"
     }
   },
+  "farmManagement": {
+    "title": "Gestão de Fazendas",
+    "description": "Gerencie suas propriedades rurais de forma inteligente e eficiente",
+    "monitoring": {
+      "title": "Monitoramento em Tempo Real",
+      "description": "Acompanhe o desempenho de suas fazendas com dados em tempo real"
+    },
+    "analytics": {
+      "title": "Analytics Avançados",
+      "description": "Análises detalhadas para otimizar a produção agrícola"
+    },
+    "automation": {
+      "title": "Automação Inteligente",
+      "description": "Sistemas automatizados para maximizar a eficiência"
+    }
+  },
+  "about": {
+    "title": "Sobre o AGROTM",
+    "description": "Somos uma plataforma inovadora que conecta agricultores e investidores através da tecnologia mais avançada.",
+    "mission": {
+      "title": "Nossa Missão",
+      "description": "Revolucionar o agronegócio através da tecnologia e sustentabilidade"
+    },
+    "vision": {
+      "title": "Nossa Visão",
+      "description": "Ser a principal plataforma de inovação agrícola do mundo"
+    },
+    "values": {
+      "title": "Nossos Valores",
+      "description": "Sustentabilidade, inovação, transparência e excelência"
+    }
+  },
   "contact": {
     "title": "Entre em Contato",
-    "subtitle": "Tem alguma dúvida? Estamos aqui para ajudar!",
+    "description": "Estamos aqui para ajudar. Entre em contato conosco.",
     "form": {
-      "title": "Envie uma Mensagem",
       "name": "Nome",
       "email": "Email",
-      "subject": "Assunto",
       "message": "Mensagem",
-      "sendMessage": "Enviar Mensagem",
-      "sending": "Enviando...",
-      "namePlaceholder": "Seu nome completo",
-      "emailPlaceholder": "seu@email.com",
-      "subjectPlaceholder": "Como podemos ajudar?",
-      "messagePlaceholder": "Descreva sua dúvida ou solicitação..."
+      "send": "Enviar"
     },
     "info": {
-      "title": "Informações de Contato",
-      "email": "Email",
-      "website": "Website",
+      "address": "Endereço",
       "phone": "Telefone",
-      "socialMedia": "Redes Sociais"
+      "email": "Email"
     }
   },
   "footer": {
-    "description": "Revolucionando a agricultura através da blockchain. Plataforma DeFi para agricultura sustentável com tecnologia de ponta e segurança garantida pela Solana.",
-    "quickLinks": "Links Rápidos",
-    "resources": "Recursos",
-    "copyright": "© 2024 AGROTM. Todos os direitos reservados."
+    "description": "AGROTM - Revolucionando o agronegócio com tecnologia de ponta",
+    "links": {
+      "about": "Sobre",
+      "services": "Serviços",
+      "contact": "Contato",
+      "privacy": "Privacidade",
+      "terms": "Termos"
+    },
+    "social": {
+      "twitter": "Twitter",
+      "linkedin": "LinkedIn",
+      "github": "GitHub"
+    }
   },
   "language": {
     "title": "Idioma / Language"

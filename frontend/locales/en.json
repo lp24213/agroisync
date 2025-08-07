@@ -11,7 +11,7 @@
     "title": "AGROTM",
     "subtitle": "SOLANA",
     "tagline": "Revolutionize Agriculture with DeFi on Solana",
-    "description": "The largest Web3 platform for global agribusiness. Staking, agricultural NFTs, decentralized governance and sustainability in a single platform.",
+    "description": "The greatest technological revolution in global agribusiness. Innovation, automation and sustainability integrated into a single platform.",
     "enterPlatform": "Enter Platform",
     "learnMore": "Learn More",
     "features": {
@@ -29,7 +29,7 @@
       },
       "growth": {
         "title": "Smart Growth",
-        "description": "Maximization of results"
+        "description": "Result maximization"
       }
     },
     "stats": {
@@ -39,7 +39,7 @@
     }
   },
   "features": {
-    "title": "Key Features",
+    "title": "Main Features",
     "sustainableStaking": {
       "title": "Sustainable Staking",
       "description": "Stake your tokens and earn rewards while supporting sustainable agricultural projects."
@@ -79,7 +79,7 @@
   },
   "stakingFarming": {
     "title": "Staking / Farming",
-    "description": "Cultivate your tokens and harvest sustainable rewards",
+    "description": "Grow your tokens and harvest sustainable rewards",
     "sustainableStaking": {
       "title": "Sustainable Staking",
       "description": "Stake your AGROTM tokens and earn rewards while supporting sustainable agricultural projects."
@@ -90,7 +90,7 @@
     }
   },
   "nftMinting": {
-    "title": "NFT Minting",
+    "title": "NFT Creation",
     "description": "Tokenize rural properties and create unique NFTs",
     "createNFTs": {
       "title": "Create Your NFTs",
@@ -98,37 +98,66 @@
       "button": "Create NFT"
     }
   },
+  "farmManagement": {
+    "title": "Farm Management",
+    "description": "Manage your rural properties intelligently and efficiently",
+    "monitoring": {
+      "title": "Real-time Monitoring",
+      "description": "Track your farms' performance with real-time data"
+    },
+    "analytics": {
+      "title": "Advanced Analytics",
+      "description": "Detailed analysis to optimize agricultural production"
+    },
+    "automation": {
+      "title": "Smart Automation",
+      "description": "Automated systems to maximize efficiency"
+    }
+  },
+  "about": {
+    "title": "About AGROTM",
+    "description": "We are an innovative platform that connects farmers and investors through the most advanced technology.",
+    "mission": {
+      "title": "Our Mission",
+      "description": "Revolutionize agribusiness through technology and sustainability"
+    },
+    "vision": {
+      "title": "Our Vision",
+      "description": "To be the world's leading agricultural innovation platform"
+    },
+    "values": {
+      "title": "Our Values",
+      "description": "Sustainability, innovation, transparency and excellence"
+    }
+  },
   "contact": {
-    "title": "Get in Touch",
-    "subtitle": "Have any questions? We're here to help!",
+    "title": "Contact Us",
+    "description": "We are here to help. Contact us.",
     "form": {
-      "title": "Send a Message",
       "name": "Name",
       "email": "Email",
-      "subject": "Subject",
       "message": "Message",
-      "sendMessage": "Send Message",
-      "sending": "Sending...",
-      "namePlaceholder": "Your full name",
-      "emailPlaceholder": "your@email.com",
-      "subjectPlaceholder": "How can we help?",
-      "messagePlaceholder": "Describe your question or request..."
+      "send": "Send"
     },
     "info": {
-      "title": "Contact Information",
-      "email": "Email",
-      "website": "Website",
+      "address": "Address",
       "phone": "Phone",
-      "socialMedia": "Social Media"
+      "email": "Email"
     }
   },
   "footer": {
-    "description": "Revolutionizing agriculture through blockchain. DeFi platform for sustainable agriculture with cutting-edge technology and security guaranteed by Solana.",
-    "quickLinks": "Quick Links",
-    "resources": "Resources",
-    "copyright": "© 2024 AGROTM. All rights reserved."
-  },
-  "language": {
-    "title": "Language / Idioma"
+    "description": "AGROTM - Revolutionizing agribusiness with cutting-edge technology",
+    "links": {
+      "about": "About",
+      "services": "Services",
+      "contact": "Contact",
+      "privacy": "Privacy",
+      "terms": "Terms"
+    },
+    "social": {
+      "twitter": "Twitter",
+      "linkedin": "LinkedIn",
+      "github": "GitHub"
+    }
   }
 }

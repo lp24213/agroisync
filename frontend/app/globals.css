@@ -11,6 +11,9 @@
   --premium-dark: #0a0a0a;
   --premium-darker: #050505;
   --premium-light: #ffffff;
+  --premium-silver: #C0C0C0; /* Prateado premium */
+  --premium-silver-light: #E5E5E5; /* Prateado claro */
+  --premium-silver-dark: #A0A0A0; /* Prateado escuro */
   --neon-blue: #00F0FF;
   --neon-cyan: #00FFFF;
   --neon-green: #00FF7F;
@@ -36,7 +39,7 @@ html {
 
 body {
   background: var(--premium-black);
-  color: var(--premium-light);
+  color: var(--premium-silver); /* Alterado para prateado premium */
   font-family: 'Poppins', sans-serif;
   line-height: 1.6;
   overflow-x: hidden;
@@ -77,17 +80,17 @@ body::after {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color: var(--neon-blue);
+  color: var(--premium-silver); /* Alterado para prateado premium */
   font-family: 'Orbitron', monospace;
   font-weight: 600;
-  text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+  text-shadow: 0 0 10px rgba(192, 192, 192, 0.5); /* Sombra prateada */
   letter-spacing: 0.05em;
 }
 
 h1 {
   font-size: 3.5rem;
   font-weight: 700;
-  background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-cyan) 100%);
+  background: linear-gradient(135deg, var(--premium-silver) 0%, var(--premium-silver-light) 100%); /* Gradiente prateado */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -97,7 +100,7 @@ h1 {
 h2 {
   font-size: 2.5rem;
   font-weight: 600;
-  background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-green) 100%);
+  background: linear-gradient(135deg, var(--premium-silver) 0%, var(--premium-silver-light) 100%); /* Gradiente prateado */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -106,14 +109,14 @@ h2 {
 h3 {
   font-size: 1.8rem;
   font-weight: 500;
-  background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-purple) 100%);
+  background: linear-gradient(135deg, var(--premium-silver) 0%, var(--premium-silver-dark) 100%); /* Gradiente prateado */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 p {
-  color: var(--premium-light);
+  color: var(--premium-silver); /* Alterado para prateado premium */
   font-family: 'Inter', sans-serif;
   line-height: 1.7;
   margin-bottom: 1rem;
@@ -316,10 +319,10 @@ p {
 
 @keyframes pulseNeon {
   0%, 100% {
-    text-shadow: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.3);
+    text-shadow: 0 0 10px rgba(192, 192, 192, 0.5), 0 0 20px rgba(192, 192, 192, 0.3); /* Sombra prateada */
   }
   50% {
-    text-shadow: 0 0 20px rgba(0, 240, 255, 0.8), 0 0 30px rgba(0, 240, 255, 0.5), 0 0 40px rgba(0, 240, 255, 0.3);
+    text-shadow: 0 0 20px rgba(192, 192, 192, 0.8), 0 0 30px rgba(192, 192, 192, 0.5), 0 0 40px rgba(192, 192, 192, 0.3); /* Sombra prateada */
   }
 }
 
@@ -474,14 +477,14 @@ p {
 
 /* Links */
 a {
-  color: var(--neon-blue);
+  color: var(--premium-silver); /* Alterado para prateado premium */
   text-decoration: none;
   transition: all 0.3s ease;
 }
 
 a:hover {
-  color: var(--neon-green);
-  text-shadow: 0 0 10px rgba(0, 255, 127, 0.5);
+  color: var(--premium-silver-light); /* Prateado claro no hover */
+  text-shadow: 0 0 10px rgba(192, 192, 192, 0.5); /* Sombra prateada */
 }
 
 /* Buttons */
@@ -495,7 +498,7 @@ input, textarea, select {
   border: 1px solid rgba(0, 240, 255, 0.3);
   border-radius: 8px;
   padding: 0.75rem 1rem;
-  color: var(--premium-light);
+  color: var(--premium-silver); /* Alterado para prateado premium */
   font-family: 'Inter', sans-serif;
   transition: all 0.3s ease;
 }
@@ -579,10 +582,10 @@ input:focus, textarea:focus, select:focus {
 /* Selection */
 ::selection {
   background: rgba(0, 240, 255, 0.3);
-  color: var(--premium-light);
+  color: var(--premium-silver); /* Alterado para prateado premium */
 }
 
 ::-moz-selection {
   background: rgba(0, 240, 255, 0.3);
-  color: var(--premium-light);
+  color: var(--premium-silver); /* Alterado para prateado premium */
 }

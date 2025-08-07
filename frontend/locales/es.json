@@ -11,7 +11,7 @@
     "title": "AGROTM",
     "subtitle": "SOLANA",
     "tagline": "Revoluciona la Agricultura con DeFi en Solana",
-    "description": "La plataforma Web3 más grande para el agronegocio mundial. Staking, NFTs agrícolas, gobernanza descentralizada y sostenibilidad en una sola plataforma.",
+    "description": "La mayor revolución tecnológica en el agronegocio mundial. Innovación, automatización y sostenibilidad integradas en una única plataforma.",
     "enterPlatform": "Entrar a la Plataforma",
     "learnMore": "Saber Más",
     "features": {
@@ -33,13 +33,13 @@
       }
     },
     "stats": {
-      "farms": "Granjas Conectadas",
+      "farms": "Fincas Conectadas",
       "assets": "Activos Tokenizados",
       "uptime": "Tiempo Activo Garantizado"
     }
   },
   "features": {
-    "title": "Características Principales",
+    "title": "Funcionalidades Principales",
     "sustainableStaking": {
       "title": "Staking Sostenible",
       "description": "Haz staking de tus tokens y gana recompensas mientras apoyas proyectos agrícolas sostenibles."
@@ -98,28 +98,66 @@
       "button": "Crear NFT"
     }
   },
+  "farmManagement": {
+    "title": "Gestión de Fincas",
+    "description": "Gestiona tus propiedades rurales de forma inteligente y eficiente",
+    "monitoring": {
+      "title": "Monitoreo en Tiempo Real",
+      "description": "Acompaña el rendimiento de tus fincas con datos en tiempo real"
+    },
+    "analytics": {
+      "title": "Analytics Avanzados",
+      "description": "Análisis detallados para optimizar la producción agrícola"
+    },
+    "automation": {
+      "title": "Automatización Inteligente",
+      "description": "Sistemas automatizados para maximizar la eficiencia"
+    }
+  },
+  "about": {
+    "title": "Acerca de AGROTM",
+    "description": "Somos una plataforma innovadora que conecta agricultores e inversores a través de la tecnología más avanzada.",
+    "mission": {
+      "title": "Nuestra Misión",
+      "description": "Revolucionar el agronegocio a través de la tecnología y sostenibilidad"
+    },
+    "vision": {
+      "title": "Nuestra Visión",
+      "description": "Ser la principal plataforma de innovación agrícola del mundo"
+    },
+    "values": {
+      "title": "Nuestros Valores",
+      "description": "Sostenibilidad, innovación, transparencia y excelencia"
+    }
+  },
   "contact": {
-    "title": "Ponte en Contacto",
-    "subtitle": "¿Tienes alguna pregunta? ¡Estamos aquí para ayudar!",
+    "title": "Contáctanos",
+    "description": "Estamos aquí para ayudar. Contáctanos.",
     "form": {
-      "title": "Envía un Mensaje",
       "name": "Nombre",
       "email": "Email",
-      "subject": "Asunto",
       "message": "Mensaje",
-      "sendMessage": "Enviar Mensaje",
-      "sending": "Enviando...",
-      "namePlaceholder": "Tu nombre completo",
-      "emailPlaceholder": "tu@email.com",
-      "subjectPlaceholder": "¿Cómo podemos ayudar?",
-      "messagePlaceholder": "Describe tu pregunta o solicitud..."
+      "send": "Enviar"
     },
     "info": {
-      "title": "Información de Contacto",
-      "email": "Email",
-      "website": "Sitio Web",
+      "address": "Dirección",
       "phone": "Teléfono",
-      "socialMedia": "Redes Sociales"
+      "email": "Email"
+    }
+  },
+  "footer": {
+    "description": "AGROTM - Revolucionando el agronegocio con tecnología de vanguardia",
+    "links": {
+      "about": "Acerca de",
+      "services": "Servicios",
+      "contact": "Contacto",
+      "privacy": "Privacidad",
+      "terms": "Términos"
+    },
+    "social": {
+      "twitter": "Twitter",
+      "linkedin": "LinkedIn",
+      "github": "GitHub"
     }
   }
 } 
