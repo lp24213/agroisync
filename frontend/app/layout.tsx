@@ -5,8 +5,7 @@ import { I18nProvider } from '@/components/providers/I18nProvider';
 import { Layout } from '@/components/layout/Layout';
 import { CustomCursor } from '@/components/ui/CustomCursor';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
-import { Chatbot } from '@/components/ui/Chatbot';
-import { Chatbot24h } from '@/components/ui/Chatbot24h';
+import { ChatbotAGROTM } from '@/components/ChatbotAGROTM';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -136,8 +135,7 @@ export default function RootLayout({
           <Layout>
             {children}
           </Layout>
-          <Chatbot />
-          <Chatbot24h />
+          <ChatbotAGROTM />
         </I18nProvider>
       </body>
     </html>

@@ -2,15 +2,66 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, X, Send, Bot, User } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { MessageCircle, X, Send, Bot, User, Mic, MicOff, Image, Volume2, VolumeX } from 'lucide-react';
+
+// Importar tipos da Web Speech API
+declare global {
+  interface Window {
+    SpeechRecognition: new () => SpeechRecognition;
+    webkitSpeechRecognition: new () => SpeechRecognition;
+  }
+}
+
+interface SpeechRecognition extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  start(): void;
+  stop(): void;
+  abort(): void;
+  onresult: (event: SpeechRecognitionEvent) => void;
+  onerror: (event: SpeechRecognitionErrorEvent) => void;
+  onend: () => void;
+}
+
+interface SpeechRecognitionEvent {
+  results: SpeechRecognitionResultList;
+  resultIndex: number;
+}
+
+interface SpeechRecognitionResultList {
+  length: number;
+  item(index: number): SpeechRecognitionResult;
+  [index: number]: SpeechRecognitionResult;
+}
+
+interface SpeechRecognitionResult {
+  isFinal: boolean;
+  length: number;
+  item(index: number): SpeechRecognitionAlternative;
+  [index: number]: SpeechRecognitionAlternative;
+}
+
+interface SpeechRecognitionAlternative {
+  transcript: string;
+  confidence: number;
+}
+
+interface SpeechRecognitionErrorEvent {
+  error: string;
+  message: string;
+}
 
 interface Message {
   id: string;
   text: string;
   isUser: boolean;
   timestamp: Date;
+  type?: 'text' | 'image' | 'voice';
+  imageUrl?: string;
 }
+
+type Language = 'pt' | 'en' | 'es' | 'zh';
 
 interface ChatbotData {
   [key: string]: {
@@ -21,7 +72,7 @@ interface ChatbotData {
   };
 }
 
-// Base de dados do chatbot com mais de 250 perguntas/respostas
+// Base de dados multilíngue do chatbot
 const chatbotData: ChatbotData = {
   pt: {
     agronegocio: {
@@ -126,136 +177,6 @@ const chatbotData: ChatbotData = {
         "Cada NFT é único e representa um ativo específico, garantindo autenticidade e rastreabilidade.",
         "O mercado de NFTs agrícolas permite negociar ativos rurais de forma segura e transparente.",
         "O valor dos NFTs é determinado pela qualidade do ativo representado, localização e potencial produtivo."
-      ]
-    },
-    suporte: {
-      questions: [
-        "preciso de ajuda",
-        "suporte técnico",
-        "como contatar suporte",
-        "problemas na plataforma",
-        "dúvidas sobre uso",
-        "assistência técnica",
-        "central de ajuda",
-        "faq",
-        "perguntas frequentes",
-        "tutorial da plataforma"
-      ],
-      answers: [
-        "Estou aqui para ajudar! Pode me fazer qualquer pergunta sobre a plataforma, agronegócio ou funcionalidades disponíveis.",
-        "Para suporte técnico, você pode usar este chat, enviar email para suporte@agrotm.com ou ligar para nosso número de atendimento.",
-        "Para contatar o suporte, use este chat 24h, envie email ou ligue para nossa equipe especializada.",
-        "Se está enfrentando problemas na plataforma, descreva o que está acontecendo e nossa equipe irá ajudá-lo imediatamente.",
-        "Para dúvidas sobre uso, posso explicar qualquer funcionalidade da plataforma ou você pode consultar nossos tutoriais.",
-        "Nossa assistência técnica está disponível 24h por dia através deste chat e outros canais de atendimento.",
-        "Nossa central de ajuda inclui tutoriais, FAQs e suporte personalizado para todas as suas necessidades.",
-        "Consulte nossa seção FAQ para respostas rápidas às perguntas mais comuns sobre a plataforma.",
-        "As perguntas frequentes cobrem desde cadastro até funcionalidades avançadas da plataforma.",
-        "Temos tutoriais completos para todas as funcionalidades da plataforma, desde básico até avançado."
-      ]
-    },
-    contato: {
-      questions: [
-        "como entrar em contato",
-        "informações de contato",
-        "email de contato",
-        "telefone de contato",
-        "endereço da empresa",
-        "redes sociais",
-        "canal de atendimento",
-        "contato comercial",
-        "contato técnico",
-        "contato para investidores"
-      ],
-      answers: [
-        "Você pode entrar em contato através deste chat 24h, email, telefone ou visitando nossa sede.",
-        "Nossas informações de contato incluem email: contato@agrotm.com, telefone: +55 (11) 9999-9999.",
-        "Nosso email de contato é contato@agrotm.com para questões gerais e suporte@agrotm.com para suporte técnico.",
-        "Nosso telefone de contato é +55 (11) 9999-9999, com atendimento de segunda a sexta, 8h às 18h.",
-        "Nosso endereço é Rua da Inovação, 123, São Paulo - SP, Brasil. Visitas devem ser agendadas previamente.",
-        "Nossas redes sociais são @agrotm no Twitter, LinkedIn e Instagram para atualizações e novidades.",
-        "Este chat é nosso principal canal de atendimento, disponível 24h por dia para suas dúvidas.",
-        "Para contato comercial, envie email para comercial@agrotm.com ou use nosso formulário no site.",
-        "Para contato técnico, use este chat ou envie email para suporte@agrotm.com com detalhes do problema.",
-        "Para investidores, envie email para investidores@agrotm.com ou agende uma reunião através do site."
-      ]
-    },
-    planos: {
-      questions: [
-        "quais são os planos",
-        "preços dos planos",
-        "planos disponíveis",
-        "diferenças entre planos",
-        "plano gratuito",
-        "plano premium",
-        "plano empresarial",
-        "como escolher plano",
-        "mudança de plano",
-        "cancelamento de plano"
-      ],
-      answers: [
-        "Oferecemos planos Gratuito, Premium e Empresarial, cada um com funcionalidades específicas para diferentes necessidades.",
-        "Os preços variam: Gratuito (R$ 0), Premium (R$ 99/mês) e Empresarial (sob consulta). Todos incluem suporte básico.",
-        "Os planos disponíveis são: Gratuito (funcionalidades básicas), Premium (funcionalidades avançadas) e Empresarial (solução completa).",
-        "As diferenças incluem número de fazendas, funcionalidades avançadas, suporte prioritário e recursos exclusivos.",
-        "O plano gratuito inclui gestão de 1 fazenda, dashboard básico e suporte por chat.",
-        "O plano Premium inclui gestão de até 10 fazendas, analytics avançados e suporte prioritário.",
-        "O plano Empresarial inclui gestão ilimitada, funcionalidades exclusivas e suporte dedicado.",
-        "Para escolher o plano, considere o número de fazendas, necessidades de funcionalidades e orçamento disponível.",
-        "Para mudar de plano, acesse as configurações da sua conta e selecione o novo plano desejado.",
-        "Para cancelar um plano, acesse as configurações da conta e clique em 'Cancelar Assinatura'."
-      ]
-    },
-    equipe: {
-      questions: [
-        "quem é a equipe",
-        "equipe da agrotm",
-        "fundadores da empresa",
-        "história da empresa",
-        "missão da empresa",
-        "visão da empresa",
-        "valores da empresa",
-        "cultura da empresa",
-        "trabalhe conosco",
-        "vagas disponíveis"
-      ],
-      answers: [
-        "Nossa equipe é composta por especialistas em agronegócio, tecnologia e inovação, comprometidos em revolucionar o setor.",
-        "A equipe da AGROTM inclui engenheiros, agrônomos, desenvolvedores e especialistas em negócios agrícolas.",
-        "Nossos fundadores são especialistas em tecnologia e agronegócio com mais de 20 anos de experiência no setor.",
-        "A história da empresa começou com a visão de democratizar o acesso à tecnologia agrícola de ponta.",
-        "Nossa missão é revolucionar o agronegócio através da tecnologia e sustentabilidade.",
-        "Nossa visão é ser a principal plataforma de inovação agrícola do mundo.",
-        "Nossos valores são sustentabilidade, inovação, transparência e excelência em tudo que fazemos.",
-        "Nossa cultura valoriza inovação, colaboração, sustentabilidade e excelência técnica.",
-        "Para trabalhar conosco, envie seu currículo para rh@agrotm.com ou consulte nossas vagas no site.",
-        "As vagas disponíveis são publicadas em nossa seção de carreiras no site e redes sociais."
-      ]
-    },
-    documentos: {
-      questions: [
-        "termos de uso",
-        "política de privacidade",
-        "documentação técnica",
-        "manuais de uso",
-        "certificados",
-        "licenças",
-        "contratos",
-        "documentos legais",
-        "compliance",
-        "regulamentações"
-      ],
-      answers: [
-        "Nossos termos de uso estão disponíveis no rodapé do site e devem ser aceitos ao se cadastrar na plataforma.",
-        "Nossa política de privacidade detalha como coletamos, usamos e protegemos seus dados pessoais.",
-        "A documentação técnica está disponível para desenvolvedores e integradores em nossa seção de desenvolvedores.",
-        "Os manuais de uso incluem tutoriais passo a passo para todas as funcionalidades da plataforma.",
-        "Nossos certificados incluem ISO 27001 para segurança da informação e certificações de qualidade.",
-        "Nossas licenças permitem uso comercial e pessoal da plataforma conforme os termos estabelecidos.",
-        "Os contratos são personalizados conforme as necessidades específicas de cada cliente e plano escolhido.",
-        "Nossos documentos legais estão em conformidade com todas as regulamentações brasileiras e internacionais.",
-        "Nossa empresa está em compliance com LGPD, regulamentações do agronegócio e padrões internacionais.",
-        "Seguimos todas as regulamentações do agronegócio, tecnologia e proteção de dados aplicáveis."
       ]
     }
   },
@@ -376,8 +297,50 @@ export const Chatbot: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [lang, setLang] = useState<Language>('pt');
+  const [isListening, setIsListening] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { t, i18n } = useTranslation();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const synthesisRef = useRef<SpeechSynthesis | null>(null);
+
+  // Detectar idioma do navegador
+  useEffect(() => {
+    const browserLang = navigator.language || navigator.languages[0];
+    if (browserLang.startsWith('en')) setLang('en');
+    else if (browserLang.startsWith('es')) setLang('es');
+    else if (browserLang.startsWith('zh')) setLang('zh');
+    else setLang('pt');
+  }, []);
+
+  // Inicializar Web Speech API
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Speech Recognition
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognitionRef.current = new SpeechRecognition();
+        recognitionRef.current.continuous = false;
+        recognitionRef.current.interimResults = false;
+        recognitionRef.current.lang = lang === 'pt' ? 'pt-BR' : lang === 'en' ? 'en-US' : lang === 'es' ? 'es-ES' : 'zh-CN';
+        
+        recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
+          const transcript = event.results[0][0].transcript;
+          setInputValue(transcript);
+          setIsListening(false);
+        };
+
+        recognitionRef.current.onerror = () => {
+          setIsListening(false);
+        };
+      }
+
+      // Speech Synthesis
+      synthesisRef.current = window.speechSynthesis;
+    }
+  }, [lang]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -389,20 +352,49 @@ export const Chatbot: React.FC = () => {
 
   useEffect(() => {
     if (isOpen && messages.length === 0) {
-      // Mensagem de boas-vindas inicial
       const welcomeMessage: Message = {
         id: '1',
-        text: t('chatbot.welcome', 'Olá! Sou o assistente virtual da AGROTM. Como posso ajudá-lo hoje?'),
+        text: getLocalizedText('welcome', lang),
         isUser: false,
         timestamp: new Date()
       };
       setMessages([welcomeMessage]);
     }
-  }, [isOpen, t]);
+  }, [isOpen, lang]);
+
+  const getLocalizedText = (key: string, language: Language): string => {
+    const texts: Record<string, Record<string, string>> = {
+      welcome: {
+        pt: "Olá! Sou o assistente virtual da AGROTM. Como posso te ajudar?",
+        en: "Hello! I'm AGROTM's virtual assistant. How can I help you?",
+        es: "¡Hola! Soy el asistente virtual de AGROTM. ¿En qué puedo ayudarte?",
+        zh: "你好！我是AGROTM的虚拟助手。请问有什么可以帮您？"
+      },
+      notFound: {
+        pt: "Desculpe, não entendi. Pode reformular?",
+        en: "Sorry, I didn't understand. Could you rephrase?",
+        es: "Lo siento, no entendí. ¿Podrías reformular?",
+        zh: "对不起，我不明白。您可以换个说法吗？"
+      },
+      placeholder: {
+        pt: "Digite sua pergunta...",
+        en: "Type your question...",
+        es: "Escribe tu pregunta...",
+        zh: "请输入您的问题..."
+      },
+      imageAnalysis: {
+        pt: "Analisando imagem...",
+        en: "Analyzing image...",
+        es: "Analizando imagen...",
+        zh: "分析图片..."
+      }
+    };
+
+    return texts[key]?.[language] || texts[key]?.['pt'] || "Erro";
+  };
 
   const findBestMatch = (userInput: string): string => {
-    const currentLang = i18n.language;
-    const data = chatbotData[currentLang] || chatbotData.pt;
+    const data = chatbotData[lang] || chatbotData.pt;
     
     let bestMatch = '';
     let highestScore = 0;
@@ -417,7 +409,7 @@ export const Chatbot: React.FC = () => {
       });
     });
 
-    return bestMatch || t('chatbot.default', 'Desculpe, não entendi sua pergunta. Pode reformular ou perguntar sobre agronegócio, plataforma, staking, NFTs, suporte, contato, planos, equipe ou documentos?');
+    return bestMatch || getLocalizedText('notFound', lang);
   };
 
   const calculateSimilarity = (str1: string, str2: string): number => {
@@ -443,7 +435,8 @@ export const Chatbot: React.FC = () => {
       id: Date.now().toString(),
       text: inputValue,
       isUser: true,
-      timestamp: new Date()
+      timestamp: new Date(),
+      type: 'text'
     };
 
     setMessages(prev => [...prev, userMessage]);
@@ -457,11 +450,17 @@ export const Chatbot: React.FC = () => {
         id: (Date.now() + 1).toString(),
         text: botResponse,
         isUser: false,
-        timestamp: new Date()
+        timestamp: new Date(),
+        type: 'text'
       };
 
       setMessages(prev => [...prev, botMessage]);
       setIsTyping(false);
+
+      // Falar a resposta se habilitado
+      if (isVoiceEnabled && synthesisRef.current) {
+        speakText(botResponse);
+      }
     }, 1000 + Math.random() * 2000);
   };
 
@@ -472,19 +471,100 @@ export const Chatbot: React.FC = () => {
     }
   };
 
-  const quickQuestions = [
+  const startListening = () => {
+    if (recognitionRef.current && !isListening) {
+      setIsListening(true);
+      recognitionRef.current.start();
+    }
+  };
+
+  const stopListening = () => {
+    if (recognitionRef.current && isListening) {
+      setIsListening(false);
+      recognitionRef.current.stop();
+    }
+  };
+
+  const speakText = (text: string) => {
+    if (synthesisRef.current && isVoiceEnabled) {
+      setIsSpeaking(true);
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang === 'pt' ? 'pt-BR' : lang === 'en' ? 'en-US' : lang === 'es' ? 'es-ES' : 'zh-CN';
+      utterance.onend = () => setIsSpeaking(false);
+      synthesisRef.current.speak(utterance);
+    }
+  };
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imageUrl = e.target?.result as string;
+        const userMessage: Message = {
+          id: Date.now().toString(),
+          text: 'Imagem enviada',
+          isUser: true,
+          timestamp: new Date(),
+          type: 'image',
+          imageUrl
+        };
+
+        setMessages(prev => [...prev, userMessage]);
+        setIsTyping(true);
+
+        // Simular análise da imagem
+        setTimeout(() => {
+          const imageAnalysis = getLocalizedText('imageAnalysis', lang) || 'Analisando imagem...';
+          const botMessage: Message = {
+            id: (Date.now() + 1).toString(),
+            text: imageAnalysis,
+            isUser: false,
+            timestamp: new Date(),
+            type: 'text'
+          };
+
+          setMessages(prev => [...prev, botMessage]);
+          setIsTyping(false);
+        }, 2000);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const quickQuestions = {
+    pt: [
     "Como funciona a plataforma?",
     "Quais são os planos?",
     "Preciso de suporte técnico",
     "Como entrar em contato?"
-  ];
+    ],
+    en: [
+      "How does the platform work?",
+      "What are the plans?",
+      "I need technical support",
+      "How to contact?"
+    ],
+    es: [
+      "¿Cómo funciona la plataforma?",
+      "¿Cuáles son los planes?",
+      "Necesito soporte técnico",
+      "¿Cómo contactar?"
+    ],
+    zh: [
+      "平台如何运作？",
+      "有哪些计划？",
+      "我需要技术支持",
+      "如何联系？"
+    ]
+  };
 
   return (
     <>
       {/* Botão do Chatbot */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-r from-premium-silver to-premium-silver-light text-premium-black rounded-full shadow-2xl shadow-premium-silver/50 hover:shadow-premium-silver/70 transition-all duration-300 z-50 flex items-center justify-center"
+        className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-full shadow-2xl shadow-blue-600/50 hover:shadow-blue-600/70 transition-all duration-300 z-50 flex items-center justify-center"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         initial={{ opacity: 0, y: 100 }}
@@ -502,25 +582,33 @@ export const Chatbot: React.FC = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 100 }}
             transition={{ duration: 0.3 }}
-            className="fixed bottom-24 right-6 w-96 h-[500px] bg-premium-dark border border-premium-silver/20 rounded-2xl shadow-2xl shadow-premium-silver/20 backdrop-blur-xl z-50 flex flex-col"
+            className="fixed bottom-24 right-6 w-96 h-[600px] bg-black border border-blue-600 rounded-2xl shadow-2xl shadow-blue-600/20 backdrop-blur-xl z-50 flex flex-col"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-premium-silver/20">
+            <div className="flex items-center justify-between p-4 border-b border-blue-600 bg-blue-900">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-premium-silver to-premium-silver-light rounded-full flex items-center justify-center">
-                  <Bot className="w-6 h-6 text-premium-black" />
+                <div className="w-10 h-10 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full flex items-center justify-center">
+                  <Bot className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-premium-silver font-semibold">AGROTM Assistant</h3>
-                  <p className="text-premium-silver/60 text-sm">Online 24/7</p>
+                  <h3 className="text-white font-semibold">AGROTM Assistant</h3>
+                  <p className="text-blue-200 text-sm">Online 24/7</p>
                 </div>
               </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => setIsVoiceEnabled(!isVoiceEnabled)}
+                  className="text-blue-200 hover:text-white transition-colors"
+                >
+                  {isVoiceEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
+                </button>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-premium-silver/60 hover:text-premium-silver transition-colors"
+                  className="text-blue-200 hover:text-white transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
+              </div>
             </div>
 
             {/* Messages */}
@@ -534,9 +622,16 @@ export const Chatbot: React.FC = () => {
                 >
                   <div className={`max-w-[80%] p-3 rounded-2xl ${
                     message.isUser 
-                      ? 'bg-gradient-to-r from-premium-silver to-premium-silver-light text-premium-black' 
-                      : 'bg-premium-black/50 border border-premium-silver/20 text-premium-silver'
+                      ? 'bg-gradient-to-r from-blue-500 to-blue-700 text-white' 
+                      : 'bg-gray-800 border border-blue-600 text-white'
                   }`}>
+                    {message.type === 'image' && message.imageUrl && (
+                      <img 
+                        src={message.imageUrl} 
+                        alt="Uploaded" 
+                        className="w-full h-32 object-cover rounded-lg mb-2"
+                      />
+                    )}
                     <p className="text-sm">{message.text}</p>
                     <p className="text-xs opacity-60 mt-1">
                       {message.timestamp.toLocaleTimeString()}
@@ -551,11 +646,11 @@ export const Chatbot: React.FC = () => {
                   animate={{ opacity: 1 }}
                   className="flex justify-start"
                 >
-                  <div className="bg-premium-black/50 border border-premium-silver/20 rounded-2xl p-3">
+                  <div className="bg-gray-800 border border-blue-600 rounded-2xl p-3">
                     <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-premium-silver rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-premium-silver rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                      <div className="w-2 h-2 bg-premium-silver rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                      <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                     </div>
                   </div>
                 </motion.div>
@@ -564,12 +659,12 @@ export const Chatbot: React.FC = () => {
               {/* Quick Questions */}
               {messages.length === 1 && (
                 <div className="space-y-2">
-                  <p className="text-premium-silver/60 text-sm">Perguntas rápidas:</p>
-                  {quickQuestions.map((question, index) => (
+                  <p className="text-blue-200 text-sm">Perguntas rápidas:</p>
+                  {quickQuestions[lang]?.map((question, index) => (
                     <motion.button
                       key={index}
                       onClick={() => setInputValue(question)}
-                      className="w-full text-left p-2 bg-premium-black/30 border border-premium-silver/20 rounded-lg text-premium-silver text-sm hover:bg-premium-black/50 transition-colors"
+                      className="w-full text-left p-2 bg-gray-800 border border-blue-600 rounded-lg text-white text-sm hover:bg-gray-700 transition-colors"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
@@ -583,20 +678,43 @@ export const Chatbot: React.FC = () => {
             </div>
 
             {/* Input */}
-            <div className="p-4 border-t border-premium-silver/20">
+            <div className="p-4 border-t border-blue-600">
               <div className="flex space-x-2">
                 <input
                   type="text"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Digite sua mensagem..."
-                  className="flex-1 bg-premium-black/50 border border-premium-silver/20 rounded-lg px-3 py-2 text-premium-silver placeholder-premium-silver/40 focus:outline-none focus:border-premium-silver/40"
+                  placeholder={getLocalizedText('placeholder', lang)}
+                  className="flex-1 bg-gray-800 border border-blue-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-blue-400"
                 />
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleImageUpload}
+                  accept="image/*"
+                  className="hidden"
+                />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-10 h-10 bg-gray-700 hover:bg-gray-600 text-white rounded-lg flex items-center justify-center transition-colors"
+                >
+                  <Image className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={isListening ? stopListening : startListening}
+                  className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${
+                    isListening 
+                      ? 'bg-red-600 hover:bg-red-700 text-white' 
+                      : 'bg-gray-700 hover:bg-gray-600 text-white'
+                  }`}
+                >
+                  {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+                </button>
                 <button
                   onClick={handleSendMessage}
                   disabled={!inputValue.trim() || isTyping}
-                  className="w-10 h-10 bg-gradient-to-r from-premium-silver to-premium-silver-light text-premium-black rounded-lg flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-all"
+                  className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-all"
                 >
                   <Send className="w-5 h-5" />
                 </button>
