@@ -1,13 +1,13 @@
 # GitHub Actions Secrets Configuration
 
-Este documento lista todos os secrets necessários para os workflows CI/CD do AGROTM.
+Este documento lista todos os secrets necessários para os workflows CI/CD do AGROTM na AWS.
 
 ## ⚠️ IMPORTANTE: Como Usar Secrets Corretamente
 
 ### ❌ ERRADO - Não declare secrets no env global:
 ```yaml
 env:
-  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}  # Isso causará erros!
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}  # Isso causará erros!
 ```
 
 ### ✅ CORRETO - Use secrets em steps individuais:
@@ -15,11 +15,11 @@ env:
 jobs:
   deploy:
     steps:
-      - name: Deploy to Vercel
-        run: npx vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
+      - name: Deploy to AWS
+        run: aws deploy --region ${{ secrets.AWS_REGION }}
         env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 ```
 
 ## 🔧 CONFIGURAÇÃO DOS SECRETS
@@ -32,20 +32,15 @@ No seu repositório do GitHub, vá em:
 
 #### **Essenciais (Obrigatórios):**
 ```
-VERCEL_TOKEN
-VERCEL_ORG_ID
-VERCEL_PROJECT_ID
-VERCEL_PROJECT_ID_STAGING
-VERCEL_PROJECT_ID_PROD
+AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY
+AWS_REGION
 ```
 
 #### **Opcionais (Funcionalidades extras):**
 ```
 SNYK_TOKEN
 SLACK_WEBHOOK_URL
-AWS_ACCESS_KEY_ID
-AWS_SECRET_ACCESS_KEY
-AWS_REGION
 ANCHOR_PROVIDER_URL
 ANCHOR_WALLET
 INFURA_URL
@@ -61,16 +56,9 @@ NOTIFICATION_EMAIL
 
 ## 📋 Lista Completa de Secrets
 
-### Vercel Deployment
-- `VERCEL_TOKEN` - Token de autenticação do Vercel
-- `VERCEL_ORG_ID` - ID da organização do Vercel
-- `VERCEL_PROJECT_ID` - ID do projeto Vercel para produção
-- `VERCEL_PROJECT_ID_STAGING` - ID do projeto Vercel para staging
-- `VERCEL_PROJECT_ID_PROD` - ID do projeto Vercel para produção
-
-### AWS ECS Deployment
-- `AWS_ACCESS_KEY_ID` - Chave de acesso AWS para deploy ECS
-- `AWS_SECRET_ACCESS_KEY` - Chave secreta AWS para deploy ECS
+### AWS Deployment
+- `AWS_ACCESS_KEY_ID` - Chave de acesso AWS para deploy
+- `AWS_SECRET_ACCESS_KEY` - Chave secreta AWS para deploy
 - `AWS_REGION` - Região AWS (ex: us-east-1)
 
 ### Security Scanning
@@ -86,8 +74,8 @@ NOTIFICATION_EMAIL
 - `PRIVATE_KEY` - Chave privada para deploy de contratos
 
 ### Environment URLs
-- `BACKEND_URL` - URL da API backend
-- `PRODUCTION_URL` - URL do frontend em produção
+- `BACKEND_URL` - URL da API backend na AWS
+- `PRODUCTION_URL` - URL do frontend em produção na AWS
 
 ### Email Configuration
 - `SMTP_SERVER` - Servidor SMTP para notificações por email
@@ -98,52 +86,36 @@ NOTIFICATION_EMAIL
 
 ## 🚀 Estrutura dos Workflows
 
-### ci-cd-modern.yml
-- **Build-and-Deploy Job:** Checkout → Setup Node → Install → Build → Snyk → Deploy Vercel → Notificar Slack
+### **Build-and-Deploy Job:** Checkout → Setup Node → Install → Build → Snyk → Deploy AWS → Notificar Slack
 
-### ci-cd-optimized.yml
-- **Build-and-Deploy Job:** Checkout → Setup Node → Install → Build → Snyk → Deploy Staging → Deploy Production → Notificar Slack
+## 📊 Status dos Secrets
 
-## 🔒 Notas de Segurança
+### ✅ **Configurados:**
+- `AWS_ACCESS_KEY_ID` ✅
+- `AWS_SECRET_ACCESS_KEY` ✅
+- `AWS_REGION` ✅
 
-- Nunca commite secrets no repositório
-- Use secrets específicos por ambiente quando possível
-- Rotacione secrets regularmente
-- Use princípio de menor privilégio para credenciais AWS
-- Monitore uso e logs de acesso dos secrets
+### ⚠️ **Pendentes:**
+- `SNYK_TOKEN` (opcional)
+- `SLACK_WEBHOOK_URL` (opcional)
 
-## 🛠️ Troubleshooting
+## 🔗 Links Úteis
 
-### Problemas Comuns:
-1. **"Unrecognized named-value: 'secrets'"** - Não use secrets no env global
-2. **"Context access might be invalid"** - Use secrets apenas em contextos válidos
-3. **"Action not found"** - Use versões corretas das actions (ex: `@master` para Snyk)
+- **AWS Console**: https://aws.amazon.com/console/
+- **AWS IAM**: https://console.aws.amazon.com/iam/
+- **GitHub Secrets**: https://github.com/lp24213/agrotm.sol/settings/secrets/actions
 
-### Melhores Práticas:
-- Sempre use sintaxe `${{ secrets.SECRET_NAME }}`
-- Declare secrets em seções `env:` de steps individuais
-- Use steps condicionais com `if: ${{ secrets.SECRET_NAME != '' }}`
-- Teste workflows com secrets mínimos primeiro
+## 📝 Notas Importantes
 
-## ✅ Status de Compatibilidade
+1. **AWS Amplify** fará deploy automático do frontend
+2. **AWS ECS/Lambda** será configurado separadamente para o backend
+3. **GitHub Actions** apenas valida builds e prepara para deploy
+4. **Secrets AWS** devem ter permissões mínimas necessárias
+5. **Região AWS** deve ser a mesma onde está configurado o Amplify
 
-Estes secrets são compatíveis com:
-- `ci-cd-modern.yml` - Pipeline CI/CD moderno simplificado
-- `ci-cd-optimized.yml` - Pipeline CI/CD otimizado com staging/produção
+## 🎯 Próximos Passos
 
-## 🎯 Secrets Opcionais
-
-Os seguintes secrets são opcionais e os workflows continuarão mesmo se não configurados:
-- `SNYK_TOKEN` - Análise de segurança será pulada
-- `SLACK_WEBHOOK_URL` - Notificações Slack serão puladas
-- Secrets relacionados a email - Notificações por email serão puladas
-
-## 🎉 WORKFLOWS FINALIZADOS
-
-Os workflows estão agora **100% funcionais** com:
-- ✅ Estrutura simplificada e otimizada
-- ✅ Secrets no contexto correto
-- ✅ Actions com versões corretas
-- ✅ Deploy automático para Vercel
-- ✅ Notificações Slack configuradas
-- ✅ Zero erros de YAML ou context access 
+1. ✅ Configurar secrets AWS no GitHub
+2. ✅ Configurar AWS Amplify para frontend
+3. ✅ Configurar AWS ECS/Lambda para backend
+4. ✅ Testar deploy completo na AWS 

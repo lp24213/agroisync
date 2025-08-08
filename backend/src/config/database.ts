@@ -7,9 +7,9 @@ export const connectMongoDB = async (): Promise<void> => {
   try {
     const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/agrotm';
     
-    // Skip connection if no MongoDB URI is provided (for Railway)
+    // Skip connection if no MongoDB URI is provided (allow server to run without DB in non-critical envs)
     if (!process.env.MONGODB_URI) {
-      logger.warn('⚠️ No MongoDB URI provided, skipping database connection');
+      logger.warn('⚠️ No MONGODB_URI provided, skipping database connection');
       return;
     }
     

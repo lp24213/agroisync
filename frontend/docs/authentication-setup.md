@@ -338,7 +338,7 @@ class CustomAuthService extends FirebaseAuthService {
 
 ### Environment Variables
 
-Ensure all Firebase environment variables are set in your deployment platform (Vercel, Railway, etc.).
+Ensure all Firebase environment variables are set in your deployment platform (AWS Amplify for frontend; ECS/Lambda for backend).
 
 ## 📚 Additional Resources
 

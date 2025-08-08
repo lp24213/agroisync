@@ -39,8 +39,10 @@ pnpm-debug.log*
 .env.production
 .env.staging
 
-# Vercel
-.vercel
+# AWS Amplify
+.amplify
+amplify_outputs*
+amplifyconfiguration*
 
 # TypeScript
 *.tsbuildinfo
@@ -149,19 +151,5 @@ temp/
 # Turbo
 .turbo
 
-# Vercel
-.vercel
-
-# Railway
-.railway
-
 # Local development
 .local
-.vercel
-
-
-# amplify
-node_modules
-.amplify
-amplify_outputs*
-amplifyconfiguration*

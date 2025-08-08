@@ -21,7 +21,13 @@ export const corsOptions = {
   origin: function (origin: string | undefined, callback: Function) {
     const allowedOrigins = process.env.ALLOWED_ORIGINS 
       ? process.env.ALLOWED_ORIGINS.split(',') 
-      : ['http://localhost:3000', 'https://agrotm-solana.vercel.app', 'https://agrotm.vercel.app'];
+      : [
+          'http://localhost:3000',
+          'https://agrotmsol.com.br',
+          'https://www.agrotmsol.com.br',
+          // Domínio padrão do AWS Amplify (ajuste para o seu)
+          'https://main.amplifyapp.com'
+        ];
     
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);

@@ -8,7 +8,7 @@ const nextConfig = {
   
   // Configuração de imagens
   images: {
-    domains: ['agrotmsol.com.br', 'localhost', 'vercel.app', 'amplifyapp.com'],
+    domains: ['agrotmsol.com.br', 'localhost', 'amplifyapp.com'],
     unoptimized: true,
   },
   

@@ -55,13 +55,13 @@ agrotm.sol/
 
 ## 🚀 Deploy
 
-### Frontend (Vercel)
-- **URL**: https://agrotm-solana.vercel.app
+### Frontend (AWS Amplify)
+- **URL**: https://app.seu-amplify-domain.amplifyapp.com
 - **Branch**: `main` → Production, `develop` → Staging
 
-### Backend (Railway)
-- **URL**: https://agrotm-backend.railway.app
-- **Health Check**: `/api/health`
+### Backend (AWS ECS/Lambda)
+- **URL**: https://api.seu-dominio-aws.com
+- **Health Check**: `/health`
 
 ## 📦 Instalação Local
 
@@ -119,8 +119,8 @@ npm run start        # Servidor produção
 
 ### Frontend (.env.local)
 ```env
-NEXT_PUBLIC_APP_URL=https://agrotm-solana.vercel.app
-NEXT_PUBLIC_API_URL=https://agrotm-backend.railway.app
+NEXT_PUBLIC_APP_URL=https://app.seu-amplify-domain.amplifyapp.com
+NEXT_PUBLIC_API_URL=https://api.seu-dominio-aws.com
 NEXT_PUBLIC_RPC_ENDPOINT=https://api.mainnet-beta.solana.com
 NEXT_PUBLIC_SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
 ```

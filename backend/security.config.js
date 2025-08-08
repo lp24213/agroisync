@@ -23,8 +23,8 @@ module.exports = {
   cors: {
     origin: process.env.FRONTEND_URL || [
       'http://localhost:3000',
-      'https://agrotm-solana.vercel.app',
-      'https://agrotm.vercel.app',
+      'https://agrotmsol.com.br',
+      'https://www.agrotmsol.com.br',
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],

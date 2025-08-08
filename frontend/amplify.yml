@@ -6,11 +6,13 @@ frontend:
         - echo "🚀 AGROTM - Iniciando build no AWS Amplify"
         - echo "📦 Instalando dependências..."
         - npm ci --production=false
+        - echo "🔧 Definindo variáveis de ambiente para o Amplify (use o Console para produção)"
         - echo "✅ Dependências instaladas"
     build:
       commands:
         - echo "🔨 Construindo aplicação Next.js..."
         - npm run build
+        - echo "🔎 NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL"
         - echo "✅ Build concluído"
     postBuild:
       commands:

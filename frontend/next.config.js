@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['agrotmsol.com.br', 'localhost', 'vercel.app'],
+    domains: ['agrotmsol.com.br', 'localhost'],
     unoptimized: true,
   },
   trailingSlash: false,

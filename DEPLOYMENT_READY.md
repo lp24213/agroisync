@@ -4,26 +4,24 @@
 
 ### 📋 CHECKLIST FINAL
 
-#### ✅ **Frontend (Vercel)**
+#### ✅ **Frontend (AWS Amplify)**
 - [x] Build funcionando: `npm run build` ✅
 - [x] SSR corrigido: Páginas problemáticas convertidas
 - [x] Dependências instaladas: `react-hot-toast` e outras
 - [x] Next.js configurado: `next.config.js` otimizado
-- [x] Vercel configurado: `vercel.json` atualizado
+- [x] Amplify configurado: `frontend/amplify.yml` validado
 - [x] TypeScript: Erros corrigidos
 
-#### ✅ **Backend (Railway)**
+#### ✅ **Backend (AWS ECS/Lambda)**
 - [x] Dockerfile corrigido: Simplificado e funcional
 - [x] Package.json atualizado: Scripts e dependências
 - [x] Index.js melhorado: CORS, helmet, health check
-- [x] Railway configurado: `railway.json` pronto
+- [x] ECS Task Definition configurada: `backend/task-definition-production.json`
 - [x] Variáveis de ambiente: `env.example` criado
 
 #### ✅ **GitHub Actions**
-- [x] Workflow configurado: `.github/workflows/ci-cd.yml`
-- [x] Deploy automático: Trigger no push para main
-- [x] Vercel Action: `amondnet/vercel-action@v25`
-- [x] Railway CLI: Deploy automático configurado
+- [x] Workflows configurados: `.github/workflows/deploy-aws.yml`, `.github/workflows/backend-ecs-deploy.yml`
+- [x] Deploy automático: Trigger no push para main (Amplify/ECS)
 
 #### ✅ **Arquivos Modificados**
 - [x] `backend/Dockerfile` - Corrigido
@@ -31,7 +29,7 @@
 - [x] `backend/index.js` - Melhorado
 - [x] `backend/env.example` - Criado
 - [x] `frontend/next.config.js` - Otimizado
-- [x] `frontend/vercel.json` - Atualizado
+- [x] `frontend/amplify.yml` - Atualizado
 - [x] `frontend/package.json` - Dependências corrigidas
 - [x] Páginas SSR corrigidas (3 arquivos)
 
@@ -43,32 +41,22 @@
 
 1. **Push realizado**: ✅ `git push origin main` executado
 2. **GitHub Actions**: Trigger automático no push
-3. **Vercel Deploy**: Build e deploy automático do frontend
-4. **Railway Deploy**: Build Docker e deploy automático do backend
+3. **AWS Amplify**: Build e deploy automático do frontend
+4. **AWS ECS/Lambda**: Build Docker e deploy automático do backend
 
 ### **URLs esperadas:**
-- **Frontend**: `https://agrotm-solana.vercel.app`
-- **Backend**: `https://agrotm-backend.railway.app`
-- **Health Check**: `https://agrotm-backend.railway.app/health`
+- **Frontend**: `https://app.seu-amplify-domain.amplifyapp.com`
+- **Backend**: `https://api.seu-dominio-aws.com`
+- **Health Check**: `https://api.seu-dominio-aws.com/health`
 
 ---
 
 ## 🔍 MONITORAMENTO
 
-### **Verificar no GitHub:**
-1. Acesse: `https://github.com/lp24213/agrotm-solana/actions`
-2. Verifique o workflow "Deploy to Vercel and Railway"
-3. Status deve ser: ✅ **Success**
-
-### **Verificar no Vercel:**
-1. Acesse: `https://vercel.com/dashboard`
-2. Projeto: `agrotm-solana`
-3. Deploy deve estar: ✅ **Ready**
-
-### **Verificar no Railway:**
-1. Acesse: `https://railway.app/dashboard`
-2. Projeto: `agrotm-backend`
-3. Deploy deve estar: ✅ **Running**
+### **Verificar nas Consoles:**
+1. GitHub Actions: `https://github.com/lp24213/agrotm-solana/actions`
+2. Amplify Console: `https://console.aws.amazon.com/amplify/`
+3. ECS Console: `https://console.aws.amazon.com/ecs/`
 
 ---
 
@@ -76,15 +64,15 @@
 
 ### **Se o deploy falhar:**
 
-#### **Vercel (Frontend)**
+#### **Amplify (Frontend)**
 - **Problema**: Build error
-- **Solução**: Verificar logs em `https://vercel.com/dashboard`
+- **Solução**: Verificar logs na Amplify Console
 - **Comando local**: `npm run build` (já testado ✅)
 
-#### **Railway (Backend)**
-- **Problema**: Docker build error
-- **Solução**: Verificar logs em `https://railway.app/dashboard`
-- **Comando local**: `docker build -t agrotm-backend .` (se Docker estiver instalado)
+#### **ECS (Backend)**
+- **Problema**: Falha no deploy/rollout
+- **Solução**: Verificar eventos do serviço no ECS e logs do CloudWatch
+- **Comando local**: `docker build -t agrotm-backend .` (opcional)
 
 #### **GitHub Actions**
 - **Problema**: Workflow error
@@ -111,8 +99,8 @@
 
 Após alguns minutos, você deve ter:
 
-1. **Frontend funcionando**: `https://agrotm-solana.vercel.app`
-2. **Backend funcionando**: `https://agrotm-backend.railway.app/health`
-3. **Deploy automático**: Configurado para futuras atualizações
+1. **Frontend funcionando**: `https://app.seu-amplify-domain.amplifyapp.com`
+2. **Backend funcionando**: `https://api.seu-dominio-aws.com/health`
+3. **Deploy automático**: Configurado para futuras atualizações na AWS
 
 **🎯 TUDO PRONTO PARA PRODUÇÃO!**

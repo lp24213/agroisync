@@ -327,7 +327,6 @@
       "subjectPartnership": "合作",
       "subjectInvestment": "投资",
       "subjectOther": "其他",
-      "message": "消息",
       "messageLabel": "消息",
       "messagePlaceholder": "描述您的问题或建议",
       "submit": "发送消息",
@@ -354,8 +353,7 @@
       "hours": "营业时间",
       "chat": "在线聊天",
       "support": "24/7电话支持",
-      "available": "可用",
-      "description": "实时聊天支持"
+      "available": "可用"
     },
     "faq": {
       "title": "常见",

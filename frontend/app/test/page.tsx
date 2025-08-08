@@ -13,11 +13,11 @@ export default function TestPage() {
           <div className="bg-white/20 backdrop-blur-sm rounded-lg p-6 mb-8">
             <p className="text-lg">✅ Frontend Online</p>
             <p className="text-lg">✅ Next.js Funcionando</p>
-            <p className="text-lg">✅ Vercel Deploy OK</p>
+            <p className="text-lg">✅ AWS Amplify Deploy OK</p>
             <p className="text-lg">✅ Rotas Funcionando</p>
             <p className="text-lg">✅ APIs Moralis & CoinCap Integradas</p>
           </div>
-          <div className="mb-8">
+            <div className="mb-8">
             <a 
               href="/" 
               className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"

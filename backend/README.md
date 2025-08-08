@@ -13,7 +13,7 @@ Backend profissional e robusto para a plataforma AGROTM - Plataforma de Agroneg�
 - **Health checks** para monitoramento
 - **Testes automatizados** com Jest
 - **Docker** configurado para produção
-- **Deploy automático** no Railway
+- **Deploy automático** na AWS (ECS/Lambda)
 
 ## 📋 Pré-requisitos
 
@@ -172,12 +172,12 @@ docker-compose up -d
 
 ## 🚀 Deploy
 
-### Railway
-O projeto está configurado para deploy automático no Railway:
+### AWS (ECS/ECR ou Lambda + API Gateway)
+O projeto está configurado para deploy na AWS:
 
-1. Conecte seu repositório ao Railway
-2. Configure as variáveis de ambiente
-3. O deploy será automático a cada push
+1. Build e push da imagem para o ECR via GitHub Actions
+2. Atualização da Task Definition do ECS Service
+3. Uso de Secrets Manager/SSM para segredos
 
 ### Variáveis de Ambiente Necessárias
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const RAILWAY_BACKEND_URL = 'https://turntable.proxy.rlwy.net:54605';
+// Base da API hospedada na AWS (ECS/Lambda). Utilize variável de ambiente.
+const AWS_BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || process.env.API_BASE_URL || '';
 
 export async function GET(
   request: NextRequest,
@@ -11,7 +12,7 @@ export async function GET(
     const url = new URL(request.url);
     const queryString = url.search;
     
-    const backendUrl = `${RAILWAY_BACKEND_URL}/${path}${queryString}`;
+    const backendUrl = `${AWS_BACKEND_URL.replace(/\/$/, '')}/${path}${queryString}`;
     
     const response = await fetch(backendUrl, {
       method: 'GET',
@@ -48,7 +49,7 @@ export async function POST(
     const path = params.path.join('/');
     const body = await request.json();
     
-    const backendUrl = `${RAILWAY_BACKEND_URL}/${path}`;
+    const backendUrl = `${AWS_BACKEND_URL.replace(/\/$/, '')}/${path}`;
     
     const response = await fetch(backendUrl, {
       method: 'POST',
@@ -86,7 +87,7 @@ export async function PUT(
     const path = params.path.join('/');
     const body = await request.json();
     
-    const backendUrl = `${RAILWAY_BACKEND_URL}/${path}`;
+    const backendUrl = `${AWS_BACKEND_URL.replace(/\/$/, '')}/${path}`;
     
     const response = await fetch(backendUrl, {
       method: 'PUT',
@@ -123,7 +124,7 @@ export async function DELETE(
   try {
     const path = params.path.join('/');
     
-    const backendUrl = `${RAILWAY_BACKEND_URL}/${path}`;
+    const backendUrl = `${AWS_BACKEND_URL.replace(/\/$/, '')}/${path}`;
     
     const response = await fetch(backendUrl, {
       method: 'DELETE',

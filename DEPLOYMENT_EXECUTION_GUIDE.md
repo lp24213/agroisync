@@ -15,19 +15,20 @@
 
 3. **Deployment Configuration**
    - ✅ GitHub Actions workflow configured (`.github/workflows/deploy.yml`)
-   - ✅ Vercel configuration ready (`frontend/vercel.json`)
-   - ✅ Railway configuration ready (`backend/railway.json`)
+   - ✅ Amplify configuration pronta (`frontend/amplify.yml`)
+   - ✅ ECS Task Definition pronta (`backend/task-definition-production.json`)
 
 ### 🔧 Required GitHub Secrets
 
 Before executing deployment, ensure these secrets are configured in your GitHub repository:
 
-#### Vercel Deployment Secrets
-- `VERCEL_TOKEN` - Your Vercel API token
-- `VERCEL_ORG_ID` - Your Vercel organization ID
-
-#### Railway Deployment Secrets
-- `RAILWAY_TOKEN` - Your Railway API token
+#### AWS Deployment Secrets
+- `AWS_REGION`
+- `AWS_GITHUB_ROLE_ARN`
+- `ECR_REPOSITORY`
+- `ECS_CLUSTER`
+- `ECS_SERVICE`
+- `ECS_CONTAINER_NAME`
 
 ### 📋 Deployment Execution Steps
 
@@ -58,21 +59,21 @@ The deployment process includes:
    - Frontend tests (type check, lint, build)
    - Backend tests (type check, build)
 
-2. **Deployment Phase** (only on main branch)
-   - Deploy frontend to Vercel
-   - Deploy backend to Railway
+2. **Deployment Phase** (somente na branch main)
+   - Deploy do frontend no Amplify
+   - Deploy do backend no ECS/Lambda
 
 ### 📊 Expected Deployment URLs
 
 After successful deployment:
-- **Frontend**: https://agrotm-solana.vercel.app
-- **Backend**: https://agrotm-backend.railway.app
+- **Frontend**: https://app.seu-amplify-domain.amplifyapp.com
+- **Backend**: https://api.seu-dominio-aws.com
 
 ### 🔍 Monitoring Deployment
 
 1. **GitHub Actions**: Monitor the workflow in the Actions tab
-2. **Vercel Dashboard**: Check frontend deployment status
-3. **Railway Dashboard**: Check backend deployment status
+2. **Amplify Console**: Check frontend deployment status
+3. **ECS Console**: Check backend deployment status
 
 ### 🚨 Troubleshooting
 

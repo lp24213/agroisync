@@ -5,17 +5,17 @@
 ### 1️⃣ **Estrutura Final Correta**
 ```
 agrotm.sol/
-├── frontend/          → Next.js (Vercel)
+├── frontend/          → Next.js (AWS Amplify)
 │   ├── app/
 │   ├── components/
 │   └── package.json
-├── backend/           → Node.js/Express (Railway)
+├── backend/           → Node.js/Express (AWS ECS)
 │   ├── server.js      → ✅ Arquivo principal
 │   └── package.json   → ✅ Scripts otimizados
-└── vercel.json        → ✅ Proxy configurado
+└── amplify.yml        → ✅ Build configurado
 ```
 
-### 2️⃣ **Backend - Railway**
+### 2️⃣ **Backend - AWS ECS**
 - ✅ **server.js** criado com configuração completa
 - ✅ **Porta dinâmica**: `process.env.PORT || 3001`
 - ✅ **Healthcheck**: `/health` retorna "OK"
@@ -25,18 +25,18 @@ agrotm.sol/
   - `GET /api/contact` → Dados de contato
   - `GET /api/v1/status` → Status da API
 
-### 3️⃣ **Frontend - Vercel**
+### 3️⃣ **Frontend - AWS Amplify**
 - ✅ **Next.js** configurado corretamente
 - ✅ **Build** sem erros
 - ✅ **Layout global** sem duplicações
 - ✅ **Dados de contato** atualizados
 
-### 4️⃣ **Proxy Vercel → Railway**
+### 4️⃣ **Infra AWS (ALB/API Gateway) → Backend**
 ```json
 {
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "https://agrotm-backend-production.up.railway.app/api/$1" },
-    { "source": "/health", "destination": "https://agrotm-backend-production.up.railway.app/health" }
+  "routes": [
+    { "path": "/api/*", "target": "https://api.seu-dominio-aws.com" },
+    { "path": "/health", "target": "https://api.seu-dominio-aws.com/health" }
   ]
 }
 ```
@@ -62,7 +62,7 @@ agrotm.sol/
 
 ## 🔗 **URLs de Produção**
 - **Frontend**: `https://agrotmsol.com.br`
-- **Backend**: `https://agrotm-backend-production.up.railway.app`
+- **Backend**: `https://api.seu-dominio-aws.com`
 - **API via Proxy**: `https://agrotmsol.com.br/api/...`
 - **Healthcheck**: `https://agrotmsol.com.br/health`
 
@@ -81,9 +81,9 @@ agrotm.sol/
 - ✅ **Vercel**: Deploy em andamento
 
 ## 🎯 **Próximos Passos**
-1. **Aguardar Railway** reconstruir a imagem
-2. **Testar healthcheck**: `https://agrotm-backend-production.up.railway.app/health`
-3. **Verificar proxy**: `https://agrotmsol.com.br/health`
+1. **ECS**: aguardar atualização do serviço
+2. **Testar healthcheck**: `https://api.seu-dominio-aws.com/health`
+3. **Verificar rota**: `https://agrotmsol.com.br/health`
 4. **Validar API**: `https://agrotmsol.com.br/api/contact`
 5. **Testar frontend**: `https://agrotmsol.com.br`
 
@@ -91,13 +91,13 @@ agrotm.sol/
 - **Node.js**: >=20.0.0
 - **Express**: ^4.18.2
 - **CORS**: Configurado para domínio principal
-- **Porta**: Dinâmica (Railway)
+- **Porta**: Definida no container (ECS)
 - **Healthcheck**: Endpoint `/health`
 - **Proxy**: Vercel → Railway
 
 ## 🎉 **Resultado Final**
 - **Frontend e Backend** unificados no domínio `agrotmsol.com.br`
-- **API funcionando** via proxy Vercel
+- **API funcionando** atrás de ALB/API Gateway
 - **Healthcheck** operacional
 - **Deploy automatizado** via GitHub Actions
 - **Build sem erros** em ambos os serviços

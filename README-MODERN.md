@@ -276,7 +276,7 @@ docker-compose -f docker-compose.prod.yml up -d
 ### Cloud Deployment
 
 ```bash
-# Deploy to Vercel (Frontend)
+# Deploy to AWS Amplify (Frontend)
 npm run deploy:frontend
 
 # Deploy to AWS ECS (Backend)

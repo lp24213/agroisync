@@ -4,12 +4,12 @@
 
 **Status**: ✅ **DEPLOY PRONTO PARA PRODUÇÃO**
 
-Após análise completa do projeto monorepo, foram identificados e corrigidos todos os problemas críticos que poderiam causar falhas no deploy. O projeto agora está configurado para deploy perfeito em Vercel (frontend) e Railway (backend).
+Após análise completa do projeto monorepo, foram identificados e corrigidos todos os problemas críticos que poderiam causar falhas no deploy. O projeto agora está configurado para deploy perfeito na AWS: Amplify (frontend) e ECS/Lambda (backend).
 
 ## ✅ PROBLEMAS CORRIGIDOS
 
 ### 1. **ESTRUTURA DO PROJETO**
-- ✅ **vercel.json corrigido**: Agora aponta corretamente para `frontend/package.json`
+- ✅ **Amplify configurado**: `frontend/amplify.yml` validado
 - ✅ **Separação clara**: Frontend e backend completamente isolados
 - ✅ **Configurações específicas**: Cada serviço tem suas próprias configurações
 
@@ -17,7 +17,7 @@ Após análise completa do projeto monorepo, foram identificados e corrigidos to
 - ✅ **Healthcheck implementado**: Rota `/api/health` criada
 - ✅ **Scripts de validação**: Adicionados scripts de teste e validação
 - ✅ **TypeScript configurado**: Build com ignoreBuildErrors para produção
-- ✅ **Vercelignore específico**: Criado para otimizar deploy
+- ✅ **Cache/Build Amplify**: Definidos em `frontend/amplify.yml`
 
 ### 3. **BACKEND (Express)**
 - ✅ **Scripts melhorados**: Removido postinstall problemático
@@ -52,8 +52,8 @@ npm run type-check      # Verifica tipos TypeScript
 ```
 
 ### **Healthchecks**
-- **Frontend**: `https://agrotm-solana.vercel.app/api/health`
-- **Backend**: `https://agrotm-backend.railway.app/health`
+- **Frontend**: `https://app.seu-amplify-domain.amplifyapp.com`
+- **Backend**: `https://api.seu-dominio-aws.com/health`
 
 ### **Configurações de Segurança**
 - Headers de segurança configurados
@@ -69,16 +69,16 @@ npm run type-check      # Verifica tipos TypeScript
 - [x] Configurações específicas por serviço
 - [x] Scripts de build funcionais
 
-### ✅ **Frontend (Vercel)**
-- [x] vercel.json configurado corretamente
+### ✅ **Frontend (Amplify)**
+- [x] `frontend/amplify.yml` configurado corretamente
 - [x] Página inicial existe (`/`)
 - [x] Healthcheck implementado (`/api/health`)
 - [x] TypeScript configurado
 - [x] Variáveis de ambiente documentadas
 - [x] Build local testado
 
-### ✅ **Backend (Railway)**
-- [x] railway.json configurado
+### ✅ **Backend (ECS/Lambda)**
+- [x] Task Definition configurada (`backend/task-definition-production.json`)
 - [x] Healthcheck implementado (`/health`)
 - [x] process.env.PORT configurado
 - [x] Dependências em dependencies
@@ -101,17 +101,20 @@ npm run type-check      # Verifica tipos TypeScript
 ### **1. Configure os Secrets (OBRIGATÓRIO)**
 ```bash
 # No GitHub: Settings > Secrets and variables > Actions
-VERCEL_TOKEN=your-vercel-token
-VERCEL_ORG_ID=your-vercel-org-id
-RAILWAY_TOKEN=your-railway-token
+AWS_REGION=...
+AWS_GITHUB_ROLE_ARN=...
+ECR_REPOSITORY=...
+ECS_CLUSTER=...
+ECS_SERVICE=...
+ECS_CONTAINER_NAME=...
 ```
 
 ### **2. Configure as Variáveis de Ambiente**
 
-#### **Vercel (Frontend)**
+#### **Amplify (Frontend)**
 ```bash
-NEXT_PUBLIC_APP_URL=https://agrotm-solana.vercel.app
-NEXT_PUBLIC_API_URL=https://agrotm-backend.railway.app
+NEXT_PUBLIC_APP_URL=https://app.seu-amplify-domain.amplifyapp.com
+NEXT_PUBLIC_API_URL=https://api.seu-dominio-aws.com
 NEXT_PUBLIC_RPC_ENDPOINT=https://api.mainnet-beta.solana.com
 ```
 
@@ -134,8 +137,8 @@ git push origin main
 
 ### **4. Monitore**
 - **GitHub Actions**: https://github.com/lp24213/agrotm.sol/actions
-- **Vercel**: https://vercel.com/dashboard
-- **Railway**: https://railway.app/dashboard
+- **Amplify Console**: https://console.aws.amazon.com/amplify/
+- **ECS Console**: https://console.aws.amazon.com/ecs/
 
 ## 🔍 PONTOS DE ATENÇÃO
 

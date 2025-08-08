@@ -24,7 +24,7 @@
 /.github/workflows/ @agrotm-devops-team
 /docker-compose*.yml @agrotm-devops-team
 /Dockerfile @agrotm-devops-team
-/vercel.json @agrotm-devops-team
+/amplify.yml @agrotm-devops-team
 
 # Documentation team owns docs
 /docs/ @agrotm-docs-team

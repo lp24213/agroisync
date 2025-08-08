@@ -211,12 +211,12 @@ export default function StatusPage() {
               <div>
                 <h3 className="text-sm font-semibold text-gray-400 mb-2">URL do Backend:</h3>
                 <p className="text-white font-mono text-sm">
-                  https://turntable.proxy.rlwy.net:54605
+                  {process.env.NEXT_PUBLIC_API_URL || 'https://api.seu-dominio-aws.com'}
                 </p>
               </div>
               <div>
                 <h3 className="text-sm font-semibold text-gray-400 mb-2">Status:</h3>
-                <p className="text-green-400 font-semibold">Railway - Ativo</p>
+                <p className="text-green-400 font-semibold">AWS - Ativo</p>
               </div>
             </div>
           </motion.div>

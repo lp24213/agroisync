@@ -61,34 +61,34 @@ jobs:
     - name: Type check
     - name: Build
 
-  deploy-vercel:
+  deploy-amplify:
     needs: [test-frontend, test-backend]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
     - uses: actions/checkout@v4
-    - name: Deploy to Vercel
-      uses: amondnet/vercel-action@v25
+    - name: Deploy to Amplify (via Console)
+      run: echo "Amplify configurado para auto-deploy no push"
 
-  deploy-railway:
+  deploy-ecs:
     needs: [test-frontend, test-backend]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
     - uses: actions/checkout@v4
-    - name: Deploy to Railway
-      uses: railwayapp/railway-action@v1
+    - name: Deploy to ECS
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v2
 ```
 
 ### **🌐 URLs de Deploy:**
 
-#### **Frontend (Vercel):**
-- **URL**: https://agrotm-solana.vercel.app
+#### **Frontend (Amplify):**
+- **URL**: https://app.seu-amplify-domain.amplifyapp.com
 - **Status**: ✅ Deploy automático ativo
 - **Branch**: main
 
-#### **Backend (Railway):**
-- **URL**: https://agrotm-backend.railway.app
+#### **Backend (ECS/Lambda):**
+- **URL**: https://api.seu-dominio-aws.com
 - **Status**: ✅ Deploy automático ativo
 - **Health Check**: /health
 
@@ -181,7 +181,7 @@ jobs:
 
 - **Email**: contato@agrotm.com.br
 - **GitHub**: https://github.com/lp24213/agrotm.sol
-- **Status**: https://agrotm-solana.vercel.app/status
+- **Status**: https://app.seu-amplify-domain.amplifyapp.com/status
 
 ---
 

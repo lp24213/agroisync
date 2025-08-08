@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://turntable.proxy.rlwy.net:54605';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || process.env.API_BASE_URL || 'https://api.seu-dominio-aws.com';
 const METAMASK_ID = process.env.NEXT_PUBLIC_METAMASK_ID || '0x5Ea5C5970e8AE23A5336d631707CF31C5916E8b1';
 
 export interface ApiResponse<T = any> {

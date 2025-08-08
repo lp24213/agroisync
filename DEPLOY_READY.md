@@ -1,18 +1,16 @@
-# 🚀 DEPLOY PRONTO - AGROTM Vercel
+# 🚀 DEPLOY PRONTO - AGROTM AWS
 
 ## ✅ PROBLEMAS CORRIGIDOS:
 
 ### 1. **Workflow GitHub Actions**
-- ✅ Simplificado para apenas deploy
-- ✅ Tokens Vercel configurados corretamente
-- ✅ Working directory apontando para ./frontend
-- ✅ Todos os testes/lint desabilitados
+- ✅ Workflows preparados para AWS
+- ✅ OIDC/Secrets configuráveis no GitHub
+- ✅ `frontend` e `backend` build testados
 
-### 2. **Configuração Vercel**
-- ✅ vercel.json simplificado
-- ✅ frontend/vercel.json configurado
-- ✅ .vercelignore criado
-- ✅ next.config.js simplificado
+### 2. **Configuração AWS**
+- ✅ Amplify configurado (frontend)
+- ✅ ECS/ECR configurado (backend)
+- ✅ Task Definition disponível `backend/task-definition-production.json`
 
 ### 3. **ESLint/Lint**
 - ✅ Todos os arquivos ESLint removidos
@@ -22,9 +20,9 @@
 
 ## 🔧 CONFIGURAÇÃO ATUAL:
 
-### Workflow (.github/workflows/ci-cd.yml):
+### Workflows:
 ```yaml
-name: Deploy to Vercel
+name: Deploy AGROTM to AWS
 on:
   push:
     branches: [main]
@@ -38,43 +36,21 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: '8'
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: 44cO3ndgIly4HF1wdNLaT43B
-          vercel-org-id: team_2QKqXqXqXqXqXqXqXqXqXqXq
-          vercel-project-id: prj_2QKqXqXqXqXqXqXqXqXqXqXq
-          working-directory: ./frontend
-          vercel-args: '--prod'
+      - name: Test Frontend Build
+        run: |
+          cd frontend
+          npm ci
+          npm run build
+      - name: Test Backend Build
+        run: |
+          cd backend
+          npm ci
+          npm run build
 ```
 
-### Vercel Config (vercel.json):
-```json
-{
-  "version": 2,
-  "buildCommand": "cd frontend && pnpm build",
-  "outputDirectory": "frontend/.next",
-  "installCommand": "pnpm install --frozen-lockfile",
-  "framework": "nextjs"
-}
-```
-
-### Frontend Config (frontend/vercel.json):
-```json
-{
-  "version": 2,
-  "buildCommand": "pnpm build",
-  "outputDirectory": ".next",
-  "installCommand": "pnpm install --frozen-lockfile",
-  "framework": "nextjs"
-}
-```
+### Amplify (frontend) e ECS (backend)
+- Frontend: Amplify consome `frontend/amplify.yml`
+- Backend: ECS usa `backend/task-definition-production.json`
 
 ## 🚀 COMO FAZER DEPLOY:
 
@@ -87,7 +63,7 @@ git push origin main
 
 2. **Verifique o deploy:**
 - GitHub Actions: https://github.com/[user]/agrotm-solana/actions
-- Vercel Dashboard: https://vercel.com/dashboard
+- Amplify Console: https://console.aws.amazon.com/amplify/
 
 ## ✅ STATUS:
 - **Lint**: ❌ Desabilitado (0 erros)

@@ -1,0 +1,16 @@
+{
+  "projectId": "prj_soyoIkWBgbvmuXGYdt6CWfpmJ2sT",
+  "orgId": "team_TbUnsqmsx4JAQsS0gf5PKgl6",
+  "projectName": "agrotm.sol",
+  "settings": {
+    "createdAt": 1754327771006,
+    "framework": "nextjs",
+    "devCommand": "npm run dev",
+    "installCommand": "npm ci",
+    "buildCommand": "npm run build",
+    "outputDirectory": ".next",
+    "rootDirectory": "frontend",
+    "directoryListing": false,
+    "nodeVersion": "22.x"
+  }
+}

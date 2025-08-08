@@ -52,8 +52,8 @@ app.use(helmet({
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
-      'https://agrotm-solana.vercel.app',
-      'https://agrotm.sol',
+      'https://agrotmsol.com.br',
+      'https://www.agrotmsol.com.br',
       'http://localhost:3000',
       'http://localhost:3001'
     ];
@@ -101,7 +101,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Static files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Health check endpoint (for Railway)
+// Health check endpoint (for AWS)
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'OK',

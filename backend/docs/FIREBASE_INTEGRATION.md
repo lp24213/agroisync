@@ -7,9 +7,9 @@ Este documento explica como o Firebase foi integrado no backend do AGROTM para f
 ## 🏗️ Arquitetura
 
 ```
-Frontend (Vercel) → Backend (Railway) → Firebase (Google)
-     ↓                    ↓                    ↓
-  Next.js App        Express API         Firestore/Storage
+Frontend (Amplify) → Backend (AWS ECS/Lambda) → Firebase (Google)
+     ↓                    ↓                          ↓
+  Next.js App        Express API                 Firestore/Storage
 ```
 
 ## ⚙️ Configuração

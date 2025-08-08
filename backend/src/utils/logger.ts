@@ -10,7 +10,7 @@ export const logger = winston.createLogger({
   ),
   defaultMeta: { service: 'agrotm-backend' },
   transports: [
-    // Always log to console for Railway
+    // Always log to console in containers (ECS/Lambda)
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.colorize(),
@@ -20,7 +20,7 @@ export const logger = winston.createLogger({
   ],
 });
 
-// Add file transports only if not in production (for Railway)
+// Add file transports only if not in development (local only)
 if (process.env.NODE_ENV !== 'production') {
   logger.add(new winston.transports.File({ filename: 'logs/error.log', level: 'error' }));
   logger.add(new winston.transports.File({ filename: 'logs/combined.log' }));

@@ -17,11 +17,11 @@
    - ✅ All dependencies are properly installed
 
 3. **Deployment Configuration**
-   - ✅ GitHub Actions workflow configured (`.github/workflows/deploy.yml`)
-   - ✅ Vercel configuration ready (`frontend/vercel.json`)
-   - ✅ Railway configuration ready (`backend/railway.json`)
-   - ✅ Health check endpoints configured (`/health`)
-   - ✅ Production environment variables set
+   - ✅ GitHub Actions workflows configurados (`.github/workflows/deploy-aws.yml`, `.github/workflows/backend-ecs-deploy.yml`)
+   - ✅ Amplify configuration pronta (`frontend/amplify.yml`)
+   - ✅ ECS Task Definition pronta (`backend/task-definition-production.json`)
+   - ✅ Health check endpoints configurados (`/health`)
+   - ✅ Variáveis de ambiente de produção definidas
 
 4. **Deployment Scripts Created**
    - ✅ `deploy-execute.sh` - Linux/macOS deployment script
@@ -30,14 +30,15 @@
 
 ### 🔧 Required GitHub Secrets
 
-Before executing deployment, configure these secrets in your GitHub repository:
+Antes de executar o deploy, configure estes secrets no repositório GitHub:
 
-#### Vercel Deployment
-- `VERCEL_TOKEN` - Your Vercel API token
-- `VERCEL_ORG_ID` - Your Vercel organization ID
-
-#### Railway Deployment
-- `RAILWAY_TOKEN` - Your Railway API token
+#### AWS Deployment
+- `AWS_REGION`
+- `AWS_GITHUB_ROLE_ARN`
+- `ECR_REPOSITORY`
+- `ECS_CLUSTER`
+- `ECS_SERVICE`
+- `ECS_CONTAINER_NAME`
 
 ### 🚀 How to Execute Deployment
 
@@ -65,15 +66,15 @@ git push origin main
 
 ### 📊 Expected Deployment URLs
 
-After successful deployment:
-- **Frontend**: https://agrotm-solana.vercel.app
-- **Backend**: https://agrotm-backend.railway.app
+Após deploy bem-sucedido:
+- **Frontend**: https://app.seu-amplify-domain.amplifyapp.com
+- **Backend**: https://api.seu-dominio-aws.com
 
 ### 🔍 Monitoring Deployment
 
-1. **GitHub Actions**: Monitor workflow in Actions tab
-2. **Vercel Dashboard**: Check frontend deployment status
-3. **Railway Dashboard**: Check backend deployment status
+1. **GitHub Actions**: monitore o workflow na aba Actions
+2. **Amplify Console**: verifique o status do frontend
+3. **ECS Console**: verifique o status do backend
 
 ### 📋 Deployment Workflow
 
@@ -83,9 +84,9 @@ The automated deployment process includes:
    - Frontend tests (type check, lint, build)
    - Backend tests (type check, build)
 
-2. **Deployment Phase** (only on main branch)
-   - Deploy frontend to Vercel
-   - Deploy backend to Railway
+2. **Deployment Phase** (somente na branch main)
+   - Deploy do frontend no Amplify
+   - Deploy do backend no ECS/Lambda
 
 ### 🎯 Next Steps After Deployment
 
@@ -106,10 +107,10 @@ The automated deployment process includes:
 
 ### 📝 Important Notes
 
-- **Environment Files**: The `.env` files contain default values and should be updated with production values in Railway
+- **Environment Files**: Os arquivos `.env` contêm valores default e devem ser atualizados no Amplify (frontend) e Secrets Manager/SSM (backend)
 - **Secrets**: Never commit sensitive information to the repository
 - **Health Checks**: The backend includes a `/health` endpoint for monitoring
-- **SSL**: Both Vercel and Railway provide automatic SSL certificates
+- **SSL**: Utilize ACM para certificados SSL no ALB/API Gateway
 
 ### 🚨 Troubleshooting
 

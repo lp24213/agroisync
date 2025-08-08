@@ -6,17 +6,21 @@
 
 ## 🔐 **GITHUB SECRETS REQUIRED**
 
-### **Vercel Secrets**
-- [ ] `VERCEL_TOKEN` - Token de autenticação da Vercel
-- [ ] `VERCEL_ORG_ID` - ID da organização Vercel
-- [ ] `VERCEL_PROJECT_ID` - ID do projeto (já configurado: `luis-paulos-projects-146dd88b`)
+### **AWS Secrets**
+- [ ] `AWS_ACCESS_KEY_ID`
+- [ ] `AWS_SECRET_ACCESS_KEY`
+- [ ] `AWS_REGION`
+- [ ] `AWS_GITHUB_ROLE_ARN` (se usar OIDC)
 
-### **Railway Secrets**
-- [ ] `RAILWAY_TOKEN` - Token de autenticação da Railway (já configurado: `a9fb0e22-7d27-41b0-a5e6-c6706f296413`)
+### **ECS/ECR**
+- [ ] `ECR_REPOSITORY`
+- [ ] `ECS_CLUSTER`
+- [ ] `ECS_SERVICE`
+- [ ] `ECS_CONTAINER_NAME`
 
 ---
 
-## 🌐 **VERCEL CONFIGURATION**
+## 🌐 **AWS AMPLIFY CONFIGURATION**
 
 ### **Project Settings**
 - ✅ **Project ID**: `luis-paulos-projects-146dd88b`
@@ -25,7 +29,7 @@
 - ✅ **Install Command**: `npm ci --omit=dev`
 - ✅ **Output Directory**: `.next`
 
-### **Environment Variables (Vercel Dashboard)**
+### **Environment Variables (Amplify Console)**
 ```bash
 # Frontend Environment Variables
 NODE_ENV=production
@@ -39,7 +43,7 @@ NEXT_PUBLIC_APP_URL=https://agrotm-solana.vercel.app
 
 ---
 
-## 🚂 **RAILWAY CONFIGURATION**
+## 🚂 **AWS ECS/LAMBDA CONFIGURATION**
 
 ### **Service Settings**
 - ✅ **Service Name**: `agrotm-backend`
@@ -63,16 +67,17 @@ ENABLE_COMPRESSION=true
 ENABLE_CACHE=true
 ```
 
-### **Where to Set Railway Variables:**
-1. **Railway Dashboard** → **Project** → **Variables**
-2. **GitHub Repository** → **Settings** → **Secrets and variables** → **Actions**
+### **Where to Set AWS Variables:**
+1. **Amplify Console** → **App settings** → **Environment variables** (frontend)
+2. **ECS Service** → **Task Definition/Secrets Manager/SSM** (backend)
+3. **GitHub** → **Settings** → **Secrets and variables** → **Actions**
 
 ---
 
 ## 🔧 **GITHUB ACTIONS CONFIGURATION**
 
 ### **Workflow Status**
-- ✅ **File**: `.github/workflows/ci-cd.yml`
+- ✅ **File**: `.github/workflows/deploy-aws.yml`, `.github/workflows/backend-ecs-deploy.yml`
 - ✅ **Triggers**: Push to main, Pull requests
 - ✅ **Jobs**: Test + Deploy
 - ✅ **Node Version**: 20.x
@@ -81,9 +86,12 @@ ENABLE_CACHE=true
 ### **Required Secrets in GitHub**
 ```yaml
 # GitHub Repository → Settings → Secrets and variables → Actions
-VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+AWS_REGION: ${{ secrets.AWS_REGION }}
+AWS_GITHUB_ROLE_ARN: ${{ secrets.AWS_GITHUB_ROLE_ARN }}
+ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
+ECS_SERVICE: ${{ secrets.ECS_SERVICE }}
+ECS_CONTAINER_NAME: ${{ secrets.ECS_CONTAINER_NAME }}
 ```
 
 ---

@@ -8,8 +8,8 @@ disable-schema-validation: true
 ignore-warnings:
   - "Context access might be invalid"
   - "MONGODB_URI"
-  - "VERCEL_TOKEN"
-  - "RAILWAY_TOKEN"
+  - "AWS_ACCESS_KEY_ID"
+  - "AWS_SECRET_ACCESS_KEY"
   - "JWT_SECRET"
 
 # Disable all validations
