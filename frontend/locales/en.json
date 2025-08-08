@@ -7,183 +7,22 @@
     "contact": "Contact",
     "getStarted": "Get Started"
   },
-  "hero": {
-    "title": "AGROTM",
-    "subtitle": "SOLANA",
-    "tagline": "Revolutionize Agriculture with DeFi on Solana",
-    "description": "The greatest technological revolution in global agribusiness. Innovation, automation and sustainability integrated into a single platform.",
-    "enterPlatform": "Enter Platform",
-    "learnMore": "Learn More",
-    "features": {
-      "technology": {
-        "title": "Advanced Technology",
-        "description": "Cutting-edge digital solutions for agribusiness"
-      },
-      "security": {
-        "title": "Blockchain Security",
-        "description": "Total protection of agricultural assets"
-      },
-      "sustainability": {
-        "title": "Sustainability",
-        "description": "Responsible agricultural practices"
-      },
-      "growth": {
-        "title": "Smart Growth",
-        "description": "Result maximization"
-      }
-    },
-    "stats": {
-      "farms": "Connected Farms",
-      "assets": "Tokenized Assets",
-      "uptime": "Guaranteed Uptime"
-    }
-  },
-  "features": {
-    "title": "Main Features",
-    "sustainableStaking": {
-      "title": "Sustainable Staking",
-      "description": "Stake your tokens and earn rewards while supporting sustainable agricultural projects."
-    },
-    "agriculturalNFTs": {
-      "title": "Agricultural NFTs",
-      "description": "Tokenize rural properties and participate in the agricultural NFT market."
-    },
-    "governance": {
-      "title": "Governance",
-      "description": "Participate in platform decisions through decentralized voting."
-    }
-  },
-  "interactiveDashboard": {
-    "title": "Interactive Dashboard",
-    "description": "Monitor your agricultural investments in real-time with our futuristic interface",
-    "defi": "DeFi",
-    "growth": "Growth",
-    "analytics": "Analytics",
-    "network": "Network"
-  },
-  "cyberDefense": {
-    "title": "Cyber Defense",
-    "description": "Next-generation security to protect your digital assets",
-    "advancedProtection": {
-      "title": "Advanced Protection",
-      "description": "Multiple security layers to protect your investments"
-    },
-    "intelligentAI": {
-      "title": "Intelligent AI",
-      "description": "AI-based threat detection systems"
-    },
-    "secureBlockchain": {
-      "title": "Secure Blockchain",
-      "description": "Blockchain technology for total transparency and security"
-    }
-  },
-  "stakingFarming": {
-    "title": "Staking / Farming",
-    "description": "Grow your tokens and harvest sustainable rewards",
-    "sustainableStaking": {
-      "title": "Sustainable Staking",
-      "description": "Stake your AGROTM tokens and earn rewards while supporting sustainable agricultural projects."
-    },
-    "liquidityFarming": {
-      "title": "Liquidity Farming",
-      "description": "Provide liquidity and earn additional tokens through the farming system."
-    },
-    "stakingPools": {
-      "title": "Staking Pools",
-      "description": "Earn passive income by staking your tokens in our secure and high-yield pools"
-    }
-  },
-  "nftMinting": {
-    "title": "NFT Creation",
-    "description": "Tokenize rural properties and create unique NFTs",
-    "createNFTs": {
-      "title": "Create Your NFTs",
-      "description": "Transform rural properties into unique and tradable NFTs. Each NFT represents a real part of sustainable agribusiness.",
-      "button": "Create NFT"
-    }
-  },
-  "farmManagement": {
-    "title": "Farm Management",
-    "description": "Manage your rural properties intelligently and efficiently",
-    "monitoring": {
-      "title": "Real-time Monitoring",
-      "description": "Track your farms' performance with real-time data"
-    },
-    "analytics": {
-      "title": "Advanced Analytics",
-      "description": "Detailed analysis to optimize agricultural production"
-    },
-    "automation": {
-      "title": "Smart Automation",
-      "description": "Automated systems to maximize efficiency"
-    }
-  },
-  "about": {
-    "title": "About AGROTM",
-    "description": "We are an innovative platform that connects farmers and investors through the most advanced technology.",
-    "mission": {
-      "title": "Our Mission",
-      "description": "Revolutionize agribusiness through technology and sustainability"
-    },
-    "vision": {
-      "title": "Our Vision",
-      "description": "To be the world's leading agricultural innovation platform"
-    },
-    "values": {
-      "title": "Our Values",
-      "description": "Sustainability, innovation, transparency and excellence"
-    }
-  },
-  "contact": {
-    "title": "Contact Us",
-    "description": "We are here to help. Contact us.",
-    "form": {
-      "name": "Name",
-      "email": "Email",
-      "message": "Message",
-      "send": "Send"
-    },
-    "info": {
-      "address": "Address",
-      "phone": "Phone",
-      "email": "Email"
-    }
-  },
-  "footer": {
-    "description": "AGROTM - Revolutionizing agribusiness with cutting-edge technology",
-    "links": {
-      "about": "About",
-      "services": "Services",
-      "contact": "Contact",
-      "privacy": "Privacy",
-      "terms": "Terms"
-    },
-    "social": {
-      "twitter": "Twitter",
-      "linkedin": "LinkedIn",
-      "github": "GitHub"
-    }
-  },
-  "language": {
-    "title": "Language / Idioma"
-  },
   "auth": {
     "login": {
       "title": "Login",
-      "subtitle": "Sign in to your account",
+      "subtitle": "Access your AGROTM account",
       "email": "Email",
       "password": "Password",
-      "forgotPassword": "Forgot your password?",
-      "submit": "Sign In",
+      "submit": "Login",
       "loading": "Signing in...",
+      "forgotPassword": "Forgot your password?",
       "noAccount": "Don't have an account?",
-      "createAccount": "Create account",
-      "or": "or"
+      "createAccount": "Create account"
     },
-    "signup": {
+    "register": {
       "title": "Create Account",
-      "subtitle": "Create your AGROTM account",
-      "fullName": "Full Name",
+      "subtitle": "Join the agribusiness revolution",
+      "name": "Full Name",
       "email": "Email",
       "phone": "Phone",
       "password": "Password",
@@ -191,17 +30,31 @@
       "submit": "Create Account",
       "loading": "Creating account...",
       "hasAccount": "Already have an account?",
-      "login": "Sign in",
-      "or": "or"
+      "login": "Sign in"
     },
-    "forgotPassword": {
+    "resetPassword": {
       "title": "Reset Password",
       "subtitle": "Enter your email to receive the recovery link",
       "email": "Email",
       "submit": "Send Link",
       "loading": "Sending...",
-      "backToLogin": "Back to login",
-      "success": "Recovery email sent!"
+      "success": "Recovery email sent!",
+      "backToLogin": "Back to login"
+    },
+    "tabs": {
+      "login": "Login",
+      "register": "Register",
+      "reset": "Reset Password"
+    },
+    "errors": {
+      "emailRequired": "Email is required",
+      "emailInvalid": "Invalid email",
+      "passwordRequired": "Password is required",
+      "passwordMinLength": "Password must be at least 6 characters",
+      "nameRequired": "Name is required",
+      "phoneRequired": "Phone is required",
+      "passwordsMismatch": "Passwords don't match",
+      "confirmPasswordRequired": "Password confirmation is required"
     }
   },
   "dashboard": {
@@ -217,5 +70,18 @@
       "change24h": "24h",
       "change7d": "7d"
     }
+  },
+  "stakingFarming": {
+    "stakingPools": {
+      "title": "Staking Pools",
+      "description": "Earn passive income by staking your tokens in our secure, high-yield pools"
+    }
+  },
+  "language": {
+    "select": "Language",
+    "portuguese": "Português",
+    "english": "English",
+    "spanish": "Español",
+    "chinese": "中文"
   }
 }

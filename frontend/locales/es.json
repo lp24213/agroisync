@@ -1,189 +1,28 @@
 {
   "nav": {
     "home": "Inicio",
-    "dashboard": "Dashboard",
+    "dashboard": "Panel",
     "staking": "Staking",
     "about": "Acerca de",
     "contact": "Contacto",
     "getStarted": "Comenzar Ahora"
   },
-  "hero": {
-    "title": "AGROTM",
-    "subtitle": "SOLANA",
-    "tagline": "Revoluciona la Agricultura con DeFi en Solana",
-    "description": "La mayor revolución tecnológica en el agronegocio mundial. Innovación, automatización y sostenibilidad integradas en una sola plataforma.",
-    "enterPlatform": "Entrar a la Plataforma",
-    "learnMore": "Saber Más",
-    "features": {
-      "technology": {
-        "title": "Tecnología Avanzada",
-        "description": "Soluciones digitales de vanguardia para el agronegocio"
-      },
-      "security": {
-        "title": "Seguridad Blockchain",
-        "description": "Protección total de activos agrícolas"
-      },
-      "sustainability": {
-        "title": "Sostenibilidad",
-        "description": "Prácticas agrícolas responsables"
-      },
-      "growth": {
-        "title": "Crecimiento Inteligente",
-        "description": "Maximización de resultados"
-      }
-    },
-    "stats": {
-      "farms": "Fincas Conectadas",
-      "assets": "Activos Tokenizados",
-      "uptime": "Tiempo Activo Garantizado"
-    }
-  },
-  "features": {
-    "title": "Funcionalidades Principales",
-    "sustainableStaking": {
-      "title": "Staking Sostenible",
-      "description": "Haz stake de tus tokens y gana recompensas mientras apoyas proyectos agrícolas sostenibles."
-    },
-    "agriculturalNFTs": {
-      "title": "NFTs Agrícolas",
-      "description": "Tokeniza propiedades rurales y participa en el mercado de NFTs agrícolas."
-    },
-    "governance": {
-      "title": "Gobernanza",
-      "description": "Participa en las decisiones de la plataforma a través de votación descentralizada."
-    }
-  },
-  "interactiveDashboard": {
-    "title": "Dashboard Interactivo",
-    "description": "Monitorea tus inversiones agrícolas en tiempo real con nuestra interfaz futurista",
-    "defi": "DeFi",
-    "growth": "Crecimiento",
-    "analytics": "Analytics",
-    "network": "Red"
-  },
-  "cyberDefense": {
-    "title": "Defensa Cibernética",
-    "description": "Seguridad de última generación para proteger tus activos digitales",
-    "advancedProtection": {
-      "title": "Protección Avanzada",
-      "description": "Múltiples capas de seguridad para proteger tus inversiones"
-    },
-    "intelligentAI": {
-      "title": "IA Inteligente",
-      "description": "Sistemas de detección de amenazas basados en inteligencia artificial"
-    },
-    "secureBlockchain": {
-      "title": "Blockchain Seguro",
-      "description": "Tecnología blockchain para transparencia y seguridad total"
-    }
-  },
-  "stakingFarming": {
-    "title": "Staking / Farming",
-    "description": "Cultiva tus tokens y cosecha recompensas sostenibles",
-    "sustainableStaking": {
-      "title": "Staking Sostenible",
-      "description": "Haz stake de tus tokens AGROTM y gana recompensas mientras apoyas proyectos agrícolas sostenibles."
-    },
-    "liquidityFarming": {
-      "title": "Farming de Liquidez",
-      "description": "Proporciona liquidez y gana tokens adicionales a través del sistema de farming."
-    },
-    "stakingPools": {
-      "title": "Pools de Staking",
-      "description": "Gana ingresos pasivos apostando tus tokens en nuestros pools seguros y de alta rentabilidad"
-    }
-  },
-  "nftMinting": {
-    "title": "Creación de NFTs",
-    "description": "Tokeniza propiedades rurales y crea NFTs únicos",
-    "createNFTs": {
-      "title": "Crea Tus NFTs",
-      "description": "Transforma propiedades rurales en NFTs únicos y negociables. Cada NFT representa una parte real del agronegocio sostenible.",
-      "button": "Crear NFT"
-    }
-  },
-  "farmManagement": {
-    "title": "Gestión de Fincas",
-    "description": "Gestiona tus propiedades rurales de forma inteligente y eficiente",
-    "monitoring": {
-      "title": "Monitoreo en Tiempo Real",
-      "description": "Acompaña el desempeño de tus fincas con datos en tiempo real"
-    },
-    "analytics": {
-      "title": "Analytics Avanzados",
-      "description": "Análisis detallados para optimizar la producción agrícola"
-    },
-    "automation": {
-      "title": "Automatización Inteligente",
-      "description": "Sistemas automatizados para maximizar la eficiencia"
-    }
-  },
-  "about": {
-    "title": "Acerca de AGROTM",
-    "description": "Somos una plataforma innovadora que conecta agricultores e inversores a través de la tecnología más avanzada.",
-    "mission": {
-      "title": "Nuestra Misión",
-      "description": "Revolucionar el agronegocio a través de la tecnología y sostenibilidad"
-    },
-    "vision": {
-      "title": "Nuestra Visión",
-      "description": "Ser la principal plataforma de innovación agrícola del mundo"
-    },
-    "values": {
-      "title": "Nuestros Valores",
-      "description": "Sostenibilidad, innovación, transparencia y excelencia"
-    }
-  },
-  "contact": {
-    "title": "Contáctanos",
-    "description": "Estamos aquí para ayudar. Contáctanos.",
-    "form": {
-      "name": "Nombre",
-      "email": "Email",
-      "message": "Mensaje",
-      "send": "Enviar"
-    },
-    "info": {
-      "address": "Dirección",
-      "phone": "Teléfono",
-      "email": "Email"
-    }
-  },
-  "footer": {
-    "description": "AGROTM - Revolucionando el agronegocio con tecnología de vanguardia",
-    "links": {
-      "about": "Acerca de",
-      "services": "Servicios",
-      "contact": "Contacto",
-      "privacy": "Privacidad",
-      "terms": "Términos"
-    },
-    "social": {
-      "twitter": "Twitter",
-      "linkedin": "LinkedIn",
-      "github": "GitHub"
-    }
-  },
-  "language": {
-    "title": "Idioma / Language"
-  },
   "auth": {
     "login": {
       "title": "Iniciar Sesión",
-      "subtitle": "Inicia sesión en tu cuenta",
+      "subtitle": "Accede a tu cuenta AGROTM",
       "email": "Email",
       "password": "Contraseña",
-      "forgotPassword": "¿Olvidaste tu contraseña?",
       "submit": "Iniciar Sesión",
       "loading": "Iniciando sesión...",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
       "noAccount": "¿No tienes una cuenta?",
-      "createAccount": "Crear cuenta",
-      "or": "o"
+      "createAccount": "Crear cuenta"
     },
-    "signup": {
+    "register": {
       "title": "Crear Cuenta",
-      "subtitle": "Crea tu cuenta AGROTM",
-      "fullName": "Nombre Completo",
+      "subtitle": "Únete a la revolución del agronegocio",
+      "name": "Nombre Completo",
       "email": "Email",
       "phone": "Teléfono",
       "password": "Contraseña",
@@ -191,17 +30,31 @@
       "submit": "Crear Cuenta",
       "loading": "Creando cuenta...",
       "hasAccount": "¿Ya tienes una cuenta?",
-      "login": "Iniciar sesión",
-      "or": "o"
+      "login": "Iniciar sesión"
     },
-    "forgotPassword": {
+    "resetPassword": {
       "title": "Recuperar Contraseña",
       "subtitle": "Ingresa tu email para recibir el enlace de recuperación",
       "email": "Email",
       "submit": "Enviar Enlace",
       "loading": "Enviando...",
-      "backToLogin": "Volver al login",
-      "success": "¡Email de recuperación enviado!"
+      "success": "¡Email de recuperación enviado!",
+      "backToLogin": "Volver al login"
+    },
+    "tabs": {
+      "login": "Login",
+      "register": "Registro",
+      "reset": "Recuperar Contraseña"
+    },
+    "errors": {
+      "emailRequired": "Email es requerido",
+      "emailInvalid": "Email inválido",
+      "passwordRequired": "Contraseña es requerida",
+      "passwordMinLength": "La contraseña debe tener al menos 6 caracteres",
+      "nameRequired": "Nombre es requerido",
+      "phoneRequired": "Teléfono es requerido",
+      "passwordsMismatch": "Las contraseñas no coinciden",
+      "confirmPasswordRequired": "Confirmación de contraseña es requerida"
     }
   },
   "dashboard": {
@@ -217,5 +70,18 @@
       "change24h": "24h",
       "change7d": "7d"
     }
+  },
+  "stakingFarming": {
+    "stakingPools": {
+      "title": "Pools de Staking",
+      "description": "Gana ingresos pasivos haciendo stake de tus tokens en nuestros pools seguros y de alta rentabilidad"
+    }
+  },
+  "language": {
+    "select": "Idioma",
+    "portuguese": "Português",
+    "english": "English",
+    "spanish": "Español",
+    "chinese": "中文"
   }
-} 
+}
