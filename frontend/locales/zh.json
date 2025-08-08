@@ -306,9 +306,12 @@
     "hero": {
       "title": "联系",
       "contact": "我们",
-      "description": "我们在这里帮助您革命化您的农业综合企业"
+      "description": "我们在这里帮助您革新您的农业业务"
     },
     "form": {
+      "title": "发送您的",
+      "message": "消息",
+      "description": "填写下面的表格，我们会尽快与您联系。",
       "name": "姓名",
       "nameLabel": "全名",
       "namePlaceholder": "您的全名",
@@ -318,7 +321,7 @@
       "subject": "主题",
       "subjectLabel": "主题",
       "subjectPlaceholder": "我们如何帮助您？",
-      "selectSubject": "选择主题",
+      "selectSubject": "选择一个主题",
       "subjectComercial": "商业",
       "subjectSupport": "技术支持",
       "subjectPartnership": "合作",
@@ -331,17 +334,20 @@
       "sendMessage": "发送消息",
       "sending": "发送中...",
       "success": "消息发送成功！",
-      "successMessage": "消息发送成功！我们会尽快联系您。",
+      "successMessage": "消息发送成功！我们会尽快与您联系。",
       "error": "发送消息时出错。请重试。",
       "errorMessage": "发送消息时出错。请重试。",
       "location": "位置",
       "locationDescription": "巴西 - 农业技术中心",
       "quickResponse": "快速响应",
-      "responseTime": "24小时内响应",
+      "responseTime": "24小时内回复",
       "secureData": "安全数据",
       "secureDescription": "您的信息受到保护"
     },
     "info": {
+      "title": "联系",
+      "contact": "信息",
+      "description": "实时聊天支持",
       "address": "地址",
       "phone": "电话",
       "email": "邮箱",
@@ -350,6 +356,19 @@
       "support": "24/7电话支持",
       "available": "可用",
       "description": "实时聊天支持"
+    },
+    "faq": {
+      "title": "常见",
+      "frequent": "问题",
+      "description": "最常见问题的快速答案",
+      "question1": "AGROTM加密货币是如何工作的？",
+      "answer1": "AGROTM是专门用于农业业务交易的加密货币，支持生产者和买家之间的安全和透明支付。",
+      "question2": "支持响应时间是多少？",
+      "answer2": "我们的支持在24小时内回复，紧急情况提供24/7聊天和电话支持。",
+      "question3": "平台安全吗？",
+      "answer3": "是的，我们使用区块链技术和高级加密来确保所有交易和数据的安全。",
+      "question4": "如何开始使用平台？",
+      "answer4": "只需创建一个账户，完成验证过程，然后开始安全透明地交易农业产品。"
     }
   },
   "footer": {
@@ -426,52 +445,5 @@
     "passwordTooShort": "密码太短",
     "passwordsMustMatch": "密码必须匹配",
     "acceptTerms": "您必须接受使用条款"
-  },
-  "about": {
-    "title": "关于我们",
-    "subtitle": "用区块链技术革命农业综合企业",
-    "description": "AGROTM是一个创新平台，通过世界上最先进的区块链技术连接农民和投资者。",
-    "mission": {
-      "title": "我们的使命",
-      "description": "民主化获取尖端农业技术，连接农村生产者与全球投资者。"
-    },
-    "vision": {
-      "title": "我们的愿景",
-      "description": "成为领先的全球去中心化农业技术平台，推动农业综合企业的可持续性和效率。"
-    },
-    "values": {
-      "title": "我们的价值观",
-      "transparency": {
-        "title": "透明度",
-        "description": "对我们所有运营和沟通的清晰度和诚实度的绝对承诺，确保用户完全可见性。"
-      },
-      "innovation": {
-        "title": "创新",
-        "description": "我们不断寻求尖端技术和创新解决方案来革命传统农业综合企业。"
-      },
-      "sustainability": {
-        "title": "可持续性",
-        "description": "我们优先考虑确保为子孙后代保护环境的可持续农业实践。"
-      },
-      "collaboration": {
-        "title": "合作",
-        "description": "我们相信生产者、投资者和技术之间合作的力量，以创建更强大的农业生态系统。"
-      },
-      "trust": {
-        "title": "信任",
-        "description": "基于信任、透明度和经过验证的结果建立持久关系。"
-      }
-    },
-    "team": {
-      "title": "我们的团队",
-      "description": "由农业综合企业、区块链和技术专家组成，因改变全球农业的热情而团结在一起。"
-    },
-    "achievements": {
-      "title": "成就",
-      "farms": "连接的农场",
-      "assets": "代币化资产",
-      "users": "活跃用户",
-      "transactions": "已完成交易"
-    }
   }
 }

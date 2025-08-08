@@ -309,6 +309,9 @@
       "description": "We're here to help you revolutionize your agribusiness"
     },
     "form": {
+      "title": "Send your",
+      "message": "Message",
+      "description": "Fill out the form below and we'll contact you soon.",
       "name": "Name",
       "nameLabel": "Full Name",
       "namePlaceholder": "Your full name",
@@ -342,6 +345,9 @@
       "secureDescription": "Your information is protected"
     },
     "info": {
+      "title": "Contact",
+      "contact": "Information",
+      "description": "Real-time chat support",
       "address": "Address",
       "phone": "Phone",
       "email": "Email",
@@ -350,6 +356,19 @@
       "support": "24/7 support via phone",
       "available": "Available",
       "description": "Real-time chat support"
+    },
+    "faq": {
+      "title": "Frequently",
+      "frequent": "Asked Questions",
+      "description": "Quick answers to the most common questions",
+      "question1": "How does the AGROTM cryptocurrency work?",
+      "answer1": "AGROTM is a specialized cryptocurrency for agribusiness transactions, enabling secure and transparent payments between producers and buyers.",
+      "question2": "What is the support response time?",
+      "answer2": "Our support responds within 24 hours, with 24/7 chat and phone support for urgent cases.",
+      "question3": "Is the platform secure?",
+      "answer3": "Yes, we use blockchain technology and advanced encryption to ensure the security of all transactions and data.",
+      "question4": "How can I start using the platform?",
+      "answer4": "Simply create an account, complete the verification process and start trading agro products securely and transparently."
     }
   },
   "footer": {

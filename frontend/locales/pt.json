@@ -310,6 +310,9 @@
       "description": "Estamos aqui para ajudar você a revolucionar seu agronegócio"
     },
     "form": {
+      "title": "Envie sua",
+      "message": "Mensagem",
+      "description": "Preencha o formulário abaixo e entraremos em contato em breve.",
       "name": "Nome",
       "nameLabel": "Nome Completo",
       "namePlaceholder": "Seu nome completo",
@@ -343,6 +346,9 @@
       "secureDescription": "Suas informações estão protegidas"
     },
     "info": {
+      "title": "Informações de",
+      "contact": "Contato",
+      "description": "Suporte via chat em tempo real",
       "address": "Endereço",
       "phone": "Telefone",
       "email": "Email",
@@ -351,6 +357,19 @@
       "support": "Suporte 24/7 via telefone",
       "available": "Disponível",
       "description": "Suporte via chat em tempo real"
+    },
+    "faq": {
+      "title": "Perguntas",
+      "frequent": "Frequentes",
+      "description": "Respostas rápidas para as dúvidas mais comuns",
+      "question1": "Como funciona a criptomoeda AGROTM?",
+      "answer1": "A AGROTM é uma criptomoeda especializada para transações no agronegócio, permitindo pagamentos seguros e transparentes entre produtores e compradores.",
+      "question2": "Qual o tempo de resposta do suporte?",
+      "answer2": "Nosso suporte responde em até 24 horas, com atendimento 24/7 via chat e telefone para casos urgentes.",
+      "question3": "A plataforma é segura?",
+      "answer3": "Sim, utilizamos tecnologia blockchain e criptografia avançada para garantir a segurança de todas as transações e dados.",
+      "question4": "Como posso começar a usar a plataforma?",
+      "answer4": "Basta criar uma conta, completar o processo de verificação e começar a negociar produtos agro de forma segura e transparente."
     }
   },
   "footer": {

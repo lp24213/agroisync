@@ -300,15 +300,18 @@
     }
   },
   "contact": {
-    "title": "Contáctenos",
+    "title": "Contáctanos",
     "subtitle": "Estamos aquí para ayudarte",
-    "description": "Contáctenos para conocer más sobre nuestras soluciones.",
+    "description": "Contáctanos para conocer más sobre nuestras soluciones.",
     "hero": {
-      "title": "Contáctenos",
+      "title": "Contáctanos",
       "contact": "",
       "description": "Estamos aquí para ayudarte a revolucionar tu agronegocio"
     },
     "form": {
+      "title": "Envía tu",
+      "message": "Mensaje",
+      "description": "Completa el formulario a continuación y te contactaremos pronto.",
       "name": "Nombre",
       "nameLabel": "Nombre Completo",
       "namePlaceholder": "Tu nombre completo",
@@ -321,7 +324,7 @@
       "selectSubject": "Selecciona un asunto",
       "subjectComercial": "Comercial",
       "subjectSupport": "Soporte Técnico",
-      "subjectPartnership": "Asociación",
+      "subjectPartnership": "Alianza",
       "subjectInvestment": "Inversión",
       "subjectOther": "Otro",
       "message": "Mensaje",
@@ -332,8 +335,8 @@
       "sending": "Enviando...",
       "success": "¡Mensaje enviado con éxito!",
       "successMessage": "¡Mensaje enviado con éxito! Te contactaremos pronto.",
-      "error": "Error al enviar mensaje. Inténtalo nuevamente.",
-      "errorMessage": "Error al enviar mensaje. Inténtalo nuevamente.",
+      "error": "Error al enviar mensaje. Inténtalo de nuevo.",
+      "errorMessage": "Error al enviar mensaje. Inténtalo de nuevo.",
       "location": "Ubicación",
       "locationDescription": "Brasil - Centro de Tecnología Agro",
       "quickResponse": "Respuesta Rápida",
@@ -342,14 +345,30 @@
       "secureDescription": "Tu información está protegida"
     },
     "info": {
+      "title": "Información de",
+      "contact": "Contacto",
+      "description": "Soporte vía chat en tiempo real",
       "address": "Dirección",
       "phone": "Teléfono",
       "email": "Email",
-      "hours": "Horario de Atención",
+      "hours": "Horario de Funcionamiento",
       "chat": "Chat en Línea",
       "support": "Soporte 24/7 vía teléfono",
       "available": "Disponible",
       "description": "Soporte vía chat en tiempo real"
+    },
+    "faq": {
+      "title": "Preguntas",
+      "frequent": "Frecuentes",
+      "description": "Respuestas rápidas a las preguntas más comunes",
+      "question1": "¿Cómo funciona la criptomoneda AGROTM?",
+      "answer1": "AGROTM es una criptomoneda especializada para transacciones en el agronegocio, permitiendo pagos seguros y transparentes entre productores y compradores.",
+      "question2": "¿Cuál es el tiempo de respuesta del soporte?",
+      "answer2": "Nuestro soporte responde en hasta 24 horas, con atención 24/7 vía chat y teléfono para casos urgentes.",
+      "question3": "¿La plataforma es segura?",
+      "answer3": "Sí, utilizamos tecnología blockchain y criptografía avanzada para garantizar la seguridad de todas las transacciones y datos.",
+      "question4": "¿Cómo puedo empezar a usar la plataforma?",
+      "answer4": "Solo crea una cuenta, completa el proceso de verificación y comienza a negociar productos agro de forma segura y transparente."
     }
   },
   "footer": {
