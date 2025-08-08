@@ -351,19 +351,23 @@
       "title": "我们的价值观",
       "transparency": {
         "title": "透明度",
-        "description": "所有操作都是透明和可审计的，确保对我们交易的完全信任。"
+        "description": "对我们所有运营和沟通的清晰度和诚实度的绝对承诺，确保用户完全可见性。"
       },
       "innovation": {
         "title": "创新",
-        "description": "始终处于技术前沿，为农业综合企业开发创新解决方案。"
+        "description": "我们不断寻求尖端技术和创新解决方案来革命传统农业综合企业。"
       },
       "sustainability": {
         "title": "可持续性",
-        "description": "致力于可持续农业实践和环境责任。"
+        "description": "我们优先考虑确保为子孙后代保护环境的可持续农业实践。"
       },
       "collaboration": {
         "title": "合作",
-        "description": "我们相信生产者、投资者和技术之间合作的力量。"
+        "description": "我们相信生产者、投资者和技术之间合作的力量，以创建更强大的农业生态系统。"
+      },
+      "trust": {
+        "title": "信任",
+        "description": "基于信任、透明度和经过验证的结果建立持久关系。"
       }
     },
     "team": {

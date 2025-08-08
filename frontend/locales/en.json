@@ -351,19 +351,23 @@
       "title": "Our Values",
       "transparency": {
         "title": "Transparency",
-        "description": "All operations are transparent and auditable, ensuring complete trust in our transactions."
+        "description": "Absolute commitment to clarity and honesty in all our operations and communications, ensuring total visibility to our users."
       },
       "innovation": {
         "title": "Innovation",
-        "description": "Always at the forefront of technology, developing innovative solutions for agribusiness."
+        "description": "We constantly seek cutting-edge technologies and innovative solutions to revolutionize traditional agribusiness."
       },
       "sustainability": {
         "title": "Sustainability",
-        "description": "Committed to sustainable agricultural practices and environmental responsibility."
+        "description": "We prioritize sustainable agricultural practices that ensure environmental preservation for future generations."
       },
       "collaboration": {
         "title": "Collaboration",
-        "description": "We believe in the power of collaboration between producers, investors and technology."
+        "description": "We believe in the power of collaboration between producers, investors and technology to create a stronger agricultural ecosystem."
+      },
+      "trust": {
+        "title": "Trust",
+        "description": "Building lasting relationships based on trust, transparency and proven results."
       }
     },
     "team": {

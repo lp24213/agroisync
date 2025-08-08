@@ -74,8 +74,6 @@ const Hero: React.FC = () => {
             <span className="bg-gradient-to-r from-premium-neon-blue via-premium-neon-cyan to-premium-neon-green bg-clip-text text-transparent animate-pulse-neon">
               AGROTM
             </span>
-            <span className="text-premium-neon-green">.</span>
-            <span className="text-premium-neon-purple">SOL</span>
           </motion.h1>
           <motion.p
             className="text-xl md:text-3xl text-premium-light mb-16 max-w-5xl mx-auto leading-relaxed"

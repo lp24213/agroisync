@@ -351,19 +351,23 @@
       "title": "Nuestros Valores",
       "transparency": {
         "title": "Transparencia",
-        "description": "Todas las operaciones son transparentes y auditables, garantizando confianza total en nuestras transacciones."
+        "description": "Compromiso absoluto con la claridad y honestidad en todas nuestras operaciones y comunicaciones, garantizando total visibilidad a nuestros usuarios."
       },
       "innovation": {
         "title": "Innovación",
-        "description": "Siempre a la vanguardia de la tecnología, desarrollando soluciones innovadoras para el agronegocio."
+        "description": "Buscamos constantemente tecnologías de vanguardia y soluciones innovadoras para revolucionar el agronegocio tradicional."
       },
       "sustainability": {
         "title": "Sostenibilidad",
-        "description": "Comprometidos con prácticas agrícolas sostenibles y responsabilidad ambiental."
+        "description": "Priorizamos prácticas agrícolas sostenibles que aseguran la preservación del medio ambiente para las futuras generaciones."
       },
       "collaboration": {
         "title": "Colaboración",
-        "description": "Creemos en el poder de la colaboración entre productores, inversores y tecnología."
+        "description": "Creemos en el poder de la colaboración entre productores, inversores y tecnología para crear un ecosistema agrícola más fuerte."
+      },
+      "trust": {
+        "title": "Confianza",
+        "description": "Construyendo relaciones duraderas basadas en confianza, transparencia y resultados comprobados."
       }
     },
     "team": {
@@ -378,4 +382,4 @@
       "transactions": "Transacciones Completadas"
     }
   }
-}
+} 
