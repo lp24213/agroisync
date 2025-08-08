@@ -154,7 +154,7 @@ npm start
 ```
 
 ### **Health Checks**
-- **Frontend**: `https://agrotm-solana.vercel.app`
+- **Frontend**: `https://app.seu-amplify-domain.amplifyapp.com`
 - **Backend**: `https://agrotm-solana.railway.app/health`
 
 ## 🚀 **Processo de Deploy**
@@ -203,7 +203,7 @@ git push origin main
 ## 📊 **Monitoramento**
 
 ### **URLs Importantes**
-- **Frontend**: https://agrotm-solana.vercel.app
+- **Frontend**: https://app.seu-amplify-domain.amplifyapp.com
 - **Backend**: https://agrotm-solana.railway.app
 - **Health Check**: https://agrotm-solana.railway.app/health
 

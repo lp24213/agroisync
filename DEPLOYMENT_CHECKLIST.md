@@ -33,8 +33,8 @@
 ```bash
 # Frontend Environment Variables
 NODE_ENV=production
-NEXT_PUBLIC_API_URL=https://agrotm-backend.railway.app
-NEXT_PUBLIC_APP_URL=https://agrotm-solana.vercel.app
+NEXT_PUBLIC_API_URL=https://api.seu-dominio-aws.com
+NEXT_PUBLIC_APP_URL=https://app.seu-amplify-domain.amplifyapp.com
 ```
 
 ### **Where to Set Vercel Secrets:**

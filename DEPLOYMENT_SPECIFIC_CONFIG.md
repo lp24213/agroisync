@@ -20,7 +20,7 @@
 #### **✅ Variáveis no Dashboard do Vercel**
 ```bash
 # Application URLs
-NEXT_PUBLIC_APP_URL=https://agrotm-solana.vercel.app
+NEXT_PUBLIC_APP_URL=https://app.seu-amplify-domain.amplifyapp.com
 NEXT_PUBLIC_API_URL=https://agrotm-solana.railway.app
 
 # Solana Configuration
@@ -87,7 +87,7 @@ SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
 SOLANA_WS_URL=wss://api.mainnet-beta.solana.com
 
 # Security
-CORS_ORIGIN=https://agrotm-solana.vercel.app
+CORS_ORIGIN=https://agrotmsol.com.br
 RATE_LIMIT_WINDOW_MS=900000
 RATE_LIMIT_MAX_REQUESTS=100
 
@@ -210,9 +210,9 @@ chmod +x test-local.sh
 
 ## 📊 **URLs de Produção**
 
-### **Frontend (Vercel)**
-- **URL**: https://agrotm-solana.vercel.app
-- **Status**: https://agrotm-solana.vercel.app/status
+### **Frontend (Amplify)**
+- **URL**: https://app.seu-amplify-domain.amplifyapp.com
+- **Status**: https://app.seu-amplify-domain.amplifyapp.com/status
 
 ### **Backend (Railway)**
 - **URL**: https://agrotm-solana.railway.app

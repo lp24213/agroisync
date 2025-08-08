@@ -207,7 +207,7 @@ npm start
 - **GitHub Actions**: Workflow logs
 
 ### **Health Checks**
-- **Frontend**: `https://seu-dominio.vercel.app`
+- **Frontend**: `https://app.seu-amplify-domain.amplifyapp.com`
 - **Backend**: `https://seu-backend.railway.app/health`
 
 ## ✅ **Status Final**
