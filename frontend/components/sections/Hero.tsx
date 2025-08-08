@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { ArrowRight, Zap, Shield, Leaf, TrendingUp, Play, Star } from 'lucide-react';
 import { ParticleEffect } from '../ui/ParticleEffect';
 import { AnimatedGradient } from '../ui/AnimatedGradient';
+import { Logo } from '../ui/Logo';
 
 const Hero: React.FC = () => {
   const { t } = useTranslation();
@@ -67,14 +68,12 @@ const Hero: React.FC = () => {
           transition={{ duration: 1 }}
           className="mb-12"
         >
-          <motion.h1
-            className="text-6xl md:text-8xl lg:text-9xl font-orbitron font-black mb-8"
+          <motion.div
+            className="mb-8 flex justify-center"
             style={{ y, opacity }}
           >
-            <span className="bg-gradient-to-r from-premium-neon-blue via-premium-neon-cyan to-premium-neon-green bg-clip-text text-transparent animate-pulse-neon">
-              AGROTM
-            </span>
-          </motion.h1>
+            <Logo size="xl" showText={false} />
+          </motion.div>
           <motion.p
             className="text-xl md:text-3xl text-premium-light mb-16 max-w-5xl mx-auto leading-relaxed"
             initial={{ opacity: 0, y: 50 }}
