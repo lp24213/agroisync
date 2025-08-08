@@ -1,0 +1,31 @@
+version: 1
+backend:
+  phases:
+    preBuild:
+      commands:
+        - echo "🔧 AGROTM Backend - Iniciando build no AWS Amplify"
+        - echo "📦 Instalando dependências..."
+        - npm ci --production=false
+        - echo "✅ Dependências instaladas"
+    build:
+      commands:
+        - echo "🔨 Preparando backend..."
+        - npm run build
+        - echo "✅ Backend preparado"
+    postBuild:
+      commands:
+        - echo "📁 Preparando arquivos para deploy..."
+        - echo "✅ Backend pronto para deploy"
+  artifacts:
+    baseDirectory: .
+    files:
+      - '**/*'
+      - '!node_modules/**/*'
+      - '!tests/**/*'
+      - '!coverage/**/*'
+      - '!.git/**/*'
+      - '!logs/**/*'
+      - '!uploads/**/*'
+  cache:
+    paths:
+      - node_modules/**/*
