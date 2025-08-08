@@ -19,9 +19,11 @@
     "cookies": "Cookies"
   },
   "hero": {
-    "title": "Revolucionando el Agronegocio con Blockchain",
-    "subtitle": "Plataforma descentralizada que conecta productores, inversores y consumidores a través de tecnología blockchain avanzada",
+    "title": "El Futuro de la Agricultura",
+    "subtitle": "Conectando agricultores e inversores a través de la tecnología blockchain más avanzada del mundo",
     "description": "Transforma tu granja en una inversión digital. Tokeniza tus tierras, cultivos y equipos para acceder a capital global y revolucionar el agronegocio.",
+    "enterPlatform": "Entrar a la Plataforma",
+    "learnMore": "Saber Más",
     "cta": {
       "primary": "Comenzar Ahora",
       "secondary": "Saber Más",
@@ -39,7 +41,20 @@
       "global": {
         "title": "Alcance Global",
         "description": "Conecta con inversores mundiales"
+      },
+      "sustainability": {
+        "title": "Sostenibilidad",
+        "description": "Prácticas agrícolas sostenibles y responsables"
+      },
+      "growth": {
+        "title": "Crecimiento Exponencial",
+        "description": "Maximiza tus retornos con tecnología avanzada"
       }
+    },
+    "stats": {
+      "farms": "Granjas Conectadas",
+      "assets": "Activos Tokenizados",
+      "uptime": "Tiempo de Actividad del Sistema"
     }
   },
   "features": {

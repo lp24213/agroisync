@@ -19,9 +19,11 @@
     "cookies": "Cookies"
   },
   "hero": {
-    "title": "Revolucionando o Agronegócio com Blockchain",
-    "subtitle": "Plataforma descentralizada que conecta produtores, investidores e consumidores através de tecnologia blockchain avançada",
+    "title": "O Futuro da Agricultura",
+    "subtitle": "Conectando agricultores e investidores através da tecnologia blockchain mais avançada do mundo",
     "description": "Transforme sua fazenda em um investimento digital. Tokenize suas terras, cultivos e equipamentos para acessar capital global e revolucionar o agronegócio.",
+    "enterPlatform": "Entrar na Plataforma",
+    "learnMore": "Saiba Mais",
     "cta": {
       "primary": "Começar Agora",
       "secondary": "Saiba Mais",
@@ -36,10 +38,24 @@
         "title": "Segurança Máxima",
         "description": "Protocolos de segurança militar"
       },
+      "sustainability": {
+        "title": "Sustentabilidade",
+        "description": "Práticas agrícolas sustentáveis com impacto positivo"
+      },
+      "growth": {
+        "title": "Crescimento Exponencial",
+        "description": "Acelere o crescimento do seu agronegócio"
+      },
       "global": {
         "title": "Alcance Global",
         "description": "Conecte-se com investidores mundiais"
       }
+    },
+    "stats": {
+      "farms": "Fazendas Conectadas",
+      "assets": "Ativos Tokenizados",
+      "uptime": "Tempo de Atividade",
+      "users": "Usuários Ativos"
     }
   },
   "features": {

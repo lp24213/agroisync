@@ -19,9 +19,11 @@
     "cookies": "Cookies"
   },
   "hero": {
-    "title": "Revolutionizing Agribusiness with Blockchain",
-    "subtitle": "Decentralized platform connecting producers, investors and consumers through advanced blockchain technology",
+    "title": "The Future of Agriculture",
+    "subtitle": "Connecting farmers and investors through the world's most advanced blockchain technology",
     "description": "Transform your farm into a digital investment. Tokenize your land, crops and equipment to access global capital and revolutionize agribusiness.",
+    "enterPlatform": "Enter Platform",
+    "learnMore": "Learn More",
     "cta": {
       "primary": "Get Started",
       "secondary": "Learn More",
@@ -39,7 +41,20 @@
       "global": {
         "title": "Global Reach",
         "description": "Connect with worldwide investors"
+      },
+      "sustainability": {
+        "title": "Sustainability",
+        "description": "Sustainable and responsible farming practices"
+      },
+      "growth": {
+        "title": "Exponential Growth",
+        "description": "Maximize your returns with advanced technology"
       }
+    },
+    "stats": {
+      "farms": "Connected Farms",
+      "assets": "Tokenized Assets",
+      "uptime": "System Uptime"
     }
   },
   "features": {

@@ -19,9 +19,11 @@
     "cookies": "Cookie"
   },
   "hero": {
-    "title": "用区块链革命农业综合企业",
-    "subtitle": "通过先进的区块链技术连接生产者、投资者和消费者的去中心化平台",
+    "title": "农业的未来",
+    "subtitle": "通过世界上最先进的区块链技术连接农民和投资者",
     "description": "将您的农场转变为数字投资。将您的土地、作物和设备代币化，获得全球资本并革命化农业综合企业。",
+    "enterPlatform": "进入平台",
+    "learnMore": "了解更多",
     "cta": {
       "primary": "立即开始",
       "secondary": "了解更多",
@@ -39,7 +41,20 @@
       "global": {
         "title": "全球覆盖",
         "description": "与全球投资者连接"
+      },
+      "sustainability": {
+        "title": "可持续发展",
+        "description": "可持续和负责任的农业实践"
+      },
+      "growth": {
+        "title": "指数增长",
+        "description": "通过先进技术最大化您的回报"
       }
+    },
+    "stats": {
+      "farms": "连接的农场",
+      "assets": "代币化资产",
+      "uptime": "系统正常运行时间"
     }
   },
   "features": {
