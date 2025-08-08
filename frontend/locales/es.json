@@ -5,14 +5,79 @@
     "staking": "Staking",
     "about": "Acerca de",
     "contact": "Contacto",
-    "getStarted": "Comenzar Ahora"
+    "getStarted": "Comenzar Ahora",
+    "documentation": "Documentación",
+    "farm": "Granja",
+    "governance": "Gobernanza",
+    "marketplace": "Marketplace",
+    "nftMarketplace": "NFT Marketplace",
+    "swap": "Intercambio",
+    "support": "Soporte",
+    "status": "Estado",
+    "privacy": "Privacidad",
+    "terms": "Términos",
+    "cookies": "Cookies"
+  },
+  "hero": {
+    "title": "Revolucionando el Agronegocio con Blockchain",
+    "subtitle": "Plataforma descentralizada que conecta productores, inversores y consumidores a través de tecnología blockchain avanzada",
+    "description": "Transforma tu granja en una inversión digital. Tokeniza tus tierras, cultivos y equipos para acceder a capital global y revolucionar el agronegocio.",
+    "cta": {
+      "primary": "Comenzar Ahora",
+      "secondary": "Saber Más",
+      "watchDemo": "Ver Demo"
+    },
+    "features": {
+      "technology": {
+        "title": "Tecnología Avanzada",
+        "description": "Blockchain, IA e IoT integrados"
+      },
+      "security": {
+        "title": "Máxima Seguridad",
+        "description": "Protocolos de seguridad militar"
+      },
+      "global": {
+        "title": "Alcance Global",
+        "description": "Conecta con inversores mundiales"
+      }
+    }
+  },
+  "features": {
+    "title": "Funcionalidades Avanzadas",
+    "subtitle": "Descubre el poder de la tokenización agrícola",
+    "tokenization": {
+      "title": "Tokenización de Activos",
+      "description": "Transforma tierras, cultivos y equipos en tokens digitales negociables"
+    },
+    "defi": {
+      "title": "DeFi Agrícola",
+      "description": "Accede a préstamos, seguros e inversiones descentralizadas"
+    },
+    "marketplace": {
+      "title": "Marketplace Digital",
+      "description": "Compra y vende productos agrícolas con transparencia total"
+    },
+    "analytics": {
+      "title": "Analytics Avanzados",
+      "description": "Datos en tiempo real para optimizar tu producción"
+    },
+    "insurance": {
+      "title": "Seguro Descentralizado",
+      "description": "Protege tus cultivos con contratos inteligentes"
+    },
+    "supply": {
+      "title": "Cadena de Suministro",
+      "description": "Trazabilidad completa del campo al consumidor"
+    }
   },
   "auth": {
     "login": {
       "title": "Iniciar Sesión",
       "subtitle": "Accede a tu cuenta AGROTM",
       "email": "Email",
+      "emailPlaceholder": "tu@email.com",
       "password": "Contraseña",
+      "passwordPlaceholder": "Ingresa tu contraseña",
       "submit": "Iniciar Sesión",
       "loading": "Iniciando sesión...",
       "success": "¡Inicio de sesión exitoso!",
@@ -24,10 +89,15 @@
       "title": "Crear Cuenta",
       "subtitle": "Únete a la revolución del agronegocio",
       "name": "Nombre Completo",
+      "namePlaceholder": "Tu nombre completo",
       "email": "Email",
+      "emailPlaceholder": "tu@email.com",
       "phone": "Teléfono",
+      "phonePlaceholder": "+34 612 345 678",
       "password": "Contraseña",
+      "passwordPlaceholder": "Crea una contraseña segura",
       "confirmPassword": "Confirmar Contraseña",
+      "confirmPasswordPlaceholder": "Ingresa la contraseña nuevamente",
       "submit": "Crear Cuenta",
       "loading": "Creando cuenta...",
       "success": "¡Cuenta creada con éxito!",
@@ -38,10 +108,12 @@
       "title": "Recuperar Contraseña",
       "subtitle": "Ingresa tu email para recibir el enlace de recuperación",
       "email": "Email",
+      "emailPlaceholder": "tu@email.com",
       "submit": "Enviar Enlace",
       "loading": "Enviando...",
       "success": "¡Email de recuperación enviado!",
-      "backToLogin": "Volver al login"
+      "backToLogin": "Volver al login",
+      "successMessage": "Hemos enviado un enlace de recuperación a tu email. Revisa tu bandeja de entrada y sigue las instrucciones."
     },
     "tabs": {
       "login": "Login",
@@ -56,7 +128,15 @@
       "nameRequired": "Nombre es requerido",
       "phoneRequired": "Teléfono es requerido",
       "passwordsMismatch": "Las contraseñas no coinciden",
-      "confirmPasswordRequired": "Confirmación de contraseña es requerida"
+      "confirmPasswordRequired": "Confirmación de contraseña es requerida",
+      "userNotFound": "Usuario no encontrado",
+      "wrongPassword": "Contraseña incorrecta",
+      "emailAlreadyInUse": "Este email ya está en uso",
+      "weakPassword": "Contraseña demasiado débil",
+      "tooManyRequests": "Demasiados intentos. Inténtalo más tarde",
+      "invalidCredential": "Credenciales inválidas",
+      "networkError": "Error de conexión. Verifica tu internet",
+      "unknown": "Error inesperado. Inténtalo nuevamente"
     },
     "logout": {
       "button": "Cerrar Sesión",
@@ -65,17 +145,57 @@
     }
   },
   "dashboard": {
+    "title": "Panel de Control",
+    "welcome": "Bienvenido de vuelta",
     "stats": {
       "totalValueLocked": "Valor Total Bloqueado",
       "averageAPY": "APY Promedio",
       "activeUsers": "Usuarios Activos",
-      "totalStaked": "Total en Staking"
+      "totalStaked": "Total en Staking",
+      "totalInvestments": "Total de Inversiones",
+      "activeProjects": "Proyectos Activos"
     },
     "crypto": {
       "title": "Criptomonedas",
       "price": "Precio",
       "change24h": "24h",
-      "change7d": "7d"
+      "change7d": "7d",
+      "marketCap": "Cap. Mercado",
+      "volume": "Volumen"
+    },
+    "activities": {
+      "title": "Actividades Recientes",
+      "noActivities": "No hay actividades recientes",
+      "viewAll": "Ver Todas"
+    },
+    "portfolio": {
+      "title": "Mi Portafolio",
+      "totalValue": "Valor Total",
+      "dailyChange": "Cambio Diario",
+      "assets": "Activos"
+    }
+  },
+  "staking": {
+    "title": "Staking AGROTM",
+    "subtitle": "Gana recompensas haciendo staking de tus tokens",
+    "pools": {
+      "title": "Pools de Staking",
+      "description": "Gana ingresos pasivos haciendo stake de tus tokens en nuestros pools seguros y de alta rentabilidad",
+      "apy": "APY",
+      "tvl": "TVL",
+      "stakingPeriod": "Período",
+      "minStake": "Stake Mínimo",
+      "maxStake": "Stake Máximo",
+      "stake": "Hacer Stake",
+      "unstake": "Retirar Stake",
+      "rewards": "Recompensas",
+      "claimRewards": "Reclamar Recompensas"
+    },
+    "myStaking": {
+      "title": "Mi Staking",
+      "totalStaked": "Total en Stake",
+      "totalRewards": "Total de Recompensas",
+      "availableRewards": "Recompensas Disponibles"
     }
   },
   "stakingFarming": {
@@ -84,11 +204,120 @@
       "description": "Gana ingresos pasivos haciendo stake de tus tokens en nuestros pools seguros y de alta rentabilidad"
     }
   },
+  "about": {
+    "title": "Acerca de AGROTM",
+    "subtitle": "Revolucionando el agronegocio con blockchain",
+    "description": "AGROTM es una plataforma innovadora que combina tecnología blockchain, inteligencia artificial e Internet de las Cosas (IoT) para transformar el sector agrícola.",
+    "mission": {
+      "title": "Nuestra Misión",
+      "description": "Democratizar el acceso a la inversión agrícola y crear un ecosistema sostenible que beneficie a productores, inversores y consumidores."
+    },
+    "vision": {
+      "title": "Nuestra Visión",
+      "description": "Ser la principal plataforma global de tokenización agrícola, conectando el agronegocio tradicional con la economía digital."
+    },
+    "values": {
+      "title": "Nuestros Valores",
+      "transparency": "Transparencia",
+      "innovation": "Innovación",
+      "sustainability": "Sostenibilidad",
+      "security": "Seguridad"
+    }
+  },
+  "contact": {
+    "title": "Contáctanos",
+    "subtitle": "Estamos aquí para ayudarte",
+    "form": {
+      "name": "Nombre",
+      "namePlaceholder": "Tu nombre completo",
+      "email": "Email",
+      "emailPlaceholder": "tu@email.com",
+      "subject": "Asunto",
+      "subjectPlaceholder": "¿Cómo podemos ayudarte?",
+      "message": "Mensaje",
+      "messagePlaceholder": "Describe tu pregunta o sugerencia",
+      "submit": "Enviar Mensaje",
+      "sending": "Enviando...",
+      "success": "¡Mensaje enviado con éxito!",
+      "error": "Error al enviar mensaje. Inténtalo nuevamente."
+    },
+    "info": {
+      "address": "Dirección",
+      "phone": "Teléfono",
+      "email": "Email",
+      "hours": "Horario de Atención"
+    }
+  },
+  "footer": {
+    "description": "Plataforma blockchain revolucionando el agronegocio mundial",
+    "links": {
+      "company": "Empresa",
+      "about": "Acerca de",
+      "team": "Equipo",
+      "careers": "Carreras",
+      "news": "Noticias",
+      "products": "Productos",
+      "platform": "Plataforma",
+      "api": "API",
+      "documentation": "Documentación",
+      "support": "Soporte",
+      "resources": "Recursos",
+      "blog": "Blog",
+      "whitepaper": "Whitepaper",
+      "roadmap": "Hoja de Ruta",
+      "legal": "Legal",
+      "privacy": "Privacidad",
+      "terms": "Términos de Uso",
+      "cookies": "Política de Cookies"
+    },
+    "social": {
+      "followUs": "Síguenos",
+      "newsletter": "Newsletter",
+      "newsletterDescription": "Recibe las últimas actualizaciones de AGROTM",
+      "emailPlaceholder": "Tu email",
+      "subscribe": "Suscribirse"
+    },
+    "copyright": "Todos los derechos reservados."
+  },
   "language": {
     "select": "Idioma",
     "portuguese": "Português",
     "english": "English",
     "spanish": "Español",
     "chinese": "中文"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "warning": "Advertencia",
+    "info": "Información",
+    "confirm": "Confirmar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "view": "Ver",
+    "download": "Descargar",
+    "upload": "Subir",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "close": "Cerrar",
+    "open": "Abrir",
+    "yes": "Sí",
+    "no": "No",
+    "or": "o",
+    "and": "y"
+  },
+  "forms": {
+    "required": "Este campo es requerido",
+    "invalidEmail": "Email inválido",
+    "invalidPhone": "Teléfono inválido",
+    "passwordTooShort": "Contraseña demasiado corta",
+    "passwordsMustMatch": "Las contraseñas deben coincidir",
+    "acceptTerms": "Debes aceptar los términos de uso"
   }
 }

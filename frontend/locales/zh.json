@@ -5,14 +5,79 @@
     "staking": "质押",
     "about": "关于",
     "contact": "联系",
-    "getStarted": "立即开始"
+    "getStarted": "立即开始",
+    "documentation": "文档",
+    "farm": "农场",
+    "governance": "治理",
+    "marketplace": "市场",
+    "nftMarketplace": "NFT市场",
+    "swap": "交换",
+    "support": "支持",
+    "status": "状态",
+    "privacy": "隐私",
+    "terms": "条款",
+    "cookies": "Cookie"
+  },
+  "hero": {
+    "title": "用区块链革命农业综合企业",
+    "subtitle": "通过先进的区块链技术连接生产者、投资者和消费者的去中心化平台",
+    "description": "将您的农场转变为数字投资。将您的土地、作物和设备代币化，获得全球资本并革命化农业综合企业。",
+    "cta": {
+      "primary": "立即开始",
+      "secondary": "了解更多",
+      "watchDemo": "观看演示"
+    },
+    "features": {
+      "technology": {
+        "title": "先进技术",
+        "description": "区块链、人工智能和物联网集成"
+      },
+      "security": {
+        "title": "最高安全性",
+        "description": "军用级安全协议"
+      },
+      "global": {
+        "title": "全球覆盖",
+        "description": "与全球投资者连接"
+      }
+    }
+  },
+  "features": {
+    "title": "先进功能",
+    "subtitle": "发现农业代币化的力量",
+    "tokenization": {
+      "title": "资产代币化",
+      "description": "将土地、作物和设备转换为可交易的数字代币"
+    },
+    "defi": {
+      "title": "农业DeFi",
+      "description": "获得去中心化贷款、保险和投资"
+    },
+    "marketplace": {
+      "title": "数字市场",
+      "description": "以完全透明的方式购买和销售农产品"
+    },
+    "analytics": {
+      "title": "高级分析",
+      "description": "实时数据优化您的生产"
+    },
+    "insurance": {
+      "title": "去中心化保险",
+      "description": "用智能合约保护您的作物"
+    },
+    "supply": {
+      "title": "供应链",
+      "description": "从田间到消费者的完整可追溯性"
+    }
   },
   "auth": {
     "login": {
       "title": "登录",
       "subtitle": "访问您的AGROTM账户",
       "email": "邮箱",
+      "emailPlaceholder": "your@email.com",
       "password": "密码",
+      "passwordPlaceholder": "输入您的密码",
       "submit": "登录",
       "loading": "登录中...",
       "success": "登录成功！",
@@ -24,10 +89,15 @@
       "title": "创建账户",
       "subtitle": "加入农业综合企业革命",
       "name": "全名",
+      "namePlaceholder": "您的全名",
       "email": "邮箱",
+      "emailPlaceholder": "your@email.com",
       "phone": "电话",
+      "phonePlaceholder": "+86 138 0013 8000",
       "password": "密码",
+      "passwordPlaceholder": "创建安全密码",
       "confirmPassword": "确认密码",
+      "confirmPasswordPlaceholder": "再次输入密码",
       "submit": "创建账户",
       "loading": "创建账户中...",
       "success": "账户创建成功！",
@@ -38,10 +108,12 @@
       "title": "重置密码",
       "subtitle": "输入您的邮箱以接收恢复链接",
       "email": "邮箱",
+      "emailPlaceholder": "your@email.com",
       "submit": "发送链接",
       "loading": "发送中...",
       "success": "恢复邮件已发送！",
-      "backToLogin": "返回登录"
+      "backToLogin": "返回登录",
+      "successMessage": "我们已向您的邮箱发送恢复链接。请检查您的收件箱并按照说明操作。"
     },
     "tabs": {
       "login": "登录",
@@ -56,7 +128,15 @@
       "nameRequired": "姓名是必需的",
       "phoneRequired": "电话是必需的",
       "passwordsMismatch": "密码不匹配",
-      "confirmPasswordRequired": "密码确认是必需的"
+      "confirmPasswordRequired": "密码确认是必需的",
+      "userNotFound": "用户未找到",
+      "wrongPassword": "密码错误",
+      "emailAlreadyInUse": "此邮箱已被使用",
+      "weakPassword": "密码太弱",
+      "tooManyRequests": "尝试次数过多。请稍后再试",
+      "invalidCredential": "凭据无效",
+      "networkError": "连接错误。请检查您的网络",
+      "unknown": "意外错误。请重试"
     },
     "logout": {
       "button": "退出登录",
@@ -65,17 +145,57 @@
     }
   },
   "dashboard": {
+    "title": "仪表板",
+    "welcome": "欢迎回来",
     "stats": {
       "totalValueLocked": "总锁仓价值",
       "averageAPY": "平均年收益率",
       "activeUsers": "活跃用户",
-      "totalStaked": "总质押量"
+      "totalStaked": "总质押量",
+      "totalInvestments": "总投资",
+      "activeProjects": "活跃项目"
     },
     "crypto": {
       "title": "加密货币",
       "price": "价格",
       "change24h": "24小时",
-      "change7d": "7天"
+      "change7d": "7天",
+      "marketCap": "市值",
+      "volume": "成交量"
+    },
+    "activities": {
+      "title": "最近活动",
+      "noActivities": "没有最近活动",
+      "viewAll": "查看全部"
+    },
+    "portfolio": {
+      "title": "我的投资组合",
+      "totalValue": "总价值",
+      "dailyChange": "日变化",
+      "assets": "资产"
+    }
+  },
+  "staking": {
+    "title": "AGROTM质押",
+    "subtitle": "通过质押您的代币获得奖励",
+    "pools": {
+      "title": "质押池",
+      "description": "通过在我们安全高收益的质押池中质押代币来获得被动收入",
+      "apy": "年收益率",
+      "tvl": "总锁仓价值",
+      "stakingPeriod": "期间",
+      "minStake": "最小质押",
+      "maxStake": "最大质押",
+      "stake": "质押",
+      "unstake": "取消质押",
+      "rewards": "奖励",
+      "claimRewards": "领取奖励"
+    },
+    "myStaking": {
+      "title": "我的质押",
+      "totalStaked": "总质押",
+      "totalRewards": "总奖励",
+      "availableRewards": "可用奖励"
     }
   },
   "stakingFarming": {
@@ -84,11 +204,120 @@
       "description": "通过在我们安全高收益的质押池中质押代币来获得被动收入"
     }
   },
+  "about": {
+    "title": "关于AGROTM",
+    "subtitle": "用区块链革命农业综合企业",
+    "description": "AGROTM是一个创新平台，结合区块链技术、人工智能和物联网(IoT)来改变农业部门。",
+    "mission": {
+      "title": "我们的使命",
+      "description": "民主化农业投资准入，创建有利于生产者、投资者和消费者的可持续生态系统。"
+    },
+    "vision": {
+      "title": "我们的愿景",
+      "description": "成为领先的全球农业代币化平台，连接传统农业综合企业与数字经济。"
+    },
+    "values": {
+      "title": "我们的价值观",
+      "transparency": "透明度",
+      "innovation": "创新",
+      "sustainability": "可持续性",
+      "security": "安全性"
+    }
+  },
+  "contact": {
+    "title": "联系我们",
+    "subtitle": "我们在这里帮助您",
+    "form": {
+      "name": "姓名",
+      "namePlaceholder": "您的全名",
+      "email": "邮箱",
+      "emailPlaceholder": "your@email.com",
+      "subject": "主题",
+      "subjectPlaceholder": "我们如何帮助您？",
+      "message": "消息",
+      "messagePlaceholder": "描述您的问题或建议",
+      "submit": "发送消息",
+      "sending": "发送中...",
+      "success": "消息发送成功！",
+      "error": "发送消息时出错。请重试。"
+    },
+    "info": {
+      "address": "地址",
+      "phone": "电话",
+      "email": "邮箱",
+      "hours": "营业时间"
+    }
+  },
+  "footer": {
+    "description": "革命全球农业综合企业的区块链平台",
+    "links": {
+      "company": "公司",
+      "about": "关于",
+      "team": "团队",
+      "careers": "职业",
+      "news": "新闻",
+      "products": "产品",
+      "platform": "平台",
+      "api": "API",
+      "documentation": "文档",
+      "support": "支持",
+      "resources": "资源",
+      "blog": "博客",
+      "whitepaper": "白皮书",
+      "roadmap": "路线图",
+      "legal": "法律",
+      "privacy": "隐私",
+      "terms": "使用条款",
+      "cookies": "Cookie政策"
+    },
+    "social": {
+      "followUs": "关注我们",
+      "newsletter": "新闻通讯",
+      "newsletterDescription": "获取AGROTM的最新更新",
+      "emailPlaceholder": "您的邮箱",
+      "subscribe": "订阅"
+    },
+    "copyright": "版权所有。"
+  },
   "language": {
     "select": "语言",
     "portuguese": "Português",
     "english": "English",
     "spanish": "Español",
     "chinese": "中文"
+  },
+  "common": {
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "warning": "警告",
+    "info": "信息",
+    "confirm": "确认",
+    "cancel": "取消",
+    "save": "保存",
+    "edit": "编辑",
+    "delete": "删除",
+    "view": "查看",
+    "download": "下载",
+    "upload": "上传",
+    "search": "搜索",
+    "filter": "筛选",
+    "sort": "排序",
+    "next": "下一个",
+    "previous": "上一个",
+    "close": "关闭",
+    "open": "打开",
+    "yes": "是",
+    "no": "否",
+    "or": "或",
+    "and": "和"
+  },
+  "forms": {
+    "required": "此字段为必填项",
+    "invalidEmail": "邮箱无效",
+    "invalidPhone": "电话无效",
+    "passwordTooShort": "密码太短",
+    "passwordsMustMatch": "密码必须匹配",
+    "acceptTerms": "您必须接受使用条款"
   }
 }

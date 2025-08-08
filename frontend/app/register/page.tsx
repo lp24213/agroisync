@@ -108,19 +108,22 @@ export default function RegisterPage() {
       
       switch (error.code) {
         case 'auth/email-already-in-use':
-          errorMessage = 'Este email já está em uso.';
+          errorMessage = t('auth.errors.emailAlreadyInUse');
           break;
         case 'auth/weak-password':
-          errorMessage = 'Senha muito fraca.';
+          errorMessage = t('auth.errors.weakPassword');
           break;
         case 'auth/invalid-email':
-          errorMessage = 'Email inválido.';
+          errorMessage = t('auth.errors.emailInvalid');
           break;
         case 'auth/operation-not-allowed':
-          errorMessage = 'Operação não permitida.';
+          errorMessage = t('auth.errors.unknown');
+          break;
+        case 'auth/network-request-failed':
+          errorMessage = t('auth.errors.networkError');
           break;
         default:
-          errorMessage = error.message || 'Erro inesperado. Tente novamente.';
+          errorMessage = t('auth.errors.unknown');
       }
       
       setErrors({ general: errorMessage });
@@ -203,7 +206,7 @@ export default function RegisterPage() {
                   value={formData.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
                   className="w-full bg-premium-black/30 border border-premium-neon-blue/20 rounded-xl pl-11 pr-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-premium-neon-blue transition-colors font-orbitron"
-                  placeholder="Seu nome completo"
+                  placeholder={t('auth.register.namePlaceholder')}
                 />
               </div>
               {errors.name && (
@@ -223,7 +226,7 @@ export default function RegisterPage() {
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
                   className="w-full bg-premium-black/30 border border-premium-neon-blue/20 rounded-xl pl-11 pr-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-premium-neon-blue transition-colors font-orbitron"
-                  placeholder="seu@email.com"
+                  placeholder={t('auth.register.emailPlaceholder')}
                 />
               </div>
               {errors.email && (
@@ -243,7 +246,7 @@ export default function RegisterPage() {
                   value={formData.phone}
                   onChange={(e) => handleInputChange('phone', e.target.value)}
                   className="w-full bg-premium-black/30 border border-premium-neon-blue/20 rounded-xl pl-11 pr-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-premium-neon-blue transition-colors font-orbitron"
-                  placeholder="(11) 99999-9999"
+                  placeholder={t('auth.register.phonePlaceholder')}
                 />
               </div>
               {errors.phone && (
@@ -263,7 +266,7 @@ export default function RegisterPage() {
                   value={formData.password}
                   onChange={(e) => handleInputChange('password', e.target.value)}
                   className="w-full bg-premium-black/30 border border-premium-neon-blue/20 rounded-xl pl-11 pr-12 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-premium-neon-blue transition-colors font-orbitron"
-                  placeholder="••••••••"
+                  placeholder={t('auth.register.passwordPlaceholder')}
                 />
                 <button
                   type="button"
@@ -290,7 +293,7 @@ export default function RegisterPage() {
                   value={formData.confirmPassword}
                   onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
                   className="w-full bg-premium-black/30 border border-premium-neon-blue/20 rounded-xl pl-11 pr-12 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-premium-neon-blue transition-colors font-orbitron"
-                  placeholder="••••••••"
+                  placeholder={t('auth.register.confirmPasswordPlaceholder')}
                 />
                 <button
                   type="button"

@@ -71,16 +71,19 @@ export default function ResetPasswordPage() {
       
       switch (error.code) {
         case 'auth/user-not-found':
-          errorMessage = 'Usuário não encontrado.';
+          errorMessage = t('auth.errors.userNotFound');
           break;
         case 'auth/invalid-email':
-          errorMessage = 'Email inválido.';
+          errorMessage = t('auth.errors.emailInvalid');
           break;
         case 'auth/too-many-requests':
-          errorMessage = 'Muitas tentativas. Tente novamente mais tarde.';
+          errorMessage = t('auth.errors.tooManyRequests');
+          break;
+        case 'auth/network-request-failed':
+          errorMessage = t('auth.errors.networkError');
           break;
         default:
-          errorMessage = error.message || 'Erro inesperado. Tente novamente.';
+          errorMessage = t('auth.errors.unknown');
       }
       
       setErrors({ general: errorMessage });
@@ -216,7 +219,7 @@ export default function ResetPasswordPage() {
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
                   className="w-full bg-premium-black/30 border border-premium-neon-blue/20 rounded-xl pl-11 pr-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-premium-neon-blue transition-colors font-orbitron"
-                  placeholder="seu@email.com"
+                  placeholder={t('auth.resetPassword.emailPlaceholder')}
                 />
               </div>
               {errors.email && (

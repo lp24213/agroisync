@@ -5,14 +5,79 @@
     "staking": "Staking",
     "about": "About",
     "contact": "Contact",
-    "getStarted": "Get Started"
+    "getStarted": "Get Started",
+    "documentation": "Documentation",
+    "farm": "Farm",
+    "governance": "Governance",
+    "marketplace": "Marketplace",
+    "nftMarketplace": "NFT Marketplace",
+    "swap": "Swap",
+    "support": "Support",
+    "status": "Status",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "cookies": "Cookies"
+  },
+  "hero": {
+    "title": "Revolutionizing Agribusiness with Blockchain",
+    "subtitle": "Decentralized platform connecting producers, investors and consumers through advanced blockchain technology",
+    "description": "Transform your farm into a digital investment. Tokenize your land, crops and equipment to access global capital and revolutionize agribusiness.",
+    "cta": {
+      "primary": "Get Started",
+      "secondary": "Learn More",
+      "watchDemo": "Watch Demo"
+    },
+    "features": {
+      "technology": {
+        "title": "Advanced Technology",
+        "description": "Blockchain, AI and IoT integrated"
+      },
+      "security": {
+        "title": "Maximum Security",
+        "description": "Military-grade security protocols"
+      },
+      "global": {
+        "title": "Global Reach",
+        "description": "Connect with worldwide investors"
+      }
+    }
+  },
+  "features": {
+    "title": "Advanced Features",
+    "subtitle": "Discover the power of agricultural tokenization",
+    "tokenization": {
+      "title": "Asset Tokenization",
+      "description": "Transform land, crops and equipment into tradeable digital tokens"
+    },
+    "defi": {
+      "title": "Agricultural DeFi",
+      "description": "Access decentralized loans, insurance and investments"
+    },
+    "marketplace": {
+      "title": "Digital Marketplace",
+      "description": "Buy and sell agricultural products with complete transparency"
+    },
+    "analytics": {
+      "title": "Advanced Analytics",
+      "description": "Real-time data to optimize your production"
+    },
+    "insurance": {
+      "title": "Decentralized Insurance",
+      "description": "Protect your crops with smart contracts"
+    },
+    "supply": {
+      "title": "Supply Chain",
+      "description": "Complete traceability from field to consumer"
+    }
   },
   "auth": {
     "login": {
       "title": "Login",
       "subtitle": "Access your AGROTM account",
       "email": "Email",
+      "emailPlaceholder": "your@email.com",
       "password": "Password",
+      "passwordPlaceholder": "Enter your password",
       "submit": "Login",
       "loading": "Signing in...",
       "success": "Login successful!",
@@ -24,10 +89,15 @@
       "title": "Create Account",
       "subtitle": "Join the agribusiness revolution",
       "name": "Full Name",
+      "namePlaceholder": "Your full name",
       "email": "Email",
+      "emailPlaceholder": "your@email.com",
       "phone": "Phone",
+      "phonePlaceholder": "+1 (555) 123-4567",
       "password": "Password",
+      "passwordPlaceholder": "Create a secure password",
       "confirmPassword": "Confirm Password",
+      "confirmPasswordPlaceholder": "Enter password again",
       "submit": "Create Account",
       "loading": "Creating account...",
       "success": "Account created successfully!",
@@ -38,10 +108,12 @@
       "title": "Reset Password",
       "subtitle": "Enter your email to receive the recovery link",
       "email": "Email",
+      "emailPlaceholder": "your@email.com",
       "submit": "Send Link",
       "loading": "Sending...",
       "success": "Recovery email sent!",
-      "backToLogin": "Back to login"
+      "backToLogin": "Back to login",
+      "successMessage": "We've sent a recovery link to your email. Check your inbox and follow the instructions."
     },
     "tabs": {
       "login": "Login",
@@ -56,7 +128,15 @@
       "nameRequired": "Name is required",
       "phoneRequired": "Phone is required",
       "passwordsMismatch": "Passwords don't match",
-      "confirmPasswordRequired": "Password confirmation is required"
+      "confirmPasswordRequired": "Password confirmation is required",
+      "userNotFound": "User not found",
+      "wrongPassword": "Incorrect password",
+      "emailAlreadyInUse": "This email is already in use",
+      "weakPassword": "Password too weak",
+      "tooManyRequests": "Too many attempts. Please try again later",
+      "invalidCredential": "Invalid credentials",
+      "networkError": "Connection error. Check your internet",
+      "unknown": "Unexpected error. Please try again"
     },
     "logout": {
       "button": "Logout",
@@ -65,17 +145,57 @@
     }
   },
   "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back",
     "stats": {
       "totalValueLocked": "Total Value Locked",
       "averageAPY": "Average APY",
       "activeUsers": "Active Users",
-      "totalStaked": "Total Staked"
+      "totalStaked": "Total Staked",
+      "totalInvestments": "Total Investments",
+      "activeProjects": "Active Projects"
     },
     "crypto": {
       "title": "Cryptocurrencies",
       "price": "Price",
       "change24h": "24h",
-      "change7d": "7d"
+      "change7d": "7d",
+      "marketCap": "Market Cap",
+      "volume": "Volume"
+    },
+    "activities": {
+      "title": "Recent Activities",
+      "noActivities": "No recent activities",
+      "viewAll": "View All"
+    },
+    "portfolio": {
+      "title": "My Portfolio",
+      "totalValue": "Total Value",
+      "dailyChange": "Daily Change",
+      "assets": "Assets"
+    }
+  },
+  "staking": {
+    "title": "AGROTM Staking",
+    "subtitle": "Earn rewards by staking your tokens",
+    "pools": {
+      "title": "Staking Pools",
+      "description": "Earn passive income by staking your tokens in our secure, high-yield pools",
+      "apy": "APY",
+      "tvl": "TVL",
+      "stakingPeriod": "Period",
+      "minStake": "Min Stake",
+      "maxStake": "Max Stake",
+      "stake": "Stake",
+      "unstake": "Unstake",
+      "rewards": "Rewards",
+      "claimRewards": "Claim Rewards"
+    },
+    "myStaking": {
+      "title": "My Staking",
+      "totalStaked": "Total Staked",
+      "totalRewards": "Total Rewards",
+      "availableRewards": "Available Rewards"
     }
   },
   "stakingFarming": {
@@ -84,11 +204,120 @@
       "description": "Earn passive income by staking your tokens in our secure, high-yield pools"
     }
   },
+  "about": {
+    "title": "About AGROTM",
+    "subtitle": "Revolutionizing agribusiness with blockchain",
+    "description": "AGROTM is an innovative platform that combines blockchain technology, artificial intelligence and Internet of Things (IoT) to transform the agricultural sector.",
+    "mission": {
+      "title": "Our Mission",
+      "description": "Democratize access to agricultural investment and create a sustainable ecosystem that benefits producers, investors and consumers."
+    },
+    "vision": {
+      "title": "Our Vision",
+      "description": "To be the leading global agricultural tokenization platform, connecting traditional agribusiness with the digital economy."
+    },
+    "values": {
+      "title": "Our Values",
+      "transparency": "Transparency",
+      "innovation": "Innovation",
+      "sustainability": "Sustainability",
+      "security": "Security"
+    }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "We're here to help you",
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "Your full name",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "subject": "Subject",
+      "subjectPlaceholder": "How can we help?",
+      "message": "Message",
+      "messagePlaceholder": "Describe your question or suggestion",
+      "submit": "Send Message",
+      "sending": "Sending...",
+      "success": "Message sent successfully!",
+      "error": "Error sending message. Please try again."
+    },
+    "info": {
+      "address": "Address",
+      "phone": "Phone",
+      "email": "Email",
+      "hours": "Business Hours"
+    }
+  },
+  "footer": {
+    "description": "Blockchain platform revolutionizing global agribusiness",
+    "links": {
+      "company": "Company",
+      "about": "About",
+      "team": "Team",
+      "careers": "Careers",
+      "news": "News",
+      "products": "Products",
+      "platform": "Platform",
+      "api": "API",
+      "documentation": "Documentation",
+      "support": "Support",
+      "resources": "Resources",
+      "blog": "Blog",
+      "whitepaper": "Whitepaper",
+      "roadmap": "Roadmap",
+      "legal": "Legal",
+      "privacy": "Privacy",
+      "terms": "Terms of Use",
+      "cookies": "Cookie Policy"
+    },
+    "social": {
+      "followUs": "Follow Us",
+      "newsletter": "Newsletter",
+      "newsletterDescription": "Get the latest AGROTM updates",
+      "emailPlaceholder": "Your email",
+      "subscribe": "Subscribe"
+    },
+    "copyright": "All rights reserved."
+  },
   "language": {
     "select": "Language",
     "portuguese": "Português",
     "english": "English",
     "spanish": "Español",
     "chinese": "中文"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Information",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "view": "View",
+    "download": "Download",
+    "upload": "Upload",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "open": "Open",
+    "yes": "Yes",
+    "no": "No",
+    "or": "or",
+    "and": "and"
+  },
+  "forms": {
+    "required": "This field is required",
+    "invalidEmail": "Invalid email",
+    "invalidPhone": "Invalid phone",
+    "passwordTooShort": "Password too short",
+    "passwordsMustMatch": "Passwords must match",
+    "acceptTerms": "You must accept the terms of use"
   }
 }

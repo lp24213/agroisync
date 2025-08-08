@@ -9,7 +9,7 @@ const LanguageSelector: React.FC = () => {
   const { i18n, t } = useTranslation();
 
   const languages = [
-    { code: 'pt', name: 'Português', flag: '🇧🇷' },
+    { code: 'pt-BR', name: 'Português', flag: '🇧🇷' },
     { code: 'en', name: 'English', flag: '🇺🇸' },
     { code: 'es', name: 'Español', flag: '🇪🇸' },
     { code: 'zh', name: '中文', flag: '🇨🇳' }

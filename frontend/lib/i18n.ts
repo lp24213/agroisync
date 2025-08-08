@@ -9,7 +9,7 @@ import esTranslations from '../locales/es.json';
 import zhTranslations from '../locales/zh.json';
 
 const resources = {
-  pt: {
+  'pt-BR': {
     translation: ptTranslations,
   },
   en: {
@@ -29,7 +29,7 @@ if (!i18n.isInitialized) {
     .use(initReactI18next)
     .init({
       resources,
-      lng: 'pt', // default language
+      lng: 'pt-BR', // default language
       fallbackLng: 'en',
       debug: process.env.NODE_ENV === 'development',
       interpolation: {
