@@ -7,7 +7,7 @@ import Hero from '../components/sections/Hero';
 import { useTranslation } from 'react-i18next';
 
 export default function HomePage() {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation();
   return (
     <Layout>
       <motion.div
