@@ -12,26 +12,26 @@ export default function AboutPage() {
   const values = [
     {
       icon: Shield,
-      title: t('about.values.transparency.title'),
-      description: t('about.values.transparency.description'),
+      title: 'Transparência',
+      description: 'Compromisso absoluto com a clareza e honestidade em todas as nossas operações e comunicações, garantindo total visibilidade aos nossos usuários.',
       color: 'text-[#00FF7F]'
     },
     {
       icon: Zap,
-      title: t('about.values.innovation.title'),
-      description: t('about.values.innovation.description'),
+      title: 'Inovação',
+      description: 'Buscamos constantemente tecnologias de ponta e soluções inovadoras para revolucionar o agronegócio tradicional.',
       color: 'text-[#00FF7F]'
     },
     {
       icon: Globe,
-      title: t('about.values.sustainability.title'),
-      description: t('about.values.sustainability.description'),
+      title: 'Sustentabilidade',
+      description: 'Priorizamos práticas agrícolas sustentáveis que garantem a preservação do meio ambiente para as futuras gerações.',
       color: 'text-[#00FF7F]'
     },
     {
       icon: Heart,
-      title: t('about.values.trust.title'),
-      description: t('about.values.trust.description'),
+      title: 'Confiança',
+      description: 'Construindo relacionamentos duradouros baseados em confiança, transparência e resultados comprovados.',
       color: 'text-[#00FF7F]'
     }
   ];
@@ -84,7 +84,7 @@ export default function AboutPage() {
             className="text-center"
           >
               <h1 className="text-5xl md:text-7xl font-orbitron font-bold gradient-text mb-6">
-                Sobre a <span className="text-[#00F0FF]">AGROTM</span>
+                Sobre a <span className="text-[#00F0FF]">Plataforma</span>
             </h1>
               <p className="text-xl md:text-2xl text-[#00F0FF] max-w-4xl mx-auto leading-relaxed font-orbitron">
                 Conectando o agronegócio ao futuro digital, com soluções seguras, escaláveis e transparentes
@@ -107,7 +107,7 @@ export default function AboutPage() {
                   Sobre <span className="text-[#00F0FF]">Nós</span>
               </h2>
                 <p className="text-lg text-[#00F0FF] leading-relaxed mb-6">
-                  A AGROTM é uma plataforma especializada na intermediação de produtos do agronegócio. Conectamos produtores, investidores e compradores por meio de tecnologia avançada, garantindo segurança, rastreabilidade e eficiência em cada negociação.
+                  Somos uma plataforma especializada na intermediação de produtos do agronegócio. Conectamos produtores, investidores e compradores por meio de tecnologia avançada, garantindo segurança, rastreabilidade e eficiência em cada negociação.
               </p>
                 <p className="text-lg text-[#00F0FF] leading-relaxed mb-8">
                   Nossa missão é modernizar e democratizar o acesso ao mercado agrícola através de tecnologia avançada e inovação sustentável, criando um ecossistema financeiro inovador que impulsiona o crescimento do setor agrícola.
@@ -156,8 +156,8 @@ export default function AboutPage() {
                   <div className="hidden w-[500px] h-[400px] bg-gradient-to-br from-[#00FF7F]/20 to-[#000000] border-2 border-[#00FF7F]/30 rounded-3xl flex items-center justify-center shadow-neon-green">
                     <div className="text-center">
                       <Target className="text-[#00FF7F] mx-auto mb-4" size={64} />
-                      <div className="text-[#00F0FF] font-orbitron text-2xl">AGROTM SOL</div>
-                      <div className="text-[#00F0FF] text-lg">Plataforma de Intermediação</div>
+                      <div className="text-[#00F0FF] font-orbitron text-2xl">Plataforma de Intermediação</div>
+                      <div className="text-[#00F0FF] text-lg">Tecnologia Avançada</div>
                     </div>
                   </div>
                 </div>

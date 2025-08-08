@@ -72,7 +72,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
             transition={{ duration: 0.8 }}
             className="relative z-10 mb-12"
           >
-            <Logo size="xl" />
+            <Logo size="xl" showText={false} />
           </motion.div>
 
           {/* Loading Text */}
