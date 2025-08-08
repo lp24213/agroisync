@@ -16,7 +16,8 @@
     "status": "状态",
     "privacy": "隐私",
     "terms": "条款",
-    "cookies": "Cookie"
+    "cookies": "Cookie",
+    "api": "API"
   },
   "hero": {
     "title": "农业的未来",
@@ -265,6 +266,8 @@
   },
   "footer": {
     "description": "革命全球农业综合企业的区块链平台",
+    "brandDescription": "AGROTM 初创公司的延伸，使用区块链撮合农产品业务。为农业领域带来安全、技术与创新。",
+    "quickLinks": "快速链接",
     "links": {
       "company": "公司",
       "about": "关于",
@@ -292,7 +295,8 @@
       "emailPlaceholder": "您的邮箱",
       "subscribe": "订阅"
     },
-    "copyright": "版权所有。"
+    "copyright": "版权所有。",
+    "copyrightFull": "© 2024 AGROTM。版权所有。"
   },
   "language": {
     "select": "语言",

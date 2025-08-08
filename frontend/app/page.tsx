@@ -4,8 +4,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '../components/layout/Layout';
 import Hero from '../components/sections/Hero';
+import { useTranslation } from 'react-i18next';
 
 export default function HomePage() {
+  const { t } = useTranslation('common');
   return (
     <Layout>
       <motion.div
@@ -26,10 +28,10 @@ export default function HomePage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <h2 className="text-4xl md:text-6xl font-orbitron font-bold text-premium-neon-blue mb-8">
-                O Futuro da Agricultura
+                {t('hero.title')}
               </h2>
               <p className="text-xl text-premium-light/80 max-w-3xl mx-auto">
-                Conectando agricultores e investidores através da tecnologia blockchain mais avançada do mundo.
+                {t('hero.subtitle')}
               </p>
             </div>
           </div>

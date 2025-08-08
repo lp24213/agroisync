@@ -3,8 +3,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Logo } from '../ui/Logo';
+import { useTranslation } from 'react-i18next';
 
 export function Footer() {
+  const { t } = useTranslation();
   return (
     <footer className="bg-premium-dark border-t border-neon-blue">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -14,8 +16,8 @@ export function Footer() {
             <div className="flex items-center mb-4">
               <Logo size="sm" showText={false} />
             </div>
-                          <p className="text-white mb-6 max-w-md">
-              Extensão da startup AGROTM, intermediando produtos do agronegócio com blockchain. Segurança, tecnologia e inovação para o setor agrícola.
+            <p className="text-white mb-6 max-w-md">
+              {t('footer.brandDescription')}
             </p>
             <div className="text-[#cccccc] mb-6 space-y-2">
               <p className="flex items-center space-x-2">
@@ -51,31 +53,31 @@ export function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-[#00bfff] font-orbitron font-semibold mb-4">Links Rápidos</h3>
+            <h3 className="text-[#00bfff] font-orbitron font-semibold mb-4">{t('footer.quickLinks')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link href="/" className="text-[#cccccc] hover:text-[#00bfff] transition-colors">
-                  Início
+                  {t('nav.home')}
                 </Link>
               </li>
               <li>
                 <Link href="/dashboard" className="text-[#cccccc] hover:text-[#00bfff] transition-colors">
-                  Dashboard
+                  {t('nav.dashboard')}
                 </Link>
               </li>
               <li>
                 <Link href="/staking" className="text-[#cccccc] hover:text-[#00bfff] transition-colors">
-                  Staking
+                  {t('nav.staking')}
                 </Link>
               </li>
               <li>
                 <Link href="/about" className="text-[#cccccc] hover:text-[#00bfff] transition-colors">
-                  Sobre
+                  {t('nav.about')}
                 </Link>
               </li>
               <li>
                 <Link href="/contact" className="text-[#cccccc] hover:text-[#00bfff] transition-colors">
-                  Contato
+                  {t('nav.contact')}
                 </Link>
               </li>
             </ul>
@@ -83,26 +85,26 @@ export function Footer() {
 
           {/* Resources */}
           <div>
-            <h3 className="text-[#00bfff] font-orbitron font-semibold mb-4">Recursos</h3>
+            <h3 className="text-[#00bfff] font-orbitron font-semibold mb-4">{t('footer.links.resources')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link href="/documentation" className="text-[#cccccc] hover:text-[#00bfff] transition-colors">
-                  Documentação
+                  {t('nav.documentation')}
                 </Link>
               </li>
               <li>
                 <Link href="/api" className="text-[#cccccc] hover:text-[#00bfff] transition-colors">
-                  API
+                  {t('nav.api')}
                 </Link>
               </li>
               <li>
                 <Link href="/status" className="text-[#cccccc] hover:text-[#00bfff] transition-colors">
-                  Status
+                  {t('nav.status')}
                 </Link>
               </li>
               <li>
                 <Link href="/support" className="text-[#cccccc] hover:text-[#00bfff] transition-colors">
-                  Suporte
+                  {t('nav.support')}
                 </Link>
               </li>
             </ul>
@@ -112,18 +114,16 @@ export function Footer() {
         {/* Bottom Section */}
         <div className="border-t border-[#00bfff]/20 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-[#cccccc] text-sm">
-              © 2024 AGROTM. Todos os direitos reservados.
-            </p>
+            <p className="text-[#cccccc] text-sm">{t('footer.copyrightFull')}</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link href="/privacy" className="text-[#cccccc] hover:text-[#00bfff] transition-colors text-sm">
-                Privacidade
+                {t('nav.privacy')}
               </Link>
               <Link href="/terms" className="text-[#cccccc] hover:text-[#00bfff] transition-colors text-sm">
-                Termos
+                {t('nav.terms')}
               </Link>
               <Link href="/cookies" className="text-[#cccccc] hover:text-[#00bfff] transition-colors text-sm">
-                Cookies
+                {t('nav.cookies')}
               </Link>
             </div>
           </div>

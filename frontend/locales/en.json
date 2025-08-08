@@ -16,7 +16,8 @@
     "status": "Status",
     "privacy": "Privacy",
     "terms": "Terms",
-    "cookies": "Cookies"
+    "cookies": "Cookies",
+    "api": "API"
   },
   "hero": {
     "title": "The Future of Agriculture",
@@ -265,6 +266,8 @@
   },
   "footer": {
     "description": "Blockchain platform revolutionizing global agribusiness",
+    "brandDescription": "Extension of the AGROTM startup, brokering agribusiness products with blockchain. Security, technology and innovation for the agricultural sector.",
+    "quickLinks": "Quick Links",
     "links": {
       "company": "Company",
       "about": "About",
@@ -292,7 +295,8 @@
       "emailPlaceholder": "Your email",
       "subscribe": "Subscribe"
     },
-    "copyright": "All rights reserved."
+    "copyright": "All rights reserved.",
+    "copyrightFull": "© 2024 AGROTM. All rights reserved."
   },
   "language": {
     "select": "Language",
