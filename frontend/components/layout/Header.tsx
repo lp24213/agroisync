@@ -3,14 +3,21 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { useRouter } from 'next/navigation';
 import { Logo } from '../ui/Logo';
 import { LanguageSelector } from '../ui/LanguageSelector';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, LogOut, User } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { signOut } from 'firebase/auth';
+import { auth } from '@/lib/firebase/config';
+import { toast } from 'react-hot-toast';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { t } = useTranslation();
+  const { user, loading } = useAuth();
+  const router = useRouter();
 
   const navigation = [
     { name: t('nav.home'), href: '/' },
@@ -29,6 +36,17 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      toast.success(t('auth.logout.success') || 'Logout realizado com sucesso!');
+      router.push('/');
+    } catch (error) {
+      console.error('Erro no logout:', error);
+      toast.error(t('auth.logout.error') || 'Erro ao fazer logout');
+    }
+  };
+
   return (
     <motion.header
       initial={{ y: -100 }}
@@ -41,7 +59,7 @@ export function Header() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-24">
           {/* Logo */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -49,7 +67,7 @@ export function Header() {
             transition={{ duration: 0.5 }}
             className="flex items-center"
           >
-            <Logo size="md" />
+            <Logo size="lg" />
           </motion.div>
 
           {/* Desktop Navigation */}
@@ -82,17 +100,49 @@ export function Header() {
               <LanguageSelector />
             </motion.div>
             
-            {/* Get Started Button */}
-            <motion.button
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="btn-primary px-8 py-3 text-sm font-orbitron"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              {t('nav.getStarted')}
-            </motion.button>
+            {/* Auth Buttons */}
+            {!loading && (
+              <>
+                {user ? (
+                  <div className="flex items-center gap-3">
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="flex items-center gap-2 bg-premium-black/50 backdrop-blur-xl border border-premium-neon-blue/30 rounded-lg px-3 py-2"
+                    >
+                      <User className="w-4 h-4 text-premium-neon-blue" />
+                      <span className="text-premium-neon-blue text-sm font-orbitron max-w-24 truncate">
+                        {user.email?.split('@')[0]}
+                      </span>
+                    </motion.div>
+                    <motion.button
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.5, delay: 0.4 }}
+                      onClick={handleLogout}
+                      className="flex items-center gap-2 bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 text-red-400 hover:text-red-300 px-4 py-2 rounded-lg transition-all duration-300 font-orbitron text-sm"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <LogOut className="w-4 h-4" />
+                      {t('auth.logout.button') || 'Sair'}
+                    </motion.button>
+                  </div>
+                ) : (
+                  <motion.button
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.4 }}
+                    onClick={() => router.push('/login')}
+                    className="btn-primary px-8 py-3 text-sm font-orbitron"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {t('auth.login.title') || 'Entrar'}
+                  </motion.button>
+                )}
+              </>
+            )}
 
             {/* Mobile Menu Button */}
             <motion.button

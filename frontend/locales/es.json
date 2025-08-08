@@ -15,6 +15,7 @@
       "password": "Contraseña",
       "submit": "Iniciar Sesión",
       "loading": "Iniciando sesión...",
+      "success": "¡Inicio de sesión exitoso!",
       "forgotPassword": "¿Olvidaste tu contraseña?",
       "noAccount": "¿No tienes una cuenta?",
       "createAccount": "Crear cuenta"
@@ -29,6 +30,7 @@
       "confirmPassword": "Confirmar Contraseña",
       "submit": "Crear Cuenta",
       "loading": "Creando cuenta...",
+      "success": "¡Cuenta creada con éxito!",
       "hasAccount": "¿Ya tienes una cuenta?",
       "login": "Iniciar sesión"
     },
@@ -55,6 +57,11 @@
       "phoneRequired": "Teléfono es requerido",
       "passwordsMismatch": "Las contraseñas no coinciden",
       "confirmPasswordRequired": "Confirmación de contraseña es requerida"
+    },
+    "logout": {
+      "button": "Cerrar Sesión",
+      "success": "¡Sesión cerrada con éxito!",
+      "error": "Error al cerrar sesión"
     }
   },
   "dashboard": {

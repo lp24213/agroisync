@@ -2,43 +2,38 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/router';
-import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
-import { Mail, ArrowLeft, ArrowRight, Globe, AlertCircle, Check } from 'lucide-react';
+import { Mail, ArrowLeft, ArrowRight, AlertCircle, Check } from 'lucide-react';
 import { sendPasswordResetEmail } from 'firebase/auth';
-import { auth } from '../lib/firebase/config';
+import { auth } from '@/lib/firebase/config';
 import { toast } from 'react-hot-toast';
+import { Logo } from '@/components/ui/Logo';
+import { LanguageSelector } from '@/components/ui/LanguageSelector';
+import { useAuth } from '@/contexts/AuthContext';
 
-const ResetPasswordPage = () => {
-  const [language, setLanguage] = useState('pt');
+export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  
   const [formData, setFormData] = useState({
     email: ''
   });
-  
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   
   const router = useRouter();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+  const { user } = useAuth();
 
+  // Redirect if already logged in
   useEffect(() => {
-    const savedLanguage = localStorage.getItem('agrotm-language') || 'pt';
-    setLanguage(savedLanguage);
-    i18n.changeLanguage(savedLanguage);
-  }, [i18n]);
-
-  const handleLanguageChange = (newLanguage) => {
-    setLanguage(newLanguage);
-    i18n.changeLanguage(newLanguage);
-    localStorage.setItem('agrotm-language', newLanguage);
-  };
+    if (user) {
+      router.push('/dashboard');
+    }
+  }, [user, router]);
 
   const validateForm = () => {
-    const newErrors = {};
+    const newErrors: { [key: string]: string } = {};
 
     if (!formData.email) {
       newErrors.email = t('auth.errors.emailRequired');
@@ -50,14 +45,14 @@ const ResetPasswordPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!validateForm()) return;
@@ -69,7 +64,7 @@ const ResetPasswordPage = () => {
       await sendPasswordResetEmail(auth, formData.email);
       setSuccess(true);
       toast.success(t('auth.resetPassword.success'));
-    } catch (error) {
+    } catch (error: any) {
       console.error('Reset password error:', error);
       
       let errorMessage = 'Erro inesperado. Tente novamente.';
@@ -130,21 +125,16 @@ const ResetPasswordPage = () => {
         >
           {/* Logo */}
           <motion.div variants={itemVariants} className="mb-8">
-            <Image
-              src="/assets/images/logo/agrotm-logo-white.svg"
-              alt="AGROTM Logo"
-              width={120}
-              height={120}
-              className="mx-auto mb-4"
-              priority
-            />
+            <div className="mb-6">
+              <Logo size="lg" className="justify-center" />
+            </div>
             <div className="w-16 h-16 bg-premium-neon-green/20 rounded-full flex items-center justify-center mx-auto mb-4">
               <Check className="w-8 h-8 text-premium-neon-green" />
             </div>
-            <h1 className="text-3xl font-orbitron font-bold bg-gradient-to-r from-premium-neon-blue to-premium-neon-green bg-clip-text text-transparent">
+            <h1 className="text-3xl font-orbitron font-bold text-white mb-2">
               Email Enviado!
             </h1>
-            <p className="text-gray-400 mt-2 font-orbitron">
+            <p className="text-gray-400 font-orbitron">
               Verifique sua caixa de entrada e siga as instruções para redefinir sua senha.
             </p>
           </motion.div>
@@ -185,37 +175,27 @@ const ResetPasswordPage = () => {
         animate="visible"
         className="relative w-full max-w-md"
       >
-        {/* Language Selector */}
-        <motion.div variants={itemVariants} className="flex justify-end mb-6">
-          <div className="flex items-center bg-premium-black/50 backdrop-blur-xl border border-premium-neon-blue/20 rounded-xl p-1">
-            <Globe className="w-4 h-4 text-premium-neon-blue mr-2 ml-2" />
-            <select
-              value={language}
-              onChange={(e) => handleLanguageChange(e.target.value)}
-              className="bg-transparent text-premium-neon-blue font-orbitron text-sm focus:outline-none cursor-pointer"
-            >
-              <option value="pt">🇧🇷 PT</option>
-              <option value="en">🇺🇸 EN</option>
-              <option value="es">🇪🇸 ES</option>
-              <option value="zh">🇨🇳 ZH</option>
-            </select>
-          </div>
+        {/* Language Selector & Back Button */}
+        <motion.div variants={itemVariants} className="flex justify-between items-center mb-6">
+          <Link
+            href="/login"
+            className="flex items-center gap-2 text-premium-neon-blue hover:text-premium-neon-green transition-colors font-orbitron"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            {t('auth.resetPassword.backToLogin')}
+          </Link>
+          <LanguageSelector />
         </motion.div>
 
         {/* Logo */}
         <motion.div variants={itemVariants} className="text-center mb-8">
-          <Image
-            src="/assets/images/logo/agrotm-logo-white.svg"
-            alt="AGROTM Logo"
-            width={120}
-            height={120}
-            className="mx-auto mb-4"
-            priority
-          />
-          <h1 className="text-4xl font-orbitron font-bold bg-gradient-to-r from-premium-neon-blue to-premium-neon-green bg-clip-text text-transparent">
+          <div className="mb-6">
+            <Logo size="lg" className="justify-center" />
+          </div>
+          <h1 className="text-3xl font-orbitron font-bold text-white mb-2">
             {t('auth.resetPassword.title')}
           </h1>
-          <p className="text-gray-400 mt-2 font-orbitron">{t('auth.resetPassword.subtitle')}</p>
+          <p className="text-gray-400 font-orbitron">{t('auth.resetPassword.subtitle')}</p>
         </motion.div>
 
         {/* Reset Password Form */}
@@ -271,17 +251,6 @@ const ResetPasswordPage = () => {
               )}
             </button>
           </form>
-
-          {/* Back to Login Link */}
-          <div className="text-center mt-6 pt-6 border-t border-premium-neon-blue/20">
-            <Link
-              href="/login"
-              className="inline-flex items-center text-premium-neon-blue hover:text-premium-neon-green transition-colors font-orbitron"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              {t('auth.resetPassword.backToLogin')}
-            </Link>
-          </div>
         </motion.div>
 
         {/* Footer */}
@@ -293,6 +262,4 @@ const ResetPasswordPage = () => {
       </motion.div>
     </div>
   );
-};
-
-export default ResetPasswordPage;
+}

@@ -2,22 +2,22 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/router';
-import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
-import { Mail, Lock, User, Phone, Eye, EyeOff, ArrowRight, Globe, AlertCircle } from 'lucide-react';
+import { Mail, Lock, User, Phone, Eye, EyeOff, ArrowRight, ArrowLeft, AlertCircle } from 'lucide-react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { setDoc, doc } from 'firebase/firestore';
-import { auth, db } from '../lib/firebase/config';
+import { auth, db } from '@/lib/firebase/config';
 import { toast } from 'react-hot-toast';
+import { Logo } from '@/components/ui/Logo';
+import { LanguageSelector } from '@/components/ui/LanguageSelector';
+import { useAuth } from '@/contexts/AuthContext';
 
-const RegisterPage = () => {
-  const [language, setLanguage] = useState('pt');
+export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -25,26 +25,21 @@ const RegisterPage = () => {
     password: '',
     confirmPassword: ''
   });
-  
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   
   const router = useRouter();
   const { t, i18n } = useTranslation();
+  const { user } = useAuth();
 
+  // Redirect if already logged in
   useEffect(() => {
-    const savedLanguage = localStorage.getItem('agrotm-language') || 'pt';
-    setLanguage(savedLanguage);
-    i18n.changeLanguage(savedLanguage);
-  }, [i18n]);
-
-  const handleLanguageChange = (newLanguage) => {
-    setLanguage(newLanguage);
-    i18n.changeLanguage(newLanguage);
-    localStorage.setItem('agrotm-language', newLanguage);
-  };
+    if (user) {
+      router.push('/dashboard');
+    }
+  }, [user, router]);
 
   const validateForm = () => {
-    const newErrors = {};
+    const newErrors: { [key: string]: string } = {};
 
     if (!formData.name) {
       newErrors.name = t('auth.errors.nameRequired');
@@ -76,14 +71,14 @@ const RegisterPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!validateForm()) return;
@@ -101,12 +96,12 @@ const RegisterPage = () => {
         name: formData.name,
         phone: formData.phone,
         createdAt: new Date().toISOString(),
-        language: language
+        language: i18n.language || 'pt'
       });
       
-      toast.success('Conta criada com sucesso!');
+      toast.success(t('auth.register.success') || 'Conta criada com sucesso!');
       router.push('/dashboard');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Register error:', error);
       
       let errorMessage = 'Erro inesperado. Tente novamente.';
@@ -167,37 +162,27 @@ const RegisterPage = () => {
         animate="visible"
         className="relative w-full max-w-md"
       >
-        {/* Language Selector */}
-        <motion.div variants={itemVariants} className="flex justify-end mb-6">
-          <div className="flex items-center bg-premium-black/50 backdrop-blur-xl border border-premium-neon-blue/20 rounded-xl p-1">
-            <Globe className="w-4 h-4 text-premium-neon-blue mr-2 ml-2" />
-            <select
-              value={language}
-              onChange={(e) => handleLanguageChange(e.target.value)}
-              className="bg-transparent text-premium-neon-blue font-orbitron text-sm focus:outline-none cursor-pointer"
-            >
-              <option value="pt">🇧🇷 PT</option>
-              <option value="en">🇺🇸 EN</option>
-              <option value="es">🇪🇸 ES</option>
-              <option value="zh">🇨🇳 ZH</option>
-            </select>
-          </div>
+        {/* Language Selector & Back Button */}
+        <motion.div variants={itemVariants} className="flex justify-between items-center mb-6">
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-premium-neon-blue hover:text-premium-neon-green transition-colors font-orbitron"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            {t('nav.home')}
+          </Link>
+          <LanguageSelector />
         </motion.div>
 
         {/* Logo */}
         <motion.div variants={itemVariants} className="text-center mb-8">
-          <Image
-            src="/assets/images/logo/agrotm-logo-white.svg"
-            alt="AGROTM Logo"
-            width={120}
-            height={120}
-            className="mx-auto mb-4"
-            priority
-          />
-          <h1 className="text-4xl font-orbitron font-bold bg-gradient-to-r from-premium-neon-blue to-premium-neon-green bg-clip-text text-transparent">
+          <div className="mb-6">
+            <Logo size="lg" className="justify-center" />
+          </div>
+          <h1 className="text-3xl font-orbitron font-bold text-white mb-2">
             {t('auth.register.title')}
           </h1>
-          <p className="text-gray-400 mt-2 font-orbitron">{t('auth.register.subtitle')}</p>
+          <p className="text-gray-400 font-orbitron">{t('auth.register.subtitle')}</p>
         </motion.div>
 
         {/* Register Form */}
@@ -371,6 +356,4 @@ const RegisterPage = () => {
       </motion.div>
     </div>
   );
-};
-
-export default RegisterPage;
+}

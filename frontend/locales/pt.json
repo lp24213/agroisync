@@ -15,6 +15,7 @@
       "password": "Senha",
       "submit": "Entrar",
       "loading": "Entrando...",
+      "success": "Login realizado com sucesso!",
       "forgotPassword": "Esqueceu sua senha?",
       "noAccount": "Não tem uma conta?",
       "createAccount": "Criar conta"
@@ -29,6 +30,7 @@
       "confirmPassword": "Confirmar Senha",
       "submit": "Criar Conta",
       "loading": "Criando conta...",
+      "success": "Conta criada com sucesso!",
       "hasAccount": "Já tem uma conta?",
       "login": "Fazer login"
     },
@@ -55,6 +57,11 @@
       "phoneRequired": "Telefone é obrigatório",
       "passwordsMismatch": "Senhas não coincidem",
       "confirmPasswordRequired": "Confirmação de senha é obrigatória"
+    },
+    "logout": {
+      "button": "Sair",
+      "success": "Logout realizado com sucesso!",
+      "error": "Erro ao fazer logout"
     }
   },
   "dashboard": {

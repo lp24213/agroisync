@@ -15,6 +15,7 @@
       "password": "Password",
       "submit": "Login",
       "loading": "Signing in...",
+      "success": "Login successful!",
       "forgotPassword": "Forgot your password?",
       "noAccount": "Don't have an account?",
       "createAccount": "Create account"
@@ -29,6 +30,7 @@
       "confirmPassword": "Confirm Password",
       "submit": "Create Account",
       "loading": "Creating account...",
+      "success": "Account created successfully!",
       "hasAccount": "Already have an account?",
       "login": "Sign in"
     },
@@ -55,6 +57,11 @@
       "phoneRequired": "Phone is required",
       "passwordsMismatch": "Passwords don't match",
       "confirmPasswordRequired": "Password confirmation is required"
+    },
+    "logout": {
+      "button": "Logout",
+      "success": "Logout successful!",
+      "error": "Error logging out"
     }
   },
   "dashboard": {
