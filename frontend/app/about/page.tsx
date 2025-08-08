@@ -7,31 +7,31 @@ import { useTranslation } from 'react-i18next';
 import Image from 'next/image';
 
 export default function AboutPage() {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation();
 
   const values = [
     {
       icon: Shield,
-      title: 'Transparência',
-      description: 'Compromisso absoluto com a clareza e honestidade em todas as nossas operações e comunicações, garantindo total visibilidade aos nossos usuários.',
+      title: t('about.values.transparency.title'),
+      description: t('about.values.transparency.description'),
       color: 'text-[#00FF7F]'
     },
     {
       icon: Zap,
-      title: 'Inovação',
-      description: 'Buscamos constantemente tecnologias de ponta e soluções inovadoras para revolucionar o agronegócio tradicional.',
+      title: t('about.values.innovation.title'),
+      description: t('about.values.innovation.description'),
       color: 'text-[#00FF7F]'
     },
     {
       icon: Globe,
-      title: 'Sustentabilidade',
-      description: 'Priorizamos práticas agrícolas sustentáveis que garantem a preservação do meio ambiente para as futuras gerações.',
+      title: t('about.values.sustainability.title'),
+      description: t('about.values.sustainability.description'),
       color: 'text-[#00FF7F]'
     },
     {
       icon: Heart,
-      title: 'Confiança',
-      description: 'Construindo relacionamentos duradouros baseados em confiança, transparência e resultados comprovados.',
+      title: t('about.values.trust.title'),
+      description: t('about.values.trust.description'),
       color: 'text-[#00FF7F]'
     }
   ];
@@ -39,27 +39,27 @@ export default function AboutPage() {
   const impact = [
     {
       icon: TrendingUp,
-      title: 'Crescimento Exponencial',
-      value: '300%',
-      description: 'Crescimento anual em volume de transações'
+      title: t('about.impact.growth.title'),
+      value: t('about.impact.growth.value'),
+      description: t('about.impact.growth.description')
     },
     {
       icon: Users,
-      title: 'Comunidade Ativa',
-      value: '50K+',
-      description: 'Usuários ativos na plataforma'
+      title: t('about.impact.community.title'),
+      value: t('about.impact.community.value'),
+      description: t('about.impact.community.description')
     },
     {
       icon: Globe,
-      title: 'Alcance Global',
-      value: '25+',
-      description: 'Países atendidos'
+      title: t('about.impact.global.title'),
+      value: t('about.impact.global.value'),
+      description: t('about.impact.global.description')
     },
     {
       icon: Award,
-      title: 'Reconhecimento',
-      value: '15+',
-      description: 'Prêmios e certificações'
+      title: t('about.impact.recognition.title'),
+      value: t('about.impact.recognition.value'),
+      description: t('about.impact.recognition.description')
     }
   ];
 
@@ -84,10 +84,10 @@ export default function AboutPage() {
             className="text-center"
           >
               <h1 className="text-5xl md:text-7xl font-orbitron font-bold gradient-text mb-6">
-                Sobre a <span className="text-[#00F0FF]">Plataforma</span>
+                {t('about.hero.title')} <span className="text-[#00F0FF]">{t('about.hero.platform')}</span>
             </h1>
               <p className="text-xl md:text-2xl text-[#00F0FF] max-w-4xl mx-auto leading-relaxed font-orbitron">
-                Conectando o agronegócio ao futuro digital, com soluções seguras, escaláveis e transparentes
+                {t('about.hero.description')}
             </p>
           </motion.div>
         </div>

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, Users, Zap, ArrowRight, Star, Shield, Clock, BarChart3 } from 'lucide-react';
 import { Layout } from '../../components/layout/Layout';
+import { useTranslation } from 'react-i18next';
 
 const tokens = [
   {
@@ -29,47 +30,9 @@ const tokens = [
   },
 ];
 
-const stakingPools = [
-  {
-    id: 1,
-    name: 'AGROTM Staking Pool',
-    token: 'AGROTM',
-    apy: 12.5,
-    tvl: 2500000,
-    minStake: 100,
-    maxStake: 100000,
-    lockPeriod: 30,
-    rewards: 'AGROTM',
-    color: '#00FF7F',
-  },
-  {
-    id: 2,
-    name: 'SOL Staking Pool',
-    token: 'SOL',
-    apy: 8.2,
-    tvl: 1800000,
-    minStake: 10,
-    maxStake: 50000,
-    lockPeriod: 7,
-    rewards: 'SOL',
-    color: '#00FF7F',
-  },
-  {
-    id: 3,
-    name: 'USDC Staking Pool',
-    token: 'USDC',
-    apy: 5.8,
-    tvl: 1200000,
-    minStake: 1000,
-    maxStake: 1000000,
-    lockPeriod: 0,
-    rewards: 'USDC',
-    color: '#00FF7F',
-  },
-];
-
 export default function StakingPage() {
-  const [selectedPool, setSelectedPool] = useState(stakingPools[0]);
+  const { t } = useTranslation();
+  const [selectedPool, setSelectedPool] = useState(null);
   const [showStakingForm, setShowStakingForm] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
   const [hoveredPool, setHoveredPool] = useState<number | null>(null);
@@ -78,6 +41,45 @@ export default function StakingPage() {
     apy: 0,
     stakers: 0,
   });
+
+  const stakingPools = [
+    {
+      id: 1,
+      name: t('staking.pools.agrotm.name'),
+      token: 'AGROTM',
+      apy: 12.5,
+      tvl: 2500000,
+      minStake: 100,
+      maxStake: 100000,
+      lockPeriod: 30,
+      rewards: 'AGROTM',
+      color: '#00FF7F',
+    },
+    {
+      id: 2,
+      name: t('staking.pools.sol.name'),
+      token: 'SOL',
+      apy: 8.2,
+      tvl: 1800000,
+      minStake: 10,
+      maxStake: 50000,
+      lockPeriod: 7,
+      rewards: 'SOL',
+      color: '#00FF7F',
+    },
+    {
+      id: 3,
+      name: t('staking.pools.usdc.name'),
+      token: 'USDC',
+      apy: 5.8,
+      tvl: 1200000,
+      minStake: 1000,
+      maxStake: 1000000,
+      lockPeriod: 0,
+      rewards: 'USDC',
+      color: '#00FF7F',
+    },
+  ];
 
   const totalValueLocked = stakingPools.reduce((sum, pool) => sum + pool.tvl, 0);
   const averageApy = stakingPools.reduce((sum, pool) => sum + pool.apy, 0) / stakingPools.length;
@@ -162,10 +164,10 @@ export default function StakingPage() {
           className='text-center mb-12'
         >
           <h1 className='font-orbitron text-4xl md:text-5xl text-[#00FF7F] mb-4 animate-fadeIn'>
-            Pools de Staking
+            {t('staking.pools.title')}
           </h1>
           <p className='text-lg md:text-xl text-[#cccccc] leading-relaxed max-w-3xl mx-auto'>
-            Ganhe renda passiva fazendo stake dos seus tokens em nossos pools seguros e de alta rentabilidade
+            {t('staking.pools.description')}
           </p>
         </motion.div>
 
@@ -182,9 +184,9 @@ export default function StakingPage() {
             transition={{ type: 'spring', stiffness: 400, damping: 10 }}
           >
             <div className='text-center bg-black/90 backdrop-blur-md p-6 rounded-lg'>
-              <TrendingUp className='h-8 w-8 text-[#00FF7F] mx-auto mb-3' />
-              <p className='text-2xl font-orbitron font-bold text-[#ffffff]'>R$ {animatedStats.tvl.toFixed(1)}M</p>
-              <p className='text-[#cccccc]'>Valor Total Bloqueado</p>
+              <TrendingUp className='w-8 h-8 text-[#00FF7F] mx-auto mb-2' />
+              <h3 className='text-lg font-semibold text-white mb-1'>{t('staking.stats.totalValueLocked')}</h3>
+              <p className='text-2xl font-bold text-[#00FF7F]'>${animatedStats.tvl}M</p>
             </div>
           </motion.div>
 
@@ -194,9 +196,9 @@ export default function StakingPage() {
             transition={{ type: 'spring', stiffness: 400, damping: 10 }}
           >
             <div className='text-center bg-black/90 backdrop-blur-md p-6 rounded-lg'>
-              <Zap className='h-8 w-8 text-[#00FF7F] mx-auto mb-3' />
-              <p className='text-2xl font-orbitron font-bold text-[#ffffff]'>{animatedStats.apy.toFixed(1)}%</p>
-              <p className='text-[#cccccc]'>APY Médio</p>
+              <BarChart3 className='w-8 h-8 text-[#00FF7F] mx-auto mb-2' />
+              <h3 className='text-lg font-semibold text-white mb-1'>{t('staking.stats.averageApy')}</h3>
+              <p className='text-2xl font-bold text-[#00FF7F]'>{animatedStats.apy}%</p>
             </div>
           </motion.div>
 
@@ -206,11 +208,9 @@ export default function StakingPage() {
             transition={{ type: 'spring', stiffness: 400, damping: 10 }}
           >
             <div className='text-center bg-black/90 backdrop-blur-md p-6 rounded-lg'>
-              <Users className='h-8 w-8 text-[#00FF7F] mx-auto mb-3' />
-              <p className='text-2xl font-orbitron font-bold text-[#ffffff]'>
-                {animatedStats.stakers.toLocaleString()}
-              </p>
-              <p className='text-[#cccccc]'>Stakers Ativos</p>
+              <Users className='w-8 h-8 text-[#00FF7F] mx-auto mb-2' />
+              <h3 className='text-lg font-semibold text-white mb-1'>{t('staking.stats.totalParticipants')}</h3>
+              <p className='text-2xl font-bold text-[#00FF7F]'>{animatedStats.stakers.toLocaleString()}</p>
             </div>
           </motion.div>
         </motion.div>

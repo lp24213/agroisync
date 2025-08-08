@@ -195,9 +195,19 @@
   "staking": {
     "title": "Staking AGROTM",
     "subtitle": "Ganhe recompensas fazendo staking dos seus tokens",
+    "description": "Aumente seus rendimentos bloqueando seus tokens com segurança.",
     "pools": {
       "title": "Pools de Staking",
       "description": "Ganhe renda passiva fazendo stake dos seus tokens em nossos pools seguros e de alta rentabilidade",
+      "agrotm": {
+        "name": "AGROTM Staking Pool"
+      },
+      "sol": {
+        "name": "SOL Staking Pool"
+      },
+      "usdc": {
+        "name": "USDC Staking Pool"
+      },
       "apy": "APY",
       "tvl": "TVL",
       "stakingPeriod": "Período",
@@ -213,6 +223,11 @@
       "totalStaked": "Total em Stake",
       "totalRewards": "Total de Recompensas",
       "availableRewards": "Recompensas Disponíveis"
+    },
+    "stats": {
+      "totalValueLocked": "Valor Total Bloqueado",
+      "averageApy": "APY Médio",
+      "totalParticipants": "Total de Participantes"
     }
   },
   "stakingFarming": {
@@ -225,6 +240,11 @@
     "title": "Sobre a AGROTM",
     "subtitle": "Revolucionando o agronegócio com blockchain",
     "description": "A AGROTM é uma plataforma inovadora que combina tecnologia blockchain, inteligência artificial e Internet das Coisas (IoT) para transformar o setor agrícola.",
+    "hero": {
+      "title": "Sobre a",
+      "platform": "Plataforma",
+      "description": "Conectando o agronegócio ao futuro digital, com soluções seguras, escaláveis e transparentes"
+    },
     "mission": {
       "title": "Nossa Missão",
       "description": "Democratizar o acesso ao investimento agrícola e criar um ecossistema sustentável que beneficie produtores, investidores e consumidores."
@@ -235,34 +255,102 @@
     },
     "values": {
       "title": "Nossos Valores",
-      "transparency": "Transparência",
-      "innovation": "Inovação",
-      "sustainability": "Sustentabilidade",
-      "security": "Segurança"
+      "transparency": {
+        "title": "Transparência",
+        "description": "Compromisso absoluto com a clareza e honestidade em todas as nossas operações e comunicações, garantindo total visibilidade aos nossos usuários."
+      },
+      "innovation": {
+        "title": "Inovação",
+        "description": "Buscamos constantemente tecnologias de ponta e soluções inovadoras para revolucionar o agronegócio tradicional."
+      },
+      "sustainability": {
+        "title": "Sustentabilidade",
+        "description": "Priorizamos práticas agrícolas sustentáveis que garantem a preservação do meio ambiente para as futuras gerações."
+      },
+      "trust": {
+        "title": "Confiança",
+        "description": "Construindo relacionamentos duradouros baseados em confiança, transparência e resultados comprovados."
+      }
+    },
+    "impact": {
+      "title": "Impacto Tecnológico",
+      "subtitle": "Transformando o agronegócio através da inovação e tecnologia",
+      "growth": {
+        "title": "Crescimento Exponencial",
+        "value": "300%",
+        "description": "Crescimento anual em volume de transações"
+      },
+      "community": {
+        "title": "Comunidade Ativa",
+        "value": "50K+",
+        "description": "Usuários ativos na plataforma"
+      },
+      "global": {
+        "title": "Alcance Global",
+        "value": "25+",
+        "description": "Países atendidos"
+      },
+      "recognition": {
+        "title": "Reconhecimento",
+        "value": "15+",
+        "description": "Prêmios e certificações"
+      }
+    },
+    "future": {
+      "title": "Construindo o futuro do agronegócio com princípios sólidos e inovação responsável."
     }
   },
   "contact": {
     "title": "Entre em Contato",
     "subtitle": "Estamos aqui para ajudar você",
+    "description": "Entre em contato conosco para saber mais sobre nossas soluções.",
+    "hero": {
+      "title": "Entre em",
+      "contact": "Contato",
+      "description": "Estamos aqui para ajudar você a revolucionar seu agronegócio"
+    },
     "form": {
       "name": "Nome",
+      "nameLabel": "Nome Completo",
       "namePlaceholder": "Seu nome completo",
       "email": "Email",
+      "emailLabel": "Email",
       "emailPlaceholder": "seu@email.com",
       "subject": "Assunto",
+      "subjectLabel": "Assunto",
       "subjectPlaceholder": "Como podemos ajudar?",
+      "selectSubject": "Selecione um assunto",
+      "subjectComercial": "Comercial",
+      "subjectSupport": "Suporte Técnico",
+      "subjectPartnership": "Parceria",
+      "subjectInvestment": "Investimento",
+      "subjectOther": "Outro",
       "message": "Mensagem",
+      "messageLabel": "Mensagem",
       "messagePlaceholder": "Descreva sua dúvida ou sugestão",
       "submit": "Enviar Mensagem",
+      "sendMessage": "Enviar Mensagem",
       "sending": "Enviando...",
       "success": "Mensagem enviada com sucesso!",
-      "error": "Erro ao enviar mensagem. Tente novamente."
+      "successMessage": "Mensagem enviada com sucesso! Entraremos em contato em breve.",
+      "error": "Erro ao enviar mensagem. Tente novamente.",
+      "errorMessage": "Erro ao enviar mensagem. Tente novamente.",
+      "location": "Localização",
+      "locationDescription": "Brasil - Centro de Tecnologia Agro",
+      "quickResponse": "Resposta Rápida",
+      "responseTime": "Resposta em até 24 horas",
+      "secureData": "Dados Seguros",
+      "secureDescription": "Suas informações estão protegidas"
     },
     "info": {
       "address": "Endereço",
       "phone": "Telefone",
       "email": "Email",
-      "hours": "Horário de Funcionamento"
+      "hours": "Horário de Funcionamento",
+      "chat": "Chat Online",
+      "support": "Suporte 24/7 via telefone",
+      "available": "Disponível",
+      "description": "Suporte via chat em tempo real"
     }
   },
   "footer": {

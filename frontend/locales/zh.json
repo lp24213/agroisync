@@ -194,9 +194,19 @@
   "staking": {
     "title": "AGROTM质押",
     "subtitle": "通过质押您的代币获得奖励",
+    "description": "通过安全质押您的代币来增加收益。",
     "pools": {
       "title": "质押池",
       "description": "通过在我们安全高收益的质押池中质押代币来获得被动收入",
+      "agrotm": {
+        "name": "AGROTM质押池"
+      },
+      "sol": {
+        "name": "SOL质押池"
+      },
+      "usdc": {
+        "name": "USDC质押池"
+      },
       "apy": "年收益率",
       "tvl": "总锁仓价值",
       "stakingPeriod": "期间",
@@ -212,6 +222,11 @@
       "totalStaked": "总质押",
       "totalRewards": "总奖励",
       "availableRewards": "可用奖励"
+    },
+    "stats": {
+      "totalValueLocked": "总锁仓价值",
+      "averageApy": "平均年收益率",
+      "totalParticipants": "总参与者"
     }
   },
   "stakingFarming": {
@@ -224,6 +239,11 @@
     "title": "关于AGROTM",
     "subtitle": "用区块链革命农业综合企业",
     "description": "AGROTM是一个创新平台，结合区块链技术、人工智能和物联网(IoT)来改变农业部门。",
+    "hero": {
+      "title": "关于",
+      "platform": "平台",
+      "description": "将农业综合企业连接到数字未来，提供安全、可扩展和透明的解决方案"
+    },
     "mission": {
       "title": "我们的使命",
       "description": "民主化农业投资准入，创建有利于生产者、投资者和消费者的可持续生态系统。"
@@ -234,34 +254,102 @@
     },
     "values": {
       "title": "我们的价值观",
-      "transparency": "透明度",
-      "innovation": "创新",
-      "sustainability": "可持续性",
-      "security": "安全性"
+      "transparency": {
+        "title": "透明度",
+        "description": "对我们所有运营和沟通的清晰度和诚实度的绝对承诺，确保用户完全可见性。"
+      },
+      "innovation": {
+        "title": "创新",
+        "description": "我们不断寻求尖端技术和创新解决方案来革命传统农业综合企业。"
+      },
+      "sustainability": {
+        "title": "可持续性",
+        "description": "我们优先考虑确保为子孙后代保护环境的可持续农业实践。"
+      },
+      "trust": {
+        "title": "信任",
+        "description": "基于信任、透明度和经过验证的结果建立持久关系。"
+      }
+    },
+    "impact": {
+      "title": "技术影响",
+      "subtitle": "通过创新和技术改造农业综合企业",
+      "growth": {
+        "title": "指数增长",
+        "value": "300%",
+        "description": "交易量年增长"
+      },
+      "community": {
+        "title": "活跃社区",
+        "value": "50K+",
+        "description": "平台活跃用户"
+      },
+      "global": {
+        "title": "全球覆盖",
+        "value": "25+",
+        "description": "服务国家"
+      },
+      "recognition": {
+        "title": "认可",
+        "value": "15+",
+        "description": "奖项和认证"
+      }
+    },
+    "future": {
+      "title": "以坚实的原则和负责任的创新构建农业的未来。"
     }
   },
   "contact": {
     "title": "联系我们",
     "subtitle": "我们在这里帮助您",
+    "description": "联系我们以了解更多关于我们的解决方案。",
+    "hero": {
+      "title": "联系",
+      "contact": "我们",
+      "description": "我们在这里帮助您革命化您的农业综合企业"
+    },
     "form": {
       "name": "姓名",
+      "nameLabel": "全名",
       "namePlaceholder": "您的全名",
       "email": "邮箱",
+      "emailLabel": "邮箱",
       "emailPlaceholder": "your@email.com",
       "subject": "主题",
+      "subjectLabel": "主题",
       "subjectPlaceholder": "我们如何帮助您？",
+      "selectSubject": "选择主题",
+      "subjectComercial": "商业",
+      "subjectSupport": "技术支持",
+      "subjectPartnership": "合作",
+      "subjectInvestment": "投资",
+      "subjectOther": "其他",
       "message": "消息",
+      "messageLabel": "消息",
       "messagePlaceholder": "描述您的问题或建议",
       "submit": "发送消息",
+      "sendMessage": "发送消息",
       "sending": "发送中...",
       "success": "消息发送成功！",
-      "error": "发送消息时出错。请重试。"
+      "successMessage": "消息发送成功！我们会尽快联系您。",
+      "error": "发送消息时出错。请重试。",
+      "errorMessage": "发送消息时出错。请重试。",
+      "location": "位置",
+      "locationDescription": "巴西 - 农业技术中心",
+      "quickResponse": "快速响应",
+      "responseTime": "24小时内响应",
+      "secureData": "安全数据",
+      "secureDescription": "您的信息受到保护"
     },
     "info": {
       "address": "地址",
       "phone": "电话",
       "email": "邮箱",
-      "hours": "营业时间"
+      "hours": "营业时间",
+      "chat": "在线聊天",
+      "support": "24/7电话支持",
+      "available": "可用",
+      "description": "实时聊天支持"
     }
   },
   "footer": {

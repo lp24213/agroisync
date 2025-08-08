@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 
 export default function ContactPage() {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -54,30 +54,30 @@ export default function ContactPage() {
   const contactInfo = [
     {
       icon: Mail,
-      title: 'Email',
+      title: t('contact.info.email'),
       value: 'contato@agrotm.com.br',
-      description: 'Envie suas dúvidas e sugestões',
+      description: t('contact.form.emailPlaceholder'),
       color: 'text-green-400',
     },
     {
       icon: Phone,
-      title: 'Telefone',
+      title: t('contact.info.phone'),
       value: '+55 (66) 99236-2830',
-      description: 'Suporte 24/7 via telefone',
+      description: t('contact.info.support'),
       color: 'text-blue-400',
     },
     {
       icon: Clock,
-      title: 'Horário de Atendimento',
+      title: t('contact.info.hours'),
       value: '24/7',
-      description: 'Suporte disponível 24 horas',
+      description: t('contact.info.description'),
       color: 'text-purple-400',
     },
     {
       icon: MessageSquare,
-      title: 'Chat Online',
-      value: 'Disponível',
-      description: 'Suporte via chat em tempo real',
+      title: t('contact.info.chat'),
+      value: t('contact.info.available'),
+      description: t('contact.info.description'),
       color: 'text-orange-400',
     },
   ];
@@ -94,10 +94,10 @@ export default function ContactPage() {
             className="text-center"
           >
             <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-              Entre em <span className="text-green-400">Contato</span>
+              {t('contact.hero.title')} <span className="text-green-400">{t('contact.hero.contact')}</span>
             </h1>
             <p className="text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-              Estamos aqui para ajudar você a revolucionar seu agronegócio
+              {t('contact.hero.description')}
             </p>
           </motion.div>
         </div>
@@ -114,10 +114,10 @@ export default function ContactPage() {
             className="text-center mb-16"
           >
             <h2 className="text-4xl font-bold text-white mb-4">
-              Informações de <span className="text-green-400">Contato</span>
+              {t('contact.info.title')} <span className="text-green-400">{t('contact.info.contact')}</span>
             </h2>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Entre em contato conosco através dos canais abaixo
+              {t('contact.info.description')}
             </p>
           </motion.div>
 
@@ -153,10 +153,10 @@ export default function ContactPage() {
               transition={{ duration: 0.8 }}
             >
               <h2 className="text-4xl font-bold text-white mb-6">
-                Envie sua <span className="text-green-400">Mensagem</span>
+                {t('contact.form.title')} <span className="text-green-400">{t('contact.form.message')}</span>
               </h2>
               <p className="text-lg text-gray-400 mb-8">
-                Preencha o formulário abaixo e nossa equipe entrará em contato com você em até 24 horas.
+                {t('contact.form.description')}
               </p>
               
               <div className="space-y-6">
@@ -165,8 +165,8 @@ export default function ContactPage() {
                     <MapPin className="w-6 h-6 text-green-400" />
                   </div>
                   <div>
-                    <h3 className="text-white font-semibold">Localização</h3>
-                    <p className="text-gray-400">Brasil - Centro de Tecnologia Agro</p>
+                    <h3 className="text-white font-semibold">{t('contact.form.location')}</h3>
+                    <p className="text-gray-400">{t('contact.form.locationDescription')}</p>
                   </div>
                 </div>
                 
@@ -175,8 +175,8 @@ export default function ContactPage() {
                     <Clock className="w-6 h-6 text-blue-400" />
                   </div>
                   <div>
-                    <h3 className="text-white font-semibold">Resposta Rápida</h3>
-                    <p className="text-gray-400">Resposta em até 24 horas</p>
+                    <h3 className="text-white font-semibold">{t('contact.form.quickResponse')}</h3>
+                    <p className="text-gray-400">{t('contact.form.responseTime')}</p>
                   </div>
                 </div>
                 
@@ -185,8 +185,8 @@ export default function ContactPage() {
                     <Shield className="w-6 h-6 text-purple-400" />
                   </div>
                   <div>
-                    <h3 className="text-white font-semibold">Dados Seguros</h3>
-                    <p className="text-gray-400">Suas informações estão protegidas</p>
+                    <h3 className="text-white font-semibold">{t('contact.form.secureData')}</h3>
+                    <p className="text-gray-400">{t('contact.form.secureDescription')}</p>
                   </div>
                 </div>
               </div>
@@ -203,7 +203,7 @@ export default function ContactPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
-                        Nome Completo *
+                        {t('contact.form.nameLabel')} *
                       </label>
                       <input
                         type="text"
@@ -213,13 +213,13 @@ export default function ContactPage() {
                         onChange={handleInputChange}
                         required
                         className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-green-400 transition-colors"
-                        placeholder="Seu nome completo"
+                        placeholder={t('contact.form.namePlaceholder')}
                       />
                     </div>
                     
                     <div>
                       <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                        Email *
+                        {t('contact.form.emailLabel')} *
                       </label>
                       <input
                         type="email"
@@ -229,14 +229,14 @@ export default function ContactPage() {
                         onChange={handleInputChange}
                         required
                         className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-green-400 transition-colors"
-                        placeholder="seu@email.com"
+                        placeholder={t('contact.form.emailPlaceholder')}
                       />
                     </div>
                   </div>
 
                   <div>
                     <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-2">
-                      Assunto *
+                      {t('contact.form.subjectLabel')} *
                     </label>
                     <select
                       id="subject"
@@ -246,18 +246,18 @@ export default function ContactPage() {
                       required
                       className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-green-400 transition-colors"
                     >
-                      <option value="">Selecione um assunto</option>
-                      <option value="comercial">Comercial</option>
-                      <option value="suporte">Suporte Técnico</option>
-                      <option value="parceria">Parceria</option>
-                      <option value="investimento">Investimento</option>
-                      <option value="outro">Outro</option>
+                      <option value="">{t('contact.form.selectSubject')}</option>
+                      <option value="comercial">{t('contact.form.subjectComercial')}</option>
+                      <option value="suporte">{t('contact.form.subjectSupport')}</option>
+                      <option value="parceria">{t('contact.form.subjectPartnership')}</option>
+                      <option value="investimento">{t('contact.form.subjectInvestment')}</option>
+                      <option value="outro">{t('contact.form.subjectOther')}</option>
                     </select>
                   </div>
 
                   <div>
                     <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
-                      Mensagem *
+                      {t('contact.form.messageLabel')} *
                     </label>
                     <textarea
                       id="message"
@@ -267,19 +267,19 @@ export default function ContactPage() {
                       required
                       rows={6}
                       className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-green-400 transition-colors resize-none"
-                      placeholder="Descreva sua mensagem..."
+                      placeholder={t('contact.form.messagePlaceholder')}
                     />
                   </div>
 
                   {submitStatus === 'success' && (
                     <div className="p-4 bg-green-500/20 border border-green-500/30 rounded-lg">
-                      <p className="text-green-400">Mensagem enviada com sucesso! Entraremos em contato em breve.</p>
+                      <p className="text-green-400">{t('contact.form.successMessage')}</p>
                     </div>
                   )}
 
                   {submitStatus === 'error' && (
                     <div className="p-4 bg-red-500/20 border border-red-500/30 rounded-lg">
-                      <p className="text-red-400">Erro ao enviar mensagem. Tente novamente.</p>
+                      <p className="text-red-400">{t('contact.form.errorMessage')}</p>
                     </div>
                   )}
 
@@ -291,12 +291,12 @@ export default function ContactPage() {
                     {isSubmitting ? (
                       <>
                         <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span>Enviando...</span>
+                        <span>{t('contact.form.sending')}</span>
                       </>
                     ) : (
                       <>
                         <Send className="w-5 h-5" />
-                        <span>Enviar Mensagem</span>
+                        <span>{t('contact.form.sendMessage')}</span>
                       </>
                     )}
                   </button>
@@ -318,30 +318,30 @@ export default function ContactPage() {
             className="text-center mb-16"
           >
             <h2 className="text-4xl font-bold text-white mb-4">
-              Perguntas <span className="text-green-400">Frequentes</span>
+              {t('contact.faq.title')} <span className="text-green-400">{t('contact.faq.frequent')}</span>
             </h2>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Respostas rápidas para as dúvidas mais comuns
+              {t('contact.faq.description')}
             </p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {[
               {
-                question: 'Como funciona a criptomoeda AGROTM?',
-                answer: 'A AGROTM é uma criptomoeda especializada para transações no agronegócio, permitindo pagamentos seguros e transparentes entre produtores e compradores.'
+                question: t('contact.faq.question1'),
+                answer: t('contact.faq.answer1')
               },
               {
-                question: 'Qual o tempo de resposta do suporte?',
-                answer: 'Nosso suporte responde em até 24 horas, com atendimento 24/7 via chat e telefone para casos urgentes.'
+                question: t('contact.faq.question2'),
+                answer: t('contact.faq.answer2')
               },
               {
-                question: 'A plataforma é segura?',
-                answer: 'Sim, utilizamos tecnologia blockchain e criptografia avançada para garantir a segurança de todas as transações e dados.'
+                question: t('contact.faq.question3'),
+                answer: t('contact.faq.answer3')
               },
               {
-                question: 'Como posso começar a usar a plataforma?',
-                answer: 'Basta criar uma conta, completar o processo de verificação e começar a negociar produtos agro de forma segura e transparente.'
+                question: t('contact.faq.question4'),
+                answer: t('contact.faq.answer4')
               },
             ].map((faq, index) => (
               <motion.div
