@@ -48,17 +48,24 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false
 }));
 
-// CORS configuration
+// CORS configuration (AWS)
 const corsOptions = {
   origin: function (origin, callback) {
-    const allowedOrigins = [
-      'https://agrotmsol.com.br',
-      'https://www.agrotmsol.com.br',
-      'http://localhost:3000',
-      'http://localhost:3001'
-    ];
-    
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+    // Allow list from env or defaults including Amplify domains
+    const envAllowed = process.env.ALLOWED_ORIGINS
+      ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
+      : [
+          'https://agrotmsol.com.br',
+          'https://www.agrotmsol.com.br',
+          'http://localhost:3000',
+          'http://localhost:3001'
+        ];
+
+    const isAllowed = (!origin)
+      || envAllowed.includes(origin)
+      || (typeof origin === 'string' && origin.endsWith('.amplifyapp.com'));
+
+    if (isAllowed) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
