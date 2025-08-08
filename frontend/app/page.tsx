@@ -4,6 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '../components/layout/Layout';
 import Hero from '../components/sections/Hero';
+import TopCryptosWrapper from '../components/TopCryptosWrapper';
 import { useTranslation } from 'react-i18next';
 
 export default function HomePage() {
@@ -16,6 +17,28 @@ export default function HomePage() {
         transition={{ duration: 1 }}
       >
         <Hero />
+        
+        {/* Seção de Criptomoedas */}
+        <motion.section
+          initial={{ opacity: 0, y: 100 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="py-20 bg-premium-dark"
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl md:text-6xl font-orbitron font-bold text-premium-neon-blue mb-8">
+                Principais Criptomoedas
+              </h2>
+              <p className="text-xl text-premium-light/80 max-w-3xl mx-auto">
+                Acompanhe as principais criptomoedas do mercado em tempo real
+              </p>
+            </div>
+            
+            <TopCryptosWrapper limit={15} />
+          </div>
+        </motion.section>
         
         {/* Adicione outras seções aqui */}
         <motion.section
