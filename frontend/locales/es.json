@@ -334,5 +334,48 @@
     "passwordTooShort": "Contraseña demasiado corta",
     "passwordsMustMatch": "Las contraseñas deben coincidir",
     "acceptTerms": "Debes aceptar los términos de uso"
+  },
+  "about": {
+    "title": "Sobre Nosotros",
+    "subtitle": "Revolucionando el agronegocio con tecnología blockchain",
+    "description": "AGROTM es una plataforma innovadora que conecta agricultores e inversores a través de la tecnología blockchain más avanzada del mundo.",
+    "mission": {
+      "title": "Nuestra Misión",
+      "description": "Democratizar el acceso a la tecnología agrícola de vanguardia y conectar productores rurales con inversores globales."
+    },
+    "vision": {
+      "title": "Nuestra Visión",
+      "description": "Ser la principal plataforma global de tecnología agrícola descentralizada, impulsando la sostenibilidad y eficiencia en el agronegocio."
+    },
+    "values": {
+      "title": "Nuestros Valores",
+      "transparency": {
+        "title": "Transparencia",
+        "description": "Todas las operaciones son transparentes y auditables, garantizando confianza total en nuestras transacciones."
+      },
+      "innovation": {
+        "title": "Innovación",
+        "description": "Siempre a la vanguardia de la tecnología, desarrollando soluciones innovadoras para el agronegocio."
+      },
+      "sustainability": {
+        "title": "Sostenibilidad",
+        "description": "Comprometidos con prácticas agrícolas sostenibles y responsabilidad ambiental."
+      },
+      "collaboration": {
+        "title": "Colaboración",
+        "description": "Creemos en el poder de la colaboración entre productores, inversores y tecnología."
+      }
+    },
+    "team": {
+      "title": "Nuestro Equipo",
+      "description": "Formado por expertos en agronegocio, blockchain y tecnología, unidos por la pasión de transformar la agricultura mundial."
+    },
+    "achievements": {
+      "title": "Logros",
+      "farms": "Granjas Conectadas",
+      "assets": "Activos Tokenizados",
+      "users": "Usuarios Activos",
+      "transactions": "Transacciones Completadas"
+    }
   }
 }

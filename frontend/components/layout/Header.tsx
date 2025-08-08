@@ -32,9 +32,29 @@ export function Header() {
       setIsScrolled(window.scrollY > 50);
     };
 
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (isMenuOpen && !target.closest('header')) {
+        setIsMenuOpen(false);
+      }
+    };
+
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    window.addEventListener('resize', handleResize);
+    document.addEventListener('click', handleClickOutside);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isMenuOpen]);
 
   const handleLogout = async () => {
     try {
@@ -59,7 +79,7 @@ export function Header() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-24">
+        <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -67,7 +87,7 @@ export function Header() {
             transition={{ duration: 0.5 }}
             className="flex items-center"
           >
-            <Logo size="lg" />
+            <Logo size="md" />
           </motion.div>
 
           {/* Desktop Navigation */}
@@ -185,23 +205,61 @@ export function Header() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="md:hidden overflow-hidden"
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="md:hidden overflow-hidden bg-premium-black/95 backdrop-blur-xl border-t border-premium-neon-blue/20"
             >
-              <div className="py-4 space-y-2 border-t border-premium-neon-blue/20 backdrop-blur-xl">
+              <div className="py-6 px-4 space-y-3">
                 {navigation.map((item, index) => (
                   <motion.a
-                    key={item.name}
+                    key={`${item.name}-${index}`}
                     href={item.href}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.1 }}
-                    className="block px-4 py-3 text-premium-neon-blue hover:text-premium-neon-green hover:bg-premium-neon-blue/10 rounded-lg transition-all duration-300"
+                    className="block px-4 py-3 text-premium-neon-blue hover:text-premium-neon-green hover:bg-premium-neon-blue/10 rounded-lg transition-all duration-300 font-orbitron font-medium"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {item.name}
                   </motion.a>
                 ))}
+                
+                {/* Mobile Auth Section */}
+                <div className="border-t border-premium-neon-blue/20 pt-4 mt-4">
+                  {!loading && (
+                    <>
+                      {user ? (
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2 px-4 py-2 bg-premium-black/50 rounded-lg">
+                            <User className="w-4 h-4 text-premium-neon-blue" />
+                            <span className="text-premium-neon-blue text-sm font-orbitron">
+                              {user.email?.split('@')[0]}
+                            </span>
+                          </div>
+                          <button
+                            onClick={() => {
+                              handleLogout();
+                              setIsMenuOpen(false);
+                            }}
+                            className="w-full flex items-center justify-center gap-2 bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 text-red-400 px-4 py-3 rounded-lg transition-all duration-300 font-orbitron text-sm"
+                          >
+                            <LogOut className="w-4 h-4" />
+                            {t('auth.logout.button') || 'Sair'}
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            router.push('/login');
+                            setIsMenuOpen(false);
+                          }}
+                          className="w-full btn-primary px-4 py-3 text-sm font-orbitron"
+                        >
+                          {t('auth.login.title') || 'Entrar'}
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
             </motion.div>
           )}

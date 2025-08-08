@@ -334,5 +334,48 @@
     "passwordTooShort": "Password too short",
     "passwordsMustMatch": "Passwords must match",
     "acceptTerms": "You must accept the terms of use"
+  },
+  "about": {
+    "title": "About Us",
+    "subtitle": "Revolutionizing agribusiness with blockchain technology",
+    "description": "AGROTM is an innovative platform that connects farmers and investors through the world's most advanced blockchain technology.",
+    "mission": {
+      "title": "Our Mission",
+      "description": "Democratize access to cutting-edge agricultural technology and connect rural producers with global investors."
+    },
+    "vision": {
+      "title": "Our Vision",
+      "description": "To be the leading global decentralized agricultural technology platform, driving sustainability and efficiency in agribusiness."
+    },
+    "values": {
+      "title": "Our Values",
+      "transparency": {
+        "title": "Transparency",
+        "description": "All operations are transparent and auditable, ensuring complete trust in our transactions."
+      },
+      "innovation": {
+        "title": "Innovation",
+        "description": "Always at the forefront of technology, developing innovative solutions for agribusiness."
+      },
+      "sustainability": {
+        "title": "Sustainability",
+        "description": "Committed to sustainable agricultural practices and environmental responsibility."
+      },
+      "collaboration": {
+        "title": "Collaboration",
+        "description": "We believe in the power of collaboration between producers, investors and technology."
+      }
+    },
+    "team": {
+      "title": "Our Team",
+      "description": "Formed by experts in agribusiness, blockchain and technology, united by the passion to transform global agriculture."
+    },
+    "achievements": {
+      "title": "Achievements",
+      "farms": "Connected Farms",
+      "assets": "Tokenized Assets",
+      "users": "Active Users",
+      "transactions": "Transactions Completed"
+    }
   }
 }

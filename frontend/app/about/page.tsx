@@ -12,20 +12,20 @@ export default function AboutPage() {
   const values = [
     {
       icon: Shield,
-      title: 'Transparência',
-      description: 'Todas as operações são transparentes e auditáveis, garantindo confiança total em nossas transações.',
+      title: t('about.values.transparency.title'),
+      description: t('about.values.transparency.description'),
       color: 'text-[#00FF7F]'
     },
     {
       icon: Zap,
-      title: 'Inovação',
-      description: 'Sempre na vanguarda da tecnologia, desenvolvendo soluções inovadoras para o agronegócio.',
+      title: t('about.values.innovation.title'),
+      description: t('about.values.innovation.description'),
       color: 'text-[#00FF7F]'
     },
     {
       icon: Globe,
-      title: 'Sustentabilidade',
-      description: 'Comprometidos com práticas agrícolas sustentáveis e responsabilidade ambiental.',
+      title: t('about.values.sustainability.title'),
+      description: t('about.values.sustainability.description'),
       color: 'text-[#00FF7F]'
     },
     {

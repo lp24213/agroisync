@@ -10,7 +10,7 @@ export { Button, buttonVariants } from './Button';
 export { Badge, badgeVariants } from './Badge';
 export { default as Modal } from './Modal';
 export { default as Logo } from './Logo';
-export { default as HeroLogo } from './HeroLogo';
+
 export { default as Select } from './Select';
 export { default as Input } from './Input';
 export { default as Textarea } from './Textarea';

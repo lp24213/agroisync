@@ -335,5 +335,52 @@
     "passwordTooShort": "Senha muito curta",
     "passwordsMustMatch": "As senhas devem coincidir",
     "acceptTerms": "Você deve aceitar os termos de uso"
+  },
+  "about": {
+    "title": "Sobre Nós",
+    "subtitle": "Revolucionando o agronegócio com tecnologia blockchain",
+    "description": "A AGROTM é uma plataforma inovadora que conecta agricultores e investidores através da tecnologia blockchain mais avançada do mundo.",
+    "mission": {
+      "title": "Nossa Missão",
+      "description": "Democratizar o acesso à tecnologia agrícola de ponta e conectar produtores rurais com investidores globais."
+    },
+    "vision": {
+      "title": "Nossa Visão", 
+      "description": "Ser a principal plataforma global de tecnologia agrícola descentralizada, impulsionando a sustentabilidade e eficiência no agronegócio."
+    },
+    "values": {
+      "title": "Nossos Valores",
+      "transparency": {
+        "title": "Transparência",
+        "description": "Todas as operações são transparentes e auditáveis, garantindo confiança total em nossas transações."
+      },
+      "innovation": {
+        "title": "Inovação",
+        "description": "Sempre na vanguarda da tecnologia, desenvolvendo soluções inovadoras para o agronegócio."
+      },
+      "sustainability": {
+        "title": "Sustentabilidade", 
+        "description": "Comprometidos com práticas agrícolas sustentáveis e responsabilidade ambiental."
+      },
+      "collaboration": {
+        "title": "Colaboração",
+        "description": "Acreditamos na força da colaboração entre produtores, investidores e tecnologia."
+      },
+      "trust": {
+        "title": "Confiança",
+        "description": "Construindo relacionamentos duradouros baseados em confiança e resultados."
+      }
+    },
+    "team": {
+      "title": "Nossa Equipe",
+      "description": "Formada por especialistas em agronegócio, blockchain e tecnologia, unidos pela paixão de transformar a agricultura mundial."
+    },
+    "achievements": {
+      "title": "Conquistas",
+      "farms": "Fazendas Conectadas",
+      "assets": "Ativos Tokenizados", 
+      "users": "Usuários Ativos",
+      "transactions": "Transações Realizadas"
+    }
   }
 }

@@ -14,15 +14,15 @@ const Logo: React.FC<LogoProps> = ({ className = '', size = 'md', showText = tru
   const { t } = useTranslation();
   
   const sizeClasses = {
-    sm: 'w-10 h-10',
-    md: 'w-16 h-16',
-    lg: 'w-20 h-20'
+    sm: 'w-8 h-8',
+    md: 'w-12 h-12',
+    lg: 'w-16 h-16'
   };
 
   const textSizes = {
-    sm: 'text-lg',
-    md: 'text-2xl',
-    lg: 'text-3xl'
+    sm: 'text-base',
+    md: 'text-xl',
+    lg: 'text-2xl'
   };
 
   return (
@@ -30,8 +30,8 @@ const Logo: React.FC<LogoProps> = ({ className = '', size = 'md', showText = tru
       <Image
         src="/assets/images/logo/agrotm-logo-white.svg"
         alt="AGROTM Logo"
-        width={size === 'sm' ? 40 : size === 'md' ? 64 : 80}
-        height={size === 'sm' ? 40 : size === 'md' ? 64 : 80}
+        width={size === 'sm' ? 32 : size === 'md' ? 48 : 64}
+        height={size === 'sm' ? 32 : size === 'md' ? 48 : 64}
         className={`${sizeClasses[size]} object-contain`}
         priority
       />

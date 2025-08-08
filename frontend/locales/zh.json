@@ -334,5 +334,48 @@
     "passwordTooShort": "密码太短",
     "passwordsMustMatch": "密码必须匹配",
     "acceptTerms": "您必须接受使用条款"
+  },
+  "about": {
+    "title": "关于我们",
+    "subtitle": "用区块链技术革命农业综合企业",
+    "description": "AGROTM是一个创新平台，通过世界上最先进的区块链技术连接农民和投资者。",
+    "mission": {
+      "title": "我们的使命",
+      "description": "民主化获取尖端农业技术，连接农村生产者与全球投资者。"
+    },
+    "vision": {
+      "title": "我们的愿景",
+      "description": "成为领先的全球去中心化农业技术平台，推动农业综合企业的可持续性和效率。"
+    },
+    "values": {
+      "title": "我们的价值观",
+      "transparency": {
+        "title": "透明度",
+        "description": "所有操作都是透明和可审计的，确保对我们交易的完全信任。"
+      },
+      "innovation": {
+        "title": "创新",
+        "description": "始终处于技术前沿，为农业综合企业开发创新解决方案。"
+      },
+      "sustainability": {
+        "title": "可持续性",
+        "description": "致力于可持续农业实践和环境责任。"
+      },
+      "collaboration": {
+        "title": "合作",
+        "description": "我们相信生产者、投资者和技术之间合作的力量。"
+      }
+    },
+    "team": {
+      "title": "我们的团队",
+      "description": "由农业综合企业、区块链和技术专家组成，因改变全球农业的热情而团结在一起。"
+    },
+    "achievements": {
+      "title": "成就",
+      "farms": "连接的农场",
+      "assets": "代币化资产",
+      "users": "活跃用户",
+      "transactions": "已完成交易"
+    }
   }
 }
