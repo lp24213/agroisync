@@ -8,7 +8,7 @@ export default function TestPage() {
     <div className="min-h-screen bg-gradient-to-br from-green-400 to-blue-500">
       <div className="container mx-auto py-8 px-4">
         <div className="text-center text-white mb-8">
-          <h1 className="text-6xl font-bold mb-4">🚀 AGROTM.SOL</h1>
+          <h1 className="text-6xl font-bold mb-4">🚀 AGROTM</h1>
           <p className="text-2xl mb-8">Deploy Funcionando!</p>
           <div className="bg-white/20 backdrop-blur-sm rounded-lg p-6 mb-8">
             <p className="text-lg">✅ Frontend Online</p>

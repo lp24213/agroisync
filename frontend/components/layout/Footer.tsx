@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { Logo } from '../ui/Logo';
 
 export function Footer() {
   return (
@@ -11,18 +12,7 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center mb-4">
-              <div className="flex items-center gap-3">
-                <Image 
-                  src="/assets/images/logo/agrotm-logo-white.svg" 
-                  alt="AGROTM Logo" 
-                  width={40} 
-                  height={40}
-                  className="w-10 h-10 object-contain"
-                />
-                <span className="text-xl font-orbitron font-bold bg-gradient-to-r from-premium-neon-blue to-premium-neon-green bg-clip-text text-transparent">
-                  AGROTM
-                </span>
-              </div>
+              <Logo size="sm" showText={false} />
             </div>
                           <p className="text-white mb-6 max-w-md">
               Extensão da startup AGROTM, intermediando produtos do agronegócio com blockchain. Segurança, tecnologia e inovação para o setor agrícola.

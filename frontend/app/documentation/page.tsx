@@ -21,7 +21,7 @@ export default function DocumentationPage() {
             Documentação Completa
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
-            Guia completo para integrar e utilizar a plataforma AGROTM.SOL
+            Guia completo para integrar e utilizar a plataforma AGROTM
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <span className="bg-green-500/20 text-green-400 px-4 py-2 rounded-full text-sm">
@@ -48,7 +48,7 @@ export default function DocumentationPage() {
           >
             <h2 className="text-4xl font-bold text-white mb-4">Visão Geral</h2>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              AGROTM.SOL é uma plataforma revolucionária que combina agricultura tradicional 
+              AGROTM é uma plataforma revolucionária que combina agricultura tradicional 
               com tecnologia blockchain para criar um ecossistema sustentável e lucrativo.
             </p>
           </motion.div>
@@ -158,7 +158,7 @@ export default function DocumentationPage() {
           >
             <h2 className="text-4xl font-bold text-white mb-4">Começando</h2>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Siga este guia passo a passo para começar a usar a plataforma AGROTM.SOL
+              Siga este guia passo a passo para começar a usar a plataforma AGROTM
             </p>
           </motion.div>
 

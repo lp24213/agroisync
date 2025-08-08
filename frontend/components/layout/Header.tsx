@@ -87,7 +87,7 @@ export function Header() {
             transition={{ duration: 0.5 }}
             className="flex items-center"
           >
-            <Logo size="md" />
+            <Logo size="md" showText={false} />
           </motion.div>
 
           {/* Desktop Navigation */}
