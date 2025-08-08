@@ -28,24 +28,23 @@ npm start
 
 ## 🌐 Deploy
 
-### Vercel (Recomendado)
+### AWS Amplify (Recomendado)
 
-1. Conecte seu repositório ao Vercel
-2. Configure as variáveis de ambiente:
+1. Conecte seu repositório ao Amplify
+2. Defina variáveis de ambiente:
    - `NEXT_PUBLIC_APP_URL` - URL da aplicação
-   - `NEXT_PUBLIC_API_URL` - URL da API
+   - `NEXT_PUBLIC_API_URL` - URL da API (ALB/API Gateway)
    - `NEXT_PUBLIC_CHAIN_ID` - ID da rede Solana
    - `NEXT_PUBLIC_NETWORK` - Nome da rede
 
-3. Deploy automático será executado
+3. Amplify executa o build com `frontend/amplify.yml`
 
 ### Outras Plataformas
 
-O projeto é compatível com qualquer plataforma que suporte Next.js:
+Compatível com qualquer plataforma Next.js:
 - Netlify
-- Railway
 - DigitalOcean App Platform
-- AWS Amplify
+- Render
 
 ## 🔧 Configuração
 
@@ -62,7 +61,7 @@ cp env.example .env.local
 - **next.config.js** - Configuração do Next.js
 - **tailwind.config.js** - Configuração do Tailwind CSS
 - **tsconfig.json** - Configuração do TypeScript
-- **vercel.json** - Configuração específica do Vercel
+- `frontend/amplify.yml` - Configuração de build do Amplify
 
 ## 📁 Estrutura do Projeto
 

@@ -80,7 +80,7 @@ After successful deployment:
 #### Common Issues:
 1. **Build Failures**: Check the build logs in GitHub Actions
 2. **Environment Variables**: Ensure all required secrets are set
-3. **Service Names**: Verify Railway service name matches configuration
+3. **Service Names**: Verify ECS service name matches configuration
 
 #### Health Checks:
 - Frontend: Visit the deployed URL
@@ -100,7 +100,7 @@ After successful deployment:
 
 ### 🎯 Next Steps
 
-1. Configure production environment variables in Railway
+1. Configure production environment variables in AWS (Amplify/SSM/Secrets Manager)
 2. Set up monitoring and logging
 3. Configure custom domains (if needed)
 4. Set up SSL certificates

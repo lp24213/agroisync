@@ -56,7 +56,7 @@
 
 ## 🌐 **Configuração de Deploy**
 
-### **Vercel (Frontend)**
+### **Amplify (Frontend)**
 ```json
 {
   "version": 2,
@@ -71,7 +71,7 @@
 }
 ```
 
-### **Railway (Backend)**
+### **ECS (Backend)**
 ```json
 {
   "build": {
@@ -89,9 +89,9 @@
 
 ### **Frontend (.env.local)**
 ```bash
-# Application URLs
-NEXT_PUBLIC_APP_URL=https://seu-dominio.vercel.app
-NEXT_PUBLIC_API_URL=https://seu-backend.railway.app
+# Application URLs (AWS)
+NEXT_PUBLIC_APP_URL=https://app.seu-amplify-domain.amplifyapp.com
+NEXT_PUBLIC_API_URL=https://api.seu-dominio-aws.com
 
 # Solana Configuration
 NEXT_PUBLIC_CHAIN_ID=1
@@ -123,7 +123,7 @@ JWT_SECRET=your-super-secret-jwt-key
 JWT_EXPIRES_IN=7d
 
 # Security
-CORS_ORIGIN=https://seu-dominio.vercel.app
+CORS_ORIGIN=https://agrotmsol.com.br
 RATE_LIMIT_WINDOW_MS=900000
 RATE_LIMIT_MAX_REQUESTS=100
 ```

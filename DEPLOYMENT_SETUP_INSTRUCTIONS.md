@@ -2,7 +2,7 @@
 
 ## 📋 Checklist de Configuração Manual
 
-### ✅ **1. Configuração do Vercel (Frontend)**
+### ✅ **1. Configuração do Amplify (Frontend)**
 
 #### **Configurações do Projeto:**
 - **Root Directory**: `frontend`
@@ -11,11 +11,11 @@
 - **Install Command**: `npm ci`
 - **Node.js Version**: 20.x
 
-#### **Variáveis de Ambiente (Vercel Dashboard):**
+#### **Variáveis de Ambiente (Amplify Console):**
 ```bash
-# Application URLs
-NEXT_PUBLIC_APP_URL=https://agrotm-solana.vercel.app
-NEXT_PUBLIC_API_URL=https://agrotm-solana.railway.app
+# Application URLs (AWS)
+NEXT_PUBLIC_APP_URL=https://app.seu-amplify-domain.amplifyapp.com
+NEXT_PUBLIC_API_URL=https://api.seu-dominio-aws.com
 
 # Solana Configuration
 NEXT_PUBLIC_CHAIN_ID=1
@@ -37,7 +37,7 @@ NEXT_PUBLIC_ENABLE_ANALYTICS=false
 NEXT_PUBLIC_ENABLE_DEBUG=false
 ```
 
-### ✅ **2. Configuração do Railway (Backend)**
+### ✅ **2. Configuração do ECS (Backend)**
 
 #### **Configurações do Projeto:**
 - **Root Directory**: `backend`
@@ -46,7 +46,7 @@ NEXT_PUBLIC_ENABLE_DEBUG=false
 - **Health Check Path**: `/health`
 - **Node.js Version**: 20.x
 
-#### **Variáveis de Ambiente (Railway Dashboard):**
+#### **Variáveis de Ambiente (ECS/SSM/Secrets Manager):**
 ```bash
 # Server Configuration
 PORT=3001
@@ -65,7 +65,7 @@ SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
 SOLANA_WS_URL=wss://api.mainnet-beta.solana.com
 
 # Security
-CORS_ORIGIN=https://agrotm-solana.vercel.app
+CORS_ORIGIN=https://agrotmsol.com.br
 RATE_LIMIT_WINDOW_MS=900000
 RATE_LIMIT_MAX_REQUESTS=100
 
@@ -74,17 +74,17 @@ LOG_LEVEL=info
 LOG_FILE=logs/app.log
 ```
 
-### ✅ **3. Configuração do GitHub Secrets**
+### ✅ **3. Configuração do GitHub Secrets (AWS)**
 
 #### **Secrets Necessários:**
 ```bash
-# Vercel Secrets
-VERCEL_TOKEN=your-vercel-token
-VERCEL_ORG_ID=your-vercel-org-id
-VERCEL_PROJECT_ID=your-vercel-project-id
-
-# Railway Secrets
-RAILWAY_TOKEN=your-railway-token
+# AWS/OIDC
+AWS_REGION=...
+AWS_GITHUB_ROLE_ARN=...
+ECR_REPOSITORY=...
+ECS_CLUSTER=...
+ECS_SERVICE=...
+ECS_CONTAINER_NAME=...
 ```
 
 #### **Como Obter os Secrets:**
@@ -166,14 +166,14 @@ git commit -m "feat: prepare for production deploy"
 git push origin main
 ```
 
-### **2. Monitorar GitHub Actions**
+### **2. Monitorar GitHub Actions / Amplify / ECS**
 - Verifique o workflow em `.github/workflows/deploy.yml`
 - Aguarde os testes passarem
 - Deploy automático será executado
 
 ### **3. Verificar Deploy**
-- **Vercel**: https://vercel.com/dashboard
-- **Railway**: https://railway.app/dashboard
+- **Amplify**: https://console.aws.amazon.com/amplify/
+- **ECS**: https://console.aws.amazon.com/ecs/
 - **Logs**: Verifique os logs de build e deploy
 
 ## 🐛 **Troubleshooting**
