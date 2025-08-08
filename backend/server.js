@@ -23,6 +23,7 @@ const dashboardRoutes = require('./src/routes/dashboard');
 // Import middleware
 const errorHandler = require('./src/middleware/errorHandler');
 const { authMiddleware } = require('./src/middleware/auth');
+const { validateMetamaskId, logMetamaskAccess } = require('./src/middleware/metamaskAuth');
 
 // Import utils
 const logger = require('./src/utils/logger');
@@ -190,16 +191,16 @@ app.get('/api/docs', (req, res) => {
 });
 
 // API Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/users', authMiddleware, userRoutes);
-app.use('/api/staking', authMiddleware, stakingRoutes);
-app.use('/api/nfts', authMiddleware, nftRoutes);
-app.use('/api/analytics', authMiddleware, analyticsRoutes);
-app.use('/api/contact', contactRoutes);
-app.use('/api/upload', authMiddleware, uploadRoutes);
+app.use('/api/auth', logMetamaskAccess, authRoutes);
+app.use('/api/users', logMetamaskAccess, validateMetamaskId, authMiddleware, userRoutes);
+app.use('/api/staking', logMetamaskAccess, validateMetamaskId, authMiddleware, stakingRoutes);
+app.use('/api/nfts', logMetamaskAccess, validateMetamaskId, authMiddleware, nftRoutes);
+app.use('/api/analytics', logMetamaskAccess, validateMetamaskId, authMiddleware, analyticsRoutes);
+app.use('/api/contact', logMetamaskAccess, contactRoutes);
+app.use('/api/upload', logMetamaskAccess, validateMetamaskId, authMiddleware, uploadRoutes);
 app.use('/api/health', healthRoutes);
-app.use('/api/marketplace', marketplaceRoutes);
-app.use('/api/dashboard', authMiddleware, dashboardRoutes);
+app.use('/api/marketplace', logMetamaskAccess, validateMetamaskId, marketplaceRoutes);
+app.use('/api/dashboard', logMetamaskAccess, validateMetamaskId, authMiddleware, dashboardRoutes);
 
 // Legacy endpoints for compatibility
 app.get('/api/contact', (req, res) => {

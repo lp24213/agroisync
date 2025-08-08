@@ -1,4 +1,5 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://turntable.proxy.rlwy.net:54605';
+const METAMASK_ID = process.env.NEXT_PUBLIC_METAMASK_ID || '0x5Ea5C5970e8AE23A5336d631707CF31C5916E8b1';
 
 export interface ApiResponse<T = any> {
   success: boolean;
@@ -9,9 +10,11 @@ export interface ApiResponse<T = any> {
 
 class ApiClient {
   private baseUrl: string;
+  private metamaskId: string;
 
-  constructor(baseUrl: string = API_BASE_URL) {
+  constructor(baseUrl: string = API_BASE_URL, metamaskId: string = METAMASK_ID) {
     this.baseUrl = baseUrl;
+    this.metamaskId = metamaskId;
   }
 
   private async request<T>(
@@ -25,6 +28,7 @@ class ApiClient {
         headers: {
           'Content-Type': 'application/json',
           'User-Agent': 'AGROTM-Frontend/1.0',
+          'x-metamask-id': this.metamaskId, // Enviando ID Metamask no header
           ...options.headers,
         },
         ...options,
