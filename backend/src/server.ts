@@ -15,6 +15,7 @@ const corsOptions = {
   origin: [
     'https://agrotmsol.com.br',
     'https://www.agrotmsol.com.br',
+    'https://main.d2d5j98tau5snm.amplifyapp.com',
     'http://localhost:3000',
     'http://localhost:3001'
   ],
