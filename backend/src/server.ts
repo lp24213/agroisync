@@ -36,7 +36,7 @@ app.get('/health', (_req, res) => {
 app.get('/mongodb-site-verification.html', (_req, res) => {
   const token = process.env.MONGODB_SITE_VERIFICATION || '';
   res.setHeader('Content-Type', 'text/plain');
-  res.status(200).send(`mongodb-site-verification=${token}`);
+  res.status(200).send(token);
 });
 
 // Detailed health check endpoint
