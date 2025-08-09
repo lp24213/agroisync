@@ -30,11 +30,11 @@
       "secrets": [
         {
           "name": "MONGODB_URI",
-          "valueFrom": "arn:aws:secretsmanager:us-east-2:119473395465:secret:agrotm/database-url"
+          "valueFrom": "agrotm/database-url"
         },
         {
           "name": "JWT_SECRET",
-          "valueFrom": "arn:aws:secretsmanager:us-east-2:119473395465:secret:agrotm/jwt-secret"
+          "valueFrom": "agrotm/jwt-secret"
         }
       ],
       "logConfiguration": {
