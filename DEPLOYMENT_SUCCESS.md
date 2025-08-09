@@ -118,9 +118,7 @@ jobs:
 ### **🔐 Secrets Configurados:**
 
 #### **GitHub Secrets:**
-- ✅ `VERCEL_TOKEN` - Token de deploy do Vercel
-- ✅ `VERCEL_ORG_ID` - ID da organização Vercel
-- ✅ `RAILWAY_TOKEN` - Token de deploy do Railway
+Somente AWS (Amplify/ECS/ECR/ACM/Route53). Nenhuma dependência de Vercel/Railway.
 
 ### **📱 Funcionalidades por Dispositivo:**
 

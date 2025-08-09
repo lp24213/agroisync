@@ -426,7 +426,7 @@ jobs:
       - run: npm run build:frontend
       - uses: amondnet/vercel-action@v20
         with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          # removido: Vercel
           vercel-org-id: ${{ secrets.ORG_ID }}
           vercel-project-id: ${{ secrets.PROJECT_ID }}
 

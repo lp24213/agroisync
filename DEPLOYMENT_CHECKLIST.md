@@ -123,25 +123,10 @@ VERCEL_ORG_ID=your-vercel-org-id
 RAILWAY_TOKEN=a9fb0e22-7d27-41b0-a5e6-c6706f296413
 ```
 
-### **2. Vercel Environment Variables**
+### **2. Amplify Environment Variables (Frontend)**
+Configure somente no AWS Amplify (branch main):
 ```bash
-# Go to: https://vercel.com/dashboard
-# Project: agrotm-solana
-# Settings → Environment Variables
-NODE_ENV=production
-NEXT_PUBLIC_API_URL=https://agrotm-backend.railway.app
-NEXT_PUBLIC_APP_URL=https://agrotm-solana.vercel.app
-```
-
-### **3. Railway Environment Variables**
-```bash
-# Go to: https://railway.app/dashboard
-# Project: agrotm-backend
-# Variables tab
-NODE_ENV=production
-PORT=3001
-FRONTEND_URL=https://agrotm-solana.vercel.app
-JWT_SECRET=your-super-secret-jwt-key-change-in-production
+NEXT_PUBLIC_API_URL=https://agrotmsol.com.br
 ```
 
 ### **4. Trigger Deployment**

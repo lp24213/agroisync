@@ -1,0 +1,50 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "IamRoleOps",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetRole",
+        "iam:CreateRole",
+        "iam:AttachRolePolicy",
+        "iam:PassRole"
+      ],
+      "Resource": "arn:aws:iam::119473395465:role/agrotmsol-lambda-role"
+    },
+    {
+      "Sid": "LambdaOps",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:GetFunction",
+        "lambda:CreateFunction",
+        "lambda:UpdateFunctionCode",
+        "lambda:UpdateFunctionConfiguration",
+        "lambda:AddPermission"
+      ],
+      "Resource": "arn:aws:lambda:us-east-2:119473395465:function:agrotmsol"
+    },
+    {
+      "Sid": "ApiGwOps",
+      "Effect": "Allow",
+      "Action": [
+        "apigateway:GET",
+        "apigateway:POST",
+        "apigateway:PUT",
+        "apigateway:PATCH"
+      ],
+      "Resource": "arn:aws:apigateway:us-east-2::/*"
+    },
+    {
+      "Sid": "AmplifyOps",
+      "Effect": "Allow",
+      "Action": [
+        "amplify:ListApps",
+        "amplify:UpdateBranch"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+
+

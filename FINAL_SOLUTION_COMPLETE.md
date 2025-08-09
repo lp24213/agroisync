@@ -8,23 +8,16 @@ Os warnings de "Context access might be invalid" foram eliminados usando **vari�
 ### **1. Abordagem Usada:**
 ```yaml
 env:
-  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+  # Somente AWS: remover Vercel/Railway
   RAILWAY_SERVICE: ${{ secrets.RAILWAY_SERVICE }}
   NOTIFICATION_WEBHOOK_URL: ${{ secrets.NOTIFICATION_WEBHOOK_URL }}
 ```
 
 ### **2. Workflows Corrigidos:**
-- ✅ `.github/workflows/ci-cd-simple.yml` - Usando `${{ env.VERCEL_TOKEN }}`
-- ✅ `.github/workflows/rollback.yml` - Usando `${{ env.VERCEL_TOKEN }}`
-- ✅ `.github/workflows/monitoring.yml` - Usando `${{ env.VERCEL_TOKEN }}`
+- ✅ Workflows somente AWS (Amplify/ECS/ECR)
 
 ### **3. Por que Funciona:**
-- **Antes:** `${{ secrets.VERCEL_TOKEN }}` → Causava warnings
-- **Agora:** `${{ env.VERCEL_TOKEN }}` → Sem warnings
-- **Resultado:** Mesma funcionalidade, zero erros
+- Removido Vercel/Railway
 
 ## 🎯 **RESULTADO:**
 

@@ -1,0 +1,15 @@
+{
+  "prod": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-agrotmsol-prod-7af8a-authRole",
+      "UnauthRoleArn": "arn:aws:iam::119473395465:role/amplify-agrotmsol-prod-7af8a-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::119473395465:role/amplify-agrotmsol-prod-7af8a-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-agrotmsol-prod-7af8a-deployment",
+      "UnauthRoleName": "amplify-agrotmsol-prod-7af8a-unauthRole",
+      "StackName": "amplify-agrotmsol-prod-7af8a",
+      "StackId": "arn:aws:cloudformation:us-east-2:119473395465:stack/amplify-agrotmsol-prod-7af8a/5c9aef20-754b-11f0-bcf8-0213d87386f3",
+      "AmplifyAppId": "d2d5j98tau5snm"
+    }
+  }
+}
