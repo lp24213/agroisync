@@ -4,8 +4,8 @@
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "1024",
   "memory": "2048",
-  "executionRoleArn": "arn:aws:iam::123456789012:role/ecsTaskExecutionRole",
-  "taskRoleArn": "arn:aws:iam::123456789012:role/ecsTaskRole",
+  "executionRoleArn": "arn:aws:iam::119473395465:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::119473395465:role/ecsTaskRole",
   "containerDefinitions": [
     {
       "name": "agrotm-backend",
@@ -29,19 +29,19 @@
       ],
       "secrets": [
         {
-          "name": "DATABASE_URL",
-          "valueFrom": "arn:aws:secretsmanager:us-east-1:123456789012:secret:agrotm/database-url"
+          "name": "MONGODB_URI",
+          "valueFrom": "arn:aws:secretsmanager:us-east-2:119473395465:secret:agrotm/database-url"
         },
         {
           "name": "JWT_SECRET",
-          "valueFrom": "arn:aws:secretsmanager:us-east-1:123456789012:secret:agrotm/jwt-secret"
+          "valueFrom": "arn:aws:secretsmanager:us-east-2:119473395465:secret:agrotm/jwt-secret"
         }
       ],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
           "awslogs-group": "/ecs/agrotm-production",
-          "awslogs-region": "us-east-1",
+          "awslogs-region": "us-east-2",
           "awslogs-stream-prefix": "ecs"
         }
       },
@@ -51,60 +51,6 @@
         "timeout": 5,
         "retries": 3,
         "startPeriod": 60
-      }
-    },
-    {
-      "name": "agrotm-graphql",
-      "image": "agrotm/graphql:latest",
-      "essential": true,
-      "portMappings": [
-        {
-          "containerPort": 4000,
-          "protocol": "tcp"
-        }
-      ],
-      "environment": [
-        {
-          "name": "NODE_ENV",
-          "value": "production"
-        },
-        {
-          "name": "PORT",
-          "value": "4000"
-        }
-      ],
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/ecs/agrotm-production",
-          "awslogs-region": "us-east-1",
-          "awslogs-stream-prefix": "ecs"
-        }
-      }
-    },
-    {
-      "name": "agrotm-analytics",
-      "image": "agrotm/analytics:latest",
-      "essential": true,
-      "portMappings": [
-        {
-          "containerPort": 8080,
-          "protocol": "tcp"
-        }
-      ],
-      "environment": [
-        {
-          "name": "ENV",
-          "value": "production"
-        }
-      ],
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/ecs/agrotm-production",
-          "awslogs-region": "us-east-1",
-          "awslogs-stream-prefix": "ecs"
-        }
       }
     }
   ],

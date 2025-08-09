@@ -29,8 +29,8 @@ RUN adduser -S nodejs -u 1001
 # Set working directory
 WORKDIR /app
 
-# Install dumb-init for proper signal handling
-RUN apk add --no-cache dumb-init
+# Install dumb-init and curl for healthcheck
+RUN apk add --no-cache dumb-init curl
 
 # Copy package files
 COPY package*.json ./
