@@ -286,3 +286,6 @@ const server = app.listen(PORT, () => {
 });
 
 module.exports = server; 
+
+// Export Express app for AWS Lambda (serverless-http)
+module.exports.app = app;
