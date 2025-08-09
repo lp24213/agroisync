@@ -32,6 +32,13 @@ app.get('/health', (_req, res) => {
   res.status(200).send('OK');
 });
 
+// MongoDB Atlas domain verification endpoint
+app.get('/mongodb-site-verification.html', (_req, res) => {
+  const token = process.env.MONGODB_SITE_VERIFICATION || '';
+  res.setHeader('Content-Type', 'text/plain');
+  res.status(200).send(`mongodb-site-verification=${token}`);
+});
+
 // Detailed health check endpoint
 app.get('/health/detailed', (_req, res) => {
   res.status(200).json({
