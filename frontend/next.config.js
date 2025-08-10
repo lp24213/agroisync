@@ -20,12 +20,24 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   
-  // Security headers
+  // Security headers (GLOBAL ACCESS - NO REGION RESTRICTIONS)
   async headers() {
     return [
       {
         source: '/(.*)',
         headers: [
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*',
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET, POST, PUT, DELETE, OPTIONS, PATCH',
+          },
+          {
+            key: 'Access-Control-Allow-Headers',
+            value: 'Content-Type, Authorization, X-Requested-With, X-API-Key, X-Client-Version, Origin, Accept',
+          },
           {
             key: 'X-Frame-Options',
             value: 'DENY',

@@ -19,21 +19,19 @@ module.exports = {
     delayMs: 500, // begin adding 500ms of delay per request above 50
   },
 
-  // CORS Configuration
+  // CORS Configuration (GLOBAL ACCESS - NO REGION RESTRICTIONS)
   cors: {
-    origin: process.env.FRONTEND_URL || [
-      'http://localhost:3000',
-      'https://agrotmsol.com.br',
-      'https://www.agrotmsol.com.br',
-    ],
+    origin: '*', // Allow ALL origins globally
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: [
       'Content-Type',
       'Authorization',
       'X-Requested-With',
       'X-API-Key',
       'X-Client-Version',
+      'Origin',
+      'Accept'
     ],
     maxAge: 86400, // 24 hours
   },

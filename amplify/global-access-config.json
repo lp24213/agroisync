@@ -1,0 +1,38 @@
+{
+  "globalAccess": {
+    "description": "AGROTM Global Access Configuration - No Region Restrictions",
+    "cors": {
+      "enabled": true,
+      "origin": "*",
+      "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+      "allowedHeaders": [
+        "Content-Type",
+        "Authorization",
+        "X-Requested-With",
+        "X-API-Key",
+        "X-Client-Version",
+        "Origin",
+        "Accept"
+      ],
+      "credentials": true
+    },
+    "regions": {
+      "primary": "us-east-2",
+      "fallback": ["us-east-1", "eu-west-1", "ap-southeast-1", "sa-east-1"],
+      "global": true
+    },
+    "cloudFront": {
+      "enabled": true,
+      "priceClass": "PriceClass_All",
+      "geoRestriction": "none"
+    },
+    "apiGateway": {
+      "cors": true,
+      "global": true
+    },
+    "s3": {
+      "cors": true,
+      "publicRead": true
+    }
+  }
+}
