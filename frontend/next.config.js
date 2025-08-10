@@ -5,11 +5,6 @@ const nextConfig = {
     unoptimized: true,
   },
   trailingSlash: false,
-  // AWS Amplify specific configuration
-  output: 'standalone',
-  experimental: {
-    outputFileTracingRoot: undefined,
-  },
   // Build configuration - IGNORE ALL ERRORS FOR DEPLOY
   eslint: {
     ignoreDuringBuilds: true,
