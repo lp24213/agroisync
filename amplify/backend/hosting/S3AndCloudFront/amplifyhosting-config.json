@@ -1,5 +1,0 @@
-{
-  "providerPlugin": "awscloudformation",
-  "service": "S3AndCloudFront",
-  "dependsOn": []
-}

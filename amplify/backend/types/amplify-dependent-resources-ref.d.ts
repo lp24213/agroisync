@@ -5,11 +5,5 @@ export type AmplifyDependentResourcesAttributes = {
       "GraphQLAPIIdOutput": "string",
       "GraphQLAPIKeyOutput": "string"
     }
-  },
-  "hosting": {
-    "S3AndCloudFront": {
-      "S3BucketName": "string",
-      "WebsiteURL": "string"
-    }
   }
 }

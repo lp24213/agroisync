@@ -22,11 +22,5 @@
       "service": "AppSync"
     }
   },
-  "hosting": {
-    "S3AndCloudFront": {
-      "dependsOn": [],
-      "providerPlugin": "awscloudformation",
-      "service": "S3AndCloudFront"
-    }
-  }
+  "hosting": {}
 }
