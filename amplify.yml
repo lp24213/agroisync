@@ -11,7 +11,7 @@ frontend:
     build:
       commands:
         - echo "🔨 Construindo aplicação Next.js..."
-        - npm run build
+        - npm run build:amplify
         - echo "✅ Build do frontend concluído"
     postBuild:
       commands:
@@ -25,3 +25,33 @@ frontend:
     paths:
       - frontend/node_modules/**/*
       - frontend/.next/cache/**/*
+
+backend:
+  phases:
+    preBuild:
+      commands:
+        - echo "🔧 Configurando backend..."
+        - cd backend
+        - npm ci --production=false
+        - echo "✅ Dependências do backend instaladas"
+    build:
+      commands:
+        - echo "🔨 Construindo backend..."
+        - npm run build
+        - echo "✅ Build do backend concluído"
+    postBuild:
+      commands:
+        - echo "📁 Preparando backend para deploy..."
+        - echo "✅ Backend pronto para deploy"
+  artifacts:
+    baseDirectory: backend
+    files:
+      - '**/*'
+      - '!node_modules/**/*'
+      - '!tests/**/*'
+      - '!coverage/**/*'
+      - '!.git/**/*'
+      - '!.vscode/**/*'
+  cache:
+    paths:
+      - backend/node_modules/**/*

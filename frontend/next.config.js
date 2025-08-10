@@ -13,6 +13,9 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   // AWS Amplify configuration
+  experimental: {
+    esmExternals: false,
+  },
   async headers() {
     return [
       {
