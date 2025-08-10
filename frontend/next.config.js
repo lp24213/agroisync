@@ -1,13 +1,16 @@
 /** @type {import('next').Config} */
 const nextConfig = {
   // AWS Amplify optimized configuration
-  output: 'export',
-  trailingSlash: true,
+  experimental: {
+    esmExternals: false,
+  },
   
   // Image configuration
   images: {
     unoptimized: true,
   },
+  
+  trailingSlash: false,
   
   // Build configuration - IGNORE ALL ERRORS FOR DEPLOY
   eslint: {
