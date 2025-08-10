@@ -1,10 +1,8 @@
 /** @type {import('next').Config} */
 const nextConfig = {
   // AWS Amplify optimized configuration
-  output: 'standalone',
   experimental: {
     esmExternals: false,
-    outputFileTracingRoot: undefined,
   },
   
   // Image configuration

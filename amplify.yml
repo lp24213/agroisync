@@ -18,7 +18,7 @@ frontend:
         - echo "📁 Preparando arquivos para deploy..."
         - echo "✅ Frontend pronto para deploy"
   artifacts:
-    baseDirectory: frontend/.next/standalone
+    baseDirectory: frontend/.next
     files:
       - '**/*'
   cache:
