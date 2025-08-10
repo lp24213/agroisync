@@ -12,12 +12,10 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // AWS Amplify specific configuration
+  // AWS Amplify configuration
   experimental: {
     esmExternals: false,
   },
-  // Output configuration for AWS Amplify
-  output: 'standalone',
   async headers() {
     return [
       {
