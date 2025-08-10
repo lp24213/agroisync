@@ -12,6 +12,9 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  // AWS Amplify specific configuration
+  output: 'export',
+  trailingSlash: true,
   async headers() {
     return [
       {
