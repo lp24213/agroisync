@@ -3,21 +3,17 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "🚀 AGROTM - Iniciando build no AWS Amplify"
-        - echo "📦 Instalando dependências..."
-        - npm ci --production=false
-        - echo "🔧 Definindo variáveis de ambiente para o Amplify (use o Console para produção)"
-        - echo "✅ Dependências instaladas"
+        - echo "🚀 AGROTM - Build AWS Amplify (Next.js)"
+        - node -v && npm -v
+        - npm ci
     build:
       commands:
-        - echo "🔨 Construindo aplicação Next.js..."
+        - echo "🔨 Executando build de produção..."
         - npm run build
-        - echo "🔎 NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL"
-        - echo "✅ Build concluído"
+        - echo "NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL"
     postBuild:
       commands:
-        - echo "📁 Preparando arquivos para deploy..."
-        - echo "✅ Frontend pronto para deploy"
+        - echo "✅ Build concluído"
   artifacts:
     baseDirectory: .next
     files:
@@ -26,3 +22,4 @@ frontend:
     paths:
       - node_modules/**/*
       - .next/cache/**/*
+      - ~/.npm/**/*

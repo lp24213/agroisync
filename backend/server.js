@@ -42,13 +42,13 @@ app.use(helmet({
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       imgSrc: ["'self'", "data:", "https:"],
       scriptSrc: ["'self'"],
-      connectSrc: ["'self'", "https://api.mainnet-beta.solana.com"]
+      connectSrc: ["'self'", "https://api.mainnet-beta.solana.com", "https://o6h7rhvsj5c43bhrz25djt53qa.appsync-api.us-east-2.amazonaws.com"]
     }
   },
   crossOriginEmbedderPolicy: false
 }));
 
-// CORS configuration (AWS)
+// CORS configuration (AWS Amplify)
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow list from env or defaults including Amplify domains
@@ -57,13 +57,15 @@ const corsOptions = {
       : [
           'https://agrotmsol.com.br',
           'https://www.agrotmsol.com.br',
+          'https://d2d5j98tau5snm.amplifyapp.com',
           'http://localhost:3000',
           'http://localhost:3001'
         ];
 
     const isAllowed = (!origin)
       || envAllowed.includes(origin)
-      || (typeof origin === 'string' && origin.endsWith('.amplifyapp.com'));
+      || (typeof origin === 'string' && origin.endsWith('.amplifyapp.com'))
+      || (typeof origin === 'string' && origin.includes('amplifyapp.com'));
 
     if (isAllowed) {
       callback(null, true);
@@ -107,15 +109,16 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Static files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
-// Health check endpoint (for AWS)
+// Health check endpoint for AWS Amplify
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'OK',
+    message: 'AGROTM Backend is healthy',
     timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
     environment: NODE_ENV,
-    version: process.env.npm_package_version || '1.0.0'
+    version: '2.3.1'
   });
 });
 
@@ -123,76 +126,41 @@ app.get('/health', (req, res) => {
 app.get('/', (req, res) => {
   res.json({
     message: 'AGROTM Backend API',
-    version: '1.0.0',
-    status: 'online',
+    version: '2.3.1',
+    status: 'running',
+    environment: NODE_ENV,
     timestamp: new Date().toISOString(),
-    documentation: '/api/docs',
-    health: '/health'
+    endpoints: {
+      health: '/health',
+      api: '/api',
+      docs: '/api/docs'
+    }
   });
 });
 
-// API Documentation
+// API documentation endpoint
 app.get('/api/docs', (req, res) => {
   res.json({
-    name: 'AGROTM Backend API',
-    version: '1.0.0',
-    description: 'API profissional para a plataforma AGROTM',
+    title: 'AGROTM Backend API Documentation',
+    version: '2.3.1',
+    description: 'API para plataforma AGROTM - Agricultura Sustentável com Blockchain',
+    baseUrl: `http://localhost:${PORT}`,
     endpoints: {
-      auth: {
-        'POST /api/auth/login': 'Autenticação de usuário',
-        'POST /api/auth/register': 'Registro de usuário',
-        'POST /api/auth/refresh': 'Renovar token',
-        'POST /api/auth/logout': 'Logout'
-      },
-      users: {
-        'GET /api/users/profile': 'Obter perfil do usuário',
-        'PUT /api/users/profile': 'Atualizar perfil',
-        'GET /api/users/wallet': 'Obter carteira do usuário'
-      },
-      staking: {
-        'GET /api/staking/pools': 'Listar pools de staking',
-        'POST /api/staking/stake': 'Fazer staking',
-        'POST /api/staking/unstake': 'Remover staking',
-        'GET /api/staking/rewards': 'Obter recompensas'
-      },
-      nfts: {
-        'GET /api/nfts': 'Listar NFTs',
-        'POST /api/nfts/mint': 'Mintar NFT',
-        'GET /api/nfts/:id': 'Obter NFT específico'
-      },
-      analytics: {
-        'GET /api/analytics/dashboard': 'Dados do dashboard',
-        'GET /api/analytics/portfolio': 'Portfólio do usuário',
-        'GET /api/analytics/market': 'Dados de mercado'
-      },
-      contact: {
-        'POST /api/contact': 'Enviar mensagem de contato',
-        'GET /api/contact/info': 'Informações de contato'
-      },
-      upload: {
-        'POST /api/upload/image': 'Upload de imagem',
-        'POST /api/upload/document': 'Upload de documento'
-      },
-      marketplace: {
-        'GET /api/marketplace/nfts': 'Listar NFTs disponíveis',
-        'GET /api/marketplace/cryptocurrencies': 'Listar criptomoedas',
-        'POST /api/marketplace/nfts/:id/buy': 'Comprar NFT',
-        'POST /api/marketplace/cryptocurrencies/:id/buy': 'Comprar criptomoeda',
-        'GET /api/marketplace/user/nfts': 'NFTs do usuário',
-        'GET /api/marketplace/user/transactions': 'Transações do usuário',
-        'GET /api/marketplace/stats': 'Estatísticas do marketplace'
-      },
-      dashboard: {
-        'GET /api/dashboard/overview': 'Visão geral do dashboard',
-        'GET /api/dashboard/portfolio': 'Detalhes do portfólio',
-        'GET /api/dashboard/wallet': 'Informações da carteira',
-        'GET /api/dashboard/security': 'Configurações de segurança',
-        'POST /api/dashboard/security/2fa/enable': 'Habilitar 2FA',
-        'POST /api/dashboard/security/2fa/disable': 'Desabilitar 2FA',
-        'POST /api/dashboard/security/change-password': 'Alterar senha',
-        'GET /api/dashboard/activity': 'Atividade da conta',
-        'GET /api/dashboard/export': 'Exportar dados da conta'
-      }
+      'GET /health': 'Health check do servidor',
+      'GET /api/v1/status': 'Status da API',
+      'POST /api/auth/login': 'Login de usuário',
+      'POST /api/auth/register': 'Registro de usuário',
+      'GET /api/users/profile': 'Perfil do usuário',
+      'POST /api/staking/stake': 'Fazer stake de tokens',
+      'GET /api/nfts/owned': 'NFTs do usuário',
+      'GET /api/analytics/portfolio': 'Análise do portfólio',
+      'POST /api/contact/send': 'Enviar mensagem de contato',
+      'POST /api/upload/file': 'Upload de arquivo',
+      'GET /api/marketplace/listings': 'Listagens do marketplace',
+      'GET /api/dashboard/overview': 'Visão geral do dashboard',
+      'POST /api/dashboard/security/change-password': 'Alterar senha',
+      'GET /api/dashboard/activity': 'Atividade da conta',
+      'GET /api/dashboard/export': 'Exportar dados da conta'
     }
   });
 });
@@ -223,7 +191,7 @@ app.get('/api/v1/status', (req, res) => {
   res.json({
     status: 'OK',
     message: 'AGROTM Backend API is running',
-    version: '1.0.0',
+    version: '2.3.1',
     timestamp: new Date().toISOString(),
     environment: NODE_ENV
   });
@@ -265,7 +233,7 @@ process.on('uncaughtException', (error) => {
 });
 
 // Start server
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
   logger.info(`🚀 AGROTM Backend server running on port ${PORT}`);
   logger.info(`📊 Environment: ${NODE_ENV}`);
   logger.info(`🔗 Health Check: http://localhost:${PORT}/health`);
@@ -276,9 +244,9 @@ const server = app.listen(PORT, () => {
 ╔══════════════════════════════════════════════════════════════╗
 ║                    AGROTM BACKEND SERVER                     ║
 ╠══════════════════════════════════════════════════════════════╣
-║  🚀 Server: http://localhost:${PORT}                          ║
-║  📊 Health: http://localhost:${PORT}/health                   ║
-║  📚 API Docs: http://localhost:${PORT}/api/docs              ║
+║  🚀 Server: http://0.0.0.0:${PORT}                          ║
+║  📊 Health: http://0.0.0.0:${PORT}/health                   ║
+║  📚 API Docs: http://0.0.0.0:${PORT}/api/docs              ║
 ║  🌍 Environment: ${NODE_ENV}                                  ║
 ║  ⏰ Started: ${new Date().toISOString()}                      ║
 ╚══════════════════════════════════════════════════════════════╝

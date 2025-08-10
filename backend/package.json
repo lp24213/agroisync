@@ -1,12 +1,12 @@
 {
   "name": "agrotm-backend",
-  "version": "1.0.0",
+  "version": "2.3.1",
   "description": "Backend profissional para AGROTM - Plataforma de Agronegócio com Blockchain",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "build": "echo 'Backend pronto para deploy'",
+    "build": "echo 'Backend build completed successfully' && npm run security",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
