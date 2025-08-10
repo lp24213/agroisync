@@ -11,7 +11,7 @@ frontend:
     build:
       commands:
         - echo "🔨 Construindo aplicação Next.js..."
-        - npm run build:production
+        - npm run build
         - echo "✅ Build do frontend concluído"
     postBuild:
       commands:
@@ -52,7 +52,7 @@ backend:
       - '!coverage/**/*'
       - '!.git/**/*'
       - '!logs/**/*'
-      - '!uploads/**/*
+      - '!uploads/**/*'
   cache:
     paths:
       - backend/node_modules/**/*
