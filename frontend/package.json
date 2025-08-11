@@ -15,7 +15,7 @@
     "clean": "rm -rf .next out",
     "build:analyze": "cross-env ANALYZE=true npm run build",
     "build:production": "NODE_ENV=production next build",
-    "build:static": "next build && next export"
+    "build:static": "next build"
   },
   "dependencies": {
     "@emotion/react": "^11.11.0",

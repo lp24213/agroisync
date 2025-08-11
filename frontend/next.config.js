@@ -5,15 +5,12 @@ const nextConfig = {
     esmExternals: false,
   },
   
-  // Static export for AWS Amplify
-  output: 'export',
-  
   // Image configuration
   images: {
     unoptimized: true,
   },
   
-  trailingSlash: true,
+  trailingSlash: false,
   
   // Build configuration - IGNORE ALL ERRORS FOR DEPLOY
   eslint: {

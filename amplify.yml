@@ -10,15 +10,15 @@ frontend:
         - echo "✅ Dependências do frontend instaladas"
     build:
       commands:
-        - echo "🔨 Construindo aplicação Next.js estática..."
-        - npm run build:static
-        - echo "✅ Build estático do frontend concluído"
+        - echo "🔨 Construindo aplicação Next.js..."
+        - npm run build
+        - echo "✅ Build do frontend concluído"
     postBuild:
       commands:
         - echo "📁 Preparando arquivos para deploy..."
-        - echo "✅ Frontend estático pronto para deploy"
+        - echo "✅ Frontend pronto para deploy"
   artifacts:
-    baseDirectory: frontend/out
+    baseDirectory: frontend
     files:
       - '**/*'
   cache:
