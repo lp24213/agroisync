@@ -25,20 +25,23 @@
           "postBuild": {
             "commands": [
               "echo \"📁 Preparando arquivos para deploy...\"",
-              "echo \"✅ Frontend Standalone pronto para deploy\""
+              "echo \"✅ Frontend Standalone pronto para deploy\"",
+              "echo \"🔍 Verificando arquivos gerados...\"",
+              "ls -la .next/standalone",
+              "echo \"✅ Verificação concluída\""
             ]
           }
         },
         "artifacts": {
-          "baseDirectory": "frontend/.next/standalone",
+          "baseDirectory": ".next/standalone",
           "files": [
             "**/*"
           ]
         },
         "cache": {
           "paths": [
-            "frontend/node_modules/**/*",
-            "frontend/.next/cache/**/*"
+            "node_modules/**/*",
+            ".next/cache/**/*"
           ]
         }
       }
