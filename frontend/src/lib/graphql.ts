@@ -1,4 +1,7 @@
-import { API, graphqlOperation } from 'aws-amplify';
+import { generateClient } from 'aws-amplify/api';
+
+// Create API client
+const client = generateClient();
 
 // GraphQL operations
 export const createTodo = /* GraphQL */ `
@@ -72,7 +75,10 @@ export const deleteTodo = /* GraphQL */ `
 // API functions
 export const createTodoAPI = async (input: { name: string; description?: string }) => {
   try {
-    const result = await API.graphql(graphqlOperation(createTodo, { input }));
+    const result = await client.graphql({
+      query: createTodo,
+      variables: { input }
+    });
     return result;
   } catch (error) {
     console.error('Error creating todo:', error);
@@ -82,7 +88,9 @@ export const createTodoAPI = async (input: { name: string; description?: string 
 
 export const listTodosAPI = async () => {
   try {
-    const result = await API.graphql(graphqlOperation(listTodos));
+    const result = await client.graphql({
+      query: listTodos
+    });
     return result;
   } catch (error) {
     console.error('Error listing todos:', error);
@@ -92,7 +100,10 @@ export const listTodosAPI = async () => {
 
 export const updateTodoAPI = async (input: { id: string; name?: string; description?: string }) => {
   try {
-    const result = await API.graphql(graphqlOperation(updateTodo, { input }));
+    const result = await client.graphql({
+      query: updateTodo,
+      variables: { input }
+    });
     return result;
   } catch (error) {
     console.error('Error updating todo:', error);
@@ -102,7 +113,10 @@ export const updateTodoAPI = async (input: { id: string; name?: string; descript
 
 export const deleteTodoAPI = async (input: { id: string }) => {
   try {
-    const result = await API.graphql(graphqlOperation(deleteTodo, { input }));
+    const result = await client.graphql({
+      query: deleteTodo,
+      variables: { input }
+    });
     return result;
   } catch (error) {
     console.error('Error deleting todo:', error);
