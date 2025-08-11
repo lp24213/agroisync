@@ -1,4 +1,4 @@
-name: Deploy AGROTM to AWS
+name: Deploy AGROTM to AWS ONLY
 
 on:
   push:
@@ -35,13 +35,14 @@ jobs:
           npm run build
           echo "✅ Backend build test passed"
 
-      - name: Deploy to AWS
+      - name: Deploy to AWS ONLY
         run: |
           echo "🚀 AGROTM build validated successfully!"
           echo "📦 Frontend and Backend are ready for AWS deployment"
           echo "✅ AWS Amplify will automatically deploy the frontend"
           echo "✅ AWS ECS/Lambda will deploy the backend"
-          echo "🌐 All deployments will be handled by AWS services"
+          echo "🌐 All deployments will be handled by AWS services ONLY"
+          echo "❌ NO VERCEL - NO RAILWAY - ONLY AWS!"
 
       - name: Verify AWS Deployment
         run: |
@@ -49,3 +50,4 @@ jobs:
           echo "Frontend: AWS Amplify (auto-deploy on push)"
           echo "Backend: AWS ECS/Lambda (configured separately)"
           echo "✅ AWS deployment pipeline ready"
+          echo "❌ Vercel integration removed"
