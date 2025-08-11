@@ -1,0 +1,81 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "An auto-generated template for hosting S3AndCloudFront",
+  "Parameters": {
+    "S3BucketName": {
+      "Type": "String",
+      "Default": "agrotmsol-hosting-bucket"
+    },
+    "CloudFrontDistributionId": {
+      "Type": "String",
+      "Default": "E1234567890123"
+    }
+  },
+  "Resources": {
+    "S3Bucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": {
+          "Ref": "S3BucketName"
+        },
+        "WebsiteConfiguration": {
+          "IndexDocument": "index.html",
+          "ErrorDocument": "index.html"
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": false,
+          "BlockPublicPolicy": false,
+          "IgnorePublicAcls": false,
+          "RestrictPublicBuckets": false
+        }
+      }
+    },
+    "S3BucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "S3Bucket"
+        },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "PublicReadGetObject",
+              "Effect": "Allow",
+              "Principal": "*",
+              "Action": "s3:GetObject",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Ref": "S3Bucket"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "S3BucketName": {
+      "Value": {
+        "Ref": "S3Bucket"
+      },
+      "Description": "Name of S3 bucket for hosting"
+    },
+    "WebsiteURL": {
+      "Value": {
+        "Fn::GetAtt": [
+          "S3Bucket",
+          "WebsiteURL"
+        ]
+      },
+      "Description": "URL of the website"
+    }
+  }
+}

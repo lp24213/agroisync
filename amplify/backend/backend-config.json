@@ -55,9 +55,9 @@
   },
   "hosting": {
     "S3AndCloudFront": {
+      "dependsOn": [],
       "providerPlugin": "awscloudformation",
-      "service": "S3AndCloudFront",
-      "dependsOn": []
+      "service": "S3AndCloudFront"
     }
   }
 }
