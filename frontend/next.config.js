@@ -20,6 +20,9 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   
+  // AWS Amplify specific configuration
+  output: 'standalone',
+  
   // Security headers (GLOBAL ACCESS - NO REGION RESTRICTIONS)
   async headers() {
     return [

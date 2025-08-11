@@ -17,20 +17,20 @@
           },
           "build": {
             "commands": [
-              "echo \"🔨 Construindo aplicação Next.js...\"",
+              "echo \"🔨 Construindo aplicação Next.js Standalone...\"",
               "npm run build",
-              "echo \"✅ Build do frontend concluído\""
+              "echo \"✅ Build do frontend Standalone concluído\""
             ]
           },
           "postBuild": {
             "commands": [
               "echo \"📁 Preparando arquivos para deploy...\"",
-              "echo \"✅ Frontend pronto para deploy\""
+              "echo \"✅ Frontend Standalone pronto para deploy\""
             ]
           }
         },
         "artifacts": {
-          "baseDirectory": "frontend",
+          "baseDirectory": "frontend/.next/standalone",
           "files": [
             "**/*"
           ]
