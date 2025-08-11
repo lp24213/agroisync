@@ -1,0 +1,17 @@
+{
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "agrotmsol.com.br",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "d3cg8n66fpfnfp.cloudfront.net"
+          }
+        ]
+      }
+    }
+  ]
+}
