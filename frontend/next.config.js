@@ -19,9 +19,6 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-
-  // Output configuration for Amplify
-  output: 'standalone',
   
   // Security headers (GLOBAL ACCESS - NO REGION RESTRICTIONS)
   async headers() {

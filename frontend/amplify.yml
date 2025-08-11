@@ -3,19 +3,19 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "🚀 AGROTM - Build AWS Amplify (Next.js Standalone)"
+        - echo "🚀 AGROTM - Build AWS Amplify (Next.js)"
         - node -v && npm -v
         - npm ci
     build:
       commands:
-        - echo "🔨 Executando build standalone..."
+        - echo "🔨 Executando build de produção..."
         - npm run build
         - echo "NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL"
     postBuild:
       commands:
-        - echo "✅ Build standalone concluído"
+        - echo "✅ Build concluído"
   artifacts:
-    baseDirectory: .next/standalone
+    baseDirectory: .next
     files:
       - '**/*'
   cache:
