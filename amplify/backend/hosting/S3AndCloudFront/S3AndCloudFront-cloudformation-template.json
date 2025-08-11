@@ -49,15 +49,7 @@
               "Principal": "*",
               "Action": "s3:GetObject",
               "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    {
-                      "Ref": "S3Bucket"
-                    },
-                    "/*"
-                  ]
-                ]
+                "Fn::Sub": "${S3Bucket}/*"
               }
             }
           ]
