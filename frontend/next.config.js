@@ -30,7 +30,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   
-  // AWS Amplify specific configuration
+  // AWS Amplify specific configuration - CRÍTICO PARA FUNCIONAR
   output: 'standalone',
   
   // Compression and optimization
