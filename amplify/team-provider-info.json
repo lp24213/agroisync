@@ -17,6 +17,9 @@
       },
       "auth": {
         "agrotmsol": {}
+      },
+      "hosting": {
+        "S3AndCloudFront": {}
       }
     }
   }
