@@ -2,6 +2,10 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "An auto-generated template for hosting S3AndCloudFront",
   "Parameters": {
+    "env": {
+      "Type": "String",
+      "Default": "prod"
+    },
     "S3BucketName": {
       "Type": "String",
       "Default": "agrotmsol-hosting-bucket"
@@ -16,7 +20,18 @@
       "Type": "AWS::S3::Bucket",
       "Properties": {
         "BucketName": {
-          "Ref": "S3BucketName"
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "S3BucketName"
+              },
+              "-",
+              {
+                "Ref": "env"
+              }
+            ]
+          ]
         },
         "WebsiteConfiguration": {
           "IndexDocument": "index.html",
