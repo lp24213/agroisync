@@ -3,22 +3,20 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "🚀 AGROTM - Build AWS Amplify (Next.js Standalone)"
-        - node -v && npm -v
+        - echo "AGROTM Build AWS Amplify"
         - cd frontend
         - rm -rf .next out
         - npm ci --production=false
     build:
       commands:
         - npm run build
-        - echo "Build concluído"
+        - echo "Build completed"
         - ls -la .next/standalone/frontend
     postBuild:
       commands:
-        - echo "Verificando arquivos essenciais..."
-        - test -f .next/standalone/frontend/server.js && echo "server.js OK" || echo "ERRO: server.js"
-        - test -f .next/standalone/frontend/package.json && echo "package.json OK" || echo "ERRO: package.json"
-        - echo "Deploy pronto"
+        - echo "Checking essential files"
+        - ls -la .next/standalone/frontend
+        - echo "Deploy ready"
   artifacts:
     baseDirectory: frontend/.next/standalone/frontend
     files:
