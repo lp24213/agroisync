@@ -4,24 +4,40 @@ frontend:
     preBuild:
       commands:
         - echo "🚀 AGROTM - Build AWS Amplify (Next.js Standalone)"
+        - echo "📋 Informações do ambiente:"
         - node -v && npm -v
+        - pwd && ls -la
+        - echo "📁 Entrando na pasta frontend..."
         - cd frontend
+        - echo "🧹 Limpando builds anteriores..."
+        - rm -rf .next out
+        - echo "📦 Instalando dependências..."
         - npm ci --production=false
         - echo "✅ Dependências instaladas"
     build:
       commands:
         - echo "🔨 Executando build de produção..."
-        - npm run build
+        - npm run build:amplify
         - echo "✅ Build concluído"
-        - echo "🔍 Verificando arquivos gerados..."
+        - echo "🔍 Verificando estrutura de build..."
         - ls -la .next/standalone
+        - ls -la .next/standalone/frontend
+        - echo "📊 Verificando tamanho dos arquivos..."
+        - du -sh .next/standalone/frontend
         - echo "✅ Verificação concluída"
     postBuild:
       commands:
         - echo "📁 Preparando para deploy..."
-        - echo "✅ Frontend pronto para deploy"
+        - echo "🔧 Verificando arquivos essenciais..."
+        - test -f .next/standalone/frontend/server.js && echo "✅ server.js encontrado" || echo "❌ ERRO: server.js não encontrado"
+        - test -f .next/standalone/frontend/package.json && echo "✅ package.json encontrado" || echo "❌ ERRO: package.json não encontrado"
+        - test -d .next/standalone/frontend/.next && echo "✅ pasta .next encontrada" || echo "❌ ERRO: pasta .next não encontrada"
+        - test -d .next/standalone/frontend/app && echo "✅ pasta app encontrada" || echo "❌ ERRO: pasta app não encontrada"
+        - echo "📋 Listando arquivos finais para deploy:"
+        - ls -la .next/standalone/frontend
+        - echo "✅ Frontend pronto para deploy no AWS Amplify"
   artifacts:
-    baseDirectory: frontend/.next/standalone
+    baseDirectory: frontend/.next/standalone/frontend
     files:
       - '**/*'
   cache:

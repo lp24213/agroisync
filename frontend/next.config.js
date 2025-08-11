@@ -3,14 +3,24 @@ const nextConfig = {
   // AWS Amplify optimized configuration
   experimental: {
     esmExternals: false,
+    serverComponentsExternalPackages: ['@aws-amplify/ui-react', 'aws-amplify'],
   },
   
-  // Image configuration
+  // Image configuration for AWS Amplify
   images: {
     unoptimized: true,
+    domains: ['localhost', '127.0.0.1'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
   },
   
+  // Build optimization
   trailingSlash: false,
+  poweredByHeader: false,
   
   // Build configuration - IGNORE ALL ERRORS FOR DEPLOY
   eslint: {
@@ -22,6 +32,10 @@ const nextConfig = {
   
   // AWS Amplify specific configuration
   output: 'standalone',
+  
+  // Compression and optimization
+  compress: true,
+  generateEtags: false,
   
   // Security headers (GLOBAL ACCESS - NO REGION RESTRICTIONS)
   async headers() {
@@ -53,9 +67,42 @@ const nextConfig = {
             key: 'X-XSS-Protection',
             value: '1; mode=block',
           },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
         ],
       },
     ];
+  },
+  
+  // Webpack optimization for AWS Amplify
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      };
+    }
+    
+    // Optimize bundle size
+    config.optimization = {
+      ...config.optimization,
+      splitChunks: {
+        chunks: 'all',
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            chunks: 'all',
+          },
+        },
+      },
+    };
+    
+    return config;
   },
 };
 

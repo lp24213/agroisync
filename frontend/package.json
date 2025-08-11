@@ -14,8 +14,11 @@
     "analyze": "ANALYZE=true npm run build",
     "clean": "rm -rf .next out",
     "build:analyze": "cross-env ANALYZE=true npm run build",
-    "build:production": "NODE_ENV=production next build",
-    "build:static": "next build"
+    "build:production": "cross-env NODE_ENV=production next build",
+    "build:static": "next build",
+    "build:amplify": "next build && echo 'Build otimizado para AWS Amplify concluído'",
+    "start:standalone": "node .next/standalone/frontend/server.js",
+    "verify:build": "echo 'Verificando build standalone...' && dir .next\\standalone\\frontend"
   },
   "dependencies": {
     "@aws-amplify/ui-react": "6.11.2",
@@ -75,7 +78,7 @@
     "typescript": "5.9.2"
   },
   "engines": {
-    "node": ">=20.0.0",
+    "node": "20.x",
     "npm": ">=7.0.0"
   }
 }

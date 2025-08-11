@@ -4,35 +4,41 @@
     "phases": {
       "preBuild": {
         "commands": [
-          "echo \"🚀 Iniciando build do AGROTM no AWS Amplify\"",
-          "echo \"📦 Instalando dependências do frontend...\"",
+          "echo \"🚀 AGROTM - Build AWS Amplify (Next.js Standalone)\"",
+          "node -v && npm -v",
           "cd frontend",
           "npm ci --production=false",
-          "echo \"✅ Dependências do frontend instaladas\""
+          "echo \"✅ Dependências instaladas\""
         ]
       },
       "build": {
         "commands": [
-          "echo \"🔨 Construindo aplicação Next.js...\"",
+          "echo \"🔨 Executando build de produção...\"",
           "npm run build",
-          "echo \"✅ Build do frontend concluído\""
+          "echo \"✅ Build concluído\"",
+          "echo \"🔍 Verificando arquivos gerados...\"",
+          "ls -la .next/standalone",
+          "echo \"✅ Verificação concluída\""
         ]
       },
       "postBuild": {
         "commands": [
-          "echo \"📁 Preparando arquivos para deploy...\"",
+          "echo \"📁 Preparando para deploy...\"",
           "echo \"✅ Frontend pronto para deploy\""
         ]
       }
     },
     "artifacts": {
-      "baseDirectory": "frontend/.next",
-      "files": ["**/*"]
+      "baseDirectory": "frontend/.next/standalone",
+      "files": [
+        "**/*"
+      ]
     },
     "cache": {
       "paths": [
         "frontend/node_modules/**/*",
-        "frontend/.next/cache/**/*"
+        "frontend/.next/cache/**/*",
+        "~/.npm/**/*"
       ]
     }
   }
