@@ -168,7 +168,7 @@ app.use('/api/dashboard', logMetamaskAccess, validateMetamaskId, authMiddleware,
 // Legacy endpoints for compatibility
 app.get('/api/contact', (req, res) => {
   res.json({
-    email: 'contato@agrotm.com.br',
+    email: 'contato@agroisync.com',
     telefone: '+55 (66) 99236-2830',
     horario: 'Seg-Sex 9h-18h',
     whatsapp: '+55 (66) 99236-2830'
@@ -178,7 +178,7 @@ app.get('/api/contact', (req, res) => {
 app.get('/api/v1/status', (req, res) => {
   res.json({
     status: 'OK',
-    message: 'AGROTM Backend API is running',
+    message: 'AGROISYNC Backend API is running',
     version: '2.3.1',
     timestamp: new Date().toISOString(),
     environment: NODE_ENV
@@ -222,7 +222,7 @@ process.on('uncaughtException', (error) => {
 
 // Start server
 const server = app.listen(PORT, '0.0.0.0', () => {
-  logger.info(`🚀 AGROTM Backend server running on port ${PORT}`);
+  logger.info(`🚀 AGROISYNC Backend server running on port ${PORT}`);
   logger.info(`📊 Environment: ${NODE_ENV}`);
   logger.info(`🔗 Health Check: http://localhost:${PORT}/health`);
   logger.info(`📚 API Docs: http://localhost:${PORT}/api/docs`);
@@ -230,7 +230,7 @@ const server = app.listen(PORT, '0.0.0.0', () => {
   // Log startup information
   console.log(`
 ╔══════════════════════════════════════════════════════════════╗
-║                    AGROTM BACKEND SERVER                     ║
+║                  AGROISYNC BACKEND SERVER                    ║
 ╠══════════════════════════════════════════════════════════════╣
 ║  🚀 Server: http://0.0.0.0:${PORT}                          ║
 ║  📊 Health: http://0.0.0.0:${PORT}/health                   ║

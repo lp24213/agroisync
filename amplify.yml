@@ -3,7 +3,7 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "AGROTM Build AWS Amplify"
+        - echo "AGROISYNC Build AWS Amplify"
         - cd frontend
         - rm -rf .next out
         - npm ci --production=false

@@ -19,9 +19,9 @@
     }
   },
   "domains": {
-    "primary": "agrotmsol.com.br",
-    "www": "www.agrotmsol.com.br",
-    "api": "api.agrotmsol.com.br"
+    "primary": "agroisync.com",
+    "www": "www.agroisync.com",
+    "api": "api.agroisync.com"
   },
   "security": {
     "headers": {

@@ -33,7 +33,7 @@ export function Contact() {
               <Mail className="text-[#00bfff]" size={32} />
             </div>
             <h3 className="text-2xl font-orbitron font-bold text-[#00bfff] mb-4">E-mail</h3>
-            <p className="text-[#cccccc] mb-6">contato@agrotm.com.br</p>
+            <p className="text-[#cccccc] mb-6">contato@agroisync.com</p>
             <p className="text-[#cccccc]">Suporte 24/7</p>
           </motion.div>
 

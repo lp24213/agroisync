@@ -1,5 +1,5 @@
 {
-  "AppSyncApiName": "agrotmsol",
+  "AppSyncApiName": "agroisync",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
   "DynamoDBEnableServerSideEncryption": false,
   "AuthModeLastUpdated": "2025-08-10T17:05:18.135Z"

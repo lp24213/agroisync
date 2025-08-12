@@ -34,8 +34,8 @@ if (!getApps().length) {
     if (hasValidAdminConfig) {
       adminApp = initializeApp({
         credential: cert(serviceAccount as any),
-        databaseURL: process.env.FIREBASE_DATABASE_URL || `https://agrotmsol-95542-default-rtdb.asia-southeast1.firebasedatabase.app`,
-        storageBucket: process.env.FIREBASE_STORAGE_BUCKET || `agrotmsol-95542.firebasestorage.app`
+        databaseURL: process.env.FIREBASE_DATABASE_URL || `https://agroisync-95542-default-rtdb.asia-southeast1.firebasedatabase.app`,
+        storageBucket: process.env.FIREBASE_STORAGE_BUCKET || `agroisync-95542.firebasestorage.app`
       });
 
       // Initialize admin services
@@ -50,7 +50,7 @@ if (!getApps().length) {
       // Alternative configuration for development
       adminApp = initializeApp({
         projectId: process.env.FIREBASE_ADMIN_PROJECT_ID || 'agrotmsol-95542',
-        databaseURL: process.env.FIREBASE_DATABASE_URL || 'https://agrotmsol-95542-default-rtdb.asia-southeast1.firebasedatabase.app'
+        databaseURL: process.env.FIREBASE_DATABASE_URL || 'https://agroisync-95542-default-rtdb.asia-southeast1.firebasedatabase.app'
       });
 
       adminAuth = getAuth(adminApp);

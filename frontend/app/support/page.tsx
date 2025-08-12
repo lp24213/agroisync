@@ -36,7 +36,7 @@ export default function SupportPage() {
               <div className="bg-[#000000]/50 border border-[#00FF7F]/20 rounded-xl p-6 backdrop-blur-sm text-center">
                 <Mail className="w-12 h-12 text-[#00FF7F] mx-auto mb-4" />
                 <h3 className="text-xl font-orbitron font-semibold text-[#00FF7F] mb-2">Email</h3>
-                <p className="text-[#cccccc] mb-4">contato@agrotm.com.br</p>
+                <p className="text-[#cccccc] mb-4">contato@agroisync.com</p>
                 <p className="text-sm text-[#888888]">Resposta em até 24h</p>
               </div>
 

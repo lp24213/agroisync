@@ -23,8 +23,8 @@ export const corsOptions = {
       ? process.env.ALLOWED_ORIGINS.split(',') 
       : [
           'http://localhost:3000',
-          'https://agrotmsol.com.br',
-          'https://www.agrotmsol.com.br',
+          'https://agroisync.com',
+          'https://www.agroisync.com',
           // Domínio padrão do AWS Amplify (ajuste para o seu)
           'https://main.amplifyapp.com'
         ];

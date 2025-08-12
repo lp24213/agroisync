@@ -13,8 +13,8 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 // CORS configuration
 const corsOptions = {
   origin: [
-    'https://agrotmsol.com.br',
-    'https://www.agrotmsol.com.br',
+    'https://agroisync.com',
+    'https://www.agroisync.com',
     'https://main.d2d5j98tau5snm.amplifyapp.com',
     'http://localhost:3000',
     'http://localhost:3001'
@@ -57,7 +57,7 @@ app.get('/health/detailed', (_req, res) => {
 // Contact endpoint
 app.get('/api/contact', (_req, res) => {
   res.json({
-    email: 'contato@agrotm.com.br',
+    email: 'contato@agroisync.com',
     telefone: '+55 (66) 99236-2830',
     horario: 'Seg-Sex 9h-18h',
     suporte: {
@@ -72,7 +72,7 @@ app.get('/api/contact', (_req, res) => {
 app.get('/api/v1/status', (_req, res) => {
   res.json({
     status: 'OK',
-    message: 'AGROTM Backend API is running',
+    message: 'AGROISYNC Backend API is running',
     version: '1.0.0',
     timestamp: new Date().toISOString(),
   });
@@ -84,7 +84,7 @@ app.use('/api/firebase', firebaseRoutes);
 // Root endpoint
 app.get('/', (_req, res) => {
   res.json({
-    message: 'AGROTM Backend API',
+    message: 'AGROISYNC Backend API',
     version: '1.0.0',
     environment: NODE_ENV,
     endpoints: {
@@ -126,13 +126,13 @@ app.use('*', (req, res) => {
 
 // Start server
 const server = app.listen(PORT, () => {
-  console.log('🚀 AGROTM Backend Server Starting...');
+  console.log('🚀 AGROISYNC Backend Server Starting...');
   console.log(`🌍 Environment: ${NODE_ENV}`);
   console.log(`🔌 Server running on port ${PORT}`);
   console.log(`🏥 Health check: http://localhost:${PORT}/health`);
   console.log(`📞 Contact API: http://localhost:${PORT}/api/contact`);
   console.log(`🔥 Firebase API: http://localhost:${PORT}/api/firebase`);
-  console.log(`🌐 CORS enabled for: agrotmsol.com.br`);
+  console.log(`🌐 CORS enabled for: agroisync.com`);
 
   console.log('✅ Server started successfully');
 });

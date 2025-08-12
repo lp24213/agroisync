@@ -224,7 +224,7 @@ export const NFTMintForm: React.FC<NFTMintFormProps> = ({
         rarity: formData.rarity,
         attributes: formData.attributes.filter(attr => attr.trait_type && attr.value),
         farmData: formData.farmData,
-        external_url: `https://agrotm.com/nft/${Date.now()}`,
+        external_url: `https://agroisync.com/nft/${Date.now()}`,
         animation_url: formData.metadata ? await uploadToIPFS(formData.metadata) : undefined
       };
 

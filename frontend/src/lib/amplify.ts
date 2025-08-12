@@ -7,7 +7,7 @@ const awsConfig = {
     "aws_appsync_region": "us-east-2",
     "aws_appsync_authenticationType": "API_KEY",
     "aws_appsync_apiKey": "da2-7zd4l2ohvbhuzcpqhmu5suka3y",
-    "aws_content_delivery_url": "http://agrotmsol-hosting-prod.s3-website.us-east-2.amazonaws.com",
+    "aws_content_delivery_url": "https://agroisync.com",
     "aws_cognito_identity_pool_id": "us-east-2:451573af-47df-4d42-a31d-80e3c508244f",
     "aws_cognito_region": "us-east-2",
     "aws_user_pools_id": "us-east-2_Kdj83pqi3",

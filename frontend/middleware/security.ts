@@ -49,9 +49,9 @@ const SECURITY_CONFIG = {
 
   // Allowed origins for CORS
   ALLOWED_ORIGINS: [
-    'https://agrotm.com',
-    'https://www.agrotm.com',
-    'https://app.agrotm.com',
+    'https://agroisync.com',
+    'https://www.agroisync.com',
+    'https://app.agroisync.com',
     'http://localhost:3000',
     'http://localhost:3001',
   ],

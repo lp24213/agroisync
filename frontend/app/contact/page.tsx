@@ -55,7 +55,7 @@ export default function ContactPage() {
     {
       icon: Mail,
       title: t('contact.info.email'),
-      value: 'contato@agrotm.com.br',
+      value: 'contato@agroisync.com',
       description: t('contact.form.emailPlaceholder'),
       color: 'text-green-400',
     },

@@ -8,10 +8,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // Origens permitidas (domínios confiáveis)
 const ALLOWED_ORIGINS = [
-  'https://agrotm.com',
-  'https://app.agrotm.com',
-  'https://api.agrotm.com',
-  'https://dashboard.agrotm.com',
+  'https://agroisync.com',
+  'https://app.agroisync.com',
+  'https://api.agroisync.com',
+  'https://dashboard.agroisync.com',
 ];
 
 // Adicionar localhost para ambientes de desenvolvimento
@@ -104,7 +104,7 @@ function setCorsHeaders(response: NextResponse, origin: string) {
   if (process.env.NODE_ENV === 'production') {
     response.headers.set(
       'Content-Security-Policy',
-      "default-src 'self'; script-src 'self' https://cdn.agrotm.com; style-src 'self' https://cdn.agrotm.com; img-src 'self' data: https://cdn.agrotm.com; connect-src 'self' https://api.agrotm.com; font-src 'self' https://cdn.agrotm.com; object-src 'none'; media-src 'self' https://cdn.agrotm.com; frame-src 'self';"
+      "default-src 'self'; script-src 'self' https://cdn.agroisync.com; style-src 'self' https://cdn.agroisync.com; img-src 'self' data: https://cdn.agroisync.com; connect-src 'self' https://api.agroisync.com; font-src 'self' https://cdn.agroisync.com; object-src 'none'; media-src 'self' https://cdn.agroisync.com; frame-src 'self';"
     );
   }
   

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "serviceConfiguration": {
-    "apiName": "agrotmsol",
+    "apiName": "agroisync",
     "serviceName": "AppSync",
     "defaultAuthType": {
       "mode": "API_KEY",

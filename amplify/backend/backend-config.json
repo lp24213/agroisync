@@ -1,6 +1,6 @@
 {
   "api": {
-    "agrotmsol": {
+    "agroisync": {
       "dependsOn": [],
       "output": {
         "authConfig": {
@@ -23,7 +23,7 @@
     }
   },
   "auth": {
-    "agrotmsol": {
+    "agroisync": {
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {

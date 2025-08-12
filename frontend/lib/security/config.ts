@@ -91,7 +91,7 @@ const getEnvironmentConfig = (env: Environment): Partial<SecurityConfig> => {
     case 'staging':
       return {
         cors: {
-          origin: process.env.CORS_ORIGIN?.split(',') || ['https://staging.agrotm.com'],
+          origin: process.env.CORS_ORIGIN?.split(',') || ['https://staging.agroisync.com'],
           credentials: true,
         },
         rateLimit: {
@@ -129,7 +129,7 @@ const getEnvironmentConfig = (env: Environment): Partial<SecurityConfig> => {
     case 'production':
       return {
         cors: {
-          origin: process.env.CORS_ORIGIN?.split(',') || ['https://agrotm.com'],
+          origin: process.env.CORS_ORIGIN?.split(',') || ['https://agroisync.com'],
           credentials: true,
         },
         rateLimit: {

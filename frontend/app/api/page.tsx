@@ -263,7 +263,7 @@ export default function APIPage() {
               transition={{ duration: 0.6, delay: 0.6 }}
               className="text-center text-[#888888] text-sm border-t border-[#00FF7F]/20 pt-8"
             >
-              <p>Precisa de ajuda com a API? Entre em contato: <span className="text-[#00FF7F]">api@agrotm.com.br</span></p>
+              <p>Precisa de ajuda com a API? Entre em contato: <span className="text-[#00FF7F]">api@agroisync.com</span></p>
             </motion.div>
           </motion.div>
         </div>

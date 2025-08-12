@@ -24,7 +24,7 @@ app.use(helmet({
 // Configuração de CORS para AWS Amplify
 app.use(cors({
   origin: [
-    'https://agrotmsol.com.br',
+    'https://agroisync.com',
     'https://*.amplifyapp.com',
     'https://*.amplifyaws.com',
     process.env.FRONTEND_URL || 'http://localhost:3000'
@@ -59,14 +59,14 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
     version: '1.0.0',
-    service: 'AGROTM Backend'
+    service: 'AGROISYNC Backend'
   });
 });
 
 // API Routes
 app.get('/api', (req, res) => {
   res.json({
-    message: 'AGROTM Backend API',
+    message: 'AGROISYNC Backend API',
     version: '1.0.0',
     status: 'running',
     timestamp: new Date().toISOString()

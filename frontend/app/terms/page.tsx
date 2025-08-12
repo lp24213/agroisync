@@ -187,7 +187,7 @@ export default function TermsPage() {
                   Se você tiver dúvidas sobre estes Termos de Uso, entre em contato conosco:
                 </p>
                 <div className="space-y-2 text-[#cccccc]">
-                  <p>📧 Email: contato@agrotm.com.br</p>
+                  <p>📧 Email: contato@agroisync.com</p>
                   <p>📞 Telefone: +55 (66) 99236-2830</p>
                 </div>
               </motion.div>

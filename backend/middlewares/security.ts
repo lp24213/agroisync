@@ -185,9 +185,9 @@ export const advancedCors = cors({
   origin: (origin, callback) => {
     const allowedOrigins = [
       'http://localhost:3000',
-      'https://agrotm.com',
-      'https://www.agrotm.com',
-      'https://app.agrotm.com',
+      'https://agroisync.com',
+      'https://www.agroisync.com',
+      'https://app.agroisync.com',
     ];
 
     if (!origin || allowedOrigins.includes(origin)) {

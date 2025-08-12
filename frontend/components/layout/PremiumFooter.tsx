@@ -61,10 +61,10 @@ const socialLinks = [
 ];
 
 const contactInfo = [
-  { icon: Mail, text: 'contato@agrotm.com.br', href: 'mailto:contato@agrotm.com.br' },
+  { icon: Mail, text: 'contato@agroisync.com', href: 'mailto:contato@agroisync.com' },
   { icon: Phone, text: '+55 (66) 99236-2830', href: 'tel:+5566992362830' },
   { icon: MapPin, text: 'Global DeFi Platform', href: '#' },
-  { icon: Globe, text: 'agrotm.com', href: 'https://agrotm.com' },
+  { icon: Globe, text: 'agroisync.com', href: 'https://agroisync.com' },
 ];
 
 export function PremiumFooter() {
@@ -87,7 +87,7 @@ export function PremiumFooter() {
                 <div className='absolute -top-1 -right-1 w-3 h-3 bg-[#00FF7F] rounded-full animate-pulse' />
               </div>
               <div className='ml-3'>
-                <h3 className='text-2xl font-orbitron font-bold text-[#00FF7F]'>AGROTM</h3>
+                <h3 className='text-2xl font-orbitron font-bold text-[#00FF7F]'>AGROISYNC</h3>
                 <p className='text-[#cccccc] text-sm'>DeFi Agriculture</p>
               </div>
             </div>

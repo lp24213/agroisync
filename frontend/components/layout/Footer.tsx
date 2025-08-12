@@ -22,7 +22,7 @@ export function Footer() {
             <div className="text-[#cccccc] mb-6 space-y-2">
               <p className="flex items-center space-x-2">
                 <span>📧</span>
-                <span>contato@agrotm.com.br</span>
+                <span>contato@agroisync.com</span>
               </p>
               <p className="flex items-center space-x-2">
                 <span>📞</span>

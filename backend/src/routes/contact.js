@@ -60,7 +60,7 @@ router.post('/', [
 router.get('/info', (req, res) => {
   try {
     const contactInfo = {
-      email: 'contato@agrotm.com.br',
+      email: 'contato@agroisync.com',
       phone: '+55 (66) 99236-2830',
       whatsapp: '+55 (66) 99236-2830',
       address: 'Mato Grosso, Brazil',
@@ -72,7 +72,7 @@ router.get('/info', (req, res) => {
         linkedin: 'https://linkedin.com/company/agrotm'
       },
       support: {
-        email: 'suporte@agrotm.com.br',
+        email: 'suporte@agroisync.com',
         phone: '+55 (66) 99236-2830',
         whatsapp: '+55 (66) 99236-2830'
       }

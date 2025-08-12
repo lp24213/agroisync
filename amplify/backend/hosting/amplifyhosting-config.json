@@ -4,7 +4,7 @@
     "phases": {
       "preBuild": {
         "commands": [
-          "echo \"🚀 AGROTM - Build AWS Amplify (Next.js Standalone)\"",
+          "echo \"🚀 AGROISYNC - Build AWS Amplify (Next.js Standalone)\"",
           "node -v && npm -v",
           "cd frontend",
           "npm ci --production=false",
