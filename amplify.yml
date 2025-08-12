@@ -3,42 +3,21 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "🚀 AGROISYNC Build AWS Amplify (Node 20) - DOMÍNIO CORRIGIDO"
-        - nvm install 20
-        - nvm use 20
+        - echo "=== INICIANDO BUILD PARA AGROISYNC.COM ==="
         - node --version
         - npm --version
         - cd frontend
-        - echo "Cleaning previous build artifacts..."
-        - rm -rf .next out node_modules package-lock.json
-        - echo "Installing ALL dependencies including dev dependencies..."
-        - npm ci --production=false --include=dev --no-audit --prefer-offline
-        - echo "Verifying TypeScript installation..."
-        - npx tsc --version || echo "TypeScript not found, installing..."
-        - npm install typescript@latest --save-dev || echo "TypeScript installation failed, continuing..."
-        - echo "Dependencies installed successfully"
-        - echo "Building for agroisync.com domain"
+        - npm ci --prefer-offline --no-audit
+        - echo "=== DEPENDÊNCIAS INSTALADAS ==="
     build:
       commands:
-        - echo "Starting build process for agroisync.com..."
+        - echo "=== CONSTRUINDO PARA AGROISYNC.COM ==="
         - npm run build
-        - echo "Build completed successfully for agroisync.com"
-        - ls -la .next/standalone/frontend
-    postBuild:
-      commands:
-        - echo "Checking essential files..."
-        - ls -la .next/standalone/frontend
-        - echo "Verifying build output..."
-        - test -f .next/standalone/frontend/server.js && echo "✅ server.js found" || echo "❌ server.js missing"
-        - test -d .next/standalone/frontend/app && echo "✅ app directory found" || echo "❌ app directory missing"
-        - test -d .next/standalone/frontend/public && echo "✅ public directory found" || echo "❌ public directory missing"
-        - echo "Deploy ready for agroisync.com"
+        - echo "=== BUILD CONCLUÍDO ==="
   artifacts:
-    baseDirectory: frontend/.next/standalone/frontend
+    baseDirectory: frontend/out
     files:
       - '**/*'
   cache:
     paths:
       - frontend/node_modules/**/*
-      - frontend/.next/cache/**/*
-      - frontend/.npm/**/*

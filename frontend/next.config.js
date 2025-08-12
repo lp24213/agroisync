@@ -1,10 +1,9 @@
-/** @type {import('next').Config} */
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  // AWS Amplify optimized configuration
-  experimental: {
-    esmExternals: false,
-    serverComponentsExternalPackages: ['@aws-amplify/ui-react', 'aws-amplify'],
-  },
+  // AWS Amplify optimized configuration - EXPORT MODE
+  output: 'export',
+  distDir: 'out',
+  trailingSlash: true,
   
   // Image configuration for AWS Amplify
   images: {
@@ -19,7 +18,6 @@ const nextConfig = {
   },
   
   // Build optimization
-  trailingSlash: false,
   poweredByHeader: false,
   
   // Build configuration - IGNORE ALL ERRORS FOR DEPLOY
@@ -30,19 +28,16 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   
-  // AWS Amplify specific configuration - CRÍTICO PARA FUNCIONAR
-  output: 'standalone',
-  
-  // Compression and optimization
-  compress: true,
-  generateEtags: false,
-  
   // Environment variables - CORRIGIDOS PARA AGROISYNC.COM
   env: {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || 'https://agroisync.com',
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'https://api.agroisync.com',
   },
+  
+  // Asset prefix and base path
+  assetPrefix: '',
+  basePath: '',
   
   // Security headers (GLOBAL ACCESS - NO REGION RESTRICTIONS)
   async headers() {
