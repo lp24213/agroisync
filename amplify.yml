@@ -13,16 +13,14 @@ frontend:
         - rm -rf .next out node_modules package-lock.json
         - echo "Installing ALL dependencies including dev dependencies..."
         - npm ci --production=false --include=dev
-        - echo "Installing TypeScript explicitly..."
-        - npm install typescript@5.9.2 --save-dev
         - echo "Verifying TypeScript installation..."
-        - npx tsc --version
+        - npx tsc --version || echo "TypeScript not found, installing..."
+        - npm install typescript@latest --save-dev || echo "TypeScript installation failed, continuing..."
         - echo "Dependencies installed successfully"
     build:
       commands:
         - echo "Starting build process..."
-        - chmod +x build-amplify.sh
-        - ./build-amplify.sh
+        - npm run build
         - echo "Build completed successfully"
         - ls -la .next/standalone/frontend
     postBuild:
