@@ -1,0 +1,21 @@
+{
+  "domain": {
+    "name": "agrisync.com.br",
+    "subdomains": [
+      "www"
+    ],
+    "sslCertificate": {
+      "type": "AMAZON_ISSUED",
+      "region": "us-east-1"
+    },
+    "dns": {
+      "nameservers": [],
+      "records": []
+    },
+    "amplify": {
+      "appId": "d2d5j98tau5snm",
+      "branch": "main",
+      "environment": "prod"
+    }
+  }
+}

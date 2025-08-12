@@ -55,6 +55,16 @@
   },
   "hosting": {
     "amplifyhosting": {
+      "customDomain": {
+        "domainName": "agrisync.com.br",
+        "sslCertificate": {
+          "region": "us-east-1",
+          "type": "AMAZON_ISSUED"
+        },
+        "subdomains": [
+          "www"
+        ]
+      },
       "providerPlugin": "awscloudformation",
       "service": "amplifyhosting",
       "type": "manual"

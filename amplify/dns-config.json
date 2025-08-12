@@ -1,0 +1,29 @@
+{
+  "dns": {
+    "domain": "agrisync.com.br",
+    "records": [
+      {
+        "name": "@",
+        "type": "A",
+        "value": "AWS_ALIAS",
+        "target": "d2d5j98tau5snm.amplifyapp.com"
+      },
+      {
+        "name": "www",
+        "type": "CNAME",
+        "value": "agrisync.com.br"
+      },
+      {
+        "name": "api",
+        "type": "CNAME",
+        "value": "agrisync.com.br"
+      }
+    ],
+    "nameservers": [
+      "ns-1.awsdns-00.com",
+      "ns-2.awsdns-00.org",
+      "ns-3.awsdns-00.net",
+      "ns-4.awsdns-00.co.uk"
+    ]
+  }
+}
