@@ -1,6 +1,6 @@
 {
   "dns": {
-    "domain": "agrisync.com.br",
+    "domain": "agroisync.com",
     "records": [
       {
         "name": "@",
@@ -11,12 +11,12 @@
       {
         "name": "www",
         "type": "CNAME",
-        "value": "agrisync.com.br"
+        "value": "agroisync.com"
       },
       {
         "name": "api",
         "type": "CNAME",
-        "value": "agrisync.com.br"
+        "value": "agroisync.com"
       }
     ],
     "nameservers": [
@@ -24,6 +24,18 @@
       "ns-2.awsdns-00.org",
       "ns-3.awsdns-00.net",
       "ns-4.awsdns-00.co.uk"
+    ],
+    "redirects": [
+      {
+        "source": "https://www.agroisync.com/<*>",
+        "target": "https://agroisync.com/<*>",
+        "status": "301"
+      },
+      {
+        "source": "/<*>",
+        "target": "/index.html",
+        "status": "404-200"
+      }
     ]
   }
 }

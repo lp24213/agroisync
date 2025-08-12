@@ -6,9 +6,10 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 
-// Origens permitidas (domínios confiáveis)
+// Origens permitidas (domínios confiáveis) - CORRIGIDO PARA AGROISYNC.COM
 const ALLOWED_ORIGINS = [
   'https://agroisync.com',
+  'https://www.agroisync.com',
   'https://app.agroisync.com',
   'https://api.agroisync.com',
   'https://dashboard.agroisync.com',
@@ -124,7 +125,7 @@ export function isAllowedOrigin(origin: string): boolean {
 export function addAllowedOrigin(origin: string): void {
   if (!ALLOWED_ORIGINS.includes(origin)) {
     ALLOWED_ORIGINS.push(origin);
-    logger.info(`Added ${origin} to allowed CORS origins`);
+    console.log(`Added ${origin} to allowed CORS origins`);
   }
 }
 
@@ -135,7 +136,7 @@ export function removeAllowedOrigin(origin: string): void {
   const index = ALLOWED_ORIGINS.indexOf(origin);
   if (index !== -1) {
     ALLOWED_ORIGINS.splice(index, 1);
-    logger.info(`Removed ${origin} from allowed CORS origins`);
+    console.log(`Removed ${origin} from allowed CORS origins`);
   }
 }
 

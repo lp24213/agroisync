@@ -38,6 +38,7 @@ const SECURITY_CONFIG = {
       'https://solana-api.projectserum.com',
       'wss://api.mainnet-beta.solana.com',
       'wss://solana-api.projectserum.com',
+      'https://api.agroisync.com',
     ],
     'frame-src': ["'none'"],
     'object-src': ["'none'"],
@@ -47,11 +48,12 @@ const SECURITY_CONFIG = {
     'upgrade-insecure-requests': [],
   },
 
-  // Allowed origins for CORS
+  // Allowed origins for CORS - CORRIGIDO PARA AGROISYNC.COM
   ALLOWED_ORIGINS: [
     'https://agroisync.com',
     'https://www.agroisync.com',
     'https://app.agroisync.com',
+    'https://api.agroisync.com',
     'http://localhost:3000',
     'http://localhost:3001',
   ],
@@ -156,20 +158,6 @@ const generateCSPHeader = (): string => {
     })
     .join('; ');
 };
-
-// Remove potentially dangerous headers function (unused but kept for future use)
-// const sanitizeHeaders = (headers: Headers): void => {
-//   const dangerousHeaders = [
-//     'x-forwarded-host',
-//     'x-forwarded-proto',
-//     'x-real-ip',
-//     'cf-connecting-ip',
-//   ];
-
-//   dangerousHeaders.forEach(header => {
-//     headers.delete(header);
-//   });
-// };
 
 // Main security middleware
 export function securityMiddleware(request: NextRequest): NextResponse | null {

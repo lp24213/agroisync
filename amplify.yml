@@ -3,7 +3,7 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "🚀 AGROISYNC Build AWS Amplify (Node 20)"
+        - echo "🚀 AGROISYNC Build AWS Amplify (Node 20) - DOMÍNIO CORRIGIDO"
         - nvm install 20
         - nvm use 20
         - node --version
@@ -17,11 +17,12 @@ frontend:
         - npx tsc --version || echo "TypeScript not found, installing..."
         - npm install typescript@latest --save-dev || echo "TypeScript installation failed, continuing..."
         - echo "Dependencies installed successfully"
+        - echo "Building for agroisync.com domain"
     build:
       commands:
-        - echo "Starting build process..."
+        - echo "Starting build process for agroisync.com..."
         - npm run build
-        - echo "Build completed successfully"
+        - echo "Build completed successfully for agroisync.com"
         - ls -la .next/standalone/frontend
     postBuild:
       commands:
@@ -31,7 +32,7 @@ frontend:
         - test -f .next/standalone/frontend/server.js && echo "✅ server.js found" || echo "❌ server.js missing"
         - test -d .next/standalone/frontend/app && echo "✅ app directory found" || echo "❌ app directory missing"
         - test -d .next/standalone/frontend/public && echo "✅ public directory found" || echo "❌ public directory missing"
-        - echo "Deploy ready"
+        - echo "Deploy ready for agroisync.com"
   artifacts:
     baseDirectory: frontend/.next/standalone/frontend
     files:

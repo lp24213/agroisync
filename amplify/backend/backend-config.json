@@ -56,7 +56,7 @@
   "hosting": {
     "amplifyhosting": {
       "customDomain": {
-        "domainName": "agrisync.com.br",
+        "domainName": "agroisync.com",
         "sslCertificate": {
           "region": "us-east-1",
           "type": "AMAZON_ISSUED"
@@ -67,7 +67,19 @@
       },
       "providerPlugin": "awscloudformation",
       "service": "amplifyhosting",
-      "type": "manual"
+      "type": "manual",
+      "redirects": [
+        {
+          "source": "https://www.agroisync.com/<*>",
+          "target": "https://agroisync.com/<*>",
+          "status": "301"
+        },
+        {
+          "source": "/<*>",
+          "target": "/index.html",
+          "status": "404-200"
+        }
+      ]
     }
   },
   "parameters": {

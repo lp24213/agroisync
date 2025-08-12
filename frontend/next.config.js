@@ -9,7 +9,7 @@ const nextConfig = {
   // Image configuration for AWS Amplify
   images: {
     unoptimized: true,
-    domains: ['localhost', '127.0.0.1'],
+    domains: ['localhost', '127.0.0.1', 'agroisync.com', 'api.agroisync.com'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -109,13 +109,25 @@ const nextConfig = {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
   },
   
-  // Redirects for AWS Amplify
+  // Redirects for AWS Amplify - CORRIGIDOS PARA AGROISYNC.COM
   async redirects() {
     return [
       {
         source: '/home',
         destination: '/',
         permanent: true,
+      },
+      // Redirecionamento www para não-www (301 permanente)
+      {
+        source: 'https://www.agroisync.com/:path*',
+        destination: 'https://agroisync.com/:path*',
+        permanent: true,
+      },
+      // Redirecionamento para SPA (404-200)
+      {
+        source: '/:path*',
+        destination: '/index.html',
+        statusCode: 404,
       },
     ];
   },

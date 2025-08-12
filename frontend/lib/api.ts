@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || process.env.API_BASE_URL || 'https://api.seu-dominio-aws.com';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || process.env.API_BASE_URL || 'https://api.agroisync.com';
 const METAMASK_ID = process.env.NEXT_PUBLIC_METAMASK_ID || '0x5Ea5C5970e8AE23A5336d631707CF31C5916E8b1';
 
 export interface ApiResponse<T = any> {
@@ -27,7 +27,7 @@ class ApiClient {
       const config: RequestInit = {
         headers: {
           'Content-Type': 'application/json',
-          'User-Agent': 'AGROTM-Frontend/1.0',
+          'User-Agent': 'AGROISYNC-Frontend/2.0',
           'x-metamask-id': this.metamaskId, // Enviando ID Metamask no header
           ...options.headers,
         },
