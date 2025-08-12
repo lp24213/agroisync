@@ -11,13 +11,18 @@ frontend:
         - cd frontend
         - echo "Cleaning previous build artifacts..."
         - rm -rf .next out node_modules package-lock.json
-        - echo "Installing dependencies..."
-        - npm install
+        - echo "Installing ALL dependencies including dev dependencies..."
+        - npm ci --production=false --include=dev
+        - echo "Installing TypeScript explicitly..."
+        - npm install typescript@5.9.2 --save-dev
+        - echo "Verifying TypeScript installation..."
+        - npx tsc --version
         - echo "Dependencies installed successfully"
     build:
       commands:
         - echo "Starting build process..."
-        - npm run build
+        - chmod +x build-amplify.sh
+        - ./build-amplify.sh
         - echo "Build completed successfully"
         - ls -la .next/standalone/frontend
     postBuild:
