@@ -2,7 +2,8 @@
   "domain": {
     "name": "agroisync.com",
     "subdomains": [
-      "www"
+      "www",
+      "api"
     ],
     "sslCertificate": {
       "type": "AMAZON_ISSUED",
@@ -30,7 +31,7 @@
         {
           "name": "api",
           "type": "CNAME",
-          "value": "agroisync.com"
+          "value": "d2d5j98tau5snm.amplifyapp.com"
         }
       ]
     },
@@ -44,11 +45,6 @@
         "source": "https://www.agroisync.com/<*>",
         "target": "https://agroisync.com/<*>",
         "status": "301"
-      },
-      {
-        "source": "/<*>",
-        "target": "/index.html",
-        "status": "404-200"
       }
     ]
   }

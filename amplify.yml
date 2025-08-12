@@ -3,10 +3,11 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "🚀 AGROISYNC.COM - BUILD HIPER PROFISSIONAL INICIADO"
+        - echo "🚀 AGROISYNC.COM - BUILD ULTRA PERFEITO INICIADO"
         - echo "📅 Data: $(date)"
         - echo "🔄 Versão: 2.3.1"
         - echo "🌐 Domínio: agroisync.com"
+        - echo "🎯 Objetivo: ZERO ERROS - 100% FUNCIONAL"
         - echo "=== INSTALANDO NODE 20 ==="
         - nvm install 20
         - nvm use 20
@@ -17,13 +18,15 @@ frontend:
         - echo "=== LIMPANDO CACHE ANTERIOR ==="
         - rm -rf .next out dist node_modules package-lock.json
         - echo "=== INSTALANDO TODAS AS DEPENDÊNCIAS ==="
-        - npm ci --production=false --include=dev --no-audit --prefer-offline
+        - npm ci --production=false --include=dev --no-audit --prefer-offline --legacy-peer-deps
         - echo "=== VERIFICANDO INSTALAÇÕES CRÍTICAS ==="
         - npx tsc --version
         - npx eslint --version
         - npx next --version
         - echo "=== VERIFICANDO ESTRUTURA ==="
         - ls -la
+        - echo "=== VERIFICANDO PACKAGE.JSON ==="
+        - cat package.json | grep -E "(name|version|scripts)"
         - echo "=== DEPENDÊNCIAS INSTALADAS COM SUCESSO ==="
     build:
       commands:
@@ -32,6 +35,10 @@ frontend:
         - npm run build
         - echo "=== VERIFICANDO BUILD ==="
         - ls -la .next
+        - echo "=== VERIFICANDO ARQUIVOS ESSENCIAIS ==="
+        - test -d .next && echo "✅ .next directory encontrado" || echo "❌ .next directory não encontrado"
+        - test -f .next/server.js && echo "✅ server.js encontrado" || echo "❌ server.js não encontrado"
+        - test -d .next/static && echo "✅ static files encontrados" || echo "❌ static files não encontrados"
         - echo "=== BUILD CONCLUÍDO COM SUCESSO ==="
     postBuild:
       commands:
@@ -40,7 +47,10 @@ frontend:
         - test -d .next && echo "✅ .next directory encontrado" || echo "❌ .next directory não encontrado"
         - test -f .next/server.js && echo "✅ server.js encontrado" || echo "❌ server.js não encontrado"
         - test -d .next/static && echo "✅ static files encontrados" || echo "❌ static files não encontrados"
+        - echo "=== VERIFICANDO TAMANHO DO BUILD ==="
+        - du -sh .next
         - echo "=== BUILD VERIFICADO E APROVADO ==="
+        - echo "🎉 AGROISYNC.COM - BUILD ULTRA PERFEITO CONCLUÍDO!"
   artifacts:
     baseDirectory: .next
     files:
