@@ -3,21 +3,14 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "=== INICIANDO BUILD PARA AGROISYNC.COM ==="
-        - node --version
-        - npm --version
-        - cd frontend
-        - npm ci --prefer-offline --no-audit
-        - echo "=== DEPENDÊNCIAS INSTALADAS ==="
+        - npm ci
     build:
       commands:
-        - echo "=== CONSTRUINDO PARA AGROISYNC.COM ==="
         - npm run build
-        - echo "=== BUILD CONCLUÍDO ==="
   artifacts:
-    baseDirectory: frontend/out
+    baseDirectory: .next
     files:
       - '**/*'
   cache:
     paths:
-      - frontend/node_modules/**/*
+      - node_modules/**/*
