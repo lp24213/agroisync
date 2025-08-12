@@ -8,11 +8,11 @@ import { useTranslation } from 'react-i18next';
 import { Mail, Lock, User, Phone, Eye, EyeOff, ArrowRight, ArrowLeft, AlertCircle } from 'lucide-react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { setDoc, doc } from 'firebase/firestore';
-import { auth, db } from '@/lib/firebase/config';
+import { auth, db } from '../../lib/firebase/config';
 import { toast } from 'react-hot-toast';
-import { Logo } from '@/components/ui/Logo';
-import { LanguageSelector } from '@/components/ui/LanguageSelector';
-import { useAuth } from '@/contexts/AuthContext';
+import { Logo } from '../../components/ui/Logo';
+import { LanguageSelector } from '../../components/ui/LanguageSelector';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);

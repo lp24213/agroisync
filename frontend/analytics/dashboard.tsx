@@ -2,14 +2,14 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { Chart } from '@/components/analytics/Chart';
-import { MetricsCard } from '@/components/analytics/MetricsCard';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Badge } from '../components/ui/Badge';
+import { LoadingSpinner } from '../components/ui/LoadingSpinner';
+import { Chart } from '../components/analytics/Chart';
+import { MetricsCard } from '../components/analytics/MetricsCard';
 import { formatCurrency, formatPercentage, formatNumber } from '../utils/formatters';
-import { cn } from '@/lib/utils';
+import { cn } from '../lib/utils';
 
 /**
  * Analytics Dashboard Component - Premium agricultural analytics interface

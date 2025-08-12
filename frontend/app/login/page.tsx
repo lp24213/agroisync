@@ -7,11 +7,11 @@ import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { Mail, Lock, Eye, EyeOff, ArrowRight, ArrowLeft, AlertCircle } from 'lucide-react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/lib/firebase/config';
+import { auth } from '../../lib/firebase/config';
 import { toast } from 'react-hot-toast';
-import { Logo } from '@/components/ui/Logo';
-import { LanguageSelector } from '@/components/ui/LanguageSelector';
-import { useAuth } from '@/contexts/AuthContext';
+import { Logo } from '../../components/ui/Logo';
+import { LanguageSelector } from '../../components/ui/LanguageSelector';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);

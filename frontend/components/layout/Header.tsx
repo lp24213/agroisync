@@ -7,9 +7,9 @@ import { useRouter } from 'next/navigation';
 import { Logo } from '../ui/Logo';
 import { LanguageSelector } from '../ui/LanguageSelector';
 import { Menu, X, LogOut, User } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { signOut } from 'firebase/auth';
-import { auth } from '@/lib/firebase/config';
+import { auth } from '../../lib/firebase/config';
 import { toast } from 'react-hot-toast';
 
 export function Header() {

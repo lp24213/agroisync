@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { AuthProvider } from '@/contexts/AuthContext';
-import { I18nProvider } from '@/components/providers/I18nProvider';
-import { ChatbotAGROISYNC } from '@/components/ChatbotAGROISYNC';
+import { AuthProvider } from '../contexts/AuthContext';
+import { I18nProvider } from '../components/providers/I18nProvider';
+import { ChatbotAGROISYNC } from '../components/ChatbotAGROISYNC';
 import { Toaster } from 'react-hot-toast';
 import '../src/lib/amplify'; // Import Amplify configuration
 

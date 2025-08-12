@@ -2,9 +2,9 @@
 
 import React, { memo, useMemo, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { cn } from '@/lib/utils';
+import { Card } from '../../ui/Card';
+import { Button } from '../../ui/Button';
+import { cn } from '../../lib/utils';
 
 /**
  * Chart Component - Premium data visualization component

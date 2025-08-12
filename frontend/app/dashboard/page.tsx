@@ -12,7 +12,7 @@ import {
   ArrowUpRight,
   ArrowDownRight
 } from 'lucide-react';
-import { CryptoChart } from '@/components/widgets/CryptoChart';
+import { CryptoChart } from '../../components/widgets/CryptoChart';
 
 export default function DashboardPage() {
   const { t } = useTranslation();
