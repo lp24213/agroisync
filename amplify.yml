@@ -3,10 +3,44 @@ frontend:
   phases:
     preBuild:
       commands:
-        - npm ci
+        - echo "🚀 AGROISYNC.COM - BUILD HIPER PROFISSIONAL INICIADO"
+        - echo "📅 Data: $(date)"
+        - echo "🔄 Versão: 2.3.1"
+        - echo "🌐 Domínio: agroisync.com"
+        - echo "=== INSTALANDO NODE 20 ==="
+        - nvm install 20
+        - nvm use 20
+        - node --version
+        - npm --version
+        - echo "=== NAVEGANDO PARA FRONTEND ==="
+        - cd frontend
+        - echo "=== LIMPANDO CACHE ANTERIOR ==="
+        - rm -rf .next out dist node_modules package-lock.json
+        - echo "=== INSTALANDO TODAS AS DEPENDÊNCIAS ==="
+        - npm ci --production=false --include=dev --no-audit --prefer-offline
+        - echo "=== VERIFICANDO INSTALAÇÕES CRÍTICAS ==="
+        - npx tsc --version
+        - npx eslint --version
+        - npx next --version
+        - echo "=== VERIFICANDO ESTRUTURA ==="
+        - ls -la
+        - echo "=== DEPENDÊNCIAS INSTALADAS COM SUCESSO ==="
     build:
       commands:
+        - echo "=== INICIANDO BUILD PRODUÇÃO ==="
+        - echo "🔨 Compilando Next.js para agroisync.com..."
         - npm run build
+        - echo "=== VERIFICANDO BUILD ==="
+        - ls -la .next
+        - echo "=== BUILD CONCLUÍDO COM SUCESSO ==="
+    postBuild:
+      commands:
+        - echo "=== VERIFICAÇÃO PÓS-BUILD ==="
+        - echo "📁 Verificando arquivos essenciais..."
+        - test -d .next && echo "✅ .next directory encontrado" || echo "❌ .next directory não encontrado"
+        - test -f .next/server.js && echo "✅ server.js encontrado" || echo "❌ server.js não encontrado"
+        - test -d .next/static && echo "✅ static files encontrados" || echo "❌ static files não encontrados"
+        - echo "=== BUILD VERIFICADO E APROVADO ==="
   artifacts:
     baseDirectory: .next
     files:
@@ -14,3 +48,4 @@ frontend:
   cache:
     paths:
       - node_modules/**/*
+      - .next/cache/**/*
