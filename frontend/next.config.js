@@ -87,23 +87,18 @@ const nextConfig = {
       };
     }
     
-    // Improve module resolution
-    config.resolve.modules = ['node_modules', '.'];
-    config.resolve.extensions = ['.js', '.jsx', '.ts', '.tsx', '.json'];
-    
-    // Optimize bundle size
-    config.optimization = {
-      ...config.optimization,
-      splitChunks: {
-        chunks: 'all',
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            chunks: 'all',
-          },
-        },
-      },
+    // Configure alias resolution for @ imports
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': '.',
+      '@/components': './components',
+      '@/lib': './lib',
+      '@/contexts': './contexts',
+      '@/hooks': './hooks',
+      '@/utils': './utils',
+      '@/types': './types',
+      '@/styles': './styles',
+      '@/public': './public'
     };
     
     return config;

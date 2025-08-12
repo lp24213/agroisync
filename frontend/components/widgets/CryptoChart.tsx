@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { TrendingUp, TrendingDown, DollarSign, Activity } from 'lucide-react';
-import { useCoinCap } from '@/hooks/useCoinCap';
 
 interface CryptoData {
   id: string;
@@ -22,8 +21,8 @@ const cryptoList: CryptoData[] = [
     id: 'bitcoin',
     symbol: 'BTC',
     name: 'Bitcoin',
-    priceUsd: '0',
-    changePercent24Hr: '0',
+    priceUsd: '45000',
+    changePercent24Hr: '2.5',
     icon: '₿',
     color: '#F7931A'
   },
@@ -31,8 +30,8 @@ const cryptoList: CryptoData[] = [
     id: 'ethereum',
     symbol: 'ETH',
     name: 'Ethereum',
-    priceUsd: '0',
-    changePercent24Hr: '0',
+    priceUsd: '3200',
+    changePercent24Hr: '1.8',
     icon: 'Ξ',
     color: '#627EEA'
   },
@@ -40,8 +39,8 @@ const cryptoList: CryptoData[] = [
     id: 'solana',
     symbol: 'SOL',
     name: 'Solana',
-    priceUsd: '0',
-    changePercent24Hr: '0',
+    priceUsd: '95',
+    changePercent24Hr: '5.2',
     icon: '◎',
     color: '#14F195'
   },
@@ -49,8 +48,8 @@ const cryptoList: CryptoData[] = [
     id: 'matic-network',
     symbol: 'MATIC',
     name: 'Polygon',
-    priceUsd: '0',
-    changePercent24Hr: '0',
+    priceUsd: '0.85',
+    changePercent24Hr: '3.1',
     icon: '◊',
     color: '#8247E5'
   },
@@ -58,8 +57,8 @@ const cryptoList: CryptoData[] = [
     id: 'tether',
     symbol: 'USDT',
     name: 'Tether',
-    priceUsd: '0',
-    changePercent24Hr: '0',
+    priceUsd: '1.00',
+    changePercent24Hr: '0.0',
     icon: '₮',
     color: '#26A17B'
   },
@@ -79,50 +78,11 @@ export function CryptoChart() {
   const [timeframe, setTimeframe] = useState<'24h' | '7d'>('24h');
   const [cryptoData, setCryptoData] = useState<CryptoData[]>(cryptoList);
   const { t } = useTranslation();
-  
-  const { 
-    cryptoPrice, 
-    cryptoPriceLoading, 
-    fetchCryptoPrice,
-    marketChart,
-    marketChartLoading,
-    fetchMarketChart
-  } = useCoinCap();
 
   useEffect(() => {
-    // Fetch initial data for all cryptos
-    const fetchAllCryptoData = async () => {
-      const updatedData = await Promise.all(
-        cryptoList.map(async (crypto) => {
-          if (crypto.id === 'agrotm') {
-            return crypto; // AGROTM is hardcoded for demo
-          }
-          
-          try {
-            await fetchCryptoPrice(crypto.id);
-            return {
-              ...crypto,
-              priceUsd: cryptoPrice?.priceUsd || '0',
-              changePercent24Hr: cryptoPrice?.changePercent24Hr || '0'
-            };
-          } catch (error) {
-            console.error(`Error fetching ${crypto.id}:`, error);
-            return crypto;
-          }
-        })
-      );
-      setCryptoData(updatedData);
-    };
-
-    fetchAllCryptoData();
+    // Simulate data loading
+    setCryptoData(cryptoList);
   }, []);
-
-  useEffect(() => {
-    if (selectedCrypto && selectedCrypto !== 'agrotm') {
-      fetchCryptoPrice(selectedCrypto);
-      fetchMarketChart(selectedCrypto, timeframe === '24h' ? 'h1' : 'd1');
-    }
-  }, [selectedCrypto, timeframe]);
 
   const formatPrice = (price: string) => {
     const numPrice = parseFloat(price);
@@ -149,22 +109,16 @@ export function CryptoChart() {
   };
 
   const generateChartData = () => {
-    if (marketChart.length === 0) {
-      // Generate mock data for demo
-      const data = [];
-      const now = Date.now();
-      for (let i = 0; i < 24; i++) {
-        data.push({
-          time: now - (23 - i) * (timeframe === '24h' ? 3600000 : 86400000),
-          price: Math.random() * 1000 + 50000
-        });
-      }
-      return data;
+    // Generate mock data for demo
+    const data = [];
+    const now = Date.now();
+    for (let i = 0; i < 24; i++) {
+      data.push({
+        time: now - (23 - i) * (timeframe === '24h' ? 3600000 : 86400000),
+        price: Math.random() * 1000 + 50000
+      });
     }
-    return marketChart.map(point => ({
-      time: parseInt(point.time),
-      price: parseFloat(point.priceUsd)
-    }));
+    return data;
   };
 
   const chartData = generateChartData();
@@ -275,47 +229,37 @@ export function CryptoChart() {
 
         {/* Chart */}
         <div className="h-32 relative">
-          {marketChartLoading || cryptoPriceLoading ? (
-            <div className="flex items-center justify-center h-full">
-              <div className="flex space-x-1">
-                <div className="w-2 h-2 bg-premium-neon-blue rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-premium-neon-blue rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                <div className="w-2 h-2 bg-premium-neon-blue rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-              </div>
-            </div>
-          ) : (
-            <div className="relative h-full">
-              {/* Chart Line */}
-              <svg className="w-full h-full" viewBox={`0 0 ${chartData.length * 20} 120`}>
-                <defs>
-                  <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor="#00FF7F" stopOpacity="0.3" />
-                    <stop offset="100%" stopColor="#00FF7F" stopOpacity="0" />
-                  </linearGradient>
-                </defs>
-                
-                {/* Area */}
-                <path
-                  d={`M 0 ${120 - (chartData[0]?.price || 0) / 10} ${chartData.map((point, i) => 
-                    `L ${i * 20} ${120 - point.price / 10}`
-                  ).join(' ')} L ${(chartData.length - 1) * 20} 120 Z`}
-                  fill="url(#chartGradient)"
-                />
-                
-                {/* Line */}
-                <path
-                  d={`M 0 ${120 - (chartData[0]?.price || 0) / 10} ${chartData.map((point, i) => 
-                    `L ${i * 20} ${120 - point.price / 10}`
-                  ).join(' ')}`}
-                  stroke="#00FF7F"
-                  strokeWidth="2"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-          )}
+          <div className="relative h-full">
+            {/* Chart Line */}
+            <svg className="w-full h-full" viewBox={`0 0 ${chartData.length * 20} 120`}>
+              <defs>
+                <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#00FF7F" stopOpacity="0.3" />
+                  <stop offset="100%" stopColor="#00FF7F" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+              
+              {/* Area */}
+              <path
+                d={`M 0 ${120 - (chartData[0]?.price || 0) / 10} ${chartData.map((point, i) => 
+                  `L ${i * 20} ${120 - point.price / 10}`
+                ).join(' ')} L ${(chartData.length - 1) * 20} 120 Z`}
+                fill="url(#chartGradient)"
+              />
+              
+              {/* Line */}
+              <path
+                d={`M 0 ${120 - (chartData[0]?.price || 0) / 10} ${chartData.map((point, i) => 
+                  `L ${i * 20} ${120 - point.price / 10}`
+                ).join(' ')}`}
+                stroke="#00FF7F"
+                strokeWidth="2"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
         </div>
 
         {/* Change Info */}

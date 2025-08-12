@@ -16,7 +16,8 @@
         "agrotmsol": {}
       },
       "auth": {
-        "agrotmsol": {}
+        "agrotmsol": {},
+        "agroisync": {}
       },
       "hosting": {
         "amplifyhosting": {
