@@ -3,14 +3,18 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "AGROISYNC Build AWS Amplify"
+        - echo "🚀 AGROISYNC Build AWS Amplify (Node 20)"
+        - nvm install 20
+        - nvm use 20
+        - node --version
+        - npm --version
         - cd frontend
-        - rm -rf .next out
-        - npm ci --production=false
+        - rm -rf .next out node_modules package-lock.json
+        - npm install
     build:
       commands:
         - npm run build
-        - echo "Build completed"
+        - echo "Build completed successfully"
         - ls -la .next/standalone/frontend
     postBuild:
       commands:
