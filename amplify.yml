@@ -12,7 +12,7 @@ frontend:
         - echo "Cleaning previous build artifacts..."
         - rm -rf .next out node_modules package-lock.json
         - echo "Installing ALL dependencies including dev dependencies..."
-        - npm ci --production=false --include=dev
+        - npm ci --production=false --include=dev --no-audit --prefer-offline
         - echo "Verifying TypeScript installation..."
         - npx tsc --version || echo "TypeScript not found, installing..."
         - npm install typescript@latest --save-dev || echo "TypeScript installation failed, continuing..."
@@ -41,3 +41,4 @@ frontend:
     paths:
       - frontend/node_modules/**/*
       - frontend/.next/cache/**/*
+      - frontend/.npm/**/*

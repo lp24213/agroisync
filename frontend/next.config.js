@@ -37,6 +37,13 @@ const nextConfig = {
   compress: true,
   generateEtags: false,
   
+  // Environment variables - CORRIGIDOS PARA AGROISYNC.COM
+  env: {
+    CUSTOM_KEY: process.env.CUSTOM_KEY,
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || 'https://agroisync.com',
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'https://api.agroisync.com',
+  },
+  
   // Security headers (GLOBAL ACCESS - NO REGION RESTRICTIONS)
   async headers() {
     return [
@@ -102,11 +109,6 @@ const nextConfig = {
     };
     
     return config;
-  },
-  
-  // Environment variables
-  env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
   },
   
   // Redirects for AWS Amplify - CORRIGIDOS PARA AGROISYNC.COM
