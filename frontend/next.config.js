@@ -87,6 +87,10 @@ const nextConfig = {
       };
     }
     
+    // Improve module resolution
+    config.resolve.modules = ['node_modules', '.'];
+    config.resolve.extensions = ['.js', '.jsx', '.ts', '.tsx', '.json'];
+    
     // Optimize bundle size
     config.optimization = {
       ...config.optimization,
@@ -103,6 +107,32 @@ const nextConfig = {
     };
     
     return config;
+  },
+  
+  // Environment variables
+  env: {
+    CUSTOM_KEY: process.env.CUSTOM_KEY,
+  },
+  
+  // Redirects for AWS Amplify
+  async redirects() {
+    return [
+      {
+        source: '/home',
+        destination: '/',
+        permanent: true,
+      },
+    ];
+  },
+  
+  // Rewrites for AWS Amplify
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: '/api/:path*',
+      },
+    ];
   },
 };
 

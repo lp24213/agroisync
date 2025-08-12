@@ -9,17 +9,25 @@ frontend:
         - node --version
         - npm --version
         - cd frontend
+        - echo "Cleaning previous build artifacts..."
         - rm -rf .next out node_modules package-lock.json
+        - echo "Installing dependencies..."
         - npm install
+        - echo "Dependencies installed successfully"
     build:
       commands:
+        - echo "Starting build process..."
         - npm run build
         - echo "Build completed successfully"
         - ls -la .next/standalone/frontend
     postBuild:
       commands:
-        - echo "Checking essential files"
+        - echo "Checking essential files..."
         - ls -la .next/standalone/frontend
+        - echo "Verifying build output..."
+        - test -f .next/standalone/frontend/server.js && echo "✅ server.js found" || echo "❌ server.js missing"
+        - test -d .next/standalone/frontend/app && echo "✅ app directory found" || echo "❌ app directory missing"
+        - test -d .next/standalone/frontend/public && echo "✅ public directory found" || echo "❌ public directory missing"
         - echo "Deploy ready"
   artifacts:
     baseDirectory: frontend/.next/standalone/frontend

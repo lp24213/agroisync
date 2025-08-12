@@ -25,9 +25,15 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"],
+      "@/components/*": ["./components/*"],
+      "@/lib/*": ["./lib/*"],
+      "@/contexts/*": ["./contexts/*"],
+      "@/hooks/*": ["./hooks/*"],
+      "@/utils/*": ["./utils/*"],
+      "@/types/*": ["./types/*"],
+      "@/styles/*": ["./styles/*"],
+      "@/public/*": ["./public/*"]
     },
     "noImplicitAny": false,
     "noImplicitReturns": false,
