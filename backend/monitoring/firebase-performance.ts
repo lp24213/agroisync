@@ -16,15 +16,16 @@ import { getApp, getApps, initializeApp } from 'firebase/app';
 import { getPerformance, trace, Trace, PerformanceObserver } from 'firebase/performance';
 import { Connection } from '@solana/web3.js';
 
-// Configuração do Firebase
+// Configuração do Firebase para AGROISYNC
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "AIzaSyAKrRqO9U21UJdgMwmwXYH8pNpXaDjJvoc",
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "agroisync.com",
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "agrotmsol-95542",
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "agroisync-95542.firebasestorage.app",
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "533878061709",
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:533878061709:web:c76cf40fe9dff00a0900c4",
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || "G-36EN55X7EY",
+  databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL || "https://agroisync-95542-default-rtdb.asia-southeast1.firebasedatabase.app",
 };
 
 // Inicializar Firebase (se ainda não estiver inicializado)

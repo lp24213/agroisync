@@ -16,6 +16,9 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || "G-36EN55X7EY",
 };
 
+// Firebase Debug Token for development and debugging
+const FIREBASE_DEBUG_TOKEN = process.env.NEXT_PUBLIC_FIREBASE_DEBUG_TOKEN || "AFCAADF3-BDCF-4B29-B1E8-C69180EA55D2";
+
 // Initialize Firebase only if we have valid config
 let app = null;
 let auth = null;
@@ -64,6 +67,13 @@ if (hasValidConfig) {
         }
       }
     }
+
+    // Log Firebase initialization success with debug token
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🚀 Firebase initialized successfully for AGROISYNC');
+      console.log('🔑 Debug Token:', FIREBASE_DEBUG_TOKEN);
+      console.log('🌐 Domain:', firebaseConfig.authDomain);
+    }
   } catch (error) {
     console.warn('Firebase initialization failed:', error);
   }
@@ -71,5 +81,5 @@ if (hasValidConfig) {
   console.warn('Firebase configuration not found. Using mock services.');
 }
 
-export { app, auth, db, storage, analytics };
+export { app, auth, db, storage, analytics, FIREBASE_DEBUG_TOKEN };
 export default app;
