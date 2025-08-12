@@ -3,39 +3,39 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { I18nProvider } from '@/components/providers/I18nProvider';
-import { ChatbotAGROTM } from '@/components/ChatbotAGROTM';
+import { ChatbotAGROISYNC } from '@/components/ChatbotAGROISYNC';
 import { Toaster } from 'react-hot-toast';
 import '../src/lib/amplify'; // Import Amplify configuration
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'AGROTM - Plataforma de Agronegócio com Blockchain',
-  description: 'AGROTM é uma plataforma inovadora que combina agronegócio com tecnologia blockchain, oferecendo tokenização de ativos agrícolas, DeFi e soluções sustentáveis.',
+  title: 'AGROISYNC - Plataforma de Agronegócio com Blockchain',
+  description: 'AGROISYNC é uma plataforma inovadora que combina agronegócio com tecnologia blockchain, oferecendo tokenização de ativos agrícolas, DeFi e soluções sustentáveis.',
   keywords: 'agronegócio, blockchain, tokenização, DeFi, agricultura, sustentabilidade',
-  authors: [{ name: 'AGROTM Team' }],
-  creator: 'AGROTM',
-  publisher: 'AGROTM',
+  authors: [{ name: 'AGROISYNC Team' }],
+  creator: 'AGROISYNC',
+  publisher: 'AGROISYNC',
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://agrotmsol.com.br'),
+  metadataBase: new URL('https://agroisync.com'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: 'AGROTM - Plataforma de Agronegócio com Blockchain',
-    description: 'AGROTM é uma plataforma inovadora que combina agronegócio com tecnologia blockchain, oferecendo tokenização de ativos agrícolas, DeFi e soluções sustentáveis.',
-    url: 'https://agrotmsol.com.br',
-    siteName: 'AGROTM',
+    title: 'AGROISYNC - Plataforma de Agronegócio com Blockchain',
+    description: 'AGROISYNC é uma plataforma inovadora que combina agronegócio com tecnologia blockchain, oferecendo tokenização de ativos agrícolas, DeFi e soluções sustentáveis.',
+    url: 'https://agroisync.com',
+    siteName: 'AGROISYNC',
     images: [
       {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'AGROTM - Plataforma de Agronegócio com Blockchain',
+        alt: 'AGROISYNC - Plataforma de Agronegócio com Blockchain',
       },
     ],
     locale: 'pt_BR',
@@ -43,8 +43,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AGROTM - Plataforma de Agronegócio com Blockchain',
-    description: 'AGROTM é uma plataforma inovadora que combina agronegócio com tecnologia blockchain, oferecendo tokenização de ativos agrícolas, DeFi e soluções sustentáveis.',
+    title: 'AGROISYNC - Plataforma de Agronegócio com Blockchain',
+    description: 'AGROISYNC é uma plataforma inovadora que combina agronegócio com tecnologia blockchain, oferecendo tokenização de ativos agrícolas, DeFi e soluções sustentáveis.',
     images: ['/og-image.jpg'],
   },
   robots: {
@@ -84,7 +84,7 @@ export default function RootLayout({
         <I18nProvider>
           <AuthProvider>
             {children}
-            <ChatbotAGROTM />
+            <ChatbotAGROISYNC />
             <Toaster
               position="top-right"
               toastOptions={{

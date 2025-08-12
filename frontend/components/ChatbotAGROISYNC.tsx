@@ -33,7 +33,7 @@ const languages = {
   zh: { name: '中文', flag: '🇨🇳' },
 };
 
-export function ChatbotAGROTM() {
+export function ChatbotAGROISYNC() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');

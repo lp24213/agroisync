@@ -30,8 +30,8 @@ const Logo: React.FC<LogoProps> = ({ className = '', size = 'md', showText = tru
   return (
     <div className={`flex items-center gap-2 ${className}`}>
       <Image
-        src="/assets/images/logo/agrotm-logo-white.svg"
-        alt="AGROTM Logo"
+        src="/assets/images/logo/agroisync-logo-white.svg"
+        alt="AGROISYNC Logo"
         width={size === 'sm' ? 32 : size === 'md' ? 48 : size === 'lg' ? 64 : 96}
         height={size === 'sm' ? 32 : size === 'md' ? 48 : size === 'lg' ? 64 : 96}
         className={`${sizeClasses[size]} object-contain`}
@@ -39,7 +39,7 @@ const Logo: React.FC<LogoProps> = ({ className = '', size = 'md', showText = tru
       />
       {showText && (
         <span className={`font-orbitron font-bold bg-gradient-to-r from-premium-neon-blue to-premium-neon-green bg-clip-text text-transparent ${textSizes[size]}`}>
-          AGROTM
+          AGROISYNC
         </span>
       )}
     </div>

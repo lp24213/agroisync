@@ -1,7 +1,7 @@
 {
-  "name": "agrotm.sol-frontend",
+  "name": "agroisync-frontend",
   "version": "2.3.1",
-  "description": "AGROTM Frontend - Solana Agricultural Tokenization Platform",
+  "description": "AGROISYNC Frontend - Solana Agricultural Tokenization Platform",
   "private": true,
   "scripts": {
     "dev": "next dev",

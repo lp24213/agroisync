@@ -90,7 +90,7 @@
   "auth": {
     "login": {
       "title": "Entrar",
-      "subtitle": "Acesse sua conta AGROTM",
+      "subtitle": "Acesse sua conta AGROISYNC",
       "email": "Email",
       "emailPlaceholder": "seu@email.com",
       "password": "Senha",
@@ -193,14 +193,14 @@
     }
   },
   "staking": {
-    "title": "Staking AGROTM",
+          "title": "Staking AGROISYNC",
     "subtitle": "Ganhe recompensas fazendo staking dos seus tokens",
     "description": "Aumente seus rendimentos bloqueando seus tokens com segurança.",
     "pools": {
       "title": "Pools de Staking",
       "description": "Ganhe renda passiva fazendo stake dos seus tokens em nossos pools seguros e de alta rentabilidade",
-      "agrotm": {
-        "name": "AGROTM Staking Pool"
+          "agroisync": {
+      "name": "AGROISYNC Staking Pool"
       },
       "sol": {
         "name": "SOL Staking Pool"
@@ -237,9 +237,9 @@
     }
   },
   "about": {
-    "title": "Sobre a AGROTM",
+          "title": "Sobre a AGROISYNC",
     "subtitle": "Revolucionando o agronegócio com blockchain",
-    "description": "A AGROTM é uma plataforma inovadora que combina tecnologia blockchain, inteligência artificial e Internet das Coisas (IoT) para transformar o setor agrícola.",
+          "description": "A AGROISYNC é uma plataforma inovadora que combina tecnologia blockchain, inteligência artificial e Internet das Coisas (IoT) para transformar o setor agrícola.",
     "hero": {
       "title": "Sobre a",
       "platform": "Plataforma",
@@ -362,8 +362,8 @@
       "title": "Perguntas",
       "frequent": "Frequentes",
       "description": "Respostas rápidas para as dúvidas mais comuns",
-      "question1": "Como funciona a criptomoeda AGROTM?",
-      "answer1": "A AGROTM é uma criptomoeda especializada para transações no agronegócio, permitindo pagamentos seguros e transparentes entre produtores e compradores.",
+      "question1": "Como funciona a criptomoeda AGROISYNC?",
+      "answer1": "A AGROISYNC é uma criptomoeda especializada para transações no agronegócio, permitindo pagamentos seguros e transparentes entre produtores e compradores.",
       "question2": "Qual o tempo de resposta do suporte?",
       "answer2": "Nosso suporte responde em até 24 horas, com atendimento 24/7 via chat e telefone para casos urgentes.",
       "question3": "A plataforma é segura?",
@@ -374,7 +374,7 @@
   },
   "footer": {
     "description": "Plataforma blockchain revolucionando o agronegócio mundial",
-    "brandDescription": "Extensão da startup AGROTM, intermediando produtos do agronegócio com blockchain. Segurança, tecnologia e inovação para o setor agrícola.",
+          "brandDescription": "Extensão da startup AGROISYNC, intermediando produtos do agronegócio com blockchain. Segurança, tecnologia e inovação para o setor agrícola.",
     "quickLinks": "Links Rápidos",
     "links": {
       "company": "Empresa",
@@ -399,12 +399,12 @@
     "social": {
       "followUs": "Siga-nos",
       "newsletter": "Newsletter",
-      "newsletterDescription": "Receba as últimas atualizações do AGROTM",
+      "newsletterDescription": "Receba as últimas atualizações do AGROISYNC",
       "emailPlaceholder": "Seu email",
       "subscribe": "Inscrever-se"
     },
     "copyright": "Todos os direitos reservados.",
-    "copyrightFull": "© 2024 AGROTM. Todos os direitos reservados."
+          "copyrightFull": "© 2024 AGROISYNC. Todos os direitos reservados."
   },
   "language": {
     "select": "Idioma",
@@ -450,7 +450,7 @@
   "about": {
     "title": "Sobre Nós",
     "subtitle": "Revolucionando o agronegócio com tecnologia blockchain",
-    "description": "A AGROTM é uma plataforma inovadora que conecta agricultores e investidores através da tecnologia blockchain mais avançada do mundo.",
+          "description": "A AGROISYNC é uma plataforma inovadora que conecta agricultores e investidores através da tecnologia blockchain mais avançada do mundo.",
     "mission": {
       "title": "Nossa Missão",
       "description": "Democratizar o acesso à tecnologia agrícola de ponta e conectar produtores rurais com investidores globais."
