@@ -15,7 +15,7 @@ if (!getApps().length) {
     // Service account configuration
     const serviceAccount = {
       type: process.env.FIREBASE_ADMIN_TYPE || 'service_account',
-      project_id: process.env.FIREBASE_ADMIN_PROJECT_ID || 'agrotmsol-95542',
+      project_id: process.env.FIREBASE_ADMIN_PROJECT_ID || 'agroisync-95542',
       private_key_id: process.env.FIREBASE_ADMIN_PRIVATE_KEY_ID,
       private_key: process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, '\n'),
       client_email: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
@@ -49,7 +49,7 @@ if (!getApps().length) {
       
       // Alternative configuration for development
       adminApp = initializeApp({
-        projectId: process.env.FIREBASE_ADMIN_PROJECT_ID || 'agrotmsol-95542',
+        projectId: process.env.FIREBASE_ADMIN_PROJECT_ID || 'agroisync-95542',
         databaseURL: process.env.FIREBASE_DATABASE_URL || 'https://agroisync-95542-default-rtdb.asia-southeast1.firebasedatabase.app'
       });
 

@@ -20,7 +20,7 @@ import { Connection } from '@solana/web3.js';
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "AIzaSyAKrRqO9U21UJdgMwmwXYH8pNpXaDjJvoc",
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "agroisync.com",
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "agrotmsol-95542",
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "agroisync-95542",
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "agroisync-95542.firebasestorage.app",
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "533878061709",
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:533878061709:web:c76cf40fe9dff00a0900c4",
