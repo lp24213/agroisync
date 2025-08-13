@@ -7,11 +7,16 @@ applications:
         NPM_CONFIG_PRODUCTION: false
         NPM_CONFIG_AUDIT: false
         NODE_OPTIONS: "--max-old-space-size=4096"
+        NODE_VERSION: "20.15.1"
+        NPM_VERSION: "10.8.2"
     frontend:
       phases:
         preBuild:
           commands:
             - echo "🚀 INICIANDO BUILD PROFISSIONAL AGROISYNC.COM"
+            - echo "📦 Verificando versão do Node.js..."
+            - node --version
+            - npm --version
             - echo "📦 Instalando dependências root..."
             - cd ..
             - npm ci --no-audit --prefer-offline --legacy-peer-deps
