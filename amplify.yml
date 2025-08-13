@@ -8,10 +8,10 @@ applications:
       phases:
         preBuild:
           commands:
-            - echo "🚀 AGROISYNC.COM - DEPLOY PERFEITO INICIADO"
-            - echo "📅 Data: $(date)"
-            - echo "🌐 Domínio: agroisync.com"
-            - echo "🎯 Objetivo: ZERO ERROS - 100% FUNCIONAL"
+            - echo "AGROISYNC.COM - DEPLOY PERFEITO INICIADO"
+            - echo "Data: $(date)"
+            - echo "Dominio: agroisync.com"
+            - echo "Objetivo: ZERO ERROS - 100% FUNCIONAL"
             - echo "=== INSTALANDO NODE 20.15.1 ==="
             - nvm install 20.15.1
             - nvm use 20.15.1
@@ -19,40 +19,40 @@ applications:
             - npm --version
             - echo "=== LIMPANDO CACHE ANTERIOR ==="
             - rm -rf .next out dist node_modules package-lock.json
-            - echo "=== INSTALANDO TODAS AS DEPENDÊNCIAS ==="
+            - echo "=== INSTALANDO TODAS AS DEPENDENCIAS ==="
             - npm ci --production=false --include=dev --no-audit --prefer-offline --legacy-peer-deps
-            - echo "=== VERIFICANDO INSTALAÇÕES ==="
+            - echo "=== VERIFICANDO INSTALACOES ==="
             - npx tsc --version
             - npx eslint --version
             - npx next --version
             - echo "=== VERIFICANDO ESTRUTURA ==="
             - ls -la
-            - echo "=== DEPENDÊNCIAS INSTALADAS COM SUCESSO ==="
+            - echo "=== DEPENDENCIAS INSTALADAS COM SUCESSO ==="
         build:
           commands:
-            - echo "=== INICIANDO BUILD PRODUÇÃO ==="
-            - echo "🔨 Compilando Next.js para agroisync.com..."
+            - echo "=== INICIANDO BUILD PRODUCAO ==="
+            - echo "Compilando Next.js para agroisync.com..."
             - npm run build
             - echo "=== VERIFICANDO BUILD ==="
             - ls -la .next
             - echo "=== VERIFICANDO ARQUIVOS ESSENCIAIS ==="
-            - test -d .next && echo "✅ .next directory encontrado" || echo "❌ .next directory não encontrado"
-            - test -f .next/server.js && echo "✅ server.js encontrado" || echo "❌ server.js não encontrado"
-            - test -d .next/static && echo "✅ static files encontrados" || echo "❌ static files não encontrados"
-            - echo "=== BUILD CONCLUÍDO COM SUCESSO ==="
+            - test -d .next && echo "OK .next directory encontrado" || echo "ERRO .next directory nao encontrado"
+            - test -f .next/server.js && echo "OK server.js encontrado" || echo "ERRO server.js nao encontrado"
+            - test -d .next/static && echo "OK static files encontrados" || echo "ERRO static files nao encontrados"
+            - echo "=== BUILD CONCLUIDO COM SUCESSO ==="
         postBuild:
           commands:
-            - echo "=== VERIFICAÇÃO PÓS-BUILD ==="
-            - echo "📁 Verificando arquivos essenciais..."
-            - test -d .next && echo "✅ .next directory encontrado" || echo "❌ .next directory não encontrado"
-            - test -f .next/server.js && echo "✅ server.js encontrado" || echo "❌ server.js não encontrado"
-            - test -d .next/static && echo "✅ static files encontrados" || echo "❌ static files não encontrados"
+            - echo "=== VERIFICACAO POS-BUILD ==="
+            - echo "Verificando arquivos essenciais..."
+            - test -d .next && echo "OK .next directory encontrado" || echo "ERRO .next directory nao encontrado"
+            - test -f .next/server.js && echo "OK server.js encontrado" || echo "ERRO server.js nao encontrado"
+            - test -d .next/static && echo "OK static files encontrados" || echo "ERRO static files nao encontrados"
             - echo "=== VERIFICANDO TAMANHO DO BUILD ==="
             - du -sh .next
             - echo "=== BUILD VERIFICADO E APROVADO ==="
-            - echo "🎉 AGROISYNC.COM - DEPLOY PERFEITO CONCLUÍDO!"
+            - echo "AGROISYNC.COM - DEPLOY PERFEITO CONCLUIDO!"
       artifacts:
-        # SSR: o Amplify detecta automaticamente a saída do Next
+        # SSR: o Amplify detecta automaticamente a saida do Next
         baseDirectory: .next
         files:
           - '**/*'
