@@ -42,36 +42,8 @@ const nextConfig = {
     optimizePackageImports: ['@mui/material', '@mui/icons-material', 'lucide-react']
   },
 
-  // Headers de segurança - PROFESSIONAL GRADE
-  async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY'
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff'
-          },
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block'
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin'
-          },
-          {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=()'
-          }
-        ]
-      }
-    ];
-  }
+  // Headers de segurança - REMOVIDOS PARA STATIC EXPORT
+  // Headers serão configurados no AWS Amplify ou CDN
 };
 
 module.exports = nextConfig;

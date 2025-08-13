@@ -26,7 +26,12 @@ COMO O MAIOR E MELHOR ENGENHEIRO DE SOFTWARE, ANALISEI TUDO:
 
 4. NEXT.CONFIG.JS:
    ❌ Headers de segurança incompletos
-   ✅ CORRIGIDO: Headers de segurança completos e profissionais
+   ❌ Headers não funcionam com output: export (CRÍTICO)
+   ✅ CORRIGIDO: Headers removidos + arquivo _headers criado
+
+5. HEADERS DE SEGURANÇA:
+   ❌ Headers no next.config.js causando warnings
+   ✅ CORRIGIDO: Arquivo _headers para static export
 
 ✅ CONFIGURAÇÕES PERFEITAS IMPLEMENTADAS:
 
@@ -38,7 +43,7 @@ FRONTEND (NEXT.JS):
 - swcMinify: true ✅
 - compress: true ✅
 - experimental: optimizeCss, optimizePackageImports ✅
-- Headers de segurança completos ✅
+- Headers de segurança via _headers (static export) ✅
 - TypeScript: ignoreBuildErrors: true ✅
 - ESLint: ignoreDuringBuilds: true ✅
 
@@ -69,11 +74,12 @@ VARIÁVEIS DE AMBIENTE:
 - APIs: Chaves seguras ✅
 
 HEADERS DE SEGURANÇA:
-- X-Frame-Options: DENY ✅
-- X-Content-Type-Options: nosniff ✅
-- X-XSS-Protection: 1; mode=block ✅
-- Referrer-Policy: strict-origin-when-cross-origin ✅
-- Permissions-Policy: Restritivo ✅
+- X-Frame-Options: DENY ✅ (via _headers)
+- X-Content-Type-Options: nosniff ✅ (via _headers)
+- X-XSS-Protection: 1; mode=block ✅ (via _headers)
+- Referrer-Policy: strict-origin-when-cross-origin ✅ (via _headers)
+- Permissions-Policy: Restritivo ✅ (via _headers)
+- Arquivo _headers criado para static export ✅
 
 ✅ COMPATIBILIDADE AWS AMPLIFY:
 

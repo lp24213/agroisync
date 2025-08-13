@@ -1,0 +1,41 @@
+# Headers de Segurança para Static Export - AGROISYNC.COM
+# Este arquivo é usado por CDNs e servidores estáticos
+
+# Headers globais para todas as rotas
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# Headers específicos para arquivos HTML
+*.html
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+
+# Headers para arquivos JavaScript
+*.js
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+
+# Headers para arquivos CSS
+*.css
+  X-Content-Type-Options: nosniff
+
+# Headers para imagens
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.webp
+  X-Content-Type-Options: nosniff
+
+# Headers para fontes
+*.woff
+*.woff2
+*.ttf
+*.eot
+  X-Content-Type-Options: nosniff
