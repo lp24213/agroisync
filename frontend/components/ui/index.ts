@@ -16,7 +16,7 @@ export { default as Input } from './Input';
 export { default as Textarea } from './Textarea';
 export { default as Alert } from './Alert';
 export { default as LoadingSpinner } from './LoadingSpinner';
-export { default as Card } from './Card';
+export { Card, CardHeader, CardTitle, CardContent } from './Card';
 export { default as Toaster } from './Toaster';
 export { default as LanguageSelector } from './LanguageSelector';
 
