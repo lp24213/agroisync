@@ -5,13 +5,12 @@
  * com autenticação automática via ID da Metamask.
  */
 
-import { apiClient, post, get } from './api';
+import { apiGet, apiPost, checkApiHealth } from './api-functions';
 
 // Exemplo de função para fazer uma requisição POST
 export async function exemploRequisicaoPost() {
   try {
-    // A requisição automaticamente incluirá o header 'x-metamask-id'
-    const resultado = await post('/endpoint-do-backend', {
+    const resultado = await apiPost('/endpoint-do-backend', {
       dados: 'exemplo',
       timestamp: new Date().toISOString()
     });
@@ -73,7 +72,7 @@ export async function exemploApiClient() {
 // Exemplo de função para verificar se a API está funcionando
 export async function verificarStatusAPI() {
   try {
-    const resultado = await apiClient.healthCheck();
+    const resultado = await checkApiHealth();
     
     if (resultado.success) {
       console.log('✅ API está funcionando:', resultado.data);
@@ -85,5 +84,5 @@ export async function verificarStatusAPI() {
   } catch (error) {
     console.error('❌ Erro ao verificar API:', error);
     return false;
-  }
+    }
 }
