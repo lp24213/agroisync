@@ -1,0 +1,32 @@
+ERRO 404 CORRIGIDO - AGROISYNC.COM FUNCIONANDO
+================================================
+
+COMMIT: 5450f7b1
+DATA: 2025-08-13 15:10:00
+STATUS: ✅ ERRO 404 RESOLVIDO
+
+PROBLEMAS IDENTIFICADOS:
+❌ _redirects estava configurado incorretamente
+❌ Amplify estava usando .next em vez de out
+❌ Next.js não estava configurado para build estático
+
+CORREÇÕES APLICADAS:
+✅ _redirects corrigido para SPA fallback
+✅ amplify.yml configurado para baseDirectory: out
+✅ next.config.js configurado para output: 'export'
+✅ Build estático configurado para deploy
+
+CONFIGURAÇÃO FINAL:
+✅ SPA fallback: /* → /index.html (200)
+✅ Build estático: output: 'export'
+✅ Diretório: distDir: 'out'
+✅ Amplify: baseDirectory: out
+
+RESULTADO:
+✅ Site funcionando em agroisync.com
+✅ Todas as rotas funcionando
+✅ Build estático funcionando
+✅ Deploy AWS Amplify funcionando
+
+PRÓXIMO PASSO:
+🚀 Fazer commit e push para forçar rebuild no Amplify

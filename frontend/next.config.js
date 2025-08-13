@@ -2,6 +2,8 @@
 const nextConfig = {
   trailingSlash: true,
   poweredByHeader: false,
+  output: 'export',
+  distDir: 'out',
   
   env: {
     NEXT_PUBLIC_API_URL: 'https://api.agroisync.com',

@@ -34,7 +34,7 @@ applications:
             - du -sh .next
             - echo "🎉 BUILD AGROISYNC.COM CONCLUÍDO!"
       artifacts:
-        baseDirectory: .next
+        baseDirectory: out
         files:
           - '**/*'
       cache:
