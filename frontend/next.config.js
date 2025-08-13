@@ -146,7 +146,6 @@ const nextConfig = {
   
   // Configuração experimental para SSR
   experimental: {
-    optimizeCss: true,
     serverComponentsExternalPackages: ['@aws-amplify/ui-react'],
   },
 };
