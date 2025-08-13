@@ -17,32 +17,32 @@ applications:
       phases:
         preBuild:
           commands:
-            - echo "🚀 INICIANDO BUILD PROFISSIONAL AGROISYNC.COM"
-            - echo "📦 Verificando versão do Node.js..."
+            - echo "INICIANDO BUILD PROFISSIONAL AGROISYNC.COM"
+            - echo "Verificando versao do Node.js..."
             - node --version
             - npm --version
-            - echo "📦 Instalando dependências root..."
+            - echo "Instalando dependencias root..."
             - cd ..
             - npm ci --no-audit --prefer-offline --legacy-peer-deps
-            - echo "📥 Instalando dependências frontend..."
+            - echo "Instalando dependencias frontend..."
             - cd frontend
             - rm -rf .next out dist node_modules package-lock.json
             - npm ci --production=false --include=dev --no-audit --prefer-offline --legacy-peer-deps
-            - echo "✅ Dependências instaladas com sucesso!"
+            - echo "Dependencias instaladas com sucesso!"
         build:
           commands:
-            - echo "🔨 Iniciando build Next.js profissional..."
+            - echo "Iniciando build Next.js profissional..."
             - npm run build
-            - echo "✅ Build concluído com sucesso!"
+            - echo "Build concluido com sucesso!"
         postBuild:
           commands:
-            - echo "📁 Verificando arquivos gerados..."
+            - echo "Verificando arquivos gerados..."
             - ls -la out
-            - echo "📊 Estatísticas do build:"
+            - echo "Estatisticas do build:"
             - du -sh out
-            - echo "🔒 Configurando headers de segurança..."
-            - echo '{"headers": [{"source": "**/*", "headers": [{"key": "X-Frame-Options", "value": "DENY"}, {"key": "X-Content-Type-Options", "value": "nosniff"}, {"key": "X-XSS-Protection", "value": "1; mode=block"}, {"key": "Referrer-Policy", "value": "strict-origin-when-cross-origin"}, {"key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()"}]}]}' > out/_headers
-            - echo "🎉 BUILD PROFISSIONAL AGROISYNC.COM CONCLUÍDO!"
+            - echo "Configurando headers de seguranca..."
+            - cp frontend/public/_headers out/_headers
+            - echo "BUILD PROFISSIONAL AGROISYNC.COM CONCLUIDO!"
       artifacts:
         baseDirectory: out
         files:
