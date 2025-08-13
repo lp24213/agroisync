@@ -4,27 +4,17 @@ applications:
     env:
       variables:
         NODE_ENV: production
-        NPM_CONFIG_PRODUCTION: false
-        NPM_CONFIG_AUDIT: false
     frontend:
       phases:
         preBuild:
           commands:
-            - echo "🚀 INICIANDO BUILD AGROISYNC.COM"
-            - cd ..
-            - npm ci --no-audit --prefer-offline --legacy-peer-deps
-            - cd frontend
-            - rm -rf .next out dist node_modules package-lock.json
-            - npm ci --production=false --include=dev --no-audit --prefer-offline --legacy-peer-deps
+            - npm ci
         build:
           commands:
-            - echo "🔨 Iniciando build Next.js..."
             - npm run build
         postBuild:
           commands:
-            - echo "📁 Verificando arquivos gerados..."
             - ls -la out
-            - echo "🎉 BUILD AGROISYNC.COM CONCLUÍDO!"
       artifacts:
         baseDirectory: out
         files:
@@ -33,4 +23,3 @@ applications:
         paths:
           - node_modules/**
           - out/**
-          - ../node_modules/**
