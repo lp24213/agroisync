@@ -1,10 +1,10 @@
 # REDIRECIONAMENTOS AGROISYNC.COM
-# Este arquivo configura o roteamento para o Next.js
+# Configuração para Next.js App Router
 
-# SPA fallback para Next.js - TODAS as rotas vão para index.html
-/*    /index.html    200
+# SPA fallback - todas as rotas vão para a aplicação
+/*    /    200
 
-# Redirecionar domínio antigo para novo
+# Redirecionamentos específicos
 /agrotmsol    /    301
 /agrotm    /    301
 /old    /    301
