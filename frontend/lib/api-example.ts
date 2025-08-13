@@ -31,8 +31,7 @@ export async function exemploRequisicaoPost() {
 // Exemplo de função para fazer uma requisição GET
 export async function exemploRequisicaoGet() {
   try {
-    // A requisição automaticamente incluirá o header 'x-metamask-id'
-    const resultado = await get('/api/v1/status');
+    const resultado = await apiGet('/api/v1/status');
     
     if (resultado.success) {
       console.log('Status:', resultado.data);
@@ -47,24 +46,24 @@ export async function exemploRequisicaoGet() {
   }
 }
 
-// Exemplo de uso direto do apiClient
+// Exemplo de uso direto das funções funcionais
 export async function exemploApiClient() {
   try {
-    // Usando o apiClient diretamente
-    const resultado = await apiClient.post('/endpoint-do-backend', {
+    // Usando as funções funcionais diretamente
+    const resultado = await apiPost('/endpoint-do-backend', {
       acao: 'exemplo',
       dados: { teste: true }
     });
     
     if (resultado.success) {
-      console.log('Resposta do apiClient:', resultado.data);
+      console.log('Resposta das funções funcionais:', resultado.data);
       return resultado.data;
     } else {
-      console.error('Erro do apiClient:', resultado.error);
+      console.error('Erro das funções funcionais:', resultado.error);
       throw new Error(resultado.error);
     }
   } catch (error) {
-    console.error('Erro no apiClient:', error);
+    console.error('Erro nas funções funcionais:', error);
     throw error;
   }
 }

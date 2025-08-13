@@ -9,6 +9,10 @@ applications:
         NODE_OPTIONS: "--max-old-space-size=4096"
         NODE_VERSION: "20.15.1"
         NPM_VERSION: "10.8.2"
+        # Configurações de ambiente para produção
+        NEXT_PUBLIC_API_URL: https://api.agroisync.com
+        NEXT_PUBLIC_APP_URL: https://agroisync.com
+        NEXT_PUBLIC_ENVIRONMENT: production
     frontend:
       phases:
         preBuild:
@@ -48,3 +52,5 @@ applications:
           - ../node_modules/**
           - ~/.npm/**
           - ~/.cache/**
+          - .next/cache/**
+          - .next/standalone/**

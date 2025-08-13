@@ -1,4 +1,5 @@
 # CONFIGURAÇÃO AMPLIFY BACKEND PROFISSIONAL - AGROISYNC.COM
+# SEGURANÇA TOTAL - VARIÁVEIS DE AMBIENTE SEGURAS
 version: 1
 applications:
   - appRoot: .
@@ -7,17 +8,21 @@ applications:
         NODE_ENV: production
         PORT: 3001
         ALLOWED_ORIGINS: https://agroisync.com,https://www.agroisync.com,https://api.agroisync.com
-        FIREBASE_ADMIN_PROJECT_ID: agroisync-95542
-        FIREBASE_ADMIN_CLIENT_EMAIL: firebase-adminsdk-xxxxx@agroisync-95542.iam.gserviceaccount.com
-        FIREBASE_ADMIN_PRIVATE_KEY: "-----BEGIN PRIVATE KEY-----\nXXXXX\n-----END PRIVATE KEY-----\n"
-        FIREBASE_ADMIN_CLIENT_X509_CERT_URL: https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-xxxxx%40agroisync-95542.iam.gserviceaccount.com
-        FIREBASE_DATABASE_URL: https://agroisync-95542-default-rtdb.asia-southeast1.firebasedatabase.app
-        FIREBASE_STORAGE_BUCKET: agroisync-95542.firebasestorage.app
-        MONGODB_URI: mongodb+srv://username:password@cluster.mongodb.net/agroisync?retryWrites=true&w=majority
-        JWT_SECRET: agroisync-super-secret-jwt-key-2024
-        COINMARKETCAP_API_KEY: your-coinmarketcap-api-key
-        SOLANA_RPC_URL: https://api.mainnet-beta.solana.com
-        ETHEREUM_RPC_URL: https://mainnet.infura.io/v3/your-project-id
+        # Firebase - Configuração segura via variáveis de ambiente
+        FIREBASE_ADMIN_PROJECT_ID: ${FIREBASE_ADMIN_PROJECT_ID}
+        FIREBASE_ADMIN_CLIENT_EMAIL: ${FIREBASE_ADMIN_CLIENT_EMAIL}
+        FIREBASE_ADMIN_PRIVATE_KEY: ${FIREBASE_ADMIN_PRIVATE_KEY}
+        FIREBASE_ADMIN_CLIENT_X509_CERT_URL: ${FIREBASE_ADMIN_CLIENT_X509_CERT_URL}
+        FIREBASE_DATABASE_URL: ${FIREBASE_DATABASE_URL}
+        FIREBASE_STORAGE_BUCKET: ${FIREBASE_STORAGE_BUCKET}
+        # MongoDB - Configuração segura
+        MONGODB_URI: ${MONGODB_URI}
+        # JWT - Configuração segura
+        JWT_SECRET: ${JWT_SECRET}
+        # APIs Externas - Configuração segura
+        COINMARKETCAP_API_KEY: ${COINMARKETCAP_API_KEY}
+        SOLANA_RPC_URL: ${SOLANA_RPC_URL}
+        ETHEREUM_RPC_URL: ${ETHEREUM_RPC_URL}
     backend:
       phases:
         preBuild:
