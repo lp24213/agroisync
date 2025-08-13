@@ -4,17 +4,34 @@ applications:
     env:
       variables:
         NODE_ENV: production
+        NPM_CONFIG_PRODUCTION: false
+        NPM_CONFIG_AUDIT: false
+        NODE_OPTIONS: "--max-old-space-size=4096"
     frontend:
       phases:
         preBuild:
           commands:
-            - npm ci
+            - echo "🚀 INICIANDO BUILD PROFISSIONAL AGROISYNC.COM"
+            - echo "📦 Instalando dependências root..."
+            - cd ..
+            - npm ci --no-audit --prefer-offline --legacy-peer-deps
+            - echo "📥 Instalando dependências frontend..."
+            - cd frontend
+            - rm -rf .next out dist node_modules package-lock.json
+            - npm ci --production=false --include=dev --no-audit --prefer-offline --legacy-peer-deps
+            - echo "✅ Dependências instaladas com sucesso!"
         build:
           commands:
+            - echo "🔨 Iniciando build Next.js profissional..."
             - npm run build
+            - echo "✅ Build concluído com sucesso!"
         postBuild:
           commands:
+            - echo "📁 Verificando arquivos gerados..."
             - ls -la out
+            - echo "📊 Estatísticas do build:"
+            - du -sh out
+            - echo "🎉 BUILD PROFISSIONAL AGROISYNC.COM CONCLUÍDO!"
       artifacts:
         baseDirectory: out
         files:
@@ -23,3 +40,6 @@ applications:
         paths:
           - node_modules/**
           - out/**
+          - ../node_modules/**
+          - ~/.npm/**
+          - ~/.cache/**
