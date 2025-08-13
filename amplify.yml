@@ -10,8 +10,6 @@ applications:
       phases:
         preBuild:
           commands:
-            - echo "Node.js version: $(node --version)"
-            - echo "NPM version: $(npm --version)"
             - cd ..
             - npm ci --no-audit --prefer-offline
             - cd frontend
@@ -23,7 +21,6 @@ applications:
         postBuild:
           commands:
             - ls -la .next
-            - test -d .next && echo "OK .next encontrado" || echo "ERRO .next nao encontrado"
       artifacts:
         baseDirectory: .next
         files:
