@@ -43,9 +43,41 @@ const nextConfig = {
           {
             key: 'X-XSS-Protection',
             value: '1; mode=block',
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=31536000; includeSubDomains; preload',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()',
           }
         ],
       },
+    ];
+  },
+
+  async redirects() {
+    return [
+      {
+        source: '/agrotmsol',
+        destination: 'https://agroisync.com',
+        permanent: true,
+      },
+      {
+        source: '/agrotm',
+        destination: 'https://agroisync.com',
+        permanent: true,
+      },
+      {
+        source: '/old',
+        destination: 'https://agroisync.com',
+        permanent: true,
+      }
     ];
   }
 };

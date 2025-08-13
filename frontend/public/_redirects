@@ -1,0 +1,19 @@
+# REDIRECIONAMENTOS AGROISYNC.COM
+# Este arquivo força o redirecionamento para o domínio correto
+
+# Redirecionar todas as rotas para agroisync.com
+/*    https://agroisync.com/:splat    301
+
+# Redirecionar www para non-www
+https://www.agroisync.com/*    https://agroisync.com/:splat    301
+
+# Redirecionar domínio antigo
+https://agrotmsol.com.br/*    https://agroisync.com/:splat    301
+https://www.agrotmsol.com.br/*    https://agroisync.com/:splat    301
+
+# Redirecionar HTTP para HTTPS
+http://agroisync.com/*    https://agroisync.com/:splat    301
+http://www.agroisync.com/*    https://agroisync.com/:splat    301
+
+# SPA fallback para Next.js
+/*    /index.html    200

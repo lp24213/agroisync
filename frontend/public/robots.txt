@@ -1,99 +1,27 @@
-# AGROTM Robots.txt
-# Allow all crawlers to access the site
+# ROBOTS.TXT - AGROISYNC.COM
+# Configuração para SEO e indexação
+
 User-agent: *
 Allow: /
 
-# Sitemap location
-Sitemap: https://agrotm.com/sitemap.xml
+# Sitemap
+Sitemap: https://agroisync.com/sitemap.xml
 
-# Crawl delay (optional - be respectful to servers)
-Crawl-delay: 1
-
-# Disallow sensitive areas
-Disallow: /api/
+# Disallow admin areas
 Disallow: /admin/
+Disallow: /api/
 Disallow: /_next/
-Disallow: /private/
-Disallow: /internal/
-Disallow: /debug/
-Disallow: /test/
-Disallow: /staging/
-Disallow: /dev/
+Disallow: /static/
 
 # Allow important pages
+Allow: /
+Allow: /about
+Allow: /services
+Allow: /contact
 Allow: /dashboard
 Allow: /staking
-Allow: /farming
 Allow: /nfts
-Allow: /governance
-Allow: /analytics
-Allow: /docs/
-Allow: /blog/
-Allow: /about
-Allow: /contact
+Allow: /marketplace
 
-# Block specific file types
-Disallow: /*.json$
-Disallow: /*.xml$
-Disallow: /*.txt$
-Disallow: /*.log$
-
-# Allow assets
-Allow: /assets/
-Allow: /images/
-Allow: /icons/
-Allow: /fonts/
-Allow: /css/
-Allow: /js/
-
-# Block search engines from indexing development/staging
-User-agent: *
-Disallow: /staging/
-Disallow: /dev/
-Disallow: /test/
-
-# Specific rules for major search engines
-User-agent: Googlebot
-Allow: /
+# Crawl delay
 Crawl-delay: 1
-
-User-agent: Bingbot
-Allow: /
-Crawl-delay: 1
-
-User-agent: Slurp
-Allow: /
-Crawl-delay: 2
-
-# Block AI training crawlers (optional)
-User-agent: GPTBot
-Disallow: /
-
-User-agent: ChatGPT-User
-Disallow: /
-
-User-agent: CCBot
-Disallow: /
-
-User-agent: anthropic-ai
-Disallow: /
-
-# Block archive.org (optional)
-User-agent: ia_archiver
-Disallow: /
-
-# Block social media crawlers from sensitive areas
-User-agent: Twitterbot
-Allow: /
-Disallow: /api/
-Disallow: /admin/
-
-User-agent: facebookexternalhit
-Allow: /
-Disallow: /api/
-Disallow: /admin/
-
-User-agent: LinkedInBot
-Allow: /
-Disallow: /api/
-Disallow: /admin/

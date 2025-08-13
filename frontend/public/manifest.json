@@ -1,188 +1,124 @@
 {
-  "name": "AGROTM - DeFi Agriculture Platform",
-  "short_name": "AGROTM",
-  "description": "Revolutionizing agriculture with blockchain technology. DeFi platform for agricultural finance and tokenization.",
+  "name": "AGROISYNC - Agricultura Sustentável com Blockchain",
+  "short_name": "AGROISYNC",
+  "description": "Plataforma revolucionária de agricultura sustentável com tecnologia blockchain",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#22c55e",
+  "theme_color": "#10b981",
   "orientation": "portrait-primary",
   "scope": "/",
-  "lang": "en",
+  "lang": "pt-BR",
   "dir": "ltr",
-  "categories": ["finance", "business", "productivity"],
+  "categories": ["finance", "business", "productivity", "utilities"],
   "icons": [
     {
-      "src": "/assets/icons/favicon/favicon-16x16.png",
-      "sizes": "16x16",
+      "src": "/icons/icon-72x72.png",
+      "sizes": "72x72",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable any"
     },
     {
-      "src": "/assets/icons/favicon/favicon-32x32.png",
-      "sizes": "32x32",
+      "src": "/icons/icon-96x96.png",
+      "sizes": "96x96",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable any"
     },
     {
-      "src": "/assets/icons/favicon/favicon-48x48.png",
-      "sizes": "48x48",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/assets/icons/favicon/favicon-64x64.png",
-      "sizes": "64x64",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/assets/icons/favicon/favicon-128x128.png",
+      "src": "/icons/icon-128x128.png",
       "sizes": "128x128",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable any"
     },
     {
-      "src": "/assets/icons/favicon/favicon-256x256.png",
-      "sizes": "256x256",
+      "src": "/icons/icon-144x144.png",
+      "sizes": "144x144",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable any"
     },
     {
-      "src": "/assets/icons/favicon/favicon-512x512.png",
+      "src": "/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable any"
     }
   ],
   "screenshots": [
     {
-      "src": "/assets/images/screenshots/desktop-dashboard.png",
-      "sizes": "1920x1080",
+      "src": "/screenshots/desktop-1.png",
+      "sizes": "1280x720",
       "type": "image/png",
-      "form_factor": "wide",
-      "label": "AGROTM Dashboard - Desktop View"
+      "form_factor": "wide"
     },
     {
-      "src": "/assets/images/screenshots/mobile-dashboard.png",
-      "sizes": "375x667",
+      "src": "/screenshots/mobile-1.png",
+      "sizes": "390x844",
       "type": "image/png",
-      "form_factor": "narrow",
-      "label": "AGROTM Dashboard - Mobile View"
-    },
-    {
-      "src": "/assets/images/screenshots/desktop-staking.png",
-      "sizes": "1920x1080",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "AGROTM Staking - Desktop View"
-    },
-    {
-      "src": "/assets/images/screenshots/mobile-staking.png",
-      "sizes": "375x667",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "AGROTM Staking - Mobile View"
+      "form_factor": "narrow"
     }
   ],
   "shortcuts": [
     {
       "name": "Dashboard",
       "short_name": "Dashboard",
-      "description": "View your portfolio and analytics",
+      "description": "Acessar dashboard principal",
       "url": "/dashboard",
       "icons": [
         {
-          "src": "/assets/icons/ui/chart.svg",
-          "sizes": "96x96",
-          "type": "image/svg+xml"
+          "src": "/icons/dashboard-icon.png",
+          "sizes": "96x96"
         }
       ]
     },
     {
       "name": "Staking",
       "short_name": "Staking",
-      "description": "Stake your AGROTM tokens",
+      "description": "Gerenciar staking de tokens",
       "url": "/staking",
       "icons": [
         {
-          "src": "/assets/icons/ui/coin.svg",
-          "sizes": "96x96",
-          "type": "image/svg+xml"
+          "src": "/icons/staking-icon.png",
+          "sizes": "96x96"
         }
       ]
     },
     {
       "name": "NFTs",
       "short_name": "NFTs",
-      "description": "View and manage your NFTs",
+      "description": "Visualizar NFTs",
       "url": "/nfts",
       "icons": [
         {
-          "src": "/assets/icons/ui/nft.svg",
-          "sizes": "96x96",
-          "type": "image/svg+xml"
-        }
-      ]
-    },
-    {
-      "name": "Governance",
-      "short_name": "Governance",
-      "description": "Participate in governance",
-      "url": "/governance",
-      "icons": [
-        {
-          "src": "/assets/icons/ui/leaf.svg",
-          "sizes": "96x96",
-          "type": "image/svg+xml"
+          "src": "/icons/nft-icon.png",
+          "sizes": "96x96"
         }
       ]
     }
   ],
-  "related_applications": [
-    {
-      "platform": "web",
-      "url": "https://agroisync.com",
-      "id": "agrotm-web"
-    }
-  ],
+  "related_applications": [],
   "prefer_related_applications": false,
   "edge_side_panel": {
     "preferred_width": 400
   },
   "launch_handler": {
-    "client_mode": "navigate-existing"
-  },
-  "handle_links": "preferred",
-  "protocol_handlers": [
-    {
-      "protocol": "web+agrotm",
-      "url": "/?action=%s"
-    }
-  ],
-  "file_handlers": [
-    {
-      "action": "/upload",
-      "accept": {
-        "application/json": [".json"],
-        "image/*": [".png", ".jpg", ".jpeg", ".gif", ".webp"]
-      }
-    }
-  ],
-  "share_target": {
-    "action": "/share",
-    "method": "POST",
-    "enctype": "multipart/form-data",
-    "params": {
-      "title": "title",
-      "text": "text",
-      "url": "url",
-      "files": [
-        {
-          "name": "files",
-          "accept": ["image/*", "application/json"]
-        }
-      ]
-    }
+    "client_mode": "focus-existing"
   }
 }
