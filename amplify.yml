@@ -25,6 +25,8 @@ applications:
             - npx tsc --version
             - npx eslint --version
             - npx next --version
+            - echo "=== VERIFICANDO ESTRUTURA ==="
+            - ls -la
             - echo "=== DEPENDÊNCIAS INSTALADAS COM SUCESSO ==="
         build:
           commands:

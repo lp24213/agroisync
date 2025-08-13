@@ -4,14 +4,10 @@ const nextConfig = {
   trailingSlash: true,
   poweredByHeader: false,
   
-  // VARIÁVEIS DE AMBIENTE EMBUTIDAS PARA PRODUÇÃO
+  // CONFIGURAÇÃO DE VARIÁVEIS DE AMBIENTE
   env: {
-    NODE_ENV: 'production',
     NEXT_PUBLIC_API_URL: 'https://api.agroisync.com',
-    NEXT_PUBLIC_APP_URL: 'https://agroisync.com',
-    ALLOWED_ORIGINS: 'https://agroisync.com,https://www.agroisync.com,https://api.agroisync.com',
-    JWT_SECRET: 'agrotm-production-secret-key-2024',
-    MONGO_URI: 'mongodb+srv://agrotm:agrotm123@cluster.mongodb.net/agrotm?retryWrites=true&w=majority'
+    NEXT_PUBLIC_APP_URL: 'https://agroisync.com'
   },
   
   // Configuração de imagens otimizada para SSR
