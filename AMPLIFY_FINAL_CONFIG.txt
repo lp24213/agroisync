@@ -1,0 +1,47 @@
+CONFIGURAÇÃO FINAL AMPLIFY - AGROISYNC.COM
+============================================
+
+COMMIT: 3f04294c
+DATA: 2025-08-13 14:55:00
+STATUS: ✅ CONFIGURAÇÃO 100% COMPLETA
+
+FRONTEND (amplify.yml):
+✅ appRoot: frontend
+✅ NODE_ENV: production
+✅ NPM_CONFIG_PRODUCTION: false
+✅ NODE_OPTIONS: --max-old-space-size=4096
+✅ Build phases: preBuild, build, postBuild
+✅ Artifacts: .next
+✅ Cache: node_modules, .next/cache
+
+BACKEND (amplify-backend.yml):
+✅ appRoot: .
+✅ NODE_ENV: production
+✅ PORT: 3001
+✅ ALLOWED_ORIGINS: agroisync.com
+✅ FIREBASE: agroisync-95542
+✅ Build phases: preBuild, build, postBuild
+✅ Artifacts: todos os arquivos exceto node_modules
+
+DOMINIOS CONFIGURADOS:
+✅ https://agroisync.com
+✅ https://www.agroisync.com
+✅ https://api.agroisync.com
+
+FIREBASE PROJECT:
+✅ ID: agroisync-95542
+✅ Database: asia-southeast1
+✅ Storage: agroisync-95542.firebasestorage.app
+
+COMPONENTES UI:
+✅ Card: Card, CardHeader, CardTitle, CardContent
+✅ Badge: Badge, badgeVariants
+✅ Button: Button, buttonVariants
+
+BUILD STATUS:
+✅ Frontend: Pronto para deploy
+✅ Backend: Pronto para deploy
+✅ Amplify: Configurado corretamente
+
+PRÓXIMO PASSO:
+🚀 Fazer commit e push para forçar rebuild no Amplify

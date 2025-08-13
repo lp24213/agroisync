@@ -109,7 +109,7 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'OK',
-    message: 'AGROTM Backend is healthy',
+    message: 'AGROISYNC Backend is healthy',
     timestamp: new Date().toISOString(),
     environment: NODE_ENV,
     version: '2.3.1'
@@ -119,7 +119,7 @@ app.get('/health', (req, res) => {
 // Root endpoint
 app.get('/', (req, res) => {
   res.json({
-    message: 'AGROTM Backend API',
+    message: 'AGROISYNC Backend API',
     version: '2.3.1',
     status: 'running',
     environment: NODE_ENV,
@@ -135,7 +135,7 @@ app.get('/', (req, res) => {
 // API documentation endpoint
 app.get('/api/docs', (req, res) => {
   res.json({
-    title: 'AGROTM Backend API Documentation',
+    title: 'AGROISYNC Backend API Documentation',
     version: '2.3.1',
     description: 'API para plataforma AGROTM - Agricultura Sustentável com Blockchain',
     baseUrl: `http://localhost:${PORT}`,
