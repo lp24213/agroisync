@@ -1,29 +1,28 @@
 version: 1
-frontend:
-  phases:
-    preBuild:
-      commands:
-        - echo "🚀 AGROTM - Build AWS Amplify (Next.js Standalone)"
-        - node -v && npm -v
-        - cd frontend
-        - rm -rf .next out
-        - npm ci --production=false
-    build:
-      commands:
-        - npm run build
-        - echo "Build concluído"
-        - ls -la .next/standalone/frontend
-    postBuild:
-      commands:
-        - echo "Verificando arquivos essenciais..."
-        - test -f .next/standalone/frontend/server.js && echo "server.js OK" || echo "ERRO: server.js"
-        - test -f .next/standalone/frontend/package.json && echo "package.json OK" || echo "ERRO: package.json"
-        - echo "Deploy pronto"
-  artifacts:
-    baseDirectory: frontend/.next/standalone/frontend
-    files:
-      - '**/*'
-  cache:
-    paths:
-      - frontend/node_modules/**/*
-      - frontend/.next/cache/**/*
+applications:
+  - appRoot: frontend
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - nvm install 20.15.1
+            - nvm use 20.15.1
+            - node --version
+            - npm --version
+            - rm -rf .next out dist node_modules package-lock.json
+            - npm ci --production=false --include=dev --no-audit --prefer-offline --legacy-peer-deps
+        build:
+          commands:
+            - npm run build
+        postBuild:
+          commands:
+            - ls -la .next
+            - test -d .next && echo "OK .next encontrado" || echo "ERRO .next nao encontrado"
+      artifacts:
+        baseDirectory: .next
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**
+          - .next/cache/**

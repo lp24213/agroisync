@@ -52,7 +52,7 @@ services:
       JWT_SECRET: your-super-secret-jwt-key-change-this-in-production
       SOLANA_NETWORK: devnet
       SOLANA_DEVNET_RPC: https://api.devnet.solana.com
-      ALLOWED_ORIGINS: http://localhost:3000,https://agrotmsol.com.br
+      ALLOWED_ORIGINS: http://localhost:3000,https://agroisync.com,https://www.agroisync.com,https://api.agroisync.com
     ports:
       - "3001:3001"
     depends_on:

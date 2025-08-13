@@ -48,9 +48,15 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false
 }));
 
-// CORS configuration (GLOBAL ACCESS - NO REGION RESTRICTIONS)
+// CORS configuration - AGROISYNC.COM ONLY
 const corsOptions = {
-  origin: '*', // Allow ALL origins globally
+  origin: [
+    'https://agroisync.com',
+    'https://www.agroisync.com',
+    'https://api.agroisync.com',
+    'http://localhost:3000',
+    'http://localhost:3001'
+  ],
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
