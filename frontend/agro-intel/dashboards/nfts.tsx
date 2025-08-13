@@ -1,18 +1,14 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { 
-  Card, CardContent, CardHeader, 
-  Grid, Typography, Box, 
-  CircularProgress, Tabs, Tab,
-  Paper, Divider, Button,
-  FormControl, InputLabel, Select, MenuItem,
-  Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Avatar, Chip,
-  TextField, IconButton, Tooltip
+import {
+  Box, Typography, Grid, Card, CardContent, CardHeader,
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  Paper, Button, FormControl, InputLabel, Select, MenuItem,
+  Tabs, Tab, TextField, Avatar, Chip, CircularProgress,
+  SelectChangeEvent
 } from '@mui/material';
-import { 
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, 
-  Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, 
-  Cell, BarChart, Bar, Legend, LineChart, Line
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer, PieChart, Pie, Cell, Legend, LineChart, Line, AreaChart, Area
 } from 'recharts';
 import { format, subDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -24,10 +20,10 @@ import InfoIcon from '@mui/icons-material/Info';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 
-// Importações de componentes e hooks personalizados
-import { useNFTData } from '../../hooks/useNFTData';
+// Hooks e componentes personalizados
 import { useNFTStats } from '../../hooks/useNFTStats';
 import { useNFTHistory } from '../../hooks/useNFTHistory';
+import { useNFTData } from '../../hooks/useNFTData';
 import { useNFTValuation } from '../../hooks/useNFTValuation';
 import { useCommodityPrices } from '../../hooks/useCommodityPrices';
 import { useWeatherData } from '../../hooks/useWeatherData';
@@ -57,6 +53,7 @@ interface NFT {
     longitude?: number;
     yieldHistory?: Array<{period: string, yield: number}>;
     certifications?: string[];
+    description?: string; // Added for mock data
     [key: string]: any;
   };
 }
@@ -101,18 +98,78 @@ const NFTDashboard: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   
   // Hooks personalizados para buscar dados
-  const { nfts, totalNFTs, totalValue } = useNFTStats();
-  const { nftHistory } = useNFTHistory(timeRange);
-  const { recentSales } = useNFTData();
-  const { predictedValues } = useNFTValuation();
-  const { commodityPrices } = useCommodityPrices();
+  const { stats, collections, loading: statsLoading } = useNFTStats();
+  const { valuationHistory } = useNFTHistory();
+  const { nfts: nftData } = useNFTData();
+  const { valuations } = useNFTValuation();
+  const { prices: commodityPrices } = useCommodityPrices();
+  const { currentWeather: weatherData } = useWeatherData();
   
-  // Dados processados para visualizações
-  const nftDistribution: NFTDistribution[] = useMemo(() => [
+  // Extrair valores das stats
+  const { totalNFTs, totalValue } = stats;
+  
+  // Dados mock para NFTs (em produção viriam da API)
+  const mockNFTs = useMemo(() => [
+    {
+      id: '1',
+      name: 'Fazenda Santa Maria',
+      type: 'Fazenda',
+      location: 'Goiás, Brasil',
+      crop: 'Soja',
+      value: 50000,
+      mintDate: new Date('2024-01-15'),
+      image: '/images/farm1.jpg',
+      area: 1500,
+      tokenId: 'token_001',
+      quantity: 1,
+      metadata: { description: 'Fazenda de soja premium' },
+      owner: '0x1234...5678'
+    },
+    {
+      id: '2',
+      name: 'Trator John Deere 5075E',
+      type: 'Maquinário',
+      location: 'Mato Grosso, Brasil',
+      crop: null,
+      value: 15000,
+      mintDate: new Date('2024-02-20'),
+      image: '/images/tractor1.jpg',
+      area: 0,
+      tokenId: 'token_002',
+      quantity: 1,
+      metadata: { description: 'Trator agrícola profissional' },
+      owner: '0x8765...4321'
+    },
+    {
+      id: '3',
+      name: 'Lote de Soja Premium',
+      type: 'Lotes de Grãos',
+      location: 'Paraná, Brasil',
+      crop: 'Soja',
+      value: 8000,
+      mintDate: new Date('2024-03-10'),
+      image: '/images/soybean1.jpg',
+      area: 100,
+      tokenId: 'token_003',
+      quantity: 500,
+      metadata: { description: 'Lote de soja de alta qualidade' },
+      owner: '0x9876...5432'
+    }
+  ], []);
+  
+  // Dados mock para distribuição (em produção viriam da API)
+  const nftDistribution = useMemo(() => [
     { type: 'Fazendas', count: 120, value: 75000000, percentage: 60 },
     { type: 'Maquinário', count: 350, value: 25000000, percentage: 20 },
     { type: 'Lotes de Grãos', count: 580, value: 15000000, percentage: 12 },
     { type: 'Certificados', count: 450, value: 10000000, percentage: 8 },
+  ], []);
+  
+  // Dados mock para vendas recentes
+  const recentSales = useMemo(() => [
+    { id: '1', nftName: 'Fazenda Santa Maria', price: 50000, date: '2024-01-15' },
+    { id: '2', nftName: 'Trator John Deere', price: 15000, date: '2024-02-20' },
+    { id: '3', nftName: 'Lote de Soja', price: 8000, date: '2024-03-10' }
   ], []);
   
   // Efeito para simular carregamento de dados
@@ -125,18 +182,18 @@ const NFTDashboard: React.FC = () => {
   }, []);
   
   // Manipuladores de eventos
-  const handleTimeRangeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleTimeRangeChange = (event: SelectChangeEvent<string>) => {
     setTimeRange(event.target.value as '7d' | '30d' | '90d' | '1y');
   };
-  
-  const handleTypeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+
+  const handleTypeChange = (event: SelectChangeEvent<string>) => {
     setSelectedType(event.target.value as string);
   };
-  
+
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
-  
+
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
@@ -147,7 +204,7 @@ const NFTDashboard: React.FC = () => {
   
   // Filtragem de NFTs com base na pesquisa
   const filteredNFTs = useMemo(() => {
-    return nfts.filter(nft => {
+    return mockNFTs.filter(nft => {
       const matchesSearch = searchTerm === '' || 
         nft.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         nft.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -157,7 +214,7 @@ const NFTDashboard: React.FC = () => {
       
       return matchesSearch && matchesType;
     });
-  }, [nfts, searchTerm, selectedType]);
+  }, [mockNFTs, searchTerm, selectedType]);
   
   if (isLoading) {
     return (
@@ -203,38 +260,39 @@ const NFTDashboard: React.FC = () => {
       
       {/* Cards de métricas principais */}
       <Grid container spacing={3} mb={4}>
-        <Grid item xs={12} md={3}>
-          <NFTMetricsCard 
-            title="Total de NFTs" 
-            value={totalNFTs.toString()}
-            secondaryValue={`${nftDistribution.reduce((acc, item) => acc + item.count, 0)} tokenizados`}
-            change={+8.3}
+        <Grid item xs={12} sm={6} md={3}>
+          <NFTMetricsCard
+            title="Total de NFTs"
+            value={totalNFTs.toLocaleString()}
+            change={12.5}
             icon="nft"
           />
         </Grid>
-        <Grid item xs={12} md={3}>
-          <NFTMetricsCard 
-            title="Valor Total" 
-            value={`$${(totalValue / 1000000).toFixed(2)}M USD`}
-            change={+15.7}
-            icon="money"
+        
+        <Grid item xs={12} sm={6} md={3}>
+          <NFTMetricsCard
+            title="Valor Total"
+            value={`$${totalValue.toLocaleString()}`}
+            change={8.2}
+            icon="currency"
           />
         </Grid>
-        <Grid item xs={12} md={3}>
-          <NFTMetricsCard 
-            title="Vendas (30d)" 
-            value={recentSales.length.toString()}
-            secondaryValue={`$${(recentSales.reduce((acc, sale) => acc + sale.price, 0) / 1000000).toFixed(2)}M USD`}
-            change={+22.5}
-            icon="sales"
-          />
-        </Grid>
-        <Grid item xs={12} md={3}>
-          <NFTMetricsCard 
-            title="Preço Médio" 
-            value={`$${(totalValue / totalNFTs).toLocaleString()} USD`}
-            change={+5.2}
+        
+        <Grid item xs={12} sm={6} md={3}>
+          <NFTMetricsCard
+            title="Valor Médio"
+            value={`$${Math.round(totalValue / totalNFTs).toLocaleString()}`}
+            change={-2.1}
             icon="chart"
+          />
+        </Grid>
+        
+        <Grid item xs={12} sm={6} md={3}>
+          <NFTMetricsCard
+            title="Novos Mints"
+            value={stats.recentMints.toString()}
+            change={15.3}
+            icon="mint"
           />
         </Grid>
       </Grid>
@@ -249,31 +307,27 @@ const NFTDashboard: React.FC = () => {
             />
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
-                <AreaChart
-                  data={nftHistory}
+                <LineChart
+                  data={valuationHistory}
                   margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis 
                     dataKey="date" 
-                    tickFormatter={(date) => format(new Date(date), 'dd/MM', { locale: ptBR })}
+                    tickFormatter={(date: string) => format(new Date(date), 'dd/MM/yyyy', { locale: ptBR })}
                   />
-                  <YAxis 
-                    tickFormatter={(value) => `$${(value / 1000000).toFixed(0)}M`}
+                  <YAxis />
+                  <Tooltip 
+                    labelFormatter={(date: string) => format(new Date(date), 'dd/MM/yyyy', { locale: ptBR })}
                   />
-                  <RechartsTooltip 
-                    formatter={(value: number) => [`$${(value / 1000000).toFixed(2)}M USD`, 'Valor Total']}
-                    labelFormatter={(date) => format(new Date(date), 'dd/MM/yyyy', { locale: ptBR })}
-                  />
-                  <Area 
+                  <Line 
                     type="monotone" 
                     dataKey="totalValue" 
                     stroke="#8884d8" 
-                    fill="#8884d8" 
-                    fillOpacity={0.3}
+                    strokeWidth={2}
                     name="Valor Total"
                   />
-                </AreaChart>
+                </LineChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
@@ -300,7 +354,7 @@ const NFTDashboard: React.FC = () => {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <RechartsTooltip 
+                  <Tooltip 
                     formatter={(value: number) => [`$${(value / 1000000).toFixed(2)}M USD`, 'Valor']}
                   />
                 </PieChart>
@@ -358,7 +412,7 @@ const NFTDashboard: React.FC = () => {
                 </Box>
                 
                 <Typography variant="body2" color="text.secondary">
-                  Exibindo {filteredNFTs.length} de {nfts.length} NFTs
+                  Exibindo {filteredNFTs.length} de {mockNFTs.length} NFTs
                 </Typography>
               </Box>
               
@@ -381,15 +435,26 @@ const NFTDashboard: React.FC = () => {
                         <TableCell>
                           <Box display="flex" alignItems="center">
                             <Avatar 
-                              src={nft.imageUrl} 
+                              src={nft.image} 
                               alt={nft.name} 
                               sx={{ mr: 2, width: 40, height: 40 }}
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.src = '/images/nft-placeholder.svg';
-                              }}
                             />
-                            <Typography variant="body2">{nft.name}</Typography>
+                            <Box>
+                              <Typography variant="body2" fontWeight="bold">
+                                {nft.name}
+                              </Typography>
+                              <Typography variant="caption" color="text.secondary">
+                                {nft.type} • {nft.location}
+                              </Typography>
+                              {nft.crop && (
+                                <Chip 
+                                  label={nft.crop} 
+                                  size="small" 
+                                  color="primary" 
+                                  sx={{ mt: 0.5 }}
+                                />
+                              )}
+                            </Box>
                           </Box>
                         </TableCell>
                         <TableCell>
@@ -424,17 +489,17 @@ const NFTDashboard: React.FC = () => {
                           )}
                           {nft.type === 'Certificado' && (
                             <Typography variant="body2">
-                              {nft.metadata.certifications?.join(', ')}
+                              {nft.metadata.description}
                             </Typography>
                           )}
                         </TableCell>
                         <TableCell align="right">
                           <Typography variant="body2" fontWeight="bold">
-                            ${nft.estimatedValue.toLocaleString()}
+                            ${nft.value.toLocaleString()}
                           </Typography>
                         </TableCell>
                         <TableCell align="right">
-                          {format(new Date(nft.lastValuation), 'dd/MM/yyyy', { locale: ptBR })}
+                          {format(new Date(nft.mintDate), 'dd/MM/yyyy', { locale: ptBR })}
                         </TableCell>
                         <TableCell align="right">
                           <Typography variant="body2">
@@ -456,30 +521,23 @@ const NFTDashboard: React.FC = () => {
                 <Card>
                   <CardHeader title="Vendas Recentes" />
                   <CardContent>
-                    <TableContainer sx={{ maxHeight: 300 }}>
-                      <Table size="small">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>NFT</TableCell>
-                            <TableCell>Tipo</TableCell>
-                            <TableCell align="right">Preço</TableCell>
-                            <TableCell align="right">Data</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {recentSales.map((sale) => (
-                            <TableRow key={sale.id} hover>
-                              <TableCell>{sale.nftName}</TableCell>
-                              <TableCell>{sale.nftType}</TableCell>
-                              <TableCell align="right">${sale.price.toLocaleString()}</TableCell>
-                              <TableCell align="right">
-                                {format(new Date(sale.date), 'dd/MM/yyyy', { locale: ptBR })}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart data={recentSales}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis 
+                          dataKey="date" 
+                          tickFormatter={(date: string) => format(new Date(date), 'dd/MM', { locale: ptBR })}
+                        />
+                        <YAxis 
+                          tickFormatter={(value: number) => `$${(value / 1000).toFixed(0)}K`}
+                        />
+                        <Tooltip 
+                          labelFormatter={(date: string) => format(new Date(date), 'dd/MM/yyyy', { locale: ptBR })}
+                          formatter={(value: number, name: string) => [`$${value.toLocaleString()}`, 'Preço']}
+                        />
+                        <Bar dataKey="price" fill="#8884d8" name="Preço de Venda" />
+                      </BarChart>
+                    </ResponsiveContainer>
                   </CardContent>
                 </Card>
               </Grid>
@@ -500,7 +558,7 @@ const NFTDashboard: React.FC = () => {
                         />
                         <YAxis yAxisId="left" orientation="left" />
                         <YAxis yAxisId="right" orientation="right" />
-                        <RechartsTooltip 
+                        <Tooltip 
                           labelFormatter={(date) => format(new Date(date), 'MM/yyyy', { locale: ptBR })}
                         />
                         <Legend />
@@ -536,7 +594,7 @@ const NFTDashboard: React.FC = () => {
                 <Card>
                   <CardHeader title="Distribuição Geográfica de NFTs" />
                   <CardContent>
-                    <NFTMap nfts={nfts} height={400} />
+                    <NFTMap nfts={mockNFTs} />
                   </CardContent>
                 </Card>
               </Grid>
@@ -555,7 +613,7 @@ const NFTDashboard: React.FC = () => {
                   <CardContent>
                     <ResponsiveContainer width="100%" height={300}>
                       <AreaChart
-                        data={predictedValues}
+                        data={valuations}
                         margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
                       >
                         <CartesianGrid strokeDasharray="3 3" />
@@ -566,7 +624,7 @@ const NFTDashboard: React.FC = () => {
                         <YAxis 
                           tickFormatter={(value) => `$${(value / 1000000).toFixed(0)}M`}
                         />
-                        <RechartsTooltip 
+                        <Tooltip 
                           labelFormatter={(date) => format(new Date(date), 'dd/MM/yyyy', { locale: ptBR })}
                           formatter={(value: number, name) => [
                             `$${(value / 1000000).toFixed(2)}M USD`, 

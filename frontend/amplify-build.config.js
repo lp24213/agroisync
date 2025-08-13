@@ -1,6 +1,7 @@
 /**
  * AWS Amplify Build Configuration
  * Otimizações específicas para deploy no AWS Amplify
+ * FORÇA USO DO NODE.JS 20.15.1 PARA COMPATIBILIDADE TOTAL
  */
 
 const amplifyConfig = {
@@ -48,6 +49,21 @@ const amplifyConfig = {
     // Otimizações de imagem
     imageOptimization: false, // Desabilitado para AWS Amplify
     responsiveImages: false,
+  },
+  
+  // Configurações de Node.js - FORÇA VERSÃO CORRETA
+  nodeConfig: {
+    version: '20.15.1',
+    npmVersion: '10.8.2',
+    enforceVersion: true,
+    checkBeforeBuild: true,
+  },
+  
+  // Configurações de compatibilidade
+  compatibility: {
+    firebase: '>=12.0.0',
+    node: '>=20.0.0',
+    npm: '>=10.8.2',
   },
 };
 
