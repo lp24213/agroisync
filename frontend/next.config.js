@@ -1,10 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Configuração principal para AWS Amplify
+  // Configuração principal para AWS Amplify com SSR
   trailingSlash: true,
   poweredByHeader: false,
   
-  // Configuração de imagens otimizada
+  // Configuração de imagens otimizada para SSR
   images: {
     unoptimized: true,
     domains: [
@@ -31,50 +31,60 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   
-  // Configuração de segurança
+  // Configuração de segurança avançada
   async headers() {
+    const securityHeaders = [
+      {
+        key: 'Access-Control-Allow-Origin',
+        value: 'https://agroisync.com, https://www.agroisync.com, https://api.agroisync.com',
+      },
+      {
+        key: 'Access-Control-Allow-Methods',
+        value: 'GET, POST, PUT, DELETE, OPTIONS, PATCH',
+      },
+      {
+        key: 'Access-Control-Allow-Headers',
+        value: 'Content-Type, Authorization, X-Requested-With, X-API-Key, X-Client-Version, Origin, Accept',
+      },
+      {
+        key: 'X-Frame-Options',
+        value: 'DENY',
+      },
+      {
+        key: 'X-Content-Type-Options',
+        value: 'nosniff',
+      },
+      {
+        key: 'X-XSS-Protection',
+        value: '1; mode=block',
+      },
+      {
+        key: 'Referrer-Policy',
+        value: 'strict-origin-when-cross-origin',
+      },
+      {
+        key: 'Strict-Transport-Security',
+        value: 'max-age=31536000; includeSubDomains; preload',
+      },
+      {
+        key: 'Permissions-Policy',
+        value: 'geolocation=(), microphone=(), camera=()',
+      },
+      {
+        key: 'Content-Security-Policy',
+        value: "default-src 'self'; img-src 'self' https: data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; connect-src 'self' https: wss:; frame-ancestors 'self'",
+      },
+    ];
+
     return [
       {
         source: '/(.*)',
-        headers: [
-          {
-            key: 'Access-Control-Allow-Origin',
-            value: '*',
-          },
-          {
-            key: 'Access-Control-Allow-Methods',
-            value: 'GET, POST, PUT, DELETE, OPTIONS, PATCH',
-          },
-          {
-            key: 'Access-Control-Allow-Headers',
-            value: 'Content-Type, Authorization, X-Requested-With, X-API-Key, X-Client-Version, Origin, Accept',
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
-          },
-          {
-            key: 'Strict-Transport-Security',
-            value: 'max-age=31536000; includeSubDomains',
-          },
-        ],
+        headers: securityHeaders,
       },
     ];
   },
   
-  // Configuração de webpack otimizada
+  // Configuração de webpack otimizada para SSR
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
@@ -103,7 +113,7 @@ const nextConfig = {
     return config;
   },
   
-  // Configuração de redirecionamentos
+  // Configuração de redirecionamentos para SSR
   async redirects() {
     return [
       {
@@ -119,7 +129,7 @@ const nextConfig = {
     ];
   },
   
-  // Configuração de rewrites
+  // Configuração de rewrites para SSR (sem regra SPA)
   async rewrites() {
     return [
       {
@@ -129,14 +139,15 @@ const nextConfig = {
     ];
   },
   
-  // Configuração de compressão
+  // Configuração de compressão e performance
   compress: true,
   generateEtags: false,
-  
-  // Configuração de performance
   swcMinify: true,
+  
+  // Configuração experimental para SSR
   experimental: {
     optimizeCss: true,
+    serverComponentsExternalPackages: ['@aws-amplify/ui-react'],
   },
 };
 
