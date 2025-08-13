@@ -1,16 +1,19 @@
 version: 1
 applications:
   - appRoot: frontend
+    env:
+      variables:
+        NODE_ENV: production
+        NPM_CONFIG_PRODUCTION: false
+        NPM_CONFIG_AUDIT: false
     frontend:
       phases:
         preBuild:
           commands:
-            - nvm install 20.15.1
-            - nvm use 20.15.1
-            - node --version
-            - npm --version
+            - echo "Node.js version: $(node --version)"
+            - echo "NPM version: $(npm --version)"
             - cd ..
-            - npm ci
+            - npm ci --no-audit --prefer-offline
             - cd frontend
             - rm -rf .next out dist node_modules package-lock.json
             - npm ci --production=false --include=dev --no-audit --prefer-offline --legacy-peer-deps
@@ -30,3 +33,5 @@ applications:
           - node_modules/**
           - .next/cache/**
           - ../node_modules/**
+          - ~/.npm/**
+          - ~/.cache/**
