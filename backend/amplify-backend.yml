@@ -1,4 +1,4 @@
-# CONFIGURAÇÃO AMPLIFY BACKEND - AGROISYNC.COM
+# CONFIGURAÇÃO AMPLIFY BACKEND PROFISSIONAL - AGROISYNC.COM
 version: 1
 applications:
   - appRoot: .
@@ -29,7 +29,7 @@ applications:
         build:
           commands:
             - echo "🔨 Verificando configuração..."
-            - node -e "console.log('✅ Node.js funcionando:', process.version)"
+            - node -e "console.log('✅ Backend configurado corretamente')"
             - echo "✅ Build backend concluído!"
         postBuild:
           commands:

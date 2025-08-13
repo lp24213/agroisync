@@ -1,15 +1,5 @@
 # CONFIGURAÇÃO PROFISSIONAL DE ROTEAMENTO - AGROISYNC.COM
-# Este arquivo configura o roteamento para Next.js App Router
+# SPA fallback para Next.js App Router
 
-# SPA fallback - todas as rotas vão para a aplicação principal
+# Todas as rotas vão para a aplicação principal
 /*    /    200
-
-# Redirecionamentos específicos para compatibilidade
-/agrotmsol    /    301
-/agrotm    /    301
-/old    /    301
-
-# Redirecionamentos de domínio antigo
-/agrotmsol/*    /    301
-/agrotm/*    /    301
-/old/*    /    301
