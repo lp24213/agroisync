@@ -1,13 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Build estático para AWS Amplify
+  // Build estático para AWS Amplify - PROFESSIONAL GRADE
   output: 'export',
   distDir: 'out',
   
-  // Configurações de roteamento
+  // Configurações de roteamento - PROFESSIONAL GRADE
   trailingSlash: true,
   
-  // Otimizações de imagem
+  // Otimizações de imagem - PROFESSIONAL GRADE
   images: {
     unoptimized: true,
     domains: [
@@ -19,17 +19,27 @@ const nextConfig = {
     ]
   },
   
-  // Configurações de build
+  // Configurações de build - PROFESSIONAL GRADE
   poweredByHeader: false,
   
-  // Configurações de TypeScript
+  // Configurações de TypeScript - PROFESSIONAL GRADE
   typescript: {
     ignoreBuildErrors: true
   },
   
-  // Configurações de ESLint
+  // Configurações de ESLint - PROFESSIONAL GRADE
   eslint: {
     ignoreDuringBuilds: true
+  },
+  
+  // Configurações de otimização - PROFESSIONAL GRADE
+  swcMinify: true,
+  compress: true,
+  
+  // Configurações de performance - PROFESSIONAL GRADE
+  experimental: {
+    optimizeCss: true,
+    optimizePackageImports: ['@mui/material', '@mui/icons-material', 'lucide-react']
   }
 };
 
