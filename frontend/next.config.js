@@ -1,16 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Configuração crítica para AWS Amplify
+  // Configuração crítica para AWS Amplify - ZERO ERROS
   output: 'standalone',
-  distDir: '.next',
-  
-  // Configurações de build otimizadas para AWS Amplify
-  experimental: {
-    optimizePackageImports: ['@mui/material', '@mui/icons-material', 'three'],
-  },
-  
-  // Configurações de performance
-  compress: true,
+  trailingSlash: true,
   
   // Configurações de imagem para AWS Amplify
   images: {
@@ -20,7 +12,24 @@ const nextConfig = {
     minimumCacheTTL: 60,
   },
   
-  // Configurações de webpack
+  // Configurações de ambiente críticas
+  env: {
+    MONGO_URI: process.env.MONGO_URI,
+    JWT_SECRET: process.env.JWT_SECRET,
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+  },
+  
+  // Rewrites para API
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: '/api/:path*'
+      }
+    ]
+  },
+  
+  // Configurações de webpack otimizadas
   webpack: (config, { dev, isServer }) => {
     // Excluir contratos do build
     config.module.rules.push({
@@ -64,7 +73,7 @@ const nextConfig = {
     return config;
   },
   
-  // Configurações de headers
+  // Headers de segurança
   async headers() {
     return [
       {
@@ -87,7 +96,7 @@ const nextConfig = {
     ];
   },
   
-  // Configurações de redirecionamento
+  // Redirecionamentos
   async redirects() {
     return [
       {
@@ -96,11 +105,6 @@ const nextConfig = {
         permanent: true,
       },
     ];
-  },
-  
-  // Configurações de ambiente
-  env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
   },
 };
 
