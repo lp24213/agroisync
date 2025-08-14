@@ -2,12 +2,11 @@
 const nextConfig = {
   // AWS Amplify optimized configuration
   experimental: {
-    // Removido esmExternals (depreciado)
-    // Removido serverComponentsExternalPackages (movido)
+    // Configurações experimentais removidas para compatibilidade
   },
   
   // Server external packages (nova configuração)
-  serverExternalPackages: ['@aws-amplify/ui-react', 'aws-amplify'],
+  serverExternalPackages: ['aws-amplify'],
   
   // Image configuration for AWS Amplify
   images: {
@@ -87,6 +86,15 @@ const nextConfig = {
         fs: false,
         net: false,
         tls: false,
+        crypto: false,
+        stream: false,
+        url: false,
+        zlib: false,
+        http: false,
+        https: false,
+        assert: false,
+        os: false,
+        path: false,
       };
     }
     

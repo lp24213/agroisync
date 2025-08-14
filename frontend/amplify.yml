@@ -5,10 +5,14 @@ frontend:
       commands:
         - nvm install 20.18.0
         - nvm use 20.18.0
-        - npm ci --production=false
+        - node --version
+        - npm --version
+        - npm ci --production=false --legacy-peer-deps
     build:
       commands:
+        - echo "Iniciando build do Next.js..."
         - npm run build
+        - echo "Build concluído com sucesso!"
   artifacts:
     baseDirectory: .next
     files:
