@@ -144,10 +144,6 @@ const nextConfig = {
         source: '/api/:path*',
         destination: '/api/:path*',
       },
-      {
-        source: '/(.*)',
-        destination: '/',
-      },
     ];
   },
 };
