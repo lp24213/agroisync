@@ -1,17 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Configurações de build otimizadas
+  // Configurações de build otimizadas para AWS Amplify
   experimental: {
-    optimizeCss: true,
     optimizePackageImports: ['@mui/material', '@mui/icons-material', 'three'],
   },
   
   // Configurações de performance
-  swcMinify: true,
   compress: true,
   
-  // Configurações de imagem
+  // Configurações de imagem para AWS Amplify
   images: {
+    unoptimized: true,
     domains: ['agroisync.com', 'api.agroisync.com'],
     formats: ['image/webp', 'image/avif'],
     minimumCacheTTL: 60,

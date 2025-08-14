@@ -1,49 +1,27 @@
 version: 1
-applications:
-  - appRoot: frontend
-    env:
-      variables:
-        NODE_ENV: production
-        NPM_CONFIG_PRODUCTION: false
-        NPM_CONFIG_AUDIT: false
-        NODE_OPTIONS: "--max-old-space-size=4096"
-        NODE_VERSION: "20.15.1"
-        NPM_VERSION: "10.8.2"
-        NEXT_PUBLIC_API_URL: https://api.agroisync.com
-        NEXT_PUBLIC_APP_URL: https://agroisync.com
-        NEXT_PUBLIC_ENVIRONMENT: production
-        NEXT_TELEMETRY_DISABLED: 1
-    frontend:
-      phases:
-        preBuild:
-          commands:
-            - echo "=== VERIFICANDO VERSÕES ==="
-            - node --version
-            - npm --version
-            - echo "=== INSTALANDO DEPENDÊNCIAS ==="
-            - cd ..
-            - npm ci --no-audit --prefer-offline --legacy-peer-deps
-            - cd frontend
-            - rm -rf .next out dist node_modules package-lock.json
-            - npm ci --production=false --include=dev --no-audit --prefer-offline --legacy-peer-deps
-        build:
-          commands:
-            - echo "=== INICIANDO BUILD ==="
-            - npm run build
-        postBuild:
-          commands:
-            - echo "=== VERIFICANDO BUILD ==="
-            - ls -la .next
-            - du -sh .next
-            - cp frontend/public/_headers .next/_headers
-      artifacts:
-        baseDirectory: .next
-        files:
-          - '**/*'
-      cache:
-        paths:
-          - node_modules/**
-          - .next/cache/**
-          - ../node_modules/**
-          - ~/.npm/**
-          - ~/.cache/**
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - echo "=== VERIFICANDO VERSÕES ==="
+        - node --version
+        - npm --version
+        - echo "=== INSTALANDO DEPENDÊNCIAS ==="
+        - cd frontend
+        - npm ci --no-audit --prefer-offline --legacy-peer-deps
+    build:
+      commands:
+        - echo "=== INICIANDO BUILD ==="
+        - npm run build
+        - echo "=== BUILD COMPLETADO ==="
+        - ls -la .next
+        - du -sh .next
+  artifacts:
+    baseDirectory: frontend/.next
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - frontend/node_modules/**/*
+      - frontend/.next/cache/**/*
+      - ~/.npm/**/*

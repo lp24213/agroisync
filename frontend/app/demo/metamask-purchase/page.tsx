@@ -1,11 +1,17 @@
+'use client';
+
 import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
 
 const MetamaskPurchasePage = dynamic(() => import('./MetamaskPurchasePage'), {
-  ssr: false,
-  loading: () => <div>Loading...</div>,
+    loading: () => <div>Loading...</div>,
+    ssr: false,
 });
 
-// Disable SSR for this page
-export const revalidate = 0;
-
-export default MetamaskPurchasePage;
+export default function Page() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <MetamaskPurchasePage />
+        </Suspense>
+    );
+}
