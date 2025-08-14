@@ -3,22 +3,30 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "=== VERIFICANDO VERSÕES ==="
+        - echo "=== INSTALANDO NODE.JS CORRETO ==="
+        - nvm install 20.18.0
+        - nvm use 20.18.0
         - node --version
         - npm --version
-        - echo "=== INSTALANDO DEPENDÊNCIAS ==="
-        - npm ci
+        - echo "=== ENTRANDO NO DIRETÓRIO FRONTEND ==="
+        - cd frontend
+        - echo "=== LIMPANDO INSTALAÇÕES ANTERIORES ==="
+        - rm -rf node_modules package-lock.json .next
+        - echo "=== INSTALANDO DEPENDÊNCIAS DO FRONTEND ==="
+        - npm install
     build:
       commands:
-        - echo "=== INICIANDO BUILD ==="
+        - echo "=== INICIANDO BUILD DO FRONTEND ==="
         - npm run build
         - echo "=== BUILD COMPLETADO ==="
         - ls -la .next
-        - du -sh .next
+        - echo "=== VERIFICANDO ARQUIVOS ==="
+        - find .next -name "*.js" | head -10
   artifacts:
-    baseDirectory: out
+    baseDirectory: frontend/.next
     files:
       - '**/*'
   cache:
     paths:
-      - node_modules/**/*
+      - frontend/node_modules/**/*
+      - frontend/.next/cache/**/*
