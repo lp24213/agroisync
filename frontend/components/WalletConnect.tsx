@@ -1,9 +1,15 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { WalletAdapter } from '../types/web3';
+import { useWeb3 } from '../contexts/Web3Context';
+// Type definition for WalletAdapter
+interface WalletAdapter {
+  name: string;
+  icon: string;
+  connect: () => Promise<void>;
+  disconnect: () => Promise<void>;
+  isConnected: boolean;
+}
 
 interface WalletConnectProps {
   onConnect?: (publicKey: string) => void;
@@ -16,45 +22,26 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
   onDisconnect,
   className = '',
 }) => {
-  const { wallet, connected, connecting, connect, disconnect } = useWallet();
+  const { isConnected, isConnecting, connect, disconnect } = useWeb3();
   const [isHovered, setIsHovered] = useState(false);
 
-  // Safe type checking for wallet
-  const isWalletValid = (wallet: any): wallet is WalletAdapter => {
-    return wallet && 
-           typeof wallet === 'object' && 
-           'publicKey' in wallet &&
-           'connected' in wallet &&
-           'connecting' in wallet;
-  };
-
-  // Safe public key access
-  const getPublicKeyString = (wallet: any): string | null => {
-    if (isWalletValid(wallet) && 
-        wallet.publicKey && 
-        typeof wallet.publicKey.toString === 'function') {
-      return wallet.publicKey.toString();
-    }
-    return null;
+  // Mock wallet info for development
+  const wallet = {
+    name: 'Demo Wallet',
+    publicKey: 'demo-public-key-123'
   };
 
   useEffect(() => {
-    if (connected && wallet) {
-      const publicKey = getPublicKeyString(wallet);
-      if (publicKey && onConnect) {
-        onConnect(publicKey);
+    if (isConnected && wallet) {
+      if (onConnect) {
+        onConnect(wallet.publicKey);
       }
-    } else if (!connected && onDisconnect) {
+    } else if (!isConnected && onDisconnect) {
       onDisconnect();
     }
-  }, [connected, wallet, onConnect, onDisconnect, getPublicKeyString]);
+  }, [isConnected, wallet, onConnect, onDisconnect]);
 
   const handleDisconnect = async () => {
-    if (!wallet || !isWalletValid(wallet)) {
-      console.error('Invalid wallet');
-      return;
-    }
-
     try {
       await disconnect();
     } catch (error) {
@@ -67,21 +54,9 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
     return `${publicKey.slice(0, 4)}...${publicKey.slice(-4)}`;
   };
 
-  const getWalletInfo = () => {
-    if (!wallet || !isWalletValid(wallet)) {
-      return { name: 'Unknown Wallet', publicKey: null };
-    }
+  const { name, publicKey } = wallet;
 
-    const publicKey = getPublicKeyString(wallet);
-    return {
-      name: wallet.name || 'Unknown Wallet',
-      publicKey: publicKey ? formatPublicKey(publicKey) : null,
-    };
-  };
-
-  const { name, publicKey } = getWalletInfo();
-
-  if (connected && publicKey) {
+  if (isConnected && publicKey) {
     return (
       <div className={`wallet-connected ${className}`}>
         <div className="wallet-info">
@@ -93,9 +68,9 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           className={`disconnect-btn ${isHovered ? 'hovered' : ''}`}
-          disabled={connecting}
+          disabled={isConnecting}
         >
-          {connecting ? 'Disconnecting...' : 'Disconnect'}
+          {isConnecting ? 'Disconnecting...' : 'Disconnect'}
         </button>
       </div>
     );
@@ -103,12 +78,13 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
 
   return (
     <div className={`wallet-connect ${className}`}>
-      <WalletMultiButton
-        disabled={connecting}
+      <button
+        onClick={connect}
+        disabled={isConnecting}
         className="connect-btn"
       >
-        {connecting ? 'Connecting...' : 'Connect Wallet'}
-      </WalletMultiButton>
+        {isConnecting ? 'Connecting...' : 'Connect Wallet'}
+      </button>
     </div>
   );
 };

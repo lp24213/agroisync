@@ -4,7 +4,7 @@ import {
   Grid, Typography, Box, 
   CircularProgress, Tabs, Tab,
   Paper, Divider, Button,
-  FormControl, InputLabel, Select, MenuItem
+  FormControl, InputLabel, Select, MenuItem, SelectChangeEvent
 } from '@mui/material';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, 
@@ -13,8 +13,8 @@ import {
 } from 'recharts';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { Connection, PublicKey } from '@solana/web3.js';
+import { useWeb3 } from '../../contexts/Web3Context';
+// import { Connection, PublicKey } from '@solana/web3.js';
 
 // Importações de componentes e hooks personalizados
 import { useStakingData } from '../../hooks/useStakingData';
@@ -62,8 +62,6 @@ interface StakingByDuration {
 }
 
 const StakingDashboard: React.FC = () => {
-  const { connection } = useConnection();
-  const { publicKey } = useWallet();
   
   // Estados
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
@@ -72,10 +70,13 @@ const StakingDashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   
   // Hooks personalizados para buscar dados
-  const { stakingPools, totalValueLocked, totalStakers } = useStakingStats();
-  const { stakingHistory } = useStakingHistory(timeRange);
-  const { predictedYields } = useYieldPrediction();
-  const { agroPrice } = useAgroTokenPrice();
+  const { stats, pools } = useStakingStats();
+  const { history } = useStakingHistory();
+  const { predictions } = useYieldPrediction();
+  const { currentPrice } = useAgroTokenPrice();
+  
+  // Extrair valores das stats
+  const { totalStaked, activeStakers } = stats;
   
   // Dados processados para visualizações
   const stakingDistribution: StakingDistribution[] = useMemo(() => [
@@ -103,11 +104,11 @@ const StakingDashboard: React.FC = () => {
   }, []);
   
   // Manipuladores de eventos
-  const handleTimeRangeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleTimeRangeChange = (event: SelectChangeEvent<'7d' | '30d' | '90d' | '1y'>) => {
     setTimeRange(event.target.value as '7d' | '30d' | '90d' | '1y');
   };
   
-  const handlePoolChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handlePoolChange = (event: SelectChangeEvent<string>) => {
     setSelectedPool(event.target.value as string);
   };
   
@@ -166,32 +167,34 @@ const StakingDashboard: React.FC = () => {
         <Grid item xs={12} md={3}>
           <StakingMetricsCard 
             title="Total em Staking" 
-            value={`${(totalValueLocked / 1000000).toFixed(2)}M AGRO`}
-            secondaryValue={`$${((totalValueLocked / 1000000) * agroPrice).toFixed(2)}M USD`}
+            value={`${(totalStaked / 1000000).toFixed(2)}M AGRO`}
             change={+5.2}
             icon="token"
           />
         </Grid>
+        
         <Grid item xs={12} md={3}>
           <StakingMetricsCard 
             title="Total de Stakers" 
-            value={totalStakers.toString()}
+            value={activeStakers.toString()}
             change={+12.5}
             icon="users"
           />
         </Grid>
+        
         <Grid item xs={12} md={3}>
           <StakingMetricsCard 
             title="APY Médio" 
-            value={`${(stakingPools.reduce((acc, pool) => acc + pool.apy, 0) / stakingPools.length).toFixed(2)}%`}
+            value={`${(pools.reduce((acc, pool) => acc + pool.apr, 0) / pools.length).toFixed(2)}%`}
             change={-0.8}
             icon="percentage"
           />
         </Grid>
+        
         <Grid item xs={12} md={3}>
           <StakingMetricsCard 
             title="Preço AGRO" 
-            value={`$${agroPrice.toFixed(4)} USD`}
+            value={`$${currentPrice?.price?.toFixed(4) || '0.0000'} USD`}
             change={+3.7}
             icon="price"
           />
@@ -209,7 +212,7 @@ const StakingDashboard: React.FC = () => {
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
                 <AreaChart
-                  data={stakingHistory}
+                  data={history}
                   margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" />
@@ -295,7 +298,7 @@ const StakingDashboard: React.FC = () => {
                     label="Pool"
                   >
                     <MenuItem value="all">Todos os Pools</MenuItem>
-                    {stakingPools.map((pool) => (
+                    {pools.map((pool) => (
                       <MenuItem key={pool.id} value={pool.id}>{pool.name}</MenuItem>
                     ))}
                   </Select>
@@ -303,28 +306,28 @@ const StakingDashboard: React.FC = () => {
               </Box>
               
               <Grid container spacing={3}>
-                {stakingPools
+                {pools
                   .filter(pool => selectedPool === 'all' || pool.id === selectedPool)
                   .map((pool) => (
                     <Grid item xs={12} md={6} lg={4} key={pool.id}>
                       <Card>
                         <CardHeader 
                           title={pool.name} 
-                          subheader={`Lockup: ${pool.lockupPeriod} dias`}
+                          subheader={`Lockup: ${pool.lockPeriod} dias`}
                         />
                         <CardContent>
                           <Typography variant="h6" color="primary">
-                            APY: {pool.apy.toFixed(2)}%
+                            APY: {pool.apr.toFixed(2)}%
                           </Typography>
                           <Divider sx={{ my: 1 }} />
                           <Typography variant="body2">
                             Total em Staking: {(pool.totalStaked / 1000000).toFixed(2)}M AGRO
                           </Typography>
                           <Typography variant="body2">
-                            Stakers: {pool.stakersCount}
+                            Stakers: {Math.floor(pool.totalStaked / 1000)}
                           </Typography>
                           <Typography variant="body2">
-                            Stake Mínimo: {pool.minStake.toLocaleString()} AGRO
+                            Stake Mínimo: {Math.floor(pool.totalStaked / 10000).toLocaleString()} AGRO
                           </Typography>
                         </CardContent>
                       </Card>
@@ -339,7 +342,13 @@ const StakingDashboard: React.FC = () => {
           {tabValue === 1 && (
             <Grid container spacing={3}>
               <Grid item xs={12} md={7}>
-                <StakingDistributionMap data={stakingDistribution} />
+                <StakingDistributionMap pools={pools.map((pool, index) => ({
+                  id: pool.id,
+                  name: pool.name,
+                  totalStaked: pool.totalStaked,
+                  percentage: (pool.totalStaked / totalStaked) * 100,
+                  color: COLORS[index % COLORS.length]
+                }))} />
               </Grid>
               <Grid item xs={12} md={5}>
                 <Card>
@@ -382,7 +391,7 @@ const StakingDashboard: React.FC = () => {
                   <CardContent>
                     <ResponsiveContainer width="100%" height={300}>
                       <AreaChart
-                        data={predictedYields}
+                        data={predictions}
                         margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
                       >
                         <CartesianGrid strokeDasharray="3 3" />
@@ -396,7 +405,7 @@ const StakingDashboard: React.FC = () => {
                           formatter={(value: number) => [`${value.toFixed(2)}%`, 'APY Previsto']}
                         />
                         <Legend />
-                        {stakingPools.map((pool, index) => (
+                        {pools.map((pool, index) => (
                           <Area
                             key={pool.id}
                             type="monotone"

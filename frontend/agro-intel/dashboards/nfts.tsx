@@ -12,8 +12,7 @@ import {
 } from 'recharts';
 import { format, subDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { Connection, PublicKey } from '@solana/web3.js';
+import { useWeb3 } from '../../contexts/Web3Context';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import SearchIcon from '@mui/icons-material/Search';
 import InfoIcon from '@mui/icons-material/Info';
@@ -21,12 +20,12 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 
 // Hooks e componentes personalizados
-import { useNFTStats } from '../../hooks/useNFTStats';
-import { useNFTHistory } from '../../hooks/useNFTHistory';
-import { useNFTData } from '../../hooks/useNFTData';
-import { useNFTValuation } from '../../hooks/useNFTValuation';
-import { useCommodityPrices } from '../../hooks/useCommodityPrices';
-import { useWeatherData } from '../../hooks/useWeatherData';
+import useNFTStats from '../../hooks/useNFTStats';
+import useNFTHistory from '../../hooks/useNFTHistory';
+import useNFTData from '../../hooks/useNFTData';
+import useNFTValuation from '../../hooks/useNFTValuation';
+import useCommodityPrices from '../../hooks/useCommodityPrices';
+import useWeatherData from '../../hooks/useWeatherData';
 import NFTMetricsCard from '../../components/NFTMetricsCard';
 import NFTMap from '../../components/NFTMap';
 import { exportToPDF } from '../reports/pdf-export';
@@ -42,12 +41,16 @@ interface NFT {
   type: 'Fazenda' | 'Maquinário' | 'Lote de Grãos' | 'Certificado';
   location: string;
   area?: number; // em hectares, para fazendas
-  crop?: string; // tipo de cultura, para fazendas e lotes
+  crop?: string | null; // tipo de cultura, para fazendas e lotes
   quantity?: number; // quantidade, para lotes de grãos
   estimatedValue: number; // em USD
   lastValuation: string; // data
   owner: string;
   tokenId: string;
+  // Propriedades necessárias para o NFTMap
+  latitude: number;
+  longitude: number;
+  status: 'active' | 'pending' | 'sold';
   metadata: {
     latitude?: number;
     longitude?: number;
@@ -87,8 +90,6 @@ interface NFTDistribution {
 }
 
 const NFTDashboard: React.FC = () => {
-  const { connection } = useConnection();
-  const { publicKey } = useWallet();
   
   // Estados
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
@@ -113,47 +114,90 @@ const NFTDashboard: React.FC = () => {
     {
       id: '1',
       name: 'Fazenda Santa Maria',
-      type: 'Fazenda',
+      type: 'Fazenda' as const,
       location: 'Goiás, Brasil',
       crop: 'Soja',
       value: 50000,
+      estimatedValue: 50000,
+      lastValuation: '2024-12-15',
       mintDate: new Date('2024-01-15'),
       image: '/images/farm1.jpg',
+      imageUrl: '/images/farm1.jpg',
       area: 1500,
       tokenId: 'token_001',
       quantity: 1,
       metadata: { description: 'Fazenda de soja premium' },
-      owner: '0x1234...5678'
+      owner: '0x1234...5678',
+      // Propriedades necessárias para o NFTMap
+      latitude: -16.6864,
+      longitude: -49.2653,
+      status: 'active' as const
     },
     {
       id: '2',
       name: 'Trator John Deere 5075E',
-      type: 'Maquinário',
+      type: 'Maquinário' as const,
       location: 'Mato Grosso, Brasil',
       crop: null,
       value: 15000,
+      estimatedValue: 15000,
+      lastValuation: '2024-12-14',
       mintDate: new Date('2024-02-20'),
       image: '/images/tractor1.jpg',
+      imageUrl: '/images/tractor1.jpg',
       area: 0,
       tokenId: 'token_002',
       quantity: 1,
       metadata: { description: 'Trator agrícola profissional' },
-      owner: '0x8765...4321'
+      owner: '0x8765...4321',
+      // Propriedades necessárias para o NFTMap
+      latitude: -15.6014,
+      longitude: -56.0979,
+      status: 'active' as const
     },
     {
       id: '3',
       name: 'Lote de Soja Premium',
-      type: 'Lotes de Grãos',
+      type: 'Lote de Grãos' as const,
       location: 'Paraná, Brasil',
       crop: 'Soja',
       value: 8000,
+      estimatedValue: 8000,
+      lastValuation: '2024-12-13',
       mintDate: new Date('2024-03-10'),
       image: '/images/soybean1.jpg',
+      imageUrl: '/images/soybean1.jpg',
       area: 100,
       tokenId: 'token_003',
       quantity: 500,
       metadata: { description: 'Lote de soja de alta qualidade' },
-      owner: '0x9876...5432'
+      owner: '0x9876...5432',
+      // Propriedades necessárias para o NFTMap
+      latitude: -25.4289,
+      longitude: -49.2671,
+      status: 'active' as const
+    },
+    {
+      id: '4',
+      name: 'Certificado de Sustentabilidade',
+      type: 'Certificado' as const,
+      location: 'São Paulo, Brasil',
+      crop: null,
+      value: 2500,
+      estimatedValue: 2500,
+      lastValuation: '2024-12-12',
+      mintDate: new Date('2024-04-05'),
+      image: '/images/certificate1.jpg',
+      imageUrl: '/images/certificate1.jpg',
+      area: 0,
+      tokenId: 'token_004',
+      quantity: 1,
+      metadata: { description: 'Certificado de práticas sustentáveis' },
+      owner: '0x5555...9999',
+      // Propriedades necessárias para o NFTMap
+      latitude: -23.5505,
+      longitude: -46.6333,
+      status: 'active' as const
     }
   ], []);
   

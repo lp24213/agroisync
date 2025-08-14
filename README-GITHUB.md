@@ -175,13 +175,13 @@ Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICE
 
 - **Issues**: [GitHub Issues](https://github.com/lp24213/agrotm.sol/issues)
 - **Documentação**: [Wiki](https://github.com/lp24213/agrotm.sol/wiki)
-- **Email**: support@agrotm.sol
+- **Email**: support@agroisync.com
 
 ## 🔗 Links Úteis
 
-- [Website](https://agrotm.sol)
-- [Documentação](https://docs.agrotm.sol)
-- [Whitepaper](https://agrotm.sol/whitepaper.pdf)
+- [Website](https://agroisync.com)
+- [Documentação](https://docs.agroisync.com)
+- [Whitepaper](https://agroisync.com/whitepaper.pdf)
 - [Telegram](https://t.me/agrotm)
 - [Twitter](https://twitter.com/agrotm_sol)
 
