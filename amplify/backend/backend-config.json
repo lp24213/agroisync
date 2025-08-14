@@ -53,47 +53,5 @@
       "service": "Cognito"
     }
   },
-  "hosting": {
-    "amplifyhosting": {
-      "customDomain": {
-        "domainName": "agroisync.com",
-        "sslCertificate": {
-          "region": "us-east-1",
-          "type": "AMAZON_ISSUED"
-        },
-        "subdomains": [
-          "www",
-          "api"
-        ]
-      },
-      "providerPlugin": "awscloudformation",
-      "redirects": [
-        {
-          "source": "https://www.agroisync.com/<*>",
-          "status": "301",
-          "target": "https://agroisync.com/<*>"
-        }
-      ],
-      "service": "amplifyhosting",
-      "type": "manual"
-    }
-  },
-  "parameters": {
-    "AMPLIFY_hosting_amplifyhosting_appId": {
-      "usedBy": [
-        {
-          "category": "hosting",
-          "resourceName": "amplifyhosting"
-        }
-      ]
-    },
-    "AMPLIFY_hosting_amplifyhosting_type": {
-      "usedBy": [
-        {
-          "category": "hosting",
-          "resourceName": "amplifyhosting"
-        }
-      ]
-    }
-  }
+  "hosting": {}
 }
