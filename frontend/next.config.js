@@ -5,7 +5,7 @@ const nextConfig = {
     // Configurações experimentais removidas para compatibilidade
   },
   
-  // Server external packages (nova configuração)
+  // Server external packages
   serverExternalPackages: ['aws-amplify'],
   
   // Image configuration for AWS Amplify
@@ -32,14 +32,14 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   
-  // AWS Amplify specific configuration - CRÍTICO PARA FUNCIONAR
+  // AWS Amplify specific configuration
   output: 'standalone',
   
   // Compression and optimization
   compress: true,
   generateEtags: false,
   
-  // Security headers (GLOBAL ACCESS - NO REGION RESTRICTIONS)
+  // Security headers
   async headers() {
     return [
       {
@@ -80,6 +80,7 @@ const nextConfig = {
   
   // Webpack optimization for AWS Amplify
   webpack: (config, { isServer }) => {
+    // Fallbacks para módulos Node.js
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -98,7 +99,7 @@ const nextConfig = {
       };
     }
     
-    // Configure alias resolution for @ imports
+    // Aliases de importação
     config.resolve.alias = {
       ...config.resolve.alias,
       '@': '.',
@@ -109,7 +110,7 @@ const nextConfig = {
       '@/utils': './utils',
       '@/types': './types',
       '@/styles': './styles',
-      '@/public': './public'
+      '@/public': './public',
     };
     
     return config;
