@@ -1,0 +1,98 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        # Forçar Node.js 20.18.0
+        - echo "🔄 Configurando Node.js 20.18.0..."
+        - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+        - export NVM_DIR="$HOME/.nvm"
+        - [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        - nvm install 20.18.0
+        - nvm use 20.18.0
+        - nvm alias default 20.18.0
+        - echo "✅ Node.js $(node --version) ativado"
+        - echo "✅ NPM $(npm --version) ativado"
+        
+        # Detectar package manager e limpar cache
+        - echo "🔍 Detectando package manager..."
+        - if [ -f "yarn.lock" ]; then
+            echo "📦 Yarn detectado - usando Yarn"
+            - yarn --version
+            - yarn cache clean
+            - yarn install --frozen-lockfile --network-timeout 300000
+          elif [ -f "package-lock.json" ]; then
+            echo "📦 NPM detectado - verificando sincronização..."
+            - npm ci --prefer-offline --no-audit || npm install --prefer-offline --no-audit
+          else
+            echo "📦 Nenhum lock file - usando npm install"
+            - npm install --prefer-offline --no-audit
+          fi
+        
+        # Verificar dependências críticas
+        - echo "🔍 Verificando dependências críticas..."
+        - npm list @types/react @types/react-dom @firebase/app @solana/web3.js || echo "⚠️ Algumas dependências podem estar faltando"
+        
+        # Configurar variáveis de ambiente
+        - echo "⚙️ Configurando variáveis de ambiente..."
+        - export NODE_ENV=production
+        - export NEXT_TELEMETRY_DISABLED=1
+        
+    build:
+      commands:
+        # Build otimizado para Next.js SSR
+        - echo "🏗️ Iniciando build Next.js SSR..."
+        - npm run build
+        
+        # Verificar build
+        - echo "✅ Build concluído - verificando arquivos..."
+        - ls -la .next/
+        - echo "📊 Tamanho do build: $(du -sh .next/)"
+        
+        # Otimizar para produção
+        - echo "🚀 Otimizando para produção..."
+        - npm run start:standalone || echo "⚠️ start:standalone não disponível"
+        
+  artifacts:
+    baseDirectory: .next
+    files:
+      - '**/*'
+    # Configuração para Next.js standalone
+    discard-paths: no
+    
+  cache:
+    paths:
+      # Cache de dependências
+      - node_modules/**/*
+      # Cache do Next.js
+      - .next/cache/**/*
+      # Cache do NPM/Yarn
+      - ~/.npm/**/*
+      - ~/.yarn/**/*
+      # Cache do build
+      - .next/standalone/**/*
+      
+  # Configurações específicas do Amplify
+  customHeaders:
+    - pattern: '**/*'
+      headers:
+        - key: 'X-Frame-Options'
+          value: 'DENY'
+        - key: 'X-XSS-Protection'
+          value: '1; mode=block'
+        - key: 'X-Content-Type-Options'
+          value: 'nosniff'
+        - key: 'Referrer-Policy'
+          value: 'strict-origin-when-cross-origin'
+        - key: 'Permissions-Policy'
+          value: 'camera=(), microphone=(), geolocation=()'
+          
+  # Configurações de build
+  buildPath: .next
+  distributionDir: .next
+  
+  # Variáveis de ambiente do build
+  environmentVariables:
+    NODE_ENV: production
+    NEXT_TELEMETRY_DISABLED: 1
+    NODE_OPTIONS: "--max-old-space-size=4096"
