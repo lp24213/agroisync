@@ -3,6 +3,11 @@ frontend:
   phases:
     preBuild:
       commands:
+        - echo "=== INSTALANDO NODE.JS 20 ==="
+        - nvm install 20.18.0
+        - nvm use 20.18.0
+        - node --version
+        - npm --version
         - echo "=== BUILD INICIADO ==="
         - cd frontend
         - npm install
