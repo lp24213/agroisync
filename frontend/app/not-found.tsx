@@ -1,20 +1,16 @@
-import Link from 'next/link';
-
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="text-center">
-        <h1 className="text-6xl font-bold text-cyan-400 mb-4">404</h1>
-        <h2 className="text-2xl font-semibold mb-4">Página não encontrada</h2>
-        <p className="text-gray-400 mb-8">
-          A página que você está procurando não existe.
-        </p>
-        <Link
-          href="/"
-          className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-6 py-3 rounded-lg hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 font-medium"
+        <h1 className="text-6xl font-bold text-gray-800 mb-4">404</h1>
+        <h2 className="text-2xl font-semibold text-gray-600 mb-4">Página não encontrada</h2>
+        <p className="text-gray-500 mb-8">A página que você está procurando não existe.</p>
+        <a 
+          href="/" 
+          className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors"
         >
           Voltar ao início
-        </Link>
+        </a>
       </div>
     </div>
   );

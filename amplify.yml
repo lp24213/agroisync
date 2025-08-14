@@ -7,7 +7,7 @@ frontend:
         - node --version
         - npm --version
         - echo "=== INSTALANDO DEPENDÊNCIAS ==="
-        - npm ci --no-audit --prefer-offline --legacy-peer-deps
+        - npm ci
     build:
       commands:
         - echo "=== INICIANDO BUILD ==="
@@ -16,11 +16,9 @@ frontend:
         - ls -la .next
         - du -sh .next
   artifacts:
-    baseDirectory: .next
+    baseDirectory: out
     files:
       - '**/*'
   cache:
     paths:
       - node_modules/**/*
-      - .next/cache/**/*
-      - ~/.npm/**/*
