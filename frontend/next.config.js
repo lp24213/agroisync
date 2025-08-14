@@ -11,7 +11,7 @@ const nextConfig = {
   // Image configuration for AWS Amplify
   images: {
     unoptimized: true,
-    domains: ['localhost', '127.0.0.1'],
+    domains: ['localhost', '127.0.0.1', 'agroisync.com'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -129,6 +129,11 @@ const nextConfig = {
         destination: '/',
         permanent: true,
       },
+      {
+        source: '/index.html',
+        destination: '/',
+        permanent: true,
+      },
     ];
   },
   
@@ -138,6 +143,10 @@ const nextConfig = {
       {
         source: '/api/:path*',
         destination: '/api/:path*',
+      },
+      {
+        source: '/(.*)',
+        destination: '/',
       },
     ];
   },
