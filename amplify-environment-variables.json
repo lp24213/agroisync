@@ -1,0 +1,29 @@
+{
+  "environmentVariables": {
+    "NODE_ENV": "production",
+    "NPM_CONFIG_PRODUCTION": "false",
+    "NPM_CONFIG_AUDIT": "false",
+    "NODE_OPTIONS": "--max-old-space-size=4096",
+    "NODE_VERSION": "20.15.1",
+    "NPM_VERSION": "10.8.2",
+    "NEXT_PUBLIC_API_URL": "https://api.agroisync.com",
+    "NEXT_PUBLIC_APP_URL": "https://agroisync.com",
+    "NEXT_PUBLIC_ENVIRONMENT": "production",
+    "NEXT_TELEMETRY_DISABLED": "1",
+    "NEXT_PUBLIC_AWS_REGION": "us-east-2",
+    "NEXT_PUBLIC_AWS_PROJECT_REGION": "us-east-2",
+    "NEXT_PUBLIC_AUTH_DOMAIN": "agroisync.com",
+    "NEXT_PUBLIC_AUTH_REDIRECT_URI": "https://agroisync.com/auth/callback",
+    "NEXT_PUBLIC_API_VERSION": "v1",
+    "NEXT_PUBLIC_API_TIMEOUT": "30000",
+    "NEXT_PUBLIC_ENABLE_ANALYTICS": "true",
+    "NEXT_PUBLIC_ENABLE_MONITORING": "true",
+    "NEXT_PUBLIC_ENABLE_CRASH_REPORTING": "true",
+    "NEXT_PUBLIC_ENABLE_PWA": "true",
+    "NEXT_PUBLIC_ENABLE_OFFLINE": "true",
+    "NEXT_PUBLIC_ENABLE_CACHING": "true",
+    "NEXT_PUBLIC_ENABLE_HTTPS": "true",
+    "NEXT_PUBLIC_ENABLE_CSP": "true",
+    "NEXT_PUBLIC_ENABLE_HSTS": "true"
+  }
+}
