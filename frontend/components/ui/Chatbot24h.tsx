@@ -345,7 +345,7 @@ const chatbotDatabase: ChatbotData = {
     
     // Suporte
     "Estou aqui para ajudar! Pode me fazer qualquer pergunta sobre a plataforma, agronegócio ou funcionalidades disponíveis.",
-    "Para suporte técnico, você pode usar este chat, enviar email para suporte@agrotm.com ou ligar para nosso número de atendimento.",
+            "Para suporte técnico, você pode usar este chat, enviar email para suporte@agroisync.com ou ligar para nosso número de atendimento.",
     "Para contatar o suporte, use este chat 24h, envie email ou ligue para nossa equipe especializada.",
     "Se está enfrentando problemas na plataforma, descreva o que está acontecendo e nossa equipe irá ajudá-lo imediatamente.",
     "Para dúvidas sobre uso, posso explicar qualquer funcionalidade da plataforma ou você pode consultar nossos tutoriais.",
@@ -362,19 +362,19 @@ const chatbotDatabase: ChatbotData = {
     
     // Contato
     "Você pode entrar em contato através deste chat 24h, email, telefone ou visitando nossa sede.",
-    "Nossas informações de contato incluem email: contato@agrotm.com, telefone: +55 (11) 9999-9999.",
-    "Nosso email de contato é contato@agrotm.com para questões gerais e suporte@agrotm.com para suporte técnico.",
+            "Nossas informações de contato incluem email: contato@agroisync.com, telefone: +55 (11) 9999-9999.",
+            "Nosso email de contato é contato@agroisync.com para questões gerais e suporte@agroisync.com para suporte técnico.",
     "Nosso telefone de contato é +55 (11) 9999-9999, com atendimento de segunda a sexta, 8h às 18h.",
     "Nosso endereço é Rua da Inovação, 123, São Paulo - SP, Brasil. Visitas devem ser agendadas previamente.",
-    "Nossas redes sociais são @agrotm no Twitter, LinkedIn e Instagram para atualizações e novidades.",
+            "Nossas redes sociais são @agroisync no Twitter, LinkedIn e Instagram para atualizações e novidades.",
     "Este chat é nosso principal canal de atendimento, disponível 24h por dia para suas dúvidas.",
-    "Para contato comercial, envie email para comercial@agrotm.com ou use nosso formulário no site.",
-    "Para contato técnico, use este chat ou envie email para suporte@agrotm.com com detalhes do problema.",
-    "Para investidores, envie email para investidores@agrotm.com ou agende uma reunião através do site.",
+            "Para contato comercial, envie email para comercial@agroisync.com ou use nosso formulário no site.",
+            "Para contato técnico, use este chat ou envie email para suporte@agroisync.com com detalhes do problema.",
+            "Para investidores, envie email para investidores@agroisync.com ou agende uma reunião através do site.",
     "O agendamento de reunião pode ser feito através do nosso calendário online ou por telefone.",
     "As visitas à empresa são bem-vindas e devem ser agendadas com antecedência para melhor atendimento.",
     "As parcerias comerciais são avaliadas caso a caso, entre em contato para discutir oportunidades.",
-    "Para imprensa e mídia, envie email para imprensa@agrotm.com com detalhes da sua solicitação.",
+            "Para imprensa e mídia, envie email para imprensa@agroisync.com com detalhes da sua solicitação.",
     "As relações públicas são gerenciadas pela nossa equipe especializada em comunicação.",
     
     // Planos
@@ -403,7 +403,7 @@ const chatbotDatabase: ChatbotData = {
     "Nossa visão é ser a principal plataforma de inovação agrícola do mundo.",
     "Nossos valores são sustentabilidade, inovação, transparência e excelência em tudo que fazemos.",
     "Nossa cultura valoriza inovação, colaboração, sustentabilidade e excelência técnica.",
-    "Para trabalhar conosco, envie seu currículo para rh@agrotm.com ou consulte nossas vagas no site.",
+            "Para trabalhar conosco, envie seu currículo para rh@agroisync.com ou consulte nossas vagas no site.",
     "As vagas disponíveis são publicadas em nossa seção de carreiras no site e redes sociais.",
     "O processo seletivo inclui múltiplas etapas para garantir a melhor adequação entre candidato e empresa.",
     "Os benefícios para funcionários incluem plano de saúde, vale refeição, flexibilidade e desenvolvimento profissional.",

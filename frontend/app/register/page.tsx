@@ -353,7 +353,7 @@ export default function RegisterPage() {
         {/* Footer */}
         <motion.div variants={itemVariants} className="text-center mt-6">
           <p className="text-gray-500 text-sm font-orbitron">
-            © 2024 AGROTM. Todos os direitos reservados.
+            © 2024 AGROISYNC. Todos os direitos reservados.
           </p>
         </motion.div>
       </motion.div>

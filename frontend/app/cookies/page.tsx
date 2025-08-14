@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Layout } from '../../components/layout/Layout';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -144,7 +145,7 @@ export default function CookiesPage() {
                 </p>
                 <div className="mt-4 space-y-2">
                   <p className="text-[#cccccc]">
-                    <strong>Email:</strong> privacy@agrotm.com
+                    <strong>Email:</strong> privacy@agroisync.com
                   </p>
                   <p className="text-[#cccccc]">
                     <strong>Telefone:</strong> +55 (11) 9999-9999

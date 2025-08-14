@@ -98,7 +98,7 @@ const ProposalsPage: React.FC = () => {
       votes: 175,
       quorum: 1000,
             type: 'single-choice',
-      discussion: 'https://forum.agrotm.com/proposal/1',
+              discussion: 'https://forum.agroisync.com/proposal/1',
       category: 'protocol'
     }
   ];

@@ -52,12 +52,12 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { name: 'Twitter', href: 'https://twitter.com/agrotm', icon: Twitter },
+          { name: 'Twitter', href: 'https://twitter.com/agroisync', icon: Twitter },
   // { name: 'Discord', href: 'https://discord.gg/agrotm', icon: Discord },
   // { name: 'Telegram', href: 'https://t.me/agrotm', icon: Telegram },
-  { name: 'GitHub', href: 'https://github.com/agrotm', icon: Github },
-  { name: 'YouTube', href: 'https://youtube.com/agrotm', icon: Youtube },
-  { name: 'LinkedIn', href: 'https://linkedin.com/company/agrotm', icon: Linkedin },
+          { name: 'GitHub', href: 'https://github.com/agroisync', icon: Github },
+          { name: 'YouTube', href: 'https://youtube.com/agroisync', icon: Youtube },
+          { name: 'LinkedIn', href: 'https://linkedin.com/company/agroisync', icon: Linkedin },
 ];
 
 const contactInfo = [
@@ -170,7 +170,7 @@ export function PremiumFooter() {
           <div className='flex flex-col md:flex-row justify-between items-center'>
             <div className='text-center md:text-left mb-4 md:mb-0'>
               <p className='text-[#cccccc] text-sm'>
-                © 2024 AGROTM. Todos os direitos reservados.
+                © 2024 AGROISYNC. Todos os direitos reservados.
               </p>
             </div>
             <div className='flex space-x-4'>
