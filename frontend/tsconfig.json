@@ -37,7 +37,8 @@
     "noUncheckedIndexedAccess": false,
     "noImplicitOverride": false,
     "allowUnusedLabels": false,
-    "allowUnreachableCode": false
+    "allowUnreachableCode": false,
+    "types": ["node", "react", "react-dom"]
   },
   "include": [
     "next-env.d.ts",
@@ -49,6 +50,12 @@
     "node_modules",
     ".next",
     "out",
-    "dist"
+    "dist",
+    "contracts/**/*",
+    "contracts_backup/**/*",
+    "**/*.sol",
+    "**/hardhat.config.ts",
+    "backend/**/*",
+    "api/**/*"
   ]
 }

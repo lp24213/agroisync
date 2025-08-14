@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useWeb3 } from '../hooks/useWeb3';
-import { useNFTData } from '../hooks/useNFTData';
+import { useWeb3Hook } from '../hooks/useWeb3';
+import useNFTData from '../hooks/useNFTData';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
@@ -54,32 +54,58 @@ export const NFTPreview: React.FC<NFTPreviewProps> = ({
   onBurn,
   className = ''
 }) => {
-  const { account, isConnected } = useWeb3();
-  const { nft, loading, error, refetch } = useNFTData(nftId);
+  const { publicKey: account, isConnected } = useWeb3Hook();
+  const { nfts, loading, error } = useNFTData();
+  const nft = nfts.find(n => n.id === nftId);
+  
+  // Mock NFT data for development to match expected interface
+  const mockNFT: NFTData | null = nft ? {
+    id: nft.id,
+    tokenId: nft.tokenId,
+    name: nft.name,
+    description: nft.metadata.description || 'No description available',
+    imageUrl: nft.imageUrl,
+    metadataUrl: '',
+    chain: 'ethereum',
+    contractAddress: '0x0000000000000000000000000000000000000000',
+    owner: nft.owner,
+    creator: nft.owner,
+    category: nft.type,
+    attributes: nft.metadata,
+    price: nft.estimatedValue / 1000000, // Convert to USDC equivalent
+    isListed: true,
+    floorPrice: nft.estimatedValue / 1000000,
+    lastSale: nft.estimatedValue / 1000000,
+    volume24h: nft.estimatedValue / 1000000,
+    rarity: 'Common',
+    rarityScore: 1,
+    createdAt: nft.lastValuation,
+    updatedAt: nft.lastValuation
+  } : null;
   const [showModal, setShowModal] = useState(false);
   const [showFullImage, setShowFullImage] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
 
   useEffect(() => {
-    if (nft && account) {
-      setIsOwner(nft.owner.toLowerCase() === account.toLowerCase());
+    if (mockNFT && account) {
+      setIsOwner(mockNFT.owner.toLowerCase() === account.toLowerCase());
     }
-  }, [nft, account]);
+  }, [mockNFT, account]);
 
   const handleImageError = () => {
     setImageError(true);
   };
 
   const handleBuy = () => {
-    if (nft && onBuy) {
-      onBuy(nft.id, nft.price);
+    if (mockNFT && onBuy) {
+      onBuy(mockNFT.id, mockNFT.price);
     }
   };
 
   const handleSell = () => {
-    if (nft && onSell) {
-      onSell(nft.id, nft.price);
+    if (mockNFT && onSell) {
+      onSell(mockNFT.id, mockNFT.price);
     }
   };
 
@@ -88,8 +114,8 @@ export const NFTPreview: React.FC<NFTPreviewProps> = ({
   };
 
   const handleBurn = () => {
-    if (nft && onBurn && confirm('Are you sure you want to burn this NFT? This action cannot be undone.')) {
-      onBurn(nft.id);
+    if (mockNFT && onBurn && confirm('Are you sure you want to burn this NFT? This action cannot be undone.')) {
+      onBurn(mockNFT.id);
     }
   };
 
@@ -137,12 +163,12 @@ export const NFTPreview: React.FC<NFTPreviewProps> = ({
     );
   }
 
-  if (error || !nft) {
+  if (error || !nft || !mockNFT) {
     return (
       <Card className={`border-red-200 bg-red-50 ${className}`}>
         <div className="p-4 text-center">
           <p className="text-red-600">Failed to load NFT</p>
-          <Button onClick={refetch} variant="outline" size="sm" className="mt-2">
+          <Button onClick={() => window.location.reload()} variant="outline" size="sm" className="mt-2">
             Retry
           </Button>
         </div>
@@ -163,8 +189,8 @@ export const NFTPreview: React.FC<NFTPreviewProps> = ({
           <div className="relative aspect-square bg-gradient-to-br from-[#00FF00]/10 to-[#00bfff]/10">
             {!imageError ? (
               <Image
-                src={nft.imageUrl}
-                alt={nft.name}
+                src={mockNFT.imageUrl}
+                alt={mockNFT.name}
                 fill
                 className="object-cover cursor-pointer transition-transform duration-300 group-hover:scale-105"
                 onError={handleImageError}
@@ -172,22 +198,22 @@ export const NFTPreview: React.FC<NFTPreviewProps> = ({
               />
             ) : (
               <div className="flex items-center justify-center h-full bg-gray-100">
-                <div className="text-6xl">{getCategoryIcon(nft.category)}</div>
+                <div className="text-6xl">{getCategoryIcon(mockNFT.category)}</div>
               </div>
             )}
             
             {/* Overlay with quick info */}
             <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300">
               <div className="absolute top-2 left-2 space-y-1">
-                <Badge className={getRarityColor(nft.rarity)}>
-                  {nft.rarity}
+                <Badge className={getRarityColor(mockNFT.rarity)}>
+                  {mockNFT.rarity}
                 </Badge>
                 <Badge variant="secondary">
-                  {getCategoryIcon(nft.category)} {nft.category}
+                  {getCategoryIcon(mockNFT.category)} {mockNFT.category}
                 </Badge>
               </div>
               
-              {nft.isListed && (
+              {mockNFT.isListed && (
                 <div className="absolute top-2 right-2">
                   <Badge variant="outline" className="bg-white text-[#00FF00]">
                     Listed
@@ -197,12 +223,12 @@ export const NFTPreview: React.FC<NFTPreviewProps> = ({
             </div>
 
             {/* Price overlay */}
-            {nft.isListed && (
+            {mockNFT.isListed && (
               <div className="absolute bottom-2 left-2 right-2">
                 <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-2">
                   <p className="text-sm text-gray-600">Price</p>
                   <p className="text-lg font-bold text-[#00FF00]">
-                    {formatPrice(nft.price)} USDC
+                    {formatPrice(mockNFT.price)} USDC
                   </p>
                 </div>
               </div>
@@ -212,8 +238,8 @@ export const NFTPreview: React.FC<NFTPreviewProps> = ({
           {/* NFT Info */}
           <div className="p-4 space-y-3">
             <div>
-              <h3 className="font-semibold text-lg truncate">{nft.name}</h3>
-              <p className="text-sm text-gray-600 truncate">{nft.description}</p>
+              <h3 className="font-semibold text-lg truncate">{mockNFT.name}</h3>
+              <p className="text-sm text-gray-600 truncate">{mockNFT.description}</p>
             </div>
 
             {showDetails && (
@@ -222,29 +248,29 @@ export const NFTPreview: React.FC<NFTPreviewProps> = ({
                 <div className="grid grid-cols-3 gap-2 text-xs">
                   <div>
                     <p className="text-gray-500">Floor</p>
-                    <p className="font-medium">{formatPrice(nft.floorPrice)}</p>
+                    <p className="font-medium">{formatPrice(mockNFT.floorPrice)}</p>
                   </div>
                   <div>
                     <p className="text-gray-500">Last Sale</p>
-                    <p className="font-medium">{formatPrice(nft.lastSale)}</p>
+                    <p className="font-medium">{formatPrice(mockNFT.lastSale)}</p>
                   </div>
                   <div>
                     <p className="text-gray-500">24h Vol</p>
-                    <p className="font-medium">{formatPrice(nft.volume24h)}</p>
+                    <p className="font-medium">{formatPrice(mockNFT.volume24h)}</p>
                   </div>
                 </div>
 
                 {/* Rarity Score */}
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-gray-500">Rarity Score</span>
-                  <span className="text-xs font-medium">{nft.rarityScore}</span>
+                  <span className="text-xs font-medium">{mockNFT.rarityScore}</span>
                 </div>
 
                 {/* Owner */}
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-gray-500">Owner</span>
                   <span className="text-xs font-mono">
-                    {formatAddress(nft.owner)}
+                    {formatAddress(mockNFT.owner)}
                   </span>
                 </div>
               </div>
@@ -253,19 +279,19 @@ export const NFTPreview: React.FC<NFTPreviewProps> = ({
             {/* Actions */}
             {showActions && (
               <div className="space-y-2 pt-2">
-                {nft.isListed && !isOwner && (
+                {mockNFT.isListed && !isOwner && (
                   <Button
                     onClick={handleBuy}
                     className="w-full"
                     disabled={!isConnected}
                   >
-                    Buy for {formatPrice(nft.price)} USDC
+                    Buy for {formatPrice(mockNFT.price)} USDC
                   </Button>
                 )}
 
                 {isOwner && (
                   <div className="grid grid-cols-2 gap-2">
-                    {!nft.isListed && (
+                    {!mockNFT.isListed && (
                       <Button
                         onClick={handleSell}
                         variant="outline"
@@ -315,16 +341,16 @@ export const NFTPreview: React.FC<NFTPreviewProps> = ({
           >
             <div className="relative">
               <Image
-                src={nft.imageUrl}
-                alt={nft.name}
+                src={mockNFT.imageUrl}
+                alt={mockNFT.name}
                 width={600}
                 height={600}
                 className="w-full h-auto rounded-lg"
                 onError={handleImageError}
               />
               <div className="mt-4">
-                <h3 className="text-xl font-bold">{nft.name}</h3>
-                <p className="text-gray-600 mt-2">{nft.description}</p>
+                <h3 className="text-xl font-bold">{mockNFT.name}</h3>
+                <p className="text-gray-600 mt-2">{mockNFT.description}</p>
               </div>
             </div>
           </Modal>
@@ -338,7 +364,7 @@ export const NFTPreview: React.FC<NFTPreviewProps> = ({
         title="Transfer NFT"
       >
         <TransferForm
-          nftId={nft.id}
+                          nftId={mockNFT.id}
           onTransfer={onTransfer}
           onClose={() => setShowModal(false)}
         />
