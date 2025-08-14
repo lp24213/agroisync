@@ -3,31 +3,14 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "=== CONFIGURAÇÃO PERFEITA PARA AWS AMPLIFY ==="
-        - echo "Entrando no diretório frontend..."
+        - echo "=== BUILD INICIADO ==="
         - cd frontend
-        - echo "Verificando versão do Node.js..."
-        - node --version
-        - echo "Verificando versão do npm..."
-        - npm --version
-        - echo "Limpando instalações anteriores..."
-        - rm -rf node_modules package-lock.json .next
-        - echo "Instalando dependências..."
         - npm install
-        - echo "Verificando dependências instaladas..."
-        - npm list --depth=0 | head -10
     build:
       commands:
-        - echo "=== INICIANDO BUILD PERFEITO ==="
-        - echo "Verificando configurações..."
-        - ls -la *.config.*
-        - echo "Iniciando build..."
+        - echo "=== BUILD EM ANDAMENTO ==="
         - npm run build:amplify
-        - echo "=== BUILD CONCLUÍDO COM SUCESSO ==="
-        - echo "Verificando arquivos gerados..."
-        - ls -la .next
-        - echo "Verificando tamanho dos arquivos..."
-        - du -sh .next
+        - echo "=== BUILD CONCLUÍDO ==="
   artifacts:
     baseDirectory: frontend/.next
     files:
