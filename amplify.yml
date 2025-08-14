@@ -3,34 +3,31 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "=== INSTALANDO NODE.JS CORRETO ==="
-        - nvm install 20.18.0
-        - nvm use 20.18.0
-        - node --version
-        - npm --version
-        - echo "=== ENTRANDO NO DIRETÓRIO FRONTEND ==="
+        - echo "=== CONFIGURAÇÃO PERFEITA PARA AWS AMPLIFY ==="
+        - echo "Entrando no diretório frontend..."
         - cd frontend
-        - echo "=== LIMPANDO INSTALAÇÕES ANTERIORES ==="
+        - echo "Verificando versão do Node.js..."
+        - node --version
+        - echo "Verificando versão do npm..."
+        - npm --version
+        - echo "Limpando instalações anteriores..."
         - rm -rf node_modules package-lock.json .next
-        - echo "=== INSTALANDO DEPENDÊNCIAS COM OTIMIZAÇÕES ==="
-        - npm install --no-optional --no-audit --no-fund --prefer-offline --production=false
-        - echo "=== LIMPANDO CACHE DO NPM ==="
-        - npm cache clean --force
-        - echo "=== VERIFICANDO MEMÓRIA DISPONÍVEL ==="
-        - free -h || echo "Comando free não disponível"
-        - df -h
+        - echo "Instalando dependências..."
+        - npm install
+        - echo "Verificando dependências instaladas..."
+        - npm list --depth=0 | head -10
     build:
       commands:
-        - echo "=== INICIANDO BUILD OTIMIZADO PARA AMPLIFY ==="
-        - export NODE_OPTIONS="--max-old-space-size=4096"
-        - export NEXT_TELEMETRY_DISABLED=1
+        - echo "=== INICIANDO BUILD PERFEITO ==="
+        - echo "Verificando configurações..."
+        - ls -la *.config.*
+        - echo "Iniciando build..."
         - npm run build:amplify
-        - echo "=== BUILD COMPLETADO ==="
+        - echo "=== BUILD CONCLUÍDO COM SUCESSO ==="
+        - echo "Verificando arquivos gerados..."
         - ls -la .next
-        - echo "=== VERIFICANDO ARQUIVOS ==="
-        - find .next -name "*.js" | head -10
-        - echo "=== VERIFICANDO TAMANHO ==="
-        - du -sh .next || echo "Comando du não disponível"
+        - echo "Verificando tamanho dos arquivos..."
+        - du -sh .next
   artifacts:
     baseDirectory: frontend/.next
     files:
