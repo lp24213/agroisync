@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Configuração crítica para AWS Amplify
+  output: 'standalone',
+  distDir: '.next',
+  
   // Configurações de build otimizadas para AWS Amplify
   experimental: {
     optimizePackageImports: ['@mui/material', '@mui/icons-material', 'three'],
