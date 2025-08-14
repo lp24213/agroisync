@@ -12,16 +12,25 @@ frontend:
         - cd frontend
         - echo "=== LIMPANDO INSTALAÇÕES ANTERIORES ==="
         - rm -rf node_modules package-lock.json .next
-        - echo "=== INSTALANDO DEPENDÊNCIAS DO FRONTEND ==="
-        - npm install
+        - echo "=== INSTALANDO DEPENDÊNCIAS COM OTIMIZAÇÕES ==="
+        - npm install --no-optional --no-audit --no-fund --prefer-offline --production=false
+        - echo "=== LIMPANDO CACHE DO NPM ==="
+        - npm cache clean --force
+        - echo "=== VERIFICANDO MEMÓRIA DISPONÍVEL ==="
+        - free -h || echo "Comando free não disponível"
+        - df -h
     build:
       commands:
-        - echo "=== INICIANDO BUILD DO FRONTEND ==="
-        - npm run build
+        - echo "=== INICIANDO BUILD OTIMIZADO PARA AMPLIFY ==="
+        - export NODE_OPTIONS="--max-old-space-size=4096"
+        - export NEXT_TELEMETRY_DISABLED=1
+        - npm run build:amplify
         - echo "=== BUILD COMPLETADO ==="
         - ls -la .next
         - echo "=== VERIFICANDO ARQUIVOS ==="
         - find .next -name "*.js" | head -10
+        - echo "=== VERIFICANDO TAMANHO ==="
+        - du -sh .next || echo "Comando du não disponível"
   artifacts:
     baseDirectory: frontend/.next
     files:
