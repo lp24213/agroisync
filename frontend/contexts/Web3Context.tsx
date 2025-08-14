@@ -1,7 +1,19 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Web3ContextType } from '../types/web3';
+// Type definition for Web3ContextType
+interface Web3ContextType {
+  isConnected: boolean;
+  isConnecting: boolean;
+  publicKey: string | null;
+  account: string | null;
+  provider: any;
+  error: string | null;
+  connect: () => Promise<void>;
+  disconnect: () => Promise<void>;
+  signMessage: (message: string) => Promise<string>;
+  signTransaction: (transaction: any) => Promise<any>;
+}
 
 interface Web3ProviderProps {
   children: ReactNode;

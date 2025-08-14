@@ -49,7 +49,7 @@ export const useStakingData = (): UseStakingDataReturn => {
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      if (connected && publicKey) {
+      if (isConnected && publicKey) {
         // Mock data for now - in production this would fetch from blockchain
         const mockPools: StakingPool[] = [
           {
@@ -105,7 +105,7 @@ export const useStakingData = (): UseStakingDataReturn => {
 
   useEffect(() => {
     fetchStakingData();
-  }, [connected, publicKey]);
+  }, [isConnected, publicKey]);
 
   const refetch = () => {
     fetchStakingData();

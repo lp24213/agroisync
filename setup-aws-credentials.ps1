@@ -7,7 +7,7 @@ $Green = "Green"
 $Yellow = "Yellow"
 $Blue = "Blue"
 $Cyan = "Cyan"
-$Magenta = "Magenta"
+# $Magenta = "Magenta"  # Removido - não utilizado
 
 # Configurações padrão
 $DEFAULT_REGION = "us-east-2"

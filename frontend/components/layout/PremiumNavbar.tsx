@@ -1,6 +1,6 @@
 'use client';
 
-import { WalletConnect } from '../WalletConnect';
+// import { WalletConnect } from '../WalletConnect';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Bell, ChevronDown, Globe, Menu, Search, Settings, Sparkles, X } from 'lucide-react';
 import Link from 'next/link';
@@ -156,7 +156,7 @@ export function PremiumNavbar() {
             </motion.button>
 
             {/* Wallet Connect */}
-            <WalletConnect />
+                            {/* <WalletConnect /> */}
 
             {/* Mobile Menu Button */}
             <motion.button

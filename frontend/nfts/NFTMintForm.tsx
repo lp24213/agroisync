@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useWeb3 } from '../hooks/useWeb3';
-import { useNFTData } from '../hooks/useNFTData';
+import { useWeb3Hook as useWeb3 } from '../hooks/useWeb3';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { Input } from '../components/ui/Input';
-import { Textarea } from '../components/ui/Textarea';
-import { Select } from '../components/ui/Select';
+import Textarea from '../components/ui/Textarea';
+import Select from '../components/ui/Select';
 import { Modal } from '../components/ui/Modal';
-import { Badge } from '../components/ui/Badge';
-import { formatAddress, formatPrice } from '../lib/utils';
 
 interface NFTMintFormProps {
   onMintSuccess?: (tokenId: string) => void;
@@ -64,7 +61,7 @@ export const NFTMintForm: React.FC<NFTMintFormProps> = ({
   onMintError,
   className = ''
 }) => {
-  const { account, provider, isConnected } = useWeb3();
+  const { publicKey, isConnected } = useWeb3();
   const [formData, setFormData] = useState<MintFormData>({
     name: '',
     description: '',
@@ -121,14 +118,16 @@ export const NFTMintForm: React.FC<NFTMintFormProps> = ({
     }
   };
 
-  const handleInputChange = (field: keyof MintFormData, value: any) => {
+  const handleInputChange = (field: keyof MintFormData, value: string | number | File | null) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
   };
 
-  const handleFileChange = (field: 'image' | 'metadata', file: File) => {
+  const handleFileChange = (field: 'image' | 'metadata', file: File | null) => {
+    if (!file) return;
+    
     if (field === 'image') {
       if (file.type.startsWith('image/')) {
         handleInputChange('image', file);
@@ -197,7 +196,7 @@ export const NFTMintForm: React.FC<NFTMintFormProps> = ({
   };
 
   const mintNFT = async () => {
-    if (!isConnected || !provider) {
+    if (!isConnected || !publicKey) {
       alert('Please connect your wallet first');
       return;
     }
@@ -212,7 +211,10 @@ export const NFTMintForm: React.FC<NFTMintFormProps> = ({
     try {
       // Step 1: Upload image to IPFS
       setMintProgress(10);
-      const imageHash = await uploadToIPFS(formData.image!);
+      if (!formData.image) {
+        throw new Error('No image selected');
+      }
+      const imageHash = await uploadToIPFS(formData.image);
       
       // Step 2: Create metadata
       setMintProgress(30);
@@ -275,13 +277,13 @@ export const NFTMintForm: React.FC<NFTMintFormProps> = ({
     });
   };
 
-  const handleFarmDataChange = (field: keyof MintFormData['farmData'], value: string) => {
+  const handleFarmDataChange = (field: keyof NonNullable<MintFormData['farmData']>, value: string) => {
     setFormData(prev => ({
       ...prev,
       farmData: {
         ...prev.farmData,
         [field]: value
-      } as MintFormData['farmData']
+      } as NonNullable<MintFormData['farmData']>
     }));
   };
 
@@ -303,36 +305,50 @@ export const NFTMintForm: React.FC<NFTMintFormProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Basic Information */}
             <div className="space-y-4">
-              <Input
-                label="NFT Name"
-                value={formData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                placeholder="Enter NFT name"
-                required
-              />
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  NFT Name
+                </label>
+                <Input
+                  value={formData.name}
+                  onChange={(value) => handleInputChange('name', value)}
+                  placeholder="Enter NFT name"
+                />
+              </div>
 
-              <Textarea
-                label="Description"
-                value={formData.description}
-                onChange={(e) => handleInputChange('description', e.target.value)}
-                placeholder="Describe your NFT"
-                rows={4}
-                required
-              />
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Description
+                </label>
+                <Textarea
+                  value={formData.description}
+                  onChange={(value) => handleInputChange('description', value)}
+                  placeholder="Describe your NFT"
+                  rows={4}
+                />
+              </div>
 
-              <Select
-                label="Category"
-                value={formData.category}
-                onChange={(e) => handleInputChange('category', e.target.value)}
-                options={NFT_CATEGORIES.map(cat => ({ value: cat, label: cat }))}
-              />
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Category
+                </label>
+                <Select
+                  value={formData.category}
+                  onChange={(value) => handleInputChange('category', value)}
+                  options={NFT_CATEGORIES.map(cat => ({ value: cat, label: cat }))}
+                />
+              </div>
 
-              <Select
-                label="Rarity"
-                value={formData.rarity}
-                onChange={(e) => handleInputChange('rarity', e.target.value)}
-                options={RARITY_LEVELS.map(rarity => ({ value: rarity, label: rarity }))}
-              />
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Rarity
+                </label>
+                <Select
+                  value={formData.rarity}
+                  onChange={(value) => handleInputChange('rarity', value)}
+                  options={RARITY_LEVELS.map(rarity => ({ value: rarity, label: rarity }))}
+                />
+              </div>
             </div>
 
             {/* Image Upload */}
@@ -344,7 +360,7 @@ export const NFTMintForm: React.FC<NFTMintFormProps> = ({
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={(e) => handleFileChange('image', e.target.files?.[0]!)}
+                  onChange={(e) => handleFileChange('image', e.target.files?.[0] || null)}
                   className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 />
               </div>
@@ -375,7 +391,7 @@ export const NFTMintForm: React.FC<NFTMintFormProps> = ({
                 <input
                   type="file"
                   accept=".json"
-                  onChange={(e) => handleFileChange('metadata', e.target.files?.[0]!)}
+                  onChange={(e) => handleFileChange('metadata', e.target.files?.[0] || null)}
                   className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 />
               </div>
@@ -387,36 +403,56 @@ export const NFTMintForm: React.FC<NFTMintFormProps> = ({
                     <div className="mt-6 p-4 bg-[#00FF00]/10 border border-[#00FF00]/20 rounded-lg">
           <h3 className="text-lg font-semibold text-[#00FF00] mb-4">Farm Data</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input
-                  label="Location"
-                  value={formData.farmData?.location || ''}
-                  onChange={(e) => handleFarmDataChange('location', e.target.value)}
-                  placeholder="Farm location"
-                />
-                <Input
-                  label="Crop Type"
-                  value={formData.farmData?.cropType || ''}
-                  onChange={(e) => handleFarmDataChange('cropType', e.target.value)}
-                  placeholder="Type of crop"
-                />
-                <Input
-                  label="Harvest Date"
-                  type="date"
-                  value={formData.farmData?.harvestDate || ''}
-                  onChange={(e) => handleFarmDataChange('harvestDate', e.target.value)}
-                />
-                <Input
-                  label="Expected Yield"
-                  value={formData.farmData?.yield || ''}
-                  onChange={(e) => handleFarmDataChange('yield', e.target.value)}
-                  placeholder="Expected yield (tons)"
-                />
-                <Input
-                  label="Quality Grade"
-                  value={formData.farmData?.quality || ''}
-                  onChange={(e) => handleFarmDataChange('quality', e.target.value)}
-                  placeholder="A, B, C, etc."
-                />
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Location
+                  </label>
+                  <Input
+                    value={formData.farmData?.location || ''}
+                    onChange={(value) => handleFarmDataChange('location', value)}
+                    placeholder="Farm location"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Crop Type
+                  </label>
+                  <Input
+                    value={formData.farmData?.cropType || ''}
+                    onChange={(value) => handleFarmDataChange('cropType', value)}
+                    placeholder="Type of crop"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Harvest Date
+                  </label>
+                  <Input
+                    type="date"
+                    value={formData.farmData?.harvestDate || ''}
+                    onChange={(value) => handleFarmDataChange('harvestDate', value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Expected Yield
+                  </label>
+                  <Input
+                    value={formData.farmData?.yield || ''}
+                    onChange={(value) => handleFarmDataChange('yield', value)}
+                    placeholder="Expected yield (tons)"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Quality Grade
+                  </label>
+                  <Input
+                    value={formData.farmData?.quality || ''}
+                    onChange={(value) => handleFarmDataChange('quality', value)}
+                    placeholder="A, B, C, etc."
+                  />
+                </div>
               </div>
             </div>
           )}
@@ -440,13 +476,13 @@ export const NFTMintForm: React.FC<NFTMintFormProps> = ({
                 <div key={index} className="flex gap-3">
                   <Input
                     value={attr.trait_type}
-                    onChange={(e) => updateAttribute(index, 'trait_type', e.target.value)}
+                    onChange={(value) => updateAttribute(index, 'trait_type', value)}
                     placeholder="Trait name"
                     className="flex-1"
                   />
                   <Input
                     value={attr.value}
-                    onChange={(e) => updateAttribute(index, 'value', e.target.value)}
+                    onChange={(value) => updateAttribute(index, 'value', value)}
                     placeholder="Trait value"
                     className="flex-1"
                   />
@@ -466,24 +502,31 @@ export const NFTMintForm: React.FC<NFTMintFormProps> = ({
 
           {/* Pricing and Supply */}
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Input
-              label="Price (ETH)"
-              type="number"
-              step="0.001"
-              value={formData.price}
-              onChange={(e) => handleInputChange('price', e.target.value)}
-              placeholder="0.0"
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Price (ETH)
+              </label>
+              <input
+                type="number"
+                step="0.001"
+                value={formData.price}
+                onChange={(e) => handleInputChange('price', e.target.value)}
+                placeholder="0.0"
+                className="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
 
-            <Input
-              label="Supply"
-              type="number"
-              min="1"
-              max="10000"
-              value={formData.supply}
-              onChange={(e) => handleInputChange('supply', parseInt(e.target.value))}
-              placeholder="1"
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Supply
+              </label>
+              <Input
+                type="number"
+                value={formData.supply.toString()}
+                onChange={(value) => handleInputChange('supply', parseInt(value))}
+                placeholder="1"
+              />
+            </div>
           </div>
 
           {/* Fee Information */}
@@ -540,7 +583,7 @@ export const NFTMintForm: React.FC<NFTMintFormProps> = ({
       {/* Preview Modal */}
       <AnimatePresence>
         {showPreview && (
-          <Modal onClose={() => setShowPreview(false)}>
+          <Modal isOpen={showPreview} onClose={() => setShowPreview(false)}>
             <div className="p-6">
               <h3 className="text-xl font-bold mb-4">NFT Preview</h3>
               <img

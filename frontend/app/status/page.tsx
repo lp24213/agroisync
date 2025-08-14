@@ -33,9 +33,9 @@ interface HealthStatus {
       auth: string;
     };
     apis: {
-      coinGecko: string;
-      solana: string;
-      ethereum: string;
+      coinGecko: 'ok' | 'error';
+      solana: 'ok' | 'error';
+      ethereum: 'ok' | 'error';
     };
   };
 }

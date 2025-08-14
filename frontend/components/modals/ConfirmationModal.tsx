@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Alert } from '../ui/Alert';
+import Alert from '../ui/Alert';
 import { Button } from '../ui/Button';
-import { AlertVariant } from '../../types/web3';
+// Removido - módulo não existe
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -11,23 +11,23 @@ interface ConfirmationModalProps {
   onConfirm: () => void;
   title: string;
   message: string;
-  variant?: AlertVariant;
+  variant?: string;
   confirmText?: string;
   cancelText?: string;
   loading?: boolean;
 }
 
 interface ModalConfig {
-  variant: AlertVariant;
+  variant: 'default' | 'warning' | 'success' | 'destructive';
   buttonVariant: 'default' | 'destructive' | 'outline';
   icon: string;
 }
 
-const getModalConfig = (variant: AlertVariant): ModalConfig => {
+const getModalConfig = (variant: string): ModalConfig => {
   switch (variant) {
     case 'error':
       return {
-        variant: 'error',
+        variant: 'destructive',
         buttonVariant: 'destructive',
         icon: '⚠️'
       };
@@ -39,7 +39,7 @@ const getModalConfig = (variant: AlertVariant): ModalConfig => {
       };
     case 'info':
       return {
-        variant: 'info',
+        variant: 'default',
         buttonVariant: 'outline',
         icon: 'ℹ️'
       };
@@ -51,7 +51,7 @@ const getModalConfig = (variant: AlertVariant): ModalConfig => {
       };
     default:
       return {
-        variant: 'info',
+        variant: 'default',
         buttonVariant: 'outline',
         icon: 'ℹ️'
       };

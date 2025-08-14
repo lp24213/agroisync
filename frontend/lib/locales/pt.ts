@@ -484,38 +484,7 @@ export default {
     },
   },
 
-  // Auth
-  auth: {
-    login: 'Entrar',
-    register: 'Cadastrar',
-    logout: 'Sair',
-    email: 'E-mail',
-    password: 'Senha',
-    confirmPassword: 'Confirmar Senha',
-    forgotPassword: 'Esqueci a Senha',
-    resetPassword: 'Redefinir Senha',
-    rememberMe: 'Lembrar de Mim',
-    createAccount: 'Criar Conta',
-    alreadyHaveAccount: 'Já tem uma conta?',
-    dontHaveAccount: 'Não tem uma conta?',
-    connectWallet: 'Conectar Carteira',
-    disconnectWallet: 'Desconectar Carteira',
-    walletConnected: 'Carteira Conectada',
-    walletDisconnected: 'Carteira Desconectada',
-    connecting: 'Conectando...',
-    disconnecting: 'Desconectando...',
-    error: {
-      invalidEmail: 'E-mail inválido',
-      invalidPassword: 'Senha inválida',
-      passwordsDontMatch: 'Senhas não coincidem',
-      userNotFound: 'Usuário não encontrado',
-      wrongPassword: 'Senha incorreta',
-      emailAlreadyExists: 'E-mail já existe',
-      weakPassword: 'Senha muito fraca',
-      networkError: 'Erro de rede',
-      walletError: 'Erro na carteira',
-    },
-  },
+  // Auth (consolidated in the main auth section below)
 
   // Errors
   errors: {

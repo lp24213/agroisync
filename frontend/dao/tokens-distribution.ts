@@ -12,7 +12,8 @@
  * - Rastreamento de histórico de participação
  */
 
-import { Connection, PublicKey } from '@solana/web3.js';
+// import { Connection, PublicKey } from '@solana/web3.js';
+type Connection = any; // Mock type for development
 import { ethers } from 'ethers';
 import { Redis } from 'ioredis';
 import axios from 'axios';

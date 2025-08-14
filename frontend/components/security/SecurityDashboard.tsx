@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card } from '../ui/Card';
-import { SecurityEvent, SecurityEventType } from '../../types/web3';
+import { SecurityEvent, SecurityEventType } from '../../lib/security/monitoring';
 
 interface SecurityDashboardProps {
   className?: string;
@@ -15,7 +15,7 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
     id: string;
     type: SecurityEventType;
     ip: string;
-    threatLevel: string;
+    threatLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
     timestamp: string;
   }>>([]);
   const [stats, setStats] = useState({
@@ -30,24 +30,36 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
     const events: SecurityEvent[] = [
       {
         id: '1',
-        type: 'login',
+        type: SecurityEventType.AUTHENTICATION_SUCCESS,
         ip: '192.168.1.100',
-        threatLevel: 'low',
-        timestamp: Date.now()
+        threatLevel: 'LOW',
+        timestamp: Date.now(),
+        userAgent: 'Mozilla/5.0',
+        details: {},
+        source: 'web',
+        metadata: {}
       },
       {
         id: '2',
-        type: 'failed_login',
+        type: SecurityEventType.AUTHENTICATION_FAILURE,
         ip: '10.0.0.50',
-        threatLevel: 'medium',
-        timestamp: Date.now() - 3600000
+        threatLevel: 'MEDIUM',
+        timestamp: Date.now() - 3600000,
+        userAgent: 'Mozilla/5.0',
+        details: {},
+        source: 'web',
+        metadata: {}
       },
       {
         id: '3',
-        type: 'suspicious_activity',
+        type: SecurityEventType.SUSPICIOUS_ACTIVITY,
         ip: '203.0.113.0',
-        threatLevel: 'high',
-        timestamp: Date.now() - 7200000
+        threatLevel: 'HIGH',
+        timestamp: Date.now() - 7200000,
+        userAgent: 'Mozilla/5.0',
+        details: {},
+        source: 'web',
+        metadata: {}
       }
     ];
 
@@ -64,9 +76,9 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
     // Calculate stats
     setStats({
       totalEvents: events.length,
-      highThreat: events.filter(e => e.threatLevel === 'high').length,
-      mediumThreat: events.filter(e => e.threatLevel === 'medium').length,
-      lowThreat: events.filter(e => e.threatLevel === 'low').length
+      highThreat: events.filter(e => e.threatLevel === 'HIGH').length,
+      mediumThreat: events.filter(e => e.threatLevel === 'MEDIUM').length,
+      lowThreat: events.filter(e => e.threatLevel === 'LOW').length
     });
   }, []);
 
@@ -81,11 +93,19 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
 
   const getEventIcon = (type: SecurityEventType) => {
     switch (type) {
-      case 'login': return '🔐';
-      case 'logout': return '🚪';
-      case 'failed_login': return '❌';
-      case 'suspicious_activity': return '⚠️';
-      case 'blocked_ip': return '🚫';
+      case SecurityEventType.AUTHENTICATION_SUCCESS: return '🔐';
+      case SecurityEventType.AUTHENTICATION_FAILURE: return '❌';
+      case SecurityEventType.SUSPICIOUS_ACTIVITY: return '⚠️';
+      case SecurityEventType.RATE_LIMIT_EXCEEDED: return '🚫';
+      case SecurityEventType.DDoS_ATTACK: return '🌊';
+      case SecurityEventType.SQL_INJECTION_ATTEMPT: return '💉';
+      case SecurityEventType.XSS_ATTACK_ATTEMPT: return '🕷️';
+      case SecurityEventType.PATH_TRAVERSAL_ATTEMPT: return '📁';
+      case SecurityEventType.COMMAND_INJECTION_ATTEMPT: return '💻';
+      case SecurityEventType.BRUTE_FORCE_ATTEMPT: return '🔨';
+      case SecurityEventType.SESSION_HIJACKING: return '🎭';
+      case SecurityEventType.DATA_EXFILTRATION: return '📤';
+      case SecurityEventType.UNUSUAL_ACCESS_PATTERN: return '🔍';
       default: return '📊';
     }
   };

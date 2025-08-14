@@ -476,38 +476,7 @@ export default {
     },
   },
 
-  // Auth
-  auth: {
-    login: 'Login',
-    register: 'Register',
-    logout: 'Logout',
-    email: 'Email',
-    password: 'Password',
-    confirmPassword: 'Confirm Password',
-    forgotPassword: 'Forgot Password',
-    resetPassword: 'Reset Password',
-    rememberMe: 'Remember Me',
-    createAccount: 'Create Account',
-    alreadyHaveAccount: 'Already have an account?',
-    dontHaveAccount: "Don't have an account?",
-    connectWallet: 'Connect Wallet',
-    disconnectWallet: 'Disconnect Wallet',
-    walletConnected: 'Wallet Connected',
-    walletDisconnected: 'Wallet Disconnected',
-    connecting: 'Connecting...',
-    disconnecting: 'Disconnecting...',
-    error: {
-      invalidEmail: 'Invalid email',
-      invalidPassword: 'Invalid password',
-      passwordsDontMatch: "Passwords don't match",
-      userNotFound: 'User not found',
-      wrongPassword: 'Wrong password',
-      emailAlreadyExists: 'Email already exists',
-      weakPassword: 'Password too weak',
-      networkError: 'Network error',
-      walletError: 'Wallet error',
-    },
-  },
+  // Auth (consolidated in the main auth section below)
 
   // Errors
   errors: {

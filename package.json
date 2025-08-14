@@ -8,22 +8,23 @@
     "backend"
   ],
   "scripts": {
-    "build": "npm run build:frontend && npm run build:backend",
+    "check-versions": "node scripts/check-node-version.js",
+    "build": "npm run check-versions && npm run build:frontend && npm run build:backend",
     "build:frontend": "cd frontend && npm install && npm run build",
     "build:backend": "cd backend && npm install && npm run build",
-    "build:all": "npm install && npm run build:frontend && npm run build:backend",
-    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "build:all": "npm run check-versions && npm install && npm run build:frontend && npm run build:backend",
+    "dev": "npm run check-versions && concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
     "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend && npm run dev",
     "start": "cd frontend && npm start",
-    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
-    "test": "npm run test:frontend && npm run test:backend",
+    "install:all": "npm run check-versions && npm install && cd frontend && npm install && cd ../backend && npm install",
+    "test": "npm run check-versions && npm run test:frontend && npm run test:backend",
     "test:frontend": "cd frontend && npm test",
     "test:backend": "cd backend && npm test"
   },
   "engines": {
-    "node": ">=20.0.0",
-    "npm": ">=7.0.0"
+    "node": ">=20.15.1",
+    "npm": ">=10.8.2"
   },
   "devDependencies": {
     "@aws-amplify/backend": "1.16.1",

@@ -20,11 +20,11 @@ const firebaseConfig = {
 const FIREBASE_DEBUG_TOKEN = process.env.NEXT_PUBLIC_FIREBASE_DEBUG_TOKEN || "AFCAADF3-BDCF-4B29-B1E8-C69180EA55D2";
 
 // Initialize Firebase only if we have valid config
-let app = null;
-let auth = null;
-let db = null;
-let storage = null;
-let analytics = null;
+let app: any = null;
+let auth: any = null;
+let db: any = null;
+let storage: any = null;
+let analytics: any = null;
 
 // Check if we have at least the basic Firebase config
 const hasValidConfig = firebaseConfig.apiKey && 

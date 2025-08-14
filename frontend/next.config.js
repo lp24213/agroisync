@@ -19,6 +19,19 @@ const nextConfig = {
   
   // Configurações de webpack
   webpack: (config, { dev, isServer }) => {
+    // Excluir contratos do build
+    config.module.rules.push({
+      test: /\.(sol|ts)$/,
+      include: /contracts/,
+      use: 'ignore-loader'
+    });
+    
+    // Excluir hardhat.config.ts
+    config.module.rules.push({
+      test: /hardhat\.config\.ts$/,
+      use: 'ignore-loader'
+    });
+    
     // Otimizações para produção
     if (!dev && !isServer) {
       config.optimization.splitChunks = {

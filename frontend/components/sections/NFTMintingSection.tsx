@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Image, Palette, Zap } from "lucide-react";
-import { NFTMinting } from "../ui/NFTMinting";
+import NFTMinting from "../ui/NFTMinting";
 
 export function NFTMintingSection() {
   return (
@@ -29,7 +29,9 @@ export function NFTMintingSection() {
           transition={{ delay: 0.2, duration: 0.8 }}
           className="flex justify-center mb-16"
         >
-          <NFTMinting size="lg" className="drop-shadow-[0_0_30px_rgba(0,255,255,0.3)]" />
+          <div className="drop-shadow-[0_0_30px_rgba(0,255,255,0.3)]">
+            <NFTMinting />
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

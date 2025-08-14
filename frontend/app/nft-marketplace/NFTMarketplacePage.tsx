@@ -321,7 +321,7 @@ const NFTMarketplacePage: React.FC = () => {
                   <Input
                     placeholder="Buscar NFTs..."
                     value={searchTerm}
-                    onChange={e => setSearchTerm(e.target.value)}
+                    onChange={setSearchTerm}
                     className="pl-10 bg-black/70 border border-[#00FF7F]/20 text-[#ffffff] placeholder-[#cccccc] focus:ring-2 focus:ring-[#00FF7F] font-orbitron"
                   />
                 </div>

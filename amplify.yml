@@ -12,12 +12,15 @@ applications:
         NEXT_PUBLIC_API_URL: https://api.agroisync.com
         NEXT_PUBLIC_APP_URL: https://agroisync.com
         NEXT_PUBLIC_ENVIRONMENT: production
+        NEXT_TELEMETRY_DISABLED: 1
     frontend:
       phases:
         preBuild:
           commands:
+            - echo "=== VERIFICANDO VERSÕES ==="
             - node --version
             - npm --version
+            - echo "=== INSTALANDO DEPENDÊNCIAS ==="
             - cd ..
             - npm ci --no-audit --prefer-offline --legacy-peer-deps
             - cd frontend
@@ -25,22 +28,22 @@ applications:
             - npm ci --production=false --include=dev --no-audit --prefer-offline --legacy-peer-deps
         build:
           commands:
+            - echo "=== INICIANDO BUILD ==="
             - npm run build
         postBuild:
           commands:
-            - ls -la out
-            - du -sh out
-            - cp frontend/public/_headers out/_headers
+            - echo "=== VERIFICANDO BUILD ==="
+            - ls -la .next
+            - du -sh .next
+            - cp frontend/public/_headers .next/_headers
       artifacts:
-        baseDirectory: out
+        baseDirectory: .next
         files:
           - '**/*'
       cache:
         paths:
           - node_modules/**
-          - out/**
+          - .next/cache/**
           - ../node_modules/**
           - ~/.npm/**
           - ~/.cache/**
-          - .next/cache/**
-          - .next/standalone/**

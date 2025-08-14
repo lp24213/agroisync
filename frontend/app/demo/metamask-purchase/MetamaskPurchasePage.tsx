@@ -50,6 +50,19 @@ const MetamaskPurchasePage: React.FC = () => {
     }));
   };
 
+  // Função wrapper para o componente Input
+  const handleInputChange = (name: string) => (value: string) => {
+    setPurchaseParams(prev => ({
+      ...prev,
+      [name]:
+        name === 'price' || name === 'amount' || name === 'tokenId'
+          ? name === 'price'
+            ? value
+            : parseInt(value)
+          : value,
+    }));
+  };
+
   // Função para lidar com o sucesso da compra
   const handleSuccess = () => {
     toast({
@@ -91,9 +104,8 @@ const MetamaskPurchasePage: React.FC = () => {
               <div>
                 <label className='block text-sm font-medium mb-2'>Endereço do Token</label>
                 <Input
-                  name='tokenAddress'
                   value={purchaseParams.tokenAddress}
-                  onChange={handleParamChange}
+                  onChange={handleInputChange('tokenAddress')}
                   placeholder='0x...'
                 />
               </div>
@@ -103,11 +115,9 @@ const MetamaskPurchasePage: React.FC = () => {
                 <div>
                   <label className='block text-sm font-medium mb-2'>ID do Token</label>
                   <Input
-                    name='tokenId'
                     type='number'
-                    value={purchaseParams.tokenId}
-                    onChange={handleParamChange}
-                    min={1}
+                    value={purchaseParams.tokenId.toString()}
+                    onChange={handleInputChange('tokenId')}
                   />
                 </div>
               )}
@@ -116,11 +126,9 @@ const MetamaskPurchasePage: React.FC = () => {
                 <div>
                   <label className='block text-sm font-medium mb-2'>Quantidade</label>
                   <Input
-                    name='amount'
                     type='number'
-                    value={purchaseParams.amount}
-                    onChange={handleParamChange}
-                    min={1}
+                    value={purchaseParams.amount.toString()}
+                    onChange={handleInputChange('amount')}
                   />
                 </div>
               )}
@@ -128,10 +136,9 @@ const MetamaskPurchasePage: React.FC = () => {
               <div>
                 <label className='block text-sm font-medium mb-2'>Preço (ETH)</label>
                 <Input
-                  name='price'
                   type='text'
                   value={purchaseParams.price}
-                  onChange={handleParamChange}
+                  onChange={handleInputChange('price')}
                   placeholder='0.01'
                 />
               </div>
@@ -139,9 +146,8 @@ const MetamaskPurchasePage: React.FC = () => {
               <div>
                 <label className='block text-sm font-medium mb-2'>Endereço do Vendedor</label>
                 <Input
-                  name='sellerAddress'
                   value={purchaseParams.sellerAddress}
-                  onChange={handleParamChange}
+                  onChange={handleInputChange('sellerAddress')}
                   placeholder='0x...'
                 />
               </div>

@@ -67,15 +67,15 @@
         ]
       },
       "providerPlugin": "awscloudformation",
-      "service": "amplifyhosting",
-      "type": "manual",
       "redirects": [
         {
           "source": "https://www.agroisync.com/<*>",
-          "target": "https://agroisync.com/<*>",
-          "status": "301"
+          "status": "301",
+          "target": "https://agroisync.com/<*>"
         }
-      ]
+      ],
+      "service": "amplifyhosting",
+      "type": "manual"
     }
   },
   "parameters": {

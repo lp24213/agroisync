@@ -71,7 +71,7 @@ const BuyWithCommission: React.FC<BuyWithCommissionProps> = ({
   // Buscar taxa de comissão do contrato
   useEffect(() => {
     const fetchCommissionRate = async () => {
-      if (contracts.buyWithCommission) {
+      if (contracts.buyWithCommission && typeof contracts.buyWithCommission.commissionRate === 'function') {
         try {
           const rate = await contracts.buyWithCommission.commissionRate();
           setCommissionRate(Number(rate));
@@ -122,7 +122,9 @@ const BuyWithCommission: React.FC<BuyWithCommissionProps> = ({
       toast.success('Transação enviada! Aguardando confirmação...');
 
       // Aguardar confirmação
-      await tx.wait();
+      if (tx && typeof (tx as any).wait === 'function') {
+        await (tx as any).wait();
+      }
 
       toast.success('Compra realizada com sucesso!');
 

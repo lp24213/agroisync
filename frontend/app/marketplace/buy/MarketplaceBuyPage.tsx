@@ -64,10 +64,8 @@ export const MarketplaceBuyPage: React.FC<MarketplaceBuyPageProps> = ({
                 <Input
                   type="number"
                   value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
+                  onChange={setAmount}
                   placeholder="Enter amount..."
-                  min="0"
-                  step="0.01"
                 />
               </div>
 

@@ -3,7 +3,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useWeb3 } from '../contexts/Web3Context';
 import { logger } from '../utils/logger';
-import { PremiumDeFiService } from '../types/web3';
+// Type definition for PremiumDeFiService
+interface PremiumDeFiService {
+  fetchUserPools: (publicKey: string) => Promise<DeFiPool[]>;
+}
 
 interface DeFiPool {
   id: string;

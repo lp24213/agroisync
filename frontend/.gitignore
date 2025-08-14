@@ -32,4 +32,9 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts 
+next-env.d.ts
+
+# contracts - não devem ser incluídos no build do Next.js
+/contracts/
+*.sol
+hardhat.config.ts 

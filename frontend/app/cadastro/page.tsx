@@ -22,7 +22,6 @@ const t = (key: string) => {
     'auth.passwordPlaceholder': 'Enter your password',
     'auth.confirmPassword': 'Confirm Password',
     'auth.confirmPasswordPlaceholder': 'Confirm your password',
-    'auth.createAccount': 'Create Account',
     'auth.creatingAccount': 'Creating account...',
     'auth.verificationCode': 'Verification Code',
     'auth.verificationCodePlaceholder': 'Enter verification code',

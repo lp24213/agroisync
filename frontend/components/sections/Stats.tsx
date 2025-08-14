@@ -102,9 +102,9 @@ export function Stats() {
                 </div>
                 
                 <div className={`flex items-center justify-center gap-1 text-sm ${
-                  stat.change > 0 ? 'text-[#00bfff]' : 'text-red-400'
+                  stat.isPositive ? 'text-[#00bfff]' : 'text-red-400'
                 }`}>
-                  {stat.change > 0 ? (
+                  {stat.isPositive ? (
                     <TrendingUp className="w-4 h-4" />
                   ) : (
                     <TrendingDown className="w-4 h-4" />

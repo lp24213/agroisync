@@ -8,7 +8,8 @@ import {
   Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Avatar, Chip,
   TextField, IconButton, Tooltip,
-  List, ListItem, ListItemText, ListItemIcon
+  List, ListItem, ListItemText, ListItemIcon,
+  SelectChangeEvent
 } from '@mui/material';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, 
@@ -17,8 +18,8 @@ import {
 } from 'recharts';
 import { format, subDays, subMonths, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { Connection, PublicKey } from '@solana/web3.js';
+// import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+// import { Connection, PublicKey } from '@solana/web3.js';
 
 // Ícones
 import PersonIcon from '@mui/icons-material/Person';
@@ -111,17 +112,57 @@ interface GeoDistribution {
 
 const UsersDashboard: React.FC = () => {
   // Estados
-  const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
+  const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d'>('30d');
   const [selectedRole, setSelectedRole] = useState<string>('all');
   const [tabValue, setTabValue] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   
   // Hooks personalizados para buscar dados
-  const { users, totalUsers, activeUsers, kycVerifiedUsers } = useUserStats();
-  const { userActivity } = useUserActivity(timeRange);
-  const { userGrowth } = useUserGrowth(timeRange);
-  const { userSegments, geoDistribution } = useUserSegmentation();
+  const { stats, activities } = useUserStats();
+  const { activities: userActivity } = useUserActivity(timeRange);
+  const { data: userGrowth } = useUserGrowth(timeRange);
+  const { segments: userSegments } = useUserSegmentation();
+  
+  // Extrair valores das stats
+  const { totalTransactions, totalVolume, nftCount, stakedAmount } = stats;
+  
+  // Dados mock para usuários (em produção viriam da API)
+  const mockUsers = useMemo(() => [
+    {
+      id: '1',
+      name: 'João Silva',
+      email: 'joao@example.com',
+      status: 'active',
+      joinDate: '2024-01-15',
+      lastActivity: '2024-03-20',
+      region: 'São Paulo, SP',
+      kycStatus: 'verified',
+      totalTransactions: 45,
+      totalVolume: 125000
+    },
+    {
+      id: '2',
+      name: 'Maria Santos',
+      email: 'maria@example.com',
+      status: 'active',
+      joinDate: '2024-02-01',
+      lastActivity: '2024-03-19',
+      region: 'Rio de Janeiro, RJ',
+      kycStatus: 'verified',
+      totalTransactions: 32,
+      totalVolume: 89000
+    }
+  ], []);
+  
+  // Dados mock para distribuição geográfica
+  const userLocations = useMemo(() => [
+    { id: '1', region: 'São Paulo', users: 1250, percentage: 35, color: '#0088FE' },
+    { id: '2', region: 'Rio de Janeiro', users: 890, percentage: 25, color: '#00C49F' },
+    { id: '3', region: 'Minas Gerais', users: 720, percentage: 20, color: '#FFBB28' },
+    { id: '4', region: 'Bahia', users: 450, percentage: 13, color: '#FF8042' },
+    { id: '5', region: 'Outros', users: 290, percentage: 7, color: '#8884D8' }
+  ], []);
   
   // Efeito para simular carregamento de dados
   useEffect(() => {
@@ -133,11 +174,11 @@ const UsersDashboard: React.FC = () => {
   }, []);
   
   // Manipuladores de eventos
-  const handleTimeRangeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setTimeRange(event.target.value as '7d' | '30d' | '90d' | '1y');
+  const handleTimeRangeChange = (event: SelectChangeEvent<'7d' | '30d' | '90d'>) => {
+    setTimeRange(event.target.value as '7d' | '30d' | '90d');
   };
   
-  const handleRoleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleRoleChange = (event: SelectChangeEvent<string>) => {
     setSelectedRole(event.target.value as string);
   };
   
@@ -155,34 +196,30 @@ const UsersDashboard: React.FC = () => {
   
   // Filtragem de usuários com base na pesquisa e papel
   const filteredUsers = useMemo(() => {
-    return users.filter(user => {
+    return mockUsers.filter(user => {
       const matchesSearch = searchTerm === '' || 
-        (user.username && user.username.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        user.walletAddress.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (user.country && user.country.toLowerCase().includes(searchTerm.toLowerCase()));
+        (user.name && user.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.region.toLowerCase().includes(searchTerm.toLowerCase());
       
-      const matchesRole = selectedRole === 'all' || user.role === selectedRole;
+      const matchesRole = selectedRole === 'all' || user.status === selectedRole;
       
       return matchesSearch && matchesRole;
     });
-  }, [users, searchTerm, selectedRole]);
+  }, [mockUsers, searchTerm, selectedRole]);
   
   // Cálculo de métricas derivadas
-  const retentionRate = useMemo(() => {
-    if (userGrowth.length > 0) {
-      return userGrowth[userGrowth.length - 1].retentionRate;
-    }
-    return 0;
-  }, [userGrowth]);
-  
   const userGrowthRate = useMemo(() => {
-    if (userGrowth.length >= 2) {
-      const current = userGrowth[userGrowth.length - 1].totalUsers;
-      const previous = userGrowth[userGrowth.length - 2].totalUsers;
-      return previous > 0 ? ((current - previous) / previous) * 100 : 0;
+    if (mockUsers.length > 0) {
+      return Math.round((mockUsers.filter(u => u.status === 'active').length / mockUsers.length) * 100);
     }
     return 0;
-  }, [userGrowth]);
+  }, [mockUsers]);
+
+  const retentionRate = useMemo(() => {
+    // Mock retention rate for now
+    return 85.5;
+  }, []);
   
   if (isLoading) {
     return (
@@ -221,7 +258,6 @@ const UsersDashboard: React.FC = () => {
               <MenuItem value="7d">7 dias</MenuItem>
               <MenuItem value="30d">30 dias</MenuItem>
               <MenuItem value="90d">90 dias</MenuItem>
-              <MenuItem value="1y">1 ano</MenuItem>
             </Select>
           </FormControl>
         </Box>
@@ -232,7 +268,7 @@ const UsersDashboard: React.FC = () => {
         <Grid item xs={12} md={3}>
           <UserMetricsCard 
             title="Total de Usuários" 
-            value={totalUsers.toString()}
+            value={mockUsers.length.toString()}
             change={userGrowthRate}
             icon={<GroupIcon />}
           />
@@ -240,8 +276,7 @@ const UsersDashboard: React.FC = () => {
         <Grid item xs={12} md={3}>
           <UserMetricsCard 
             title="Usuários Ativos" 
-            value={activeUsers.toString()}
-            secondaryValue={`${((activeUsers / totalUsers) * 100).toFixed(1)}% do total`}
+            value={mockUsers.filter(u => u.status === 'active').length.toString()}
             change={+12.3}
             icon={<PersonIcon />}
           />
@@ -257,8 +292,7 @@ const UsersDashboard: React.FC = () => {
         <Grid item xs={12} md={3}>
           <UserMetricsCard 
             title="Verificados KYC" 
-            value={kycVerifiedUsers.toString()}
-            secondaryValue={`${((kycVerifiedUsers / totalUsers) * 100).toFixed(1)}% do total`}
+            value={mockUsers.filter(u => u.kycStatus === 'verified').length.toString()}
             change={+18.7}
             icon={<VerifiedUserIcon />}
           />
@@ -335,17 +369,16 @@ const UsersDashboard: React.FC = () => {
                     nameKey="segment"
                     label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
                   >
-                    {userSegments.map((entry, index) => (
+                    {userSegments.map((entry: any, index: number) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
                   <RechartsTooltip 
-                    formatter={(value: number, name, props) => {
-                      const segment = userSegments.find(s => s.segment === name);
-                      return [
-                        `${value} usuários (${(segment?.percentage || 0).toFixed(1)}%)`,
-                        name
-                      ];
+                    formatter={(value: any, name: string) => {
+                      if (typeof value === 'number') {
+                        return [`${value.toFixed(1)}%`, name];
+                      }
+                      return [value, name];
                     }}
                   />
                 </PieChart>
@@ -383,11 +416,10 @@ const UsersDashboard: React.FC = () => {
                       label="Perfil de Usuário"
                     >
                       <MenuItem value="all">Todos os Perfis</MenuItem>
-                      <MenuItem value="investor">Investidores</MenuItem>
-                      <MenuItem value="farmer">Agricultores</MenuItem>
-                      <MenuItem value="enterprise">Empresas</MenuItem>
-                      <MenuItem value="developer">Desenvolvedores</MenuItem>
-                      <MenuItem value="regular">Usuários Comuns</MenuItem>
+                      <MenuItem value="active">Ativos</MenuItem>
+                      <MenuItem value="inactive">Inativos</MenuItem>
+                      <MenuItem value="verified">Verificados KYC</MenuItem>
+                      <MenuItem value="unverified">Não Verificados KYC</MenuItem>
                     </Select>
                   </FormControl>
                   
@@ -404,7 +436,7 @@ const UsersDashboard: React.FC = () => {
                 </Box>
                 
                 <Typography variant="body2" color="text.secondary">
-                  Exibindo {filteredUsers.length} de {users.length} usuários
+                  Exibindo {filteredUsers.length} de {mockUsers.length} usuários
                 </Typography>
               </Box>
               
@@ -428,22 +460,18 @@ const UsersDashboard: React.FC = () => {
                         <TableCell>
                           <Box display="flex" alignItems="center">
                             <Avatar 
-                              src={user.avatarUrl} 
-                              alt={user.username || user.walletAddress} 
+                              src={`https://via.placeholder.com/50?text=${user.name?.[0] || 'U'}`} 
+                              alt={user.name || user.email} 
                               sx={{ mr: 2, width: 40, height: 40 }}
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.src = '/images/nft-placeholder.svg';
-                              }}
                             >
-                              {!user.avatarUrl && (user.username?.[0] || user.walletAddress[0])}
+                              {!user.name && user.email?.[0]}
                             </Avatar>
                             <Box>
                               <Typography variant="body2" fontWeight="bold">
-                                {user.username || 'Anônimo'}
+                                {user.name || user.email}
                               </Typography>
                               <Typography variant="caption" color="text.secondary">
-                                {user.walletAddress.substring(0, 6)}...{user.walletAddress.substring(user.walletAddress.length - 4)}
+                                {user.email}
                               </Typography>
                             </Box>
                           </Box>
@@ -451,19 +479,11 @@ const UsersDashboard: React.FC = () => {
                         <TableCell>
                           <Chip 
                             label={
-                              user.role === 'investor' ? 'Investidor' :
-                              user.role === 'farmer' ? 'Agricultor' :
-                              user.role === 'enterprise' ? 'Empresa' :
-                              user.role === 'developer' ? 'Desenvolvedor' :
-                              'Usuário Comum'
+                              user.status === 'active' ? 'Ativo' : 'Inativo'
                             } 
                             size="small" 
                             color={
-                              user.role === 'investor' ? 'primary' :
-                              user.role === 'farmer' ? 'success' :
-                              user.role === 'enterprise' ? 'secondary' :
-                              user.role === 'developer' ? 'info' :
-                              'default'
+                              user.status === 'active' ? 'success' : 'default'
                             } 
                             variant="outlined" 
                           />
@@ -472,19 +492,25 @@ const UsersDashboard: React.FC = () => {
                           {format(parseISO(user.joinDate), 'dd/MM/yyyy', { locale: ptBR })}
                         </TableCell>
                         <TableCell>
-                          {format(parseISO(user.lastActive), 'dd/MM/yyyy HH:mm', { locale: ptBR })}
+                          {format(parseISO(user.lastActivity), 'dd/MM/yyyy HH:mm', { locale: ptBR })}
                         </TableCell>
                         <TableCell align="right">
-                          {user.totalTransactions}
+                          <Typography variant="body2">
+                            {user.totalTransactions}
+                          </Typography>
                         </TableCell>
                         <TableCell align="right">
-                          {user.stakingAmount.toLocaleString()}
+                          <Typography variant="body2">
+                            {stakedAmount}
+                          </Typography>
                         </TableCell>
                         <TableCell align="right">
-                          {user.nftsOwned}
+                          <Typography variant="body2">
+                            {nftCount}
+                          </Typography>
                         </TableCell>
                         <TableCell align="center">
-                          {user.kycVerified ? (
+                          {user.kycStatus === 'verified' ? (
                             <Tooltip title="Verificado">
                               <VerifiedUserIcon color="success" fontSize="small" />
                             </Tooltip>
@@ -680,7 +706,7 @@ const UsersDashboard: React.FC = () => {
                 <Card>
                   <CardHeader title="Distribuição Geográfica" />
                   <CardContent>
-                    <UserMap users={users} height={300} />
+                    <UserMap locations={userLocations} height={300} />
                     
                     <Box mt={2}>
                       <Typography variant="subtitle2" gutterBottom>Principais Países</Typography>
@@ -694,12 +720,12 @@ const UsersDashboard: React.FC = () => {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {geoDistribution.slice(0, 5).map((geo) => (
-                              <TableRow key={geo.country} hover>
+                            {userLocations.slice(0, 5).map((geo) => (
+                              <TableRow key={geo.id} hover>
                                 <TableCell>
                                   <Box display="flex" alignItems="center">
                                     <PublicIcon fontSize="small" sx={{ mr: 1, color: 'text.secondary' }} />
-                                    {geo.country}
+                                    {geo.region}
                                   </Box>
                                 </TableCell>
                                 <TableCell align="right">{geo.users}</TableCell>
@@ -744,10 +770,10 @@ const UsersDashboard: React.FC = () => {
                         />
                         <RechartsTooltip 
                           cursor={{ strokeDasharray: '3 3' }}
-                          formatter={(value, name, props) => {
-                            if (name === 'Valor Médio') return [`$${value.toFixed(2)} USD`, name];
+                          formatter={(value: any, name: string, props: any) => {
+                            if (name === 'Valor Médio') return [`$${(value as number).toFixed(2)} USD`, name];
                             if (name === 'Número de Usuários') return [value, name];
-                            if (name === '% do Total') return [`${value.toFixed(1)}%`, name];
+                            if (name === '% do Total') return [`${(value as number).toFixed(1)}%`, name];
                             return [value, name];
                           }}
                         />
@@ -778,19 +804,19 @@ const UsersDashboard: React.FC = () => {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {userSegments.map((segment) => (
-                              <TableRow key={segment.segment} hover>
-                                <TableCell>{segment.segment}</TableCell>
+                            {userSegments.map((segment: any) => (
+                              <TableRow key={segment.id || segment.name} hover>
+                                <TableCell>{segment.name || segment.segment}</TableCell>
                                 <TableCell align="right">{segment.count}</TableCell>
-                                <TableCell align="right">${segment.avgValue.toLocaleString()}</TableCell>
+                                <TableCell align="right">${(segment.avgValue || 0).toLocaleString()}</TableCell>
                                 <TableCell align="right">
                                   <Box display="flex" alignItems="center" justifyContent="flex-end">
-                                    {segment.growth > 0 ? (
+                                    {(segment.growth || 0) > 0 ? (
                                       <TrendingUpIcon fontSize="small" color="success" sx={{ mr: 0.5 }} />
                                     ) : (
                                       <TrendingUpIcon fontSize="small" color="error" sx={{ mr: 0.5, transform: 'rotate(180deg)' }} />
                                     )}
-                                    {Math.abs(segment.growth).toFixed(1)}%
+                                    {Math.abs(segment.growth || 0).toFixed(1)}%
                                   </Box>
                                 </TableCell>
                               </TableRow>
@@ -817,10 +843,10 @@ const UsersDashboard: React.FC = () => {
                             </ListItemIcon>
                             <ListItemText 
                               primary="Usuários Diários" 
-                              secondary={`${((activeUsers * 0.35) / totalUsers * 100).toFixed(1)}% do total`} 
+                              secondary={`${((mockUsers.filter(u => u.status === 'active').length * 0.35) / mockUsers.length * 100).toFixed(1)}% do total`} 
                             />
                             <Typography variant="body2">
-                              {Math.round(activeUsers * 0.35)}
+                              {Math.round(mockUsers.filter(u => u.status === 'active').length * 0.35)}
                             </Typography>
                           </ListItem>
                           <ListItem>
@@ -829,10 +855,10 @@ const UsersDashboard: React.FC = () => {
                             </ListItemIcon>
                             <ListItemText 
                               primary="Usuários Semanais" 
-                              secondary={`${((activeUsers * 0.30) / totalUsers * 100).toFixed(1)}% do total`} 
+                              secondary={`${((mockUsers.filter(u => u.status === 'active').length * 0.30) / mockUsers.length * 100).toFixed(1)}% do total`} 
                             />
                             <Typography variant="body2">
-                              {Math.round(activeUsers * 0.30)}
+                              {Math.round(mockUsers.filter(u => u.status === 'active').length * 0.30)}
                             </Typography>
                           </ListItem>
                           <ListItem>
@@ -841,10 +867,10 @@ const UsersDashboard: React.FC = () => {
                             </ListItemIcon>
                             <ListItemText 
                               primary="Usuários Mensais" 
-                              secondary={`${((activeUsers * 0.35) / totalUsers * 100).toFixed(1)}% do total`} 
+                              secondary={`${((mockUsers.filter(u => u.status === 'active').length * 0.35) / mockUsers.length * 100).toFixed(1)}% do total`} 
                             />
                             <Typography variant="body2">
-                              {Math.round(activeUsers * 0.35)}
+                              {Math.round(mockUsers.filter(u => u.status === 'active').length * 0.35)}
                             </Typography>
                           </ListItem>
                         </List>
@@ -859,10 +885,10 @@ const UsersDashboard: React.FC = () => {
                             </ListItemIcon>
                             <ListItemText 
                               primary="Staking Ativo" 
-                              secondary={`${((totalUsers * 0.42) / totalUsers * 100).toFixed(1)}% do total`} 
+                              secondary={`${((mockUsers.length * 0.42) / mockUsers.length * 100).toFixed(1)}% do total`} 
                             />
                             <Typography variant="body2">
-                              {Math.round(totalUsers * 0.42)}
+                              {Math.round(mockUsers.length * 0.42)}
                             </Typography>
                           </ListItem>
                           <ListItem>
@@ -871,10 +897,10 @@ const UsersDashboard: React.FC = () => {
                             </ListItemIcon>
                             <ListItemText 
                               primary="Participação em DAO" 
-                              secondary={`${((totalUsers * 0.18) / totalUsers * 100).toFixed(1)}% do total`} 
+                              secondary={`${((mockUsers.length * 0.18) / mockUsers.length * 100).toFixed(1)}% do total`} 
                             />
                             <Typography variant="body2">
-                              {Math.round(totalUsers * 0.18)}
+                              {Math.round(mockUsers.length * 0.18)}
                             </Typography>
                           </ListItem>
                           <ListItem>
@@ -883,10 +909,10 @@ const UsersDashboard: React.FC = () => {
                             </ListItemIcon>
                             <ListItemText 
                               primary="Trading de NFTs" 
-                              secondary={`${((totalUsers * 0.25) / totalUsers * 100).toFixed(1)}% do total`} 
+                              secondary={`${((mockUsers.length * 0.25) / mockUsers.length * 100).toFixed(1)}% do total`} 
                             />
                             <Typography variant="body2">
-                              {Math.round(totalUsers * 0.25)}
+                              {Math.round(mockUsers.length * 0.25)}
                             </Typography>
                           </ListItem>
                         </List>
@@ -901,10 +927,10 @@ const UsersDashboard: React.FC = () => {
                             </ListItemIcon>
                             <ListItemText 
                               primary="> 6 meses" 
-                              secondary={`${((totalUsers * 0.38) / totalUsers * 100).toFixed(1)}% do total`} 
+                              secondary={`${((mockUsers.length * 0.38) / mockUsers.length * 100).toFixed(1)}% do total`} 
                             />
                             <Typography variant="body2">
-                              {Math.round(totalUsers * 0.38)}
+                              {Math.round(mockUsers.length * 0.38)}
                             </Typography>
                           </ListItem>
                           <ListItem>
@@ -913,10 +939,10 @@ const UsersDashboard: React.FC = () => {
                             </ListItemIcon>
                             <ListItemText 
                               primary="3-6 meses" 
-                              secondary={`${((totalUsers * 0.27) / totalUsers * 100).toFixed(1)}% do total`} 
+                              secondary={`${((mockUsers.length * 0.27) / mockUsers.length * 100).toFixed(1)}% do total`} 
                             />
                             <Typography variant="body2">
-                              {Math.round(totalUsers * 0.27)}
+                              {Math.round(mockUsers.length * 0.27)}
                             </Typography>
                           </ListItem>
                           <ListItem>
@@ -925,10 +951,10 @@ const UsersDashboard: React.FC = () => {
                             </ListItemIcon>
                             <ListItemText 
                               primary="< 3 meses" 
-                              secondary={`${((totalUsers * 0.35) / totalUsers * 100).toFixed(1)}% do total`} 
+                              secondary={`${((mockUsers.length * 0.35) / mockUsers.length * 100).toFixed(1)}% do total`} 
                             />
                             <Typography variant="body2">
-                              {Math.round(totalUsers * 0.35)}
+                              {Math.round(mockUsers.length * 0.35)}
                             </Typography>
                           </ListItem>
                         </List>

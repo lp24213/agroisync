@@ -1,151 +1,215 @@
 import React from 'react';
 import {
-  Card,
-  CardContent,
-  Typography,
-  Box,
-  Chip,
-  Avatar,
-  LinearProgress
+  Box, Card, CardContent, Typography, Avatar,
+  Chip, LinearProgress, Tooltip
 } from '@mui/material';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import TrendingDownIcon from '@mui/icons-material/TrendingDown';
-import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
+import {
+  TrendingUp, TrendingDown, AttachMoney,
+  ShowChart, Collections, Add
+} from '@mui/icons-material';
 
 interface NFTMetricsCardProps {
   title: string;
-  value: string | number;
-  change?: number;
-  changeType?: 'percentage' | 'absolute';
-  icon?: React.ReactNode;
-  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
+  value: string;
+  change: number;
+  icon: 'nft' | 'currency' | 'chart' | 'mint';
   subtitle?: string;
+  color?: 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info';
   progress?: number;
-  maxProgress?: number;
+  trend?: 'up' | 'down' | 'stable';
 }
 
 const NFTMetricsCard: React.FC<NFTMetricsCardProps> = ({
   title,
   value,
   change,
-  changeType = 'percentage',
   icon,
-  color = 'primary',
   subtitle,
+  color = 'primary',
   progress,
-  maxProgress = 100
+  trend = 'stable'
 }) => {
-  const formatValue = (val: string | number): string => {
-    if (typeof val === 'number') {
-      if (val >= 1000000) {
-        return `${(val / 1000000).toFixed(1)}M`;
-      } else if (val >= 1000) {
-        return `${(val / 1000).toFixed(1)}K`;
-      }
-      return val.toLocaleString();
+  // Mapear ícones
+  const getIcon = () => {
+    switch (icon) {
+      case 'nft':
+        return <Collections />;
+      case 'currency':
+        return <AttachMoney />;
+      case 'chart':
+        return <ShowChart />;
+      case 'mint':
+        return <Add />;
+      default:
+        return <Collections />;
     }
-    return val;
   };
 
-  const formatChange = (changeValue: number): string => {
-    if (changeType === 'percentage') {
-      return `${changeValue >= 0 ? '+' : ''}${changeValue.toFixed(1)}%`;
+  // Mapear cores
+  const getColor = () => {
+    switch (color) {
+      case 'success':
+        return '#4caf50';
+      case 'error':
+        return '#f44336';
+      case 'warning':
+        return '#ff9800';
+      case 'info':
+        return '#2196f3';
+      case 'secondary':
+        return '#9c27b0';
+      default:
+        return '#1976d2';
     }
-    return `${changeValue >= 0 ? '+' : ''}${formatValue(changeValue)}`;
   };
 
-  const getTrendIcon = (changeValue: number) => {
-    if (changeValue > 0) {
-      return <TrendingUpIcon sx={{ fontSize: 16, color: 'success.main' }} />;
-    } else if (changeValue < 0) {
-      return <TrendingDownIcon sx={{ fontSize: 16, color: 'error.main' }} />;
+  // Determinar tendência
+  const getTrendIcon = () => {
+    if (change > 0) {
+      return <TrendingUp color="success" />;
+    } else if (change < 0) {
+      return <TrendingDown color="error" />;
     }
-    return <TrendingFlatIcon sx={{ fontSize: 16, color: 'text.secondary' }} />;
+    return <TrendingUp color="disabled" />; // Ícone padrão para mudança zero
   };
 
-  const getTrendColor = (changeValue: number): 'success' | 'error' | 'default' => {
-    if (changeValue > 0) return 'success';
-    if (changeValue < 0) return 'error';
+  // Determinar cor da mudança
+  const getChangeColor = () => {
+    if (change > 0) return 'success';
+    if (change < 0) return 'error';
     return 'default';
+  };
+
+  // Formatar mudança
+  const formatChange = (change: number) => {
+    const sign = change > 0 ? '+' : '';
+    return `${sign}${change.toFixed(1)}%`;
   };
 
   return (
     <Card 
       sx={{ 
         height: '100%',
+        background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+        border: '1px solid #e0e0e0',
         transition: 'all 0.3s ease-in-out',
         '&:hover': {
-          transform: 'translateY(-2px)',
-          boxShadow: 3
+          transform: 'translateY(-4px)',
+          boxShadow: '0 8px 25px rgba(0,0,0,0.15)',
+          borderColor: getColor()
         }
       }}
     >
-      <CardContent>
+      <CardContent sx={{ p: 3 }}>
+        {/* Header com ícone e título */}
         <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
-          <Typography variant="h6" component="h3" color="text.secondary" gutterBottom>
-            {title}
-          </Typography>
-          {icon && (
-            <Avatar 
-              sx={{ 
-                bgcolor: `${color}.light`,
-                color: `${color}.main`,
-                width: 40,
-                height: 40
+          <Box display="flex" alignItems="center">
+            <Avatar
+              sx={{
+                bgcolor: getColor(),
+                width: 48,
+                height: 48,
+                mr: 2
               }}
             >
-              {icon}
+              {getIcon()}
             </Avatar>
-          )}
+            <Box>
+              <Typography variant="h6" component="h3" gutterBottom>
+                {title}
+              </Typography>
+              {subtitle && (
+                <Typography variant="body2" color="text.secondary">
+                  {subtitle}
+                </Typography>
+              )}
+            </Box>
+          </Box>
+          
+          {/* Chip de tendência */}
+          <Chip
+            icon={getTrendIcon()}
+            label={formatChange(change)}
+            color={getChangeColor() as any}
+            size="small"
+            variant="outlined"
+            sx={{ 
+              fontWeight: 'bold',
+              '& .MuiChip-icon': {
+                fontSize: '1rem'
+              }
+            }}
+          />
         </Box>
 
+        {/* Valor principal */}
         <Typography 
           variant="h4" 
           component="div" 
-          fontWeight="bold"
-          color={`${color}.main`}
-          mb={1}
+          sx={{ 
+            fontWeight: 'bold',
+            color: getColor(),
+            mb: 1
+          }}
         >
-          {formatValue(value)}
+          {value}
         </Typography>
 
-        {subtitle && (
-          <Typography variant="body2" color="text.secondary" mb={1}>
-            {subtitle}
-          </Typography>
-        )}
-
-        {change !== undefined && (
-          <Box display="flex" alignItems="center" gap={0.5} mb={1}>
-            {getTrendIcon(change)}
-            <Chip
-              label={formatChange(change)}
-              size="small"
-              color={getTrendColor(change)}
-              variant="outlined"
-            />
-          </Box>
-        )}
-
+        {/* Barra de progresso (se fornecida) */}
         {progress !== undefined && (
           <Box mt={2}>
-            <Box display="flex" justifyContent="space-between" mb={0.5}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
               <Typography variant="body2" color="text.secondary">
                 Progresso
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {progress.toFixed(1)}%
+              <Typography variant="body2" fontWeight="bold">
+                {progress}%
               </Typography>
             </Box>
-            <LinearProgress 
-              variant="determinate" 
-              value={(progress / maxProgress) * 100}
-              color={color}
-              sx={{ height: 6, borderRadius: 3 }}
+            <LinearProgress
+              variant="determinate"
+              value={progress}
+              sx={{
+                height: 8,
+                borderRadius: 4,
+                backgroundColor: '#e0e0e0',
+                '& .MuiLinearProgress-bar': {
+                  borderRadius: 4,
+                  backgroundColor: getColor()
+                }
+              }}
             />
           </Box>
         )}
+
+        {/* Informações adicionais */}
+        <Box mt={2} display="flex" justifyContent="space-between" alignItems="center">
+          <Typography variant="caption" color="text.secondary">
+            Última atualização: {new Date().toLocaleTimeString('pt-BR')}
+          </Typography>
+          
+          {/* Indicador de status */}
+          <Tooltip title={change > 0 ? "Crescimento positivo" : change < 0 ? "Declínio" : "Estável"}>
+            <Box
+              sx={{
+                width: 12,
+                height: 12,
+                borderRadius: '50%',
+                backgroundColor: change > 0 ? '#4caf50' : change < 0 ? '#f44336' : '#9e9e9e',
+                animation: change !== 0 ? 'pulse 2s infinite' : 'none'
+              }}
+            />
+          </Tooltip>
+        </Box>
       </CardContent>
+
+      <style jsx>{`
+        @keyframes pulse {
+          0% { opacity: 1; }
+          50% { opacity: 0.5; }
+          100% { opacity: 1; }
+        }
+      `}</style>
     </Card>
   );
 };

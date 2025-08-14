@@ -42,7 +42,7 @@ interface FarmMetrics {
 interface ProductivityData {
   current: number;
   predicted: number;
-  trend: 'up' | 'down' | 'stable';
+  trend: 'up' | 'down' | 'neutral';
   confidence: number;
 }
 
@@ -90,7 +90,7 @@ export default function AnalyticsDashboard() {
     );
     
     const predicted = Math.min(100, current + Math.random() * 10 - 5);
-    const trend = predicted > current ? 'up' : predicted < current ? 'down' : 'stable';
+    const trend = predicted > current ? 'up' : predicted < current ? 'down' : 'neutral';
     const confidence = Math.min(100, 70 + (current / 100) * 30);
     
     return { current, predicted, trend, confidence };
@@ -205,7 +205,7 @@ export default function AnalyticsDashboard() {
     return (
       <div className="min-h-screen bg-agro-darker flex items-center justify-center">
         <div className="text-center">
-          <LoadingSpinner size="lg" />
+          <LoadingSpinner />
           <p className="mt-4 text-agro-light/60">Carregando analytics...</p>
         </div>
       </div>
@@ -269,7 +269,7 @@ export default function AnalyticsDashboard() {
               className="flex items-center gap-2"
             >
               {refreshing ? (
-                <LoadingSpinner size="sm" />
+                <LoadingSpinner />
               ) : (
                 <span>🔄</span>
               )}
@@ -341,25 +341,23 @@ export default function AnalyticsDashboard() {
             change={productivity.trend === 'up' ? '+5.2%' : productivity.trend === 'down' ? '-2.1%' : '0%'}
             trend={productivity.trend}
             icon="📈"
-            description="Índice geral de produtividade"
+
           />
           
           <MetricsCard
             title="pH do Solo"
             value={metrics.soilPH.toFixed(1)}
             change={metrics.soilPH > 6.5 ? 'Ideal' : 'Atenção'}
-            trend={metrics.soilPH >= 6.0 && metrics.soilPH <= 7.0 ? 'stable' : 'down'}
+            trend={metrics.soilPH >= 6.0 && metrics.soilPH <= 7.0 ? 'neutral' : 'down'}
             icon="🌱"
-            description="Acidez do solo"
           />
           
           <MetricsCard
             title="Temperatura"
             value={`${metrics.avgTemp.toFixed(1)}°C`}
             change={metrics.avgTemp >= 20 && metrics.avgTemp <= 30 ? 'Ideal' : 'Variação'}
-            trend={metrics.avgTemp >= 20 && metrics.avgTemp <= 30 ? 'up' : 'stable'}
+            trend={metrics.avgTemp >= 20 && metrics.avgTemp <= 30 ? 'up' : 'neutral'}
             icon="🌡️"
-            description="Temperatura média"
           />
           
           <MetricsCard
@@ -368,7 +366,7 @@ export default function AnalyticsDashboard() {
             change={metrics.pestRisk <= 2 ? 'Baixo' : metrics.pestRisk <= 3 ? 'Médio' : 'Alto'}
             trend={metrics.pestRisk <= 2 ? 'up' : 'down'}
             icon="🐛"
-            description="Avaliação de risco"
+
           />
         </motion.div>
         
@@ -394,13 +392,14 @@ export default function AnalyticsDashboard() {
               </div>
               
               <Chart 
+                title="Produtividade Mensal"
                 data={[
-                  { name: 'Jan', value: 78 },
-                  { name: 'Fev', value: 82 },
-                  { name: 'Mar', value: 85 },
-                  { name: 'Abr', value: 79 },
-                  { name: 'Mai', value: 88 },
-                  { name: 'Jun', value: productivity.current }
+                  { label: 'Jan', value: 78 },
+                  { label: 'Fev', value: 82 },
+                  { label: 'Mar', value: 85 },
+                  { label: 'Abr', value: 79 },
+                  { label: 'Mai', value: 88 },
+                  { label: 'Jun', value: productivity.current }
                 ]}
                 type="line"
                 height={300}

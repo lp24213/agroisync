@@ -32,7 +32,7 @@ const tokens = [
 
 export default function StakingPage() {
   const { t } = useTranslation();
-  const [selectedPool, setSelectedPool] = useState(null);
+  const [selectedPool, setSelectedPool] = useState<any>(null);
   const [showStakingForm, setShowStakingForm] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
   const [hoveredPool, setHoveredPool] = useState<number | null>(null);

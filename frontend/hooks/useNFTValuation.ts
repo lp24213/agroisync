@@ -1,168 +1,287 @@
-import { useState, useEffect } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useState, useEffect, useCallback } from 'react';
 
 interface NFTValuation {
+  id: string;
   nftId: string;
+  nftName: string;
+  nftType: string;
   currentValue: number;
   previousValue: number;
-  change: number;
   changePercentage: number;
-  confidence: number; // 0-100
-  lastUpdated: string;
+  changeAmount: number;
+  valuationDate: string;
   factors: {
-    marketTrend: number;
     commodityPrices: number;
     weatherConditions: number;
-    seasonality: number;
-    location: number;
-    condition: number;
+    marketDemand: number;
+    locationPremium: number;
+    certificationBonus: number;
   };
   predictions: {
-    nextWeek: number;
     nextMonth: number;
     nextQuarter: number;
+    nextYear: number;
   };
-}
-
-interface MarketTrends {
-  farmland: {
-    trend: 'up' | 'down' | 'stable';
-    percentage: number;
-  };
-  machinery: {
-    trend: 'up' | 'down' | 'stable';
-    percentage: number;
-  };
-  commodities: {
-    trend: 'up' | 'down' | 'stable';
-    percentage: number;
-  };
-  certificates: {
-    trend: 'up' | 'down' | 'stable';
-    percentage: number;
-  };
+  riskScore: number;
+  recommendation: 'buy' | 'hold' | 'sell';
 }
 
 interface UseNFTValuationReturn {
   valuations: NFTValuation[];
-  marketTrends: MarketTrends;
   loading: boolean;
   error: string | null;
-  refetch: () => void;
-  getValuationByNFTId: (nftId: string) => NFTValuation | undefined;
+  refreshValuations: () => void;
+  getValuationByNFT: (nftId: string) => NFTValuation | undefined;
+  getTopPerformers: (limit?: number) => NFTValuation[];
+  getRiskAnalysis: () => Array<{ risk: string; count: number; percentage: number }>;
 }
 
-// Mock market trends
-const mockMarketTrends: MarketTrends = {
-  farmland: {
-    trend: 'up',
-    percentage: 8.5
-  },
-  machinery: {
-    trend: 'stable',
-    percentage: 1.2
-  },
-  commodities: {
-    trend: 'up',
-    percentage: 12.3
-  },
-  certificates: {
-    trend: 'up',
-    percentage: 15.7
-  }
-};
-
-// Generate mock valuations
-const generateMockValuations = (): NFTValuation[] => {
-  const valuations: NFTValuation[] = [];
-  
-  for (let i = 1; i <= 20; i++) {
-    const baseValue = Math.floor(Math.random() * 2000000) + 100000;
-    const change = (Math.random() * 200000) - 100000;
-    const changePercentage = (change / baseValue) * 100;
-    
-    valuations.push({
-      nftId: `nft_${i}`,
-      currentValue: baseValue + change,
-      previousValue: baseValue,
-      change,
-      changePercentage,
-      confidence: Math.floor(Math.random() * 30) + 70, // 70-100%
-      lastUpdated: new Date().toISOString(),
-      factors: {
-        marketTrend: Math.random() * 20 - 10,
-        commodityPrices: Math.random() * 15 - 7.5,
-        weatherConditions: Math.random() * 10 - 5,
-        seasonality: Math.random() * 8 - 4,
-        location: Math.random() * 12 - 6,
-        condition: Math.random() * 6 - 3
-      },
-      predictions: {
-        nextWeek: baseValue + change + (Math.random() * 50000 - 25000),
-        nextMonth: baseValue + change + (Math.random() * 150000 - 75000),
-        nextQuarter: baseValue + change + (Math.random() * 300000 - 150000)
-      }
-    });
-  }
-  
-  return valuations;
-};
-
-export const useNFTValuation = (): UseNFTValuationReturn => {
-  const { connection } = useConnection();
-  const { publicKey, connected } = useWallet();
+const useNFTValuation = (): UseNFTValuationReturn => {
   const [valuations, setValuations] = useState<NFTValuation[]>([]);
-  const [marketTrends, setMarketTrends] = useState<MarketTrends>(mockMarketTrends);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchNFTValuations = async () => {
+  // Gerar dados mock de valorização
+  const generateMockValuations = (): NFTValuation[] => {
+    const mockValuations: NFTValuation[] = [
+      {
+        id: 'val_1',
+        nftId: '1',
+        nftName: 'Fazenda Santa Maria',
+        nftType: 'Fazenda',
+        currentValue: 50000000,
+        previousValue: 48000000,
+        changePercentage: 4.17,
+        changeAmount: 2000000,
+        valuationDate: '2024-12-15',
+        factors: {
+          commodityPrices: 0.8,
+          weatherConditions: 0.9,
+          marketDemand: 0.85,
+          locationPremium: 0.95,
+          certificationBonus: 0.9
+        },
+        predictions: {
+          nextMonth: 52000000,
+          nextQuarter: 55000000,
+          nextYear: 60000000
+        },
+        riskScore: 0.2,
+        recommendation: 'buy'
+      },
+      {
+        id: 'val_2',
+        nftId: '2',
+        nftName: 'Trator John Deere 5075E',
+        nftType: 'Maquinário',
+        currentValue: 15000000,
+        previousValue: 15500000,
+        changePercentage: -3.23,
+        changeAmount: -500000,
+        valuationDate: '2024-12-14',
+        factors: {
+          commodityPrices: 0.7,
+          weatherConditions: 0.6,
+          marketDemand: 0.75,
+          locationPremium: 0.8,
+          certificationBonus: 0.85
+        },
+        predictions: {
+          nextMonth: 14800000,
+          nextQuarter: 14500000,
+          nextYear: 14000000
+        },
+        riskScore: 0.4,
+        recommendation: 'hold'
+      },
+      {
+        id: 'val_3',
+        nftId: '3',
+        nftName: 'Lote de Soja Premium',
+        nftType: 'Lote de Grãos',
+        currentValue: 8000000,
+        previousValue: 7500000,
+        changePercentage: 6.67,
+        changeAmount: 500000,
+        valuationDate: '2024-12-13',
+        factors: {
+          commodityPrices: 0.95,
+          weatherConditions: 0.85,
+          marketDemand: 0.9,
+          locationPremium: 0.75,
+          certificationBonus: 0.8
+        },
+        predictions: {
+          nextMonth: 8500000,
+          nextQuarter: 9000000,
+          nextYear: 10000000
+        },
+        riskScore: 0.3,
+        recommendation: 'buy'
+      },
+      {
+        id: 'val_4',
+        nftId: '4',
+        nftName: 'Certificado de Sustentabilidade',
+        nftType: 'Certificado',
+        currentValue: 2000000,
+        previousValue: 1900000,
+        changePercentage: 5.26,
+        changeAmount: 100000,
+        valuationDate: '2024-12-12',
+        factors: {
+          commodityPrices: 0.6,
+          weatherConditions: 0.7,
+          marketDemand: 0.95,
+          locationPremium: 0.8,
+          certificationBonus: 1.0
+        },
+        predictions: {
+          nextMonth: 2100000,
+          nextQuarter: 2200000,
+          nextYear: 2500000
+        },
+        riskScore: 0.1,
+        recommendation: 'buy'
+      },
+      {
+        id: 'val_5',
+        nftId: '5',
+        nftName: 'Fazenda Boa Vista',
+        nftType: 'Fazenda',
+        currentValue: 35000000,
+        previousValue: 36000000,
+        changePercentage: -2.78,
+        changeAmount: -1000000,
+        valuationDate: '2024-12-11',
+        factors: {
+          commodityPrices: 0.75,
+          weatherConditions: 0.6,
+          marketDemand: 0.8,
+          locationPremium: 0.85,
+          certificationBonus: 0.9
+        },
+        predictions: {
+          nextMonth: 34500000,
+          nextQuarter: 34000000,
+          nextYear: 35000000
+        },
+        riskScore: 0.5,
+        recommendation: 'hold'
+      }
+    ];
+
+    return mockValuations;
+  };
+
+  // Carregar valorizações
+  const loadValuations = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Simular delay de API
+      await new Promise(resolve => setTimeout(resolve, 1200));
 
-      if (connected && publicKey) {
-        // Fetch real NFT valuations from AI/ML services and market data APIs
-        const response = await fetch(`/api/nft/valuation?address=${publicKey.toString()}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch NFT valuations');
-        }
-        
-        const data = await response.json();
-        setValuations(data.valuations);
-        setMarketTrends(data.marketTrends);
-      } else {
-        setValuations([]);
-        setMarketTrends(mockMarketTrends);
-      }
+      // Em produção, aqui seria uma chamada real para a API
+      // const response = await fetch('/api/nft/valuations');
+      // const data = await response.json();
+
+      const mockValuations = generateMockValuations();
+      setValuations(mockValuations);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao carregar avaliações');
+      setError(err instanceof Error ? err.message : 'Erro ao carregar valorizações');
+      console.error('Erro ao carregar valorizações:', err);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
+  // Obter valorização por NFT
+  const getValuationByNFT = useCallback((nftId: string): NFTValuation | undefined => {
+    return valuations.find(val => val.nftId === nftId);
+  }, [valuations]);
+
+  // Obter top performers
+  const getTopPerformers = useCallback((limit: number = 5): NFTValuation[] => {
+    return [...valuations]
+      .sort((a, b) => b.changePercentage - a.changePercentage)
+      .slice(0, limit);
+  }, [valuations]);
+
+  // Análise de risco
+  const getRiskAnalysis = useCallback(() => {
+    const riskLevels = {
+      'Baixo': 0,
+      'Médio': 0,
+      'Alto': 0
+    };
+
+    valuations.forEach(val => {
+      if (val.riskScore <= 0.3) {
+        riskLevels['Baixo']++;
+      } else if (val.riskScore <= 0.6) {
+        riskLevels['Médio']++;
+      } else {
+        riskLevels['Alto']++;
+      }
+    });
+
+    const total = valuations.length;
+    
+    return Object.entries(riskLevels).map(([risk, count]) => ({
+      risk,
+      count,
+      percentage: total > 0 ? Math.round((count / total) * 100) : 0
+    }));
+  }, [valuations]);
+
+  // Função para atualizar valorizações
+  const refreshValuations = useCallback(() => {
+    loadValuations();
+  }, [loadValuations]);
+
+  // Carregar dados iniciais
   useEffect(() => {
-    fetchNFTValuations();
-  }, [connected, publicKey]);
+    loadValuations();
+  }, [loadValuations]);
 
-  const refetch = () => {
-    fetchNFTValuations();
-  };
+  // Simular atualizações em tempo real (a cada 10 minutos)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!loading && valuations.length > 0) {
+        // Simular pequenas variações nos valores
+        setValuations(prev => prev.map(val => {
+          const volatility = 0.02; // 2% de volatilidade
+          const randomFactor = 1 + (Math.random() - 0.5) * volatility * 2;
+          
+          const newCurrentValue = Math.round(val.currentValue * randomFactor);
+          const newChangeAmount = newCurrentValue - val.previousValue;
+          const newChangePercentage = (newChangeAmount / val.previousValue) * 100;
 
-  const getValuationByNFTId = (nftId: string): NFTValuation | undefined => {
-    return valuations.find(valuation => valuation.nftId === nftId);
-  };
+          return {
+            ...val,
+            currentValue: newCurrentValue,
+            changeAmount: newChangeAmount,
+            changePercentage: Math.round(newChangePercentage * 100) / 100,
+            valuationDate: new Date().toISOString().split('T')[0]
+          };
+        }));
+      }
+    }, 600000); // 10 minutos
+
+    return () => clearInterval(interval);
+  }, [loading, valuations]);
 
   return {
     valuations,
-    marketTrends,
     loading,
     error,
-    refetch,
-    getValuationByNFTId
+    refreshValuations,
+    getValuationByNFT,
+    getTopPerformers,
+    getRiskAnalysis
   };
 };
+
+export default useNFTValuation;

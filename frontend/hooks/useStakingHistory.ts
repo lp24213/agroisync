@@ -52,7 +52,7 @@ export const useStakingHistory = (): UseStakingHistoryReturn => {
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1200));
 
-      if (connected && publicKey) {
+      if (isConnected && publicKey) {
         // Mock data for now - in production this would fetch from blockchain
         const mockHistory: StakingHistoryEntry[] = [
           {
@@ -117,7 +117,7 @@ export const useStakingHistory = (): UseStakingHistoryReturn => {
 
   useEffect(() => {
     fetchStakingHistory();
-  }, [connected, publicKey]);
+  }, [isConnected, publicKey]);
 
   const refetch = () => {
     fetchStakingHistory();

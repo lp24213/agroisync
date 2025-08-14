@@ -1,88 +1,6 @@
-import { useState, useEffect } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey } from '@solana/web3.js';
-import { format, subDays } from 'date-fns';
-import { logger } from '../utils/logger';
-
-// Real blockchain data fetching functions
-const fetchNFTSalesHistory = async (connection: any, publicKey: PublicKey): Promise<NFTSale[]> => {
-  try {
-    // Fetch NFT sales events from blockchain
-    const signatures = await connection.getSignaturesForAddress(publicKey, { limit: 100 });
-    
-    const sales: NFTSale[] = [];
-    for (const sig of signatures) {
-      const tx = await connection.getTransaction(sig.signature);
-      if (tx?.meta?.logMessages?.some(log => log.includes('NFT_SALE'))) {
-        // Parse NFT sale event
-        const saleEvent = parseNFTSaleEvent(tx);
-        if (saleEvent) {
-          sales.push(saleEvent);
-        }
-      }
-    }
-    
-    return sales;
-  } catch (error) {
-    logger.error('Error fetching NFT sales history:', error);
-    return [];
-  }
-};
-
-const fetchNFTValuationHistory = async (connection: any, publicKey: PublicKey): Promise<NFTValuationHistory[]> => {
-  try {
-    // Fetch NFT valuation data from blockchain analytics
-    const response = await fetch(`/api/nft/valuation-history?address=${publicKey.toString()}`);
-    if (!response.ok) {
-      throw new Error('Failed to fetch valuation history');
-    }
-    
-    const data = await response.json();
-    return data.history || [];
-  } catch (error) {
-    logger.error('Error fetching NFT valuation history:', error);
-    return [];
-  }
-};
-
-const parseNFTSaleEvent = (transaction: any): NFTSale | null => {
-  try {
-    // Parse transaction logs to extract NFT sale information
-    const logs = transaction.meta?.logMessages || [];
-    const saleLog = logs.find(log => log.includes('NFT_SALE'));
-    
-    if (saleLog) {
-      // Extract sale data from log
-      const saleData = JSON.parse(saleLog.split('NFT_SALE:')[1] || '{}');
-      return {
-        id: saleData.id || `sale_${Date.now()}`,
-        nftId: saleData.nftId || '',
-        nftName: saleData.nftName || 'Unknown NFT',
-        nftType: saleData.nftType || 'Unknown',
-        price: saleData.price || 0,
-        date: format(new Date(saleData.timestamp || Date.now()), 'yyyy-MM-dd'),
-        buyer: saleData.buyer || 'Unknown',
-        seller: saleData.seller || 'Unknown'
-      };
-    }
-    
-    return null;
-  } catch (error) {
-    logger.error('Error parsing NFT sale event:', error);
-    return null;
-  }
-};
-
-interface NFTSale {
-  id: string;
-  nftId: string;
-  nftName: string;
-  nftType: string;
-  price: number;
-  date: string;
-  buyer: string;
-  seller: string;
-}
+import { useState, useEffect, useCallback } from 'react';
+import { subDays, format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 interface NFTValuationHistory {
   date: string;
@@ -92,129 +10,154 @@ interface NFTValuationHistory {
   machineryValue: number;
   grainLotsValue: number;
   certificatesValue: number;
+  volume: number;
+  transactions: number;
 }
 
 interface UseNFTHistoryReturn {
-  sales: NFTSale[];
   valuationHistory: NFTValuationHistory[];
   loading: boolean;
   error: string | null;
-  refetch: () => void;
+  refreshHistory: () => void;
+  getHistoryByPeriod: (period: '7d' | '30d' | '90d' | '1y') => Promise<NFTValuationHistory[]>;
 }
 
-// Generate mock sales data
-const generateMockSales = (): NFTSale[] => {
-  const sales: NFTSale[] = [];
-  const nftTypes = ['Fazenda', 'Maquinário', 'Lote de Grãos', 'Certificado'];
-  const nftNames = {
-    'Fazenda': ['Fazenda São João', 'Fazenda Vista Alegre', 'Fazenda Boa Esperança', 'Fazenda Santa Maria'],
-    'Maquinário': ['Trator John Deere', 'Colheitadeira Case IH', 'Pulverizador Jacto', 'Plantadeira Semeato'],
-    'Lote de Grãos': ['Lote de Soja Premium', 'Lote de Milho', 'Lote de Trigo', 'Lote de Algodão'],
-    'Certificado': ['Certificado Orgânico', 'Certificado Rainforest', 'Certificado Fair Trade', 'Certificado UTZ']
-  };
-  
-  for (let i = 0; i < 50; i++) {
-    const type = nftTypes[Math.floor(Math.random() * nftTypes.length)] as keyof typeof nftNames;
-    const name = nftNames[type][Math.floor(Math.random() * nftNames[type].length)];
-    const basePrice = type === 'Fazenda' ? 1000000 : type === 'Maquinário' ? 500000 : type === 'Lote de Grãos' ? 50000 : 10000;
-    
-    sales.push({
-      id: `sale_${i + 1}`,
-      nftId: `nft_${i + 1}`,
-      nftName: name,
-      nftType: type,
-      price: basePrice + Math.floor(Math.random() * basePrice * 0.5),
-      date: format(subDays(new Date(), Math.floor(Math.random() * 90)), 'yyyy-MM-dd'),
-      buyer: `Comprador ${i + 1}`,
-      seller: `Vendedor ${i + 1}`
-    });
-  }
-  
-  return sales.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-};
-
-// Generate mock valuation history
-const generateMockValuationHistory = (): NFTValuationHistory[] => {
-  const history: NFTValuationHistory[] = [];
-  const baseValues = {
-    farm: 8000000,
-    machinery: 2500000,
-    grainLots: 800000,
-    certificates: 150000
-  };
-  
-  for (let i = 29; i >= 0; i--) {
-    const date = format(subDays(new Date(), i), 'yyyy-MM-dd');
-    const variation = 1 + (Math.random() * 0.2 - 0.1); // ±10% variation
-    
-    const farmValue = Math.floor(baseValues.farm * variation);
-    const machineryValue = Math.floor(baseValues.machinery * variation);
-    const grainLotsValue = Math.floor(baseValues.grainLots * variation);
-    const certificatesValue = Math.floor(baseValues.certificates * variation);
-    const totalValue = farmValue + machineryValue + grainLotsValue + certificatesValue;
-    
-    history.push({
-      date,
-      averageValue: Math.floor(totalValue / 156), // Assuming 156 total NFTs
-      totalValue,
-      farmValue,
-      machineryValue,
-      grainLotsValue,
-      certificatesValue
-    });
-  }
-  
-  return history;
-};
-
-export const useNFTHistory = (): UseNFTHistoryReturn => {
-  const { connection } = useConnection();
-  const { publicKey, connected } = useWallet();
-  const [sales, setSales] = useState<NFTSale[]>([]);
+const useNFTHistory = (): UseNFTHistoryReturn => {
   const [valuationHistory, setValuationHistory] = useState<NFTValuationHistory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchNFTHistory = async () => {
+  // Gerar dados mock de histórico
+  const generateMockHistory = (days: number): NFTValuationHistory[] => {
+    const history: NFTValuationHistory[] = [];
+    const baseValues = {
+      averageValue: 80000,
+      totalValue: 120000000,
+      farmValue: 75000000,
+      machineryValue: 25000000,
+      grainLotsValue: 15000000,
+      certificatesValue: 10000000,
+      volume: 25000000,
+      transactions: 150
+    };
+
+    for (let i = days; i >= 0; i--) {
+      const date = subDays(new Date(), i);
+      const volatility = 0.05; // 5% de volatilidade diária
+      const randomFactor = 1 + (Math.random() - 0.5) * volatility * 2;
+      
+      history.push({
+        date: format(date, 'yyyy-MM-dd', { locale: ptBR }),
+        averageValue: Math.round(baseValues.averageValue * randomFactor),
+        totalValue: Math.round(baseValues.totalValue * randomFactor),
+        farmValue: Math.round(baseValues.farmValue * randomFactor),
+        machineryValue: Math.round(baseValues.machineryValue * randomFactor),
+        grainLotsValue: Math.round(baseValues.grainLotsValue * randomFactor),
+        certificatesValue: Math.round(baseValues.certificatesValue * randomFactor),
+        volume: Math.round(baseValues.volume * (0.5 + Math.random())),
+        transactions: Math.round(baseValues.transactions * (0.7 + Math.random() * 0.6))
+      });
+    }
+
+    return history;
+  };
+
+  // Carregar histórico
+  const loadHistory = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1200));
+      // Simular delay de API
+      await new Promise(resolve => setTimeout(resolve, 800));
 
-      if (connected && publicKey) {
-        // Fetch real NFT sales history from blockchain
-        const salesData = await fetchNFTSalesHistory(connection, publicKey);
-        setSales(salesData);
-        
-        // Fetch real valuation history from blockchain analytics
-        const valuationData = await fetchNFTValuationHistory(connection, publicKey);
-        setValuationHistory(valuationData);
-      } else {
-        setSales([]);
-        setValuationHistory([]);
-      }
+      // Em produção, aqui seria uma chamada real para a API
+      // const response = await fetch('/api/nft/history');
+      // const data = await response.json();
+
+      const mockHistory = generateMockHistory(30); // 30 dias de histórico
+      setValuationHistory(mockHistory);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao carregar histórico');
+      console.error('Erro ao carregar histórico:', err);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
+  // Obter histórico por período
+  const getHistoryByPeriod = useCallback(async (period: '7d' | '30d' | '90d' | '1y'): Promise<NFTValuationHistory[]> => {
+    try {
+      const daysMap = {
+        '7d': 7,
+        '30d': 30,
+        '90d': 90,
+        '1y': 365
+      };
+
+      const days = daysMap[period];
+      const mockHistory = generateMockHistory(days);
+      
+      return mockHistory;
+    } catch (err) {
+      console.error('Erro ao carregar histórico por período:', err);
+      throw err;
+    }
+  }, []);
+
+  // Função para atualizar histórico
+  const refreshHistory = useCallback(() => {
+    loadHistory();
+  }, [loadHistory]);
+
+  // Carregar dados iniciais
   useEffect(() => {
-    fetchNFTHistory();
-  }, [connected, publicKey]);
+    loadHistory();
+  }, [loadHistory]);
 
-  const refetch = () => {
-    fetchNFTHistory();
-  };
+  // Simular atualizações em tempo real (a cada hora)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!loading && valuationHistory.length > 0) {
+        // Adicionar novo ponto de dados
+        const lastEntry = valuationHistory[valuationHistory.length - 1];
+        const newDate = new Date();
+        const volatility = 0.02; // 2% de volatilidade
+        const randomFactor = 1 + (Math.random() - 0.5) * volatility * 2;
+
+        const newEntry: NFTValuationHistory = {
+          date: format(newDate, 'yyyy-MM-dd', { locale: ptBR }),
+          averageValue: Math.round(lastEntry.averageValue * randomFactor),
+          totalValue: Math.round(lastEntry.totalValue * randomFactor),
+          farmValue: Math.round(lastEntry.farmValue * randomFactor),
+          machineryValue: Math.round(lastEntry.machineryValue * randomFactor),
+          grainLotsValue: Math.round(lastEntry.grainLotsValue * randomFactor),
+          certificatesValue: Math.round(lastEntry.certificatesValue * randomFactor),
+          volume: Math.round(lastEntry.volume * (0.8 + Math.random() * 0.4)),
+          transactions: Math.round(lastEntry.transactions * (0.9 + Math.random() * 0.2))
+        };
+
+        setValuationHistory(prev => {
+          const newHistory = [...prev, newEntry];
+          // Manter apenas os últimos 365 dias
+          if (newHistory.length > 365) {
+            return newHistory.slice(-365);
+          }
+          return newHistory;
+        });
+      }
+    }, 3600000); // 1 hora
+
+    return () => clearInterval(interval);
+  }, [loading, valuationHistory]);
 
   return {
-    sales,
     valuationHistory,
     loading,
     error,
-    refetch
+    refreshHistory,
+    getHistoryByPeriod
   };
 };
+
+export default useNFTHistory;

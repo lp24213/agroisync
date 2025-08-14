@@ -5,7 +5,7 @@ import { useWeb3 } from '../../contexts/Web3Context';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Card } from '../ui/Card';
-import { TargetEvent } from '../../types/web3';
+// Removido - módulo não existe
 
 interface StakingFormProps {
   onStake?: (amount: string, poolId: string) => Promise<void>;
@@ -38,15 +38,12 @@ export const StakingForm: React.FC<StakingFormProps> = ({
   const [error, setError] = useState('');
 
   // Safe type checking for events
-  const isTargetEvent = (e: any): e is TargetEvent => {
+  const isTargetEvent = (e: any): e is any => {
     return e && typeof e === 'object' && 'target' in e && e.target;
   };
 
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (isTargetEvent(e)) {
-      const value = e.target.value;
-      setAmount(value);
-    }
+  const handleAmountChange = (value: string) => {
+    setAmount(value);
   };
 
   const handlePoolChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -189,14 +186,10 @@ export const StakingForm: React.FC<StakingFormProps> = ({
             Amount
           </label>
           <Input
-            id="amount-input"
             type="number"
             value={amount}
             onChange={handleAmountChange}
             placeholder="Enter amount..."
-            min="0"
-            step="0.01"
-            required
             className="form-input"
           />
         </div>

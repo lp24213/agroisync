@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
+// import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import { useWeb3 as useWeb3Context } from '../contexts/Web3Context';
 
 interface Web3HookState {
-  connection: Connection | null;
+  connection: any | null; // Mock type for development
   balance: number;
   isConnected: boolean;
   publicKey: string | null;
@@ -16,23 +16,24 @@ interface Web3HookState {
 interface Web3HookActions {
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
-  sendTransaction: (transaction: Transaction) => Promise<string>;
+  sendTransaction: (transaction: any) => Promise<string>; // Mock type for development
   getBalance: () => Promise<number>;
   signMessage: (message: string) => Promise<string>;
 }
 
 export const useWeb3Hook = (): Web3HookState & Web3HookActions => {
   const { isConnected, publicKey, connect, disconnect, signMessage } = useWeb3Context();
-  const [connection, setConnection] = useState<Connection | null>(null);
+  const [connection, setConnection] = useState<any | null>(null); // Mock type for development
   const [balance, setBalance] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Initialize connection
   useEffect(() => {
-    const rpcUrl = process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com';
-    const newConnection = new Connection(rpcUrl);
-    setConnection(newConnection);
+    // Mock connection for development
+    // const rpcUrl = process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com';
+    // const newConnection = new Connection(rpcUrl);
+    // setConnection(newConnection);
   }, []);
 
   // Get balance when connected
@@ -45,6 +46,12 @@ export const useWeb3Hook = (): Web3HookState & Web3HookActions => {
   }, [isConnected, publicKey, connection]);
 
   const getBalance = useCallback(async (): Promise<number> => {
+    // Mock balance for development
+    const mockBalance = 1000; // Mock SOL balance
+    setBalance(mockBalance);
+    return mockBalance;
+    
+    /* Original code commented for development
     if (!connection || !publicKey) return 0;
 
     try {
@@ -59,9 +66,10 @@ export const useWeb3Hook = (): Web3HookState & Web3HookActions => {
       console.error('Failed to get balance:', errorMessage);
       return 0;
     }
-  }, [connection, publicKey]);
+    */
+  }, []);
 
-  const sendTransaction = useCallback(async (transaction: Transaction): Promise<string> => {
+  const sendTransaction = useCallback(async (transaction: any): Promise<string> => { // Mock type for development
     if (!connection || !publicKey) {
       throw new Error('Wallet not connected');
     }

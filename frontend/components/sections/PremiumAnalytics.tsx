@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { BarChart3, TrendingUp, Users, DollarSign } from "lucide-react";
-import { InteractiveDashboard } from "../ui/InteractiveDashboard";
+import InteractiveDashboard from "../ui/InteractiveDashboard";
 
 export function PremiumAnalytics() {
   return (
@@ -29,7 +29,9 @@ export function PremiumAnalytics() {
           transition={{ delay: 0.2, duration: 0.8 }}
           className="flex justify-center mb-16"
         >
-          <InteractiveDashboard size="lg" className="drop-shadow-[0_0_30px_rgba(0,255,255,0.3)]" />
+          <div className="drop-shadow-[0_0_30px_rgba(0,255,255,0.3)]">
+            <InteractiveDashboard />
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

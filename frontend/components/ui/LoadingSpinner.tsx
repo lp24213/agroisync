@@ -3,7 +3,16 @@
 import React, { memo } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '../../lib/utils';
-import { LoadingSpinnerProps, SpinnerVariant, SpinnerSize } from '../../types/web3';
+// Type definitions
+type SpinnerVariant = 'default' | 'primary' | 'secondary';
+type SpinnerSize = 'sm' | 'md' | 'lg';
+
+interface LoadingSpinnerProps {
+  variant?: SpinnerVariant;
+  size?: SpinnerSize;
+  className?: string;
+  [key: string]: any;
+}
 
 /**
  * LoadingSpinner Component - Premium loading indicator
@@ -86,5 +95,5 @@ const LoadingSpinner = memo<LoadingSpinnerProps>(({
 LoadingSpinner.displayName = 'LoadingSpinner';
 
 export { LoadingSpinner };
-export type { LoadingSpinnerProps, SpinnerVariant, SpinnerSize } from '../../types/web3';
+export type { LoadingSpinnerProps, SpinnerVariant, SpinnerSize };
 export default LoadingSpinner;
