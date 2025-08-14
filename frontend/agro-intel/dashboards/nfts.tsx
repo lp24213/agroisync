@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
-  Box, Typography, Grid, Card, CardContent, CardHeader,
+  Box, Typography, Card, CardContent, CardHeader,
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   Paper, Button, FormControl, InputLabel, Select, MenuItem,
   Tabs, Tab, TextField, Avatar, Chip, CircularProgress,
@@ -303,47 +303,47 @@ const NFTDashboard: React.FC = () => {
       </Box>
       
       {/* Cards de métricas principais */}
-      <Grid container spacing={3} mb={4}>
-        <Grid item xs={12} sm={6} md={3}>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, mb: 4 }}>
+        <Box sx={{ flex: '1 1 200px', minWidth: '200px' }}>
           <NFTMetricsCard
             title="Total de NFTs"
             value={totalNFTs.toLocaleString()}
             change={12.5}
             icon="nft"
           />
-        </Grid>
+        </Box>
         
-        <Grid item xs={12} sm={6} md={3}>
+        <Box sx={{ flex: '1 1 200px', minWidth: '200px' }}>
           <NFTMetricsCard
             title="Valor Total"
             value={`$${totalValue.toLocaleString()}`}
             change={8.2}
             icon="currency"
           />
-        </Grid>
+        </Box>
         
-        <Grid item xs={12} sm={6} md={3}>
+        <Box sx={{ flex: '1 1 200px', minWidth: '200px' }}>
           <NFTMetricsCard
             title="Valor Médio"
             value={`$${Math.round(totalValue / totalNFTs).toLocaleString()}`}
             change={-2.1}
             icon="chart"
           />
-        </Grid>
+        </Box>
         
-        <Grid item xs={12} sm={6} md={3}>
+        <Box sx={{ flex: '1 1 200px', minWidth: '200px' }}>
           <NFTMetricsCard
             title="Novos Mints"
             value={stats.recentMints.toString()}
             change={15.3}
             icon="mint"
           />
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
       
       {/* Gráficos principais */}
-      <Grid container spacing={3} mb={4}>
-        <Grid item xs={12} lg={8}>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, mb: 4 }}>
+        <Box sx={{ flex: '1 1 600px', minWidth: '300px' }}>
           <Card>
             <CardHeader 
               title="Evolução do Valor Total de NFTs" 
@@ -375,9 +375,9 @@ const NFTDashboard: React.FC = () => {
               </ResponsiveContainer>
             </CardContent>
           </Card>
-        </Grid>
+        </Box>
         
-        <Grid item xs={12} lg={4}>
+        <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
           <Card sx={{ height: '100%' }}>
             <CardHeader title="Distribuição por Tipo" />
             <CardContent>
@@ -392,7 +392,7 @@ const NFTDashboard: React.FC = () => {
                     fill="#8884d8"
                     dataKey="value"
                     nameKey="type"
-                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                    label={({ name, percent }) => `${name}: ${((percent || 0) * 100).toFixed(0)}%`}
                   >
                     {nftDistribution.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -405,8 +405,8 @@ const NFTDashboard: React.FC = () => {
               </ResponsiveContainer>
             </CardContent>
           </Card>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
       
       {/* Abas para diferentes visualizações */}
       <Paper sx={{ mb: 4 }}>
@@ -560,8 +560,8 @@ const NFTDashboard: React.FC = () => {
           
           {/* Conteúdo da aba de Análise de Mercado */}
           {tabValue === 1 && (
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
+              <Box sx={{ flex: '1 1 600px', minWidth: '300px' }}>
                 <Card>
                   <CardHeader title="Vendas Recentes" />
                   <CardContent>
@@ -584,9 +584,9 @@ const NFTDashboard: React.FC = () => {
                     </ResponsiveContainer>
                   </CardContent>
                 </Card>
-              </Grid>
+              </Box>
               
-              <Grid item xs={12} md={6}>
+              <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
                 <Card>
                   <CardHeader title="Correlação com Preços de Commodities" />
                   <CardContent>
@@ -632,23 +632,23 @@ const NFTDashboard: React.FC = () => {
                     </ResponsiveContainer>
                   </CardContent>
                 </Card>
-              </Grid>
+              </Box>
               
-              <Grid item xs={12}>
+              <Box sx={{ flex: '1 1 100%' }}>
                 <Card>
                   <CardHeader title="Distribuição Geográfica de NFTs" />
                   <CardContent>
                     <NFTMap nfts={mockNFTs} />
                   </CardContent>
                 </Card>
-              </Grid>
-            </Grid>
+              </Box>
+            </Box>
           )}
           
           {/* Conteúdo da aba de Previsão de Valorização */}
           {tabValue === 2 && (
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
+              <Box sx={{ flex: '1 1 100%' }}>
                 <Card>
                   <CardHeader 
                     title="Previsão de Valorização para os Próximos 90 Dias" 
@@ -716,9 +716,9 @@ const NFTDashboard: React.FC = () => {
                     </ResponsiveContainer>
                   </CardContent>
                 </Card>
-              </Grid>
+              </Box>
               
-              <Grid item xs={12} md={6}>
+              <Box sx={{ flex: '1 1 600px', minWidth: '300px' }}>
                 <Card>
                   <CardHeader title="Fatores que Influenciam a Valorização" />
                   <CardContent>
@@ -735,9 +735,9 @@ const NFTDashboard: React.FC = () => {
                     </Typography>
                   </CardContent>
                 </Card>
-              </Grid>
+              </Box>
               
-              <Grid item xs={12} md={6}>
+              <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
                 <Card>
                   <CardHeader title="Oportunidades de Investimento" />
                   <CardContent>
@@ -780,8 +780,8 @@ const NFTDashboard: React.FC = () => {
                     </Typography>
                   </CardContent>
                 </Card>
-              </Grid>
-            </Grid>
+              </Box>
+            </Box>
           )}
         </Box>
       </Paper>

@@ -1,27 +1,12 @@
-# ROBOTS.TXT - AGROISYNC.COM
-# Configuração para SEO e indexação
-
+# *
 User-agent: *
 Allow: /
+Disallow: /admin/*
+Disallow: /api/*
+Disallow: /_next/*
 
-# Sitemap
+# Host
+Host: https://agroisync.com
+
+# Sitemaps
 Sitemap: https://agroisync.com/sitemap.xml
-
-# Disallow admin areas
-Disallow: /admin/
-Disallow: /api/
-Disallow: /_next/
-Disallow: /static/
-
-# Allow important pages
-Allow: /
-Allow: /about
-Allow: /services
-Allow: /contact
-Allow: /dashboard
-Allow: /staking
-Allow: /nfts
-Allow: /marketplace
-
-# Crawl delay
-Crawl-delay: 1

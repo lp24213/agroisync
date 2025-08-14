@@ -163,12 +163,12 @@ const StakingDashboard: React.FC = () => {
       </Box>
       
       {/* Cards de métricas principais */}
-      <Grid container spacing={3} mb={4}>
+      <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} md={3}>
           <StakingMetricsCard 
             title="Total em Staking" 
             value={`${(totalStaked / 1000000).toFixed(2)}M AGRO`}
-            change={+5.2}
+            change={8.5}
             icon="token"
           />
         </Grid>
@@ -177,7 +177,7 @@ const StakingDashboard: React.FC = () => {
           <StakingMetricsCard 
             title="Total de Stakers" 
             value={activeStakers.toString()}
-            change={+12.5}
+            change={12.3}
             icon="users"
           />
         </Grid>
@@ -185,8 +185,8 @@ const StakingDashboard: React.FC = () => {
         <Grid item xs={12} md={3}>
           <StakingMetricsCard 
             title="APY Médio" 
-            value={`${(pools.reduce((acc, pool) => acc + pool.apr, 0) / pools.length).toFixed(2)}%`}
-            change={-0.8}
+            value={`${stats.averageAPR.toFixed(2)}%`}
+            change={2.1}
             icon="percentage"
           />
         </Grid>
@@ -195,14 +195,14 @@ const StakingDashboard: React.FC = () => {
           <StakingMetricsCard 
             title="Preço AGRO" 
             value={`$${currentPrice?.price?.toFixed(4) || '0.0000'} USD`}
-            change={+3.7}
+            change={-1.8}
             icon="price"
           />
         </Grid>
       </Grid>
       
       {/* Gráficos principais */}
-      <Grid container spacing={3} mb={4}>
+      <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} lg={8}>
           <Card>
             <CardHeader 
@@ -218,21 +218,19 @@ const StakingDashboard: React.FC = () => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis 
                     dataKey="date" 
-                    tickFormatter={(date) => format(new Date(date), 'dd/MM', { locale: ptBR })}
+                    tickFormatter={(date: string) => format(new Date(date), 'dd/MM/yyyy', { locale: ptBR })}
                   />
-                  <YAxis 
-                    tickFormatter={(value) => `${(value / 1000000).toFixed(1)}M`}
-                  />
+                  <YAxis />
                   <Tooltip 
-                    formatter={(value: number) => [`${(value / 1000000).toFixed(2)}M AGRO`, 'Total em Staking']}
-                    labelFormatter={(date) => format(new Date(date), 'dd/MM/yyyy', { locale: ptBR })}
+                    labelFormatter={(date: string) => format(new Date(date), 'dd/MM/yyyy', { locale: ptBR })}
                   />
                   <Area 
                     type="monotone" 
                     dataKey="totalStaked" 
                     stroke="#8884d8" 
-                    fill="#8884d8" 
+                    fill="#8884d8"
                     fillOpacity={0.3}
+                    name="Total em Staking"
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -255,14 +253,14 @@ const StakingDashboard: React.FC = () => {
                     fill="#8884d8"
                     dataKey="value"
                     nameKey="duration"
-                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                    label={({ name, percent }) => `${name}: ${((percent || 0) * 100).toFixed(0)}%`}
                   >
                     {stakingByDuration.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
                   <Tooltip 
-                    formatter={(value: number) => [`${(value / 1000000).toFixed(2)}M AGRO`, 'Valor em Staking']}
+                    formatter={(value: number) => [`${(value / 1000000).toFixed(2)}M AGRO`, 'Valor']}
                   />
                 </PieChart>
               </ResponsiveContainer>

@@ -5,6 +5,7 @@ import { AuthProvider } from '../contexts/AuthContext';
 import { I18nProvider } from '../components/providers/I18nProvider';
 import { ChatbotAGROISYNC } from '../components/ChatbotAGROISYNC';
 import { Toaster } from 'react-hot-toast';
+import '../lib/amplify-config'; // Configuração do Amplify
 
 const inter = Inter({ subsets: ['latin'] });
 

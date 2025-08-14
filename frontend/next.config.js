@@ -2,9 +2,12 @@
 const nextConfig = {
   // AWS Amplify optimized configuration
   experimental: {
-    esmExternals: false,
-    serverComponentsExternalPackages: ['@aws-amplify/ui-react', 'aws-amplify'],
+    // Removido esmExternals (depreciado)
+    // Removido serverComponentsExternalPackages (movido)
   },
+  
+  // Server external packages (nova configuração)
+  serverExternalPackages: ['@aws-amplify/ui-react', 'aws-amplify'],
   
   // Image configuration for AWS Amplify
   images: {

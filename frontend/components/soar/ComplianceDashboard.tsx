@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { useProtectedRole } from '@/hooks/useProtectedRole';
+import { Card } from '../ui/Card';
+import { Button } from '../ui/Button';
+import { useProtectedRole } from '../../hooks/useProtectedRole';
 import { validation } from '../../lib/utils';
 
 interface ComplianceMetric {

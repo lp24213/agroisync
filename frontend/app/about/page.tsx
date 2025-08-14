@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Layout } from '../../components/layout/Layout';
 import { motion } from 'framer-motion';
 import { TrendingUp, Users, Globe, Shield, Leaf, Zap, Target, Eye, Heart, Award, Rocket } from 'lucide-react';
@@ -7,7 +8,23 @@ import { useTranslation } from 'react-i18next';
 import Image from 'next/image';
 
 export default function AboutPage() {
+  const [mounted, setMounted] = useState(false);
   const { t } = useTranslation();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-[#000000] text-[#00F0FF] flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00F0FF] mx-auto mb-4"></div>
+          <h1 className="text-2xl font-bold text-[#00F0FF]">Loading...</h1>
+        </div>
+      </div>
+    );
+  }
 
   const values = [
     {

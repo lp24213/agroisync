@@ -31,6 +31,10 @@ const tokens = [
 ];
 
 export default function StakingPage() {
+  // Verificação de segurança para evitar erro de prerender
+  if (typeof window === 'undefined') {
+    return null;
+  }
   const { t } = useTranslation();
   const [selectedPool, setSelectedPool] = useState<any>(null);
   const [showStakingForm, setShowStakingForm] = useState(false);

@@ -367,7 +367,7 @@ const UsersDashboard: React.FC = () => {
                     fill="#8884d8"
                     dataKey="count"
                     nameKey="segment"
-                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                    label={({ name, percent }) => `${name}: ${((percent || 0) * 100).toFixed(0)}%`}
                   >
                     {userSegments.map((entry: any, index: number) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -646,7 +646,7 @@ const UsersDashboard: React.FC = () => {
                               fill="#8884d8"
                               dataKey="value"
                               nameKey="name"
-                              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                              label={({ name, percent }) => `${name}: ${((percent || 0) * 100).toFixed(0)}%`}
                             >
                               {[
                                 { name: 'Desktop', value: 45 },
@@ -677,7 +677,7 @@ const UsersDashboard: React.FC = () => {
                               fill="#8884d8"
                               dataKey="value"
                               nameKey="name"
-                              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                              label={({ name, percent }) => `${name}: ${((percent || 0) * 100).toFixed(0)}%`}
                             >
                               {[
                                 { name: 'Chrome', value: 55 },
