@@ -25,11 +25,19 @@ const Home: NextPage = () => {
             </div>
             <div className="bg-blue-50 p-4 rounded-lg">
               <h2 className="text-lg font-semibold text-blue-800">🚀 Backend Integrado</h2>
-              <p className="text-blue-600">API Routes + AWS Amplify</p>
+              <p className="text-blue-600">API Routes + Todas as funcionalidades</p>
             </div>
             <div className="bg-purple-50 p-4 rounded-lg">
               <h2 className="text-lg font-semibold text-purple-800">🔧 Deploy Otimizado</h2>
               <p className="text-purple-600">Build limpo sem conflitos</p>
+            </div>
+            <div className="bg-yellow-50 p-4 rounded-lg">
+              <h2 className="text-lg font-semibold text-yellow-800">🌐 Domínio Conectado</h2>
+              <p className="text-yellow-600">agroisync.com funcionando</p>
+            </div>
+            <div className="bg-indigo-50 p-4 rounded-lg">
+              <h2 className="text-lg font-semibold text-indigo-800">📱 Funcionalidades</h2>
+              <p className="text-indigo-600">Auth, Staking, NFTs, Marketplace, Dashboard</p>
             </div>
           </div>
         </div>
