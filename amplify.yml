@@ -1,15 +1,21 @@
 version: 1
+# CONFIGURAÇÃO DEFINITIVA PARA AMPLIFY - DEPLOY FUNCIONANDO
 frontend:
   phases:
     preBuild:
       commands:
+        - echo "🚀 INICIANDO BUILD DO AGROSYNC..."
         - cd frontend
+        - echo "🧹 LIMPANDO CACHE..."
         - rm -rf node_modules package-lock.json .next
+        - echo "📦 INSTALANDO DEPENDÊNCIAS..."
         - npm install --legacy-peer-deps
     build:
       commands:
+        - echo "🔨 EXECUTANDO BUILD..."
         - cd frontend
         - npm run build
+        - echo "✅ BUILD CONCLUÍDO COM SUCESSO!"
   artifacts:
     baseDirectory: frontend/.next
     files:
