@@ -1,9 +1,12 @@
 {
-  "extends": ["next/core-web-vitals"],
-  "rules": {
-    "no-unused-vars": "warn",
-    "no-console": "warn",
-    "prefer-const": "error",
-    "no-var": "error"
+  "extends": "next/core-web-vitals",
+  "env": {
+    "node": true,
+    "browser": true,
+    "es6": true
+  },
+  "globals": {
+    "process": "readonly",
+    "module": "readonly"
   }
 } 

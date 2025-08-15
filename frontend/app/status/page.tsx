@@ -41,9 +41,9 @@ interface HealthStatus {
 }
 
 export default function StatusPage() {
-  return (
+    return (
     <div className="min-h-screen bg-green-900 text-white flex items-center justify-center">
-      <div className="text-center">
+        <div className="text-center">
         <h1 className="text-6xl font-bold text-green-400 mb-8">
           ✅ SITE FUNCIONANDO!
         </h1>
@@ -57,7 +57,7 @@ export default function StatusPage() {
           <a href="/" className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg">
             Voltar ao Site Principal
           </a>
-        </div>
+                    </div>
       </div>
     </div>
   );

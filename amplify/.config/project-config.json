@@ -1,0 +1,17 @@
+{
+  "projectName": "agroisync",
+  "version": "3.1",
+  "frontend": "javascript",
+  "javascript": {
+    "framework": "none",
+    "config": {
+      "SourceDir": "frontend",
+      "DistributionDir": "frontend/.next",
+      "BuildCommand": "npm run build:frontend",
+      "StartCommand": "npm start"
+    }
+  },
+  "providers": [
+    "awscloudformation"
+  ]
+}
