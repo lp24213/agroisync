@@ -1,0 +1,39 @@
+{
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "agroisync.com",
+        "Type": "A",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "18.155.21.113"
+          },
+          {
+            "Value": "18.155.21.9"
+          },
+          {
+            "Value": "18.155.21.15"
+          },
+          {
+            "Value": "18.155.21.104"
+          }
+        ]
+      }
+    },
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "www.agroisync.com",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "dirk1j0autb4d.amplifyapp.com"
+          }
+        ]
+      }
+    }
+  ]
+}
