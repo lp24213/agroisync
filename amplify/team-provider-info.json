@@ -17,6 +17,12 @@
       },
       "auth": {
         "agroisync": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d2d5j98tau5snm",
+          "type": "manual"
+        }
       }
     }
   }
