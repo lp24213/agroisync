@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+// CONFIGURAÇÃO DEFINITIVA PARA AMPLIFY - SEM ESLINT
 const nextConfig = {
   reactStrictMode: false,
   swcMinify: false,
