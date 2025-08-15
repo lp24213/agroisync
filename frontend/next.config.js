@@ -1,11 +1,8 @@
 /** @type {import('next').NextConfig} */
-import { fileURLToPath } from 'url';
-import { dirname, resolve } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
 const nextConfig = {
+  output: 'standalone',
+  reactStrictMode: true,
+  swcMinify: true,
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -16,7 +13,6 @@ const nextConfig = {
     unoptimized: true,
     domains: ['agroisync.com'],
   },
-  serverExternalPackages: ['aws-amplify'],
   webpack: (config, { dev, isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
@@ -36,11 +32,6 @@ const nextConfig = {
       };
     }
     
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@': resolve(__dirname, './'),
-    };
-
     if (!dev) {
       config.optimization = {
         ...config.optimization,
@@ -48,12 +39,6 @@ const nextConfig = {
           ...config.optimization.splitChunks,
           cacheGroups: {
             ...config.optimization.splitChunks.cacheGroups,
-            styles: {
-              name: 'styles',
-              test: /\.(css|scss)$/,
-              chunks: 'all',
-              enforce: true,
-            },
             vendor: {
               test: /[\\/]node_modules[\\/]/,
               name: 'vendors',
@@ -66,15 +51,6 @@ const nextConfig = {
 
     return config;
   },
-  async redirects() {
-    return [
-      {
-        source: '/index.html',
-        destination: '/',
-        permanent: true,
-      },
-    ];
-  },
-};
+}
 
-export default nextConfig;
+module.exports = nextConfig
