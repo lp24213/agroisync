@@ -4,13 +4,13 @@
 /node_modules
 /.pnp
 .pnp.js
-.yarn/install-state.gz
 
 # testing
 /coverage
 
 # next.js
 /.next/
+/out/
 
 # production
 /build
@@ -27,13 +27,9 @@ yarn-error.log*
 # local env files
 .env*.local
 
-# AWS Amplify only
+# vercel
+.vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# contracts - não devem ser incluídos no build do Next.js
-/contracts/
-*.sol
-hardhat.config.ts 

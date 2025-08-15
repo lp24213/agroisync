@@ -1,154 +1,38 @@
-# AGROTM Frontend
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-Plataforma DeFi para Agricultura Sustentável na Solana - Frontend Next.js
+## Getting Started
 
-## 🚀 Tecnologias
-
-- **Next.js 14** - Framework React
-- **TypeScript** - Tipagem estática
-- **Tailwind CSS** - Estilização
-- **Framer Motion** - Animações
-- **Solana Web3.js** - Integração blockchain
-
-## 📦 Instalação
+First, run the development server:
 
 ```bash
-# Instalar dependências
-npm install
-
-# Executar em desenvolvimento
 npm run dev
-
-# Build para produção
-npm run build
-
-# Executar em produção
-npm start
+# or
+yarn dev
+# or
+pnpm dev
 ```
 
-## 🌐 Deploy
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-### AWS Amplify (Recomendado)
+You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
 
-1. Conecte seu repositório ao Amplify
-2. Defina variáveis de ambiente:
-   - `NEXT_PUBLIC_APP_URL` - URL da aplicação
-   - `NEXT_PUBLIC_API_URL` - URL da API (ALB/API Gateway)
-   - `NEXT_PUBLIC_CHAIN_ID` - ID da rede Solana
-   - `NEXT_PUBLIC_NETWORK` - Nome da rede
+[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
 
-3. Amplify executa o build com `frontend/amplify.yml`
+The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
-### Outras Plataformas
+This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-Compatível com qualquer plataforma Next.js:
-- Netlify
-- DigitalOcean App Platform
-- Render
+## Learn More
 
-## 🔧 Configuração
+To learn more about Next.js, take a look at the following resources:
 
-### Variáveis de Ambiente
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-Crie um arquivo `.env.local` baseado no `env.example`:
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-```bash
-cp env.example .env.local
-```
+## Deploy on Vercel
 
-### Configurações Importantes
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-- **next.config.js** - Configuração do Next.js
-- **tailwind.config.js** - Configuração do Tailwind CSS
-- **tsconfig.json** - Configuração do TypeScript
-- `frontend/amplify.yml` - Configuração de build do Amplify
-
-## 📁 Estrutura do Projeto
-
-```
-frontend/
-├── app/                    # App Router (Next.js 14)
-│   ├── layout.tsx         # Layout principal
-│   ├── page.tsx           # Página inicial
-│   └── globals.css        # Estilos globais
-├── components/            # Componentes React
-│   ├── ui/               # Componentes base
-│   ├── layout/           # Componentes de layout
-│   └── sections/         # Seções da página
-├── contexts/             # Contextos React
-├── hooks/                # Custom hooks
-├── lib/                  # Utilitários
-├── public/               # Arquivos estáticos
-└── types/                # Definições TypeScript
-```
-
-## 🎨 Design System
-
-### Cores
-
-- `agro-dark` - Fundo escuro principal
-- `agro-darker` - Fundo mais escuro
-- `agro-blue` - Azul principal
-- `agro-green` - Verde principal
-- `agro-purple` - Roxo principal
-- `agro-neon` - Verde neon
-
-### Componentes
-
-- **Button** - Botões com múltiplas variantes
-- **Card** - Cards com efeitos visuais
-- **LoadingSpinner** - Indicadores de carregamento
-- **Layout** - Layout principal da aplicação
-
-## 🔒 Segurança
-
-- Headers de segurança configurados
-- Validação de entrada
-- Sanitização de dados
-- Proteção contra XSS
-
-## 📱 Responsividade
-
-O projeto é totalmente responsivo e otimizado para:
-- Desktop (1024px+)
-- Tablet (768px - 1023px)
-- Mobile (320px - 767px)
-
-## 🚀 Performance
-
-- Otimização de imagens
-- Lazy loading
-- Code splitting
-- Bundle optimization
-- CDN ready
-
-## 🐛 Debugging
-
-Para debug em desenvolvimento:
-
-```bash
-# Logs detalhados
-DEBUG=* npm run dev
-
-# Build com análise
-npm run build && npm run analyze
-```
-
-## 📄 Licença
-
-MIT License - veja o arquivo LICENSE para detalhes.
-
-## 🤝 Contribuição
-
-1. Fork o projeto
-2. Crie uma branch para sua feature
-3. Commit suas mudanças
-4. Push para a branch
-5. Abra um Pull Request
-
-## 📞 Suporte
-
-Para suporte, entre em contato:
-- Email: support@agrotm.com
-- Discord: https://discord.gg/agrotm
-- GitHub Issues: https://github.com/agrotm/frontend/issues 
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

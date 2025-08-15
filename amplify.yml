@@ -3,20 +3,13 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "=== INSTALANDO NODE.JS 20 ==="
-        - nvm install 20.18.0
-        - nvm use 20.18.0
-        - node --version
-        - npm --version
-        - echo "=== LIMPEZA E INSTALAÇÃO ==="
         - cd frontend
         - rm -rf node_modules package-lock.json .next
-        - npm install
+        - npm install --legacy-peer-deps
     build:
       commands:
-        - echo "=== BUILD EM ANDAMENTO ==="
+        - cd frontend
         - npm run build
-        - echo "=== BUILD CONCLUÍDO ==="
   artifacts:
     baseDirectory: frontend/.next
     files:
