@@ -17,6 +17,15 @@
           "appId": "d2on3iftsg8gzd",
           "type": "manual"
         }
+      },
+      "auth": {
+        "agroisync0c0b1f22": {}
+      },
+      "api": {
+        "agroisync": {}
+      },
+      "storage": {
+        "agrotmuserdata": {}
       }
     }
   }

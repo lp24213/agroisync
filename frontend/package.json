@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Plataforma de agricultura inteligente e tokenização com Web3, Firebase e Solana",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

@@ -1,86 +1,23 @@
-/** @type {import('next').Config} */
+/** @type {import('next').NextConfig} */
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const nextConfig = {
-  // AWS Amplify optimized configuration
-  experimental: {
-    // Configurações experimentais removidas para compatibilidade
-  },
-  
-  // Server external packages
-  serverExternalPackages: ['aws-amplify'],
-  
-  // Image configuration for AWS Amplify
-  images: {
-    unoptimized: true,
-    domains: ['localhost', '127.0.0.1', 'agroisync.com'],
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
-    ],
-  },
-  
-  // Build optimization
-  trailingSlash: false,
-  poweredByHeader: false,
-  
-  // Build configuration - IGNORE ALL ERRORS FOR DEPLOY
   eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
     ignoreBuildErrors: true,
   },
-  
-  // AWS Amplify specific configuration
-  output: 'standalone',
-  
-  // Compression and optimization
-  compress: true,
-  generateEtags: false,
-  
-  // Security headers
-  async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'Access-Control-Allow-Origin',
-            value: '*',
-          },
-          {
-            key: 'Access-Control-Allow-Methods',
-            value: 'GET, POST, PUT, DELETE, OPTIONS, PATCH',
-          },
-          {
-            key: 'Access-Control-Allow-Headers',
-            value: 'Content-Type, Authorization, X-Requested-With, X-API-Key, X-Client-Version, Origin, Accept',
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
-          },
-        ],
-      },
-    ];
+  images: {
+    unoptimized: true,
+    domains: ['agroisync.com'],
   },
-  
-  // Webpack optimization for AWS Amplify
-  webpack: (config, { isServer }) => {
-    // Fallbacks para módulos Node.js
+  serverExternalPackages: ['aws-amplify'],
+  webpack: (config, { dev, isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -99,36 +36,38 @@ const nextConfig = {
       };
     }
     
-    // Aliases de importação
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@': '.',
-      '@/components': './components',
-      '@/lib': './lib',
-      '@/contexts': './contexts',
-      '@/hooks': './hooks',
-      '@/utils': './utils',
-      '@/types': './types',
-      '@/styles': './styles',
-      '@/public': './public',
+      '@': resolve(__dirname, './'),
     };
-    
+
+    if (!dev) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          ...config.optimization.splitChunks,
+          cacheGroups: {
+            ...config.optimization.splitChunks.cacheGroups,
+            styles: {
+              name: 'styles',
+              test: /\.(css|scss)$/,
+              chunks: 'all',
+              enforce: true,
+            },
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'vendors',
+              chunks: 'all',
+            },
+          },
+        },
+      };
+    }
+
     return config;
   },
-  
-  // Environment variables
-  env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
-  },
-  
-  // Redirects for AWS Amplify
   async redirects() {
     return [
-      {
-        source: '/home',
-        destination: '/',
-        permanent: true,
-      },
       {
         source: '/index.html',
         destination: '/',
@@ -136,16 +75,6 @@ const nextConfig = {
       },
     ];
   },
-  
-  // Rewrites for AWS Amplify
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: '/api/:path*',
-      },
-    ];
-  },
 };
 
-module.exports = nextConfig;
+export default nextConfig;

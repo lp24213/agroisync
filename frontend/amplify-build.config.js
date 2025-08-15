@@ -67,4 +67,4 @@ const amplifyConfig = {
   },
 };
 
-module.exports = amplifyConfig;
+export default amplifyConfig;
