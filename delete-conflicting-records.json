@@ -1,0 +1,30 @@
+{
+  "Changes": [
+    {
+      "Action": "DELETE",
+      "ResourceRecordSet": {
+        "Name": "\\100.https\\072\\057\\057agroisync.com",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "d14eryth1hg01x.cloudfront.net"
+          }
+        ]
+      }
+    },
+    {
+      "Action": "DELETE",
+      "ResourceRecordSet": {
+        "Name": "www.https\\072\\057\\057agroisync.com",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "d14eryth1hg01x.cloudfront.net"
+          }
+        ]
+      }
+    }
+  ]
+}
