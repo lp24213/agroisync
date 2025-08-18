@@ -260,13 +260,13 @@ const Contact: NextPage = () => {
                           Como funciona o sistema de staking?
                         </h4>
                         <p className="text-sm text-gray-600">
-                          O staking permite que você bloqueie seus tokens AGRO para ganhar recompensas e participar da governança da plataforma.
+                          O sistema de gestão permite que você controle suas operações agrícolas e acompanhe o desempenho da sua propriedade.
                         </p>
                       </div>
                       
                       <div className="border-b border-gray-200 pb-3">
                         <h4 className="font-medium text-gray-900 mb-1">
-                          Posso criar NFTs de qualquer propriedade rural?
+                          Posso cadastrar qualquer propriedade rural?
                         </h4>
                         <p className="text-sm text-gray-600">
                           Sim, desde que você seja o proprietário legítimo e tenha a documentação necessária para comprovar a propriedade.
@@ -278,7 +278,7 @@ const Contact: NextPage = () => {
                           A plataforma é segura?
                         </h4>
                         <p className="text-sm text-gray-600">
-                          Sim, utilizamos as mais avançadas tecnologias de segurança blockchain e criptografia para proteger seus ativos.
+                          Sim, utilizamos as mais avançadas tecnologias de segurança e criptografia para proteger seus dados.
                         </p>
                       </div>
                     </div>

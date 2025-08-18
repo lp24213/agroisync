@@ -21,22 +21,22 @@ const Card: React.FC<CardProps> = ({
     sm: 'p-3',
     md: 'p-6',
     lg: 'p-8'
-  };
+  } as const;
   
   const shadowClasses = {
     none: '',
     sm: 'shadow-sm',
     md: 'shadow-md',
     lg: 'shadow-lg'
-  };
+  } as const;
 
   return (
     <div
       className={clsx(
-        'bg-white rounded-lg',
+        'bg-gray-900 text-gray-100 rounded-lg',
         paddingClasses[padding],
         shadowClasses[shadow],
-        border && 'border border-gray-200',
+        border && 'border border-gray-800',
         className
       )}
     >

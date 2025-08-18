@@ -1308,7 +1308,7 @@ const KYCUpload: React.FC = () => {
                           style={{ marginTop: 4, marginRight: 8 }}
                         />
                         <Typography variant="body2">
-                          Eu li e aceito os <Box component="span" sx={{ color: 'primary.main', cursor: 'pointer' }}>Termos e Condições</Box> da plataforma AGROTM.
+                          Eu li e aceito os <Box component="span" sx={{ color: 'primary.main', cursor: 'pointer' }}>Termos e Condições</Box> da plataforma AGROISYNC.
                         </Typography>
                       </Box>
                       {errors.termsAccepted && <FormHelperText>{errors.termsAccepted}</FormHelperText>}
@@ -1326,7 +1326,7 @@ const KYCUpload: React.FC = () => {
                           style={{ marginTop: 4, marginRight: 8 }}
                         />
                         <Typography variant="body2">
-                          Eu li e aceito a <Box component="span" sx={{ color: 'primary.main', cursor: 'pointer' }}>Política de Privacidade</Box> da plataforma AGROTM.
+                          Eu li e aceito a <Box component="span" sx={{ color: 'primary.main', cursor: 'pointer' }}>Política de Privacidade</Box> da plataforma AGROISYNC.
                         </Typography>
                       </Box>
                       {errors.privacyAccepted && <FormHelperText>{errors.privacyAccepted}</FormHelperText>}
@@ -1424,7 +1424,7 @@ const KYCUpload: React.FC = () => {
       </Typography>
       
       <Typography variant="body1" color="textSecondary" paragraph>
-        Complete o processo de verificação Know Your Customer (KYC) e Anti-Money Laundering (AML) para acessar todos os recursos da plataforma AGROTM.
+        Complete o processo de verificação Know Your Customer (KYC) e Anti-Money Laundering (AML) para acessar todos os recursos da plataforma AGROISYNC.
       </Typography>
       
       <Box sx={{ width: '100%', mb: 4 }}>

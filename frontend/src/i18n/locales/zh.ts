@@ -1,0 +1,32 @@
+const zh = {
+	app_name: 'AgroSync',
+	nav_home: '首页',
+	nav_marketplace: '市场',
+	nav_staking: '投资',
+	nav_properties: '资产',
+	nav_dashboard: '控制台',
+	nav_about: '关于',
+	cta_get_started: '立即开始',
+	cta_learn_more: '了解更多',
+	prices_realtime: '实时价格',
+	stats_users: '活跃用户',
+	stats_volume: '月度交易量',
+	stats_transactions: '交易',
+	stats_properties: '登记资产',
+	features_why: '为什么选择 AgroSync？',
+	features_sub: '我们的平台提供现代化农业运营所需的一切工具。',
+	chart_title: '农业表现',
+	chart_sub: '追踪您的产量增长',
+	cta_headline: '准备好革新您的农业吗？',
+	cta_sub: '加入数千名已采用数字农业的生产者。',
+	cta_free_account: '创建免费账户',
+	cta_talk_expert: '联系专家',
+	login: '登录',
+	enter: '进入',
+	lang_pt: '葡萄牙语',
+	lang_en: '英语',
+	lang_es: '西班牙语',
+	lang_zh: '中文'
+}
+
+export default zh

@@ -1,0 +1,90 @@
+<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="neonCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00ffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0080ff;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="300" fill="#0a0a0a"/>
+  
+  <!-- Title -->
+  <text x="50" y="40" fill="url(#neonCyan)" font-family="Arial, sans-serif" font-size="24" font-weight="bold" filter="url(#glow)">CYBER DEFENSE</text>
+  
+  <!-- Central Shield -->
+  <g filter="url(#glow)" transform="translate(200, 150)">
+    <!-- Shield Shape -->
+    <path d="M -40 -60 L 40 -60 L 50 -20 L 40 20 L 20 60 L -20 60 L -40 20 Z" fill="none" stroke="url(#neonCyan)" stroke-width="3"/>
+    
+    <!-- Plant Inside Shield -->
+    <line x1="0" y1="40" x2="0" y2="20" stroke="url(#neonCyan)" stroke-width="2"/>
+    <circle cx="0" cy="20" r="5" fill="url(#neonCyan)" opacity="0.8"/>
+    <line x1="0" y1="20" x2="-8" y2="15" stroke="url(#neonCyan)" stroke-width="2"/>
+    <line x1="0" y1="20" x2="8" y2="15" stroke="url(#neonCyan)" stroke-width="2"/>
+    <line x1="0" y1="20" x2="0" y2="12" stroke="url(#neonCyan)" stroke-width="2"/>
+    
+    <!-- Roots -->
+    <line x1="0" y1="40" x2="-5" y2="45" stroke="url(#neonCyan)" stroke-width="1"/>
+    <line x1="0" y1="40" x2="5" y2="45" stroke="url(#neonCyan)" stroke-width="1"/>
+    <line x1="0" y1="40" x2="0" y2="50" stroke="url(#neonCyan)" stroke-width="1"/>
+  </g>
+  
+  <!-- Digital Grid/Circuitry -->
+  <g filter="url(#glow)" opacity="0.4">
+    <!-- Horizontal Lines -->
+    <line x1="50" y1="200" x2="150" y2="200" stroke="url(#neonCyan)" stroke-width="1"/>
+    <line x1="50" y1="210" x2="150" y2="210" stroke="url(#neonCyan)" stroke-width="1"/>
+    <line x1="50" y1="220" x2="150" y2="220" stroke="url(#neonCyan)" stroke-width="1"/>
+    <line x1="50" y1="230" x2="150" y2="230" stroke="url(#neonCyan)" stroke-width="1"/>
+    
+    <!-- Vertical Lines -->
+    <line x1="60" y1="200" x2="60" y2="230" stroke="url(#neonCyan)" stroke-width="1"/>
+    <line x1="80" y1="200" x2="80" y2="230" stroke="url(#neonCyan)" stroke-width="1"/>
+    <line x1="100" y1="200" x2="100" y2="230" stroke="url(#neonCyan)" stroke-width="1"/>
+    <line x1="120" y1="200" x2="120" y2="230" stroke="url(#neonCyan)" stroke-width="1"/>
+    <line x1="140" y1="200" x2="140" y2="230" stroke="url(#neonCyan)" stroke-width="1"/>
+  </g>
+  
+  <!-- Data/Text Lines -->
+  <g filter="url(#glow)" opacity="0.6">
+    <line x1="50" y1="80" x2="120" y2="80" stroke="url(#neonCyan)" stroke-width="1"/>
+    <line x1="50" y1="90" x2="100" y2="90" stroke="url(#neonCyan)" stroke-width="1"/>
+    <line x1="50" y1="100" x2="110" y2="100" stroke="url(#neonCyan)" stroke-width="1"/>
+    <line x1="50" y1="110" x2="90" y2="110" stroke="url(#neonCyan)" stroke-width="1"/>
+  </g>
+  
+  <!-- Right Panel Icons -->
+  <g filter="url(#glow)" transform="translate(320, 120)">
+    <!-- Brain Icon -->
+    <g>
+      <path d="M -15 -20 Q -20 -15 -20 -10 Q -20 -5 -15 0 Q -10 5 -5 0 Q 0 -5 5 0 Q 10 5 15 0 Q 20 -5 20 -10 Q 20 -15 15 -20 Q 10 -25 5 -20 Q 0 -15 -5 -20 Q -10 -25 -15 -20 Z" fill="none" stroke="url(#neonCyan)" stroke-width="2"/>
+      <path d="M -10 -15 Q -5 -10 0 -15 Q 5 -20 10 -15" stroke="url(#neonCyan)" stroke-width="1" fill="none"/>
+      <path d="M -8 -8 Q -3 -3 2 -8 Q 7 -13 12 -8" stroke="url(#neonCyan)" stroke-width="1" fill="none"/>
+      <path d="M -6 -1 Q -1 4 4 -1 Q 9 -6 14 -1" stroke="url(#neonCyan)" stroke-width="1" fill="none"/>
+    </g>
+  </g>
+  
+  <g filter="url(#glow)" transform="translate(320, 200)">
+    <!-- Cube/Block Icon -->
+    <g>
+      <!-- Front Face -->
+      <rect x="-12" y="-12" width="24" height="24" fill="none" stroke="url(#neonCyan)" stroke-width="2"/>
+      <!-- Top Face -->
+      <polygon points="-12,-12 0,-20 12,-12" fill="none" stroke="url(#neonCyan)" stroke-width="2"/>
+      <!-- Right Face -->
+      <polygon points="12,-12 20,-20 20,-8" fill="none" stroke="url(#neonCyan)" stroke-width="2"/>
+      <!-- Internal Lines -->
+      <line x1="0" y1="-12" x2="0" y2="12" stroke="url(#neonCyan)" stroke-width="1" opacity="0.6"/>
+      <line x1="-12" y1="0" x2="12" y2="0" stroke="url(#neonCyan)" stroke-width="1" opacity="0.6"/>
+      <line x1="0" y1="-20" x2="20" y2="-20" stroke="url(#neonCyan)" stroke-width="1" opacity="0.6"/>
+    </g>
+  </g>
+</svg>

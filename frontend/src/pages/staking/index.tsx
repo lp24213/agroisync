@@ -1,339 +1,237 @@
-import type { NextPage } from 'next'
+import { NextPage } from 'next'
 import Head from 'next/head'
-import { useState, useEffect } from 'react'
-import { 
-  LockClosedIcon,
-  ChartBarIcon,
-  CurrencyDollarIcon,
-  ArrowTrendingUpIcon
-} from '@heroicons/react/24/outline'
-import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
-import Input from '@/components/ui/Input'
-
-interface StakingPool {
-  id: string
-  name: string
-  apy: string
-  totalStaked: string
-  minStake: string
-  maxStake: string
-  lockPeriod: string
-  rewards: string
-}
-
-interface UserStake {
-  id: string
-  poolId: string
-  amount: string
-  startDate: string
-  endDate: string
-  rewards: string
-  status: 'active' | 'locked' | 'completed'
-}
+import { 
+  ArrowTrendingUpIcon, 
+  FireIcon, 
+  StarIcon,
+  LockClosedIcon,
+  CurrencyDollarIcon
+} from '@heroicons/react/24/outline'
 
 const Staking: NextPage = () => {
-  const [pools, setPools] = useState<StakingPool[]>([])
-  const [userStakes, setUserStakes] = useState<UserStake[]>([])
-  const [loading, setLoading] = useState(true)
-  const [selectedPool, setSelectedPool] = useState<string>('')
-  const [stakeAmount, setStakeAmount] = useState('')
-  const [showStakeModal, setShowStakeModal] = useState(false)
-
-  useEffect(() => {
-    fetchStakingData()
-  }, [])
-
-  const fetchStakingData = async () => {
-    try {
-      const [poolsResponse, stakesResponse] = await Promise.all([
-        fetch('/api/staking'),
-        fetch('/api/staking/user-stakes')
-      ])
-      
-      const poolsData = await poolsResponse.json()
-      const stakesData = await stakesResponse.json()
-      
-      if (poolsData.success) {
-        setPools(poolsData.data.pools)
-      }
-      
-      if (stakesData.success) {
-        setUserStakes(stakesData.data.stakes || [])
-      }
-    } catch (error) {
-      console.error('Erro ao carregar dados de staking:', error)
-    } finally {
-      setLoading(false)
+  const stakingPools = [
+    {
+      id: 1,
+      name: 'AGRO Token Staking',
+      apy: 12.5,
+      totalStaked: '2.5M AGRO',
+      yourStake: '15K AGRO',
+      rewards: '1.2K AGRO',
+      image: '/images/staking-farming.svg'
+    },
+    {
+      id: 2,
+      name: 'ETH/AGRO Liquidity Pool',
+      apy: 18.2,
+      totalStaked: '1.8M LP',
+      yourStake: '8.5K LP',
+      rewards: '2.1K AGRO',
+      image: '/images/futuristic-farm.svg'
+    },
+    {
+      id: 3,
+      name: 'BTC/AGRO Farming',
+      apy: 22.8,
+      totalStaked: '950K LP',
+      yourStake: '12K LP',
+      rewards: '3.8K AGRO',
+      image: '/images/cyber-defense.svg'
     }
-  }
+  ]
 
-  const handleStake = async () => {
-    if (!selectedPool || !stakeAmount) return
-    
-    try {
-      const response = await fetch('/api/staking', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          poolId: selectedPool,
-          amount: stakeAmount,
-          walletAddress: '0x1234...5678' // Mock wallet
-        })
-      })
-      
-      const data = await response.json()
-      if (data.success) {
-        setShowStakeModal(false)
-        setStakeAmount('')
-        setSelectedPool('')
-        fetchStakingData() // Refresh data
-      }
-    } catch (error) {
-      console.error('Erro ao fazer stake:', error)
-    }
-  }
-
-  const totalStaked = userStakes.reduce((sum, stake) => sum + parseFloat(stake.amount), 0)
-  const totalRewards = userStakes.reduce((sum, stake) => sum + parseFloat(stake.rewards), 0)
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600"></div>
-      </div>
-    )
-  }
+  const stakingStats = [
+    { label: 'Total Staked', value: '5.25M AGRO', change: '+15.2%', changeType: 'positive' },
+    { label: 'Total Rewards', value: '125K AGRO', change: '+8.7%', changeType: 'positive' },
+    { label: 'APY Médio', value: '17.8%', change: '+2.1%', changeType: 'positive' },
+    { label: 'Usuários Ativos', value: '1,250+', change: '+12.3%', changeType: 'positive' }
+  ]
 
   return (
     <>
       <Head>
-        <title>Staking - AgroSync</title>
-        <meta name="description" content="Faça stake dos seus tokens AGRO e ganhe recompensas" />
+        <title>Staking & Farming - AGROISYNC</title>
+        <meta name="description" content="Sistema avançado de staking e farming para maximizar seus retornos na plataforma AGROISYNC" />
       </Head>
 
-      <div className="min-h-screen bg-gray-50">
-        {/* Header Section */}
-        <section className="bg-white shadow-sm border-b">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-            <div className="text-center">
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Staking de Tokens AGRO
-              </h1>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Ganhe recompensas fazendo stake dos seus tokens e participe da governança da plataforma
-              </p>
-            </div>
+      <div className="min-h-screen bg-black text-gray-100">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-blue-900 to-purple-900 py-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 className="text-4xl md:text-6xl font-bold text-gray-100 mb-6">
+              Staking & Farming
+            </h1>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              Maximize seus retornos com nosso sistema avançado de staking e farming. 
+              Ganhe recompensas passivas enquanto apoia a rede AGROISYNC.
+            </p>
           </div>
-        </section>
+        </div>
 
-        {/* User Stats */}
-        <section className="py-8">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          {/* Stats Overview */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            {stakingStats.map((stat, index) => (
+              <Card key={index} className="text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1 enhanced-shadow">
                 <div className="p-6">
-                  <LockClosedIcon className="h-12 w-12 text-green-600 mx-auto mb-4" />
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                    {totalStaked.toLocaleString()} AGRO
-                  </h3>
-                  <p className="text-gray-600">Total em Stake</p>
+                  <h3 className="text-2xl font-bold text-gray-100 mb-2">{stat.value}</h3>
+                  <p className="text-gray-400 mb-2">{stat.label}</p>
+                  <div className={`inline-flex items-center text-sm ${
+                    stat.changeType === 'positive' ? 'text-green-400' : 'text-red-400'
+                  }`}>
+                    <ArrowTrendingUpIcon className="h-4 w-4 mr-1" />
+                    {stat.change}
+                  </div>
                 </div>
               </Card>
-              
-              <Card className="text-center">
-                <div className="p-6">
-                  <CurrencyDollarIcon className="h-12 w-12 text-yellow-600 mx-auto mb-4" />
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                    {totalRewards.toLocaleString()} AGRO
-                  </h3>
-                  <p className="text-gray-600">Recompensas Acumuladas</p>
-                </div>
-              </Card>
-              
-              <Card className="text-center">
-                <div className="p-6">
-                  <ChartBarIcon className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                    {userStakes.length}
-                  </h3>
-                  <p className="text-gray-600">Stakes Ativos</p>
-                </div>
-              </Card>
-            </div>
+            ))}
           </div>
-        </section>
 
-        {/* Staking Pools */}
-        <section className="py-12">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-bold text-gray-900">Pools de Staking Disponíveis</h2>
-              <Button onClick={() => setShowStakeModal(true)}>
-                Novo Stake
-              </Button>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {pools.map((pool) => (
-                <Card key={pool.id} className="hover:shadow-lg transition-shadow">
-                  <div className="p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-xl font-semibold text-gray-900">{pool.name}</h3>
-                      <ArrowTrendingUpIcon className="h-6 w-6 text-green-600" />
+          {/* Staking Pools */}
+          <div className="mb-12">
+            <h2 className="text-3xl font-bold text-gray-100 mb-8 text-center">
+              Pools de Staking Disponíveis
+            </h2>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {stakingPools.map((pool) => (
+                <Card key={pool.id} className="hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 enhanced-shadow">
+                  <div className="text-center p-6">
+                    <div className="mb-6 flex justify-center">
+                      <img 
+                        src={pool.image} 
+                        alt={pool.name}
+                        className="w-24 h-24 object-contain"
+                      />
                     </div>
+                    <h3 className="text-xl font-bold text-gray-100 mb-4">{pool.name}</h3>
                     
-                    <div className="space-y-3 mb-6">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">APY:</span>
-                        <span className="font-semibold text-green-600">{pool.apy}</span>
+                    <div className="space-y-4 mb-6">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-400">APY:</span>
+                        <span className="text-2xl font-bold text-green-400">{pool.apy}%</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Total Stakeado:</span>
-                        <span className="font-semibold">{pool.totalStaked}</span>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-400">Total Staked:</span>
+                        <span className="text-gray-100 font-medium">{pool.totalStaked}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Stake Mínimo:</span>
-                        <span className="font-semibold">{pool.minStake}</span>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-400">Seu Stake:</span>
+                        <span className="text-gray-100 font-medium">{pool.yourStake}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Período de Lock:</span>
-                        <span className="font-semibold">{pool.lockPeriod}</span>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-400">Recompensas:</span>
+                        <span className="text-green-400 font-medium">{pool.rewards}</span>
                       </div>
                     </div>
-                    
-                    <Button 
-                      className="w-full" 
-                      onClick={() => {
-                        setSelectedPool(pool.id)
-                        setShowStakeModal(true)
-                      }}
-                    >
-                      Fazer Stake
-                    </Button>
+
+                    <div className="flex space-x-3">
+                      <button className="flex-1 bg-gradient-to-r from-blue-500 to-slate-300 text-black px-4 py-2 rounded-lg font-semibold hover:from-blue-400 hover:to-slate-200 transition-all duration-200">
+                        Stake
+                      </button>
+                      <button className="flex-1 border border-blue-400 text-blue-400 px-4 py-2 rounded-lg font-semibold hover:bg-blue-400 hover:text-black transition-all duration-200">
+                        Unstake
+                      </button>
+                    </div>
                   </div>
                 </Card>
               ))}
             </div>
           </div>
-        </section>
 
-        {/* User Stakes */}
-        <section className="py-12">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-8">Meus Stakes</h2>
-            
-            {userStakes.length === 0 ? (
-              <Card className="text-center py-12">
-                <p className="text-gray-500 text-lg">Você ainda não possui stakes ativos</p>
-                <Button className="mt-4" onClick={() => setShowStakeModal(true)}>
-                  Fazer Primeiro Stake
-                </Button>
+          {/* How It Works */}
+          <div className="mb-12">
+            <h2 className="text-3xl font-bold text-gray-100 mb-8 text-center">
+              Como Funciona o Staking
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <Card className="text-center enhanced-shadow">
+                <div className="p-6">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <LockClosedIcon className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-100 mb-3">1. Stake seus Tokens</h3>
+                  <p className="text-gray-400">
+                    Bloqueie seus AGRO tokens em um dos pools disponíveis para começar a ganhar recompensas
+                  </p>
+                </div>
               </Card>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {userStakes.map((stake) => (
-                  <Card key={stake.id}>
-                    <div className="p-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold text-gray-900">Stake #{stake.id}</h3>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          stake.status === 'active' ? 'bg-green-100 text-green-800' :
-                          stake.status === 'locked' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-gray-100 text-gray-800'
-                        }`}>
-                          {stake.status === 'active' ? 'Ativo' :
-                           stake.status === 'locked' ? 'Bloqueado' : 'Completo'}
-                        </span>
-                      </div>
-                      
-                      <div className="space-y-2 mb-4">
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Quantidade:</span>
-                          <span className="font-semibold">{stake.amount} AGRO</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Recompensas:</span>
-                          <span className="font-semibold text-green-600">{stake.rewards} AGRO</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Início:</span>
-                          <span className="font-semibold">{new Date(stake.startDate).toLocaleDateString()}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Fim:</span>
-                          <span className="font-semibold">{new Date(stake.endDate).toLocaleDateString()}</span>
-                        </div>
-                      </div>
-                      
-                      <Button variant="outline" className="w-full" size="sm">
-                        Ver Detalhes
-                      </Button>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
-        </section>
 
-        {/* Stake Modal */}
-        {showStakeModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Novo Stake</h3>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Pool de Staking
-                  </label>
-                  <select
-                    value={selectedPool}
-                    onChange={(e) => setSelectedPool(e.target.value)}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                  >
-                    <option value="">Selecione uma pool</option>
-                    {pools.map((pool) => (
-                      <option key={pool.id} value={pool.id}>
-                        {pool.name} - {pool.apy} APY
-                      </option>
-                    ))}
-                  </select>
+              <Card className="text-center enhanced-shadow">
+                <div className="p-6">
+                  <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <FireIcon className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-100 mb-3">2. Ganhe Recompensas</h3>
+                  <p className="text-gray-400">
+                    Receba recompensas automaticamente baseadas no APY do pool e no tempo de staking
+                  </p>
                 </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Quantidade (AGRO)
-                  </label>
-                  <Input
-                    type="number"
-                    placeholder="0.00"
-                    value={stakeAmount}
-                    onChange={(e) => setStakeAmount(e.target.value)}
-                  />
+              </Card>
+
+              <Card className="text-center enhanced-shadow">
+                <div className="p-6">
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CurrencyDollarIcon className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-100 mb-3">3. Compostagem</h3>
+                  <p className="text-gray-400">
+                    Reinvesta suas recompensas para maximizar os retornos com juros compostos
+                  </p>
                 </div>
-              </div>
-              
-              <div className="flex gap-3 mt-6">
-                <Button 
-                  variant="outline" 
-                  className="flex-1"
-                  onClick={() => setShowStakeModal(false)}
-                >
-                  Cancelar
-                </Button>
-                <Button 
-                  className="flex-1"
-                  onClick={handleStake}
-                  disabled={!selectedPool || !stakeAmount}
-                >
-                  Confirmar Stake
-                </Button>
-              </div>
+              </Card>
             </div>
           </div>
-        )}
+
+          {/* Benefits */}
+          <div className="mb-12">
+            <h2 className="text-3xl font-bold text-gray-100 mb-8 text-center">
+              Benefícios do Staking AGROISYNC
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <Card className="enhanced-shadow">
+                <div className="p-6">
+                  <h3 className="text-xl font-bold text-gray-100 mb-4">Recompensas Passivas</h3>
+                  <ul className="space-y-2 text-gray-400">
+                    <li>• Ganhe até 25% APY em recompensas</li>
+                    <li>• Pagamentos automáticos a cada bloco</li>
+                    <li>• Sem necessidade de trading ativo</li>
+                    <li>• Compostagem automática disponível</li>
+                  </ul>
+                </div>
+              </Card>
+
+              <Card className="enhanced-shadow">
+                <div className="p-6">
+                  <h3 className="text-xl font-bold text-gray-100 mb-4">Segurança e Transparência</h3>
+                  <ul className="space-y-2 text-gray-400">
+                    <li>• Smart contracts auditados</li>
+                    <li>• Liquidez sempre disponível</li>
+                    <li>• Governança descentralizada</li>
+                    <li>• Transparência total das operações</li>
+                  </ul>
+                </div>
+              </Card>
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="text-center">
+            <Card className="bg-gradient-to-r from-blue-900 to-purple-900 enhanced-shadow">
+              <div className="p-8">
+                <h3 className="text-2xl font-bold text-gray-100 mb-4">
+                  Pronto para Começar a Ganhar?
+                </h3>
+                <p className="text-gray-300 mb-6">
+                  Junte-se aos milhares de usuários que já estão ganhando recompensas 
+                  com o staking AGROISYNC
+                </p>
+                <button className="bg-white text-black px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-all duration-200 hover:scale-105 transform">
+                  Começar Staking Agora
+                </button>
+              </div>
+            </Card>
+          </div>
+        </div>
       </div>
     </>
   )

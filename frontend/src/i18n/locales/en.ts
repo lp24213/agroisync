@@ -1,0 +1,32 @@
+const en = {
+	app_name: 'AgroSync',
+	nav_home: 'Home',
+	nav_marketplace: 'Marketplace',
+	nav_staking: 'Investments',
+	nav_properties: 'Properties',
+	nav_dashboard: 'Dashboard',
+	nav_about: 'About',
+	cta_get_started: 'Get Started',
+	cta_learn_more: 'Learn More',
+	prices_realtime: 'Real-time Prices',
+	stats_users: 'Active Users',
+	stats_volume: 'Monthly Volume',
+	stats_transactions: 'Transactions',
+	stats_properties: 'Registered Properties',
+	features_why: 'Why choose AgroSync?',
+	features_sub: 'Our platform provides all tools to modernize your operation and maximize returns.',
+	chart_title: 'Agricultural Performance',
+	chart_sub: 'Track your production growth',
+	cta_headline: 'Ready to revolutionize your agriculture?',
+	cta_sub: 'Join thousands of producers leveraging digital agriculture.',
+	cta_free_account: 'Create Free Account',
+	cta_talk_expert: 'Talk to an Expert',
+	login: 'Sign In',
+	enter: 'Enter',
+	lang_pt: 'Portuguese',
+	lang_en: 'English',
+	lang_es: 'Spanish',
+	lang_zh: 'Mandarin'
+}
+
+export default en
