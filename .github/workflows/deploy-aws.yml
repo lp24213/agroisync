@@ -1,4 +1,4 @@
-name: Deploy AGROTM to AWS ONLY
+name: Deploy AGROISYNC to AWS ONLY
 
 on:
   push:
@@ -37,7 +37,7 @@ jobs:
 
       - name: Deploy to AWS ONLY
         run: |
-          echo "🚀 AGROTM build validated successfully!"
+          echo "🚀 AGROISYNC build validated successfully!"
           echo "📦 Frontend and Backend are ready for AWS deployment"
           echo "✅ AWS Amplify will automatically deploy the frontend"
           echo "✅ AWS ECS/Lambda will deploy the backend"

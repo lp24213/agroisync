@@ -1,330 +1,298 @@
 #!/bin/bash
 
-# 🔍 AGROTM - Script de Verificação de Status AWS Amplify
-# Verifica status completo dos domínios, certificados e aplicação
+# 🔍 AGROISYNC - Script de Verificação de Status AWS Amplify
+# Este script verifica o status completo da aplicação no AWS Amplify
 
-set -e  # Exit on any error
+set -e
 
 # Cores para output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-PURPLE='\033[0;35m'
-CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Configurações
-HOSTED_ZONE_ID="Z1014720F19TBNCSVRC1"
-REGION="us-east-2"
-AMPLIFY_APP_ID="d2d5j98tau5snm"
-DOMAIN="agrotmsol.com.br"
-CLOUDFRONT="d3cg8n66fpfnfp.cloudfront.net"
-ACM_VALIDATION_NAME="_3978cce7ded379adc6cc9704bdff5269.agrotmsol.com.br"
+APP_ID="d1234567890abc"  # Substitua pelo seu App ID
+BRANCH="main"
+DOMAIN="agroisync.com.br"
 
-# Contadores
-SUCCESS_COUNT=0
-ERROR_COUNT=0
-WARNING_COUNT=0
-
-# Função para log
+# Função para log colorido
 log() {
-    echo -e "${BLUE}[$(date '+%Y-%m-%d %H:%M:%S')]${NC} $1"
+    echo -e "${GREEN}[$(date +'%Y-%m-%d %H:%M:%S')]${NC} $1"
 }
 
-log_success() {
-    echo -e "${GREEN}✅ $1${NC}"
-    ((SUCCESS_COUNT++))
+error() {
+    echo -e "${RED}[ERRO]${NC} $1"
 }
 
-log_error() {
-    echo -e "${RED}❌ $1${NC}"
-    ((ERROR_COUNT++))
+warning() {
+    echo -e "${YELLOW}[AVISO]${NC} $1"
 }
 
-log_warning() {
-    echo -e "${YELLOW}⚠️  $1${NC}"
-    ((WARNING_COUNT++))
+info() {
+    echo -e "${BLUE}[INFO]${NC} $1"
 }
 
-log_info() {
-    echo -e "${PURPLE}ℹ️  $1${NC}"
+# Verificar se AWS CLI está instalado
+check_aws_cli() {
+    if ! command -v aws &> /dev/null; then
+        error "AWS CLI não está instalado. Instale primeiro: https://aws.amazon.com/cli/"
+        exit 1
+    fi
+    log "AWS CLI encontrado: $(aws --version)"
 }
 
-log_step() {
-    echo -e "${CYAN}🔍 $1${NC}"
+# Verificar se jq está instalado
+check_jq() {
+    if ! command -v jq &> /dev/null; then
+        error "jq não está instalado. Instale primeiro: sudo apt-get install jq"
+        exit 1
+    fi
+    log "jq encontrado: $(jq --version)"
 }
 
-# Função para verificar se AWS CLI está configurado
+# Verificar configuração AWS
 check_aws_config() {
-    log "Verificando configuração AWS CLI..."
-    
     if ! aws sts get-caller-identity &> /dev/null; then
-        log_error "AWS CLI não está configurado!"
-        echo ""
-        echo "Execute primeiro: ./setup-aws-credentials.sh"
+        error "AWS não está configurado. Execute: aws configure"
         exit 1
     fi
     
-    IDENTITY=$(aws sts get-caller-identity --query 'Account' --output text)
-    log_success "AWS CLI configurado para conta: $IDENTITY"
+    ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
+    USER_ARN=$(aws sts get-caller-identity --query 'Arn' --output text)
+    REGION=$(aws configure get region)
+    
+    log "AWS Configurado:"
+    log "  Conta: $ACCOUNT_ID"
+    log "  Usuário: $USER_ARN"
+    log "  Região: $REGION"
 }
 
-# Função para verificar status do domínio no Amplify
-check_amplify_domain_status() {
-    log_step "1️⃣ Verificando status do domínio no Amplify..."
+# Verificar status da aplicação Amplify
+check_app_status() {
+    log "Verificando status da aplicação Amplify..."
     
-    if aws amplify get-domain-association \
-        --app-id "$AMPLIFY_APP_ID" \
-        --domain-name "$DOMAIN" \
-        --region "$REGION" &> /dev/null; then
-        
-        # Obter status detalhado
-        DOMAIN_STATUS=$(aws amplify get-domain-association \
-            --app-id "$AMPLIFY_APP_ID" \
-            --domain-name "$DOMAIN" \
-            --region "$REGION" \
-            --query 'domainAssociation.domainStatus' \
-            --output text)
-        
-        SUBDOMAIN_STATUS=$(aws amplify get-domain-association \
-            --app-id "$AMPLIFY_APP_ID" \
-            --domain-name "$DOMAIN" \
-            --region "$REGION" \
-            --query 'domainAssociation.subDomains[0].status' \
-            --output text)
-        
-        log_info "Status do domínio: $DOMAIN_STATUS"
-        log_info "Status do subdomínio: $SUBDOMAIN_STATUS"
-        
-        if [ "$DOMAIN_STATUS" = "AVAILABLE" ] && [ "$SUBDOMAIN_STATUS" = "AVAILABLE" ]; then
-            log_success "Domínio Amplify: Disponível e funcionando!"
-        elif [ "$DOMAIN_STATUS" = "PENDING_VERIFICATION" ]; then
-            log_warning "Domínio Amplify: Aguardando verificação DNS"
-        elif [ "$DOMAIN_STATUS" = "PENDING_DEPLOYMENT" ]; then
-            log_warning "Domínio Amplify: Aguardando deploy"
-        else
-            log_error "Domínio Amplify: Status desconhecido ($DOMAIN_STATUS)"
-        fi
-    else
-        log_error "Não foi possível obter status do domínio no Amplify"
+    if ! aws amplify get-app --app-id $APP_ID &> /dev/null; then
+        error "Aplicação com ID $APP_ID não encontrada ou sem permissão de acesso"
+        exit 1
     fi
+    
+    APP_NAME=$(aws amplify get-app --app-id $APP_ID --query 'app.name' --output text)
+    APP_STATUS=$(aws amplify get-app --app-id $APP_ID --query 'app.enableBranchAutoBuild' --output text)
+    
+    log "Aplicação: $APP_NAME"
+    log "Status: $APP_STATUS"
 }
 
-# Função para verificação DNS
-check_dns_resolution() {
-    log_step "2️⃣ Verificando resolução DNS..."
+# Verificar status da branch
+check_branch_status() {
+    log "Verificando status da branch $BRANCH..."
     
-    echo ""
-    echo "🔍 VERIFICAÇÃO DNS:"
-    echo "=================="
-    
-    # Verificar domínio principal
-    if nslookup "$DOMAIN" &> /dev/null; then
-        CURRENT_MAIN=$(nslookup "$DOMAIN" | grep "canonical name" | awk '{print $NF}')
-        if [ "$CURRENT_MAIN" = "$CLOUDFRONT" ]; then
-            log_success "Domínio principal ($DOMAIN) → $CURRENT_MAIN"
-        else
-            log_warning "Domínio principal ($DOMAIN) → $CURRENT_MAIN (esperado: $CLOUDFRONT)"
-        fi
-    else
-        log_error "Domínio principal ($DOMAIN) → Não resolve"
+    if ! aws amplify get-branch --app-id $APP_ID --branch-name $BRANCH &> /dev/null; then
+        error "Branch $BRANCH não encontrada"
+        exit 1
     fi
     
-    # Verificar subdomínio www
-    if nslookup "www.$DOMAIN" &> /dev/null; then
-        CURRENT_WWW=$(nslookup "www.$DOMAIN" | grep "canonical name" | awk '{print $NF}')
-        if [ "$CURRENT_WWW" = "$CLOUDFRONT" ]; then
-            log_success "Subdomínio www (www.$DOMAIN) → $CURRENT_WWW"
-        else
-            log_warning "Subdomínio www (www.$DOMAIN) → $CURRENT_WWW (esperado: $CLOUDFRONT)"
+    BRANCH_STATUS=$(aws amplify get-branch --app-id $APP_ID --branch-name $BRANCH --query 'branch.status' --output text)
+    BRANCH_ENV=$(aws amplify get-branch --app-id $APP_ID --branch-name $BRANCH --query 'branch.environmentVariables' --output json)
+    
+    log "Status da Branch: $BRANCH_STATUS"
+    log "Variáveis de Ambiente: $BRANCH_ENV"
+}
+
+# Verificar último job de build
+check_last_build() {
+    log "Verificando último job de build..."
+    
+    LAST_JOB=$(aws amplify list-jobs --app-id $APP_ID --branch-name $BRANCH --max-items 1 --query 'jobSummaries[0]' --output json)
+    
+    if [ "$LAST_JOB" != "null" ]; then
+        JOB_ID=$(echo $LAST_JOB | jq -r '.jobId')
+        JOB_STATUS=$(echo $LAST_JOB | jq -r '.status')
+        JOB_TYPE=$(echo $LAST_JOB | jq -r '.jobType')
+        JOB_START_TIME=$(echo $LAST_JOB | jq -r '.startTime')
+        
+        log "Último Job:"
+        log "  ID: $JOB_ID"
+        log "  Status: $JOB_STATUS"
+        log "  Tipo: $JOB_TYPE"
+        log "  Início: $JOB_START_TIME"
+        
+        # Verificar detalhes do job se estiver em execução
+        if [ "$JOB_STATUS" = "RUNNING" ] || [ "$JOB_STATUS" = "PENDING" ]; then
+            check_job_details $JOB_ID
         fi
     else
-        log_error "Subdomínio www (www.$DOMAIN) → Não resolve"
-    fi
-    
-    # Verificar registro de validação ACM
-    if nslookup "$ACM_VALIDATION_NAME" &> /dev/null; then
-        CURRENT_ACM=$(nslookup "$ACM_VALIDATION_NAME" | grep "canonical name" | awk '{print $NF}')
-        log_info "Validação ACM ($ACM_VALIDATION_NAME) → $CURRENT_ACM"
-    else
-        log_warning "Registro de validação ACM não encontrado"
+        warning "Nenhum job encontrado para a branch $BRANCH"
     fi
 }
 
-# Função para verificar status do certificado SSL
+# Verificar detalhes de um job específico
+check_job_details() {
+    local job_id=$1
+    log "Verificando detalhes do job $job_id..."
+    
+    JOB_DETAILS=$(aws amplify get-job --app-id $APP_ID --branch-name $BRANCH --job-id $job_id --output json)
+    
+    if [ "$JOB_DETAILS" != "null" ]; then
+        JOB_STATUS=$(echo $JOB_DETAILS | jq -r '.job.status')
+        JOB_STEPS=$(echo $JOB_DETAILS | jq -r '.job.steps')
+        
+        log "Status do Job: $JOB_STATUS"
+        log "Passos do Job: $JOB_STEPS"
+        
+        # Verificar logs se disponível
+        if [ "$JOB_STATUS" = "RUNNING" ] || [ "$JOB_STATUS" = "FAILED" ]; then
+            check_job_logs $job_id
+        fi
+    fi
+}
+
+# Verificar logs de um job
+check_job_logs() {
+    local job_id=$1
+    log "Verificando logs do job $job_id..."
+    
+    # Tentar obter logs (pode não estar disponível imediatamente)
+    if aws amplify get-job --app-id $APP_ID --branch-name $BRANCH --job-id $job_id --query 'job.steps[].logUrl' --output text | grep -q "http"; then
+        LOG_URLS=$(aws amplify get-job --app-id $APP_ID --branch-name $BRANCH --job-id $job_id --query 'job.steps[].logUrl' --output text)
+        log "URLs dos Logs: $LOG_URLS"
+    else
+        info "Logs ainda não disponíveis para este job"
+    fi
+}
+
+# Verificar domínio personalizado
+check_custom_domain() {
+    log "Verificando domínio personalizado..."
+    
+    DOMAINS=$(aws amplify list-domain-associations --app-id $APP_ID --output json)
+    
+    if [ "$DOMAINS" != "null" ] && [ "$(echo $DOMAINS | jq '.domainAssociations | length')" -gt 0 ]; then
+        log "Domínios associados:"
+        echo $DOMAINS | jq -r '.domainAssociations[].domainName'
+        
+        # Verificar status de cada domínio
+        echo $DOMAINS | jq -r '.domainAssociations[] | "\(.domainName): \(.status)"'
+    else
+        info "Nenhum domínio personalizado configurado"
+    fi
+}
+
+# Verificar certificado SSL
 check_ssl_certificate() {
-    log_step "3️⃣ Verificando status do certificado SSL..."
+    log "Verificando certificado SSL..."
     
-    # Verificar certificados ACM na região us-east-1 (global)
-    if aws acm list-certificates --region us-east-1 --query 'CertificateSummaryList[?DomainName==`'"$DOMAIN"'`]' --output text &> /dev/null; then
-        CERT_ARN=$(aws acm list-certificates --region us-east-1 --query 'CertificateSummaryList[?DomainName==`'"$DOMAIN"'`].CertificateArn' --output text)
+    # Verificar se o domínio tem certificado válido
+    if command -v openssl &> /dev/null; then
+        if openssl s_client -connect $DOMAIN:443 -servername $DOMAIN < /dev/null 2>/dev/null | openssl x509 -noout -dates &> /dev/null; then
+            CERT_DATES=$(openssl s_client -connect $DOMAIN:443 -servername $DOMAIN < /dev/null 2>/dev/null | openssl x509 -noout -dates)
+            log "Certificado SSL válido:"
+            echo "$CERT_DATES"
+        else
+            warning "Não foi possível verificar o certificado SSL"
+        fi
+    else
+        info "OpenSSL não disponível para verificação de certificado"
+    fi
+}
+
+# Verificar conectividade
+check_connectivity() {
+    log "Verificando conectividade..."
+    
+    # Verificar se o domínio responde
+    if command -v curl &> /dev/null; then
+        HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://$DOMAIN")
+        if [ "$HTTP_STATUS" = "200" ]; then
+            log "✅ Domínio responde com status HTTP $HTTP_STATUS"
+        else
+            warning "⚠️ Domínio responde com status HTTP $HTTP_STATUS"
+        fi
+    else
+        info "curl não disponível para verificação de conectividade"
+    fi
+    
+    # Verificar tempo de resposta
+    if command -v ping &> /dev/null; then
+        PING_RESULT=$(ping -c 1 $DOMAIN 2>/dev/null | grep "time=" | cut -d "=" -f4)
+        if [ ! -z "$PING_RESULT" ]; then
+            log "Tempo de resposta: $PING_RESULT"
+        fi
+    fi
+}
+
+# Verificar recursos AWS relacionados
+check_aws_resources() {
+    log "Verificando recursos AWS relacionados..."
+    
+    # Verificar CloudFront (se usado)
+    if aws cloudfront list-distributions --query "DistributionList.Items[?contains(Comment, '$APP_ID')]" --output json | jq -e '.[0]' &> /dev/null; then
+        CLOUDFRONT_ID=$(aws cloudfront list-distributions --query "DistributionList.Items[?contains(Comment, '$APP_ID')].Id" --output text)
+        log "CloudFront Distribution: $CLOUDFRONT_ID"
+    fi
+    
+    # Verificar S3 (se usado)
+    if aws s3 ls "s3://$APP_ID" &> /dev/null; then
+        log "Bucket S3 encontrado: $APP_ID"
+    fi
+}
+
+# Verificar métricas de performance
+check_performance() {
+    log "Verificando métricas de performance..."
+    
+    # Verificar se CloudWatch está disponível
+    if aws cloudwatch list-metrics --namespace "AWS/Amplify" --metric-name "BuildDuration" &> /dev/null; then
+        log "Métricas CloudWatch disponíveis"
         
-        if [ -n "$CERT_ARN" ]; then
-            log_success "Certificado encontrado: $CERT_ARN"
-            
-            # Obter status detalhado do certificado
-            CERT_STATUS=$(aws acm describe-certificate --region us-east-1 --certificate-arn "$CERT_ARN" --query 'Certificate.Status' --output text)
-            log_info "Status do certificado: $CERT_STATUS"
-            
-            if [ "$CERT_STATUS" = "ISSUED" ]; then
-                log_success "Certificado SSL: Válido e emitido!"
-            elif [ "$CERT_STATUS" = "PENDING_VALIDATION" ]; then
-                log_warning "Certificado SSL: Aguardando validação DNS"
-            elif [ "$CERT_STATUS" = "FAILED" ]; then
-                log_error "Certificado SSL: Falha na validação"
-            else
-                log_warning "Certificado SSL: Status desconhecido ($CERT_STATUS)"
-            fi
-        else
-            log_warning "Nenhum certificado encontrado para o domínio"
-        fi
-    else
-        log_warning "Não foi possível verificar certificados ACM"
-    fi
-}
-
-# Função para teste HTTP das URLs
-test_http_urls() {
-    log_step "4️⃣ Testando conectividade HTTP..."
-    
-    echo ""
-    echo "🌐 TESTE DE CONECTIVIDADE:"
-    echo "==========================="
-    
-    # Testar domínio principal
-    log_info "Testando https://$DOMAIN..."
-    if curl -I "https://$DOMAIN" --max-time 10 --silent &> /dev/null; then
-        HTTP_CODE=$(curl -I "https://$DOMAIN" --max-time 10 --silent -w "%{http_code}" -o /dev/null)
-        if [ "$HTTP_CODE" = "200" ]; then
-            log_success "Domínio principal: HTTP $HTTP_CODE - Funcionando!"
-        else
-            log_warning "Domínio principal: HTTP $HTTP_CODE - Responde mas com status diferente"
-        fi
-    else
-        log_error "Domínio principal: Não responde ou timeout"
-    fi
-    
-    # Testar subdomínio www
-    log_info "Testando https://www.$DOMAIN..."
-    if curl -I "https://www.$DOMAIN" --max-time 10 --silent &> /dev/null; then
-        HTTP_CODE=$(curl -I "https://www.$DOMAIN" --max-time 10 --silent -w "%{http_code}" -o /dev/null)
-        if [ "$HTTP_CODE" = "200" ]; then
-            log_success "Subdomínio www: HTTP $HTTP_CODE - Funcionando!"
-        else
-            log_warning "Subdomínio www: HTTP $HTTP_CODE - Responde mas com status diferente"
-        fi
-    else
-        log_error "Subdomínio www: Não responde ou timeout"
-    fi
-    
-    # Testar subdomínio app
-    log_info "Testando https://app.$DOMAIN..."
-    if curl -I "https://app.$DOMAIN" --max-time 10 --silent &> /dev/null; then
-        HTTP_CODE=$(curl -I "https://app.$DOMAIN" --max-time 10 --silent -w "%{http_code}" -o /dev/null)
-        if [ "$HTTP_CODE" = "200" ]; then
-            log_success "Subdomínio app: HTTP $HTTP_CODE - Funcionando!"
-        else
-            log_warning "Subdomínio app: HTTP $HTTP_CODE - Responde mas com status diferente"
-        fi
-    else
-        log_error "Subdomínio app: Não responde ou timeout"
-    fi
-}
-
-# Função para verificar status do build mais recente
-check_latest_build() {
-    log_step "5️⃣ Verificando status do build mais recente..."
-    
-    if aws amplify list-jobs --app-id "$AMPLIFY_APP_ID" --branch-name main --region "$REGION" --max-items 1 &> /dev/null; then
-        LATEST_JOB_ID=$(aws amplify list-jobs --app-id "$AMPLIFY_APP_ID" --branch-name main --region "$REGION" --max-items 1 --query 'jobSummaries[0].jobId' --output text)
+        # Tentar obter métricas recentes
+        METRICS=$(aws cloudwatch get-metric-statistics \
+            --namespace "AWS/Amplify" \
+            --metric-name "BuildDuration" \
+            --dimensions Name=AppId,Value=$APP_ID \
+            --start-time $(date -u -d '1 hour ago' +%Y-%m-%dT%H:%M:%S) \
+            --end-time $(date -u +%Y-%m-%dT%H:%M:%S) \
+            --period 3600 \
+            --statistics Average \
+            --output json)
         
-        if [ "$LATEST_JOB_ID" != "None" ] && [ -n "$LATEST_JOB_ID" ]; then
-            log_info "Job ID mais recente: $LATEST_JOB_ID"
-            
-            # Obter status do job
-            JOB_STATUS=$(aws amplify get-job --app-id "$AMPLIFY_APP_ID" --branch-name main --job-id "$LATEST_JOB_ID" --region "$REGION" --query 'job.summary.status' --output text)
-            log_info "Status do job: $JOB_STATUS"
-            
-            if [ "$JOB_STATUS" = "SUCCEED" ]; then
-                log_success "Build mais recente: Sucesso!"
-            elif [ "$JOB_STATUS" = "FAILED" ]; then
-                log_error "Build mais recente: Falhou!"
-            elif [ "$JOB_STATUS" = "RUNNING" ]; then
-                log_warning "Build mais recente: Em execução"
-            else
-                log_warning "Build mais recente: Status desconhecido ($JOB_STATUS)"
-            fi
-        else
-            log_warning "Nenhum job encontrado"
+        if [ "$METRICS" != "null" ] && [ "$(echo $METRICS | jq '.Datapoints | length')" -gt 0 ]; then
+            AVG_DURATION=$(echo $METRICS | jq -r '.Datapoints[0].Average')
+            log "Duração média de build (última hora): ${AVG_DURATION}s"
         fi
     else
-        log_warning "Não foi possível verificar jobs do Amplify"
-    fi
-}
-
-# Função para mostrar resumo
-show_summary() {
-    echo ""
-    echo "📊 RESUMO DA VERIFICAÇÃO:"
-    echo "=========================="
-    echo "  ✅ Sucessos: $SUCCESS_COUNT"
-    echo "  ❌ Erros: $ERROR_COUNT"
-    echo "  ⚠️  Avisos: $WARNING_COUNT"
-    echo ""
-    
-    if [ $ERROR_COUNT -eq 0 ] && [ $WARNING_COUNT -eq 0 ]; then
-        log_success "Tudo funcionando perfeitamente! 🎉"
-        echo ""
-        echo "🌐 URLs funcionando:"
-        echo "  ✅ https://$DOMAIN"
-        echo "  ✅ https://www.$DOMAIN"
-        echo "  ✅ https://app.$DOMAIN"
-    elif [ $ERROR_COUNT -eq 0 ]; then
-        log_warning "Alguns avisos, mas sem erros críticos"
-        echo ""
-        echo "🔧 AÇÕES RECOMENDADAS:"
-        echo "1. Aguarde propagação completa do DNS (5-10 minutos)"
-        echo "2. Execute novamente: ./verify-amplify-status.sh"
-    else
-        log_error "Encontrados erros que precisam ser corrigidos"
-        echo ""
-        echo "🔧 AÇÕES RECOMENDADAS:"
-        echo "1. Execute: ./fix-amplify-dns.sh"
-        echo "2. Aguarde propagação DNS (5-10 minutos)"
-        echo "3. Execute novamente: ./verify-amplify-status.sh"
+        info "Métricas CloudWatch não disponíveis"
     fi
 }
 
 # Função principal
 main() {
-    echo ""
-    echo "🔍 AGROTM - VERIFICAÇÃO COMPLETA DE STATUS AWS AMPLIFY"
-    echo "======================================================"
-    echo "📋 Configurações:"
-    echo "  Hosted Zone ID: $HOSTED_ZONE_ID"
-    echo "  Região: $REGION"
-    echo "  App ID: $AMPLIFY_APP_ID"
-    echo "  Domínio: $DOMAIN"
-    echo "  CloudFront: $CLOUDFRONT"
-    echo ""
+    log "🔍 AGROISYNC - VERIFICAÇÃO COMPLETA DE STATUS AWS AMPLIFY"
+    log "=========================================================="
     
-    # Verificações iniciais
+    # Verificações prévias
+    check_aws_cli
+    check_jq
     check_aws_config
     
-    echo ""
-    echo "🔍 INICIANDO VERIFICAÇÕES..."
-    echo "============================="
+    log ""
     
-    # Executar verificações
-    check_amplify_domain_status
-    check_dns_resolution
+    # Verificações principais
+    check_app_status
+    check_branch_status
+    check_last_build
+    check_custom_domain
     check_ssl_certificate
-    test_http_urls
-    check_latest_build
+    check_connectivity
+    check_aws_resources
+    check_performance
     
-    # Mostrar resumo
-    show_summary
+    log ""
+    log "✅ Verificação completa finalizada!"
+    log "Para mais detalhes, consulte o console AWS Amplify:"
+    log "https://console.aws.amazon.com/amplify/home"
 }
 
 # Executar função principal

@@ -1,121 +1,132 @@
-# GitHub Actions Secrets Configuration
+# AGROISYNC - GitHub Secrets Configuration
 
-Este documento lista todos os secrets necessários para os workflows CI/CD do AGROTM na AWS.
+Este documento lista todos os secrets necessários para os workflows CI/CD do AGROISYNC na AWS.
 
-## ⚠️ IMPORTANTE: Como Usar Secrets Corretamente
+## 🔐 Secrets Obrigatórios
 
-### ❌ ERRADO - Não declare secrets no env global:
-```yaml
-env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}  # Isso causará erros!
+### AWS Credentials
+- **AWS_ACCESS_KEY_ID**: Chave de acesso AWS
+- **AWS_SECRET_ACCESS_KEY**: Chave secreta AWS
+- **AWS_REGION**: Região AWS (ex: us-east-1, eu-west-1)
+
+### AWS Amplify
+- **AMPLIFY_APP_ID**: ID da aplicação Amplify
+- **AMPLIFY_BRANCH_NAME**: Nome da branch (ex: main, develop)
+
+### AWS ECS
+- **ECS_CLUSTER_NAME**: Nome do cluster ECS
+- **ECS_SERVICE_NAME**: Nome do serviço ECS
+- **ECS_TASK_DEFINITION**: Nome da definição de task ECS
+
+### AWS ECR
+- **ECR_REPOSITORY**: Nome do repositório ECR
+- **ECR_REGISTRY**: URL do registro ECR
+
+### AWS RDS
+- **RDS_HOST**: Endpoint do banco de dados RDS
+- **RDS_PORT**: Porta do banco de dados (ex: 5432)
+- **RDS_DATABASE**: Nome do banco de dados
+- **RDS_USERNAME**: Usuário do banco de dados
+
+### AWS ElastiCache
+- **REDIS_HOST**: Endpoint do Redis ElastiCache
+- **REDIS_PORT**: Porta do Redis (ex: 6379)
+
+### AWS S3
+- **S3_BUCKET**: Nome do bucket S3
+- **S3_REGION**: Região do bucket S3
+
+### JWT e Segurança
+- **JWT_SECRET**: Chave secreta para JWT
+- **JWT_EXPIRES_IN**: Tempo de expiração JWT (ex: 24h)
+
+### Email
+- **SMTP_HOST**: Servidor SMTP
+- **SMTP_PORT**: Porta SMTP (ex: 587)
+- **SMTP_USER**: Usuário SMTP
+- **SMTP_PASS**: Senha SMTP
+
+### Monitoramento
+- **SENTRY_DSN**: DSN do Sentry para monitoramento de erros
+- **NEW_RELIC_LICENSE_KEY**: Chave de licença New Relic
+
+### Blockchain
+- **SOLANA_RPC_URL**: URL do RPC Solana
+- **SOLANA_PRIVATE_KEY**: Chave privada Solana (para transações)
+
+### APIs Externas
+- **WEATHER_API_KEY**: Chave da API de clima
+- **COMMODITIES_API_KEY**: Chave da API de commodities
+- **PRICES_API_KEY**: Chave da API de preços
+
+## 📋 Como Configurar
+
+### 1. Acesse o Repositório
+Vá para: https://github.com/lp24213/agroisync/settings/secrets/actions
+
+### 2. Adicione os Secrets
+Para cada secret listado acima:
+1. Clique em "New repository secret"
+2. Digite o nome do secret
+3. Digite o valor do secret
+4. Clique em "Add secret"
+
+### 3. Verifique a Configuração
+Após adicionar todos os secrets, verifique se estão configurados corretamente.
+
+## 🔒 Segurança
+
+- **NUNCA** commite secrets no código
+- **NUNCA** compartilhe secrets publicamente
+- Use variáveis de ambiente para desenvolvimento local
+- Rotacione as chaves AWS regularmente
+
+## 🚨 Troubleshooting
+
+### Secret não encontrado
 ```
-
-### ✅ CORRETO - Use secrets em steps individuais:
-```yaml
-jobs:
-  deploy:
-    steps:
-      - name: Deploy to AWS
-        run: aws deploy --region ${{ secrets.AWS_REGION }}
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+Error: Secret 'SECRET_NAME' not found
 ```
+**Solução**: Verifique se o secret foi adicionado corretamente no GitHub.
 
-## 🔧 CONFIGURAÇÃO DOS SECRETS
-
-### PASSO 1: Criar Secrets no GitHub
-No seu repositório do GitHub, vá em:
-**Settings > Secrets and variables > Actions > New repository secret**
-
-### PASSO 2: Criar TODOS estes secrets (copie exatamente os nomes!)
-
-#### **Essenciais (Obrigatórios):**
+### Permissão negada
 ```
-AWS_ACCESS_KEY_ID
-AWS_SECRET_ACCESS_KEY
-AWS_REGION
+Error: AccessDenied: User is not authorized
 ```
+**Solução**: Verifique se as credenciais AWS têm as permissões necessárias.
 
-#### **Opcionais (Funcionalidades extras):**
+### Região incorreta
 ```
-SNYK_TOKEN
-SLACK_WEBHOOK_URL
-ANCHOR_PROVIDER_URL
-ANCHOR_WALLET
-INFURA_URL
-PRIVATE_KEY
-BACKEND_URL
-PRODUCTION_URL
-SMTP_SERVER
-SMTP_PORT
-SMTP_USERNAME
-SMTP_PASSWORD
-NOTIFICATION_EMAIL
+Error: Could not connect to endpoint
 ```
+**Solução**: Verifique se a região AWS está configurada corretamente.
 
-## 📋 Lista Completa de Secrets
+## 📚 Links Úteis
 
-### AWS Deployment
-- `AWS_ACCESS_KEY_ID` - Chave de acesso AWS para deploy
-- `AWS_SECRET_ACCESS_KEY` - Chave secreta AWS para deploy
-- `AWS_REGION` - Região AWS (ex: us-east-1)
-
-### Security Scanning
-- `SNYK_TOKEN` - Token do Snyk para análise de segurança (opcional)
-
-### Notifications
-- `SLACK_WEBHOOK_URL` - URL do webhook Slack para notificações (opcional)
-
-### Web3 & Blockchain
-- `ANCHOR_PROVIDER_URL` - URL do provider Anchor para Solana
-- `ANCHOR_WALLET` - Caminho da wallet Anchor
-- `INFURA_URL` - URL do Infura para Ethereum
-- `PRIVATE_KEY` - Chave privada para deploy de contratos
-
-### Environment URLs
-- `BACKEND_URL` - URL da API backend na AWS
-- `PRODUCTION_URL` - URL do frontend em produção na AWS
-
-### Email Configuration
-- `SMTP_SERVER` - Servidor SMTP para notificações por email
-- `SMTP_PORT` - Porta SMTP
-- `SMTP_USERNAME` - Usuário SMTP
-- `SMTP_PASSWORD` - Senha SMTP
-- `NOTIFICATION_EMAIL` - Email para notificações
-
-## 🚀 Estrutura dos Workflows
-
-### **Build-and-Deploy Job:** Checkout → Setup Node → Install → Build → Snyk → Deploy AWS → Notificar Slack
-
-## 📊 Status dos Secrets
-
-### ✅ **Configurados:**
-- `AWS_ACCESS_KEY_ID` ✅
-- `AWS_SECRET_ACCESS_KEY` ✅
-- `AWS_REGION` ✅
-
-### ⚠️ **Pendentes:**
-- `SNYK_TOKEN` (opcional)
-- `SLACK_WEBHOOK_URL` (opcional)
-
-## 🔗 Links Úteis
-
-- **AWS Console**: https://aws.amazon.com/console/
+- **GitHub Secrets**: https://github.com/lp24213/agroisync/settings/secrets/actions
 - **AWS IAM**: https://console.aws.amazon.com/iam/
-- **GitHub Secrets**: https://github.com/lp24213/agrotm.sol/settings/secrets/actions
+- **AWS Amplify**: https://console.aws.amazon.com/amplify/
+- **AWS ECS**: https://console.aws.amazon.com/ecs/
 
-## 📝 Notas Importantes
+## ✅ Checklist de Configuração
 
-1. **AWS Amplify** fará deploy automático do frontend
-2. **AWS ECS/Lambda** será configurado separadamente para o backend
-3. **GitHub Actions** apenas valida builds e prepara para deploy
-4. **Secrets AWS** devem ter permissões mínimas necessárias
-5. **Região AWS** deve ser a mesma onde está configurado o Amplify
+- [ ] AWS Credentials configurados
+- [ ] AWS Amplify configurado
+- [ ] AWS ECS configurado
+- [ ] AWS ECR configurado
+- [ ] AWS RDS configurado
+- [ ] AWS ElastiCache configurado
+- [ ] AWS S3 configurado
+- [ ] JWT configurado
+- [ ] Email configurado
+- [ ] Monitoramento configurado
+- [ ] Blockchain configurado
+- [ ] APIs externas configuradas
 
-## 🎯 Próximos Passos
+## 🆘 Suporte
 
-1. ✅ Configurar secrets AWS no GitHub
-2. ✅ Configurar AWS Amplify para frontend
-3. ✅ Configurar AWS ECS/Lambda para backend
-4. ✅ Testar deploy completo na AWS 
+Se precisar de ajuda com a configuração dos secrets:
+1. Verifique a documentação AWS
+2. Consulte a equipe de DevOps
+3. Abra uma issue no GitHub
+4. Entre em contato: devops@agroisync.com 

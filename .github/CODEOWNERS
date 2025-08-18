@@ -1,58 +1,54 @@
-# These owners will be the default owners for everything in
-# the repo. Unless a later match takes precedence,
-# @global-owner1 and @global-owner2 will be requested for
-# review when someone opens a pull request.
+# CODEOWNERS - AGROISYNC Project
+# This file defines who is responsible for different parts of the codebase
 
-* @agrotm-team
+# Global ownership
+* @agroisync-team
 
-# Order is important; the last matching pattern takes precedence
-# over more general patterns.
+# Core application files
+/app/ @agroisync-core-team
+/components/ @agroisync-core-team
+/hooks/ @agroisync-core-team
+/utils/ @agroisync-core-team
+/types/ @agroisync-core-team
 
-# Core team owns the main application code
-/app/ @agrotm-core-team
-/components/ @agrotm-core-team
-/hooks/ @agrotm-core-team
-/utils/ @agrotm-core-team
-/types/ @agrotm-core-team
+# Security-related files
+/middlewares/security.ts @agroisync-security-team
+/services/security/ @agroisync-security-team
+/docs/security/ @agroisync-security-team
 
-# Security team owns security-related files
-/middlewares/security.ts @agrotm-security-team
-/services/security/ @agrotm-security-team
-/docs/security/ @agrotm-security-team
+# DevOps and deployment
+/.github/workflows/ @agroisync-devops-team
+/docker-compose*.yml @agroisync-devops-team
+/Dockerfile @agroisync-devops-team
+/amplify.yml @agroisync-devops-team
 
-# DevOps team owns infrastructure and deployment
-/.github/workflows/ @agrotm-devops-team
-/docker-compose*.yml @agrotm-devops-team
-/Dockerfile @agrotm-devops-team
-/amplify.yml @agrotm-devops-team
+# Documentation
+/docs/ @agroisync-docs-team
+/README.md @agroisync-docs-team
+/CHANGELOG.md @agroisync-docs-team
 
-# Documentation team owns docs
-/docs/ @agrotm-docs-team
-/README.md @agrotm-docs-team
-/CHANGELOG.md @agrotm-docs-team
+# Blockchain and smart contracts
+/contracts/ @agroisync-blockchain-team
+/src/contracts/ @agroisync-blockchain-team
 
-# Smart contracts team owns blockchain code
-/contracts/ @agrotm-blockchain-team
-/src/contracts/ @agrotm-blockchain-team
+# Frontend specific
+/frontend/ @agroisync-frontend-team
+/components/ui/ @agroisync-frontend-team
+/styles/ @agroisync-frontend-team
 
-# Frontend team owns UI components
-/frontend/ @agrotm-frontend-team
-/components/ui/ @agrotm-frontend-team
-/styles/ @agrotm-frontend-team
+# Backend specific
+/backend/ @agroisync-backend-team
+/microservices/ @agroisync-backend-team
+/services/ @agroisync-backend-team
 
-# Backend team owns API and services
-/backend/ @agrotm-backend-team
-/microservices/ @agrotm-backend-team
-/services/ @agrotm-backend-team
-
-# Testing team owns test files
-/tests/ @agrotm-testing-team
-/__tests__/ @agrotm-testing-team
-*.test.* @agrotm-testing-team
-*.spec.* @agrotm-testing-team
+# Testing
+/tests/ @agroisync-testing-team
+/__tests__/ @agroisync-testing-team
+*.test.* @agroisync-testing-team
+*.spec.* @agroisync-testing-team
 
 # Configuration files
-package.json @agrotm-core-team
-tsconfig.json @agrotm-core-team
-next.config.js @agrotm-core-team
-tailwind.config.js @agrotm-frontend-team 
+package.json @agroisync-core-team
+tsconfig.json @agroisync-core-team
+next.config.js @agroisync-core-team
+tailwind.config.js @agroisync-frontend-team 

@@ -1,7 +1,9 @@
-name: production
+name: Production Environment
+description: Production deployment environment for AGROISYNC
+workflows: ["AGROISYNC CI/CD Pipeline"]
 on:
   workflow_run:
-    workflows: ["AGROTM CI/CD Pipeline"]
+    workflows: ["AGROISYNC CI/CD Pipeline"]
     types:
       - completed
     branches: [main]

@@ -1,7 +1,9 @@
-name: staging
+name: Staging Environment
+description: Staging deployment environment for AGROISYNC
+workflows: ["AGROISYNC CI/CD Pipeline"]
 on:
   workflow_run:
-    workflows: ["AGROTM CI/CD Pipeline"]
+    workflows: ["AGROISYNC CI/CD Pipeline"]
     types:
       - completed
     branches: [develop]

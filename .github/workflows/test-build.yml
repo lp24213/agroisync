@@ -1,4 +1,4 @@
-name: Test Build AGROTM
+name: Test Build AGROISYNC
 
 on:
   pull_request:
