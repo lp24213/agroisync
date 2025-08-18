@@ -8,18 +8,9 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: false,
   },
-  experimental: {
-    forceSwcTransforms: true,
-  },
-  output: 'standalone',
-  trailingSlash: false,
-  generateBuildId: async () => {
-    return 'build-' + Date.now()
-  },
-  // Desabilitar export estático para resolver problemas de SSR
+  // Configurações simplificadas para evitar conflitos
   distDir: '.next',
   webpack: (config, { isServer }) => {
-    // Configuração profissional do webpack
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -28,12 +19,6 @@ const nextConfig = {
         tls: false,
       }
     }
-    
-    config.ignoreWarnings = [
-      { module: /node_modules/ },
-      { file: /node_modules/ },
-    ];
-    
     return config;
   },
 }

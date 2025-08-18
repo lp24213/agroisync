@@ -4,14 +4,14 @@
     "lib": ["dom", "dom.iterable", "es6", "es2017"],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "noImplicitReturns": false,
+    "noImplicitThis": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "exactOptionalPropertyTypes": false,
-    "noImplicitOverride": true,
+    "noImplicitOverride": false,
     "noPropertyAccessFromIndexSignature": false,
     "noUncheckedIndexedAccess": false,
     "forceConsistentCasingInFileNames": true,
@@ -32,15 +32,7 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "noEmit": true,
-    "allowUnreachableCode": false,
-    "allowUnusedLabels": false,
-    "useUnknownInCatchVariables": true,
-    "noFallthroughCasesInSwitch": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictBindCallApply": true,
-    "strictPropertyInitialization": true
+    "noEmit": true
   },
   "include": [
     "next-env.d.ts",

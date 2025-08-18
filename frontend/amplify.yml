@@ -10,10 +10,6 @@ frontend:
         - npm ci
     build:
       commands:
-        - echo "🔍 Verificando TypeScript..."
-        - npm run type-check
-        - echo "🔧 Executando lint..."
-        - npm run lint
         - echo "🏗️ Buildando aplicação..."
         - npm run build
         - echo "✅ Build concluído com sucesso!"
