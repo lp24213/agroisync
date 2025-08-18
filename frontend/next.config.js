@@ -1,18 +1,41 @@
 /** @type {import('next').NextConfig} */
-// CONFIGURAÇÃO DEFINITIVA PARA AMPLIFY - SEM ESLINT
 const nextConfig = {
-  reactStrictMode: false,
-  swcMinify: false,
-  eslint: {
-    ignoreDuringBuilds: true
-  },
+  reactStrictMode: true,
+  swcMinify: true,
   typescript: {
-    ignoreBuildErrors: true
+    ignoreBuildErrors: false,
+  },
+  eslint: {
+    ignoreDuringBuilds: false,
+  },
+  experimental: {
+    forceSwcTransforms: true,
   },
   output: 'standalone',
-  images: {
-    unoptimized: true
-  }
+  trailingSlash: false,
+  generateBuildId: async () => {
+    return 'build-' + Date.now()
+  },
+  // Desabilitar export estático para resolver problemas de SSR
+  distDir: '.next',
+  webpack: (config, { isServer }) => {
+    // Configuração profissional do webpack
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      }
+    }
+    
+    config.ignoreWarnings = [
+      { module: /node_modules/ },
+      { file: /node_modules/ },
+    ];
+    
+    return config;
+  },
 }
 
 module.exports = nextConfig

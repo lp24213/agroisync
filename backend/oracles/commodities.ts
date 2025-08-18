@@ -50,6 +50,7 @@ interface HistoricalPrice {
   high?: number;            // Preço máximo (opcional)
   low?: number;             // Preço mínimo (opcional)
   volume?: number;          // Volume negociado (opcional)
+  source?: string;          // Fonte dos dados (opcional)
 }
 
 interface CommodityPriceHistory {
@@ -97,7 +98,7 @@ const CHAINLINK_PRICE_FEED_ABI = [
 ];
 
 // Provedor Ethereum
-let provider: ethers.providers.JsonRpcProvider | null = null;
+let provider: ethers.JsonRpcProvider | null = null;
 
 /**
  * Inicializa o provedor Ethereum
@@ -106,7 +107,7 @@ function initProvider() {
   if (provider) return provider;
   
   const rpcUrl = process.env.ETH_RPC_URL || 'https://mainnet.infura.io/v3/your-infura-key';
-  provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+  provider = new ethers.JsonRpcProvider(rpcUrl);
   return provider;
 }
 
@@ -130,7 +131,7 @@ async function getChainlinkCommodityPrice(symbol: string): Promise<CommodityPric
     const description = await priceFeed.description();
     
     // Calcular preço real
-    const price = parseFloat(ethers.utils.formatUnits(answer, decimals));
+    const price = parseFloat(ethers.formatUnits(answer, decimals));
     
     // Obter dados anteriores para calcular a variação
     let change = 0;
@@ -190,7 +191,7 @@ async function getPriceHistoryFromChainlink(symbol: string, startTime: number): 
     // Obter preço atual
     const [roundId, answer, started, updatedAt, answeredInRound] = await priceFeed.latestRoundData();
     const decimals = await priceFeed.decimals();
-    const currentPrice = parseFloat(ethers.utils.formatUnits(answer, decimals));
+    const currentPrice = parseFloat(ethers.formatUnits(answer, decimals));
     
     // Simular histórico com variação aleatória
     const history: HistoricalPrice[] = [];

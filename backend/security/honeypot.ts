@@ -8,6 +8,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Redis } from '@upstash/redis';
 import { v4 as uuidv4 } from 'uuid';
 
+// Simple logger implementation
+const logger = {
+  warn: (message: string, ...args: any[]) => console.warn(`[HONEYPOT] ${message}`, ...args),
+  error: (message: string, ...args: any[]) => console.error(`[HONEYPOT] ${message}`, ...args),
+  info: (message: string, ...args: any[]) => console.info(`[HONEYPOT] ${message}`, ...args)
+};
+
 // Configuração do Redis para armazenamento de dados
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_URL || '',

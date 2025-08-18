@@ -3,8 +3,7 @@
 import { Pool } from 'pg';
 import { MongoClient } from 'mongodb';
 import { Redis } from 'ioredis';
-import * as fs from 'fs';
-import * as path from 'path';
+// Removed unused imports
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -653,7 +652,7 @@ async function main() {
     redis: {
       host: process.env.REDIS_HOST || 'localhost',
       port: parseInt(process.env.REDIS_PORT || '6379'),
-      password: process.env.REDIS_PASSWORD
+      password: process.env.REDIS_PASSWORD || undefined
     }
   };
 

@@ -98,7 +98,7 @@ app.get('/', (_req, res) => {
 });
 
 // Error handling middleware
-app.use((err: any, req: any, res: any, next: any) => {
+app.use((err: any, _req: any, res: any, _next: any) => {
   console.error('Unhandled error:', err);
 
   const errorResponse: any = {

@@ -1,223 +1,226 @@
-# AGROTM Backend API
+# AgroSync Backend
 
-Backend profissional e robusto para a plataforma AGROTM - Plataforma de Agronegócio com Blockchain.
+Backend da plataforma AgroSync com APIs RESTful, autenticação e integração blockchain.
 
-## 🚀 Características
+## 🚀 Tecnologias
 
-- **API RESTful** completa com autenticação JWT
-- **Sistema de logging** profissional com Winston
-- **Validação de dados** com express-validator
-- **Upload de arquivos** com Multer e Sharp
-- **Rate limiting** e segurança com Helmet
-- **Compressão** de respostas
-- **Health checks** para monitoramento
-- **Testes automatizados** com Jest
-- **Docker** configurado para produção
-- **Deploy automático** na AWS (ECS/Lambda)
+- **Node.js** - Runtime JavaScript
+- **TypeScript** - Tipagem estática
+- **Express.js** - Framework web
+- **PostgreSQL** - Banco de dados principal
+- **Redis** - Cache e sessões
+- **JWT** - Autenticação
+- **Helmet** - Segurança
+- **Rate Limiting** - Proteção contra ataques
 
-## 📋 Pré-requisitos
+## 📁 Estrutura do Projeto
 
-- Node.js >= 20.0.0
-- npm >= 8.0.0
-- PostgreSQL (opcional para desenvolvimento)
+```
+src/
+├── config/           # Configurações (DB, segurança, etc.)
+├── middleware/       # Middlewares Express
+├── models/          # Modelos de dados
+├── routes/          # Rotas da API
+├── types/           # Definições de tipos TypeScript
+└── utils/           # Utilitários e helpers
+```
 
 ## 🛠️ Instalação
 
 1. **Clone o repositório**
-```bash
-git clone https://github.com/lp24213/agrotm.sol.git
-cd agrotm.sol/backend
-```
+   ```bash
+   git clone <repository-url>
+   cd agroisync/backend
+   ```
 
 2. **Instale as dependências**
-```bash
-npm install
-```
+   ```bash
+   npm install
+   ```
 
 3. **Configure as variáveis de ambiente**
-```bash
-cp env.example .env
-# Edite o arquivo .env com suas configurações
-```
+   ```bash
+   cp env.example .env
+   # Edite .env com suas configurações
+   ```
 
-4. **Inicie o servidor**
-```bash
-# Desenvolvimento
-npm run dev
+4. **Configure o banco de dados**
+   ```bash
+   npm run db:setup
+   npm run db:migrate
+   npm run db:seed
+   ```
 
-# Produção
-npm start
-```
+5. **Execute o projeto**
+   ```bash
+   # Desenvolvimento
+   npm run dev
+   
+   # Produção
+   npm run build
+   npm start
+   ```
 
-## 🔧 Scripts Disponíveis
+## 📜 Scripts Disponíveis
 
-```bash
-# Desenvolvimento
-npm run dev          # Inicia o servidor com nodemon
-npm run build        # Build do projeto
-npm run test         # Executa os testes
-npm run test:watch   # Executa os testes em modo watch
-npm run test:coverage # Executa os testes com cobertura
+- `npm run dev` - Inicia o servidor de desenvolvimento
+- `npm run build` - Constrói o projeto para produção
+- `npm start` - Inicia o servidor de produção
+- `npm run type-check` - Verifica tipos TypeScript
+- `npm run type-check:final` - Verifica tipos para produção
+- `npm run db:setup` - Configura o banco de dados
+- `npm run db:migrate` - Executa migrações
+- `npm run db:seed` - Popula o banco com dados iniciais
 
-# Qualidade de código
-npm run lint         # Executa o ESLint
-npm run lint:fix     # Corrige problemas do ESLint
-npm run format       # Formata o código com Prettier
-
-# Segurança
-npm run security     # Verifica vulnerabilidades
-npm run security:fix # Corrige vulnerabilidades
-
-# Docker
-npm run docker:build # Build da imagem Docker
-npm run docker:run   # Executa o container Docker
-
-# Utilitários
-npm run health       # Testa o health check
-```
-
-## 📚 Endpoints da API
+## 🌐 APIs Disponíveis
 
 ### Autenticação
 - `POST /api/auth/login` - Login de usuário
 - `POST /api/auth/register` - Registro de usuário
-- `POST /api/auth/refresh` - Renovar token
 - `POST /api/auth/logout` - Logout
-- `GET /api/auth/me` - Obter usuário atual
+- `GET /api/auth/me` - Dados do usuário atual
 
 ### Usuários
-- `GET /api/users/profile` - Obter perfil do usuário
-- `PUT /api/users/profile` - Atualizar perfil
-- `GET /api/users/wallet` - Obter carteira do usuário
-
-### Staking
-- `GET /api/staking/pools` - Listar pools de staking
-- `GET /api/staking/pools/:id` - Obter pool específico
-- `POST /api/staking/stake` - Fazer staking
-- `POST /api/staking/unstake` - Remover staking
-- `GET /api/staking/rewards` - Obter recompensas
-- `GET /api/staking/history` - Histórico de staking
+- `GET /api/users` - Lista usuários
+- `GET /api/users/:id` - Dados de um usuário
+- `PUT /api/users/:id` - Atualiza usuário
+- `DELETE /api/users/:id` - Remove usuário
 
 ### NFTs
-- `GET /api/nfts` - Listar NFTs
-- `GET /api/nfts/:id` - Obter NFT específico
-- `POST /api/nfts/mint` - Mintar NFT
-- `PUT /api/nfts/:id` - Atualizar NFT
-- `POST /api/nfts/:id/transfer` - Transferir NFT
-- `GET /api/nfts/user/:wallet` - NFTs do usuário
+- `GET /api/nfts` - Lista NFTs
+- `POST /api/nfts` - Cria novo NFT
+- `GET /api/nfts/:id` - Dados de um NFT
+- `PUT /api/nfts/:id` - Atualiza NFT
+- `DELETE /api/nfts/:id` - Remove NFT
 
-### Analytics
-- `GET /api/analytics/dashboard` - Dados do dashboard
-- `GET /api/analytics/portfolio` - Portfólio do usuário
-- `GET /api/analytics/market` - Dados de mercado
-- `GET /api/analytics/staking` - Analytics de staking
+### Staking
+- `GET /api/staking` - Lista pools de staking
+- `POST /api/staking` - Cria novo stake
+- `GET /api/staking/user-stakes` - Stakes do usuário
+- `DELETE /api/staking/:id` - Remove stake
 
-### Contato
-- `POST /api/contact` - Enviar mensagem de contato
-- `GET /api/contact/info` - Informações de contato
-- `POST /api/contact/support` - Solicitar suporte
+### Marketplace
+- `GET /api/marketplace` - Lista produtos
+- `POST /api/marketplace` - Adiciona produto
+- `GET /api/marketplace/:id` - Dados de um produto
+- `PUT /api/marketplace/:id` - Atualiza produto
 
 ### Upload
-- `POST /api/upload/image` - Upload de imagem
-- `POST /api/upload/images` - Upload múltiplas imagens
-- `POST /api/upload/document` - Upload de documento
-- `DELETE /api/upload/:filename` - Deletar arquivo
-- `GET /api/upload/files` - Listar arquivos
+- `POST /api/upload` - Upload de arquivo
+- `GET /api/upload` - Lista arquivos
 
-### Health Check
-- `GET /health` - Health check básico
-- `GET /api/health/detailed` - Health check detalhado
-- `GET /api/health/ready` - Verificação de readiness
-- `GET /api/health/live` - Verificação de liveness
+### Analytics
+- `GET /api/analytics` - Estatísticas gerais
+- `GET /api/analytics/recent-activity` - Atividade recente
 
-### Documentação
-- `GET /api/docs` - Documentação da API
-- `GET /` - Informações da API
+## 🔧 Configurações
+
+### Banco de Dados
+- **PostgreSQL** para dados principais
+- **Redis** para cache e sessões
+- Migrações automáticas
+- Seeds para dados iniciais
+
+### Segurança
+- **Helmet** para headers de segurança
+- **Rate Limiting** para proteção contra ataques
+- **CORS** configurado adequadamente
+- **JWT** para autenticação
+- Validação de entrada em todas as rotas
+
+### Performance
+- **Compression** para respostas
+- **Caching** com Redis
+- **Connection pooling** para banco de dados
+- **Logging** estruturado
+
+## 🚀 Deploy
+
+### Docker
+```bash
+docker build -t agroisync-backend .
+docker run -p 3001:3001 agroisync-backend
+```
+
+### AWS ECS
+1. Configure o ECS cluster
+2. Crie a task definition
+3. Configure o load balancer
+4. Deploy automático
+
+### Heroku
+1. Conecte ao Heroku
+2. Configure as variáveis de ambiente
+3. Deploy automático
 
 ## 🔒 Segurança
 
 - **Helmet** para headers de segurança
-- **CORS** configurado
-- **Rate limiting** para prevenir abuso
-- **Validação de entrada** com express-validator
-- **Autenticação JWT** com expiração
-- **Sanitização de dados**
-- **Logs de auditoria**
-
-## 🧪 Testes
-
-```bash
-# Executar todos os testes
-npm test
-
-# Executar testes com cobertura
-npm run test:coverage
-
-# Executar testes em modo watch
-npm run test:watch
-```
-
-## 🐳 Docker
-
-```bash
-# Build da imagem
-npm run docker:build
-
-# Executar container
-npm run docker:run
-
-# Ou usar docker-compose
-docker-compose up -d
-```
-
-## 🚀 Deploy
-
-### AWS (ECS/ECR ou Lambda + API Gateway)
-O projeto está configurado para deploy na AWS:
-
-1. Build e push da imagem para o ECR via GitHub Actions
-2. Atualização da Task Definition do ECS Service
-3. Uso de Secrets Manager/SSM para segredos
-
-### Variáveis de Ambiente Necessárias
-
-```env
-NODE_ENV=production
-PORT=3001
-JWT_SECRET=your-secret-key
-DB_HOST=your-db-host
-DB_PORT=5432
-DB_NAME=your-db-name
-DB_USER=your-db-user
-DB_PASSWORD=your-db-password
-CORS_ORIGIN=https://your-frontend-domain.com
-```
+- **Rate Limiting** para proteção contra DDoS
+- **CORS** configurado adequadamente
+- **JWT** com expiração configurável
+- **Validação** de entrada em todas as rotas
+- **Sanitização** de dados
+- **Logs** de auditoria
 
 ## 📊 Monitoramento
 
+- **Logs** estruturados
+- **Métricas** de performance
+- **Alertas** configuráveis
 - **Health checks** automáticos
-- **Logs estruturados** com Winston
-- **Métricas de performance**
-- **Tratamento de erros** centralizado
+
+## 🧪 Testes
+
+- **Jest** para testes unitários
+- **Supertest** para testes de API
+- **Coverage** reports
+- **Mocks** para dependências externas
+
+## 📈 Performance
+
+- **Connection pooling** para banco de dados
+- **Caching** com Redis
+- **Compression** de respostas
+- **Rate limiting** inteligente
+- **Logging** assíncrono
 
 ## 🤝 Contribuição
 
 1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
+2. Crie uma branch para sua feature
+3. Commit suas mudanças
+4. Push para a branch
 5. Abra um Pull Request
 
 ## 📄 Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+Este projeto está sob a licença MIT.
 
 ## 📞 Suporte
 
-- **Email**: contato@agrotm.com.br
-- **WhatsApp**: +55 (66) 99236-2830
-- **Documentação**: `/api/docs`
+- **Email**: contato@agroisync.com
+- **Documentação**: [docs.agroisync.com](https://docs.agroisync.com)
+- **Issues**: [GitHub Issues](https://github.com/agroisync/backend/issues)
+
+## 🔄 Changelog
+
+### v1.0.0
+- ✅ API RESTful completa
+- ✅ Autenticação JWT
+- ✅ Sistema de usuários
+- ✅ CRUD de NFTs
+- ✅ Sistema de staking
+- ✅ Marketplace
+- ✅ Upload de arquivos
+- ✅ Analytics
+- ✅ Segurança configurada
+- ✅ Banco de dados configurado
+- ✅ Cache Redis
+- ✅ Logging estruturado
+- ✅ Testes configurados
+- ✅ Deploy configurado
 
 ---
 
-**Desenvolvido com ❤️ para AGROTM** 
+**Desenvolvido com ❤️ pela equipe AgroSync** 

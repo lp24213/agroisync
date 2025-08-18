@@ -1,185 +1,105 @@
 version: '3.8'
 
 services:
-  # AGROTM Backend API
-  agrotm-backend:
+  # Backend API
+  backend:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: agrotm-backend
+    container_name: agroisync-backend
+    restart: unless-stopped
     ports:
       - "3001:3001"
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
       - PORT=3001
-      - MONGODB_URI=mongodb://mongodb:27017/agrotm
-      - REDIS_URL=redis://redis:6379
-      - JWT_SECRET=dev-jwt-secret-change-in-production
-      - SOLANA_NETWORK=devnet
-      - SOLANA_RPC_URL=https://api.devnet.solana.com
-      - FRONTEND_URL=http://localhost:3000
-      - LOG_LEVEL=debug
-    volumes:
-      - ./src:/app/src
-      - ./logs:/app/logs
-      - node_modules:/app/node_modules
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=agroisync
+      - DB_USER=agroisync
+      - DB_PASSWORD=agroisync_password
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_SECRET=your-super-secret-jwt-key-change-in-production
+      - CORS_ORIGIN=http://localhost:3000,https://agroisync.com
     depends_on:
-      - mongodb
+      - postgres
       - redis
+    volumes:
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
     networks:
-      - agrotm-network
-    restart: unless-stopped
+      - agroisync-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
 
-  # MongoDB Database
-  mongodb:
-    image: mongo:7.0
-    container_name: agrotm-mongodb
-    ports:
-      - "27017:27017"
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=agrotm123
-      - MONGO_INITDB_DATABASE=agrotm
-    volumes:
-      - mongodb_data:/data/db
-      - ./database/init:/docker-entrypoint-initdb.d
-    networks:
-      - agrotm-network
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: agroisync-postgres
     restart: unless-stopped
+    environment:
+      - POSTGRES_DB=agroisync
+      - POSTGRES_USER=agroisync
+      - POSTGRES_PASSWORD=agroisync_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - agroisync-network
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      test: ["CMD-SHELL", "pg_isready -U agroisync -d agroisync"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
 
   # Redis Cache
   redis:
-    image: redis:7.2-alpine
-    container_name: agrotm-redis
+    image: redis:7-alpine
+    container_name: agroisync-redis
+    restart: unless-stopped
     ports:
       - "6379:6379"
-    command: redis-server --appendonly yes --requirepass agrotm123
     volumes:
       - redis_data:/data
     networks:
-      - agrotm-network
-    restart: unless-stopped
+      - agroisync-network
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ["CMD", "redis-cli", "ping"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
 
-  # MongoDB Express (Admin UI)
-  mongo-express:
-    image: mongo-express:1.0.0
-    container_name: agrotm-mongo-express
-    ports:
-      - "8081:8081"
-    environment:
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=agrotm123
-      - ME_CONFIG_MONGODB_URL=mongodb://admin:agrotm123@mongodb:27017/
-      - ME_CONFIG_BASICAUTH_USERNAME=admin
-      - ME_CONFIG_BASICAUTH_PASSWORD=agrotm123
-    depends_on:
-      - mongodb
-    networks:
-      - agrotm-network
-    restart: unless-stopped
-
-  # Redis Commander (Admin UI)
-  redis-commander:
-    image: rediscommander/redis-commander:latest
-    container_name: agrotm-redis-commander
-    ports:
-      - "8082:8081"
-    environment:
-      - REDIS_HOSTS=local:redis:6379:0:agrotm123
-    depends_on:
-      - redis
-    networks:
-      - agrotm-network
-    restart: unless-stopped
-
-  # Prometheus (Metrics)
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: agrotm-prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/etc/prometheus/console_libraries'
-      - '--web.console.templates=/etc/prometheus/consoles'
-      - '--storage.tsdb.retention.time=200h'
-      - '--web.enable-lifecycle'
-    networks:
-      - agrotm-network
-    restart: unless-stopped
-
-  # Grafana (Dashboard)
-  grafana:
-    image: grafana/grafana:latest
-    container_name: agrotm-grafana
-    ports:
-      - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=agrotm123
-      - GF_USERS_ALLOW_SIGN_UP=false
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
-      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
-    depends_on:
-      - prometheus
-    networks:
-      - agrotm-network
-    restart: unless-stopped
-
-  # Nginx (Reverse Proxy)
+  # Nginx Reverse Proxy (Opcional)
   nginx:
     image: nginx:alpine
-    container_name: agrotm-nginx
+    container_name: agroisync-nginx
+    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/ssl:/etc/nginx/ssl
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
     depends_on:
-      - agrotm-backend
+      - backend
     networks:
-      - agrotm-network
-    restart: unless-stopped
+      - agroisync-network
 
 volumes:
-  mongodb_data:
+  postgres_data:
     driver: local
   redis_data:
     driver: local
-  prometheus_data:
-    driver: local
-  grafana_data:
-    driver: local
-  node_modules:
-    driver: local
 
 networks:
-  agrotm-network:
+  agroisync-network:
     driver: bridge
     ipam:
       config:

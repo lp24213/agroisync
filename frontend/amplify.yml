@@ -1,0 +1,27 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - echo "🚀 Iniciando build do AGROISYNC Frontend..."
+        - npm --version
+        - node --version
+        - echo "📦 Instalando dependências..."
+        - npm ci
+    build:
+      commands:
+        - echo "🔍 Verificando TypeScript..."
+        - npm run type-check
+        - echo "🔧 Executando lint..."
+        - npm run lint
+        - echo "🏗️ Buildando aplicação..."
+        - npm run build
+        - echo "✅ Build concluído com sucesso!"
+  artifacts:
+    baseDirectory: .next
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
+      - .next/cache/**/*

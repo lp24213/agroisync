@@ -1,0 +1,75 @@
+name: Deploy Frontend to AWS Amplify
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'frontend/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'frontend/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: './frontend/package-lock.json'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run TypeScript check
+        run: npm run type-check
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Build application
+        run: npm run build
+
+      - name: Test build output
+        run: |
+          if [ -d ".next" ]; then
+            echo "✅ Build successful - .next directory created"
+            ls -la .next/
+          else
+            echo "❌ Build failed - .next directory not found"
+            exit 1
+          fi
+
+  notify:
+    needs: [test]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Notify test status
+        run: |
+          if [ "${{ needs.test.result }}" == "success" ]; then
+            echo "✅ Frontend tests passed - ready for Amplify deployment"
+            echo "🚀 Amplify will automatically deploy on push to main branch"
+          else
+            echo "❌ Frontend tests failed - deployment blocked"
+          fi
+
+      - name: Deployment info
+        if: needs.test.result == 'success'
+        run: |
+          echo "📋 Deployment Information:"
+          echo "- Frontend: AWS Amplify (automatic)"
+          echo "- Branch: ${{ github.ref_name }}"
+          echo "- Commit: ${{ github.sha }}"
+          echo "- Triggered by: ${{ github.actor }}"

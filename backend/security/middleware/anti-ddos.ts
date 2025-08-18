@@ -9,6 +9,13 @@ import { Redis } from '@upstash/redis';
 import { RateLimiter } from 'limiter';
 import { getClientIp } from 'request-ip';
 
+// Simple logger implementation
+const logger = {
+  warn: (message: string, ...args: any[]) => console.warn(`[ANTI-DDOS] ${message}`, ...args),
+  error: (message: string, ...args: any[]) => console.error(`[ANTI-DDOS] ${message}`, ...args),
+  info: (message: string, ...args: any[]) => console.info(`[ANTI-DDOS] ${message}`, ...args)
+};
+
 // Configuração do Redis para armazenamento de estado distribuído
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_URL || '',

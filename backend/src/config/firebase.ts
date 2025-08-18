@@ -5,8 +5,8 @@ import { getStorage } from 'firebase-admin/storage';
 
 // Firebase Admin SDK Configuration
 let adminApp = null;
-let adminAuth = null;
-let adminDb = null;
+let adminAuth: any = null;
+let adminDb: any = null;
 let adminStorage = null;
 
 // Check if Firebase Admin is already initialized
@@ -63,9 +63,11 @@ if (!getApps().length) {
 } else {
   // Use existing instance
   adminApp = getApps()[0];
-  adminAuth = getAuth(adminApp);
-  adminDb = getFirestore(adminApp);
-  adminStorage = getStorage(adminApp);
+  if (adminApp) {
+    adminAuth = getAuth(adminApp);
+    adminDb = getFirestore(adminApp);
+    adminStorage = getStorage(adminApp);
+  }
 }
 
 // Firebase Admin SDK utility functions

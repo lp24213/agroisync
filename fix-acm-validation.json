@@ -3,13 +3,11 @@
     {
       "Action": "UPSERT",
       "ResourceRecordSet": {
-        "Name": "_3978cce7ded379adc6cc9704bdff5269.agrotmsol.com.br",
+        "Name": "_acme-challenge.agroisync.com",
         "Type": "CNAME",
         "TTL": 300,
         "ResourceRecords": [
-          {
-            "Value": "_83bf8471385abf31a452d69c0008d3df.xlfgrmvvlj.acm-validations.aws"
-          }
+          { "Value": "_validation-token.example.acm-validations.aws" }
         ]
       }
     }

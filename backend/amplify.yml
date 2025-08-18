@@ -1,0 +1,31 @@
+version: 1
+backend:
+  phases:
+    preBuild:
+      commands:
+        - echo "🚀 Iniciando build do AGROISYNC Backend..."
+        - npm --version
+        - node --version
+    build:
+      commands:
+        - echo "📦 Instalando dependências..."
+        - npm ci --only=production
+        - echo "🔍 Verificando configurações..."
+        - echo "📁 Criando diretórios necessários..."
+        - mkdir -p logs uploads public
+        - echo "🏗️ Build finalizado com sucesso!"
+  artifacts:
+    baseDirectory: .
+    files:
+      - '**/*'
+      - '!node_modules/.cache/**/*'
+      - '!tests/**/*'
+      - '!coverage/**/*'
+      - '!.git/**/*'
+      - '!.github/**/*'
+      - '!*.md'
+      - '!*.log'
+  cache:
+    paths:
+      - node_modules/**/*
+      - .npm-cache/**/*

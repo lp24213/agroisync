@@ -13,6 +13,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import xss from 'xss';
 import { v4 as uuidv4 } from 'uuid';
 
+// Simple logger implementation
+const logger = {
+  warn: (message: string, ...args: any[]) => console.warn(`[WAF] ${message}`, ...args),
+  error: (message: string, ...args: any[]) => console.error(`[WAF] ${message}`, ...args),
+  info: (message: string, ...args: any[]) => console.info(`[WAF] ${message}`, ...args)
+};
+
 // Padrões de ataque conhecidos (expressões regulares)
 const ATTACK_PATTERNS = {
   sqlInjection: /('|\")(\s)*(OR|AND)(\s)*('|\"|[0-9])|UNION(\s)+SELECT|INSERT(\s)+INTO|SELECT(\s)+FROM|DELETE(\s)+FROM|DROP(\s)+TABLE|EXEC(\s)+\(|EXEC(\s)+SP_/i,

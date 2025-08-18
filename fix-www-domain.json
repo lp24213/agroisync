@@ -3,13 +3,11 @@
     {
       "Action": "UPSERT",
       "ResourceRecordSet": {
-        "Name": "www.agrotmsol.com.br",
+        "Name": "www.agroisync.com",
         "Type": "CNAME",
         "TTL": 300,
         "ResourceRecords": [
-          {
-            "Value": "d3cg8n66fpfnfp.cloudfront.net"
-          }
+          { "Value": "dirk1j0autb4d.amplifyapp.com" }
         ]
       }
     }

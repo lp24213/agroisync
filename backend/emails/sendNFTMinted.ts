@@ -47,7 +47,7 @@ class NFTEmailService {
     this.config = config;
     this.templatesPath = path.join(__dirname, 'templates');
     
-    this.transporter = nodemailer.createTransporter({
+    this.transporter = nodemailer.createTransport({
       host: config.host,
       port: config.port,
       secure: config.secure,

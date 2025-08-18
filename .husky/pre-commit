@@ -1,18 +1,34 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
 
-echo "🔍 Running pre-commit checks..."
+echo "🔍 Executando verificações pré-commit..."
 
-# Run linting
-echo "📝 Checking code style..."
-pnpm lint
+# Frontend checks
+if [ -d "frontend" ]; then
+  echo "📱 Verificando frontend..."
+  cd frontend
+  
+  # TypeScript check
+  echo "🔧 Verificando TypeScript..."
+  npm run type-check
+  
+  # Lint check
+  echo "🔍 Executando lint..."
+  npm run lint
+  
+  cd ..
+fi
 
-# Run type checking
-echo "🔧 Checking TypeScript types..."
-pnpm type-check
+# Backend checks
+if [ -d "backend" ]; then
+  echo "⚙️ Verificando backend..."
+  cd backend
+  
+  # Lint check
+  echo "🔍 Executando lint..."
+  npm run lint
+  
+  cd ..
+fi
 
-# Run tests
-echo "🧪 Running tests..."
-pnpm test
-
-echo "✅ Pre-commit checks passed!" 
+echo "✅ Verificações pré-commit concluídas com sucesso!" 

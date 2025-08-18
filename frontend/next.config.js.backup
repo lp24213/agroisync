@@ -1,0 +1,51 @@
+/** @type {import('next').NextConfig} */
+// CONFIGURAÇÃO DEFINITIVA PARA AMPLIFY - OTIMIZADA PARA PRODUÇÃO
+const nextConfig = {
+  reactStrictMode: true,
+  swcMinify: true,
+  eslint: {
+    ignoreDuringBuilds: false
+  },
+  typescript: {
+    ignoreBuildErrors: false
+  },
+  output: 'standalone',
+  images: {
+    unoptimized: false,
+    domains: ['storage.agroisync.com', 'api.agroisync.com'],
+    formats: ['image/webp', 'image/avif']
+  },
+  experimental: {
+    optimizeCss: true,
+    optimizePackageImports: ['@heroicons/react', 'lucide-react']
+  },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production'
+  },
+  env: {
+    CUSTOM_KEY: process.env.CUSTOM_KEY
+  },
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY'
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'origin-when-cross-origin'
+          }
+        ]
+      }
+    ]
+  }
+}
+
+module.exports = nextConfig

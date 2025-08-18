@@ -1,42 +1,6 @@
 version: 2
 updates:
-  # Enable version updates for npm
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "America/Sao_Paulo"
-    open-pull-requests-limit: 10
-    reviewers:
-      - "luispaulodeoliveira"
-    assignees:
-      - "luispaulodeoliveira"
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-    labels:
-      - "dependencies"
-      - "npm"
-    ignore:
-      # Ignore major version updates for critical packages
-      - dependency-name: "@types/*"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "typescript"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "next"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "react"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "react-dom"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "@solana/web3.js"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "@coral-xyz/anchor"
-        update-types: ["version-update:semver-major"]
-
-  # Enable version updates for npm in frontend directory
+  # Frontend dependencies
   - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
@@ -46,18 +10,28 @@ updates:
       timezone: "America/Sao_Paulo"
     open-pull-requests-limit: 5
     reviewers:
-      - "luispaulodeoliveira"
+      - "lp24213"
     assignees:
-      - "luispaulodeoliveira"
+      - "lp24213"
     commit-message:
-      prefix: "chore"
+      prefix: "📱 frontend"
       include: "scope"
     labels:
       - "dependencies"
       - "frontend"
       - "npm"
+    ignore:
+      # Ignore major version updates for critical packages
+      - dependency-name: "next"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
 
-  # Enable version updates for npm in backend directory
+  # Backend dependencies
   - package-ecosystem: "npm"
     directory: "/backend"
     schedule:
@@ -67,39 +41,24 @@ updates:
       timezone: "America/Sao_Paulo"
     open-pull-requests-limit: 5
     reviewers:
-      - "luispaulodeoliveira"
+      - "lp24213"
     assignees:
-      - "luispaulodeoliveira"
+      - "lp24213"
     commit-message:
-      prefix: "chore"
+      prefix: "⚙️ backend"
       include: "scope"
     labels:
       - "dependencies"
       - "backend"
       - "npm"
+    ignore:
+      # Ignore major version updates for critical packages
+      - dependency-name: "express"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "node"
+        update-types: ["version-update:semver-major"]
 
-  # Enable version updates for npm in contracts directory
-  - package-ecosystem: "npm"
-    directory: "/contracts"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "America/Sao_Paulo"
-    open-pull-requests-limit: 5
-    reviewers:
-      - "luispaulodeoliveira"
-    assignees:
-      - "luispaulodeoliveira"
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-    labels:
-      - "dependencies"
-      - "contracts"
-      - "npm"
-
-  # Enable version updates for GitHub Actions
+  # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -107,19 +66,19 @@ updates:
       day: "monday"
       time: "09:00"
       timezone: "America/Sao_Paulo"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
     reviewers:
-      - "luispaulodeoliveira"
+      - "lp24213"
     assignees:
-      - "luispaulodeoliveira"
+      - "lp24213"
     commit-message:
-      prefix: "ci"
+      prefix: "🔧 github-actions"
       include: "scope"
     labels:
       - "dependencies"
       - "github-actions"
 
-  # Enable version updates for Docker
+  # Docker dependencies
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
@@ -127,68 +86,19 @@ updates:
       day: "monday"
       time: "09:00"
       timezone: "America/Sao_Paulo"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
     reviewers:
-      - "luispaulodeoliveira"
+      - "lp24213"
     assignees:
-      - "luispaulodeoliveira"
+      - "lp24213"
     commit-message:
-      prefix: "chore"
+      prefix: "🐳 docker"
       include: "scope"
     labels:
       - "dependencies"
       - "docker"
 
-  # Enable version updates for Rust (Cargo)
-  - package-ecosystem: "cargo"
-    directory: "/contracts"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "America/Sao_Paulo"
-    open-pull-requests-limit: 5
-    reviewers:
-      - "luispaulodeoliveira"
-    assignees:
-      - "luispaulodeoliveira"
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-    labels:
-      - "dependencies"
-      - "rust"
-      - "cargo"
-    ignore:
-      # Ignore major version updates for critical Rust packages
-      - dependency-name: "anchor-lang"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "anchor-spl"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "solana-program"
-        update-types: ["version-update:semver-major"]
-
-  # Enable version updates for Terraform
-  - package-ecosystem: "terraform"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "America/Sao_Paulo"
-    open-pull-requests-limit: 5
-    reviewers:
-      - "luispaulodeoliveira"
-    assignees:
-      - "luispaulodeoliveira"
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-    labels:
-      - "dependencies"
-      - "terraform"
-
-  # Enable version updates for Python (if any)
+  # Python dependencies (if any)
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
@@ -196,15 +106,14 @@ updates:
       day: "monday"
       time: "09:00"
       timezone: "America/Sao_Paulo"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
     reviewers:
-      - "luispaulodeoliveira"
+      - "lp24213"
     assignees:
-      - "luispaulodeoliveira"
+      - "lp24213"
     commit-message:
-      prefix: "chore"
+      prefix: "🐍 python"
       include: "scope"
     labels:
       - "dependencies"
-      - "python"
-      - "pip" 
+      - "python" 

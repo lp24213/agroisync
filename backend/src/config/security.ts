@@ -1,7 +1,7 @@
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import slowDown from 'express-slow-down';
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
 
 // Helmet configuration
 export const helmetConfig = helmet({
@@ -68,8 +68,8 @@ export const createRateLimiters = () => {
 };
 
 // Speed limiters
-export const createSpeedLimiters = () => {
-  const generalSpeedLimiter = slowDown({
+export const createSpeedLimiters = (): { generalSpeedLimiter: RequestHandler } => {
+  const generalSpeedLimiter: RequestHandler = slowDown({
     windowMs: 15 * 60 * 1000, // 15 minutes
     delayAfter: 50, // allow 50 requests per 15 minutes, then...
     delayMs: 500, // begin adding 500ms of delay per request above 50
@@ -97,7 +97,7 @@ export const ddosProtection = (
   next: NextFunction
 ) => {
   // Simple DDoS protection - can be enhanced with more sophisticated logic
-  const clientIP = req.ip || req.connection.remoteAddress;
+  const clientIP = req.ip || (req.connection && (req.connection as any).remoteAddress);
   
   // Add rate limiting per IP
   if (clientIP) {

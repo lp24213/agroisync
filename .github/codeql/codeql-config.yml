@@ -1,32 +1,27 @@
-name: "CodeQL Config"
+name: "AGROISYNC CodeQL Config"
 
-queries:
-  # Use these queries for JavaScript/TypeScript
-  - uses: security-and-quality
-  - uses: security-extended
-  - uses: security-experimental
+# Disable default queries
+disable-default-queries: false
 
-  # Custom queries for blockchain security
-  - name: Blockchain Security
-    description: "Custom queries for blockchain and Web3 security"
-    queries:
-      - uses: security-and-quality
-      - uses: security-extended
-      - uses: security-experimental
-    paths:
-      - contracts/
-      - frontend/src/blockchain/
-      - backend/src/blockchain/
+# Query suite selection
+query-filters:
+  - include:
+      tags contain: security
+  - include:
+      tags contain: security-and-quality
+  - exclude:
+      tags contain: experimental
+  - exclude:
+      tags contain: deprecated
 
-  # Custom queries for API security
-  - name: API Security
-    description: "Custom queries for API security"
-    queries:
-      - uses: security-and-quality
-      - uses: security-extended
-    paths:
-      - backend/src/api/
-      - frontend/src/api/
+# Paths to include/exclude
+paths:
+  - frontend/src
+  - backend/src
+  - '**/*.js'
+  - '**/*.ts'
+  - '**/*.jsx'
+  - '**/*.tsx'
 
 paths-ignore:
   - '**/node_modules'
@@ -34,118 +29,40 @@ paths-ignore:
   - '**/build'
   - '**/.next'
   - '**/coverage'
-  - '**/test-results'
-  - '**/playwright-report'
-  - '**/cypress/videos'
-  - '**/cypress/screenshots'
-  - '**/.git'
-  - '**/target'
-  - '**/artifacts'
-  - '**/cache'
-  - '**/out'
-  - '**/.turbo'
-  - '**/storybook-static'
-  - '**/.storybook'
-  - '**/docs'
-  - '**/scripts'
-  - '**/migrations'
-  - '**/seeds'
-  - '**/fixtures'
-  - '**/examples'
-  - '**/demos'
-  - '**/samples'
-  - '**/templates'
-  - '**/stubs'
-  - '**/mocks'
-  - '**/fakes'
-  - '**/doubles'
-  - '**/test-utils'
-  - '**/test-helpers'
-  - '**/test-data'
-  - '**/test-fixtures'
-  - '**/test-mocks'
-  - '**/test-stubs'
-  - '**/test-doubles'
-  - '**/test-fakes'
-  - '**/test-utils'
-  - '**/test-helpers'
-  - '**/test-data'
-  - '**/test-fixtures'
-  - '**/test-mocks'
-  - '**/test-stubs'
-  - '**/test-doubles'
-  - '**/test-fakes'
+  - '**/logs'
+  - '**/uploads'
+  - '**/public'
+  - '**/*.min.js'
+  - '**/*.bundle.js'
 
-paths:
-  - frontend/src/
-  - backend/src/
-  - contracts/
-  - components/
-  - hooks/
-  - lib/
-  - utils/
-  - services/
-  - contexts/
-  - types/
-  - shared/
+# Additional queries
+queries:
+  - uses: security-and-quality
+  - uses: security-extended
+  - uses: ./queries
 
-# Disable specific queries that are not relevant
-disable-default-queries: false
-
-# Additional query suites
-query-suites:
-  - security-and-quality
-  - security-extended
-  - security-experimental
-
-# Custom query filters
-query-filters:
-  - include:
-      tags contain: security
-  - exclude:
-      tags contain: experimental
-  - exclude:
-      tags contain: deprecated
-
-# Analysis timeout
-analysis-timeout: 3600
+# Query options
+query-options:
+  - name: javascript-security-and-quality.qls
+    uses: security-and-quality
+    options:
+      - name: js/security-and-quality
+        value: true
+  - name: typescript-security-and-quality.qls
+    uses: security-and-quality
+    options:
+      - name: ts/security-and-quality
+        value: true
 
 # Memory settings
-memory: 8192
+memory:
+  - name: javascript
+    value: 4096
+  - name: typescript
+    value: 4096
 
 # Threads
-threads: 4
+threads: 2
 
-# Debug mode
-debug: false
-
-# Verbose logging
-verbose: false
-
-# Additional options
-additional-packs:
-  - codeql/javascript-queries
-  - codeql/typescript-queries
-
-# Custom query pack
-query-pack: ./custom-queries
-
-# Results format
-results-format: sarif-latest
-
-# Upload results
-upload-results: true
-
-# Create database
-create-database: true
-
-# Database location
-database-location: ./codeql-db
-
-# Source archive
-source-archive: ./source-archive
-
-# Custom environment variables
-env:
-  CODEQL_EXTRACTOR_JAVASCRIPT_ROOT: ./codeql-extractors/javascript
-  CODEQL_EXTRACTOR_TYPESCRIPT_ROOT: ./codeql-extractors/typescript 
+# Timeout
+timeout: 1800 

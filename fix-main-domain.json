@@ -3,14 +3,13 @@
     {
       "Action": "UPSERT",
       "ResourceRecordSet": {
-        "Name": "agrotmsol.com.br",
-        "Type": "CNAME",
-        "TTL": 300,
-        "ResourceRecords": [
-          {
-            "Value": "d3cg8n66fpfnfp.cloudfront.net"
-          }
-        ]
+        "Name": "agroisync.com",
+        "Type": "A",
+        "AliasTarget": {
+          "HostedZoneId": "Z2FDTNDATAQYW2",
+          "DNSName": "d29j0gzu6xv2uk.cloudfront.net",
+          "EvaluateTargetHealth": false
+        }
       }
     }
   ]

@@ -3,6 +3,12 @@ import { render } from 'ejs';
 import * as fs from 'fs';
 import * as path from 'path';
 
+// Simple logger implementation
+const logger = {
+  info: (message: string, ...args: any[]) => console.info(`[EMAIL] ${message}`, ...args),
+  error: (message: string, ...args: any[]) => console.error(`[EMAIL] ${message}`, ...args)
+};
+
 interface WelcomeEmailData {
   userEmail: string;
   userName: string;
@@ -39,7 +45,7 @@ class WelcomeEmailService {
     this.config = config;
     this.templatesPath = path.join(__dirname, 'templates');
     
-    this.transporter = nodemailer.createTransporter({
+    this.transporter = nodemailer.createTransport({
       host: config.host,
       port: config.port,
       secure: config.secure,

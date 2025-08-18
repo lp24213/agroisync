@@ -14,7 +14,7 @@ interface DeployConfig {
   rpcUrl: string;
   privateKey: string;
   gasLimit?: number;
-  gasPrice?: string;
+  gasPrice?: string | undefined;
 }
 
 interface ContractConfig {
@@ -40,16 +40,16 @@ class ContractDeployer {
         constructorArgs: [
           'AGROTM Token',
           'AGRO',
-          ethers.utils.parseEther('1000000000'), // 1 billion tokens
-          process.env.TREASURY_ADDRESS || ethers.constants.AddressZero
+          ethers.parseEther('1000000000'), // 1 billion tokens
+          process.env.TREASURY_ADDRESS || ethers.ZeroAddress
         ]
       },
       {
         name: 'Staking',
         path: '../contracts/ethereum/contracts/Staking.sol',
         constructorArgs: [
-          process.env.AGRO_TOKEN_ADDRESS || ethers.constants.AddressZero,
-          process.env.REWARDS_TOKEN_ADDRESS || ethers.constants.AddressZero
+          process.env.AGRO_TOKEN_ADDRESS || ethers.ZeroAddress,
+          process.env.REWARDS_TOKEN_ADDRESS || ethers.ZeroAddress
         ]
       },
       {
@@ -58,7 +58,7 @@ class ContractDeployer {
         constructorArgs: [
           'AGROTM NFTs',
           'AGRONFT',
-          process.env.AGRO_TOKEN_ADDRESS || ethers.constants.AddressZero
+          process.env.AGRO_TOKEN_ADDRESS || ethers.ZeroAddress
         ]
       },
       {
@@ -66,7 +66,7 @@ class ContractDeployer {
         path: '../contracts/ethereum/BuyWithCommission.sol',
         constructorArgs: [
           process.env.COMMISSION_RATE || '250', // 2.5%
-          process.env.COMMISSION_RECEIVER || ethers.constants.AddressZero
+          process.env.COMMISSION_RECEIVER || ethers.ZeroAddress
         ]
       }
     ];
@@ -75,7 +75,7 @@ class ContractDeployer {
   async deployEthereumContracts(): Promise<void> {
     console.log('🚀 Starting Ethereum contract deployment...');
 
-    const provider = new ethers.providers.JsonRpcProvider(this.config.rpcUrl);
+    const provider = new ethers.JsonRpcProvider(this.config.rpcUrl);
     const wallet = new ethers.Wallet(this.config.privateKey, provider);
     
     const deployedAddresses: { [key: string]: string } = {};
@@ -99,18 +99,22 @@ class ContractDeployer {
 
         const deploymentOptions = {
           gasLimit: this.config.gasLimit || 5000000,
-          gasPrice: this.config.gasPrice ? ethers.utils.parseUnits(this.config.gasPrice, 'gwei') : undefined
+          gasPrice: this.config.gasPrice ? ethers.parseUnits(this.config.gasPrice, 'gwei') : undefined
         };
 
         const deployedContract = await factory.deploy(...contract.constructorArgs, deploymentOptions);
-        await deployedContract.deployed();
+        await deployedContract.waitForDeployment();
 
-        deployedAddresses[contract.name] = deployedContract.address;
+        const deployedAddress = await deployedContract.getAddress();
+        deployedAddresses[contract.name] = deployedAddress;
         
-        console.log(`✅ ${contract.name} deployed at: ${deployedContract.address}`);
+        console.log(`✅ ${contract.name} deployed at: ${deployedAddress}`);
         
         // Wait for confirmation
-        await deployedContract.deployTransaction.wait(5);
+        const deploymentTx = deployedContract.deploymentTransaction();
+        if (deploymentTx) {
+          await deploymentTx.wait(5);
+        }
         
       } catch (error) {
         console.error(`❌ Failed to deploy ${contract.name}:`, error);
@@ -130,7 +134,7 @@ class ContractDeployer {
     const connection = new Connection(this.config.rpcUrl, 'confirmed');
     const keypair = Keypair.fromSecretKey(Buffer.from(JSON.parse(this.config.privateKey)));
     
-    const provider = new AnchorProvider(connection, { publicKey: keypair.publicKey, signTransaction: (tx) => Promise.resolve(tx) }, {});
+    const provider = new AnchorProvider(connection, { publicKey: keypair.publicKey, signTransaction: (tx: any) => Promise.resolve(tx) }, {});
     
     const deployedAddresses: { [key: string]: string } = {};
 

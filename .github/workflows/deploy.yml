@@ -1,0 +1,191 @@
+name: AGROISYNC Deploy
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  NODE_VERSION: '18'
+  AWS_REGION: 'us-east-2'
+
+jobs:
+  # Frontend Tests & Build
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+    
+    steps:
+    - name: 🚀 Checkout code
+      uses: actions/checkout@v4
+    
+    - name: 📱 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+    
+    - name: 📦 Install dependencies
+      run: npm ci
+    
+    - name: 🔍 TypeScript check
+      run: npm run type-check
+    
+    - name: 🔧 Lint check
+      run: npm run lint
+    
+    - name: 🧪 Run tests
+      run: npm test
+    
+    - name: 🏗️ Build application
+      run: npm run build
+    
+    - name: 📦 Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: frontend-build
+        path: frontend/.next
+        retention-days: 1
+
+  # Backend Tests & Build
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    
+    steps:
+    - name: 🚀 Checkout code
+      uses: actions/checkout@v4
+    
+    - name: ⚙️ Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: backend/package-lock.json
+    
+    - name: 📦 Install dependencies
+      run: npm ci
+    
+    - name: 🔍 Lint check
+      run: npm run lint
+    
+    - name: 🧪 Run tests
+      run: npm test
+    
+    - name: 🔒 Security audit
+      run: npm audit --audit-level=moderate
+    
+    - name: 📦 Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: backend-build
+        path: backend
+        retention-days: 1
+
+  # Deploy to AWS Amplify (Frontend)
+  deploy-frontend:
+    needs: [frontend, backend]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 🚀 Checkout code
+      uses: actions/checkout@v4
+    
+    - name: 🔑 Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+    
+    - name: 📱 Deploy Frontend to Amplify
+      run: |
+        # Get the Amplify App ID
+        APP_ID=$(aws amplify list-apps --region ${{ env.AWS_REGION }} --query "apps[?name=='agroisync-frontend'].appId" --output text)
+        
+        if [ "$APP_ID" != "None" ]; then
+          echo "🚀 Deploying frontend to Amplify App: $APP_ID"
+          
+          # Create a new branch for deployment
+          aws amplify create-branch \
+            --app-id $APP_ID \
+            --branch-name "deploy-$(date +%Y%m%d-%H%M%S)" \
+            --region ${{ env.AWS_REGION }} || true
+          
+          # Start the build
+          aws amplify start-job \
+            --app-id $APP_ID \
+            --branch-name main \
+            --job-type RELEASE \
+            --region ${{ env.AWS_REGION }}
+        else
+          echo "⚠️ Amplify App 'agroisync-frontend' not found"
+        fi
+
+  # Deploy to AWS Amplify (Backend)
+  deploy-backend:
+    needs: [frontend, backend]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 🚀 Checkout code
+      uses: actions/checkout@v4
+    
+    - name: 🔑 Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+    
+    - name: ⚙️ Deploy Backend to Amplify
+      run: |
+        # Get the Amplify App ID
+        APP_ID=$(aws amplify list-apps --region ${{ env.AWS_REGION }} --query "apps[?name=='agroisync-backend'].appId" --output text)
+        
+        if [ "$APP_ID" != "None" ]; then
+          echo "🚀 Deploying backend to Amplify App: $APP_ID"
+          
+          # Create a new branch for deployment
+          aws amplify create-branch \
+            --app-id $APP_ID \
+            --branch-name "deploy-$(date +%Y%m%d-%H%M%S)" \
+            --region ${{ env.AWS_REGION }} || true
+          
+          # Start the build
+          aws amplify start-job \
+            --app-id $APP_ID \
+            --branch-name main \
+            --job-type RELEASE \
+            --region ${{ env.AWS_REGION }}
+        else
+          echo "⚠️ Amplify App 'agroisync-backend' not found"
+        fi
+
+  # Notify deployment status
+  notify:
+    needs: [deploy-frontend, deploy-backend]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: 📢 Notify deployment status
+      run: |
+        if [ "${{ needs.deploy-frontend.result }}" == "success" ] && [ "${{ needs.deploy-backend.result }}" == "success" ]; then
+          echo "🎉 Deployment successful!"
+          echo "Frontend: ✅"
+          echo "Backend: ✅"
+        else
+          echo "❌ Deployment failed!"
+          echo "Frontend: ${{ needs.deploy-frontend.result }}"
+          echo "Backend: ${{ needs.deploy-backend.result }}"
+          exit 1
+        fi

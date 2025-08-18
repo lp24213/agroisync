@@ -1,26 +1,3 @@
 {
-  "Changes": [
-    {
-      "Action": "DELETE",
-      "ResourceRecordSet": {
-        "Name": "agroisync.com",
-        "Type": "A",
-        "TTL": 300,
-        "ResourceRecords": [
-          {
-            "Value": "18.155.21.113"
-          },
-          {
-            "Value": "18.155.21.9"
-          },
-          {
-            "Value": "18.155.21.15"
-          },
-          {
-            "Value": "18.155.21.104"
-          }
-        ]
-      }
-    }
-  ]
+  "Changes": []
 }

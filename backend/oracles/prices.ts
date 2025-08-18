@@ -69,7 +69,7 @@ const CHAINLINK_FEED_ABI = [
 ];
 
 // Provedor Ethereum
-let provider: ethers.providers.JsonRpcProvider | null = null;
+let provider: ethers.JsonRpcProvider | null = null;
 
 /**
  * Inicializa o provedor Ethereum
@@ -78,7 +78,7 @@ function initProvider() {
   if (provider) return provider;
   
   const rpcUrl = process.env.ETH_RPC_URL || 'https://mainnet.infura.io/v3/your-infura-key';
-  provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+  provider = new ethers.JsonRpcProvider(rpcUrl);
   return provider;
 }
 
@@ -101,7 +101,7 @@ async function getChainlinkPrice(pair: string): Promise<PriceData | null> {
     const decimals = await priceFeed.decimals();
     
     // Calcular preço real
-    const price = parseFloat(ethers.utils.formatUnits(answer, decimals));
+    const price = parseFloat(ethers.formatUnits(answer, decimals));
     
     return {
       price,

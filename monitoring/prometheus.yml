@@ -1,0 +1,82 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - "rules/*.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # AGROISYNC Frontend
+  - job_name: 'agroisync-frontend'
+    static_configs:
+      - targets: ['frontend:3000']
+    metrics_path: '/api/metrics'
+    scrape_interval: 30s
+
+  # AGROISYNC Backend
+  - job_name: 'agroisync-backend'
+    static_configs:
+      - targets: ['backend:3001']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  # PostgreSQL Database
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres:5432']
+    metrics_path: '/metrics'
+    scrape_interval: 60s
+
+  # Redis Cache
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:6379']
+    metrics_path: '/metrics'
+    scrape_interval: 60s
+
+  # Nginx
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx:80']
+    metrics_path: '/nginx_status'
+    scrape_interval: 30s
+
+  # Node.js Applications
+  - job_name: 'nodejs'
+    static_configs:
+      - targets: ['backend:3001', 'frontend:3000']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # Health Checks
+  - job_name: 'health-checks'
+    static_configs:
+      - targets: 
+        - 'frontend:3000'
+        - 'backend:3001'
+        - 'postgres:5432'
+        - 'redis:6379'
+        - 'nginx:80'
+    metrics_path: '/health'
+    scrape_interval: 60s
+    scrape_timeout: 5s
+
+  # Custom Metrics
+  - job_name: 'custom-metrics'
+    static_configs:
+      - targets: ['backend:3001']
+    metrics_path: '/api/metrics/custom'
+    scrape_interval: 60s
+    scrape_timeout: 10s

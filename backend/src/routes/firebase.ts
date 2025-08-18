@@ -1,6 +1,6 @@
 import express from 'express';
 import { firebaseAdmin } from '../config/firebase';
-import { authenticateToken } from '../middleware/auth';
+// Removed unused import
 
 const router = express.Router();
 
@@ -48,10 +48,10 @@ router.post('/users', verifyFirebaseToken, async (req, res) => {
       photoURL
     });
 
-    res.status(201).json({ user: userRecord });
+    return res.status(201).json({ user: userRecord });
   } catch (error) {
     console.error('Error creating user:', error);
-    res.status(500).json({ error: 'Failed to create user' });
+    return res.status(500).json({ error: 'Failed to create user' });
   }
 });
 
@@ -59,10 +59,10 @@ router.get('/users/:uid', verifyFirebaseToken, async (req, res) => {
   try {
     const { uid } = req.params;
     const userRecord = await firebaseAdmin.getUser(uid);
-    res.json({ user: userRecord });
+    return res.json({ user: userRecord });
   } catch (error) {
     console.error('Error getting user:', error);
-    res.status(500).json({ error: 'Failed to get user' });
+    return res.status(500).json({ error: 'Failed to get user' });
   }
 });
 
@@ -195,7 +195,7 @@ router.get('/health', async (req, res) => {
     res.status(500).json({ 
       status: 'unhealthy', 
       firebase: 'disconnected',
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
       timestamp: new Date().toISOString()
     });
   }

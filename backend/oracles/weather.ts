@@ -162,7 +162,7 @@ const CHAINLINK_WEATHER_FEED_ABI = [
 ];
 
 // Provedor Ethereum
-let provider: ethers.providers.JsonRpcProvider | null = null;
+let provider: ethers.JsonRpcProvider | null = null;
 
 /**
  * Inicializa o provedor Ethereum
@@ -171,7 +171,7 @@ function initProvider() {
   if (provider) return provider;
   
   const rpcUrl = process.env.ETH_RPC_URL || 'https://mainnet.infura.io/v3/your-infura-key';
-  provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+  provider = new ethers.JsonRpcProvider(rpcUrl);
   return provider;
 }
 
@@ -195,7 +195,7 @@ async function getChainlinkWeatherData(feedType: string, coordinates: Coordinate
     const description = await weatherFeed.description();
     
     // Calcular valor real
-    const value = parseFloat(ethers.utils.formatUnits(answer, decimals));
+    const value = parseFloat(ethers.formatUnits(answer, decimals));
     
     return {
       type: feedType,
@@ -651,6 +651,11 @@ function analyzeCropImpact(cropType: string, weatherData: WeatherData, forecast:
   // Usar parâmetros padrão se o tipo de cultura não estiver definido
   const params = cropParameters[cropType.toLowerCase()] || cropParameters['corn'];
   
+  // Verificar se params está definido
+  if (!params) {
+    throw new Error('Parâmetros de cultura não encontrados');
+  }
+  
   // Analisar condições atuais
   const currentTemp = weatherData.current.temperature;
   const currentHumidity = weatherData.current.humidity;
@@ -1007,12 +1012,14 @@ export async function getPrecipitationHistory(location: string | Coordinates, da
       date.setDate(date.getDate() - i);
       const dateStr = date.toISOString().split('T')[0]; // Formato YYYY-MM-DD
       
-      const historicalData = await getHistoricalWeather(location, dateStr);
-      if (historicalData) {
-        data.push({
-          date: dateStr,
-          precipitation: historicalData.totalPrecipitation,
-        });
+      if (dateStr) {
+        const historicalData = await getHistoricalWeather(location, dateStr);
+        if (historicalData) {
+          data.push({
+            date: dateStr,
+            precipitation: historicalData.totalPrecipitation,
+          });
+        }
       }
     }
     
@@ -1046,14 +1053,16 @@ export async function getTemperatureHistory(location: string | Coordinates, days
       date.setDate(date.getDate() - i);
       const dateStr = date.toISOString().split('T')[0]; // Formato YYYY-MM-DD
       
-      const historicalData = await getHistoricalWeather(location, dateStr);
-      if (historicalData) {
-        data.push({
-          date: dateStr,
-          min: historicalData.minTemp,
-          max: historicalData.maxTemp,
-          avg: historicalData.avgTemp,
-        });
+      if (dateStr) {
+        const historicalData = await getHistoricalWeather(location, dateStr);
+        if (historicalData) {
+          data.push({
+            date: dateStr,
+            min: historicalData.minTemp,
+            max: historicalData.maxTemp,
+            avg: historicalData.avgTemp,
+          });
+        }
       }
     }
     
