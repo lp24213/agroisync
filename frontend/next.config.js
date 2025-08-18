@@ -1,44 +1,47 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  // Configurações básicas
+  reactStrictMode: false,
   swcMinify: true,
+  
+  // Ignorar erros durante o build
   typescript: {
-    ignoreBuildErrors: true, // Ignorar erros de TypeScript durante o build
+    ignoreBuildErrors: true,
   },
   eslint: {
-    ignoreDuringBuilds: true, // Ignorar erros de ESLint durante o build
+    ignoreDuringBuilds: true,
   },
-  // Configurações para exportação estática (Amplify)
+  
+  // Configuração para exportação estática (Amplify)
   output: 'export',
   trailingSlash: true,
   images: {
     unoptimized: true,
   },
-  // Configurações para evitar problemas de build
-  experimental: {
-    esmExternals: false,
-  },
-  // Configurações simplificadas para evitar conflitos
+  
+  // Configurações de build
   distDir: '.next',
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-        net: false,
-        tls: false,
-        crypto: false,
-        stream: false,
-        url: false,
-        zlib: false,
-        http: false,
-        https: false,
-        assert: false,
-        os: false,
-        path: false,
-      }
+  
+  // Webpack config para evitar problemas
+  webpack: (config) => {
+    config.resolve.fallback = {
+      fs: false,
+      net: false,
+      tls: false,
+      crypto: false,
+      stream: false,
+      url: false,
+      zlib: false,
+      http: false,
+      https: false,
+      assert: false,
+      os: false,
+      path: false,
+      buffer: false,
+      util: false,
     }
-    return config;
+    
+    return config
   },
 }
 
