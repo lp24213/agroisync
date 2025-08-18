@@ -4,41 +4,41 @@ applications:
       phases:
         preBuild:
           commands:
-            - echo "🚀 Iniciando build do AGROISYNC Frontend no Linux..."
-            - echo "📋 Informações do sistema:"
+            - echo "Iniciando build do AGROISYNC Frontend no Linux..."
+            - echo "Informacoes do sistema:"
             - uname -a
-            - echo "📋 Versões do ambiente:"
+            - echo "Versoes do ambiente:"
             - node --version
             - npm --version
-            - echo "📋 Diretório atual:"
+            - echo "Diretorio atual:"
             - pwd
-            - echo "📦 Instalando dependências..."
+            - echo "Instalando dependencias..."
             - cd frontend
             - npm ci
-            - echo "⚙️ Configurando Next.js para Amplify..."
+            - echo "Configurando Next.js para Amplify..."
             - cp next.config-final.js next.config.js
             - cp tsconfig-amplify.json tsconfig.json
-            - echo "🔧 Configurações aplicadas com sucesso"
-            - echo "📁 Estrutura atual:"
+            - echo "Configuracoes aplicadas com sucesso"
+            - echo "Estrutura atual:"
             - ls -la
-            - echo "📁 Verificando arquivos de configuração:"
+            - echo "Verificando arquivos de configuracao:"
             - ls -la next.config*.js
             - ls -la tsconfig*.json
         build:
           commands:
-            - echo "🏗️ Buildando aplicação..."
+            - echo "Buildando aplicacao..."
             - npm run build
-            - echo "📁 Verificando estrutura após build..."
+            - echo "Verificando estrutura apos build..."
             - pwd
             - ls -la
-            - echo "📁 Verificando pasta out..."
+            - echo "Verificando pasta out..."
             - ls -la out/
-            - echo "📄 Verificando index.html..."
+            - echo "Verificando index.html..."
             - ls -la out/index.html
-            - echo "📄 Conteúdo inicial do index.html:"
+            - echo "Conteudo inicial do index.html:"
             - head -10 out/index.html
-            - echo "✅ Build concluído com sucesso!"
-            - echo "🎯 Frontend pronto para deploy no Amplify!"
+            - echo "Build concluido com sucesso!"
+            - echo "Frontend pronto para deploy no Amplify!"
       artifacts:
         baseDirectory: frontend/out
         files:
@@ -52,31 +52,31 @@ applications:
       phases:
         preBuild:
           commands:
-            - echo "🚀 Iniciando build do AGROISYNC Backend no Linux..."
-            - echo "📋 Informações do sistema:"
+            - echo "Iniciando build do AGROISYNC Backend no Linux..."
+            - echo "Informacoes do sistema:"
             - uname -a
-            - echo "📋 Versões do ambiente:"
+            - echo "Versoes do ambiente:"
             - node --version
             - npm --version
-            - echo "📋 Diretório atual:"
+            - echo "Diretorio atual:"
             - pwd
-            - echo "📦 Instalando dependências..."
+            - echo "Instalando dependencias..."
             - cd backend
             - npm ci
-            - echo "🔧 Configurações aplicadas com sucesso"
-            - echo "📁 Estrutura atual:"
+            - echo "Configuracoes aplicadas com sucesso"
+            - echo "Estrutura atual:"
             - ls -la
         build:
           commands:
-            - echo "🏗️ Buildando aplicação..."
+            - echo "Buildando aplicacao..."
             - npm run build
-            - echo "📁 Verificando estrutura após build..."
+            - echo "Verificando estrutura apos build..."
             - pwd
             - ls -la
-            - echo "📁 Verificando arquivos de build..."
-            - ls -la dist/ || echo "Pasta dist não encontrada"
-            - echo "✅ Build concluído com sucesso!"
-            - echo "🎯 Backend pronto para deploy no Amplify!"
+            - echo "Verificando arquivos de build..."
+            - ls -la dist/ || echo "Pasta dist nao encontrada"
+            - echo "Build concluido com sucesso!"
+            - echo "Backend pronto para deploy no Amplify!"
       artifacts:
         baseDirectory: backend
         files:
