@@ -7,7 +7,10 @@ import {
   FireIcon, 
   StarIcon, 
   ArrowRightIcon,
-  ArrowTrendingDownIcon
+  ArrowTrendingDownIcon,
+  SparklesIcon,
+  RocketLaunchIcon,
+  CpuChipIcon
 } from '@heroicons/react/24/outline'
 import Card from '@/components/ui/Card'
 
@@ -38,19 +41,22 @@ const Home: NextPage = () => {
       title: 'Futuristic Agricultural Technology',
       description: 'Integração avançada de drones, IoT e IA para monitoramento agrícola inteligente',
       icon: '/images/futuristic-farm.svg',
-      bgColor: 'from-blue-600 to-cyan-500'
+      bgColor: 'from-cyan-600 via-blue-600 to-purple-600',
+      delay: 'animation-delay-0'
     },
     {
       title: 'Staking & Farming Rewards',
       description: 'Sistema de recompensas baseado em staking e farming de ativos agrícolas',
       icon: '/images/staking-farming.svg',
-      bgColor: 'from-green-600 to-emerald-500'
+      bgColor: 'from-emerald-600 via-green-600 to-teal-600',
+      delay: 'animation-delay-300'
     },
     {
       title: 'Cyber Defense & Security',
       description: 'Proteção avançada com blockchain e criptografia para seus ativos digitais',
       icon: '/images/cyber-defense.svg',
-      bgColor: 'from-purple-600 to-pink-500'
+      bgColor: 'from-purple-600 via-pink-600 to-rose-600',
+      delay: 'animation-delay-600'
     }
   ]
 
@@ -63,63 +69,121 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="min-h-screen bg-black text-gray-100">
+      <main className="min-h-screen bg-black text-gray-100 relative overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-cyan-900/10 to-blue-900/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-purple-900/10 to-pink-900/10 rounded-full blur-3xl animate-pulse animation-delay-2000"></div>
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-br from-blue-900/10 to-cyan-900/10 rounded-full blur-3xl animate-pulse animation-delay-4000"></div>
+          
+          {/* Floating Particles */}
+          <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-cyan-400 rounded-full animate-bounce animation-delay-1000"></div>
+          <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-blue-400 rounded-full animate-bounce animation-delay-2000"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce animation-delay-3000"></div>
+          <div className="absolute bottom-1/3 left-1/3 w-1 h-1 bg-pink-400 rounded-full animate-bounce animation-delay-4000"></div>
+        </div>
+
         {/* Hero Section */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-black to-blue-900 py-20">
+        <section className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-black to-blue-900 py-32">
           <div className="absolute inset-0">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/20 to-purple-900/20"></div>
-            <div className="absolute top-0 left-0 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-            <div className="absolute top-0 right-0 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-            <div className="absolute bottom-0 left-0 w-72 h-72 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-900/20 via-blue-900/20 to-purple-900/20"></div>
+            <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-cyan-500/30 to-blue-500/30 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+            <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-purple-500/30 to-pink-500/30 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-br from-blue-500/30 to-cyan-500/30 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
           </div>
           
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div className="animate-fade-in">
-              <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-cyan-300 to-slate-300 bg-clip-text text-transparent">
+              {/* Animated Badge */}
+              <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 border border-cyan-500/30 rounded-full px-6 py-3 mb-8 animate-fade-in animation-delay-300">
+                <SparklesIcon className="h-5 w-5 text-cyan-400 animate-pulse" />
+                <span className="text-cyan-400 font-semibold text-sm">🚀 Plataforma Revolucionária</span>
+              </div>
+
+              <h1 className="text-6xl md:text-8xl font-black mb-8 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent leading-tight animate-fade-in animation-delay-600">
                 AGROISYNC
               </h1>
-              <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-                A revolução da agricultura inteligente está aqui. Combine tecnologia de ponta com 
-                tradição agrícola para maximizar seus lucros e sustentabilidade.
+              
+              <p className="text-2xl md:text-3xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in animation-delay-900">
+                A <span className="text-cyan-400 font-bold">revolução da agricultura inteligente</span> está aqui. 
+                Combine <span className="text-blue-400 font-bold">tecnologia de ponta</span> com 
+                <span className="text-purple-400 font-bold"> tradição agrícola</span> para maximizar seus lucros e sustentabilidade.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/marketplace" className="bg-gradient-to-r from-blue-500 to-slate-300 text-black px-8 py-4 rounded-lg text-lg font-semibold hover:from-blue-400 hover:to-slate-200 transition-all duration-200 hover:scale-105 transform">
-                  Explorar Marketplace
+
+              <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in animation-delay-1200">
+                <Link href="/marketplace" className="group relative bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 text-white px-10 py-5 rounded-2xl text-xl font-bold hover:shadow-2xl hover:shadow-cyan-500/25 transition-all duration-500 hover:scale-105 transform overflow-hidden">
+                  <span className="relative z-10 flex items-center space-x-3">
+                    <RocketLaunchIcon className="h-6 w-6 group-hover:animate-bounce" />
+                    <span>Explorar Marketplace</span>
+                  </span>
+                  {/* Animated Background */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-blue-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  {/* Shine Effect */}
+                  <div className="absolute inset-0 -skew-x-12 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                 </Link>
-                <Link href="/dashboard" className="border-2 border-blue-400 text-blue-400 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-400 hover:text-black transition-all duration-200">
-                  Ver Dashboard
+                
+                <Link href="/dashboard" className="group border-2 border-cyan-400 text-cyan-400 px-10 py-5 rounded-2xl text-xl font-bold hover:bg-cyan-400 hover:text-black transition-all duration-500 hover:scale-105 transform relative overflow-hidden">
+                  <span className="relative z-10 flex items-center space-x-3">
+                    <CpuChipIcon className="h-6 w-6 group-hover:rotate-12 transition-transform duration-300" />
+                    <span>Ver Dashboard</span>
+                  </span>
+                  {/* Hover Glow */}
+                  <div className="absolute inset-0 bg-cyan-400/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
                 </Link>
+              </div>
+
+              {/* Floating Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20 animate-fade-in animation-delay-1500">
+                <div className="text-center group">
+                  <div className="text-4xl font-black text-cyan-400 mb-2 group-hover:scale-110 transition-transform duration-300">+150%</div>
+                  <div className="text-gray-400 font-medium">Aumento na Produtividade</div>
+                </div>
+                <div className="text-center group">
+                  <div className="text-4xl font-black text-blue-400 mb-2 group-hover:scale-110 transition-transform duration-300">+2000</div>
+                  <div className="text-gray-400 font-medium">Fazendeiros Ativos</div>
+                </div>
+                <div className="text-center group">
+                  <div className="text-4xl font-black text-purple-400 mb-2 group-hover:scale-110 transition-transform duration-300">+85%</div>
+                  <div className="text-gray-400 font-medium">Redução de Custos</div>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         {/* Live Crypto Prices Section */}
-        <section className="py-16 bg-gray-900">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold text-center mb-12 text-gray-100">
-              Preços de Criptomoedas em Tempo Real
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <section className="py-20 bg-gradient-to-br from-gray-900 via-black to-slate-900 relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-900/10 via-blue-900/10 to-purple-900/10"></div>
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-5xl font-black text-gray-100 mb-6 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
+                Preços de Criptomoedas em Tempo Real
+              </h2>
+              <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+                Acompanhe os preços das principais criptomoedas com dados atualizados a cada segundo
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {cryptoData.map((crypto, index) => (
-                <Card key={crypto.symbol} className="hover:shadow-xl transition-all duration-300 hover:-translate-y-1 enhanced-shadow">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className={`p-3 rounded-lg ${crypto.change >= 0 ? 'bg-green-500/20' : 'bg-red-500/20'}`}>
+                <Card key={crypto.symbol} className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 enhanced-shadow bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 hover:border-cyan-500/50">
+                  <div className="flex items-center justify-between p-6">
+                    <div className="flex items-center space-x-4">
+                      <div className={`p-4 rounded-2xl ${crypto.change >= 0 ? 'bg-green-500/20 border border-green-500/30' : 'bg-red-500/20 border border-red-500/30'} group-hover:scale-110 transition-transform duration-300`}>
                         {crypto.change >= 0 ? (
-                          <ArrowTrendingUpIcon className="h-6 w-6 text-green-400" />
+                          <ArrowTrendingUpIcon className="h-8 w-8 text-green-400" />
                         ) : (
-                          <ArrowTrendingDownIcon className="h-6 w-6 text-red-400" />
+                          <ArrowTrendingDownIcon className="h-8 w-8 text-red-400" />
                         )}
                       </div>
                       <div>
-                        <p className="font-semibold text-gray-100">{crypto.symbol}</p>
+                        <p className="font-bold text-gray-100 text-lg">{crypto.symbol}</p>
                         <p className="text-sm text-gray-400">Cap: ${crypto.marketCap}</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-xl font-bold text-gray-100">${crypto.price.toFixed(2)}</p>
-                      <p className={`text-sm ${crypto.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                      <p className="text-2xl font-black text-gray-100">${crypto.price.toFixed(2)}</p>
+                      <p className={`text-sm font-bold ${crypto.change >= 0 ? 'text-green-400' : 'text-red-400'} bg-${crypto.change >= 0 ? 'green' : 'red'}-400/20 px-3 py-1 rounded-full`}>
                         {crypto.change >= 0 ? '+' : ''}{crypto.change.toFixed(1)}%
                       </p>
                     </div>
@@ -131,36 +195,40 @@ const Home: NextPage = () => {
         </section>
 
         {/* Features Section */}
-        <section className="py-20 bg-black">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-gray-100 mb-4">
+        <section className="py-24 bg-black relative">
+          <div className="absolute inset-0 bg-gradient-to-br from-cyan-900/5 via-blue-900/5 to-purple-900/5"></div>
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-20">
+              <h2 className="text-5xl font-black text-gray-100 mb-6 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
                 Tecnologia de Ponta para Agricultura
               </h2>
-              <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+              <p className="text-xl text-gray-400 max-w-4xl mx-auto">
                 Nossa plataforma combina as mais avançadas tecnologias para revolucionar 
-                a agricultura tradicional
+                a agricultura tradicional com inovação e eficiência
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
               {features.map((feature, index) => (
                 <div key={index} className="group">
-                  <Card className="h-full hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 enhanced-shadow group-hover:scale-105">
-                    <div className="text-center">
-                      <div className="mb-6 flex justify-center">
+                  <Card className="h-full hover:shadow-2xl transition-all duration-700 hover:-translate-y-4 enhanced-shadow bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 hover:border-cyan-500/50 overflow-hidden">
+                    <div className="text-center p-8">
+                      <div className="mb-8 flex justify-center group-hover:scale-110 transition-transform duration-500">
                         <img 
                           src={feature.icon} 
                           alt={feature.title}
-                          className="w-32 h-32 object-contain"
+                          className="w-40 h-40 object-contain filter drop-shadow-2xl"
                         />
                       </div>
-                      <h3 className="text-xl font-semibold text-gray-100 mb-3">
+                      <h3 className="text-2xl font-bold text-gray-100 mb-4 group-hover:text-cyan-400 transition-colors duration-300">
                         {feature.title}
                       </h3>
-                      <p className="text-gray-400 leading-relaxed">
+                      <p className="text-gray-400 leading-relaxed text-lg">
                         {feature.description}
                       </p>
+                      
+                      {/* Animated Border */}
+                      <div className={`absolute inset-0 bg-gradient-to-r ${feature.bgColor} opacity-0 group-hover:opacity-20 transition-opacity duration-500 rounded-lg`}></div>
                     </div>
                   </Card>
                 </div>
@@ -170,59 +238,64 @@ const Home: NextPage = () => {
         </section>
 
         {/* Stats Section */}
-        <section className="py-20 bg-gray-900">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <section className="py-24 bg-gradient-to-br from-gray-900 via-black to-slate-900 relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-900/10 via-blue-900/10 to-purple-900/10"></div>
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
               <div className="text-center group">
-                <div className="mb-4 inline-flex p-4 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full group-hover:scale-110 transition-transform duration-300">
-                  <FireIcon className="h-8 w-8 text-white" />
+                <div className="mb-6 inline-flex p-6 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl group-hover:scale-110 transition-transform duration-500 shadow-2xl shadow-cyan-500/25">
+                  <FireIcon className="h-12 w-12 text-white" />
                 </div>
-                <h3 className="text-3xl font-bold text-gray-100 mb-2">+150%</h3>
-                <p className="text-gray-400">Aumento na Produtividade</p>
+                <h3 className="text-4xl font-black text-gray-100 mb-3 group-hover:text-cyan-400 transition-colors duration-300">+150%</h3>
+                <p className="text-gray-400 text-lg font-medium">Aumento na Produtividade</p>
               </div>
               
               <div className="text-center group">
-                <div className="mb-4 inline-flex p-4 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full group-hover:scale-110 transition-transform duration-300">
-                  <StarIcon className="h-8 w-8 text-white" />
+                <div className="mb-6 inline-flex p-6 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl group-hover:scale-110 transition-transform duration-500 shadow-2xl shadow-emerald-500/25">
+                  <StarIcon className="h-12 w-12 text-white" />
                 </div>
-                <h3 className="text-3xl font-bold text-gray-100 mb-2">+2000</h3>
-                <p className="text-gray-400">Fazendeiros Ativos</p>
+                <h3 className="text-4xl font-black text-gray-100 mb-3 group-hover:text-emerald-400 transition-colors duration-300">+2000</h3>
+                <p className="text-gray-400 text-lg font-medium">Fazendeiros Ativos</p>
               </div>
               
               <div className="text-center group">
-                <div className="mb-4 inline-flex p-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full group-hover:scale-110 transition-transform duration-300">
-                  <ArrowTrendingUpIcon className="h-8 w-8 text-white" />
+                <div className="mb-6 inline-flex p-6 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl group-hover:scale-110 transition-transform duration-500 shadow-2xl shadow-purple-500/25">
+                  <ArrowTrendingUpIcon className="h-12 w-12 text-white" />
                 </div>
-                <h3 className="text-3xl font-bold text-gray-100 mb-2">+85%</h3>
-                <p className="text-gray-400">Redução de Custos</p>
+                <h3 className="text-4xl font-black text-gray-100 mb-3 group-hover:text-purple-400 transition-colors duration-300">+85%</h3>
+                <p className="text-gray-400 text-lg font-medium">Redução de Custos</p>
               </div>
               
               <div className="text-center group">
-                <div className="mb-4 inline-flex p-4 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full group-hover:scale-110 transition-transform duration-300">
-                  <StarIcon className="h-8 w-8 text-white" />
+                <div className="mb-6 inline-flex p-6 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl group-hover:scale-110 transition-transform duration-500 shadow-2xl shadow-blue-500/25">
+                  <CpuChipIcon className="h-12 w-12 text-white" />
                 </div>
-                <h3 className="text-3xl font-bold text-gray-100 mb-2">24/7</h3>
-                <p className="text-gray-400">Monitoramento Ativo</p>
+                <h3 className="text-4xl font-black text-gray-100 mb-3 group-hover:text-blue-400 transition-colors duration-300">24/7</h3>
+                <p className="text-gray-400 text-lg font-medium">Monitoramento Ativo</p>
               </div>
             </div>
           </div>
         </section>
 
         {/* Chart Preview Section */}
-        <section className="py-20 bg-black">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <Card className="enhanced-shadow">
-              <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-gray-100 mb-4">
+        <section className="py-24 bg-black relative">
+          <div className="absolute inset-0 bg-gradient-to-br from-cyan-900/5 via-blue-900/5 to-purple-900/5"></div>
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <Card className="enhanced-shadow bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700">
+              <div className="text-center mb-12 p-8">
+                <h2 className="text-4xl font-black text-gray-100 mb-6 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
                   Gráfico de Performance em Tempo Real
                 </h2>
-                <p className="text-gray-400">
-                  Acompanhe o desempenho dos seus ativos agrícolas e criptomoedas
+                <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+                  Acompanhe o desempenho dos seus ativos agrícolas e criptomoedas com análises avançadas
                 </p>
               </div>
-              <div className="bg-gradient-to-br from-blue-950 to-gray-900 rounded-lg p-8 text-center">
+              <div className="bg-gradient-to-br from-cyan-950 via-blue-950 to-purple-950 rounded-2xl p-12 text-center mx-8 mb-8 border border-cyan-500/20">
+                <div className="text-cyan-400 text-2xl font-bold mb-4">
+                  📊 Gráfico Interativo Avançado
+                </div>
                 <div className="text-gray-400 text-lg">
-                  Gráfico interativo será carregado aqui
+                  Dados em tempo real • Análises preditivas • Indicadores técnicos
                 </div>
               </div>
             </Card>
@@ -230,21 +303,33 @@ const Home: NextPage = () => {
         </section>
 
         {/* CTA Section */}
-        <section className="py-20 bg-gradient-to-r from-blue-900 via-purple-900 to-cyan-900">
-          <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-            <h2 className="text-4xl font-bold text-gray-100 mb-6">
+        <section className="py-24 bg-gradient-to-r from-cyan-900 via-blue-900 to-purple-900 relative overflow-hidden">
+          <div className="absolute inset-0">
+            <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full blur-3xl animate-pulse animation-delay-2000"></div>
+          </div>
+          
+          <div className="relative z-10 max-w-5xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+            <h2 className="text-5xl font-black text-gray-100 mb-8">
               Pronto para Revolucionar sua Agricultura?
             </h2>
-            <p className="text-xl text-gray-300 mb-8">
+            <p className="text-2xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
               Junte-se a milhares de fazendeiros que já estão usando AGROISYNC para 
-              maximizar seus lucros e produtividade
+              maximizar seus lucros e produtividade com tecnologia de ponta
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/marketplace" className="bg-white text-black px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-all duration-200 hover:scale-105 transform">
-                Começar Agora
+            <div className="flex flex-col sm:flex-row gap-8 justify-center">
+              <Link href="/marketplace" className="group relative bg-white text-black px-12 py-6 rounded-2xl text-2xl font-bold hover:shadow-2xl hover:shadow-white/25 transition-all duration-500 hover:scale-105 transform overflow-hidden">
+                <span className="relative z-10 flex items-center space-x-4">
+                  <RocketLaunchIcon className="h-8 w-8 group-hover:animate-bounce" />
+                  <span>Começar Agora</span>
+                </span>
+                {/* Shine Effect */}
+                <div className="absolute inset-0 -skew-x-12 bg-gradient-to-r from-transparent via-gray-100 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
               </Link>
-              <Link href="/contact" className="border-2 border-white text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white hover:text-black transition-all duration-200">
-                Falar com Especialista
+              <Link href="/contact" className="group border-2 border-white text-white px-12 py-6 rounded-2xl text-2xl font-bold hover:bg-white hover:text-black transition-all duration-500 hover:scale-105 transform relative overflow-hidden">
+                <span className="relative z-10">Falar com Especialista</span>
+                {/* Hover Glow */}
+                <div className="absolute inset-0 bg-white/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
               </Link>
             </div>
           </div>
