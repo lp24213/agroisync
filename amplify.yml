@@ -4,41 +4,20 @@ applications:
       phases:
         preBuild:
           commands:
-            - echo "Iniciando build do AGROISYNC Frontend no Linux..."
-            - echo "Informacoes do sistema:"
+            - echo "Starting AGROISYNC Frontend build on Linux..."
             - uname -a
-            - echo "Versoes do ambiente:"
             - node --version
             - npm --version
-            - echo "Diretorio atual:"
             - pwd
-            - echo "Instalando dependencias..."
             - cd frontend
             - npm ci
-            - echo "Configurando Next.js para Amplify..."
             - cp next.config-final.js next.config.js
             - cp tsconfig-amplify.json tsconfig.json
-            - echo "Configuracoes aplicadas com sucesso"
-            - echo "Estrutura atual:"
-            - ls -la
-            - echo "Verificando arquivos de configuracao:"
-            - ls -la next.config*.js
-            - ls -la tsconfig*.json
         build:
           commands:
-            - echo "Buildando aplicacao..."
             - npm run build
-            - echo "Verificando estrutura apos build..."
-            - pwd
             - ls -la
-            - echo "Verificando pasta out..."
             - ls -la out/
-            - echo "Verificando index.html..."
-            - ls -la out/index.html
-            - echo "Conteudo inicial do index.html:"
-            - head -10 out/index.html
-            - echo "Build concluido com sucesso!"
-            - echo "Frontend pronto para deploy no Amplify!"
       artifacts:
         baseDirectory: frontend/out
         files:
@@ -52,31 +31,17 @@ applications:
       phases:
         preBuild:
           commands:
-            - echo "Iniciando build do AGROISYNC Backend no Linux..."
-            - echo "Informacoes do sistema:"
+            - echo "Starting AGROISYNC Backend build on Linux..."
             - uname -a
-            - echo "Versoes do ambiente:"
             - node --version
             - npm --version
-            - echo "Diretorio atual:"
             - pwd
-            - echo "Instalando dependencias..."
             - cd backend
             - npm ci
-            - echo "Configuracoes aplicadas com sucesso"
-            - echo "Estrutura atual:"
-            - ls -la
         build:
           commands:
-            - echo "Buildando aplicacao..."
             - npm run build
-            - echo "Verificando estrutura apos build..."
-            - pwd
             - ls -la
-            - echo "Verificando arquivos de build..."
-            - ls -la dist/ || echo "Pasta dist nao encontrada"
-            - echo "Build concluido com sucesso!"
-            - echo "Backend pronto para deploy no Amplify!"
       artifacts:
         baseDirectory: backend
         files:
