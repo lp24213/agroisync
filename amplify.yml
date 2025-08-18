@@ -19,19 +19,22 @@ frontend:
         - echo "🔧 Configurações aplicadas com sucesso"
         - echo "📁 Estrutura atual:"
         - ls -la
+        - echo "📁 Verificando arquivos de configuração:"
+        - ls -la next.config*.js
+        - ls -la tsconfig*.json
     build:
       commands:
         - echo "🏗️ Buildando aplicação..."
-        - cd frontend && npm run build
+        - npm run build
         - echo "📁 Verificando estrutura após build..."
         - pwd
         - ls -la
         - echo "📁 Verificando pasta out..."
-        - ls -la frontend/out/
+        - ls -la out/
         - echo "📄 Verificando index.html..."
-        - ls -la frontend/out/index.html
+        - ls -la out/index.html
         - echo "📄 Conteúdo inicial do index.html:"
-        - head -10 frontend/out/index.html
+        - head -10 out/index.html
         - echo "✅ Build concluído com sucesso!"
         - echo "🎯 Frontend pronto para deploy no Amplify!"
   artifacts:
