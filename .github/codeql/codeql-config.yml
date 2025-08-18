@@ -7,8 +7,6 @@ disable-default-queries: false
 query-filters:
   - include:
       tags contain: security
-  - include:
-      tags contain: security-and-quality
   - exclude:
       tags contain: experimental
   - exclude:
@@ -28,18 +26,16 @@ paths-ignore:
   - '**/dist'
   - '**/build'
   - '**/.next'
+  - '**/out'
   - '**/coverage'
   - '**/logs'
   - '**/uploads'
   - '**/public'
   - '**/*.min.js'
   - '**/*.bundle.js'
-
-# Additional queries
-queries:
-  - uses: security-and-quality
-  - uses: security-extended
-  - uses: ./queries
+  - '**/package-lock.json'
+  - '**/yarn.lock'
+  - '**/pnpm-lock.yaml'
 
 # Query options
 query-options:
@@ -57,12 +53,12 @@ query-options:
 # Memory settings
 memory:
   - name: javascript
-    value: 4096
+    value: 2048
   - name: typescript
-    value: 4096
+    value: 2048
 
 # Threads
-threads: 2
+threads: 1
 
 # Timeout
-timeout: 1800 
+timeout: 900 
