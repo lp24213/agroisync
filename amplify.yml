@@ -12,7 +12,8 @@ frontend:
         - echo "📋 Diretório atual:"
         - pwd
         - echo "📦 Instalando dependências..."
-        - cd frontend && npm ci
+        - cd frontend
+        - npm ci
         - echo "⚙️ Configurando Next.js para Amplify..."
         - cp next.config-final.js next.config.js
         - cp tsconfig-amplify.json tsconfig.json
