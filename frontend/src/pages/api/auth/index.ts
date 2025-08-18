@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { authService } from '@/services/api'
 
 type AuthResponse = {
   success: boolean
@@ -10,35 +11,51 @@ type AuthResponse = {
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<AuthResponse>
-) {
+) => {
   if (req.method === 'POST') {
     try {
-      const { email, password, metamaskId } = req.body
+      const { email, password, metamaskId, signature } = req.body
 
-      // Simular autenticação (será integrada com o backend real)
       if (email && password) {
-        // Login tradicional
-        return res.status(200).json({
-          success: true,
-          message: 'Login realizado com sucesso',
-          token: 'mock-jwt-token',
-          user: { email, id: 'user-123' }
-        })
-      } else if (metamaskId) {
-        // Login com MetaMask
-        return res.status(200).json({
-          success: true,
-          message: 'Login com MetaMask realizado',
-          token: 'mock-metamask-token',
-          user: { metamaskId, id: 'user-456' }
-        })
+        // Login tradicional - usar serviço real
+        try {
+          const result = await authService.login(email, password)
+          return res.status(200).json({
+            success: true,
+            message: 'Login realizado com sucesso',
+            token: result.token,
+            user: result.user
+          })
+        } catch (error: any) {
+          return res.status(400).json({
+            success: false,
+            message: error.response?.data?.message || 'Erro no login'
+          })
+        }
+      } else if (metamaskId && signature) {
+        // Login com MetaMask - usar serviço real
+        try {
+          const result = await authService.loginWithMetamask(metamaskId, signature)
+          return res.status(200).json({
+            success: true,
+            message: 'Login com MetaMask realizado',
+            token: result.token,
+            user: result.user
+          })
+        } catch (error: any) {
+          return res.status(400).json({
+            success: false,
+            message: error.response?.data?.message || 'Erro no login com MetaMask'
+          })
+        }
       }
 
       return res.status(400).json({
         success: false,
         message: 'Credenciais inválidas'
       })
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Erro na API de autenticação:', error)
       return res.status(500).json({
         success: false,
         message: 'Erro interno do servidor'

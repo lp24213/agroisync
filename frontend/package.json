@@ -10,7 +10,8 @@
     "lint:fix": "next lint --fix",
     "type-check": "tsc --noEmit",
     "build:analyze": "ANALYZE=true npm run build",
-    "export": "next build && next export",
+    "build:amplify": "cp next.config-amplify.js next.config.js && next build",
+    "export": "next build",
     "clean": "rm -rf .next out",
     "test": "jest",
     "test:watch": "jest --watch"
