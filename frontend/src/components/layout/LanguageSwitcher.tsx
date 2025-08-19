@@ -30,11 +30,11 @@ const languages = [
 ];
 
 const LanguageSwitcher: React.FC = () => {
-  const { currentLanguage, changeLanguage } = useI18n();
+  const { locale, setLocale } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const currentLang = languages.find(lang => lang.code === currentLanguage) || languages[0];
+  const currentLang = languages.find(lang => lang.code === locale) || languages[0];
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -48,7 +48,7 @@ const LanguageSwitcher: React.FC = () => {
   }, []);
 
   const handleLanguageChange = (languageCode: string) => {
-    changeLanguage(languageCode);
+    setLocale(languageCode as 'pt' | 'en' | 'es' | 'zh');
     setIsOpen(false);
   };
 
@@ -67,12 +67,12 @@ const LanguageSwitcher: React.FC = () => {
       </button>
 
       {isOpen && (
-        <div className="absolute top-full right-0 mt-3 w-64 cosmic-card border border-purple-500/30 shadow-2xl shadow-purple-500/25 overflow-hidden z-50 animate-fade-in">
-          <div className="p-3">
-            <div className="mb-3 px-3 py-2 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-lg border border-purple-500/30">
+        <div className="absolute top-full right-0 mt-2 w-48 cosmic-card border border-purple-500/30 shadow-2xl shadow-purple-500/25 overflow-hidden z-50 animate-fade-in">
+          <div className="p-2">
+            <div className="mb-2 px-2 py-1 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-lg border border-purple-500/30">
               <div className="flex items-center gap-2">
-                <SparklesIcon className="h-4 w-4 text-purple-400" />
-                <span className="text-xs font-medium text-purple-silver">Selecione o Idioma</span>
+                <SparklesIcon className="h-3 w-3 text-purple-400" />
+                <span className="text-xs font-medium text-purple-silver">Idioma</span>
               </div>
             </div>
             
@@ -80,24 +80,24 @@ const LanguageSwitcher: React.FC = () => {
               <button
                 key={language.code}
                 onClick={() => handleLanguageChange(language.code)}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 group hover:scale-105 transform ${
-                  currentLanguage === language.code
+                className={`w-full flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 group hover:scale-105 transform ${
+                  locale === language.code
                     ? 'bg-gradient-to-r from-purple-500/30 to-cyan-500/30 border border-purple-400/50 text-purple-200 shadow-lg shadow-purple-500/25'
                     : 'text-purple-silver hover:bg-gradient-to-r hover:from-purple-500/20 hover:to-cyan-500/20 hover:text-cyan-200 hover:border hover:border-purple-500/30'
                 }`}
               >
-                <span className="text-2xl group-hover:scale-110 transition-transform duration-300">
+                <span className="text-lg group-hover:scale-110 transition-transform duration-300">
                   {language.flag}
                 </span>
                 <div className="flex flex-col items-start">
-                  <span className="font-semibold text-sm">{language.name}</span>
+                  <span className="font-semibold text-xs">{language.name}</span>
                   <span className="text-xs text-purple-silver/70 group-hover:text-purple-silver/90">
                     {language.nativeName}
                   </span>
                 </div>
-                {currentLanguage === language.code && (
+                {locale === language.code && (
                   <div className="ml-auto">
-                    <div className="w-3 h-3 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></div>
+                    <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></div>
                   </div>
                 )}
               </button>
