@@ -1,5 +1,11 @@
 const es = {
 	app_name: 'AgroSync',
+	home: 'Inicio',
+	marketplace: 'Mercado',
+	staking: 'Inversiones',
+	properties: 'Propiedades',
+	dashboard: 'Panel',
+	about: 'Acerca de',
 	nav_home: 'Inicio',
 	nav_marketplace: 'Mercado',
 	nav_staking: 'Inversiones',

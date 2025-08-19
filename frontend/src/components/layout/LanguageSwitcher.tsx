@@ -56,23 +56,23 @@ const LanguageSwitcher: React.FC = () => {
     <div className="relative z-50" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="cosmic-button flex items-center space-x-3 bg-gradient-to-r from-purple-600/90 to-cyan-600/90 hover:from-purple-500/90 hover:to-cyan-500/90 border border-purple-400/50 hover:border-purple-300/50 rounded-xl px-4 py-3 transition-all duration-300 group hover:scale-105 transform shadow-lg hover:shadow-purple-500/25"
+        className="cosmic-button flex items-center space-x-2 bg-gradient-to-r from-purple-600/90 to-cyan-600/90 hover:from-purple-500/90 hover:to-cyan-500/90 border border-purple-400/50 hover:border-purple-300/50 rounded-lg px-3 py-2 transition-all duration-300 group hover:scale-105 transform shadow-lg hover:shadow-purple-500/25"
       >
-        <GlobeAltIcon className="h-5 w-5 text-white group-hover:text-cyan-200 transition-colors duration-300" />
-        <span className="text-2xl group-hover:scale-110 transition-transform duration-300">{currentLang.flag}</span>
-        <span className="text-white font-semibold text-sm hidden sm:block group-hover:text-cyan-100 transition-colors duration-300">
-          {currentLang.name}
+        <GlobeAltIcon className="h-4 w-4 text-white group-hover:text-cyan-200 transition-colors duration-300" />
+        <span className="text-lg group-hover:scale-110 transition-transform duration-300">{currentLang.flag}</span>
+        <span className="text-white font-semibold text-xs hidden sm:block group-hover:text-cyan-100 transition-colors duration-300">
+          {currentLang.code.toUpperCase()}
         </span>
-        <ChevronDownIcon className={`h-4 w-4 text-white transition-transform duration-300 group-hover:text-cyan-200 ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDownIcon className={`h-3 w-3 text-white transition-transform duration-300 group-hover:text-cyan-200 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div className="absolute top-full right-0 mt-2 w-48 cosmic-card border border-purple-500/30 shadow-2xl shadow-purple-500/25 overflow-hidden z-50 animate-fade-in">
-          <div className="p-2">
-            <div className="mb-2 px-2 py-1 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-lg border border-purple-500/30">
-              <div className="flex items-center gap-2">
+        <div className="absolute top-full right-0 mt-2 w-36 cosmic-card border border-purple-500/30 shadow-2xl shadow-purple-500/25 overflow-hidden z-50 animate-fade-in">
+          <div className="p-1">
+            <div className="mb-1 px-2 py-1 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-lg border border-purple-500/30">
+              <div className="flex items-center gap-1">
                 <SparklesIcon className="h-3 w-3 text-purple-400" />
-                <span className="text-xs font-medium text-purple-silver">Idioma</span>
+                <span className="text-xs font-medium text-purple-silver">🌍</span>
               </div>
             </div>
             
@@ -80,24 +80,21 @@ const LanguageSwitcher: React.FC = () => {
               <button
                 key={language.code}
                 onClick={() => handleLanguageChange(language.code)}
-                className={`w-full flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 group hover:scale-105 transform ${
+                className={`w-full flex items-center space-x-1 px-2 py-1 rounded-md transition-all duration-300 group hover:scale-105 transform ${
                   locale === language.code
                     ? 'bg-gradient-to-r from-purple-500/30 to-cyan-500/30 border border-purple-400/50 text-purple-200 shadow-lg shadow-purple-500/25'
                     : 'text-purple-silver hover:bg-gradient-to-r hover:from-purple-500/20 hover:to-cyan-500/20 hover:text-cyan-200 hover:border hover:border-purple-500/30'
                 }`}
               >
-                <span className="text-lg group-hover:scale-110 transition-transform duration-300">
+                <span className="text-base group-hover:scale-110 transition-transform duration-300">
                   {language.flag}
                 </span>
-                <div className="flex flex-col items-start">
-                  <span className="font-semibold text-xs">{language.name}</span>
-                  <span className="text-xs text-purple-silver/70 group-hover:text-purple-silver/90">
-                    {language.nativeName}
-                  </span>
-                </div>
+                <span className="font-semibold text-xs ml-1">
+                  {language.code.toUpperCase()}
+                </span>
                 {locale === language.code && (
                   <div className="ml-auto">
-                    <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></div>
+                    <div className="w-1.5 h-1.5 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></div>
                   </div>
                 )}
               </button>

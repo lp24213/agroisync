@@ -96,10 +96,10 @@ const Header: React.FC = () => {
                 {/* Logo Text */}
                 <div className="flex flex-col">
                   <span className="text-3xl font-black text-cosmic-glow tracking-tight">
-                    {t('app_name')}
+                    AGROISYNC
                   </span>
                   <span className="text-xs text-purple-silver font-medium tracking-wider uppercase">
-                    {t('nav_about')}
+                    Revolução Digital no Agronegócio
                   </span>
                 </div>
               </div>
@@ -170,9 +170,9 @@ const Header: React.FC = () => {
             <div className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto cosmic-background px-6 py-6 sm:max-w-sm border-l border-purple-500/30">
               <div className="flex items-center justify-between">
                 <Link href="/" className="-m-1.5 p-1.5">
-                                  <span className="text-2xl font-black text-cosmic-glow">
-                  {t('app_name')}
-                </span>
+                  <span className="text-2xl font-black text-cosmic-glow">
+                    AGROISYNC
+                  </span>
                 </Link>
                 <button
                   type="button"

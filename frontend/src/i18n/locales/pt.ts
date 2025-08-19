@@ -1,5 +1,11 @@
 const pt = {
 	app_name: 'AgroSync',
+	home: 'Início',
+	marketplace: 'Marketplace',
+	staking: 'Investimentos',
+	properties: 'Propriedades',
+	dashboard: 'Dashboard',
+	about: 'Sobre',
 	nav_home: 'Home',
 	nav_marketplace: 'Marketplace',
 	nav_staking: 'Investimentos',

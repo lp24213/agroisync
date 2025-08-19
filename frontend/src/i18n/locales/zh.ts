@@ -1,5 +1,11 @@
 const zh = {
 	app_name: 'AgroSync',
+	home: '首页',
+	marketplace: '市场',
+	staking: '投资',
+	properties: '资产',
+	dashboard: '控制台',
+	about: '关于',
 	nav_home: '首页',
 	nav_marketplace: '市场',
 	nav_staking: '投资',
