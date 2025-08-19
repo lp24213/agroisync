@@ -436,8 +436,8 @@ const Chatbot: React.FC = () => {
               <div className="flex items-center space-x-3 mb-2">
                 <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
                   <span className="text-2xl">🌱</span>
-                </div>
-                <div>
+              </div>
+              <div>
                   <h3 className="font-bold text-lg">{t('chatbot_assistant_title')}</h3>
                   <p className="text-xs text-white/80">{t('chatbot_status_online')}</p>
                 </div>
@@ -500,7 +500,7 @@ const Chatbot: React.FC = () => {
                 <div className="bg-gradient-to-r from-gray-800 to-gray-700 text-gray-100 px-4 py-3 rounded-2xl border border-purple-500/20">
                   <div className="flex items-center gap-2">
                     <span className="text-sm">{t('chatbot_typing')}</span>
-                    <div className="flex space-x-1">
+                  <div className="flex space-x-1">
                       <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
                       <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
                       <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
