@@ -26,7 +26,12 @@ const zh = {
 	lang_pt: '葡萄牙语',
 	lang_en: '英语',
 	lang_es: '西班牙语',
-	lang_zh: '中文'
+	lang_zh: '中文',
+	// Legal pages
+	privacy_policy: '隐私政策',
+	terms_of_service: '服务条款',
+	cookies_policy: 'Cookie政策',
+	legal: '法律'
 }
 
 export default zh

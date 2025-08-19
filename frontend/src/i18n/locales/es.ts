@@ -26,7 +26,12 @@ const es = {
 	lang_pt: 'Portugués',
 	lang_en: 'Inglés',
 	lang_es: 'Español',
-	lang_zh: 'Mandarín'
+	lang_zh: 'Mandarín',
+	// Legal pages
+	privacy_policy: 'Política de Privacidad',
+	terms_of_service: 'Términos de Servicio',
+	cookies_policy: 'Política de Cookies',
+	legal: 'Legal'
 }
 
 export default es

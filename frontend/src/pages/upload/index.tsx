@@ -1,6 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useState, useRef } from 'react'
+import { useI18n } from '@/i18n/I18nProvider'
 import { 
   CloudArrowUpIcon,
   DocumentIcon,
@@ -26,6 +27,7 @@ interface UploadedFile {
 }
 
 const Upload: NextPage = () => {
+  const { t } = useI18n();
   const [files, setFiles] = useState<UploadedFile[]>([])
   const [dragActive, setDragActive] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState('general')
@@ -33,14 +35,14 @@ const Upload: NextPage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const categories = [
-    { value: 'general', label: 'Geral' },
-    { value: 'documents', label: 'Documentos' },
-    { value: 'images', label: 'Imagens' },
-    { value: 'videos', label: 'Vídeos' },
-    { value: 'contracts', label: 'Contratos' },
-    { value: 'certificates', label: 'Certificados' },
-    { value: 'maps', label: 'Mapas' },
-    { value: 'reports', label: 'Relatórios' }
+    { value: 'general', label: t('upload_category_general') },
+    { value: 'documents', label: t('upload_category_documents') },
+    { value: 'images', label: t('upload_category_images') },
+    { value: 'videos', label: t('upload_category_videos') },
+    { value: 'contracts', label: t('upload_category_contracts') },
+    { value: 'certificates', label: t('upload_category_certificates') },
+    { value: 'maps', label: t('upload_category_maps') },
+    { value: 'reports', label: t('upload_category_reports') }
   ]
 
   const getFileIcon = (type: string) => {
@@ -167,8 +169,8 @@ const Upload: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Upload de Arquivos - AgroSync</title>
-        <meta name="description" content="Faça upload de documentos, imagens e arquivos para a plataforma AgroSync" />
+        <title>{t('upload_title')} - {t('app_name')}</title>
+        <meta name="description" content={t('upload_description')} />
       </Head>
 
       <div className="min-h-screen bg-gray-50">
@@ -177,10 +179,10 @@ const Upload: NextPage = () => {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
             <div className="text-center">
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Upload de Arquivos
+                {t('upload_main_title')}
               </h1>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Faça upload de documentos, imagens e arquivos importantes para sua fazenda
+                {t('upload_subtitle')}
               </p>
             </div>
           </div>
@@ -194,12 +196,12 @@ const Upload: NextPage = () => {
               <div className="lg:col-span-2">
                 <Card>
                   <div className="p-8">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Enviar Arquivos</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('upload_send_files_title')}</h2>
                     
                     {/* Category Selection */}
                     <div className="mb-6">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Categoria do Arquivo
+                        {t('upload_file_category_label')}
                       </label>
                       <select
                         value={selectedCategory}
@@ -228,16 +230,16 @@ const Upload: NextPage = () => {
                     >
                       <CloudArrowUpIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
                       <p className="text-lg font-medium text-gray-900 mb-2">
-                        Arraste e solte arquivos aqui
+                        {t('upload_drag_drop_title')}
                       </p>
                       <p className="text-gray-600 mb-4">
-                        ou clique para selecionar arquivos
+                        {t('upload_click_to_select')}
                       </p>
                       <Button
                         onClick={() => fileInputRef.current?.click()}
                         variant="outline"
                       >
-                        Selecionar Arquivos
+                        {t('upload_select_files_button')}
                       </Button>
                       <input
                         ref={fileInputRef}
@@ -251,23 +253,23 @@ const Upload: NextPage = () => {
 
                     {/* File Types Info */}
                     <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                      <h4 className="font-medium text-gray-900 mb-2">Tipos de Arquivo Suportados:</h4>
+                      <h4 className="font-medium text-gray-900 mb-2">{t('upload_supported_file_types')}:</h4>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600">
                         <div className="flex items-center">
                           <DocumentIcon className="h-4 w-4 mr-2" />
-                          Documentos (PDF, DOC)
+                          {t('upload_documents_type')}
                         </div>
                         <div className="flex items-center">
                           <PhotoIcon className="h-4 w-4 mr-2" />
-                          Imagens (JPG, PNG)
+                          {t('upload_images_type')}
                         </div>
                         <div className="flex items-center">
                           <VideoCameraIcon className="h-4 w-4 mr-2" />
-                          Vídeos (MP4, AVI)
+                          {t('upload_videos_type')}
                         </div>
                         <div className="flex items-center">
                           <DocumentIcon className="h-4 w-4 mr-2" />
-                          Planilhas (XLS, CSV)
+                          {t('upload_spreadsheets_type')}
                         </div>
                       </div>
                     </div>
@@ -279,30 +281,30 @@ const Upload: NextPage = () => {
               <div>
                 <Card>
                   <div className="p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Estatísticas</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('upload_statistics_title')}</h3>
                     
                     <div className="space-y-4">
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Total de Arquivos:</span>
+                        <span className="text-gray-600">{t('upload_total_files')}:</span>
                         <span className="font-semibold">{files.length}</span>
                       </div>
                       
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Em Upload:</span>
+                        <span className="text-gray-600">{t('upload_uploading')}:</span>
                         <span className="font-semibold text-blue-600">
                           {files.filter(f => f.status === 'uploading').length}
                         </span>
                       </div>
                       
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Concluídos:</span>
+                        <span className="text-gray-600">{t('upload_completed')}:</span>
                         <span className="font-semibold text-green-600">
                           {files.filter(f => f.status === 'completed').length}
                         </span>
                       </div>
                       
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Com Erro:</span>
+                        <span className="text-gray-600">{t('upload_with_error')}:</span>
                         <span className="font-semibold text-red-600">
                           {files.filter(f => f.status === 'error').length}
                         </span>
@@ -316,7 +318,7 @@ const Upload: NextPage = () => {
                           className="w-full"
                           onClick={() => setFiles([])}
                         >
-                          Limpar Lista
+                          {t('upload_clear_list')}
                         </Button>
                       </div>
                     )}
@@ -331,7 +333,7 @@ const Upload: NextPage = () => {
         {files.length > 0 && (
           <section className="py-8">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Arquivos Enviados</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('upload_sent_files_title')}</h2>
               
               <div className="space-y-4">
                 {files.map((file) => (
@@ -370,8 +372,8 @@ const Upload: NextPage = () => {
                           <div className={`flex items-center space-x-2 ${getStatusColor(file.status)}`}>
                             {getStatusIcon(file.status)}
                             <span className="text-sm font-medium">
-                              {file.status === 'uploading' ? 'Enviando...' :
-                               file.status === 'completed' ? 'Concluído' : 'Erro'}
+                              {file.status === 'uploading' ? t('upload_status_uploading') :
+                               file.status === 'completed' ? t('upload_status_completed') : t('upload_status_error')}
                             </span>
                           </div>
                           
@@ -379,7 +381,7 @@ const Upload: NextPage = () => {
                           <div className="flex items-center space-x-2">
                             {file.status === 'completed' && (
                               <Button variant="outline" size="sm">
-                                Download
+                                {t('upload_download_button')}
                               </Button>
                             )}
                             
@@ -389,7 +391,7 @@ const Upload: NextPage = () => {
                                 size="sm"
                                 onClick={() => retryUpload(file.id)}
                               >
-                                Tentar Novamente
+                                {t('upload_retry_button')}
                               </Button>
                             )}
                             
@@ -399,7 +401,7 @@ const Upload: NextPage = () => {
                               onClick={() => removeFile(file.id)}
                               className="text-red-600 hover:text-red-700"
                             >
-                              Remover
+                              {t('upload_remove_button')}
                             </Button>
                           </div>
                         </div>
@@ -415,16 +417,16 @@ const Upload: NextPage = () => {
         {/* Tips Section */}
         <section className="py-12 bg-white">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Dicas para Upload</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">{t('upload_tips_title')}</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="text-center">
                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <DocumentIcon className="h-8 w-8 text-blue-600" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">Organize por Categoria</h3>
+                <h3 className="font-semibold text-gray-900 mb-2">{t('upload_tip1_title')}</h3>
                 <p className="text-gray-600 text-sm">
-                  Use as categorias para organizar seus arquivos e facilitar a busca posterior
+                  {t('upload_tip1_description')}
                 </p>
               </div>
               
@@ -432,9 +434,9 @@ const Upload: NextPage = () => {
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <CloudArrowUpIcon className="h-8 w-8 text-green-600" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">Backup Automático</h3>
+                <h3 className="font-semibold text-gray-900 mb-2">{t('upload_tip2_title')}</h3>
                 <p className="text-gray-600 text-sm">
-                  Todos os arquivos são automaticamente salvos na nuvem com backup redundante
+                  {t('upload_tip2_description')}
                 </p>
               </div>
               
@@ -442,9 +444,9 @@ const Upload: NextPage = () => {
                 <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <CheckCircleIcon className="h-8 w-8 text-purple-600" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">Segurança Garantida</h3>
+                <h3 className="font-semibold text-gray-900 mb-2">{t('upload_tip3_title')}</h3>
                 <p className="text-gray-600 text-sm">
-                  Seus arquivos são criptografados e protegidos com as mais altas medidas de segurança
+                  {t('upload_tip3_description')}
                 </p>
               </div>
             </div>

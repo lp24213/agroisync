@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* Custom Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 /* Base Styles */
 * {
@@ -15,9 +15,220 @@ html {
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
+  color: #ffffff;
+  min-height: 100vh;
+}
+
+/* ===== CORES ROXO PRATEADO PERFEITAS ===== */
+:root {
+  --purple-silver-50: #f8f7ff;
+  --purple-silver-100: #f0eeff;
+  --purple-silver-200: #e6e2ff;
+  --purple-silver-300: #d4ccff;
+  --purple-silver-400: #b8a6ff;
+  --purple-silver-500: #9b7cff;
+  --purple-silver-600: #7c5aff;
+  --purple-silver-700: #6b46c1;
+  --purple-silver-800: #553c9a;
+  --purple-silver-900: #4c1d95;
+  --purple-silver-950: #2e1065;
+  
+  --cosmic-purple: #8b5cf6;
+  --cosmic-blue: #3b82f6;
+  --cosmic-cyan: #06b6d4;
+  --cosmic-pink: #ec4899;
+  --cosmic-indigo: #6366f1;
+  
+  --text-primary: #ffffff;
+  --text-secondary: #e2e8f0;
+  --text-muted: #94a3b8;
+  
+  --bg-primary: #0f0f23;
+  --bg-secondary: #1a1a2e;
+  --bg-tertiary: #16213e;
+  --bg-accent: #0f3460;
+  
+  --border-primary: rgba(139, 92, 246, 0.3);
+  --border-secondary: rgba(59, 130, 246, 0.2);
+  --border-accent: rgba(6, 182, 212, 0.4);
+}
+
+/* ===== FUNDO CÓSMICO PERFEITO ===== */
+.cosmic-background {
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 60% 60%, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
+    linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.cosmic-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(2px 2px at 40px 70px, rgba(139, 92, 246, 0.6), transparent),
+    radial-gradient(1px 1px at 90px 40px, rgba(59, 130, 246, 0.6), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(6, 182, 212, 0.6), transparent),
+    radial-gradient(2px 2px at 160px 30px, rgba(236, 72, 153, 0.6), transparent);
+  background-repeat: repeat;
+  background-size: 200px 100px;
+  animation: star-field 20s linear infinite;
+  opacity: 0.6;
+}
+
+@keyframes star-field {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-100px); }
+}
+
+/* ===== TIPOGRAFIA PERFEITA ===== */
+.text-cosmic {
+  background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 25%, #94a3b8 50%, #64748b 75%, #475569 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+}
+
+.text-cosmic-glow {
+  background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 50%, #94a3b8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 
+    0 0 10px rgba(255, 255, 255, 0.5),
+    0 0 20px rgba(139, 92, 246, 0.3),
+    0 0 30px rgba(59, 130, 246, 0.2);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.text-purple-silver {
+  background: linear-gradient(135deg, #f8f7ff 0%, #e6e2ff 25%, #b8a6ff 50%, #9b7cff 75%, #7c5aff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 600;
+}
+
+/* ===== CARDS PERFEITOS ===== */
+.cosmic-card {
+  background: linear-gradient(135deg, rgba(26, 26, 46, 0.9) 0%, rgba(22, 33, 62, 0.9) 50%, rgba(15, 52, 96, 0.9) 100%);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 20px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(139, 92, 246, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.cosmic-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.1), transparent);
+  transition: left 0.6s ease;
+}
+
+.cosmic-card:hover::before {
+  left: 100%;
+}
+
+.cosmic-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  border-color: rgba(139, 92, 246, 0.4);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(139, 92, 246, 0.3),
+    0 0 30px rgba(139, 92, 246, 0.2);
+}
+
+/* ===== BOTÕES CÓSMICOS ===== */
+.cosmic-button {
+  background: linear-gradient(135deg, #7c5aff 0%, #9b7cff 25%, #b8a6ff 50%, #d4ccff 75%, #f0eeff 100%);
+  border: none;
+  color: #0f0f23;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 4px 15px rgba(124, 90, 255, 0.3),
+    0 0 0 1px rgba(124, 90, 255, 0.2);
+}
+
+.cosmic-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.cosmic-button:hover::before {
+  left: 100%;
+}
+
+.cosmic-button:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 
+    0 8px 25px rgba(124, 90, 255, 0.4),
+    0 0 0 1px rgba(124, 90, 255, 0.3),
+    0 0 20px rgba(124, 90, 255, 0.2);
+}
+
+.cosmic-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* ===== INPUTS CÓSMICOS ===== */
+.cosmic-input {
+  background: rgba(26, 26, 46, 0.8);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 12px;
+  color: #ffffff;
+  padding: 12px 16px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.cosmic-input:focus {
+  outline: none;
+  border-color: rgba(139, 92, 246, 0.6);
+  box-shadow: 
+    0 0 0 3px rgba(139, 92, 246, 0.1),
+    0 0 20px rgba(139, 92, 246, 0.2);
+  background: rgba(26, 26, 46, 0.9);
+}
+
+.cosmic-input::placeholder {
+  color: rgba(148, 163, 184, 0.6);
 }
 
 /* Custom Animations */
