@@ -128,8 +128,40 @@ const pt = {
  	staking_stats_total_rewards: 'Total Rewards',
  	staking_stats_avg_apy: 'APY Médio',
  	staking_stats_active_users: 'Usuários Ativos',
- 	staking_pools_title: 'Pools de Staking',
- 	staking_pools_subtitle: 'Escolha os melhores pools para maximizar seus retornos'
+ 		staking_pools_title: 'Pools de Staking',
+	staking_pools_subtitle: 'Escolha os melhores pools para maximizar seus retornos',
+	
+	// Home page content
+	home_title: 'AGROISYNC - Revolução Digital no Agronegócio',
+	home_description: 'Plataforma revolucionária que combina agricultura inteligente com tecnologia blockchain para maximizar produtividade e lucros.',
+	home_badge_revolutionary: 'Plataforma Revolucionária',
+	home_main_subtitle: 'A primeira plataforma de agricultura inteligente que combina tecnologia blockchain com dados em tempo real para revolucionar seu agronegócio.',
+	home_explore_marketplace_button: 'Explorar Marketplace',
+	home_view_dashboard_button: 'Ver Dashboard',
+	home_stats_productivity: 'Aumento na Produtividade',
+	home_stats_farmers: 'Agricultores Ativos',
+	home_stats_cost_reduction: 'Redução de Custos',
+	home_agricultural_prices_title: 'Preços Agrícolas em Tempo Real',
+	home_agricultural_prices_subtitle: 'Acompanhe os preços dos principais produtos agrícolas da região de Sinop, Mato Grosso, com atualizações a cada segundo.',
+	home_chart_title: 'Análise de Mercado Avançada',
+	home_chart_subtitle: 'Gráficos profissionais com indicadores técnicos para tomada de decisões estratégicas.',
+	home_chart_advanced_title: 'Análise Técnica Profissional',
+	home_chart_description: 'Indicadores avançados incluindo RSI, MACD e Volume para análise completa do mercado agrícola.',
+	home_chart_price_label: 'Preço (R$)',
+	home_chart_products_up: 'Produtos em Alta',
+	home_chart_products_down: 'Produtos em Baixa',
+	home_technology_title: 'Tecnologia Revolucionária',
+	home_technology_subtitle: 'Nossa plataforma utiliza as mais avançadas tecnologias para transformar sua operação agrícola.',
+	home_cta_title: 'Pronto para Revolucionar sua Agricultura?',
+	home_cta_subtitle: 'Junte-se a milhares de produtores que já aproveitam a agricultura digital com tecnologia blockchain.',
+	home_cta_start_button: 'Começar Agora',
+	home_cta_expert_button: 'Falar com Especialista',
+	home_feature1_title: 'Agricultura Inteligente',
+	home_feature1_description: 'Sistema avançado de monitoramento e análise de dados para maximizar produtividade e reduzir custos operacionais.',
+	home_feature2_title: 'Staking & Farming',
+	home_feature2_description: 'Plataforma de investimento com pools de staking e farming para gerar renda passiva com suas criptomoedas agrícolas.',
+	home_feature3_title: 'Segurança Blockchain',
+	home_feature3_description: 'Tecnologia blockchain de ponta para garantir transparência, segurança e imutabilidade em todas as transações.'
 }
 
 export default pt

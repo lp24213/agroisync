@@ -128,8 +128,40 @@ const en = {
  	staking_stats_total_rewards: 'Total Rewards',
  	staking_stats_avg_apy: 'Average APY',
  	staking_stats_active_users: 'Active Users',
- 	staking_pools_title: 'Staking Pools',
- 	staking_pools_subtitle: 'Choose the best pools to maximize your returns'
+ 		staking_pools_title: 'Staking Pools',
+	staking_pools_subtitle: 'Choose the best pools to maximize your returns',
+	
+	// Home page content
+	home_title: 'AGROISYNC - Digital Revolution in Agribusiness',
+	home_description: 'Revolutionary platform that combines intelligent agriculture with blockchain technology to maximize productivity and profits.',
+	home_badge_revolutionary: 'Revolutionary Platform',
+	home_main_subtitle: 'The first intelligent agriculture platform that combines blockchain technology with real-time data to revolutionize your agribusiness.',
+	home_explore_marketplace_button: 'Explore Marketplace',
+	home_view_dashboard_button: 'View Dashboard',
+	home_stats_productivity: 'Productivity Increase',
+	home_stats_farmers: 'Active Farmers',
+	home_stats_cost_reduction: 'Cost Reduction',
+	home_agricultural_prices_title: 'Real-Time Agricultural Prices',
+	home_agricultural_prices_subtitle: 'Track the prices of major agricultural products in the Sinop, Mato Grosso region with updates every second.',
+	home_chart_title: 'Advanced Market Analysis',
+	home_chart_subtitle: 'Professional charts with technical indicators for strategic decision making.',
+	home_chart_advanced_title: 'Professional Technical Analysis',
+	home_chart_description: 'Advanced indicators including RSI, MACD and Volume for complete agricultural market analysis.',
+	home_chart_price_label: 'Price (R$)',
+	home_chart_products_up: 'Products Up',
+	home_chart_products_down: 'Products Down',
+	home_technology_title: 'Revolutionary Technology',
+	home_technology_subtitle: 'Our platform uses the most advanced technologies to transform your agricultural operation.',
+	home_cta_title: 'Ready to Revolutionize Your Agriculture?',
+	home_cta_subtitle: 'Join thousands of producers who already enjoy digital agriculture with blockchain technology.',
+	home_cta_start_button: 'Get Started',
+	home_cta_expert_button: 'Talk to Expert',
+	home_feature1_title: 'Intelligent Agriculture',
+	home_feature1_description: 'Advanced monitoring and data analysis system to maximize productivity and reduce operational costs.',
+	home_feature2_title: 'Staking & Farming',
+	home_feature2_description: 'Investment platform with staking and farming pools to generate passive income with your agricultural cryptocurrencies.',
+	home_feature3_title: 'Blockchain Security',
+	home_feature3_description: 'Cutting-edge blockchain technology to ensure transparency, security and immutability in all transactions.'
 }
 
 export default en
