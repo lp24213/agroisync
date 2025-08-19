@@ -10,30 +10,35 @@ import {
   ArrowTrendingDownIcon,
   SparklesIcon,
   RocketLaunchIcon,
-  CpuChipIcon
+  CpuChipIcon,
+  MapPinIcon
 } from '@heroicons/react/24/outline'
 import Card from '@/components/ui/Card'
+import agriculturalApi from '@/services/agriculturalApi'
+import { AgriculturalProduct } from '@/services/agriculturalApi'
 
 const Home: NextPage = () => {
-  const [cryptoData, setCryptoData] = useState([
-    { symbol: 'BTC', price: 43250.00, change: 3.2, marketCap: '845.2B' },
-    { symbol: 'ETH', price: 2650.00, change: 2.8, marketCap: '318.7B' },
-    { symbol: 'ADA', price: 0.48, change: -1.2, marketCap: '16.9B' },
-    { symbol: 'SOL', price: 98.50, change: 5.7, marketCap: '42.1B' },
-    { symbol: 'DOT', price: 7.25, change: 1.9, marketCap: '9.8B' },
-    { symbol: 'LINK', price: 15.80, change: -0.8, marketCap: '8.9B' }
-  ])
+  const [agriculturalData, setAgriculturalData] = useState<AgriculturalProduct[]>([])
+  const [cryptoData, setCryptoData] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCryptoData(prev => prev.map(crypto => ({
-        ...crypto,
-        price: crypto.price * (1 + (Math.random() - 0.5) * 0.02),
-        change: crypto.change + (Math.random() - 0.5) * 2
-      })))
-    }, 5000)
+    const fetchData = async () => {
+      try {
+        const [agData, cryptoData] = await Promise.all([
+          agriculturalApi.getAgriculturalData(),
+          agriculturalApi.getCryptoData()
+        ])
+        setAgriculturalData(agData.products)
+        setCryptoData(cryptoData)
+        setLoading(false)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+        setLoading(false)
+      }
+    }
 
-    return () => clearInterval(interval)
+    fetchData()
   }, [])
 
   const features = [
@@ -59,6 +64,59 @@ const Home: NextPage = () => {
       delay: 'animation-delay-600'
     }
   ]
+
+  // Chart data for agricultural products
+  const chartData = {
+    labels: agriculturalData.map(p => p.name),
+    datasets: [
+      {
+        label: 'Preço (R$)',
+        data: agriculturalData.map(p => p.price),
+        borderColor: '#06b6d4',
+        backgroundColor: 'rgba(6, 182, 212, 0.1)',
+        borderWidth: 3,
+        fill: true,
+        tension: 0.4
+      }
+    ]
+  }
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: false,
+        grid: {
+          color: 'rgba(107, 114, 128, 0.2)'
+        },
+        ticks: {
+          color: '#9ca3af',
+          font: {
+            family: 'Inter',
+            size: 11
+          }
+        }
+      },
+      x: {
+        grid: {
+          color: 'rgba(107, 114, 128, 0.2)'
+        },
+        ticks: {
+          color: '#9ca3af',
+          font: {
+            family: 'Inter',
+            size: 11
+          }
+        }
+      }
+    }
+  }
 
   return (
     <>
@@ -151,9 +209,122 @@ const Home: NextPage = () => {
           </div>
         </section>
 
-        {/* Live Crypto Prices Section */}
+        {/* Live Agricultural Prices Section */}
         <section className="py-20 bg-gradient-to-br from-gray-900 via-black to-slate-900 relative">
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-900/10 via-blue-900/10 to-purple-900/10"></div>
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-5xl font-black text-gray-100 mb-6 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
+                Preços Agrícolas em Tempo Real - Sinop MT
+              </h2>
+              <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+                Dados atualizados diariamente da região de Sinop MT, baseados em informações reais do mercado
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+              {loading ? (
+                // Loading skeleton
+                Array.from({ length: 6 }).map((_, index) => (
+                  <Card key={index} className="enhanced-shadow bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700">
+                    <div className="p-6 animate-pulse">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-12 h-12 bg-gray-700 rounded-xl"></div>
+                          <div className="space-y-2">
+                            <div className="h-4 bg-gray-700 rounded w-16"></div>
+                            <div className="h-3 bg-gray-700 rounded w-20"></div>
+                          </div>
+                        </div>
+                        <div className="text-right space-y-2">
+                          <div className="h-6 bg-gray-700 rounded w-20"></div>
+                          <div className="h-4 bg-gray-700 rounded w-16"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                ))
+              ) : (
+                agriculturalData.map((product, index) => (
+                  <Card key={product.id} className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 enhanced-shadow bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 hover:border-cyan-500/50">
+                    <div className="flex items-center justify-between p-6">
+                      <div className="flex items-center space-x-4">
+                        <div className={`p-4 rounded-2xl ${product.trend === 'up' ? 'bg-green-500/20 border border-green-500/30' : product.trend === 'down' ? 'bg-red-500/20 border border-red-500/30' : 'bg-gray-500/20 border border-gray-500/30'} group-hover:scale-110 transition-transform duration-300`}>
+                          <span className="text-2xl">{product.icon}</span>
+                        </div>
+                        <div>
+                          <p className="font-bold text-gray-100 text-lg">{product.name}</p>
+                          <p className="text-sm text-gray-400">{product.region}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-2xl font-black text-gray-100">R$ {product.price.toFixed(2)}</p>
+                        <p className={`text-sm font-bold ${product.trend === 'up' ? 'text-green-400' : product.trend === 'down' ? 'text-red-400' : 'text-gray-400'} bg-${product.trend === 'up' ? 'green' : product.trend === 'down' ? 'red' : 'gray'}-400/20 px-3 py-1 rounded-full`}>
+                          {product.trend === 'up' ? '+' : ''}{product.changePercent.toFixed(2)}%
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">{product.priceUnit}</p>
+                      </div>
+                    </div>
+                  </Card>
+                ))
+              )}
+            </div>
+
+            {/* Professional Chart */}
+            <Card className="enhanced-shadow bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700">
+              <div className="p-8">
+                <div className="text-center mb-8">
+                  <h3 className="text-3xl font-bold text-gray-100 mb-4 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
+                    📊 Gráfico Interativo Avançado
+                  </h3>
+                  <p className="text-xl text-gray-400">
+                    Dados em tempo real • Análises preditivas • Indicadores técnicos
+                  </p>
+                </div>
+                
+                {loading ? (
+                  <div className="bg-gradient-to-br from-cyan-950 via-blue-950 to-purple-950 rounded-2xl p-12 text-center border border-cyan-500/20 animate-pulse">
+                    <div className="h-64 bg-gray-800 rounded-lg"></div>
+                  </div>
+                ) : (
+                  <div className="bg-gradient-to-br from-cyan-950 via-blue-950 to-purple-950 rounded-2xl p-8 border border-cyan-500/20">
+                    <div className="h-80">
+                      {/* Chart will be rendered here */}
+                      <div className="w-full h-full flex items-center justify-center">
+                        <div className="text-center">
+                          <div className="text-cyan-400 text-4xl font-bold mb-4">
+                            📈 Gráfico Profissional
+                          </div>
+                          <div className="text-gray-400 text-lg mb-4">
+                            Visualização avançada dos preços agrícolas
+                          </div>
+                          <div className="grid grid-cols-2 gap-8 text-sm">
+                            <div className="text-center">
+                              <div className="text-2xl font-bold text-green-400">
+                                {agriculturalData.filter(p => p.trend === 'up').length}
+                              </div>
+                              <div className="text-gray-400">Produtos em Alta</div>
+                            </div>
+                            <div className="text-center">
+                              <div className="text-2xl font-bold text-red-400">
+                                {agriculturalData.filter(p => p.trend === 'down').length}
+                              </div>
+                              <div className="text-gray-400">Produtos em Baixa</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </Card>
+          </div>
+        </section>
+
+        {/* Live Crypto Prices Section */}
+        <section className="py-20 bg-black relative">
+          <div className="absolute inset-0 bg-gradient-to-br from-cyan-900/5 via-blue-900/5 to-purple-900/5"></div>
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-5xl font-black text-gray-100 mb-6 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
@@ -165,16 +336,12 @@ const Home: NextPage = () => {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {cryptoData.map((crypto, index) => (
+              {cryptoData.map((crypto: any, index: number) => (
                 <Card key={crypto.symbol} className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 enhanced-shadow bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 hover:border-cyan-500/50">
                   <div className="flex items-center justify-between p-6">
                     <div className="flex items-center space-x-4">
                       <div className={`p-4 rounded-2xl ${crypto.change >= 0 ? 'bg-green-500/20 border border-green-500/30' : 'bg-red-500/20 border border-red-500/30'} group-hover:scale-110 transition-transform duration-300`}>
-                        {crypto.change >= 0 ? (
-                          <ArrowTrendingUpIcon className="h-8 w-8 text-green-400" />
-                        ) : (
-                          <ArrowTrendingDownIcon className="h-8 w-8 text-red-400" />
-                        )}
+                        <span className="text-2xl">{crypto.icon}</span>
                       </div>
                       <div>
                         <p className="font-bold text-gray-100 text-lg">{crypto.symbol}</p>
@@ -277,31 +444,6 @@ const Home: NextPage = () => {
           </div>
         </section>
 
-        {/* Chart Preview Section */}
-        <section className="py-24 bg-black relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-cyan-900/5 via-blue-900/5 to-purple-900/5"></div>
-          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <Card className="enhanced-shadow bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700">
-              <div className="text-center mb-12 p-8">
-                <h2 className="text-4xl font-black text-gray-100 mb-6 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
-                  Gráfico de Performance em Tempo Real
-                </h2>
-                <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-                  Acompanhe o desempenho dos seus ativos agrícolas e criptomoedas com análises avançadas
-                </p>
-              </div>
-              <div className="bg-gradient-to-br from-cyan-950 via-blue-950 to-purple-950 rounded-2xl p-12 text-center mx-8 mb-8 border border-cyan-500/20">
-                <div className="text-cyan-400 text-2xl font-bold mb-4">
-                  📊 Gráfico Interativo Avançado
-                </div>
-                <div className="text-gray-400 text-lg">
-                  Dados em tempo real • Análises preditivas • Indicadores técnicos
-                </div>
-              </div>
-            </Card>
-          </div>
-        </section>
-
         {/* CTA Section */}
         <section className="py-24 bg-gradient-to-r from-cyan-900 via-blue-900 to-purple-900 relative overflow-hidden">
           <div className="absolute inset-0">
@@ -314,8 +456,8 @@ const Home: NextPage = () => {
               Pronto para Revolucionar sua Agricultura?
             </h2>
             <p className="text-2xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
-              Junte-se a milhares de fazendeiros que já estão usando AGROISYNC para 
-              maximizar seus lucros e produtividade com tecnologia de ponta
+              Junte-se à revolução agrícola digital e transforme seus ativos rurais em 
+              oportunidades de investimento com tecnologia blockchain de ponta
             </p>
             <div className="flex flex-col sm:flex-row gap-8 justify-center">
               <Link href="/marketplace" className="group relative bg-white text-black px-12 py-6 rounded-2xl text-2xl font-bold hover:shadow-2xl hover:shadow-white/25 transition-all duration-500 hover:scale-105 transform overflow-hidden">
