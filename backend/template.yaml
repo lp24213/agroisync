@@ -6,7 +6,7 @@ Resources:
   ApiFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: agroisync-api-working
+      FunctionName: agroisync-api
       CodeUri: .
       Handler: dist/handler.js
       Runtime: nodejs20.x
