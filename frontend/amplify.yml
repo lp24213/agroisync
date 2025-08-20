@@ -1,14 +1,10 @@
 version: 1
 frontend:
   phases:
-    preBuild:
-      commands:
-        - corepack enable
-        - pnpm install
     build:
       commands:
-        - pnpm build
+        - echo "HTML estático - sem build necessário"
   artifacts:
-    baseDirectory: build
+    baseDirectory: public
     files:
       - '**/*'
