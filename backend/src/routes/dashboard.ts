@@ -8,7 +8,7 @@ const router: Router = express.Router();
 
 // Dashboard endpoint
 router.get('/', (req: Request, res: Response) => {
-  res.json({
+    res.json({
     message: 'Dashboard service',
     status: 'operational'
   });
