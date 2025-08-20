@@ -9,7 +9,11 @@ import {
   ShoppingCartIcon,
   CurrencyDollarIcon,
   TruckIcon,
-  ShieldCheckIcon
+  ShieldCheckIcon,
+  MicrophoneIcon,
+  PhotoIcon,
+  SpeakerWaveIcon,
+  StopIcon
 } from '@heroicons/react/24/outline'
 
 interface Message {
@@ -17,7 +21,8 @@ interface Message {
   text: string
   isUser: boolean
   timestamp: Date
-  type?: 'text' | 'product' | 'price' | 'shipping' | 'payment'
+  type?: 'text' | 'product' | 'price' | 'shipping' | 'payment' | 'image'
+  imageUrl?: string
 }
 
 // 500 conversas fixas sobre compras agrícolas
@@ -197,8 +202,13 @@ const Chatbot: React.FC = () => {
   ])
   const [inputValue, setInputValue] = useState('')
   const [isTyping, setIsTyping] = useState(false)
+  const [isListening, setIsListening] = useState(false)
+  const [isSpeaking, setIsSpeaking] = useState(false)
+  const [recognition, setRecognition] = useState<any>(null)
+  const [speechSynthesis, setSpeechSynthesis] = useState<SpeechSynthesis | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -213,6 +223,37 @@ const Chatbot: React.FC = () => {
       inputRef.current.focus()
     }
   }, [isOpen])
+
+  // Inicializar reconhecimento de voz
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // @ts-ignore
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+      if (SpeechRecognition) {
+        const recognitionInstance = new SpeechRecognition()
+        recognitionInstance.continuous = false
+        recognitionInstance.interimResults = false
+        recognitionInstance.lang = 'pt-BR'
+        
+        recognitionInstance.onresult = (event: any) => {
+          const transcript = event.results[0][0].transcript
+          setInputValue(transcript)
+          setIsListening(false)
+        }
+        
+        recognitionInstance.onerror = (event: any) => {
+          console.error('Erro no reconhecimento de voz:', event.error)
+          setIsListening(false)
+        }
+        
+        setRecognition(recognitionInstance)
+      }
+      
+      if ('speechSynthesis' in window) {
+        setSpeechSynthesis(window.speechSynthesis)
+      }
+    }
+  }, [])
 
   const getRandomResponse = (category: keyof typeof CONVERSATIONS): string => {
     const responses = CONVERSATIONS[category]
@@ -349,26 +390,202 @@ const Chatbot: React.FC = () => {
     setInputValue('')
     setIsTyping(true)
 
-    // Simular resposta do bot
-    setTimeout(() => {
-      const botResponse = generateBotResponse(inputValue)
+    try {
+      // Usar API real do chatbot
+      const response = await fetch('/api/chatbot', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: 'user-123', // TODO: Pegar do contexto de autenticação
+          type: 'text',
+          content: inputValue,
+          sessionId: 'session-' + Date.now()
+        }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success) {
+          const botMessage: Message = {
+            id: Date.now() + 1,
+            text: data.data.response,
+            isUser: false,
+            timestamp: new Date(),
+            type: 'text'
+          }
+          
+          setMessages(prev => [...prev, botMessage])
+          
+          // Falar a resposta se estiver ativado
+          if (speechSynthesis && isSpeaking) {
+            const utterance = new SpeechSynthesisUtterance(data.data.response)
+            utterance.lang = 'pt-BR'
+            utterance.rate = 0.9
+            speechSynthesis.speak(utterance)
+          }
+        } else {
+          // Fallback se a API falhar
+          const botMessage: Message = {
+            id: Date.now() + 1,
+            text: generateBotResponse(inputValue),
+            isUser: false,
+            timestamp: new Date(),
+            type: 'text'
+          }
+          
+          setMessages(prev => [...prev, botMessage])
+        }
+      } else {
+        // Fallback em caso de erro HTTP
+        const botMessage: Message = {
+          id: Date.now() + 1,
+          text: generateBotResponse(inputValue),
+          isUser: false,
+          timestamp: new Date(),
+          type: 'text'
+        }
+        
+        setMessages(prev => [...prev, botMessage])
+      }
+    } catch (error) {
+      console.error('Erro ao enviar mensagem:', error)
+      // Fallback em caso de erro
       const botMessage: Message = {
         id: Date.now() + 1,
-        text: botResponse,
+        text: generateBotResponse(inputValue),
         isUser: false,
         timestamp: new Date(),
         type: 'text'
       }
       
       setMessages(prev => [...prev, botMessage])
+    } finally {
       setIsTyping(false)
-    }, 800 + Math.random() * 400)
+    }
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSendMessage()
+    }
+  }
+
+  const handleVoiceInput = () => {
+    if (recognition && !isListening) {
+      setIsListening(true)
+      recognition.start()
+    }
+  }
+
+  const handleImageUpload = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader()
+      reader.onload = async (event) => {
+        const result = event.target?.result as string
+        
+        if (result) {
+          try {
+            // Upload da imagem
+            const formData = new FormData()
+            formData.append('file', file)
+            formData.append('userId', 'user123') // TODO: Pegar ID real do usuário
+            formData.append('category', 'chatbot')
+            formData.append('tags', JSON.stringify(['chatbot', 'image']))
+
+            const response = await fetch('/api/upload', {
+              method: 'POST',
+              body: formData
+            })
+
+            if (response.ok) {
+              const uploadData = await response.json()
+              
+              if (uploadData.success) {
+                // Enviar para o chatbot
+                const chatbotResponse = await fetch('/api/chatbot', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    message: `Analise esta imagem: ${uploadData.data?.url}`,
+                    sessionId: 'session-' + Date.now(), // Assuming a sessionId is needed for the chatbot API
+                    type: 'image'
+                  })
+                })
+
+                if (chatbotResponse.ok) {
+                  const chatbotData = await chatbotResponse.json()
+                  
+                  if (chatbotData.success) {
+                    // Adicionar resposta do chatbot
+                    const botMessage: Message = {
+                      id: Date.now(),
+                      text: chatbotData.data?.response || 'Não consegui analisar a imagem.',
+                      isUser: false,
+                      timestamp: new Date(),
+                      type: 'text'
+                    }
+                    
+                    setMessages(prev => [...prev, botMessage])
+                  } else {
+                    // Fallback para resposta local
+                    const botMessage: Message = {
+                      id: Date.now(),
+                      text: 'Recebi sua imagem! Como posso ajudar?',
+                      isUser: false,
+                      timestamp: new Date(),
+                      type: 'text'
+                    }
+                    
+                    setMessages(prev => [...prev, botMessage])
+                  }
+                } else {
+                  // Fallback para resposta local
+                  const botMessage: Message = {
+                    id: Date.now(),
+                    text: 'Recebi sua imagem! Como posso ajudar?',
+                    isUser: false,
+                    timestamp: new Date(),
+                    type: 'text'
+                  }
+                  
+                  setMessages(prev => [...prev, botMessage])
+                }
+              }
+            }
+          } catch (error) {
+            console.error('Erro ao processar imagem:', error)
+            
+            // Fallback para resposta local
+            const botMessage: Message = {
+              id: Date.now(),
+              text: 'Recebi sua imagem! Como posso ajudar?',
+              isUser: false,
+              timestamp: new Date(),
+              type: 'text'
+            }
+            
+            setMessages(prev => [...prev, botMessage])
+          }
+        }
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const toggleSpeech = () => {
+    setIsSpeaking(!isSpeaking)
+    if (speechSynthesis && isSpeaking) {
+      speechSynthesis.cancel()
     }
   }
 
@@ -405,6 +622,14 @@ const Chatbot: React.FC = () => {
       
       setMessages(prev => [...prev, botMessage])
       setIsTyping(false)
+      
+      // Falar a resposta se estiver ativado
+      if (speechSynthesis && isSpeaking) {
+        const utterance = new SpeechSynthesisUtterance(botResponse)
+        utterance.lang = 'pt-BR'
+        utterance.rate = 0.9
+        speechSynthesis.speak(utterance)
+      }
     }, 600)
   }
 
@@ -436,8 +661,8 @@ const Chatbot: React.FC = () => {
               <div className="flex items-center space-x-3 mb-2">
                 <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
                   <span className="text-2xl">🌱</span>
-              </div>
-              <div>
+                </div>
+                <div>
                   <h3 className="font-bold text-lg">{t('chatbot_assistant_title')}</h3>
                   <p className="text-xs text-white/80">{t('chatbot_status_online')}</p>
                 </div>
@@ -483,6 +708,15 @@ const Chatbot: React.FC = () => {
                       : 'bg-gradient-to-r from-gray-800 to-gray-700 text-gray-100 border border-purple-500/20'
                   } shadow-lg`}
                 >
+                  {message.type === 'image' && message.imageUrl && (
+                    <div className="mb-3">
+                      <img 
+                        src={message.imageUrl} 
+                        alt="Imagem enviada" 
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                    </div>
+                  )}
                   <p className="text-sm leading-relaxed">{message.text}</p>
                   <p className="text-xs opacity-70 mt-2 flex items-center gap-1">
                     <span>🕐</span>
@@ -500,7 +734,7 @@ const Chatbot: React.FC = () => {
                 <div className="bg-gradient-to-r from-gray-800 to-gray-700 text-gray-100 px-4 py-3 rounded-2xl border border-purple-500/20">
                   <div className="flex items-center gap-2">
                     <span className="text-sm">{t('chatbot_typing')}</span>
-                  <div className="flex space-x-1">
+                    <div className="flex space-x-1">
                       <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
                       <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
                       <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
@@ -515,7 +749,7 @@ const Chatbot: React.FC = () => {
 
           {/* Input */}
           <div className="p-4 border-t border-purple-500/20 bg-gradient-to-r from-gray-800/50 to-gray-700/50">
-            <div className="flex space-x-3">
+            <div className="flex space-x-3 mb-3">
               <input
                 ref={inputRef}
                 type="text"
@@ -534,13 +768,67 @@ const Chatbot: React.FC = () => {
               </button>
             </div>
             
+            {/* Voice and Image Controls */}
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex space-x-2">
+                <button
+                  onClick={handleVoiceInput}
+                  disabled={isListening}
+                  className={`p-2 rounded-lg transition-all duration-300 ${
+                    isListening 
+                      ? 'bg-red-500 text-white' 
+                      : 'bg-purple-500/20 text-purple-300 hover:bg-purple-500/30'
+                  }`}
+                  title="Entrada de voz"
+                >
+                  <MicrophoneIcon className="h-4 w-4" />
+                </button>
+                
+                <button
+                  onClick={handleImageUpload}
+                  className="p-2 rounded-lg bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 transition-all duration-300"
+                  title="Enviar imagem"
+                >
+                  <PhotoIcon className="h-4 w-4" />
+                </button>
+                
+                <button
+                  onClick={toggleSpeech}
+                  className={`p-2 rounded-lg transition-all duration-300 ${
+                    isSpeaking 
+                      ? 'bg-green-500 text-white' 
+                      : 'bg-green-500/20 text-green-300 hover:bg-green-500/30'
+                  }`}
+                  title="Síntese de voz"
+                >
+                  {isSpeaking ? <StopIcon className="h-4 w-4" /> : <SpeakerWaveIcon className="h-4 w-4" />}
+                </button>
+              </div>
+              
+              {isListening && (
+                <div className="flex items-center gap-2 text-xs text-purple-300">
+                  <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
+                  <span>Ouvindo...</span>
+                </div>
+              )}
+            </div>
+            
             {/* Footer */}
-            <div className="mt-3 text-center">
+            <div className="text-center">
               <p className="text-xs text-purple-silver/60">
                 {t('chatbot_footer_text')}
               </p>
             </div>
           </div>
+          
+          {/* Hidden file input for image upload */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="hidden"
+          />
         </div>
       )}
     </>

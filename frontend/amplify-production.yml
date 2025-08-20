@@ -1,0 +1,26 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - echo "Instalando dependências..."
+        - npm ci --only=production
+        - echo "Verificando versão do Node.js..."
+        - node --version
+        - echo "Verificando versão do npm..."
+        - npm --version
+    build:
+      commands:
+        - echo "Configurando variáveis de ambiente..."
+        - cp env.production .env.production
+        - echo "Executando build de produção..."
+        - npm run build
+        - echo "Build concluído com sucesso!"
+  artifacts:
+    baseDirectory: .next
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
+      - .next/cache/**/*

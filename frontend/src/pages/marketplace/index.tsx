@@ -1,154 +1,255 @@
-import type { NextPage } from 'next'
+import React, { useState, useEffect } from 'react'
+import { NextPage } from 'next'
 import Head from 'next/head'
-import { useState, useEffect } from 'react'
 import { useI18n } from '@/i18n/I18nProvider'
 import { 
   MagnifyingGlassIcon,
   FunnelIcon,
+  HeartIcon,
   ShoppingCartIcon,
   StarIcon,
-  SparklesIcon,
-  RocketLaunchIcon
+  MapPinIcon,
+  UserIcon,
+  CurrencyDollarIcon
 } from '@heroicons/react/24/outline'
+import Footer from '@/components/layout/Footer'
+import Chatbot from '@/components/Chatbot'
 
 interface Product {
   id: string
   name: string
-  category: string
-  price: string
   description: string
-  seller: string
+  price: number
+  originalPrice?: number
+  category: string
+  image: string
   rating: number
-  stock: number
-  image?: string
-  discount?: number
-  isNew?: boolean
-  isFeatured?: boolean
+  reviews: number
+  owner: string
+  location: string
+  inStock: boolean
+  isFavorite: boolean
+  tags: string[]
 }
 
 const Marketplace: NextPage = () => {
-  const { t } = useI18n();
-  const [products, setProducts] = useState<Product[]>([
+  const { t } = useI18n()
+  const [products, setProducts] = useState<Product[]>([])
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('all')
+  const [sortBy, setSortBy] = useState('newest')
+  const [loading, setLoading] = useState(true)
+
+  // Dados simulados de produtos
+  const mockProducts: Product[] = [
     {
       id: '1',
-      name: 'Sementes de Soja Premium BRS 7580',
-      category: 'Sementes',
-      price: 'R$ 89,90',
-      description: 'Sementes certificadas de soja de alta produtividade, resistentes a pragas e doenças. Rendimento superior a 80 sacas/hectare.',
-      seller: 'AgroSementes Brasil',
+      name: 'Sementes de Soja Premium',
+      description: 'Sementes de soja certificadas com alta produtividade, resistentes a pragas e doenças.',
+      price: 89.90,
+      originalPrice: 119.90,
+      category: 'seeds',
+      image: '/images/products/soy-seeds.jpg',
       rating: 4.8,
-      stock: 1500,
-      image: '/images/futuristic-farm.svg',
-      discount: 15,
-      isNew: true,
-      isFeatured: true
+      reviews: 156,
+      owner: 'Fazenda Santa Clara',
+      location: 'Sinop, MT',
+      inStock: true,
+      isFavorite: false,
+      tags: ['premium', 'certificado', 'alta-produtividade']
     },
     {
       id: '2',
-      name: 'Fertilizante NPK 20-10-10 Plus',
-      category: 'Fertilizantes',
-      price: 'R$ 245,00',
-      description: 'Fertilizante balanceado com micronutrientes essenciais para todas as fases do desenvolvimento vegetal.',
-      seller: 'NutriAgro Ltda',
+      name: 'Fertilizante NPK 20-10-10',
+      description: 'Fertilizante balanceado com micronutrientes essenciais para todas as culturas.',
+      price: 45.50,
+      category: 'fertilizers',
+      image: '/images/products/npk-fertilizer.jpg',
       rating: 4.6,
-      stock: 800,
-      image: '/images/staking-farming.svg',
-      discount: 10
+      reviews: 89,
+      owner: 'AgroQuímica Brasil',
+      location: 'Lucas do Rio Verde, MT',
+      inStock: true,
+      isFavorite: false,
+      tags: ['balanceado', 'micronutrientes', 'todas-culturas']
     },
     {
       id: '3',
-      name: 'Pulverizador Costal Manual 20L',
-      category: 'Equipamentos',
-      price: 'R$ 189,90',
-      description: 'Pulverizador costal com bico regulável, ideal para aplicação de defensivos em pequenas áreas.',
-      seller: 'Máquinas Agrícolas Express',
+      name: 'Pulverizador Manual 20L',
+      description: 'Pulverizador manual de 20 litros com bico regulável e pressão constante.',
+      price: 189.90,
+      category: 'equipment',
+      image: '/images/products/sprayer.jpg',
       rating: 4.4,
-      stock: 120,
-      image: '/images/cyber-defense.svg'
+      reviews: 67,
+      owner: 'Máquinas Agrícolas MT',
+      location: 'Sorriso, MT',
+      inStock: true,
+      isFavorite: false,
+      tags: ['manual', '20l', 'bico-regulável']
     },
     {
       id: '4',
-      name: 'Defensivo Biológico Bacillus Thuringiensis',
-      category: 'Pesticidas',
-      price: 'R$ 156,00',
-      description: 'Controle biológico eficaz contra lagartas, seguro para o meio ambiente e certificado orgânico.',
-      seller: 'BioDefensivos Naturais',
+      name: 'Trator Massey Ferguson 275',
+      description: 'Trator 75cv com cabine climatizada, GPS integrado e sistema de telemetria.',
+      price: 125000.00,
+      category: 'machinery',
+      image: '/images/products/tractor.jpg',
       rating: 4.9,
-      stock: 300,
-      image: '/images/futuristic-farm.svg',
-      isNew: true
+      reviews: 23,
+      owner: 'Concessionária MT',
+      location: 'Cuiabá, MT',
+      inStock: true,
+      isFavorite: false,
+      tags: ['75cv', 'cabine-climatizada', 'gps', 'telemetria']
     },
     {
       id: '5',
-      name: 'Trator Agrícola Massey Ferguson 6713',
-      category: 'Maquinário',
-      price: 'R$ 285.000,00',
-      description: 'Trator de 130cv com cabine climatizada, GPS integrado e sistema de telemetria avançado.',
-      seller: 'Máquinas Pesadas MT',
+      name: 'Sementes de Milho Híbrido',
+      description: 'Sementes de milho híbrido com potencial de rendimento superior a 200 sacas/hectare.',
+      price: 67.80,
+      category: 'seeds',
+      image: '/images/products/corn-seeds.jpg',
       rating: 4.7,
-      stock: 3,
-      image: '/images/staking-farming.svg',
-      isFeatured: true
+      reviews: 134,
+      owner: 'Sementes Premium',
+      location: 'Rondonópolis, MT',
+      inStock: true,
+      isFavorite: false,
+      tags: ['híbrido', 'alta-produtividade', '200-sacas']
     },
     {
       id: '6',
       name: 'Sistema de Irrigação por Gotejamento',
-      category: 'Equipamentos',
-      price: 'R$ 2.890,00',
-      description: 'Sistema completo de irrigação automatizada com sensores de umidade e controle via smartphone.',
-      seller: 'Irrigação Inteligente',
+      description: 'Sistema completo de irrigação por gotejamento para 5 hectares com controle automático.',
+      price: 8900.00,
+      category: 'equipment',
+      image: '/images/products/irrigation.jpg',
       rating: 4.5,
-      stock: 45,
-      image: '/images/cyber-defense.svg',
-      discount: 20
-    },
-    {
-      id: '7',
-      name: 'Adubo Orgânico Compostado',
-      category: 'Fertilizantes',
-      price: 'R$ 78,50',
-      description: 'Adubo 100% orgânico rico em matéria orgânica e nutrientes essenciais para o solo.',
-      seller: 'Orgânicos do Brasil',
-      rating: 4.8,
-      stock: 2000,
-      image: '/images/futuristic-farm.svg'
-    },
-    {
-      id: '8',
-      name: 'Monitor de Solo Digital',
-      category: 'Equipamentos',
-      price: 'R$ 1.250,00',
-      description: 'Sensor avançado para monitoramento de pH, umidade e temperatura do solo em tempo real.',
-      seller: 'Tecnologia Agrícola',
-      rating: 4.6,
-      stock: 67,
-      image: '/images/staking-farming.svg',
-      isNew: true
+      reviews: 45,
+      owner: 'Irrigação Brasil',
+      location: 'Nova Mutum, MT',
+      inStock: true,
+      isFavorite: false,
+      tags: ['gotejamento', '5-hectares', 'controle-automático']
     }
-  ])
-  const [loading, setLoading] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('all')
+  ]
 
-  const categories = ['all', 'Sementes', 'Fertilizantes', 'Equipamentos', 'Pesticidas', 'Maquinário']
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch('/api/marketplace')
+        
+        if (response.ok) {
+          const data = await response.json()
+          if (data.success) {
+            setProducts(data.data || [])
+            setFilteredProducts(data.data || [])
+          } else {
+            // Fallback para dados mock se a API falhar
+            setProducts(mockProducts)
+            setFilteredProducts(mockProducts)
+          }
+        } else {
+          // Fallback para dados mock se a API falhar
+          setProducts(mockProducts)
+          setFilteredProducts(mockProducts)
+        }
+      } catch (error) {
+        console.error('Erro ao carregar produtos:', error)
+        // Fallback para dados mock em caso de erro
+        setProducts(mockProducts)
+        setFilteredProducts(mockProducts)
+      } finally {
+        setLoading(false)
+      }
+    }
 
-  const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.description.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory
-    return matchesSearch && matchesCategory
-  })
+    fetchProducts()
+  }, [])
+
+  useEffect(() => {
+    filterAndSortProducts()
+  }, [searchTerm, selectedCategory, sortBy, products])
+
+  const filterAndSortProducts = () => {
+    let filtered = products
+
+    // Filtrar por categoria
+    if (selectedCategory !== 'all') {
+      filtered = filtered.filter(product => product.category === selectedCategory)
+    }
+
+    // Filtrar por termo de busca
+    if (searchTerm) {
+      filtered = filtered.filter(product =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+      )
+    }
+
+    // Ordenar produtos
+    switch (sortBy) {
+      case 'price_low':
+        filtered.sort((a, b) => a.price - b.price)
+        break
+      case 'price_high':
+        filtered.sort((a, b) => b.price - a.price)
+        break
+      case 'newest':
+        filtered.sort((a, b) => b.id.localeCompare(a.id))
+        break
+      case 'popular':
+        filtered.sort((a, b) => b.reviews - a.reviews)
+        break
+      default:
+        break
+    }
+
+    setFilteredProducts(filtered)
+  }
+
+  const toggleFavorite = (productId: string) => {
+    setProducts(prev => prev.map(product =>
+      product.id === productId 
+        ? { ...product, isFavorite: !product.isFavorite }
+        : product
+    ))
+  }
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(price)
+  }
+
+  const categories = [
+    { id: 'all', name: t('marketplace_filter_all'), icon: '🌾' },
+    { id: 'seeds', name: t('marketplace_filter_seeds'), icon: '🌱' },
+    { id: 'fertilizers', name: t('marketplace_filter_fertilizers'), icon: '🧪' },
+    { id: 'equipment', name: t('marketplace_filter_equipment'), icon: '🔧' },
+    { id: 'machinery', name: t('marketplace_filter_machinery'), icon: '🚜' }
+  ]
+
+  const sortOptions = [
+    { id: 'newest', name: t('marketplace_sort_newest') },
+    { id: 'popular', name: t('marketplace_sort_popular') },
+    { id: 'price_low', name: t('marketplace_sort_price_low') },
+    { id: 'price_high', name: t('marketplace_sort_price_high') }
+  ]
 
   if (loading) {
     return (
-      <div className="min-h-screen cosmic-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="relative">
-            <div className="w-32 h-32 border-4 border-purple-500/30 rounded-full animate-spin"></div>
-            <div className="absolute inset-0 w-32 h-32 border-4 border-transparent border-t-purple-500 rounded-full animate-spin" style={{animationDuration: '1.5s'}}></div>
-            <div className="absolute inset-0 w-32 h-32 border-4 border-transparent border-t-cyan-500 rounded-full animate-spin" style={{animationDuration: '2s'}}></div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-500 mx-auto"></div>
+            <p className="text-white text-xl mt-4">{t('marketplace_loading')}</p>
           </div>
-                     <p className="mt-6 text-cosmic text-xl">{t('marketplace_loading')}</p>
         </div>
       </div>
     )
@@ -157,199 +258,208 @@ const Marketplace: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{t('marketplace_title')} - {t('app_name')}</title>
-        <meta name="description" content={t('marketplace_description')} />
+        <title>{t('marketplace_main_title')} - {t('app_name')}</title>
+        <meta name="description" content={t('marketplace_subtitle')} />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="min-h-screen cosmic-background">
-        {/* Partículas cósmicas */}
-        <div className="fixed inset-0 pointer-events-none">
-          <div className="cosmic-particle w-2 h-2 top-20 left-10 animate-float"></div>
-          <div className="cosmic-particle w-1 h-1 top-40 right-20 animate-float-reverse animation-delay-1000"></div>
-          <div className="cosmic-particle w-3 h-3 top-60 left-1/4 animate-float animation-delay-2000"></div>
-          <div className="cosmic-particle w-1 h-1 top-80 right-1/3 animate-float-reverse animation-delay-3000"></div>
-          <div className="cosmic-particle w-2 h-2 bottom-40 left-1/3 animate-float animation-delay-1500"></div>
-          <div className="cosmic-particle w-1 h-1 bottom-20 right-10 animate-float-reverse animation-delay-2500"></div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+        {/* Header da Página */}
+        <div className="bg-gradient-to-r from-purple-600/20 to-cyan-600/20 border-b border-purple-500/20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className="text-center">
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                {t('marketplace_main_title')}
+              </h1>
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                {t('marketplace_subtitle')}
+              </p>
+            </div>
+          </div>
         </div>
 
-        {/* Header Section */}
-        <section className="relative bg-gradient-to-r from-gray-900/80 to-gray-800/80 backdrop-blur-xl border-b border-purple-500/30">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-            <div className="text-center space-y-6">
-              <div className="flex items-center justify-center gap-4 mb-6">
-                <RocketLaunchIcon className="h-16 w-16 text-purple-400 animate-pulse" />
-                <h1 className="text-5xl md:text-6xl font-bold text-cosmic-glow">
-                  {t('marketplace_main_title')}
-                </h1>
-                <SparklesIcon className="h-16 w-16 text-cyan-400 animate-pulse" />
+        {/* Filtros e Busca */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="bg-gray-800/50 rounded-2xl p-6 border border-purple-500/20">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              
+              {/* Campo de Busca */}
+              <div className="relative">
+                <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder={t('marketplace_search_placeholder')}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
               </div>
-                             <p className="text-2xl text-purple-silver max-w-3xl mx-auto leading-relaxed">
-                 {t('marketplace_subtitle')}
-               </p>
-              <div className="flex items-center justify-center gap-4 text-purple-silver">
-                <div className="flex items-center gap-2">
-                  <StarIcon className="h-5 w-5 text-yellow-400" />
-                                     <span>{t('marketplace_stats_ratings')}</span>
-                </div>
-                <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                <div className="flex items-center gap-2">
-                  <ShoppingCartIcon className="h-5 w-5 text-cyan-400" />
-                                     <span>{t('marketplace_stats_sales')}</span>
-                </div>
-                <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                <div className="flex items-center gap-2">
-                  <SparklesIcon className="h-5 w-5 text-purple-400" />
-                                     <span>{t('marketplace_stats_secure')}</span>
-                </div>
+
+              {/* Filtro de Categoria */}
+              <div className="relative">
+                <FunnelIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent appearance-none"
+                >
+                  {categories.map(category => (
+                    <option key={category.id} value={category.id}>
+                      {category.icon} {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Ordenação */}
+              <div className="relative">
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent appearance-none"
+                >
+                  {sortOptions.map(option => (
+                    <option key={option.id} value={option.id}>
+                      {option.name}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* Search and Filters */}
-        <section className="py-8">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="cosmic-card p-6">
-              <div className="flex flex-col md:flex-row gap-6 items-center justify-between">
-                {/* Search */}
-                <div className="relative flex-1 max-w-md">
-                  <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-purple-400" />
-                  <input
-                    type="text"
-                                         placeholder={t('marketplace_search_placeholder')}
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="cosmic-input w-full pl-10"
-                  />
-                </div>
-
-                {/* Category Filter */}
-                <div className="flex items-center gap-3">
-                  <FunnelIcon className="h-5 w-5 text-purple-400" />
-                  <select
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="cosmic-input"
-                  >
-                    {categories.map(category => (
-                      <option key={category} value={category}>
-                                                 {category === 'all' ? t('marketplace_category_all') : category}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
+        {/* Lista de Produtos */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+          {filteredProducts.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="text-6xl mb-4">🌾</div>
+              <h3 className="text-2xl font-semibold text-white mb-2">
+                {t('marketplace_no_products')}
+              </h3>
+              <p className="text-gray-400">
+                Tente ajustar os filtros ou termos de busca
+              </p>
             </div>
-          </div>
-        </section>
-
-        {/* Products Grid */}
-        <section className="py-12">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            {filteredProducts.length === 0 ? (
-              <div className="text-center py-16">
-                <div className="w-32 h-32 bg-gradient-to-br from-purple-500/20 to-cyan-500/20 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
-                  <ShoppingCartIcon className="h-16 w-16 text-purple-400" />
-                </div>
-                                 <p className="text-purple-silver text-xl">{t('marketplace_no_results')}</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                {filteredProducts.map((product, index) => (
-                  <div 
-                    key={product.id} 
-                    className="cosmic-card group hover:scale-105 transition-all duration-500 animation-delay-100"
-                    style={{animationDelay: `${index * 100}ms`}}
-                  >
-                    <div className="relative overflow-hidden">
-                      {product.image ? (
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700"
-                        />
-                      ) : (
-                        <div className="w-full h-48 bg-gradient-to-br from-purple-500/20 to-cyan-500/20 rounded-t-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-700">
-                                                     <span className="text-purple-400 text-lg">{t('marketplace_no_image')}</span>
-                        </div>
-                      )}
-                      
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                      
-                      {/* Badges */}
-                      <div className="absolute top-3 left-3 flex flex-col gap-2">
-                        {product.isNew && (
-                          <span className="px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-green-400 border border-green-500/30">
-                                                         {t('marketplace_badge_new')}
-                          </span>
-                        )}
-                        {product.isFeatured && (
-                          <span className="px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-yellow-400 border border-yellow-500/30">
-                                                         {t('marketplace_badge_featured')}
-                          </span>
-                        )}
-                      </div>
-                      
-                      {product.discount && (
-                        <div className="absolute top-3 right-3">
-                          <span className="px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-red-500/20 to-pink-500/20 text-red-400 border border-red-500/30">
-                            -{product.discount}%
-                          </span>
-                        </div>
-                      )}
-                      
-                      <span className="absolute bottom-3 left-3 px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-purple-500/20 to-cyan-500/20 text-purple-300 border border-purple-500/30">
-                        {product.category}
-                      </span>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredProducts.map(product => (
+                <div
+                  key={product.id}
+                  className="bg-gray-800/50 rounded-2xl border border-purple-500/20 overflow-hidden hover:border-purple-500/40 transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20 group"
+                >
+                  {/* Imagem do Produto */}
+                  <div className="relative h-48 bg-gradient-to-br from-gray-700 to-gray-800">
+                    <div className="absolute inset-0 flex items-center justify-center text-6xl text-gray-600">
+                      {product.category === 'seeds' && '🌱'}
+                      {product.category === 'fertilizers' && '🧪'}
+                      {product.category === 'equipment' && '🔧'}
+                      {product.category === 'machinery' && '🚜'}
                     </div>
                     
-                    <div className="p-6">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-1">
-                          <StarIcon className="h-4 w-4 text-yellow-400 fill-current" />
-                          <span className="text-sm text-purple-silver font-medium">{product.rating}</span>
-                        </div>
-                                                 <span className="text-sm text-purple-silver/70">{t('marketplace_stock_label')}: {product.stock}</span>
+                    {/* Badge de Desconto */}
+                    {product.originalPrice && (
+                      <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                        -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
                       </div>
-                      
-                      <h3 className="text-xl font-bold text-cosmic mb-3 line-clamp-2">{product.name}</h3>
-                      <p className="text-purple-silver text-sm mb-4 line-clamp-3 leading-relaxed">{product.description}</p>
-                      
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="space-y-1">
-                          {product.discount ? (
-                            <>
-                              <div className="text-2xl font-bold text-purple-silver">{product.price}</div>
-                              <div className="text-sm text-purple-silver/70 line-through">
-                                R$ {(parseFloat(product.price.replace('R$ ', '').replace(',', '.')) * (1 + product.discount / 100)).toFixed(2).replace('.', ',')}
-                              </div>
-                            </>
-                          ) : (
-                            <div className="text-2xl font-bold text-purple-silver">{product.price}</div>
-                          )}
-                        </div>
-                      </div>
-                      
-                                             <div className="text-sm text-purple-silver/70 mb-4">{t('marketplace_sold_by')}: {product.seller}</div>
-                      
-                      <div className="flex gap-3">
-                        <button className="cosmic-button flex-1 flex items-center justify-center gap-2 group">
-                          <ShoppingCartIcon className="h-4 w-4 group-hover:scale-110 transition-transform" />
-                                                     {t('marketplace_buy_button')}
-                        </button>
-                        <button className="cosmic-button bg-gradient-to-r from-gray-600 to-gray-500 flex items-center justify-center gap-2 group">
-                          <StarIcon className="h-4 w-4 group-hover:scale-110 transition-transform" />
-                                                     {t('marketplace_favorite_button')}
-                        </button>
+                    )}
+                    
+                    {/* Botão Favorito */}
+                    <button
+                      onClick={() => toggleFavorite(product.id)}
+                      className={`absolute top-3 right-3 p-2 rounded-full transition-all duration-300 ${
+                        product.isFavorite
+                          ? 'bg-red-500 text-white'
+                          : 'bg-gray-700/50 text-gray-400 hover:bg-red-500 hover:text-white'
+                      }`}
+                    >
+                      <HeartIcon className="h-5 w-5" />
+                    </button>
+                  </div>
+
+                  {/* Informações do Produto */}
+                  <div className="p-6">
+                    {/* Categoria */}
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-xs font-medium text-purple-400 uppercase tracking-wide">
+                        {categories.find(c => c.id === product.category)?.name}
+                      </span>
+                      <div className="flex items-center space-x-1">
+                        <StarIcon className="h-4 w-4 text-yellow-400 fill-current" />
+                        <span className="text-sm text-gray-300">{product.rating}</span>
+                        <span className="text-xs text-gray-500">({product.reviews})</span>
                       </div>
                     </div>
+
+                    {/* Nome e Descrição */}
+                    <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-purple-400 transition-colors duration-300">
+                      {product.name}
+                    </h3>
+                    <p className="text-gray-400 text-sm mb-4 line-clamp-2">
+                      {product.description}
+                    </p>
+
+                    {/* Preço */}
+                    <div className="flex items-center space-x-2 mb-4">
+                      <span className="text-2xl font-bold text-white">
+                        {formatPrice(product.price)}
+                      </span>
+                      {product.originalPrice && (
+                        <span className="text-lg text-gray-500 line-through">
+                          {formatPrice(product.originalPrice)}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Informações Adicionais */}
+                    <div className="space-y-2 mb-6">
+                      <div className="flex items-center space-x-2 text-sm text-gray-400">
+                        <UserIcon className="h-4 w-4" />
+                        <span>{product.owner}</span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-sm text-gray-400">
+                        <MapPinIcon className="h-4 w-4" />
+                        <span>{product.location}</span>
+                      </div>
+                    </div>
+
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {product.tags.slice(0, 3).map(tag => (
+                        <span
+                          key={tag}
+                          className="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-full border border-purple-500/30"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Botões de Ação */}
+                    <div className="flex space-x-3">
+                      <button className="flex-1 bg-gradient-to-r from-purple-600 to-cyan-600 text-white py-3 px-4 rounded-xl font-semibold hover:from-purple-700 hover:to-cyan-700 transition-all duration-300 hover:scale-105 flex items-center justify-center space-x-2">
+                        <ShoppingCartIcon className="h-5 w-5" />
+                        <span>{t('marketplace_product_buy')}</span>
+                      </button>
+                      <button className="bg-gray-700/50 text-gray-300 py-3 px-4 rounded-xl font-semibold hover:bg-gray-600/50 transition-all duration-300 hover:scale-105 flex items-center justify-center space-x-2">
+                        <span>🌱</span>
+                        <span>{t('marketplace_product_stake')}</span>
+                      </button>
+                    </div>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </section>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <Footer />
       </div>
+
+      {/* Chatbot */}
+      <Chatbot />
     </>
   )
 }

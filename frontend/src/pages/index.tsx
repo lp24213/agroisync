@@ -24,7 +24,13 @@ import CosmicParticles from '@/components/effects/CosmicParticles'
 const Home: NextPage = () => {
   const { t } = useI18n();
   const [agriculturalData, setAgriculturalData] = useState<AgriculturalProduct[]>([])
-  const [cryptoData, setCryptoData] = useState([])
+  const [cryptoData, setCryptoData] = useState<Array<{
+    symbol: string
+    price: number
+    change: number
+    marketCap: string
+    icon: string
+  }>>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

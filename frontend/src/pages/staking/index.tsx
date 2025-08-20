@@ -1,286 +1,707 @@
+import React, { useState, useEffect } from 'react'
 import { NextPage } from 'next'
 import Head from 'next/head'
 import { useI18n } from '@/i18n/I18nProvider'
 import { 
-  ArrowTrendingUpIcon, 
-  FireIcon, 
-  StarIcon,
   LockClosedIcon,
+  LockOpenIcon,
+  StarIcon,
   CurrencyDollarIcon,
-  SparklesIcon,
-  RocketLaunchIcon,
-  ShieldCheckIcon
+  ChartBarIcon,
+  ClockIcon,
+  ArrowTrendingUpIcon,
+  FireIcon,
+  ShieldCheckIcon,
+  CheckCircleIcon,
+  ExclamationTriangleIcon
 } from '@heroicons/react/24/outline'
+import Footer from '@/components/layout/Footer'
+import Chatbot from '@/components/Chatbot'
+
+interface StakingPool {
+  id: string
+  name: string
+  description: string
+  apy: number
+  tvl: number
+  minStake: number
+  maxStake: number
+  lockPeriod: number
+  totalStaked: number
+  userStaked: number
+  userRewards: number
+  status: 'active' | 'locked' | 'full'
+  risk: 'low' | 'medium' | 'high'
+  features: string[]
+  icon: string
+}
+
+interface StakingHistory {
+  id: string
+  type: 'stake' | 'unstake' | 'claim'
+  amount: number
+  timestamp: Date
+  status: 'completed' | 'pending' | 'failed'
+  txHash?: string
+  pool: string
+}
 
 const Staking: NextPage = () => {
-  const { t } = useI18n();
-  
-  const stakingPools = [
+  const { t } = useI18n()
+  const [stakingPools, setStakingPools] = useState<StakingPool[]>([])
+  const [stakingHistory, setStakingHistory] = useState<StakingHistory[]>([])
+  const [totalStaked, setTotalStaked] = useState(0)
+  const [totalRewards, setTotalRewards] = useState(0)
+  const [selectedPool, setSelectedPool] = useState<StakingPool | null>(null)
+  const [stakeAmount, setStakeAmount] = useState('')
+  const [unstakeAmount, setUnstakeAmount] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [showStakeModal, setShowStakeModal] = useState(false)
+  const [showUnstakeModal, setShowUnstakeModal] = useState(false)
+
+  // Dados simulados de pools de staking
+  const mockStakingPools: StakingPool[] = [
     {
-      id: 1,
-      name: 'AGRO Token Staking',
-      apy: 12.5,
-      totalStaked: '2.5M AGRO',
-      yourStake: '15K AGRO',
-      rewards: '1.2K AGRO',
-      image: '/images/staking-farming.svg',
-      color: 'from-cyan-500 to-blue-600'
+      id: '1',
+      name: 'Pool AgroSync Premium',
+      description: 'Pool de alta performance com tecnologia blockchain avançada e segurança máxima',
+      apy: 24.5,
+      tvl: 2500000,
+      minStake: 100,
+      maxStake: 100000,
+      lockPeriod: 30,
+      totalStaked: 1800000,
+      userStaked: 5000,
+      userRewards: 187.5,
+      status: 'active',
+      risk: 'low',
+      features: ['Segurança máxima', 'Liquidez garantida', 'Suporte 24/7', 'Auditoria externa'],
+      icon: '🌱'
     },
     {
-      id: 2,
-      name: 'ETH/AGRO Liquidity Pool',
-      apy: 18.2,
-      totalStaked: '1.8M LP',
-      yourStake: '8.5K LP',
-      rewards: '2.1K AGRO',
-      image: '/images/futuristic-farm.svg',
-      color: 'from-emerald-500 to-teal-600'
+      id: '2',
+      name: 'Pool Solana High Yield',
+      description: 'Pool especializada em Solana com yield otimizado e estratégias avançadas',
+      apy: 32.8,
+      tvl: 1800000,
+      minStake: 50,
+      maxStake: 50000,
+      lockPeriod: 90,
+      totalStaked: 1500000,
+      userStaked: 2500,
+      userRewards: 182.0,
+      status: 'locked',
+      risk: 'medium',
+      features: ['Yield otimizado', 'Estratégias avançadas', 'Composição automática', 'Hedging'],
+      icon: '◎'
     },
     {
-      id: 3,
-      name: 'BTC/AGRO Farming',
-      apy: 22.8,
-      totalStaked: '950K LP',
-      yourStake: '12K LP',
-      rewards: '3.8K AGRO',
-      image: '/images/cyber-defense.svg',
-      color: 'from-purple-500 to-pink-600'
+      id: '3',
+      name: 'Pool Ethereum Liquid Staking',
+      description: 'Staking líquido de Ethereum com flexibilidade total e yield competitivo',
+      apy: 18.7,
+      tvl: 3200000,
+      minStake: 200,
+      maxStake: 200000,
+      lockPeriod: 0,
+      totalStaked: 2800000,
+      userStaked: 10000,
+      userRewards: 217.5,
+      status: 'active',
+      risk: 'low',
+      features: ['Liquidez total', 'Sem período de lock', 'Yield competitivo', 'Integração DeFi'],
+      icon: 'Ξ'
+    },
+    {
+      id: '4',
+      name: 'Pool Bitcoin Yield Farming',
+      description: 'Pool inovadora que combina staking de Bitcoin com estratégias de yield farming',
+      apy: 28.3,
+      tvl: 950000,
+      minStake: 75,
+      maxStake: 75000,
+      lockPeriod: 60,
+      totalStaked: 800000,
+      userStaked: 0,
+      userRewards: 0,
+      status: 'active',
+      risk: 'high',
+      features: ['Yield farming', 'Estratégias inovadoras', 'Alto potencial', 'Risco elevado'],
+      icon: '₿'
+    },
+    {
+      id: '5',
+      name: 'Pool Cardano Staking',
+      description: 'Pool dedicada ao ecossistema Cardano com validação descentralizada',
+      apy: 15.2,
+      tvl: 680000,
+      minStake: 100,
+      maxStake: 100000,
+      lockPeriod: 0,
+      totalStaked: 600000,
+      userStaked: 0,
+      userRewards: 0,
+      status: 'active',
+      risk: 'low',
+      features: ['Validação descentralizada', 'Governança participativa', 'Sustentabilidade', 'Baixo risco'],
+      icon: '₳'
     }
   ]
 
-  const stakingStats = [
-    { labelKey: 'staking_stats_total_staked', value: '5.25M AGRO', change: '+15.2%', changeType: 'positive' },
-    { labelKey: 'staking_stats_total_rewards', value: '125K AGRO', change: '+8.7%', changeType: 'positive' },
-    { labelKey: 'staking_stats_apy', value: '17.8%', change: '+2.1%', changeType: 'positive' },
-    { labelKey: 'staking_stats_active_users', value: '1,250+', change: '+12.3%', changeType: 'positive' }
+  // Dados simulados de histórico
+  const mockStakingHistory: StakingHistory[] = [
+    {
+      id: '1',
+      type: 'stake',
+      amount: 5000,
+      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+      status: 'completed',
+      txHash: '0x1234...5678',
+      pool: 'Pool AgroSync Premium'
+    },
+    {
+      id: '2',
+      type: 'claim',
+      amount: 187.5,
+      timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000),
+      status: 'completed',
+      txHash: '0x8765...4321',
+      pool: 'Pool AgroSync Premium'
+    },
+    {
+      id: '3',
+      type: 'stake',
+      amount: 2500,
+      timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000),
+      status: 'completed',
+      txHash: '0x9876...5432',
+      pool: 'Pool Solana High Yield'
+    },
+    {
+      id: '4',
+      type: 'unstake',
+      amount: 1000,
+      timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+      status: 'completed',
+      txHash: '0x5432...1098',
+      pool: 'Pool Ethereum Liquid Staking'
+    }
   ]
+
+  useEffect(() => {
+    const fetchStakingData = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch('/api/staking?userId=user-123') // TODO: Pegar do contexto de autenticação
+        
+        if (response.ok) {
+          const data = await response.json()
+          if (data.success && data.data) {
+            setStakingPools(data.data.stakingPools || [])
+            setStakingHistory(data.data.stakingHistory || [])
+            
+            // Calcular totais
+            const totalStakedValue = (data.data.stakingPools || []).reduce((sum: number, pool: any) => sum + pool.userStaked, 0)
+            setTotalStaked(totalStakedValue)
+            
+            const totalRewardsValue = (data.data.stakingPools || []).reduce((sum: number, pool: any) => sum + pool.userRewards, 0)
+            setTotalRewards(totalRewardsValue)
+          } else {
+            // Fallback para dados mock se a API falhar
+            setFallbackData()
+          }
+        } else {
+          // Fallback para dados mock se a API falhar
+          setFallbackData()
+        }
+      } catch (error) {
+        console.error('Erro ao carregar dados de staking:', error)
+        // Fallback para dados mock em caso de erro
+        setFallbackData()
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    const setFallbackData = () => {
+      setStakingPools(mockStakingPools)
+      setStakingHistory(mockStakingHistory)
+      
+      // Calcular totais
+      const totalStakedValue = mockStakingPools.reduce((sum, pool) => sum + pool.userStaked, 0)
+      setTotalStaked(totalStakedValue)
+      
+      const totalRewardsValue = mockStakingPools.reduce((sum, pool) => sum + pool.userRewards, 0)
+      setTotalRewards(totalRewardsValue)
+    }
+
+    fetchStakingData()
+  }, [])
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(value)
+  }
+
+  const formatNumber = (value: number) => {
+    if (value >= 1000000) {
+      return `${(value / 1000000).toFixed(1)}M`
+    }
+    if (value >= 1000) {
+      return `${(value / 1000).toFixed(1)}K`
+    }
+    return value.toString()
+  }
+
+  const formatPercentage = (value: number) => {
+    return `${value.toFixed(2)}%`
+  }
+
+  const getRiskColor = (risk: string) => {
+    switch (risk) {
+      case 'low': return 'text-green-400 bg-green-500/20 border-green-500/30'
+      case 'medium': return 'text-yellow-400 bg-yellow-500/20 border-yellow-500/30'
+      case 'high': return 'text-red-400 bg-red-500/20 border-red-500/30'
+      default: return 'text-gray-400 bg-gray-500/20 border-gray-500/30'
+    }
+  }
+
+  const getRiskLabel = (risk: string) => {
+    switch (risk) {
+      case 'low': return 'Baixo'
+      case 'medium': return 'Médio'
+      case 'high': return 'Alto'
+      default: return 'Desconhecido'
+    }
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'active': return 'text-green-400 bg-green-500/20 border-green-500/30'
+      case 'locked': return 'text-yellow-400 bg-yellow-500/20 border-yellow-500/30'
+      case 'full': return 'text-red-400 bg-red-500/20 border-red-500/30'
+      default: return 'text-gray-400 bg-gray-500/20 border-gray-500/30'
+    }
+  }
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'active': return 'Ativo'
+      case 'locked': return 'Bloqueado'
+      case 'full': return 'Lotado'
+      default: return 'Desconhecido'
+    }
+  }
+
+  const handleStake = () => {
+    if (!selectedPool || !stakeAmount) return
+    
+    const amount = parseFloat(stakeAmount)
+    if (amount < selectedPool.minStake || amount > selectedPool.maxStake) {
+      alert('Valor fora dos limites permitidos')
+      return
+    }
+
+    // Simular stake
+    setStakingPools(prev => prev.map(pool =>
+      pool.id === selectedPool.id
+        ? { ...pool, userStaked: pool.userStaked + amount }
+        : pool
+    ))
+
+    setTotalStaked(prev => prev + amount)
+    setStakeAmount('')
+    setShowStakeModal(false)
+    setSelectedPool(null)
+  }
+
+  const handleUnstake = () => {
+    if (!selectedPool || !unstakeAmount) return
+    
+    const amount = parseFloat(unstakeAmount)
+    if (amount > selectedPool.userStaked) {
+      alert('Valor maior que o staked')
+      return
+    }
+
+    // Simular unstake
+    setStakingPools(prev => prev.map(pool =>
+      pool.id === selectedPool.id
+        ? { ...pool, userStaked: pool.userStaked - amount }
+        : pool
+    ))
+
+    setTotalStaked(prev => prev - amount)
+    setUnstakeAmount('')
+    setShowUnstakeModal(false)
+    setSelectedPool(null)
+  }
+
+  const claimRewards = (poolId: string) => {
+    setStakingPools(prev => prev.map(pool =>
+      pool.id === poolId
+        ? { ...pool, userRewards: 0 }
+        : pool
+    ))
+
+    setTotalRewards(prev => prev - (stakingPools.find(p => p.id === poolId)?.userRewards || 0))
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-500 mx-auto"></div>
+            <p className="text-white text-xl mt-4">{t('staking_loading')}</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <>
       <Head>
         <title>{t('staking_title')} - {t('app_name')}</title>
         <meta name="description" content={t('staking_subtitle')} />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="min-h-screen cosmic-background text-white relative overflow-hidden">
-        {/* Efeitos cósmicos de fundo */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          {/* Nebulosas flutuantes */}
-          <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-cyan-900/20 to-blue-900/20 rounded-full blur-3xl animate-nebula-drift"></div>
-          <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-purple-900/20 to-pink-900/20 rounded-full blur-3xl animate-nebula-drift animation-delay-2000"></div>
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-br from-blue-900/20 to-cyan-900/20 rounded-full blur-3xl animate-nebula-drift animation-delay-4000"></div>
-          
-          {/* Portais quânticos */}
-          <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-to-br from-cyan-500/20 via-blue-500/20 to-purple-500/20 rounded-full animate-quantum-orbital"></div>
-          <div className="absolute top-1/3 right-1/3 w-24 h-24 bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-cyan-500/20 rounded-full animate-quantum-orbital animation-delay-2000"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-28 h-28 bg-gradient-to-br from-blue-500/20 via-cyan-500/20 to-purple-500/20 rounded-full animate-quantum-orbital animation-delay-4000"></div>
-          
-          {/* Ondas de energia cósmica */}
-          <div className="absolute top-1/2 left-0 w-64 h-1 bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent animate-cosmic-wave"></div>
-          <div className="absolute bottom-1/3 right-0 w-64 h-1 bg-gradient-to-r from-transparent via-purple-500/30 to-transparent animate-cosmic-wave animation-delay-2000"></div>
-          
-          {/* Estrelas cintilantes */}
-          <div className="absolute top-20 left-20 w-2 h-2 bg-white rounded-full animate-sparkle animation-delay-100"></div>
-          <div className="absolute top-40 right-40 w-1 h-1 bg-cyan-400 rounded-full animate-sparkle animation-delay-2000"></div>
-          <div className="absolute bottom-40 left-40 w-1.5 h-1.5 bg-blue-400 rounded-full animate-sparkle animation-delay-3000"></div>
-          <div className="absolute bottom-20 right-20 w-1 h-1 bg-purple-400 rounded-full animate-sparkle animation-delay-4000"></div>
-          
-          {/* Partículas flutuantes */}
-          <div className="absolute top-1/3 left-1/2 w-3 h-3 bg-cyan-400/60 rounded-full animate-cosmic-float"></div>
-          <div className="absolute top-2/3 right-1/3 w-2 h-2 bg-blue-400/60 rounded-full animate-cosmic-float animation-delay-1500"></div>
-          <div className="absolute bottom-1/3 left-1/3 w-2.5 h-2.5 bg-purple-400/60 rounded-full animate-cosmic-float animation-delay-3000"></div>
-        </div>
-
-        {/* Header */}
-        <div className="relative py-20">
-          <div className="absolute inset-0 bg-gradient-to-r from-cyan-900/20 via-blue-900/20 to-purple-900/20"></div>
-          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 border border-cyan-500/30 rounded-full px-6 py-3 mb-8 animate-fade-in">
-              <SparklesIcon className="h-5 w-5 text-cyan-400 animate-sparkle" />
-              <span className="text-cyan-400 font-semibold text-sm">🚀 {t('staking_badge_text')}</span>
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+        {/* Header da Página */}
+        <div className="bg-gradient-to-r from-purple-600/20 to-cyan-600/20 border-b border-purple-500/20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className="text-center">
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                {t('staking_title')}
+              </h1>
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                {t('staking_subtitle')}
+              </p>
             </div>
-            
-            <h1 className="text-5xl md:text-6xl font-black text-cosmic-glow mb-6 animate-fade-in animation-delay-300">
-              {t('staking_title')}
-            </h1>
-            <p className="text-xl text-purple-silver max-w-3xl mx-auto animate-fade-in animation-delay-600">
-              {t('staking_subtitle')}
-            </p>
           </div>
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          {/* Stats Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {stakingStats.map((stat, index) => (
-              <div key={index} className="cosmic-card text-center hover:scale-105 transition-all duration-500 hover-cosmic-pulse">
-                <div className="p-6">
-                  <h3 className="text-2xl font-bold text-cosmic-glow mb-2 animate-energy-pulse">{stat.value}</h3>
-                  <p className="text-purple-silver mb-2">{t(stat.labelKey)}</p>
-                  <div className={`inline-flex items-center text-sm ${
-                    stat.changeType === 'positive' ? 'text-green-400' : 'text-red-400'
-                  }`}>
-                    <ArrowTrendingUpIcon className="h-4 w-4 mr-1 animate-pulse" />
-                    {stat.change}
-                  </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          
+          {/* Resumo do Staking */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="bg-gray-800/50 rounded-2xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-all duration-300">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-400">{t('staking_total_staked')}</p>
+                  <p className="text-2xl font-bold text-white">{formatCurrency(totalStaked)}</p>
+                </div>
+                <div className="p-3 bg-purple-500/20 rounded-xl">
+                  <LockClosedIcon className="h-6 w-6 text-purple-400" />
                 </div>
               </div>
-            ))}
+              <div className="mt-4 flex items-center text-green-400 text-sm">
+                <ArrowTrendingUpIcon className="h-4 w-4 mr-1" />
+                <span>+15.3% este mês</span>
+              </div>
+            </div>
+
+            <div className="bg-gray-800/50 rounded-2xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-all duration-300">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-400">{t('staking_total_rewards')}</p>
+                  <p className="text-2xl font-bold text-white">{formatCurrency(totalRewards)}</p>
+                </div>
+                <div className="p-3 bg-green-500/20 rounded-xl">
+                  <StarIcon className="h-6 w-6 text-green-400" />
+                </div>
+              </div>
+              <div className="mt-4 flex items-center text-green-400 text-sm">
+                <FireIcon className="h-4 w-4 mr-1" />
+                <span>APY médio: 24.5%</span>
+              </div>
+            </div>
+
+            <div className="bg-gray-800/50 rounded-2xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-all duration-300">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-400">{t('staking_active_pools')}</p>
+                  <p className="text-2xl font-bold text-white">{stakingPools.filter(p => p.status === 'active').length}</p>
+                </div>
+                <div className="p-3 bg-cyan-500/20 rounded-xl">
+                  <ChartBarIcon className="h-6 w-6 text-cyan-400" />
+                </div>
+              </div>
+              <div className="mt-4 flex items-center text-cyan-400 text-sm">
+                <ShieldCheckIcon className="h-4 w-4 mr-1" />
+                <span>Segurança máxima</span>
+              </div>
+            </div>
           </div>
 
-          {/* Staking Pools */}
-          <div className="mb-12">
-            <h2 className="text-3xl font-bold text-cosmic-glow mb-8 text-center">
-              {t('staking_pools_title')}
+          {/* Pools de Staking */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-semibold text-white mb-6 flex items-center">
+              <StarIcon className="h-6 w-6 mr-2 text-purple-400" />
+              {t('staking_available_pools')}
             </h2>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {stakingPools.map((pool) => (
-                <div key={pool.id} className="cosmic-card hover:scale-105 transition-all duration-500 hover:-translate-y-2 group">
-                  <div className="text-center p-6">
-                    <div className="mb-6 flex justify-center group-hover:scale-110 transition-transform duration-500">
-                      <img 
-                        src={pool.image} 
-                        alt={pool.name}
-                        className="w-24 h-24 object-contain filter drop-shadow-2xl"
-                      />
-                    </div>
-                    <h3 className="text-xl font-bold text-cosmic-glow mb-4 group-hover:text-cyan-400 transition-colors duration-300">{pool.name}</h3>
-                    
-                    <div className="space-y-4 mb-6">
-                      <div className="flex justify-between items-center">
-                        <span className="text-purple-silver">{t('staking_pool_apy')}:</span>
-                        <span className="text-2xl font-bold text-green-400 animate-energy-pulse">{pool.apy}%</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-purple-silver">{t('staking_pool_total_staked')}:</span>
-                        <span className="text-cosmic-glow font-medium">{pool.totalStaked}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-purple-silver">{t('staking_pool_your_stake')}:</span>
-                        <span className="text-cosmic-glow font-medium">{pool.yourStake}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-purple-silver">{t('staking_pool_rewards')}:</span>
-                        <span className="text-green-400 font-medium">{pool.rewards}</span>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {stakingPools.map(pool => (
+                <div
+                  key={pool.id}
+                  className="bg-gray-800/50 rounded-2xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-all duration-300"
+                >
+                  {/* Header do Pool */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="text-3xl">{pool.icon}</div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-white">{pool.name}</h3>
+                        <p className="text-sm text-gray-400">{pool.description}</p>
                       </div>
                     </div>
+                    <div className="flex flex-col items-end space-y-2">
+                      <span className={`px-3 py-1 text-xs rounded-full border ${getStatusColor(pool.status)}`}>
+                        {getStatusLabel(pool.status)}
+                      </span>
+                      <span className={`px-3 py-1 text-xs rounded-full border ${getRiskColor(pool.risk)}`}>
+                        {getRiskLabel(pool.risk)}
+                      </span>
+                    </div>
+                  </div>
 
-                    <div className="flex space-x-3">
-                      <button className="flex-1 cosmic-button px-4 py-2 rounded-lg font-semibold hover:scale-105 transition-transform duration-300">
-                        {t('staking_pool_stake_button')}
-                      </button>
-                      <button className="flex-1 border border-cyan-400 text-cyan-400 px-4 py-2 rounded-lg font-semibold hover:bg-cyan-400 hover:text-black transition-all duration-300 hover:scale-105">
-                        {t('staking_pool_unstake_button')}
-                      </button>
+                  {/* Estatísticas do Pool */}
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="text-center p-3 bg-gray-700/30 rounded-xl">
+                      <div className="text-2xl font-bold text-green-400">{formatPercentage(pool.apy)}</div>
+                      <div className="text-xs text-gray-400">APY</div>
                     </div>
+                    <div className="text-center p-3 bg-gray-700/30 rounded-xl">
+                      <div className="text-lg font-bold text-white">{formatCurrency(pool.tvl)}</div>
+                      <div className="text-xs text-gray-400">TVL</div>
+                    </div>
+                    <div className="text-center p-3 bg-gray-700/30 rounded-xl">
+                      <div className="text-lg font-bold text-white">{formatNumber(pool.totalStaked)}</div>
+                      <div className="text-xs text-gray-400">Total Staked</div>
+                    </div>
+                    <div className="text-center p-3 bg-gray-700/30 rounded-xl">
+                      <div className="text-lg font-bold text-white">{formatCurrency(pool.minStake)}</div>
+                      <div className="text-xs text-gray-400">Min. Stake</div>
+                    </div>
+                  </div>
+
+                  {/* Informações do Usuário */}
+                  {pool.userStaked > 0 && (
+                    <div className="mb-6 p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium text-green-400">Seu Stake</span>
+                        <span className="text-sm text-white">{formatCurrency(pool.userStaked)}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-400">Recompensas Acumuladas</span>
+                        <span className="text-sm text-green-400">{formatCurrency(pool.userRewards)}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Features do Pool */}
+                  <div className="mb-6">
+                    <h4 className="text-sm font-semibold text-white mb-3">Características</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {pool.features.map((feature, index) => (
+                        <span
+                          key={index}
+                          className="px-2 py-1 bg-blue-500/20 text-blue-300 text-xs rounded-full border border-blue-500/30"
+                        >
+                          {feature}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Botões de Ação */}
+                  <div className="flex space-x-3">
+                    {pool.userStaked > 0 ? (
+                      <>
+                        <button
+                          onClick={() => {
+                            setSelectedPool(pool)
+                            setShowUnstakeModal(true)
+                          }}
+                          className="flex-1 bg-red-500/20 hover:bg-red-500/30 text-red-400 py-2 px-4 rounded-xl font-semibold border border-red-500/30 hover:border-red-500/50 transition-all duration-300 hover:scale-105 flex items-center justify-center space-x-2"
+                        >
+                          <LockOpenIcon className="h-4 w-4" />
+                          <span>Unstake</span>
+                        </button>
+                        <button
+                          onClick={() => claimRewards(pool.id)}
+                          disabled={pool.userRewards === 0}
+                          className="bg-green-500/20 hover:bg-green-500/30 text-green-400 py-2 px-4 rounded-xl font-semibold border border-green-500/30 hover:border-green-500/50 transition-all duration-300 hover:scale-105 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <StarIcon className="h-4 w-4" />
+                          <span>Claim</span>
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          setSelectedPool(pool)
+                          setShowStakeModal(true)
+                        }}
+                        className="flex-1 bg-gradient-to-r from-purple-600 to-cyan-600 text-white py-3 px-4 rounded-xl font-semibold hover:from-purple-700 hover:to-cyan-700 transition-all duration-300 hover:scale-105 flex items-center justify-center space-x-2"
+                      >
+                        <LockClosedIcon className="h-5 w-5" />
+                        <span>Stake Agora</span>
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* How It Works */}
-          <div className="mb-12">
-            <h2 className="text-3xl font-bold text-cosmic-glow mb-8 text-center">
-              {t('staking_how_it_works_title')}
+          {/* Histórico de Staking */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-semibold text-white mb-6 flex items-center">
+              <ClockIcon className="h-6 w-6 mr-2 text-purple-400" />
+              {t('staking_history')}
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="cosmic-card text-center group hover:scale-105 transition-all duration-500 hover-cosmic-pulse">
-                <div className="p-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-500 shadow-lg shadow-cyan-500/25">
-                    <LockClosedIcon className="h-8 w-8 text-white" />
+            
+            <div className="bg-gray-800/50 rounded-2xl p-6 border border-purple-500/20">
+              <div className="space-y-4">
+                {stakingHistory.map(transaction => (
+                  <div
+                    key={transaction.id}
+                    className="flex items-center justify-between p-4 bg-gray-700/30 rounded-xl hover:bg-gray-700/50 transition-all duration-300"
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div className={`p-2 rounded-lg ${
+                        transaction.type === 'stake' ? 'bg-green-500/20 text-green-400' :
+                        transaction.type === 'unstake' ? 'bg-red-500/20 text-red-400' :
+                        'bg-blue-500/20 text-blue-400'
+                      }`}>
+                        {transaction.type === 'stake' ? <LockClosedIcon className="h-4 w-4" /> :
+                         transaction.type === 'unstake' ? <LockOpenIcon className="h-4 w-4" /> :
+                         <StarIcon className="h-4 w-4" />}
+                      </div>
+                      <div>
+                        <div className="font-semibold text-white capitalize">
+                          {transaction.type === 'stake' ? 'Stake' :
+                           transaction.type === 'unstake' ? 'Unstake' :
+                           'Claim'}
+                        </div>
+                        <div className="text-sm text-gray-400">
+                          {transaction.pool}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="text-right">
+                      <div className={`font-semibold ${
+                        transaction.type === 'stake' ? 'text-green-400' :
+                        transaction.type === 'unstake' ? 'text-red-400' :
+                        'text-blue-400'
+                      }`}>
+                        {transaction.type === 'stake' ? '+' : transaction.type === 'unstake' ? '-' : '+'}{formatCurrency(transaction.amount)}
+                      </div>
+                      <div className="text-sm text-gray-400">
+                        {transaction.timestamp.toLocaleDateString('pt-BR')}
+                      </div>
+                      <div className="flex items-center space-x-1 text-xs text-gray-400">
+                        {transaction.status === 'completed' && <CheckCircleIcon className="h-3 w-3 text-green-400" />}
+                        <span className="capitalize">{transaction.status}</span>
+                      </div>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold text-cosmic-glow mb-3 group-hover:text-cyan-400 transition-colors duration-300">1. {t('staking_step1_title')}</h3>
-                  <p className="text-purple-silver">
-                    {t('staking_step1_desc')}
-                  </p>
-                </div>
-              </div>
-
-              <div className="cosmic-card text-center group hover:scale-105 transition-all duration-500 hover-cosmic-pulse">
-                <div className="p-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-500 shadow-lg shadow-emerald-500/25">
-                    <FireIcon className="h-8 w-8 text-white" />
-                  </div>
-                  <h3 className="text-xl font-bold text-cosmic-glow mb-3 group-hover:text-emerald-400 transition-colors duration-300">2. {t('staking_step2_title')}</h3>
-                  <p className="text-purple-silver">
-                    {t('staking_step2_desc')}
-                  </p>
-                </div>
-              </div>
-
-              <div className="cosmic-card text-center group hover:scale-105 transition-all duration-500 hover-cosmic-pulse">
-                <div className="p-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-500 shadow-lg shadow-purple-500/25">
-                    <CurrencyDollarIcon className="h-8 w-8 text-white" />
-                  </div>
-                  <h3 className="text-xl font-bold text-cosmic-glow mb-3 group-hover:text-purple-400 transition-colors duration-300">3. {t('staking_step3_title')}</h3>
-                  <p className="text-purple-silver">
-                    {t('staking_step3_desc')}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Benefits */}
-          <div className="mb-12">
-            <h2 className="text-3xl font-bold text-cosmic-glow mb-8 text-center">
-              {t('staking_benefits_title')}
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="cosmic-card group hover:scale-105 transition-all duration-500 hover-cosmic-pulse">
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-cosmic-glow mb-4 group-hover:text-cyan-400 transition-colors duration-300">{t('staking_benefit1_title')}</h3>
-                                      <ul className="space-y-2 text-purple-silver">
-                      <li>• {t('staking_benefit1_item1')}</li>
-                      <li>• {t('staking_benefit1_item2')}</li>
-                      <li>• {t('staking_benefit1_item3')}</li>
-                      <li>• {t('staking_benefit1_item4')}</li>
-                    </ul>
-                </div>
-              </div>
-
-              <div className="cosmic-card group hover:scale-105 transition-all duration-500 hover-cosmic-pulse">
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-cosmic-glow mb-4 group-hover:text-purple-400 transition-colors duration-300">{t('staking_benefit2_title')}</h3>
-                                      <ul className="space-y-2 text-purple-silver">
-                      <li>• {t('staking_benefit2_item1')}</li>
-                      <li>• {t('staking_benefit2_item2')}</li>
-                      <li>• {t('staking_benefit2_item3')}</li>
-                      <li>• {t('staking_benefit2_item4')}</li>
-                    </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* CTA */}
-          <div className="text-center">
-            <div className="cosmic-card bg-gradient-to-r from-cyan-900 to-purple-900 relative overflow-hidden">
-              {/* Efeitos de fundo cósmicos */}
-              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-purple-500/10 animate-cosmic-pulse"></div>
-              <div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-full blur-2xl animate-float"></div>
-              <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full blur-2xl animate-float animation-delay-2000"></div>
-              
-              <div className="p-8 relative z-10">
-                <h3 className="text-2xl font-bold text-cosmic-glow mb-4">
-                  {t('staking_cta_title')}
-                </h3>
-                <p className="text-purple-silver mb-6">
-                  {t('staking_cta_subtitle')}
-                </p>
-                <button className="cosmic-button px-8 py-3 rounded-lg text-lg font-semibold hover:scale-105 transition-transform duration-300">
-                  <span className="flex items-center space-x-2">
-                    <RocketLaunchIcon className="h-5 w-5" />
-                    <span>{t('staking_cta_button')}</span>
-                  </span>
-                </button>
+                ))}
               </div>
             </div>
           </div>
         </div>
+
+        {/* Footer */}
+        <Footer />
       </div>
+
+      {/* Chatbot */}
+      <Chatbot />
+
+      {/* Modal de Stake */}
+      {showStakeModal && selectedPool && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-gray-800 rounded-2xl p-6 w-96 border border-purple-500/20">
+            <h3 className="text-xl font-semibold text-white mb-4">Stake em {selectedPool.name}</h3>
+            
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-400 mb-2">Valor para Stake</label>
+              <input
+                type="number"
+                value={stakeAmount}
+                onChange={(e) => setStakeAmount(e.target.value)}
+                placeholder={`Min: ${formatCurrency(selectedPool.minStake)}`}
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+              <p className="text-xs text-gray-400 mt-1">
+                APY: {formatPercentage(selectedPool.apy)} • Lock: {selectedPool.lockPeriod} dias
+              </p>
+            </div>
+
+            <div className="flex space-x-3">
+              <button
+                onClick={() => setShowStakeModal(false)}
+                className="flex-1 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-500 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleStake}
+                className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+              >
+                Confirmar Stake
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Unstake */}
+      {showUnstakeModal && selectedPool && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-gray-800 rounded-2xl p-6 w-96 border border-purple-500/20">
+            <h3 className="text-xl font-semibold text-white mb-4">Unstake de {selectedPool.name}</h3>
+            
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-400 mb-2">Valor para Unstake</label>
+              <input
+                type="number"
+                value={unstakeAmount}
+                onChange={(e) => setUnstakeAmount(e.target.value)}
+                placeholder={`Max: ${formatCurrency(selectedPool.userStaked)}`}
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+              <p className="text-xs text-gray-400 mt-1">
+                Stake atual: {formatCurrency(selectedPool.userStaked)}
+              </p>
+            </div>
+
+            <div className="flex space-x-3">
+              <button
+                onClick={() => setShowUnstakeModal(false)}
+                className="flex-1 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-500 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleUnstake}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Confirmar Unstake
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }

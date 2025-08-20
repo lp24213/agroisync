@@ -1,9 +1,561 @@
-# This "input" configures a global authorization rule to enable public access to
-# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
-input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
+input AMPLIFY { globalAuthRule: AuthRule = { allow: private } }
 
-type Todo @model {
+# ===========================================
+# TIPOS PRINCIPAIS
+# ===========================================
+
+type User @model @auth(rules: [
+  { allow: owner, operations: [create, read, update, delete] },
+  { allow: groups, groups: ["admin"], operations: [read, update, delete] }
+]) {
+  id: ID!
+  cognitoId: String! @index(name: "byCognitoId")
+  email: String! @index(name: "byEmail")
+  name: String!
+  group: String! @default(value: "user")
+  isActive: Boolean! @default(value: true)
+  lastLogin: AWSDateTime
+  profilePicture: String
+  phone: String
+  address: String
+  city: String
+  state: String
+  country: String
+  zipCode: String
+  preferences: AWSJSON
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  
+  # Relacionamentos
+  properties: [Property] @hasMany(indexName: "byOwner", fields: ["id"])
+  products: [Product] @hasMany(indexName: "byOwner", fields: ["id"])
+  transactions: [Transaction] @hasMany(indexName: "byUser", fields: ["id"])
+  stakingRecords: [StakingRecord] @hasMany(indexName: "byUser", fields: ["id"])
+  nfts: [NFT] @hasMany(indexName: "byOwner", fields: ["id"])
+  uploads: [Upload] @hasMany(indexName: "byOwner", fields: ["id"])
+  chatMessages: [ChatMessage] @hasMany(indexName: "byUser", fields: ["id"])
+  notifications: [Notification] @hasMany(indexName: "byUser", fields: ["id"])
+  analytics: [UserAnalytics] @hasMany(indexName: "byUser", fields: ["id"])
+}
+
+type Property @model @auth(rules: [
+  { allow: owner, operations: [create, read, update, delete] },
+  { allow: groups, groups: ["admin"], operations: [read, update, delete] },
+  { allow: groups, groups: ["user"], operations: [read] }
+]) {
   id: ID!
   name: String!
   description: String
+  type: PropertyType!
+  status: PropertyStatus! @default(value: VERIFICATION_REQUIRED)
+  coordinates: Coordinates
+  address: String!
+  city: String!
+  state: String!
+  country: String!
+  zipCode: String!
+  area: Float!
+  areaUnit: AreaUnit!
+  isVerified: Boolean! @default(value: false)
+  verificationDate: AWSDateTime
+  ownerId: ID! @index(name: "byOwner")
+  owner: User! @belongsTo(fields: ["ownerId"])
+  images: [String]
+  documents: [String]
+  features: [String]
+  price: Float
+  currency: String! @default(value: "BRL")
+  isForSale: Boolean! @default(value: false)
+  isForRent: Boolean! @default(value: false)
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type Product @model @auth(rules: [
+  { allow: owner, operations: [create, read, update, delete] },
+  { allow: groups, groups: ["admin"], operations: [read, update, delete] },
+  { allow: groups, groups: ["user"], operations: [read] }
+]) {
+  id: ID!
+  name: String!
+  description: String
+  sku: String! @index(name: "bySKU")
+  category: ProductCategory!
+  brand: String
+  price: Float!
+  currency: String! @default(value: "BRL")
+  weight: Float
+  weightUnit: WeightUnit
+  dimensions: Dimensions
+  isOrganic: Boolean! @default(value: false)
+  isCertified: Boolean! @default(value: false)
+  certificationType: String
+  stock: Int! @default(value: 0)
+  minStock: Int! @default(value: 0)
+  isActive: Boolean! @default(value: true)
+  ownerId: ID! @index(name: "byOwner")
+  owner: User! @belongsTo(fields: ["ownerId"])
+  images: [String]
+  tags: [String]
+  rating: Float
+  reviewCount: Int! @default(value: 0)
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type Transaction @model @auth(rules: [
+  { allow: owner, operations: [create, read, update, delete] },
+  { allow: groups, groups: ["admin"], operations: [read, update, delete] }
+]) {
+  id: ID!
+  type: TransactionType!
+  amount: Float!
+  currency: String! @default(value: "BRL")
+  status: TransactionStatus! @default(value: PENDING)
+  description: String
+  userId: ID! @index(name: "byUser")
+  user: User! @belongsTo(fields: ["userId"])
+  relatedId: ID
+  relatedType: String
+  paymentMethod: PaymentMethod
+  transactionHash: String
+  fees: Float
+  metadata: AWSJSON
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type Upload @model @auth(rules: [
+  { allow: owner, operations: [create, read, update, delete] },
+  { allow: groups, groups: ["admin"], operations: [read, update, delete] }
+]) {
+  id: ID!
+  filename: String!
+  originalName: String!
+  mimeType: String!
+  size: Int!
+  category: UploadCategory!
+  tags: [String]
+  isPublic: Boolean! @default(value: false)
+  downloadCount: Int! @default(value: 0)
+  ownerId: ID! @index(name: "byOwner")
+  owner: User! @belongsTo(fields: ["ownerId"])
+  s3Key: String!
+  s3Bucket: String!
+  url: String
+  metadata: AWSJSON
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+# ===========================================
+# SISTEMA DE STAKING E DEFI
+# ===========================================
+
+type StakingPool @model @auth(rules: [
+  { allow: groups, groups: ["admin"], operations: [create, read, update, delete] },
+  { allow: groups, groups: ["user"], operations: [read] }
+]) {
+  id: ID!
+  name: String!
+  description: String
+  apy: Float!
+  minStake: Float!
+  maxStake: Float
+  totalStaked: Float! @default(value: 0)
+  totalRewards: Float! @default(value: 0)
+  isActive: Boolean! @default(value: true)
+  lockPeriod: Int! # em dias
+  maxParticipants: Int
+  currentParticipants: Int! @default(value: 0)
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  
+  # Relacionamentos
+  stakingRecords: [StakingRecord] @hasMany(indexName: "byPool", fields: ["id"])
+}
+
+type StakingRecord @model @auth(rules: [
+  { allow: owner, operations: [create, read, update, delete] },
+  { allow: groups, groups: ["admin"], operations: [read, update, delete] }
+]) {
+  id: ID!
+  userId: ID! @index(name: "byUser")
+  user: User! @belongsTo(fields: ["userId"])
+  poolId: ID! @index(name: "byPool")
+  pool: StakingPool! @belongsTo(fields: ["poolId"])
+  amount: Float!
+  startDate: AWSDateTime!
+  endDate: AWSDateTime
+  status: StakingStatus! @default(value: ACTIVE)
+  rewards: Float! @default(value: 0)
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+# ===========================================
+# SISTEMA NFT
+# ===========================================
+
+type NFT @model @auth(rules: [
+  { allow: owner, operations: [create, read, update, delete] },
+  { allow: groups, groups: ["admin"], operations: [read, update, delete] },
+  { allow: groups, groups: ["user"], operations: [read] }
+]) {
+  id: ID!
+  tokenId: String! @index(name: "byTokenId")
+  name: String!
+  description: String
+  image: String!
+  metadata: String!
+  userId: ID! @index(name: "byOwner")
+  user: User! @belongsTo(fields: ["userId"])
+  collection: String! @default(value: "AGROISYNC")
+  attributes: [NFTAttribute]
+  isMinted: Boolean! @default(value: false)
+  mintTransactionHash: String
+  mintDate: AWSDateTime
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type NFTAttribute {
+  trait_type: String!
+  value: String!
+}
+
+# ===========================================
+# SISTEMA DE CHAT E NOTIFICAÇÕES
+# ===========================================
+
+type ChatMessage @model @auth(rules: [
+  { allow: owner, operations: [create, read, update, delete] },
+  { allow: groups, groups: ["admin"], operations: [read, update, delete] }
+]) {
+  id: ID!
+  content: String!
+  type: MessageType! @default(value: TEXT)
+  userId: ID! @index(name: "byUser")
+  user: User! @belongsTo(fields: ["userId"])
+  roomId: String!
+  isRead: Boolean! @default(value: false)
+  metadata: AWSJSON
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type Notification @model @auth(rules: [
+  { allow: owner, operations: [create, read, update, delete] },
+  { allow: groups, groups: ["admin"], operations: [create, read, update, delete] }
+]) {
+  id: ID!
+  title: String!
+  message: String!
+  type: NotificationType!
+  priority: NotificationPriority! @default(value: NORMAL)
+  isRead: Boolean! @default(value: false)
+  actionUrl: String
+  userId: ID! @index(name: "byUser")
+  user: User! @belongsTo(fields: ["userId"])
+  expiresAt: AWSDateTime
+  metadata: AWSJSON
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+# ===========================================
+# SISTEMA DE PREÇOS E CIDADES
+# ===========================================
+
+type CityPrice @model @auth(rules: [
+  { allow: groups, groups: ["admin"], operations: [create, read, update, delete] },
+  { allow: groups, groups: ["user"], operations: [read] }
+]) {
+  id: ID!
+  city: String! @index(name: "byCity")
+  state: String!
+  country: String!
+  commodityType: CommodityType!
+  price: Float!
+  currency: String! @default(value: "BRL")
+  priceUnit: PriceUnit!
+  source: String
+  date: AWSDate!
+  isActive: Boolean! @default(value: true)
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+# ===========================================
+# SISTEMA DE ANALYTICS E RELATÓRIOS
+# ===========================================
+
+type UserAnalytics @model @auth(rules: [
+  { allow: owner, operations: [create, read, update, delete] },
+  { allow: groups, groups: ["admin"], operations: [read, update, delete] }
+]) {
+  id: ID!
+  userId: ID! @index(name: "byUser")
+  user: User! @belongsTo(fields: ["userId"])
+  type: String!
+  data: AWSJSON!
+  date: AWSDate!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type Report @model @auth(rules: [
+  { allow: owner, operations: [create, read, update, delete] },
+  { allow: groups, groups: ["admin"], operations: [create, read, update, delete] }
+]) {
+  id: ID!
+  name: String!
+  type: ReportType!
+  status: ReportStatus! @default(value: PENDING)
+  parameters: AWSJSON
+  result: AWSJSON
+  userId: ID! @index(name: "byUser")
+  user: User! @belongsTo(fields: ["userId"])
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+# ===========================================
+# SISTEMA DE MANUTENÇÃO E TAREFAS
+# ===========================================
+
+type Maintenance @model @auth(rules: [
+  { allow: groups, groups: ["admin"], operations: [create, read, update, delete] }
+]) {
+  id: ID!
+  title: String!
+  description: String
+  type: String!
+  status: String! @default(value: SCHEDULED)
+  scheduledDate: AWSDateTime!
+  completedDate: AWSDateTime
+  assignedTo: String
+  priority: String! @default(value: MEDIUM)
+  metadata: AWSJSON
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type Task @model @auth(rules: [
+  { allow: owner, operations: [create, read, update, delete] },
+  { allow: groups, groups: ["admin"], operations: [create, read, update, delete] }
+]) {
+  id: ID!
+  title: String!
+  description: String
+  type: String!
+  status: String! @default(value: PENDING)
+  priority: String! @default(value: MEDIUM)
+  dueDate: AWSDateTime
+  completedDate: AWSDateTime
+  assignedTo: String
+  createdBy: String
+  metadata: AWSJSON
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+# ===========================================
+# SISTEMA DE CONFIGURAÇÃO
+# ===========================================
+
+type SystemConfig @model @auth(rules: [
+  { allow: groups, groups: ["admin"], operations: [create, read, update, delete] }
+]) {
+  id: ID!
+  key: String! @index(name: "byKey")
+  value: String!
+  description: String
+  isActive: Boolean! @default(value: true)
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+# ===========================================
+# ENUMS E TIPOS
+# ===========================================
+
+enum PropertyType {
+  FARM
+  RANCH
+  PLANTATION
+  FOREST
+  VINEYARD
+  ORCHARD
+  GREENHOUSE
+  OTHER
+}
+
+enum PropertyStatus {
+  VERIFICATION_REQUIRED
+  VERIFIED
+  REJECTED
+  SUSPENDED
+}
+
+enum AreaUnit {
+  HECTARES
+  ACRES
+  SQUARE_METERS
+  SQUARE_FEET
+}
+
+enum ProductCategory {
+  GRAINS
+  VEGETABLES
+  FRUITS
+  LIVESTOCK
+  DAIRY
+  EQUIPMENT
+  SEEDS
+  FERTILIZERS
+  PESTICIDES
+  TOOLS
+  MACHINERY
+  OTHER
+}
+
+enum WeightUnit {
+  KILOGRAMS
+  POUNDS
+  TONS
+  GRAMS
+}
+
+enum TransactionType {
+  PURCHASE
+  SALE
+  RENTAL
+  STAKING
+  REWARD
+  FEE
+  REFUND
+  NFT_MINT
+  NFT_TRANSFER
+  OTHER
+}
+
+enum TransactionStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  BANK_TRANSFER
+  CRYPTO
+  CASH
+  CHECK
+  OTHER
+}
+
+enum UploadCategory {
+  IMAGE
+  DOCUMENT
+  VIDEO
+  AUDIO
+  SPREADSHEET
+  PRESENTATION
+  OTHER
+}
+
+enum StakingStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  REWARDED
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  FILE
+  SYSTEM
+}
+
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+  SYSTEM
+  TRANSACTION
+  STAKING
+  NFT
+}
+
+enum NotificationPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum CommodityType {
+  SOYBEANS
+  CORN
+  WHEAT
+  COTTON
+  SUGAR
+  COFFEE
+  CATTLE
+  PORK
+  POULTRY
+  DAIRY
+  OTHER
+}
+
+enum PriceUnit {
+  PER_KG
+  PER_TON
+  PER_UNIT
+  PER_LITER
+  PER_METER
+}
+
+enum ReportType {
+  USER_ACTIVITY
+  TRANSACTION_SUMMARY
+  STAKING_ANALYSIS
+  NFT_COLLECTION
+  SYSTEM_PERFORMANCE
+  CUSTOM
+}
+
+enum ReportStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+type Coordinates {
+  latitude: Float!
+  longitude: Float!
+}
+
+type Dimensions {
+  length: Float!
+  width: Float!
+  height: Float!
+  unit: String! @default(value: "cm")
+}
+
+type Location {
+  name: String!
+  coordinates: Coordinates
+  timezone: String
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
 }

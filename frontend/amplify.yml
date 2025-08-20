@@ -3,49 +3,19 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "🚀 Iniciando build do AGROISYNC Frontend no Linux..."
-        - echo "📋 Informações do sistema:"
-        - uname -a
-        - echo "📋 Versões do ambiente:"
-        - node --version
-        - npm --version
-        - echo "📋 Diretório atual:"
-        - pwd
-        - echo "📦 Instalando dependências..."
+        - echo "Instalando dependências..."
         - npm ci
-        - echo "⚙️ Configurando Next.js para Amplify..."
-        - cp next.config-final.js next.config.js
-        - cp tsconfig-amplify.json tsconfig.json
-        - echo "🔧 Configurações aplicadas com sucesso"
-        - echo "📁 Estrutura atual:"
-        - ls -la
-        - echo "📁 Verificando arquivos de configuração:"
-        - ls -la next.config*.js
-        - ls -la tsconfig*.json
+        - echo "Verificando versão do Node.js..."
+        - node --version
+        - echo "Verificando versão do npm..."
+        - npm --version
     build:
       commands:
-        - echo "🏗️ Buildando aplicação..."
+        - echo "Fazendo build do projeto..."
         - npm run build
-        - echo "📁 Verificando estrutura após build..."
-        - pwd
-        - ls -la
-        - echo "📁 Verificando pasta out..."
-        - ls -la out/
-        - echo "📄 Verificando index.html..."
-        - ls -la out/index.html
-        - echo "📄 Conteúdo inicial do index.html:"
-        - head -10 out/index.html
-        - echo "📊 Tamanho dos arquivos principais:"
-        - ls -lh out/index.html
-        - ls -lh out/_next/static/css/*.css | head -3
-        - echo "✅ Build concluído com sucesso!"
-        - echo "🎯 Arquivos prontos para deploy no Amplify!"
-        - echo "📊 Resumo do build:"
-        - echo "   - Pasta out criada: $(test -d out && echo 'SIM' || echo 'NÃO')"
-        - echo "   - index.html existe: $(test -f out/index.html && echo 'SIM' || echo 'NÃO')"
-        - echo "   - Total de arquivos: $(find out -type f | wc -l)"
+        - echo "Build concluído com sucesso!"
   artifacts:
-    baseDirectory: out
+    baseDirectory: .next
     files:
       - '**/*'
   cache:

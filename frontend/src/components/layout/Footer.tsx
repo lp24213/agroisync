@@ -1,195 +1,222 @@
-import React from 'react';
-import Link from 'next/link';
-import { useI18n } from '@/i18n/I18nProvider';
+import React from 'react'
+import Link from 'next/link'
+import { useI18n } from '@/i18n/I18nProvider'
 import { 
   EnvelopeIcon, 
-  PhoneIcon,
+  PhoneIcon, 
   MapPinIcon,
-  SparklesIcon,
-  RocketLaunchIcon,
-  StarIcon,
-  GlobeAltIcon,
-  ShieldCheckIcon
-} from '@heroicons/react/24/outline';
+  ClockIcon
+} from '@heroicons/react/24/outline'
 
 const Footer: React.FC = () => {
-  const { t } = useI18n();
-  
+  const { t } = useI18n()
+
   return (
-    <footer className="cosmic-background text-white relative overflow-hidden">
-      {/* Efeitos cósmicos de fundo */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Nebulosas flutuantes */}
-        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-cyan-900/10 to-blue-900/10 rounded-full blur-3xl animate-nebula-drift"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-br from-purple-900/10 to-pink-900/10 rounded-full blur-3xl animate-nebula-drift animation-delay-2000"></div>
-        
-        {/* Portais quânticos */}
-        <div className="absolute top-1/4 left-1/4 w-24 h-24 bg-gradient-to-br from-cyan-500/20 via-blue-500/20 to-purple-500/20 rounded-full animate-quantum-orbital"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-20 h-20 bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-cyan-500/20 rounded-full animate-quantum-orbital animation-delay-3000"></div>
-        
-        {/* Ondas de energia */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent animate-cosmic-wave"></div>
-        
-        {/* Estrelas cintilantes */}
-        <div className="absolute top-20 left-20 w-1 h-1 bg-white rounded-full animate-sparkle"></div>
-        <div className="absolute top-40 right-40 w-1.5 h-1.5 bg-cyan-400 rounded-full animate-sparkle animation-delay-2000"></div>
-        <div className="absolute bottom-40 left-40 w-1 h-1 bg-blue-400 rounded-full animate-sparkle animation-delay-4000"></div>
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="py-16">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {/* Company Info */}
-            <div className="col-span-1 md:col-span-2">
-              <div className="flex items-center mb-6 group">
-                <div className="h-12 w-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-cyan-500/25">
-                  <span className="text-white font-bold text-2xl">🌱</span>
-                </div>
-                <span className="ml-4 text-3xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent group-hover:from-cyan-300 group-hover:via-blue-300 group-hover:to-purple-300 transition-all duration-300">
-                  {t('app_name')}
-                </span>
+    <footer className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-gray-300">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          
+          {/* Logo e Slogan */}
+          <div className="lg:col-span-1">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-cyan-600 rounded-xl flex items-center justify-center">
+                <span className="text-2xl font-bold text-white">🌱</span>
               </div>
-              <p className="text-purple-silver mb-6 max-w-md text-lg leading-relaxed">
-                {t('features_sub')}
-              </p>
-              <div className="flex space-x-4">
-                <a href="#" className="group p-3 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 rounded-xl hover:from-cyan-400/30 hover:to-blue-400/30 hover:border-cyan-400/50 transition-all duration-300 hover:scale-110 hover-cosmic-pulse">
-                  <span className="sr-only">Facebook</span>
-                  <svg className="h-6 w-6 text-cyan-400 group-hover:text-cyan-300 transition-colors" fill="currentColor" viewBox="0 0 24 24">
-                    <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" />
-                  </svg>
-                </a>
-                <a href="#" className="group p-3 bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-xl hover:from-blue-400/30 hover:to-purple-400/30 hover:border-blue-400/50 transition-all duration-300 hover:scale-110 hover-cosmic-pulse">
-                  <span className="sr-only">Twitter</span>
-                  <svg className="h-6 w-6 text-blue-400 group-hover:text-blue-300 transition-colors" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-                  </svg>
-                </a>
-                <a href="#" className="group p-3 bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-xl hover:from-purple-400/30 hover:to-pink-400/30 hover:border-purple-400/50 transition-all duration-300 hover:scale-110 hover-cosmic-pulse">
-                  <span className="sr-only">LinkedIn</span>
-                  <svg className="h-6 w-6 text-purple-400 group-hover:text-purple-300 transition-colors" fill="currentColor" viewBox="0 0 24 24">
-                    <path fillRule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clipRule="evenodd" />
-                  </svg>
-                </a>
+              <div>
+                <h3 className="text-xl font-bold text-white">AgroSync</h3>
+                <p className="text-sm text-gray-400">{t('footer_logo_slogan')}</p>
               </div>
             </div>
+            <p className="text-sm text-gray-400 leading-relaxed">
+              Revolucionando o agronegócio com tecnologia blockchain e inteligência artificial.
+              Conectamos produtores, investidores e consumidores em uma plataforma segura e transparente.
+            </p>
+          </div>
 
-            {/* Quick Links */}
-            <div>
-              <h3 className="text-sm font-bold text-cyan-400 tracking-wider uppercase mb-6 flex items-center">
-                <RocketLaunchIcon className="h-4 w-4 mr-2 animate-pulse" />
-                {t('nav_marketplace')}
-              </h3>
-              <ul className="space-y-4">
-                <li>
-                  <Link href="/marketplace" className="group flex items-center text-purple-silver hover:text-cyan-300 transition-all duration-300 hover:translate-x-1">
-                    <span className="w-2 h-2 bg-cyan-400 rounded-full mr-3 group-hover:scale-150 transition-transform duration-300"></span>
-                    {t('nav_marketplace')}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/staking" className="group flex items-center text-purple-silver hover:text-cyan-300 transition-all duration-300 hover:translate-x-1">
-                    <span className="w-2 h-2 bg-blue-400 rounded-full mr-3 group-hover:scale-150 transition-transform duration-300"></span>
-                    {t('nav_staking')}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/properties" className="group flex items-center text-purple-silver hover:text-cyan-300 transition-all duration-300 hover:translate-x-1">
-                    <span className="w-2 h-2 bg-purple-400 rounded-full mr-3 group-hover:scale-150 transition-transform duration-300"></span>
-                    {t('nav_properties')}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/dashboard" className="group flex items-center text-purple-silver hover:text-cyan-300 transition-all duration-300 hover:translate-x-1">
-                    <span className="w-2 h-2 bg-pink-400 rounded-full mr-3 group-hover:scale-150 transition-transform duration-300"></span>
-                    {t('nav_dashboard')}
-                  </Link>
-                </li>
-              </ul>
+          {/* Links Principais */}
+          <div>
+            <h4 className="text-lg font-semibold text-white mb-4">{t('footer_main_links_title')}</h4>
+            <ul className="space-y-3">
+              <li>
+                <Link 
+                  href="/marketplace" 
+                  className="text-gray-400 hover:text-purple-400 transition-colors duration-300 flex items-center space-x-2 group"
+                >
+                  <span className="w-1 h-1 bg-purple-400 rounded-full group-hover:scale-150 transition-transform duration-300"></span>
+                  <span>{t('marketplace')}</span>
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/staking" 
+                  className="text-gray-400 hover:text-purple-400 transition-colors duration-300 flex items-center space-x-2 group"
+                >
+                  <span className="w-1 h-1 bg-purple-400 rounded-full group-hover:scale-150 transition-transform duration-300"></span>
+                  <span>{t('staking')}</span>
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/properties" 
+                  className="text-gray-400 hover:text-purple-400 transition-colors duration-300 flex items-center space-x-2 group"
+                >
+                  <span className="w-1 h-1 bg-purple-400 rounded-full group-hover:scale-150 transition-transform duration-300"></span>
+                  <span>{t('properties')}</span>
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/dashboard" 
+                  className="text-gray-400 hover:text-purple-400 transition-colors duration-300 flex items-center space-x-2 group"
+                >
+                  <span className="w-1 h-1 bg-purple-400 rounded-full group-hover:scale-150 transition-transform duration-300"></span>
+                  <span>{t('dashboard')}</span>
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/about" 
+                  className="text-gray-400 hover:text-purple-400 transition-colors duration-300 flex items-center space-x-2 group"
+                >
+                  <span className="w-1 h-1 bg-purple-400 rounded-full group-hover:scale-150 transition-transform duration-300"></span>
+                  <span>{t('about')}</span>
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Links Legais */}
+          <div>
+            <h4 className="text-lg font-semibold text-white mb-4">{t('footer_legal_links_title')}</h4>
+            <ul className="space-y-3">
+              <li>
+                <Link 
+                  href="/privacy" 
+                  className="text-gray-400 hover:text-purple-400 transition-colors duration-300 flex items-center space-x-2 group"
+                >
+                  <span className="w-1 h-1 bg-purple-400 rounded-full group-hover:scale-150 transition-transform duration-300"></span>
+                  <span>{t('privacy_policy')}</span>
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/terms" 
+                  className="text-gray-400 hover:text-purple-400 transition-colors duration-300 flex items-center space-x-2 group"
+                >
+                  <span className="w-1 h-1 bg-purple-400 rounded-full group-hover:scale-150 transition-transform duration-300"></span>
+                  <span>{t('terms_of_service')}</span>
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/cookies" 
+                  className="text-gray-400 hover:text-purple-400 transition-colors duration-300 flex items-center space-x-2 group"
+                >
+                  <span className="w-1 h-1 bg-purple-400 rounded-full group-hover:scale-150 transition-transform duration-300"></span>
+                  <span>{t('cookies_policy')}</span>
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/contact" 
+                  className="text-gray-400 hover:text-purple-400 transition-colors duration-300 flex items-center space-x-2 group"
+                >
+                  <span className="w-1 h-1 bg-purple-400 rounded-full group-hover:scale-150 transition-transform duration-300"></span>
+                  <span>{t('contact_title')}</span>
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Informações de Contato */}
+          <div>
+            <h4 className="text-lg font-semibold text-white mb-4">{t('footer_contact_title')}</h4>
+            <div className="space-y-3">
+              <div className="flex items-center space-x-3 text-gray-400 hover:text-purple-400 transition-colors duration-300">
+                <EnvelopeIcon className="w-5 h-5 text-purple-400" />
+                <a href="mailto:contato@agroisync.com" className="text-sm">
+                  {t('footer_contact_email')}
+                </a>
+              </div>
+              <div className="flex items-center space-x-3 text-gray-400 hover:text-purple-400 transition-colors duration-300">
+                <PhoneIcon className="w-5 h-5 text-purple-400" />
+                <a href="tel:+5566999999999" className="text-sm">
+                  {t('footer_contact_phone')}
+                </a>
+              </div>
+              <div className="flex items-center space-x-3 text-gray-400 hover:text-purple-400 transition-colors duration-300">
+                <MapPinIcon className="w-5 h-5 text-purple-400" />
+                <span className="text-sm">{t('footer_contact_address')}</span>
+              </div>
+              <div className="flex items-center space-x-3 text-gray-400 hover:text-purple-400 transition-colors duration-300">
+                <ClockIcon className="w-5 h-5 text-purple-400" />
+                <span className="text-sm">Seg-Sex: 8h às 18h</span>
+              </div>
             </div>
 
-            {/* Contact Info */}
-            <div>
-              <h3 className="text-sm font-bold text-cyan-400 tracking-wider uppercase mb-6 flex items-center">
-                <GlobeAltIcon className="h-4 w-4 mr-2 animate-pulse" />
-                {t('nav_about')}
-              </h3>
-              <ul className="space-y-4">
-                <li className="group">
-                  <a href="mailto:contato@agroisync.com" className="flex items-center text-purple-silver hover:text-cyan-300 transition-all duration-300 hover:translate-x-1">
-                    <EnvelopeIcon className="h-5 w-5 mr-3 text-cyan-400 group-hover:scale-110 transition-transform duration-300" />
-                    contato@agroisync.com
-                  </a>
-                </li>
-                <li className="group">
-                  <a href="tel:+5566992362830" className="flex items-center text-purple-silver hover:text-cyan-300 transition-all duration-300 hover:translate-x-1">
-                    <PhoneIcon className="h-5 w-5 mr-3 text-blue-400 group-hover:scale-110 transition-transform duration-300" />
-                    +55 (66) 99236-2830
-                  </a>
-                </li>
-                <li className="group flex items-center text-purple-silver">
-                  <MapPinIcon className="h-5 w-5 mr-3 text-purple-400 group-hover:scale-110 transition-transform duration-300" />
-                  <span>Mato Grosso, Brasil</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Legal Links */}
-            <div>
-              <h3 className="text-sm font-bold text-cyan-400 tracking-wider uppercase mb-6 flex items-center">
-                <ShieldCheckIcon className="h-4 w-4 mr-2 animate-pulse" />
-                {t('legal')}
-              </h3>
-              <ul className="space-y-4">
-                <li>
-                  <Link href="/privacy" className="group flex items-center text-purple-silver hover:text-cyan-300 transition-all duration-300 hover:translate-x-1">
-                    <span className="w-2 h-2 bg-green-400 rounded-full mr-3 group-hover:scale-150 transition-transform duration-300"></span>
-                    {t('privacy_policy')}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/terms" className="group flex items-center text-purple-silver hover:text-cyan-300 transition-all duration-300 hover:translate-x-1">
-                    <span className="w-2 h-2 bg-blue-400 rounded-full mr-3 group-hover:scale-150 transition-transform duration-300"></span>
-                    {t('terms_of_service')}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/cookies" className="group flex items-center text-purple-silver hover:text-cyan-300 transition-all duration-300 hover:translate-x-1">
-                    <span className="w-2 h-2 bg-purple-400 rounded-full mr-3 group-hover:scale-150 transition-transform duration-300"></span>
-                    {t('cookies_policy')}
-                  </Link>
-                </li>
-              </ul>
+            {/* Redes Sociais */}
+            <div className="mt-6">
+              <h5 className="text-sm font-semibold text-white mb-3">{t('footer_social_title')}</h5>
+              <div className="flex space-x-3">
+                <a 
+                  href="#" 
+                  className="w-10 h-10 bg-gradient-to-r from-purple-600 to-cyan-600 rounded-lg flex items-center justify-center text-white hover:from-purple-700 hover:to-cyan-700 transition-all duration-300 hover:scale-110"
+                  title="Facebook"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                  </svg>
+                </a>
+                <a 
+                  href="#" 
+                  className="w-10 h-10 bg-gradient-to-r from-purple-600 to-cyan-600 rounded-lg flex items-center justify-center text-white hover:from-purple-700 hover:to-cyan-700 transition-all duration-300 hover:scale-110"
+                  title="Twitter"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                  </svg>
+                </a>
+                <a 
+                  href="#" 
+                  className="w-10 h-10 bg-gradient-to-r from-purple-600 to-cyan-600 rounded-lg flex items-center justify-center text-white hover:from-purple-700 hover:to-cyan-700 transition-all duration-300 hover:scale-110"
+                  title="LinkedIn"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  </svg>
+                </a>
+                <a 
+                  href="#" 
+                  className="w-10 h-10 bg-gradient-to-r from-purple-600 to-cyan-600 rounded-lg flex items-center justify-center text-white hover:from-purple-700 hover:to-cyan-700 transition-all duration-300 hover:scale-110"
+                  title="Instagram"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987 6.62 0 11.987-5.367 11.987-11.987C24.014 5.367 18.637.001 12.017.001zM8.449 16.988c-1.297 0-2.448-.49-3.323-1.297C4.198 14.895 3.708 13.744 3.708 12.447s.49-2.448 1.418-3.323c.875-.807 2.026-1.297 3.323-1.297s2.448.49 3.323 1.297c.928.875 1.418 2.026 1.418 3.323s-.49 2.448-1.418 3.323c-.875.807-2.026 1.297-3.323 1.297zm7.718-1.297c-.875.807-2.026 1.297-3.323 1.297s-2.448-.49-3.323-1.297c-.928-.875-1.418-2.026-1.418-3.323s.49-2.448 1.418-3.323c.875-.807 2.026-1.297 3.323-1.297s2.448.49 3.323 1.297c.928.875 1.418 2.026 1.418 3.323s-.49 2.448-1.418 3.323z"/>
+                  </svg>
+                </a>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Bottom Section */}
-        <div className="border-t border-cyan-500/20 py-8 relative">
-          {/* Efeito de brilho na borda */}
-          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent animate-cosmic-wave"></div>
-          
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-purple-silver text-sm flex items-center">
-              <StarIcon className="h-4 w-4 mr-2 text-cyan-400 animate-pulse" />
-              © 2024 AGROISYNC. {t('nav_about')}.
+        {/* Linha divisória */}
+        <div className="border-t border-gray-700 mt-8 pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <p className="text-sm text-gray-400 text-center md:text-left">
+              {t('footer_copyright')}
             </p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link href="/privacy" className="text-purple-silver hover:text-cyan-300 text-sm transition-all duration-300 hover:scale-105">
-                {t('privacy_policy')}
-              </Link>
-              <Link href="/terms" className="text-purple-silver hover:text-cyan-300 text-sm transition-all duration-300 hover:scale-105">
-                {t('terms_of_service')}
-              </Link>
-              <Link href="/cookies" className="text-purple-silver hover:text-cyan-300 text-sm transition-all duration-300 hover:scale-105">
-                {t('cookies_policy')}
-              </Link>
+            <div className="flex items-center space-x-6 text-sm text-gray-400">
+              <span className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span>Servidor Online</span>
+              </span>
+              <span>v2.1.0</span>
             </div>
           </div>
         </div>
       </div>
     </footer>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer

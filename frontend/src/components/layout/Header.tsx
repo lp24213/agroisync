@@ -25,7 +25,8 @@ const Header: React.FC = () => {
     { name: t('staking'), href: '/staking' },
     { name: t('properties'), href: '/properties' },
     { name: t('dashboard'), href: '/dashboard' },
-    { name: t('about'), href: '/about' }
+    { name: t('about'), href: '/about' },
+    { name: 'Admin', href: '/admin' }
   ];
 
   const isActive = (href: string) => router.pathname === href;

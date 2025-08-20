@@ -1,47 +1,38 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Configurações básicas
-  reactStrictMode: false,
-  swcMinify: true,
-  
-  // Ignorar erros durante o build
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  
-  // Configuração para exportação estática (Amplify)
-  output: 'export',
-  trailingSlash: true,
   images: {
-    unoptimized: true,
+    domains: ['images.unsplash.com', 'via.placeholder.com', 'localhost'],
   },
-  
-  // Configurações de build
-  distDir: '.next',
-  
-  // Webpack config para evitar problemas
-  webpack: (config) => {
-    config.resolve.fallback = {
-      fs: false,
-      net: false,
-      tls: false,
-      crypto: false,
-      stream: false,
-      url: false,
-      zlib: false,
-      http: false,
-      https: false,
-      assert: false,
-      os: false,
-      path: false,
-      buffer: false,
-      util: false,
+  headers: async () => {
+    return [
+      {
+        source: '/api/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          { key: 'Access-Control-Allow-Methods', value: 'GET, POST, PUT, DELETE, OPTIONS' },
+          { key: 'Access-Control-Allow-Headers', value: 'Content-Type, Authorization' },
+        ],
+      },
+    ]
+  },
+  rewrites: async () => {
+    return [
+      {
+        source: '/uploads/:path*',
+        destination: '/api/upload/:path*',
+      },
+    ]
+  },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      };
     }
-    
-    return config
+    return config;
   },
 }
 

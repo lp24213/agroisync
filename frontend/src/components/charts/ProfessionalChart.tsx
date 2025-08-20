@@ -12,8 +12,7 @@ import {
   Title,
   Tooltip,
   Legend,
-  Filler,
-  GridLine
+  Filler
 } from 'chart.js';
 
 // Register Chart.js components
@@ -27,8 +26,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  Filler,
-  GridLine
+  Filler
 );
 
 interface ProfessionalChartProps {

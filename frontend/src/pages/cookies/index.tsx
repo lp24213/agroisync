@@ -1,361 +1,509 @@
-import { NextPage } from 'next';
-import Head from 'next/head';
-import { CakeIcon, CogIcon, ShieldCheckIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
-import { useI18n } from '@/i18n/I18nProvider';
+import React, { useState } from 'react'
+import { NextPage } from 'next'
+import Head from 'next/head'
+import { useI18n } from '@/i18n/I18nProvider'
+import { 
+  CakeIcon,
+  CogIcon,
+  ShieldCheckIcon,
+  EyeIcon,
+  ClockIcon,
+  TrashIcon,
+  CheckCircleIcon,
+  XCircleIcon
+} from '@heroicons/react/24/outline'
+import Footer from '@/components/layout/Footer'
+import Chatbot from '@/components/Chatbot'
 
 const Cookies: NextPage = () => {
-  const { t } = useI18n();
-  
+  const { t } = useI18n()
+  const [cookiePreferences, setCookiePreferences] = useState({
+    essential: true,
+    analytics: false,
+    functional: false,
+    marketing: false
+  })
+
+  const cookieTypes = [
+    {
+      type: 'Essenciais',
+      description: 'Necessários para o funcionamento básico do site',
+      examples: ['Sessão de usuário', 'Carrinho de compras', 'Preferências básicas', 'Segurança'],
+      duration: 'Sessão',
+      required: true,
+      color: 'green'
+    },
+    {
+      type: 'Analíticos',
+      description: 'Ajudam a entender como os usuários interagem com o site',
+      examples: ['Google Analytics', 'Métricas de performance', 'Análise de comportamento', 'Relatórios'],
+      duration: '2 anos',
+      required: false,
+      color: 'blue'
+    },
+    {
+      type: 'Funcionais',
+      description: 'Permitem funcionalidades avançadas e personalização',
+      examples: ['Idioma e região', 'Configurações avançadas', 'Histórico de navegação', 'Preferências'],
+      duration: '1 ano',
+      required: false,
+      color: 'purple'
+    },
+    {
+      type: 'Marketing',
+      description: 'Usados para publicidade e marketing direcionado',
+      examples: ['Anúncios personalizados', 'Redes sociais', 'Remarketing', 'Campanhas'],
+      duration: '6 meses',
+      required: false,
+      color: 'orange'
+    }
+  ]
+
+  const cookieDetails = [
+    {
+      name: 'session_id',
+      type: 'Essencial',
+      purpose: 'Manter sessão do usuário ativa',
+      duration: 'Sessão',
+      provider: 'AgroSync'
+    },
+    {
+      name: 'user_preferences',
+      type: 'Funcional',
+      purpose: 'Armazenar preferências do usuário',
+      duration: '1 ano',
+      provider: 'AgroSync'
+    },
+    {
+      name: '_ga',
+      type: 'Analítico',
+      purpose: 'Identificar usuários únicos',
+      duration: '2 anos',
+      provider: 'Google Analytics'
+    },
+    {
+      name: '_fbp',
+      type: 'Marketing',
+      purpose: 'Rastrear conversões do Facebook',
+      duration: '3 meses',
+      provider: 'Facebook'
+    },
+    {
+      name: 'cart_items',
+      type: 'Essencial',
+      purpose: 'Manter itens no carrinho',
+      duration: 'Sessão',
+      provider: 'AgroSync'
+    },
+    {
+      name: 'language',
+      type: 'Funcional',
+      purpose: 'Lembrar idioma preferido',
+      duration: '1 ano',
+      provider: 'AgroSync'
+    }
+  ]
+
+  const handleCookieToggle = (type: string) => {
+    if (type === 'essential') return // Essenciais não podem ser desabilitados
+    
+    setCookiePreferences(prev => ({
+      ...prev,
+      [type]: !prev[type as keyof typeof prev]
+    }))
+  }
+
+  const savePreferences = () => {
+    // Simular salvamento das preferências
+    localStorage.setItem('cookie-preferences', JSON.stringify(cookiePreferences))
+    alert('Preferências de cookies salvas com sucesso!')
+  }
+
+  const clearAllCookies = () => {
+    if (confirm('Tem certeza que deseja limpar todos os cookies? Isso pode afetar sua experiência na plataforma.')) {
+      setCookiePreferences({
+        essential: true,
+        analytics: false,
+        functional: false,
+        marketing: false
+      })
+      localStorage.removeItem('cookie-preferences')
+      alert('Todos os cookies não essenciais foram removidos!')
+    }
+  }
+
+  const getColorClasses = (color: string) => {
+    switch (color) {
+      case 'green': return 'bg-green-500/20 text-green-400 border-green-500/30'
+      case 'blue': return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
+      case 'purple': return 'bg-purple-500/20 text-purple-400 border-purple-500/30'
+      case 'orange': return 'bg-orange-500/20 text-orange-400 border-orange-500/30'
+      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+    }
+  }
+
   return (
     <>
       <Head>
-        <title>{t('cookies_title')} - {t('app_name')}</title>
-        <meta name="description" content={`${t('cookies_title')} da ${t('app_name')} - Uso de cookies e tecnologias similares`} />
+        <title>{t('cookies_policy')} - {t('app_name')}</title>
+        <meta name="description" content="Política de Cookies do AgroSync - Saiba como usamos cookies e como gerenciá-los" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="cosmic-background min-h-screen">
-        {/* Efeitos cósmicos de fundo */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-cyan-900/10 to-blue-900/10 rounded-full blur-3xl animate-nebula-drift"></div>
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-br from-purple-900/10 to-pink-900/10 rounded-full blur-3xl animate-nebula-drift animation-delay-2000"></div>
-          <div className="absolute top-1/4 left-1/4 w-24 h-24 bg-gradient-to-br from-cyan-500/20 via-blue-500/20 to-purple-500/20 rounded-full animate-quantum-orbital"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-20 h-20 bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-cyan-500/20 rounded-full animate-quantum-orbital animation-delay-3000"></div>
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent animate-cosmic-wave"></div>
-          <div className="absolute top-20 left-20 w-1 h-1 bg-white rounded-full animate-sparkle"></div>
-          <div className="absolute top-40 right-40 w-1.5 h-1.5 bg-cyan-400 rounded-full animate-sparkle animation-delay-2000"></div>
-          <div className="absolute bottom-40 left-40 w-1 h-1 bg-blue-400 rounded-full animate-sparkle animation-delay-4000"></div>
-        </div>
-
-        <div className="relative z-10">
-          {/* Header */}
-          <div className="text-center py-20">
-            <div className="cosmic-card p-8 max-w-4xl mx-auto">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+        {/* Header da Página */}
+        <div className="bg-gradient-to-r from-purple-600/20 to-cyan-600/20 border-b border-purple-500/20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div className="text-center">
               <div className="flex justify-center mb-6">
-                <div className="h-20 w-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow-lg shadow-green-500/25">
-                                     <CakeIcon className="h-10 w-10 text-white" />
+                <div className="p-4 bg-purple-500/20 rounded-2xl">
+                  <CakeIcon className="h-12 w-12 text-purple-400" />
                 </div>
               </div>
-              <h1 className="text-5xl font-black text-cosmic-glow mb-6">
-                {t('cookies_title')}
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                {t('cookies_policy')}
               </h1>
-              <p className="text-xl text-purple-silver leading-relaxed">
-                {t('cookies_subtitle')}
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                Saiba como usamos cookies e tecnologias similares para melhorar sua experiência 
+                e como você pode controlar seu uso.
               </p>
-              <div className="mt-6 text-sm text-purple-silver">
-                {t('privacy_last_update')}: {new Date().toLocaleDateString()}
+              <div className="mt-6 text-sm text-gray-400">
+                Última atualização: {new Date().toLocaleDateString('pt-BR')}
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Conteúdo Principal */}
-          <div className="max-w-4xl mx-auto px-4 pb-20">
-            <div className="space-y-8">
-              {/* Seção 1: O que são Cookies */}
-              <div className="cosmic-card p-8">
-                <h2 className="text-3xl font-bold text-cosmic-glow mb-6 flex items-center">
-                  <InformationCircleIcon className="h-8 w-8 mr-3 text-blue-400" />
-                  {t('cookies_what_title')}
-                </h2>
-                <div className="text-purple-silver space-y-4 text-lg leading-relaxed">
-                  <p>
-                    {t('cookies_what_text1')}
-                  </p>
-                  <p>
-                    {t('cookies_what_text2')}
-                  </p>
-                </div>
-              </div>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          
+          {/* Introdução */}
+          <div className="mb-12">
+            <div className="bg-gray-800/50 rounded-2xl p-8 border border-purple-500/20">
+              <h2 className="text-2xl font-bold text-white mb-4">O que são Cookies?</h2>
+              <p className="text-gray-300 leading-relaxed mb-4">
+                Cookies são pequenos arquivos de texto que são armazenados no seu dispositivo quando você visita 
+                nosso site. Eles nos ajudam a fornecer uma experiência melhor e mais personalizada.
+              </p>
+              <p className="text-gray-400 leading-relaxed">
+                Utilizamos cookies para lembrar suas preferências, analisar o tráfego do site, 
+                personalizar conteúdo e fornecer funcionalidades avançadas. Você pode controlar 
+                o uso de cookies através das configurações do seu navegador ou usando nosso painel de controle.
+              </p>
+            </div>
+          </div>
 
-              {/* Seção 2: Como Utilizamos */}
-              <div className="cosmic-card p-8">
-                <h2 className="text-3xl font-bold text-cosmic-glow mb-6 flex items-center">
-                  <CogIcon className="h-8 w-8 mr-3 text-cyan-400" />
-                  {t('cookies_how_title')}
-                </h2>
-                <div className="text-purple-silver space-y-4">
-                  <p className="text-lg leading-relaxed">
-                    {t('cookies_how_subtitle')}
-                  </p>
-                  <ul className="list-disc list-inside space-y-2 ml-4">
-                                         <li>{t('cookies_how_item1')}</li>
-                     <li>{t('cookies_how_item2')}</li>
-                     <li>{t('cookies_how_item3')}</li>
-                     <li>{t('cookies_how_item4')}</li>
-                     <li>{t('cookies_how_item5')}</li>
-                     <li>{t('cookies_how_item6')}</li>
-                  </ul>
-                </div>
-              </div>
-
-              {/* Seção 3: Tipos de Cookies */}
-              <div className="cosmic-card p-8">
-                <h2 className="text-3xl font-bold text-cosmic-glow mb-6">
-                  {t('cookies_types_title')}
-                </h2>
-                <div className="text-purple-silver space-y-6">
-                  <div>
-                    <h3 className="text-xl font-semibold text-cosmic-glow mb-3">{t('cookies_types_essential')}</h3>
-                    <p className="text-lg leading-relaxed mb-3">
-                      {t('cookies_types_essential_intro')}
-                    </p>
-                    <ul className="list-disc list-inside space-y-2 ml-4">
-                      <li>{t('cookies_types_essential_item1')}</li>
-                      <li>{t('cookies_types_essential_item2')}</li>
-                      <li>{t('cookies_types_essential_item3')}</li>
-                      <li>{t('cookies_types_essential_item4')}</li>
-                    </ul>
-                  </div>
-
-                  <div>
-                    <h3 className="text-xl font-semibold text-cosmic-glow mb-3">{t('cookies_types_performance')}</h3>
-                    <p className="text-lg leading-relaxed mb-3">
-                      {t('cookies_types_performance_intro')}
-                    </p>
-                    <ul className="list-disc list-inside space-y-2 ml-4">
-                      <li>{t('cookies_types_performance_item1')}</li>
-                      <li>{t('cookies_types_performance_item2')}</li>
-                      <li>{t('cookies_types_performance_item3')}</li>
-                      <li>{t('cookies_types_performance_item4')}</li>
-                    </ul>
-                  </div>
-
-                  <div>
-                    <h3 className="text-xl font-semibold text-cosmic-glow mb-3">{t('cookies_types_functionality')}</h3>
-                    <p className="text-lg leading-relaxed mb-3">
-                      {t('cookies_types_functionality_intro')}
-                    </p>
-                    <ul className="list-disc list-inside space-y-2 ml-4">
-                      <li>{t('cookies_types_functionality_item1')}</li>
-                      <li>{t('cookies_types_functionality_item2')}</li>
-                      <li>{t('cookies_types_functionality_item3')}</li>
-                      <li>{t('cookies_types_functionality_item4')}</li>
-                    </ul>
-                  </div>
-
-                  <div>
-                    <h3 className="text-xl font-semibold text-cosmic-glow mb-3">{t('cookies_types_marketing')}</h3>
-                    <p className="text-lg leading-relaxed mb-3">
-                      {t('cookies_types_marketing_intro')}
-                    </p>
-                    <ul className="list-disc list-inside space-y-2 ml-4">
-                      <li>{t('cookies_types_marketing_item1')}</li>
-                      <li>{t('cookies_types_marketing_item2')}</li>
-                      <li>{t('cookies_types_marketing_item3')}</li>
-                      <li>{t('cookies_types_marketing_item4')}</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              {/* Seção 4: Cookies de Terceiros */}
-              <div className="cosmic-card p-8">
-                <h2 className="text-3xl font-bold text-cosmic-glow mb-6">
-                  {t('cookies_third_party_title')}
-                </h2>
-                <div className="text-purple-silver space-y-4">
-                  <p className="text-lg leading-relaxed">
-                    {t('cookies_third_party_intro')}
-                  </p>
-                  <ul className="list-disc list-inside space-y-2 ml-4">
-                                         <li><strong className="text-cosmic-glow">Google Analytics:</strong> {t('cookies_third_party_google_analytics')}</li>
-                     <li><strong className="text-cosmic-glow">Stripe:</strong> {t('cookies_third_party_stripe')}</li>
-                     <li><strong className="text-cosmic-glow">Intercom:</strong> {t('cookies_third_party_intercom')}</li>
-                     <li><strong className="text-cosmic-glow">Hotjar:</strong> {t('cookies_third_party_hotjar')}</li>
-                     <li><strong className="text-cosmic-glow">Facebook Pixel:</strong> {t('cookies_third_party_facebook_pixel')}</li>
-                  </ul>
-                  <p className="text-lg leading-relaxed mt-4">
-                    {t('cookies_third_party_policies')}
-                  </p>
-                </div>
-              </div>
-
-              {/* Seção 5: Duração dos Cookies */}
-              <div className="cosmic-card p-8">
-                <h2 className="text-3xl font-bold text-cosmic-glow mb-6">
-                  {t('cookies_duration_title')}
-                </h2>
-                <div className="text-purple-silver space-y-4">
-                  <div>
-                    <h3 className="text-xl font-semibold text-cosmic-glow mb-3">{t('cookies_duration_session')}</h3>
-                    <p className="text-lg leading-relaxed">
-                      {t('cookies_duration_session_intro')}
-                    </p>
-                    <ul className="list-disc list-inside space-y-2 ml-4 mt-2">
-                                             <li>{t('cookies_duration_session_item1')}</li>
-                       <li>{t('cookies_duration_session_item2')}</li>
-                       <li>{t('cookies_duration_session_item3')}</li>
-                    </ul>
-                  </div>
-
-                  <div>
-                    <h3 className="text-xl font-semibold text-cosmic-glow mb-3 mt-6">5.2 Cookies Persistentes</h3>
-                    <p className="text-lg leading-relaxed">
-                      {t('cookies_duration_persistent_intro')}
-                    </p>
-                    <ul className="list-disc list-inside space-y-2 ml-4 mt-2">
-                                             <li>{t('cookies_duration_persistent_item1')}</li>
-                       <li>{t('cookies_duration_persistent_item2')}</li>
-                       <li>{t('cookies_duration_persistent_item3')}</li>
-                       <li>{t('cookies_duration_persistent_item4')}</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              {/* Seção 6: Gerenciamento */}
-              <div className="cosmic-card p-8">
-                <h2 className="text-3xl font-bold text-cosmic-glow mb-6">
-                  {t('cookies_management_title')}
-                </h2>
-                <div className="text-purple-silver space-y-4">
-                  <h3 className="text-xl font-semibold text-cosmic-glow">{t('cookies_management_browser_title')}</h3>
-                  <p className="text-lg leading-relaxed mb-3">
-                    {t('cookies_management_browser_intro')}
-                  </p>
-                  <ul className="list-disc list-inside space-y-2 ml-4">
-                                         <li><strong className="text-cosmic-glow">Chrome:</strong> {t('cookies_management_browser_chrome')}</li>
-                     <li><strong className="text-cosmic-glow">Firefox:</strong> {t('cookies_management_browser_firefox')}</li>
-                     <li><strong className="text-cosmic-glow">Safari:</strong> {t('cookies_management_browser_safari')}</li>
-                     <li><strong className="text-cosmic-glow">Edge:</strong> {t('cookies_management_browser_edge')}</li>
-                  </ul>
-
-                  <h3 className="text-xl font-semibold text-cosmic-glow mt-6">{t('cookies_management_platform_title')}</h3>
-                  <p className="text-lg leading-relaxed mb-3">
-                    {t('cookies_management_platform_intro')}
-                  </p>
-                  <ul className="list-disc list-inside space-y-2 ml-4">
-                                         <li>{t('cookies_management_platform_item1')}</li>
-                     <li>{t('cookies_management_platform_item2')}</li>
-                     <li>{t('cookies_management_platform_item3')}</li>
-                     <li>{t('cookies_management_platform_item4')}</li>
-                  </ul>
-                </div>
-              </div>
-
-              {/* Seção 7: Impacto da Desativação */}
-              <div className="cosmic-card p-8">
-                <h2 className="text-3xl font-bold text-cosmic-glow mb-6">
-                  {t('cookies_deactivation_title')}
-                </h2>
-                <div className="text-purple-silver space-y-4">
-                  <p className="text-lg leading-relaxed">
-                    {t('cookies_deactivation_intro')}
-                  </p>
-                  <ul className="list-disc list-inside space-y-2 ml-4">
-                                         <li>{t('cookies_deactivation_item1')}</li>
-                     <li>{t('cookies_deactivation_item2')}</li>
-                     <li>{t('cookies_deactivation_item3')}</li>
-                     <li>{t('cookies_deactivation_item4')}</li>
-                     <li>{t('cookies_deactivation_item5')}</li>
-                  </ul>
-                  <p className="text-lg leading-relaxed mt-4">
-                    {t('cookies_deactivation_recommendation')}
-                  </p>
-                </div>
-              </div>
-
-              {/* Seção 8: Tecnologias Similares */}
-              <div className="cosmic-card p-8">
-                <h2 className="text-3xl font-bold text-cosmic-glow mb-6">
-                  {t('cookies_other_technologies_title')}
-                </h2>
-                <div className="text-purple-silver space-y-4">
-                  <p className="text-lg leading-relaxed">
-                    {t('cookies_other_technologies_intro')}
-                  </p>
-                  <ul className="list-disc list-inside space-y-2 ml-4">
-                                         <li><strong className="text-cosmic-glow">Local Storage:</strong> {t('cookies_other_technologies_local_storage')}</li>
-                     <li><strong className="text-cosmic-glow">Session Storage:</strong> {t('cookies_other_technologies_session_storage')}</li>
-                     <li><strong className="text-cosmic-glow">Web Beacons:</strong> {t('cookies_other_technologies_web_beacons')}</li>
-                     <li><strong className="text-cosmic-glow">Fingerprinting:</strong> {t('cookies_other_technologies_fingerprinting')}</li>
-                     <li><strong className="text-cosmic-glow">Pixels:</strong> {t('cookies_other_technologies_pixels')}</li>
-                  </ul>
-                </div>
-              </div>
-
-              {/* Seção 9: Atualizações */}
-              <div className="cosmic-card p-8">
-                <h2 className="text-3xl font-bold text-cosmic-glow mb-6">
-                  {t('cookies_updates_title')}
-                </h2>
-                <div className="text-purple-silver space-y-4">
-                  <p className="text-lg leading-relaxed">
-                    {t('cookies_updates_intro')}
-                  </p>
-                  <ul className="list-disc list-inside space-y-2 ml-4">
-                                         <li>{t('cookies_updates_item1')}</li>
-                     <li>{t('cookies_updates_item2')}</li>
-                     <li>{t('cookies_updates_item3')}</li>
-                     <li>{t('cookies_updates_item4')}</li>
-                  </ul>
-                  <p className="text-lg leading-relaxed mt-4">
-                    {t('cookies_updates_notification')}
-                  </p>
-                </div>
-              </div>
-
-              {/* Seção 10: Conformidade Legal */}
-              <div className="cosmic-card p-8">
-                <h2 className="text-3xl font-bold text-cosmic-glow mb-6 flex items-center">
-                  <ShieldCheckIcon className="h-8 w-8 mr-3 text-green-400" />
-                  {t('cookies_compliance_title')}
-                </h2>
-                <div className="text-purple-silver space-y-4">
-                  <p className="text-lg leading-relaxed">
-                    {t('cookies_compliance_intro')}
-                  </p>
-                  <ul className="list-disc list-inside space-y-2 ml-4">
-                                         <li><strong className="text-cosmic-glow">LGPD (Lei Geral de Proteção de Dados):</strong> {t('cookies_compliance_lgpd')}</li>
-                     <li><strong className="text-cosmic-glow">Marco Civil da Internet:</strong> {t('cookies_compliance_marco_civil')}</li>
-                     <li><strong className="text-cosmic-glow">GDPR (UE):</strong> {t('cookies_compliance_gdpr')}</li>
-                     <li><strong className="text-cosmic-glow">CCPA (Califórnia):</strong> {t('cookies_compliance_ccpa')}</li>
-                  </ul>
-                  <p className="text-lg leading-relaxed mt-4">
-                    {t('cookies_compliance_rights')}
-                  </p>
-                </div>
-              </div>
-
-              {/* Seção 11: Dúvidas */}
-              <div className="cosmic-card p-8">
-                                          <h2 className="text-3xl font-bold text-cosmic-glow mb-6">
-                            {t('cookies_contact_title')}
-                          </h2>
-                          <div className="text-purple-silver space-y-4">
-                            <p className="text-lg leading-relaxed">
-                              {t('cookies_contact_subtitle')}
-                            </p>
-                  <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 p-6 rounded-xl border border-green-500/20">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <h4 className="font-semibold text-cosmic-glow mb-2">{t('cookies_contact_email_title')}</h4>
-                        <p>cookies@agroisync.com</p>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-cosmic-glow mb-2">{t('cookies_contact_phone_title')}</h4>
-                        <p>+55 (66) 99999-9999</p>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-cosmic-glow mb-2">{t('cookies_contact_address_title')}</h4>
-                        <p>Sinop, Mato Grosso, Brasil</p>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-cosmic-glow mb-2">{t('cookies_contact_schedule_title')}</h4>
-                        <p>Segunda a Sexta: 8h às 18h</p>
-                      </div>
+          {/* Tipos de Cookies */}
+          <div className="mb-12">
+            <h2 className="text-3xl font-bold text-white mb-8 text-center">Tipos de Cookies que Utilizamos</h2>
+            
+            <div className="space-y-6">
+              {cookieTypes.map((cookie, index) => (
+                <div
+                  key={index}
+                  className="bg-gray-800/50 rounded-2xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-all duration-300"
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                      <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getColorClasses(cookie.color)}`}>
+                        {cookie.type}
+                      </span>
+                      {cookie.required && (
+                        <span className="px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded-full border border-red-500/30">
+                          Obrigatório
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm text-gray-400">Duração</div>
+                      <div className="font-semibold text-white">{cookie.duration}</div>
                     </div>
                   </div>
-                  <p className="text-lg leading-relaxed mt-4">
-                    {t('cookies_contact_support')}
+                  
+                  <p className="text-gray-300 mb-4">{cookie.description}</p>
+                  
+                  <div>
+                    <h4 className="text-sm font-semibold text-gray-400 mb-2">Exemplos de uso:</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {cookie.examples.map((example, exampleIndex) => (
+                        <span
+                          key={exampleIndex}
+                          className="px-2 py-1 bg-gray-700/30 text-gray-300 text-xs rounded-full border border-gray-600"
+                        >
+                          {example}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Gerenciador de Cookies */}
+          <div className="mb-12">
+            <h2 className="text-3xl font-bold text-white mb-8 text-center">Gerenciar Preferências de Cookies</h2>
+            
+            <div className="bg-gray-800/50 rounded-2xl p-6 border border-purple-500/20">
+              <p className="text-gray-300 mb-6 leading-relaxed">
+                Use este painel para controlar quais tipos de cookies você permite que utilizemos. 
+                As alterações serão aplicadas imediatamente.
+              </p>
+              
+              <div className="space-y-4 mb-6">
+                {cookieTypes.map((cookie, index) => (
+                  <div key={index} className="flex items-center justify-between p-4 bg-gray-700/30 rounded-xl">
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-4 h-4 rounded-full border-2 ${
+                        cookiePreferences[cookie.type.toLowerCase() as keyof typeof cookiePreferences]
+                          ? 'bg-purple-500 border-purple-500'
+                          : 'border-gray-400'
+                      }`}></div>
+                      <div>
+                        <h4 className="font-semibold text-white">{cookie.type}</h4>
+                        <p className="text-sm text-gray-400">{cookie.description}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center space-x-3">
+                      {cookie.required && (
+                        <span className="text-xs text-gray-500">Obrigatório</span>
+                      )}
+                      <button
+                        onClick={() => handleCookieToggle(cookie.type.toLowerCase())}
+                        disabled={cookie.required}
+                        className={`px-3 py-1 rounded-lg text-sm font-medium transition-all duration-300 ${
+                          cookie.required
+                            ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                            : cookiePreferences[cookie.type.toLowerCase() as keyof typeof cookiePreferences]
+                            ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                            : 'bg-red-500/20 text-red-400 border border-red-500/30'
+                        }`}
+                      >
+                        {cookiePreferences[cookie.type.toLowerCase() as keyof typeof cookiePreferences] ? 'Ativado' : 'Desativado'}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-4">
+                <button
+                  onClick={savePreferences}
+                  className="flex-1 bg-gradient-to-r from-purple-600 to-cyan-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-purple-700 hover:to-cyan-700 transition-all duration-300 hover:scale-105"
+                >
+                  Salvar Preferências
+                </button>
+                <button
+                  onClick={clearAllCookies}
+                  className="bg-red-500/20 text-red-400 py-3 px-6 rounded-xl font-semibold border border-red-500/30 hover:bg-red-500/30 transition-all duration-300"
+                >
+                  Limpar Todos os Cookies
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Detalhes dos Cookies */}
+          <div className="mb-12">
+            <h2 className="text-3xl font-bold text-white mb-8 text-center">Detalhes dos Cookies Utilizados</h2>
+            
+            <div className="bg-gray-800/50 rounded-2xl p-6 border border-purple-500/20">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-gray-700">
+                      <th className="text-left py-3 px-4 text-white font-semibold">Nome</th>
+                      <th className="text-left py-3 px-4 text-white font-semibold">Tipo</th>
+                      <th className="text-left py-3 px-4 text-white font-semibold">Propósito</th>
+                      <th className="text-left py-3 px-4 text-white font-semibold">Duração</th>
+                      <th className="text-left py-3 px-4 text-white font-semibold">Provedor</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {cookieDetails.map((cookie, index) => (
+                      <tr key={index} className="border-b border-gray-700/50 hover:bg-gray-700/30 transition-colors">
+                        <td className="py-3 px-4 text-gray-300 font-mono text-sm">{cookie.name}</td>
+                        <td className="py-3 px-4">
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            cookie.type === 'Essencial' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
+                            cookie.type === 'Analítico' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
+                            cookie.type === 'Funcional' ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' :
+                            'bg-orange-500/20 text-orange-400 border border-orange-500/30'
+                          }`}>
+                            {cookie.type}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-gray-300 text-sm">{cookie.purpose}</td>
+                        <td className="py-3 px-4 text-gray-300 text-sm">{cookie.duration}</td>
+                        <td className="py-3 px-4 text-gray-300 text-sm">{cookie.provider}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          {/* Como Gerenciar Cookies */}
+          <div className="mb-12">
+            <h2 className="text-3xl font-bold text-white mb-8 text-center">Como Gerenciar Cookies</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="bg-gray-800/50 rounded-2xl p-6 border border-purple-500/20">
+                <h3 className="text-xl font-semibold text-white mb-4 flex items-center">
+                  <CogIcon className="h-6 w-6 text-blue-400 mr-2" />
+                  Configurações do Navegador
+                </h3>
+                <p className="text-gray-300 mb-4 leading-relaxed">
+                  A maioria dos navegadores permite controlar cookies através das configurações de privacidade.
+                </p>
+                <ul className="space-y-2 text-gray-400">
+                  <li>• Chrome: Configurações {'>'} Privacidade e Segurança</li>
+                  <li>• Firefox: Opções {'>'} Privacidade e Segurança</li>
+                  <li>• Safari: Preferências {'>'} Privacidade</li>
+                  <li>• Edge: Configurações {'>'} Cookies e Permissões</li>
+                </ul>
+              </div>
+              
+              <div className="bg-gray-800/50 rounded-2xl p-6 border border-purple-500/20">
+                <h3 className="text-xl font-semibold text-white mb-4 flex items-center">
+                  <ShieldCheckIcon className="h-6 w-6 text-green-400 mr-2" />
+                  Nossa Plataforma
+                </h3>
+                <p className="text-gray-300 mb-4 leading-relaxed">
+                  Use nosso painel de controle para gerenciar preferências de cookies específicas.
+                </p>
+                <ul className="space-y-2 text-gray-400">
+                  <li>• Controle granular por tipo de cookie</li>
+                  <li>• Ativação/desativação em tempo real</li>
+                  <li>• Salvamento automático de preferências</li>
+                  <li>• Interface intuitiva e responsiva</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Impacto da Desativação */}
+          <div className="mb-12">
+            <h2 className="text-3xl font-bold text-white mb-6 text-center">Impacto da Desativação de Cookies</h2>
+            
+            <div className="bg-gray-800/50 rounded-2xl p-6 border border-purple-500/20">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-xl font-semibold text-white mb-4 flex items-center">
+                    <XCircleIcon className="h-6 w-6 text-red-400 mr-2" />
+                    Cookies Essenciais (Nunca Desativar)
+                  </h3>
+                  <p className="text-gray-300 mb-4 leading-relaxed">
+                    Estes cookies são necessários para o funcionamento básico do site.
+                  </p>
+                  <ul className="space-y-2 text-gray-400">
+                    <li>• Login e autenticação</li>
+                    <li>• Carrinho de compras</li>
+                    <li>• Segurança e proteção</li>
+                    <li>• Funcionalidades básicas</li>
+                  </ul>
+                </div>
+                
+                <div>
+                  <h3 className="text-xl font-semibold text-white mb-4 flex items-center">
+                    <EyeIcon className="h-6 w-6 text-yellow-400 mr-2" />
+                    Cookies Opcionais (Podem Ser Desativados)
+                  </h3>
+                  <p className="text-gray-300 mb-4 leading-relaxed">
+                    Desativar estes cookies pode afetar sua experiência.
+                  </p>
+                  <ul className="space-y-2 text-gray-400">
+                    <li>• Personalização reduzida</li>
+                    <li>• Análises limitadas</li>
+                    <li>• Funcionalidades avançadas</li>
+                    <li>• Recomendações menos precisas</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Atualizações */}
+          <div className="mb-12">
+            <h2 className="text-3xl font-bold text-white mb-6 text-center">Atualizações da Política</h2>
+            
+            <div className="bg-gray-800/50 rounded-2xl p-6 border border-purple-500/20">
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-xl font-semibold text-white mb-3">Mudanças na Política</h3>
+                  <p className="text-gray-300 leading-relaxed mb-4">
+                    Esta política pode ser atualizada para refletir mudanças em nossas práticas 
+                    ou por outros motivos operacionais, legais ou regulatórios.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="text-xl font-semibold text-white mb-3">Notificação de Mudanças</h3>
+                  <p className="text-gray-300 leading-relaxed mb-4">
+                    Notificaremos sobre mudanças significativas através de:
+                  </p>
+                  <ul className="space-y-2 text-gray-400">
+                    <li>• Email para sua conta registrada</li>
+                    <li>• Banner de notificação na plataforma</li>
+                    <li>• Atualização da data de modificação</li>
+                    <li>• Comunicado nas redes sociais</li>
+                  </ul>
+                </div>
+                
+                <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl">
+                  <p className="text-sm text-blue-300">
+                    <strong>Importante:</strong> O uso continuado de nossos serviços após modificações 
+                    constitui aceitação da política atualizada.
                   </p>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </>
-  );
-};
 
-export default Cookies;
+          {/* Contato */}
+          <div className="text-center">
+            <div className="bg-gray-800/50 rounded-2xl p-8 border border-purple-500/20">
+              <h3 className="text-xl font-semibold text-white mb-4">Dúvidas sobre Cookies?</h3>
+              <p className="text-gray-300 mb-6">
+                Nossa equipe está disponível para esclarecer qualquer dúvida sobre nossa 
+                política de cookies e como gerenciá-los.
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="p-4 bg-gray-700/30 rounded-xl">
+                  <h4 className="font-semibold text-white mb-2">Email</h4>
+                  <a href="mailto:cookies@agroisync.com" className="text-purple-400 hover:text-purple-300 transition-colors">
+                    cookies@agroisync.com
+                  </a>
+                </div>
+                
+                <div className="p-4 bg-gray-700/30 rounded-xl">
+                  <h4 className="font-semibold text-white mb-2">Telefone</h4>
+                  <a href="tel:+5566999999999" className="text-purple-400 hover:text-purple-300 transition-colors">
+                    +55 (66) 99999-9999
+                  </a>
+                </div>
+              </div>
+              
+              <div className="mt-6 p-4 bg-purple-500/10 border border-purple-500/20 rounded-xl">
+                <p className="text-sm text-purple-300">
+                  <strong>Tempo de resposta:</strong> Respondemos a consultas sobre cookies em até 24 horas.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <Footer />
+      </div>
+
+      {/* Chatbot */}
+      <Chatbot />
+    </>
+  )
+}
+
+export default Cookies

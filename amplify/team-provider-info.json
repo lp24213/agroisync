@@ -1,31 +1,32 @@
 {
   "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-agrotmsol-dev-5835c-authRole",
-      "UnauthRoleArn": "arn:aws:iam::119473395465:role/amplify-agrotmsol-dev-5835c-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::119473395465:role/amplify-agrotmsol-dev-5835c-authRole",
-      "Region": "us-east-2",
-      "DeploymentBucketName": "amplify-agrotmsol-dev-5835c-deployment",
-      "UnauthRoleName": "amplify-agrotmsol-dev-5835c-unauthRole",
-      "StackName": "amplify-agrotmsol-dev-5835c",
-      "StackId": "arn:aws:cloudformation:us-east-2:119473395465:stack/amplify-agrotmsol-dev-5835c/f9c68e10-7971-11f0-b29e-025407c00ee7",
-      "AmplifyAppId": "d2on3iftsg8gzd"
+      "AuthRoleName": "agroisync-20191203-authRole",
+      "UnauthRoleName": "agroisync-20191203-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::123456789012:role/agroisync-20191203-authRole",
+      "UnauthRoleArn": "arn:aws:iam::123456789012:role/agroisync-20191203-unauthRole",
+      "AmplifyAppId": "d1234567890abc"
     },
     "categories": {
-      "hosting": {
-        "amplifyhosting": {
-          "appId": "d2on3iftsg8gzd",
-          "type": "manual"
-        }
-      },
       "auth": {
-        "agroisync0c0b1f22": {}
+        "agroisync": {}
       },
       "api": {
         "agroisync": {}
       },
       "storage": {
-        "agrotmuserdata": {}
+        "agroisyncstorage": {}
+      },
+      "function": {
+        "adminFunctions": {},
+        "stakingFunctions": {},
+        "nftFunctions": {},
+        "maintenanceFunctions": {},
+        "analyticsFunctions": {},
+        "taskScheduler": {}
+      },
+      "hosting": {
+        "amplifyhosting": {}
       }
     }
   }
