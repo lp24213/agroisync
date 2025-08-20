@@ -9,16 +9,19 @@ frontend:
         - rm -rf .next node_modules out package-lock.json
         - echo "📦 Instalando dependências..."
         - npm ci
+        - echo "🔧 Verificando versão do Node..."
+        - node --version
+        - npm --version
     build:
       commands:
         - cd frontend
-        - echo "🔨 Configurando Next.js para export estático..."
-        - echo '{"output": "export", "trailingSlash": true, "images": {"unoptimized": true}}' > next.config.temp.json
         - echo "🔨 Fazendo build estático..."
         - npm run build
         - echo "✅ Build concluído com sucesso!"
         - echo "📁 Verificando arquivos gerados..."
         - ls -la out/
+        - echo "📊 Tamanho do diretório out:"
+        - du -sh out/
   artifacts:
     baseDirectory: frontend/out
     files:
