@@ -2,7 +2,13 @@
 const nextConfig = {
   // Configurações básicas
   reactStrictMode: false,
-  swcMinify: true,
+  
+  // Configuração para exportação estática (Amplify)
+  output: 'export',
+  trailingSlash: true,
+  images: {
+    unoptimized: true,
+  },
   
   // Ignorar erros durante o build
   typescript: {
@@ -12,15 +18,8 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   
-  // Configuração para exportação estática (Amplify)
-  output: 'export',
-  trailingSlash: true,
-  images: {
-    unoptimized: true,
-  },
-  
   // Configurações de build
-  distDir: '.next',
+  distDir: 'out',
   
   // Webpack config para evitar problemas
   webpack: (config) => {

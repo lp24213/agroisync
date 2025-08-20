@@ -3,18 +3,24 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "Iniciando build do AgroSync..."
+        - echo "🚀 Iniciando build do AGROISYNC..."
         - cd frontend
-        - rm -rf node_modules package-lock.json .next
-        - npm install --legacy-peer-deps --no-audit
+        - echo "🧹 Limpando arquivos anteriores..."
+        - rm -rf .next node_modules out package-lock.json
+        - echo "📦 Instalando dependências..."
+        - npm ci
     build:
       commands:
         - cd frontend
-        - echo "Building Next.js application..."
+        - echo "🔨 Configurando Next.js para export estático..."
+        - echo '{"output": "export", "trailingSlash": true, "images": {"unoptimized": true}}' > next.config.temp.json
+        - echo "🔨 Fazendo build estático..."
         - npm run build
-        - echo "Build concluído com sucesso!"
+        - echo "✅ Build concluído com sucesso!"
+        - echo "📁 Verificando arquivos gerados..."
+        - ls -la out/
   artifacts:
-    baseDirectory: frontend/.next
+    baseDirectory: frontend/out
     files:
       - '**/*'
   cache:

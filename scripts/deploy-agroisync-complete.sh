@@ -156,15 +156,28 @@ echo -e "${YELLOW}🏗️  Fazendo build e deploy...${NC}"
 # Fazer build e deploy
 if [ -d "frontend" ]; then
     cd frontend
+    
+    # Limpar e fazer build
+    echo -e "${YELLOW}🧹 Limpando projeto...${NC}"
+    rm -rf .next node_modules out package-lock.json
+    
     echo -e "${YELLOW}📦 Instalando dependências...${NC}"
-    npm ci
+    npm install
     
     echo -e "${YELLOW}🔨 Fazendo build...${NC}"
     npm run build
     
-    # Deploy para Amplify Hosting
-    echo -e "${YELLOW}🚀 Deploy para Amplify Hosting...${NC}"
-    amplify publish --yes
+    # Verificar se o build foi bem-sucedido
+    if [ -d "out" ]; then
+        echo -e "${GREEN}✅ Build bem-sucedido! Arquivos gerados em out/${NC}"
+        
+        # Contar arquivos
+        FILE_COUNT=$(find out -type f | wc -l)
+        echo -e "${BLUE}📊 Total de arquivos: $FILE_COUNT${NC}"
+    else
+        echo -e "${RED}❌ Build falhou! Verifique os erros acima.${NC}"
+        exit 1
+    fi
     
     cd ..
 else

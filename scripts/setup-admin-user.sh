@@ -1,123 +1,116 @@
 #!/bin/bash
 
-# Script para configurar usuário admin inicial do AGROISYNC
-# Este script deve ser executado após o deploy inicial do Amplify
+# 👤 AGROISYNC - Setup Usuário Admin
+# Este script configura o usuário admin no Cognito
 
-set -e
+set -e  # Parar em caso de erro
 
-echo "🚀 Configurando usuário admin inicial para AGROISYNC..."
+# Cores para output
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
 
-# Verificar se o AWS CLI está configurado
-if ! aws sts get-caller-identity &> /dev/null; then
-    echo "❌ AWS CLI não está configurado. Execute 'aws configure' primeiro."
+echo -e "${GREEN}👤 AGROISYNC - Setup Usuário Admin${NC}"
+echo -e "${GREEN}===================================${NC}"
+
+# Verificar se o Amplify CLI está instalado
+if ! command -v amplify &> /dev/null; then
+    echo -e "${RED}❌ Amplify CLI não está instalado${NC}"
+    exit 1
+fi
+
+# Verificar se o projeto Amplify existe
+if [ ! -d "amplify" ]; then
+    echo -e "${RED}❌ Projeto Amplify não encontrado. Execute o deploy primeiro.${NC}"
     exit 1
 fi
 
 # Obter informações do projeto
-PROJECT_NAME="agroisync"
-REGION="us-east-2"
-
-echo "📍 Região: $REGION"
-echo "🏗️  Projeto: $PROJECT_NAME"
-
-# Obter User Pool ID
-echo "🔍 Obtendo User Pool ID..."
-USER_POOL_ID=$(aws cognito-idp list-user-pools --max-items 20 --region $REGION --query "UserPools[?Name=='${PROJECT_NAME}_userpool'].Id" --output text)
-
-if [ -z "$USER_POOL_ID" ]; then
-    echo "❌ User Pool não encontrado. Verifique se o Amplify foi deployado."
+if [ -f "amplify/team-provider-info.json" ]; then
+    USER_POOL_ID=$(jq -r '.dev.awscloudformation.UserPoolId' amplify/team-provider-info.json)
+    if [ "$USER_POOL_ID" = "null" ] || [ -z "$USER_POOL_ID" ]; then
+        echo -e "${RED}❌ User Pool ID não encontrado. Execute 'amplify push' primeiro.${NC}"
+        exit 1
+    fi
+else
+    echo -e "${RED}❌ team-provider-info.json não encontrado${NC}"
     exit 1
 fi
 
-echo "✅ User Pool ID: $USER_POOL_ID"
+echo -e "${BLUE}📊 User Pool ID: $USER_POOL_ID${NC}"
 
-# Obter Client ID
-echo "🔍 Obtendo Client ID..."
-CLIENT_ID=$(aws cognito-idp list-user-pool-clients --user-pool-id $USER_POOL_ID --region $REGION --query "UserPoolClients[0].ClientId" --output text)
+# Configurações do usuário admin
+ADMIN_EMAIL="luispaulodeoliveira@agrotm.com.br"
+ADMIN_PASSWORD="Admin@2024!"
+ADMIN_NAME="Luis Paulo Admin"
 
-if [ -z "$CLIENT_ID" ]; then
-    echo "❌ Client ID não encontrado."
-    exit 1
-fi
-
-echo "✅ Client ID: $CLIENT_ID"
-
-# Criar grupo admin se não existir
-echo "👥 Criando grupo admin..."
-aws cognito-idp create-group \
-    --user-pool-id $USER_POOL_ID \
-    --group-name "admin" \
-    --description "Administradores do sistema AGROISYNC" \
-    --region $REGION \
-    --precedence 1 || echo "⚠️  Grupo admin já existe"
+echo -e "${YELLOW}🔐 Criando usuário admin...${NC}"
 
 # Criar usuário admin
-ADMIN_EMAIL="luispaulodeoliveira@agrotm.com.br"
-ADMIN_NAME="Luis Paulo de Oliveira"
-TEMP_PASSWORD="Admin@2024!"
-
-echo "👤 Criando usuário admin: $ADMIN_EMAIL"
-
-# Criar usuário
 aws cognito-idp admin-create-user \
-    --user-pool-id $USER_POOL_ID \
-    --username $ADMIN_EMAIL \
+    --user-pool-id "$USER_POOL_ID" \
+    --username "$ADMIN_EMAIL" \
     --user-attributes \
-        Name=email,Value=$ADMIN_EMAIL \
+        Name=email,Value="$ADMIN_EMAIL" \
         Name=name,Value="$ADMIN_NAME" \
         Name=email_verified,Value=true \
-    --temporary-password $TEMP_PASSWORD \
-    --region $REGION
+    --temporary-password "$ADMIN_PASSWORD" \
+    --message-action SUPPRESS
 
-# Adicionar usuário ao grupo admin
-echo "🔐 Adicionando usuário ao grupo admin..."
-aws cognito-idp admin-add-user-to-group \
-    --user-pool-id $USER_POOL_ID \
-    --username $ADMIN_EMAIL \
-    --group-name "admin" \
-    --region $REGION
+echo -e "${GREEN}✅ Usuário admin criado com sucesso!${NC}"
 
-# Configurar atributos customizados
-echo "⚙️  Configurando atributos customizados..."
-aws cognito-idp admin-update-user-attributes \
-    --user-pool-id $USER_POOL_ID \
-    --username $ADMIN_EMAIL \
-    --user-attributes \
-        Name="custom:group",Value="admin" \
-        Name="custom:role",Value="SUPER_ADMIN" \
-    --region $REGION
+# Definir senha permanente
+echo -e "${YELLOW}🔑 Definindo senha permanente...${NC}"
 
-echo ""
-echo "✅ Usuário admin configurado com sucesso!"
-echo ""
-echo "📧 Email: $ADMIN_EMAIL"
-echo "🔑 Senha temporária: $TEMP_PASSWORD"
-echo "👥 Grupo: admin"
-echo "🎭 Role: SUPER_ADMIN"
-echo ""
-echo "⚠️  IMPORTANTE: O usuário deve alterar a senha no primeiro login!"
-echo ""
-echo "🌐 Para fazer login, acesse: https://www.agroisync.com/"
-echo ""
+aws cognito-idp admin-set-user-password \
+    --user-pool-id "$USER_POOL_ID" \
+    --username "$ADMIN_EMAIL" \
+    --password "$ADMIN_PASSWORD" \
+    --permanent
 
-# Configurar domínio OAuth se necessário
-echo "🔗 Configurando domínio OAuth..."
-DOMAIN_NAME="${PROJECT_NAME}-${RANDOM}"
+echo -e "${GREEN}✅ Senha definida com sucesso!${NC}"
 
-aws cognito-idp create-user-pool-domain \
-    --domain $DOMAIN_NAME \
-    --user-pool-id $USER_POOL_ID \
-    --region $REGION || echo "⚠️  Domínio já existe ou erro na criação"
+# Adicionar usuário ao grupo admin (se existir)
+echo -e "${YELLOW}👥 Adicionando usuário ao grupo admin...${NC}"
 
-echo "✅ Domínio OAuth: $DOMAIN_NAME.auth.$REGION.amazoncognito.com"
-
-# Configurar providers sociais (Google, Facebook, Apple)
-echo "🔐 Configurando providers sociais..."
-echo "⚠️  Configure manualmente os providers sociais no console AWS Cognito:"
-echo "   - Google: https://console.aws.amazon.com/cognito/"
-echo "   - Facebook: https://console.aws.amazon.com/cognito/"
-echo "   - Apple: https://console.aws.amazon.com/cognito/"
+# Verificar se o grupo admin existe
+if aws cognito-idp get-group --user-pool-id "$USER_POOL_ID" --group-name "admin" &> /dev/null; then
+    aws cognito-idp admin-add-user-to-group \
+        --user-pool-id "$USER_POOL_ID" \
+        --username "$ADMIN_EMAIL" \
+        --group-name "admin"
+    echo -e "${GREEN}✅ Usuário adicionado ao grupo admin${NC}"
+else
+    echo -e "${YELLOW}⚠️  Grupo admin não encontrado. Criando...${NC}"
+    
+    # Criar grupo admin
+    aws cognito-idp create-group \
+        --user-pool-id "$USER_POOL_ID" \
+        --group-name "admin" \
+        --description "Administradores do sistema" \
+        --precedence 1
+    
+    # Adicionar usuário ao grupo
+    aws cognito-idp admin-add-user-to-group \
+        --user-pool-id "$USER_POOL_ID" \
+        --username "$ADMIN_EMAIL" \
+        --group-name "admin"
+    
+    echo -e "${GREEN}✅ Grupo admin criado e usuário adicionado${NC}"
+fi
 
 echo ""
-echo "🎉 Configuração do usuário admin concluída!"
-echo "🚀 AGROISYNC está pronto para uso!"
+echo -e "${GREEN}🎉 Usuário admin configurado com sucesso!${NC}"
+echo ""
+echo -e "${BLUE}🔐 Credenciais de Acesso:${NC}"
+echo -e "${YELLOW}   Email: $ADMIN_EMAIL${NC}"
+echo -e "${YELLOW}   Senha: $ADMIN_PASSWORD${NC}"
+echo -e "${YELLOW}   Grupo: admin${NC}"
+echo ""
+echo -e "${BLUE}🌐 URLs de Acesso:${NC}"
+echo -e "${YELLOW}   Frontend: https://www.agroisync.com${NC}"
+echo -e "${YELLOW}   Admin: https://www.agroisync.com/admin${NC}"
+echo ""
+echo -e "${GREEN}🚀 AGROISYNC está pronto para uso!${NC}"
