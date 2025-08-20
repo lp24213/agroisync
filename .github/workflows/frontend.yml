@@ -1,0 +1,35 @@
+name: AGROISYNC Deploy / frontend
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend.yml'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - run: corepack enable
+      - run: pnpm i --frozen-lockfile
+      - working-directory: frontend
+        run: pnpm build
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: frontend/.next
+          retention-days: 1
+  # Deploy pelo AWS Amplify Hosting (CI nativo do Amplify):
+  # Recomendação: conectar o repo ao Amplify Console e deixar o Amplify fazer o deploy
+  # a cada push. Este job garante build/qualidade; o deploy ocorre no Amplify.

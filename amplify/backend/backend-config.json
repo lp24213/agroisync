@@ -210,6 +210,96 @@
       }
     }
   },
+  "parameters": {
+    "AMPLIFY_api_agroisync_GraphQLAPIEndpointOutput": {
+      "usedBy": [
+        {
+          "category": "api",
+          "resourceName": "agroisync"
+        }
+      ]
+    },
+    "AMPLIFY_api_agroisync_GraphQLAPIIdOutput": {
+      "usedBy": [
+        {
+          "category": "api",
+          "resourceName": "agroisync"
+        }
+      ]
+    },
+    "AMPLIFY_api_agroisync_GraphQLAPIKeyOutput": {
+      "usedBy": [
+        {
+          "category": "api",
+          "resourceName": "agroisync"
+        }
+      ]
+    },
+    "AMPLIFY_auth_agroisync_AppClientID": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "agroisync"
+        }
+      ]
+    },
+    "AMPLIFY_auth_agroisync_AppClientIDWeb": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "agroisync"
+        }
+      ]
+    },
+    "AMPLIFY_auth_agroisync_HostedUIDomain": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "agroisync"
+        }
+      ]
+    },
+    "AMPLIFY_auth_agroisync_OAuthMetadata": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "agroisync"
+        }
+      ]
+    },
+    "AMPLIFY_auth_agroisync_UserPoolId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "agroisync"
+        }
+      ]
+    },
+    "AMPLIFY_auth_agroisync_UserPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "agroisync"
+        }
+      ]
+    },
+    "AMPLIFY_storage_agroisyncstorage_BucketName": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "agroisyncstorage"
+        }
+      ]
+    },
+    "AMPLIFY_storage_agroisyncstorage_Region": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "agroisyncstorage"
+        }
+      ]
+    }
+  },
   "storage": {
     "agroisyncstorage": {
       "build": true,

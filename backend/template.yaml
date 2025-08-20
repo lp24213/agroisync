@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AGROISYNC Backend (Lambda + HTTP API)
+
+Resources:
+  ApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: agroisync-api-final
+      CodeUri: .
+      Handler: dist/handler.js
+      Runtime: nodejs20.x
+      MemorySize: 512
+      Timeout: 15
+      Policies:
+        - AWSLambdaBasicExecutionRole
+      Environment:
+        Variables:
+          NODE_ENV: production
+      Events:
+        HttpApi:
+          Type: HttpApi
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+
+Outputs:
+  ApiUrl:
+    Description: HTTP API URL
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com"

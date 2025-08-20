@@ -1,17 +1,16 @@
 {
-  "name": "agroisync-frontend",
+  "name": "frontend",
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=20.15.1",
-    "npm": ">=10.8.2"
+    "node": ">=20"
   },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p ${PORT:-3000}",
     "lint": "next lint",
-    "type-check": "tsc --noEmit"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@heroicons/react": "^2.0.18",
@@ -19,14 +18,13 @@
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
     "autoprefixer": "^10.4.16",
-    "aws-amplify": "^6.15.5",
-    "bcryptjs": "^2.4.3",
+    "bcryptjs": "^3.0.2",
     "chart.js": "^4.4.0",
     "clsx": "^2.0.0",
-    "formidable": "^3.5.1",
+    "formidable": "^3.5.4",
     "framer-motion": "^10.16.16",
     "jsonwebtoken": "^9.0.2",
-    "mongodb": "^6.3.0",
+    "mongodb": "^6.18.0",
     "next": "^14.2.31",
     "postcss": "^8.4.32",
     "react": "^18",
@@ -36,9 +34,8 @@
     "tailwindcss": "^3.3.6"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
     "@types/formidable": "^3.4.5",
-    "@types/jsonwebtoken": "^9.0.5",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

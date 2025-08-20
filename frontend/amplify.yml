@@ -3,28 +3,19 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "Configurando versão do Node.js..."
-        - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-        - export NVM_DIR="$HOME/.nvm"
-        - [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-        - nvm install 20.15.1
-        - nvm use 20.15.1
-        - echo "Verificando versão do Node.js..."
-        - node --version
-        - echo "Verificando versão do npm..."
-        - npm --version
-        - echo "Instalando dependências..."
-        - npm ci
+        - nvm install 20
+        - nvm use 20
+        - corepack enable
+        - pnpm i --frozen-lockfile
     build:
       commands:
-        - echo "Fazendo build do projeto..."
-        - npm run build
-        - echo "Build concluído com sucesso!"
+        - pnpm build
   artifacts:
-    baseDirectory: frontend/.next
+    baseDirectory: .next
     files:
       - '**/*'
   cache:
     paths:
-      - frontend/node_modules/**/*
-      - frontend/.next/cache/**/*
+      - node_modules/**/*
+      - .next/cache/**/*
+      - ~/.pnpm-store/**/*

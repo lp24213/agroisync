@@ -1,13 +1,15 @@
-import express, { Application } from 'express';
+import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
+import serverless from 'aws-serverless-express';
 
 // Import routes
 import healthRoutes from './routes/health';
 import apiRoutes from './routes/api';
 
-const app: Application = express();
+const app = express();
 
 // Security middleware
 app.use(helmet());
@@ -55,10 +57,32 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   res.status(500).json({ error: 'Internal server error' });
 });
 
-// Start server
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// AWS Lambda handler
+export const handler = async (
+  event: APIGatewayProxyEvent,
+  context: Context
+): Promise<APIGatewayProxyResult> => {
+  // Convert API Gateway event to Express request
+  const server = serverless.createServer(app);
+  
+  return new Promise((resolve, reject) => {
+    serverless.proxy(server, event, context, 'PROMISE').promise
+      .then((response: any) => {
+        resolve({
+          statusCode: response.statusCode,
+          headers: response.headers,
+          body: response.body,
+          isBase64Encoded: response.isBase64Encoded
+        });
+      })
+      .catch(reject);
+  });
+};
 
-export default app;
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 3001;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}

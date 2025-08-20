@@ -1,46 +1,24 @@
 {
-  "name": "agroisync",
-  "version": "2.3.1",
-  "description": "AGROISYNC - Plataforma DeFi para Agricultura Sustentável",
+  "name": "agroisync-monorepo",
   "private": true,
-  "workspaces": [
-    "frontend",
-    "backend"
+  "engines": { 
+    "node": ">=20" 
+  },
+  "workspaces": [ 
+    "frontend", 
+    "backend" 
   ],
   "scripts": {
-    "check-versions": "node scripts/check-node-version.js",
-    "build": "npm run build:frontend && npm run build:backend",
-    "build:frontend": "cd frontend && npm install && npm run build",
-    "build:backend": "cd backend && npm install && npm run build",
-    "build:all": "npm install && npm run build:frontend && npm run build:backend",
-    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
-    "dev:frontend": "cd frontend && npm run dev",
-    "dev:backend": "cd backend && npm run dev",
-    "start": "cd frontend && npm start",
-    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
-    "test": "npm run test:frontend && npm run test:backend",
-    "test:frontend": "cd frontend && npm test",
-    "test:backend": "cd backend && npm test"
-  },
-  "engines": {
-    "node": ">=20.15.1",
-    "npm": ">=10.8.2"
+    "build": "pnpm -r build",
+    "dev": "pnpm --filter ./frontend dev",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "clean": "pnpm -r clean",
+    "install:all": "pnpm install"
   },
   "devDependencies": {
-    "@aws-amplify/backend": "1.16.1",
-    "@aws-amplify/backend-cli": "1.8.0",
-    "aws-cdk-lib": "2.204.0",
-    "concurrently": "^8.2.2",
-    "constructs": "10.4.2",
-    "esbuild": "0.25.8",
-    "tsx": "4.20.3",
-    "typescript": "5.9.2"
-  },
-  "dependencies": {
-    "aws-amplify": "6.15.5",
-    "cors": "^2.8.5",
-    "dotenv": "^16.6.1",
-    "express": "^4.18.2",
-    "mongodb": "6.18.0"
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
   }
 }
