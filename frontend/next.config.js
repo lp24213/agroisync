@@ -1,21 +1,48 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Configurações básicas
   reactStrictMode: false,
-  swcMinify: false,
-  eslint: {
-    ignoreDuringBuilds: true
-  },
+  swcMinify: true,
+  
+  // Ignorar erros durante o build
   typescript: {
-    ignoreBuildErrors: true
+    ignoreBuildErrors: true,
   },
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: '/api/:path*'
-      }
-    ]
-  }
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  
+  // Configuração para exportação estática (Amplify)
+  output: 'export',
+  trailingSlash: true,
+  images: {
+    unoptimized: true,
+  },
+  
+  // Configurações de build
+  distDir: '.next',
+  
+  // Webpack config para evitar problemas
+  webpack: (config) => {
+    config.resolve.fallback = {
+      fs: false,
+      net: false,
+      tls: false,
+      crypto: false,
+      stream: false,
+      url: false,
+      zlib: false,
+      http: false,
+      https: false,
+      assert: false,
+      os: false,
+      path: false,
+      buffer: false,
+      util: false,
+    }
+    
+    return config
+  },
 }
 
 module.exports = nextConfig
