@@ -61,7 +61,7 @@ export default async function handler(
         uploadDir: UPLOAD_DIR,
         keepExtensions: true,
         maxFileSize: 10 * 1024 * 1024, // 10MB
-        filter: ({ mimetype }) => {
+        filter: ({ mimetype }: { mimetype?: string }) => {
           // Permitir apenas imagens, vídeos e documentos
           return Boolean(mimetype && (
             mimetype.includes('image/') ||
@@ -157,110 +157,22 @@ export default async function handler(
       const client = await MongoClient.connect(MONGODB_URI)
       const db = client.db(DB_NAME)
 
-      const { userId, category, limit = 50 } = req.query
-
-      if (!userId) {
-        return res.status(400).json({
-          success: false,
-          message: 'ID do usuário é obrigatório'
-        })
-      }
-
-      // Buscar arquivos do usuário
       const filesCollection = db.collection<UploadedFile>('uploaded_files')
-      const filter: any = { userId: userId.toString() }
-      
-      if (category && category !== 'all') {
-        filter.category = category
-      }
-
-      const files = await filesCollection
-        .find(filter)
-        .sort({ createdAt: -1 })
-        .limit(parseInt(limit as string))
-        .toArray()
+      const files = await filesCollection.find({}).toArray()
 
       await client.close()
 
-      // Formatar dados para retorno
-      const formattedFiles = files.map(file => ({
-        id: file._id?.toString(),
-        originalName: file.originalName,
-        filename: file.filename,
-        url: `/uploads/${file.filename}`,
-        size: file.size,
-        mimetype: file.mimetype,
-        category: file.category,
-        metadata: file.metadata,
-        createdAt: file.createdAt
-      }))
-
       return res.status(200).json({
         success: true,
-        message: 'Arquivos carregados com sucesso',
+        message: 'Arquivos listados com sucesso',
         data: {
-          files: formattedFiles,
+          files,
           total: files.length
         }
       })
 
     } catch (error: any) {
-      console.error('Erro ao buscar arquivos:', error)
-      return res.status(500).json({
-        success: false,
-        message: 'Erro interno do servidor'
-      })
-    }
-  }
-
-  if (req.method === 'DELETE') {
-    try {
-      const { fileId, userId } = req.body
-
-      if (!fileId || !userId) {
-        return res.status(400).json({
-          success: false,
-          message: 'ID do arquivo e usuário são obrigatórios'
-        })
-      }
-
-      const client = await MongoClient.connect(MONGODB_URI)
-      const db = client.db(DB_NAME)
-
-      // Buscar arquivo
-      const filesCollection = db.collection<UploadedFile>('uploaded_files')
-      const file = await filesCollection.findOne({
-        _id: new ObjectId(fileId),
-        userId: userId.toString()
-      })
-
-      if (!file) {
-        await client.close()
-        return res.status(404).json({
-          success: false,
-          message: 'Arquivo não encontrado'
-        })
-      }
-
-      // Remover arquivo físico
-      try {
-        fs.unlinkSync(file.path)
-      } catch (fsError) {
-        console.warn('Erro ao remover arquivo físico:', fsError)
-      }
-
-      // Remover do MongoDB
-      await filesCollection.deleteOne({ _id: new ObjectId(fileId) })
-
-      await client.close()
-
-      return res.status(200).json({
-        success: true,
-        message: 'Arquivo removido com sucesso'
-      })
-
-    } catch (error: any) {
-      console.error('Erro ao remover arquivo:', error)
+      console.error('Erro ao listar arquivos:', error)
       return res.status(500).json({
         success: false,
         message: 'Erro interno do servidor'
