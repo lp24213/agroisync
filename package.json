@@ -1,7 +1,7 @@
 {
-  "name": "agrotm.sol",
+  "name": "agroisync",
   "version": "2.3.1",
-  "description": "AGROTM Solana - Plataforma DeFi para Agricultura Sustentável",
+  "description": "AGROISYNC - Plataforma DeFi para Agricultura Sustentável",
   "private": true,
   "workspaces": [
     "frontend",
