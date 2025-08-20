@@ -1,1 +1,236 @@
-{}
+{
+  "api": {
+    "agroisync": {
+      "build": true,
+      "config": {
+        "additionalAuthenticationProviders": [],
+        "conflictResolution": {
+          "defaultResolutionStrategy": "AUTOMERGE"
+        },
+        "defaultAuthentication": {
+          "authenticationType": "AMAZON_COGNITO_USER_POOLS"
+        }
+      },
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "agroisync"
+        }
+      ]
+    }
+  },
+  "auth": {
+    "agroisync": {
+      "build": true,
+      "config": {
+        "userPoolConfig": {
+          "allowUnauthenticatedIdentities": false,
+          "hostedUI": true,
+          "hostedUIProviderMeta": [
+            {
+              "ProviderName": "Google",
+              "clientId": "your-google-client-id",
+              "clientSecret": "your-google-client-secret"
+            },
+            {
+              "ProviderName": "Facebook",
+              "clientId": "your-facebook-client-id",
+              "clientSecret": "your-facebook-client-secret"
+            },
+            {
+              "ProviderName": "Apple",
+              "clientId": "your-apple-client-id",
+              "clientSecret": "your-apple-client-secret"
+            }
+          ],
+          "hostedUIRedirectSignIn": "https://www.agroisync.com/",
+          "hostedUIRedirectSignOut": "https://www.agroisync.com/",
+          "hostedUISignOut": true,
+          "mfaConfiguration": "ON",
+          "mfaTypes": [
+            "SMS",
+            "TOTP"
+          ],
+          "passwordPolicyMinLength": 12,
+          "passwordPolicyRequirements": [
+            "REQUIRES_LOWERCASE",
+            "REQUIRES_NUMBERS",
+            "REQUIRES_SYMBOLS",
+            "REQUIRES_UPPERCASE"
+          ],
+          "requiredAttributes": [
+            "EMAIL",
+            "NAME"
+          ],
+          "signinAliases": {
+            "email": true
+          },
+          "socialProviders": [
+            "GOOGLE",
+            "FACEBOOK",
+            "APPLE"
+          ]
+        }
+      }
+    }
+  },
+  "function": {
+    "adminFunctions": {
+      "build": true,
+      "config": {
+        "environmentVariables": {
+          "ENV": "production"
+        },
+        "memory": 512,
+        "runtime": "nodejs20.x",
+        "timeout": 30
+      },
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "agroisync"
+        }
+      ]
+    },
+    "analyticsFunctions": {
+      "build": true,
+      "config": {
+        "environmentVariables": {
+          "ENV": "production"
+        },
+        "memory": 512,
+        "runtime": "nodejs20.x",
+        "timeout": 30
+      },
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "agroisync"
+        }
+      ]
+    },
+    "maintenanceFunctions": {
+      "build": true,
+      "config": {
+        "environmentVariables": {
+          "ENV": "production"
+        },
+        "memory": 512,
+        "runtime": "nodejs20.x",
+        "timeout": 30
+      },
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "agroisync"
+        }
+      ]
+    },
+    "nftFunctions": {
+      "build": true,
+      "config": {
+        "environmentVariables": {
+          "ENV": "production"
+        },
+        "memory": 512,
+        "runtime": "nodejs20.x",
+        "timeout": 30
+      },
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "agroisync"
+        }
+      ]
+    },
+    "stakingFunctions": {
+      "build": true,
+      "config": {
+        "environmentVariables": {
+          "ENV": "production"
+        },
+        "memory": 512,
+        "runtime": "nodejs20.x",
+        "timeout": 30
+      },
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "agroisync"
+        }
+      ]
+    },
+    "taskScheduler": {
+      "build": true,
+      "config": {
+        "environmentVariables": {
+          "ENV": "production"
+        },
+        "memory": 512,
+        "runtime": "nodejs20.x",
+        "timeout": 30
+      },
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "agroisync"
+        }
+      ]
+    }
+  },
+  "hosting": {
+    "amplifyhosting": {
+      "build": true,
+      "config": {
+        "BuildCommand": "npm run build",
+        "DistributionDir": ".next",
+        "SourceDir": "frontend",
+        "StartCommand": "npm start"
+      }
+    }
+  },
+  "storage": {
+    "agroisyncstorage": {
+      "build": true,
+      "config": {
+        "bucketAccess": "auth",
+        "bucketAccessPolicies": "private",
+        "bucketEncryption": "SSE-S3",
+        "bucketName": "agroisync-storage",
+        "bucketPublicAccess": "false",
+        "bucketRegion": "us-east-2",
+        "bucketVersioning": "enabled"
+      },
+      "dependsOn": [
+        {
+          "attributes": [
+            "IdentityPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "agroisync"
+        }
+      ]
+    }
+  }
+}
