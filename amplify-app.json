@@ -4,7 +4,7 @@
   "frontend": {
     "framework": "nextjs",
     "buildCommand": "npm run build",
-    "outputDirectory": "out",
+    "outputDirectory": ".next",
     "devCommand": "npm run dev",
     "startCommand": "npm run start"
   },
