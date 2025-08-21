@@ -7,13 +7,13 @@ frontend:
     build:
       commands:
         - npm run build
-        - ls -la out/
+        - ls -la .next/
         - echo "Build completed successfully"
     postBuild:
       commands:
         - echo "Deploy ready"
   artifacts:
-    baseDirectory: out
+    baseDirectory: .next
     files:
       - '**/*'
   cache:
