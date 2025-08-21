@@ -11,6 +11,10 @@ frontend:
       commands:
         - echo "Build completed successfully"
   artifacts:
-    baseDirectory: out
+    baseDirectory: .next
     files:
       - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
+      - .next/cache/**/*
