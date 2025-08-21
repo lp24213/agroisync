@@ -7,7 +7,10 @@ frontend:
     build:
       commands:
         - npm run build
+    postBuild:
+      commands:
+        - echo "Build completed successfully"
   artifacts:
-    baseDirectory: .next
+    baseDirectory: out
     files:
       - '**/*'
