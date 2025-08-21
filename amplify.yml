@@ -1,34 +1,30 @@
 version: 1
-frontend:
-  phases:
-    preBuild:
-      commands:
-        - echo "🚀 AGROISYNC - Build iniciado..."
-        - cd frontend
-        - echo "🧹 Limpando arquivos anteriores..."
-        - rm -rf .next node_modules out package-lock.json
-        - echo "📦 Instalando dependências..."
-        - npm ci
-        - echo "🔧 Verificando versões..."
-        - node --version
-        - npm --version
-    build:
-      commands:
-        - cd frontend
-        - echo "🔨 Fazendo build estático com configuração final..."
-        - npm run build:final
-        - echo "✅ Build concluído!"
-        - echo "📁 Verificando arquivos gerados..."
-        - ls -la out/
-        - echo "📊 Tamanho do diretório out:"
-        - du -sh out/
-        - echo "🔍 Verificando se index.html existe:"
-        - test -f out/index.html && echo "✅ index.html encontrado!" || echo "❌ index.html NÃO encontrado!"
-  artifacts:
-    baseDirectory: frontend/out
-    files:
-      - '**/*'
-  cache:
-    paths:
-      - frontend/node_modules/**/*
-      - frontend/.next/cache/**/*
+applications:
+  - frontend:
+      phases:
+        preBuild:
+          commands:
+            - echo "🔧 Configurando ambiente..."
+            - node --version
+            - npm --version
+            - echo "📦 Instalando dependências..."
+            - npm ci
+        build:
+          commands:
+            - echo "🏗️ Building aplicação..."
+            - npm run build
+            - echo "✅ Build concluído"
+        postBuild:
+          commands:
+            - echo "📋 Verificando build..."
+            - ls -la out/
+            - echo "🎉 Deploy pronto!"
+      artifacts:
+        baseDirectory: out
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+          - .next/cache/**/*
+    appRoot: frontend

@@ -1,70 +1,37 @@
 # Dependencies
 node_modules/
-.pnp
-.pnp.js
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# Testing
-coverage/
-.nyc_output/
-test-results/
-playwright-report/
-
-# Next.js
+# Build outputs
 .next/
-build/
+out/
 dist/
-
-# Production
 build/
-dist/
 
-# Misc
-.DS_Store
-*.pem
+# Environment variables
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# Debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-# Local env files
-.env*.local
-.env.production
-.env.staging
-
-# AWS Amplify
-.amplify
-amplify_outputs*
-amplifyconfiguration*
-
-# TypeScript
+# Cache
+.npm
+.eslintcache
 *.tsbuildinfo
-next-env.d.ts
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
-Thumbs.db
-
-# Logs
-logs/
-*.log
 
 # Runtime data
-pids/
+pids
 *.pid
 *.seed
 *.pid.lock
+
+# Logs
+logs
+*.log
 
 # Coverage directory used by tools like istanbul
 coverage/
@@ -74,20 +41,16 @@ coverage/
 .nyc_output
 
 # Dependency directories
-node_modules/
 jspm_packages/
+
+# TypeScript cache
+*.tsbuildinfo
 
 # Optional npm cache directory
 .npm
 
 # Optional eslint cache
 .eslintcache
-
-# Microbundle cache
-.rpt2_cache/
-.rts2_cache_cjs/
-.rts2_cache_es/
-.rts2_cache_umd/
 
 # Optional REPL history
 .node_repl_history
@@ -104,14 +67,11 @@ jspm_packages/
 
 # Next.js build output
 .next
+out
 
 # Nuxt.js build / generate output
 .nuxt
 dist
-
-# Gatsby files
-.cache/
-# public (mantido para imagens)
 
 # Storybook build outputs
 .out
@@ -125,52 +85,42 @@ temp/
 .vscode/*
 !.vscode/extensions.json
 .idea
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+*.swp
+*.swo
+*~
 
-# Database
-*.db
-*.sqlite
-*.sqlite3
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
-# Docker
-.dockerignore
+# AWS
+.aws/
 
-# Terraform
-*.tfstate
-*.tfstate.*
-.terraform/
+# Local Netlify folder
+.netlify
 
-# Sentry
-.sentryclirc
+# Amplify
+amplify/backend/awscloudformation/
+amplify/.config/
+amplify/mock-data/
+amplify/mock-api-resources/
 
-# Turbo
-.turbo
+# ZIP files
+*.zip
 
-# Local development
-.local
+# Temporary files
+h origin main
+how HEADamplify.yml
+tatus
+tatus --porcelain
+s... && git add . && git commit*
 
-#amplify-do-not-edit-begin
-amplify/\#current-cloud-backend
-amplify/.config/local-*
-amplify/logs
-amplify/mock-data
-amplify/mock-api-resources
-amplify/backend/amplify-meta.json
-amplify/backend/.temp
-build/
-dist/
-node_modules/
-aws-exports.js
-awsconfiguration.json
-amplifyconfiguration.json
-amplifyconfiguration.dart
-amplify-build-config.json
-amplify-gradle-config.json
-amplifytools.xcconfig
-.secret-*
-**.sample
-#amplify-do-not-edit-end
+# Build artifacts
+function.zip
+AGROTM-AWS-DEPLOY-COMPLETO.zip
+*.tmp

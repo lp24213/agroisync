@@ -1,0 +1,31 @@
+# AGROISYNC - Configuração Principal do Projeto
+project:
+  name: "AGROISYNC"
+  version: "2.3.1"
+  description: "Plataforma de Agricultura Inteligente com Web3"
+
+aws:
+  region: "us-east-2"
+  amplify:
+    app_id: "d2d5j98tau5snm"
+    domain: "agroisync.com"
+  
+deployment:
+  frontend:
+    platform: "aws-amplify"
+    build_command: "npm run build:final"
+    output_directory: "out"
+  
+  backend:
+    platform: "aws-ecs"
+    image: "agroisync-backend"
+    cluster: "agroisync-cluster"
+
+domains:
+  primary: "agroisync.com"
+  api: "api.agroisync.com"
+  www: "www.agroisync.com"
+
+environment:
+  node_version: "20"
+  package_manager: "npm"
