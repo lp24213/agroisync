@@ -3,7 +3,7 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "🔧 Configurando ambiente Frontend..."
+        - echo "🔧 Configurando ambiente Frontend + Backend..."
         - node --version
         - npm --version
         - echo "📦 Instalando dependências..."
@@ -11,7 +11,7 @@ frontend:
         - echo "✅ Dependências instaladas"
     build:
       commands:
-        - echo "🏗️ Building aplicação Next.js..."
+        - echo "🏗️ Building aplicação Next.js (Frontend + Backend)..."
         - npm run build
         - echo "✅ Build concluído"
         - echo "📋 Verificando diretório de saída..."
@@ -20,6 +20,8 @@ frontend:
         - find .next/ -type f | head -20
         - echo "🔍 Verificando arquivos principais..."
         - ls -lh .next/server/pages-manifest.json
+        - echo "🔍 Verificando APIs..."
+        - ls -lh .next/server/pages/api/
     postBuild:
       commands:
         - echo "🎉 Deploy pronto!"
