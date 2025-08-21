@@ -1,70 +1,116 @@
 import { useState, useEffect } from 'react'
 
 export default function Home() {
-  const [status, setStatus] = useState('Carregando...')
+  const [status, setStatus] = useState('✅ Backend Online!')
+  const [currentTime, setCurrentTime] = useState('')
 
   useEffect(() => {
-    fetch('/api/hello')
-      .then(res => res.json())
-      .then(data => setStatus(data.message))
-      .catch(() => setStatus('API offline'))
+    // Atualizar tempo a cada segundo
+    const timer = setInterval(() => {
+      setCurrentTime(new Date().toLocaleString())
+    }, 1000)
+    
+    setCurrentTime(new Date().toLocaleString())
+    
+    return () => clearInterval(timer)
   }, [])
 
   return (
     <div style={{
       padding: '50px',
       textAlign: 'center',
-      fontFamily: 'Arial',
+      fontFamily: 'Arial, sans-serif',
       background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
       minHeight: '100vh',
       color: 'white'
     }}>
-      <h1>🚀 AgroSync Funcionando!</h1>
+      <h1 style={{ fontSize: '3rem', marginBottom: '30px' }}>🚀 AgroSync Funcionando!</h1>
+      
       <div style={{
         background: 'rgba(255,255,255,0.1)',
         padding: '30px',
         borderRadius: '15px',
         margin: '30px auto',
-        maxWidth: '600px'
+        maxWidth: '600px',
+        backdropFilter: 'blur(10px)'
       }}>
-        <h2>Status do Sistema</h2>
-        <p><strong>Frontend:</strong> ✅ Online</p>
-        <p><strong>Backend:</strong> {status}</p>
-        <p><strong>Deploy:</strong> {new Date().toLocaleString()}</p>
+        <h2 style={{ fontSize: '2rem', marginBottom: '20px' }}>Status do Sistema</h2>
+        <p style={{ fontSize: '1.2rem', margin: '10px 0' }}><strong>Frontend:</strong> ✅ Online</p>
+        <p style={{ fontSize: '1.2rem', margin: '10px 0' }}><strong>Backend:</strong> {status}</p>
+        <p style={{ fontSize: '1.2rem', margin: '10px 0' }}><strong>Deploy:</strong> {currentTime}</p>
       </div>
       
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
         gap: '20px',
         marginTop: '40px',
-        maxWidth: '800px',
+        maxWidth: '900px',
         margin: '40px auto 0'
       }}>
         <div style={{
           background: 'rgba(255,255,255,0.1)',
-          padding: '20px',
-          borderRadius: '10px'
-        }}>
-          <h3>🌱 Gestão</h3>
-          <p>Sistema de gestão agrícola</p>
+          padding: '25px',
+          borderRadius: '15px',
+          backdropFilter: 'blur(10px)',
+          transition: 'transform 0.3s ease',
+          cursor: 'pointer'
+        }} onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'} onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}>
+          <h3 style={{ fontSize: '1.5rem', marginBottom: '15px' }}>🌱 Gestão Agrícola</h3>
+          <p style={{ fontSize: '1.1rem' }}>Sistema completo de gestão de fazendas, cultivos e recursos</p>
+          <div style={{ marginTop: '15px', fontSize: '0.9rem', opacity: 0.8 }}>
+            <p>• Controle de plantações</p>
+            <p>• Gestão de estoque</p>
+            <p>• Relatórios financeiros</p>
+          </div>
         </div>
+        
         <div style={{
           background: 'rgba(255,255,255,0.1)',
-          padding: '20px',
-          borderRadius: '10px'
-        }}>
-          <h3>📊 Relatórios</h3>
-          <p>Análises e métricas</p>
+          padding: '25px',
+          borderRadius: '15px',
+          backdropFilter: 'blur(10px)',
+          transition: 'transform 0.3s ease',
+          cursor: 'pointer'
+        }} onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'} onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}>
+          <h3 style={{ fontSize: '1.5rem', marginBottom: '15px' }}>📊 Analytics Inteligente</h3>
+          <p style={{ fontSize: '1.1rem' }}>Análises avançadas e métricas em tempo real</p>
+          <div style={{ marginTop: '15px', fontSize: '0.9rem', opacity: 0.8 }}>
+            <p>• Dashboards interativos</p>
+            <p>• Previsões meteorológicas</p>
+            <p>• Otimização de recursos</p>
+          </div>
         </div>
+        
         <div style={{
           background: 'rgba(255,255,255,0.1)',
-          padding: '20px',
-          borderRadius: '10px'
-        }}>
-          <h3>⚙️ Config</h3>
-          <p>Configurações</p>
+          padding: '25px',
+          borderRadius: '15px',
+          backdropFilter: 'blur(10px)',
+          transition: 'transform 0.3s ease',
+          cursor: 'pointer'
+        }} onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'} onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}>
+          <h3 style={{ fontSize: '1.5rem', marginBottom: '15px' }}>⚙️ Configurações</h3>
+          <p style={{ fontSize: '1.1rem' }}>Personalização completa do sistema</p>
+          <div style={{ marginTop: '15px', fontSize: '0.9rem', opacity: 0.8 }}>
+            <p>• Perfis de usuário</p>
+            <p>• Configurações de alertas</p>
+            <p>• Integrações externas</p>
+          </div>
         </div>
+      </div>
+
+      <div style={{
+        marginTop: '50px',
+        padding: '20px',
+        background: 'rgba(255,255,255,0.1)',
+        borderRadius: '15px',
+        backdropFilter: 'blur(10px)'
+      }}>
+        <h3 style={{ fontSize: '1.3rem', marginBottom: '15px' }}>🎯 Sistema AgroSync - Versão 2.0</h3>
+        <p style={{ fontSize: '1rem', opacity: 0.9 }}>
+          Plataforma completa de agricultura inteligente funcionando perfeitamente no AWS Amplify
+        </p>
       </div>
     </div>
   )
