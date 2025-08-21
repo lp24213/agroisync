@@ -3,41 +3,50 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "🔧 Configurando ambiente Next.js..."
+        - echo "🔧 Configurando ambiente..."
         - node --version
         - npm --version
         - echo "📦 Instalando dependências..."
         - npm install --legacy-peer-deps
         - echo "✅ Dependências instaladas"
+        - echo "🔍 Detectando framework..."
+        - if (Test-Path "package.json") { $pkg = Get-Content "package.json" | ConvertFrom-Json; Write-Host "Framework detectado: $($pkg.dependencies.keys | Where-Object { $_ -like "*next*" -or $_ -like "*react*" -or $_ -like "*vite*" })" }
     build:
       commands:
-        - echo "🏗️ Building aplicação Next.js..."
+        - echo "🏗️ Building aplicação..."
         - npm run build
         - echo "✅ Build concluído"
-        - echo "📋 Verificando diretório de saída..."
-        - ls -la out/
-        - echo "📁 Conteúdo do diretório out:"
-        - find out/ -type f | head -20
+        - echo "🔍 Verificando framework e pasta de saída..."
+        - if (Test-Path "out") { Write-Host "✅ Next.js detectado - pasta out criada"; $OUTPUT_DIR = "out" } elseif (Test-Path "build") { Write-Host "✅ React CRA detectado - pasta build criada"; $OUTPUT_DIR = "build" } elseif (Test-Path "dist") { Write-Host "✅ Vite detectado - pasta dist criada"; $OUTPUT_DIR = "dist" } else { Write-Host "❌ Nenhuma pasta de saída encontrada"; exit 1 }
+        - echo "📋 Verificando diretório de saída: $OUTPUT_DIR"
+        - ls -la $OUTPUT_DIR/
+        - echo "📁 Conteúdo do diretório $OUTPUT_DIR:"
+        - find $OUTPUT_DIR/ -type f | head -20
         - echo "🔍 Verificando arquivo index.html..."
-        - cat out/index.html | head -10
+        - if (Test-Path "$OUTPUT_DIR/index.html") { cat $OUTPUT_DIR/index.html | head -10 } else { echo "❌ index.html não encontrado"; exit 1 }
         - echo "📊 Tamanho dos arquivos principais:"
-        - ls -lh out/index.html out/_next/static/chunks/pages/index-*.js
+        - ls -lh $OUTPUT_DIR/index.html
+        - if (Test-Path "$OUTPUT_DIR/_next") { ls -lh $OUTPUT_DIR/_next/static/chunks/pages/index-*.js } else { echo "ℹ️ Pasta _next não encontrada (não é Next.js)" }
         - echo "🔧 Criando arquivo de configuração para SPA..."
-        - echo '{"rewrites":[{"source":"/**","destination":"/index.html"}]}' > out/amplify.json
+        - echo '{"rewrites":[{"source":"/**","destination":"/index.html"}]}' > $OUTPUT_DIR/amplify.json
         - echo "✅ Configuração SPA criada"
         - echo "🔧 Criando arquivo de redirecionamento..."
-        - echo "/*    /index.html   200" > out/_redirects
+        - echo "/*    /index.html   200" > $OUTPUT_DIR/_redirects
         - echo "✅ Redirecionamentos configurados"
+        - echo "📝 Salvando diretório de saída para uso posterior..."
+        - echo $OUTPUT_DIR > .output_dir
     postBuild:
       commands:
         - echo "🎉 Deploy pronto!"
         - echo "🚀 Frontend + Backend integrados funcionando!"
-        - echo "📁 Estrutura final do diretório out:"
-        - tree out/ || find out/ -type f | sort
+        - $OUTPUT_DIR = Get-Content .output_dir
+        - echo "📁 Estrutura final do diretório $OUTPUT_DIR:"
+        - tree $OUTPUT_DIR/ || find $OUTPUT_DIR/ -type f | sort
         - echo "🔧 Verificando configuração SPA..."
-        - cat out/amplify.json
+        - cat $OUTPUT_DIR/amplify.json
         - echo "🔧 Verificando redirecionamentos..."
-        - cat out/_redirects
+        - cat $OUTPUT_DIR/_redirects
+        - echo "🎯 Diretório final configurado: $OUTPUT_DIR"
   artifacts:
     baseDirectory: out
     files:
@@ -47,3 +56,5 @@ frontend:
       - node_modules/**/*
       - .next/cache/**/*
       - out/**/*
+      - build/**/*
+      - dist/**/*
