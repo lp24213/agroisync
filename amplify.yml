@@ -3,46 +3,11 @@ frontend:
   phases:
     preBuild:
       commands:
-        - cd frontend
-        - echo "🔧 Configurando ambiente..."
-        - node --version
-        - npm --version
-        - echo "📦 Instalando dependências..."
-        - npm install
+        - npm install --legacy-peer-deps
     build:
       commands:
-        - echo "🏗️ Building aplicação..."
         - npm run build
-        - echo "✅ Build concluído"
-    postBuild:
-      commands:
-        - echo "📋 Verificando build..."
-        - ls -la out/
-        - echo "🎉 Deploy pronto!"
   artifacts:
-    baseDirectory: frontend/out
+    baseDirectory: .next
     files:
       - '**/*'
-  cache:
-    paths:
-      - frontend/node_modules/**/*
-      - frontend/.next/cache/**/*
-backend:
-  phases:
-    preBuild:
-      commands:
-        - cd backend
-        - echo "📦 Instalando dependências do backend..."
-        - npm install
-    build:
-      commands:
-        - echo "🏗️ Building backend..."
-        - npm run build
-        - echo "✅ Backend build concluído"
-  artifacts:
-    baseDirectory: backend/dist
-    files:
-      - '**/*'
-  cache:
-    paths:
-      - backend/node_modules/**/*
