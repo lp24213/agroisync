@@ -22,12 +22,22 @@ frontend:
         - cat out/index.html | head -10
         - echo "📊 Tamanho dos arquivos principais:"
         - ls -lh out/index.html out/_next/static/chunks/pages/index-*.js
+        - echo "🔧 Criando arquivo de configuração para SPA..."
+        - echo '{"rewrites":[{"source":"/**","destination":"/index.html"}]}' > out/amplify.json
+        - echo "✅ Configuração SPA criada"
+        - echo "🔧 Criando arquivo de redirecionamento..."
+        - echo "/*    /index.html   200" > out/_redirects
+        - echo "✅ Redirecionamentos configurados"
     postBuild:
       commands:
         - echo "🎉 Deploy pronto!"
         - echo "🚀 Frontend + Backend integrados funcionando!"
         - echo "📁 Estrutura final do diretório out:"
         - tree out/ || find out/ -type f | sort
+        - echo "🔧 Verificando configuração SPA..."
+        - cat out/amplify.json
+        - echo "🔧 Verificando redirecionamentos..."
+        - cat out/_redirects
   artifacts:
     baseDirectory: out
     files:
