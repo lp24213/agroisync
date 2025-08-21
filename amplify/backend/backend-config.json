@@ -203,8 +203,8 @@
     "amplifyhosting": {
       "build": true,
       "config": {
-        "BuildCommand": "npm run build",
-        "DistributionDir": ".next",
+        "BuildCommand": "npm run build:final",
+        "DistributionDir": "out",
         "SourceDir": "frontend",
         "StartCommand": "npm start"
       }

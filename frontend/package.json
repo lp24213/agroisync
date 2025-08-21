@@ -5,13 +5,17 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:final": "next build --config next.config-final.js",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "clean": "rm -rf .next out node_modules package-lock.json",
+    "install:clean": "npm run clean && npm ci",
+    "build:clean": "npm run clean && npm ci && npm run build:final"
   },
   "dependencies": {
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "next": "14.0.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "next": "^15.4.6"
   },
   "devDependencies": {
     "typescript": "^5.0.0",
@@ -19,6 +23,6 @@
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "eslint": "^8.0.0",
-    "eslint-config-next": "^14.0.0"
+    "eslint-config-next": "^15.4.6"
   }
 }
