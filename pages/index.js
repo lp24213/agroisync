@@ -3,9 +3,12 @@ import { useState, useEffect } from 'react'
 export default function Home() {
   const [status, setStatus] = useState('✅ Backend Online!')
   const [currentTime, setCurrentTime] = useState('')
-  const [apiData, setApiData] = useState(null)
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
+    // Marcar como carregado
+    setIsLoaded(true)
+    
     // Atualizar tempo a cada segundo
     const timer = setInterval(() => {
       setCurrentTime(new Date().toLocaleString())
@@ -25,7 +28,6 @@ export default function Home() {
           environment: 'AWS Amplify Static'
         }
         
-        setApiData(mockResponse)
         setStatus(mockResponse.message)
       } catch (error) {
         setStatus('✅ Backend Online! (Static Mode)')
@@ -62,6 +64,9 @@ export default function Home() {
         <p style={{ fontSize: '1.2rem', margin: '10px 0' }}><strong>Deploy:</strong> {currentTime}</p>
         <p style={{ fontSize: '1rem', margin: '10px 0', opacity: 0.8 }}>
           <strong>Ambiente:</strong> AWS Amplify (Frontend + Backend Integrados)
+        </p>
+        <p style={{ fontSize: '1rem', margin: '10px 0', opacity: 0.8 }}>
+          <strong>JavaScript:</strong> {isLoaded ? '✅ Carregado' : '⏳ Carregando...'}
         </p>
       </div>
       
@@ -137,7 +142,7 @@ export default function Home() {
           Plataforma completa de agricultura inteligente funcionando perfeitamente no AWS Amplify
         </p>
         <p style={{ fontSize: '0.9rem', opacity: 0.7, marginTop: '10px' }}>
-          Frontend e Backend integrados em deploy estático
+          Frontend e Backend integrados em deploy estático com JavaScript funcional
         </p>
       </div>
     </div>
