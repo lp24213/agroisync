@@ -3,13 +3,24 @@ frontend:
   phases:
     preBuild:
       commands:
+        - echo "🔧 Configurando ambiente..."
+        - node --version
+        - npm --version
+        - echo "📦 Instalando dependências..."
         - npm install --legacy-peer-deps
+        - echo "✅ Dependências instaladas"
     build:
       commands:
+        - echo "🏗️ Building aplicação Next.js..."
         - npm run build
+        - echo "✅ Build concluído"
+        - echo "📋 Verificando diretório de saída..."
+        - ls -la out/
     postBuild:
       commands:
-        - echo "Build completed successfully"
+        - echo "🎉 Deploy pronto!"
+        - echo "📁 Conteúdo do diretório out:"
+        - find out/ -type f | head -20
   artifacts:
     baseDirectory: out
     files:
