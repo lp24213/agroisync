@@ -1,10 +1,14 @@
-import { AnalyticsPage } from '@/components/analytics/analytics-page'
+import { AnalyticsDashboard } from '@/components/analytics/analytics-dashboard'
 
 export const metadata = {
   title: 'Analytics - AgroSync',
   description: 'Dashboards interativos, gráficos e KPIs em tempo real na plataforma AgroSync.',
 }
 
-export default function AnalyticsPageRoute() {
-  return <AnalyticsPage />
+export default function AnalyticsPage() {
+  return (
+    <div className="min-h-screen">
+      <AnalyticsDashboard />
+    </div>
+  )
 }

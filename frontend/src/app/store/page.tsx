@@ -1,11 +1,9 @@
-import { Marketplace } from '@/components/store/marketplace'
+import { StoreDashboard } from '@/components/store/store-dashboard'
 
 export default function StorePage() {
   return (
-    <div className="min-h-screen bg-black">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Marketplace />
-      </div>
+    <div className="min-h-screen">
+      <StoreDashboard />
     </div>
   )
 }
