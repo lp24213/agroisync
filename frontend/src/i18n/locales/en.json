@@ -1,0 +1,428 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Try Again",
+    "refresh": "Refresh",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "search": "Search",
+    "filter": "Filter",
+    "clear": "Clear",
+    "close": "Close"
+  },
+  "navigation": {
+    "home": "Home",
+    "about": "About",
+    "quotes": "Quotes",
+    "marketplace": "Marketplace",
+    "agroconnect": "AgroConnect",
+    "crypto": "Crypto",
+    "register": "Register",
+    "admin": "Admin",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "home": {
+    "title": "AGROSYNC",
+    "subtitle": "Leading agricultural intelligence platform",
+    "description": "Integrating real-time data from IBGE, Federal Revenue and global APIs for advanced commodity analysis.",
+    "features": {
+      "title": "Main Features",
+      "geolocation": {
+        "title": "Geolocation",
+        "description": "Prices based on your location via GPS and IP"
+      },
+      "agrolink": {
+        "title": "Agrolink API",
+        "description": "Real-time agricultural market quotes"
+      },
+      "analysis": {
+        "title": "Data Analysis",
+        "description": "Charts and futures market metrics"
+      },
+      "apis": {
+        "title": "External APIs",
+        "description": "IBGE, Federal Revenue and FAO integrated"
+      }
+    },
+    "stats": {
+      "grains": "Grain Types",
+      "realtime": "Real Time",
+      "updates": "Updates",
+      "integration": "Integration"
+    }
+  },
+  "about": {
+    "title": "About AGROSYNC",
+    "subtitle": "Leading agricultural intelligence platform",
+    "mission": {
+      "title": "Our Mission",
+      "description1": "Connect Brazilian agribusiness through cutting-edge technology, offering accurate data, advanced analytics and tools for strategic decision-making in the agricultural market.",
+      "description2": "We integrate official Brazilian government APIs with global data to provide the most complete and up-to-date market view."
+    },
+    "contact": {
+      "title": "Contact Information",
+      "email": "contato@agroisync.com",
+      "phone": "+55 66 99236-2830",
+      "location": "Sinop - MT, Brazil"
+    },
+    "features": {
+      "title": "Why choose AGROSYNC?",
+      "official_data": {
+        "title": "Official Data",
+        "description": "Direct integration with IBGE, Federal Revenue and government APIs"
+      },
+      "realtime": {
+        "title": "Real Time",
+        "description": "24/7 automatic updates with market data"
+      },
+      "global": {
+        "title": "Global Coverage",
+        "description": "FAO export data and international markets"
+      }
+    },
+    "cta": {
+      "title": "Ready to get started?",
+      "description": "Access now and discover the power of real-time agricultural data.",
+      "view_quotes": "View Quotes",
+      "create_account": "Create Account"
+    }
+  },
+  "quotes": {
+    "title": "Grain Quotes",
+    "subtitle": "Real-time prices based on your location",
+    "description": "Real-time prices based on your location via Agrolink API. Data automatically updated with GPS geolocation and IP fallback.",
+    "dashboard": {
+      "title": "Grain Dashboard",
+      "subtitle": "Real-time quotes based on your location",
+      "loading": "Loading quote data...",
+      "updating": "Updating...",
+      "update": "Update",
+      "last_update": "Last update",
+      "regional_price": "Regional price",
+      "updated": "Updated",
+      "error_loading": "Error Loading Data",
+      "try_again": "Try Again"
+    },
+    "grains": {
+      "title": "Monitored Grains",
+      "soybean": "Soybean",
+      "corn": "Corn",
+      "wheat": "Wheat",
+      "rice": "Rice",
+      "coffee": "Coffee",
+      "cotton": "Cotton",
+      "unit": "Unit"
+    },
+    "geolocation": {
+      "title": "How Geolocation Works",
+      "gps": {
+        "title": "1. Native GPS",
+        "description": "We request access to your device's GPS for precise location"
+      },
+      "fallback": {
+        "title": "2. IP Fallback",
+        "description": "If GPS is not available, we use your IP location"
+      },
+      "agrolink": {
+        "title": "3. Agrolink API",
+        "description": "Regional prices based on your detected location"
+      }
+    }
+  },
+  "marketplace": {
+    "title": "Agricultural Marketplace",
+    "subtitle": "Connecting producers, sellers and buyers",
+    "description": "We connect producers, sellers and buyers of Brazilian agribusiness. Advertise your products and find the best market offers.",
+    "search_placeholder": "Search products or location...",
+    "categories": {
+      "all": "All",
+      "grains": "Grains",
+      "coffee": "Coffee",
+      "fibers": "Fibers"
+    },
+    "products": {
+      "title": "Available Products",
+      "found": "product found",
+      "found_plural": "products found",
+      "no_products": {
+        "title": "No products found",
+        "description": "Try adjusting filters or search"
+      },
+      "available": "Available",
+      "price": "Price",
+      "quantity": "Quantity",
+      "call": "Call",
+      "email": "Email",
+      "product_id": "Product ID"
+    },
+    "cta": {
+      "title": "Want to advertise your products?",
+      "description": "Register for free and start selling on Brazil's largest agricultural marketplace.",
+      "advertise": "Advertise Product",
+      "how_it_works": "See How It Works"
+    }
+  },
+  "agroconnect": {
+    "title": "AgroConnect",
+    "subtitle": "Agricultural freight system",
+    "description": "Agricultural freight system that connects truckers, producers, sellers and buyers of Brazilian agribusiness.",
+    "tabs": {
+      "freights": "Available Freights",
+      "users": "Registered Users"
+    },
+    "freights": {
+      "title": "Available Freights",
+      "publish": "Publish Freights",
+      "origin": "Origin",
+      "destination": "Destination",
+      "product": "Product",
+      "weight": "Weight",
+      "value": "Value",
+      "type": "Type",
+      "driver": "Driver",
+      "contact": "Contact",
+      "status": {
+        "available": "Available",
+        "in_transit": "In Transit",
+        "completed": "Completed"
+      }
+    },
+    "users": {
+      "title": "Registered Users",
+      "register": "Register User",
+      "contact_user": "Contact User",
+      "types": {
+        "driver": "Driver",
+        "producer": "Producer",
+        "buyer": "Buyer",
+        "seller": "Seller"
+      },
+      "status": {
+        "active": "Active"
+      }
+    },
+    "cta": {
+      "title": "Want to register on AgroConnect?",
+      "description": "Connect with Brazil's largest agricultural freight system.",
+      "register_now": "Register Now",
+      "see_user_types": "See User Types"
+    }
+  },
+  "crypto": {
+    "title": "Crypto & DeFi",
+    "subtitle": "Decentralized finance for agribusiness",
+    "description": "Advanced decentralized finance platform integrating Metamask, Stripe and Web3 solutions for agribusiness.",
+    "wallet": {
+      "title": "Connect Your Wallet",
+      "connect_metamask": "Connect MetaMask",
+      "connecting": "Connecting...",
+      "connected": "Wallet Connected",
+      "disconnect": "Disconnect",
+      "view_transactions": "View Transactions",
+      "balance": "Balance",
+      "metamask_not_installed": "MetaMask is not installed!",
+      "connection_error": "Error connecting wallet",
+      "description": "Connect your MetaMask wallet to access DeFi features"
+    },
+    "defi": {
+      "title": "DeFi Features",
+      "staking": {
+        "title": "Staking",
+        "description": "Stake your tokens and earn rewards"
+      },
+      "yield_farming": {
+        "title": "Yield Farming",
+        "description": "Maximize your returns with farming"
+      },
+      "liquidity_pools": {
+        "title": "Liquidity Pools",
+        "description": "Provide liquidity and earn fees"
+      }
+    },
+    "public_address": {
+      "title": "Platform Public Address",
+      "ethereum_address": "Ethereum Address",
+      "copy": "Copy",
+      "description": "This address is used for transactions and platform smart contracts",
+      "copied": "Address copied to clipboard!"
+    },
+    "stripe": {
+      "title": "Stripe Integration",
+      "subtitle": "Traditional Payments",
+      "description": "Accept payments in reais through Stripe, integrated with our DeFi platform for automatic currency conversion.",
+      "credit_card": "Credit Card",
+      "visa_mastercard": "Visa, Mastercard",
+      "pix": "PIX",
+      "instant_transfer": "Instant Transfer",
+      "boleto": "Bank Slip",
+      "bank_payment": "Bank Payment"
+    },
+    "cta": {
+      "title": "Ready for the Future of Finance?",
+      "description": "Experience the first DeFi platform integrated with Brazilian agribusiness.",
+      "connect_wallet": "Connect Wallet",
+      "learn_more": "Learn More"
+    }
+  },
+  "register": {
+    "title": "Register",
+    "login_title": "Login",
+    "subtitle_register": "Create your account and start using all AGROSYNC features",
+    "subtitle_login": "Access your account to manage products, freight and quotes",
+    "toggle": {
+      "register": "Register",
+      "login": "Login"
+    },
+    "form": {
+      "full_name": "Full Name",
+      "full_name_placeholder": "Enter your full name",
+      "user_type": "User Type",
+      "cpf_cnpj": "CPF or CNPJ",
+      "cpf_cnpj_placeholder": "Enter your CPF or CNPJ",
+      "phone": "Phone",
+      "phone_placeholder": "(00) 00000-0000",
+      "location": "Location",
+      "location_placeholder": "City - State",
+      "company": "Company Name (optional)",
+      "company_placeholder": "Enter your company name",
+      "email": "Email",
+      "email_placeholder": "your@email.com",
+      "password": "Password",
+      "password_placeholder": "Enter your password",
+      "confirm_password": "Confirm Password",
+      "confirm_password_placeholder": "Confirm your password",
+      "login_button": "Login",
+      "register_button": "Create Account",
+      "forgot_password": "Forgot your password?",
+      "no_account": "Don't have an account?",
+      "register_here": "Register here",
+      "have_account": "Already have an account?",
+      "login_here": "Login here"
+    },
+    "user_types": {
+      "producer": "Producer - Farmer who produces commodities",
+      "buyer": "Buyer - Company that buys agricultural products",
+      "seller": "Seller - Intermediary in product sales",
+      "driver": "Driver - Agricultural freight transporter"
+    },
+    "features": {
+      "title": "Why register on AGROSYNC?",
+      "geolocation": {
+        "title": "Geolocation",
+        "description": "Prices based on your real location"
+      },
+      "marketplace": {
+        "title": "Marketplace",
+        "description": "Advertise and buy agricultural products"
+      },
+      "freight": {
+        "title": "Freight",
+        "description": "Complete agricultural logistics system"
+      }
+    }
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "subtitle": "Complete AGROSYNC platform management",
+    "login": {
+      "title": "Administrative Area",
+      "email_label": "Administrative Email",
+      "email_placeholder": "admin@agroisync.com",
+      "password_label": "Password",
+      "password_placeholder": "Enter your password",
+      "login_button": "Access Admin",
+      "restricted_access": "Access restricted to authorized administrators",
+      "invalid_credentials": "Invalid credentials!",
+      "login_success": "Login successful!"
+    },
+    "dashboard": {
+      "stats": "General Statistics",
+      "users": "Users",
+      "quotes": "Quotes",
+      "registrations": "Registrations",
+      "ads": "Ads",
+      "logout": "Logout"
+    },
+    "management": {
+      "title": "Management",
+      "users": {
+        "title": "Users",
+        "description": "Manage accounts and permissions"
+      },
+      "quotes": {
+        "title": "Quotes",
+        "description": "Monitor prices and trends"
+      },
+      "registrations": {
+        "title": "Registrations",
+        "description": "Approve new users"
+      },
+      "ads": {
+        "title": "Ads",
+        "description": "Moderate marketplace"
+      }
+    },
+    "quick_actions": {
+      "title": "Quick Actions",
+      "add_user": {
+        "title": "Add User",
+        "description": "Create new administrative account"
+      },
+      "approve_registrations": {
+        "title": "Approve Registrations",
+        "description": "Review pending items"
+      },
+      "reports": {
+        "title": "Reports",
+        "description": "Generate analytics and metrics"
+      }
+    }
+  },
+  "footer": {
+    "sections": {
+      "platform": "Platform",
+      "services": "Services",
+      "support": "Support"
+    },
+    "services": {
+      "agroconnect": "AgroConnect",
+      "crypto_defi": "Crypto & DeFi",
+      "marketplace": "Marketplace",
+      "geolocation": "Geolocation"
+    },
+    "support": {
+      "register": "Register",
+      "faq": "FAQ",
+      "contact": "Contact",
+      "admin": "Admin"
+    },
+    "contact": {
+      "title": "Contact",
+      "email": "contato@agroisync.com",
+      "phone": "+55 66 99236-2830",
+      "location": "Sinop - MT, Brazil"
+    },
+    "newsletter": {
+      "title": "Newsletter",
+      "placeholder": "Your email"
+    },
+    "schedule": {
+      "title": "Business Hours",
+      "weekdays": "Monday to Friday: 8am to 6pm",
+      "saturday": "Saturday: 8am to 12pm",
+      "sunday": "Sunday: Closed"
+    },
+    "copyright": "All rights reserved.",
+    "legal": {
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Use",
+      "cookies": "Cookies"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "short_name": "AGROSYNC",
+  "name": "AGROSYNC - Inteligência Agrícola",
+  "description": "Plataforma líder em inteligência agrícola com dados em tempo real do IBGE, Receita Federal e APIs globais.",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "agrosync-logo.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192"
+    },
+    {
+      "src": "agrosync-logo.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#000000",
+  "orientation": "portrait-primary",
+  "categories": ["business", "productivity", "finance"],
+  "lang": "pt-BR"
+}
