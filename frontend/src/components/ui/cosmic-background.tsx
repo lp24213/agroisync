@@ -15,9 +15,14 @@ export function CosmicBackground({ children, className = '' }: CosmicBackgroundP
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const animationFrameRef = useRef<number | null>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    if (!mountRef.current) return;
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mountRef.current || !isClient || typeof window === 'undefined') return;
 
     // Scene setup
     const scene = new THREE.Scene();
@@ -207,7 +212,18 @@ export function CosmicBackground({ children, className = '' }: CosmicBackgroundP
         sceneRef.current.clear();
       }
     };
-  }, []);
+  }, [isClient]);
+
+  // Fallback for SSR
+  if (!isClient) {
+    return (
+      <div className={`relative w-full h-full bg-black ${className}`}>
+        <div className="absolute inset-0 z-10">
+          {children}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div ref={mountRef} className={`relative w-full h-full ${className}`}>
@@ -219,6 +235,14 @@ export function CosmicBackground({ children, className = '' }: CosmicBackgroundP
 }
 
 export function FloatingLights() {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) return null;
+
   return (
     <div className="fixed inset-0 pointer-events-none z-0">
       {[...Array(20)].map((_, i) => (

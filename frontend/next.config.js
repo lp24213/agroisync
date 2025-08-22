@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
-  trailingSlash: true,
+  trailingSlash: false,
   images: {
     unoptimized: true,
     remotePatterns: [

@@ -1,23 +1,20 @@
 'use client';
 
 import { FuturisticNavbar } from '@/components/layout/futuristic-navbar'
-import { CosmicBackground } from '@/components/ui/cosmic-background'
 import { AIChatbot } from '@/components/chatbot/ai-chatbot'
-import { FloatingLights } from '@/components/ui/cosmic-background'
 
-interface ClientLayoutProps {
+interface SimpleLayoutProps {
   children: React.ReactNode
 }
 
-export function ClientLayout({ children }: ClientLayoutProps) {
+export function SimpleLayout({ children }: SimpleLayoutProps) {
   return (
-    <CosmicBackground>
-      <FloatingLights />
+    <div className="min-h-screen bg-black text-white">
       <FuturisticNavbar />
       <main className="pt-20">
         {children}
       </main>
       <AIChatbot />
-    </CosmicBackground>
+    </div>
   )
 }

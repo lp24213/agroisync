@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { ClientLayout } from '@/components/layout/client-layout'
+import { StableLayout } from '@/components/layout/stable-layout'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -47,9 +47,9 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className="dark">
       <body className={`${inter.className} bg-black text-white antialiased`}>
-        <ClientLayout>
+        <StableLayout>
           {children}
-        </ClientLayout>
+        </StableLayout>
       </body>
     </html>
   )

@@ -51,7 +51,7 @@ Resources:
       Handler: dist/handler.js
       MemorySize: 2048
       Timeout: 60
-      ReservedConcurrencyLimit: 100
+      # ReservedConcurrencyLimit: 100
       AutoPublishAlias: live
       DeploymentPreference:
         Type: Linear10PercentEvery1Minute
@@ -119,7 +119,7 @@ Resources:
       Handler: dist/health-handler.js
       MemorySize: 512
       Timeout: 10
-      ReservedConcurrencyLimit: 50
+      # ReservedConcurrencyLimit: 50
       Policies:
         - AWSLambdaBasicExecutionRole
         - Statement:
