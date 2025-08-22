@@ -30,15 +30,16 @@ export function StableLayout({ children }: StableLayoutProps) {
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const handleScroll = () => {
+    const handleScroll = () => {
+      if (typeof window !== 'undefined') {
         setScrolled(window.scrollY > 20);
-      };
+      }
+    };
 
+    if (typeof window !== 'undefined') {
       window.addEventListener('scroll', handleScroll);
       return () => window.removeEventListener('scroll', handleScroll);
     }
-    return undefined;
   }, []);
 
   const navItems = [
