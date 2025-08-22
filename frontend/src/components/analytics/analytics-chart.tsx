@@ -95,13 +95,13 @@ export function AnalyticsChart({ data, type, height }: AnalyticsChartProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="relative"
     >
-      <canvas
-        ref={canvasRef}
-        className="w-full rounded-lg"
-        style={{ height: `${height}px` }}
-      />
+      <div className="relative">
+        <canvas
+          ref={canvasRef}
+          className="w-full h-64"
+        />
+      </div>
     </motion.div>
   )
 }

@@ -116,23 +116,24 @@ export function FreightMap({ freightData }: FreightMapProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="relative"
     >
-      <div ref={mapRef} className="w-full h-96 rounded-xl overflow-hidden" />
+      <div className="relative">
+        <div ref={mapRef} className="w-full h-96 rounded-xl overflow-hidden" />
       
-      <div className="absolute top-4 right-4 bg-card/80 backdrop-blur-sm border border-border/50 rounded-lg p-3">
-        <div className="flex items-center space-x-4 text-sm">
-          <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 bg-green-400 rounded-full" />
-            <span className="text-foreground">Disponível</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 bg-yellow-400 rounded-full" />
-            <span className="text-foreground">Em Trânsito</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 bg-blue-400 rounded-full" />
-            <span className="text-foreground">Concluído</span>
+        <div className="absolute top-4 right-4 bg-card/80 backdrop-blur-sm border border-border/50 rounded-lg p-3">
+          <div className="flex items-center space-x-4 text-sm">
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 bg-green-400 rounded-full" />
+              <span className="text-foreground">Disponível</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 bg-yellow-400 rounded-full" />
+              <span className="text-foreground">Em Trânsito</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 bg-blue-400 rounded-full" />
+              <span className="text-foreground">Concluído</span>
+            </div>
           </div>
         </div>
       </div>

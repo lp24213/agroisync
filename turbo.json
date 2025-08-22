@@ -1,9 +1,205 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["**/.env.*local"],
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "dist/**"]
+      "outputs": ["dist/**", ".next/**", "build/**"],
+      "env": ["NODE_ENV", "NEXT_PUBLIC_*", "VITE_*", "REACT_APP_*"],
+      "cache": true
+    },
+    "build:clean": {
+      "dependsOn": ["^build:clean"],
+      "outputs": ["dist/**", ".next/**", "build/**"],
+      "cache": false
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "start": {
+      "dependsOn": ["build"],
+      "cache": false
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
+      "env": ["NODE_ENV", "CI", "TEST_*"],
+      "cache": true
+    },
+    "test:watch": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "test:coverage": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
+      "cache": true
+    },
+    "lint": {
+      "dependsOn": ["^build"],
+      "outputs": [],
+      "cache": true
+    },
+    "lint:fix": {
+      "dependsOn": ["^build"],
+      "outputs": [],
+      "cache": false
+    },
+    "type-check": {
+      "dependsOn": ["^build"],
+      "outputs": [],
+      "cache": true
+    },
+    "clean": {
+      "dependsOn": ["^clean"],
+      "outputs": ["dist/**", ".next/**", "build/**", "node_modules/.cache/**", "coverage/**", "logs/**"],
+      "cache": false
+    },
+    "docker:build": {
+      "dependsOn": ["^build"],
+      "outputs": [],
+      "cache": false
+    },
+    "docker:push": {
+      "dependsOn": ["docker:build"],
+      "outputs": [],
+      "cache": false
+    },
+    "deploy:sam": {
+      "dependsOn": ["build"],
+      "outputs": [],
+      "cache": false
+    },
+    "deploy:lambda": {
+      "dependsOn": ["build"],
+      "outputs": [],
+      "cache": false
+    },
+    "deploy:docker": {
+      "dependsOn": ["docker:build"],
+      "outputs": [],
+      "cache": false
+    },
+    "security": {
+      "dependsOn": [],
+      "outputs": [],
+      "cache": true
+    },
+    "security:fix": {
+      "dependsOn": [],
+      "outputs": [],
+      "cache": false
+    },
+    "monitor": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "logs": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "restart": {
+      "dependsOn": ["^build"],
+      "outputs": [],
+      "cache": false
+    },
+    "health": {
+      "dependsOn": [],
+      "outputs": [],
+      "cache": false
+    },
+    "health:detailed": {
+      "dependsOn": [],
+      "outputs": [],
+      "cache": false
     }
-  }
+  },
+  "globalEnv": [
+    "NODE_ENV",
+    "CI",
+    "VERCEL",
+    "NEXT_PUBLIC_*",
+    "VITE_*",
+    "REACT_APP_*",
+    "AWS_*",
+    "STRIPE_*",
+    "JWT_*",
+    "DB_*",
+    "REDIS_*",
+    "SENTRY_*",
+    "NEW_RELIC_*"
+  ],
+  "experimentalFeatures": {
+    "outputMode": "new-only",
+    "taskDependencies": true,
+    "cacheOnly": false,
+    "remoteCache": false
+  },
+  "cache": {
+    "enabled": true,
+    "compression": "gzip",
+    "maxAge": 86400,
+    "hashDependencies": ["package-lock.json", "yarn.lock", "pnpm-lock.yaml"],
+    "outputMode": "new-only"
+  },
+  "remoteCache": {
+    "enabled": false,
+    "signature": false,
+    "team": "agroisync",
+    "url": "https://turbo.build"
+  },
+  "tasks": {
+    "build": {
+      "description": "Build the application",
+      "command": "npm run build",
+      "inputs": ["src/**/*", "package.json", "tsconfig.json"],
+      "outputs": ["dist/**"]
+    },
+    "test": {
+      "description": "Run tests",
+      "command": "npm run test",
+      "inputs": ["src/**/*", "tests/**/*", "package.json"],
+      "outputs": ["coverage/**"]
+    },
+    "lint": {
+      "description": "Run linting",
+      "command": "npm run lint",
+      "inputs": ["src/**/*", ".eslintrc.js", "package.json"],
+      "outputs": []
+    },
+    "type-check": {
+      "description": "Run type checking",
+      "command": "npm run type-check",
+      "inputs": ["src/**/*", "tsconfig.json"],
+      "outputs": []
+    }
+  },
+  "extends": ["//"],
+  "outputs": ["dist/**", ".next/**", "build/**", "coverage/**"],
+  "inputs": ["src/**/*", "tests/**/*", "package.json", "tsconfig.json", ".eslintrc.js"],
+  "env": ["NODE_ENV", "CI", "AWS_*", "STRIPE_*", "JWT_*", "DB_*", "REDIS_*"],
+  "cacheKey": "agroisync-backend-{{hash}}",
+  "cacheDir": ".turbo",
+  "logLevel": "info",
+  "concurrency": 4,
+  "profile": false,
+  "trace": false,
+  "dryRun": false,
+  "force": false,
+  "filter": [],
+  "scope": [],
+  "ignore": ["node_modules/**", "dist/**", ".next/**", "build/**", "coverage/**", "logs/**"],
+  "only": [],
+  "noCache": false,
+  "continue": false,
+  "parallel": true,
+  "graph": false,
+  "team": "agroisync",
+  "token": "",
+  "api": "https://api.turbo.build",
+  "login": "https://turbo.build/login"
 } 

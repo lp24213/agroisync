@@ -100,7 +100,7 @@ const mockCryptoData: CryptoData[] = [
 export function CryptoPage() {
   const [cryptoData, setCryptoData] = useState<CryptoData[]>(mockCryptoData)
   const [isLoading, setIsLoading] = useState(false)
-  const [selectedCrypto, setSelectedCrypto] = useState<CryptoData>(mockCryptoData[0])
+  const [selectedCrypto, setSelectedCrypto] = useState<CryptoData | undefined>(mockCryptoData[0])
 
   const refreshData = async () => {
     setIsLoading(true)
@@ -156,16 +156,18 @@ export function CryptoPage() {
               <div className="glass-card p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-semibold text-foreground">
-                    Gráfico de Preços - {selectedCrypto.name}
+                    Gráfico de Preços{selectedCrypto ? ` - ${selectedCrypto.name}` : ''}
                   </h2>
                   <div className="flex items-center space-x-2">
                     <Coins className="w-4 h-4 text-primary" />
                     <span className="text-sm text-muted-foreground">
-                      Última atualização: {selectedCrypto.lastUpdated.toLocaleTimeString('pt-BR')}
+                      Última atualização: {selectedCrypto?.lastUpdated.toLocaleTimeString('pt-BR')}
                     </span>
                   </div>
                 </div>
-                <CryptoChart data={selectedCrypto.chartData || []} symbol={selectedCrypto.symbol} />
+                {selectedCrypto && (
+                  <CryptoChart data={selectedCrypto.chartData || []} symbol={selectedCrypto.symbol} />
+                )}
               </div>
             </div>
 

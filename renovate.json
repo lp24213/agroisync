@@ -1,27 +1,91 @@
 {
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:base",
-    "schedule:weekly"
+    "schedule:weekly",
+    ":semanticCommits",
+    ":enablePreCommit",
+    ":enableLockFileMaintenance"
   ],
   "packageRules": [
     {
-      "matchPackagePatterns": ["^@types/"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchCurrentVersion": "!/^0/",
       "automerge": true,
-      "automergeType": "pr"
+      "automergeType": "pr",
+      "platformAutomerge": true
     },
     {
-      "matchPackageNames": ["next", "react", "react-dom"],
-      "enabled": false
+      "matchPackageNames": ["typescript", "@types/node"],
+      "groupName": "typescript ecosystem",
+      "automerge": false
     },
     {
-      "matchPackageNames": ["express"],
-      "enabled": false
+      "matchPackageNames": ["@aws-sdk/*"],
+      "groupName": "aws sdk",
+      "automerge": true
+    },
+    {
+      "matchPackageNames": ["express", "helmet", "cors"],
+      "groupName": "express ecosystem",
+      "automerge": true
+    },
+    {
+      "matchPackageNames": ["jest", "@types/jest", "ts-jest"],
+      "groupName": "testing ecosystem",
+      "automerge": true
+    },
+    {
+      "matchPackageNames": ["eslint", "@typescript-eslint/*"],
+      "groupName": "linting ecosystem",
+      "automerge": true
+    },
+    {
+      "matchPackageNames": ["prettier"],
+      "groupName": "code formatting",
+      "automerge": true
     }
   ],
-  "assignees": ["lp24213"],
-  "reviewers": ["lp24213"],
+  "assignees": ["@agroisync-team"],
+  "reviewers": ["@agroisync-team"],
   "labels": ["dependencies", "renovate"],
   "commitMessagePrefix": "chore(deps):",
-  "schedule": ["before 9am on monday"],
-  "timezone": "America/Sao_Paulo"
+  "commitMessageAction": "update",
+  "commitMessageTopic": "{{depName}}",
+  "commitMessageExtra": "to {{newVersion}}",
+  "prHourlyLimit": 2,
+  "prConcurrentLimit": 10,
+  "rangeStrategy": "bump",
+  "bumpVersion": "patch",
+  "recreateClosed": false,
+  "onboarding": false,
+  "requireConfig": true,
+  "platform": "github",
+  "repositories": [
+    "lp24213/agrotm.sol"
+  ],
+  "schedule": [
+    "before 4am on monday"
+  ],
+  "timezone": "America/Sao_Paulo",
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "assignees": ["@agroisync-team"],
+    "reviewers": ["@agroisync-team"],
+    "labels": ["security", "vulnerability"]
+  },
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 4am on monday"]
+  },
+  "packageRules": [
+    {
+      "matchPackagePatterns": ["^@agroisync/"],
+      "enabled": false
+    }
+  ]
 }

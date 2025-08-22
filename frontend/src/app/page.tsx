@@ -1,17 +1,11 @@
-import { Hero } from '@/components/home/hero'
-import { QuickAccessCards } from '@/components/home/quick-access-cards'
-import { FeaturesSection } from '@/components/home/features-section'
-import { StatsSection } from '@/components/home/stats-section'
-import { CTASection } from '@/components/home/cta-section'
+import dynamic from 'next/dynamic'
 
-export default function HomePage() {
+const FuturisticHero = dynamic(() => import('@/components/home/futuristic-hero').then(mod => ({ default: mod.FuturisticHero })), { ssr: false })
+
+export default function Home() {
   return (
-    <div className="relative">
-      <Hero />
-      <QuickAccessCards />
-      <FeaturesSection />
-      <StatsSection />
-      <CTASection />
+    <div className="min-h-screen">
+      <FuturisticHero />
     </div>
   )
 }

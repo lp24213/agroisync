@@ -230,28 +230,29 @@ export function AdminPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="glass-card p-6 border border-border/50"
                 >
-                  <div className="flex items-center justify-between mb-4">
-                    <div className={`w-12 h-12 bg-gradient-to-r ${stat.color} rounded-xl flex items-center justify-center`}>
-                      <stat.icon className="w-6 h-6 text-white" />
+                  <div className="glass-card p-6 border border-border/50">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className={`w-12 h-12 bg-gradient-to-r ${stat.color} rounded-xl flex items-center justify-center`}>
+                        <stat.icon className="w-6 h-6 text-white" />
+                      </div>
+                      <div className={`text-sm font-medium px-2 py-1 rounded-full ${
+                        stat.changeType === 'positive' 
+                          ? 'bg-green-500/20 text-green-400' 
+                          : 'bg-red-500/20 text-red-400'
+                      }`}>
+                        {stat.change}
+                      </div>
                     </div>
-                    <div className={`text-sm font-medium px-2 py-1 rounded-full ${
-                      stat.changeType === 'positive' 
-                        ? 'bg-green-500/20 text-green-400' 
-                        : 'bg-red-500/20 text-red-400'
-                    }`}>
-                      {stat.change}
+                    
+                    <div>
+                      <h3 className="text-sm font-medium text-muted-foreground mb-1">
+                        {stat.title}
+                      </h3>
+                      <p className="text-2xl font-bold text-foreground">
+                        {stat.value}
+                      </p>
                     </div>
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-sm font-medium text-muted-foreground mb-1">
-                      {stat.title}
-                    </h3>
-                    <p className="text-2xl font-bold text-foreground">
-                      {stat.value}
-                    </p>
                   </div>
                 </motion.div>
               ))}
@@ -632,7 +633,6 @@ export function AdminPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="mb-8"
         >
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-foreground mb-2">

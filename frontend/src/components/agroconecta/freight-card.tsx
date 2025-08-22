@@ -46,66 +46,56 @@ export function FreightCard({ freight }: FreightCardProps) {
   return (
     <motion.div
       whileHover={{ scale: 1.02, y: -4 }}
-      className="glass-card p-6 border border-border/50 hover:border-primary/50 transition-all duration-300 cursor-pointer"
     >
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex-1">
-          <h3 className="font-semibold text-foreground mb-2 line-clamp-2">
-            {freight.title}
-          </h3>
-          <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(freight.status)}`}>
-            {getStatusLabel(freight.status)}
-          </div>
-        </div>
-        <div className="text-right">
-          <div className="text-2xl font-bold text-primary">
-            R$ {freight.price.toLocaleString('pt-BR')}
-          </div>
-          <div className="text-sm text-muted-foreground">
-            {freight.weight.toLocaleString('pt-BR')} kg
-          </div>
-        </div>
-      </div>
-
-      <div className="space-y-3 mb-4">
-        <div className="flex items-center space-x-2">
-          <MapPin className="w-4 h-4 text-muted-foreground" />
-          <div className="text-sm">
-            <div className="text-foreground font-medium">Origem</div>
-            <div className="text-muted-foreground">{freight.origin}</div>
-          </div>
-        </div>
-        
-        <div className="flex items-center space-x-2">
-          <MapPin className="w-4 h-4 text-muted-foreground" />
-          <div className="text-sm">
-            <div className="text-foreground font-medium">Destino</div>
-            <div className="text-muted-foreground">{freight.destination}</div>
+      <div className="glass-card p-6 border border-border/50 hover:border-primary/50 transition-all duration-300 cursor-pointer">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-foreground mb-2">
+              {freight.title}
+            </h3>
           </div>
         </div>
 
-        <div className="flex items-center space-x-2">
-          <Package className="w-4 h-4 text-muted-foreground" />
-          <div className="text-sm">
-            <div className="text-foreground font-medium">Tipo de Grão</div>
-            <div className="text-muted-foreground">{freight.grainType}</div>
+        <div className="space-y-3 mb-4">
+          <div className="flex items-center space-x-2">
+            <MapPin className="w-4 h-4 text-muted-foreground" />
+            <div className="text-sm">
+              <div className="text-foreground font-medium">Origem</div>
+              <div className="text-muted-foreground">{freight.origin}</div>
+            </div>
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            <MapPin className="w-4 h-4 text-muted-foreground" />
+            <div className="text-sm">
+              <div className="text-foreground font-medium">Destino</div>
+              <div className="text-muted-foreground">{freight.destination}</div>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Package className="w-4 h-4 text-muted-foreground" />
+            <div className="text-sm">
+              <div className="text-foreground font-medium">Tipo de Grão</div>
+              <div className="text-muted-foreground">{freight.grainType}</div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="flex items-center justify-between pt-4 border-t border-border/30">
-        <div className="flex items-center space-x-2">
-          <User className="w-4 h-4 text-muted-foreground" />
-          <span className="text-sm text-muted-foreground">{freight.transporter}</span>
-        </div>
-        <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-          <Calendar className="w-3 h-3" />
-          <span>
-            {freight.createdAt.toLocaleDateString('pt-BR', {
-              day: '2-digit',
-              month: '2-digit',
-            })}
-          </span>
+        <div className="flex items-center justify-between pt-4 border-t border-border/30">
+          <div className="flex items-center space-x-2">
+            <User className="w-4 h-4 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">{freight.transporter}</span>
+          </div>
+          <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+            <Calendar className="w-3 h-3" />
+            <span>
+              {freight.createdAt.toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+              })}
+            </span>
+          </div>
         </div>
       </div>
     </motion.div>

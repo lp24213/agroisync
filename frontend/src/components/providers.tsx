@@ -1,7 +1,7 @@
 'use client'
 
 import { ReactNode } from 'react'
-import { ThemeProvider } from 'next-themes'
+import { AppProvider } from '@/contexts/app-context'
 import { Toaster } from 'react-hot-toast'
 
 interface ProvidersProps {
@@ -10,12 +10,7 @@ interface ProvidersProps {
 
 export function Providers({ children }: ProvidersProps) {
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="dark"
-      enableSystem={false}
-      disableTransitionOnChange
-    >
+    <AppProvider>
       {children}
       <Toaster
         position="top-right"
@@ -28,6 +23,6 @@ export function Providers({ children }: ProvidersProps) {
           },
         }}
       />
-    </ThemeProvider>
+    </AppProvider>
   )
 }

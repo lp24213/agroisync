@@ -1,10 +1,11 @@
-import { StorePage } from '@/components/store/store-page'
+import { Marketplace } from '@/components/store/marketplace'
 
-export const metadata = {
-  title: 'Loja Online - AgroSync',
-  description: 'Catálogo de produtos agrícolas, filtros avançados e checkout integrado na plataforma AgroSync.',
-}
-
-export default function StorePageRoute() {
-  return <StorePage />
+export default function StorePage() {
+  return (
+    <div className="min-h-screen bg-black">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <Marketplace />
+      </div>
+    </div>
+  )
 }

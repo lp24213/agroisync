@@ -67,48 +67,49 @@ export function AnalyticsTable() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: index * 0.1 }}
-              className="border-b border-border/20 hover:bg-secondary/20 transition-colors"
             >
-              <td className="py-3 px-4">
-                <div className="flex items-center space-x-2">
-                  <MapPin className="w-4 h-4 text-muted-foreground" />
-                  <span className="font-medium text-foreground">{region.region}</span>
-                </div>
-              </td>
-              <td className="py-3 px-4 text-right">
-                <div className="font-semibold text-foreground">
-                  R$ {(region.revenue / 1000).toFixed(0)}k
-                </div>
-              </td>
-              <td className="py-3 px-4 text-right">
-                <div className="font-medium text-foreground">
-                  {region.orders.toLocaleString('pt-BR')}
-                </div>
-              </td>
-              <td className="py-3 px-4 text-right">
-                <div className="font-medium text-foreground">
-                  {region.users.toLocaleString('pt-BR')}
-                </div>
-              </td>
-              <td className="py-3 px-4 text-right">
-                <div className={`flex items-center justify-end space-x-1 ${
-                  region.growth >= 0 ? 'text-green-400' : 'text-red-400'
-                }`}>
-                  {region.growth >= 0 ? (
-                    <TrendingUp className="w-4 h-4" />
-                  ) : (
-                    <TrendingDown className="w-4 h-4" />
-                  )}
-                  <span className="font-medium">
-                    {region.growth >= 0 ? '+' : ''}{region.growth}%
-                  </span>
-                </div>
-              </td>
-              <td className="py-3 px-4 text-right">
-                <div className="font-medium text-foreground">
-                  {region.conversion}%
-                </div>
-              </td>
+              <tr className="border-b border-border/20 hover:bg-secondary/20 transition-colors">
+                <td className="py-3 px-4">
+                  <div className="flex items-center space-x-2">
+                    <MapPin className="w-4 h-4 text-muted-foreground" />
+                    <span className="font-medium text-foreground">{region.region}</span>
+                  </div>
+                </td>
+                <td className="py-3 px-4 text-right">
+                  <div className="font-semibold text-foreground">
+                    R$ {(region.revenue / 1000).toFixed(0)}k
+                  </div>
+                </td>
+                <td className="py-3 px-4 text-right">
+                  <div className="font-medium text-foreground">
+                    {region.orders.toLocaleString('pt-BR')}
+                  </div>
+                </td>
+                <td className="py-3 px-4 text-right">
+                  <div className="font-medium text-foreground">
+                    {region.users.toLocaleString('pt-BR')}
+                  </div>
+                </td>
+                <td className="py-3 px-4 text-right">
+                  <div className={`flex items-center justify-end space-x-1 ${
+                    region.growth >= 0 ? 'text-green-400' : 'text-red-400'
+                  }`}>
+                    {region.growth >= 0 ? (
+                      <TrendingUp className="w-4 h-4" />
+                    ) : (
+                      <TrendingDown className="w-4 h-4" />
+                    )}
+                    <span className="font-medium">
+                      {region.growth >= 0 ? '+' : ''}{region.growth}%
+                    </span>
+                  </div>
+                </td>
+                <td className="py-3 px-4 text-right">
+                  <div className="font-medium text-foreground">
+                    {region.conversion}%
+                  </div>
+                </td>
+              </tr>
             </motion.tr>
           ))}
         </tbody>

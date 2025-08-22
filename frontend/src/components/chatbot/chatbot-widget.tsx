@@ -259,7 +259,7 @@ export function ChatbotWidget({ isOpen, onToggle }: ChatbotWidgetProps) {
                         : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
                     }`}
                   >
-                    {message.type === 'image' && message.metadata.fileData && (
+                    {message.type === 'image' && message.metadata?.fileData && (
                       <img
                         src={message.metadata.fileData as string}
                         alt="Uploaded file"

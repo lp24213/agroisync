@@ -21,7 +21,7 @@ class AgrolinkClient {
 
   constructor(config: Partial<AgrolinkConfig> = {}) {
     this.config = {
-      apiKey: process.env.NEXT_PUBLIC_AGROLINK_API_KEY,
+      apiKey: process.env.NEXT_PUBLIC_AGROLINK_API_KEY || '',
       baseUrl: 'https://api.agrolink.com.br/v1',
       timeout: 10000,
       maxRetries: 3,
@@ -36,9 +36,9 @@ class AgrolinkClient {
   ): Promise<AgrolinkResponse<T>> {
     try {
       const url = `${this.config.baseUrl}${endpoint}`
-      const headers: HeadersInit = {
+      const headers: Record<string, string> = {
         'Content-Type': 'application/json',
-        ...options.headers,
+        ...(options.headers as Record<string, string>),
       }
 
       if (this.config.apiKey) {

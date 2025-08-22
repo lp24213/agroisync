@@ -111,92 +111,93 @@ export function AnalyticsPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="mb-8"
         >
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-4xl font-bold text-foreground mb-2">
-                <span className="gradient-text">Analytics</span>
-              </h1>
-              <p className="text-xl text-muted-foreground">
-                Dashboards interativos e KPIs em tempo real
-              </p>
-            </div>
-            <div className="flex items-center space-x-2">
-              <select
-                value={selectedPeriod}
-                onChange={(e) => setSelectedPeriod(e.target.value)}
-                className="bg-secondary border border-border rounded-lg px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-              >
-                <option value="7d">Últimos 7 dias</option>
-                <option value="30d">Últimos 30 dias</option>
-                <option value="90d">Últimos 90 dias</option>
-                <option value="1y">Último ano</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {metrics.map((metric, index) => (
-              <AnalyticsMetric
-                key={metric.title}
-                metric={metric}
-                delay={index * 0.1}
-              />
-            ))}
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <div className="glass-card p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-foreground">
-                  Receita Mensal
-                </h2>
-                <div className="flex items-center space-x-2">
-                  <TrendingUp className="w-4 h-4 text-green-400" />
-                  <span className="text-sm text-green-400">+{analyticsData.growth}%</span>
-                </div>
-              </div>
-              <AnalyticsChart
-                data={chartData}
-                type="revenue"
-                height={300}
-              />
-            </div>
-
-            <div className="glass-card p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-foreground">
-                  Pedidos e Usuários
-                </h2>
-                <div className="flex items-center space-x-2">
-                  <Activity className="w-4 h-4 text-blue-400" />
-                  <span className="text-sm text-blue-400">Crescimento</span>
-                </div>
-              </div>
-              <AnalyticsChart
-                data={chartData}
-                type="orders"
-                height={300}
-              />
-            </div>
-          </div>
-
-          <div className="glass-card p-6">
+          <div className="mb-8">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-semibold text-foreground">
-                Performance por Região
-              </h2>
-              <div className="flex items-center space-x-4">
-                <span className="text-sm text-muted-foreground">
-                  Taxa de conversão: {analyticsData.conversion}%
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  Período: {selectedPeriod}
-                </span>
+              <div>
+                <h1 className="text-4xl font-bold text-foreground mb-2">
+                  <span className="gradient-text">Analytics</span>
+                </h1>
+                <p className="text-xl text-muted-foreground">
+                  Métricas e insights para otimizar sua operação
+                </p>
+              </div>
+              <div className="flex items-center space-x-2">
+                <select
+                  value={selectedPeriod}
+                  onChange={(e) => setSelectedPeriod(e.target.value)}
+                  className="bg-secondary border border-border rounded-lg px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                >
+                  <option value="7d">Últimos 7 dias</option>
+                  <option value="30d">Últimos 30 dias</option>
+                  <option value="90d">Últimos 90 dias</option>
+                  <option value="1y">Último ano</option>
+                </select>
               </div>
             </div>
-            <AnalyticsTable />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              {metrics.map((metric, index) => (
+                <AnalyticsMetric
+                  key={metric.title}
+                  metric={metric}
+                  delay={index * 0.1}
+                />
+              ))}
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              <div className="glass-card p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-semibold text-foreground">
+                    Receita Mensal
+                  </h2>
+                  <div className="flex items-center space-x-2">
+                    <TrendingUp className="w-4 h-4 text-green-400" />
+                    <span className="text-sm text-green-400">+{analyticsData.growth}%</span>
+                  </div>
+                </div>
+                <AnalyticsChart
+                  data={chartData}
+                  type="revenue"
+                  height={300}
+                />
+              </div>
+
+              <div className="glass-card p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-semibold text-foreground">
+                    Pedidos e Usuários
+                  </h2>
+                  <div className="flex items-center space-x-2">
+                    <Activity className="w-4 h-4 text-blue-400" />
+                    <span className="text-sm text-blue-400">Crescimento</span>
+                  </div>
+                </div>
+                <AnalyticsChart
+                  data={chartData}
+                  type="orders"
+                  height={300}
+                />
+              </div>
+            </div>
+
+            <div className="glass-card p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-semibold text-foreground">
+                  Performance por Região
+                </h2>
+                <div className="flex items-center space-x-4">
+                  <span className="text-sm text-muted-foreground">
+                    Taxa de conversão: {analyticsData.conversion}%
+                  </span>
+                  <span className="text-sm text-muted-foreground">
+                    Período: {selectedPeriod}
+                  </span>
+                </div>
+              </div>
+              <AnalyticsTable />
+            </div>
           </div>
         </motion.div>
       </div>

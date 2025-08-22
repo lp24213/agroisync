@@ -30,7 +30,7 @@ export function LanguageSwitcher() {
         className="flex items-center space-x-2"
       >
         <Globe className="w-4 h-4" />
-        <span className="hidden sm:inline">{selectedLanguage.flag}</span>
+        <span className="hidden sm:inline">{selectedLanguage?.flag || '🌐'}</span>
       </Button>
 
       <AnimatePresence>
@@ -51,7 +51,7 @@ export function LanguageSwitcher() {
                   <span className="text-lg">{language.flag}</span>
                   <span className="text-foreground">{language.name}</span>
                 </div>
-                {selectedLanguage.code === language.code && (
+                {selectedLanguage?.code === language.code && (
                   <Check className="w-4 h-4 text-primary" />
                 )}
               </button>

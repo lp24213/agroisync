@@ -189,133 +189,134 @@ export function StorePage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="mb-8"
         >
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-4xl font-bold text-foreground mb-2">
-                <span className="gradient-text">Loja Online</span>
-              </h1>
-              <p className="text-xl text-muted-foreground">
-                Catálogo completo de produtos agrícolas
-              </p>
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h1 className="text-4xl font-bold text-foreground mb-2">
+                  <span className="gradient-text">Loja Online</span>
+                </h1>
+                <p className="text-xl text-muted-foreground">
+                  Produtos agrícolas de qualidade com entrega rápida
+                </p>
+              </div>
+              <Button
+                onClick={() => setShowCart(true)}
+                className="flex items-center space-x-2 bg-gradient-to-r from-neon-blue to-neon-cyan"
+              >
+                <ShoppingCart className="w-4 h-4" />
+                <span>Carrinho ({cart.length})</span>
+              </Button>
             </div>
-            <Button
-              onClick={() => setShowCart(true)}
-              className="flex items-center space-x-2 bg-gradient-to-r from-neon-blue to-neon-cyan"
-            >
-              <ShoppingCart className="w-4 h-4" />
-              <span>Carrinho ({cart.length})</span>
-            </Button>
-          </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            <div className="lg:col-span-3">
-              <div className="glass-card p-6 mb-6">
-                <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
-                  <div className="flex-1 relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <input
-                      type="text"
-                      placeholder="Buscar produtos..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full bg-secondary border border-border rounded-lg pl-10 pr-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              <div className="lg:col-span-3">
+                <div className="glass-card p-6 mb-6">
+                  <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
+                    <div className="flex-1 relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <input
+                        type="text"
+                        placeholder="Buscar produtos..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full bg-secondary border border-border rounded-lg pl-10 pr-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      />
+                    </div>
+                    <select
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value)}
+                      className="bg-secondary border border-border rounded-lg px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    >
+                      <option value="name">Nome</option>
+                      <option value="price-low">Menor Preço</option>
+                      <option value="price-high">Maior Preço</option>
+                      <option value="rating">Melhor Avaliação</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredProducts.map((product) => (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      onAddToCart={addToCart}
                     />
-                  </div>
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="bg-secondary border border-border rounded-lg px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-                  >
-                    <option value="name">Nome</option>
-                    <option value="price-low">Menor Preço</option>
-                    <option value="price-high">Maior Preço</option>
-                    <option value="rating">Melhor Avaliação</option>
-                  </select>
+                  ))}
                 </div>
+
+                {filteredProducts.length === 0 && (
+                  <div className="text-center py-12">
+                    <Package className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-foreground mb-2">
+                      Nenhum produto encontrado
+                    </h3>
+                    <p className="text-muted-foreground">
+                      Tente ajustar os filtros ou buscar por outros termos.
+                    </p>
+                  </div>
+                )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredProducts.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    onAddToCart={addToCart}
-                  />
-                ))}
-              </div>
-
-              {filteredProducts.length === 0 && (
-                <div className="text-center py-12">
-                  <Package className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-foreground mb-2">
-                    Nenhum produto encontrado
+              <div className="space-y-6">
+                <div className="glass-card p-6">
+                  <h3 className="text-lg font-semibold text-foreground mb-4">
+                    Filtros
                   </h3>
-                  <p className="text-muted-foreground">
-                    Tente ajustar os filtros ou buscar por outros termos.
-                  </p>
-                </div>
-              )}
-            </div>
-
-            <div className="space-y-6">
-              <div className="glass-card p-6">
-                <h3 className="text-lg font-semibold text-foreground mb-4">
-                  Filtros
-                </h3>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Categoria
-                    </label>
-                    <select
-                      value={selectedCategory}
-                      onChange={(e) => setSelectedCategory(e.target.value)}
-                      className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-                    >
-                      {categories.map(category => (
-                        <option key={category} value={category}>
-                          {category}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Faixa de Preço
-                    </label>
-                    <select
-                      value={selectedPriceRange}
-                      onChange={(e) => setSelectedPriceRange(e.target.value)}
-                      className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-                    >
-                      {priceRanges.map(range => (
-                        <option key={range} value={range}>
-                          {range}
-                        </option>
-                      ))}
-                    </select>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        Categoria
+                      </label>
+                      <select
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                        className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      >
+                        {categories.map(category => (
+                          <option key={category} value={category}>
+                            {category}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        Faixa de Preço
+                      </label>
+                      <select
+                        value={selectedPriceRange}
+                        onChange={(e) => setSelectedPriceRange(e.target.value)}
+                        className="w-full bg-secondary border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      >
+                        {priceRanges.map(range => (
+                          <option key={range} value={range}>
+                            {range}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="glass-card p-6">
-                <h3 className="text-lg font-semibold text-foreground mb-4">
-                  Informações
-                </h3>
-                <div className="space-y-3 text-sm">
-                  <div className="flex items-center space-x-2">
-                    <Truck className="w-4 h-4 text-primary" />
-                    <span className="text-muted-foreground">Frete grátis acima de R$ 200</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Shield className="w-4 h-4 text-primary" />
-                    <span className="text-muted-foreground">Garantia de 30 dias</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Package className="w-4 h-4 text-primary" />
-                    <span className="text-muted-foreground">Entrega em até 5 dias úteis</span>
+                <div className="glass-card p-6">
+                  <h3 className="text-lg font-semibold text-foreground mb-4">
+                    Informações
+                  </h3>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-center space-x-2">
+                      <Truck className="w-4 h-4 text-primary" />
+                      <span className="text-muted-foreground">Frete grátis acima de R$ 200</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Shield className="w-4 h-4 text-primary" />
+                      <span className="text-muted-foreground">Garantia de 30 dias</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Package className="w-4 h-4 text-primary" />
+                      <span className="text-muted-foreground">Entrega em até 5 dias úteis</span>
+                    </div>
                   </div>
                 </div>
               </div>

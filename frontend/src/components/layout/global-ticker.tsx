@@ -23,7 +23,7 @@ export function GlobalTicker() {
       state.crypto.slice(0, 4).forEach((crypto) => {
         items.push({
           symbol: crypto.symbol,
-          price: formatPrice(crypto.price, crypto.currency),
+          price: formatPrice(crypto.price, crypto.currency || 'USD'),
           change: crypto.change24h,
           changePercent: crypto.changePercent24h,
           type: 'crypto'
@@ -42,8 +42,8 @@ export function GlobalTicker() {
 
       state.grains.slice(0, 2).forEach((grain) => {
         items.push({
-          symbol: grain.type,
-          price: formatPrice(grain.price, grain.currency),
+          symbol: grain.type || 'GRAIN',
+          price: formatPrice(grain.price, grain.currency || 'USD'),
           change: grain.change24h || 0,
           changePercent: grain.changePercent24h || 0,
           type: 'grain'

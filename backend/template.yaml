@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: AGROISYNC Backend (Lambda + HTTP API)
+Description: AGROISYNC Backend (Lambda + HTTP API) - Production Ready
 
 Parameters:
   StripeSecretKey:
@@ -16,17 +16,47 @@ Parameters:
     Description: Environment (dev/staging/prod)
     Default: "production"
     AllowedValues: ["dev", "staging", "production"]
+  DatabasePassword:
+    Type: String
+    Description: Database password
+    NoEcho: true
+  JWTSecret:
+    Type: String
+    Description: JWT secret key
+    NoEcho: true
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 1024
+    Runtime: nodejs20.x
+    Environment:
+      Variables:
+        NODE_ENV: !Ref Environment
+        AWS_REGION: !Ref AWS::Region
+        UPLOAD_BUCKET: !Ref UploadBucket
+        DYNAMODB_TABLE_PREFIX: "agroisync"
+        LOG_LEVEL: "info"
+        CORS_ORIGIN: "*"
+        RATE_LIMIT_WINDOW_MS: "900000"
+        RATE_LIMIT_MAX_REQUESTS: "100"
 
 Resources:
+  # Main API Function
   ApiFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: agroisync-api
+      FunctionName: !Sub "agroisync-api-${Environment}"
       CodeUri: .
       Handler: dist/handler.js
-      Runtime: nodejs20.x
-      MemorySize: 1024
-      Timeout: 30
+      MemorySize: 2048
+      Timeout: 60
+      ReservedConcurrencyLimit: 100
+      AutoPublishAlias: live
+      DeploymentPreference:
+        Type: Linear10PercentEvery1Minute
+        Alarms:
+          - !Ref ApiFunctionErrorAlarm
       Policies:
         - AWSLambdaBasicExecutionRole
         - Statement:
@@ -35,7 +65,8 @@ Resources:
                 - s3:GetObject
                 - s3:PutObject
                 - s3:DeleteObject
-              Resource: !Sub "arn:aws:s3:::agroisync-uploads/*"
+                - s3:PutObjectAcl
+              Resource: !Sub "arn:aws:s3:::${UploadBucket}/*"
         - Statement:
             - Effect: Allow
               Action:
@@ -45,26 +76,88 @@ Resources:
                 - dynamodb:DeleteItem
                 - dynamodb:Query
                 - dynamodb:Scan
+                - dynamodb:BatchGetItem
+                - dynamodb:BatchWriteItem
               Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/agroisync-*"
+        - Statement:
+            - Effect: Allow
+              Action:
+                - secretsmanager:GetSecretValue
+              Resource: !Ref SecretsManagerSecret
+        - Statement:
+            - Effect: Allow
+              Action:
+                - cloudwatch:PutMetricData
+              Resource: "*"
       Environment:
         Variables:
-          NODE_ENV: !Ref Environment
           STRIPE_SECRET_KEY: !Ref StripeSecretKey
           METAMASK_ADMIN_ADDRESS: !Ref MetamaskAddress
-          AWS_REGION: !Ref AWS::Region
-          UPLOAD_BUCKET: "agroisync-uploads"
+          JWT_SECRET: !Ref JWTSecret
+          DB_PASSWORD: !Ref DatabasePassword
+          UPLOAD_BUCKET: !Ref UploadBucket
           DYNAMODB_TABLE_PREFIX: "agroisync"
+          LOG_LEVEL: "info"
+          CORS_ORIGIN: "*"
+          RATE_LIMIT_WINDOW_MS: "900000"
+          RATE_LIMIT_MAX_REQUESTS: "100"
       Events:
         HttpApi:
           Type: HttpApi
           Properties:
             Path: /{proxy+}
             Method: ANY
+            Auth:
+              Authorizer: NONE
 
+  # Health Check Function
+  HealthFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "agroisync-health-${Environment}"
+      CodeUri: .
+      Handler: dist/health-handler.js
+      MemorySize: 512
+      Timeout: 10
+      ReservedConcurrencyLimit: 50
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:DescribeTable
+              Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/agroisync-*"
+      Environment:
+        Variables:
+          NODE_ENV: !Ref Environment
+          AWS_REGION: !Ref AWS::Region
+          DYNAMODB_TABLE_PREFIX: "agroisync"
+      Events:
+        HealthCheck:
+          Type: HttpApi
+          Properties:
+            Path: /health
+            Method: GET
+
+  # Secrets Manager for sensitive data
+  SecretsManagerSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Sub "agroisync-secrets-${Environment}"
+      Description: "AGROISYNC application secrets"
+      SecretString: !Sub |
+        {
+          "stripe_secret_key": "${StripeSecretKey}",
+          "jwt_secret": "${JWTSecret}",
+          "database_password": "${DatabasePassword}",
+          "metamask_admin_address": "${MetamaskAddress}"
+        }
+
+  # S3 Bucket for file uploads
   UploadBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: agroisync-uploads
+      BucketName: !Sub "agroisync-uploads-${Environment}-${AWS::AccountId}"
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
         BlockPublicPolicy: true
@@ -73,9 +166,10 @@ Resources:
       CorsConfiguration:
         CorsRules:
           - AllowedHeaders: ["*"]
-            AllowedMethods: [GET, POST, PUT, DELETE]
+            AllowedMethods: [GET, POST, PUT, DELETE, HEAD]
             AllowedOrigins: ["*"]
             MaxAge: 3000
+            ExposedHeaders: ["ETag", "x-amz-meta-custom-header"]
       LifecycleConfiguration:
         Rules:
           - Id: DeleteOldVersions
@@ -83,16 +177,33 @@ Resources:
             NoncurrentVersionExpirationInDays: 30
             AbortIncompleteMultipartUpload:
               DaysAfterInitiation: 7
+          - Id: DeleteOldObjects
+            Status: Enabled
+            ExpirationInDays: 365
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Service
+          Value: "agroisync"
 
-  DynamoDBTable:
+  # DynamoDB Tables
+  UsersTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub "${DYNAMODB_TABLE_PREFIX}-users"
+      TableName: !Sub "agroisync-users-${Environment}"
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
         - AttributeName: email
+          AttributeType: S
+        - AttributeName: wallet_address
           AttributeType: S
       KeySchema:
         - AttributeName: id
@@ -104,14 +215,161 @@ Resources:
               KeyType: HASH
           Projection:
             ProjectionType: ALL
+        - IndexName: WalletIndex
+          KeySchema:
+            - AttributeName: wallet_address
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Service
+          Value: "agroisync"
+
+  StakingTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "agroisync-staking-${Environment}"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: user_id
+          AttributeType: S
+        - AttributeName: pool_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: UserIndex
+          KeySchema:
+            - AttributeName: user_id
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: PoolIndex
+          KeySchema:
+            - AttributeName: pool_id
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Service
+          Value: "agroisync"
+
+  # CloudWatch Alarms
+  ApiFunctionErrorAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub "agroisync-api-errors-${Environment}"
+      AlarmDescription: "Alarm when API function has errors"
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 5
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref ApiFunction
+      AlarmActions:
+        - !Ref SNSTopic
+
+  # SNS Topic for notifications
+  SNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub "agroisync-alerts-${Environment}"
+      DisplayName: !Sub "AGROISYNC Alerts - ${Environment}"
+
+  # CloudWatch Dashboard
+  MonitoringDashboard:
+    Type: AWS::CloudWatch::Dashboard
+    Properties:
+      DashboardName: !Sub "agroisync-dashboard-${Environment}"
+      DashboardBody: !Sub |
+        {
+          "widgets": [
+            {
+              "type": "metric",
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "metrics": [
+                  ["AWS/Lambda", "Invocations", "FunctionName", "${ApiFunction}"],
+                  [".", "Errors", ".", "."],
+                  [".", "Throttles", ".", "."]
+                ],
+                "view": "timeSeries",
+                "stacked": false,
+                "region": "${AWS::Region}",
+                "title": "Lambda Function Metrics"
+              }
+            },
+            {
+              "type": "metric",
+              "x": 12,
+              "y": 0,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "metrics": [
+                  ["AWS/DynamoDB", "ConsumedReadCapacityUnits", "TableName", "${UsersTable}"],
+                  [".", "ConsumedWriteCapacityUnits", ".", "."]
+                ],
+                "view": "timeSeries",
+                "stacked": false,
+                "region": "${AWS::Region}",
+                "title": "DynamoDB Metrics"
+              }
+            }
+          ]
+        }
 
 Outputs:
   ApiUrl:
     Description: HTTP API URL
     Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com"
+    Export:
+      Name: !Sub "agroisync-api-url-${Environment}"
+  
   UploadBucketName:
     Description: S3 Bucket for file uploads
     Value: !Ref UploadBucket
-  DynamoDBTableName:
+    Export:
+      Name: !Sub "agroisync-upload-bucket-${Environment}"
+  
+  UsersTableName:
     Description: DynamoDB table for users
-    Value: !Ref DynamoDBTable
+    Value: !Ref UsersTable
+    Export:
+      Name: !Sub "agroisync-users-table-${Environment}"
+  
+  StakingTableName:
+    Description: DynamoDB table for staking
+    Value: !Ref StakingTable
+    Export:
+      Name: !Sub "agroisync-staking-table-${Environment}"
+  
+  SecretsManagerArn:
+    Description: Secrets Manager ARN
+    Value: !Ref SecretsManagerSecret
+    Export:
+      Name: !Sub "agroisync-secrets-arn-${Environment}"
+  
+  SNSTopicArn:
+    Description: SNS Topic ARN for alerts
+    Value: !Ref SNSTopic
+    Export:
+      Name: !Sub "agroisync-sns-topic-${Environment}"

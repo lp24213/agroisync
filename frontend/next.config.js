@@ -1,44 +1,28 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  reactStrictMode: true,
+  swcMinify: true,
+  poweredByHeader: false,
+  compress: true,
   trailingSlash: true,
   images: {
     unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
   },
   experimental: {
-    appDir: true,
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
+    serverComponentsExternalPackages: ['framer-motion'],
   },
+
   env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
-  },
-  async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
-          },
-        ],
-      },
-    ]
-  },
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: '/api/:path*',
-      },
-    ]
+    CUSTOM_KEY: process.env.CUSTOM_KEY || '',
+    NEXT_PUBLIC_APP_NAME: 'AGROISYNC',
+    NEXT_PUBLIC_APP_VERSION: '2.3.1',
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
@@ -47,10 +31,30 @@ const nextConfig = {
         fs: false,
         net: false,
         tls: false,
+        crypto: false,
+        stream: false,
+        http: false,
+        https: false,
+        zlib: false,
+        path: false,
+        os: false,
       }
     }
+    
+    // Ignore specific warnings
+    config.ignoreWarnings = [
+      /critical dependency/i,
+    ]
+    
     return config
   },
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+  eslint: {
+    ignoreDuringBuilds: false,
+  },
+  // output: process.env.NODE_ENV === 'production' ? 'export' : undefined, // Commented out for framer-motion compatibility
 }
 
 module.exports = nextConfig

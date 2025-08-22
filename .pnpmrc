@@ -1,23 +1,13 @@
-# Use exact versions for better reproducibility
-save-exact=true
-
-# Use legacy peer deps for better compatibility
-legacy-peer-deps=true
-
-# Enable audit
-audit=true
-
-# Set registry
+# AGROISYNC PNPM Configuration
 registry=https://registry.npmjs.org/
-
-# Enable store
-store-dir=.pnpm-store
-
-# Set engine strict mode
-engine-strict=true
-
-# Auto install peers
+save-exact=true
+save-prefix=""
+package-lock=true
+fund=false
+audit=false
+progress=false
+loglevel=warn
 auto-install-peers=true
-
-# Shamefully hoist
-shamefully-hoist=true 
+strict-peer-dependencies=false
+shamefully-hoist=true
+prefer-frozen-lockfile=true 

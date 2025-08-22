@@ -1,10 +1,11 @@
-import { CryptoPage } from '@/components/crypto/crypto-page'
+import { CryptoDashboard } from '@/components/crypto/crypto-dashboard'
 
-export const metadata = {
-  title: 'Criptomoedas - AgroSync',
-  description: 'Cotações em tempo real, gráficos e trading de criptomoedas na plataforma AgroSync.',
-}
-
-export default function CryptoPageRoute() {
-  return <CryptoPage />
+export default function CryptoPage() {
+  return (
+    <div className="min-h-screen bg-black">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <CryptoDashboard />
+      </div>
+    </div>
+  )
 }
