@@ -5,13 +5,17 @@ import { motion } from 'framer-motion';
 import { BarChart3, TrendingUp, TrendingDown, Calendar } from 'lucide-react';
 
 interface ChartData {
-  time: string;
+  date: string;
   price: number;
-  volume: number;
 }
 
-export function CryptoChart() {
-  const [selectedCrypto, setSelectedCrypto] = useState('BTC');
+interface CryptoChartProps {
+  data: ChartData[];
+  symbol: string;
+}
+
+export function CryptoChart({ data, symbol }: CryptoChartProps) {
+  const [selectedCrypto, setSelectedCrypto] = useState(symbol);
   const [timeframe, setTimeframe] = useState('24h');
   const [chartData, setChartData] = useState<ChartData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,28 +35,33 @@ export function CryptoChart() {
   ];
 
   useEffect(() => {
-    // Simular dados da TradingView API
-    const generateMockData = () => {
-      const data: ChartData[] = [];
-      const basePrice = selectedCrypto === 'BTC' ? 43250 : selectedCrypto === 'ETH' ? 2650 : 98;
-      
-      for (let i = 0; i < 24; i++) {
-        const time = `${i.toString().padStart(2, '0')}:00`;
-        const price = basePrice + (Math.random() - 0.5) * 1000;
-        const volume = Math.random() * 1000000000 + 500000000;
-        
-        data.push({ time, price, volume });
-      }
-      
-      return data;
-    };
-
-    setLoading(true);
-    setTimeout(() => {
-      setChartData(generateMockData());
+    // Usar os dados passados como props ou gerar mock se não houver
+    if (data && data.length > 0) {
+      setChartData(data);
       setLoading(false);
-    }, 1000);
-  }, [selectedCrypto, timeframe]);
+    } else {
+      // Simular dados da TradingView API
+      const generateMockData = () => {
+        const mockData: ChartData[] = [];
+        const basePrice = selectedCrypto === 'BTC' ? 43250 : selectedCrypto === 'ETH' ? 2650 : 98;
+        
+        for (let i = 0; i < 24; i++) {
+          const date = `${i.toString().padStart(2, '0')}:00`;
+          const price = basePrice + (Math.random() - 0.5) * 1000;
+          
+          mockData.push({ date, price });
+        }
+        
+        return mockData;
+      };
+
+      setLoading(true);
+      setTimeout(() => {
+        setChartData(generateMockData());
+        setLoading(false);
+      }, 1000);
+    }
+  }, [data, selectedCrypto, timeframe]);
 
   const currentPrice = chartData[chartData.length - 1]?.price || 0;
   const previousPrice = chartData[0]?.price || 0;
@@ -69,7 +78,7 @@ export function CryptoChart() {
       {/* Header */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-4">
         <div>
-          <h3 className="text-2xl font-bold text-white mb-2">Análise Técnica</h3>
+          <h3 className="text-2xl font-bold text-white mb-2">Análise Técnica - {symbol}</h3>
           <p className="text-gray-400">Gráficos em tempo real e indicadores avançados</p>
         </div>
         
@@ -106,29 +115,26 @@ export function CryptoChart() {
         </div>
       </div>
 
-      {/* Price Summary */}
+      {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="p-6 bg-white/5 rounded-xl border border-white/10">
+        <div className="p-4 bg-gradient-to-r from-cyan-400/10 to-blue-600/10 border border-cyan-400/30 rounded-xl">
           <div className="text-sm text-gray-400 mb-2">Preço Atual</div>
-          <div className="text-3xl font-bold text-white">
+          <div className="text-2xl font-bold text-white">
             ${currentPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
         </div>
         
-        <div className="p-6 bg-white/5 rounded-xl border border-white/10">
-          <div className="text-sm text-gray-400 mb-2">Variação ({timeframe})</div>
+        <div className="p-4 bg-gradient-to-r from-green-400/10 to-emerald-600/10 border border-green-400/30 rounded-xl">
+          <div className="text-sm text-gray-400 mb-2">Variação 24h</div>
           <div className={`text-2xl font-bold ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
             {isPositive ? '+' : ''}{priceChange.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
-          <div className={`text-sm ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
-            {isPositive ? '+' : ''}{priceChangePercent.toFixed(2)}%
-          </div>
         </div>
         
-        <div className="p-6 bg-white/5 rounded-xl border border-white/10">
-          <div className="text-sm text-gray-400 mb-2">Volume 24h</div>
-          <div className="text-2xl font-bold text-white">
-            ${(chartData.reduce((sum, data) => sum + data.volume, 0) / 24 / 1000000000).toFixed(2)}B
+        <div className="p-4 bg-gradient-to-r from-purple-400/10 to-pink-600/10 border border-purple-400/30 rounded-xl">
+          <div className="text-sm text-gray-400 mb-2">Variação %</div>
+          <div className={`text-2xl font-bold ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
+            {isPositive ? '+' : ''}{priceChangePercent.toFixed(2)}%
           </div>
         </div>
       </div>
@@ -138,18 +144,18 @@ export function CryptoChart() {
         {loading ? (
           <div className="text-center">
             <div className="w-16 h-16 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-gray-400">Carregando dados...</p>
+            <p className="text-gray-400">Carregando dados do gráfico...</p>
           </div>
         ) : (
           <div className="text-center">
             <BarChart3 className="w-16 h-16 text-cyan-400 mx-auto mb-4" />
-            <h4 className="text-xl font-semibold text-white mb-2">Gráfico TradingView</h4>
+            <h4 className="text-xl font-semibold text-white mb-2">Gráfico de Preços</h4>
             <p className="text-gray-400 max-w-md">
-              Integração com TradingView API para gráficos profissionais e indicadores técnicos avançados
+              Visualização interativa dos preços históricos de {symbol} com indicadores técnicos
             </p>
             <div className="mt-4 p-3 bg-cyan-400/10 border border-cyan-400/30 rounded-lg">
               <p className="text-sm text-cyan-400">
-                API Key: {process.env.NEXT_PUBLIC_TRADINGVIEW_API_KEY || 'Configurar TradingView API'}
+                TradingView API - Dados em tempo real
               </p>
             </div>
           </div>
@@ -157,29 +163,49 @@ export function CryptoChart() {
       </div>
 
       {/* Technical Indicators */}
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-4 bg-white/5 rounded-lg border border-white/10">
-          <div className="text-sm text-gray-400 mb-1">RSI</div>
-          <div className="text-lg font-semibold text-white">65.4</div>
-          <div className="text-xs text-green-400">Neutro</div>
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="p-6 bg-white/5 rounded-xl border border-white/10">
+          <h4 className="text-lg font-semibold text-white mb-4">Indicadores Técnicos</h4>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-gray-400">RSI (14)</span>
+              <span className="text-white font-medium">65.4</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-gray-400">MACD</span>
+              <span className="text-green-400 font-medium">Bullish</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-gray-400">Médias Móveis</span>
+              <span className="text-green-400 font-medium">50 &gt; 200</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-gray-400">Volume</span>
+              <span className="text-blue-400 font-medium">Alto</span>
+            </div>
+          </div>
         </div>
         
-        <div className="p-4 bg-white/5 rounded-lg border border-white/10">
-          <div className="text-sm text-gray-400 mb-1">MACD</div>
-          <div className="text-lg font-semibold text-white">+2.45</div>
-          <div className="text-xs text-green-400">Bullish</div>
-        </div>
-        
-        <div className="p-4 bg-white/5 rounded-lg border border-white/10">
-          <div className="text-sm text-gray-400 mb-1">Bollinger</div>
-          <div className="text-lg font-semibold text-white">$42.8K</div>
-          <div className="text-xs text-yellow-400">Médio</div>
-        </div>
-        
-        <div className="p-4 bg-white/5 rounded-lg border border-white/10">
-          <div className="text-sm text-gray-400 mb-1">Volume</div>
-          <div className="text-lg font-semibold text-white">2.8B</div>
-          <div className="text-xs text-green-400">Alto</div>
+        <div className="p-6 bg-white/5 rounded-xl border border-white/10">
+          <h4 className="text-lg font-semibold text-white mb-4">Níveis de Suporte/Resistência</h4>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-gray-400">Resistência 1</span>
+              <span className="text-red-400 font-medium">$44,500</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-gray-400">Resistência 2</span>
+              <span className="text-red-400 font-medium">$45,200</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-gray-400">Suporte 1</span>
+              <span className="text-green-400 font-medium">$42,800</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-gray-400">Suporte 2</span>
+              <span className="text-green-400 font-medium">$42,100</span>
+            </div>
+          </div>
         </div>
       </div>
     </motion.div>

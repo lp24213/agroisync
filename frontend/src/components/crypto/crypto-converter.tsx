@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, RefreshCw, Calculator } from 'lucide-react';
 
@@ -18,16 +18,16 @@ export function CryptoConverter() {
   const [result, setResult] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const currencies: Currency[] = [
+  const currencies: Currency[] = useMemo(() => [
     { code: 'USD', name: 'Dólar Americano', symbol: '$', rate: 1 },
     { code: 'EUR', name: 'Euro', symbol: '€', rate: 0.85 },
     { code: 'BRL', name: 'Real Brasileiro', symbol: 'R$', rate: 4.95 },
     { code: 'BTC', name: 'Bitcoin', symbol: '₿', rate: 0.000023 },
     { code: 'ETH', name: 'Ethereum', symbol: 'Ξ', rate: 0.00037 },
     { code: 'SOL', name: 'Solana', symbol: '◎', rate: 0.0102 },
-  ];
+  ], []);
 
-  const convertCurrency = async () => {
+  const convertCurrency = useCallback(async () => {
     setLoading(true);
     
     // Simular API call
@@ -42,11 +42,11 @@ export function CryptoConverter() {
     }
     
     setLoading(false);
-  };
+  }, [fromCurrency, toCurrency, amount, currencies]);
 
   useEffect(() => {
     convertCurrency();
-  }, [fromCurrency, toCurrency, amount]);
+  }, [convertCurrency]);
 
   const formatResult = (value: number) => {
     if (value < 0.01) {

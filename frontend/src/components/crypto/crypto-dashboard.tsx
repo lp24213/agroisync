@@ -10,8 +10,10 @@ import { CryptoWallet } from './crypto-wallet';
 
 interface CryptoData {
   symbol: string;
+  name: string;
   price: number;
   change24h: number;
+  changePercent24h: number;
   volume: number;
 }
 
@@ -22,11 +24,11 @@ export function CryptoDashboard() {
   useEffect(() => {
     // Simular dados da Binance API
     const mockData: CryptoData[] = [
-      { symbol: 'BTC', price: 43250.50, change24h: 2.5, volume: 28475000000 },
-      { symbol: 'ETH', price: 2650.75, change24h: 1.8, volume: 15842000000 },
-      { symbol: 'SOL', price: 98.25, change24h: 5.2, volume: 3248000000 },
-      { symbol: 'USDT', price: 1.00, change24h: 0.0, volume: 45680000000 },
-      { symbol: 'BRL', price: 0.21, change24h: -0.5, volume: 1250000000 },
+      { symbol: 'BTC', name: 'Bitcoin', price: 43250.50, change24h: 1250.75, changePercent24h: 2.5, volume: 28475000000 },
+      { symbol: 'ETH', name: 'Ethereum', price: 2650.75, change24h: 47.25, changePercent24h: 1.8, volume: 15842000000 },
+      { symbol: 'SOL', name: 'Solana', price: 98.25, change24h: 4.85, changePercent24h: 5.2, volume: 3248000000 },
+      { symbol: 'USDT', name: 'Tether', price: 1.00, change24h: 0.00, changePercent24h: 0.0, volume: 45680000000 },
+      { symbol: 'BRL', name: 'Real Brasileiro', price: 0.21, change24h: -0.001, changePercent24h: -0.5, volume: 1250000000 },
     ];
     
     setTimeout(() => {
@@ -66,8 +68,12 @@ export function CryptoDashboard() {
           {cryptoData.map((crypto, index) => (
             <CryptoPriceCard
               key={crypto.symbol}
-              data={crypto}
-              delay={index * 0.1}
+              symbol={crypto.symbol}
+              name={crypto.name}
+              price={crypto.price}
+              change24h={crypto.change24h}
+              changePercent24h={crypto.changePercent24h}
+              onClick={() => {}}
             />
           ))}
         </div>
@@ -98,7 +104,7 @@ export function CryptoDashboard() {
           <Coins className="text-yellow-400" />
           Análise Técnica
         </h2>
-        <CryptoChart />
+        <CryptoChart data={[]} symbol="BTC" />
       </motion.div>
 
       {/* Carteira */}

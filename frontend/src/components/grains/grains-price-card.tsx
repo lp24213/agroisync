@@ -13,9 +13,11 @@ interface GrainsPriceCardProps {
     unit: string;
   };
   delay: number;
+  region?: string;
+  source?: string;
 }
 
-export function GrainsPriceCard({ data, delay }: GrainsPriceCardProps) {
+export function GrainsPriceCard({ data, delay, region, source }: GrainsPriceCardProps) {
   const isPositive = data.change24h >= 0;
   
   const getIcon = (symbol: string) => {
@@ -47,7 +49,7 @@ export function GrainsPriceCard({ data, delay }: GrainsPriceCardProps) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.5, delay }}
       whileHover={{ y: -5, scale: 1.02 }}
-      className="group p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:border-green-400/50 transition-all duration-300 hover:shadow-2xl hover:shadow-green-400/20"
+      className="group relative p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:border-green-400/50 transition-all duration-300 hover:shadow-2xl hover:shadow-green-400/20"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
@@ -79,9 +81,17 @@ export function GrainsPriceCard({ data, delay }: GrainsPriceCardProps) {
       </div>
       
       {/* Volume */}
-      <div className="text-gray-400 text-sm">
+      <div className="text-gray-400 text-sm mb-3">
         Volume: {(data.volume / 1000).toFixed(1)}k {data.unit}
       </div>
+
+      {/* Region and Source Info */}
+      {(region || source) && (
+        <div className="text-xs text-gray-500 space-y-1">
+          {region && <div>Região: {region}</div>}
+          {source && <div>Fonte: {source}</div>}
+        </div>
+      )}
       
       {/* Hover Effect */}
       <div className="absolute inset-0 bg-gradient-to-r from-green-400/5 to-emerald-600/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
