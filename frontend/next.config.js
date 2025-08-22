@@ -16,6 +16,7 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
+  outputFileTracingRoot: process.cwd(),
   serverExternalPackages: ['framer-motion'],
 
   env: {
