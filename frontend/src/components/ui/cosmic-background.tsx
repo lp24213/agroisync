@@ -23,6 +23,8 @@ export function CosmicBackground({ children, className = '' }: CosmicBackgroundP
 
   useEffect(() => {
     if (!mountRef.current || !isClient || typeof window === 'undefined') return;
+    
+    const currentMount = mountRef.current;
 
     // Scene setup
     const scene = new THREE.Scene();
@@ -48,7 +50,7 @@ export function CosmicBackground({ children, className = '' }: CosmicBackgroundP
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     rendererRef.current = renderer;
 
-    mountRef.current.appendChild(renderer.domElement);
+    currentMount.appendChild(renderer.domElement);
 
     // Create star field
     const starGeometry = new THREE.BufferGeometry();

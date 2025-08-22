@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { StableLayout } from '@/components/layout/stable-layout'
+import { SimpleStableLayout } from '@/components/layout/simple-stable-layout'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -12,6 +12,7 @@ export const viewport = {
 }
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://agroisync.com'),
   title: 'AgroSync - O Futuro da Agricultura Digital',
   description: 'Plataforma revolucionária que combina blockchain, IA e conectividade global para transformar o agronegócio. Criptomoedas, grãos, marketplace e muito mais.',
   keywords: 'agroisync, agricultura, blockchain, criptomoedas, grãos, marketplace, IA, agronegócio',
@@ -52,9 +53,9 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className="dark">
       <body className={`${inter.className} bg-black text-white antialiased`}>
-        <StableLayout>
+        <SimpleStableLayout>
           {children}
-        </StableLayout>
+        </SimpleStableLayout>
       </body>
     </html>
   )

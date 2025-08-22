@@ -260,11 +260,9 @@ export function ChatbotWidget({ isOpen, onToggle }: ChatbotWidgetProps) {
                     }`}
                   >
                     {message.type === 'image' && message.metadata?.fileData && (
-                      <img
-                        src={message.metadata.fileData as string}
-                        alt="Uploaded file"
-                        className="w-full h-32 object-cover rounded mb-2"
-                      />
+                      <div className="w-full h-32 bg-gray-200 dark:bg-gray-600 rounded mb-2 flex items-center justify-center">
+                        <span className="text-gray-500 dark:text-gray-400 text-sm">Imagem carregada</span>
+                      </div>
                     )}
                     <p className="text-sm">{message.content}</p>
                     <p className="text-xs opacity-70 mt-1">
