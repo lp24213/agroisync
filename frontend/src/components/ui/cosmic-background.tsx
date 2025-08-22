@@ -205,9 +205,10 @@ export function CosmicBackground({ children, className = '' }: CosmicBackgroundP
       }
       
       const currentMount = mountRef.current;
-      if (rendererRef.current && currentMount) {
-        currentMount.removeChild(rendererRef.current.domElement);
-        rendererRef.current.dispose();
+      const currentRenderer = rendererRef.current;
+      if (currentRenderer && currentMount) {
+        currentMount.removeChild(currentRenderer.domElement);
+        currentRenderer.dispose();
       }
       
       if (sceneRef.current) {
