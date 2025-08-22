@@ -1,7 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Layout from './components/layout/Layout';
 
-// Importando todas as páginas
+// Páginas
 import Home from './pages/Home';
 import Sobre from './pages/Sobre';
 import Cotacao from './pages/Cotacao';
@@ -11,16 +12,46 @@ import Cripto from './pages/Cripto';
 import Cadastro from './pages/Cadastro';
 import Admin from './pages/Admin';
 
-// Importando componentes de grãos
-import GrainsDashboard from './components/grains/GrainsDashboard';
-import GrainsPriceCard from './components/grains/GrainsPriceCard';
+// Serviço de Segurança
+import securityService from './services/securityService';
+
+// Inicializar serviço de segurança
+securityService.initSecurity();
 
 function App() {
+  // Verificar ambiente de segurança
+  React.useEffect(() => {
+    // Log de inicialização segura
+    console.log('🔒 AGROSYNC - Sistema de Segurança Ativado');
+    
+    // Verificar integridade do ambiente
+    try {
+      securityService.validateEnvironment();
+      console.log('✅ Ambiente validado com sucesso');
+    } catch (error) {
+      console.error('❌ Erro de validação de ambiente:', error);
+      // Em produção, redirecionar para página de erro
+      if (process.env.NODE_ENV === 'production') {
+        window.location.href = '/security-error';
+      }
+    }
+    
+    // Monitor de segurança contínuo
+    const securityInterval = setInterval(() => {
+      const report = securityService.getSecurityReport();
+      if (report.metrics.emergencyMode) {
+        console.warn('🚨 MODO DE EMERGÊNCIA ATIVADO');
+        // Implementar ações de emergência
+      }
+    }, 30000); // A cada 30 segundos
+    
+    return () => clearInterval(securityInterval);
+  }, []);
+
   return (
     <Router>
-      <div className="App">
+      <Layout>
         <Routes>
-          {/* Rotas principais */}
           <Route path="/" element={<Home />} />
           <Route path="/sobre" element={<Sobre />} />
           <Route path="/cotacao" element={<Cotacao />} />
@@ -29,28 +60,8 @@ function App() {
           <Route path="/cripto" element={<Cripto />} />
           <Route path="/cadastro" element={<Cadastro />} />
           <Route path="/admin" element={<Admin />} />
-          
-          {/* Rotas de componentes de grãos (para desenvolvimento/teste) */}
-          <Route path="/grains-dashboard" element={<GrainsDashboard />} />
-          <Route path="/grains-price-card" element={<GrainsPriceCard />} />
-          
-          {/* Rota 404 */}
-          <Route path="*" element={
-            <div className="min-h-screen bg-black text-white flex items-center justify-center">
-              <div className="text-center">
-                <h1 className="text-6xl font-bold mb-4 text-red-500">404</h1>
-                <p className="text-xl text-gray-400 mb-8">Página não encontrada</p>
-                <a 
-                  href="/" 
-                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300"
-                >
-                  Voltar ao Início
-                </a>
-              </div>
-            </div>
-          } />
         </Routes>
-      </div>
+      </Layout>
     </Router>
   );
 }

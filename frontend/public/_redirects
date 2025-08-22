@@ -1,0 +1,4 @@
+# Redirecionamentos para AWS Amplify
+# Todas as rotas devem ir para index.html para funcionar com React Router
+
+/*    /index.html   200

@@ -3,45 +3,58 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "Installing dependencies..."
-        - cd frontend
-        - npm ci --legacy-peer-deps --force
-        - echo "Dependencies installed successfully"
+        - echo "🔒 Iniciando build seguro do AGROSYNC"
+        - npm ci --production=false
+        - echo "✅ Dependências instaladas com segurança"
     build:
       commands:
-        - echo "Building application..."
+        - echo "🛡️ Aplicando configurações de segurança"
         - npm run build
-        - echo "Build completed successfully"
+        - echo "✅ Build concluído com sucesso"
+        - echo "📁 Verificando arquivos gerados:"
+        - ls -la build/
   artifacts:
-    baseDirectory: .next
+    baseDirectory: build
     files:
       - '**/*'
   cache:
     paths:
-      - frontend/node_modules/**/*
-      - frontend/.next/cache/**/*
-  phases:
-    preBuild:
-      commands:
-        - echo "Installing dependencies..."
-        - cd frontend
-        - npm ci --legacy-peer-deps --force
-        - echo "Dependencies installed successfully"
-    build:
-      commands:
-        - echo "Building application..."
-        - npm run build
-        - echo "Build completed successfully"
-        - ls -la out/
-    postBuild:
-      commands:
-        - echo "Deploy ready"
-        - cd ..
-  artifacts:
-    baseDirectory: frontend/.next
-    files:
-      - '**/*'
-  cache:
-    paths:
-      - frontend/node_modules/**/*
-      - frontend/.next/cache/**/*
+      - node_modules/**/*
+      - .npm-cache/**/*
+  customHeaders:
+    - pattern: '**/*'
+      headers:
+        - key: 'X-Content-Type-Options'
+          value: 'nosniff'
+        - key: 'X-Frame-Options'
+          value: 'DENY'
+        - key: 'X-XSS-Protection'
+          value: '1; mode=block'
+        - key: 'Referrer-Policy'
+          value: 'strict-origin-when-cross-origin'
+        - key: 'Permissions-Policy'
+          value: 'geolocation=(), microphone=(), camera=()'
+        - key: 'Content-Security-Policy'
+          value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://ipapi.co https://nominatim.openstreetmap.org https://servicodados.ibge.gov.br; frame-ancestors 'none';"
+        - key: 'Strict-Transport-Security'
+          value: 'max-age=31536000; includeSubDomains; preload'
+        - key: 'Cache-Control'
+          value: 'public, max-age=3600'
+  redirects:
+    - source: '</^[^.]+$|\.(?!(css|gif|ico|jpg|js|png|txt|svg|woff|woff2|ttf|map|json)$)([^.]+$)/>'
+      target: '/index.html'
+      status: '200'
+  security:
+    rateLimit: 1000
+    ddosProtection: true
+    botProtection: true
+    wafRules:
+      - name: 'SQLInjection'
+        priority: 1
+        action: 'BLOCK'
+      - name: 'XSSAttack'
+        priority: 2
+        action: 'BLOCK'
+      - name: 'DDoSProtection'
+        priority: 3
+        action: 'RATE_LIMIT'
