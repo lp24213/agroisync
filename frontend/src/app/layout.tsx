@@ -1,12 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import dynamic from 'next/dynamic'
-
-const FuturisticNavbar = dynamic(() => import('@/components/layout/futuristic-navbar').then(mod => ({ default: mod.FuturisticNavbar })), { ssr: false })
-const CosmicBackground = dynamic(() => import('@/components/ui/cosmic-background').then(mod => ({ default: mod.CosmicBackground })), { ssr: false })
-const AIChatbot = dynamic(() => import('@/components/chatbot/ai-chatbot').then(mod => ({ default: mod.AIChatbot })), { ssr: false })
-const FloatingLights = dynamic(() => import('@/components/ui/cosmic-background').then(mod => ({ default: mod.FloatingLights })), { ssr: false })
+import { ClientLayout } from '@/components/layout/client-layout'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -52,14 +47,9 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className="dark">
       <body className={`${inter.className} bg-black text-white antialiased`}>
-        <CosmicBackground>
-          <FloatingLights />
-          <FuturisticNavbar />
-          <main className="pt-20">
-            {children}
-          </main>
-          <AIChatbot />
-        </CosmicBackground>
+        <ClientLayout>
+          {children}
+        </ClientLayout>
       </body>
     </html>
   )

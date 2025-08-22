@@ -1,6 +1,4 @@
-import dynamic from 'next/dynamic'
-
-const FuturisticHero = dynamic(() => import('@/components/home/futuristic-hero').then(mod => ({ default: mod.FuturisticHero })), { ssr: false })
+import { FuturisticHero } from '@/components/home/futuristic-hero'
 
 export default function Home() {
   return (

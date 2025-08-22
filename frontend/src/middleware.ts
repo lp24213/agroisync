@@ -33,7 +33,7 @@ export function middleware(request: NextRequest) {
     headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload')
   }
 
-  const rateLimitKey = request.ip || 'anonymous'
+  const rateLimitKey = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'anonymous'
   const rateLimit = getRateLimit(rateLimitKey, request.nextUrl.pathname)
   
   if (rateLimit.exceeded) {

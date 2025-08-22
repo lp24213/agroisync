@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   poweredByHeader: false,
   compress: true,
   trailingSlash: true,
@@ -16,8 +15,8 @@ const nextConfig = {
   },
   experimental: {
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
-    serverComponentsExternalPackages: ['framer-motion'],
   },
+  serverExternalPackages: ['framer-motion'],
 
   env: {
     CUSTOM_KEY: process.env.CUSTOM_KEY || '',
@@ -54,7 +53,6 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: false,
   },
-  // output: process.env.NODE_ENV === 'production' ? 'export' : undefined, // Commented out for framer-motion compatibility
 }
 
 module.exports = nextConfig
