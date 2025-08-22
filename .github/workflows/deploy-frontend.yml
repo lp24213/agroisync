@@ -1,14 +1,12 @@
-name: Deploy Frontend to AWS Amplify
+﻿name: Deploy AGROISYNC Frontend
 
 on:
   push:
-    branches: [ main, develop ]
-    paths:
-      - 'frontend/**'
+    branches: [main]
+    paths: ['frontend/**']
   pull_request:
-    branches: [ main ]
-    paths:
-      - 'frontend/**'
+    branches: [main]
+    paths: ['frontend/**']
 
 jobs:
   test:
@@ -31,45 +29,152 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run TypeScript check
+      - name: Run tests
+        run: npm test
+
+      - name: Type check
         run: npm run type-check
 
-      - name: Run ESLint
+      - name: Lint
         run: npm run lint
 
-      - name: Build application
+      - name: Build
         run: npm run build
 
-      - name: Test build output
+      - name: Export static
+        run: npm run export
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: './frontend/package-lock.json'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Export static
+        run: npm run export
+
+      - name: Setup AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Deploy to S3
         run: |
-          if [ -d ".next" ]; then
-            echo "✅ Build successful - .next directory created"
-            ls -la .next/
-          else
-            echo "❌ Build failed - .next directory not found"
-            exit 1
-          fi
+          BUCKET_NAME="agroisync-frontend-$(date +%s)"
+          
+          # Criar bucket S3
+          aws s3 mb s3://$BUCKET_NAME --region us-east-1
+          
+          # Configurar bucket para website estático
+          aws s3 website s3://$BUCKET_NAME --index-document index.html --error-document error.html
+          
+          # Upload dos arquivos
+          aws s3 sync out/ s3://$BUCKET_NAME --delete
+          
+          # Configurar política de bucket para acesso público
+          cat > bucket-policy.json << EOF
+          {
+              "Version": "2012-10-17",
+              "Statement": [
+                  {
+                      "Sid": "PublicReadGetObject",
+                      "Effect": "Allow",
+                      "Principal": "*",
+                      "Action": "s3:GetObject",
+                      "Resource": "arn:aws:s3:::$BUCKET_NAME/*"
+                  }
+              ]
+          }
+          EOF
+          
+          aws s3api put-bucket-policy --bucket $BUCKET_NAME --policy file://bucket-policy.json
+          
+          # Limpar arquivo temporário
+          rm bucket-policy.json
+          
+          echo "BUCKET_NAME=$BUCKET_NAME" >> $GITHUB_ENV
+          echo "WEBSITE_URL=http://$BUCKET_NAME.s3-website-us-east-1.amazonaws.com" >> $GITHUB_ENV
+
+      - name: Configure CloudFront
+        run: |
+          DISTRIBUTION_ID=$(aws cloudfront create-distribution \
+            --distribution-config file://<(cat << EOF
+          {
+              "CallerReference": "$(date +%s)",
+              "Comment": "AGROISYNC Frontend",
+              "DefaultRootObject": "index.html",
+              "Origins": {
+                  "Quantity": 1,
+                  "Items": [
+                      {
+                          "Id": "S3-$BUCKET_NAME",
+                          "DomainName": "$BUCKET_NAME.s3.amazonaws.com",
+                          "S3OriginConfig": {
+                              "OriginAccessIdentity": ""
+                          }
+                      }
+                  ]
+              },
+              "DefaultCacheBehavior": {
+                  "TargetOriginId": "S3-$BUCKET_NAME",
+                  "ViewerProtocolPolicy": "redirect-to-https",
+                  "MinTTL": 0,
+                  "ForwardedValues": {
+                      "QueryString": false,
+                      "Cookies": {
+                          "Forward": "none"
+                      }
+                  }
+              },
+              "Enabled": true
+          }
+          EOF
+          ) --query 'Distribution.Id' --output text)
+          
+          echo "DISTRIBUTION_ID=$DISTRIBUTION_ID" >> $GITHUB_ENV
+          echo "CDN_URL=https://$(aws cloudfront get-distribution --id $DISTRIBUTION_ID --query 'Distribution.DomainName' --output text)" >> $GITHUB_ENV
+
+      - name: Deploy to Amplify (Alternative)
+        if: false # Desabilitado por enquanto
+        run: |
+          echo "Deploy to Amplify would happen here"
+          echo "Configure your Amplify app in the AWS Console"
 
   notify:
-    needs: [test]
+    needs: [deploy]
     runs-on: ubuntu-latest
     if: always()
-    
     steps:
-      - name: Notify test status
+      - name: Notify deployment status
+        env:
+          WEBSITE_URL: ${{ env.WEBSITE_URL }}
+          CDN_URL: ${{ env.CDN_URL }}
         run: |
-          if [ "${{ needs.test.result }}" == "success" ]; then
-            echo "✅ Frontend tests passed - ready for Amplify deployment"
-            echo "🚀 Amplify will automatically deploy on push to main branch"
+          if [ "${{ needs.deploy.result }}" == "success" ]; then
+            echo "Frontend deployed successfully!"
+            echo "S3 Website: $WEBSITE_URL"
+            echo "CloudFront: $CDN_URL"
           else
-            echo "❌ Frontend tests failed - deployment blocked"
+            echo "Frontend deployment failed!"
           fi
-
-      - name: Deployment info
-        if: needs.test.result == 'success'
-        run: |
-          echo "📋 Deployment Information:"
-          echo "- Frontend: AWS Amplify (automatic)"
-          echo "- Branch: ${{ github.ref_name }}"
-          echo "- Commit: ${{ github.sha }}"
-          echo "- Triggered by: ${{ github.actor }}"

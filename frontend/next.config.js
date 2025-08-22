@@ -1,34 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Configuração para AWS Amplify
   output: 'export',
   trailingSlash: true,
-  distDir: 'out',
-  
-  // Configurações de imagem para exportação estática
   images: {
     unoptimized: true,
-    loader: 'custom',
-    loaderFile: './imageLoader.js'
   },
-  
-  // Variáveis de ambiente
+  experimental: {
+    appDir: true,
+  },
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'https://api.agroisync.com',
-    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || 'https://agroisync.com',
-    NEXT_PUBLIC_SOLANA_NETWORK: process.env.NEXT_PUBLIC_SOLANA_NETWORK || 'mainnet-beta',
+    CUSTOM_KEY: process.env.CUSTOM_KEY,
   },
-  
-  // Configurações de build
-  eslint: {
-    ignoreDuringBuilds: false,
-  },
-  
-  typescript: {
-    ignoreBuildErrors: false,
-  },
-  
-  // Configurações de headers de segurança
   async headers() {
     return [
       {
@@ -48,19 +30,27 @@ const nextConfig = {
           },
         ],
       },
-    ];
+    ]
   },
-  
-  // Redirecionamentos
-  async redirects() {
+  async rewrites() {
     return [
       {
-        source: '/home',
-        destination: '/',
-        permanent: true,
+        source: '/api/:path*',
+        destination: '/api/:path*',
       },
-    ];
+    ]
+  },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      }
+    }
+    return config
   },
 }
 
-module.exports = nextConfig;
+module.exports = nextConfig

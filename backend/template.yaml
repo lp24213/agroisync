@@ -2,6 +2,21 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: AGROISYNC Backend (Lambda + HTTP API)
 
+Parameters:
+  StripeSecretKey:
+    Type: String
+    Description: Stripe Secret Key for payments
+    NoEcho: true
+  MetamaskAddress:
+    Type: String
+    Description: Metamask wallet address for admin operations
+    Default: "0x5Ea5C5970e8AE23A5336d631707CF31C5916E8b1"
+  Environment:
+    Type: String
+    Description: Environment (dev/staging/prod)
+    Default: "production"
+    AllowedValues: ["dev", "staging", "production"]
+
 Resources:
   ApiFunction:
     Type: AWS::Serverless::Function
@@ -10,13 +25,35 @@ Resources:
       CodeUri: .
       Handler: dist/handler.js
       Runtime: nodejs20.x
-      MemorySize: 512
-      Timeout: 15
+      MemorySize: 1024
+      Timeout: 30
       Policies:
         - AWSLambdaBasicExecutionRole
+        - Statement:
+            - Effect: Allow
+              Action:
+                - s3:GetObject
+                - s3:PutObject
+                - s3:DeleteObject
+              Resource: !Sub "arn:aws:s3:::agroisync-uploads/*"
+        - Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:UpdateItem
+                - dynamodb:DeleteItem
+                - dynamodb:Query
+                - dynamodb:Scan
+              Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/agroisync-*"
       Environment:
         Variables:
-          NODE_ENV: production
+          NODE_ENV: !Ref Environment
+          STRIPE_SECRET_KEY: !Ref StripeSecretKey
+          METAMASK_ADMIN_ADDRESS: !Ref MetamaskAddress
+          AWS_REGION: !Ref AWS::Region
+          UPLOAD_BUCKET: "agroisync-uploads"
+          DYNAMODB_TABLE_PREFIX: "agroisync"
       Events:
         HttpApi:
           Type: HttpApi
@@ -24,7 +61,57 @@ Resources:
             Path: /{proxy+}
             Method: ANY
 
+  UploadBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: agroisync-uploads
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders: ["*"]
+            AllowedMethods: [GET, POST, PUT, DELETE]
+            AllowedOrigins: ["*"]
+            MaxAge: 3000
+      LifecycleConfiguration:
+        Rules:
+          - Id: DeleteOldVersions
+            Status: Enabled
+            NoncurrentVersionExpirationInDays: 30
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 7
+
+  DynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${DYNAMODB_TABLE_PREFIX}-users"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: email
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: EmailIndex
+          KeySchema:
+            - AttributeName: email
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
 Outputs:
   ApiUrl:
     Description: HTTP API URL
     Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com"
+  UploadBucketName:
+    Description: S3 Bucket for file uploads
+    Value: !Ref UploadBucket
+  DynamoDBTableName:
+    Description: DynamoDB table for users
+    Value: !Ref DynamoDBTable
