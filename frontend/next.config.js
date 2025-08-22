@@ -17,7 +17,6 @@ const nextConfig = {
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
   outputFileTracingRoot: process.cwd(),
-  serverExternalPackages: ['framer-motion'],
 
   env: {
     CUSTOM_KEY: process.env.CUSTOM_KEY || '',
@@ -53,6 +52,11 @@ const nextConfig = {
   },
   eslint: {
     ignoreDuringBuilds: false,
+  },
+  // Configurações específicas para AWS Amplify
+  swcMinify: true,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
   },
 }
 

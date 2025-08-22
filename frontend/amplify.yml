@@ -5,7 +5,27 @@ frontend:
       commands:
         - echo "Installing dependencies..."
         - cd frontend
-        - npm ci --legacy-peer-deps
+        - npm ci --legacy-peer-deps --force
+        - echo "Dependencies installed successfully"
+    build:
+      commands:
+        - echo "Building application..."
+        - npm run build
+        - echo "Build completed successfully"
+  artifacts:
+    baseDirectory: frontend/.next
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - frontend/node_modules/**/*
+      - frontend/.next/cache/**/*
+  phases:
+    preBuild:
+      commands:
+        - echo "Installing dependencies..."
+        - cd frontend
+        - npm ci --legacy-peer-deps --force
         - echo "Dependencies installed successfully"
     build:
       commands:
@@ -18,7 +38,7 @@ frontend:
         - echo "Deploy ready"
         - cd ..
   artifacts:
-    baseDirectory: frontend/out
+    baseDirectory: frontend/.next
     files:
       - '**/*'
   cache:
