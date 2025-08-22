@@ -35,6 +35,7 @@ export function SimpleStableLayout({ children }: SimpleStableLayoutProps) {
       window.addEventListener('scroll', handleScroll);
       return () => window.removeEventListener('scroll', handleScroll);
     }
+    return undefined;
   }, []);
 
   const navItems = [
