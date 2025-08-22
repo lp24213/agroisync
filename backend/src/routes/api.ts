@@ -3,7 +3,7 @@ import express, { Router } from 'express';
 const router: Router = express.Router();
 
 // API info endpoint
-router.get('/', (req, res) => {
+router.get('/', (_req, res) => {
   res.json({
     message: 'AGROISYNC API',
     version: '2.3.1',
@@ -17,7 +17,7 @@ router.get('/', (req, res) => {
 });
 
 // Blockchain endpoint
-router.get('/blockchain', (req, res) => {
+router.get('/blockchain', (_req, res) => {
   res.json({
     message: 'Blockchain services available',
     networks: ['solana', 'ethereum', 'polygon'],
@@ -26,7 +26,7 @@ router.get('/blockchain', (req, res) => {
 });
 
 // Agriculture endpoint
-router.get('/agriculture', (req, res) => {
+router.get('/agriculture', (_req, res) => {
   res.json({
     message: 'Agriculture services available',
     services: ['crop-monitoring', 'weather-data', 'market-prices'],

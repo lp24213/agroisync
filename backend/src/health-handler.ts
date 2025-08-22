@@ -1,9 +1,10 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, DescribeTableCommand } from '@aws-sdk/lib-dynamodb';
+// import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import { DescribeTableCommand } from '@aws-sdk/client-dynamodb';
 
-const dynamoClient = new DynamoDBClient({ region: process.env.AWS_REGION });
-const docClient = DynamoDBDocumentClient.from(dynamoClient);
+const dynamoClient = new DynamoDBClient({ region: process.env.AWS_REGION || 'us-east-1' });
+// const docClient = DynamoDBDocumentClient.from(dynamoClient);
 
 interface HealthStatus {
   status: 'healthy' | 'unhealthy' | 'degraded';
@@ -27,7 +28,7 @@ async function checkDynamoDB(): Promise<'healthy' | 'unhealthy' | 'degraded'> {
     const tableName = `${tablePrefix}-users-${process.env.NODE_ENV || 'production'}`;
     
     const command = new DescribeTableCommand({ TableName: tableName });
-    await docClient.send(command);
+    await dynamoClient.send(command);
     
     return 'healthy';
   } catch (error: any) {
@@ -58,8 +59,8 @@ function checkMemory(): 'healthy' | 'unhealthy' {
 
 // Main health check handler
 export const handler = async (
-  event: APIGatewayProxyEvent,
-  context: Context
+  _event: APIGatewayProxyEvent,
+  _context: Context
 ): Promise<APIGatewayProxyResult> => {
   const startTime = Date.now();
   

@@ -3,7 +3,7 @@ import express, { Router } from 'express';
 const router: Router = express.Router();
 
 // Health check endpoint
-router.get('/', (req, res) => {
+router.get('/', (_req, res) => {
   res.json({
     ok: true,
     ts: new Date().toISOString(),
@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
 });
 
 // Detailed health check
-router.get('/detailed', (req, res) => {
+router.get('/detailed', (_req, res) => {
   res.json({
     status: 'healthy',
     timestamp: new Date().toISOString(),
