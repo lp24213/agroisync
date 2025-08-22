@@ -5,6 +5,12 @@ import { StableLayout } from '@/components/layout/stable-layout'
 
 const inter = Inter({ subsets: ['latin'] })
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#000000',
+}
+
 export const metadata: Metadata = {
   title: 'AgroSync - O Futuro da Agricultura Digital',
   description: 'Plataforma revolucionária que combina blockchain, IA e conectividade global para transformar o agronegócio. Criptomoedas, grãos, marketplace e muito mais.',
@@ -35,8 +41,7 @@ export const metadata: Metadata = {
     description: 'Plataforma revolucionária que combina blockchain, IA e conectividade global para transformar o agronegócio.',
     images: ['/og-image.jpg'],
   },
-  viewport: 'width=device-width, initial-scale=1',
-  themeColor: '#000000',
+
 }
 
 export default function RootLayout({

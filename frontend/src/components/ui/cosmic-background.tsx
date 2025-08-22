@@ -202,9 +202,8 @@ export function CosmicBackground({ children, className = '' }: CosmicBackgroundP
         cancelAnimationFrame(animationFrameRef.current);
       }
       
-      const currentMount = mountRef.current;
-      if (rendererRef.current && currentMount) {
-        currentMount.removeChild(rendererRef.current.domElement);
+      if (rendererRef.current && mountRef.current) {
+        mountRef.current.removeChild(rendererRef.current.domElement);
         rendererRef.current.dispose();
       }
       
