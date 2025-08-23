@@ -2,427 +2,203 @@
   "common": {
     "loading": "Carregando...",
     "error": "Erro",
-    "retry": "Tentar Novamente",
-    "refresh": "Atualizar",
-    "save": "Salvar",
+    "success": "Sucesso",
     "cancel": "Cancelar",
     "confirm": "Confirmar",
-    "back": "Voltar",
-    "next": "Próximo",
-    "previous": "Anterior",
+    "save": "Salvar",
+    "edit": "Editar",
+    "delete": "Excluir",
     "search": "Buscar",
     "filter": "Filtrar",
-    "clear": "Limpar",
-    "close": "Fechar"
+    "sort": "Ordenar",
+    "view": "Visualizar",
+    "contact": "Contato",
+    "about": "Sobre",
+    "home": "Início",
+    "marketplace": "Marketplace",
+    "crypto": "Criptomoedas",
+    "register": "Cadastro",
+    "login": "Login",
+    "logout": "Sair",
+    "admin": "Administração",
+    "plans": "Planos",
+    "language": "Idioma"
   },
   "navigation": {
-    "home": "Home",
+    "home": "Início",
     "about": "Sobre",
-    "quotes": "Cotação",
-    "marketplace": "Loja",
+    "quotes": "Cotações",
+    "store": "Loja",
     "agroconnect": "AgroConecta",
     "crypto": "Cripto",
     "register": "Cadastro",
-    "admin": "Admin",
-    "login": "Login",
-    "logout": "Sair"
+    "contact": "Contato"
   },
   "home": {
-    "title": "AGROSYNC",
-    "subtitle": "Plataforma líder em inteligência agrícola",
-    "description": "Integrando dados em tempo real do IBGE, Receita Federal e APIs globais para análise avançada de commodities.",
-    "features": {
-      "title": "Funcionalidades Principais",
-      "geolocation": {
-        "title": "Geolocalização",
-        "description": "Preços baseados na sua localização via GPS e IP"
-      },
-      "agrolink": {
-        "title": "API Agrolink",
-        "description": "Cotações em tempo real do mercado agrícola"
-      },
-      "analysis": {
-        "title": "Análise de Dados",
-        "description": "Gráficos e métricas do mercado futuro"
-      },
-      "apis": {
-        "title": "APIs Externas",
-        "description": "IBGE, Receita Federal e FAO integrados"
-      }
+    "hero": {
+      "title": "AgroConecta",
+      "subtitle": "A plataforma mais avançada do agronegócio digital",
+      "description": "Conectando produtores, compradores e investidores com tecnologia de última geração. O futuro do agronegócio está aqui.",
+      "cta": "Começar Agora",
+      "learnMore": "Saiba Mais"
     },
-    "stats": {
-      "grains": "Tipos de Grãos",
-      "realtime": "Tempo Real",
-      "updates": "Atualizações",
-      "integration": "Integração"
-    }
-  },
-  "about": {
-    "title": "Sobre o AGROSYNC",
-    "subtitle": "Plataforma líder em inteligência agrícola",
-    "mission": {
-      "title": "Nossa Missão",
-      "description1": "Conectar o agronegócio brasileiro através de tecnologia de ponta, oferecendo dados precisos, análises avançadas e ferramentas para tomada de decisão estratégica no mercado agrícola.",
-      "description2": "Integramos APIs oficiais do governo brasileiro com dados globais para fornecer a visão mais completa e atualizada do mercado."
-    },
-    "contact": {
-      "title": "Informações de Contato",
-      "email": "contato@agroisync.com",
-      "phone": "(66) 99236-2830",
-      "location": "Sinop - MT"
+    "highlights": {
+      "title": "Destaques",
+      "realTimeData": "Dados em Tempo Real",
+      "advancedAnalytics": "Análises Avançadas",
+      "marketIntelligence": "Inteligência de Mercado",
+      "cryptoTrading": "Trading de Criptomoedas"
     },
     "features": {
-      "title": "Por que escolher o AGROSYNC?",
-      "official_data": {
-        "title": "Dados Oficiais",
-        "description": "Integração direta com IBGE, Receita Federal e APIs governamentais"
+      "title": "Por que AgroConecta?",
+      "feature1": {
+        "title": "Tecnologia de Última Geração",
+        "description": "Plataforma construída com as mais avançadas tecnologias do mercado"
       },
-      "realtime": {
-        "title": "Tempo Real",
-        "description": "Atualizações automáticas 24/7 com dados do mercado"
+      "feature2": {
+        "title": "Dados em Tempo Real",
+        "description": "Acesso instantâneo a informações críticas do mercado agrícola"
       },
-      "global": {
-        "title": "Cobertura Global",
-        "description": "Dados de exportação FAO e mercados internacionais"
-      }
-    },
-    "cta": {
-      "title": "Pronto para começar?",
-      "description": "Acesse agora mesmo e descubra o poder dos dados agrícolas em tempo real.",
-      "view_quotes": "Ver Cotações",
-      "create_account": "Criar Conta"
-    }
-  },
-  "quotes": {
-    "title": "Cotação de Grãos",
-    "subtitle": "Preços em tempo real baseados na sua localização",
-    "description": "Preços em tempo real baseados na sua localização via API Agrolink. Dados atualizados automaticamente com geolocalização GPS e fallback por IP.",
-    "dashboard": {
-      "title": "Dashboard de Grãos",
-      "subtitle": "Cotações em tempo real baseadas na sua localização",
-      "loading": "Carregando dados de cotações...",
-      "updating": "Atualizando...",
-      "update": "Atualizar",
-      "last_update": "Última atualização",
-      "regional_price": "Preço regional",
-      "updated": "Atualizado",
-      "error_loading": "Erro ao Carregar Dados",
-      "try_again": "Tentar Novamente"
-    },
-    "grains": {
-      "title": "Grãos Monitorados",
-      "soybean": "Soja",
-      "corn": "Milho", 
-      "wheat": "Trigo",
-      "rice": "Arroz",
-      "coffee": "Café",
-      "cotton": "Algodão",
-      "unit": "Unidade"
-    },
-    "geolocation": {
-      "title": "Como Funciona a Geolocalização",
-      "gps": {
-        "title": "1. GPS Nativo",
-        "description": "Solicitamos acesso ao GPS do seu dispositivo para localização precisa"
-      },
-      "fallback": {
-        "title": "2. Fallback IP",
-        "description": "Se GPS não estiver disponível, usamos sua localização por IP"
-      },
-      "agrolink": {
-        "title": "3. API Agrolink",
-        "description": "Preços regionais baseados na sua localização detectada"
+      "feature3": {
+        "title": "Conectividade Global",
+        "description": "Rede mundial de produtores, compradores e investidores"
       }
     }
   },
   "marketplace": {
-    "title": "Marketplace Agrícola",
-    "subtitle": "Conectamos produtores, vendedores e compradores",
-    "description": "Conectamos produtores, vendedores e compradores do agronegócio brasileiro. Anuncie seus produtos e encontre as melhores ofertas do mercado.",
-    "search_placeholder": "Buscar produtos ou localização...",
-    "categories": {
-      "all": "Todos",
-      "grains": "Grãos",
-      "coffee": "Café",
-      "fibers": "Fibras"
+    "title": "Marketplace AgroConecta",
+    "subtitle": "Conecte-se diretamente com produtores e fornecedores",
+    "search": "Buscar produtos...",
+    "categories": "Categorias",
+    "location": "Localização",
+    "priceRange": "Faixa de Preço",
+    "quality": "Qualidade",
+    "certifications": "Certificações",
+    "viewMode": {
+      "grid": "Grade",
+      "list": "Lista"
     },
-    "products": {
-      "title": "Produtos Disponíveis",
-      "found": "produto encontrado",
-      "found_plural": "produtos encontrados",
-      "no_products": {
-        "title": "Nenhum produto encontrado",
-        "description": "Tente ajustar os filtros ou a busca"
-      },
-      "available": "Disponível",
+    "sortBy": {
+      "relevance": "Relevância",
       "price": "Preço",
-      "quantity": "Quantidade",
-      "call": "Ligar",
-      "email": "Email",
-      "product_id": "ID do Produto"
+      "rating": "Avaliação",
+      "newest": "Mais Recente"
     },
-    "cta": {
-      "title": "Quer anunciar seus produtos?",
-      "description": "Cadastre-se gratuitamente e comece a vender no maior marketplace agrícola do Brasil.",
-      "advertise": "Anunciar Produto",
-      "how_it_works": "Ver Como Funciona"
+    "filters": {
+      "title": "Filtros Avançados",
+      "clear": "Limpar Filtros",
+      "apply": "Aplicar Filtros"
+    },
+    "product": {
+      "contactSupplier": "Contatar Fornecedor",
+      "save": "Salvar",
+      "minOrder": "Pedido Mínimo",
+      "stock": "Estoque",
+      "delivery": "Entrega",
+      "payment": "Pagamento"
+    },
+    "noResults": "Nenhum resultado encontrado",
+    "noResultsDescription": "Tente ajustar os filtros ou buscar por outros termos"
+  },
+  "about": {
+    "title": "Sobre o AgroConecta",
+    "subtitle": "Revolucionando o agronegócio com tecnologia de ponta",
+    "mission": {
+      "title": "Nossa Missão",
+      "description": "Transformar o agronegócio através da tecnologia, conectando produtores, compradores e investidores em uma plataforma inovadora e eficiente."
+    },
+    "vision": {
+      "title": "Nossa Visão",
+      "description": "Ser a plataforma líder em inteligência agrícola digital, impulsionando o crescimento sustentável do setor agropecuário global."
+    },
+    "values": {
+      "title": "Nossos Valores",
+      "innovation": "Inovação",
+      "sustainability": "Sustentabilidade",
+      "transparency": "Transparência",
+      "excellence": "Excelência",
+      "collaboration": "Colaboração"
+    },
+    "stats": {
+      "title": "Números que Impressionam",
+      "users": "Usuários Ativos",
+      "transactions": "Transações Realizadas",
+      "countries": "Países Atendidos",
+      "partners": "Parceiros Estratégicos"
+    },
+    "journey": {
+      "title": "Nossa Jornada",
+      "2020": "Fundação e desenvolvimento da plataforma",
+      "2021": "Lançamento beta e primeiros usuários",
+      "2022": "Expansão para novos mercados",
+      "2023": "Integração com tecnologias avançadas",
+      "2024": "Liderança no mercado de agtech"
+    },
+    "team": {
+      "title": "Nossa Equipe",
+      "description": "Especialistas em tecnologia, agronegócio e inovação trabalhando juntos para revolucionar o setor."
+    },
+    "technology": {
+      "title": "Tecnologias de Ponta",
+      "description": "Utilizamos as mais avançadas tecnologias para garantir performance, segurança e escalabilidade."
     }
   },
-  "agroconnect": {
-    "title": "AgroConecta",
-    "subtitle": "Sistema de fretes agrícolas",
-    "description": "Sistema de fretes agrícolas que conecta caminhoneiros, produtores, vendedores e compradores do agronegócio brasileiro.",
-    "tabs": {
-      "freights": "Fretes Disponíveis",
-      "users": "Usuários Cadastrados"
-    },
-    "freights": {
-      "title": "Fretes Disponíveis",
-      "publish": "Publicar Fretes",
-      "origin": "Origem",
-      "destination": "Destino",
-      "product": "Produto",
-      "weight": "Peso",
-      "value": "Valor",
-      "type": "Tipo",
-      "driver": "Caminhoneiro",
-      "contact": "Contato",
-      "status": {
-        "available": "Disponível",
-        "in_transit": "Em Trânsito",
-        "completed": "Concluído"
-      }
-    },
-    "users": {
-      "title": "Usuários Cadastrados",
-      "register": "Cadastrar Usuário",
-      "contact_user": "Entrar em Contato",
-      "types": {
-        "driver": "Caminhoneiro",
-        "producer": "Produtor",
-        "buyer": "Comprador",
-        "seller": "Vendedor"
-      },
-      "status": {
-        "active": "Ativo"
-      }
-    },
-    "cta": {
-      "title": "Quer se cadastrar no AgroConecta?",
-      "description": "Conecte-se com o maior sistema de fretes agrícolas do Brasil.",
-      "register_now": "Cadastrar Agora",
-      "see_user_types": "Ver Tipos de Usuário"
-    }
-  },
-  "crypto": {
-    "title": "Cripto & DeFi",
-    "subtitle": "Finanças descentralizadas para o agronegócio",
-    "description": "Plataforma avançada de finanças descentralizadas integrando Metamask, Stripe e soluções Web3 para o agronegócio.",
-    "wallet": {
-      "title": "Conecte sua Carteira",
-      "connect_metamask": "Conectar MetaMask",
-      "connecting": "Conectando...",
-      "connected": "Carteira Conectada",
-      "disconnect": "Desconectar",
-      "view_transactions": "Ver Transações",
-      "balance": "Saldo",
-      "metamask_not_installed": "MetaMask não está instalado!",
-      "connection_error": "Erro ao conectar carteira",
-      "description": "Conecte sua carteira MetaMask para acessar as funcionalidades DeFi"
-    },
-    "defi": {
-      "title": "Funcionalidades DeFi",
-      "staking": {
-        "title": "Staking",
-        "description": "Stake seus tokens e ganhe recompensas"
-      },
-      "yield_farming": {
-        "title": "Yield Farming", 
-        "description": "Maximize seus retornos com farming"
-      },
-      "liquidity_pools": {
-        "title": "Liquidity Pools",
-        "description": "Forneça liquidez e ganhe fees"
-      }
-    },
-    "public_address": {
-      "title": "Endereço Público da Plataforma",
-      "ethereum_address": "Endereço Ethereum",
-      "copy": "Copiar",
-      "description": "Este endereço é usado para transações e contratos inteligentes da plataforma",
-      "copied": "Endereço copiado para a área de transferência!"
-    },
-    "stripe": {
-      "title": "Integração com Stripe",
-      "subtitle": "Pagamentos Tradicionais",
-      "description": "Aceite pagamentos em reais através do Stripe, integrado com nossa plataforma DeFi para conversão automática de moedas.",
-      "credit_card": "Cartão de Crédito",
-      "visa_mastercard": "Visa, Mastercard",
-      "pix": "PIX",
-      "instant_transfer": "Transferência Imediata",
-      "boleto": "Boleto",
-      "bank_payment": "Pagamento Bancário"
-    },
-    "cta": {
-      "title": "Pronto para o Futuro das Finanças?",
-      "description": "Experimente a primeira plataforma DeFi integrada ao agronegócio brasileiro.",
-      "connect_wallet": "Conectar Carteira",
-      "learn_more": "Saber Mais"
-    }
-  },
-  "register": {
-    "title": "Cadastro",
-    "login_title": "Login",
-    "subtitle_register": "Crie sua conta e comece a usar todas as funcionalidades do AGROSYNC",
-    "subtitle_login": "Acesse sua conta para gerenciar produtos, fretes e cotações",
-    "toggle": {
-      "register": "Cadastro",
-      "login": "Login"
-    },
+  "contact": {
+    "title": "Entre em Contato",
+    "subtitle": "Estamos aqui para ajudar você a conectar-se ao futuro do agronegócio",
     "form": {
-      "full_name": "Nome Completo",
-      "full_name_placeholder": "Digite seu nome completo",
-      "user_type": "Tipo de Usuário",
-      "cpf_cnpj": "CPF ou CNPJ",
-      "cpf_cnpj_placeholder": "Digite seu CPF ou CNPJ",
+      "name": "Nome Completo",
+      "email": "E-mail",
       "phone": "Telefone",
-      "phone_placeholder": "(00) 00000-0000",
-      "location": "Localização",
-      "location_placeholder": "Cidade - Estado",
-      "company": "Nome da Empresa (opcional)",
-      "company_placeholder": "Digite o nome da sua empresa",
-      "email": "Email",
-      "email_placeholder": "seu@email.com",
-      "password": "Senha",
-      "password_placeholder": "Digite sua senha",
-      "confirm_password": "Confirmar Senha",
-      "confirm_password_placeholder": "Confirme sua senha",
-      "login_button": "Entrar",
-      "register_button": "Criar Conta",
-      "forgot_password": "Esqueceu sua senha?",
-      "no_account": "Não tem uma conta?",
-      "register_here": "Cadastre-se aqui",
-      "have_account": "Já tem uma conta?",
-      "login_here": "Faça login aqui"
+      "company": "Empresa",
+      "subject": "Assunto",
+      "message": "Mensagem",
+      "send": "Enviar Mensagem"
     },
-    "user_types": {
-      "producer": "Produtor - Agricultor que produz commodities",
-      "buyer": "Comprador - Empresa que compra produtos agrícolas",
-      "seller": "Vendedor - Intermediário na venda de produtos",
-      "driver": "Freteiro - Transportador de cargas agrícolas"
+    "info": {
+      "title": "Informações de Contato",
+      "address": "Endereço",
+      "phone": "Telefone",
+      "email": "E-mail",
+      "website": "Website"
     },
-    "features": {
-      "title": "Por que se cadastrar no AGROSYNC?",
-      "geolocation": {
-        "title": "Geolocalização",
-        "description": "Preços baseados na sua localização real"
-      },
-      "marketplace": {
-        "title": "Marketplace",
-        "description": "Anuncie e compre produtos agrícolas"
-      },
-      "freight": {
-        "title": "Fretes",
-        "description": "Sistema completo de logística agrícola"
-      }
+    "social": {
+      "title": "Redes Sociais",
+      "follow": "Siga-nos"
     }
   },
-  "admin": {
-    "title": "Painel Admin",
-    "subtitle": "Gerenciamento completo da plataforma AGROSYNC",
-    "login": {
-      "title": "Área Administrativa",
-      "email_label": "Email Administrativo",
-      "email_placeholder": "admin@agroisync.com",
-      "password_label": "Senha",
-      "password_placeholder": "Digite sua senha",
-      "login_button": "Acessar Admin",
-      "restricted_access": "Acesso restrito a administradores autorizados",
-      "invalid_credentials": "Credenciais inválidas!",
-      "login_success": "Login realizado com sucesso!"
+  "chatbot": {
+    "title": "Assistente IA AgroConecta",
+    "subtitle": "Como posso ajudá-lo hoje?",
+    "personalities": {
+      "agro-expert": "Dr. AgroBot",
+      "friendly": "AgroAmigo",
+      "analyst": "DataAgro",
+      "crypto": "CryptoAgro"
     },
-    "dashboard": {
-      "stats": "Estatísticas Gerais",
-      "users": "Usuários",
-      "quotes": "Cotações",
-      "registrations": "Cadastros",
-      "ads": "Anúncios",
-      "logout": "Sair"
+    "input": {
+      "placeholder": "Digite sua mensagem...",
+      "voice": "Falar",
+      "send": "Enviar"
     },
-    "management": {
-      "title": "Gerenciamento",
-      "users": {
-        "title": "Usuários",
-        "description": "Gerenciar contas e permissões"
-      },
-      "quotes": {
-        "title": "Cotações",
-        "description": "Monitorar preços e tendências"
-      },
-      "registrations": {
-        "title": "Cadastros",
-        "description": "Aprovar novos usuários"
-      },
-      "ads": {
-        "title": "Anúncios",
-        "description": "Moderar marketplace"
-      }
-    },
-    "quick_actions": {
-      "title": "Ações Rápidas",
-      "add_user": {
-        "title": "Adicionar Usuário",
-        "description": "Criar nova conta administrativa"
-      },
-      "approve_registrations": {
-        "title": "Aprovar Cadastros", 
-        "description": "Revisar pendências"
-      },
-      "reports": {
-        "title": "Relatórios",
-        "description": "Gerar análises e métricas"
-      }
+    "quickActions": {
+      "marketInfo": "Informações de Mercado",
+      "productSearch": "Buscar Produtos",
+      "priceQuotes": "Cotações",
+      "help": "Ajuda"
     }
   },
   "footer": {
-    "sections": {
-      "platform": "Plataforma",
+    "description": "AgroConecta - Conectando o futuro do agronegócio",
+    "links": {
+      "about": "Sobre",
       "services": "Serviços",
-      "support": "Suporte"
-    },
-    "services": {
-      "agroconnect": "AgroConecta",
-      "crypto_defi": "Cripto & DeFi",
-      "marketplace": "Marketplace",
-      "geolocation": "Geolocalização"
-    },
-    "support": {
-      "register": "Cadastro",
-      "faq": "FAQ",
       "contact": "Contato",
-      "admin": "Admin"
+      "privacy": "Privacidade",
+      "terms": "Termos"
     },
-    "contact": {
-      "title": "Contato",
-      "email": "contato@agroisync.com",
-      "phone": "(66) 99236-2830",
-      "location": "Sinop - MT"
-    },
-    "newsletter": {
-      "title": "Newsletter",
-      "placeholder": "Seu email"
-    },
-    "schedule": {
-      "title": "Horário de Funcionamento",
-      "weekdays": "Segunda a Sexta: 8h às 18h",
-      "saturday": "Sábado: 8h às 12h",
-      "sunday": "Domingo: Fechado"
-    },
-    "copyright": "Todos os direitos reservados.",
-    "legal": {
-      "privacy": "Política de Privacidade",
-      "terms": "Termos de Uso",
-      "cookies": "Cookies"
-    }
+    "social": "Redes Sociais",
+    "newsletter": "Newsletter",
+    "subscribe": "Inscrever-se"
   }
 }

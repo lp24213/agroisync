@@ -1,0 +1,204 @@
+{
+  "common": {
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "cancel": "取消",
+    "confirm": "确认",
+    "save": "保存",
+    "edit": "编辑",
+    "delete": "删除",
+    "search": "搜索",
+    "filter": "筛选",
+    "sort": "排序",
+    "view": "查看",
+    "contact": "联系",
+    "about": "关于",
+    "home": "首页",
+    "marketplace": "市场",
+    "crypto": "加密货币",
+    "register": "注册",
+    "login": "登录",
+    "logout": "登出",
+    "admin": "管理",
+    "plans": "计划",
+    "language": "语言"
+  },
+  "navigation": {
+    "home": "首页",
+    "about": "关于",
+    "quotes": "报价",
+    "store": "商店",
+    "agroconnect": "农业连接",
+    "crypto": "加密",
+    "register": "注册",
+    "contact": "联系"
+  },
+  "home": {
+    "hero": {
+      "title": "农业连接",
+      "subtitle": "最先进的数字农业平台",
+      "description": "通过尖端技术连接生产者、买家和投资者。农业的未来就在这里。",
+      "cta": "立即开始",
+      "learnMore": "了解更多"
+    },
+    "highlights": {
+      "title": "亮点",
+      "realTimeData": "实时数据",
+      "advancedAnalytics": "高级分析",
+      "marketIntelligence": "市场智能",
+      "cryptoTrading": "加密货币交易"
+    },
+    "features": {
+      "title": "为什么选择农业连接？",
+      "feature1": {
+        "title": "尖端技术",
+        "description": "使用市场上最先进技术构建的平台"
+      },
+      "feature2": {
+        "title": "实时数据",
+        "description": "即时访问农业市场关键信息"
+      },
+      "feature3": {
+        "title": "全球连接",
+        "description": "生产者、买家和投资者的全球网络"
+      }
+    }
+  },
+  "marketplace": {
+    "title": "农业连接市场",
+    "subtitle": "直接与生产者和供应商联系",
+    "search": "搜索产品...",
+    "categories": "类别",
+    "location": "位置",
+    "priceRange": "价格范围",
+    "quality": "质量",
+    "certifications": "认证",
+    "viewMode": {
+      "grid": "网格",
+      "list": "列表"
+    },
+    "sortBy": {
+      "relevance": "相关性",
+      "price": "价格",
+      "rating": "评分",
+      "newest": "最新"
+    },
+    "filters": {
+      "title": "高级筛选",
+      "clear": "清除筛选",
+      "apply": "应用筛选"
+    },
+    "product": {
+      "contactSupplier": "联系供应商",
+      "save": "保存",
+      "minOrder": "最小订单",
+      "stock": "库存",
+      "delivery": "配送",
+      "payment": "付款"
+    },
+    "noResults": "未找到结果",
+    "noResultsDescription": "尝试调整筛选条件或搜索其他术语"
+  },
+  "about": {
+    "title": "关于农业连接",
+    "subtitle": "用尖端技术革新农业",
+    "mission": {
+      "title": "我们的使命",
+      "description": "通过技术改变农业，在创新高效的平台上连接生产者、买家和投资者。"
+    },
+    "vision": {
+      "title": "我们的愿景",
+      "description": "成为数字农业智能的领先平台，推动全球农业部门的可持续增长。"
+    },
+    "values": {
+      "title": "我们的价值观",
+      "innovation": "创新",
+      "sustainability": "可持续性",
+      "transparency": "透明度",
+      "excellence": "卓越",
+      "collaboration": "协作"
+    },
+    "stats": {
+      "title": "令人印象深刻的数字",
+      "users": "活跃用户",
+      "transactions": "完成的交易",
+      "countries": "服务的国家",
+      "partners": "战略合作伙伴"
+    },
+    "journey": {
+      "title": "我们的旅程",
+      "2020": "平台基础和开发",
+      "2021": "测试版发布和首批用户",
+      "2022": "扩展到新市场",
+      "2023": "与先进技术集成",
+      "2024": "农业科技市场领导地位"
+    },
+    "team": {
+      "title": "我们的团队",
+      "description": "技术、农业和创新专家共同努力革新该行业。"
+    },
+    "technology": {
+      "title": "尖端技术",
+      "description": "我们使用最先进的技术来确保性能、安全性和可扩展性。"
+    }
+  },
+  "contact": {
+    "title": "联系我们",
+    "subtitle": "我们在这里帮助您连接到农业的未来",
+    "form": {
+      "name": "全名",
+      "email": "电子邮件",
+      "phone": "电话",
+      "company": "公司",
+      "subject": "主题",
+      "message": "消息",
+      "send": "发送消息"
+    },
+    "info": {
+      "title": "联系信息",
+      "address": "地址",
+      "phone": "电话",
+      "email": "电子邮件",
+      "website": "网站"
+    },
+    "social": {
+      "title": "社交媒体",
+      "follow": "关注我们"
+    }
+  },
+  "chatbot": {
+    "title": "农业连接AI助手",
+    "subtitle": "今天我能为您做些什么？",
+    "personalities": {
+      "agro-expert": "农业博士",
+      "friendly": "农业朋友",
+      "analyst": "数据农业",
+      "crypto": "加密农业"
+    },
+    "input": {
+      "placeholder": "输入您的消息...",
+      "voice": "说话",
+      "send": "发送"
+    },
+    "quickActions": {
+      "marketInfo": "市场信息",
+      "productSearch": "搜索产品",
+      "priceQuotes": "价格报价",
+      "help": "帮助"
+    }
+  },
+  "footer": {
+    "description": "农业连接 - 连接农业的未来",
+    "links": {
+      "about": "关于",
+      "services": "服务",
+      "contact": "联系",
+      "privacy": "隐私",
+      "terms": "条款"
+    },
+    "social": "社交媒体",
+    "newsletter": "通讯",
+    "subscribe": "订阅"
+  }
+}

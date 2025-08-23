@@ -1,127 +1,318 @@
 import React from 'react';
+import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../contexts/ThemeContext';
 import { Link } from 'react-router-dom';
+import NFTMinting from '../components/illustrations/NFTMinting';
+import PremiumFarmer from '../components/illustrations/PremiumFarmer';
+import InteractiveDashboard from '../components/illustrations/InteractiveDashboard';
+import StakingFarming from '../components/illustrations/StakingFarming';
+import CyberDefense from '../components/illustrations/CyberDefense';
+import SmartFarming from '../components/illustrations/SmartFarming';
+import ThemeDemo from '../components/ThemeDemo';
 
 const Home = () => {
+  const { t } = useTranslation();
+  const { theme } = useTheme();
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.3
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const highlightCards = [
+    {
+      icon: "📊",
+      title: t('home.highlights.realTimeData'),
+      description: "Dados atualizados em tempo real para tomada de decisões estratégicas",
+      illustration: <InteractiveDashboard className="w-16 h-16" />
+    },
+    {
+      icon: "🔍",
+      title: t('home.highlights.advancedAnalytics'),
+      description: "Análises avançadas com inteligência artificial e machine learning",
+      illustration: <CyberDefense className="w-16 h-16" />
+    },
+    {
+      icon: "🌍",
+      title: t('home.highlights.marketIntelligence'),
+      description: "Inteligência de mercado com insights globais e tendências",
+      illustration: <SmartFarming className="w-16 h-16" />
+    },
+    {
+      icon: "₿",
+      title: t('home.highlights.cryptoTrading'),
+      description: "Trading de criptomoedas integrado ao ecossistema agrícola",
+      illustration: <NFTMinting className="w-16 h-16" />
+    }
+  ];
+
+  const featureCards = [
+    {
+      icon: "🚀",
+      title: t('home.features.feature1.title'),
+      description: t('home.features.feature1.description'),
+      illustration: <PremiumFarmer className="w-20 h-20" />
+    },
+    {
+      icon: "⚡",
+      title: t('home.features.feature2.title'),
+      description: t('home.features.feature2.description'),
+      illustration: <StakingFarming className="w-20 h-20" />
+    },
+    {
+      icon: "🌐",
+      title: t('home.features.feature3.title'),
+      description: t('home.features.feature3.description'),
+      illustration: <SmartFarming className="w-20 h-20" />
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen relative z-10">
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 to-green-900/20"></div>
-        <div className="relative z-10 text-center px-4 max-w-6xl mx-auto">
-          <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-green-400 to-yellow-400 bg-clip-text text-transparent">
-            AGROSYNC
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-            Plataforma líder em inteligência agrícola, integrando dados em tempo real 
-            do IBGE, Receita Federal e APIs globais para análise avançada de commodities.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link 
-              to="/cotacao" 
-              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-green-600 text-white font-bold rounded-lg hover:from-blue-700 hover:to-green-700 transition-all duration-300 hover:scale-105"
+      <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden">
+        {/* Gradiente de fundo baseado no tema */}
+        <div className={`absolute inset-0 ${
+          theme === 'dark' 
+            ? 'bg-gradient-to-br from-bg-primary via-bg-secondary to-bg-primary' 
+            : 'bg-gradient-to-br from-bg-primary via-bg-secondary to-bg-primary'
+        }`} />
+        
+        {/* Partículas flutuantes (apenas no tema escuro) */}
+        {theme === 'dark' && (
+          <div className="absolute inset-0">
+            {[...Array(20)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-2 h-2 bg-accent-primary/30 rounded-full"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 5}s`
+                }}
+                animate={{
+                  y: [0, -20, 0],
+                  opacity: [0.3, 0.8, 0.3]
+                }}
+                transition={{
+                  duration: 3 + Math.random() * 2,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
+            ))}
+          </div>
+        )}
+
+        <div className="relative z-10 text-center max-w-6xl mx-auto">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {/* Título principal */}
+            <motion.h1
+              variants={itemVariants}
+              className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6"
             >
-              Cotação de Grãos
-            </Link>
-            <Link 
-              to="/loja" 
-              className="px-8 py-4 bg-gradient-to-r from-green-600 to-yellow-600 text-white font-bold rounded-lg hover:from-green-700 hover:to-yellow-700 transition-all duration-300 hover:scale-105"
+              <span className="text-gradient">
+                {t('home.hero.title')}
+              </span>
+            </motion.h1>
+
+            {/* Subtítulo */}
+            <motion.p
+              variants={itemVariants}
+              className="text-xl md:text-2xl lg:text-3xl text-text-secondary mb-8 max-w-4xl mx-auto leading-relaxed"
             >
-              Marketplace
-            </Link>
-            <Link 
-              to="/agroconecta" 
-              className="px-8 py-4 bg-gradient-to-r from-yellow-600 to-orange-600 text-white font-bold rounded-lg hover:from-yellow-700 hover:to-orange-700 transition-all duration-300 hover:scale-105"
+              {t('home.hero.subtitle')}
+            </motion.p>
+
+            {/* Descrição */}
+            <motion.p
+              variants={itemVariants}
+              className="text-lg md:text-xl text-text-tertiary mb-12 max-w-3xl mx-auto leading-relaxed"
             >
-              AgroConecta
-            </Link>
-            <Link 
-              to="/cripto" 
-              className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 hover:scale-105"
+              {t('home.hero.description')}
+            </motion.p>
+
+            {/* Botões de ação */}
+            <motion.div
+              variants={itemVariants}
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
             >
-              Cripto & DeFi
-            </Link>
+              <Link
+                to="/cadastro"
+                className="btn btn-primary"
+              >
+                {t('home.hero.cta')}
+              </Link>
+
+              <Link
+                to="/sobre"
+                className="btn btn-secondary"
+              >
+                {t('home.hero.learnMore')}
+              </Link>
+            </motion.div>
+          </motion.div>
+        </div>
+
+        {/* Scroll indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2, duration: 1 }}
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+        >
+          <motion.div
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="w-6 h-10 border-2 border-accent-primary/50 rounded-full flex justify-center"
+          >
+            <motion.div
+              animate={{ y: [0, 12, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="w-1 h-3 bg-accent-primary rounded-full mt-2"
+            />
+          </motion.div>
+        </motion.div>
+      </section>
+
+      {/* Highlights Section */}
+      <section className="relative py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-6">
+              {t('home.highlights.title')}
+            </h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-accent-primary to-accent-secondary mx-auto rounded-full" />
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {highlightCards.map((card, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="group"
+              >
+                <div className="card">
+                  {/* Ilustração futurista */}
+                  <div className="flex justify-center mb-4">
+                    {card.illustration}
+                  </div>
+                  
+                  <h3 className="text-xl font-semibold text-text-primary mb-3">
+                    {card.title}
+                  </h3>
+                  <p className="text-text-secondary leading-relaxed">
+                    {card.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-4 bg-gray-900">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-16 text-white">
-            Funcionalidades Principais
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center p-6 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors duration-300">
-              <div className="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                  <circle cx="12" cy="10" r="3"/>
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold mb-2 text-white">Geolocalização</h3>
-              <p className="text-gray-400">Preços baseados na sua localização via GPS e IP</p>
-            </div>
-            
-            <div className="text-center p-6 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors duration-300">
-              <div className="w-16 h-16 bg-green-600 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 2L8 8l4 4 4-4-4-6z"/>
-                  <path d="M8 8v8a4 4 0 0 0 8 0V8"/>
-                  <path d="M6 16h12"/>
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold mb-2 text-white">API Agrolink</h3>
-              <p className="text-gray-400">Cotações em tempo real do mercado agrícola</p>
-            </div>
-            
-            <div className="text-center p-6 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors duration-300">
-              <div className="w-16 h-16 bg-yellow-600 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <line x1="12" y1="20" x2="12" y2="10"/>
-                  <line x1="18" y1="20" x2="18" y2="4"/>
-                  <line x1="6" y1="20" x2="6" y2="16"/>
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold mb-2 text-white">Análise de Dados</h3>
-              <p className="text-gray-400">Gráficos e métricas do mercado futuro</p>
-            </div>
-            
-            <div className="text-center p-6 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors duration-300">
-              <div className="w-16 h-16 bg-purple-600 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="10"/>
-                  <line x1="2" y1="12" x2="22" y2="12"/>
-                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold mb-2 text-white">APIs Externas</h3>
-              <p className="text-gray-400">IBGE, Receita Federal e FAO integrados</p>
-            </div>
+      <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-bg-tertiary/30">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-6">
+              {t('home.features.title')}
+            </h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-accent-primary to-accent-secondary mx-auto rounded-full" />
+          </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {featureCards.map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.2 }}
+                viewport={{ once: true }}
+                className="group"
+              >
+                <div className="card">
+                  {/* Ilustração futurista */}
+                  <div className="flex justify-center mb-6">
+                    {feature.illustration}
+                  </div>
+                  
+                  <h3 className="text-2xl font-semibold text-text-primary mb-4">
+                    {feature.title}
+                  </h3>
+                  <p className="text-text-secondary leading-relaxed text-lg">
+                    {feature.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-20 px-4 bg-black">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="text-4xl font-bold text-blue-400 mb-2">6</div>
-              <div className="text-gray-400">Tipos de Grãos</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-green-400 mb-2">24/7</div>
-              <div className="text-gray-400">Atualizações</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-yellow-400 mb-2">100%</div>
-              <div className="text-gray-400">Tempo Real</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-purple-400 mb-2">API</div>
-              <div className="text-gray-400">Integração</div>
-            </div>
-          </div>
+      {/* Theme Demo Section */}
+      <ThemeDemo />
+
+      {/* CTA Section */}
+      <section className="relative py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-6">
+              Pronto para o Futuro?
+            </h2>
+            <p className="text-xl text-text-secondary mb-8 leading-relaxed">
+              Junte-se à revolução digital do agronegócio e conecte-se ao futuro da agricultura
+            </p>
+            <Link
+              to="/cadastro"
+              className="btn btn-primary text-lg px-10 py-5"
+            >
+              Começar Agora
+            </Link>
+          </motion.div>
         </div>
       </section>
     </div>

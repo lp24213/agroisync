@@ -1,0 +1,204 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "save": "Guardar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "view": "Ver",
+    "contact": "Contacto",
+    "about": "Acerca de",
+    "home": "Inicio",
+    "marketplace": "Mercado",
+    "crypto": "Criptomonedas",
+    "register": "Registrarse",
+    "login": "Iniciar Sesión",
+    "logout": "Cerrar Sesión",
+    "admin": "Administración",
+    "plans": "Planes",
+    "language": "Idioma"
+  },
+  "navigation": {
+    "home": "Inicio",
+    "about": "Acerca de",
+    "quotes": "Cotizaciones",
+    "store": "Tienda",
+    "agroconnect": "AgroConecta",
+    "crypto": "Cripto",
+    "register": "Registrarse",
+    "contact": "Contacto"
+  },
+  "home": {
+    "hero": {
+      "title": "AgroConecta",
+      "subtitle": "La plataforma más avanzada del agronegocio digital",
+      "description": "Conectando productores, compradores e inversores con tecnología de última generación. El futuro del agronegocio está aquí.",
+      "cta": "Comenzar Ahora",
+      "learnMore": "Saber Más"
+    },
+    "highlights": {
+      "title": "Destacados",
+      "realTimeData": "Datos en Tiempo Real",
+      "advancedAnalytics": "Análisis Avanzados",
+      "marketIntelligence": "Inteligencia de Mercado",
+      "cryptoTrading": "Trading de Criptomonedas"
+    },
+    "features": {
+      "title": "¿Por qué AgroConecta?",
+      "feature1": {
+        "title": "Tecnología de Última Generación",
+        "description": "Plataforma construida con las tecnologías más avanzadas del mercado"
+      },
+      "feature2": {
+        "title": "Datos en Tiempo Real",
+        "description": "Acceso instantáneo a información crítica del mercado agrícola"
+      },
+      "feature3": {
+        "title": "Conectividad Global",
+        "description": "Red mundial de productores, compradores e inversores"
+      }
+    }
+  },
+  "marketplace": {
+    "title": "Mercado AgroConecta",
+    "subtitle": "Conéctate directamente con productores y proveedores",
+    "search": "Buscar productos...",
+    "categories": "Categorías",
+    "location": "Ubicación",
+    "priceRange": "Rango de Precio",
+    "quality": "Calidad",
+    "certifications": "Certificaciones",
+    "viewMode": {
+      "grid": "Cuadrícula",
+      "list": "Lista"
+    },
+    "sortBy": {
+      "relevance": "Relevancia",
+      "price": "Precio",
+      "rating": "Calificación",
+      "newest": "Más Reciente"
+    },
+    "filters": {
+      "title": "Filtros Avanzados",
+      "clear": "Limpiar Filtros",
+      "apply": "Aplicar Filtros"
+    },
+    "product": {
+      "contactSupplier": "Contactar Proveedor",
+      "save": "Guardar",
+      "minOrder": "Pedido Mínimo",
+      "stock": "Inventario",
+      "delivery": "Entrega",
+      "payment": "Pago"
+    },
+    "noResults": "No se encontraron resultados",
+    "noResultsDescription": "Intenta ajustar los filtros o buscar otros términos"
+  },
+  "about": {
+    "title": "Acerca de AgroConecta",
+    "subtitle": "Revolucionando el agronegocio con tecnología de punta",
+    "mission": {
+      "title": "Nuestra Misión",
+      "description": "Transformar el agronegocio a través de la tecnología, conectando productores, compradores e inversores en una plataforma innovadora y eficiente."
+    },
+    "vision": {
+      "title": "Nuestra Visión",
+      "description": "Ser la plataforma líder en inteligencia agrícola digital, impulsando el crecimiento sostenible del sector agropecuario global."
+    },
+    "values": {
+      "title": "Nuestros Valores",
+      "innovation": "Innovación",
+      "sustainability": "Sostenibilidad",
+      "transparency": "Transparencia",
+      "excellence": "Excelencia",
+      "collaboration": "Colaboración"
+    },
+    "stats": {
+      "title": "Números que Impresionan",
+      "users": "Usuarios Activos",
+      "transactions": "Transacciones Completadas",
+      "countries": "Países Atendidos",
+      "partners": "Socios Estratégicos"
+    },
+    "journey": {
+      "title": "Nuestro Viaje",
+      "2020": "Fundación y desarrollo de la plataforma",
+      "2021": "Lanzamiento beta y primeros usuarios",
+      "2022": "Expansión a nuevos mercados",
+      "2023": "Integración con tecnologías avanzadas",
+      "2024": "Liderazgo en el mercado de agtech"
+    },
+    "team": {
+      "title": "Nuestro Equipo",
+      "description": "Expertos en tecnología, agronegocio e innovación trabajando juntos para revolucionar el sector."
+    },
+    "technology": {
+      "title": "Tecnologías de Punta",
+      "description": "Utilizamos las tecnologías más avanzadas para garantizar rendimiento, seguridad y escalabilidad."
+    }
+  },
+  "contact": {
+    "title": "Ponte en Contacto",
+    "subtitle": "Estamos aquí para ayudarte a conectarte con el futuro del agronegocio",
+    "form": {
+      "name": "Nombre Completo",
+      "email": "Correo Electrónico",
+      "phone": "Teléfono",
+      "company": "Empresa",
+      "subject": "Asunto",
+      "message": "Mensaje",
+      "send": "Enviar Mensaje"
+    },
+    "info": {
+      "title": "Información de Contacto",
+      "address": "Dirección",
+      "phone": "Teléfono",
+      "email": "Correo Electrónico",
+      "website": "Sitio Web"
+    },
+    "social": {
+      "title": "Redes Sociales",
+      "follow": "Síguenos"
+    }
+  },
+  "chatbot": {
+    "title": "Asistente IA AgroConecta",
+    "subtitle": "¿Cómo puedo ayudarte hoy?",
+    "personalities": {
+      "agro-expert": "Dr. AgroBot",
+      "friendly": "AgroAmigo",
+      "analyst": "DataAgro",
+      "crypto": "CryptoAgro"
+    },
+    "input": {
+      "placeholder": "Escribe tu mensaje...",
+      "voice": "Hablar",
+      "send": "Enviar"
+    },
+    "quickActions": {
+      "marketInfo": "Información de Mercado",
+      "productSearch": "Buscar Productos",
+      "priceQuotes": "Cotizaciones",
+      "help": "Ayuda"
+    }
+  },
+  "footer": {
+    "description": "AgroConecta - Conectando el futuro del agronegocio",
+    "links": {
+      "about": "Acerca de",
+      "services": "Servicios",
+      "contact": "Contacto",
+      "privacy": "Privacidad",
+      "terms": "Términos"
+    },
+    "social": "Redes Sociales",
+    "newsletter": "Boletín",
+    "subscribe": "Suscribirse"
+  }
+}

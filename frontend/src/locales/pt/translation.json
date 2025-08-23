@@ -1,0 +1,192 @@
+{
+  "common": {
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "save": "Salvar",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "search": "Pesquisar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "view": "Visualizar",
+    "close": "Fechar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "previous": "Anterior",
+    "submit": "Enviar",
+    "reset": "Resetar",
+    "copy": "Copiar",
+    "download": "Baixar",
+    "upload": "Enviar",
+    "refresh": "Atualizar",
+    "settings": "Configurações",
+    "profile": "Perfil",
+    "logout": "Sair",
+    "login": "Entrar",
+    "register": "Cadastrar"
+  },
+  "navigation": {
+    "home": "Início",
+    "about": "Sobre",
+    "quotes": "Cotações",
+    "store": "Loja",
+    "agroconnect": "AgroConecta",
+    "crypto": "Cripto",
+    "register": "Cadastro",
+    "contact": "Contato"
+  },
+  "home": {
+    "hero": {
+      "title": "AgroConecta",
+      "subtitle": "O Futuro do Agronegócio Digital",
+      "description": "Plataforma líder em inteligência agrícola, integrando dados em tempo real, análise avançada e conectividade global para revolucionar o agronegócio.",
+      "cta": "Começar Agora",
+      "learnMore": "Saiba Mais"
+    },
+    "highlights": {
+      "title": "Destaques",
+      "realTimeData": "Dados em Tempo Real",
+      "advancedAnalytics": "Análises Avançadas",
+      "marketIntelligence": "Inteligência de Mercado",
+      "cryptoTrading": "Trading Cripto"
+    },
+    "features": {
+      "title": "Recursos",
+      "feature1": {
+        "title": "Inteligência Artificial",
+        "description": "Algoritmos avançados de IA para análise preditiva e tomada de decisões estratégicas no agronegócio."
+      },
+      "feature2": {
+        "title": "Blockchain & DeFi",
+        "description": "Tecnologia blockchain para transparência, rastreabilidade e finanças descentralizadas no setor agrícola."
+      },
+      "feature3": {
+        "title": "IoT & Sensores",
+        "description": "Monitoramento inteligente de culturas com sensores IoT e análise de dados em tempo real."
+      }
+    }
+  },
+  "marketplace": {
+    "title": "Marketplace",
+    "search": "Pesquisar produtos...",
+    "filter": "Filtrar por categoria",
+    "sort": "Ordenar por",
+    "viewMode": "Modo de visualização",
+    "grid": "Grade",
+    "list": "Lista",
+    "categories": {
+      "all": "Todas",
+      "grains": "Grãos",
+      "vegetables": "Vegetais",
+      "fruits": "Frutas",
+      "livestock": "Pecuária",
+      "equipment": "Equipamentos",
+      "services": "Serviços"
+    },
+    "sortOptions": {
+      "name": "Nome",
+      "price": "Preço",
+      "date": "Data",
+      "rating": "Avaliação"
+    },
+    "contactSeller": "Entrar em Contato",
+    "noProducts": "Nenhum produto encontrado",
+    "loading": "Carregando produtos..."
+  },
+  "about": {
+    "title": "Sobre Nós",
+    "mission": "Nossa Missão",
+    "vision": "Nossa Visão",
+    "values": "Nossos Valores",
+    "team": "Nossa Equipe",
+    "story": "Nossa História",
+    "missionText": "Transformar o agronegócio através da tecnologia, conectando produtores, traders e investidores em uma plataforma digital inovadora.",
+    "visionText": "Ser a plataforma líder global em inteligência agrícola, criando um ecossistema sustentável e conectado para o futuro da agricultura.",
+    "valuesText": "Inovação, transparência, sustentabilidade e excelência são os pilares que guiam todas as nossas ações e decisões."
+  },
+  "contact": {
+    "title": "Entre em Contato",
+    "subtitle": "Estamos aqui para ajudar",
+    "form": {
+      "name": "Nome completo",
+      "email": "E-mail",
+      "phone": "Telefone",
+      "subject": "Assunto",
+      "message": "Mensagem",
+      "submit": "Enviar mensagem"
+    },
+    "info": {
+      "title": "Informações de Contato",
+      "address": "Endereço",
+      "phone": "Telefone",
+      "email": "E-mail",
+      "hours": "Horário de funcionamento"
+    },
+    "social": {
+      "title": "Redes Sociais",
+      "follow": "Siga-nos"
+    }
+  },
+  "chatbot": {
+    "title": "Assistente IA",
+    "welcome": "Olá! Como posso ajudar você hoje?",
+    "placeholder": "Digite sua mensagem...",
+    "send": "Enviar",
+    "personalities": {
+      "agronomist": "Agrônomo",
+      "trader": "Trader",
+      "analyst": "Analista",
+      "farmer": "Produtor"
+    },
+    "suggestions": [
+      "Como funciona a plataforma?",
+      "Quais são as cotações atuais?",
+      "Como investir em commodities?",
+      "Dicas para agricultura sustentável"
+    ]
+  },
+  "footer": {
+    "description": "Plataforma líder em inteligência agrícola, integrando dados em tempo real, análise avançada e conectividade global para revolucionar o agronegócio.",
+    "company": {
+      "title": "Empresa",
+      "about": "Sobre nós",
+      "contact": "Contato",
+      "careers": "Carreiras",
+      "press": "Imprensa"
+    },
+    "services": {
+      "title": "Serviços",
+      "quotes": "Cotações",
+      "marketplace": "Marketplace",
+      "agroconnect": "AgroConecta",
+      "crypto": "Cripto & DeFi"
+    },
+    "support": {
+      "title": "Suporte",
+      "help": "Central de ajuda",
+      "faq": "Perguntas frequentes",
+      "documentation": "Documentação",
+      "status": "Status do sistema"
+    },
+    "legal": {
+      "title": "Legal",
+      "privacy": "Privacidade",
+      "terms": "Termos de uso",
+      "cookies": "Política de cookies",
+      "compliance": "Compliance"
+    },
+    "newsletter": {
+      "title": "Newsletter",
+      "description": "Mantenha-se atualizado com as últimas notícias e tendências do agronegócio.",
+      "placeholder": "Seu e-mail",
+      "subscribe": "Inscrever-se"
+    },
+    "rights": "Todos os direitos reservados.",
+    "privacy": "Privacidade",
+    "terms": "Termos",
+    "cookies": "Cookies"
+  }
+}
