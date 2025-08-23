@@ -3,14 +3,19 @@ frontend:
   phases:
     preBuild:
       commands:
+        - echo "Starting preBuild phase..."
         - cd frontend
-        - npm install --legacy-peer-deps
+        - echo "Installing dependencies..."
+        - npm install --legacy-peer-deps --verbose
+        - echo "Dependencies installed successfully"
     build:
       commands:
+        - echo "Starting build phase..."
         - npm run build
+        - echo "Build completed successfully"
     postBuild:
       commands:
-        - echo "Build completed"
+        - echo "Build completed - ready for deployment"
   artifacts:
     baseDirectory: frontend/build
     files:
