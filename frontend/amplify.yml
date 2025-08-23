@@ -13,6 +13,8 @@ frontend:
         - echo "✅ Build concluído com sucesso"
         - echo "📁 Verificando arquivos gerados:"
         - ls -la build/
+        - echo "📄 Verificando _redirects:"
+        - cat build/_redirects
   artifacts:
     baseDirectory: build
     files:
@@ -40,21 +42,3 @@ frontend:
           value: 'max-age=31536000; includeSubDomains; preload'
         - key: 'Cache-Control'
           value: 'public, max-age=3600'
-  redirects:
-    - source: '</^[^.]+$|\.(?!(css|gif|ico|jpg|js|png|txt|svg|woff|woff2|ttf|map|json)$)([^.]+$)/>'
-      target: '/index.html'
-      status: '200'
-  security:
-    rateLimit: 1000
-    ddosProtection: true
-    botProtection: true
-    wafRules:
-      - name: 'SQLInjection'
-        priority: 1
-        action: 'BLOCK'
-      - name: 'XSSAttack'
-        priority: 2
-        action: 'BLOCK'
-      - name: 'DDoSProtection'
-        priority: 3
-        action: 'RATE_LIMIT'
