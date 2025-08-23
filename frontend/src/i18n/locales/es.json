@@ -22,7 +22,9 @@
     "logout": "Cerrar Sesión",
     "admin": "Administración",
     "plans": "Planes",
-    "language": "Idioma"
+    "language": "Idioma",
+    "brand": "Agroisync",
+    "tagline": "El futuro del agronegocio digital"
   },
   "navigation": {
     "home": "Inicio",

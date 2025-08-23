@@ -22,7 +22,9 @@
     "logout": "登出",
     "admin": "管理",
     "plans": "计划",
-    "language": "语言"
+    "language": "语言",
+    "brand": "Agroisync",
+    "tagline": "数字农业的未来"
   },
   "navigation": {
     "home": "首页",

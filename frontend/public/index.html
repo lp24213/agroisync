@@ -6,6 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     
+    <!-- Script para evitar flash de tema -->
+    <script>
+      (function() {
+        try {
+          const savedTheme = localStorage.getItem('agroisync-theme') || 'dark';
+          const isDark = savedTheme === 'dark';
+          document.documentElement.classList.add(isDark ? 'dark' : 'light');
+          document.documentElement.setAttribute('data-theme', savedTheme);
+        } catch (e) {
+          // Fallback para tema escuro se houver erro
+          document.documentElement.classList.add('dark');
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      })();
+    </script>
+    
     <!-- Cloudflare Security Headers -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">

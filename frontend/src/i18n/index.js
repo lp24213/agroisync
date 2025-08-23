@@ -20,12 +20,17 @@ i18n
     resources,
     lng: 'pt', // idioma padrão
     fallbackLng: 'pt',
+    debug: process.env.NODE_ENV === 'development',
     interpolation: {
       escapeValue: false
     },
     detection: {
-      order: ['localStorage', 'navigator'],
-      caches: ['localStorage']
+      order: ['localStorage', 'navigator', 'cookie', 'querystring'],
+      caches: ['localStorage'],
+      lookupLocalStorage: 'agroisync-language'
+    },
+    react: {
+      useSuspense: false
     }
   });
 

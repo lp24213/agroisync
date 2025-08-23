@@ -75,12 +75,12 @@ const Navbar = () => {
                 <h1 className={`text-xl lg:text-2xl font-bold ${
                   isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
                 }`}>
-                  AgroConecta
+                  {t('common.brand')}
                 </h1>
                 <p className={`text-xs font-medium ${
                   isDark ? 'text-dark-text-tertiary' : 'text-light-text-tertiary'
                 }`}>
-                  Future of Agribusiness
+                  {t('common.tagline')}
                 </p>
               </div>
             </Link>

@@ -22,7 +22,9 @@
     "logout": "Sair",
     "admin": "Administração",
     "plans": "Planos",
-    "language": "Idioma"
+    "language": "Idioma",
+    "brand": "Agroisync",
+    "tagline": "O futuro do agronegócio digital"
   },
   "navigation": {
     "home": "Início",
@@ -36,32 +38,36 @@
   },
   "home": {
     "hero": {
-      "title": "AgroConecta",
-      "subtitle": "A plataforma mais avançada do agronegócio digital",
-      "description": "Conectando produtores, compradores e investidores com tecnologia de última geração. O futuro do agronegócio está aqui.",
-      "cta": "Começar Agora",
+      "title": "Agroisync",
+      "subtitle": "A nova era do agronegócio digital",
+      "description": "Conectando produtores, compradores e investidores com tecnologia de ponta. Marketplace de anúncios, cotações por região e pagamentos seguros — tudo em uma única plataforma.",
+      "cta": "Explorar Marketplace",
       "learnMore": "Saiba Mais"
     },
     "highlights": {
       "title": "Destaques",
       "realTimeData": "Dados em Tempo Real",
+      "realTimeDataDesc": "Dados atualizados em tempo real para decisões estratégicas",
       "advancedAnalytics": "Análises Avançadas",
+      "advancedAnalyticsDesc": "Análises avançadas com inteligência artificial",
       "marketIntelligence": "Inteligência de Mercado",
-      "cryptoTrading": "Trading de Criptomoedas"
+      "marketIntelligenceDesc": "Inteligência de mercado e tendências",
+      "cryptoTrading": "Pagamentos Cripto",
+      "cryptoTradingDesc": "Pagamentos em cripto integrados ao ecossistema"
     },
     "features": {
-      "title": "Por que AgroConecta?",
+      "title": "Por que Agroisync?",
       "feature1": {
-        "title": "Tecnologia de Última Geração",
-        "description": "Plataforma construída com as mais avançadas tecnologias do mercado"
+        "title": "Gestão de Anúncios",
+        "description": "Intermediação profissional de produtos agrícolas"
       },
       "feature2": {
-        "title": "Dados em Tempo Real",
-        "description": "Acesso instantâneo a informações críticas do mercado agrícola"
+        "title": "Cotações Locais",
+        "description": "Preços de grãos personalizados por região"
       },
       "feature3": {
-        "title": "Conectividade Global",
-        "description": "Rede mundial de produtores, compradores e investidores"
+        "title": "Chatbot IA",
+        "description": "Assistente inteligente para suporte e análises rápidas"
       }
     }
   },
@@ -189,7 +195,7 @@
     }
   },
   "footer": {
-    "description": "AgroConecta - Conectando o futuro do agronegócio",
+    "description": "Conectando o agronegócio ao futuro digital",
     "company": {
       "title": "Empresa",
       "about": "Sobre",

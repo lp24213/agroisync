@@ -22,7 +22,9 @@
     "logout": "Logout",
     "admin": "Administration",
     "plans": "Plans",
-    "language": "Language"
+    "language": "Language",
+    "brand": "Agroisync",
+    "tagline": "The future of digital agribusiness"
   },
   "navigation": {
     "home": "Home",
@@ -36,32 +38,36 @@
   },
   "home": {
     "hero": {
-      "title": "AgroConnect",
-      "subtitle": "The most advanced digital agribusiness platform",
-      "description": "Connecting producers, buyers and investors with cutting-edge technology. The future of agribusiness is here.",
-      "cta": "Get Started",
+      "title": "Agroisync",
+      "subtitle": "The new era of digital agribusiness",
+      "description": "Connecting producers, buyers and investors with cutting-edge technology. Advertisement marketplace, regional quotes and secure payments — all in one platform.",
+      "cta": "Explore Marketplace",
       "learnMore": "Learn More"
     },
     "highlights": {
       "title": "Highlights",
       "realTimeData": "Real-Time Data",
+      "realTimeDataDesc": "Real-time updated data for strategic decisions",
       "advancedAnalytics": "Advanced Analytics",
+      "advancedAnalyticsDesc": "Advanced analytics with artificial intelligence",
       "marketIntelligence": "Market Intelligence",
-      "cryptoTrading": "Crypto Trading"
+      "marketIntelligenceDesc": "Market intelligence and trends",
+      "cryptoTrading": "Crypto Payments",
+      "cryptoTradingDesc": "Crypto payments integrated into the ecosystem"
     },
     "features": {
-      "title": "Why AgroConnect?",
+      "title": "Why Agroisync?",
       "feature1": {
-        "title": "Cutting-Edge Technology",
-        "description": "Platform built with the most advanced technologies in the market"
+        "title": "Advertisement Management",
+        "description": "Professional intermediation of agricultural products"
       },
       "feature2": {
-        "title": "Real-Time Data",
-        "description": "Instant access to critical agricultural market information"
+        "title": "Local Quotes",
+        "description": "Grain prices customized by region"
       },
       "feature3": {
-        "title": "Global Connectivity",
-        "description": "Worldwide network of producers, buyers and investors"
+        "title": "AI Chatbot",
+        "description": "Intelligent assistant for support and quick analysis"
       }
     }
   },
@@ -189,7 +195,7 @@
     }
   },
   "footer": {
-    "description": "AgroConnect - Connecting the future of agribusiness",
+    "description": "Connecting agribusiness to the digital future",
     "company": {
       "title": "Company",
       "about": "About",

@@ -3,13 +3,13 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../contexts/ThemeContext';
 import { Link } from 'react-router-dom';
+import { BarChart3, Search, Globe, Bitcoin, Rocket, Zap, Network } from 'lucide-react';
 import NFTMinting from '../components/illustrations/NFTMinting';
 import PremiumFarmer from '../components/illustrations/PremiumFarmer';
 import InteractiveDashboard from '../components/illustrations/InteractiveDashboard';
 import StakingFarming from '../components/illustrations/StakingFarming';
 import CyberDefense from '../components/illustrations/CyberDefense';
 import SmartFarming from '../components/illustrations/SmartFarming';
-import ThemeDemo from '../components/ThemeDemo';
 
 const Home = () => {
   const { t } = useTranslation();
@@ -40,46 +40,46 @@ const Home = () => {
 
   const highlightCards = [
     {
-      icon: "📊",
+      icon: <BarChart3 className="w-8 h-8" />,
       title: t('home.highlights.realTimeData'),
-      description: "Dados atualizados em tempo real para tomada de decisões estratégicas",
+      description: t('home.highlights.realTimeDataDesc'),
       illustration: <InteractiveDashboard className="w-16 h-16" />
     },
     {
-      icon: "🔍",
+      icon: <Search className="w-8 h-8" />,
       title: t('home.highlights.advancedAnalytics'),
-      description: "Análises avançadas com inteligência artificial e machine learning",
+      description: t('home.highlights.advancedAnalyticsDesc'),
       illustration: <CyberDefense className="w-16 h-16" />
     },
     {
-      icon: "🌍",
+      icon: <Globe className="w-8 h-8" />,
       title: t('home.highlights.marketIntelligence'),
-      description: "Inteligência de mercado com insights globais e tendências",
+      description: t('home.highlights.marketIntelligenceDesc'),
       illustration: <SmartFarming className="w-16 h-16" />
     },
     {
-      icon: "₿",
+      icon: <Bitcoin className="w-8 h-8" />,
       title: t('home.highlights.cryptoTrading'),
-      description: "Trading de criptomoedas integrado ao ecossistema agrícola",
+      description: t('home.highlights.cryptoTradingDesc'),
       illustration: <NFTMinting className="w-20 h-20" />
     }
   ];
 
   const featureCards = [
     {
-      icon: "🚀",
+      icon: <Rocket className="w-8 h-8" />,
       title: t('home.features.feature1.title'),
       description: t('home.features.feature1.description'),
       illustration: <PremiumFarmer className="w-20 h-20" />
     },
     {
-      icon: "⚡",
+      icon: <Zap className="w-8 h-8" />,
       title: t('home.features.feature2.title'),
       description: t('home.features.feature2.description'),
       illustration: <StakingFarming className="w-20 h-20" />
     },
     {
-      icon: "🌐",
+      icon: <Network className="w-8 h-8" />,
       title: t('home.features.feature3.title'),
       description: t('home.features.feature3.description'),
       illustration: <SmartFarming className="w-20 h-20" />
@@ -252,7 +252,11 @@ const Home = () => {
                 }`}
               >
                 <div className="text-center">
-                  <div className="text-4xl mb-4">{card.icon}</div>
+                  <div className={`flex justify-center mb-4 ${
+                    isDark ? 'text-dark-accent-primary' : 'text-light-accent-primary'
+                  }`}>
+                    {card.icon}
+                  </div>
                   <h3 className={`text-xl font-semibold mb-3 font-space-grotesk ${
                     isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
                   }`}>
@@ -302,7 +306,11 @@ const Home = () => {
                 }`}
               >
                 <div className="text-center">
-                  <div className="text-5xl mb-6">{feature.icon}</div>
+                  <div className={`flex justify-center mb-6 ${
+                    isDark ? 'text-dark-accent-primary' : 'text-light-accent-primary'
+                  }`}>
+                    {feature.icon}
+                  </div>
                   <h3 className={`text-2xl font-semibold mb-4 font-space-grotesk ${
                     isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
                   }`}>
@@ -320,12 +328,17 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Theme Demo Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <ThemeDemo />
-        </div>
-      </section>
+      {/* Theme Demo Section - Apenas para desenvolvimento */}
+      {process.env.NODE_ENV === 'development' && (
+        <section className="py-20 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-8">
+              <h3 className="text-lg text-gray-500">Seção de Desenvolvimento - Theme Demo</h3>
+            </div>
+            {/* ThemeDemo component seria renderizado aqui apenas em desenvolvimento */}
+          </div>
+        </section>
+      )}
     </div>
   );
 };

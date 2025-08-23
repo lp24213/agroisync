@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../contexts/ThemeContext';
 import { Link } from 'react-router-dom';
+import { Linkedin, Twitter, Instagram, Youtube } from 'lucide-react';
 
 const Footer = () => {
   const { t } = useTranslation();
@@ -50,10 +51,10 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { name: 'LinkedIn', icon: '💼', url: 'https://linkedin.com/company/agroconecta' },
-    { name: 'Twitter', icon: '🐦', url: 'https://twitter.com/agroconecta' },
-    { name: 'Instagram', icon: '📸', url: 'https://instagram.com/agroconecta' },
-    { name: 'YouTube', icon: '📺', url: 'https://youtube.com/@agroconecta' }
+    { name: 'LinkedIn', icon: <Linkedin className="w-5 h-5" />, url: 'https://linkedin.com/company/agroisync' },
+    { name: 'Twitter', icon: <Twitter className="w-5 h-5" />, url: 'https://twitter.com/agroisync' },
+    { name: 'Instagram', icon: <Instagram className="w-5 h-5" />, url: 'https://instagram.com/agroisync' },
+    { name: 'YouTube', icon: <Youtube className="w-5 h-5" />, url: 'https://youtube.com/@agroisync' }
   ];
 
   return (
@@ -85,12 +86,12 @@ const Footer = () => {
                   <h3 className={`text-2xl font-bold ${
                     isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
                   }`}>
-                    AgroConecta
+                    {t('common.brand')}
                   </h3>
                   <p className={`text-sm ${
                     isDark ? 'text-dark-text-tertiary' : 'text-light-text-tertiary'
                   }`}>
-                    Future of Agribusiness
+                    {t('common.tagline')}
                   </p>
                 </div>
               </Link>
@@ -190,7 +191,7 @@ const Footer = () => {
               isDark ? 'text-dark-text-tertiary' : 'text-light-text-tertiary'
             }`}
           >
-            © {currentYear} AgroConecta. {t('footer.rights')}
+            © {currentYear} {t('common.brand')}. {t('footer.rights')}
           </motion.p>
           
           <motion.div
