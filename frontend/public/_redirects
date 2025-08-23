@@ -1,5 +1,1 @@
-# Redirecionamentos para AWS Amplify
-# Todas as rotas devem ir para index.html para funcionar com React Router
-# Formato: source target status
-
 /*    /index.html   200
