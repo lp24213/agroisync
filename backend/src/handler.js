@@ -2,12 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
 import serverless from 'aws-serverless-express';
 
 // Import routes
-import healthRoutes from './routes/health';
-import apiRoutes from './routes/api';
+import healthRoutes from './routes/health.js';
+import apiRoutes from './routes/api.js';
 
 const app = express();
 
@@ -52,22 +51,19 @@ app.use('*', (_req, res) => {
 });
 
 // Error handler
-app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+app.use((err, _req, res, _next) => {
   console.error('Error:', err);
   res.status(500).json({ error: 'Internal server error' });
 });
 
 // AWS Lambda handler
-export const handler = async (
-  event: APIGatewayProxyEvent,
-  context: Context
-): Promise<APIGatewayProxyResult> => {
+export const handler = async (event, context) => {
   // Convert API Gateway event to Express request
   const server = serverless.createServer(app);
   
   return new Promise((resolve, reject) => {
     serverless.proxy(server, event, context, 'PROMISE').promise
-      .then((response: any) => {
+      .then((response) => {
         resolve({
           statusCode: response.statusCode,
           headers: response.headers,

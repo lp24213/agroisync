@@ -1,4 +1,3 @@
-import { Context, APIGatewayProxyResult, APIGatewayEvent } from 'aws-lambda';
 import { CognitoJwtVerifier } from 'aws-jwt-verify';
 import { DynamoDB, S3 } from 'aws-sdk';
 
@@ -6,11 +5,11 @@ const dynamoDB = new DynamoDB.DocumentClient();
 const s3 = new S3();
 
 // Variáveis de ambiente configuradas automaticamente pelo Amplify
-const USER_POOL_ID = process.env.USER_POOL_ID!;
-const USER_POOL_CLIENT_ID = process.env.USER_POOL_CLIENT_ID!;
-const API_AGROISYNC_NFTTABLE_NAME = process.env.API_AGROISYNC_NFTTABLE_NAME!;
-const API_AGROISYNC_TRANSACTIONTABLE_NAME = process.env.API_AGROISYNC_TRANSACTIONTABLE_NAME!;
-const STORAGE_AGROISYNCS3_BUCKETNAME = process.env.STORAGE_AGROISYNCS3_BUCKETNAME!;
+const USER_POOL_ID = process.env.USER_POOL_ID;
+const USER_POOL_CLIENT_ID = process.env.USER_POOL_CLIENT_ID;
+const API_AGROISYNC_NFTTABLE_NAME = process.env.API_AGROISYNC_NFTTABLE_NAME;
+const API_AGROISYNC_TRANSACTIONTABLE_NAME = process.env.API_AGROISYNC_TRANSACTIONTABLE_NAME;
+const STORAGE_AGROISYNCS3_BUCKETNAME = process.env.STORAGE_AGROISYNCS3_BUCKETNAME;
 
 const verifier = CognitoJwtVerifier.create({
   userPoolId: USER_POOL_ID,
@@ -18,10 +17,7 @@ const verifier = CognitoJwtVerifier.create({
   clientId: USER_POOL_CLIENT_ID,
 });
 
-export const handler = async (
-  event: APIGatewayEvent,
-  context: Context
-): Promise<APIGatewayProxyResult> => {
+export const handler = async (event, context) => {
   try {
     // Verificar token JWT
     const token = event.headers.Authorization?.replace('Bearer ', '');
@@ -68,13 +64,7 @@ export const handler = async (
   }
 };
 
-async function createNFT(userId: string, data: {
-  name: string;
-  description: string;
-  image: string;
-  collection?: string;
-  attributes?: Array<{ trait_type: string; value: string }>;
-}) {
+async function createNFT(userId, data) {
   const nftId = `nft_${Date.now()}_${userId}`;
   const tokenId = `AGROISYNC_${Date.now()}`;
   
@@ -114,7 +104,7 @@ async function createNFT(userId: string, data: {
   };
 }
 
-async function mintNFT(userId: string, data: { nftId: string; transactionHash: string }) {
+async function mintNFT(userId, data) {
   // Verificar se o NFT existe e pertence ao usuário
   const nftParams = {
     TableName: API_AGROISYNC_NFTTABLE_NAME,
@@ -185,7 +175,7 @@ async function mintNFT(userId: string, data: { nftId: string; transactionHash: s
   };
 }
 
-async function getNFTs(userId: string) {
+async function getNFTs(userId) {
   const params = {
     TableName: API_AGROISYNC_NFTTABLE_NAME,
     IndexName: 'byOwner',
@@ -204,7 +194,7 @@ async function getNFTs(userId: string) {
   };
 }
 
-async function getNFT(nftId: string) {
+async function getNFT(nftId) {
   const params = {
     TableName: API_AGROISYNC_NFTTABLE_NAME,
     Key: { id: nftId }
@@ -227,12 +217,7 @@ async function getNFT(nftId: string) {
   };
 }
 
-async function updateNFT(userId: string, data: {
-  nftId: string;
-  name?: string;
-  description?: string;
-  attributes?: Array<{ trait_type: string; value: string }>;
-}) {
+async function updateNFT(userId, data) {
   // Verificar se o NFT existe e pertence ao usuário
   const nftParams = {
     TableName: API_AGROISYNC_NFTTABLE_NAME,
@@ -257,9 +242,9 @@ async function updateNFT(userId: string, data: {
   }
 
   // Construir expressão de atualização dinâmica
-  const updateExpressions: string[] = [];
-  const expressionAttributeNames: any = {};
-  const expressionAttributeValues: any = {};
+  const updateExpressions = [];
+  const expressionAttributeNames = {};
+  const expressionAttributeValues = {};
 
   if (data.name) {
     updateExpressions.push('#name = :name');
@@ -307,7 +292,7 @@ async function updateNFT(userId: string, data: {
   };
 }
 
-async function deleteNFT(userId: string, data: { nftId: string }) {
+async function deleteNFT(userId, data) {
   // Verificar se o NFT existe e pertence ao usuário
   const nftParams = {
     TableName: API_AGROISYNC_NFTTABLE_NAME,
@@ -357,7 +342,7 @@ async function deleteNFT(userId: string, data: { nftId: string }) {
   };
 }
 
-async function transferNFT(userId: string, data: { nftId: string; newOwnerId: string }) {
+async function transferNFT(userId, data) {
   // Verificar se o NFT existe e pertence ao usuário
   const nftParams = {
     TableName: API_AGROISYNC_NFTTABLE_NAME,

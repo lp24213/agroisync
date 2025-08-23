@@ -1,13 +1,13 @@
-import express, { Application } from 'express';
+import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 
 // Import routes
-import healthRoutes from './routes/health';
-import apiRoutes from './routes/api';
+import healthRoutes from './routes/health.js';
+import apiRoutes from './routes/api.js';
 
-const app: Application = express();
+const app = express();
 
 // Security middleware
 app.use(helmet());
@@ -50,7 +50,7 @@ app.use('*', (_req, res) => {
 });
 
 // Error handler
-app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+app.use((err, _req, res, _next) => {
   console.error('Error:', err);
   res.status(500).json({ error: 'Internal server error' });
 });
