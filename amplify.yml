@@ -3,20 +3,41 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "Starting preBuild phase..."
+        - echo "Starting frontend preBuild phase..."
         - cd frontend
-        - echo "Installing dependencies..."
+        - echo "Installing frontend dependencies..."
         - npm install --legacy-peer-deps --verbose
-        - echo "Dependencies installed successfully"
+        - echo "Frontend dependencies installed successfully"
     build:
       commands:
-        - echo "Starting build phase..."
+        - echo "Starting frontend build phase..."
         - npm run build
-        - echo "Build completed successfully"
+        - echo "Frontend build completed successfully"
     postBuild:
       commands:
-        - echo "Build completed - ready for deployment"
+        - echo "Frontend build completed - ready for deployment"
   artifacts:
     baseDirectory: frontend/build
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - frontend/node_modules/**/*
+
+backend:
+  phases:
+    preBuild:
+      commands:
+        - echo "Starting backend preBuild phase..."
+        - echo "Backend preBuild completed"
+    build:
+      commands:
+        - echo "Starting backend build phase..."
+        - echo "Backend build completed successfully"
+    postBuild:
+      commands:
+        - echo "Backend build completed - ready for deployment"
+  artifacts:
+    baseDirectory: amplify/backend
     files:
       - '**/*'
