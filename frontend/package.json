@@ -2,6 +2,7 @@
   "name": "agroisync-frontend",
   "version": "1.0.0",
   "description": "Frontend profissional do AGROSYNC - Plataforma de inteligência agrícola",
+  "homepage": "/",
   "private": true,
   "dependencies": {
     "@stripe/stripe-js": "^7.8.0",
