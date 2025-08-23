@@ -8,16 +8,10 @@ frontend:
     build:
       commands:
         - npm run build
-        - echo "Build completed successfully"
-        - ls -la build/
     postBuild:
       commands:
-        - echo "Deploy ready"
-        - cd ..
+        - echo "Build completed"
   artifacts:
     baseDirectory: frontend/build
     files:
       - '**/*'
-  cache:
-    paths:
-      - frontend/node_modules/**/*
