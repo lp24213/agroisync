@@ -1,14 +1,38 @@
 {
   "name": "agroisync",
   "version": "1.0.0",
+  "description": "AGROSYNC - Plataforma de inteligência agrícola",
+  "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "dev": "cd frontend && npm start",
+    "build": "cd frontend && npm run build",
+    "start": "cd frontend && npm start",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "build:all": "npm run build && cd backend && npm run build",
+    "test": "cd frontend && npm test && cd ../backend && npm test"
   },
-  "dependencies": {
-    "next": "15.5.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
-  }
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agroisync/agroisync.git"
+  },
+  "keywords": [
+    "agronegócio",
+    "cotações",
+    "grãos",
+    "IBGE",
+    "receita federal",
+    "API agrícola",
+    "marketplace",
+    "geolocalização"
+  ],
+  "author": "AGROSYNC Team",
+  "license": "MIT"
 }

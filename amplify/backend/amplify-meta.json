@@ -216,7 +216,7 @@
       "build": true,
       "config": {
         "BuildCommand": "npm run build",
-        "DistributionDir": ".next",
+        "DistributionDir": "build",
         "SourceDir": "frontend",
         "StartCommand": "npm start"
       }

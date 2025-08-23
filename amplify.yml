@@ -4,21 +4,44 @@ frontend:
     preBuild:
       commands:
         - cd frontend
-        - npm install --legacy-peer-deps
+        - npm ci --production=false
+        - echo "✅ Dependências instaladas com segurança"
     build:
       commands:
-        - npm run build
-        - ls -la .next/
-        - echo "Build completed successfully"
+        - chmod +x build.sh
+        - ./build.sh
     postBuild:
       commands:
-        - echo "Deploy ready"
+        - echo "🚀 Deploy pronto"
         - cd ..
   artifacts:
-    baseDirectory: frontend/.next
+    baseDirectory: frontend/build
     files:
       - '**/*'
   cache:
     paths:
       - frontend/node_modules/**/*
-      - frontend/.next/cache/**/*
+      - frontend/.npm-cache/**/*
+  customHeaders:
+    - pattern: '**/*'
+      headers:
+        - key: 'X-Content-Type-Options'
+          value: 'nosniff'
+        - key: 'X-Frame-Options'
+          value: 'DENY'
+        - key: 'X-XSS-Protection'
+          value: '1; mode=block'
+        - key: 'Referrer-Policy'
+          value: 'strict-origin-when-cross-origin'
+        - key: 'Permissions-Policy'
+          value: 'geolocation=(), microphone=(), camera=()'
+        - key: 'Content-Security-Policy'
+          value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://ipapi.co https://nominatim.openstreetmap.org https://servicodados.ibge.gov.br; frame-ancestors 'none';"
+        - key: 'Strict-Transport-Security'
+          value: 'max-age=31536000; includeSubDomains; preload'
+        - key: 'Cache-Control'
+          value: 'public, max-age=3600'
+  redirects:
+    - source: '/*'
+      target: '/index.html'
+      status: '200'
