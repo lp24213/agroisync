@@ -1,0 +1,68 @@
+<svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sojaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B4513;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#A0522D;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#CD853F;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="leafGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#228B22;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#32CD32;stop-opacity:1" />
+    </linearGradient>
+    
+    <filter id="shadow">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="300" height="300" fill="#1a1a1a"/>
+  
+  <!-- Soil Base -->
+  <ellipse cx="150" cy="280" rx="120" ry="40" fill="#654321" opacity="0.8"/>
+  
+  <!-- Main Soybean Plant -->
+  <g filter="url(#shadow)">
+    <!-- Stem -->
+    <path d="M150 280 L150 180" stroke="#8B4513" stroke-width="8" stroke-linecap="round"/>
+    
+    <!-- Leaves -->
+    <path d="M150 200 Q120 180, 110 200 Q120 220, 150 200" fill="url(#leafGradient)"/>
+    <path d="M150 200 Q180 180, 190 200 Q180 220, 150 200" fill="url(#leafGradient)"/>
+    <path d="M150 220 Q120 200, 110 220 Q120 240, 150 220" fill="url(#leafGradient)"/>
+    <path d="M150 220 Q180 200, 190 220 Q180 240, 150 220" fill="url(#leafGradient)"/>
+    
+    <!-- Soybean Pods -->
+    <ellipse cx="140" cy="160" rx="15" ry="8" fill="url(#sojaGradient)"/>
+    <ellipse cx="160" cy="160" rx="15" ry="8" fill="url(#sojaGradient)"/>
+    <ellipse cx="150" cy="140" rx="12" ry="6" fill="url(#sojaGradient)"/>
+    
+    <!-- Individual Soybeans -->
+    <circle cx="135" cy="155" r="3" fill="#DEB887"/>
+    <circle cx="145" cy="155" r="3" fill="#DEB887"/>
+    <circle cx="155" cy="155" r="3" fill="#DEB887"/>
+    <circle cx="165" cy="155" r="3" fill="#DEB887"/>
+    <circle cx="145" cy="135" r="3" fill="#DEB887"/>
+    <circle cx="155" cy="135" r="3" fill="#DEB887"/>
+  </g>
+  
+  <!-- Additional Plants -->
+  <g opacity="0.6">
+    <path d="M80 280 L80 200" stroke="#8B4513" stroke-width="4" stroke-linecap="round"/>
+    <ellipse cx="75" cy="180" rx="8" ry="4" fill="url(#sojaGradient)"/>
+    <ellipse cx="85" cy="180" rx="8" ry="4" fill="url(#sojaGradient)"/>
+    
+    <path d="M220 280 L220 200" stroke="#8B4513" stroke-width="4" stroke-linecap="round"/>
+    <ellipse cx="215" cy="180" rx="8" ry="4" fill="url(#sojaGradient)"/>
+    <ellipse cx="225" cy="180" rx="8" ry="4" fill="url(#sojaGradient)"/>
+  </g>
+  
+  <!-- Text Label -->
+  <text x="150" y="50" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="24" font-weight="bold">
+    SOJA PREMIUM
+  </text>
+  <text x="150" y="75" text-anchor="middle" fill="#00ff88" font-family="Arial, sans-serif" font-size="16">
+    Qualidade Exportação
+  </text>
+</svg>

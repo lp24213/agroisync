@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
 
 const Cripto = () => {
   const [walletAddress, setWalletAddress] = useState('');
@@ -51,8 +49,6 @@ const Cripto = () => {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <Navbar />
-      
       {/* Header Section */}
       <section className="relative py-20 px-4 bg-gradient-to-br from-purple-900/20 to-pink-900/20">
         <div className="max-w-6xl mx-auto text-center">
@@ -257,8 +253,6 @@ const Cripto = () => {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 };

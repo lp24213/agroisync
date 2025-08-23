@@ -1,0 +1,79 @@
+<svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cornGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFA500;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF8C00;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="leafGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#228B22;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#32CD32;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="huskGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8FBC8F;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#90EE90;stop-opacity:1" />
+    </linearGradient>
+    
+    <filter id="shadow">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="300" height="300" fill="#1a1a1a"/>
+  
+  <!-- Soil Base -->
+  <ellipse cx="150" cy="280" rx="120" ry="40" fill="#654321" opacity="0.8"/>
+  
+  <!-- Main Corn Plant -->
+  <g filter="url(#shadow)">
+    <!-- Stem -->
+    <path d="M150 280 L150 180" stroke="#8B4513" stroke-width="8" stroke-linecap="round"/>
+    
+    <!-- Corn Cob -->
+    <ellipse cx="150" cy="160" rx="20" ry="35" fill="url(#cornGradient)"/>
+    
+    <!-- Corn Kernels -->
+    <circle cx="140" cy="140" r="4" fill="#FFD700"/>
+    <circle cx="160" cy="140" r="4" fill="#FFD700"/>
+    <circle cx="135" cy="150" r="4" fill="#FFA500"/>
+    <circle cx="165" cy="150" r="4" fill="#FFA500"/>
+    <circle cx="130" cy="160" r="4" fill="#FF8C00"/>
+    <circle cx="170" cy="160" r="4" fill="#FF8C00"/>
+    <circle cx="135" cy="170" r="4" fill="#FFD700"/>
+    <circle cx="165" cy="170" r="4" fill="#FFD700"/>
+    <circle cx="140" cy="180" r="4" fill="#FFA500"/>
+    <circle cx="160" cy="180" r="4" fill="#FFA500"/>
+    
+    <!-- Corn Husks -->
+    <path d="M130 150 Q120 130, 110 140 Q120 160, 130 150" fill="url(#huskGradient)"/>
+    <path d="M170 150 Q180 130, 190 140 Q180 160, 170 150" fill="url(#huskGradient)"/>
+    <path d="M125 160 Q115 140, 105 150 Q115 170, 125 160" fill="url(#huskGradient)"/>
+    <path d="M175 160 Q185 140, 195 150 Q185 170, 175 160" fill="url(#huskGradient)"/>
+    
+    <!-- Leaves -->
+    <path d="M150 200 Q120 180, 110 200 Q120 220, 150 200" fill="url(#leafGradient)"/>
+    <path d="M150 200 Q180 180, 190 200 Q180 220, 150 200" fill="url(#leafGradient)"/>
+    <path d="M150 220 Q120 200, 110 220 Q120 240, 150 220" fill="url(#leafGradient)"/>
+    <path d="M150 220 Q180 200, 190 220 Q180 240, 150 220" fill="url(#leafGradient)"/>
+  </g>
+  
+  <!-- Additional Plants -->
+  <g opacity="0.6">
+    <path d="M80 280 L80 200" stroke="#8B4513" stroke-width="4" stroke-linecap="round"/>
+    <ellipse cx="80" cy="180" rx="12" ry="20" fill="url(#cornGradient)"/>
+    
+    <path d="M220 280 L220 200" stroke="#8B4513" stroke-width="4" stroke-linecap="round"/>
+    <ellipse cx="220" cy="180" rx="12" ry="20" fill="url(#cornGradient)"/>
+  </g>
+  
+  <!-- Text Label -->
+  <text x="150" y="50" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="24" font-weight="bold">
+    MILHO AMARELO
+  </text>
+  <text x="150" y="75" text-anchor="middle" fill="#00ff88" font-family="Arial, sans-serif" font-size="16">
+    Tipo 1 - Qualidade Superior
+  </text>
+</svg>

@@ -1,0 +1,44 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle with Gradient -->
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#00ff88;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="leafGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00ff88;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:1" />
+    </linearGradient>
+    
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Main Circle -->
+  <circle cx="60" cy="60" r="55" fill="url(#logoGradient)" stroke="#ffffff" stroke-width="2" filter="url(#glow)"/>
+  
+  <!-- Leaf Symbol -->
+  <path d="M60 25 C70 35, 80 45, 75 60 C70 75, 60 85, 45 75 C30 65, 40 45, 60 25 Z" 
+        fill="url(#leafGradient)" stroke="#ffffff" stroke-width="1.5"/>
+  
+  <!-- Connection Lines -->
+  <path d="M35 45 L85 45" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+  <path d="M40 60 L80 60" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+  <path d="M45 75 L75 75" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+  
+  <!-- Center Dot -->
+  <circle cx="60" cy="60" r="8" fill="#ffffff" opacity="0.9"/>
+  
+  <!-- Tech Elements -->
+  <circle cx="25" cy="25" r="3" fill="#00d4ff" opacity="0.7"/>
+  <circle cx="95" cy="25" r="3" fill="#00ff88" opacity="0.7"/>
+  <circle cx="25" cy="95" r="3" fill="#00ff88" opacity="0.7"/>
+  <circle cx="95" cy="95" r="3" fill="#00d4ff" opacity="0.7"/>
+</svg>

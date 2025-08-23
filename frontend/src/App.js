@@ -13,6 +13,7 @@ import Cadastro from './pages/Cadastro';
 import Admin from './pages/Admin';
 import Planos from './pages/Planos';
 import PaymentSuccess from './pages/PaymentSuccess';
+import Contato from './pages/Contato';
 
 // Serviços de Segurança
 import securityService from './services/securityService';
@@ -75,6 +76,7 @@ function App() {
           <Route path="/admin" element={<Admin />} />
           <Route path="/planos" element={<Planos />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
+          <Route path="/contato" element={<Contato />} />
         </Routes>
       </Layout>
     </Router>
