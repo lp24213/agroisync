@@ -189,14 +189,38 @@
     }
   },
   "footer": {
-    "description": "农业连接 - 连接农业的未来",
-    "links": {
+    "description": "AgroConecta - 连接农业综合企业的未来",
+    "company": {
+      "title": "公司",
       "about": "关于",
-      "services": "服务",
       "contact": "联系",
-      "privacy": "隐私",
-      "terms": "条款"
+      "careers": "职业",
+      "press": "新闻"
     },
+    "services": {
+      "title": "服务",
+      "quotes": "报价",
+      "marketplace": "市场",
+      "agroconnect": "农业连接",
+      "crypto": "加密"
+    },
+    "support": {
+      "title": "支持",
+      "help": "帮助",
+      "faq": "常见问题",
+      "documentation": "文档",
+      "status": "状态"
+    },
+    "legal": {
+      "title": "法律",
+      "privacy": "隐私",
+      "terms": "条款",
+      "cookies": "Cookie",
+      "compliance": "合规"
+    },
+    "rights": "保留所有权利。",
+    "version": "版本",
+    "lastUpdate": "最后更新",
     "social": "社交媒体",
     "newsletter": "通讯",
     "subscribe": "订阅"

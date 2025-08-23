@@ -190,13 +190,37 @@
   },
   "footer": {
     "description": "AgroConecta - Conectando o futuro do agronegócio",
-    "links": {
+    "company": {
+      "title": "Empresa",
       "about": "Sobre",
-      "services": "Serviços",
       "contact": "Contato",
-      "privacy": "Privacidade",
-      "terms": "Termos"
+      "careers": "Carreiras",
+      "press": "Imprensa"
     },
+    "services": {
+      "title": "Serviços",
+      "quotes": "Cotações",
+      "marketplace": "Marketplace",
+      "agroconnect": "AgroConecta",
+      "crypto": "Cripto"
+    },
+    "support": {
+      "title": "Suporte",
+      "help": "Ajuda",
+      "faq": "FAQ",
+      "documentation": "Documentação",
+      "status": "Status"
+    },
+    "legal": {
+      "title": "Legal",
+      "privacy": "Privacidade",
+      "terms": "Termos",
+      "cookies": "Cookies",
+      "compliance": "Compliance"
+    },
+    "rights": "Todos os direitos reservados.",
+    "version": "Versão",
+    "lastUpdate": "Última atualização",
     "social": "Redes Sociais",
     "newsletter": "Newsletter",
     "subscribe": "Inscrever-se"

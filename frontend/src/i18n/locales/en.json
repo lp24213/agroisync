@@ -190,13 +190,37 @@
   },
   "footer": {
     "description": "AgroConnect - Connecting the future of agribusiness",
-    "links": {
+    "company": {
+      "title": "Company",
       "about": "About",
-      "services": "Services",
       "contact": "Contact",
-      "privacy": "Privacy",
-      "terms": "Terms"
+      "careers": "Careers",
+      "press": "Press"
     },
+    "services": {
+      "title": "Services",
+      "quotes": "Quotes",
+      "marketplace": "Marketplace",
+      "agroconnect": "AgroConnect",
+      "crypto": "Crypto"
+    },
+    "support": {
+      "title": "Support",
+      "help": "Help",
+      "faq": "FAQ",
+      "documentation": "Documentation",
+      "status": "Status"
+    },
+    "legal": {
+      "title": "Legal",
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "cookies": "Cookies",
+      "compliance": "Compliance"
+    },
+    "rights": "All rights reserved.",
+    "version": "Version",
+    "lastUpdate": "Last update",
     "social": "Social Media",
     "newsletter": "Newsletter",
     "subscribe": "Subscribe"

@@ -13,7 +13,7 @@ import ThemeDemo from '../components/ThemeDemo';
 
 const Home = () => {
   const { t } = useTranslation();
-  const { theme } = useTheme();
+  const { isDark, isLight } = useTheme();
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -61,7 +61,7 @@ const Home = () => {
       icon: "₿",
       title: t('home.highlights.cryptoTrading'),
       description: "Trading de criptomoedas integrado ao ecossistema agrícola",
-      illustration: <NFTMinting className="w-16 h-16" />
+      illustration: <NFTMinting className="w-20 h-20" />
     }
   ];
 
@@ -92,18 +92,20 @@ const Home = () => {
       <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden">
         {/* Gradiente de fundo baseado no tema */}
         <div className={`absolute inset-0 ${
-          theme === 'dark' 
-            ? 'bg-gradient-to-br from-bg-primary via-bg-secondary to-bg-primary' 
-            : 'bg-gradient-to-br from-bg-primary via-bg-secondary to-bg-primary'
+          isDark 
+            ? 'bg-gradient-to-br from-dark-bg-primary via-dark-bg-secondary to-dark-bg-primary' 
+            : 'bg-gradient-to-br from-light-bg-primary via-light-bg-secondary to-light-bg-primary'
         }`} />
         
         {/* Partículas flutuantes (apenas no tema escuro) */}
-        {theme === 'dark' && (
+        {isDark && (
           <div className="absolute inset-0">
             {[...Array(20)].map((_, i) => (
               <motion.div
                 key={i}
-                className="absolute w-2 h-2 bg-accent-primary/30 rounded-full"
+                className={`absolute w-2 h-2 rounded-full ${
+                  isDark ? 'bg-dark-accent-primary/30' : 'bg-light-accent-primary/30'
+                }`}
                 style={{
                   left: `${Math.random() * 100}%`,
                   top: `${Math.random() * 100}%`,
@@ -132,9 +134,13 @@ const Home = () => {
             {/* Título principal */}
             <motion.h1
               variants={itemVariants}
-              className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6"
+              className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 font-orbitron"
             >
-              <span className="text-gradient">
+              <span className={`${
+                isDark 
+                  ? 'bg-gradient-to-r from-dark-accent-primary to-dark-accent-secondary bg-clip-text text-transparent'
+                  : 'bg-gradient-to-r from-light-accent-primary to-light-accent-secondary bg-clip-text text-transparent'
+              }`}>
                 {t('home.hero.title')}
               </span>
             </motion.h1>
@@ -142,7 +148,9 @@ const Home = () => {
             {/* Subtítulo */}
             <motion.p
               variants={itemVariants}
-              className="text-xl md:text-2xl lg:text-3xl text-text-secondary mb-8 max-w-4xl mx-auto leading-relaxed"
+              className={`text-xl md:text-2xl lg:text-3xl mb-8 max-w-4xl mx-auto leading-relaxed font-space-grotesk ${
+                isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+              }`}
             >
               {t('home.hero.subtitle')}
             </motion.p>
@@ -150,7 +158,9 @@ const Home = () => {
             {/* Descrição */}
             <motion.p
               variants={itemVariants}
-              className="text-lg md:text-xl text-text-tertiary mb-12 max-w-3xl mx-auto leading-relaxed"
+              className={`text-lg md:text-xl mb-12 max-w-3xl mx-auto leading-relaxed font-inter ${
+                isDark ? 'text-dark-text-tertiary' : 'text-light-text-tertiary'
+              }`}
             >
               {t('home.hero.description')}
             </motion.p>
@@ -162,14 +172,22 @@ const Home = () => {
             >
               <Link
                 to="/cadastro"
-                className="btn btn-primary"
+                className={`px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 ${
+                  isDark
+                    ? 'bg-gradient-to-r from-dark-accent-primary to-dark-accent-secondary text-white shadow-lg hover:shadow-xl hover:shadow-dark-accent-primary/25'
+                    : 'bg-gradient-to-r from-light-accent-primary to-light-accent-secondary text-white shadow-lg hover:shadow-xl hover:shadow-light-accent-primary/25'
+                }`}
               >
                 {t('home.hero.cta')}
               </Link>
 
               <Link
                 to="/sobre"
-                className="btn btn-secondary"
+                className={`px-8 py-4 rounded-2xl font-semibold text-lg border-2 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 ${
+                  isDark
+                    ? 'border-dark-accent-primary text-dark-accent-primary hover:bg-dark-accent-primary hover:text-white'
+                    : 'border-light-accent-primary text-light-accent-primary hover:bg-light-accent-primary hover:text-white'
+                }`}
               >
                 {t('home.hero.learnMore')}
               </Link>
@@ -187,53 +205,62 @@ const Home = () => {
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
-            className="w-6 h-10 border-2 border-accent-primary/50 rounded-full flex justify-center"
+            className={`w-6 h-10 border-2 rounded-full flex justify-center ${
+              isDark ? 'border-dark-accent-primary/50' : 'border-light-accent-primary/50'
+            }`}
           >
             <motion.div
               animate={{ y: [0, 12, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
-              className="w-1 h-3 bg-accent-primary rounded-full mt-2"
+              className={`w-1 h-3 rounded-full mt-2 ${
+                isDark ? 'bg-dark-accent-primary' : 'bg-light-accent-primary'
+              }`}
             />
           </motion.div>
         </motion.div>
       </section>
 
       {/* Highlights Section */}
-      <section className="relative py-20 px-4 sm:px-6 lg:px-8">
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-6">
+            <h2 className={`text-4xl md:text-5xl font-bold mb-6 font-orbitron ${
+              isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+            }`}>
               {t('home.highlights.title')}
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-accent-primary to-accent-secondary mx-auto rounded-full" />
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {highlightCards.map((card, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 50 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="group"
+                className={`p-6 rounded-2xl backdrop-blur-md border transition-all duration-300 hover:transform hover:scale-105 ${
+                  isDark
+                    ? 'bg-dark-bg-card/80 border-dark-border-primary hover:border-dark-accent-primary hover:shadow-lg hover:shadow-dark-accent-primary/20'
+                    : 'bg-light-bg-card/80 border-light-border-primary hover:border-light-accent-primary hover:shadow-lg hover:shadow-light-accent-primary/20'
+                }`}
               >
-                <div className="card">
-                  {/* Ilustração futurista */}
-                  <div className="flex justify-center mb-4">
-                    {card.illustration}
-                  </div>
-                  
-                  <h3 className="text-xl font-semibold text-text-primary mb-3">
+                <div className="text-center">
+                  <div className="text-4xl mb-4">{card.icon}</div>
+                  <h3 className={`text-xl font-semibold mb-3 font-space-grotesk ${
+                    isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+                  }`}>
                     {card.title}
                   </h3>
-                  <p className="text-text-secondary leading-relaxed">
+                  <p className={`text-sm leading-relaxed font-inter ${
+                    isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+                  }`}>
                     {card.description}
                   </p>
                 </div>
@@ -244,41 +271,46 @@ const Home = () => {
       </section>
 
       {/* Features Section */}
-      <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-bg-tertiary/30">
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-6">
+            <h2 className={`text-4xl md:text-5xl font-bold mb-6 font-orbitron ${
+              isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+            }`}>
               {t('home.features.title')}
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-accent-primary to-accent-secondary mx-auto rounded-full" />
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {featureCards.map((feature, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 50 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.2 }}
                 viewport={{ once: true }}
-                className="group"
+                className={`p-8 rounded-2xl backdrop-blur-md border transition-all duration-300 hover:transform hover:scale-105 ${
+                  isDark
+                    ? 'bg-dark-bg-card/80 border-dark-border-primary hover:border-dark-accent-primary hover:shadow-lg hover:shadow-dark-accent-primary/20'
+                    : 'bg-light-bg-card/80 border-light-border-primary hover:border-light-accent-primary hover:shadow-lg hover:shadow-light-accent-primary/20'
+                }`}
               >
-                <div className="card">
-                  {/* Ilustração futurista */}
-                  <div className="flex justify-center mb-6">
-                    {feature.illustration}
-                  </div>
-                  
-                  <h3 className="text-2xl font-semibold text-text-primary mb-4">
+                <div className="text-center">
+                  <div className="text-5xl mb-6">{feature.icon}</div>
+                  <h3 className={`text-2xl font-semibold mb-4 font-space-grotesk ${
+                    isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+                  }`}>
                     {feature.title}
                   </h3>
-                  <p className="text-text-secondary leading-relaxed text-lg">
+                  <p className={`text-base leading-relaxed font-inter ${
+                    isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+                  }`}>
                     {feature.description}
                   </p>
                 </div>
@@ -289,30 +321,9 @@ const Home = () => {
       </section>
 
       {/* Theme Demo Section */}
-      <ThemeDemo />
-
-      {/* CTA Section */}
-      <section className="relative py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-6">
-              Pronto para o Futuro?
-            </h2>
-            <p className="text-xl text-text-secondary mb-8 leading-relaxed">
-              Junte-se à revolução digital do agronegócio e conecte-se ao futuro da agricultura
-            </p>
-            <Link
-              to="/cadastro"
-              className="btn btn-primary text-lg px-10 py-5"
-            >
-              Começar Agora
-            </Link>
-          </motion.div>
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <ThemeDemo />
         </div>
       </section>
     </div>

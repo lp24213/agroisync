@@ -16,8 +16,8 @@ export const ThemeProvider = ({ children }) => {
 
   useEffect(() => {
     // Carregar tema salvo do localStorage
-    const savedTheme = localStorage.getItem('agroconecta-theme');
-    if (savedTheme) {
+    const savedTheme = localStorage.getItem('agroisync-theme');
+    if (savedTheme && (savedTheme === 'dark' || savedTheme === 'light')) {
       setTheme(savedTheme);
     }
     setIsLoading(false);
@@ -26,21 +26,43 @@ export const ThemeProvider = ({ children }) => {
   useEffect(() => {
     // Aplicar tema ao documento
     document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('agroconecta-theme', theme);
+    localStorage.setItem('agroisync-theme', theme);
+    
+    // Aplicar classes do Tailwind baseadas no tema
+    if (theme === 'dark') {
+      document.documentElement.classList.remove('light');
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+    }
   }, [theme]);
 
   const toggleTheme = () => {
     setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
   };
 
+  const setThemeExplicit = (newTheme) => {
+    if (newTheme === 'dark' || newTheme === 'light') {
+      setTheme(newTheme);
+    }
+  };
+
   const value = {
     theme,
     toggleTheme,
-    isLoading
+    setTheme: setThemeExplicit,
+    isLoading,
+    isDark: theme === 'dark',
+    isLight: theme === 'light'
   };
 
   if (isLoading) {
-    return <div className="min-h-screen bg-black" />;
+    return (
+      <div className="min-h-screen bg-dark-bg-primary dark:bg-dark-bg-primary light:bg-light-bg-primary flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-accent-primary"></div>
+      </div>
+    );
   }
 
   return (

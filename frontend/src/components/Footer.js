@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => {
   const { t } = useTranslation();
-  const { theme } = useTheme();
+  const { isDark, isLight } = useTheme();
 
   const currentYear = new Date().getFullYear();
 
@@ -57,7 +57,11 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="relative z-10 bg-bg-secondary/50 backdrop-blur-sm border-t border-border-primary">
+    <footer className={`relative z-10 backdrop-blur-sm border-t ${
+      isDark 
+        ? 'bg-dark-bg-secondary/50 border-dark-border-primary' 
+        : 'bg-light-bg-secondary/50 border-light-border-primary'
+    }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Conteúdo principal do footer */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
@@ -70,16 +74,30 @@ const Footer = () => {
               viewport={{ once: true }}
             >
               <Link to="/" className="flex items-center space-x-3 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-2xl flex items-center justify-center shadow-lg">
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg ${
+                  isDark 
+                    ? 'bg-gradient-to-br from-dark-accent-primary to-dark-accent-secondary'
+                    : 'bg-gradient-to-br from-light-accent-primary to-light-accent-secondary'
+                }`}>
                   <span className="text-2xl font-bold text-white">AC</span>
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-gradient">AgroConecta</h3>
-                  <p className="text-sm text-text-tertiary">Future of Agribusiness</p>
+                  <h3 className={`text-2xl font-bold ${
+                    isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+                  }`}>
+                    AgroConecta
+                  </h3>
+                  <p className={`text-sm ${
+                    isDark ? 'text-dark-text-tertiary' : 'text-light-text-tertiary'
+                  }`}>
+                    Future of Agribusiness
+                  </p>
                 </div>
               </Link>
               
-              <p className="text-text-secondary leading-relaxed mb-6 max-w-md">
+              <p className={`leading-relaxed mb-6 max-w-md ${
+                isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+              }`}>
                 {t('footer.description')}
               </p>
               
@@ -95,7 +113,11 @@ const Footer = () => {
                     whileInView={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.4, delay: index * 0.1 }}
                     viewport={{ once: true }}
-                    className="w-10 h-10 bg-bg-card border border-border-primary rounded-xl flex items-center justify-center text-lg hover:bg-bg-card-hover hover:border-accent-primary transition-all duration-300 group"
+                    className={`w-10 h-10 border rounded-xl flex items-center justify-center text-lg transition-all duration-300 group ${
+                      isDark
+                        ? 'bg-dark-bg-card border-dark-border-primary hover:bg-dark-bg-card-hover hover:border-dark-accent-primary'
+                        : 'bg-light-bg-card border-light-border-primary hover:bg-light-bg-card-hover hover:border-light-accent-primary'
+                    }`}
                   >
                     <span className="group-hover:scale-110 transition-transform duration-300">
                       {social.icon}
@@ -115,21 +137,27 @@ const Footer = () => {
               transition={{ duration: 0.6, delay: sectionIndex * 0.1 }}
               viewport={{ once: true }}
             >
-              <h4 className="text-lg font-semibold text-text-primary mb-4">
+              <h4 className={`text-lg font-semibold mb-4 ${
+                isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+              }`}>
                 {section.title}
               </h4>
-              <ul className="space-y-3">
+              <ul className="space-y-2">
                 {section.links.map((link, linkIndex) => (
                   <motion.li
-                    key={link.label}
+                    key={link.path}
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.4, delay: (sectionIndex * 0.1) + (linkIndex * 0.05) }}
+                    transition={{ duration: 0.4, delay: linkIndex * 0.05 }}
                     viewport={{ once: true }}
                   >
                     <Link
                       to={link.path}
-                      className="text-text-secondary hover:text-accent-primary transition-colors duration-300 text-sm"
+                      className={`text-sm transition-colors duration-300 hover:underline ${
+                        isDark 
+                          ? 'text-dark-text-secondary hover:text-dark-text-primary' 
+                          : 'text-light-text-secondary hover:text-light-text-primary'
+                      }`}
                     >
                       {link.label}
                     </Link>
@@ -141,45 +169,26 @@ const Footer = () => {
         </div>
 
         {/* Linha divisória */}
-        <div className="border-t border-border-primary/50 mb-8" />
-
-        {/* Newsletter */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          initial={{ opacity: 0, scaleX: 0 }}
+          whileInView={{ opacity: 1, scaleX: 1 }}
+          transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="text-center mb-8"
-        >
-          <h4 className="text-xl font-semibold text-text-primary mb-4">
-            {t('footer.newsletter.title')}
-          </h4>
-          <p className="text-text-secondary mb-6 max-w-2xl mx-auto">
-            {t('footer.newsletter.description')}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto">
-            <input
-              type="email"
-              placeholder={t('footer.newsletter.placeholder')}
-              className="input flex-1"
-            />
-            <button className="btn btn-primary whitespace-nowrap">
-              {t('footer.newsletter.subscribe')}
-            </button>
-          </div>
-        </motion.div>
-
-        {/* Linha divisória */}
-        <div className="border-t border-border-primary/50 mb-8" />
+          className={`h-px mb-8 ${
+            isDark ? 'bg-dark-border-primary' : 'bg-light-border-primary'
+          }`}
+        />
 
         {/* Rodapé inferior */}
-        <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        <div className="flex flex-col md:flex-row justify-between items-center">
           <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="text-text-tertiary text-sm"
+            className={`text-sm ${
+              isDark ? 'text-dark-text-tertiary' : 'text-light-text-tertiary'
+            }`}
           >
             © {currentYear} AgroConecta. {t('footer.rights')}
           </motion.p>
@@ -189,27 +198,19 @@ const Footer = () => {
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
-            className="flex items-center space-x-6 text-sm"
+            className={`flex items-center space-x-6 mt-4 md:mt-0 ${
+              isDark ? 'text-dark-text-tertiary' : 'text-light-text-tertiary'
+            }`}
           >
-            <Link to="/privacidade" className="text-text-tertiary hover:text-accent-primary transition-colors duration-300">
-              {t('footer.privacy')}
-            </Link>
-            <Link to="/termos" className="text-text-tertiary hover:text-accent-primary transition-colors duration-300">
-              {t('footer.terms')}
-            </Link>
-            <Link to="/cookies" className="text-text-tertiary hover:text-accent-primary transition-colors duration-300">
-              {t('footer.cookies')}
-            </Link>
+            <span className="text-xs">
+              {t('footer.version')} 2.0.0
+            </span>
+            <span className="text-xs">
+              {t('footer.lastUpdate')} {new Date().toLocaleDateString()}
+            </span>
           </motion.div>
         </div>
       </div>
-
-      {/* Indicador de tema no rodapé (apenas para debug) */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="text-center py-2 text-xs text-text-tertiary bg-bg-tertiary/30">
-          Tema atual: {theme} | Versão: {process.env.REACT_APP_VERSION || '1.0.0'}
-        </div>
-      )}
     </footer>
   );
 };

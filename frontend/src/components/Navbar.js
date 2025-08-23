@@ -6,7 +6,7 @@ import { Link, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
   const { t } = useTranslation();
-  const { theme } = useTheme();
+  const { isDark, isLight } = useTheme();
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -40,7 +40,9 @@ const Navbar = () => {
       transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled
-          ? 'bg-bg-card/95 backdrop-blur-xl border-b border-border-primary shadow-2xl'
+          ? (isDark 
+              ? 'bg-dark-bg-card/95 backdrop-blur-xl border-b border-dark-border-primary shadow-2xl'
+              : 'bg-light-bg-card/95 backdrop-blur-xl border-b border-light-border-primary shadow-2xl')
           : 'bg-transparent'
       }`}
     >
@@ -54,18 +56,32 @@ const Navbar = () => {
           >
             <Link to="/" className="flex items-center space-x-3">
               <div className="relative">
-                <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-2xl flex items-center justify-center shadow-lg">
+                <div className={`w-10 h-10 lg:w-12 lg:h-12 rounded-2xl flex items-center justify-center shadow-lg ${
+                  isDark 
+                    ? 'bg-gradient-to-br from-dark-accent-primary to-dark-accent-secondary'
+                    : 'bg-gradient-to-br from-light-accent-primary to-light-accent-secondary'
+                }`}>
                   <span className="text-2xl lg:text-3xl font-bold text-white">
                     AC
                   </span>
                 </div>
-                <div className="absolute inset-0 bg-gradient-to-br from-accent-primary/20 to-transparent rounded-2xl animate-pulse" />
+                <div className={`absolute inset-0 rounded-2xl animate-pulse ${
+                  isDark 
+                    ? 'bg-gradient-to-br from-dark-accent-primary/20 to-transparent'
+                    : 'bg-gradient-to-br from-light-accent-primary/20 to-transparent'
+                }`} />
               </div>
               <div className="hidden sm:block">
-                <h1 className="text-xl lg:text-2xl font-bold text-gradient">
+                <h1 className={`text-xl lg:text-2xl font-bold ${
+                  isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+                }`}>
                   AgroConecta
                 </h1>
-                <p className="text-xs text-text-tertiary font-medium">Future of Agribusiness</p>
+                <p className={`text-xs font-medium ${
+                  isDark ? 'text-dark-text-tertiary' : 'text-light-text-tertiary'
+                }`}>
+                  Future of Agribusiness
+                </p>
               </div>
             </Link>
           </motion.div>
@@ -83,20 +99,32 @@ const Navbar = () => {
                   to={link.path}
                   className={`relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 group ${
                     isActive(link.path)
-                      ? 'text-text-primary bg-accent-primary/20 border border-accent-primary/50'
-                      : 'text-text-secondary hover:text-text-primary hover:bg-bg-card-hover'
+                      ? (isDark 
+                          ? 'text-dark-text-primary bg-dark-accent-primary/20 border border-dark-accent-primary/50'
+                          : 'text-light-text-primary bg-light-accent-primary/20 border border-light-accent-primary/50')
+                      : (isDark 
+                          ? 'text-dark-text-secondary hover:text-dark-text-primary hover:bg-dark-bg-card-hover'
+                          : 'text-light-text-secondary hover:text-light-text-primary hover:bg-light-bg-card-hover')
                   }`}
                 >
                   {link.label}
                   {isActive(link.path) && (
                     <motion.div
                       layoutId="activeTab"
-                      className="absolute inset-0 bg-gradient-to-r from-accent-primary/20 to-accent-secondary/20 rounded-xl border border-accent-primary/50"
+                      className={`absolute inset-0 rounded-xl border ${
+                        isDark 
+                          ? 'bg-gradient-to-r from-dark-accent-primary/20 to-dark-accent-secondary/20 border-dark-accent-primary/50'
+                          : 'bg-gradient-to-r from-light-accent-primary/20 to-light-accent-secondary/20 border-light-accent-primary/50'
+                      }`}
                       initial={false}
                       transition={{ type: "spring", stiffness: 500, damping: 30 }}
                     />
                   )}
-                  <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-accent-primary/0 via-accent-primary/10 to-accent-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className={`absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
+                    isDark 
+                      ? 'bg-gradient-to-r from-dark-accent-primary/0 via-dark-accent-primary/10 to-dark-accent-primary/0'
+                      : 'bg-gradient-to-r from-light-accent-primary/0 via-light-accent-primary/10 to-light-accent-primary/0'
+                  }`} />
                 </Link>
               </motion.div>
             ))}
@@ -107,7 +135,11 @@ const Navbar = () => {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-xl bg-bg-card-hover border border-border-primary text-text-primary hover:text-text-primary hover:bg-bg-card-hover transition-all duration-300"
+              className={`p-2 rounded-xl transition-all duration-300 ${
+                isDark
+                  ? 'bg-dark-bg-card-hover border border-dark-border-primary text-dark-text-primary hover:bg-dark-bg-card-hover'
+                  : 'bg-light-bg-card-hover border border-light-border-primary text-light-text-primary hover:bg-light-bg-card-hover'
+              }`}
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {isMobileMenuOpen ? (
@@ -130,7 +162,11 @@ const Navbar = () => {
               transition={{ duration: 0.3 }}
               className="lg:hidden overflow-hidden"
             >
-              <div className="px-2 pt-2 pb-3 space-y-1 bg-bg-card/95 backdrop-blur-xl border-t border-border-primary rounded-b-2xl">
+              <div className={`px-2 pt-2 pb-3 space-y-1 rounded-b-2xl ${
+                isDark
+                  ? 'bg-dark-bg-card/95 backdrop-blur-xl border-t border-dark-border-primary'
+                  : 'bg-light-bg-card/95 backdrop-blur-xl border-t border-light-border-primary'
+              }`}>
                 {navigationLinks.map((link) => (
                   <Link
                     key={link.path}
@@ -138,8 +174,12 @@ const Navbar = () => {
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={`block px-3 py-2 rounded-xl text-base font-medium transition-all duration-300 ${
                       isActive(link.path)
-                        ? 'text-text-primary bg-accent-primary/20 border border-accent-primary/50'
-                        : 'text-text-secondary hover:text-text-primary hover:bg-bg-card-hover'
+                        ? (isDark 
+                            ? 'text-dark-text-primary bg-dark-accent-primary/20 border border-dark-accent-primary/50'
+                            : 'text-light-text-primary bg-light-accent-primary/20 border border-light-accent-primary/50')
+                        : (isDark 
+                            ? 'text-dark-text-secondary hover:text-dark-text-primary hover:bg-dark-bg-card-hover'
+                            : 'text-light-text-secondary hover:text-light-text-primary hover:bg-light-bg-card-hover')
                     }`}
                   >
                     {link.label}
