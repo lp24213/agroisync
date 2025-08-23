@@ -21,7 +21,3 @@ frontend:
   cache:
     paths:
       - frontend/node_modules/**/*
-               redirects:
-               - source: '</^[^.]+$|(?<!\.[^./?]+)(?=[^?]*$)/>'
-                 target: '/index.html'
-                 status: '200'
