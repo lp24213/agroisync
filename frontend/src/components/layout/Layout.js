@@ -46,12 +46,12 @@ const Layout = ({ children }) => {
             <GlobalTicker />
           </div>
 
-          {/* Header fixo - POSICIONADO ABAIXO DO TICKER */}
+          {/* Header SEMPRE FIXO - NUNCA DESAPARECE */}
           <motion.header
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="sticky top-12 z-40" // top-12 para ficar abaixo do ticker
+            className="fixed top-12 left-0 right-0 z-40" // SEMPRE fixo, nunca sticky
           >
             <Navbar />
           </motion.header>
@@ -61,7 +61,7 @@ const Layout = ({ children }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative z-10 pt-24" // pt-24 para compensar o ticker fixo
+            className="relative z-10 pt-32" // pt-32 para compensar ticker + menu fixo
           >
             <PageTransition>
               {children}
@@ -78,17 +78,17 @@ const Layout = ({ children }) => {
             <Footer />
           </motion.footer>
 
-          {/* Chatbot IA */}
+          {/* Chatbot IA - SEMPRE VISÍVEL */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="relative z-20"
+            className="fixed bottom-6 right-6 z-50" // SEMPRE fixo
           >
             <Chatbot />
           </motion.div>
 
-          {/* Widget de Clima Global */}
+          {/* Widget de Clima Global - SEMPRE VISÍVEL */}
           <GlobalWeatherWidget />
         </div>
       </div>

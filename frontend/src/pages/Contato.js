@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
 import { useTheme } from '../contexts/ThemeContext';
 import { 
-  MapPin, Phone, Mail, Clock, Globe, Send, CheckCircle 
+  MapPin, Phone, Mail, Clock, Send, CheckCircle 
 } from 'lucide-react';
 
 const Contato = () => {
-  const { t } = useTranslation();
   const { isDark } = useTheme();
   const [formData, setFormData] = useState({
     nome: '',
@@ -91,7 +89,7 @@ const Contato = () => {
   ];
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
+    <div className="min-h-screen bg-white text-gray-900">
       {/* Header Section */}
       <section className="relative py-20 px-4 bg-gradient-to-br from-green-900/20 to-blue-900/20">
         <div className="max-w-6xl mx-auto text-center">
@@ -125,30 +123,20 @@ const Contato = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className={`text-center p-6 rounded-2xl transition-all duration-300 hover:scale-105 ${
-                  isDark
-                    ? 'bg-gray-800/80 backdrop-blur-xl border border-gray-700 hover:border-green-500'
-                    : 'bg-white/80 backdrop-blur-xl border border-gray-200 hover:border-green-500 shadow-xl'
-                }`}
+                className="text-center p-6 rounded-2xl transition-all duration-300 hover:scale-105 bg-white/80 backdrop-blur-xl border border-gray-200 hover:border-green-500 shadow-xl"
               >
-                <div className={`w-16 h-16 bg-gradient-to-r from-green-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4`}>
+                <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <div className="text-white">
                     {info.icon}
                   </div>
                 </div>
-                <h3 className={`text-xl font-bold mb-2 ${
-                  isDark ? 'text-white' : 'text-gray-900'
-                }`}>
+                <h3 className="text-xl font-bold mb-2 text-gray-900">
                   {info.title}
                 </h3>
-                <p className={`text-lg font-semibold mb-2 ${
-                  isDark ? 'text-green-400' : 'text-green-600'
-                }`}>
+                <p className="text-lg font-semibold mb-2 text-green-600">
                   {info.content}
                 </p>
-                <p className={`text-sm ${
-                  isDark ? 'text-gray-400' : 'text-gray-600'
-                }`}>
+                <p className="text-sm text-gray-600">
                   {info.description}
                 </p>
               </motion.div>
@@ -161,30 +149,20 @@ const Contato = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className={`text-center p-8 rounded-2xl mb-16 ${
-              isDark
-                ? 'bg-gray-800/80 backdrop-blur-xl border border-gray-700'
-                : 'bg-white/80 backdrop-blur-xl border border-gray-200 shadow-xl'
-            }`}
+            className="text-center p-8 rounded-2xl mb-16 bg-white/80 backdrop-blur-xl border border-gray-200 shadow-xl"
           >
-            <h2 className={`text-3xl font-bold mb-6 ${
-              isDark ? 'text-white' : 'text-gray-900'
-            }`}>
+            <h2 className="text-3xl font-bold mb-6 text-gray-900">
               E-mails de Suporte
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {supportEmails.map((emailInfo, index) => (
                 <div key={index} className="text-center">
-                  <p className={`text-sm mb-2 ${
-                    isDark ? 'text-gray-400' : 'text-gray-600'
-                  }`}>
+                  <p className="text-sm mb-2 text-gray-600">
                     {emailInfo.label}
                   </p>
                   <a
                     href={`mailto:${emailInfo.email}`}
-                    className={`text-lg font-semibold hover:text-green-500 transition-colors ${
-                      isDark ? 'text-green-400' : 'text-green-600'
-                    }`}
+                    className="text-lg font-semibold hover:text-green-500 transition-colors text-green-600"
                   >
                     {emailInfo.email}
                   </a>
@@ -203,15 +181,9 @@ const Contato = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className={`p-8 rounded-2xl ${
-              isDark
-                ? 'bg-gray-800/80 backdrop-blur-xl border border-gray-700'
-                : 'bg-white/80 backdrop-blur-xl border border-gray-200 shadow-xl'
-            }`}
+            className="p-8 rounded-2xl bg-white/80 backdrop-blur-xl border border-gray-200 shadow-xl"
           >
-            <h2 className={`text-3xl font-bold text-center mb-8 ${
-              isDark ? 'text-white' : 'text-gray-900'
-            }`}>
+            <h2 className="text-3xl font-bold text-center mb-8 text-gray-900">
               Envie sua Mensagem
             </h2>
 
@@ -235,9 +207,7 @@ const Contato = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className={`block text-sm font-medium mb-2 ${
-                    isDark ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
+                  <label className="block text-sm font-medium mb-2 text-gray-700">
                     Nome Completo *
                   </label>
                   <input
@@ -246,19 +216,13 @@ const Contato = () => {
                     value={formData.nome}
                     onChange={handleInputChange}
                     required
-                    className={`w-full p-3 rounded-lg border transition-colors ${
-                      isDark
-                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-green-500'
-                        : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500 focus:border-green-500'
-                    }`}
+                    className="w-full p-3 rounded-lg border transition-colors bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500 focus:border-green-500"
                     placeholder="Seu nome completo"
                   />
                 </div>
 
                 <div>
-                  <label className={`block text-sm font-medium mb-2 ${
-                    isDark ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
+                  <label className="block text-sm font-medium mb-2 text-gray-700">
                     E-mail *
                   </label>
                   <input
@@ -267,11 +231,7 @@ const Contato = () => {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    className={`w-full p-3 rounded-lg border transition-colors ${
-                      isDark
-                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-green-500'
-                        : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500 focus:border-green-500'
-                    }`}
+                    className="w-full p-3 rounded-lg border transition-colors bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500 focus:border-green-500"
                     placeholder="seu@email.com"
                   />
                 </div>
@@ -279,9 +239,7 @@ const Contato = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className={`block text-sm font-medium mb-2 ${
-                    isDark ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
+                  <label className="block text-sm font-medium mb-2 text-gray-700">
                     Telefone
                   </label>
                   <input
@@ -289,19 +247,13 @@ const Contato = () => {
                     name="telefone"
                     value={formData.telefone}
                     onChange={handleInputChange}
-                    className={`w-full p-3 rounded-lg border transition-colors ${
-                      isDark
-                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-green-500'
-                        : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500 focus:border-green-500'
-                    }`}
+                    className="w-full p-3 rounded-lg border transition-colors bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500 focus:border-green-500"
                     placeholder="(66) 99236-2830"
                   />
                 </div>
 
                 <div>
-                  <label className={`block text-sm font-medium mb-2 ${
-                    isDark ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
+                  <label className="block text-sm font-medium mb-2 text-gray-700">
                     Assunto *
                   </label>
                   <input
@@ -310,20 +262,14 @@ const Contato = () => {
                     value={formData.assunto}
                     onChange={handleInputChange}
                     required
-                    className={`w-full p-3 rounded-lg border transition-colors ${
-                      isDark
-                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-green-500'
-                        : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500 focus:border-green-500'
-                    }`}
+                    className="w-full p-3 rounded-lg border transition-colors bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500 focus:border-green-500"
                     placeholder="Como podemos ajudar?"
                   />
                 </div>
               </div>
 
               <div>
-                <label className={`block text-sm font-medium mb-2 ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
-                }`}>
+                <label className="block text-sm font-medium mb-2 text-gray-700">
                   Mensagem *
                 </label>
                 <textarea
@@ -332,11 +278,7 @@ const Contato = () => {
                   onChange={handleInputChange}
                   required
                   rows={6}
-                  className={`w-full p-3 rounded-lg border transition-colors resize-none ${
-                    isDark
-                      ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-green-500'
-                      : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500 focus:border-green-500'
-                  }`}
+                  className="w-full p-3 rounded-lg border transition-colors resize-none bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500 focus:border-green-500"
                   placeholder="Descreva sua dúvida ou solicitação..."
                 />
               </div>
@@ -345,7 +287,7 @@ const Contato = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`px-8 py-4 bg-gradient-to-r from-green-600 to-blue-600 text-white font-bold rounded-xl hover:from-green-700 hover:to-blue-700 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 mx-auto`}
+                  className="px-8 py-4 bg-gradient-to-r from-green-600 to-blue-600 text-white font-bold rounded-xl hover:from-green-700 hover:to-blue-700 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 mx-auto"
                 >
                   {isSubmitting ? (
                     <>
@@ -373,27 +315,17 @@ const Contato = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className={`p-8 rounded-2xl ${
-              isDark
-                ? 'bg-gray-800/80 backdrop-blur-xl border border-gray-700'
-                : 'bg-white/80 backdrop-blur-xl border border-gray-200 shadow-xl'
-            }`}
+            className="p-8 rounded-2xl bg-white/80 backdrop-blur-xl border border-gray-200 shadow-xl"
           >
-            <h2 className={`text-3xl font-bold text-center mb-8 ${
-              isDark ? 'text-white' : 'text-gray-900'
-            }`}>
+            <h2 className="text-3xl font-bold text-center mb-8 text-gray-900">
               Nossa Localização
             </h2>
             
             <div className="text-center mb-6">
-              <p className={`text-lg ${
-                isDark ? 'text-gray-300' : 'text-gray-700'
-              }`}>
+              <p className="text-lg text-gray-700">
                 Sinop - Mato Grosso, Brasil
               </p>
-              <p className={`text-sm ${
-                isDark ? 'text-gray-400' : 'text-gray-600'
-              }`}>
+              <p className="text-sm text-gray-600">
                 Centro de tecnologia agropecuária
               </p>
             </div>

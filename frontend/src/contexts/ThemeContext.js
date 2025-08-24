@@ -11,13 +11,19 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState('light'); // Alterado para 'light' como padrão
+  const [theme, setTheme] = useState('light'); // SEMPRE tema claro como padrão
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Carregar tema salvo ou usar padrão claro
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    setTheme(savedTheme);
+    // SEMPRE usar tema claro como padrão, nunca escuro
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      // Se o usuário tinha salvo tema escuro, perguntar se quer manter
+      const userPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setTheme(userPrefersDark ? 'dark' : 'light');
+    } else {
+      setTheme('light'); // Padrão sempre claro
+    }
     setIsLoading(false);
   }, []);
 
@@ -25,6 +31,15 @@ export const ThemeProvider = ({ children }) => {
     // Aplicar tema ao documento
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
+    
+    // Aplicar classes do Tailwind baseadas no tema
+    if (theme === 'dark') {
+      document.documentElement.classList.remove('light');
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+    }
   }, [theme]);
 
   const toggleTheme = () => {
@@ -32,7 +47,9 @@ export const ThemeProvider = ({ children }) => {
   };
 
   const setThemeExplicit = (newTheme) => {
-    setTheme(newTheme);
+    if (newTheme === 'dark' || newTheme === 'light') {
+      setTheme(newTheme);
+    }
   };
 
   const value = {
