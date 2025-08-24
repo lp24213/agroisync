@@ -201,13 +201,16 @@ const Footer = () => {
             
             <div className="flex items-center space-x-6 text-sm">
               <a href="/privacidade" className="text-gray-400 hover:text-green-400 transition-colors duration-200">
-                {t('footer.legal.privacy')}
+                Política de Privacidade
               </a>
               <a href="/termos" className="text-gray-400 hover:text-green-400 transition-colors duration-200">
-                {t('footer.legal.terms')}
+                Termos de Uso
               </a>
               <a href="/cookies" className="text-gray-400 hover:text-green-400 transition-colors duration-200">
-                {t('footer.legal.cookies')}
+                Política de Cookies
+              </a>
+              <a href="/lgpd" className="text-gray-400 hover:text-green-400 transition-colors duration-200">
+                LGPD
               </a>
             </div>
           </div>

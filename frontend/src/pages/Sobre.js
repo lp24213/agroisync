@@ -7,7 +7,7 @@ import {
   TrendingUp, Shield, Lightbulb, CheckCircle,
   ArrowRight, Star, MapPin, Phone, Mail
 } from 'lucide-react';
-import WeatherWidget from '../components/WeatherWidget';
+// Componente removido - já renderizado pelo Layout global
 
 const Sobre = () => {
   const { isDark } = useTheme();

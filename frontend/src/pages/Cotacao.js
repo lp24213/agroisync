@@ -1,12 +1,12 @@
 import React from 'react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+// Componente removido - já renderizado pelo Layout global
+// Componente removido - já renderizado pelo Layout global
 import GrainsDashboard from '../components/grains/GrainsDashboard';
 
 const Cotacao = () => {
   return (
     <div className="min-h-screen bg-black text-white">
-      <Navbar />
+
       
       {/* Header Section */}
       <section className="relative py-20 px-4 bg-gradient-to-br from-blue-900/20 to-green-900/20">
@@ -104,7 +104,7 @@ const Cotacao = () => {
         </div>
       </section>
 
-      <Footer />
+      
     </div>
   );
 };

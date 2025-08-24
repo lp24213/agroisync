@@ -37,7 +37,7 @@ const GlobalWeatherWidget = () => {
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
-        className={`fixed top-32 right-6 z-40 p-4 rounded-2xl shadow-xl transition-all duration-300 ${
+        className={`fixed top-20 right-6 z-40 p-4 rounded-2xl shadow-xl transition-all duration-300 ${
           isDark
             ? 'bg-gray-800/90 backdrop-blur-xl border border-gray-700'
             : 'bg-white/90 backdrop-blur-xl border border-gray-200'
@@ -61,7 +61,7 @@ const GlobalWeatherWidget = () => {
     <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
-      className={`fixed top-32 right-6 z-40 transition-all duration-300 ${
+      className={`fixed top-20 right-6 z-40 transition-all duration-300 ${
         expanded ? 'w-80' : 'w-40'
       }`}
     >

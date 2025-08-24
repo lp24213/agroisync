@@ -7,7 +7,7 @@ import {
   Users, Package, Truck, Coins, BarChart3,
   CheckCircle, Star, Award, Target, Lightbulb
 } from 'lucide-react';
-import WeatherWidget from '../components/WeatherWidget';
+// Componente removido - já renderizado pelo Layout global
 
 const Home = () => {
   const { isDark } = useTheme();

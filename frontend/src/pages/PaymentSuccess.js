@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+// Componente removido - já renderizado pelo Layout global
+// Componente removido - já renderizado pelo Layout global
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -29,7 +29,7 @@ const PaymentSuccess = () => {
 
   return (
     <div className="min-h-screen bg-neutral-900 text-white">
-      <Navbar />
+
       
       <main className="pt-24 pb-16">
         <div className="max-w-4xl mx-auto px-4 text-center">
@@ -164,7 +164,7 @@ const PaymentSuccess = () => {
         </div>
       </main>
       
-      <Footer />
+      
     </div>
   );
 };

@@ -7,8 +7,7 @@ import {
   Check, Star, ShoppingCart, Truck, Package, Leaf, Wrench, User, 
   Circle, Settings, BarChart3, Headphones, Zap, Shield, Globe, Coins
 } from 'lucide-react';
-import GlobalTicker from '../components/GlobalTicker';
-import Navbar from '../components/Navbar';
+// Componentes removidos - já renderizados pelo Layout global
 
 const Planos = () => {
   const { isDark } = useTheme();
@@ -229,8 +228,6 @@ const Planos = () => {
 
   return (
     <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300`}>
-      <GlobalTicker />
-      <Navbar />
       
       {/* Header Section */}
       <section className="relative pt-40 pb-20 px-4 overflow-hidden">

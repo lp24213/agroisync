@@ -6,11 +6,7 @@ import {
   MapPin, Phone, Mail, Clock, Send, CheckCircle,
   MessageSquare, Building, Globe, ArrowRight
 } from 'lucide-react';
-import Navbar from '../components/Navbar';
-
-import GlobalTicker from '../components/GlobalTicker';
-import WeatherWidget from '../components/WeatherWidget';
-import Chatbot from '../components/Chatbot';
+// Componentes removidos - já renderizados pelo Layout global
 
 const Contato = () => {
   const { isDark } = useTheme();
@@ -84,11 +80,6 @@ const Contato = () => {
 
   return (
     <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300`}>
-      {/* Global Ticker */}
-      <GlobalTicker />
-      
-      {/* Navbar */}
-      <Navbar />
 
       {/* Hero Section */}
       <section className="relative pt-40 pb-20 px-4 overflow-hidden">

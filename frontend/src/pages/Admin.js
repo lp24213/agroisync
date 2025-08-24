@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+// Componente removido - já renderizado pelo Layout global
+// Componente removido - já renderizado pelo Layout global
 
 const Admin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -61,7 +61,6 @@ const Admin = () => {
   if (!isLoggedIn) {
     return (
       <div className="min-h-screen bg-black text-white">
-        <Navbar />
         
         {/* Login Section */}
         <section className="py-20 px-4">
@@ -119,14 +118,13 @@ const Admin = () => {
           </div>
         </section>
 
-        <Footer />
+
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <Navbar />
       
       {/* Admin Header */}
       <section className="relative py-20 px-4 bg-gradient-to-br from-red-900/20 to-orange-900/20">
@@ -323,7 +321,7 @@ const Admin = () => {
         </div>
       </section>
 
-      <Footer />
+      
     </div>
   );
 };

@@ -226,65 +226,65 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700"
+            className="lg:hidden bg-black border-t border-gray-700"
           >
             <div className="px-4 py-6 space-y-4">
               
               {/* Mobile Navigation Links */}
               <div className="grid grid-cols-2 gap-4">
-                <a href="/" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200">
-                  <BarChart3 className="w-5 h-5" />
+                <a href="/" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                  <BarChart3 className="w-5 h-5 text-white" />
                   <span>{t('nav.home')}</span>
                 </a>
-                <a href="/sobre" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200">
-                  <HelpCircle className="w-5 h-5" />
+                <a href="/sobre" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                  <HelpCircle className="w-5 h-5 text-white" />
                   <span>{t('nav.about')}</span>
                 </a>
-                <a href="/loja" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200">
-                  <ShoppingCart className="w-5 h-5" />
+                <a href="/loja" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                  <ShoppingCart className="w-5 h-5 text-white" />
                   <span>{t('nav.store')}</span>
                 </a>
-                <a href="/agroconecta" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200">
-                  <Truck className="w-5 h-5" />
+                <a href="/agroconecta" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                  <Truck className="w-5 h-5 text-white" />
                   <span>{t('nav.agroconnect')}</span>
                 </a>
-                <a href="/cripto" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200">
-                  <Coins className="w-5 h-5" />
+                <a href="/cripto" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                  <Coins className="w-5 h-5 text-white" />
                   <span>{t('nav.crypto')}</span>
                 </a>
-                <a href="/planos" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200">
-                  <BarChart3 className="w-5 h-5" />
+                <a href="/planos" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                  <BarChart3 className="w-5 h-5 text-white" />
                   <span>{t('nav.plans')}</span>
                 </a>
-                <a href="/faq" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200">
-                  <HelpCircle className="w-5 h-5" />
+                <a href="/faq" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                  <HelpCircle className="w-5 h-5 text-white" />
                   <span>{t('nav.faq')}</span>
                 </a>
-                <a href="/ajuda" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200">
-                  <HelpCircle className="w-5 h-5" />
+                <a href="/ajuda" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                  <HelpCircle className="w-5 h-5 text-white" />
                   <span>{t('nav.help')}</span>
                 </a>
-                <a href="/status" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200">
-                  <Activity className="w-5 h-5" />
+                <a href="/status" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                  <Activity className="w-5 h-5 text-white" />
                   <span>{t('nav.status')}</span>
                 </a>
-                <a href="/contato" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200">
-                  <HelpCircle className="w-5 h-5" />
+                <a href="/contato" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                  <HelpCircle className="w-5 h-5 text-white" />
                   <span>{t('nav.contact')}</span>
                 </a>
               </div>
 
               {/* Mobile Language and Theme */}
-              <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
-                <div className="flex items-center space-x-2">
-                  <Globe className="w-5 h-5" />
+              <div className="flex items-center justify-between pt-4 border-t border-gray-700">
+                <div className="flex items-center space-x-2 text-white">
+                  <Globe className="w-5 h-5 text-white" />
                   <span className="text-sm">{currentLanguage?.flag}</span>
                 </div>
                 <button
                   onClick={toggleTheme}
-                  className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+                  className="p-2 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white"
                 >
-                  {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                  {isDark ? <Sun className="w-5 h-5 text-white" /> : <Moon className="w-5 h-5 text-white" />}
                 </button>
               </div>
 
@@ -292,16 +292,16 @@ const Navbar = () => {
               <div className="flex flex-col space-y-3 pt-4">
                 {user ? (
                   <>
-                    <div className="px-3 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">{user.name}</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
+                    <div className="px-3 py-2 bg-gray-800 rounded-lg">
+                      <p className="text-sm font-medium text-white">{user.name}</p>
+                      <p className="text-xs text-gray-300">{user.email}</p>
                     </div>
                     <button
                       onClick={() => {
                         setIsOpen(false);
                         logout();
                       }}
-                      className="w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200 flex items-center justify-center space-x-2"
+                      className="w-full px-4 py-2 text-sm text-red-400 hover:bg-red-900/20 transition-colors duration-200 flex items-center justify-center space-x-2"
                     >
                       <LogOut className="w-4 h-4" />
                       <span>Sair</span>
@@ -312,7 +312,7 @@ const Navbar = () => {
                     <a
                       href="/login"
                       onClick={() => setIsOpen(false)}
-                      className="w-full px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 text-center"
+                      className="w-full px-4 py-2 text-sm font-medium text-white hover:text-gray-200 transition-colors duration-200 text-center"
                     >
                       {t('nav.login')}
                     </a>
