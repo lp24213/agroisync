@@ -36,16 +36,60 @@
     "register": "Cadastro",
     "contact": "Contato"
   },
+  "crypto": {
+    "title": "Cripto AgroSync",
+    "subtitle": "Conecte sua carteira, acompanhe cotações em tempo real e realize pagamentos com segurança",
+    "realTimeQuotes": "Cotações em Tempo Real",
+    "connectWallet": "Conectar Carteira",
+    "acceptedPayments": "Pagamentos Aceitos",
+    "transactionHistory": "Histórico de Transações",
+    "security": "Segurança",
+    "walletConnected": "Carteira Conectada",
+    "balance": "Saldo",
+    "disconnect": "Desconectar",
+    "viewTransactions": "Ver Transações",
+    "connectMetaMask": "Conectar MetaMask",
+    "connectPhantom": "Conectar Phantom",
+    "connectWalletConnect": "Conectar WalletConnect",
+    "connecting": "Conectando...",
+    "metamaskNotInstalled": "MetaMask não está instalado!",
+    "walletConnectionError": "Erro ao conectar carteira",
+    "features": {
+      "staking": "Staking",
+      "stakingDesc": "Stake seus tokens e ganhe recompensas",
+      "yieldFarming": "Yield Farming",
+      "yieldFarmingDesc": "Maximize seus retornos com farming",
+      "liquidityPools": "Pools de Liquidez",
+      "liquidityPoolsDesc": "Forneça liquidez e ganhe fees"
+    },
+    "payments": {
+      "traditional": "Pagamentos Tradicionais",
+      "traditionalDesc": "Aceite pagamentos em reais através do Stripe, integrado com nossa plataforma DeFi para conversão automática de moedas",
+      "creditCard": "Cartão de Crédito",
+      "pix": "PIX",
+      "boleto": "Boleto",
+      "visaMastercard": "Visa, Mastercard",
+      "instantTransfer": "Transferência Imediata",
+      "bankPayment": "Pagamento Bancário"
+    },
+    "cta": {
+      "title": "Pronto para o Futuro das Finanças?",
+      "subtitle": "Experimente a primeira plataforma DeFi integrada ao agronegócio brasileiro",
+      "connectWallet": "Conectar Carteira",
+      "learnMore": "Saber Mais"
+    }
+  },
   "home": {
     "hero": {
       "title": "Agroisync",
       "subtitle": "A nova era do agronegócio digital",
       "description": "Conectando produtores, compradores e investidores com tecnologia de ponta. Marketplace de anúncios, cotações por região e pagamentos seguros — tudo em uma única plataforma.",
-      "cta": "Explorar Marketplace",
-      "learnMore": "Saiba Mais"
+      "ctaPrimary": "Explorar Marketplace",
+      "ctaSecondary": "Saiba Mais"
     },
     "highlights": {
       "title": "Destaques",
+      "subtitle": "Tecnologia de ponta para o agronegócio",
       "realTimeData": "Dados em Tempo Real",
       "realTimeDataDesc": "Dados atualizados em tempo real para decisões estratégicas",
       "advancedAnalytics": "Análises Avançadas",
@@ -57,6 +101,7 @@
     },
     "features": {
       "title": "Por que Agroisync?",
+      "subtitle": "Soluções inovadoras para o agronegócio",
       "feature1": {
         "title": "Gestão de Anúncios",
         "description": "Intermediação profissional de produtos agrícolas"
@@ -97,105 +142,10 @@
     },
     "product": {
       "contactSupplier": "Contatar Fornecedor",
-      "save": "Salvar",
-      "minOrder": "Pedido Mínimo",
-      "stock": "Estoque",
-      "delivery": "Entrega",
-      "payment": "Pagamento"
-    },
-    "noResults": "Nenhum resultado encontrado",
-    "noResultsDescription": "Tente ajustar os filtros ou buscar por outros termos"
-  },
-  "about": {
-    "title": "Sobre o AgroConecta",
-    "subtitle": "Revolucionando o agronegócio com tecnologia de ponta",
-    "mission": {
-      "title": "Nossa Missão",
-      "description": "Transformar o agronegócio através da tecnologia, conectando produtores, compradores e investidores em uma plataforma inovadora e eficiente."
-    },
-    "vision": {
-      "title": "Nossa Visão",
-      "description": "Ser a plataforma líder em inteligência agrícola digital, impulsionando o crescimento sustentável do setor agropecuário global."
-    },
-    "values": {
-      "title": "Nossos Valores",
-      "innovation": "Inovação",
-      "sustainability": "Sustentabilidade",
-      "transparency": "Transparência",
-      "excellence": "Excelência",
-      "collaboration": "Colaboração"
-    },
-    "stats": {
-      "title": "Números que Impressionam",
-      "users": "Usuários Ativos",
-      "transactions": "Transações Realizadas",
-      "countries": "Países Atendidos",
-      "partners": "Parceiros Estratégicos"
-    },
-    "journey": {
-      "title": "Nossa Jornada",
-      "2020": "Fundação e desenvolvimento da plataforma",
-      "2021": "Lançamento beta e primeiros usuários",
-      "2022": "Expansão para novos mercados",
-      "2023": "Integração com tecnologias avançadas",
-      "2024": "Liderança no mercado de agtech"
-    },
-    "team": {
-      "title": "Nossa Equipe",
-      "description": "Especialistas em tecnologia, agronegócio e inovação trabalhando juntos para revolucionar o setor."
-    },
-    "technology": {
-      "title": "Tecnologias de Ponta",
-      "description": "Utilizamos as mais avançadas tecnologias para garantir performance, segurança e escalabilidade."
-    }
-  },
-  "contact": {
-    "title": "Entre em Contato",
-    "subtitle": "Estamos aqui para ajudar você a conectar-se ao futuro do agronegócio",
-    "form": {
-      "name": "Nome Completo",
-      "email": "E-mail",
-      "phone": "Telefone",
-      "company": "Empresa",
-      "subject": "Assunto",
-      "message": "Mensagem",
-      "send": "Enviar Mensagem"
-    },
-    "info": {
-      "title": "Informações de Contato",
-      "address": "Endereço",
-      "phone": "Telefone",
-      "email": "E-mail",
-      "website": "Website"
-    },
-    "social": {
-      "title": "Redes Sociais",
-      "follow": "Siga-nos"
-    }
-  },
-  "chatbot": {
-    "title": "Assistente IA AgroConecta",
-    "subtitle": "Como posso ajudá-lo hoje?",
-    "personalities": {
-      "agro-expert": "Dr. AgroBot",
-      "friendly": "AgroAmigo",
-      "analyst": "DataAgro",
-      "crypto": "CryptoAgro"
-    },
-    "input": {
-      "placeholder": "Digite sua mensagem...",
-      "voice": "Falar",
-      "send": "Enviar"
-    },
-    "quickActions": {
-      "marketInfo": "Informações de Mercado",
-      "productSearch": "Buscar Produtos",
-      "priceQuotes": "Cotações",
-      "help": "Ajuda"
+      "save": "Salvar"
     }
   },
   "footer": {
-    "description": "Conectando o agronegócio ao futuro digital",
     "company": {
       "title": "Empresa",
       "about": "Sobre",
@@ -224,11 +174,8 @@
       "cookies": "Cookies",
       "compliance": "Compliance"
     },
+    "description": "Plataforma líder em tecnologia para o agronegócio brasileiro, conectando produtores, compradores e investidores com soluções inovadoras e seguras.",
     "rights": "Todos os direitos reservados.",
-    "version": "Versão",
-    "lastUpdate": "Última atualização",
-    "social": "Redes Sociais",
-    "newsletter": "Newsletter",
-    "subscribe": "Inscrever-se"
+    "version": "Versão"
   }
 }
