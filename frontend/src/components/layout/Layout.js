@@ -51,7 +51,7 @@ const Layout = ({ children }) => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="fixed top-12 left-0 right-0 z-50 flex justify-center items-center" // Centralizado vertical e horizontalmente
+            className="fixed top-0 left-0 right-0 z-50 flex justify-center items-center" // Centralizado vertical e horizontalmente
           >
             <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <Navbar />
@@ -63,7 +63,7 @@ const Layout = ({ children }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative z-10 pt-32" // pt-32 para compensar ticker + menu fixo
+            className="relative z-10 pt-20" // pt-20 para compensar menu fixo no topo
           >
             <PageTransition>
               {children}
@@ -91,7 +91,7 @@ const Layout = ({ children }) => {
           </motion.div>
 
           {/* Widget de Clima Global - SEMPRE VISÍVEL */}
-          <div className="fixed top-20 right-6 z-50">
+          <div className="fixed top-4 right-4 z-50">
             <GlobalWeatherWidget />
           </div>
         </div>

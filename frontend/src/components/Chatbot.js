@@ -77,13 +77,7 @@ const Chatbot = () => {
       return false;
     }
     
-    // Verificar se o usuário tem plano AGROCONNECT+ ou superior
-    if (!user.plan || !user.plan.includes('AGROCONNECT+')) {
-      // Usuário sem plano adequado - redirecionar para upgrade
-      navigate('/planos');
-      return false;
-    }
-    
+    // Permitir acesso para todos os usuários autenticados
     return true;
   };
 
@@ -168,6 +162,22 @@ const Chatbot = () => {
 
   const handleSendMessage = async (text) => {
     if (!text.trim()) return;
+
+    // Verificar limite de mensagens para usuários gratuitos
+    if (user && (!user.plan || !user.plan.includes('AGROCONNECT+'))) {
+      const messageCount = messages.filter(m => m.sender === 'user').length;
+      if (messageCount >= 5) {
+        const limitMessage = {
+          id: Date.now() + 1,
+          text: 'Você atingiu o limite de 5 mensagens do plano gratuito. Faça upgrade para AGROCONNECT+ para conversas ilimitadas!',
+          sender: 'bot',
+          timestamp: new Date(),
+          type: 'limit-warning'
+        };
+        setMessages(prev => [...prev, limitMessage]);
+        return;
+      }
+    }
 
     const userMessage = {
       id: Date.now(),
