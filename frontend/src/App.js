@@ -15,6 +15,9 @@ import Admin from './pages/Admin';
 import Planos from './pages/Planos';
 import PaymentSuccess from './pages/PaymentSuccess';
 import Contato from './pages/Contato';
+import Ajuda from './pages/Ajuda';
+import FAQ from './pages/FAQ';
+import Status from './pages/Status';
 import Cookies from './pages/Cookies';
 import Termos from './pages/Termos';
 import Privacidade from './pages/Privacidade';
@@ -85,6 +88,9 @@ function App() {
               <Route path="/planos" element={<Planos />} />
               <Route path="/payment-success" element={<PaymentSuccess />} />
               <Route path="/contato" element={<Contato />} />
+              <Route path="/ajuda" element={<Ajuda />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/status" element={<Status />} />
               <Route path="/cookies" element={<Cookies />} />
               <Route path="/termos" element={<Termos />} />
               <Route path="/privacidade" element={<Privacidade />} />
