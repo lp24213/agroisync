@@ -100,9 +100,10 @@ const Navbar = () => {
       transition={{ duration: 0.5 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isDark 
-          ? 'bg-black/90 backdrop-blur-md border-b border-gray-800' 
-          : 'bg-white/90 backdrop-blur-md border-b border-gray-200'
+          ? 'bg-black/95 backdrop-blur-md border-b border-gray-800' 
+          : 'bg-white/95 backdrop-blur-md border-b border-gray-200'
       }`}
+      style={{ marginTop: '0' }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
@@ -191,7 +192,7 @@ const Navbar = () => {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
-                    className={`absolute top-full right-0 mt-2 w-48 rounded-lg shadow-lg ${
+                    className={`absolute top-full right-0 mt-2 w-48 rounded-lg shadow-lg z-50 ${
                       isDark ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
                     }`}
                   >
@@ -248,7 +249,7 @@ const Navbar = () => {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
-                    className={`absolute top-full right-0 mt-2 w-48 rounded-lg shadow-lg ${
+                    className={`absolute top-full right-0 mt-2 w-48 rounded-lg shadow-lg z-50 ${
                       isDark ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
                     }`}
                   >
@@ -298,7 +299,7 @@ const Navbar = () => {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className={`lg:hidden overflow-hidden ${
+            className={`lg:hidden overflow-hidden z-50 ${
               isDark ? 'bg-gray-900 border-t border-gray-800' : 'bg-gray-50 border-t border-gray-200'
             }`}
           >

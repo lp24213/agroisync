@@ -175,7 +175,19 @@ const Planos = () => {
   return (
     <div className="min-h-screen bg-white text-gray-900">
       {/* Header Section */}
-      <section className="relative py-20 px-4 bg-gradient-to-br from-green-900/20 to-blue-900/20">
+      <section className="relative pt-40 pb-20 px-4 overflow-hidden">
+        {/* Background */}
+        <div className="absolute inset-0">
+          {isDark ? (
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900">
+              <div className="absolute inset-0 bg-gray-800 opacity-20"></div>
+            </div>
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50">
+              <div className="absolute inset-0 bg-blue-100 opacity-30"></div>
+            </div>
+          )}
+        </div>
         <div className="max-w-6xl mx-auto text-center">
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
