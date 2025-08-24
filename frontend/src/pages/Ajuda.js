@@ -22,7 +22,7 @@ const Ajuda = () => {
       id: 'tutoriais',
       title: 'Tutoriais',
       icon: <BookOpen className="w-6 h-6" />,
-      description: 'Guias passo a passo para usar o AgroISync',
+      description: 'Guias passo a passo para usar o Agroisync',
       items: [
         {
           title: 'Como cadastrar produtos na Loja',
@@ -46,7 +46,7 @@ const Ajuda = () => {
           link: '#'
         },
         {
-          title: 'Primeiros passos no AgroISync',
+          title: 'Primeiros passos no Agroisync',
           description: 'Guia básico para novos usuários',
           duration: '10 min',
           type: 'video',
@@ -191,7 +191,7 @@ const Ajuda = () => {
             Central de Ajuda
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Tutoriais, Documentação e Suporte para o AgroISync
+                         Tutoriais, Documentação e Suporte para o Agroisync
           </p>
         </div>
       </section>

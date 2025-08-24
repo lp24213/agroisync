@@ -79,7 +79,7 @@ const Sobre = () => {
       avatar: '👨‍💼'
     },
     {
-      name: 'Equipe AgroISync',
+              name: 'Equipe Agroisync',
       role: t('about.team.developers.role'),
       description: t('about.team.developers.description'),
       avatar: '👨‍💻'
@@ -124,7 +124,7 @@ const Sobre = () => {
             className="mb-8"
           >
             <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
-              Sobre o AgroISync
+              Sobre o Agroisync
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Conectando o Agronegócio Brasileiro com Tecnologia e Inovação
@@ -186,7 +186,7 @@ const Sobre = () => {
                   <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-r from-green-500 to-blue-600 flex items-center justify-center">
                     <span className="text-white text-3xl font-bold">A</span>
                   </div>
-                  <h3 className="text-2xl font-bold mb-4">AgroISync</h3>
+                  <h3 className="text-2xl font-bold mb-4">Agroisync</h3>
                   <p className="text-gray-600 mb-6">
                     {t('about.mission.vision')}
                   </p>

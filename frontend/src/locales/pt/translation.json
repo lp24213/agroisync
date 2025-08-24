@@ -40,21 +40,27 @@
   },
   "home": {
     "hero": {
-      "title": "AgroConecta",
-      "subtitle": "O Futuro do Agronegócio Digital",
+      "title": "Agroisync",
+      "subtitle": "O Hub Completo do Agronegócio Brasileiro",
       "description": "Plataforma líder em inteligência agrícola, integrando dados em tempo real, análise avançada e conectividade global para revolucionar o agronegócio.",
       "cta": "Começar Agora",
       "learnMore": "Saiba Mais"
     },
     "highlights": {
       "title": "Destaques",
+      "subtitle": "Tecnologia de ponta para o agronegócio",
       "realTimeData": "Dados em Tempo Real",
+      "realTimeDataDesc": "Dados atualizados em tempo real para decisões estratégicas",
       "advancedAnalytics": "Análises Avançadas",
+      "advancedAnalyticsDesc": "Análises avançadas com inteligência artificial",
       "marketIntelligence": "Inteligência de Mercado",
-      "cryptoTrading": "Trading Cripto"
+      "marketIntelligenceDesc": "Inteligência de mercado e tendências",
+      "cryptoTrading": "Trading Cripto",
+      "cryptoTradingDesc": "Trading em cripto integrado ao ecossistema"
     },
     "features": {
       "title": "Recursos",
+      "subtitle": "Soluções inovadoras para o agronegócio",
       "feature1": {
         "title": "Inteligência Artificial",
         "description": "Algoritmos avançados de IA para análise preditiva e tomada de decisões estratégicas no agronegócio."
@@ -71,6 +77,7 @@
   },
   "marketplace": {
     "title": "Marketplace",
+    "subtitle": "Conecte-se diretamente com produtores e fornecedores",
     "search": "Pesquisar produtos...",
     "filter": "Filtrar por categoria",
     "sort": "Ordenar por",
@@ -97,19 +104,20 @@
     "loading": "Carregando produtos..."
   },
   "about": {
-    "title": "Sobre Nós",
+    "title": "Sobre o Agroisync",
+    "subtitle": "Conectando o Agronegócio Brasileiro com Tecnologia e Inovação",
     "mission": "Nossa Missão",
     "vision": "Nossa Visão",
     "values": "Nossos Valores",
     "team": "Nossa Equipe",
     "story": "Nossa História",
-    "missionText": "Transformar o agronegócio através da tecnologia, conectando produtores, traders e investidores em uma plataforma digital inovadora.",
-    "visionText": "Ser a plataforma líder global em inteligência agrícola, criando um ecossistema sustentável e conectado para o futuro da agricultura.",
+    "missionText": "Conectar o agronegócio brasileiro com tecnologia e inovação, unindo produtores, traders e investidores em uma plataforma digital integrada.",
+    "visionText": "Ser o hub líder do agronegócio brasileiro, criando um ecossistema sustentável e conectado para o futuro da agricultura.",
     "valuesText": "Inovação, transparência, sustentabilidade e excelência são os pilares que guiam todas as nossas ações e decisões."
   },
   "contact": {
     "title": "Entre em Contato",
-    "subtitle": "Estamos aqui para ajudar",
+    "subtitle": "Estamos Aqui para Ajudar o Seu Agronegócio",
     "form": {
       "name": "Nome completo",
       "email": "E-mail",
@@ -132,6 +140,7 @@
   },
   "chatbot": {
     "title": "Assistente IA",
+    "subtitle": "Como posso ajudar você hoje?",
     "welcome": "Olá! Como posso ajudar você hoje?",
     "placeholder": "Digite sua mensagem...",
     "send": "Enviar",
@@ -149,10 +158,10 @@
     ]
   },
   "footer": {
-    "description": "Plataforma líder em inteligência agrícola, integrando dados em tempo real, análise avançada e conectividade global para revolucionar o agronegócio.",
+    "description": "O Hub Completo do Agronegócio Brasileiro, integrando dados em tempo real, análise avançada e conectividade global.",
     "company": {
       "title": "Empresa",
-      "about": "Sobre nós",
+      "about": "Sobre o Agroisync",
       "contact": "Contato",
       "careers": "Carreiras",
       "press": "Imprensa"
@@ -166,10 +175,10 @@
     },
     "support": {
       "title": "Suporte",
-      "help": "Central de ajuda",
-      "faq": "Perguntas frequentes",
+      "help": "Central de Ajuda",
+      "faq": "Perguntas Frequentes",
       "documentation": "Documentação",
-      "status": "Status do sistema"
+      "status": "Status do Sistema"
     },
     "legal": {
       "title": "Legal",

@@ -118,7 +118,7 @@ const Cripto = () => {
         </div>
         <div className="max-w-6xl mx-auto text-center">
           <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
-            Criptomoedas AgroISync
+                         Criptomoedas Agroisync
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Soluções em Criptomoedas para o Agronegócio

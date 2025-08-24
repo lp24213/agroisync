@@ -195,7 +195,7 @@ const Status = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-xl text-gray-600 max-w-3xl mx-auto"
           >
-            Monitoramento em Tempo Real dos Serviços AgroISync
+                         Monitoramento em Tempo Real dos Serviços Agroisync
           </motion.p>
         </div>
       </section>

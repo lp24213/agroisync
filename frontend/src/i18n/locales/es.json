@@ -24,7 +24,7 @@
     "plans": "Planes",
     "language": "Idioma",
     "brand": "Agroisync",
-    "tagline": "El futuro del agronegocio digital"
+    "tagline": "El Hub Completo del Agronegocio Brasileño"
   },
   "navigation": {
     "home": "Inicio",
@@ -38,37 +38,43 @@
   },
   "home": {
     "hero": {
-      "title": "AgroConecta",
-      "subtitle": "La plataforma más avanzada del agronegocio digital",
-      "description": "Conectando productores, compradores e inversores con tecnología de última generación. El futuro del agronegocio está aquí.",
-      "cta": "Comenzar Ahora",
+      "title": "Agroisync",
+      "subtitle": "El Hub Completo del Agronegocio Brasileño",
+      "description": "Conectando productores, compradores e inversores con tecnología de última generación. Marketplace de anuncios, cotizaciones regionales y pagos seguros — todo en una plataforma.",
+      "cta": "Explorar Marketplace",
       "learnMore": "Saber Más"
     },
     "highlights": {
       "title": "Destacados",
+      "subtitle": "Tecnología de última generación para el agronegocio",
       "realTimeData": "Datos en Tiempo Real",
+      "realTimeDataDesc": "Datos actualizados en tiempo real para decisiones estratégicas",
       "advancedAnalytics": "Análisis Avanzados",
+      "advancedAnalyticsDesc": "Análisis avanzados con inteligencia artificial",
       "marketIntelligence": "Inteligencia de Mercado",
-      "cryptoTrading": "Trading de Criptomonedas"
+      "marketIntelligenceDesc": "Inteligencia de mercado y tendencias",
+      "cryptoTrading": "Pagos en Cripto",
+      "cryptoTradingDesc": "Pagos en cripto integrados al ecosistema"
     },
     "features": {
-      "title": "¿Por qué AgroConecta?",
+      "title": "¿Por qué Agroisync?",
+      "subtitle": "Soluciones innovadoras para el agronegocio",
       "feature1": {
-        "title": "Tecnología de Última Generación",
-        "description": "Plataforma construida con las tecnologías más avanzadas del mercado"
+        "title": "Gestión de Anuncios",
+        "description": "Intermediación profesional de productos agrícolas"
       },
       "feature2": {
-        "title": "Datos en Tiempo Real",
-        "description": "Acceso instantáneo a información crítica del mercado agrícola"
+        "title": "Cotizaciones Locales",
+        "description": "Precios de granos personalizados por región"
       },
       "feature3": {
-        "title": "Conectividad Global",
-        "description": "Red mundial de productores, compradores e inversores"
+        "title": "Chatbot IA",
+        "description": "Asistente inteligente para soporte y análisis rápido"
       }
     }
   },
   "marketplace": {
-    "title": "Mercado AgroConecta",
+    "title": "Mercado Agroisync",
     "subtitle": "Conéctate directamente con productores y proveedores",
     "search": "Buscar productos...",
     "categories": "Categorías",
@@ -103,15 +109,15 @@
     "noResultsDescription": "Intenta ajustar los filtros o buscar otros términos"
   },
   "about": {
-    "title": "Acerca de AgroConecta",
-    "subtitle": "Revolucionando el agronegocio con tecnología de punta",
+    "title": "Acerca de Agroisync",
+    "subtitle": "Conectando el Agronegocio Brasileño con Tecnología e Innovación",
     "mission": {
       "title": "Nuestra Misión",
-      "description": "Transformar el agronegocio a través de la tecnología, conectando productores, compradores e inversores en una plataforma innovadora y eficiente."
+      "description": "Conectar el agronegocio brasileño con tecnología e innovación, uniendo productores, compradores e inversores en una plataforma innovadora y eficiente."
     },
     "vision": {
       "title": "Nuestra Visión",
-      "description": "Ser la plataforma líder en inteligencia agrícola digital, impulsando el crecimiento sostenible del sector agropecuario global."
+      "description": "Ser el hub líder del agronegocio brasileño, creando un ecosistema sostenible y conectado para el futuro de la agricultura."
     },
     "values": {
       "title": "Nuestros Valores",
@@ -147,7 +153,7 @@
   },
   "contact": {
     "title": "Ponte en Contacto",
-    "subtitle": "Estamos aquí para ayudarte a conectarte con el futuro del agronegocio",
+    "subtitle": "Estamos Aquí para Ayudar tu Agronegocio",
     "form": {
       "name": "Nombre Completo",
       "email": "Correo Electrónico",
@@ -170,7 +176,7 @@
     }
   },
   "chatbot": {
-    "title": "Asistente IA AgroConecta",
+    "title": "Asistente IA Agroisync",
     "subtitle": "¿Cómo puedo ayudarte hoy?",
     "personalities": {
       "agro-expert": "Dr. AgroBot",
@@ -191,10 +197,10 @@
     }
   },
   "footer": {
-    "description": "AgroConecta - Conectando el futuro del agronegocio",
+    "description": "El Hub Completo del Agronegocio Brasileño, integrando datos en tiempo real, análisis avanzados y conectividad global.",
     "company": {
       "title": "Empresa",
-      "about": "Acerca de",
+      "about": "Acerca de Agroisync",
       "contact": "Contacto",
       "careers": "Carreras",
       "press": "Prensa"
@@ -208,10 +214,10 @@
     },
     "support": {
       "title": "Soporte",
-      "help": "Ayuda",
-      "faq": "FAQ",
+      "help": "Centro de Ayuda",
+      "faq": "Preguntas Frecuentes",
       "documentation": "Documentación",
-      "status": "Estado"
+      "status": "Estado del Sistema"
     },
     "legal": {
       "title": "Legal",

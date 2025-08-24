@@ -24,7 +24,7 @@
     "plans": "Planos",
     "language": "Idioma",
     "brand": "Agroisync",
-    "tagline": "O futuro do agronegócio digital"
+    "tagline": "O Hub Completo do Agronegócio Brasileiro"
   },
   "navigation": {
     "home": "Início",
@@ -37,8 +37,8 @@
     "contact": "Contato"
   },
   "crypto": {
-    "title": "Cripto AgroSync",
-    "subtitle": "Conecte sua carteira, acompanhe cotações em tempo real e realize pagamentos com segurança",
+    "title": "Criptomoedas Agroisync",
+    "subtitle": "Soluções em Criptomoedas para o Agronegócio",
     "realTimeQuotes": "Cotações em Tempo Real",
     "connectWallet": "Conectar Carteira",
     "acceptedPayments": "Pagamentos Aceitos",
@@ -82,7 +82,7 @@
   "home": {
     "hero": {
       "title": "Agroisync",
-      "subtitle": "A nova era do agronegócio digital",
+      "subtitle": "O Hub Completo do Agronegócio Brasileiro",
       "description": "Conectando produtores, compradores e investidores com tecnologia de ponta. Marketplace de anúncios, cotações por região e pagamentos seguros — tudo em uma única plataforma.",
       "ctaPrimary": "Explorar Marketplace",
       "ctaSecondary": "Saiba Mais"
@@ -117,7 +117,7 @@
     }
   },
   "marketplace": {
-    "title": "Marketplace AgroConecta",
+    "title": "Marketplace Agroisync",
     "subtitle": "Conecte-se diretamente com produtores e fornecedores",
     "search": "Buscar produtos...",
     "categories": "Categorias",
@@ -148,7 +148,7 @@
   "footer": {
     "company": {
       "title": "Empresa",
-      "about": "Sobre",
+      "about": "Sobre o Agroisync",
       "contact": "Contato",
       "careers": "Carreiras",
       "press": "Imprensa"
@@ -162,10 +162,10 @@
     },
     "support": {
       "title": "Suporte",
-      "help": "Ajuda",
-      "faq": "FAQ",
+      "help": "Central de Ajuda",
+      "faq": "Perguntas Frequentes",
       "documentation": "Documentação",
-      "status": "Status"
+      "status": "Status do Sistema"
     },
     "legal": {
       "title": "Legal",
@@ -174,7 +174,7 @@
       "cookies": "Cookies",
       "compliance": "Compliance"
     },
-    "description": "Plataforma líder em tecnologia para o agronegócio brasileiro, conectando produtores, compradores e investidores com soluções inovadoras e seguras.",
+    "description": "O Hub Completo do Agronegócio Brasileiro, conectando produtores, compradores e investidores com soluções inovadoras e seguras.",
     "rights": "Todos os direitos reservados.",
     "version": "Versão"
   }

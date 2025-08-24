@@ -138,7 +138,7 @@ const Navbar = () => {
               <span className={`text-xl font-bold ${
                 isDark ? 'text-white' : 'text-gray-900'
               }`}>
-                AgroISync
+                Agroisync
               </span>
             </a>
           </motion.div>

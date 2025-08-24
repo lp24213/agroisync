@@ -219,7 +219,7 @@ const Cadastro = () => {
         </div>
         <div className="max-w-6xl mx-auto text-center">
           <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
-            Cadastro AgroISync
+                         Cadastro Agroisync
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Junte-se ao Hub do Agronegócio Brasileiro

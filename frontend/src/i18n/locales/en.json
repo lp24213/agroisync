@@ -24,7 +24,7 @@
     "plans": "Plans",
     "language": "Language",
     "brand": "Agroisync",
-    "tagline": "The future of digital agribusiness"
+    "tagline": "The Complete Hub of Brazilian Agribusiness"
   },
   "navigation": {
     "home": "Home",
@@ -39,13 +39,14 @@
   "home": {
     "hero": {
       "title": "Agroisync",
-      "subtitle": "The new era of digital agribusiness",
+      "subtitle": "The Complete Hub of Brazilian Agribusiness",
       "description": "Connecting producers, buyers and investors with cutting-edge technology. Advertisement marketplace, regional quotes and secure payments — all in one platform.",
       "cta": "Explore Marketplace",
       "learnMore": "Learn More"
     },
     "highlights": {
       "title": "Highlights",
+      "subtitle": "Cutting-edge technology for agribusiness",
       "realTimeData": "Real-Time Data",
       "realTimeDataDesc": "Real-time updated data for strategic decisions",
       "advancedAnalytics": "Advanced Analytics",
@@ -57,6 +58,7 @@
     },
     "features": {
       "title": "Why Agroisync?",
+      "subtitle": "Innovative solutions for agribusiness",
       "feature1": {
         "title": "Advertisement Management",
         "description": "Professional intermediation of agricultural products"
@@ -72,7 +74,7 @@
     }
   },
   "marketplace": {
-    "title": "AgroConnect Marketplace",
+    "title": "Agroisync Marketplace",
     "subtitle": "Connect directly with producers and suppliers",
     "search": "Search products...",
     "categories": "Categories",
@@ -107,15 +109,15 @@
     "noResultsDescription": "Try adjusting the filters or searching for other terms"
   },
   "about": {
-    "title": "About AgroConnect",
-    "subtitle": "Revolutionizing agribusiness with cutting-edge technology",
+    "title": "About Agroisync",
+    "subtitle": "Connecting Brazilian Agribusiness with Technology and Innovation",
     "mission": {
       "title": "Our Mission",
-      "description": "Transform agribusiness through technology, connecting producers, buyers and investors in an innovative and efficient platform."
+      "description": "Connect Brazilian agribusiness with technology and innovation, uniting producers, buyers and investors in an innovative and efficient platform."
     },
     "vision": {
       "title": "Our Vision",
-      "description": "To be the leading platform in digital agricultural intelligence, driving sustainable growth of the global agribusiness sector."
+      "description": "To be the leading hub of Brazilian agribusiness, creating a sustainable and connected ecosystem for the future of agriculture."
     },
     "values": {
       "title": "Our Values",
@@ -151,7 +153,7 @@
   },
   "contact": {
     "title": "Get in Touch",
-    "subtitle": "We're here to help you connect to the future of agribusiness",
+    "subtitle": "We're Here to Help Your Agribusiness",
     "form": {
       "name": "Full Name",
       "email": "Email",
@@ -174,7 +176,7 @@
     }
   },
   "chatbot": {
-    "title": "AgroConnect AI Assistant",
+    "title": "Agroisync AI Assistant",
     "subtitle": "How can I help you today?",
     "personalities": {
       "agro-expert": "Dr. AgroBot",
@@ -195,10 +197,10 @@
     }
   },
   "footer": {
-    "description": "Connecting agribusiness to the digital future",
+    "description": "The Complete Hub of Brazilian Agribusiness, integrating real-time data, advanced analytics and global connectivity.",
     "company": {
       "title": "Company",
-      "about": "About",
+      "about": "About Agroisync",
       "contact": "Contact",
       "careers": "Careers",
       "press": "Press"
@@ -212,10 +214,10 @@
     },
     "support": {
       "title": "Support",
-      "help": "Help",
-      "faq": "FAQ",
+      "help": "Help Center",
+      "faq": "Frequently Asked Questions",
       "documentation": "Documentation",
-      "status": "Status"
+      "status": "System Status"
     },
     "legal": {
       "title": "Legal",

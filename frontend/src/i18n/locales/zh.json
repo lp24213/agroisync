@@ -24,7 +24,7 @@
     "plans": "计划",
     "language": "语言",
     "brand": "Agroisync",
-    "tagline": "数字农业的未来"
+    "tagline": "巴西农业综合企业的完整中心"
   },
   "navigation": {
     "home": "首页",
@@ -38,37 +38,43 @@
   },
   "home": {
     "hero": {
-      "title": "农业连接",
-      "subtitle": "最先进的数字农业平台",
-      "description": "通过尖端技术连接生产者、买家和投资者。农业的未来就在这里。",
-      "cta": "立即开始",
+      "title": "Agroisync",
+      "subtitle": "巴西农业综合企业的完整中心",
+      "description": "通过尖端技术连接生产者、买家和投资者。广告市场、区域报价和安全支付 — 全部集成在一个平台中。",
+      "cta": "探索市场",
       "learnMore": "了解更多"
     },
     "highlights": {
       "title": "亮点",
+      "subtitle": "农业综合企业的尖端技术",
       "realTimeData": "实时数据",
+      "realTimeDataDesc": "实时更新的数据，用于战略决策",
       "advancedAnalytics": "高级分析",
+      "advancedAnalyticsDesc": "基于人工智能的高级分析",
       "marketIntelligence": "市场智能",
-      "cryptoTrading": "加密货币交易"
+      "marketIntelligenceDesc": "市场智能和趋势分析",
+      "cryptoTrading": "加密支付",
+      "cryptoTradingDesc": "集成到生态系统中的加密支付"
     },
     "features": {
-      "title": "为什么选择农业连接？",
+      "title": "为什么选择Agroisync？",
+      "subtitle": "农业综合企业的创新解决方案",
       "feature1": {
-        "title": "尖端技术",
-        "description": "使用市场上最先进技术构建的平台"
+        "title": "广告管理",
+        "description": "农产品专业中介服务"
       },
       "feature2": {
-        "title": "实时数据",
-        "description": "即时访问农业市场关键信息"
+        "title": "本地报价",
+        "description": "按地区定制的谷物价格"
       },
       "feature3": {
-        "title": "全球连接",
-        "description": "生产者、买家和投资者的全球网络"
+        "title": "AI聊天机器人",
+        "description": "智能助手，提供支持和快速分析"
       }
     }
   },
   "marketplace": {
-    "title": "农业连接市场",
+    "title": "Agroisync市场",
     "subtitle": "直接与生产者和供应商联系",
     "search": "搜索产品...",
     "categories": "类别",
@@ -103,15 +109,15 @@
     "noResultsDescription": "尝试调整筛选条件或搜索其他术语"
   },
   "about": {
-    "title": "关于农业连接",
-    "subtitle": "用尖端技术革新农业",
+    "title": "关于Agroisync",
+    "subtitle": "用技术和创新连接巴西农业综合企业",
     "mission": {
       "title": "我们的使命",
-      "description": "通过技术改变农业，在创新高效的平台上连接生产者、买家和投资者。"
+      "description": "通过技术和创新连接巴西农业综合企业，在创新高效的平台上连接生产者、买家和投资者。"
     },
     "vision": {
       "title": "我们的愿景",
-      "description": "成为数字农业智能的领先平台，推动全球农业部门的可持续增长。"
+      "description": "成为巴西农业综合企业的领先中心，为农业的未来创造可持续和互联的生态系统。"
     },
     "values": {
       "title": "我们的价值观",
@@ -147,7 +153,7 @@
   },
   "contact": {
     "title": "联系我们",
-    "subtitle": "我们在这里帮助您连接到农业的未来",
+    "subtitle": "我们在这里帮助您的农业综合企业",
     "form": {
       "name": "全名",
       "email": "电子邮件",
@@ -170,7 +176,7 @@
     }
   },
   "chatbot": {
-    "title": "农业连接AI助手",
+    "title": "Agroisync AI助手",
     "subtitle": "今天我能为您做些什么？",
     "personalities": {
       "agro-expert": "农业博士",
@@ -191,10 +197,10 @@
     }
   },
   "footer": {
-    "description": "AgroConecta - 连接农业综合企业的未来",
+    "description": "巴西农业综合企业的完整中心，集成实时数据、高级分析和全球连接。",
     "company": {
       "title": "公司",
-      "about": "关于",
+      "about": "关于Agroisync",
       "contact": "联系",
       "careers": "职业",
       "press": "新闻"
@@ -208,10 +214,10 @@
     },
     "support": {
       "title": "支持",
-      "help": "帮助",
+      "help": "帮助中心",
       "faq": "常见问题",
       "documentation": "文档",
-      "status": "状态"
+      "status": "系统状态"
     },
     "legal": {
       "title": "法律",

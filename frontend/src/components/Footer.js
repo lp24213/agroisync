@@ -39,7 +39,7 @@ const Footer = () => {
                   <span className="text-white font-bold text-xl">A</span>
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold">AgroISync</h3>
+                  <h3 className="text-2xl font-bold">Agroisync</h3>
                   <p className="text-green-400 text-sm">Hub do Agronegócio Brasileiro</p>
                 </div>
               </div>
@@ -194,7 +194,7 @@ const Footer = () => {
         >
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="flex items-center space-x-2 text-gray-400 text-sm">
-              <span>© {currentYear} AgroISync. {t('footer.rights')}</span>
+                               <span>© {currentYear} Agroisync. {t('footer.rights')}</span>
               <Heart className="w-4 h-4 text-red-500" />
               <span>{t('footer.madeIn')}</span>
             </div>

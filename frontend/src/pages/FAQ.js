@@ -25,8 +25,8 @@ const FAQ = () => {
       icon: <HelpCircle className="w-5 h-5" />,
       items: [
         {
-          question: 'O que é o AgroISync?',
-          answer: 'O AgroISync é o hub mais completo do agronegócio brasileiro, unindo marketplace de produtos agrícolas, plataforma de fretes e soluções em criptomoedas em uma única plataforma profissional e integrada.'
+          question: 'O que é o Agroisync?',
+          answer: 'O Agroisync é o hub mais completo do agronegócio brasileiro, unindo marketplace de produtos agrícolas, plataforma de fretes e soluções em criptomoedas em uma única plataforma profissional e integrada.'
         },
         {
           question: 'Como funciona o sistema de cadastro?',
@@ -102,7 +102,7 @@ const FAQ = () => {
       items: [
         {
           question: 'O site funciona em dispositivos móveis?',
-          answer: 'Sim, o AgroISync é totalmente responsivo e funciona perfeitamente em smartphones, tablets e desktops, com interface otimizada para cada dispositivo.'
+          answer: 'Sim, o Agroisync é totalmente responsivo e funciona perfeitamente em smartphones, tablets e desktops, com interface otimizada para cada dispositivo.'
         },
         {
           question: 'Como funciona o sistema de notificações?',
@@ -160,7 +160,7 @@ const FAQ = () => {
             Perguntas Frequentes
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Respostas para as Principais Dúvidas sobre o AgroISync
+                         Respostas para as Principais Dúvidas sobre o Agroisync
           </p>
         </div>
       </section>
