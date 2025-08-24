@@ -5,6 +5,8 @@ import {
   Search, Filter, MapPin, Truck, Package, Clock, DollarSign,
   Star, Phone, Mail, Calendar, Weight, Route, User, Building
 } from 'lucide-react';
+import GlobalTicker from '../components/GlobalTicker';
+import Navbar from '../components/Navbar';
 
 const AgroConecta = () => {
   const { isDark } = useTheme();
@@ -54,75 +56,83 @@ const AgroConecta = () => {
     { id: 'truck', name: 'Truck' }
   ];
 
-  // Dados simulados mais realistas de fretes
+  // Dados simulados mais realistas e profissionais de fretes
   const mockFreights = [
     {
       id: 1,
-      product: 'Soja em Grão',
+      product: 'Soja em Grão Tipo 1',
       quantity: '500 sacas',
       weight: '30 toneladas',
       origin: 'Sinop - MT',
       destination: 'Porto de Santos - SP',
-      truckType: 'Truck 3 eixos',
+      truckType: 'Truck 3 eixos graneleiro',
       value: 8500.00,
       deadline: '3 dias',
       status: 'Disponível',
-      carrier: 'Transportadora Rápida MT',
+      carrier: 'Transportadora Rápida MT Ltda',
       phone: '(66) 99999-9999',
       whatsapp: '(66) 99999-9999',
       rating: 4.8,
-      reviews: 45
+      reviews: 45,
+      insurance: 'Seguro de carga incluído',
+      tracking: 'Rastreamento em tempo real'
     },
     {
       id: 2,
-      product: 'Milho em Grão',
+      product: 'Milho em Grão Seco',
       quantity: '800 sacas',
       weight: '48 toneladas',
       origin: 'Lucas do Rio Verde - MT',
       destination: 'Goiânia - GO',
-      truckType: 'Truck 2 eixos',
+      truckType: 'Truck 2 eixos graneleiro',
       value: 4200.00,
       deadline: '2 dias',
       status: 'Disponível',
-      carrier: 'Fretes Express MT',
+      carrier: 'Fretes Express MT Ltda',
       phone: '(66) 88888-8888',
       whatsapp: '(66) 88888-8888',
       rating: 4.6,
-      reviews: 32
+      reviews: 32,
+      insurance: 'Seguro de carga incluído',
+      tracking: 'Rastreamento em tempo real'
     },
     {
       id: 3,
-      product: 'Algodão em Pluma',
+      product: 'Algodão em Pluma Premium',
       quantity: '200 fardos',
       weight: '15 toneladas',
       origin: 'Campo Verde - MT',
       destination: 'São Paulo - SP',
-      truckType: 'Truck 3 eixos',
+      truckType: 'Truck 3 eixos baú',
       value: 6800.00,
       deadline: '4 dias',
       status: 'Disponível',
-      carrier: 'Transportes Premium',
+      carrier: 'Transportes Premium Ltda',
       phone: '(66) 77777-7777',
       whatsapp: '(66) 77777-7777',
       rating: 4.9,
-      reviews: 28
+      reviews: 28,
+      insurance: 'Seguro de carga incluído',
+      tracking: 'Rastreamento em tempo real'
     },
     {
       id: 4,
-      product: 'Fertilizantes',
+      product: 'Fertilizantes NPK',
       quantity: '50 toneladas',
       weight: '50 toneladas',
       origin: 'Sorriso - MT',
       destination: 'Nova Mutum - MT',
-      truckType: 'Truck 2 eixos',
+      truckType: 'Truck 2 eixos baú',
       value: 1800.00,
       deadline: '1 dia',
       status: 'Disponível',
-      carrier: 'Fretes Rápidos MT',
+      carrier: 'Fretes Rápidos MT Ltda',
       phone: '(66) 66666-6666',
       whatsapp: '(66) 66666-6666',
       rating: 4.7,
-      reviews: 67
+      reviews: 67,
+      insurance: 'Seguro de carga incluído',
+      tracking: 'Rastreamento em tempo real'
     },
     {
       id: 5,
@@ -131,32 +141,36 @@ const AgroConecta = () => {
       weight: '8 toneladas',
       origin: 'Cuiabá - MT',
       destination: 'Rondonópolis - MT',
-      truckType: 'Truck 3 eixos + prancha',
+      truckType: 'Truck 3 eixos + prancha baixa',
       value: 3200.00,
       deadline: '2 dias',
       status: 'Disponível',
-      carrier: 'Transportes Especializados',
+      carrier: 'Transportes Especializados Ltda',
       phone: '(66) 55555-5555',
       whatsapp: '(66) 55555-5555',
       rating: 4.8,
-      reviews: 23
+      reviews: 23,
+      insurance: 'Seguro de carga incluído',
+      tracking: 'Rastreamento em tempo real'
     },
     {
       id: 6,
-      product: 'Bovinos Vivos',
+      product: 'Bovinos Vivos Nelore',
       quantity: '20 cabeças',
       weight: '12 toneladas',
       origin: 'Nova Mutum - MT',
       destination: 'Campo Grande - MS',
-      truckType: 'Truck boiadeiro',
+      truckType: 'Truck boiadeiro 3 eixos',
       value: 4500.00,
       deadline: '1 dia',
       status: 'Disponível',
-      carrier: 'Fretes Bovinos MT',
+      carrier: 'Fretes Bovinos MT Ltda',
       phone: '(66) 44444-4444',
       whatsapp: '(66) 44444-4444',
       rating: 4.9,
-      reviews: 89
+      reviews: 89,
+      insurance: 'Seguro de carga incluído',
+      tracking: 'Rastreamento em tempo real'
     }
   ];
 
@@ -220,17 +234,17 @@ const AgroConecta = () => {
 
   const getProductIcon = (product) => {
     switch (product) {
-      case 'Soja em Grão':
+      case 'Soja em Grão Tipo 1':
         return <Package className="w-5 h-5 text-green-600" />;
-      case 'Milho em Grão':
+      case 'Milho em Grão Seco':
         return <Package className="w-5 h-5 text-yellow-600" />;
-      case 'Algodão em Pluma':
+      case 'Algodão em Pluma Premium':
         return <Package className="w-5 h-5 text-white" />;
-      case 'Fertilizantes':
+      case 'Fertilizantes NPK':
         return <Package className="w-5 h-5 text-blue-600" />;
       case 'Máquinas Agrícolas':
         return <Package className="w-5 h-5 text-gray-600" />;
-      case 'Bovinos Vivos':
+      case 'Bovinos Vivos Nelore':
         return <Package className="w-5 h-5 text-red-600" />;
       default:
         return <Package className="w-5 h-5 text-gray-400" />;
@@ -239,13 +253,13 @@ const AgroConecta = () => {
 
   const getTruckIcon = (truckType) => {
     switch (truckType) {
-      case 'Truck 3 eixos':
+      case 'Truck 3 eixos graneleiro':
         return <Truck className="w-5 h-5 text-orange-600" />;
-      case 'Truck 2 eixos':
+      case 'Truck 2 eixos graneleiro':
         return <Truck className="w-5 h-5 text-blue-600" />;
-      case 'Truck 3 eixos + prancha':
+      case 'Truck 3 eixos baú':
         return <Truck className="w-5 h-5 text-purple-600" />;
-      case 'Truck boiadeiro':
+      case 'Truck boiadeiro 3 eixos':
         return <Truck className="w-5 h-5 text-cyan-600" />;
       default:
         return <Truck className="w-5 h-5 text-gray-400" />;
@@ -254,17 +268,17 @@ const AgroConecta = () => {
 
   const getProductColor = (product) => {
     switch (product) {
-      case 'Soja em Grão':
+      case 'Soja em Grão Tipo 1':
         return 'bg-green-100 text-green-800 border-green-200';
-      case 'Milho em Grão':
+      case 'Milho em Grão Seco':
         return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'Algodão em Pluma':
+      case 'Algodão em Pluma Premium':
         return 'bg-white text-gray-800 border-gray-200';
-      case 'Fertilizantes':
+      case 'Fertilizantes NPK':
         return 'bg-blue-100 text-blue-800 border-blue-200';
       case 'Máquinas Agrícolas':
         return 'bg-gray-100 text-gray-800 border-gray-200';
-      case 'Bovinos Vivos':
+      case 'Bovinos Vivos Nelore':
         return 'bg-red-100 text-red-800 border-red-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
@@ -283,7 +297,10 @@ const AgroConecta = () => {
   }
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-white'} transition-colors duration-300`}>
+    <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300`}>
+      <GlobalTicker />
+      <Navbar />
+      
       {/* Header Section */}
       <section className="relative pt-40 pb-20 px-4 overflow-hidden">
         {/* Background */}
@@ -294,7 +311,7 @@ const AgroConecta = () => {
             </div>
           ) : (
             <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50">
-              <div className="absolute inset-0 bg-white opacity-90"></div>
+              <div className="absolute inset-0 bg-white opacity-95"></div>
             </div>
           )}
         </div>

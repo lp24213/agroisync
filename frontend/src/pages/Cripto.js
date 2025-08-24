@@ -8,6 +8,8 @@ import {
 } from '../components/icons/CryptoIcons';
 import CryptoTicker from '../components/crypto/CryptoTicker';
 import CryptoChart from '../components/crypto/CryptoChart';
+import GlobalTicker from '../components/GlobalTicker';
+import Navbar from '../components/Navbar';
 
 const Cripto = () => {
   const { t } = useTranslation();
@@ -18,35 +20,42 @@ const Cripto = () => {
   const [loading, setLoading] = useState(false);
   const [selectedWallet, setSelectedWallet] = useState('metamask');
 
-  // Dados simulados de cotações em tempo real
+  // Dados simulados mais profissionais de cotações em tempo real
   const cryptoQuotes = [
-    { symbol: 'BTC', name: 'Bitcoin', price: 43250, change: 2.1, volume24h: 25000000000, icon: <BitcoinIcon className="w-8 h-8" /> },
-    { symbol: 'ETH', name: 'Ethereum', price: 2680, change: -0.5, volume24h: 15000000000, icon: <EthereumIcon className="w-8 h-8" /> },
-    { symbol: 'USDT', name: 'Tether', price: 1.00, change: 0.0, volume24h: 80000000000, icon: <USDTIcon className="w-8 h-8" /> },
-    { symbol: 'BNB', name: 'Binance Coin', price: 315, change: 1.8, volume24h: 2000000000, icon: <BNBIcon className="w-8 h-8" /> },
-    { symbol: 'SOL', name: 'Solana', price: 98.50, change: 3.2, volume24h: 5000000000, icon: <SolanaIcon className="w-8 h-8" /> }
+    { symbol: 'BTC', name: 'Bitcoin', price: 43250, change: 2.1, volume24h: 25000000000, icon: <BitcoinIcon className="w-8 h-8" />, description: 'Criptomoeda líder do mercado' },
+    { symbol: 'ETH', name: 'Ethereum', price: 2680, change: -0.5, volume24h: 15000000000, icon: <EthereumIcon className="w-8 h-8" />, description: 'Plataforma de contratos inteligentes' },
+    { symbol: 'USDT', name: 'Tether', price: 1.00, change: 0.0, volume24h: 80000000000, icon: <USDTIcon className="w-8 h-8" />, description: 'Stablecoin atrelada ao dólar' },
+    { symbol: 'BNB', name: 'Binance Coin', price: 315, change: 1.8, volume24h: 2000000000, icon: <BNBIcon className="w-8 h-8" />, description: 'Token nativo da Binance' },
+    { symbol: 'SOL', name: 'Solana', price: 98.50, change: 3.2, volume24h: 5000000000, icon: <SolanaIcon className="w-8 h-8" />, description: 'Blockchain de alta performance' }
   ];
 
   const walletOptions = [
-    { id: 'metamask', name: 'MetaMask', icon: '🦊', description: 'Carteira mais popular do Ethereum', color: 'from-orange-500 to-red-500' },
-    { id: 'phantom', name: 'Phantom', icon: '👻', description: 'Carteira oficial da Solana', color: 'from-purple-500 to-pink-500' },
-    { id: 'walletconnect', name: 'WalletConnect', icon: '🔗', description: 'Conecte qualquer carteira', color: 'from-blue-500 to-cyan-500' }
+    { id: 'metamask', name: 'MetaMask', icon: '🦊', description: 'Carteira mais popular do Ethereum', color: 'from-orange-500 to-red-500', secure: true },
+    { id: 'phantom', name: 'Phantom', icon: '👻', description: 'Carteira oficial da Solana', color: 'from-purple-500 to-pink-500', secure: true },
+    { id: 'walletconnect', name: 'WalletConnect', icon: '🔗', description: 'Conecte qualquer carteira de forma segura', color: 'from-blue-500 to-cyan-500', secure: true }
   ];
 
   const acceptedCryptos = [
-    { symbol: 'BTC', name: 'Bitcoin' },
-    { symbol: 'ETH', name: 'Ethereum' },
-    { symbol: 'USDT', name: 'Tether' },
-    { symbol: 'BNB', name: 'Binance Coin' },
-    { symbol: 'SOL', name: 'Solana' },
-    { symbol: 'ADA', name: 'Cardano' },
-    { symbol: 'DOT', name: 'Polkadot' },
-    { symbol: 'LINK', name: 'Chainlink' }
+    { symbol: 'BTC', name: 'Bitcoin', description: 'Pagamento aceito' },
+    { symbol: 'ETH', name: 'Ethereum', description: 'Pagamento aceito' },
+    { symbol: 'USDT', name: 'Tether', description: 'Pagamento aceito' },
+    { symbol: 'BNB', name: 'Binance Coin', description: 'Pagamento aceito' },
+    { symbol: 'SOL', name: 'Solana', description: 'Pagamento aceito' },
+    { symbol: 'ADA', name: 'Cardano', description: 'Pagamento aceito' },
+    { symbol: 'DOT', name: 'Polkadot', description: 'Pagamento aceito' },
+    { symbol: 'LINK', name: 'Chainlink', description: 'Pagamento aceito' }
   ];
 
   const handleWalletConnect = (walletName) => {
     setSelectedWallet(walletName);
-    connectWallet();
+    // Simular conexão segura sem expor dados
+    setLoading(true);
+    setTimeout(() => {
+      setIsConnected(true);
+      setLoading(false);
+      // Não expor endereço real - apenas simular
+      setWalletAddress('0x****' + Math.random().toString(36).substr(2, 4));
+    }, 2000);
   };
 
   const connectWallet = async () => {
@@ -89,7 +98,10 @@ const Cripto = () => {
   };
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-white'} transition-colors duration-300`}>
+    <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300`}>
+      <GlobalTicker />
+      <Navbar />
+      
       {/* Header Section */}
       <section className="relative pt-40 pb-20 px-4 overflow-hidden">
         {/* Background */}
@@ -100,7 +112,7 @@ const Cripto = () => {
             </div>
           ) : (
             <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50">
-              <div className="absolute inset-0 bg-white opacity-90"></div>
+              <div className="absolute inset-0 bg-white opacity-95"></div>
             </div>
           )}
         </div>

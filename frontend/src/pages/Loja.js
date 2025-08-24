@@ -5,6 +5,8 @@ import {
   Search, Filter, MapPin, Star, ShoppingCart, Heart, Eye,
   Truck, Package, Leaf, Wrench, User, Circle, DollarSign
 } from 'lucide-react';
+import GlobalTicker from '../components/GlobalTicker';
+import Navbar from '../components/Navbar';
 
 const Loja = () => {
   const { isDark } = useTheme();
@@ -40,91 +42,103 @@ const Loja = () => {
     { id: 'TO', name: 'Tocantins' }
   ];
 
-  // Dados simulados mais realistas de produtos agrícolas
+  // Dados simulados mais realistas e profissionais de produtos agrícolas
   const mockProducts = [
     {
       id: 1,
-      name: 'Semente de Soja RR2 PRO',
+      name: 'Semente de Soja RR2 PRO - Intacta 2 Xtend',
       category: 'Insumos',
       price: 189.90,
       unit: 'Saca 60kg',
       stock: 150,
-      description: 'Semente de soja de alta produtividade, resistente a herbicidas. Ideal para plantio direto.',
+      description: 'Semente de soja de alta produtividade, resistente a herbicidas e insetos. Ideal para plantio direto e alta tecnologia.',
       image: '/images/soja.svg',
       location: 'Sinop - MT',
-      seller: 'AgroSementes MT',
+      seller: 'AgroSementes MT Ltda',
       rating: 4.8,
-      reviews: 127
+      reviews: 127,
+      certification: 'Certificado MAPA',
+      delivery: 'Entrega em 24h'
     },
     {
       id: 2,
-      name: 'Fertilizante NPK 20-20-20',
+      name: 'Fertilizante NPK 20-20-20 + Micronutrientes',
       category: 'Insumos',
       price: 89.50,
       unit: 'Saca 50kg',
       stock: 80,
-      description: 'Fertilizante balanceado para todas as culturas. Aplicação via solo ou foliar.',
+      description: 'Fertilizante balanceado com micronutrientes para todas as culturas. Aplicação via solo ou foliar com alta eficiência.',
       image: '/images/milho.svg',
       location: 'Lucas do Rio Verde - MT',
-      seller: 'Fertilizantes do Brasil',
+      seller: 'Fertilizantes do Brasil S/A',
       rating: 4.6,
-      reviews: 89
+      reviews: 89,
+      certification: 'Registro MAPA',
+      delivery: 'Entrega em 48h'
     },
     {
       id: 3,
-      name: 'Trator Massey Ferguson 6713',
+      name: 'Trator Massey Ferguson 6713 Dyna-6',
       category: 'Máquinas/Implementos',
       price: 285000.00,
       unit: 'Unidade',
       stock: 3,
-      description: 'Trator 130cv, 4x4, cabine climatizada, direção hidráulica. Ano 2022, 800h.',
+      description: 'Trator 130cv, 4x4, cabine climatizada, direção hidráulica, transmissão Dyna-6. Ano 2022, 800h de uso.',
       image: '/images/logo.svg',
       location: 'Sorriso - MT',
-      seller: 'Máquinas Agro MT',
+      seller: 'Máquinas Agro MT Ltda',
       rating: 4.9,
-      reviews: 23
+      reviews: 23,
+      certification: 'Garantia 12 meses',
+      delivery: 'Entrega em 7 dias'
     },
     {
       id: 4,
-      name: 'Boi Nelore Mocho',
+      name: 'Boi Nelore Mocho - Acabamento A',
       category: 'Pecuária',
       price: 4200.00,
       unit: 'Arroba',
       stock: 45,
-      description: 'Boi gordo Nelore mocho, peso médio 18@, acabamento A, saúde atestada.',
+      description: 'Boi gordo Nelore mocho, peso médio 18@, acabamento A, saúde atestada, vacinação completa, rastreabilidade.',
       image: '/images/logo.svg',
       location: 'Nova Mutum - MT',
-      seller: 'Fazenda Boa Vista',
+      seller: 'Fazenda Boa Vista Ltda',
       rating: 4.7,
-      reviews: 156
+      reviews: 156,
+      certification: 'SIF',
+      delivery: 'Entrega em 24h'
     },
     {
       id: 5,
-      name: 'Soja em Grão Tipo 1',
+      name: 'Soja em Grão Tipo 1 - Proteína 38%',
       category: 'Commodities',
       price: 180.50,
       unit: 'Saca 60kg',
       stock: 2000,
-      description: 'Soja em grão tipo 1, proteína 38%, óleo 20%. Entrega em silo ou caminhão.',
+      description: 'Soja em grão tipo 1, proteína 38%, óleo 20%, umidade 13%, impurezas 1%. Entrega em silo ou caminhão.',
       image: '/images/soja.svg',
       location: 'Campo Verde - MT',
-      seller: 'Cooperativa Agro MT',
+      seller: 'Cooperativa Agro MT Ltda',
       rating: 4.8,
-      reviews: 342
+      reviews: 342,
+      certification: 'Certificado de Origem',
+      delivery: 'Entrega em 24h'
     },
     {
       id: 6,
-      name: 'Consultoria Agronômica',
+      name: 'Consultoria Agronômica Especializada',
       category: 'Serviços',
       price: 150.00,
       unit: 'Hora',
       stock: null,
-      description: 'Consultoria técnica especializada em soja, milho e algodão. Atendimento em campo.',
+      description: 'Consultoria técnica especializada em soja, milho e algodão. Atendimento em campo, análise de solo, recomendação de insumos.',
       image: '/images/logo.svg',
       location: 'Toda MT',
-      seller: 'AgroConsult MT',
+      seller: 'AgroConsult MT Ltda',
       rating: 4.9,
-      reviews: 67
+      reviews: 67,
+      certification: 'CREA',
+      delivery: 'Atendimento em 24h'
     }
   ];
 
@@ -227,7 +241,10 @@ const Loja = () => {
   }
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-white'} transition-colors duration-300`}>
+    <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300`}>
+      <GlobalTicker />
+      <Navbar />
+      
       {/* Header Section */}
       <section className="relative pt-40 pb-20 px-4 overflow-hidden">
         {/* Background */}
@@ -238,7 +255,7 @@ const Loja = () => {
             </div>
           ) : (
             <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50">
-              <div className="absolute inset-0 bg-white opacity-90"></div>
+              <div className="absolute inset-0 bg-white opacity-95"></div>
             </div>
           )}
         </div>

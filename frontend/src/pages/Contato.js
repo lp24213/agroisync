@@ -83,7 +83,7 @@ const Contato = () => {
   ];
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-white'} transition-colors duration-300`}>
+    <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300`}>
       {/* Global Ticker */}
       <GlobalTicker />
       
@@ -100,7 +100,7 @@ const Contato = () => {
             </div>
           ) : (
             <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50">
-              <div className="absolute inset-0 bg-white opacity-90"></div>
+              <div className="absolute inset-0 bg-white opacity-95"></div>
             </div>
           )}
         </div>

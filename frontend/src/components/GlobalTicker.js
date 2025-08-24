@@ -9,16 +9,18 @@ const GlobalTicker = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [tickerData, setTickerData] = useState([]);
 
-  // Dados simulados mais realistas do ticker
+  // Dados simulados mais realistas e profissionais do ticker
   const mockTickerData = [
-    { symbol: 'USD/BRL', value: '5,23', change: '+0,15%', trend: 'up', type: 'currency' },
-    { symbol: 'EUR/BRL', value: '5,67', change: '-0,08%', trend: 'down', type: 'currency' },
-    { symbol: 'BTC/USD', value: '43,250', change: '+2,34%', trend: 'up', type: 'crypto' },
-    { symbol: 'ETH/USD', value: '2,680', change: '+1,87%', trend: 'up', type: 'crypto' },
-    { symbol: 'IBOV', value: '128.450', change: '+0,67%', trend: 'up', type: 'stock' },
-    { symbol: 'SOJA', value: 'R$ 180,50', change: '+1,25%', trend: 'up', type: 'commodity' },
-    { symbol: 'MILHO', value: 'R$ 95,30', change: '-0,45%', trend: 'down', type: 'commodity' },
-    { symbol: 'BOI GORDO', value: 'R$ 320,00', change: '+0,89%', trend: 'up', type: 'commodity' }
+    { symbol: 'USD/BRL', value: '5,23', change: '+0,15%', trend: 'up', type: 'currency', description: 'Dólar Americano' },
+    { symbol: 'EUR/BRL', value: '5,67', change: '-0,08%', trend: 'down', type: 'currency', description: 'Euro' },
+    { symbol: 'BTC/USD', value: '43,250', change: '+2,34%', trend: 'up', type: 'crypto', description: 'Bitcoin' },
+    { symbol: 'ETH/USD', value: '2,680', change: '+1,87%', trend: 'up', type: 'crypto', description: 'Ethereum' },
+    { symbol: 'IBOV', value: '128.450', change: '+0,67%', trend: 'up', type: 'stock', description: 'Índice Bovespa' },
+    { symbol: 'SOJA', value: 'R$ 180,50', change: '+1,25%', trend: 'up', type: 'commodity', description: 'Soja Tipo 1' },
+    { symbol: 'MILHO', value: 'R$ 95,30', change: '-0,45%', trend: 'down', type: 'commodity', description: 'Milho Seco' },
+    { symbol: 'BOI GORDO', value: 'R$ 320,00', change: '+0,89%', trend: 'up', type: 'commodity', description: 'Boi Nelore' },
+    { symbol: 'CAFÉ', value: 'R$ 1.250,00', change: '+2,15%', trend: 'up', type: 'commodity', description: 'Café Arábica' },
+    { symbol: 'ALGODÃO', value: 'R$ 4,85', change: '-0,32%', trend: 'down', type: 'commodity', description: 'Algodão Pluma' }
   ];
 
   useEffect(() => {
