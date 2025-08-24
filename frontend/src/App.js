@@ -9,6 +9,7 @@ import Cotacao from './pages/Cotacao';
 import Loja from './pages/Loja';
 import AgroConecta from './pages/AgroConecta';
 import Cripto from './pages/Cripto';
+import Login from './pages/Login';
 import Cadastro from './pages/Cadastro';
 import Admin from './pages/Admin';
 import Planos from './pages/Planos';
@@ -74,6 +75,7 @@ function App() {
               <Route path="/loja" element={<Loja />} />
               <Route path="/agroconecta" element={<AgroConecta />} />
               <Route path="/cripto" element={<Cripto />} />
+              <Route path="/login" element={<Login />} />
               <Route path="/cadastro" element={<Cadastro />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/planos" element={<Planos />} />
