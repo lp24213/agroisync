@@ -6,11 +6,11 @@ import {
   CheckCircle, AlertCircle, XCircle, Clock, 
   Server, Database, Globe, Shield, Activity
 } from 'lucide-react';
-import GlobalTicker from '../components/GlobalTicker';
-import Navbar from '../components/Navbar';
-
-import WeatherWidget from '../components/WeatherWidget';
-import Chatbot from '../components/Chatbot';
+import { 
+  CheckCircle, AlertCircle, XCircle, Clock, 
+  Server, Database, Globe, Shield, Activity,
+  Wifi, WifiOff, Settings
+} from 'lucide-react';
 
 const Status = () => {
   const { isDark } = useTheme();
@@ -20,84 +20,64 @@ const Status = () => {
   // Dados simulados de status dos serviços
   const services = [
     {
-      id: 'website',
-      name: 'Website Principal',
-      description: 'Interface do usuário e páginas principais',
+      id: 'blockchain',
+      name: t('status.services.blockchain.name'),
+      description: t('status.services.blockchain.description'),
       status: 'operational',
       uptime: '99.98%',
       responseTime: '45ms',
       lastIncident: null,
-      icon: <Globe className="w-6 h-6" />
+      icon: <Shield className="w-6 h-6" />
     },
     {
-      id: 'api',
-      name: 'API Backend',
-      description: 'Serviços de backend e integrações',
+      id: 'marketplace',
+      name: t('status.services.marketplace.name'),
+      description: t('status.services.marketplace.description'),
       status: 'operational',
       uptime: '99.95%',
       responseTime: '120ms',
+      lastIncident: null,
+      icon: <Globe className="w-6 h-6" />
+    },
+    {
+      id: 'chatbot',
+      name: t('status.services.chatbot.name'),
+      description: t('status.services.chatbot.description'),
+      status: 'operational',
+      uptime: '99.99%',
+      responseTime: '15ms',
+      lastIncident: null,
+      icon: <Activity className="w-6 h-6" />
+    },
+    {
+      id: 'api',
+      name: t('status.services.api.name'),
+      description: t('status.services.api.description'),
+      status: 'operational',
+      uptime: '99.97%',
+      responseTime: '85ms',
       lastIncident: null,
       icon: <Server className="w-6 h-6" />
     },
     {
       id: 'database',
-      name: 'Banco de Dados',
-      description: 'MongoDB e armazenamento de dados',
-      status: 'operational',
-      uptime: '99.99%',
-      responseTime: '15ms',
-      lastIncident: null,
-      icon: <Database className="w-6 h-6" />
-    },
-    {
-      id: 'marketplace',
-      name: 'Marketplace',
-      description: 'Sistema de produtos e vendas',
-      status: 'operational',
-      uptime: '99.97%',
-      responseTime: '85ms',
-      lastIncident: null,
-      icon: <Globe className="w-6 h-6" />
-    },
-    {
-      id: 'freight',
-      name: 'AgroConecta',
-      description: 'Sistema de fretes e transportes',
+      name: t('status.services.database.name'),
+      description: t('status.services.database.description'),
       status: 'operational',
       uptime: '99.96%',
       responseTime: '95ms',
       lastIncident: null,
-      icon: <Globe className="w-6 h-6" />
+      icon: <Database className="w-6 h-6" />
     },
     {
-      id: 'crypto',
-      name: 'Sistema Cripto',
-      description: 'Integração com criptomoedas',
+      id: 'auth',
+      name: t('status.services.auth.name'),
+      description: t('status.services.auth.description'),
       status: 'operational',
       uptime: '99.94%',
       responseTime: '150ms',
       lastIncident: null,
       icon: <Shield className="w-6 h-6" />
-    },
-    {
-      id: 'weather',
-      name: 'Serviço de Clima',
-      description: 'API de previsão do tempo',
-      status: 'operational',
-      uptime: '99.92%',
-      responseTime: '200ms',
-      lastIncident: null,
-      icon: <Activity className="w-6 h-6" />
-    },
-    {
-      id: 'quotes',
-      name: 'Cotações em Tempo Real',
-      description: 'APIs de cotações e bolsa',
-      status: 'operational',
-      uptime: '99.90%',
-      responseTime: '180ms',
-      lastIncident: null,
-      icon: <Activity className="w-6 h-6" />
     }
   ];
 
@@ -162,8 +142,6 @@ const Status = () => {
 
   return (
     <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300`}>
-      <GlobalTicker />
-      <Navbar />
       
       {/* Header Section */}
       <section className="relative pt-40 pb-20 px-4 overflow-hidden">
@@ -187,7 +165,7 @@ const Status = () => {
             transition={{ duration: 0.8 }}
             className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent"
           >
-            Status do Sistema
+            {t('status.title')}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 30 }}
@@ -195,7 +173,7 @@ const Status = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-xl text-gray-600 max-w-3xl mx-auto"
           >
-                         Monitoramento em Tempo Real dos Serviços Agroisync
+            {t('status.subtitle')}
           </motion.p>
         </div>
       </section>
@@ -215,7 +193,7 @@ const Status = () => {
           >
             <div className="flex items-center justify-center space-x-3 mb-4">
               {getStatusIcon(overallStatus)}
-              <h2 className="text-2xl font-bold">Status Geral do Sistema</h2>
+              <h2 className="text-2xl font-bold">{t('status.overallTitle')}</h2>
             </div>
             <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium border mb-4 ${getStatusColor(overallStatus)}`}>
               {getStatusText(overallStatus)}
@@ -223,7 +201,7 @@ const Status = () => {
             <p className={`text-sm ${
               isDark ? 'text-gray-400' : 'text-gray-600'
             }`}>
-              Última atualização: {lastUpdate.toLocaleTimeString('pt-BR')}
+              {t('status.lastUpdate')}: {lastUpdate.toLocaleTimeString('pt-BR')}
             </p>
           </motion.div>
         </div>
@@ -238,7 +216,7 @@ const Status = () => {
             transition={{ duration: 0.6 }}
             className="text-3xl font-bold text-center mb-12"
           >
-            Status dos Serviços
+            {t('status.servicesTitle')}
           </motion.h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -274,7 +252,7 @@ const Status = () => {
                         <p className={`text-xs ${
                           isDark ? 'text-gray-400' : 'text-gray-500'
                         }`}>
-                          Uptime
+                          {t('status.uptime')}
                         </p>
                         <p className="font-semibold text-green-500">{service.uptime}</p>
                       </div>
@@ -282,7 +260,7 @@ const Status = () => {
                         <p className={`text-xs ${
                           isDark ? 'text-gray-400' : 'text-gray-500'
                         }`}>
-                          Tempo de Resposta
+                          {t('status.responseTime')}
                         </p>
                         <p className="font-semibold text-blue-500">{service.responseTime}</p>
                       </div>
@@ -310,7 +288,7 @@ const Status = () => {
             transition={{ duration: 0.6 }}
             className="text-3xl font-bold text-center mb-12"
           >
-            Métricas de Performance
+            {t('status.performanceTitle')}
           </motion.h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -325,7 +303,7 @@ const Status = () => {
               }`}
             >
               <div className="text-3xl font-bold text-green-500 mb-2">99.96%</div>
-              <div className="text-sm text-gray-500">Uptime Médio</div>
+              <div className="text-sm text-gray-500">{t('status.metrics.uptime')}</div>
             </motion.div>
 
             <motion.div
@@ -339,7 +317,7 @@ const Status = () => {
               }`}
             >
               <div className="text-3xl font-bold text-blue-500 mb-2">110ms</div>
-              <div className="text-sm text-gray-500">Tempo de Resposta Médio</div>
+              <div className="text-sm text-gray-500">{t('status.metrics.responseTime')}</div>
             </motion.div>
 
             <motion.div
@@ -353,7 +331,7 @@ const Status = () => {
               }`}
             >
               <div className="text-3xl font-bold text-purple-500 mb-2">24/7</div>
-              <div className="text-sm text-gray-500">Monitoramento</div>
+              <div className="text-sm text-gray-500">{t('status.metrics.monitoring')}</div>
             </motion.div>
           </div>
         </div>
@@ -368,7 +346,7 @@ const Status = () => {
             transition={{ duration: 0.6 }}
             className="text-3xl font-bold text-center mb-12"
           >
-            Histórico de Incidentes
+            {t('status.incidentTitle')}
           </motion.h2>
 
           <motion.div
@@ -382,19 +360,16 @@ const Status = () => {
             }`}
           >
             <CheckCircle className="w-16 h-16 mx-auto mb-4 text-green-500" />
-            <h3 className="text-xl font-bold mb-2">Nenhum Incidente Recente</h3>
+            <h3 className="text-xl font-bold mb-2">{t('status.noIncidents')}</h3>
             <p className={`text-sm ${
               isDark ? 'text-gray-300' : 'text-gray-600'
             }`}>
-              Todos os serviços estão funcionando normalmente. Última verificação: {lastUpdate.toLocaleString('pt-BR')}
+              {t('status.allServicesNormal')} {t('status.lastCheck')}: {lastUpdate.toLocaleString('pt-BR')}
             </p>
           </motion.div>
         </div>
       </section>
 
-      
-      <WeatherWidget />
-      <Chatbot />
     </div>
   );
 };

@@ -55,14 +55,14 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           
           {/* Logo */}
-          <motion.div
+          <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center space-x-3 flex-1"
           >
             <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-green-500 to-blue-600 flex items-center justify-center">
-              <span className="text-white font-bold text-lg">A</span>
-            </div>
+                <span className="text-white font-bold text-lg">A</span>
+              </div>
             <span className="text-xl font-bold">Agroisync</span>
           </motion.div>
 
@@ -151,18 +151,18 @@ const Navbar = () => {
             {/* User Menu or Login/Register */}
             {user ? (
               <div className="relative">
-                <button
+              <button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                   className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
-                >
-                  <User className="w-5 h-5" />
+              >
+                <User className="w-5 h-5" />
                   <span className="text-sm font-medium">{user.name}</span>
-                </button>
+              </button>
 
                 {/* User Dropdown */}
-                <AnimatePresence>
-                  {isUserMenuOpen && (
-                    <motion.div
+              <AnimatePresence>
+                {isUserMenuOpen && (
+                  <motion.div
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
@@ -185,9 +185,9 @@ const Navbar = () => {
                           <span>Sair</span>
                         </button>
                       </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                  </motion.div>
+                )}
+              </AnimatePresence>
               </div>
             ) : (
               <div className="flex items-center space-x-3">
@@ -205,9 +205,9 @@ const Navbar = () => {
                 </a>
               </div>
             )}
-          </div>
+            </div>
 
-          {/* Mobile Menu Button */}
+            {/* Mobile Menu Button */}
           <div className="lg:hidden">
             <button
               onClick={toggleMenu}
@@ -324,8 +324,8 @@ const Navbar = () => {
                       {t('nav.register')}
                     </a>
                   </>
-                )}
-              </div>
+                  )}
+                </div>
             </div>
           </motion.div>
         )}

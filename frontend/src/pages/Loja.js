@@ -87,7 +87,7 @@ const Loja = () => {
     fetchProducts();
   }, [selectedCategory, priceRange, selectedState, searchTerm]);
 
-  // Atualizar contadores de categorias
+    // Atualizar contadores de categorias
   useEffect(() => {
     const updatedCategories = categories.map(cat => ({
       ...cat,

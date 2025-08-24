@@ -2,10 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Chatbot = () => {
   const { isDark } = useTheme();
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
@@ -65,6 +69,24 @@ const Chatbot = () => {
     setMessages([initialMessage]);
   }, [chatbotPersonality]);
 
+  // Verificar acesso ao chatbot baseado no plano do usuário
+  const checkChatbotAccess = () => {
+    if (!user) {
+      // Usuário não autenticado - redirecionar para login
+      navigate('/login');
+      return false;
+    }
+    
+    // Verificar se o usuário tem plano AGROCONNECT+ ou superior
+    if (!user.plan || !user.plan.includes('AGROCONNECT+')) {
+      // Usuário sem plano adequado - redirecionar para upgrade
+      navigate('/planos');
+      return false;
+    }
+    
+    return true;
+  };
+
   // Estado inicial minimizado em dispositivos móveis
   useEffect(() => {
     const isMobile = window.innerWidth <= 768;
@@ -100,6 +122,11 @@ const Chatbot = () => {
   }, []);
 
   const toggleChatbot = () => {
+    // Verificar acesso antes de abrir o chatbot
+    if (!isOpen && !checkChatbotAccess()) {
+      return;
+    }
+    
     setIsOpen(!isOpen);
     if (!isOpen) {
       setIsMinimized(false);

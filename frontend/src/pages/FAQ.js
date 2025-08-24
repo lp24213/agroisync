@@ -4,13 +4,9 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import { 
   ChevronDown, Search, HelpCircle, MessageCircle, 
-  FileText, Phone, Mail, Globe, Clock
+  FileText, Phone, Mail, Globe, Clock,
+  Shield, Coins, Truck, ShoppingCart
 } from 'lucide-react';
-import GlobalTicker from '../components/GlobalTicker';
-import Navbar from '../components/Navbar';
-
-import WeatherWidget from '../components/WeatherWidget';
-import Chatbot from '../components/Chatbot';
 
 const FAQ = () => {
   const { isDark } = useTheme();
@@ -21,96 +17,104 @@ const FAQ = () => {
   const faqCategories = [
     {
       id: 'general',
-      title: 'Geral',
+      title: t('faq.categories.general.title'),
       icon: <HelpCircle className="w-5 h-5" />,
       items: [
         {
-          question: 'O que é o Agroisync?',
-          answer: 'O Agroisync é o hub mais completo do agronegócio brasileiro, unindo marketplace de produtos agrícolas, plataforma de fretes e soluções em criptomoedas em uma única plataforma profissional e integrada.'
+          question: t('faq.categories.general.items.whatIs.question'),
+          answer: t('faq.categories.general.items.whatIs.answer')
         },
         {
-          question: 'Como funciona o sistema de cadastro?',
-          answer: 'O sistema oferece cadastros separados para Loja (vendedores e clientes), AgroConecta (transportadoras e motoristas) e Cripto (usuários de criptomoedas), cada um com campos específicos e validação completa.'
+          question: t('faq.categories.general.items.payment.question'),
+          answer: t('faq.categories.general.items.payment.answer')
         },
         {
-          question: 'Quais são os planos disponíveis?',
-          answer: 'Oferecemos planos Básico (gratuito), Pro e Enterprise para Loja e AgroConecta, com funcionalidades escaláveis e preços competitivos para diferentes necessidades do agronegócio.'
+          question: t('faq.categories.general.items.security.question'),
+          answer: t('faq.categories.general.items.security.answer')
+        },
+        {
+          question: t('faq.categories.general.items.nftRights.question'),
+          answer: t('faq.categories.general.items.nftRights.answer')
+        },
+        {
+          question: t('faq.categories.general.items.support.question'),
+          answer: t('faq.categories.general.items.support.answer')
         }
       ]
     },
     {
       id: 'marketplace',
-      title: 'Marketplace',
-      icon: <FileText className="w-5 h-5" />,
+      title: t('faq.categories.marketplace.title'),
+      icon: <ShoppingCart className="w-5 h-5" />,
       items: [
         {
-          question: 'Como cadastrar produtos na Loja?',
-          answer: 'Para cadastrar produtos, faça login como vendedor, acesse "Meus Produtos" e preencha as informações: nome, categoria, preço, estoque, descrição e fotos. Todos os produtos passam por moderação.'
+          question: t('faq.categories.marketplace.items.products.question'),
+          answer: t('faq.categories.marketplace.items.products.answer')
         },
         {
-          question: 'Quais categorias de produtos são aceitas?',
-          answer: 'Aceitamos Insumos (sementes, fertilizantes), Máquinas/Implementos, Pecuária (bovinos, suínos), Commodities (grãos, café) e Serviços (consultoria, análise).'
+          question: t('faq.categories.marketplace.items.categories.question'),
+          answer: t('faq.categories.marketplace.items.categories.answer')
         },
         {
-          question: 'Como funciona o sistema de pagamentos?',
-          answer: 'Aceitamos PIX, Boleto Bancário e Cartão de Crédito/Débito. Para produtos de alto valor, oferecemos opções de financiamento e parcelamento.'
+          question: t('faq.categories.marketplace.items.payments.question'),
+          answer: t('faq.categories.marketplace.items.payments.answer')
         }
       ]
     },
     {
       id: 'freight',
-      title: 'Fretes',
-      icon: <Globe className="w-5 h-5" />,
+      title: t('faq.categories.freight.title'),
+      icon: <Truck className="w-5 h-5" />,
       items: [
         {
-          question: 'Como cadastrar fretes no AgroConecta?',
-          answer: 'Transportadoras e motoristas podem cadastrar fretes informando produto, quantidade, origem, destino, tipo de caminhão, valor e prazo. O sistema oferece rastreamento e seguro de carga.'
+          question: t('faq.categories.freight.items.register.question'),
+          answer: t('faq.categories.freight.items.register.answer')
         },
         {
-          question: 'Quais tipos de carga são aceitos?',
-          answer: 'Aceitamos grãos (soja, milho, trigo), commodities (café, algodão), máquinas agrícolas, bovinos vivos e insumos, com veículos adequados para cada tipo de carga.'
+          question: t('faq.categories.freight.items.cargoTypes.question'),
+          answer: t('faq.categories.freight.items.cargoTypes.answer')
         },
         {
-          question: 'Como funciona o sistema de busca de fretes?',
-          answer: 'Produtores podem buscar fretes por origem, destino, produto, preço e tipo de caminhão. O sistema mostra opções em tempo real com avaliações e histórico das transportadoras.'
+          question: t('faq.categories.freight.items.search.question'),
+          answer: t('faq.categories.freight.items.search.answer')
         }
       ]
     },
     {
       id: 'crypto',
-      title: 'Criptomoedas',
-      icon: <MessageCircle className="w-5 h-5" />,
+      title: t('faq.categories.crypto.title'),
+      icon: <Coins className="w-5 h-5" />,
       items: [
         {
-          question: 'Quais criptomoedas são aceitas?',
-          answer: 'Aceitamos Bitcoin (BTC), Ethereum (ETH), Tether (USDT), Binance Coin (BNB), Solana (SOL), Cardano (ADA), Polkadot (DOT) e Chainlink (LINK).'
+          question: t('faq.categories.crypto.items.accepted.question'),
+          answer: t('faq.categories.crypto.items.accepted.answer')
         },
         {
-          question: 'Como funciona a integração com carteiras?',
-          answer: 'Integramos com MetaMask, Phantom e WalletConnect de forma segura. Os endereços das carteiras não são expostos publicamente, garantindo total segurança.'
+          question: t('faq.categories.crypto.items.wallets.question'),
+          answer: t('faq.categories.crypto.items.wallets.answer')
         },
         {
-          question: 'O sistema é seguro para transações?',
-          answer: 'Sim, utilizamos as melhores práticas de segurança blockchain, com criptografia avançada e auditorias regulares. Todas as transações são rastreadas e seguras.'
+          question: t('faq.categories.crypto.items.security.question'),
+          answer: t('faq.categories.crypto.items.security.answer')
         }
       ]
     },
     {
       id: 'technical',
-      title: 'Técnico',
-      icon: <Clock className="w-5 h-5" />,
+      title: t('faq.categories.technical.title'),
+      icon: <Shield className="w-5 h-5" />,
       items: [
         {
-          question: 'O site funciona em dispositivos móveis?',
-          answer: 'Sim, o Agroisync é totalmente responsivo e funciona perfeitamente em smartphones, tablets e desktops, com interface otimizada para cada dispositivo.'
+          question: t('faq.categories.technical.items.mobile.question'),
+          answer: t('faq.categories.technical.items.mobile.answer')
         },
         {
-          question: 'Como funciona o sistema de notificações?',
-          answer: 'Oferecemos notificações em tempo real para novos fretes, atualizações de produtos, mensagens e status de pedidos, via email e push notifications.'
+          question: t('faq.categories.technical.items.notifications.question'),
+          answer: t('faq.categories.technical.items.notifications.answer')
         },
         {
-          question: 'O sistema está sempre disponível?',
-          answer: 'Garantimos 99.9% de uptime com infraestrutura AWS robusta, backups automáticos e monitoramento 24/7 para máxima disponibilidade.'
+          question: t('faq.categories.technical.items.availability.question'),
+          answer: t('faq.categories.technical.items.availability.answer')
         }
       ]
     }
@@ -137,8 +141,6 @@ const FAQ = () => {
 
   return (
     <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300`}>
-      <GlobalTicker />
-      <Navbar />
       
       {/* Header Section */}
       <section className="relative pt-40 pb-20 px-4 overflow-hidden">
@@ -157,10 +159,10 @@ const FAQ = () => {
 
         <div className="relative max-w-6xl mx-auto text-center">
           <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
-            Perguntas Frequentes
+            {t('faq.title')}
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                         Respostas para as Principais Dúvidas sobre o Agroisync
+            {t('faq.subtitle')}
           </p>
         </div>
       </section>
@@ -172,7 +174,7 @@ const FAQ = () => {
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
-              placeholder="Buscar perguntas ou respostas..."
+              placeholder={t('faq.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className={`w-full pl-12 pr-4 py-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${
@@ -267,7 +269,7 @@ const FAQ = () => {
             transition={{ duration: 0.6 }}
             className="text-3xl md:text-4xl font-bold mb-8"
           >
-            Ainda tem dúvidas?
+            {t('faq.contactTitle')}
           </motion.h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -282,8 +284,8 @@ const FAQ = () => {
               }`}
             >
               <Phone className="w-12 h-12 mx-auto mb-4 text-green-500" />
-              <h3 className="font-bold mb-2">Telefone</h3>
-              <p className="text-sm">(66) 99236-2830</p>
+              <h3 className="font-bold mb-2">{t('faq.contact.phone.title')}</h3>
+              <p className="text-sm">{t('faq.contact.phone.number')}</p>
             </motion.div>
 
             <motion.div
@@ -297,8 +299,8 @@ const FAQ = () => {
               }`}
             >
               <Mail className="w-12 h-12 mx-auto mb-4 text-green-500" />
-              <h3 className="font-bold mb-2">Email</h3>
-              <p className="text-sm">contato@agroisync.com</p>
+              <h3 className="font-bold mb-2">{t('faq.contact.email.title')}</h3>
+              <p className="text-sm">{t('faq.contact.email.address')}</p>
             </motion.div>
 
             <motion.div
@@ -312,16 +314,13 @@ const FAQ = () => {
               }`}
             >
               <MessageCircle className="w-12 h-12 mx-auto mb-4 text-green-500" />
-              <h3 className="font-bold mb-2">Chat</h3>
-              <p className="text-sm">Suporte em tempo real</p>
+              <h3 className="font-bold mb-2">{t('faq.contact.chat.title')}</h3>
+              <p className="text-sm">{t('faq.contact.chat.description')}</p>
             </motion.div>
           </div>
         </div>
       </section>
 
-      
-      <WeatherWidget />
-      <Chatbot />
     </div>
   );
 };

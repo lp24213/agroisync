@@ -40,6 +40,278 @@
     "register": "注册",
     "login": "登录"
   },
+  "status": {
+    "title": "系统状态",
+    "subtitle": "Agroisync服务实时监控",
+    "overallTitle": "整体系统状态",
+    "lastUpdate": "最后更新",
+    "servicesTitle": "服务状态",
+    "performanceTitle": "性能指标",
+    "incidentTitle": "事件历史",
+    "noIncidents": "无最近事件",
+    "allServicesNormal": "所有服务正常运行。",
+    "lastCheck": "最后检查",
+    "uptime": "运行时间",
+    "responseTime": "响应时间",
+    "metrics": {
+      "uptime": "平均运行时间",
+      "responseTime": "平均响应时间",
+      "monitoring": "监控"
+    },
+    "services": {
+      "blockchain": {
+        "name": "Solana区块链",
+        "description": "安全交易的区块链网络"
+      },
+      "marketplace": {
+        "name": "市场",
+        "description": "产品和销售系统"
+      },
+      "chatbot": {
+        "name": "AI聊天机器人",
+        "description": "智能虚拟助手"
+      },
+      "api": {
+        "name": "API/MongoDB",
+        "description": "后端服务和数据库"
+      },
+      "database": {
+        "name": "数据库",
+        "description": "MongoDB和数据存储"
+      },
+      "auth": {
+        "name": "Firebase认证",
+        "description": "登录和安全系统"
+      }
+    }
+  },
+  "faq": {
+    "title": "常见问题",
+    "subtitle": "关于Agroisync的主要问题解答",
+    "searchPlaceholder": "搜索问题或答案...",
+    "contactTitle": "还有疑问？",
+    "categories": {
+      "general": {
+        "title": "一般",
+        "items": {
+          "whatIs": {
+            "question": "什么是AGROTM？",
+            "answer": "AGROTM是巴西农业最完整的中心，将农产品市场、货运平台和加密货币解决方案整合在一个专业且集成的平台中。"
+          },
+          "payment": {
+            "question": "我需要付费使用吗？",
+            "answer": "我们提供基础（免费）、专业版和企业版计划。基础计划免费，允许访问基本功能。付费计划提供高级功能和更大容量。"
+          },
+          "security": {
+            "question": "如何确保安全？",
+            "answer": "我们使用最佳安全实践：高级加密、双因素认证、身份验证、24/7监控和符合国际安全标准。"
+          },
+          "nftRights": {
+            "question": "NFT给予真实权利吗？",
+            "answer": "是的，我们的NFT代表对农产品、货运或项目参与的真实权利。每个NFT都链接到实物资产或法律合同，确保真实价值。"
+          },
+          "support": {
+            "question": "如何联系支持？",
+            "answer": "我们提供多种渠道：24/7实时聊天、电子邮件（support@agroisync.com）、电话（66）99236-2830和完整的知识库。我们的团队在24小时内回复。"
+          }
+        }
+      },
+      "marketplace": {
+        "title": "市场",
+        "items": {
+          "products": {
+            "question": "如何在商店注册产品？",
+            "answer": "要注册产品，请以卖家身份登录，访问'我的产品'并填写信息：名称、类别、价格、库存、描述和照片。所有产品都经过审核。"
+          },
+          "categories": {
+            "question": "接受哪些产品类别？",
+            "answer": "我们接受投入品（种子、肥料）、机器/工具、畜牧业（牛、猪）、商品（谷物、咖啡）和服务（咨询、分析）。"
+          },
+          "payments": {
+            "question": "支付系统如何工作？",
+            "answer": "我们接受PIX、银行汇票和信用卡/借记卡。对于高价值产品，我们提供融资和分期付款选项。"
+          }
+        }
+      },
+      "freight": {
+        "title": "货运",
+        "items": {
+          "register": {
+            "question": "如何在AgroConecta注册货运？",
+            "answer": "运输公司和司机可以通过提供产品、数量、起点、目的地、卡车类型、价值和截止日期来注册货运。系统提供跟踪和货物保险。"
+          },
+          "cargoTypes": {
+            "question": "接受哪些类型的货物？",
+            "answer": "我们接受谷物（大豆、玉米、小麦）、商品（咖啡、棉花）、农业机械、活牛和投入品，每种货物类型都有合适的车辆。"
+          },
+          "search": {
+            "question": "货运搜索系统如何工作？",
+            "answer": "生产者可以按起点、目的地、产品、价格和卡车类型搜索货运。系统实时显示选项，包括评级和运输公司历史。"
+          }
+        }
+      },
+      "crypto": {
+        "title": "加密货币",
+        "items": {
+          "accepted": {
+            "question": "接受哪些加密货币？",
+            "answer": "我们接受比特币（BTC）、以太坊（ETH）、泰达币（USDT）、币安币（BNB）、索拉纳（SOL）、卡尔达诺（ADA）、波卡（DOT）和链链接（LINK）。"
+          },
+          "wallets": {
+            "question": "钱包集成如何工作？",
+            "answer": "我们安全地与MetaMask、Phantom和WalletConnect集成。钱包地址不会公开暴露，确保完全安全。"
+          },
+          "security": {
+            "question": "系统对交易安全吗？",
+            "answer": "是的，我们使用最佳区块链安全实践，包括高级加密和定期审计。所有交易都被跟踪且安全。"
+          }
+        }
+      },
+      "technical": {
+        "title": "技术",
+        "items": {
+          "mobile": {
+            "question": "网站在移动设备上工作吗？",
+            "answer": "是的，Agroisync完全响应式，在智能手机、平板电脑和台式机上完美工作，界面针对每个设备进行了优化。"
+          },
+          "notifications": {
+            "question": "通知系统如何工作？",
+            "answer": "我们为新货运、产品更新、消息和订单状态提供实时通知，通过电子邮件和推送通知。"
+          },
+          "availability": {
+            "question": "系统总是可用吗？",
+            "answer": "我们保证99.9%的正常运行时间，拥有强大的AWS基础设施、自动备份和24/7监控，确保最大可用性。"
+          }
+        }
+      }
+    },
+    "contact": {
+      "phone": {
+        "title": "电话",
+        "number": "(66) 99236-2830"
+      },
+      "email": {
+        "title": "电子邮件",
+        "address": "contact@agroisync.com"
+      },
+      "chat": {
+        "title": "聊天",
+        "description": "实时支持"
+      }
+    }
+  },
+  "help": {
+    "title": "帮助中心",
+    "subtitle": "Agroisync教程、文档和支持",
+    "contactTitle": "需要更多帮助？",
+    "sections": {
+      "firstSteps": {
+        "title": "第一步",
+        "description": "开始使用Agroisync的分步指南",
+        "items": {
+          "account": {
+            "title": "创建账户",
+            "description": "学习如何创建和配置您的账户"
+          },
+          "marketplace": {
+            "title": "使用市场",
+            "description": "如何浏览和查找产品"
+          },
+          "freight": {
+            "title": "设置货运",
+            "description": "注册和管理货运的教程"
+          },
+          "crypto": {
+            "title": "集成钱包",
+            "description": "如何安全连接钱包"
+          }
+        }
+      },
+      "nftStaking": {
+        "title": "NFT和质押",
+        "description": "关于NFT和质押系统的一切",
+        "items": {
+          "minting": {
+            "title": "创建NFT",
+            "description": "如何创建和定制您的NFT"
+          },
+          "staking": {
+            "title": "质押系统",
+            "description": "如何参与质押并获得奖励"
+          },
+          "rewards": {
+            "title": "奖励和福利",
+            "description": "了解奖励如何运作"
+          },
+          "security": {
+            "title": "NFT安全",
+            "description": "保护和最佳实践"
+          }
+        }
+      },
+      "paymentsSecurity": {
+        "title": "支付和安全",
+        "description": "支付方式和平台安全",
+        "items": {
+          "pix": {
+            "title": "PIX支付",
+            "description": "如何安全使用PIX"
+          },
+          "crypto": {
+            "title": "加密货币支付",
+            "description": "安全的加密货币交易"
+          },
+          "security": {
+            "title": "平台安全",
+            "description": "为您的安全实施的保护"
+          },
+          "verification": {
+            "title": "账户验证",
+            "description": "验证和验证过程"
+          }
+        }
+      },
+      "chatbotAI": {
+        "title": "AI聊天机器人",
+        "description": "如何使用智能虚拟助手",
+        "items": {
+          "basic": {
+            "title": "基本功能",
+            "description": "主要命令和功能"
+          },
+          "advanced": {
+            "title": "高级功能",
+            "description": "聊天机器人的高级功能"
+          },
+          "integration": {
+            "title": "系统集成",
+            "description": "聊天机器人如何与平台集成"
+          },
+          "troubleshooting": {
+            "title": "故障排除",
+            "description": "常见问题的解决"
+          }
+        }
+      }
+    },
+    "contact": {
+      "phone": {
+        "title": "电话",
+        "number": "(66) 99236-2830",
+        "schedule": "周一至周五，上午8点至下午6点"
+      },
+      "email": {
+        "title": "电子邮件",
+        "address": "support@agroisync.com",
+        "response": "24小时内回复"
+      },
+      "chat": {
+        "title": "聊天",
+        "description": "实时支持",
+        "availability": "24/7可用"
+      }
+    }
+  },
   "home": {
     "hero": {
       "title": "Agroisync",

@@ -40,6 +40,278 @@
     "register": "Register",
     "login": "Login"
   },
+  "status": {
+    "title": "System Status",
+    "subtitle": "Real-time Monitoring of Agroisync Services",
+    "overallTitle": "Overall System Status",
+    "lastUpdate": "Last update",
+    "servicesTitle": "Services Status",
+    "performanceTitle": "Performance Metrics",
+    "incidentTitle": "Incident History",
+    "noIncidents": "No Recent Incidents",
+    "allServicesNormal": "All services are running normally.",
+    "lastCheck": "Last check",
+    "uptime": "Uptime",
+    "responseTime": "Response Time",
+    "metrics": {
+      "uptime": "Average Uptime",
+      "responseTime": "Average Response Time",
+      "monitoring": "Monitoring"
+    },
+    "services": {
+      "blockchain": {
+        "name": "Solana Blockchain",
+        "description": "Blockchain network for secure transactions"
+      },
+      "marketplace": {
+        "name": "Marketplace",
+        "description": "Product and sales system"
+      },
+      "chatbot": {
+        "name": "AI Chatbot",
+        "description": "Intelligent virtual assistant"
+      },
+      "api": {
+        "name": "API/MongoDB",
+        "description": "Backend services and database"
+      },
+      "database": {
+        "name": "Database",
+        "description": "MongoDB and data storage"
+      },
+      "auth": {
+        "name": "Firebase Authentication",
+        "description": "Login and security system"
+      }
+    }
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Answers to the Main Questions about Agroisync",
+    "searchPlaceholder": "Search questions or answers...",
+    "contactTitle": "Still have questions?",
+    "categories": {
+      "general": {
+        "title": "General",
+        "items": {
+          "whatIs": {
+            "question": "What is AGROTM?",
+            "answer": "AGROTM is the most complete hub of Brazilian agribusiness, uniting agricultural products marketplace, freight platform and cryptocurrency solutions in a single professional and integrated platform."
+          },
+          "payment": {
+            "question": "Do I need to pay to use it?",
+            "answer": "We offer Basic (free), Pro and Enterprise plans. The basic plan is free and allows access to essential features. Paid plans offer advanced features and greater capacity."
+          },
+          "security": {
+            "question": "How to ensure security?",
+            "answer": "We use the best security practices: advanced encryption, two-factor authentication, identity verification, 24/7 monitoring and compliance with international security standards."
+          },
+          "nftRights": {
+            "question": "Do NFTs give real rights?",
+            "answer": "Yes, our NFTs represent real rights over agricultural products, freight or project participation. Each NFT is linked to physical assets or legal contracts, ensuring real value."
+          },
+          "support": {
+            "question": "How to contact support?",
+            "answer": "We offer multiple channels: 24/7 real-time chat, email (support@agroisync.com), phone (66) 99236-2830 and complete knowledge base. Our team responds within 24 hours."
+          }
+        }
+      },
+      "marketplace": {
+        "title": "Marketplace",
+        "items": {
+          "products": {
+            "question": "How to register products in the Store?",
+            "answer": "To register products, login as a seller, access 'My Products' and fill in the information: name, category, price, stock, description and photos. All products go through moderation."
+          },
+          "categories": {
+            "question": "What product categories are accepted?",
+            "answer": "We accept Inputs (seeds, fertilizers), Machines/Implements, Livestock (cattle, pigs), Commodities (grains, coffee) and Services (consulting, analysis)."
+          },
+          "payments": {
+            "question": "How does the payment system work?",
+            "answer": "We accept PIX, Bank Slip and Credit/Debit Card. For high-value products, we offer financing and installment options."
+          }
+        }
+      },
+      "freight": {
+        "title": "Freight",
+        "items": {
+          "register": {
+            "question": "How to register freight in AgroConecta?",
+            "answer": "Transport companies and drivers can register freight by informing product, quantity, origin, destination, truck type, value and deadline. The system offers tracking and cargo insurance."
+          },
+          "cargoTypes": {
+            "question": "What types of cargo are accepted?",
+            "answer": "We accept grains (soybeans, corn, wheat), commodities (coffee, cotton), agricultural machinery, live cattle and inputs, with vehicles suitable for each type of cargo."
+          },
+          "search": {
+            "question": "How does the freight search system work?",
+            "answer": "Producers can search for freight by origin, destination, product, price and truck type. The system shows real-time options with ratings and transport company history."
+          }
+        }
+      },
+      "crypto": {
+        "title": "Cryptocurrencies",
+        "items": {
+          "accepted": {
+            "question": "What cryptocurrencies are accepted?",
+            "answer": "We accept Bitcoin (BTC), Ethereum (ETH), Tether (USDT), Binance Coin (BNB), Solana (SOL), Cardano (ADA), Polkadot (DOT) and Chainlink (LINK)."
+          },
+          "wallets": {
+            "question": "How does wallet integration work?",
+            "answer": "We integrate with MetaMask, Phantom and WalletConnect securely. Wallet addresses are not publicly exposed, ensuring total security."
+          },
+          "security": {
+            "question": "Is the system secure for transactions?",
+            "answer": "Yes, we use the best blockchain security practices, with advanced encryption and regular audits. All transactions are tracked and secure."
+          }
+        }
+      },
+      "technical": {
+        "title": "Technical",
+        "items": {
+          "mobile": {
+            "question": "Does the site work on mobile devices?",
+            "answer": "Yes, Agroisync is fully responsive and works perfectly on smartphones, tablets and desktops, with interface optimized for each device."
+          },
+          "notifications": {
+            "question": "How does the notification system work?",
+            "answer": "We offer real-time notifications for new freight, product updates, messages and order status, via email and push notifications."
+          },
+          "availability": {
+            "question": "Is the system always available?",
+            "answer": "We guarantee 99.9% uptime with robust AWS infrastructure, automatic backups and 24/7 monitoring for maximum availability."
+          }
+        }
+      }
+    },
+    "contact": {
+      "phone": {
+        "title": "Phone",
+        "number": "(66) 99236-2830"
+      },
+      "email": {
+        "title": "Email",
+        "address": "contact@agroisync.com"
+      },
+      "chat": {
+        "title": "Chat",
+        "description": "Real-time support"
+      }
+    }
+  },
+  "help": {
+    "title": "Help Center",
+    "subtitle": "Tutorials, Documentation and Support for Agroisync",
+    "contactTitle": "Need more help?",
+    "sections": {
+      "firstSteps": {
+        "title": "First Steps",
+        "description": "Step-by-step guides to get started with Agroisync",
+        "items": {
+          "account": {
+            "title": "Creating your account",
+            "description": "Learn how to create and configure your account"
+          },
+          "marketplace": {
+            "title": "Using the Marketplace",
+            "description": "How to navigate and find products"
+          },
+          "freight": {
+            "title": "Setting up freight",
+            "description": "Tutorial for registering and managing freight"
+          },
+          "crypto": {
+            "title": "Integrating wallets",
+            "description": "How to connect wallets securely"
+          }
+        }
+      },
+      "nftStaking": {
+        "title": "NFT & Staking",
+        "description": "Everything about NFTs and staking system",
+        "items": {
+          "minting": {
+            "title": "Creating NFTs",
+            "description": "How to create and customize your NFTs"
+          },
+          "staking": {
+            "title": "Staking System",
+            "description": "How to participate in staking and earn rewards"
+          },
+          "rewards": {
+            "title": "Rewards and Benefits",
+            "description": "Understand how rewards work"
+          },
+          "security": {
+            "title": "NFT Security",
+            "description": "Protections and best practices"
+          }
+        }
+      },
+      "paymentsSecurity": {
+        "title": "Payments & Security",
+        "description": "Payment methods and platform security",
+        "items": {
+          "pix": {
+            "title": "PIX Payments",
+            "description": "How to use PIX securely"
+          },
+          "crypto": {
+            "title": "Crypto Payments",
+            "description": "Secure transactions in cryptocurrencies"
+          },
+          "security": {
+            "title": "Platform Security",
+            "description": "Protections implemented for your security"
+          },
+          "verification": {
+            "title": "Account Verification",
+            "description": "Verification and validation process"
+          }
+        }
+      },
+      "chatbotAI": {
+        "title": "AI Chatbot",
+        "description": "How to use the intelligent virtual assistant",
+        "items": {
+          "basic": {
+            "title": "Basic Features",
+            "description": "Main commands and features"
+          },
+          "advanced": {
+            "title": "Advanced Features",
+            "description": "Advanced chatbot functionality"
+          },
+          "integration": {
+            "title": "System Integration",
+            "description": "How the chatbot integrates with the platform"
+          },
+          "troubleshooting": {
+            "title": "Troubleshooting",
+            "description": "Resolution of common problems"
+          }
+        }
+      }
+    },
+    "contact": {
+      "phone": {
+        "title": "Phone",
+        "number": "(66) 99236-2830",
+        "schedule": "Monday to Friday, 8am to 6pm"
+      },
+      "email": {
+        "title": "Email",
+        "address": "support@agroisync.com",
+        "response": "Response within 24 hours"
+      },
+      "chat": {
+        "title": "Chat",
+        "description": "Real-time support",
+        "availability": "Available 24/7"
+      }
+    }
+  },
   "home": {
     "hero": {
       "title": "Agroisync",

@@ -6,11 +6,12 @@ import {
   BookOpen, Video, FileText, MessageCircle, 
   Phone, Mail, Clock, Users, Shield, Zap
 } from 'lucide-react';
-import GlobalTicker from '../components/GlobalTicker';
-import Navbar from '../components/Navbar';
-
-import WeatherWidget from '../components/WeatherWidget';
-import Chatbot from '../components/Chatbot';
+import { 
+  BookOpen, Video, FileText, MessageCircle, 
+  Phone, Mail, Clock, Users, Shield, Zap,
+  Truck, Coins, ShoppingCart, Settings,
+  HelpCircle, Star, Award, Bookmark
+} from 'lucide-react';
 
 const Ajuda = () => {
   const { isDark } = useTheme();
@@ -19,35 +20,35 @@ const Ajuda = () => {
 
   const helpSections = [
     {
-      id: 'tutoriais',
-      title: 'Tutoriais',
+      id: 'primeiros-passos',
+      title: t('help.sections.firstSteps.title'),
       icon: <BookOpen className="w-6 h-6" />,
-      description: 'Guias passo a passo para usar o Agroisync',
+      description: t('help.sections.firstSteps.description'),
       items: [
         {
-          title: 'Como cadastrar produtos na Loja',
-          description: 'Aprenda a cadastrar produtos agrícolas de forma profissional',
+          title: t('help.sections.firstSteps.items.account.title'),
+          description: t('help.sections.firstSteps.items.account.description'),
           duration: '5 min',
           type: 'video',
           link: '#'
         },
         {
-          title: 'Configurando fretes no AgroConecta',
-          description: 'Tutorial completo para cadastrar e gerenciar fretes',
+          title: t('help.sections.firstSteps.items.marketplace.title'),
+          description: t('help.sections.firstSteps.items.marketplace.description'),
           duration: '8 min',
           type: 'video',
           link: '#'
         },
         {
-          title: 'Integrando carteiras cripto',
-          description: 'Como conectar carteiras de forma segura',
+          title: t('help.sections.firstSteps.items.freight.title'),
+          description: t('help.sections.firstSteps.items.freight.description'),
           duration: '6 min',
           type: 'video',
           link: '#'
         },
         {
-          title: 'Primeiros passos no Agroisync',
-          description: 'Guia básico para novos usuários',
+          title: t('help.sections.firstSteps.items.crypto.title'),
+          description: t('help.sections.firstSteps.items.crypto.description'),
           duration: '10 min',
           type: 'video',
           link: '#'
@@ -55,73 +56,109 @@ const Ajuda = () => {
       ]
     },
     {
-      id: 'documentacao',
-      title: 'Documentação',
-      icon: <FileText className="w-6 h-6" />,
-      description: 'Documentação técnica e de usuário',
+      id: 'nft-staking',
+      title: t('help.sections.nftStaking.title'),
+      icon: <Coins className="w-6 h-6" />,
+      description: t('help.sections.nftStaking.description'),
       items: [
         {
-          title: 'API de Integração',
-          description: 'Documentação completa da API para desenvolvedores',
-          duration: 'Leitura',
-          type: 'document',
+          title: t('help.sections.nftStaking.items.minting.title'),
+          description: t('help.sections.nftStaking.items.minting.description'),
+          duration: '7 min',
+          type: 'video',
           link: '#'
         },
         {
-          title: 'Manual do Usuário',
-          description: 'Manual completo com todas as funcionalidades',
-          duration: 'Leitura',
-          type: 'document',
+          title: t('help.sections.nftStaking.items.staking.title'),
+          description: t('help.sections.nftStaking.items.staking.description'),
+          duration: '9 min',
+          type: 'video',
           link: '#'
         },
         {
-          title: 'Políticas de Uso',
-          description: 'Termos de uso e políticas da plataforma',
-          duration: 'Leitura',
-          type: 'document',
+          title: t('help.sections.nftStaking.items.rewards.title'),
+          description: t('help.sections.nftStaking.items.rewards.description'),
+          duration: '5 min',
+          type: 'video',
           link: '#'
         },
         {
-          title: 'FAQ Técnico',
-          description: 'Perguntas frequentes técnicas',
-          duration: 'Leitura',
-          type: 'document',
+          title: t('help.sections.nftStaking.items.security.title'),
+          description: t('help.sections.nftStaking.items.security.description'),
+          duration: '8 min',
+          type: 'video',
           link: '#'
         }
       ]
     },
     {
-      id: 'suporte',
-      title: 'Suporte',
-      icon: <MessageCircle className="w-6 h-6" />,
-      description: 'Canais de suporte e atendimento',
+      id: 'pagamentos-seguranca',
+      title: t('help.sections.paymentsSecurity.title'),
+      icon: <Shield className="w-6 h-6" />,
+      description: t('help.sections.paymentsSecurity.description'),
       items: [
         {
-          title: 'Chat em Tempo Real',
-          description: 'Suporte via chat com nossa equipe',
-          duration: '24/7',
-          type: 'chat',
+          title: t('help.sections.paymentsSecurity.items.pix.title'),
+          description: t('help.sections.paymentsSecurity.items.pix.description'),
+          duration: '3 min',
+          type: 'video',
           link: '#'
         },
         {
-          title: 'Central de Ajuda',
-          description: 'Base de conhecimento e soluções',
-          duration: 'Sempre',
-          type: 'help',
+          title: t('help.sections.paymentsSecurity.items.crypto.title'),
+          description: t('help.sections.paymentsSecurity.items.crypto.description'),
+          duration: '6 min',
+          type: 'video',
           link: '#'
         },
         {
-          title: 'Comunidade',
-          description: 'Fórum de usuários e discussões',
-          duration: 'Ativo',
-          type: 'community',
+          title: t('help.sections.paymentsSecurity.items.security.title'),
+          description: t('help.sections.paymentsSecurity.items.security.description'),
+          duration: '4 min',
+          type: 'video',
           link: '#'
         },
         {
-          title: 'Status do Sistema',
-          description: 'Monitoramento em tempo real',
-          duration: '24/7',
-          type: 'status',
+          title: t('help.sections.paymentsSecurity.items.verification.title'),
+          description: t('help.sections.paymentsSecurity.items.verification.description'),
+          duration: '5 min',
+          type: 'video',
+          link: '#'
+        }
+      ]
+    },
+    {
+      id: 'chatbot-ia',
+      title: t('help.sections.chatbotAI.title'),
+      icon: <MessageCircle className="w-6 h-6" />,
+      description: t('help.sections.chatbotAI.description'),
+      items: [
+        {
+          title: t('help.sections.chatbotAI.items.basic.title'),
+          description: t('help.sections.chatbotAI.items.basic.description'),
+          duration: '4 min',
+          type: 'video',
+          link: '#'
+        },
+        {
+          title: t('help.sections.chatbotAI.items.advanced.title'),
+          description: t('help.sections.chatbotAI.items.advanced.description'),
+          duration: '7 min',
+          type: 'video',
+          link: '#'
+        },
+        {
+          title: t('help.sections.chatbotAI.items.integration.title'),
+          description: t('help.sections.chatbotAI.items.integration.description'),
+          duration: '6 min',
+          type: 'video',
+          link: '#'
+        },
+        {
+          title: t('help.sections.chatbotAI.items.troubleshooting.title'),
+          description: t('help.sections.chatbotAI.items.troubleshooting.description'),
+          duration: '5 min',
+          type: 'video',
           link: '#'
         }
       ]
@@ -188,10 +225,10 @@ const Ajuda = () => {
 
         <div className="relative max-w-6xl mx-auto text-center">
           <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
-            Central de Ajuda
+            {t('help.title')}
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                         Tutoriais, Documentação e Suporte para o Agroisync
+            {t('help.subtitle')}
           </p>
         </div>
       </section>
@@ -299,7 +336,7 @@ const Ajuda = () => {
             transition={{ duration: 0.6 }}
             className="text-3xl md:text-4xl font-bold mb-8"
           >
-            Precisa de mais ajuda?
+            {t('help.contactTitle')}
           </motion.h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -314,9 +351,9 @@ const Ajuda = () => {
               }`}
             >
               <Phone className="w-12 h-12 mx-auto mb-4 text-green-500" />
-              <h3 className="font-bold mb-2">Telefone</h3>
-              <p className="text-sm">(66) 99236-2830</p>
-              <p className="text-xs text-gray-500 mt-1">Segunda a Sexta, 8h às 18h</p>
+              <h3 className="font-bold mb-2">{t('help.contact.phone.title')}</h3>
+              <p className="text-sm">{t('help.contact.phone.number')}</p>
+              <p className="text-xs text-gray-500 mt-1">{t('help.contact.phone.schedule')}</p>
             </motion.div>
 
             <motion.div
@@ -330,9 +367,9 @@ const Ajuda = () => {
               }`}
             >
               <Mail className="w-12 h-12 mx-auto mb-4 text-green-500" />
-              <h3 className="font-bold mb-2">Email</h3>
-              <p className="text-sm">suporte@agroisync.com</p>
-              <p className="text-xs text-gray-500 mt-1">Resposta em até 24h</p>
+              <h3 className="font-bold mb-2">{t('help.contact.email.title')}</h3>
+              <p className="text-sm">{t('help.contact.email.address')}</p>
+              <p className="text-xs text-gray-500 mt-1">{t('help.contact.email.response')}</p>
             </motion.div>
 
             <motion.div
@@ -346,17 +383,14 @@ const Ajuda = () => {
               }`}
             >
               <Clock className="w-12 h-12 mx-auto mb-4 text-green-500" />
-              <h3 className="font-bold mb-2">Chat</h3>
-              <p className="text-sm">Suporte em tempo real</p>
-              <p className="text-xs text-gray-500 mt-1">Disponível 24/7</p>
+              <h3 className="font-bold mb-2">{t('help.contact.chat.title')}</h3>
+              <p className="text-sm">{t('help.contact.chat.description')}</p>
+              <p className="text-xs text-gray-500 mt-1">{t('help.contact.chat.availability')}</p>
             </motion.div>
           </div>
         </div>
       </section>
 
-      
-      <WeatherWidget />
-      <Chatbot />
     </div>
   );
 };
