@@ -98,7 +98,7 @@ const Footer = () => {
               </li>
               <li>
                 <a href="/agroconecta" className="text-gray-300 hover:text-green-400 transition-colors duration-200">
-                  {t('nav.freight')}
+                  {t('nav.agroconnect')}
                 </a>
               </li>
               <li>
@@ -120,31 +120,31 @@ const Footer = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <h4 className="text-lg font-semibold mb-4 text-white">{t('footer.services')}</h4>
+            <h4 className="text-lg font-semibold mb-4 text-white">{t('footer.services.title')}</h4>
             <ul className="space-y-2">
               <li>
                 <a href="/loja" className="text-gray-300 hover:text-green-400 transition-colors duration-200">
-                  {t('footer.marketplace')}
+                  {t('footer.services.marketplace')}
                 </a>
               </li>
               <li>
                 <a href="/agroconecta" className="text-gray-300 hover:text-green-400 transition-colors duration-200">
-                  {t('footer.freight')}
+                  {t('footer.services.agroconnect')}
                 </a>
               </li>
               <li>
                 <a href="/cripto" className="text-gray-300 hover:text-green-400 transition-colors duration-200">
-                  {t('footer.crypto')}
+                  {t('footer.services.crypto')}
                 </a>
               </li>
               <li>
                 <a href="/planos" className="text-gray-300 hover:text-green-400 transition-colors duration-200">
-                  {t('footer.plans')}
+                  {t('nav.plans')}
                 </a>
               </li>
               <li>
                 <a href="/contato" className="text-gray-300 hover:text-green-400 transition-colors duration-200">
-                  {t('footer.support')}
+                  {t('footer.support.help')}
                 </a>
               </li>
             </ul>
@@ -162,7 +162,7 @@ const Footer = () => {
             <div className="flex items-center space-x-3">
               <MapPin className="w-5 h-5 text-green-400" />
               <div>
-                <p className="text-sm text-gray-300">{t('footer.address')}</p>
+                <p className="text-sm text-gray-300">{t('contact.info.address.title')}</p>
                 <p className="text-white font-medium">Sinop - MT, Brasil</p>
               </div>
             </div>
@@ -170,7 +170,7 @@ const Footer = () => {
             <div className="flex items-center space-x-3">
               <Phone className="w-5 h-5 text-green-400" />
               <div>
-                <p className="text-sm text-gray-300">{t('footer.phone')}</p>
+                <p className="text-sm text-gray-300">{t('contact.info.phone.title')}</p>
                 <p className="text-white font-medium">(66) 99236-2830</p>
               </div>
             </div>
@@ -178,7 +178,7 @@ const Footer = () => {
             <div className="flex items-center space-x-3">
               <Mail className="w-5 h-5 text-green-400" />
               <div>
-                <p className="text-sm text-gray-300">{t('footer.email')}</p>
+                <p className="text-sm text-gray-300">{t('contact.info.email.title')}</p>
                 <p className="text-white font-medium">contato@agroisync.com</p>
               </div>
             </div>
@@ -194,20 +194,20 @@ const Footer = () => {
         >
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="flex items-center space-x-2 text-gray-400 text-sm">
-                               <span>© {currentYear} Agroisync. {t('footer.rights')}</span>
+              <span>© {currentYear} Agroisync. {t('footer.rights')}</span>
               <Heart className="w-4 h-4 text-red-500" />
               <span>{t('footer.madeIn')}</span>
             </div>
             
             <div className="flex items-center space-x-6 text-sm">
               <a href="/privacidade" className="text-gray-400 hover:text-green-400 transition-colors duration-200">
-                {t('footer.privacy')}
+                {t('footer.legal.privacy')}
               </a>
               <a href="/termos" className="text-gray-400 hover:text-green-400 transition-colors duration-200">
-                {t('footer.terms')}
+                {t('footer.legal.terms')}
               </a>
               <a href="/cookies" className="text-gray-400 hover:text-green-400 transition-colors duration-200">
-                {t('footer.cookies')}
+                {t('footer.legal.cookies')}
               </a>
             </div>
           </div>

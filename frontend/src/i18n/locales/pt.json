@@ -26,15 +26,275 @@
     "brand": "Agroisync",
     "tagline": "O Hub Completo do Agronegócio Brasileiro"
   },
-  "navigation": {
+  "nav": {
     "home": "Início",
     "about": "Sobre",
-    "quotes": "Cotações",
     "store": "Loja",
     "agroconnect": "AgroConecta",
     "crypto": "Cripto",
+    "plans": "Planos",
+    "faq": "FAQ",
+    "help": "Ajuda",
+    "status": "Status",
+    "contact": "Contato",
     "register": "Cadastro",
-    "contact": "Contato"
+    "login": "Login"
+  },
+  "home": {
+    "hero": {
+      "title": "Agroisync",
+      "subtitle": "O Hub Completo do Agronegócio Brasileiro",
+      "description": "Conectando produtores, compradores e investidores com tecnologia de ponta. Marketplace de anúncios, cotações por região e pagamentos seguros — tudo em uma única plataforma.",
+      "cta": {
+        "primary": "Explorar Marketplace",
+        "secondary": "Saiba Mais"
+      }
+    },
+    "highlights": {
+      "title": "Destaques",
+      "subtitle": "Tecnologia de ponta para o agronegócio",
+      "realTimeData": "Dados em Tempo Real",
+      "realTimeDataDesc": "Dados atualizados em tempo real para decisões estratégicas",
+      "advancedAnalytics": "Análises Avançadas",
+      "advancedAnalyticsDesc": "Análises avançadas com inteligência artificial",
+      "marketIntelligence": "Inteligência de Mercado",
+      "marketIntelligenceDesc": "Inteligência de mercado e tendências",
+      "cryptoTrading": "Pagamentos Cripto",
+      "cryptoTradingDesc": "Pagamentos em cripto integrados ao ecossistema"
+    },
+    "features": {
+      "title": "Por que Agroisync?",
+      "subtitle": "Soluções inovadoras para o agronegócio",
+      "marketplace": {
+        "title": "Marketplace Completo",
+        "description": "Plataforma integrada para compra e venda de produtos agrícolas"
+      },
+      "freight": {
+        "title": "Sistema de Fretes",
+        "description": "Conecta produtores e transportadoras de forma eficiente"
+      },
+      "crypto": {
+        "title": "Soluções Cripto",
+        "description": "Pagamentos e transações em criptomoedas integradas"
+      },
+      "quotes": {
+        "title": "Cotações em Tempo Real",
+        "description": "Dados atualizados de preços e tendências do mercado"
+      }
+    },
+    "howItWorks": {
+      "title": "Como Funciona",
+      "subtitle": "Processo simples e eficiente para o seu agronegócio",
+      "step1": {
+        "title": "Cadastre-se",
+        "description": "Crie sua conta gratuita em minutos"
+      },
+      "step2": {
+        "title": "Explore",
+        "description": "Navegue pelo marketplace e encontre o que precisa"
+      },
+      "step3": {
+        "title": "Conecte-se",
+        "description": "Faça negócios com segurança e transparência"
+      }
+    },
+    "testimonials": {
+      "title": "Depoimentos",
+      "subtitle": "O que nossos usuários dizem sobre a plataforma",
+      "farmer": {
+        "role": "Produtor Rural",
+        "content": "A plataforma revolucionou minha forma de vender produtos. Interface intuitiva e suporte excelente."
+      },
+      "transporter": {
+        "role": "Transportadora",
+        "content": "O AgroConecta nos conectou com os melhores fretes. Sistema eficiente e confiável."
+      },
+      "buyer": {
+        "role": "Comprador",
+        "content": "Encontrei produtos de qualidade com preços competitivos. Recomendo para todos do setor."
+      }
+    },
+    "stats": {
+      "users": "Usuários Ativos",
+      "products": "Produtos Cadastrados",
+      "freights": "Fretes Realizados",
+      "uptime": "Disponibilidade"
+    },
+    "cta": {
+      "title": "Pronto para Revolucionar seu Agronegócio?",
+      "subtitle": "Junte-se a milhares de produtores que já escolheram o Agroisync",
+      "primary": "Começar Agora",
+      "secondary": "Ver Planos"
+    }
+  },
+  "about": {
+    "title": "Sobre o Agroisync",
+    "subtitle": "Conectando o Agronegócio Brasileiro com Tecnologia e Inovação",
+    "mission": {
+      "title": "Nossa Missão",
+      "description": "Conectar o agronegócio brasileiro com tecnologia e inovação, unindo produtores, compradores e investidores em uma plataforma inovadora e eficiente.",
+      "point1": "Integração tecnológica completa",
+      "point2": "Transparência em todas as transações",
+      "point3": "Sustentabilidade no agronegócio",
+      "point4": "Inovação contínua",
+      "vision": "Ser o hub líder do agronegócio brasileiro, criando um ecossistema sustentável e conectado para o futuro da agricultura.",
+      "users": "Usuários Ativos",
+      "products": "Produtos Cadastrados"
+    },
+    "values": {
+      "title": "Nossos Valores",
+      "subtitle": "Princípios que guiam todas as nossas ações",
+      "innovation": {
+        "title": "Inovação",
+        "description": "Sempre buscamos as melhores soluções tecnológicas"
+      },
+      "trust": {
+        "title": "Confiança",
+        "description": "Transparência e segurança em todas as operações"
+      },
+      "global": {
+        "title": "Conectividade Global",
+        "description": "Ligando o agronegócio brasileiro ao mundo"
+      },
+      "community": {
+        "title": "Comunidade",
+        "description": "Fortalecendo o setor através da colaboração"
+      }
+    },
+    "timeline": {
+      "title": "Nossa Jornada",
+      "subtitle": "Marcos importantes na história do Agroisync",
+      "2020": {
+        "title": "Fundação",
+        "description": "Nascimento da plataforma e desenvolvimento inicial"
+      },
+      "2021": {
+        "title": "Primeiro Lançamento",
+        "description": "Versão beta e primeiros usuários"
+      },
+      "2022": {
+        "title": "Expansão",
+        "description": "Crescimento para novos mercados e regiões"
+      },
+      "2023": {
+        "title": "Tecnologia Avançada",
+        "description": "Integração com IA e blockchain"
+      },
+      "2024": {
+        "title": "Liderança",
+        "description": "Consolidação como referência no setor"
+      }
+    },
+    "team": {
+      "title": "Nossa Equipe",
+      "subtitle": "Especialistas dedicados ao seu sucesso",
+      "ceo": {
+        "role": "CEO & Fundador",
+        "description": "Líder visionário com vasta experiência no setor"
+      },
+      "developers": {
+        "role": "Equipe de Desenvolvimento",
+        "description": "Especialistas em tecnologia e inovação"
+      },
+      "consultants": {
+        "role": "Consultores Agrícolas",
+        "description": "Profissionais com conhecimento profundo do setor"
+      }
+    },
+    "cta": {
+      "title": "Faça Parte da Revolução",
+      "subtitle": "Entre em contato e descubra como podemos ajudar seu negócio",
+      "primary": "Falar Conosco",
+      "secondary": "Ver Planos"
+    }
+  },
+  "contact": {
+    "title": "Entre em Contato",
+    "subtitle": "Estamos Aqui para Ajudar o Seu Agronegócio",
+    "info": {
+      "title": "Informações de Contato",
+      "subtitle": "Múltiplos canais para atendimento personalizado",
+      "address": {
+        "title": "Endereço",
+        "content": "Sinop - MT, Brasil"
+      },
+      "phone": {
+        "title": "Telefone",
+        "content": "(66) 99236-2830"
+      },
+      "email": {
+        "title": "E-mail",
+        "content": "contato@agroisync.com"
+      },
+      "hours": {
+        "title": "Horário de Funcionamento",
+        "content": "Segunda a Sexta: 8h às 18h"
+      }
+    },
+    "form": {
+      "title": "Formulário de Contato",
+      "name": "Nome Completo",
+      "namePlaceholder": "Digite seu nome completo",
+      "email": "E-mail",
+      "emailPlaceholder": "Digite seu e-mail",
+      "phone": "Telefone",
+      "phonePlaceholder": "Digite seu telefone",
+      "subject": "Assunto",
+      "subjectPlaceholder": "Digite o assunto",
+      "message": "Mensagem",
+      "messagePlaceholder": "Digite sua mensagem",
+      "send": "Enviar Mensagem",
+      "sending": "Enviando...",
+      "success": {
+        "title": "Mensagem Enviada!",
+        "message": "Obrigado pelo contato. Retornaremos em breve.",
+        "cta": "Enviar Nova Mensagem"
+      }
+    },
+    "map": {
+      "title": "Nossa Localização",
+      "office": {
+        "title": "Escritório Principal",
+        "name": "Agroisync",
+        "address": "Sinop - Mato Grosso",
+        "city": "Brasil"
+      }
+    },
+    "cta": {
+      "title": "Vamos Conversar?",
+      "subtitle": "Entre em contato e descubra como podemos transformar seu agronegócio",
+      "primary": "Falar Conosco",
+      "secondary": "Ver Planos"
+    }
+  },
+  "marketplace": {
+    "title": "Marketplace Agroisync",
+    "subtitle": "Conecte-se diretamente com produtores e fornecedores",
+    "search": "Buscar produtos...",
+    "categories": "Categorias",
+    "location": "Localização",
+    "priceRange": "Faixa de Preço",
+    "quality": "Qualidade",
+    "certifications": "Certificações",
+    "viewMode": {
+      "grid": "Grade",
+      "list": "Lista"
+    },
+    "sortBy": {
+      "relevance": "Relevância",
+      "price": "Preço",
+      "rating": "Avaliação",
+      "newest": "Mais Recente"
+    },
+    "filters": {
+      "title": "Filtros Avançados",
+      "clear": "Limpar Filtros",
+      "apply": "Aplicar Filtros"
+    },
+    "product": {
+      "contactSupplier": "Contatar Fornecedor",
+      "save": "Salvar"
+    }
   },
   "crypto": {
     "title": "Criptomoedas Agroisync",
@@ -79,73 +339,9 @@
       "learnMore": "Saber Mais"
     }
   },
-  "home": {
-    "hero": {
-      "title": "Agroisync",
-      "subtitle": "O Hub Completo do Agronegócio Brasileiro",
-      "description": "Conectando produtores, compradores e investidores com tecnologia de ponta. Marketplace de anúncios, cotações por região e pagamentos seguros — tudo em uma única plataforma.",
-      "ctaPrimary": "Explorar Marketplace",
-      "ctaSecondary": "Saiba Mais"
-    },
-    "highlights": {
-      "title": "Destaques",
-      "subtitle": "Tecnologia de ponta para o agronegócio",
-      "realTimeData": "Dados em Tempo Real",
-      "realTimeDataDesc": "Dados atualizados em tempo real para decisões estratégicas",
-      "advancedAnalytics": "Análises Avançadas",
-      "advancedAnalyticsDesc": "Análises avançadas com inteligência artificial",
-      "marketIntelligence": "Inteligência de Mercado",
-      "marketIntelligenceDesc": "Inteligência de mercado e tendências",
-      "cryptoTrading": "Pagamentos Cripto",
-      "cryptoTradingDesc": "Pagamentos em cripto integrados ao ecossistema"
-    },
-    "features": {
-      "title": "Por que Agroisync?",
-      "subtitle": "Soluções inovadoras para o agronegócio",
-      "feature1": {
-        "title": "Gestão de Anúncios",
-        "description": "Intermediação profissional de produtos agrícolas"
-      },
-      "feature2": {
-        "title": "Cotações Locais",
-        "description": "Preços de grãos personalizados por região"
-      },
-      "feature3": {
-        "title": "Chatbot IA",
-        "description": "Assistente inteligente para suporte e análises rápidas"
-      }
-    }
-  },
-  "marketplace": {
-    "title": "Marketplace Agroisync",
-    "subtitle": "Conecte-se diretamente com produtores e fornecedores",
-    "search": "Buscar produtos...",
-    "categories": "Categorias",
-    "location": "Localização",
-    "priceRange": "Faixa de Preço",
-    "quality": "Qualidade",
-    "certifications": "Certificações",
-    "viewMode": {
-      "grid": "Grade",
-      "list": "Lista"
-    },
-    "sortBy": {
-      "relevance": "Relevância",
-      "price": "Preço",
-      "rating": "Avaliação",
-      "newest": "Mais Recente"
-    },
-    "filters": {
-      "title": "Filtros Avançados",
-      "clear": "Limpar Filtros",
-      "apply": "Aplicar Filtros"
-    },
-    "product": {
-      "contactSupplier": "Contatar Fornecedor",
-      "save": "Salvar"
-    }
-  },
   "footer": {
+    "description": "O Hub Completo do Agronegócio Brasileiro, conectando produtores, compradores e investidores com soluções inovadoras e seguras.",
+    "quickLinks": "Links Rápidos",
     "company": {
       "title": "Empresa",
       "about": "Sobre o Agroisync",
@@ -174,8 +370,8 @@
       "cookies": "Cookies",
       "compliance": "Compliance"
     },
-    "description": "O Hub Completo do Agronegócio Brasileiro, conectando produtores, compradores e investidores com soluções inovadoras e seguras.",
     "rights": "Todos os direitos reservados.",
+    "madeIn": "Feito no Brasil",
     "version": "Versão"
   }
 }

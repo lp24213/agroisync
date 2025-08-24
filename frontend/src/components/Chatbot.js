@@ -57,7 +57,7 @@ const Chatbot = () => {
   useEffect(() => {
     const initialMessage = {
       id: 1,
-      text: `Olá! Sou ${personalities[chatbotPersonality].name} ${personalities[chatbotPersonality].avatar}\n\nComo posso ajudar você hoje? Posso:\n• 📈 Analisar cotações de grãos\n• 🏪 Ajudar no marketplace\n• 💰 Explicar DeFi e criptomoedas\n• 📍 Fornecer dados de geolocalização\n• 🔍 Buscar informações do IBGE\n• 💳 Ajudar com pagamentos\n\nEscolha uma opção ou me diga o que precisa!`,
+      text: `Olá! Sou ${personalities[chatbotPersonality].name} ${personalities[chatbotPersonality].avatar}\n\nComo posso ajudar você hoje? Posso:\n• Analisar cotações de grãos\n• Ajudar no marketplace\n• Explicar DeFi e criptomoedas\n• Fornecer dados de geolocalização\n• Buscar informações do IBGE\n• Ajudar com pagamentos\n\nEscolha uma opção ou me diga o que precisa!`,
       sender: 'bot',
       timestamp: new Date(),
       type: 'welcome'
@@ -174,26 +174,26 @@ const Chatbot = () => {
     const input = userInput.toLowerCase();
     
     if (input.includes('cotação') || input.includes('preço') || input.includes('grãos')) {
-      return '📈 Aqui estão as cotações atuais dos principais grãos:\n\n🌾 Soja: R$ 180,50 (+1.8%)\n🌽 Milho: R$ 85,30 (-0.3%)\n☕ Café: R$ 1.250,00 (+2.5%)\n\nQuer que eu analise alguma tendência específica?';
+      return 'Aqui estão as cotações atuais dos principais grãos:\n\nSoja: R$ 180,50 (+1.8%)\nMilho: R$ 85,30 (-0.3%)\nCafé: R$ 1.250,00 (+2.5%)\n\nQuer que eu analise alguma tendência específica?';
     }
     
     if (input.includes('marketplace') || input.includes('loja') || input.includes('comprar')) {
-      return '🏪 Nossa loja oferece:\n\n• Grãos certificados\n• Preços competitivos\n• Entrega segura\n• Pagamento flexível\n\nPosso te ajudar a encontrar o produto ideal!';
+      return 'Nossa loja oferece:\n\n• Grãos certificados\n• Preços competitivos\n• Entrega segura\n• Pagamento flexível\n\nPosso te ajudar a encontrar o produto ideal!';
     }
     
     if (input.includes('cripto') || input.includes('defi') || input.includes('blockchain')) {
-      return '₿ DeFi no agronegócio:\n\n• Staking de grãos\n• NFTs de propriedades\n• Smart contracts para contratos\n• Pagamentos em criptomoedas\n\nQuer saber mais sobre algum aspecto?';
+      return 'DeFi no agronegócio:\n\n• Staking de grãos\n• NFTs de propriedades\n• Smart contracts para contratos\n• Pagamentos em criptomoedas\n\nQuer saber mais sobre algum aspecto?';
     }
     
     if (input.includes('ibge') || input.includes('dados') || input.includes('estatísticas')) {
-      return '📊 Dados do IBGE disponíveis:\n\n• Produção agrícola\n• Área plantada\n• Produtividade por região\n• Preços médios\n\nQue tipo de informação você precisa?';
+      return 'Dados do IBGE disponíveis:\n\n• Produção agrícola\n• Área plantada\n• Produtividade por região\n• Preços médios\n\nQue tipo de informação você precisa?';
     }
     
     if (input.includes('pagamento') || input.includes('pagar') || input.includes('cartão')) {
-      return '💳 Formas de pagamento:\n\n• Cartão de crédito/débito\n• PIX\n• Boleto bancário\n• Criptomoedas\n• Transferência bancária\n\nQual prefere?';
+      return 'Formas de pagamento:\n\n• Cartão de crédito/débito\n• PIX\n• Boleto bancário\n• Criptomoedas\n• Transferência bancária\n\nQual prefere?';
     }
     
-    return '🤔 Interessante! Posso te ajudar com:\n\n📈 Cotações e análises\n🏪 Marketplace de grãos\n₿ DeFi e criptomoedas\n📊 Dados do IBGE\n💳 Pagamentos\n\nMe diga mais sobre o que você precisa!';
+    return 'Interessante! Posso te ajudar com:\n\nCotações e análises\nMarketplace de grãos\nDeFi e criptomoedas\nDados do IBGE\nPagamentos\n\nMe diga mais sobre o que você precisa!';
   };
 
   const handleKeyPress = (e) => {

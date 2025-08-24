@@ -26,23 +26,29 @@
     "brand": "Agroisync",
     "tagline": "The Complete Hub of Brazilian Agribusiness"
   },
-  "navigation": {
+  "nav": {
     "home": "Home",
     "about": "About",
-    "quotes": "Quotes",
     "store": "Store",
     "agroconnect": "AgroConnect",
     "crypto": "Crypto",
+    "plans": "Plans",
+    "faq": "FAQ",
+    "help": "Help",
+    "status": "Status",
+    "contact": "Contact",
     "register": "Register",
-    "contact": "Contact"
+    "login": "Login"
   },
   "home": {
     "hero": {
       "title": "Agroisync",
       "subtitle": "The Complete Hub of Brazilian Agribusiness",
       "description": "Connecting producers, buyers and investors with cutting-edge technology. Advertisement marketplace, regional quotes and secure payments — all in one platform.",
-      "cta": "Explore Marketplace",
-      "learnMore": "Learn More"
+      "cta": {
+        "primary": "Explore Marketplace",
+        "secondary": "Learn More"
+      }
     },
     "highlights": {
       "title": "Highlights",
@@ -59,18 +65,206 @@
     "features": {
       "title": "Why Agroisync?",
       "subtitle": "Innovative solutions for agribusiness",
-      "feature1": {
-        "title": "Advertisement Management",
-        "description": "Professional intermediation of agricultural products"
+      "marketplace": {
+        "title": "Complete Marketplace",
+        "description": "Integrated platform for buying and selling agricultural products"
       },
-      "feature2": {
-        "title": "Local Quotes",
-        "description": "Grain prices customized by region"
+      "freight": {
+        "title": "Freight System",
+        "description": "Efficiently connects producers and carriers"
       },
-      "feature3": {
-        "title": "AI Chatbot",
-        "description": "Intelligent assistant for support and quick analysis"
+      "crypto": {
+        "title": "Crypto Solutions",
+        "description": "Integrated cryptocurrency payments and transactions"
+      },
+      "quotes": {
+        "title": "Real-Time Quotes",
+        "description": "Updated data on prices and market trends"
       }
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "subtitle": "Simple and efficient process for your agribusiness",
+      "step1": {
+        "title": "Sign Up",
+        "description": "Create your free account in minutes"
+      },
+      "step2": {
+        "title": "Explore",
+        "description": "Browse the marketplace and find what you need"
+      },
+      "step3": {
+        "title": "Connect",
+        "description": "Do business with security and transparency"
+      }
+    },
+    "testimonials": {
+      "title": "Testimonials",
+      "subtitle": "What our users say about the platform",
+      "farmer": {
+        "role": "Rural Producer",
+        "content": "The platform revolutionized my way of selling products. Intuitive interface and excellent support."
+      },
+      "transporter": {
+        "role": "Carrier",
+        "content": "AgroConnect connected us with the best freight. Efficient and reliable system."
+      },
+      "buyer": {
+        "role": "Buyer",
+        "content": "I found quality products at competitive prices. I recommend it for everyone in the sector."
+      }
+    },
+    "stats": {
+      "users": "Active Users",
+      "products": "Registered Products",
+      "freights": "Completed Freight",
+      "uptime": "Uptime"
+    },
+    "cta": {
+      "title": "Ready to Revolutionize Your Agribusiness?",
+      "subtitle": "Join thousands of producers who have already chosen Agroisync",
+      "primary": "Get Started",
+      "secondary": "View Plans"
+    }
+  },
+  "about": {
+    "title": "About Agroisync",
+    "subtitle": "Connecting Brazilian Agribusiness with Technology and Innovation",
+    "mission": {
+      "title": "Our Mission",
+      "description": "Connect Brazilian agribusiness with technology and innovation, uniting producers, buyers and investors in an innovative and efficient platform.",
+      "point1": "Complete technological integration",
+      "point2": "Transparency in all transactions",
+      "point3": "Sustainability in agribusiness",
+      "point4": "Continuous innovation",
+      "vision": "To be the leading hub of Brazilian agribusiness, creating a sustainable and connected ecosystem for the future of agriculture.",
+      "users": "Active Users",
+      "products": "Registered Products"
+    },
+    "values": {
+      "title": "Our Values",
+      "subtitle": "Principles that guide all our actions",
+      "innovation": {
+        "title": "Innovation",
+        "description": "We always seek the best technological solutions"
+      },
+      "trust": {
+        "title": "Trust",
+        "description": "Transparency and security in all operations"
+      },
+      "global": {
+        "title": "Global Connectivity",
+        "description": "Linking Brazilian agribusiness to the world"
+      },
+      "community": {
+        "title": "Community",
+        "description": "Strengthening the sector through collaboration"
+      }
+    },
+    "timeline": {
+      "title": "Our Journey",
+      "subtitle": "Important milestones in Agroisync's history",
+      "2020": {
+        "title": "Foundation",
+        "description": "Platform birth and initial development"
+      },
+      "2021": {
+        "title": "First Launch",
+        "description": "Beta version and first users"
+      },
+      "2022": {
+        "title": "Expansion",
+        "description": "Growth to new markets and regions"
+      },
+      "2023": {
+        "title": "Advanced Technology",
+        "description": "Integration with AI and blockchain"
+      },
+      "2024": {
+        "title": "Leadership",
+        "description": "Consolidation as a sector reference"
+      }
+    },
+    "team": {
+      "title": "Our Team",
+      "subtitle": "Experts dedicated to your success",
+      "ceo": {
+        "role": "CEO & Founder",
+        "description": "Visionary leader with extensive sector experience"
+      },
+      "developers": {
+        "role": "Development Team",
+        "description": "Technology and innovation specialists"
+      },
+      "consultants": {
+        "role": "Agricultural Consultants",
+        "description": "Professionals with deep sector knowledge"
+      }
+    },
+    "cta": {
+      "title": "Be Part of the Revolution",
+      "subtitle": "Get in touch and discover how we can help your business",
+      "primary": "Talk to Us",
+      "secondary": "View Plans"
+    }
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "subtitle": "We're Here to Help Your Agribusiness",
+    "info": {
+      "title": "Contact Information",
+      "subtitle": "Multiple channels for personalized service",
+      "address": {
+        "title": "Address",
+        "content": "Sinop - MT, Brazil"
+      },
+      "phone": {
+        "title": "Phone",
+        "content": "(66) 99236-2830"
+      },
+      "email": {
+        "title": "Email",
+        "content": "contato@agroisync.com"
+      },
+      "hours": {
+        "title": "Business Hours",
+        "content": "Monday to Friday: 8am to 6pm"
+      }
+    },
+    "form": {
+      "title": "Contact Form",
+      "name": "Full Name",
+      "namePlaceholder": "Enter your full name",
+      "email": "Email",
+      "emailPlaceholder": "Enter your email",
+      "phone": "Phone",
+      "phonePlaceholder": "Enter your phone",
+      "subject": "Subject",
+      "subjectPlaceholder": "Enter the subject",
+      "message": "Message",
+      "messagePlaceholder": "Enter your message",
+      "send": "Send Message",
+      "sending": "Sending...",
+      "success": {
+        "title": "Message Sent!",
+        "message": "Thank you for contacting us. We'll get back to you soon.",
+        "cta": "Send New Message"
+      }
+    },
+    "map": {
+      "title": "Our Location",
+      "office": {
+        "title": "Main Office",
+        "name": "Agroisync",
+        "address": "Sinop - Mato Grosso",
+        "city": "Brazil"
+      }
+    },
+    "cta": {
+      "title": "Let's Talk?",
+      "subtitle": "Get in touch and discover how we can transform your agribusiness",
+      "primary": "Talk to Us",
+      "secondary": "View Plans"
     }
   },
   "marketplace": {
@@ -108,71 +302,47 @@
     "noResults": "No results found",
     "noResultsDescription": "Try adjusting the filters or searching for other terms"
   },
-  "about": {
-    "title": "About Agroisync",
-    "subtitle": "Connecting Brazilian Agribusiness with Technology and Innovation",
-    "mission": {
-      "title": "Our Mission",
-      "description": "Connect Brazilian agribusiness with technology and innovation, uniting producers, buyers and investors in an innovative and efficient platform."
+  "crypto": {
+    "title": "Agroisync Cryptocurrencies",
+    "subtitle": "Cryptocurrency Solutions for Agribusiness",
+    "realTimeQuotes": "Real-Time Quotes",
+    "connectWallet": "Connect Wallet",
+    "acceptedPayments": "Accepted Payments",
+    "transactionHistory": "Transaction History",
+    "security": "Security",
+    "walletConnected": "Wallet Connected",
+    "balance": "Balance",
+    "disconnect": "Disconnect",
+    "viewTransactions": "View Transactions",
+    "connectMetaMask": "Connect MetaMask",
+    "connectPhantom": "Connect Phantom",
+    "connectWalletConnect": "Connect WalletConnect",
+    "connecting": "Connecting...",
+    "metamaskNotInstalled": "MetaMask is not installed!",
+    "walletConnectionError": "Wallet connection error",
+    "features": {
+      "staking": "Staking",
+      "stakingDesc": "Stake your tokens and earn rewards",
+      "yieldFarming": "Yield Farming",
+      "yieldFarmingDesc": "Maximize your returns with farming",
+      "liquidityPools": "Liquidity Pools",
+      "liquidityPoolsDesc": "Provide liquidity and earn fees"
     },
-    "vision": {
-      "title": "Our Vision",
-      "description": "To be the leading hub of Brazilian agribusiness, creating a sustainable and connected ecosystem for the future of agriculture."
+    "payments": {
+      "traditional": "Traditional Payments",
+      "traditionalDesc": "Accept payments in reais through Stripe, integrated with our DeFi platform for automatic currency conversion",
+      "creditCard": "Credit Card",
+      "pix": "PIX",
+      "boleto": "Boleto",
+      "visaMastercard": "Visa, Mastercard",
+      "instantTransfer": "Instant Transfer",
+      "bankPayment": "Bank Payment"
     },
-    "values": {
-      "title": "Our Values",
-      "innovation": "Innovation",
-      "sustainability": "Sustainability",
-      "transparency": "Transparency",
-      "excellence": "Excellence",
-      "collaboration": "Collaboration"
-    },
-    "stats": {
-      "title": "Impressive Numbers",
-      "users": "Active Users",
-      "transactions": "Completed Transactions",
-      "countries": "Countries Served",
-      "partners": "Strategic Partners"
-    },
-    "journey": {
-      "title": "Our Journey",
-      "2020": "Foundation and platform development",
-      "2021": "Beta launch and first users",
-      "2022": "Expansion to new markets",
-      "2023": "Integration with advanced technologies",
-      "2024": "Leadership in the agtech market"
-    },
-    "team": {
-      "title": "Our Team",
-      "description": "Experts in technology, agribusiness and innovation working together to revolutionize the sector."
-    },
-    "technology": {
-      "title": "Cutting-Edge Technologies",
-      "description": "We use the most advanced technologies to ensure performance, security and scalability."
-    }
-  },
-  "contact": {
-    "title": "Get in Touch",
-    "subtitle": "We're Here to Help Your Agribusiness",
-    "form": {
-      "name": "Full Name",
-      "email": "Email",
-      "phone": "Phone",
-      "company": "Company",
-      "subject": "Subject",
-      "message": "Message",
-      "send": "Send Message"
-    },
-    "info": {
-      "title": "Contact Information",
-      "address": "Address",
-      "phone": "Phone",
-      "email": "Email",
-      "website": "Website"
-    },
-    "social": {
-      "title": "Social Media",
-      "follow": "Follow us"
+    "cta": {
+      "title": "Ready for the Future of Finance?",
+      "subtitle": "Experience the first DeFi platform integrated with Brazilian agribusiness",
+      "connectWallet": "Connect Wallet",
+      "learnMore": "Learn More"
     }
   },
   "chatbot": {
@@ -198,6 +368,7 @@
   },
   "footer": {
     "description": "The Complete Hub of Brazilian Agribusiness, integrating real-time data, advanced analytics and global connectivity.",
+    "quickLinks": "Quick Links",
     "company": {
       "title": "Company",
       "about": "About Agroisync",
@@ -227,6 +398,7 @@
       "compliance": "Compliance"
     },
     "rights": "All rights reserved.",
+    "madeIn": "Made in Brazil",
     "version": "Version",
     "lastUpdate": "Last update",
     "social": "Social Media",

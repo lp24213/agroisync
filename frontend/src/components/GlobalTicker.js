@@ -97,7 +97,7 @@ const GlobalTicker = () => {
           }`}>
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
             <span className="text-xs font-semibold uppercase tracking-wider">
-              📊 COTAÇÕES EM TEMPO REAL • AGROISYNC
+              COTAÇÕES EM TEMPO REAL • AGROISYNC
             </span>
           </div>
 

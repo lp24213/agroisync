@@ -26,23 +26,29 @@
     "brand": "Agroisync",
     "tagline": "巴西农业综合企业的完整中心"
   },
-  "navigation": {
+  "nav": {
     "home": "首页",
     "about": "关于",
-    "quotes": "报价",
     "store": "商店",
     "agroconnect": "农业连接",
     "crypto": "加密",
+    "plans": "计划",
+    "faq": "常见问题",
+    "help": "帮助",
+    "status": "状态",
+    "contact": "联系",
     "register": "注册",
-    "contact": "联系"
+    "login": "登录"
   },
   "home": {
     "hero": {
       "title": "Agroisync",
       "subtitle": "巴西农业综合企业的完整中心",
       "description": "通过尖端技术连接生产者、买家和投资者。广告市场、区域报价和安全支付 — 全部集成在一个平台中。",
-      "cta": "探索市场",
-      "learnMore": "了解更多"
+      "cta": {
+        "primary": "探索市场",
+        "secondary": "了解更多"
+      }
     },
     "highlights": {
       "title": "亮点",
@@ -59,18 +65,206 @@
     "features": {
       "title": "为什么选择Agroisync？",
       "subtitle": "农业综合企业的创新解决方案",
-      "feature1": {
-        "title": "广告管理",
-        "description": "农产品专业中介服务"
+      "marketplace": {
+        "title": "完整市场",
+        "description": "农产品买卖集成平台"
       },
-      "feature2": {
-        "title": "本地报价",
-        "description": "按地区定制的谷物价格"
+      "freight": {
+        "title": "货运系统",
+        "description": "高效连接生产者和运输商"
       },
-      "feature3": {
-        "title": "AI聊天机器人",
-        "description": "智能助手，提供支持和快速分析"
+      "crypto": {
+        "title": "加密解决方案",
+        "description": "集成加密货币支付和交易"
+      },
+      "quotes": {
+        "title": "实时报价",
+        "description": "价格和市场趋势的更新数据"
       }
+    },
+    "howItWorks": {
+      "title": "工作原理",
+      "subtitle": "为您的农业综合企业提供简单高效的流程",
+      "step1": {
+        "title": "注册",
+        "description": "几分钟内创建免费账户"
+      },
+      "step2": {
+        "title": "探索",
+        "description": "浏览市场并找到您需要的东西"
+      },
+      "step3": {
+        "title": "连接",
+        "description": "安全透明地开展业务"
+      }
+    },
+    "testimonials": {
+      "title": "用户评价",
+      "subtitle": "我们的用户对平台的评价",
+      "farmer": {
+        "role": "农村生产者",
+        "content": "该平台彻底改变了我的产品销售方式。直观的界面和出色的支持。"
+      },
+      "transporter": {
+        "role": "运输商",
+        "content": "AgroConnect将我们与最佳货运连接起来。高效可靠的系统。"
+      },
+      "buyer": {
+        "role": "买家",
+        "content": "我找到了具有竞争力的优质产品。我推荐给该行业的每个人。"
+      }
+    },
+    "stats": {
+      "users": "活跃用户",
+      "products": "注册产品",
+      "freights": "完成的货运",
+      "uptime": "正常运行时间"
+    },
+    "cta": {
+      "title": "准备好革新您的农业综合企业了吗？",
+      "subtitle": "加入已经选择Agroisync的数千名生产者",
+      "primary": "立即开始",
+      "secondary": "查看计划"
+    }
+  },
+  "about": {
+    "title": "关于Agroisync",
+    "subtitle": "用技术和创新连接巴西农业综合企业",
+    "mission": {
+      "title": "我们的使命",
+      "description": "通过技术和创新连接巴西农业综合企业，在创新高效的平台上连接生产者、买家和投资者。",
+      "point1": "完整的技术集成",
+      "point2": "所有交易的透明度",
+      "point3": "农业综合企业的可持续性",
+      "point4": "持续创新",
+      "vision": "成为巴西农业综合企业的领先中心，为农业的未来创造可持续和互联的生态系统。",
+      "users": "活跃用户",
+      "products": "注册产品"
+    },
+    "values": {
+      "title": "我们的价值观",
+      "subtitle": "指导我们所有行动的原则",
+      "innovation": {
+        "title": "创新",
+        "description": "我们始终寻求最佳的技术解决方案"
+      },
+      "trust": {
+        "title": "信任",
+        "description": "所有操作的透明度和安全性"
+      },
+      "global": {
+        "title": "全球连接",
+        "description": "将巴西农业综合企业与世界连接"
+      },
+      "community": {
+        "title": "社区",
+        "description": "通过协作加强行业"
+      }
+    },
+    "timeline": {
+      "title": "我们的旅程",
+      "subtitle": "Agroisync历史上的重要里程碑",
+      "2020": {
+        "title": "成立",
+        "description": "平台诞生和初步发展"
+      },
+      "2021": {
+        "title": "首次发布",
+        "description": "测试版和首批用户"
+      },
+      "2022": {
+        "title": "扩展",
+        "description": "向新市场和地区增长"
+      },
+      "2023": {
+        "title": "先进技术",
+        "description": "与AI和区块链集成"
+      },
+      "2024": {
+        "title": "领导地位",
+        "description": "巩固作为行业参考的地位"
+      }
+    },
+    "team": {
+      "title": "我们的团队",
+      "subtitle": "致力于您成功的专家",
+      "ceo": {
+        "role": "CEO兼创始人",
+        "description": "具有丰富行业经验的远见卓识的领导者"
+      },
+      "developers": {
+        "role": "开发团队",
+        "description": "技术和创新专家"
+      },
+      "consultants": {
+        "role": "农业顾问",
+        "description": "具有深厚行业知识的专业人士"
+      }
+    },
+    "cta": {
+      "title": "成为革命的一部分",
+      "subtitle": "联系我们，了解我们如何帮助您的业务",
+      "primary": "与我们交谈",
+      "secondary": "查看计划"
+    }
+  },
+  "contact": {
+    "title": "联系我们",
+    "subtitle": "我们在这里帮助您的农业综合企业",
+    "info": {
+      "title": "联系信息",
+      "subtitle": "个性化服务的多个渠道",
+      "address": {
+        "title": "地址",
+        "content": "锡诺普 - 马托格罗索，巴西"
+      },
+      "phone": {
+        "title": "电话",
+        "content": "(66) 99236-2830"
+      },
+      "email": {
+        "title": "电子邮件",
+        "content": "contato@agroisync.com"
+      },
+      "hours": {
+        "title": "营业时间",
+        "content": "周一至周五：上午8点至下午6点"
+      }
+    },
+    "form": {
+      "title": "联系表单",
+      "name": "全名",
+      "namePlaceholder": "输入您的全名",
+      "email": "电子邮件",
+      "emailPlaceholder": "输入您的电子邮件",
+      "phone": "电话",
+      "phonePlaceholder": "输入您的电话",
+      "subject": "主题",
+      "subjectPlaceholder": "输入主题",
+      "message": "消息",
+      "messagePlaceholder": "输入您的消息",
+      "send": "发送消息",
+      "sending": "发送中...",
+      "success": {
+        "title": "消息已发送！",
+        "message": "感谢您的联系。我们会尽快回复您。",
+        "cta": "发送新消息"
+      }
+    },
+    "map": {
+      "title": "我们的位置",
+      "office": {
+        "title": "主办公室",
+        "name": "Agroisync",
+        "address": "锡诺普 - 马托格罗索",
+        "city": "巴西"
+      }
+    },
+    "cta": {
+      "title": "让我们谈谈？",
+      "subtitle": "联系我们，了解我们如何改变您的农业综合企业",
+      "primary": "与我们交谈",
+      "secondary": "查看计划"
     }
   },
   "marketplace": {
@@ -108,71 +302,47 @@
     "noResults": "未找到结果",
     "noResultsDescription": "尝试调整筛选条件或搜索其他术语"
   },
-  "about": {
-    "title": "关于Agroisync",
-    "subtitle": "用技术和创新连接巴西农业综合企业",
-    "mission": {
-      "title": "我们的使命",
-      "description": "通过技术和创新连接巴西农业综合企业，在创新高效的平台上连接生产者、买家和投资者。"
+  "crypto": {
+    "title": "Agroisync加密货币",
+    "subtitle": "农业综合企业的加密货币解决方案",
+    "realTimeQuotes": "实时报价",
+    "connectWallet": "连接钱包",
+    "acceptedPayments": "接受的付款",
+    "transactionHistory": "交易历史",
+    "security": "安全性",
+    "walletConnected": "钱包已连接",
+    "balance": "余额",
+    "disconnect": "断开连接",
+    "viewTransactions": "查看交易",
+    "connectMetaMask": "连接MetaMask",
+    "connectPhantom": "连接Phantom",
+    "connectWalletConnect": "连接WalletConnect",
+    "connecting": "连接中...",
+    "metamaskNotInstalled": "未安装MetaMask！",
+    "walletConnectionError": "钱包连接错误",
+    "features": {
+      "staking": "质押",
+      "stakingDesc": "质押您的代币并获得奖励",
+      "yieldFarming": "收益农场",
+      "yieldFarmingDesc": "通过农场最大化您的回报",
+      "liquidityPools": "流动性池",
+      "liquidityPoolsDesc": "提供流动性并获得费用"
     },
-    "vision": {
-      "title": "我们的愿景",
-      "description": "成为巴西农业综合企业的领先中心，为农业的未来创造可持续和互联的生态系统。"
+    "payments": {
+      "traditional": "传统付款",
+      "traditionalDesc": "通过Stripe接受雷亚尔付款，与我们的DeFi平台集成，实现自动货币转换",
+      "creditCard": "信用卡",
+      "pix": "PIX",
+      "boleto": "Boleto",
+      "visaMastercard": "Visa、Mastercard",
+      "instantTransfer": "即时转账",
+      "bankPayment": "银行付款"
     },
-    "values": {
-      "title": "我们的价值观",
-      "innovation": "创新",
-      "sustainability": "可持续性",
-      "transparency": "透明度",
-      "excellence": "卓越",
-      "collaboration": "协作"
-    },
-    "stats": {
-      "title": "令人印象深刻的数字",
-      "users": "活跃用户",
-      "transactions": "完成的交易",
-      "countries": "服务的国家",
-      "partners": "战略合作伙伴"
-    },
-    "journey": {
-      "title": "我们的旅程",
-      "2020": "平台基础和开发",
-      "2021": "测试版发布和首批用户",
-      "2022": "扩展到新市场",
-      "2023": "与先进技术集成",
-      "2024": "农业科技市场领导地位"
-    },
-    "team": {
-      "title": "我们的团队",
-      "description": "技术、农业和创新专家共同努力革新该行业。"
-    },
-    "technology": {
-      "title": "尖端技术",
-      "description": "我们使用最先进的技术来确保性能、安全性和可扩展性。"
-    }
-  },
-  "contact": {
-    "title": "联系我们",
-    "subtitle": "我们在这里帮助您的农业综合企业",
-    "form": {
-      "name": "全名",
-      "email": "电子邮件",
-      "phone": "电话",
-      "company": "公司",
-      "subject": "主题",
-      "message": "消息",
-      "send": "发送消息"
-    },
-    "info": {
-      "title": "联系信息",
-      "address": "地址",
-      "phone": "电话",
-      "email": "电子邮件",
-      "website": "网站"
-    },
-    "social": {
-      "title": "社交媒体",
-      "follow": "关注我们"
+    "cta": {
+      "title": "准备好迎接金融的未来？",
+      "subtitle": "体验第一个与巴西农业综合企业集成的DeFi平台",
+      "connectWallet": "连接钱包",
+      "learnMore": "了解更多"
     }
   },
   "chatbot": {
@@ -198,6 +368,7 @@
   },
   "footer": {
     "description": "巴西农业综合企业的完整中心，集成实时数据、高级分析和全球连接。",
+    "quickLinks": "快速链接",
     "company": {
       "title": "公司",
       "about": "关于Agroisync",
@@ -227,6 +398,7 @@
       "compliance": "合规"
     },
     "rights": "保留所有权利。",
+    "madeIn": "巴西制造",
     "version": "版本",
     "lastUpdate": "最后更新",
     "social": "社交媒体",
