@@ -15,8 +15,8 @@ const Cotacao = () => {
             Cotação de Grãos
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Preços em tempo real baseados na sua localização via API Agrolink. 
-            Dados atualizados automaticamente com geolocalização GPS e fallback por IP.
+            Preços em tempo real baseados na sua localização detectada por IP. 
+            Dados atualizados automaticamente com cotações regionais personalizadas.
           </p>
         </div>
       </section>
@@ -32,7 +32,7 @@ const Cotacao = () => {
       <section className="py-20 px-4 bg-gray-900">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-16 text-white">
-            Como Funciona a Geolocalização
+            Como Funciona a Detecção de Localização
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center p-6 bg-gray-800 rounded-lg">
@@ -42,8 +42,8 @@ const Cotacao = () => {
                   <circle cx="12" cy="10" r="3"/>
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-white">1. GPS Nativo</h3>
-              <p className="text-gray-400">Solicitamos acesso ao GPS do seu dispositivo para localização precisa</p>
+              <h3 className="text-xl font-semibold mb-2 text-white">1. Detecção por IP</h3>
+              <p className="text-gray-400">Detectamos automaticamente sua localização através do seu endereço IP</p>
             </div>
             
             <div className="text-center p-6 bg-gray-800 rounded-lg">
@@ -54,8 +54,8 @@ const Cotacao = () => {
                   <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-white">2. Fallback IP</h3>
-              <p className="text-gray-400">Se GPS não estiver disponível, usamos sua localização por IP</p>
+              <h3 className="text-xl font-semibold mb-2 text-white">2. Cotações Regionais</h3>
+              <p className="text-gray-400">Preços personalizados baseados na sua região detectada automaticamente</p>
             </div>
             
             <div className="text-center p-6 bg-gray-800 rounded-lg">
@@ -66,8 +66,8 @@ const Cotacao = () => {
                   <path d="M6 16h12"/>
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-white">3. API Agrolink</h3>
-              <p className="text-gray-400">Preços regionais baseados na sua localização detectada</p>
+              <h3 className="text-xl font-semibold mb-2 text-white">3. Atualização Automática</h3>
+              <p className="text-gray-400">Dados atualizados a cada 5 minutos para informações sempre precisas</p>
             </div>
           </div>
         </div>

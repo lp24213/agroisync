@@ -5,16 +5,15 @@ import GrainsChart from './GrainsChart';
 import FuturesMarket from './FuturesMarket';
 import ExportData from './ExportData';
 import { useAgrolinkGrains } from '../../services/agrolinkAPI';
-import { useGeolocation } from '../../services/geoService';
 
 const GrainsDashboard = () => {
-  const { regionInfo, loading: locationLoading, error: locationError } = useGeolocation();
   const { 
     grainsData, 
     loading: grainsLoading, 
     error: grainsError, 
-    refreshData 
-  } = useAgrolinkGrains(regionInfo);
+    refreshData,
+    userLocation
+  } = useAgrolinkGrains();
 
   const [lastUpdate, setLastUpdate] = useState(new Date());
 
@@ -32,8 +31,8 @@ const GrainsDashboard = () => {
     setLastUpdate(new Date());
   }, [refreshData]);
 
-  const isLoading = locationLoading || grainsLoading;
-  const hasError = locationError || grainsError;
+  const isLoading = grainsLoading;
+  const hasError = grainsError;
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -73,7 +72,7 @@ const GrainsDashboard = () => {
             </svg>
             <h2 className="text-2xl font-bold mb-4 text-red-400">Erro ao Carregar Dados</h2>
             <p className="text-gray-300 mb-6">
-              {locationError || grainsError || 'Erro desconhecido'}
+              {grainsError || 'Erro desconhecido'}
             </p>
             <button
               onClick={handleRefresh}
@@ -95,6 +94,29 @@ const GrainsDashboard = () => {
       variants={containerVariants}
     >
       <div className="max-w-7xl mx-auto">
+        {/* Header com localização */}
+        <motion.div 
+          className="mb-8"
+        >
+          {userLocation && (
+            <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4 mb-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <svg className="w-5 h-5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                  </svg>
+                  <span className="text-gray-300">Localização detectada:</span>
+                  <span className="text-white font-semibold">{userLocation.region}</span>
+                </div>
+                <span className="text-sm text-gray-400">
+                  IP: {userLocation.ip}
+                </span>
+              </div>
+            </div>
+          )}
+        </motion.div>
+
         {/* Header */}
         <motion.div 
           className="mb-8"
@@ -134,26 +156,7 @@ const GrainsDashboard = () => {
             </div>
           </div>
 
-          {/* Localização */}
-          {regionInfo && (
-            <motion.div 
-              className="bg-gray-900/50 rounded-lg p-4 border border-gray-700"
-              variants={itemVariants}
-            >
-              <div className="flex items-center space-x-2 text-gray-300">
-                <svg className="w-5 h-5 text-green-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                  <circle cx="12" cy="10" r="3"/>
-                </svg>
-                <span className="font-medium">
-                  {regionInfo.city}, {regionInfo.state} - {regionInfo.country}
-                </span>
-                <span className="text-sm text-gray-500">
-                  Última atualização: {lastUpdate.toLocaleTimeString('pt-BR')}
-                </span>
-              </div>
-            </motion.div>
-          )}
+
         </motion.div>
 
         {/* Loading State */}
@@ -177,7 +180,7 @@ const GrainsDashboard = () => {
               <GrainsPriceCard 
                 key={grain.id} 
                 grain={grain}
-                location={regionInfo}
+                location={userLocation}
               />
             ))}
           </motion.div>

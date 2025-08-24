@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 
 // Hook para dados da API Agrolink (simulado + integração futura)
-export const useAgrolinkGrains = (regionInfo) => {
+export const useAgrolinkGrains = () => {
   const [grainsData, setGrainsData] = useState([]);
   const [marketData, setMarketData] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [userLocation, setUserLocation] = useState(null);
 
   // Dados base de grãos (simulados baseados em dados reais)
   const getBaseGrainsData = useCallback((region) => {
@@ -82,6 +83,47 @@ export const useAgrolinkGrains = (regionInfo) => {
     });
   }, []);
 
+  // Função para obter localização do usuário via API
+  const getUserLocation = useCallback(async () => {
+    try {
+      const response = await fetch('/api/location');
+      if (!response.ok) {
+        throw new Error(`Erro na API de localização: ${response.status}`);
+      }
+      const locationData = await response.json();
+      setUserLocation(locationData);
+      return locationData;
+    } catch (error) {
+      console.error('Erro ao obter localização:', error);
+      // Fallback para dados padrão
+      return {
+        city: 'São Paulo',
+        state: 'SP',
+        region: 'São Paulo, SP'
+      };
+    }
+  }, []);
+
+  // Função para obter cotações baseadas na região
+  const getCotacoesByRegion = useCallback(async (region) => {
+    try {
+      const response = await fetch(`/api/cotacoes?regiao=${encodeURIComponent(region)}`);
+      if (!response.ok) {
+        throw new Error(`Erro na API de cotações: ${response.status}`);
+      }
+      const cotacoesData = await response.json();
+      return cotacoesData.cotacoes;
+    } catch (error) {
+      console.error('Erro ao obter cotações:', error);
+      // Fallback para dados padrão
+      return [
+        { produto: 'Soja', preco: 'R$ 150,00/sc', variacao: 'N/A', unidade: 'sc' },
+        { produto: 'Milho', preco: 'R$ 85,00/sc', variacao: 'N/A', unidade: 'sc' },
+        { produto: 'Trigo', preco: 'R$ 70,00/sc', variacao: 'N/A', unidade: 'sc' }
+      ];
+    }
+  }, []);
+
   // Multiplicador de preços por região (simulado)
   const getRegionMultiplier = (region) => {
     if (!region) return 1.0;
@@ -155,36 +197,112 @@ export const useAgrolinkGrains = (regionInfo) => {
     return null;
   }, []);
 
-  const refreshData = useCallback(() => {
-    if (regionInfo) {
-      fetchAgrolinkData(regionInfo);
+  const refreshData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Obter localização atualizada
+      const location = await getUserLocation();
+      
+      // Obter cotações atualizadas
+      const cotacoes = await getCotacoesByRegion(location.region);
+      
+      // Converter formato das cotações
+      const grains = cotacoes.map((cotacao, index) => ({
+        id: `grain-${index}`,
+        name: cotacao.produto,
+        symbol: cotacao.produto.toUpperCase().substring(0, 3),
+        unit: cotacao.unidade,
+        price: parseFloat(cotacao.preco.replace(/[^\d,]/g, '').replace(',', '.')),
+        change: 0,
+        changePercent: 0,
+        volume: Math.floor(Math.random() * 10000) + 1000,
+        lastUpdate: new Date().toISOString(),
+        region: location.region,
+        variacao: cotacao.variacao
+      }));
+      
+      setGrainsData(grains);
+      setMarketData({
+        totalVolume: grains.reduce((sum, grain) => sum + grain.volume, 0),
+        activeContracts: grains.length,
+        lastUpdate: new Date().toISOString(),
+        userLocation: location
+      });
+    } catch (error) {
+      console.error('Erro ao atualizar dados:', error);
+      setError('Erro ao atualizar dados dos grãos');
+    } finally {
+      setLoading(false);
     }
-  }, [regionInfo, fetchAgrolinkData]);
+  }, [getUserLocation, getCotacoesByRegion]);
 
   useEffect(() => {
-    if (regionInfo) {
-      fetchAgrolinkData(regionInfo);
-      fetchIBGEData(regionInfo);
-    }
-  }, [regionInfo, fetchAgrolinkData, fetchIBGEData]);
+    const loadGrainsData = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        // Obter localização do usuário
+        const location = await getUserLocation();
+        
+        // Obter cotações baseadas na região
+        const cotacoes = await getCotacoesByRegion(location.region);
+        
+        // Converter formato das cotações para o formato esperado
+        const grains = cotacoes.map((cotacao, index) => ({
+          id: `grain-${index}`,
+          name: cotacao.produto,
+          symbol: cotacao.produto.toUpperCase().substring(0, 3),
+          unit: cotacao.unidade,
+          price: parseFloat(cotacao.preco.replace(/[^\d,]/g, '').replace(',', '.')),
+          change: 0, // Não temos variação nos dados mockados
+          changePercent: 0,
+          volume: Math.floor(Math.random() * 10000) + 1000,
+          lastUpdate: new Date().toISOString(),
+          region: location.region,
+          variacao: cotacao.variacao
+        }));
+        
+        setGrainsData(grains);
+        
+        // Simular dados de mercado
+        setMarketData({
+          totalVolume: grains.reduce((sum, grain) => sum + grain.volume, 0),
+          activeContracts: grains.length,
+          lastUpdate: new Date().toISOString(),
+          userLocation: location
+        });
+      } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+        setError('Erro ao carregar dados dos grãos');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadGrainsData();
+  }, [getUserLocation, getCotacoesByRegion]);
 
   // Auto-refresh a cada 5 minutos
   useEffect(() => {
     const interval = setInterval(() => {
-      if (regionInfo && !loading) {
+      if (!loading) {
         refreshData();
       }
     }, 300000); // 5 minutos
 
     return () => clearInterval(interval);
-  }, [regionInfo, loading, refreshData]);
+  }, [loading, refreshData]);
 
   return {
     grainsData,
     marketData,
     loading,
     error,
-    refreshData
+    refreshData,
+    userLocation
   };
 };
 
