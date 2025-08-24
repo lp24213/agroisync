@@ -1,332 +1,298 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
 import { useTheme } from '../contexts/ThemeContext';
-import { Link } from 'react-router-dom';
-import { BarChart3, Search, Globe, Bitcoin, Rocket, Zap, Network } from 'lucide-react';
-import NFTMinting from '../components/illustrations/NFTMinting';
-import PremiumFarmer from '../components/illustrations/PremiumFarmer';
-import InteractiveDashboard from '../components/illustrations/InteractiveDashboard';
-import StakingFarming from '../components/illustrations/StakingFarming';
-import CyberDefense from '../components/illustrations/CyberDefense';
-import SmartFarming from '../components/illustrations/SmartFarming';
+import { useTranslation } from 'react-i18next';
+import { 
+  ArrowRight, Star, Users, TrendingUp, Shield, Zap, 
+  ShoppingCart, Truck, Coins, Globe, CheckCircle
+} from 'lucide-react';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import GlobalTicker from '../components/GlobalTicker';
 import WeatherWidget from '../components/WeatherWidget';
-import NewsWidget from '../components/NewsWidget';
+import Chatbot from '../components/Chatbot';
 
 const Home = () => {
-  const { t } = useTranslation();
   const { isDark } = useTheme();
+  const { t } = useTranslation();
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.3
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: "easeOut"
-      }
-    }
-  };
-
-  const highlightCards = [
+  const features = [
     {
-      icon: <BarChart3 className="w-8 h-8" />,
-      title: t('home.highlights.realTimeData'),
-      description: t('home.highlights.realTimeDataDesc'),
-      illustration: <InteractiveDashboard className="w-16 h-16" />
+      icon: <ShoppingCart className="w-8 h-8" />,
+      title: t('home.features.marketplace.title'),
+      description: t('home.features.marketplace.description'),
+      color: 'from-green-500 to-green-600'
     },
     {
-      icon: <Search className="w-8 h-8" />,
-      title: t('home.highlights.advancedAnalytics'),
-      description: t('home.highlights.advancedAnalyticsDesc'),
-      illustration: <CyberDefense className="w-16 h-16" />
+      icon: <Truck className="w-8 h-8" />,
+      title: t('home.features.freight.title'),
+      description: t('home.features.freight.description'),
+      color: 'from-blue-500 to-blue-600'
     },
     {
-      icon: <Globe className="w-8 h-8" />,
-      title: t('home.highlights.marketIntelligence'),
-      description: t('home.highlights.marketIntelligenceDesc'),
-      illustration: <SmartFarming className="w-16 h-16" />
+      icon: <Coins className="w-8 h-8" />,
+      title: t('home.features.crypto.title'),
+      description: t('home.features.crypto.description'),
+      color: 'from-purple-500 to-purple-600'
     },
     {
-      icon: <Bitcoin className="w-8 h-8" />,
-      title: t('home.highlights.cryptoTrading'),
-      description: t('home.highlights.cryptoTradingDesc'),
-      illustration: <NFTMinting className="w-20 h-20" />
+      icon: <TrendingUp className="w-8 h-8" />,
+      title: t('home.features.quotes.title'),
+      description: t('home.features.quotes.description'),
+      color: 'from-orange-500 to-orange-600'
     }
   ];
 
-  const featureCards = [
+  const stats = [
+    { number: '50K+', label: t('home.stats.users') },
+    { number: '100K+', label: t('home.stats.products') },
+    { number: '25K+', label: t('home.stats.freights') },
+    { number: '99.9%', label: t('home.stats.uptime') }
+  ];
+
+  const testimonials = [
     {
-      icon: <Rocket className="w-8 h-8" />,
-      title: t('home.features.feature1.title'),
-      description: t('home.features.feature1.description'),
-      illustration: <PremiumFarmer className="w-20 h-20" />
+      name: 'João Silva',
+      role: t('home.testimonials.farmer.role'),
+      content: t('home.testimonials.farmer.content'),
+      rating: 5,
+      avatar: '👨‍🌾'
     },
     {
-      icon: <Zap className="w-8 h-8" />,
-      title: t('home.features.feature2.title'),
-      description: t('home.features.feature2.description'),
-      illustration: <StakingFarming className="w-20 h-20" />
+      name: 'Maria Santos',
+      role: t('home.testimonials.transporter.role'),
+      content: t('home.testimonials.transporter.content'),
+      rating: 5,
+      avatar: '🚛'
     },
     {
-      icon: <Network className="w-8 h-8" />,
-      title: t('home.features.feature3.title'),
-      description: t('home.features.feature3.description'),
-      illustration: <SmartFarming className="w-20 h-20" />
+      name: 'Carlos Oliveira',
+      role: t('home.testimonials.buyer.role'),
+      content: t('home.testimonials.buyer.content'),
+      rating: 5,
+      avatar: '🏢'
     }
   ];
 
   return (
-    <div className={`min-h-screen relative z-10 ${
-      isDark ? 'bg-gray-900' : 'bg-white'
-    }`}>
+    <div className={`min-h-screen ${isDark ? 'bg-black text-white' : 'bg-white text-gray-900'}`}>
+      {/* Global Ticker */}
+      <GlobalTicker />
+      
+      {/* Navbar */}
+      <Navbar />
+
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden">
-        {/* Gradiente de fundo baseado no tema */}
-        <div className={`absolute inset-0 transition-all duration-500 ${
-          isDark 
-            ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-black' 
-            : 'bg-gradient-to-br from-white via-gray-50 to-gray-100'
-        }`} />
-        
-        {/* Partículas flutuantes */}
-        <div className="absolute inset-0 overflow-hidden">
-          {[...Array(20)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-2 h-2 bg-cyan-400/30 rounded-full"
-              animate={{
-                x: [0, 100, 0],
-                y: [0, -100, 0],
-                opacity: [0.3, 0.8, 0.3],
-              }}
-              transition={{
-                duration: 8 + i * 0.5,
-                repeat: Infinity,
-                delay: i * 0.2,
-              }}
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-              }}
-            />
-          ))}
+      <section className="relative pt-32 pb-20 px-4 overflow-hidden">
+        {/* Background */}
+        <div className="absolute inset-0">
+          {isDark ? (
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900">
+              <div className="absolute inset-0 bg-gray-800 opacity-20"></div>
+            </div>
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50">
+              <div className="absolute inset-0 bg-blue-100 opacity-30"></div>
+            </div>
+          )}
         </div>
 
-        {/* Conteúdo do Hero */}
-        <div className="relative z-10 text-center max-w-4xl mx-auto">
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            <motion.h1
-              variants={itemVariants}
-              className={`text-5xl md:text-7xl font-bold mb-6 font-orbitron ${
-                isDark
-                  ? 'bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent'
-                  : 'bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent'
-              }`}
-            >
-              {t('home.hero.title')}
-            </motion.h1>
-            
-            <motion.p
-              variants={itemVariants}
-              className={`text-xl md:text-2xl mb-8 ${
-                isDark ? 'text-gray-300' : 'text-gray-700'
-              }`}
-            >
-              {t('home.hero.subtitle')}
-            </motion.p>
-            
-            <motion.p
-              variants={itemVariants}
-              className={`text-lg mb-12 max-w-2xl mx-auto ${
-                isDark ? 'text-gray-400' : 'text-gray-600'
-              }`}
-            >
-              {t('home.hero.description')}
-            </motion.p>
-
-            <motion.div
-              variants={itemVariants}
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-            >
-              <Link
-                to="/cadastro"
-                className={`px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl ${
-                  isDark
-                    ? 'bg-gradient-to-r from-cyan-400 to-purple-500 text-white shadow-lg shadow-cyan-400/25'
-                    : 'bg-gradient-to-r from-green-600 to-blue-600 text-white shadow-lg shadow-green-600/25'
-                }`}
-              >
-                {t('home.hero.ctaPrimary')}
-              </Link>
-              
-              <Link
-                to="/sobre"
-                className={`px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 ${
-                  isDark
-                    ? 'border-2 border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-white'
-                    : 'border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white'
-                }`}
-              >
-                {t('home.hero.ctaSecondary')}
-              </Link>
-            </motion.div>
-          </motion.div>
-        </div>
-
-        {/* Indicador de scroll */}
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-        >
-          <div className={`w-6 h-10 border-2 rounded-full flex justify-center ${
-            isDark ? 'border-cyan-400/50' : 'border-green-600/50'
-          }`}>
-            <motion.div
-              animate={{ y: [0, 12, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className={`w-1 h-3 rounded-full mt-2 ${
-                isDark ? 'bg-cyan-400' : 'bg-green-600'
-              }`}
-            />
-          </div>
-        </motion.div>
-      </section>
-
-      {/* Highlights Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+        <div className="relative max-w-7xl mx-auto text-center">
+          {/* Main Title */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
+            className="mb-8"
           >
-            <h2 className={`text-4xl md:text-5xl font-bold mb-6 font-orbitron ${
-              isDark ? 'text-white' : 'text-gray-900'
-            }`}>
-              {t('home.highlights.title')}
-            </h2>
-            <p className={`text-xl ${
-              isDark ? 'text-gray-300' : 'text-gray-700'
-            }`}>
-              {t('home.highlights.subtitle')}
+            <h1 className="text-5xl md:text-7xl font-bold mb-6">
+              <span className="bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                AgroISync
+              </span>
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+              {t('home.hero.subtitle')}
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {highlightCards.map((card, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className={`p-6 rounded-2xl text-center transition-all duration-300 hover:scale-105 ${
-                  isDark
-                    ? 'bg-gray-900/80 backdrop-blur-xl border border-gray-700 hover:border-cyan-400'
-                    : 'bg-white/80 backdrop-blur-xl border border-gray-200 hover:border-green-500'
-                }`}
-              >
-                <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center ${
-                  isDark
-                    ? 'bg-cyan-400/20 text-cyan-400'
-                    : 'bg-green-600/20 text-green-600'
+          {/* Weather Widget */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="mb-8"
+          >
+            <WeatherWidget />
+          </motion.div>
+
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
+          >
+            <a
+              href="/cadastro"
+              className="px-8 py-4 bg-gradient-to-r from-green-600 to-blue-600 text-white font-bold rounded-xl hover:from-green-700 hover:to-blue-700 transition-all duration-300 hover:scale-105 shadow-lg"
+            >
+              {t('home.hero.cta.primary')}
+            </a>
+            <a
+              href="/planos"
+              className="px-8 py-4 bg-transparent border-2 border-green-600 text-green-600 font-bold rounded-xl hover:bg-green-600 hover:text-white transition-all duration-300 hover:scale-105"
+            >
+              {t('home.hero.cta.secondary')}
+            </a>
+          </motion.div>
+
+          {/* Stats */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto"
+          >
+            {stats.map((stat, index) => (
+              <div key={index} className="text-center">
+                <div className={`text-3xl md:text-4xl font-bold mb-2 ${
+                  isDark ? 'text-green-400' : 'text-green-600'
                 }`}>
-                  {card.icon}
+                  {stat.number}
                 </div>
-                <h3 className={`text-xl font-bold mb-3 ${
-                  isDark ? 'text-white' : 'text-gray-900'
+                <div className={`text-sm ${
+                  isDark ? 'text-gray-400' : 'text-gray-600'
                 }`}>
-                  {card.title}
-                </h3>
-                <p className={`text-sm ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
-                }`}>
-                  {card.description}
-                </p>
-                <div className="mt-4 flex justify-center">
-                  {card.illustration}
+                  {stat.label}
                 </div>
-              </motion.div>
+              </div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className={`text-4xl md:text-5xl font-bold mb-6 font-orbitron ${
-              isDark ? 'text-white' : 'text-gray-900'
-            }`}>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
               {t('home.features.title')}
             </h2>
-            <p className={`text-xl ${
-              isDark ? 'text-gray-300' : 'text-gray-700'
-            }`}>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               {t('home.features.subtitle')}
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {featureCards.map((card, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="text-center group"
+              >
+                <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-r ${feature.color} flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300`}>
+                  {feature.icon}
+                </div>
+                <h3 className="text-xl font-bold mb-4">{feature.title}</h3>
+                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className={`py-20 px-4 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              {t('home.howItWorks.title')}
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              {t('home.howItWorks.subtitle')}
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { step: '1', title: t('home.howItWorks.step1.title'), description: t('home.howItWorks.step1.description') },
+              { step: '2', title: t('home.howItWorks.step2.title'), description: t('home.howItWorks.step2.description') },
+              { step: '3', title: t('home.howItWorks.step3.title'), description: t('home.howItWorks.step3.description') }
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.2 }}
-                viewport={{ once: true }}
-                className={`p-8 rounded-2xl text-center transition-all duration-300 hover:scale-105 ${
-                  isDark
-                    ? 'bg-gray-900/80 backdrop-blur-xl border border-gray-700 hover:border-cyan-400'
-                    : 'bg-white/80 backdrop-blur-xl border border-gray-200 hover:border-green-500'
+                className="text-center relative"
+              >
+                <div className={`w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-r from-green-500 to-blue-600 flex items-center justify-center text-white text-2xl font-bold`}>
+                  {item.step}
+                </div>
+                <h3 className="text-xl font-bold mb-4">{item.title}</h3>
+                <p className="text-gray-600 leading-relaxed">{item.description}</p>
+                
+                {index < 2 && (
+                  <div className="hidden md:block absolute top-8 left-full w-full h-0.5 bg-gradient-to-r from-green-500 to-blue-600 transform translate-x-4"></div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              {t('home.testimonials.title')}
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              {t('home.testimonials.subtitle')}
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className={`p-6 rounded-2xl shadow-lg ${
+                  isDark ? 'bg-gray-800' : 'bg-white'
                 }`}
               >
-                <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center ${
-                  isDark
-                    ? 'bg-cyan-400/20 text-cyan-400'
-                    : 'bg-green-600/20 text-green-600'
-                }`}>
-                  {card.icon}
+                <div className="flex items-center mb-4">
+                  <div className="text-3xl mr-4">{testimonial.avatar}</div>
+                  <div>
+                    <h4 className="font-bold">{testimonial.name}</h4>
+                    <p className="text-sm text-gray-600">{testimonial.role}</p>
+                  </div>
                 </div>
-                <h3 className={`text-2xl font-bold mb-4 ${
-                  isDark ? 'text-white' : 'text-gray-900'
-                }`}>
-                  {card.title}
-                </h3>
-                <p className={`text-lg ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
-                }`}>
-                  {card.description}
-                </p>
-                <div className="mt-6 flex justify-center">
-                  {card.illustration}
+                <p className="text-gray-600 mb-4">{testimonial.content}</p>
+                <div className="flex">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                  ))}
                 </div>
               </motion.div>
             ))}
@@ -334,51 +300,44 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Informações em Tempo Real Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      {/* CTA Section */}
+      <section className={`py-20 px-4 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
+        <div className="max-w-4xl mx-auto text-center">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
+            transition={{ duration: 0.6 }}
           >
-            <h2 className={`text-4xl md:text-5xl font-bold mb-6 font-orbitron ${
-              isDark ? 'text-white' : 'text-gray-900'
-            }`}>
-              Informações em Tempo Real
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              {t('home.cta.title')}
             </h2>
-            <p className={`text-xl ${
-              isDark ? 'text-gray-300' : 'text-gray-700'
-            }`}>
-              Clima local e notícias do agronegócio
+            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+              {t('home.cta.subtitle')}
             </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a
+                href="/cadastro"
+                className="px-8 py-4 bg-gradient-to-r from-green-600 to-blue-600 text-white font-bold rounded-xl hover:from-green-700 hover:to-blue-700 transition-all duration-300 hover:scale-105 shadow-lg flex items-center justify-center"
+              >
+                {t('home.cta.primary')}
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </a>
+              <a
+                href="/planos"
+                className="px-8 py-4 bg-transparent border-2 border-green-600 text-green-600 font-bold rounded-xl hover:bg-green-600 hover:text-white transition-all duration-300 hover:scale-105"
+              >
+                {t('home.cta.secondary')}
+              </a>
+            </div>
           </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Widget de Clima */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <WeatherWidget showForecast={true} />
-            </motion.div>
-
-            {/* Widget de Notícias */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              viewport={{ once: true }}
-            >
-              <NewsWidget limit={4} showBreaking={true} />
-            </motion.div>
-          </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <Footer />
+
+      {/* Chatbot */}
+      <Chatbot />
     </div>
   );
 };

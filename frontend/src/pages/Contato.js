@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
+import { useTranslation } from 'react-i18next';
 import { 
-  MapPin, Phone, Mail, Clock, Send, CheckCircle 
+  MapPin, Phone, Mail, Clock, Send, CheckCircle,
+  MessageSquare, Building, Globe, ArrowRight
 } from 'lucide-react';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import GlobalTicker from '../components/GlobalTicker';
+import WeatherWidget from '../components/WeatherWidget';
+import Chatbot from '../components/Chatbot';
 
 const Contato = () => {
   const { isDark } = useTheme();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     nome: '',
     email: '',
@@ -14,9 +22,8 @@ const Contato = () => {
     assunto: '',
     mensagem: ''
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [submitError, setSubmitError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -28,17 +35,12 @@ const Contato = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitError('');
-
+    setLoading(true);
+    
     try {
-      // Simular envio para o backend
+      // Simular envio para API
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Em produção, enviar para: contato@agroisync.com
-      console.log('Dados do formulário:', formData);
-      
-      setSubmitSuccess(true);
+      setSuccess(true);
       setFormData({
         nome: '',
         email: '',
@@ -46,306 +48,342 @@ const Contato = () => {
         assunto: '',
         mensagem: ''
       });
-      
-      // Resetar sucesso após 5 segundos
-      setTimeout(() => setSubmitSuccess(false), 5000);
     } catch (error) {
-      setSubmitError('Erro ao enviar mensagem. Tente novamente.');
+      console.error('Erro ao enviar mensagem:', error);
     } finally {
-      setIsSubmitting(false);
+      setLoading(false);
     }
   };
 
   const contactInfo = [
     {
       icon: <MapPin className="w-6 h-6" />,
-      title: 'Localização',
+      title: t('contact.info.address.title'),
       content: 'Sinop - MT, Brasil',
-      description: 'Centro de tecnologia agropecuária'
+      color: 'from-green-500 to-green-600'
     },
     {
       icon: <Phone className="w-6 h-6" />,
-      title: 'Telefone',
+      title: t('contact.info.phone.title'),
       content: '(66) 99236-2830',
-      description: 'Atendimento de segunda a sexta'
+      color: 'from-blue-500 to-blue-600'
     },
     {
       icon: <Mail className="w-6 h-6" />,
-      title: 'E-mail',
+      title: t('contact.info.email.title'),
       content: 'contato@agroisync.com',
-      description: 'Resposta em até 24 horas'
+      color: 'from-purple-500 to-purple-600'
     },
     {
       icon: <Clock className="w-6 h-6" />,
-      title: 'Horário de Atendimento',
-      content: 'Segunda a Sexta',
-      description: '8h às 18h (GMT-4)'
+      title: t('contact.info.hours.title'),
+      content: 'Segunda a Sexta: 8h às 18h',
+      color: 'from-orange-500 to-orange-600'
     }
   ];
 
-  const supportEmails = [
-    { email: 'contato@agroisync.com', label: 'Contato Geral' },
-    { email: 'suporte@agroisync.com', label: 'Suporte Técnico' }
-  ];
-
   return (
-    <div className="min-h-screen bg-white text-gray-900">
-      {/* Header Section */}
-      <section className="relative py-20 px-4 bg-gradient-to-br from-green-900/20 to-blue-900/20">
-        <div className="max-w-6xl mx-auto text-center">
-          <motion.h1
+    <div className={`min-h-screen ${isDark ? 'bg-black text-white' : 'bg-white text-gray-900'}`}>
+      {/* Global Ticker */}
+      <GlobalTicker />
+      
+      {/* Navbar */}
+      <Navbar />
+
+      {/* Hero Section */}
+      <section className="relative pt-32 pb-20 px-4 overflow-hidden">
+        {/* Background */}
+        <div className="absolute inset-0">
+          {isDark ? (
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900">
+              <div className="absolute inset-0 bg-gray-800 opacity-20"></div>
+            </div>
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50">
+              <div className="absolute inset-0 bg-blue-100 opacity-30"></div>
+            </div>
+          )}
+        </div>
+
+        <div className="relative max-w-7xl mx-auto text-center">
+          {/* Main Title */}
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent"
+            className="mb-8"
           >
-            Entre em Contato
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
+            <h1 className="text-5xl md:text-7xl font-bold mb-6">
+              {t('contact.hero.title')}
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+              {t('contact.hero.subtitle')}
+            </p>
+          </motion.div>
+
+          {/* Weather Widget */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl text-gray-600 max-w-3xl mx-auto"
+            className="mb-8"
           >
-            Estamos aqui para ajudar você a conectar-se ao futuro do agronegócio
-          </motion.p>
+            <WeatherWidget />
+          </motion.div>
         </div>
       </section>
 
-      {/* Informações de Contato */}
+      {/* Contact Info Section */}
       <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              {t('contact.info.title')}
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              {t('contact.info.subtitle')}
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {contactInfo.map((info, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="text-center p-6 rounded-2xl transition-all duration-300 hover:scale-105 bg-white/80 backdrop-blur-xl border border-gray-200 hover:border-green-500 shadow-xl"
+                className="text-center group"
               >
-                <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <div className="text-white">
-                    {info.icon}
-                  </div>
+                <div className={`w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-r ${info.color} flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300`}>
+                  {info.icon}
                 </div>
-                <h3 className="text-xl font-bold mb-2 text-gray-900">
-                  {info.title}
-                </h3>
-                <p className="text-lg font-semibold mb-2 text-green-600">
-                  {info.content}
-                </p>
-                <p className="text-sm text-gray-600">
-                  {info.description}
-                </p>
+                <h3 className="text-xl font-bold mb-4">{info.title}</h3>
+                <p className="text-gray-600">{info.content}</p>
               </motion.div>
             ))}
           </div>
-
-          {/* E-mails de Suporte */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center p-8 rounded-2xl mb-16 bg-white/80 backdrop-blur-xl border border-gray-200 shadow-xl"
-          >
-            <h2 className="text-3xl font-bold mb-6 text-gray-900">
-              E-mails de Suporte
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {supportEmails.map((emailInfo, index) => (
-                <div key={index} className="text-center">
-                  <p className="text-sm mb-2 text-gray-600">
-                    {emailInfo.label}
-                  </p>
-                  <a
-                    href={`mailto:${emailInfo.email}`}
-                    className="text-lg font-semibold hover:text-green-500 transition-colors text-green-600"
-                  >
-                    {emailInfo.email}
-                  </a>
-                </div>
-              ))}
-            </div>
-          </motion.div>
         </div>
       </section>
 
-      {/* Formulário de Contato */}
-      <section className="py-20 px-4">
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="p-8 rounded-2xl bg-white/80 backdrop-blur-xl border border-gray-200 shadow-xl"
-          >
-            <h2 className="text-3xl font-bold text-center mb-8 text-gray-900">
-              Envie sua Mensagem
-            </h2>
+      {/* Contact Form & Map Section */}
+      <section className={`py-20 px-4 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Contact Form */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className="text-3xl font-bold mb-8">
+                {t('contact.form.title')}
+              </h2>
+              
+              {success ? (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="text-center py-12"
+                >
+                  <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+                  <h3 className="text-2xl font-bold mb-2">{t('contact.form.success.title')}</h3>
+                  <p className="text-gray-600 mb-6">{t('contact.form.success.message')}</p>
+                  <button
+                    onClick={() => setSuccess(false)}
+                    className="px-6 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors duration-300"
+                  >
+                    {t('contact.form.success.cta')}
+                  </button>
+                </motion.div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        {t('contact.form.name')} *
+                      </label>
+                      <input
+                        type="text"
+                        name="nome"
+                        value={formData.nome}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder={t('contact.form.namePlaceholder')}
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        {t('contact.form.email')} *
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder={t('contact.form.emailPlaceholder')}
+                      />
+                    </div>
+                  </div>
 
-            {submitSuccess && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg flex items-center space-x-2"
-              >
-                <CheckCircle className="w-5 h-5" />
-                <span>Mensagem enviada com sucesso! Entraremos em contato em breve.</span>
-              </motion.div>
-            )}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('contact.form.phone')}
+                    </label>
+                    <input
+                      type="tel"
+                      name="telefone"
+                      value={formData.telefone}
+                      onChange={handleInputChange}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                      placeholder={t('contact.form.phonePlaceholder')}
+                    />
+                  </div>
 
-            {submitError && (
-              <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-                {submitError}
-              </div>
-            )}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('contact.form.subject')} *
+                    </label>
+                    <input
+                      type="text"
+                      name="assunto"
+                      value={formData.assunto}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                      placeholder={t('contact.form.subjectPlaceholder')}
+                    />
+                  </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-700">
-                    Nome Completo *
-                  </label>
-                  <input
-                    type="text"
-                    name="nome"
-                    value={formData.nome}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full p-3 rounded-lg border transition-colors bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500 focus:border-green-500"
-                    placeholder="Seu nome completo"
-                  />
-                </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('contact.form.message')} *
+                    </label>
+                    <textarea
+                      name="mensagem"
+                      value={formData.mensagem}
+                      onChange={handleInputChange}
+                      required
+                      rows={5}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                      placeholder={t('contact.form.messagePlaceholder')}
+                    />
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-700">
-                    E-mail *
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full p-3 rounded-lg border transition-colors bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500 focus:border-green-500"
-                    placeholder="seu@email.com"
-                  />
-                </div>
-              </div>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full px-8 py-4 bg-gradient-to-r from-green-600 to-blue-600 text-white font-bold rounded-xl hover:from-green-700 hover:to-blue-700 transition-all duration-300 hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                  >
+                    {loading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                        {t('contact.form.sending')}
+                      </>
+                    ) : (
+                      <>
+                        {t('contact.form.send')}
+                        <Send className="w-5 h-5 ml-2" />
+                      </>
+                    )}
+                  </button>
+                </form>
+              )}
+            </motion.div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-700">
-                    Telefone
-                  </label>
-                  <input
-                    type="tel"
-                    name="telefone"
-                    value={formData.telefone}
-                    onChange={handleInputChange}
-                    className="w-full p-3 rounded-lg border transition-colors bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500 focus:border-green-500"
-                    placeholder="(66) 99236-2830"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-700">
-                    Assunto *
-                  </label>
-                  <input
-                    type="text"
-                    name="assunto"
-                    value={formData.assunto}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full p-3 rounded-lg border transition-colors bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500 focus:border-green-500"
-                    placeholder="Como podemos ajudar?"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2 text-gray-700">
-                  Mensagem *
-                </label>
-                <textarea
-                  name="mensagem"
-                  value={formData.mensagem}
-                  onChange={handleInputChange}
-                  required
-                  rows={6}
-                  className="w-full p-3 rounded-lg border transition-colors resize-none bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500 focus:border-green-500"
-                  placeholder="Descreva sua dúvida ou solicitação..."
+            {/* Map */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <h2 className="text-3xl font-bold mb-8">
+                {t('contact.map.title')}
+              </h2>
+              
+              <div className={`rounded-2xl overflow-hidden shadow-lg ${
+                isDark ? 'bg-gray-800' : 'bg-white'
+              }`}>
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3926.1234567890123!2d-55.6333!3d-11.8333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTHCsDUwJzAwLjAiUyA1NcKwMzcnNTkuOSJX!5e0!3m2!1spt-BR!2sbr!4v1234567890123"
+                  width="100%"
+                  height="400"
+                  style={{ border: 0 }}
+                  allowFullScreen=""
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="AgroISync - Sinop, MT"
                 />
               </div>
 
-              <div className="text-center">
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="px-8 py-4 bg-gradient-to-r from-green-600 to-blue-600 text-white font-bold rounded-xl hover:from-green-700 hover:to-blue-700 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 mx-auto"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      <span>Enviando...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Send className="w-5 h-5" />
-                      <span>Enviar Mensagem</span>
-                    </>
-                  )}
-                </button>
+              <div className="mt-6 p-6 rounded-2xl bg-gradient-to-r from-green-500 to-blue-600 text-white">
+                <h3 className="text-xl font-bold mb-4">{t('contact.map.office.title')}</h3>
+                <div className="space-y-2">
+                  <p className="flex items-center">
+                    <Building className="w-5 h-5 mr-2" />
+                    {t('contact.map.office.name')}
+                  </p>
+                  <p className="flex items-center">
+                    <MapPin className="w-5 h-5 mr-2" />
+                    {t('contact.map.office.address')}
+                  </p>
+                  <p className="flex items-center">
+                    <Globe className="w-5 h-5 mr-2" />
+                    {t('contact.map.office.city')}
+                  </p>
+                </div>
               </div>
-            </form>
-          </motion.div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* Mapa */}
+      {/* CTA Section */}
       <section className="py-20 px-4">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-4xl mx-auto text-center">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="p-8 rounded-2xl bg-white/80 backdrop-blur-xl border border-gray-200 shadow-xl"
+            transition={{ duration: 0.6 }}
           >
-            <h2 className="text-3xl font-bold text-center mb-8 text-gray-900">
-              Nossa Localização
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              {t('contact.cta.title')}
             </h2>
-            
-            <div className="text-center mb-6">
-              <p className="text-lg text-gray-700">
-                Sinop - Mato Grosso, Brasil
-              </p>
-              <p className="text-sm text-gray-600">
-                Centro de tecnologia agropecuária
-              </p>
-            </div>
-
-            {/* Mapa embutido - Google Maps */}
-            <div className="w-full h-96 rounded-xl overflow-hidden">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d24476.123456789!2d-55.6333!3d-11.8333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTHCsDUwJzAwLjAiUyA1NcKwMzgnMDAuMCJX!5e0!3m2!1spt-BR!2sbr!4v1234567890"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen=""
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="AgroSync - Sinop, MT"
-              />
+            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+              {t('contact.cta.subtitle')}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a
+                href="/cadastro"
+                className="px-8 py-4 bg-gradient-to-r from-green-600 to-blue-600 text-white font-bold rounded-xl hover:from-green-700 hover:to-blue-700 transition-all duration-300 hover:scale-105 shadow-lg flex items-center justify-center"
+              >
+                {t('contact.cta.primary')}
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </a>
+              <a
+                href="/planos"
+                className="px-8 py-4 bg-transparent border-2 border-green-600 text-green-600 font-bold rounded-xl hover:bg-green-600 hover:text-white transition-all duration-300 hover:scale-105"
+              >
+                {t('contact.cta.secondary')}
+              </a>
             </div>
           </motion.div>
         </div>
       </section>
+
+      {/* Footer */}
+      <Footer />
+
+      {/* Chatbot */}
+      <Chatbot />
     </div>
   );
 };
