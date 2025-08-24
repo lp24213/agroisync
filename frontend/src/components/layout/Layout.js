@@ -51,9 +51,11 @@ const Layout = ({ children }) => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="fixed top-12 left-0 right-0 z-40 flex justify-center" // SEMPRE fixo, nunca sticky
+            className="fixed top-12 left-0 right-0 z-40 flex justify-center items-center" // Centralizado vertical e horizontalmente
           >
-            <Navbar />
+            <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <Navbar />
+            </div>
           </motion.header>
 
           {/* Conteúdo principal */}

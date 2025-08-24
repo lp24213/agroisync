@@ -4,9 +4,9 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { 
-  Menu, X, Globe, Sun, Moon, ChevronDown, User, 
+  Menu, X, Globe, Sun, Moon, User, 
   ShoppingCart, Truck, Coins, BarChart3, HelpCircle, 
-  Activity, Settings, LogOut
+  Activity, LogOut
 } from 'lucide-react';
 
 const Navbar = () => {
@@ -40,12 +40,8 @@ const Navbar = () => {
     setIsOpen(!isOpen);
   };
 
-  const closeMenu = () => {
-    setIsOpen(false);
-  };
-
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+    <nav className={`w-full transition-all duration-300 ${
       isScrolled 
         ? (isDark ? 'bg-black/95 backdrop-blur-md' : 'bg-white/95 backdrop-blur-md')
         : 'bg-transparent'
@@ -54,11 +50,11 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           
-          {/* Logo */}
+          {/* Logo - Centralizado */}
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex items-center space-x-3 flex-1"
+            className="flex items-center space-x-3"
           >
             <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-green-500 to-blue-600 flex items-center justify-center">
                 <span className="text-white font-bold text-lg">A</span>
@@ -66,8 +62,8 @@ const Navbar = () => {
             <span className="text-xl font-bold">Agroisync</span>
           </motion.div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8 flex-1 justify-center">
+          {/* Desktop Navigation - Centralizado */}
+          <div className="hidden lg:flex items-center space-x-8">
             <a href="/" className="hover:text-green-500 transition-colors duration-200">
               {t('nav.home')}
             </a>
@@ -100,39 +96,37 @@ const Navbar = () => {
             </a>
           </div>
 
-          {/* Right Side Actions */}
-          <div className="hidden lg:flex items-center space-x-4 flex-1 justify-end">
-            
+          {/* Right Side - Language, Theme, User */}
+          <div className="flex items-center space-x-4">
             {/* Language Selector */}
             <div className="relative">
               <button
                 onClick={() => setIsLanguageOpen(!isLanguageOpen)}
                 className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
               >
-                <Globe className="w-5 h-5" />
-                <span className="text-sm">{currentLanguage?.flag}</span>
+                <span className="text-2xl">{currentLanguage?.flag}</span>
+                <span className="hidden sm:block text-sm">{currentLanguage?.code.toUpperCase()}</span>
               </button>
 
-              {/* Language Dropdown */}
               <AnimatePresence>
                 {isLanguageOpen && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50"
+                    className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 z-50"
                   >
-                    {languages.map((lang) => (
+                    {languages.map((language) => (
                       <button
-                        key={lang.code}
+                        key={language.code}
                         onClick={() => {
-                          i18n.changeLanguage(lang.code);
+                          i18n.changeLanguage(language.code);
                           setIsLanguageOpen(false);
                         }}
-                        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 flex items-center space-x-3"
+                        className="w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 first:rounded-t-xl last:rounded-b-xl"
                       >
-                        <span>{lang.flag}</span>
-                        <span>{lang.name}</span>
+                        <span className="text-2xl">{language.flag}</span>
+                        <span className="text-sm">{language.name}</span>
                       </button>
                     ))}
                   </motion.div>
@@ -145,93 +139,101 @@ const Navbar = () => {
               onClick={toggleTheme}
               className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
             >
-              {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              {isDark ? (
+                <Sun className="w-5 h-5 text-yellow-400" />
+              ) : (
+                <Moon className="w-5 h-5 text-gray-600" />
+              )}
             </button>
 
-            {/* User Menu or Login/Register */}
+            {/* User Menu */}
             {user ? (
               <div className="relative">
-              <button
+                <button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                   className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
-              >
-                <User className="w-5 h-5" />
-                  <span className="text-sm font-medium">{user.name}</span>
-              </button>
+                >
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-blue-600 flex items-center justify-center">
+                    <span className="text-white text-sm font-bold">
+                      {user.name?.charAt(0)?.toUpperCase() || 'U'}
+                    </span>
+                  </div>
+                  <span className="hidden sm:block text-sm font-medium">{user.name}</span>
+                </button>
 
-                {/* User Dropdown */}
-              <AnimatePresence>
-                {isUserMenuOpen && (
-                  <motion.div
+                <AnimatePresence>
+                  {isUserMenuOpen && (
+                    <motion.div
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
-                      className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50"
+                      className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 z-50"
                     >
-                      <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
-                        <p className="text-sm font-medium text-gray-900 dark:text-white">{user.name}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
+                      <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                        <p className="text-sm font-medium">{user.name}</p>
+                        <p className="text-xs text-gray-500">{user.email}</p>
                       </div>
-                      
-                      <div className="py-1">
+                      <div className="py-2">
+                        <a
+                          href="/perfil"
+                          className="flex items-center space-x-2 px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
+                        >
+                          <User className="w-4 h-4" />
+                          <span>Perfil</span>
+                        </a>
                         <button
-                          onClick={() => {
-                            setIsUserMenuOpen(false);
-                            logout();
-                          }}
-                          className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200 flex items-center space-x-2"
+                          onClick={logout}
+                          className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200"
                         >
                           <LogOut className="w-4 h-4" />
                           <span>Sair</span>
                         </button>
                       </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             ) : (
               <div className="flex items-center space-x-3">
                 <a
                   href="/login"
-                  className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
+                  className="px-4 py-2 text-sm font-medium hover:text-green-500 transition-colors duration-200"
                 >
                   {t('nav.login')}
                 </a>
                 <a
                   href="/cadastro"
-                  className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors duration-200"
+                  className="px-4 py-2 bg-gradient-to-r from-green-600 to-blue-600 text-white text-sm font-medium rounded-lg hover:from-green-700 hover:to-blue-700 transition-all duration-300 hover:scale-105"
                 >
                   {t('nav.register')}
                 </a>
               </div>
             )}
-            </div>
 
             {/* Mobile Menu Button */}
-          <div className="lg:hidden">
             <button
               onClick={toggleMenu}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
             >
-              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
         </div>
-      </div>
 
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-black border-t border-gray-700"
-          >
-            <div className="px-4 py-6 space-y-4">
-              
-              {/* Mobile Navigation Links */}
-              <div className="grid grid-cols-2 gap-4">
+        {/* Mobile Menu */}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="lg:hidden bg-black border-t border-gray-700"
+            >
+              <div className="py-4 space-y-2">
                 <a href="/" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
                   <BarChart3 className="w-5 h-5 text-white" />
                   <span>{t('nav.home')}</span>
@@ -253,7 +255,7 @@ const Navbar = () => {
                   <span>{t('nav.crypto')}</span>
                 </a>
                 <a href="/planos" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
-                  <BarChart3 className="w-5 h-5 text-white" />
+                  <Activity className="w-5 h-5 text-white" />
                   <span>{t('nav.plans')}</span>
                 </a>
                 <a href="/faq" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
@@ -272,24 +274,31 @@ const Navbar = () => {
                   <HelpCircle className="w-5 h-5 text-white" />
                   <span>{t('nav.contact')}</span>
                 </a>
-              </div>
 
-              {/* Mobile Language and Theme */}
-              <div className="flex items-center justify-between pt-4 border-t border-gray-700">
-                <div className="flex items-center space-x-2 text-white">
-                  <Globe className="w-5 h-5 text-white" />
-                  <span className="text-sm">{currentLanguage?.flag}</span>
+                {/* Mobile Language & Theme */}
+                <div className="flex items-center justify-between p-3 border-t border-gray-700">
+                  <div className="flex items-center space-x-4">
+                    <button
+                      onClick={toggleTheme}
+                      className="p-2 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white"
+                    >
+                      {isDark ? (
+                        <Sun className="w-5 h-5 text-yellow-400" />
+                      ) : (
+                        <Moon className="w-5 h-5 text-white" />
+                      )}
+                    </button>
+                    <button
+                      onClick={() => setIsLanguageOpen(!isLanguageOpen)}
+                      className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white"
+                    >
+                      <span className="text-xl">{currentLanguage?.flag}</span>
+                      <span className="text-sm">{currentLanguage?.code.toUpperCase()}</span>
+                    </button>
+                  </div>
                 </div>
-                <button
-                  onClick={toggleTheme}
-                  className="p-2 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white"
-                >
-                  {isDark ? <Sun className="w-5 h-5 text-white" /> : <Moon className="w-5 h-5 text-white" />}
-                </button>
-              </div>
 
-              {/* Mobile CTA Buttons */}
-              <div className="flex flex-col space-y-3 pt-4">
+                {/* Mobile User Info */}
                 {user ? (
                   <>
                     <div className="px-3 py-2 bg-gray-800 rounded-lg">
@@ -297,10 +306,7 @@ const Navbar = () => {
                       <p className="text-xs text-gray-300">{user.email}</p>
                     </div>
                     <button
-                      onClick={() => {
-                        setIsOpen(false);
-                        logout();
-                      }}
+                      onClick={logout}
                       className="w-full px-4 py-2 text-sm text-red-400 hover:bg-red-900/20 transition-colors duration-200 flex items-center justify-center space-x-2"
                     >
                       <LogOut className="w-4 h-4" />
@@ -319,17 +325,17 @@ const Navbar = () => {
                     <a
                       href="/cadastro"
                       onClick={() => setIsOpen(false)}
-                      className="w-full px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors duration-200 text-center"
+                      className="w-full px-4 py-2 bg-gradient-to-r from-green-600 to-blue-600 text-white text-sm font-medium rounded-lg hover:from-green-700 hover:to-blue-700 transition-all duration-300 text-center"
                     >
                       {t('nav.register')}
                     </a>
                   </>
-                  )}
-                </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </nav>
   );
 };

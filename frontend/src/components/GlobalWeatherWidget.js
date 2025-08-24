@@ -37,7 +37,7 @@ const GlobalWeatherWidget = () => {
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
-        className={`fixed top-20 right-6 z-40 p-4 rounded-2xl shadow-xl transition-all duration-300 ${
+        className={`fixed top-24 right-6 z-40 p-4 rounded-2xl shadow-xl transition-all duration-300 ${
           isDark
             ? 'bg-gray-800/90 backdrop-blur-xl border border-gray-700'
             : 'bg-white/90 backdrop-blur-xl border border-gray-200'
@@ -61,7 +61,7 @@ const GlobalWeatherWidget = () => {
     <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
-      className={`fixed top-20 right-6 z-40 transition-all duration-300 ${
+      className={`fixed top-24 right-6 z-40 transition-all duration-300 ${
         expanded ? 'w-80' : 'w-40'
       }`}
     >
@@ -99,163 +99,110 @@ const GlobalWeatherWidget = () => {
           <div className={`text-2xl font-bold ${
             isDark ? 'text-white' : 'text-gray-900'
           }`}>
-            {weatherData.temperature}°C
+            {weatherData.current.temp}°C
           </div>
           <div className={`text-xs ${
             isDark ? 'text-gray-400' : 'text-gray-600'
           }`}>
-            Sensação: {weatherData.feelsLike}°C
+            Sensação: {weatherData.current.feels_like}°C
           </div>
         </div>
 
-        {/* Condição do Clima */}
-        <div className="text-center mb-3">
-          <img
-            src={weatherService.getWeatherIcon(weatherData.icon)}
-            alt={weatherData.description}
-            className="w-12 h-12 mx-auto"
-          />
-          <div className={`text-xs capitalize ${
-            isDark ? 'text-gray-300' : 'text-gray-700'
-          }`}>
-            {weatherData.description}
-          </div>
-        </div>
-
-        {/* Detalhes Expandidos */}
-        {expanded && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="space-y-3 pt-3 border-t border-gray-300/30"
-          >
-            {/* Umidade */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Droplets className={`w-4 h-4 ${
-                  isDark ? 'text-blue-400' : 'text-blue-600'
-                }`} />
-                <span className={`text-xs ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
-                }`}>
-                  Umidade
-                </span>
-              </div>
-              <span className={`text-xs font-semibold ${
-                isDark ? 'text-white' : 'text-gray-900'
-              }`}>
-                {weatherData.humidity}%
-              </span>
-            </div>
-
-            {/* Vento */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Wind className={`w-4 h-4 ${
-                  isDark ? 'text-gray-400' : 'text-gray-600'
-                }`} />
-                <span className={`text-xs ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
-                }`}>
-                  Vento
-                </span>
-              </div>
-              <span className={`text-xs font-semibold ${
-                isDark ? 'text-white' : 'text-gray-900'
-              }`}>
-                {weatherData.windSpeed} km/h {weatherData.windDirection}
-              </span>
-            </div>
-
-            {/* Pressão */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Thermometer className={`w-4 h-4 ${
-                  isDark ? 'text-red-400' : 'text-red-600'
-                }`} />
-                <span className={`text-xs ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
-                }`}>
-                  Pressão
-                </span>
-              </div>
-              <span className={`text-xs font-semibold ${
-                isDark ? 'text-white' : 'text-gray-900'
-              }`}>
-                {weatherData.pressure} hPa
-              </span>
-            </div>
-
-            {/* Visibilidade */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <div className={`w-4 h-4 rounded-full ${
-                  isDark ? 'bg-gray-400' : 'bg-gray-600'
-                }`} />
-                <span className={`text-xs ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
-                }`}>
-                  Visibilidade
-                </span>
-              </div>
-              <span className={`text-xs font-semibold ${
-                isDark ? 'text-white' : 'text-gray-900'
-              }`}>
-                {weatherData.visibility} km
-              </span>
-            </div>
-
-            {/* Nascer e Pôr do Sol */}
-            <div className="grid grid-cols-2 gap-2 pt-2">
-              <div className="text-center">
-                <Sun className={`w-4 h-4 mx-auto mb-1 ${
-                  isDark ? 'text-yellow-400' : 'text-yellow-600'
-                }`} />
-                <div className={`text-xs ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
-                }`}>
-                  Nascer
-                </div>
-                <div className={`text-xs font-semibold ${
-                  isDark ? 'text-white' : 'text-gray-900'
-                }`}>
-                  {formatTime(weatherData.sunrise)}
-                </div>
-              </div>
-              <div className="text-center">
-                <Moon className={`w-4 h-4 mx-auto mb-1 ${
-                  isDark ? 'text-blue-400' : 'text-blue-600'
-                }`} />
-                <div className={`text-xs ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
-                }`}>
-                  Pôr
-                </div>
-                <div className={`text-xs font-semibold ${
-                  isDark ? 'text-white' : 'text-gray-900'
-                }`}>
-                  {formatTime(weatherData.sunset)}
-                </div>
-              </div>
-            </div>
-
-            {/* Atualização */}
-            <div className={`text-center text-xs pt-2 border-t border-gray-300/30 ${
-              isDark ? 'text-gray-500' : 'text-gray-400'
+        {/* Condições do Tempo */}
+        <div className="flex items-center justify-center mb-3">
+          <div className="text-center">
+            <div className={`w-12 h-12 mx-auto mb-1 ${
+              isDark ? 'text-cyan-400' : 'text-green-600'
             }`}>
-              Atualizado: {weatherData.timestamp.toLocaleTimeString('pt-BR')}
+              {weatherData.current.icon === 'sun' ? (
+                <Sun className="w-full h-full" />
+              ) : (
+                <Moon className="w-full h-full" />
+              )}
             </div>
-          </motion.div>
-        )}
+            <div className={`text-xs ${
+              isDark ? 'text-gray-400' : 'text-gray-600'
+            }`}>
+              {weatherData.current.description}
+            </div>
+          </div>
+        </div>
+
+        {/* Informações Adicionais */}
+        <div className="grid grid-cols-2 gap-2 text-xs">
+          <div className="flex items-center space-x-1">
+            <Droplets className={`w-3 h-3 ${
+              isDark ? 'text-blue-400' : 'text-blue-600'
+            }`} />
+            <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>
+              {weatherData.current.humidity}%
+            </span>
+          </div>
+          <div className="flex items-center space-x-1">
+            <Wind className={`w-3 h-3 ${
+              isDark ? 'text-gray-400' : 'text-gray-600'
+            }`} />
+            <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>
+              {weatherData.current.wind_speed} km/h
+            </span>
+          </div>
+        </div>
 
         {/* Indicador de Expansão */}
-        <div className={`text-center text-xs mt-2 ${
-          isDark ? 'text-gray-500' : 'text-gray-400'
-        }`}>
-          {expanded ? 'Clique para recolher' : 'Clique para expandir'}
+        <div className="text-center mt-2">
+          <div className={`w-1 h-1 rounded-full mx-auto ${
+            isDark ? 'bg-cyan-400' : 'bg-green-500'
+          }`}></div>
         </div>
       </motion.div>
+
+      {/* Widget Expandido */}
+      {expanded && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          className={`mt-4 p-4 rounded-2xl shadow-xl ${
+            isDark
+              ? 'bg-gray-800/90 backdrop-blur-xl border border-gray-700'
+              : 'bg-white/90 backdrop-blur-xl border border-gray-200'
+          }`}
+        >
+          {/* Previsão para os Próximos Dias */}
+          <h4 className={`text-sm font-semibold mb-3 ${
+            isDark ? 'text-white' : 'text-gray-900'
+          }`}>
+            Previsão 5 Dias
+          </h4>
+          
+          <div className="space-y-2">
+            {weatherData.forecast.slice(0, 5).map((day, index) => (
+              <div key={index} className="flex items-center justify-between text-xs">
+                <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>
+                  {day.date}
+                </span>
+                <div className="flex items-center space-x-2">
+                  <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>
+                    {day.temp_min}°C
+                  </span>
+                  <span className={isDark ? 'text-white' : 'text-gray-900'}>
+                    {day.temp_max}°C
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Última Atualização */}
+          <div className="mt-3 pt-3 border-t border-gray-600 dark:border-gray-600">
+            <p className={`text-xs text-center ${
+              isDark ? 'text-gray-400' : 'text-gray-500'
+            }`}>
+              Atualizado: {formatTime(new Date())}
+            </p>
+          </div>
+        </motion.div>
+      )}
     </motion.div>
   );
 };
