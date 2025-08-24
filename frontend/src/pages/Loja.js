@@ -1,644 +1,531 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  SoyIcon, CornIcon, CoffeeIcon, GrainIcon, VegetableIcon, FruitIcon,
-  DairyIcon, MeatIcon, SeedIcon, StarIcon, TrophyIcon, LockIcon,
-  CheckIcon, PhoneIcon, SaveIcon, SearchIcon, GridIcon, ListIcon,
-  ToolsIcon, BoxIcon, FactoryIcon, ReloadIcon, EmailIcon, XIcon,
-  GlobalIcon, LeafIcon, ClipboardIcon
-} from '../components/icons/StoreIcons';
+import { motion } from 'framer-motion';
+import { useTheme } from '../contexts/ThemeContext';
+import { 
+  Search, Filter, MapPin, Star, ShoppingCart, Heart, Eye,
+  Truck, Package, Leaf, Wrench, User, Circle, DollarSign
+} from 'lucide-react';
 
 const Loja = () => {
+  const { isDark } = useTheme();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({
-    category: 'all',
-    location: 'all',
-    priceRange: 'all',
-    quality: 'all',
-    certification: 'all'
-  });
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('relevance');
+  const [priceRange, setPriceRange] = useState([0, 10000]);
+  const [selectedState, setSelectedState] = useState('all');
   const [viewMode, setViewMode] = useState('grid');
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [showFilters, setShowFilters] = useState(false);
 
-  // Dados profissionais do marketplace
+  // Categorias reais do agronegócio
   const categories = [
-    { id: 'grains', name: 'Grãos', icon: <GrainIcon className="w-5 h-5" />, count: 156 },
-    { id: 'vegetables', name: 'Hortifrúti', icon: <VegetableIcon className="w-5 h-5" />, count: 89 },
-    { id: 'fruits', name: 'Frutas', icon: <FruitIcon className="w-5 h-5" />, count: 67 },
-    { id: 'dairy', name: 'Laticínios', icon: <DairyIcon className="w-5 h-5" />, count: 43 },
-    { id: 'meat', name: 'Carnes', icon: <MeatIcon className="w-5 h-5" />, count: 78 },
-    { id: 'seeds', name: 'Sementes', icon: <SeedIcon className="w-5 h-5" />, count: 34 }
+    { id: 'all', name: 'Todas', icon: <Package className="w-5 h-5" />, count: 0 },
+    { id: 'insumos', name: 'Insumos Agrícolas', icon: <Leaf className="w-5 h-5" />, count: 0 },
+    { id: 'maquinas', name: 'Máquinas e Implementos', icon: <Wrench className="w-5 h-5" />, count: 0 },
+    { id: 'pecuaria', name: 'Pecuária', icon: <User className="w-5 h-5" />, count: 0 },
+    { id: 'commodities', name: 'Commodities', icon: <Circle className="w-5 h-5" />, count: 0 }
   ];
 
-  const locations = [
-    { id: 'all', name: 'Todas as Regiões' },
-    { id: 'south', name: 'Sul', count: 89 },
-    { id: 'southeast', name: 'Sudeste', count: 156 },
-    { id: 'central-west', name: 'Centro-Oeste', count: 234 },
-    { id: 'northeast', name: 'Nordeste', count: 67 },
-    { id: 'north', name: 'Norte', count: 45 }
+  // Estados brasileiros
+  const states = [
+    { id: 'all', name: 'Todos os Estados' },
+    { id: 'MT', name: 'Mato Grosso' },
+    { id: 'GO', name: 'Goiás' },
+    { id: 'MS', name: 'Mato Grosso do Sul' },
+    { id: 'PR', name: 'Paraná' },
+    { id: 'RS', name: 'Rio Grande do Sul' },
+    { id: 'SP', name: 'São Paulo' },
+    { id: 'MG', name: 'Minas Gerais' },
+    { id: 'BA', name: 'Bahia' },
+    { id: 'TO', name: 'Tocantins' }
   ];
 
-  const qualityStandards = [
-    { id: 'all', name: 'Todos os Padrões' },
-    { id: 'premium', name: 'Premium', icon: <StarIcon className="w-4 h-4" filled={true} /> },
-    { id: 'export', name: 'Exportação', icon: <GlobalIcon className="w-4 h-4" /> },
-    { id: 'organic', name: 'Orgânico', icon: <LeafIcon className="w-4 h-4" /> },
-    { id: 'conventional', name: 'Convencional', icon: <ClipboardIcon className="w-4 h-4" /> }
+  // Produtos simulados do agronegócio
+  const mockProducts = [
+    // Insumos Agrícolas
+    {
+      id: 1,
+      name: 'Sementes de Soja RR2 PRO',
+      category: 'insumos',
+      price: 180.50,
+      unit: 'saco 60kg',
+      description: 'Sementes de soja de alta produtividade, resistente a herbicidas',
+      image: '/images/soja-seeds.jpg',
+      stock: 150,
+      seller: 'AgroSementes MT',
+      state: 'MT',
+      rating: 4.8,
+      reviews: 127,
+      featured: true
+    },
+    {
+      id: 2,
+      name: 'Fertilizante NPK 20-20-20',
+      category: 'insumos',
+      price: 89.90,
+      unit: 'saco 50kg',
+      description: 'Fertilizante balanceado para todas as culturas',
+      image: '/images/fertilizer.jpg',
+      stock: 300,
+      seller: 'Fertilizantes Brasil',
+      state: 'GO',
+      rating: 4.6,
+      reviews: 89,
+      featured: false
+    },
+    {
+      id: 3,
+      name: 'Defensivo Agrícola Fungicida',
+      category: 'insumos',
+      price: 245.00,
+      unit: 'litro',
+      description: 'Fungicida sistêmico para controle de doenças',
+      image: '/images/fungicide.jpg',
+      stock: 75,
+      seller: 'Defensivos Pro',
+      state: 'MS',
+      rating: 4.7,
+      reviews: 156,
+      featured: true
+    },
+
+    // Máquinas e Implementos
+    {
+      id: 4,
+      name: 'Pulverizador Costal 20L',
+      category: 'maquinas',
+      price: 450.00,
+      unit: 'unidade',
+      description: 'Pulverizador costal profissional para pequenas áreas',
+      image: '/images/sprayer.jpg',
+      stock: 25,
+      seller: 'Máquinas Agro',
+      state: 'PR',
+      rating: 4.5,
+      reviews: 67,
+      featured: false
+    },
+    {
+      id: 5,
+      name: 'Arado de Discos 3 Discos',
+      category: 'maquinas',
+      price: 2800.00,
+      unit: 'unidade',
+      description: 'Arado de discos para preparo do solo',
+      image: '/images/plow.jpg',
+      stock: 8,
+      seller: 'Implementos RS',
+      state: 'RS',
+      rating: 4.9,
+      reviews: 34,
+      featured: true
+    },
+    {
+      id: 6,
+      name: 'Colheitadeira de Milho',
+      category: 'maquinas',
+      price: 85000.00,
+      unit: 'unidade',
+      description: 'Colheitadeira automotriz para milho e soja',
+      image: '/images/harvester.jpg',
+      stock: 2,
+      seller: 'Máquinas Pesadas SP',
+      state: 'SP',
+      rating: 4.8,
+      reviews: 12,
+      featured: true
+    },
+
+    // Pecuária
+    {
+      id: 7,
+      name: 'Ração para Bovinos 20% PB',
+      category: 'pecuaria',
+      price: 65.90,
+      unit: 'saco 50kg',
+      description: 'Ração balanceada para bovinos de corte e leite',
+      image: '/images/cattle-feed.jpg',
+      stock: 200,
+      seller: 'Rações Premium',
+      state: 'MG',
+      rating: 4.6,
+      reviews: 234,
+      featured: false
+    },
+    {
+      id: 8,
+      name: 'Suplemento Mineral Bovinos',
+      category: 'pecuaria',
+      price: 45.50,
+      unit: 'saco 25kg',
+      description: 'Suplemento mineral completo para bovinos',
+      image: '/images/mineral.jpg',
+      stock: 180,
+      seller: 'Minerais Brasil',
+      state: 'BA',
+      rating: 4.7,
+      reviews: 156,
+      featured: false
+    },
+    {
+      id: 9,
+      name: 'Medicamento Antiparasitário',
+      category: 'pecuaria',
+      price: 125.00,
+      unit: 'frasco 100ml',
+      description: 'Antiparasitário para bovinos e equinos',
+      image: '/images/medicine.jpg',
+      stock: 45,
+      seller: 'VetFarma',
+      state: 'TO',
+      rating: 4.8,
+      reviews: 89,
+      featured: true
+    },
+
+    // Commodities
+    {
+      id: 10,
+      name: 'Soja em Grãos Tipo 1',
+      category: 'commodities',
+      price: 180.00,
+      unit: 'saca 60kg',
+      description: 'Soja de alta qualidade para processamento',
+      image: '/images/soybeans.jpg',
+      stock: 5000,
+      seller: 'Cooperativa MT',
+      state: 'MT',
+      rating: 4.9,
+      reviews: 445,
+      featured: true
+    },
+    {
+      id: 11,
+      name: 'Milho em Grãos',
+      category: 'commodities',
+      price: 85.00,
+      unit: 'saca 60kg',
+      description: 'Milho seco e limpo para ração animal',
+      image: '/images/corn.jpg',
+      stock: 8000,
+      seller: 'Produtores GO',
+      state: 'GO',
+      rating: 4.7,
+      reviews: 312,
+      featured: false
+    },
+    {
+      id: 12,
+      name: 'Algodão em Pluma',
+      category: 'commodities',
+      price: 320.00,
+      unit: 'kg',
+      description: 'Algodão de fibra longa para tecelagem',
+      image: '/images/cotton.jpg',
+      stock: 1500,
+      seller: 'Algodão MS',
+      state: 'MS',
+      rating: 4.8,
+      reviews: 178,
+      featured: true
+    }
   ];
 
-  const certifications = [
-    { id: 'all', name: 'Todas as Certificações' },
-    { id: 'iso', name: 'ISO 9001', icon: <TrophyIcon className="w-4 h-4" /> },
-    { id: 'haccp', name: 'HACCP', icon: <LockIcon className="w-4 h-4" /> },
-    { id: 'gmp', name: 'GMP', icon: <CheckIcon className="w-4 h-4" /> },
-    { id: 'brc', name: 'BRC', icon: <CheckIcon className="w-4 h-4" /> },
-    { id: 'fscc', name: 'FSSC 22000', icon: <GlobalIcon className="w-4 h-4" /> }
-  ];
-
-  // Simular produtos profissionais
   useEffect(() => {
-    const mockProducts = [
-      {
-        id: 1,
-        name: 'Soja Premium Tipo 1',
-        category: 'grains',
-        location: 'central-west',
-        quality: 'premium',
-        certifications: ['iso', 'haccp', 'gmp'],
-        price: 165.50,
-        currency: 'BRL',
-        unit: 'sc',
-        quantity: 1000,
-        unitType: 'sacas',
-        supplier: {
-          name: 'Fazenda Santa Clara Ltda',
-          rating: 4.9,
-          verified: true,
-          location: 'Lucas do Rio Verde - MT',
-          certifications: ['iso', 'haccp'],
-          yearsActive: 15
-        },
-        specifications: {
-          protein: '38-40%',
-          moisture: '<14%',
-          impurities: '<2%',
-          color: 'Amarelo uniforme',
-          origin: 'MT - Brasil'
-        },
-        images: ['/images/soja.svg'],
-        description: 'Soja de alta qualidade, ideal para exportação e processamento industrial. Produzida com tecnologia de ponta e certificações internacionais.',
-        availableFrom: '2024-03-15',
-        deliveryOptions: ['FOB', 'CIF', 'EXW'],
-        paymentTerms: ['30 dias', '60 dias', '90 dias'],
-        minOrder: 100,
-        stockStatus: 'available',
-        lastUpdated: '2024-01-15T10:30:00Z'
-      },
-      {
-        id: 2,
-        name: 'Milho Amarelo Tipo 1',
-        category: 'grains',
-        location: 'south',
-        quality: 'export',
-        certifications: ['iso', 'haccp', 'brc'],
-        price: 78.90,
-        currency: 'BRL',
-        unit: 'sc',
-        quantity: 2500,
-        unitType: 'sacas',
-        supplier: {
-          name: 'Cooperativa Agroindustrial',
-          rating: 4.8,
-          verified: true,
-          location: 'Cascavel - PR',
-          certifications: ['iso', 'haccp', 'brc'],
-          yearsActive: 25
-        },
-        specifications: {
-          protein: '8-10%',
-          moisture: '<13%',
-          impurities: '<1%',
-          color: 'Amarelo intenso',
-          origin: 'PR - Brasil'
-        },
-        images: ['/images/milho.svg'],
-        description: 'Milho de excelente qualidade para alimentação animal e processamento industrial. Atende aos mais rigorosos padrões internacionais.',
-        availableFrom: '2024-03-01',
-        deliveryOptions: ['FOB', 'CIF', 'EXW'],
-        paymentTerms: ['30 dias', '45 dias', '60 dias'],
-        minOrder: 200,
-        stockStatus: 'available',
-        lastUpdated: '2024-01-15T09:15:00Z'
-      },
-      {
-        id: 3,
-        name: 'Café Arábica Premium',
-        category: 'fruits',
-        location: 'southeast',
-        quality: 'premium',
-        certifications: ['iso', 'haccp', 'gmp'],
-        price: 45.80,
-        currency: 'BRL',
-        unit: 'kg',
-        quantity: 5000,
-        unitType: 'kg',
-        supplier: {
-          name: 'Fazenda São João',
-          rating: 4.9,
-          verified: true,
-          location: 'Franca - SP',
-          certifications: ['iso', 'haccp', 'gmp'],
-          yearsActive: 20
-        },
-        specifications: {
-          altitude: '1200-1400m',
-          process: 'Lavado',
-          screen: '16-18',
-          moisture: '<11%',
-          origin: 'SP - Brasil'
-        },
-        images: ['/images/soja.svg'], // Placeholder
-        description: 'Café arábica de altitude, produzido com técnicas tradicionais e certificações de qualidade. Ideal para torrefação premium.',
-        availableFrom: '2024-02-15',
-        deliveryOptions: ['FOB', 'CIF'],
-        paymentTerms: ['30 dias', '60 dias'],
-        minOrder: 100,
-        stockStatus: 'available',
-        lastUpdated: '2024-01-15T11:45:00Z'
-      }
-    ];
+    // Simular carregamento
+    const timer = setTimeout(() => {
+      setProducts(mockProducts);
+      setFilteredProducts(mockProducts);
+      setLoading(false);
+    }, 1000);
 
-    setProducts(mockProducts);
-    setFilteredProducts(mockProducts);
-    setLoading(false);
+    return () => clearTimeout(timer);
   }, []);
 
-  // Filtros avançados
   useEffect(() => {
-    let filtered = [...products];
+    // Atualizar contadores de categorias
+    const updatedCategories = categories.map(cat => ({
+      ...cat,
+      count: cat.id === 'all' ? products.length : products.filter(p => p.category === cat.id).length
+    }));
+    
+    // Filtrar produtos
+    let filtered = products;
 
     // Filtro por categoria
-    if (filters.category !== 'all') {
-      filtered = filtered.filter(p => p.category === filters.category);
+    if (selectedCategory !== 'all') {
+      filtered = filtered.filter(p => p.category === selectedCategory);
     }
 
-    // Filtro por localização
-    if (filters.location !== 'all') {
-      filtered = filtered.filter(p => p.location === filters.location);
-    }
-
-    // Filtro por qualidade
-    if (filters.quality !== 'all') {
-      filtered = filtered.filter(p => p.quality === filters.quality);
-    }
-
-    // Filtro por certificação
-    if (filters.certification !== 'all') {
-      filtered = filtered.filter(p => p.certifications.includes(filters.certification));
-    }
-
-    // Filtro por preço
-    if (filters.priceRange !== 'all') {
-      const [min, max] = filters.priceRange.split('-').map(Number);
-      filtered = filtered.filter(p => p.price >= min && p.price <= max);
-    }
-
-    // Busca por texto
+    // Filtro por busca
     if (searchTerm) {
       filtered = filtered.filter(p => 
         p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.supplier.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.description.toLowerCase().includes(searchTerm.toLowerCase())
+        p.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.seller.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
-    // Ordenação
-    switch (sortBy) {
-      case 'price-low':
-        filtered.sort((a, b) => a.price - b.price);
-        break;
-      case 'price-high':
-        filtered.sort((a, b) => b.price - a.price);
-        break;
-      case 'rating':
-        filtered.sort((a, b) => b.supplier.rating - a.supplier.rating);
-        break;
-      case 'newest':
-        filtered.sort((a, b) => new Date(b.lastUpdated) - new Date(a.lastUpdated));
-        break;
-      default:
-        // Relevância baseada em rating e verificação
-        filtered.sort((a, b) => {
-          const scoreA = (a.supplier.rating * 10) + (a.supplier.verified ? 50 : 0);
-          const scoreB = (b.supplier.rating * 10) + (b.supplier.verified ? 50 : 0);
-          return scoreB - scoreA;
-        });
+    // Filtro por estado
+    if (selectedState !== 'all') {
+      filtered = filtered.filter(p => p.state === selectedState);
     }
 
+    // Filtro por preço
+    filtered = filtered.filter(p => p.price >= priceRange[0] && p.price <= priceRange[1]);
+
     setFilteredProducts(filtered);
-  }, [products, filters, searchTerm, sortBy]);
+  }, [products, selectedCategory, searchTerm, selectedState, priceRange]);
 
-  const handleContactSupplier = (product) => {
-    setSelectedProduct(product);
-    // Aqui você implementaria a lógica de contato
-    console.log('Contatando fornecedor:', product.supplier.name);
-  };
-
-  const formatPrice = (price, currency, unit) => {
+  const formatPrice = (price) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
-      currency: currency
-    }).format(price) + `/${unit}`;
+      currency: 'BRL'
+    }).format(price);
   };
 
-  const getCertificationIcon = (certId) => {
-    const cert = certifications.find(c => c.id === certId);
-    return cert ? cert.icon : <ClipboardIcon className="w-4 h-4" />;
+  const getCategoryIcon = (category) => {
+    switch (category) {
+      case 'insumos':
+        return <Leaf className="w-5 h-5 text-green-600" />;
+      case 'maquinas':
+        return <Wrench className="w-5 h-5 text-blue-600" />;
+      case 'pecuaria':
+        return <User className="w-5 h-5 text-orange-600" />;
+      case 'commodities':
+        return <Circle className="w-5 h-5 text-yellow-600" />;
+      default:
+        return <Package className="w-5 h-5 text-gray-600" />;
+    }
   };
 
-  const getProductIcon = (productName, category) => {
-    const name = productName.toLowerCase();
-    
-    if (name.includes('soja')) {
-      return <SoyIcon className="w-12 h-12 text-green-500" />;
-    } else if (name.includes('milho')) {
-      return <CornIcon className="w-12 h-12 text-yellow-500" />;
-    } else if (name.includes('café')) {
-      return <CoffeeIcon className="w-12 h-12 text-amber-600" />;
-    } else {
-      switch (category) {
-        case 'grains':
-          return <GrainIcon className="w-12 h-12 text-amber-500" />;
-        case 'vegetables':
-          return <VegetableIcon className="w-12 h-12 text-green-500" />;
-        case 'fruits':
-          return <FruitIcon className="w-12 h-12 text-red-500" />;
-        case 'dairy':
-          return <DairyIcon className="w-12 h-12 text-blue-400" />;
-        case 'meat':
-          return <MeatIcon className="w-12 h-12 text-red-600" />;
-        case 'seeds':
-          return <SeedIcon className="w-12 h-12 text-green-600" />;
-        default:
-          return <GrainIcon className="w-12 h-12 text-gray-500" />;
-      }
+  const getCategoryColor = (category) => {
+    switch (category) {
+      case 'insumos':
+        return 'bg-green-100 text-green-800 border-green-200';
+      case 'maquinas':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'pecuaria':
+        return 'bg-orange-100 text-orange-800 border-orange-200';
+      case 'commodities':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black text-white pt-20">
-        <div className="max-w-7xl mx-auto px-4 py-20">
-          <div className="flex items-center justify-center">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
-          </div>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Carregando marketplace...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-black text-white pt-20">
+    <div className="min-h-screen bg-white text-gray-900">
       {/* Header Section */}
-      <section className="relative py-20 px-4 bg-gradient-to-br from-blue-900/20 to-green-900/20">
+      <section className="relative py-20 px-4 bg-gradient-to-br from-green-900/20 to-blue-900/20">
         <div className="max-w-6xl mx-auto text-center">
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-green-400 to-yellow-400 bg-clip-text text-transparent"
+            className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent"
           >
-            Marketplace Corporativo
+            Loja AgroSync
           </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl text-gray-300 max-w-4xl mx-auto"
+            className="text-xl text-gray-600 max-w-3xl mx-auto"
           >
-            Conectamos produtores certificados com compradores corporativos. 
-            Qualidade garantida, transparência total e negociações seguras.
+            Marketplace completo do agronegócio brasileiro. Insumos, máquinas, pecuária e commodities em um só lugar.
           </motion.p>
-          
-          {/* Stats */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-12"
-          >
-            {[
-              { number: '2,500+', label: 'Produtos', icon: <BoxIcon className="w-8 h-8 text-blue-400" /> },
-              { number: '500+', label: 'Fornecedores', icon: <FactoryIcon className="w-8 h-8 text-green-400" /> },
-              { number: '99.9%', label: 'Satisfação', icon: <StarIcon className="w-8 h-8 text-yellow-400" filled={true} /> },
-              { number: '24/7', label: 'Suporte', icon: <ReloadIcon className="w-8 h-8 text-purple-400" /> }
-            ].map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="flex justify-center mb-2">{stat.icon}</div>
-                <div className="text-2xl font-bold text-blue-400">{stat.number}</div>
-                <div className="text-gray-400 text-sm">{stat.label}</div>
-              </div>
-            ))}
-          </motion.div>
         </div>
       </section>
 
-      {/* Filters and Search */}
-      <section className="py-8 px-4 bg-neutral-900/50 border-b border-neutral-700">
+      {/* Filtros e Busca */}
+      <section className="py-8 px-4 bg-gray-50 border-b">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
-            
-            {/* Search Bar */}
+            {/* Busca */}
             <div className="flex-1 max-w-md">
               <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Buscar produtos, fornecedores..."
+                  placeholder="Buscar produtos, vendedores..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-4 py-3 pl-12 bg-neutral-800 border border-neutral-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 />
-                <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
-                  <SearchIcon className="w-5 h-5" />
-                </div>
               </div>
             </div>
 
-            {/* View Mode Toggle */}
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg transition-all duration-300 ${
-                  viewMode === 'grid' 
-                    ? 'bg-blue-600 text-white' 
-                    : 'bg-neutral-700 text-gray-400 hover:bg-neutral-600'
-                }`}
+            {/* Filtros */}
+            <div className="flex flex-wrap gap-4">
+              {/* Categoria */}
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               >
-                <GridIcon className="w-5 h-5" />
-              </button>
-              <button
-                onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition-all duration-300 ${
-                  viewMode === 'list' 
-                    ? 'bg-blue-600 text-white' 
-                    : 'bg-neutral-700 text-gray-400 hover:bg-neutral-600'
-                }`}
+                {categories.map(cat => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name} ({cat.count})
+                  </option>
+                ))}
+              </select>
+
+              {/* Estado */}
+              <select
+                value={selectedState}
+                onChange={(e) => setSelectedState(e.target.value)}
+                className="px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               >
-                <ListIcon className="w-5 h-5" />
-              </button>
+                {states.map(state => (
+                  <option key={state.id} value={state.id}>
+                    {state.name}
+                  </option>
+                ))}
+              </select>
+
+              {/* Faixa de Preço */}
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-600">Preço:</span>
+                <input
+                  type="number"
+                  placeholder="Min"
+                  value={priceRange[0]}
+                  onChange={(e) => setPriceRange([parseInt(e.target.value) || 0, priceRange[1]])}
+                  className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+                <span className="text-gray-400">-</span>
+                <input
+                  type="number"
+                  placeholder="Max"
+                  value={priceRange[1]}
+                  onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value) || 10000])}
+                  className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+
+              {/* Modo de Visualização */}
+              <div className="flex border border-gray-300 rounded-xl overflow-hidden">
+                <button
+                  onClick={() => setViewMode('grid')}
+                  className={`px-3 py-2 ${viewMode === 'grid' ? 'bg-green-500 text-white' : 'bg-white text-gray-600'}`}
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`px-3 py-2 ${viewMode === 'list' ? 'bg-green-500 text-white' : 'bg-white text-gray-600'}`}
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </div>
             </div>
-
-            {/* Sort Dropdown */}
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="px-4 py-3 bg-neutral-800 border border-neutral-600 rounded-lg text-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
-            >
-              <option value="relevance">Mais Relevantes</option>
-              <option value="price-low">Menor Preço</option>
-              <option value="price-high">Maior Preço</option>
-              <option value="rating">Melhor Avaliação</option>
-              <option value="newest">Mais Recentes</option>
-            </select>
-
-            {/* Filters Toggle */}
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 flex items-center space-x-2"
-            >
-              <ToolsIcon className="w-5 h-5" />
-              <span>Filtros</span>
-            </button>
           </div>
-
-          {/* Advanced Filters */}
-          <AnimatePresence>
-            {showFilters && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="mt-6 pt-6 border-t border-neutral-700"
-              >
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-                  
-                  {/* Category Filter */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Categoria
-                    </label>
-                    <select
-                      value={filters.category}
-                      onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value }))}
-                      className="w-full px-3 py-2 bg-neutral-800 border border-neutral-600 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500"
-                    >
-                      <option value="all">Todas as Categorias</option>
-                      {categories.map(cat => (
-                        <option key={cat.id} value={cat.id}>
-                          {cat.name} ({cat.count})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Location Filter */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Localização
-                    </label>
-                    <select
-                      value={filters.location}
-                      onChange={(e) => setFilters(prev => ({ ...prev, location: e.target.value }))}
-                      className="w-full px-3 py-2 bg-neutral-800 border border-neutral-600 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500"
-                    >
-                      {locations.map(loc => (
-                        <option key={loc.id} value={loc.id}>
-                          {loc.name} {loc.count ? `(${loc.count})` : ''}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Quality Filter */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Qualidade
-                    </label>
-                    <select
-                      value={filters.quality}
-                      onChange={(e) => setFilters(prev => ({ ...prev, quality: e.target.value }))}
-                      className="w-full px-3 py-2 bg-neutral-800 border border-neutral-600 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500"
-                    >
-                      <option value="all">Todos os Padrões</option>
-                      {qualityStandards.map(qual => (
-                        <option key={qual.id} value={qual.id}>
-                          {qual.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Certification Filter */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Certificação
-                    </label>
-                    <select
-                      value={filters.certification}
-                      onChange={(e) => setFilters(prev => ({ ...prev, certification: e.target.value }))}
-                      className="w-full px-3 py-2 bg-neutral-800 border border-neutral-600 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500"
-                    >
-                      {certifications.map(cert => (
-                        <option key={cert.id} value={cert.id}>
-                          {cert.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Price Range Filter */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Faixa de Preço
-                    </label>
-                    <select
-                      value={filters.priceRange}
-                      onChange={(e) => setFilters(prev => ({ ...prev, priceRange: e.target.value }))}
-                      className="w-full px-3 py-2 bg-neutral-800 border border-neutral-600 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500"
-                    >
-                      <option value="all">Todos os Preços</option>
-                      <option value="0-50">Até R$ 50</option>
-                      <option value="50-100">R$ 50 - R$ 100</option>
-                      <option value="100-200">R$ 100 - R$ 200</option>
-                      <option value="200-500">R$ 200 - R$ 500</option>
-                      <option value="500-999999">Acima de R$ 500</option>
-                    </select>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
       </section>
 
-      {/* Products Grid */}
+      {/* Produtos */}
       <section className="py-12 px-4">
         <div className="max-w-7xl mx-auto">
-          
-          {/* Results Info */}
-          <div className="flex items-center justify-between mb-8">
-            <div className="text-gray-400">
-              Mostrando <span className="text-white font-semibold">{filteredProducts.length}</span> de <span className="text-white font-semibold">{products.length}</span> produtos
-            </div>
-            <div className="text-gray-400 text-sm">
-              Última atualização: {new Date().toLocaleDateString('pt-BR')}
-            </div>
+          {/* Estatísticas */}
+          <div className="mb-8 text-center">
+            <p className="text-gray-600">
+              Mostrando <span className="font-semibold text-green-600">{filteredProducts.length}</span> de{' '}
+              <span className="font-semibold text-green-600">{products.length}</span> produtos
+            </p>
           </div>
 
-          {/* Products */}
+          {/* Grid de Produtos */}
           {viewMode === 'grid' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredProducts.map((product) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {filteredProducts.map((product, index) => (
                 <motion.div
                   key={product.id}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6 }}
-                  className="bg-neutral-900/50 backdrop-blur-xl border border-neutral-700 rounded-2xl overflow-hidden hover:border-blue-500/50 transition-all duration-300 group"
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-gray-200 overflow-hidden"
                 >
-                  {/* Product Image */}
-                  <div className="relative h-48 bg-neutral-800 overflow-hidden flex items-center justify-center">
-                    <div className="group-hover:scale-105 transition-transform duration-300">
-                      {getProductIcon(product.name, product.category)}
+                  {/* Imagem do Produto */}
+                  <div className="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                    <div className="text-6xl text-gray-400">
+                      {getCategoryIcon(product.category)}
                     </div>
-                    <div className="absolute top-4 right-4">
-                      <div className="bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
-                        {product.quality.toUpperCase()}
+                    {product.featured && (
+                      <div className="absolute top-2 right-2 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold">
+                        DESTAQUE
                       </div>
+                    )}
+                    <div className="absolute top-2 left-2">
+                      <button className="p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors">
+                        <Heart className="w-4 h-4 text-gray-600" />
+                      </button>
                     </div>
                   </div>
 
-                  {/* Product Info */}
-                  <div className="p-6">
-                    <div className="flex items-start justify-between mb-3">
-                      <h3 className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors duration-300">
-                        {product.name}
-                      </h3>
-                      <div className="text-right">
-                        <div className="text-2xl font-bold text-green-400">
-                          {formatPrice(product.price, product.currency, product.unit)}
-                        </div>
-                        <div className="text-sm text-gray-400">
-                          Min: {product.minOrder} {product.unitType}
-                        </div>
+                  {/* Informações do Produto */}
+                  <div className="p-4">
+                    {/* Categoria */}
+                    <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getCategoryColor(product.category)} mb-2`}>
+                      {getCategoryIcon(product.category)}
+                      <span className="ml-1">{categories.find(c => c.id === product.category)?.name}</span>
+                    </div>
+
+                    {/* Nome */}
+                    <h3 className="font-bold text-gray-900 mb-2 line-clamp-2">{product.name}</h3>
+
+                    {/* Preço */}
+                    <div className="text-2xl font-bold text-green-600 mb-2">
+                      {formatPrice(product.price)}
+                    </div>
+
+                    {/* Unidade */}
+                    <p className="text-sm text-gray-600 mb-3">por {product.unit}</p>
+
+                    {/* Vendedor e Localização */}
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-1">
+                        <MapPin className="w-4 h-4 text-gray-400" />
+                        <span className="text-sm text-gray-600">{product.state}</span>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                        <span className="text-sm text-gray-600">{product.rating}</span>
+                        <span className="text-xs text-gray-400">({product.reviews})</span>
                       </div>
                     </div>
 
-                    <p className="text-gray-300 text-sm mb-4 line-clamp-2">
-                      {product.description}
+                    {/* Vendedor */}
+                    <p className="text-sm text-gray-700 mb-3 font-medium">{product.seller}</p>
+
+                    {/* Estoque */}
+                    <p className="text-sm text-gray-600 mb-4">
+                      Estoque: <span className="font-semibold text-green-600">{product.stock} {product.unit}</span>
                     </p>
 
-                    {/* Supplier Info */}
-                    <div className="flex items-center justify-between mb-4 p-3 bg-neutral-800/50 rounded-lg">
-                      <div>
-                        <div className="flex items-center space-x-2 mb-1">
-                          <span className="text-sm font-semibold text-white">
-                            {product.supplier.name}
-                          </span>
-                          {product.supplier.verified && (
-                            <span className="flex items-center text-blue-400 text-xs">
-                              <CheckIcon className="w-3 h-3 mr-1" />
-                              Verificado
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <div className="flex items-center space-x-1">
-                            <StarIcon className="w-4 h-4 text-yellow-400" filled={true} />
-                            <span className="text-sm text-gray-300">{product.supplier.rating}</span>
-                          </div>
-                          <span className="text-gray-500">•</span>
-                          <span className="text-sm text-gray-400">{product.supplier.location}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Specifications */}
-                    <div className="grid grid-cols-2 gap-2 mb-4 text-xs">
-                      {Object.entries(product.specifications).slice(0, 4).map(([key, value]) => (
-                        <div key={key} className="flex justify-between">
-                          <span className="text-gray-400 capitalize">{key}:</span>
-                          <span className="text-white font-medium">{value}</span>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Certifications */}
-                    <div className="flex items-center space-x-2 mb-4">
-                      {product.certifications.map(certId => (
-                        <div key={certId} className="flex items-center" title={certifications.find(c => c.id === certId)?.name}>
-                          {getCertificationIcon(certId)}
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex space-x-3">
-                      <button
-                        onClick={() => handleContactSupplier(product)}
-                        className="flex-1 bg-gradient-to-r from-blue-600 to-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-green-700 transition-all duration-300 hover:scale-105 flex items-center justify-center space-x-2"
-                      >
-                        <PhoneIcon className="w-4 h-4" />
-                        <span>Contatar Fornecedor</span>
+                    {/* Botões */}
+                    <div className="flex space-x-2">
+                      <button className="flex-1 bg-green-600 text-white py-2 px-4 rounded-xl hover:bg-green-700 transition-colors font-medium flex items-center justify-center space-x-2">
+                        <ShoppingCart className="w-4 h-4" />
+                        <span>Comprar</span>
                       </button>
-                      <button className="p-3 bg-neutral-700 text-gray-300 rounded-lg hover:bg-neutral-600 transition-colors duration-300">
-                        <SaveIcon className="w-5 h-5" />
+                      <button className="px-4 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors">
+                        <Eye className="w-4 h-4 text-gray-600" />
                       </button>
                     </div>
                   </div>
@@ -646,104 +533,69 @@ const Loja = () => {
               ))}
             </div>
           ) : (
-            // List View
-            <div className="space-y-6">
-              {filteredProducts.map((product) => (
+            /* Lista de Produtos */
+            <div className="space-y-4">
+              {filteredProducts.map((product, index) => (
                 <motion.div
                   key={product.id}
-                  initial={{ opacity: 0, x: -20 }}
+                  initial={{ opacity: 0, x: -30 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6 }}
-                  className="bg-neutral-900/50 backdrop-blur-xl border border-neutral-700 rounded-2xl p-6 hover:border-blue-500/50 transition-all duration-300"
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200 p-6"
                 >
-                  <div className="flex items-start space-x-6">
-                    {/* Product Image */}
-                    <div className="relative w-32 h-32 bg-neutral-800 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center">
-                      {getProductIcon(product.name, product.category)}
-                      <div className="absolute top-2 right-2">
-                        <div className="bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
-                          {product.quality.toUpperCase()}
-                        </div>
+                  <div className="flex items-center space-x-6">
+                    {/* Imagem */}
+                    <div className="relative w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <div className="text-3xl text-gray-400">
+                        {getCategoryIcon(product.category)}
                       </div>
+                      {product.featured && (
+                        <div className="absolute -top-1 -right-1 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold">
+                          DESTAQUE
+                        </div>
+                      )}
                     </div>
 
-                    {/* Product Details */}
+                    {/* Informações */}
                     <div className="flex-1">
-                      <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-start justify-between mb-2">
                         <div>
-                          <h3 className="text-2xl font-bold text-white mb-2">
-                            {product.name}
-                          </h3>
-                          <p className="text-gray-300 mb-3 max-w-2xl">
-                            {product.description}
-                          </p>
+                          <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getCategoryColor(product.category)} mb-2`}>
+                            {getCategoryIcon(product.category)}
+                            <span className="ml-1">{categories.find(c => c.id === product.category)?.name}</span>
+                          </div>
+                          <h3 className="text-lg font-bold text-gray-900 mb-1">{product.name}</h3>
+                          <p className="text-sm text-gray-600 mb-2">{product.description}</p>
                         </div>
                         <div className="text-right">
-                          <div className="text-3xl font-bold text-green-400 mb-1">
-                            {formatPrice(product.price, product.currency, product.unit)}
+                          <div className="text-2xl font-bold text-green-600 mb-1">
+                            {formatPrice(product.price)}
                           </div>
-                          <div className="text-sm text-gray-400">
-                            Min: {product.minOrder} {product.unitType}
-                          </div>
+                          <p className="text-sm text-gray-600">por {product.unit}</p>
                         </div>
                       </div>
 
-                      {/* Supplier and Specs Row */}
-                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        {/* Supplier Info */}
-                        <div className="bg-neutral-800/50 rounded-lg p-4">
-                          <h4 className="font-semibold text-white mb-2">Fornecedor</h4>
-                          <div className="space-y-2">
-                            <div className="flex items-center space-x-2">
-                              <span className="text-sm font-medium text-white">
-                                {product.supplier.name}
-                              </span>
-                              {product.supplier.verified && (
-                                <span className="flex items-center text-blue-400 text-xs">
-                                  <CheckIcon className="w-3 h-3 mr-1" />
-                                  Verificado
-                                </span>
-                              )}
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <StarIcon className="w-4 h-4 text-yellow-400" filled={true} />
-                              <span className="text-sm text-gray-300">{product.supplier.rating}</span>
-                              <span className="text-gray-500">•</span>
-                              <span className="text-sm text-gray-400">{product.supplier.yearsActive} anos</span>
-                            </div>
-                            <div className="text-sm text-gray-400">{product.supplier.location}</div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4 text-sm text-gray-600">
+                          <div className="flex items-center space-x-1">
+                            <MapPin className="w-4 h-4" />
+                            <span>{product.state}</span>
                           </div>
+                          <div className="flex items-center space-x-1">
+                            <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                            <span>{product.rating}</span>
+                            <span>({product.reviews})</span>
+                          </div>
+                          <span>Estoque: {product.stock} {product.unit}</span>
                         </div>
 
-                        {/* Specifications */}
-                        <div className="bg-neutral-800/50 rounded-lg p-4">
-                          <h4 className="font-semibold text-white mb-2">Especificações</h4>
-                          <div className="space-y-1 text-sm">
-                            {Object.entries(product.specifications).map(([key, value]) => (
-                              <div key={key} className="flex justify-between">
-                                <span className="text-gray-400 capitalize">{key}:</span>
-                                <span className="text-white font-medium">{value}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Certifications & Actions */}
-                        <div className="bg-neutral-800/50 rounded-lg p-4">
-                          <h4 className="font-semibold text-white mb-2">Certificações</h4>
-                          <div className="flex items-center space-x-3 mb-4">
-                            {product.certifications.map(certId => (
-                              <div key={certId} className="flex items-center" title={certifications.find(c => c.id === certId)?.name}>
-                                {getCertificationIcon(certId)}
-                              </div>
-                            ))}
-                          </div>
-                          <button
-                            onClick={() => handleContactSupplier(product)}
-                            className="w-full bg-gradient-to-r from-blue-600 to-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-green-700 transition-all duration-300 hover:scale-105 flex items-center justify-center space-x-2"
-                          >
-                            <PhoneIcon className="w-4 h-4" />
-                            <span>Contatar Fornecedor</span>
+                        <div className="flex space-x-2">
+                          <button className="bg-green-600 text-white py-2 px-6 rounded-xl hover:bg-green-700 transition-colors font-medium flex items-center space-x-2">
+                            <ShoppingCart className="w-4 h-4" />
+                            <span>Comprar</span>
+                          </button>
+                          <button className="px-4 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors">
+                            <Eye className="w-4 h-4 text-gray-600" />
                           </button>
                         </div>
                       </div>
@@ -754,118 +606,16 @@ const Loja = () => {
             </div>
           )}
 
-          {/* No Results */}
+          {/* Sem Produtos */}
           {filteredProducts.length === 0 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center py-20"
-            >
-              <div className="flex justify-center mb-4">
-                <SearchIcon className="w-16 h-16 text-gray-400" />
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-2">Nenhum produto encontrado</h3>
-              <p className="text-gray-400 mb-6">
-                Tente ajustar os filtros ou termos de busca
-              </p>
-              <button
-                onClick={() => {
-                  setFilters({
-                    category: 'all',
-                    location: 'all',
-                    priceRange: 'all',
-                    quality: 'all',
-                    certification: 'all'
-                  });
-                  setSearchTerm('');
-                }}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300"
-              >
-                Limpar Filtros
-              </button>
-            </motion.div>
+            <div className="text-center py-20">
+              <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-600 mb-2">Nenhum produto encontrado</h3>
+              <p className="text-gray-500">Tente ajustar os filtros ou termos de busca</p>
+            </div>
           )}
         </div>
       </section>
-
-      {/* Contact Modal */}
-      <AnimatePresence>
-        {selectedProduct && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={() => setSelectedProduct(null)}
-          >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              className="bg-neutral-900 border border-neutral-700 rounded-2xl p-8 max-w-2xl w-full"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-white">
-                  Contatar Fornecedor
-                </h2>
-                <button
-                  onClick={() => setSelectedProduct(null)}
-                  className="text-gray-400 hover:text-white transition-colors duration-300"
-                >
-                  <XIcon className="w-6 h-6" />
-                </button>
-              </div>
-
-              <div className="space-y-6">
-                <div className="bg-neutral-800/50 rounded-lg p-4">
-                  <h3 className="font-semibold text-white mb-2">Produto</h3>
-                  <p className="text-gray-300">{selectedProduct.name}</p>
-                </div>
-
-                <div className="bg-neutral-800/50 rounded-lg p-4">
-                  <h3 className="font-semibold text-white mb-2">Fornecedor</h3>
-                  <div className="space-y-2">
-                    <p className="text-white font-medium">{selectedProduct.supplier.name}</p>
-                    <p className="text-gray-300">{selectedProduct.supplier.location}</p>
-                    <div className="flex items-center text-gray-400 text-sm">
-                      <span>Avaliação:</span>
-                      <StarIcon className="w-4 h-4 text-yellow-400 mx-1" filled={true} />
-                      <span>{selectedProduct.supplier.rating} • {selectedProduct.supplier.yearsActive} anos de experiência</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-neutral-800/50 rounded-lg p-4">
-                  <h3 className="font-semibold text-white mb-2">Preço e Disponibilidade</h3>
-                  <div className="space-y-2">
-                    <p className="text-2xl font-bold text-green-400">
-                      {formatPrice(selectedProduct.price, selectedProduct.currency, selectedProduct.unit)}
-                    </p>
-                    <p className="text-gray-300">
-                      Quantidade disponível: {selectedProduct.quantity} {selectedProduct.unitType}
-                    </p>
-                    <p className="text-gray-400 text-sm">
-                      Pedido mínimo: {selectedProduct.minOrder} {selectedProduct.unitType}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex space-x-4">
-                  <button className="flex-1 bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-300 flex items-center justify-center space-x-2">
-                    <EmailIcon className="w-4 h-4" />
-                    <span>Enviar Mensagem</span>
-                  </button>
-                  <button className="flex-1 bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 transition-all duration-300 flex items-center justify-center space-x-2">
-                    <PhoneIcon className="w-4 h-4" />
-                    <span>Ligar Agora</span>
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };
