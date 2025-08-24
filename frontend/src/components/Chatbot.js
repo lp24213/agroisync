@@ -28,28 +28,28 @@ const Chatbot = () => {
       avatar: '🌾',
       description: 'Especialista em agronegócio',
       style: 'Profissional e técnico',
-      color: isDark ? 'from-dark-accent-primary to-dark-accent-secondary' : 'from-light-accent-primary to-light-accent-secondary'
+      color: isDark ? 'from-cyan-400 to-purple-500' : 'from-green-600 to-blue-600'
     },
     'friendly': {
       name: 'AgroAmigo',
       avatar: '🤝',
       description: 'Amigável e acolhedor',
       style: 'Casual e simpático',
-      color: isDark ? 'from-dark-accent-secondary to-dark-accent-tertiary' : 'from-light-accent-secondary to-light-accent-tertiary'
+      color: isDark ? 'from-purple-500 to-pink-500' : 'from-blue-600 to-green-600'
     },
     'analyst': {
       name: 'DataAgro',
       avatar: '📊',
       description: 'Analista de dados',
       style: 'Analítico e preciso',
-      color: isDark ? 'from-dark-accent-tertiary to-dark-accent-primary' : 'from-light-accent-tertiary to-light-accent-primary'
+      color: isDark ? 'from-pink-500 to-cyan-400' : 'from-green-600 to-blue-600'
     },
     'crypto': {
       name: 'CryptoAgro',
       avatar: '₿',
       description: 'Especialista em DeFi',
       style: 'Inovador e tecnológico',
-      color: isDark ? 'from-dark-accent-primary to-dark-accent-tertiary' : 'from-light-accent-primary to-light-accent-tertiary'
+      color: isDark ? 'from-cyan-400 to-pink-500' : 'from-green-600 to-blue-600'
     }
   };
 
@@ -64,6 +64,12 @@ const Chatbot = () => {
     };
     setMessages([initialMessage]);
   }, [chatbotPersonality]);
+
+  // Estado inicial minimizado em dispositivos móveis
+  useEffect(() => {
+    const isMobile = window.innerWidth <= 768;
+    setIsMinimized(isMobile);
+  }, []);
 
   // Scroll para última mensagem
   useEffect(() => {
@@ -224,8 +230,8 @@ const Chatbot = () => {
           onClick={() => setIsOpen(true)}
           className={`w-16 h-16 rounded-full shadow-2xl flex items-center justify-center text-2xl transition-all duration-300 ${
             isDark
-              ? 'bg-gradient-to-r from-dark-accent-primary to-dark-accent-secondary text-white hover:shadow-dark-accent-primary/50'
-              : 'bg-gradient-to-r from-light-accent-primary to-light-accent-secondary text-white hover:shadow-light-accent-primary/50'
+              ? 'bg-gradient-to-r from-cyan-400 to-purple-500 text-white hover:shadow-cyan-400/50'
+              : 'bg-gradient-to-r from-green-600 to-blue-600 text-white hover:shadow-green-600/50'
           }`}
           title="Abrir Chatbot AgroConecta"
         >
@@ -246,28 +252,28 @@ const Chatbot = () => {
         {/* Container principal do chat */}
         <div className={`w-full h-full rounded-2xl shadow-2xl backdrop-blur-md border overflow-hidden ${
           isDark
-            ? 'bg-dark-bg-card/95 border-dark-border-primary'
-            : 'bg-light-bg-card/95 border-light-border-primary'
+            ? 'bg-gray-900/95 border-gray-700'
+            : 'bg-white/95 border-gray-200'
         }`}>
           {/* Header do chat */}
           <div className={`p-4 border-b ${
-            isDark ? 'bg-dark-bg-card-hover border-dark-border-primary' : 'bg-light-bg-card-hover border-light-border-primary'
+            isDark ? 'bg-gray-800 border-gray-700' : 'bg-gray-100 border-gray-200'
           }`}>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xl ${
-                  isDark ? 'bg-gradient-to-r from-dark-accent-primary to-dark-accent-secondary' : 'bg-gradient-to-r from-light-accent-primary to-light-accent-secondary'
+                  isDark ? 'bg-gradient-to-r from-cyan-400 to-purple-500' : 'bg-gradient-to-r from-green-600 to-blue-600'
                 }`}>
                   {personalities[chatbotPersonality].avatar}
                 </div>
                 <div>
                   <h3 className={`font-semibold ${
-                    isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+                    isDark ? 'text-white' : 'text-gray-900'
                   }`}>
                     {personalities[chatbotPersonality].name}
                   </h3>
                   <p className={`text-xs ${
-                    isDark ? 'text-dark-text-tertiary' : 'text-light-text-tertiary'
+                    isDark ? 'text-gray-400' : 'text-gray-600'
                   }`}>
                     {personalities[chatbotPersonality].description}
                   </p>
@@ -278,7 +284,7 @@ const Chatbot = () => {
                 <button
                   onClick={() => setShowPersonalitySelector(!showPersonalitySelector)}
                   className={`p-2 rounded-lg transition-colors duration-200 ${
-                    isDark ? 'hover:bg-dark-bg-card-hover' : 'hover:bg-light-bg-card-hover'
+                    isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'
                   }`}
                   title="Alterar personalidade"
                 >
@@ -287,7 +293,7 @@ const Chatbot = () => {
                 <button
                   onClick={() => setIsMinimized(!isMinimized)}
                   className={`p-2 rounded-lg transition-colors duration-200 ${
-                    isDark ? 'hover:bg-dark-bg-card-hover' : 'hover:bg-light-bg-card-hover'
+                    isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'
                   }`}
                   title="Minimizar"
                 >
@@ -296,7 +302,7 @@ const Chatbot = () => {
                 <button
                   onClick={() => setIsOpen(false)}
                   className={`p-2 rounded-lg transition-colors duration-200 ${
-                    isDark ? 'hover:bg-dark-bg-card-hover' : 'hover:bg-light-bg-card-hover'
+                    isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'
                   }`}
                   title="Fechar"
                 >
@@ -313,11 +319,11 @@ const Chatbot = () => {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               className={`p-4 border-b ${
-                isDark ? 'bg-dark-bg-card-hover border-dark-border-primary' : 'bg-light-bg-card-hover border-light-border-primary'
+                isDark ? 'bg-gray-800 border-gray-700' : 'bg-gray-100 border-gray-200'
               }`}
             >
               <h4 className={`text-sm font-semibold mb-3 ${
-                isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+                isDark ? 'text-white' : 'text-gray-900'
               }`}>
                 Escolha a personalidade:
               </h4>
@@ -331,18 +337,18 @@ const Chatbot = () => {
                     }}
                     className={`p-2 rounded-lg text-left transition-all duration-200 ${
                       chatbotPersonality === key
-                        ? (isDark ? 'bg-dark-accent-primary/20 border-dark-accent-primary' : 'bg-light-accent-primary/20 border-light-accent-primary')
-                        : (isDark ? 'hover:bg-dark-bg-card-hover' : 'hover:bg-light-bg-card-hover')
+                        ? (isDark ? 'bg-cyan-400/20 border-cyan-400' : 'bg-green-500/20 border-green-500')
+                        : (isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200')
                     } border`}
                   >
                     <div className="text-lg">{personality.avatar}</div>
                     <div className={`text-xs font-semibold ${
-                      isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+                      isDark ? 'text-white' : 'text-gray-900'
                     }`}>
                       {personality.name}
                     </div>
                     <div className={`text-xs ${
-                      isDark ? 'text-dark-text-tertiary' : 'text-light-text-tertiary'
+                      isDark ? 'text-gray-400' : 'text-gray-600'
                     }`}>
                       {personality.style}
                     </div>
@@ -366,15 +372,15 @@ const Chatbot = () => {
                     <div className={`max-w-xs lg:max-w-md p-3 rounded-2xl ${
                       message.sender === 'user'
                         ? (isDark 
-                            ? 'bg-dark-accent-primary text-white' 
-                            : 'bg-light-accent-primary text-white')
+                            ? 'bg-cyan-400 text-white' 
+                            : 'bg-green-500 text-white')
                         : (isDark 
-                            ? 'bg-dark-bg-card-hover text-dark-text-primary' 
-                            : 'bg-light-bg-card-hover text-light-text-primary')
+                            ? 'bg-gray-800 text-white' 
+                            : 'bg-gray-100 text-gray-900')
                     }`}>
                       <div className="whitespace-pre-line text-sm">{message.text}</div>
                       <div className={`text-xs mt-2 opacity-70 ${
-                        message.sender === 'user' ? 'text-white' : (isDark ? 'text-dark-text-tertiary' : 'text-light-text-tertiary')
+                        message.sender === 'user' ? 'text-white' : (isDark ? 'text-gray-400' : 'text-gray-600')
                       }`}>
                         {formatTime(message.timestamp)}
                       </div>
@@ -390,18 +396,18 @@ const Chatbot = () => {
                     className="flex justify-start"
                   >
                     <div className={`max-w-xs p-3 rounded-2xl ${
-                      isDark ? 'bg-dark-bg-card-hover text-dark-text-primary' : 'bg-light-bg-card-hover text-light-text-primary'
+                      isDark ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-900'
                     }`}>
                       <div className="flex items-center space-x-1">
                         <div className="flex space-x-1">
                           <div className={`w-2 h-2 rounded-full animate-bounce ${
-                            isDark ? 'bg-dark-accent-primary' : 'bg-light-accent-primary'
+                            isDark ? 'bg-cyan-400' : 'bg-green-500'
                           }`} style={{ animationDelay: '0ms' }}></div>
                           <div className={`w-2 h-2 rounded-full animate-bounce ${
-                            isDark ? 'bg-dark-accent-primary' : 'bg-light-accent-primary'
+                            isDark ? 'bg-cyan-400' : 'bg-green-500'
                           }`} style={{ animationDelay: '150ms' }}></div>
                           <div className={`w-2 h-2 rounded-full animate-bounce ${
-                            isDark ? 'bg-dark-accent-primary' : 'bg-light-accent-primary'
+                            isDark ? 'bg-cyan-400' : 'bg-green-500'
                           }`} style={{ animationDelay: '300ms' }}></div>
                         </div>
                         <span className="text-xs ml-2">Digitando...</span>
@@ -415,15 +421,15 @@ const Chatbot = () => {
 
               {/* Área de input */}
               <div className={`p-4 border-t ${
-                isDark ? 'border-dark-border-primary' : 'border-light-border-primary'
+                isDark ? 'border-gray-700' : 'border-gray-200'
               }`}>
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={toggleVoiceRecognition}
                     className={`p-2 rounded-lg transition-colors duration-200 ${
                       isListening
-                        ? (isDark ? 'bg-dark-accent-primary text-white' : 'bg-light-accent-primary text-white')
-                        : (isDark ? 'hover:bg-dark-bg-card-hover' : 'hover:bg-light-bg-card-hover')
+                        ? (isDark ? 'bg-cyan-400 text-white' : 'bg-green-500 text-white')
+                        : (isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200')
                     }`}
                     title={isListening ? 'Parar gravação' : 'Gravar áudio'}
                   >
@@ -439,8 +445,8 @@ const Chatbot = () => {
                     placeholder="Digite sua mensagem..."
                     className={`flex-1 p-2 rounded-lg border transition-colors duration-200 ${
                       isDark
-                        ? 'bg-dark-bg-secondary border-dark-border-primary text-dark-text-primary placeholder-dark-text-tertiary focus:border-dark-accent-primary'
-                        : 'bg-light-bg-secondary border-light-border-primary text-light-text-primary placeholder-light-text-tertiary focus:border-light-accent-primary'
+                        ? 'bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-cyan-400'
+                        : 'bg-gray-100 border-gray-300 text-gray-900 placeholder-gray-500 focus:border-green-500'
                     }`}
                   />
                   
@@ -450,11 +456,11 @@ const Chatbot = () => {
                     className={`p-2 rounded-lg transition-all duration-200 ${
                       inputValue.trim() && !isTyping
                         ? (isDark 
-                            ? 'bg-dark-accent-primary text-white hover:bg-dark-accent-secondary' 
-                            : 'bg-light-accent-primary text-white hover:bg-light-accent-secondary')
+                            ? 'bg-cyan-400 text-white hover:bg-purple-500' 
+                            : 'bg-green-500 text-white hover:bg-blue-600')
                         : (isDark 
-                            ? 'bg-dark-bg-card-hover text-dark-text-tertiary cursor-not-allowed' 
-                            : 'bg-light-bg-card-hover text-light-text-tertiary cursor-not-allowed')
+                            ? 'bg-gray-700 text-gray-400 cursor-not-allowed' 
+                            : 'bg-gray-200 text-gray-500 cursor-not-allowed')
                     }`}
                     title="Enviar mensagem"
                   >
@@ -465,7 +471,7 @@ const Chatbot = () => {
                 {/* Indicadores de status */}
                 <div className="flex items-center justify-between mt-2 text-xs">
                   <div className={`flex items-center space-x-2 ${
-                    isDark ? 'text-dark-text-tertiary' : 'text-light-text-tertiary'
+                    isDark ? 'text-gray-400' : 'text-gray-600'
                   }`}>
                     {isListening && <span>🎤 Gravando...</span>}
                     {isProcessing && <span>⚙️ Processando...</span>}

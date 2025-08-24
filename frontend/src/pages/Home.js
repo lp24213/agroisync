@@ -10,6 +10,8 @@ import InteractiveDashboard from '../components/illustrations/InteractiveDashboa
 import StakingFarming from '../components/illustrations/StakingFarming';
 import CyberDefense from '../components/illustrations/CyberDefense';
 import SmartFarming from '../components/illustrations/SmartFarming';
+import WeatherWidget from '../components/WeatherWidget';
+import NewsWidget from '../components/NewsWidget';
 
 const Home = () => {
   const { t } = useTranslation();
@@ -87,14 +89,16 @@ const Home = () => {
   ];
 
   return (
-    <div className="min-h-screen relative z-10">
+    <div className={`min-h-screen relative z-10 ${
+      isDark ? 'bg-dark-bg-primary' : 'bg-light-bg-primary'
+    }`}>
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden">
         {/* Gradiente de fundo baseado no tema */}
-        <div className={`absolute inset-0 ${
+        <div className={`absolute inset-0 transition-all duration-500 ${
           isDark 
-            ? 'bg-gradient-to-br from-dark-bg-primary via-dark-bg-secondary to-dark-bg-primary' 
-            : 'bg-gradient-to-br from-light-bg-primary via-light-bg-secondary to-light-bg-primary'
+            ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-black' 
+            : 'bg-gradient-to-br from-white via-gray-50 to-gray-100'
         }`} />
         
         {/* Partículas flutuantes (apenas no tema escuro) */}
@@ -103,9 +107,7 @@ const Home = () => {
             {[...Array(20)].map((_, i) => (
               <motion.div
                 key={i}
-                className={`absolute w-2 h-2 rounded-full ${
-                  isDark ? 'bg-dark-accent-primary/30' : 'bg-light-accent-primary/30'
-                }`}
+                className="absolute w-2 h-2 rounded-full bg-cyan-400/30"
                 style={{
                   left: `${Math.random() * 100}%`,
                   top: `${Math.random() * 100}%`,
@@ -138,8 +140,8 @@ const Home = () => {
             >
               <span className={`${
                 isDark 
-                  ? 'bg-gradient-to-r from-dark-accent-primary to-dark-accent-secondary bg-clip-text text-transparent'
-                  : 'bg-gradient-to-r from-light-accent-primary to-light-accent-secondary bg-clip-text text-transparent'
+                  ? 'bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent'
+                  : 'bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent'
               }`}>
                 {t('home.hero.title')}
               </span>
@@ -149,7 +151,7 @@ const Home = () => {
             <motion.p
               variants={itemVariants}
               className={`text-xl md:text-2xl lg:text-3xl mb-8 max-w-4xl mx-auto leading-relaxed font-space-grotesk ${
-                isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+                isDark ? 'text-gray-300' : 'text-gray-700'
               }`}
             >
               {t('home.hero.subtitle')}
@@ -159,7 +161,7 @@ const Home = () => {
             <motion.p
               variants={itemVariants}
               className={`text-lg md:text-xl mb-12 max-w-3xl mx-auto leading-relaxed font-inter ${
-                isDark ? 'text-dark-text-tertiary' : 'text-light-text-tertiary'
+                isDark ? 'text-gray-400' : 'text-gray-600'
               }`}
             >
               {t('home.hero.description')}
@@ -174,8 +176,8 @@ const Home = () => {
                 to="/cadastro"
                 className={`px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 ${
                   isDark
-                    ? 'bg-gradient-to-r from-dark-accent-primary to-dark-accent-secondary text-white shadow-lg hover:shadow-xl hover:shadow-dark-accent-primary/25'
-                    : 'bg-gradient-to-r from-light-accent-primary to-light-accent-secondary text-white shadow-lg hover:shadow-xl hover:shadow-light-accent-primary/25'
+                    ? 'bg-gradient-to-r from-cyan-400 to-purple-500 text-white shadow-lg hover:shadow-xl hover:shadow-cyan-400/25'
+                    : 'bg-gradient-to-r from-green-600 to-blue-600 text-white shadow-lg hover:shadow-xl hover:shadow-green-600/25'
                 }`}
               >
                 {t('home.hero.cta')}
@@ -185,8 +187,8 @@ const Home = () => {
                 to="/sobre"
                 className={`px-8 py-4 rounded-2xl font-semibold text-lg border-2 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 ${
                   isDark
-                    ? 'border-dark-accent-primary text-dark-accent-primary hover:bg-dark-accent-primary hover:text-white'
-                    : 'border-light-accent-primary text-light-accent-primary hover:bg-light-accent-primary hover:text-white'
+                    ? 'border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-white'
+                    : 'border-green-600 text-green-600 hover:bg-green-600 hover:text-white'
                 }`}
               >
                 {t('home.hero.learnMore')}
@@ -206,15 +208,15 @@ const Home = () => {
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
             className={`w-6 h-10 border-2 rounded-full flex justify-center ${
-              isDark ? 'border-dark-accent-primary/50' : 'border-light-accent-primary/50'
+              isDark ? 'border-cyan-400/50' : 'border-green-600/50'
             }`}
           >
             <motion.div
               animate={{ y: [0, 12, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
-              className={`w-1 h-3 rounded-full mt-2 ${
-                isDark ? 'bg-dark-accent-primary' : 'bg-light-accent-primary'
-              }`}
+                          className={`w-1 h-3 rounded-full mt-2 ${
+              isDark ? 'bg-cyan-400' : 'bg-green-600'
+            }`}
             />
           </motion.div>
         </motion.div>
@@ -231,7 +233,7 @@ const Home = () => {
             className="text-center mb-16"
           >
             <h2 className={`text-4xl md:text-5xl font-bold mb-6 font-orbitron ${
-              isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+              isDark ? 'text-white' : 'text-gray-900'
             }`}>
               {t('home.highlights.title')}
             </h2>
@@ -247,23 +249,23 @@ const Home = () => {
                 viewport={{ once: true }}
                 className={`p-6 rounded-2xl backdrop-blur-md border transition-all duration-300 hover:transform hover:scale-105 ${
                   isDark
-                    ? 'bg-dark-bg-card/80 border-dark-border-primary hover:border-dark-accent-primary hover:shadow-lg hover:shadow-dark-accent-primary/20'
-                    : 'bg-light-bg-card/80 border-light-border-primary hover:border-light-accent-primary hover:shadow-lg hover:shadow-light-accent-primary/20'
+                    ? 'bg-gray-900/80 border-gray-700 hover:border-cyan-400 hover:shadow-lg hover:shadow-cyan-400/20'
+                    : 'bg-white/80 border-gray-200 hover:border-green-500 hover:shadow-lg hover:shadow-green-500/20'
                 }`}
               >
                 <div className="text-center">
                   <div className={`flex justify-center mb-4 ${
-                    isDark ? 'text-dark-accent-primary' : 'text-light-accent-primary'
+                    isDark ? 'text-cyan-400' : 'text-green-600'
                   }`}>
                     {card.icon}
                   </div>
                   <h3 className={`text-xl font-semibold mb-3 font-space-grotesk ${
-                    isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+                    isDark ? 'text-white' : 'text-gray-900'
                   }`}>
                     {card.title}
                   </h3>
                   <p className={`text-sm leading-relaxed font-inter ${
-                    isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+                    isDark ? 'text-gray-300' : 'text-gray-700'
                   }`}>
                     {card.description}
                   </p>
@@ -285,7 +287,7 @@ const Home = () => {
             className="text-center mb-16"
           >
             <h2 className={`text-4xl md:text-5xl font-bold mb-6 font-orbitron ${
-              isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+              isDark ? 'text-white' : 'text-gray-900'
             }`}>
               {t('home.features.title')}
             </h2>
@@ -301,29 +303,75 @@ const Home = () => {
                 viewport={{ once: true }}
                 className={`p-8 rounded-2xl backdrop-blur-md border transition-all duration-300 hover:transform hover:scale-105 ${
                   isDark
-                    ? 'bg-dark-bg-card/80 border-dark-border-primary hover:border-dark-accent-primary hover:shadow-lg hover:shadow-dark-accent-primary/20'
-                    : 'bg-light-bg-card/80 border-light-border-primary hover:border-light-accent-primary hover:shadow-lg hover:shadow-light-accent-primary/20'
+                    ? 'bg-gray-900/80 border-gray-700 hover:border-cyan-400 hover:shadow-lg hover:shadow-cyan-400/20'
+                    : 'bg-white/80 border-gray-200 hover:border-green-500 hover:shadow-lg hover:shadow-green-500/20'
                 }`}
               >
                 <div className="text-center">
                   <div className={`flex justify-center mb-6 ${
-                    isDark ? 'text-dark-accent-primary' : 'text-light-accent-primary'
+                    isDark ? 'text-cyan-400' : 'text-green-600'
                   }`}>
                     {feature.icon}
                   </div>
                   <h3 className={`text-2xl font-semibold mb-4 font-space-grotesk ${
-                    isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+                    isDark ? 'text-white' : 'text-gray-900'
                   }`}>
                     {feature.title}
                   </h3>
                   <p className={`text-base leading-relaxed font-inter ${
-                    isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+                    isDark ? 'text-gray-300' : 'text-gray-700'
                   }`}>
                     {feature.description}
                   </p>
                 </div>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Informações em Tempo Real Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className={`text-4xl md:text-5xl font-bold mb-6 font-orbitron ${
+              isDark ? 'text-white' : 'text-gray-900'
+            }`}>
+              Informações em Tempo Real
+            </h2>
+            <p className={`text-xl ${
+              isDark ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+              Clima local e notícias do agronegócio
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Widget de Clima */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <WeatherWidget showForecast={true} />
+            </motion.div>
+
+            {/* Widget de Notícias */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              <NewsWidget limit={4} showBreaking={true} />
+            </motion.div>
           </div>
         </div>
       </section>

@@ -23,6 +23,15 @@
   --accent-warning: #ffaa00;
   --accent-error: #ff4757;
   
+  /* Tons prateados e futuristas */
+  --silver-primary: #c0c0c0;
+  --silver-secondary: #a8a8a8;
+  --silver-tertiary: #808080;
+  --metallic-primary: #b8c5d6;
+  --metallic-secondary: #9ba5b4;
+  --futuristic-primary: #00ffff;
+  --futuristic-secondary: #ff00ff;
+  
   --shadow-primary: 0 8px 32px rgba(0, 0, 0, 0.4);
   --shadow-secondary: 0 4px 16px rgba(0, 0, 0, 0.3);
   --shadow-accent: 0 0 20px rgba(0, 212, 255, 0.2);
@@ -32,35 +41,44 @@
 }
 
 [data-theme="light"] {
-  /* Tema Claro - Agro moderno sofisticado */
+  /* Tema Claro - Agro moderno sofisticado com fundo branco */
   --bg-primary: #ffffff;
   --bg-secondary: #f8fafc;
   --bg-tertiary: #e2e8f0;
-  --bg-card: rgba(255, 255, 255, 0.9);
-  --bg-card-hover: rgba(248, 250, 252, 0.95);
+  --bg-card: rgba(255, 255, 255, 0.95);
+  --bg-card-hover: rgba(248, 250, 252, 0.98);
   
-  --text-primary: #1e293b;
-  --text-secondary: #475569;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
   --text-tertiary: #64748b;
-  --text-accent: #22c55e;
+  --text-accent: #059669;
   
-  --border-primary: rgba(30, 41, 59, 0.1);
-  --border-secondary: rgba(30, 41, 59, 0.05);
-  --border-accent: rgba(34, 197, 94, 0.3);
+  --border-primary: rgba(15, 23, 42, 0.08);
+  --border-secondary: rgba(15, 23, 42, 0.04);
+  --border-accent: rgba(5, 150, 105, 0.2);
   
-  --accent-primary: #22c55e; /* Verde agro sofisticado */
-  --accent-secondary: #f59e0b; /* Dourado metálico sutil */
-  --accent-tertiary: #8b5a2b; /* Marrom terra suave */
-  --accent-success: #10b981;
-  --accent-warning: #f59e0b;
-  --accent-error: #ef4444;
+  --accent-primary: #059669; /* Verde agro sofisticado */
+  --accent-secondary: #d97706; /* Dourado metálico sutil */
+  --accent-tertiary: #92400e; /* Marrom terra suave */
+  --accent-success: #059669;
+  --accent-warning: #d97706;
+  --accent-error: #dc2626;
   
-  --shadow-primary: 0 8px 32px rgba(0, 0, 0, 0.1);
-  --shadow-secondary: 0 4px 16px rgba(0, 0, 0, 0.08);
-  --shadow-accent: 0 0 20px rgba(34, 197, 94, 0.15);
+  /* Tons prateados e futuristas para tema claro */
+  --silver-primary: #6b7280;
+  --silver-secondary: #9ca3af;
+  --silver-tertiary: #d1d5db;
+  --metallic-primary: #4b5563;
+  --metallic-secondary: #6b7280;
+  --futuristic-primary: #0891b2;
+  --futuristic-secondary: #7c3aed;
   
-  --glass-bg: rgba(255, 255, 255, 0.8);
-  --glass-border: rgba(30, 41, 59, 0.1);
+  --shadow-primary: 0 8px 32px rgba(15, 23, 42, 0.08);
+  --shadow-secondary: 0 4px 16px rgba(15, 23, 42, 0.06);
+  --shadow-accent: 0 0 20px rgba(5, 150, 105, 0.12);
+  
+  --glass-bg: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(15, 23, 42, 0.08);
 }
 
 /* ===== ESTILOS GLOBAIS ===== */
