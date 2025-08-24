@@ -298,7 +298,7 @@ const Loja = () => {
             transition={{ duration: 0.8 }}
             className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent"
           >
-            Loja AgroSync
+            Loja AgroISync
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 30 }}
@@ -306,7 +306,7 @@ const Loja = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-xl text-gray-600 max-w-3xl mx-auto"
           >
-            Marketplace completo do agronegócio brasileiro. Insumos, máquinas, pecuária e commodities em um só lugar.
+            Marketplace Completo de Produtos Agrícolas
           </motion.p>
         </div>
       </section>

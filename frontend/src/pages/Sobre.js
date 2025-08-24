@@ -123,11 +123,11 @@ const Sobre = () => {
             transition={{ duration: 0.8 }}
             className="mb-8"
           >
-            <h1 className="text-5xl md:text-7xl font-bold mb-6">
-              {t('about.hero.title')}
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
+              Sobre o AgroISync
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-              {t('about.hero.subtitle')}
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Conectando o Agronegócio Brasileiro com Tecnologia e Inovação
             </p>
           </motion.div>
 

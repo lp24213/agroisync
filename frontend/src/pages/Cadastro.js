@@ -218,22 +218,12 @@ const Cadastro = () => {
           )}
         </div>
         <div className="max-w-6xl mx-auto text-center">
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent"
-          >
-            Cadastro AgroSync
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl text-gray-600 max-w-3xl mx-auto"
-          >
-            Junte-se à maior plataforma do agronegócio brasileiro
-          </motion.p>
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
+            Cadastro AgroISync
+          </h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Junte-se ao Hub do Agronegócio Brasileiro
+          </p>
         </div>
       </section>
 

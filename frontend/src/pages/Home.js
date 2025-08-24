@@ -111,7 +111,7 @@ const Home = () => {
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-              {t('home.hero.subtitle')}
+              O Hub Completo do Agronegócio Brasileiro
             </p>
           </motion.div>
 

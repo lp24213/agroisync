@@ -117,22 +117,12 @@ const Cripto = () => {
           )}
         </div>
         <div className="max-w-6xl mx-auto text-center">
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
-          >
-            {t('crypto.title')}
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl text-gray-300 max-w-3xl mx-auto"
-          >
-            {t('crypto.subtitle')}
-          </motion.p>
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
+            Criptomoedas AgroISync
+          </h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Soluções em Criptomoedas para o Agronegócio
+          </p>
         </div>
       </section>
 

@@ -358,7 +358,7 @@ const AgroConecta = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-green-600 to-cyan-600 bg-clip-text text-transparent"
+            className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent"
           >
             AgroConecta
           </motion.h1>
@@ -368,7 +368,7 @@ const AgroConecta = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-xl text-gray-600 max-w-3xl mx-auto"
           >
-            Plataforma de fretes para o agronegócio brasileiro. Conecte produtores e transportadoras de forma rápida e segura.
+            Plataforma de Fretes e Transportes Agrícolas
           </motion.p>
         </div>
       </section>
