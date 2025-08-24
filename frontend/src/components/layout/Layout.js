@@ -37,53 +37,52 @@ const Layout = ({ children }) => {
             : 'bg-gradient-to-br from-white via-gray-50 to-gray-100'
         }`} />
       
-      {/* Conteúdo principal */}
-      <div className="relative z-10">
-
-
-        {/* Header fixo */}
-        <motion.header
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="sticky top-0 z-40"
-        >
-          <Navbar />
-        </motion.header>
-
         {/* Conteúdo principal */}
-        <motion.main
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative z-10"
-        >
-          <PageTransition>
-            {children}
-          </PageTransition>
-        </motion.main>
+        <div className="relative z-10">
+          {/* Header fixo */}
+          <motion.header
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="sticky top-0 z-40"
+          >
+            <Navbar />
+          </motion.header>
 
-        {/* Footer */}
-        <motion.footer
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="relative z-10"
-        >
-          <Footer />
-        </motion.footer>
+          {/* Conteúdo principal */}
+          <motion.main
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="relative z-10"
+          >
+            <PageTransition>
+              {children}
+            </PageTransition>
+          </motion.main>
 
-        {/* Chatbot IA */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="relative z-20"
-        >
-          <Chatbot />
-        </motion.div>
+          {/* Footer */}
+          <motion.footer
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="relative z-10"
+          >
+            <Footer />
+          </motion.footer>
+
+          {/* Chatbot IA */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="relative z-20"
+          >
+            <Chatbot />
+          </motion.div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
