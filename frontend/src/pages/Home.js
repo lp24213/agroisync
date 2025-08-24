@@ -396,8 +396,7 @@ const Home = () => {
 
       
 
-      {/* Chatbot */}
-      {/* Chatbot is now in Layout.js */}
+
     </div>
   );
 };

@@ -395,10 +395,10 @@ const Ajuda = () => {
             transition={{ duration: 0.8 }}
             className="mb-8"
           >
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
               Central de Suporte
-            </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          </h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Encontre respostas para todas as suas dúvidas sobre a plataforma Agroisync
             </p>
           </motion.div>
@@ -444,7 +444,7 @@ const Ajuda = () => {
                 }`}
               >
                 <div className="flex items-center space-x-2">
-                  {section.icon}
+                {section.icon}
                   <span>{section.title}</span>
                 </div>
               </button>
@@ -452,13 +452,13 @@ const Ajuda = () => {
           </motion.div>
 
           {/* Active Section Content */}
-          <motion.div
+              <motion.div
             key={activeTab}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
             className="max-w-4xl mx-auto"
-          >
+              >
             {getActiveSection() && (
               <div>
                 {/* Section Header */}
@@ -483,7 +483,7 @@ const Ajuda = () => {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: index * 0.1 }}
                       className={`p-6 rounded-2xl border-2 transition-all duration-300 hover:shadow-xl ${
-                        isDark
+                        isDark 
                           ? 'bg-gray-800 border-gray-700 hover:border-green-500'
                           : 'bg-white border-gray-200 hover:border-green-500'
                       }`}
@@ -497,8 +497,8 @@ const Ajuda = () => {
                         <div className="flex items-center space-x-2 text-sm text-gray-500">
                           <Clock className="w-4 h-4" />
                           <span>{item.duration}</span>
+                          </div>
                         </div>
-                      </div>
 
                       {/* Steps */}
                       <div className="space-y-2">
@@ -529,7 +529,7 @@ const Ajuda = () => {
                 </div>
               </div>
             )}
-          </motion.div>
+              </motion.div>
         </div>
       </section>
 
@@ -547,44 +547,44 @@ const Ajuda = () => {
             <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
               Nossa equipe de suporte está sempre pronta para ajudar você
             </p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
                 className="p-6 rounded-2xl bg-white dark:bg-gray-700 shadow-lg"
               >
                 <Mail className="w-12 h-12 mx-auto mb-4 text-green-600" />
                 <h3 className="text-xl font-bold mb-2">Email</h3>
                 <p className="text-gray-600 mb-4">suporte@agroisync.com</p>
                 <p className="text-sm text-gray-500">Resposta em até 24h</p>
-              </motion.div>
+            </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
                 className="p-6 rounded-2xl bg-white dark:bg-gray-700 shadow-lg"
               >
                 <Phone className="w-12 h-12 mx-auto mb-4 text-blue-600" />
                 <h3 className="text-xl font-bold mb-2">Telefone</h3>
                 <p className="text-gray-600 mb-4">(66) 99236-2830</p>
                 <p className="text-sm text-gray-500">Segunda a Sexta, 8h às 18h</p>
-              </motion.div>
+            </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
                 className="p-6 rounded-2xl bg-white dark:bg-gray-700 shadow-lg"
               >
                 <MessageCircle className="w-12 h-12 mx-auto mb-4 text-purple-600" />
                 <h3 className="text-xl font-bold mb-2">Chat ao Vivo</h3>
                 <p className="text-gray-600 mb-4">Chatbot IA 24/7</p>
                 <p className="text-sm text-gray-500">Respostas instantâneas</p>
-              </motion.div>
-            </div>
+            </motion.div>
+          </div>
           </motion.div>
         </div>
       </section>

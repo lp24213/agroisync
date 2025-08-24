@@ -198,10 +198,10 @@ const FAQ = () => {
             transition={{ duration: 0.8 }}
             className="mb-8"
           >
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
-              Perguntas Frequentes
-            </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
+            Perguntas Frequentes
+          </h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Encontre respostas rápidas para as dúvidas mais comuns sobre a plataforma Agroisync
             </p>
           </motion.div>
@@ -213,16 +213,16 @@ const FAQ = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="max-w-2xl mx-auto"
           >
-            <div className="relative">
+          <div className="relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
+            <input
+              type="text"
                 placeholder="Buscar perguntas..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-12 pr-4 py-4 text-lg border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              />
-            </div>
+            />
+          </div>
           </motion.div>
         </div>
       </section>
@@ -241,7 +241,7 @@ const FAQ = () => {
               {/* Category Header */}
               <div className="flex items-center space-x-3 mb-8">
                 <div className="p-3 rounded-xl bg-gradient-to-r from-green-500 to-blue-600 text-white">
-                  {category.icon}
+                {category.icon}
                 </div>
                 <h2 className="text-3xl md:text-4xl font-bold">{category.title}</h2>
               </div>
@@ -270,13 +270,13 @@ const FAQ = () => {
                       <button
                         onClick={() => toggleItem(itemId)}
                         className={`w-full px-6 py-4 text-left flex items-center justify-between transition-colors duration-200 ${
-                          isDark
+                          isDark 
                             ? 'bg-gray-800 hover:bg-gray-700'
                             : 'bg-gray-50 hover:bg-gray-100'
                         }`}
                       >
                         <h3 className="text-lg font-semibold pr-4">{item.question}</h3>
-                        <ChevronDown
+                        <ChevronDown 
                           className={`w-5 h-5 transition-transform duration-200 ${
                             isOpen ? 'rotate-180' : ''
                           }`}
@@ -284,13 +284,13 @@ const FAQ = () => {
                       </button>
 
                       {/* Answer */}
-                      <motion.div
+                        <motion.div
                         initial={false}
                         animate={{
                           height: isOpen ? 'auto' : 0,
                           opacity: isOpen ? 1 : 0
                         }}
-                        transition={{ duration: 0.3 }}
+                          transition={{ duration: 0.3 }}
                         className="overflow-hidden"
                       >
                         <div className={`px-6 py-4 ${
@@ -298,7 +298,7 @@ const FAQ = () => {
                         }`}>
                           <p className="text-gray-600 leading-relaxed">{item.answer}</p>
                         </div>
-                      </motion.div>
+                        </motion.div>
                     </motion.div>
                   );
                 })}
@@ -322,44 +322,44 @@ const FAQ = () => {
             <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
               Nossa equipe de suporte está sempre pronta para ajudar com suas dúvidas específicas
             </p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
                 className="p-6 rounded-2xl bg-white dark:bg-gray-700 shadow-lg"
               >
                 <MessageCircle className="w-12 h-12 mx-auto mb-4 text-green-600" />
                 <h3 className="text-xl font-bold mb-2">Chatbot IA</h3>
                 <p className="text-gray-600 mb-4">Suporte instantâneo 24/7</p>
                 <p className="text-sm text-gray-500">Respostas em segundos</p>
-              </motion.div>
+            </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
                 className="p-6 rounded-2xl bg-white dark:bg-gray-700 shadow-lg"
               >
                 <Mail className="w-12 h-12 mx-auto mb-4 text-blue-600" />
                 <h3 className="text-xl font-bold mb-2">Email</h3>
                 <p className="text-gray-600 mb-4">suporte@agroisync.com</p>
                 <p className="text-sm text-gray-500">Resposta em até 24h</p>
-              </motion.div>
+            </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
                 className="p-6 rounded-2xl bg-white dark:bg-gray-700 shadow-lg"
               >
                 <Phone className="w-12 h-12 mx-auto mb-4 text-purple-600" />
                 <h3 className="text-xl font-bold mb-2">Telefone</h3>
                 <p className="text-gray-600 mb-4">(66) 99236-2830</p>
                 <p className="text-sm text-gray-500">Segunda a Sexta, 8h às 18h</p>
-              </motion.div>
-            </div>
+            </motion.div>
+          </div>
           </motion.div>
         </div>
       </section>

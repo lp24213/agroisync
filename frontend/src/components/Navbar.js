@@ -54,7 +54,7 @@ const Navbar = () => {
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex items-center space-x-3"
+            className="flex items-center space-x-3 mr-8"
           >
             <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-green-500 to-blue-600 flex items-center justify-center">
                 <span className="text-white font-bold text-lg">A</span>

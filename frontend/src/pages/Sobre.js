@@ -101,8 +101,6 @@ const Sobre = () => {
   return (
     <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}>
       
-      {/* Global Ticker */}
-      {/* Navbar */}
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 overflow-hidden">
         <div className="absolute inset-0">
@@ -392,8 +390,7 @@ const Sobre = () => {
 
       
 
-      {/* Chatbot */}
-      {/* WeatherWidget */}
+
     </div>
   );
 };
