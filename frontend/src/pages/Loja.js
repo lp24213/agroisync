@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  SoyIcon, CornIcon, CoffeeIcon, GrainIcon, VegetableIcon, FruitIcon,
+  DairyIcon, MeatIcon, SeedIcon, StarIcon, TrophyIcon, LockIcon,
+  CheckIcon, PhoneIcon, SaveIcon, SearchIcon, GridIcon, ListIcon,
+  ToolsIcon, BoxIcon, FactoryIcon, ReloadIcon, EmailIcon, XIcon,
+  GlobalIcon, LeafIcon, ClipboardIcon
+} from '../components/icons/StoreIcons';
 
 const Loja = () => {
   const [products, setProducts] = useState([]);
@@ -20,12 +27,12 @@ const Loja = () => {
 
   // Dados profissionais do marketplace
   const categories = [
-    { id: 'grains', name: 'Grãos', icon: '🌾', count: 156 },
-    { id: 'vegetables', name: 'Hortifrúti', icon: '🥬', count: 89 },
-    { id: 'fruits', name: 'Frutas', icon: '🍎', count: 67 },
-    { id: 'dairy', name: 'Laticínios', icon: '🥛', count: 43 },
-    { id: 'meat', name: 'Carnes', icon: '🥩', count: 78 },
-    { id: 'seeds', name: 'Sementes', icon: '🌱', count: 34 }
+    { id: 'grains', name: 'Grãos', icon: <GrainIcon className="w-5 h-5" />, count: 156 },
+    { id: 'vegetables', name: 'Hortifrúti', icon: <VegetableIcon className="w-5 h-5" />, count: 89 },
+    { id: 'fruits', name: 'Frutas', icon: <FruitIcon className="w-5 h-5" />, count: 67 },
+    { id: 'dairy', name: 'Laticínios', icon: <DairyIcon className="w-5 h-5" />, count: 43 },
+    { id: 'meat', name: 'Carnes', icon: <MeatIcon className="w-5 h-5" />, count: 78 },
+    { id: 'seeds', name: 'Sementes', icon: <SeedIcon className="w-5 h-5" />, count: 34 }
   ];
 
   const locations = [
@@ -39,19 +46,19 @@ const Loja = () => {
 
   const qualityStandards = [
     { id: 'all', name: 'Todos os Padrões' },
-    { id: 'premium', name: 'Premium', icon: '⭐' },
-    { id: 'export', name: 'Exportação', icon: '🌍' },
-    { id: 'organic', name: 'Orgânico', icon: '🌿' },
-    { id: 'conventional', name: 'Convencional', icon: '📋' }
+    { id: 'premium', name: 'Premium', icon: <StarIcon className="w-4 h-4" filled={true} /> },
+    { id: 'export', name: 'Exportação', icon: <GlobalIcon className="w-4 h-4" /> },
+    { id: 'organic', name: 'Orgânico', icon: <LeafIcon className="w-4 h-4" /> },
+    { id: 'conventional', name: 'Convencional', icon: <ClipboardIcon className="w-4 h-4" /> }
   ];
 
   const certifications = [
     { id: 'all', name: 'Todas as Certificações' },
-    { id: 'iso', name: 'ISO 9001', icon: '🏆' },
-    { id: 'haccp', name: 'HACCP', icon: '🔒' },
-    { id: 'gmp', name: 'GMP', icon: '✅' },
-    { id: 'brc', name: 'BRC', icon: '🇬🇧' },
-    { id: 'fscc', name: 'FSSC 22000', icon: '🌐' }
+    { id: 'iso', name: 'ISO 9001', icon: <TrophyIcon className="w-4 h-4" /> },
+    { id: 'haccp', name: 'HACCP', icon: <LockIcon className="w-4 h-4" /> },
+    { id: 'gmp', name: 'GMP', icon: <CheckIcon className="w-4 h-4" /> },
+    { id: 'brc', name: 'BRC', icon: <CheckIcon className="w-4 h-4" /> },
+    { id: 'fscc', name: 'FSSC 22000', icon: <GlobalIcon className="w-4 h-4" /> }
   ];
 
   // Simular produtos profissionais
@@ -252,7 +259,36 @@ const Loja = () => {
 
   const getCertificationIcon = (certId) => {
     const cert = certifications.find(c => c.id === certId);
-    return cert ? cert.icon : '📋';
+    return cert ? cert.icon : <ClipboardIcon className="w-4 h-4" />;
+  };
+
+  const getProductIcon = (productName, category) => {
+    const name = productName.toLowerCase();
+    
+    if (name.includes('soja')) {
+      return <SoyIcon className="w-12 h-12 text-green-500" />;
+    } else if (name.includes('milho')) {
+      return <CornIcon className="w-12 h-12 text-yellow-500" />;
+    } else if (name.includes('café')) {
+      return <CoffeeIcon className="w-12 h-12 text-amber-600" />;
+    } else {
+      switch (category) {
+        case 'grains':
+          return <GrainIcon className="w-12 h-12 text-amber-500" />;
+        case 'vegetables':
+          return <VegetableIcon className="w-12 h-12 text-green-500" />;
+        case 'fruits':
+          return <FruitIcon className="w-12 h-12 text-red-500" />;
+        case 'dairy':
+          return <DairyIcon className="w-12 h-12 text-blue-400" />;
+        case 'meat':
+          return <MeatIcon className="w-12 h-12 text-red-600" />;
+        case 'seeds':
+          return <SeedIcon className="w-12 h-12 text-green-600" />;
+        default:
+          return <GrainIcon className="w-12 h-12 text-gray-500" />;
+      }
+    }
   };
 
   if (loading) {
@@ -298,13 +334,13 @@ const Loja = () => {
             className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-12"
           >
             {[
-              { number: '2,500+', label: 'Produtos', icon: '📦' },
-              { number: '500+', label: 'Fornecedores', icon: '🏭' },
-              { number: '99.9%', label: 'Satisfação', icon: '⭐' },
-              { number: '24/7', label: 'Suporte', icon: '🔄' }
+              { number: '2,500+', label: 'Produtos', icon: <BoxIcon className="w-8 h-8 text-blue-400" /> },
+              { number: '500+', label: 'Fornecedores', icon: <FactoryIcon className="w-8 h-8 text-green-400" /> },
+              { number: '99.9%', label: 'Satisfação', icon: <StarIcon className="w-8 h-8 text-yellow-400" filled={true} /> },
+              { number: '24/7', label: 'Suporte', icon: <ReloadIcon className="w-8 h-8 text-purple-400" /> }
             ].map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="text-3xl mb-2">{stat.icon}</div>
+                <div className="flex justify-center mb-2">{stat.icon}</div>
                 <div className="text-2xl font-bold text-blue-400">{stat.number}</div>
                 <div className="text-gray-400 text-sm">{stat.label}</div>
               </div>
@@ -329,7 +365,7 @@ const Loja = () => {
                   className="w-full px-4 py-3 pl-12 bg-neutral-800 border border-neutral-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
                 />
                 <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
-                  🔍
+                  <SearchIcon className="w-5 h-5" />
                 </div>
               </div>
             </div>
@@ -344,7 +380,7 @@ const Loja = () => {
                     : 'bg-neutral-700 text-gray-400 hover:bg-neutral-600'
                 }`}
               >
-                ⬜
+                <GridIcon className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
@@ -354,7 +390,7 @@ const Loja = () => {
                     : 'bg-neutral-700 text-gray-400 hover:bg-neutral-600'
                 }`}
               >
-                ☰
+                <ListIcon className="w-5 h-5" />
               </button>
             </div>
 
@@ -376,7 +412,7 @@ const Loja = () => {
               onClick={() => setShowFilters(!showFilters)}
               className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 flex items-center space-x-2"
             >
-              <span>🔧</span>
+              <ToolsIcon className="w-5 h-5" />
               <span>Filtros</span>
             </button>
           </div>
@@ -405,7 +441,7 @@ const Loja = () => {
                       <option value="all">Todas as Categorias</option>
                       {categories.map(cat => (
                         <option key={cat.id} value={cat.id}>
-                          {cat.icon} {cat.name} ({cat.count})
+                          {cat.name} ({cat.count})
                         </option>
                       ))}
                     </select>
@@ -442,7 +478,7 @@ const Loja = () => {
                       <option value="all">Todos os Padrões</option>
                       {qualityStandards.map(qual => (
                         <option key={qual.id} value={qual.id}>
-                          {qual.icon} {qual.name}
+                          {qual.name}
                         </option>
                       ))}
                     </select>
@@ -460,7 +496,7 @@ const Loja = () => {
                     >
                       {certifications.map(cert => (
                         <option key={cert.id} value={cert.id}>
-                          {cert.icon} {cert.name}
+                          {cert.name}
                         </option>
                       ))}
                     </select>
@@ -517,12 +553,10 @@ const Loja = () => {
                   className="bg-neutral-900/50 backdrop-blur-xl border border-neutral-700 rounded-2xl overflow-hidden hover:border-blue-500/50 transition-all duration-300 group"
                 >
                   {/* Product Image */}
-                  <div className="relative h-48 bg-neutral-800 overflow-hidden">
-                    <img 
-                      src={product.images[0]} 
-                      alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
+                  <div className="relative h-48 bg-neutral-800 overflow-hidden flex items-center justify-center">
+                    <div className="group-hover:scale-105 transition-transform duration-300">
+                      {getProductIcon(product.name, product.category)}
+                    </div>
                     <div className="absolute top-4 right-4">
                       <div className="bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
                         {product.quality.toUpperCase()}
@@ -558,12 +592,15 @@ const Loja = () => {
                             {product.supplier.name}
                           </span>
                           {product.supplier.verified && (
-                            <span className="text-blue-400 text-xs">✓ Verificado</span>
+                            <span className="flex items-center text-blue-400 text-xs">
+                              <CheckIcon className="w-3 h-3 mr-1" />
+                              Verificado
+                            </span>
                           )}
                         </div>
                         <div className="flex items-center space-x-2">
                           <div className="flex items-center space-x-1">
-                            <span className="text-yellow-400">⭐</span>
+                            <StarIcon className="w-4 h-4 text-yellow-400" filled={true} />
                             <span className="text-sm text-gray-300">{product.supplier.rating}</span>
                           </div>
                           <span className="text-gray-500">•</span>
@@ -585,9 +622,9 @@ const Loja = () => {
                     {/* Certifications */}
                     <div className="flex items-center space-x-2 mb-4">
                       {product.certifications.map(certId => (
-                        <span key={certId} className="text-lg" title={certifications.find(c => c.id === certId)?.name}>
+                        <div key={certId} className="flex items-center" title={certifications.find(c => c.id === certId)?.name}>
                           {getCertificationIcon(certId)}
-                        </span>
+                        </div>
                       ))}
                     </div>
 
@@ -595,12 +632,13 @@ const Loja = () => {
                     <div className="flex space-x-3">
                       <button
                         onClick={() => handleContactSupplier(product)}
-                        className="flex-1 bg-gradient-to-r from-blue-600 to-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-green-700 transition-all duration-300 hover:scale-105"
+                        className="flex-1 bg-gradient-to-r from-blue-600 to-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-green-700 transition-all duration-300 hover:scale-105 flex items-center justify-center space-x-2"
                       >
-                        📞 Contatar Fornecedor
+                        <PhoneIcon className="w-4 h-4" />
+                        <span>Contatar Fornecedor</span>
                       </button>
                       <button className="p-3 bg-neutral-700 text-gray-300 rounded-lg hover:bg-neutral-600 transition-colors duration-300">
-                        💾
+                        <SaveIcon className="w-5 h-5" />
                       </button>
                     </div>
                   </div>
@@ -620,12 +658,8 @@ const Loja = () => {
                 >
                   <div className="flex items-start space-x-6">
                     {/* Product Image */}
-                    <div className="relative w-32 h-32 bg-neutral-800 rounded-lg overflow-hidden flex-shrink-0">
-                      <img 
-                        src={product.images[0]} 
-                        alt={product.name}
-                        className="w-full h-full object-cover"
-                      />
+                    <div className="relative w-32 h-32 bg-neutral-800 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center">
+                      {getProductIcon(product.name, product.category)}
                       <div className="absolute top-2 right-2">
                         <div className="bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
                           {product.quality.toUpperCase()}
@@ -665,11 +699,14 @@ const Loja = () => {
                                 {product.supplier.name}
                               </span>
                               {product.supplier.verified && (
-                                <span className="text-blue-400 text-xs">✓ Verificado</span>
+                                <span className="flex items-center text-blue-400 text-xs">
+                                  <CheckIcon className="w-3 h-3 mr-1" />
+                                  Verificado
+                                </span>
                               )}
                             </div>
                             <div className="flex items-center space-x-2">
-                              <span className="text-yellow-400">⭐</span>
+                              <StarIcon className="w-4 h-4 text-yellow-400" filled={true} />
                               <span className="text-sm text-gray-300">{product.supplier.rating}</span>
                               <span className="text-gray-500">•</span>
                               <span className="text-sm text-gray-400">{product.supplier.yearsActive} anos</span>
@@ -694,18 +731,19 @@ const Loja = () => {
                         {/* Certifications & Actions */}
                         <div className="bg-neutral-800/50 rounded-lg p-4">
                           <h4 className="font-semibold text-white mb-2">Certificações</h4>
-                          <div className="flex items-center space-x-2 mb-4">
+                          <div className="flex items-center space-x-3 mb-4">
                             {product.certifications.map(certId => (
-                              <span key={certId} className="text-2xl" title={certifications.find(c => c.id === certId)?.name}>
+                              <div key={certId} className="flex items-center" title={certifications.find(c => c.id === certId)?.name}>
                                 {getCertificationIcon(certId)}
-                              </span>
+                              </div>
                             ))}
                           </div>
                           <button
                             onClick={() => handleContactSupplier(product)}
-                            className="w-full bg-gradient-to-r from-blue-600 to-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-green-700 transition-all duration-300 hover:scale-105"
+                            className="w-full bg-gradient-to-r from-blue-600 to-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-green-700 transition-all duration-300 hover:scale-105 flex items-center justify-center space-x-2"
                           >
-                            📞 Contatar Fornecedor
+                            <PhoneIcon className="w-4 h-4" />
+                            <span>Contatar Fornecedor</span>
                           </button>
                         </div>
                       </div>
@@ -723,7 +761,9 @@ const Loja = () => {
               animate={{ opacity: 1 }}
               className="text-center py-20"
             >
-              <div className="text-6xl mb-4">🔍</div>
+              <div className="flex justify-center mb-4">
+                <SearchIcon className="w-16 h-16 text-gray-400" />
+              </div>
               <h3 className="text-2xl font-bold text-white mb-2">Nenhum produto encontrado</h3>
               <p className="text-gray-400 mb-6">
                 Tente ajustar os filtros ou termos de busca
@@ -773,7 +813,7 @@ const Loja = () => {
                   onClick={() => setSelectedProduct(null)}
                   className="text-gray-400 hover:text-white transition-colors duration-300"
                 >
-                  ✕
+                  <XIcon className="w-6 h-6" />
                 </button>
               </div>
 
@@ -788,9 +828,11 @@ const Loja = () => {
                   <div className="space-y-2">
                     <p className="text-white font-medium">{selectedProduct.supplier.name}</p>
                     <p className="text-gray-300">{selectedProduct.supplier.location}</p>
-                    <p className="text-gray-400 text-sm">
-                      Avaliação: ⭐ {selectedProduct.supplier.rating} • {selectedProduct.supplier.yearsActive} anos de experiência
-                    </p>
+                    <div className="flex items-center text-gray-400 text-sm">
+                      <span>Avaliação:</span>
+                      <StarIcon className="w-4 h-4 text-yellow-400 mx-1" filled={true} />
+                      <span>{selectedProduct.supplier.rating} • {selectedProduct.supplier.yearsActive} anos de experiência</span>
+                    </div>
                   </div>
                 </div>
 
@@ -810,11 +852,13 @@ const Loja = () => {
                 </div>
 
                 <div className="flex space-x-4">
-                  <button className="flex-1 bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-300">
-                    📧 Enviar Mensagem
+                  <button className="flex-1 bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-300 flex items-center justify-center space-x-2">
+                    <EmailIcon className="w-4 h-4" />
+                    <span>Enviar Mensagem</span>
                   </button>
-                  <button className="flex-1 bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 transition-all duration-300">
-                    📞 Ligar Agora
+                  <button className="flex-1 bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 transition-all duration-300 flex items-center justify-center space-x-2">
+                    <PhoneIcon className="w-4 h-4" />
+                    <span>Ligar Agora</span>
                   </button>
                 </div>
               </div>
