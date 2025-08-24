@@ -20,18 +20,34 @@ const Cripto = () => {
 
   // Dados simulados de cotações em tempo real
   const cryptoQuotes = [
-    { symbol: 'BTC', name: 'Bitcoin', price: '$43,250', change: '+2.1%', icon: <BitcoinIcon className="w-8 h-8" /> },
-    { symbol: 'ETH', name: 'Ethereum', price: '$2,680', change: '-0.5%', icon: <EthereumIcon className="w-8 h-8" /> },
-    { symbol: 'USDT', name: 'Tether', price: '$1.00', change: '0.0%', icon: <USDTIcon className="w-8 h-8" /> },
-    { symbol: 'BNB', name: 'Binance Coin', price: '$315', change: '+1.8%', icon: <BNBIcon className="w-8 h-8" /> },
-    { symbol: 'SOL', name: 'Solana', price: '$98.50', change: '+3.2%', icon: <SolanaIcon className="w-8 h-8" /> }
+    { symbol: 'BTC', name: 'Bitcoin', price: 43250, change: 2.1, volume24h: 25000000000, icon: <BitcoinIcon className="w-8 h-8" /> },
+    { symbol: 'ETH', name: 'Ethereum', price: 2680, change: -0.5, volume24h: 15000000000, icon: <EthereumIcon className="w-8 h-8" /> },
+    { symbol: 'USDT', name: 'Tether', price: 1.00, change: 0.0, volume24h: 80000000000, icon: <USDTIcon className="w-8 h-8" /> },
+    { symbol: 'BNB', name: 'Binance Coin', price: 315, change: 1.8, volume24h: 2000000000, icon: <BNBIcon className="w-8 h-8" /> },
+    { symbol: 'SOL', name: 'Solana', price: 98.50, change: 3.2, volume24h: 5000000000, icon: <SolanaIcon className="w-8 h-8" /> }
   ];
 
   const walletOptions = [
-    { id: 'metamask', name: 'MetaMask', icon: <MetaMaskIcon className="w-6 h-6" />, color: 'from-orange-500 to-red-500' },
-    { id: 'phantom', name: 'Phantom', icon: <PhantomIcon className="w-6 h-6" />, color: 'from-purple-500 to-pink-500' },
-    { id: 'walletconnect', name: 'WalletConnect', icon: <WalletConnectIcon className="w-6 h-6" />, color: 'from-blue-500 to-cyan-500' }
+    { id: 'metamask', name: 'MetaMask', icon: '🦊', description: 'Carteira mais popular do Ethereum', color: 'from-orange-500 to-red-500' },
+    { id: 'phantom', name: 'Phantom', icon: '👻', description: 'Carteira oficial da Solana', color: 'from-purple-500 to-pink-500' },
+    { id: 'walletconnect', name: 'WalletConnect', icon: '🔗', description: 'Conecte qualquer carteira', color: 'from-blue-500 to-cyan-500' }
   ];
+
+  const acceptedCryptos = [
+    { symbol: 'BTC', name: 'Bitcoin' },
+    { symbol: 'ETH', name: 'Ethereum' },
+    { symbol: 'USDT', name: 'Tether' },
+    { symbol: 'BNB', name: 'Binance Coin' },
+    { symbol: 'SOL', name: 'Solana' },
+    { symbol: 'ADA', name: 'Cardano' },
+    { symbol: 'DOT', name: 'Polkadot' },
+    { symbol: 'LINK', name: 'Chainlink' }
+  ];
+
+  const handleWalletConnect = (walletName) => {
+    setSelectedWallet(walletName);
+    connectWallet();
+  };
 
   const connectWallet = async () => {
     setLoading(true);
@@ -73,7 +89,7 @@ const Cripto = () => {
   };
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-white'} text-white`}>
+    <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-white'} transition-colors duration-300`}>
       {/* Header Section */}
       <section className="relative pt-40 pb-20 px-4 overflow-hidden">
         {/* Background */}
@@ -84,7 +100,7 @@ const Cripto = () => {
             </div>
           ) : (
             <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50">
-              <div className="absolute inset-0 bg-blue-100 opacity-30"></div>
+              <div className="absolute inset-0 bg-white opacity-90"></div>
             </div>
           )}
         </div>
@@ -111,51 +127,72 @@ const Cripto = () => {
       {/* Cryptocurrency Ticker */}
       <CryptoTicker />
 
-      {/* Cotações em Tempo Real Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-7xl mx-auto">
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
+      {/* Cotações em Tempo Real */}
+      <section className="py-16 px-4">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className={`text-4xl font-bold text-center mb-16 ${
-              isDark ? 'text-white' : 'text-gray-900'
-            }`}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
           >
-            {t('crypto.realTimeQuotes')}
-          </motion.h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+            <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${
+              isDark ? 'text-white' : 'text-gray-900'
+            }`}>
+              Cotações em Tempo Real
+            </h2>
+            <p className={`text-lg ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+              Acompanhe as principais criptomoedas do mercado
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {cryptoQuotes.map((crypto, index) => (
               <motion.div
                 key={crypto.symbol}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className={`p-6 rounded-2xl text-center transition-all duration-300 hover:scale-105 ${
-                  isDark
-                    ? 'bg-gray-800/80 backdrop-blur-xl border border-gray-700 hover:border-cyan-400'
-                    : 'bg-white/80 backdrop-blur-xl border border-gray-200 hover:border-green-500'
-                }`}
+                className={`p-6 rounded-xl border ${
+                  isDark 
+                    ? 'bg-gray-800 border-gray-700 hover:border-gray-600' 
+                    : 'bg-white border-gray-200 hover:border-gray-300'
+                } transition-all duration-300 hover:shadow-lg`}
               >
-                <div className="flex justify-center mb-4">
-                  {crypto.icon}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">
+                        {crypto.symbol.charAt(0)}
+                      </span>
+                    </div>
+                    <div>
+                      <h3 className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                        {crypto.symbol}
+                      </h3>
+                      <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                        {crypto.name}
+                      </p>
+                    </div>
+                  </div>
+                  <div className={`text-right ${
+                    crypto.change >= 0 ? 'text-green-500' : 'text-red-500'
+                  }`}>
+                    <div className="text-lg font-bold">
+                      {crypto.change >= 0 ? '+' : ''}{crypto.change}%
+                    </div>
+                  </div>
                 </div>
-                <h3 className={`text-lg font-bold mb-2 ${
+                
+                <div className={`text-3xl font-bold mb-4 ${
                   isDark ? 'text-white' : 'text-gray-900'
                 }`}>
-                  {crypto.name}
-                </h3>
-                <p className={`text-2xl font-bold mb-2 ${
-                  isDark ? 'text-cyan-400' : 'text-green-600'
-                }`}>
-                  {crypto.price}
-                </p>
-                <p className={`text-sm font-medium ${getChangeColor(crypto.change)}`}>
-                  {crypto.change}
-                </p>
+                  ${crypto.price.toLocaleString()}
+                </div>
+                
+                <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                  Volume 24h: ${crypto.volume24h.toLocaleString()}
+                </div>
               </motion.div>
             ))}
           </div>
@@ -174,162 +211,100 @@ const Cripto = () => {
         </div>
       </section>
 
-      {/* Conectar Carteira Section */}
-      <section className="py-20 px-4">
+      {/* Conectar Carteira */}
+      <section className="py-16 px-4">
         <div className="max-w-4xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className={`p-8 rounded-2xl ${
-              isDark
-                ? 'bg-gray-800/80 backdrop-blur-xl border border-gray-700'
-                : 'bg-white/80 backdrop-blur-xl border border-gray-200'
-            }`}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
           >
-            <h2 className={`text-3xl font-bold mb-8 text-center ${
+            <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${
               isDark ? 'text-white' : 'text-gray-900'
             }`}>
-              {t('crypto.connectWallet')}
+              Conectar Carteira
             </h2>
-            
-            {!isConnected ? (
-              <div className="text-center">
-                <div className="w-24 h-24 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <svg className="w-12 h-12 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                  </svg>
-                </div>
-                <p className={`text-lg mb-8 ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
-                }`}>
-                  Escolha sua carteira preferida para conectar
-                </p>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                  {walletOptions.map((wallet) => (
-                    <button
-                      key={wallet.id}
-                      onClick={() => setSelectedWallet(wallet.id)}
-                      className={`p-4 rounded-xl border-2 transition-all duration-300 ${
-                        selectedWallet === wallet.id
-                          ? (isDark
-                              ? 'border-cyan-400 bg-cyan-400/10'
-                              : 'border-green-500 bg-green-500/10')
-                          : (isDark
-                              ? 'border-gray-600 hover:border-gray-500'
-                              : 'border-gray-300 hover:border-gray-400')
-                      }`}
-                    >
-                      <div className="flex items-center space-x-3">
-                        {wallet.icon}
-                        <span className={`font-medium ${
-                          isDark ? 'text-white' : 'text-gray-900'
-                        }`}>
-                          {wallet.name}
-                        </span>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-                
-                <button
-                  onClick={connectWallet}
-                  disabled={loading}
-                  className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-bold rounded-xl hover:from-cyan-600 hover:to-purple-600 transition-all duration-300 hover:scale-105 disabled:opacity-50"
-                >
-                  {loading ? t('crypto.connecting') : t('crypto.connectMetaMask')}
-                </button>
-              </div>
-            ) : (
-              <div className="space-y-6">
-                <div className={`flex items-center justify-between p-4 rounded-xl ${
-                  isDark ? 'bg-gray-700' : 'bg-gray-100'
-                }`}>
-                  <div>
-                    <p className={`text-sm ${
-                      isDark ? 'text-gray-400' : 'text-gray-600'
-                    }`}>
-                      {t('crypto.walletConnected')}
-                    </p>
-                    <p className={`font-mono text-sm ${
-                      isDark ? 'text-white' : 'text-gray-900'
-                    }`}>
-                      {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className={`text-sm ${
-                      isDark ? 'text-gray-400' : 'text-gray-600'
-                    }`}>
-                      {t('crypto.balance')}
-                    </p>
-                    <p className="text-green-400 font-bold">{balance} ETH</p>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <button
-                    onClick={disconnectWallet}
-                    className="px-6 py-3 bg-red-600 text-white font-medium rounded-xl hover:bg-red-700 transition-colors duration-300"
-                  >
-                    {t('crypto.disconnect')}
-                  </button>
-                  <button
-                    onClick={() => alert('Funcionalidade em desenvolvimento')}
-                    className="px-6 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors duration-300"
-                  >
-                    {t('crypto.viewTransactions')}
-                  </button>
-                </div>
-              </div>
-            )}
+            <p className={`text-lg ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+              Conecte sua carteira de forma segura para realizar transações
+            </p>
           </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {walletOptions.map((wallet, index) => (
+              <motion.button
+                key={wallet.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`p-6 rounded-xl border-2 border-dashed transition-all duration-300 ${
+                  isDark 
+                    ? 'border-gray-600 hover:border-gray-500 hover:bg-gray-800' 
+                    : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
+                }`}
+                onClick={() => handleWalletConnect(wallet.name)}
+              >
+                <div className="text-center">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-lg bg-blue-600 flex items-center justify-center">
+                    <span className="text-white text-2xl">{wallet.icon}</span>
+                  </div>
+                  <h3 className={`font-bold text-lg mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    {wallet.name}
+                  </h3>
+                  <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                    {wallet.description}
+                  </p>
+                </div>
+              </motion.button>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Pagamentos Aceitos Section */}
-      <section className="py-20 px-4">
+      {/* Pagamentos Aceitos */}
+      <section className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className={`text-4xl font-bold text-center mb-16 ${
-              isDark ? 'text-white' : 'text-gray-900'
-            }`}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
           >
-            {t('crypto.acceptedPayments')}
-          </motion.h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-            {cryptoQuotes.map((crypto, index) => (
+            <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${
+              isDark ? 'text-white' : 'text-gray-900'
+            }`}>
+              Pagamentos Aceitos
+            </h2>
+            <p className={`text-lg ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+              Aceitamos as principais criptomoedas do mercado
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {acceptedCryptos.map((crypto, index) => (
               <motion.div
                 key={crypto.symbol}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className={`p-6 rounded-2xl text-center transition-all duration-300 hover:scale-105 ${
-                  isDark
-                    ? 'bg-gray-800/80 backdrop-blur-xl border border-gray-700 hover:border-cyan-400'
-                    : 'bg-white/80 backdrop-blur-xl border border-gray-200 hover:border-green-500'
+                className={`p-6 rounded-xl border text-center ${
+                  isDark 
+                    ? 'bg-gray-800 border-gray-700' 
+                    : 'bg-white border-gray-200'
                 }`}
               >
-                <div className="flex justify-center mb-4">
-                  {crypto.icon}
+                <div className="w-16 h-16 mx-auto mb-4 rounded-lg bg-blue-600 flex items-center justify-center">
+                  <span className="text-white text-2xl font-bold">
+                    {crypto.symbol.charAt(0)}
+                  </span>
                 </div>
-                <h3 className={`text-lg font-bold ${
-                  isDark ? 'text-white' : 'text-gray-900'
-                }`}>
-                  {crypto.name}
+                <h3 className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  {crypto.symbol}
                 </h3>
-                <p className={`text-sm ${
-                  isDark ? 'text-gray-400' : 'text-gray-600'
-                }`}>
-                  Aceito para pagamentos
+                <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                  {crypto.name}
                 </p>
               </motion.div>
             ))}

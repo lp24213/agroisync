@@ -1,28 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
+import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 
 const GlobalTicker = () => {
   const { isDark } = useTheme();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
+  const [tickerData, setTickerData] = useState([]);
 
-  // Dados simulados do ticker
+  // Dados simulados mais realistas do ticker
   const mockTickerData = [
-    { symbol: 'USD/BRL', value: '5,23', change: '+0,15%', trend: 'up' },
-    { symbol: 'EUR/BRL', value: '5,67', change: '-0,08%', trend: 'down' },
-    { symbol: 'BTC/USD', value: '43,250', change: '+2,34%', trend: 'up' },
-    { symbol: 'ETH/USD', value: '2,680', change: '+1,87%', trend: 'up' },
-    { symbol: 'IBOV', value: '128.450', change: '+0,67%', trend: 'up' },
-    { symbol: 'SOJA', value: 'R$ 180,50', change: '+1,25%', trend: 'up' },
-    { symbol: 'MILHO', value: 'R$ 95,30', change: '-0,45%', trend: 'down' },
-    { symbol: 'BOI GORDO', value: 'R$ 320,00', change: '+0,89%', trend: 'up' }
+    { symbol: 'USD/BRL', value: '5,23', change: '+0,15%', trend: 'up', type: 'currency' },
+    { symbol: 'EUR/BRL', value: '5,67', change: '-0,08%', trend: 'down', type: 'currency' },
+    { symbol: 'BTC/USD', value: '43,250', change: '+2,34%', trend: 'up', type: 'crypto' },
+    { symbol: 'ETH/USD', value: '2,680', change: '+1,87%', trend: 'up', type: 'crypto' },
+    { symbol: 'IBOV', value: '128.450', change: '+0,67%', trend: 'up', type: 'stock' },
+    { symbol: 'SOJA', value: 'R$ 180,50', change: '+1,25%', trend: 'up', type: 'commodity' },
+    { symbol: 'MILHO', value: 'R$ 95,30', change: '-0,45%', trend: 'down', type: 'commodity' },
+    { symbol: 'BOI GORDO', value: 'R$ 320,00', change: '+0,89%', trend: 'up', type: 'commodity' }
   ];
+
+  useEffect(() => {
+    // Simular carregamento de dados reais
+    const timer = setTimeout(() => {
+      setTickerData(mockTickerData);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % mockTickerData.length);
-    }, 3000);
+    }, 4000); // Aumentado para 4 segundos para melhor visualização
 
     return () => clearInterval(interval);
   }, [mockTickerData.length]);
@@ -38,7 +49,33 @@ const GlobalTicker = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  if (!isVisible) return null;
+  const getTrendIcon = (trend) => {
+    switch (trend) {
+      case 'up':
+        return <TrendingUp className="w-3 h-3 text-green-500" />;
+      case 'down':
+        return <TrendingDown className="w-3 h-3 text-red-500" />;
+      default:
+        return <Minus className="w-3 h-3 text-gray-400" />;
+    }
+  };
+
+  const getTypeColor = (type) => {
+    switch (type) {
+      case 'crypto':
+        return isDark ? 'text-cyan-400' : 'text-cyan-600';
+      case 'currency':
+        return isDark ? 'text-green-400' : 'text-green-600';
+      case 'stock':
+        return isDark ? 'text-blue-400' : 'text-blue-600';
+      case 'commodity':
+        return isDark ? 'text-yellow-400' : 'text-yellow-600';
+      default:
+        return isDark ? 'text-gray-400' : 'text-gray-600';
+    }
+  };
+
+  if (!isVisible || tickerData.length === 0) return null;
 
   return (
     <div 
@@ -62,41 +99,46 @@ const GlobalTicker = () => {
 
           {/* Ticker Content */}
           <div className="flex-1 mx-4 overflow-hidden">
-            <motion.div
-              key={currentIndex}
-              initial={{ x: 100, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -100, opacity: 0 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-              className="flex items-center space-x-4"
-            >
-              {mockTickerData[currentIndex] && (
-                <div className="flex items-center space-x-3">
-                  <span className={`text-sm font-medium ${
-                    isDark ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    {mockTickerData[currentIndex].symbol}
-                  </span>
-                  <span className={`text-sm font-bold ${
-                    isDark ? 'text-white' : 'text-gray-900'
-                  }`}>
-                    {mockTickerData[currentIndex].value}
-                  </span>
-                  <span className={`text-xs font-medium px-2 py-1 rounded ${
-                    mockTickerData[currentIndex].trend === 'up'
-                      ? 'text-green-600 bg-green-100'
-                      : 'text-red-600 bg-red-100'
-                  }`}>
-                    {mockTickerData[currentIndex].change}
-                  </span>
-                </div>
-              )}
-            </motion.div>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentIndex}
+                initial={{ x: 100, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: -100, opacity: 0 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+                className="flex items-center space-x-4"
+              >
+                {tickerData[currentIndex] && (
+                  <div className="flex items-center space-x-3">
+                    <span className={`text-sm font-medium ${getTypeColor(tickerData[currentIndex].type)}`}>
+                      {tickerData[currentIndex].symbol}
+                    </span>
+                    <span className={`text-sm font-bold ${
+                      isDark ? 'text-white' : 'text-gray-900'
+                    }`}>
+                      {tickerData[currentIndex].value}
+                    </span>
+                    <div className="flex items-center space-x-1">
+                      {getTrendIcon(tickerData[currentIndex].trend)}
+                      <span className={`text-xs font-medium px-2 py-1 rounded ${
+                        tickerData[currentIndex].trend === 'up'
+                          ? 'text-green-600 bg-green-100'
+                          : tickerData[currentIndex].trend === 'down'
+                          ? 'text-red-600 bg-red-100'
+                          : 'text-gray-600 bg-gray-100'
+                      }`}>
+                        {tickerData[currentIndex].change}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            </AnimatePresence>
           </div>
 
           {/* Navigation Dots */}
           <div className="flex space-x-1">
-            {mockTickerData.map((_, index) => (
+            {tickerData.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}

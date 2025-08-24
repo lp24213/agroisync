@@ -40,194 +40,91 @@ const Loja = () => {
     { id: 'TO', name: 'Tocantins' }
   ];
 
-  // Produtos simulados do agronegócio
+  // Dados simulados mais realistas de produtos agrícolas
   const mockProducts = [
-    // Insumos Agrícolas
     {
       id: 1,
-      name: 'Sementes de Soja RR2 PRO',
-      category: 'insumos',
-      price: 180.50,
-      unit: 'saco 60kg',
-      description: 'Sementes de soja de alta produtividade, resistente a herbicidas',
-      image: '/images/soja-seeds.jpg',
+      name: 'Semente de Soja RR2 PRO',
+      category: 'Insumos',
+      price: 189.90,
+      unit: 'Saca 60kg',
       stock: 150,
+      description: 'Semente de soja de alta produtividade, resistente a herbicidas. Ideal para plantio direto.',
+      image: '/images/soja.svg',
+      location: 'Sinop - MT',
       seller: 'AgroSementes MT',
-      state: 'MT',
       rating: 4.8,
-      reviews: 127,
-      featured: true
+      reviews: 127
     },
     {
       id: 2,
       name: 'Fertilizante NPK 20-20-20',
-      category: 'insumos',
-      price: 89.90,
-      unit: 'saco 50kg',
-      description: 'Fertilizante balanceado para todas as culturas',
-      image: '/images/fertilizer.jpg',
-      stock: 300,
-      seller: 'Fertilizantes Brasil',
-      state: 'GO',
+      category: 'Insumos',
+      price: 89.50,
+      unit: 'Saca 50kg',
+      stock: 80,
+      description: 'Fertilizante balanceado para todas as culturas. Aplicação via solo ou foliar.',
+      image: '/images/milho.svg',
+      location: 'Lucas do Rio Verde - MT',
+      seller: 'Fertilizantes do Brasil',
       rating: 4.6,
-      reviews: 89,
-      featured: false
+      reviews: 89
     },
     {
       id: 3,
-      name: 'Defensivo Agrícola Fungicida',
-      category: 'insumos',
-      price: 245.00,
-      unit: 'litro',
-      description: 'Fungicida sistêmico para controle de doenças',
-      image: '/images/fungicide.jpg',
-      stock: 75,
-      seller: 'Defensivos Pro',
-      state: 'MS',
-      rating: 4.7,
-      reviews: 156,
-      featured: true
+      name: 'Trator Massey Ferguson 6713',
+      category: 'Máquinas/Implementos',
+      price: 285000.00,
+      unit: 'Unidade',
+      stock: 3,
+      description: 'Trator 130cv, 4x4, cabine climatizada, direção hidráulica. Ano 2022, 800h.',
+      image: '/images/logo.svg',
+      location: 'Sorriso - MT',
+      seller: 'Máquinas Agro MT',
+      rating: 4.9,
+      reviews: 23
     },
-
-    // Máquinas e Implementos
     {
       id: 4,
-      name: 'Pulverizador Costal 20L',
-      category: 'maquinas',
-      price: 450.00,
-      unit: 'unidade',
-      description: 'Pulverizador costal profissional para pequenas áreas',
-      image: '/images/sprayer.jpg',
-      stock: 25,
-      seller: 'Máquinas Agro',
-      state: 'PR',
-      rating: 4.5,
-      reviews: 67,
-      featured: false
+      name: 'Boi Nelore Mocho',
+      category: 'Pecuária',
+      price: 4200.00,
+      unit: 'Arroba',
+      stock: 45,
+      description: 'Boi gordo Nelore mocho, peso médio 18@, acabamento A, saúde atestada.',
+      image: '/images/logo.svg',
+      location: 'Nova Mutum - MT',
+      seller: 'Fazenda Boa Vista',
+      rating: 4.7,
+      reviews: 156
     },
     {
       id: 5,
-      name: 'Arado de Discos 3 Discos',
-      category: 'maquinas',
-      price: 2800.00,
-      unit: 'unidade',
-      description: 'Arado de discos para preparo do solo',
-      image: '/images/plow.jpg',
-      stock: 8,
-      seller: 'Implementos RS',
-      state: 'RS',
-      rating: 4.9,
-      reviews: 34,
-      featured: true
+      name: 'Soja em Grão Tipo 1',
+      category: 'Commodities',
+      price: 180.50,
+      unit: 'Saca 60kg',
+      stock: 2000,
+      description: 'Soja em grão tipo 1, proteína 38%, óleo 20%. Entrega em silo ou caminhão.',
+      image: '/images/soja.svg',
+      location: 'Campo Verde - MT',
+      seller: 'Cooperativa Agro MT',
+      rating: 4.8,
+      reviews: 342
     },
     {
       id: 6,
-      name: 'Colheitadeira de Milho',
-      category: 'maquinas',
-      price: 85000.00,
-      unit: 'unidade',
-      description: 'Colheitadeira automotriz para milho e soja',
-      image: '/images/harvester.jpg',
-      stock: 2,
-      seller: 'Máquinas Pesadas SP',
-      state: 'SP',
-      rating: 4.8,
-      reviews: 12,
-      featured: true
-    },
-
-    // Pecuária
-    {
-      id: 7,
-      name: 'Ração para Bovinos 20% PB',
-      category: 'pecuaria',
-      price: 65.90,
-      unit: 'saco 50kg',
-      description: 'Ração balanceada para bovinos de corte e leite',
-      image: '/images/cattle-feed.jpg',
-      stock: 200,
-      seller: 'Rações Premium',
-      state: 'MG',
-      rating: 4.6,
-      reviews: 234,
-      featured: false
-    },
-    {
-      id: 8,
-      name: 'Suplemento Mineral Bovinos',
-      category: 'pecuaria',
-      price: 45.50,
-      unit: 'saco 25kg',
-      description: 'Suplemento mineral completo para bovinos',
-      image: '/images/mineral.jpg',
-      stock: 180,
-      seller: 'Minerais Brasil',
-      state: 'BA',
-      rating: 4.7,
-      reviews: 156,
-      featured: false
-    },
-    {
-      id: 9,
-      name: 'Medicamento Antiparasitário',
-      category: 'pecuaria',
-      price: 125.00,
-      unit: 'frasco 100ml',
-      description: 'Antiparasitário para bovinos e equinos',
-      image: '/images/medicine.jpg',
-      stock: 45,
-      seller: 'VetFarma',
-      state: 'TO',
-      rating: 4.8,
-      reviews: 89,
-      featured: true
-    },
-
-    // Commodities
-    {
-      id: 10,
-      name: 'Soja em Grãos Tipo 1',
-      category: 'commodities',
-      price: 180.00,
-      unit: 'saca 60kg',
-      description: 'Soja de alta qualidade para processamento',
-      image: '/images/soybeans.jpg',
-      stock: 5000,
-      seller: 'Cooperativa MT',
-      state: 'MT',
+      name: 'Consultoria Agronômica',
+      category: 'Serviços',
+      price: 150.00,
+      unit: 'Hora',
+      stock: null,
+      description: 'Consultoria técnica especializada em soja, milho e algodão. Atendimento em campo.',
+      image: '/images/logo.svg',
+      location: 'Toda MT',
+      seller: 'AgroConsult MT',
       rating: 4.9,
-      reviews: 445,
-      featured: true
-    },
-    {
-      id: 11,
-      name: 'Milho em Grãos',
-      category: 'commodities',
-      price: 85.00,
-      unit: 'saca 60kg',
-      description: 'Milho seco e limpo para ração animal',
-      image: '/images/corn.jpg',
-      stock: 8000,
-      seller: 'Produtores GO',
-      state: 'GO',
-      rating: 4.7,
-      reviews: 312,
-      featured: false
-    },
-    {
-      id: 12,
-      name: 'Algodão em Pluma',
-      category: 'commodities',
-      price: 320.00,
-      unit: 'kg',
-      description: 'Algodão de fibra longa para tecelagem',
-      image: '/images/cotton.jpg',
-      stock: 1500,
-      seller: 'Algodão MS',
-      state: 'MS',
-      rating: 4.8,
-      reviews: 178,
-      featured: true
+      reviews: 67
     }
   ];
 
@@ -268,7 +165,7 @@ const Loja = () => {
 
     // Filtro por estado
     if (selectedState !== 'all') {
-      filtered = filtered.filter(p => p.state === selectedState);
+      filtered = filtered.filter(p => p.location.includes(selectedState));
     }
 
     // Filtro por preço
@@ -286,14 +183,16 @@ const Loja = () => {
 
   const getCategoryIcon = (category) => {
     switch (category) {
-      case 'insumos':
+      case 'Insumos':
         return <Leaf className="w-5 h-5 text-green-600" />;
-      case 'maquinas':
+      case 'Máquinas/Implementos':
         return <Wrench className="w-5 h-5 text-blue-600" />;
-      case 'pecuaria':
+      case 'Pecuária':
         return <User className="w-5 h-5 text-orange-600" />;
-      case 'commodities':
+      case 'Commodities':
         return <Circle className="w-5 h-5 text-yellow-600" />;
+      case 'Serviços':
+        return <DollarSign className="w-5 h-5 text-purple-600" />;
       default:
         return <Package className="w-5 h-5 text-gray-600" />;
     }
@@ -301,14 +200,16 @@ const Loja = () => {
 
   const getCategoryColor = (category) => {
     switch (category) {
-      case 'insumos':
+      case 'Insumos':
         return 'bg-green-100 text-green-800 border-green-200';
-      case 'maquinas':
+      case 'Máquinas/Implementos':
         return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'pecuaria':
+      case 'Pecuária':
         return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'commodities':
+      case 'Commodities':
         return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'Serviços':
+        return 'bg-purple-100 text-purple-800 border-purple-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
     }
@@ -326,7 +227,7 @@ const Loja = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white text-gray-900">
+    <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-white'} transition-colors duration-300`}>
       {/* Header Section */}
       <section className="relative pt-40 pb-20 px-4 overflow-hidden">
         {/* Background */}
@@ -337,7 +238,7 @@ const Loja = () => {
             </div>
           ) : (
             <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50">
-              <div className="absolute inset-0 bg-blue-100 opacity-30"></div>
+              <div className="absolute inset-0 bg-white opacity-90"></div>
             </div>
           )}
         </div>
@@ -513,7 +414,7 @@ const Loja = () => {
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center space-x-1">
                         <MapPin className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm text-gray-600">{product.state}</span>
+                        <span className="text-sm text-gray-600">{product.location}</span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <Star className="w-4 h-4 text-yellow-400 fill-current" />
@@ -591,7 +492,7 @@ const Loja = () => {
                         <div className="flex items-center space-x-4 text-sm text-gray-600">
                           <div className="flex items-center space-x-1">
                             <MapPin className="w-4 h-4" />
-                            <span>{product.state}</span>
+                            <span>{product.location}</span>
                           </div>
                           <div className="flex items-center space-x-1">
                             <Star className="w-4 h-4 text-yellow-400 fill-current" />

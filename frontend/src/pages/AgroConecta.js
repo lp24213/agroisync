@@ -54,202 +54,109 @@ const AgroConecta = () => {
     { id: 'truck', name: 'Truck' }
   ];
 
-  // Fretes simulados
+  // Dados simulados mais realistas de fretes
   const mockFreights = [
-    // Fretes de Soja
     {
       id: 1,
-      product: 'soja',
-      productName: 'Soja em Grãos',
-      quantity: 30,
-      unit: 'toneladas',
-      origin: 'MT',
-      originCity: 'Sinop',
-      destination: 'SP',
-      destinationCity: 'Santos',
-      truckType: 'graneleiro',
-      price: 180.00,
-      priceUnit: 'por tonelada',
-      totalPrice: 5400.00,
-      deliveryTime: '3-4 dias',
-      carrier: {
-        name: 'Transportes Rápido MT',
-        rating: 4.8,
-        reviews: 156,
-        verified: true,
-        phone: '(66) 99999-9999',
-        email: 'contato@rapidomt.com.br'
-      },
-      truck: {
-        plate: 'MTU-1234',
-        type: 'Graneleiro 30 ton',
-        available: true
-      },
-      featured: true,
-      urgent: false
+      product: 'Soja em Grão',
+      quantity: '500 sacas',
+      weight: '30 toneladas',
+      origin: 'Sinop - MT',
+      destination: 'Porto de Santos - SP',
+      truckType: 'Truck 3 eixos',
+      value: 8500.00,
+      deadline: '3 dias',
+      status: 'Disponível',
+      carrier: 'Transportadora Rápida MT',
+      phone: '(66) 99999-9999',
+      whatsapp: '(66) 99999-9999',
+      rating: 4.8,
+      reviews: 45
     },
     {
       id: 2,
-      product: 'soja',
-      productName: 'Soja Tipo 1',
-      quantity: 25,
-      unit: 'toneladas',
-      origin: 'GO',
-      originCity: 'Rio Verde',
-      destination: 'PR',
-      destinationCity: 'Paranaguá',
-      truckType: 'graneleiro',
-      price: 165.00,
-      priceUnit: 'por tonelada',
-      totalPrice: 4125.00,
-      deliveryTime: '2-3 dias',
-      carrier: {
-        name: 'Fretes Goiás Express',
-        rating: 4.6,
-        reviews: 89,
-        verified: true,
-        phone: '(62) 88888-8888',
-        email: 'fretes@goiasexpress.com.br'
-      },
-      truck: {
-        plate: 'GOI-5678',
-        type: 'Graneleiro 25 ton',
-        available: true
-      },
-      featured: false,
-      urgent: true
+      product: 'Milho em Grão',
+      quantity: '800 sacas',
+      weight: '48 toneladas',
+      origin: 'Lucas do Rio Verde - MT',
+      destination: 'Goiânia - GO',
+      truckType: 'Truck 2 eixos',
+      value: 4200.00,
+      deadline: '2 dias',
+      status: 'Disponível',
+      carrier: 'Fretes Express MT',
+      phone: '(66) 88888-8888',
+      whatsapp: '(66) 88888-8888',
+      rating: 4.6,
+      reviews: 32
     },
-
-    // Fretes de Milho
     {
       id: 3,
-      product: 'milho',
-      productName: 'Milho em Grãos',
-      quantity: 40,
-      unit: 'toneladas',
-      origin: 'MS',
-      originCity: 'Dourados',
-      destination: 'RS',
-      destinationCity: 'Porto Alegre',
-      truckType: 'graneleiro',
-      price: 145.00,
-      priceUnit: 'por tonelada',
-      totalPrice: 5800.00,
-      deliveryTime: '4-5 dias',
-      carrier: {
-        name: 'Transportadora Sul MS',
-        rating: 4.7,
-        reviews: 234,
-        verified: true,
-        phone: '(67) 77777-7777',
-        email: 'contato@sulms.com.br'
-      },
-      truck: {
-        plate: 'MSU-9012',
-        type: 'Graneleiro 40 ton',
-        available: true
-      },
-      featured: true,
-      urgent: false
+      product: 'Algodão em Pluma',
+      quantity: '200 fardos',
+      weight: '15 toneladas',
+      origin: 'Campo Verde - MT',
+      destination: 'São Paulo - SP',
+      truckType: 'Truck 3 eixos',
+      value: 6800.00,
+      deadline: '4 dias',
+      status: 'Disponível',
+      carrier: 'Transportes Premium',
+      phone: '(66) 77777-7777',
+      whatsapp: '(66) 77777-7777',
+      rating: 4.9,
+      reviews: 28
     },
-
-    // Fretes de Carne
     {
       id: 4,
-      product: 'carne',
-      productName: 'Carne Bovina',
-      quantity: 15,
-      unit: 'toneladas',
-      origin: 'MT',
-      originCity: 'Cuiabá',
-      destination: 'SP',
-      destinationCity: 'São Paulo',
-      truckType: 'refrigerado',
-      price: 320.00,
-      priceUnit: 'por tonelada',
-      totalPrice: 4800.00,
-      deliveryTime: '2-3 dias',
-      carrier: {
-        name: 'Frigorífico Express',
-        rating: 4.9,
-        reviews: 67,
-        verified: true,
-        phone: '(66) 66666-6666',
-        email: 'frigo@express.com.br'
-      },
-      truck: {
-        plate: 'MTU-3456',
-        type: 'Refrigerado 15 ton',
-        available: true
-      },
-      featured: true,
-      urgent: false
+      product: 'Fertilizantes',
+      quantity: '50 toneladas',
+      weight: '50 toneladas',
+      origin: 'Sorriso - MT',
+      destination: 'Nova Mutum - MT',
+      truckType: 'Truck 2 eixos',
+      value: 1800.00,
+      deadline: '1 dia',
+      status: 'Disponível',
+      carrier: 'Fretes Rápidos MT',
+      phone: '(66) 66666-6666',
+      whatsapp: '(66) 66666-6666',
+      rating: 4.7,
+      reviews: 67
     },
-
-    // Fretes de Insumos
     {
       id: 5,
-      product: 'insumo',
-      productName: 'Fertilizantes',
-      quantity: 20,
-      unit: 'toneladas',
-      origin: 'PR',
-      originCity: 'Curitiba',
-      destination: 'MT',
-      destinationCity: 'Lucas do Rio Verde',
-      truckType: 'bau',
-      price: 280.00,
-      priceUnit: 'por tonelada',
-      totalPrice: 5600.00,
-      deliveryTime: '5-6 dias',
-      carrier: {
-        name: 'Cargas Paraná',
-        rating: 4.5,
-        reviews: 123,
-        verified: true,
-        phone: '(41) 55555-5555',
-        email: 'cargas@parana.com.br'
-      },
-      truck: {
-        plate: 'PRU-7890',
-        type: 'Baú 20 ton',
-        available: true
-      },
-      featured: false,
-      urgent: false
+      product: 'Máquinas Agrícolas',
+      quantity: '1 unidade',
+      weight: '8 toneladas',
+      origin: 'Cuiabá - MT',
+      destination: 'Rondonópolis - MT',
+      truckType: 'Truck 3 eixos + prancha',
+      value: 3200.00,
+      deadline: '2 dias',
+      status: 'Disponível',
+      carrier: 'Transportes Especializados',
+      phone: '(66) 55555-5555',
+      whatsapp: '(66) 55555-5555',
+      rating: 4.8,
+      reviews: 23
     },
-
-    // Fretes de Maquinário
     {
       id: 6,
-      product: 'maquinario',
-      productName: 'Trator Agrícola',
-      quantity: 1,
-      unit: 'unidade',
-      origin: 'SP',
-      originCity: 'São Paulo',
-      destination: 'GO',
-      destinationCity: 'Goiânia',
-      truckType: 'carreta',
-      price: 2500.00,
-      priceUnit: 'por carga',
-      totalPrice: 2500.00,
-      deliveryTime: '1-2 dias',
-      carrier: {
-        name: 'Transportes Especiais SP',
-        rating: 4.8,
-        reviews: 45,
-        verified: true,
-        phone: '(11) 44444-4444',
-        email: 'especiais@sp.com.br'
-      },
-      truck: {
-        plate: 'SPU-1111',
-        type: 'Carreta Especial',
-        available: true
-      },
-      featured: true,
-      urgent: false
+      product: 'Bovinos Vivos',
+      quantity: '20 cabeças',
+      weight: '12 toneladas',
+      origin: 'Nova Mutum - MT',
+      destination: 'Campo Grande - MS',
+      truckType: 'Truck boiadeiro',
+      value: 4500.00,
+      deadline: '1 dia',
+      status: 'Disponível',
+      carrier: 'Fretes Bovinos MT',
+      phone: '(66) 44444-4444',
+      whatsapp: '(66) 44444-4444',
+      rating: 4.9,
+      reviews: 89
     }
   ];
 
@@ -289,15 +196,15 @@ const AgroConecta = () => {
     }
 
     // Filtro por preço
-    filtered = filtered.filter(f => f.totalPrice >= priceRange[0] && f.totalPrice <= priceRange[1]);
+    filtered = filtered.filter(f => f.value >= priceRange[0] && f.value <= priceRange[1]);
 
     // Filtro por busca
     if (searchTerm) {
       filtered = filtered.filter(f => 
-        f.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        f.carrier.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        f.originCity.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        f.destinationCity.toLowerCase().includes(searchTerm.toLowerCase())
+        f.product.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        f.carrier.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        f.origin.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        f.destination.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -313,18 +220,18 @@ const AgroConecta = () => {
 
   const getProductIcon = (product) => {
     switch (product) {
-      case 'soja':
+      case 'Soja em Grão':
         return <Package className="w-5 h-5 text-green-600" />;
-      case 'milho':
+      case 'Milho em Grão':
         return <Package className="w-5 h-5 text-yellow-600" />;
-      case 'algodao':
+      case 'Algodão em Pluma':
         return <Package className="w-5 h-5 text-white" />;
-      case 'carne':
-        return <Package className="w-5 h-5 text-red-600" />;
-      case 'insumo':
+      case 'Fertilizantes':
         return <Package className="w-5 h-5 text-blue-600" />;
-      case 'maquinario':
+      case 'Máquinas Agrícolas':
         return <Package className="w-5 h-5 text-gray-600" />;
+      case 'Bovinos Vivos':
+        return <Package className="w-5 h-5 text-red-600" />;
       default:
         return <Package className="w-5 h-5 text-gray-400" />;
     }
@@ -332,18 +239,14 @@ const AgroConecta = () => {
 
   const getTruckIcon = (truckType) => {
     switch (truckType) {
-      case 'graneleiro':
+      case 'Truck 3 eixos':
         return <Truck className="w-5 h-5 text-orange-600" />;
-      case 'bitrem':
+      case 'Truck 2 eixos':
         return <Truck className="w-5 h-5 text-blue-600" />;
-      case 'bau':
-        return <Truck className="w-5 h-5 text-green-600" />;
-      case 'refrigerado':
-        return <Truck className="w-5 h-5 text-cyan-600" />;
-      case 'carreta':
+      case 'Truck 3 eixos + prancha':
         return <Truck className="w-5 h-5 text-purple-600" />;
-      case 'truck':
-        return <Truck className="w-5 h-5 text-gray-600" />;
+      case 'Truck boiadeiro':
+        return <Truck className="w-5 h-5 text-cyan-600" />;
       default:
         return <Truck className="w-5 h-5 text-gray-400" />;
     }
@@ -351,18 +254,18 @@ const AgroConecta = () => {
 
   const getProductColor = (product) => {
     switch (product) {
-      case 'soja':
+      case 'Soja em Grão':
         return 'bg-green-100 text-green-800 border-green-200';
-      case 'milho':
+      case 'Milho em Grão':
         return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'algodao':
+      case 'Algodão em Pluma':
         return 'bg-white text-gray-800 border-gray-200';
-      case 'carne':
-        return 'bg-red-100 text-red-800 border-red-200';
-      case 'insumo':
+      case 'Fertilizantes':
         return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'maquinario':
+      case 'Máquinas Agrícolas':
         return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'Bovinos Vivos':
+        return 'bg-red-100 text-red-800 border-red-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
     }
@@ -380,7 +283,7 @@ const AgroConecta = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white text-gray-900">
+    <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-white'} transition-colors duration-300`}>
       {/* Header Section */}
       <section className="relative pt-40 pb-20 px-4 overflow-hidden">
         {/* Background */}
@@ -391,7 +294,7 @@ const AgroConecta = () => {
             </div>
           ) : (
             <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50">
-              <div className="absolute inset-0 bg-blue-100 opacity-30"></div>
+              <div className="absolute inset-0 bg-white opacity-90"></div>
             </div>
           )}
         </div>
@@ -540,18 +443,9 @@ const AgroConecta = () => {
                       <div className="flex items-center space-x-3 mb-3">
                         <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getProductColor(freight.product)}`}>
                           {getProductIcon(freight.product)}
-                          <span className="ml-2">{freight.productName}</span>
+                          <span className="ml-2">{freight.product}</span>
                         </div>
-                        {freight.featured && (
-                          <span className="bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold">
-                            DESTAQUE
-                          </span>
-                        )}
-                        {freight.urgent && (
-                          <span className="bg-red-400 text-red-900 px-2 py-1 rounded-full text-xs font-bold">
-                            URGENTE
-                          </span>
-                        )}
+                        {/* Removed featured and urgent badges as they are not in mockFreights */}
                       </div>
 
                       {/* Rota */}
@@ -559,14 +453,14 @@ const AgroConecta = () => {
                         <div className="flex items-center space-x-2">
                           <MapPin className="w-4 h-4 text-green-600" />
                           <span className="text-sm text-gray-600">
-                            <strong>{freight.originCity}</strong> ({freight.origin})
+                            <strong>{freight.origin}</strong>
                           </span>
                         </div>
                         <Route className="w-4 h-4 text-gray-400" />
                         <div className="flex items-center space-x-2">
                           <MapPin className="w-4 h-4 text-red-600" />
                           <span className="text-sm text-gray-600">
-                            <strong>{freight.destinationCity}</strong> ({freight.destination})
+                            <strong>{freight.destination}</strong>
                           </span>
                         </div>
                       </div>
@@ -576,25 +470,25 @@ const AgroConecta = () => {
                         <div className="flex items-center space-x-2">
                           <Weight className="w-4 h-4 text-blue-600" />
                           <span className="text-sm text-gray-600">
-                            <strong>{freight.quantity}</strong> {freight.unit}
+                            <strong>{freight.quantity}</strong>
                           </span>
                         </div>
                         <div className="flex items-center space-x-2">
                           <Truck className="w-4 h-4 text-orange-600" />
                           <span className="text-sm text-gray-600">
-                            <strong>{truckTypes.find(t => t.id === freight.truckType)?.name}</strong>
+                            <strong>{freight.truckType}</strong>
                           </span>
                         </div>
                         <div className="flex items-center space-x-2">
                           <Clock className="w-4 h-4 text-purple-600" />
                           <span className="text-sm text-gray-600">
-                            <strong>{freight.deliveryTime}</strong>
+                            <strong>{freight.deadline}</strong>
                           </span>
                         </div>
                         <div className="flex items-center space-x-2">
                           <DollarSign className="w-4 h-4 text-green-600" />
                           <span className="text-sm text-gray-600">
-                            <strong>{freight.priceUnit}</strong>
+                            <strong>{formatPrice(freight.value)}</strong>
                           </span>
                         </div>
                       </div>
@@ -603,10 +497,10 @@ const AgroConecta = () => {
                     {/* Preço */}
                     <div className="text-right ml-6">
                       <div className="text-3xl font-bold text-blue-600 mb-1">
-                        {formatPrice(freight.totalPrice)}
+                        {formatPrice(freight.value)}
                       </div>
                       <div className="text-sm text-gray-600 mb-2">
-                        {freight.priceUnit}
+                        Valor por carga
                       </div>
                       <button className="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors font-medium">
                         Solicitar Frete
@@ -620,17 +514,13 @@ const AgroConecta = () => {
                       <div className="flex items-center space-x-4">
                         <div className="flex items-center space-x-2">
                           <Building className="w-4 h-4 text-gray-600" />
-                          <span className="font-medium text-gray-900">{freight.carrier.name}</span>
-                          {freight.carrier.verified && (
-                            <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
-                              ✓ Verificado
-                            </span>
-                          )}
+                          <span className="font-medium text-gray-900">{freight.carrier}</span>
+                          {/* Removed verified badge as it's not in mockFreights */}
                         </div>
                         <div className="flex items-center space-x-2">
                           <Star className="w-4 h-4 text-yellow-400 fill-current" />
                           <span className="text-sm text-gray-600">
-                            {freight.carrier.rating} ({freight.carrier.reviews} avaliações)
+                            {freight.rating} ({freight.reviews} avaliações)
                           </span>
                         </div>
                       </div>
@@ -639,7 +529,7 @@ const AgroConecta = () => {
                         <div className="flex items-center space-x-2">
                           <Truck className="w-4 h-4 text-gray-600" />
                           <span className="text-sm text-gray-600">
-                            {freight.truck.plate} - {freight.truck.type}
+                            {freight.truckType}
                           </span>
                         </div>
                         <div className="flex space-x-2">
