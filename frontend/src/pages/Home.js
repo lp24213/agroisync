@@ -15,7 +15,7 @@ import NewsWidget from '../components/NewsWidget';
 
 const Home = () => {
   const { t } = useTranslation();
-  const { isDark, isLight } = useTheme();
+  const { isDark } = useTheme();
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -90,7 +90,7 @@ const Home = () => {
 
   return (
     <div className={`min-h-screen relative z-10 ${
-      isDark ? 'bg-dark-bg-primary' : 'bg-light-bg-primary'
+      isDark ? 'bg-gray-900' : 'bg-white'
     }`}>
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden">
@@ -101,124 +101,112 @@ const Home = () => {
             : 'bg-gradient-to-br from-white via-gray-50 to-gray-100'
         }`} />
         
-        {/* Partículas flutuantes (apenas no tema escuro) */}
-        {isDark && (
-          <div className="absolute inset-0">
-            {[...Array(20)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-2 h-2 rounded-full bg-cyan-400/30"
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 5}s`
-                }}
-                animate={{
-                  y: [0, -20, 0],
-                  opacity: [0.3, 0.8, 0.3]
-                }}
-                transition={{
-                  duration: 3 + Math.random() * 2,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              />
-            ))}
-          </div>
-        )}
+        {/* Partículas flutuantes */}
+        <div className="absolute inset-0 overflow-hidden">
+          {[...Array(20)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-2 h-2 bg-cyan-400/30 rounded-full"
+              animate={{
+                x: [0, 100, 0],
+                y: [0, -100, 0],
+                opacity: [0.3, 0.8, 0.3],
+              }}
+              transition={{
+                duration: 8 + i * 0.5,
+                repeat: Infinity,
+                delay: i * 0.2,
+              }}
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+              }}
+            />
+          ))}
+        </div>
 
-        <div className="relative z-10 text-center max-w-6xl mx-auto">
+        {/* Conteúdo do Hero */}
+        <div className="relative z-10 text-center max-w-4xl mx-auto">
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
-            {/* Título principal */}
             <motion.h1
               variants={itemVariants}
-              className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 font-orbitron"
-            >
-              <span className={`${
-                isDark 
+              className={`text-5xl md:text-7xl font-bold mb-6 font-orbitron ${
+                isDark
                   ? 'bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent'
                   : 'bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent'
-              }`}>
-                {t('home.hero.title')}
-              </span>
+              }`}
+            >
+              {t('home.hero.title')}
             </motion.h1>
-
-            {/* Subtítulo */}
+            
             <motion.p
               variants={itemVariants}
-              className={`text-xl md:text-2xl lg:text-3xl mb-8 max-w-4xl mx-auto leading-relaxed font-space-grotesk ${
+              className={`text-xl md:text-2xl mb-8 ${
                 isDark ? 'text-gray-300' : 'text-gray-700'
               }`}
             >
               {t('home.hero.subtitle')}
             </motion.p>
-
-            {/* Descrição */}
+            
             <motion.p
               variants={itemVariants}
-              className={`text-lg md:text-xl mb-12 max-w-3xl mx-auto leading-relaxed font-inter ${
+              className={`text-lg mb-12 max-w-2xl mx-auto ${
                 isDark ? 'text-gray-400' : 'text-gray-600'
               }`}
             >
               {t('home.hero.description')}
             </motion.p>
 
-            {/* Botões de ação */}
             <motion.div
               variants={itemVariants}
               className="flex flex-col sm:flex-row gap-4 justify-center items-center"
             >
               <Link
                 to="/cadastro"
-                className={`px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 ${
+                className={`px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl ${
                   isDark
-                    ? 'bg-gradient-to-r from-cyan-400 to-purple-500 text-white shadow-lg hover:shadow-xl hover:shadow-cyan-400/25'
-                    : 'bg-gradient-to-r from-green-600 to-blue-600 text-white shadow-lg hover:shadow-xl hover:shadow-green-600/25'
+                    ? 'bg-gradient-to-r from-cyan-400 to-purple-500 text-white shadow-lg shadow-cyan-400/25'
+                    : 'bg-gradient-to-r from-green-600 to-blue-600 text-white shadow-lg shadow-green-600/25'
                 }`}
               >
-                {t('home.hero.cta')}
+                {t('home.hero.ctaPrimary')}
               </Link>
-
+              
               <Link
                 to="/sobre"
-                className={`px-8 py-4 rounded-2xl font-semibold text-lg border-2 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 ${
+                className={`px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 ${
                   isDark
-                    ? 'border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-white'
-                    : 'border-green-600 text-green-600 hover:bg-green-600 hover:text-white'
+                    ? 'border-2 border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-white'
+                    : 'border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white'
                 }`}
               >
-                {t('home.hero.learnMore')}
+                {t('home.hero.ctaSecondary')}
               </Link>
             </motion.div>
           </motion.div>
         </div>
 
-        {/* Scroll indicator */}
+        {/* Indicador de scroll */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2, duration: 1 }}
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
           className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
         >
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className={`w-6 h-10 border-2 rounded-full flex justify-center ${
-              isDark ? 'border-cyan-400/50' : 'border-green-600/50'
-            }`}
-          >
+          <div className={`w-6 h-10 border-2 rounded-full flex justify-center ${
+            isDark ? 'border-cyan-400/50' : 'border-green-600/50'
+          }`}>
             <motion.div
               animate={{ y: [0, 12, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
-                          className={`w-1 h-3 rounded-full mt-2 ${
-              isDark ? 'bg-cyan-400' : 'bg-green-600'
-            }`}
+              className={`w-1 h-3 rounded-full mt-2 ${
+                isDark ? 'bg-cyan-400' : 'bg-green-600'
+              }`}
             />
-          </motion.div>
+          </div>
         </motion.div>
       </section>
 
@@ -237,6 +225,11 @@ const Home = () => {
             }`}>
               {t('home.highlights.title')}
             </h2>
+            <p className={`text-xl ${
+              isDark ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+              {t('home.highlights.subtitle')}
+            </p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -247,28 +240,31 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className={`p-6 rounded-2xl backdrop-blur-md border transition-all duration-300 hover:transform hover:scale-105 ${
+                className={`p-6 rounded-2xl text-center transition-all duration-300 hover:scale-105 ${
                   isDark
-                    ? 'bg-gray-900/80 border-gray-700 hover:border-cyan-400 hover:shadow-lg hover:shadow-cyan-400/20'
-                    : 'bg-white/80 border-gray-200 hover:border-green-500 hover:shadow-lg hover:shadow-green-500/20'
+                    ? 'bg-gray-900/80 backdrop-blur-xl border border-gray-700 hover:border-cyan-400'
+                    : 'bg-white/80 backdrop-blur-xl border border-gray-200 hover:border-green-500'
                 }`}
               >
-                <div className="text-center">
-                  <div className={`flex justify-center mb-4 ${
-                    isDark ? 'text-cyan-400' : 'text-green-600'
-                  }`}>
-                    {card.icon}
-                  </div>
-                  <h3 className={`text-xl font-semibold mb-3 font-space-grotesk ${
-                    isDark ? 'text-white' : 'text-gray-900'
-                  }`}>
-                    {card.title}
-                  </h3>
-                  <p className={`text-sm leading-relaxed font-inter ${
-                    isDark ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    {card.description}
-                  </p>
+                <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center ${
+                  isDark
+                    ? 'bg-cyan-400/20 text-cyan-400'
+                    : 'bg-green-600/20 text-green-600'
+                }`}>
+                  {card.icon}
+                </div>
+                <h3 className={`text-xl font-bold mb-3 ${
+                  isDark ? 'text-white' : 'text-gray-900'
+                }`}>
+                  {card.title}
+                </h3>
+                <p className={`text-sm ${
+                  isDark ? 'text-gray-300' : 'text-gray-700'
+                }`}>
+                  {card.description}
+                </p>
+                <div className="mt-4 flex justify-center">
+                  {card.illustration}
                 </div>
               </motion.div>
             ))}
@@ -291,38 +287,46 @@ const Home = () => {
             }`}>
               {t('home.features.title')}
             </h2>
+            <p className={`text-xl ${
+              isDark ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+              {t('home.features.subtitle')}
+            </p>
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {featureCards.map((feature, index) => (
+            {featureCards.map((card, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.2 }}
                 viewport={{ once: true }}
-                className={`p-8 rounded-2xl backdrop-blur-md border transition-all duration-300 hover:transform hover:scale-105 ${
+                className={`p-8 rounded-2xl text-center transition-all duration-300 hover:scale-105 ${
                   isDark
-                    ? 'bg-gray-900/80 border-gray-700 hover:border-cyan-400 hover:shadow-lg hover:shadow-cyan-400/20'
-                    : 'bg-white/80 border-gray-200 hover:border-green-500 hover:shadow-lg hover:shadow-green-500/20'
+                    ? 'bg-gray-900/80 backdrop-blur-xl border border-gray-700 hover:border-cyan-400'
+                    : 'bg-white/80 backdrop-blur-xl border border-gray-200 hover:border-green-500'
                 }`}
               >
-                <div className="text-center">
-                  <div className={`flex justify-center mb-6 ${
-                    isDark ? 'text-cyan-400' : 'text-green-600'
-                  }`}>
-                    {feature.icon}
-                  </div>
-                  <h3 className={`text-2xl font-semibold mb-4 font-space-grotesk ${
-                    isDark ? 'text-white' : 'text-gray-900'
-                  }`}>
-                    {feature.title}
-                  </h3>
-                  <p className={`text-base leading-relaxed font-inter ${
-                    isDark ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    {feature.description}
-                  </p>
+                <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center ${
+                  isDark
+                    ? 'bg-cyan-400/20 text-cyan-400'
+                    : 'bg-green-600/20 text-green-600'
+                }`}>
+                  {card.icon}
+                </div>
+                <h3 className={`text-2xl font-bold mb-4 ${
+                  isDark ? 'text-white' : 'text-gray-900'
+                }`}>
+                  {card.title}
+                </h3>
+                <p className={`text-lg ${
+                  isDark ? 'text-gray-300' : 'text-gray-700'
+                }`}>
+                  {card.description}
+                </p>
+                <div className="mt-6 flex justify-center">
+                  {card.illustration}
                 </div>
               </motion.div>
             ))}
@@ -375,18 +379,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-
-      {/* Theme Demo Section - Apenas para desenvolvimento */}
-      {process.env.NODE_ENV === 'development' && (
-        <section className="py-20 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-8">
-              <h3 className="text-lg text-gray-500">Seção de Desenvolvimento - Theme Demo</h3>
-            </div>
-            {/* ThemeDemo component seria renderizado aqui apenas em desenvolvimento */}
-          </div>
-        </section>
-      )}
     </div>
   );
 };

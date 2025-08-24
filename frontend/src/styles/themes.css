@@ -1,27 +1,29 @@
 /* ===== VARIÁVEIS DE TEMA ===== */
 :root {
-  /* Tema Escuro (Padrão) - Futurista com fundo preto fosco */
-  --bg-primary: #0a0a0a;
-  --bg-secondary: #111111;
-  --bg-tertiary: #1a1a1a;
-  --bg-card: rgba(17, 17, 17, 0.8);
-  --bg-card-hover: rgba(26, 26, 26, 0.9);
-  
+  /* Tema Escuro - Padrão */
+  --bg-primary: #0f0f23;
+  --bg-secondary: #1a1a2e;
+  --bg-tertiary: #16213e;
+  --bg-card: rgba(26, 26, 46, 0.95);
+  --bg-card-hover: rgba(26, 26, 46, 0.98);
   --text-primary: #ffffff;
-  --text-secondary: #e5e5e5;
-  --text-tertiary: #a3a3a3;
-  --text-accent: #00d4ff;
-  
+  --text-secondary: #e2e8f0;
+  --text-tertiary: #94a3b8;
+  --text-accent: #00ffff;
   --border-primary: rgba(255, 255, 255, 0.1);
   --border-secondary: rgba(255, 255, 255, 0.05);
-  --border-accent: rgba(0, 212, 255, 0.3);
-  
-  --accent-primary: #00d4ff;
-  --accent-secondary: #8b5cf6;
-  --accent-tertiary: #ec4899;
+  --border-accent: rgba(0, 255, 255, 0.3);
+  --accent-primary: #00ffff;
+  --accent-secondary: #ff6b6b;
+  --accent-tertiary: #4ecdc4;
   --accent-success: #00ff88;
-  --accent-warning: #ffaa00;
-  --accent-error: #ff4757;
+  --accent-warning: #ffd93d;
+  --accent-error: #ff6b6b;
+  --shadow-primary: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --shadow-secondary: 0 4px 16px rgba(0, 0, 0, 0.2);
+  --shadow-accent: 0 0 20px rgba(0, 255, 255, 0.2);
+  --glass-bg: rgba(26, 26, 46, 0.9);
+  --glass-border: rgba(255, 255, 255, 0.1);
   
   /* Tons prateados e futuristas */
   --silver-primary: #c0c0c0;
@@ -32,12 +34,14 @@
   --futuristic-primary: #00ffff;
   --futuristic-secondary: #ff00ff;
   
-  --shadow-primary: 0 8px 32px rgba(0, 0, 0, 0.4);
-  --shadow-secondary: 0 4px 16px rgba(0, 0, 0, 0.3);
-  --shadow-accent: 0 0 20px rgba(0, 212, 255, 0.2);
-  
-  --glass-bg: rgba(17, 17, 17, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  /* Cores específicas para componentes */
+  --navbar-bg: rgba(15, 15, 35, 0.95);
+  --footer-bg: rgba(15, 15, 35, 0.9);
+  --card-bg: rgba(26, 26, 46, 0.95);
+  --button-primary: linear-gradient(135deg, #00ffff 0%, #0099ff 100%);
+  --button-secondary: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+  --button-success: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+  --button-warning: linear-gradient(135deg, #ffd93d 0%, #ffb347 100%);
 }
 
 [data-theme="light"] {
@@ -47,22 +51,24 @@
   --bg-tertiary: #e2e8f0;
   --bg-card: rgba(255, 255, 255, 0.95);
   --bg-card-hover: rgba(248, 250, 252, 0.98);
-  
   --text-primary: #0f172a;
   --text-secondary: #334155;
   --text-tertiary: #64748b;
   --text-accent: #059669;
-  
   --border-primary: rgba(15, 23, 42, 0.08);
   --border-secondary: rgba(15, 23, 42, 0.04);
   --border-accent: rgba(5, 150, 105, 0.2);
-  
   --accent-primary: #059669; /* Verde agro sofisticado */
   --accent-secondary: #d97706; /* Dourado metálico sutil */
   --accent-tertiary: #92400e; /* Marrom terra suave */
   --accent-success: #059669;
   --accent-warning: #d97706;
   --accent-error: #dc2626;
+  --shadow-primary: 0 8px 32px rgba(15, 23, 42, 0.08);
+  --shadow-secondary: 0 4px 16px rgba(15, 23, 42, 0.06);
+  --shadow-accent: 0 0 20px rgba(5, 150, 105, 0.12);
+  --glass-bg: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(15, 23, 42, 0.08);
   
   /* Tons prateados e futuristas para tema claro */
   --silver-primary: #6b7280;
@@ -73,12 +79,14 @@
   --futuristic-primary: #0891b2;
   --futuristic-secondary: #7c3aed;
   
-  --shadow-primary: 0 8px 32px rgba(15, 23, 42, 0.08);
-  --shadow-secondary: 0 4px 16px rgba(15, 23, 42, 0.06);
-  --shadow-accent: 0 0 20px rgba(5, 150, 105, 0.12);
-  
-  --glass-bg: rgba(255, 255, 255, 0.9);
-  --glass-border: rgba(15, 23, 42, 0.08);
+  /* Cores específicas para componentes no tema claro */
+  --navbar-bg: rgba(255, 255, 255, 0.95);
+  --footer-bg: rgba(255, 255, 255, 0.9);
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --button-primary: linear-gradient(135deg, #059669 0%, #047857 100%);
+  --button-secondary: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  --button-success: linear-gradient(135deg, #059669 0%, #047857 100%);
+  --button-warning: linear-gradient(135deg, #d97706 0%, #b45309 100%);
 }
 
 /* ===== ESTILOS GLOBAIS ===== */
@@ -244,6 +252,54 @@ p {
 
 .shadow-glow {
   box-shadow: 0 0 20px var(--accent-primary);
+}
+
+/* ===== UTILITÁRIOS DE TEMA ===== */
+.theme-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== COMPONENTES ESPECÍFICOS ===== */
+.navbar-theme {
+  background: var(--navbar-bg);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.footer-theme {
+  background: var(--footer-bg);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border-primary);
+}
+
+.card-theme {
+  background: var(--card-bg);
+  border: 1px solid var(--border-primary);
+  box-shadow: var(--shadow-primary);
+}
+
+.button-theme-primary {
+  background: var(--button-primary);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.button-theme-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-accent);
+}
+
+.button-theme-secondary {
+  background: var(--button-secondary);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.button-theme-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-accent);
 }
 
 /* ===== SCROLLBAR PERSONALIZADA ===== */

@@ -7,6 +7,8 @@ import Chatbot from '../Chatbot';
 import AnimatedBackground from '../AnimatedBackground';
 import PagePreloader from '../PagePreloader';
 import PageTransition from '../PageTransition';
+import GlobalTicker from '../GlobalTicker';
+import GlobalWeatherWidget from '../GlobalWeatherWidget';
 
 const Layout = ({ children }) => {
   const { isDark } = useTheme();
@@ -39,6 +41,9 @@ const Layout = ({ children }) => {
       
         {/* Conteúdo principal */}
         <div className="relative z-10">
+          {/* Ticker Global de Cotações */}
+          <GlobalTicker />
+          
           {/* Header fixo */}
           <motion.header
             initial={{ opacity: 0, y: -20 }}
@@ -80,6 +85,9 @@ const Layout = ({ children }) => {
           >
             <Chatbot />
           </motion.div>
+
+          {/* Widget de Clima Global */}
+          <GlobalWeatherWidget />
         </div>
       </div>
     </>
