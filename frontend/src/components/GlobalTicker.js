@@ -9,18 +9,30 @@ const GlobalTicker = () => {
 
   // Dados simulados de cotações (em produção, integrar com APIs reais)
   const mockTickerData = [
-    { symbol: 'USD/BRL', value: '5.12', change: '+0.8%', trend: 'up' },
-    { symbol: 'EUR/BRL', value: '5.58', change: '+1.2%', trend: 'up' },
-    { symbol: 'BTC/USD', value: '43,250', change: '+2.1%', trend: 'up' },
-    { symbol: 'ETH/USD', value: '2,680', change: '-0.5%', trend: 'down' },
-    { symbol: 'BOVESPA', value: '128,450', change: '+0.9%', trend: 'up' },
-    { symbol: 'NASDAQ', value: '16,890', change: '+1.3%', trend: 'up' },
-    { symbol: 'S&P500', value: '4,890', change: '+0.7%', trend: 'up' },
-    { symbol: 'DOW', value: '38,450', change: '+0.4%', trend: 'up' },
-    { symbol: 'SOJA', value: 'R$ 180,50', change: '+1.8%', trend: 'up' },
-    { symbol: 'MILHO', value: 'R$ 85,30', change: '-0.3%', trend: 'down' },
-    { symbol: 'CAFÉ', value: 'R$ 1.250,00', change: '+2.5%', trend: 'up' },
-    { symbol: 'BOI GORDO', value: 'R$ 320,00', change: '+0.9%', trend: 'up' }
+    // Moedas Fiat
+    { symbol: 'USD/BRL', value: '5.12', change: '+0.8%', trend: 'up', type: 'currency' },
+    { symbol: 'EUR/BRL', value: '5.58', change: '+1.2%', trend: 'up', type: 'currency' },
+    
+    // Criptomoedas
+    { symbol: 'BTC/USD', value: '43,250', change: '+2.1%', trend: 'up', type: 'crypto' },
+    { symbol: 'ETH/USD', value: '2,680', change: '-0.5%', trend: 'down', type: 'crypto' },
+    { symbol: 'BNB/USD', value: '315', change: '+1.8%', trend: 'up', type: 'crypto' },
+    { symbol: 'SOL/USD', value: '98.50', change: '+3.2%', trend: 'up', type: 'crypto' },
+    { symbol: 'USDT/USD', value: '1.00', change: '0.0%', trend: 'neutral', type: 'crypto' },
+    
+    // Bolsa Brasileira
+    { symbol: 'IBOV', value: '128,450', change: '+0.9%', trend: 'up', type: 'stock' },
+    
+    // Bolsas Internacionais
+    { symbol: 'NASDAQ', value: '16,890', change: '+1.3%', trend: 'up', type: 'stock' },
+    { symbol: 'S&P500', value: '4,890', change: '+0.7%', trend: 'up', type: 'stock' },
+    { symbol: 'DOW', value: '38,450', change: '+0.4%', trend: 'up', type: 'stock' },
+    
+    // Commodities Agrícolas
+    { symbol: 'SOJA', value: 'R$ 180,50', change: '+1.8%', trend: 'up', type: 'commodity' },
+    { symbol: 'MILHO', value: 'R$ 85,30', change: '-0.3%', trend: 'down', type: 'commodity' },
+    { symbol: 'CAFÉ', value: 'R$ 1.250,00', change: '+2.5%', trend: 'up', type: 'commodity' },
+    { symbol: 'BOI GORDO', value: 'R$ 320,00', change: '+0.9%', trend: 'up', type: 'commodity' }
   ];
 
   useEffect(() => {
@@ -45,6 +57,21 @@ const GlobalTicker = () => {
     return '→';
   };
 
+  const getTypeColor = (type) => {
+    switch (type) {
+      case 'crypto':
+        return isDark ? 'text-cyan-400' : 'text-cyan-600';
+      case 'currency':
+        return isDark ? 'text-green-400' : 'text-green-600';
+      case 'stock':
+        return isDark ? 'text-blue-400' : 'text-blue-600';
+      case 'commodity':
+        return isDark ? 'text-yellow-400' : 'text-yellow-600';
+      default:
+        return isDark ? 'text-gray-400' : 'text-gray-600';
+    }
+  };
+
   if (loading) {
     return (
       <div className={`w-full py-2 ${
@@ -66,7 +93,7 @@ const GlobalTicker = () => {
         isDark 
           ? 'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-gray-700' 
           : 'bg-gradient-to-r from-white via-gray-50 to-white border-gray-200'
-      } border-b shadow-sm sticky top-0 z-50`}
+      } border-b shadow-sm`}
     >
       <div className="overflow-hidden">
         <div className="flex animate-scroll whitespace-nowrap">
@@ -78,9 +105,7 @@ const GlobalTicker = () => {
               transition={{ duration: 0.3, delay: index * 0.1 }}
               className="flex items-center space-x-2 px-4 py-1 mx-2 rounded-lg bg-opacity-10"
             >
-              <span className={`font-semibold text-sm ${
-                isDark ? 'text-gray-200' : 'text-gray-800'
-              }`}>
+              <span className={`font-semibold text-sm ${getTypeColor(item.type)}`}>
                 {item.symbol}
               </span>
               <span className={`font-mono text-sm ${
@@ -100,9 +125,7 @@ const GlobalTicker = () => {
               key={`duplicate-${index}`}
               className="flex items-center space-x-2 px-4 py-1 mx-2 rounded-lg bg-opacity-10"
             >
-              <span className={`font-semibold text-sm ${
-                isDark ? 'text-gray-200' : 'text-gray-800'
-              }`}>
+              <span className={`font-semibold text-sm ${getTypeColor(item.type)}`}>
                 {item.symbol}
               </span>
               <span className={`font-mono text-sm ${

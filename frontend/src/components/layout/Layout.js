@@ -27,29 +27,31 @@ const Layout = ({ children }) => {
     <>
       {/* Preloader */}
       <PagePreloader isLoading={isLoading} />
-      
+
       <div className="min-h-screen relative overflow-hidden">
         {/* Fundo animado de estrelas (apenas no tema escuro) */}
         {isDark && <AnimatedBackground />}
-        
+
         {/* Gradiente sutil sobre o fundo */}
         <div className={`absolute inset-0 pointer-events-none z-0 ${
-          isDark 
-            ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-black' 
+          isDark
+            ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-black'
             : 'bg-gradient-to-br from-white via-gray-50 to-gray-100'
         }`} />
-      
+
         {/* Conteúdo principal */}
         <div className="relative z-10">
-          {/* Ticker Global de Cotações */}
-          <GlobalTicker />
-          
-          {/* Header fixo */}
+          {/* Ticker Global de Cotações - FIXO ACIMA DO MENU */}
+          <div className="fixed top-0 left-0 right-0 z-50">
+            <GlobalTicker />
+          </div>
+
+          {/* Header fixo - POSICIONADO ABAIXO DO TICKER */}
           <motion.header
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="sticky top-0 z-40"
+            className="sticky top-12 z-40" // top-12 para ficar abaixo do ticker
           >
             <Navbar />
           </motion.header>
@@ -59,7 +61,7 @@ const Layout = ({ children }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative z-10"
+            className="relative z-10 pt-24" // pt-24 para compensar o ticker fixo
           >
             <PageTransition>
               {children}
