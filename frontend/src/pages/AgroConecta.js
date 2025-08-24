@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 import { 
   Search, Filter, MapPin, Truck, Package, Clock, DollarSign,
-  Star, Phone, Mail, Calendar, Weight, Route, User, Building
+  Star, Phone, Mail, Calendar, Weight, Route, User, Building, Plus
 } from 'lucide-react';
 import GlobalTicker from '../components/GlobalTicker';
 import Navbar from '../components/Navbar';
@@ -464,6 +464,15 @@ const AgroConecta = () => {
                   className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
+
+              {/* Botão Cadastrar Frete */}
+              <button
+                onClick={() => window.location.href = '/cadastro'}
+                className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors duration-300 flex items-center gap-2"
+              >
+                <Plus className="w-5 h-5" />
+                Cadastrar Frete
+              </button>
             </div>
           </div>
         </div>

@@ -7,7 +7,7 @@ import {
   MessageSquare, Building, Globe, ArrowRight
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+
 import GlobalTicker from '../components/GlobalTicker';
 import WeatherWidget from '../components/WeatherWidget';
 import Chatbot from '../components/Chatbot';
@@ -379,8 +379,7 @@ const Contato = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <Footer />
+      
 
       {/* Chatbot */}
       <Chatbot />

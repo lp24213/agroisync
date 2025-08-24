@@ -61,7 +61,7 @@ const Navbar = () => {
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex items-center space-x-3"
+            className="flex items-center space-x-3 flex-1"
           >
             <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-green-500 to-blue-600 flex items-center justify-center">
               <span className="text-white font-bold text-lg">A</span>
@@ -70,7 +70,7 @@ const Navbar = () => {
           </motion.div>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-8 flex-1 justify-center">
             <a href="/" className="hover:text-green-500 transition-colors duration-200">
               {t('nav.home')}
             </a>
@@ -104,7 +104,7 @@ const Navbar = () => {
           </div>
 
           {/* Right Side Actions */}
-          <div className="hidden lg:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-4 flex-1 justify-end">
             
             {/* Language Selector */}
             <div className="relative">

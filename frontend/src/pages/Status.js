@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import GlobalTicker from '../components/GlobalTicker';
 import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+
 import WeatherWidget from '../components/WeatherWidget';
 import Chatbot from '../components/Chatbot';
 
@@ -392,7 +392,7 @@ const Status = () => {
         </div>
       </section>
 
-      <Footer />
+      
       <WeatherWidget />
       <Chatbot />
     </div>

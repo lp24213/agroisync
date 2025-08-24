@@ -527,8 +527,11 @@ const Cripto = () => {
             >
               {t('crypto.cta.connectWallet')}
             </button>
-            <button className="px-8 py-4 bg-transparent border-2 border-white text-white font-bold rounded-xl hover:bg-white hover:text-cyan-900 transition-colors duration-300">
-              {t('crypto.cta.learnMore')}
+            <button 
+              onClick={() => window.location.href = '/cadastro'}
+              className="px-8 py-4 bg-transparent border-2 border-white text-white font-bold rounded-xl hover:bg-white hover:text-cyan-900 transition-colors duration-300"
+            >
+              Cadastrar na Plataforma
             </button>
           </div>
         </div>

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 import { 
   Search, Filter, MapPin, Star, ShoppingCart, Heart, Eye,
-  Truck, Package, Leaf, Wrench, User, Circle, DollarSign
+  Truck, Package, Leaf, Wrench, User, Circle, DollarSign, Plus
 } from 'lucide-react';
 import GlobalTicker from '../components/GlobalTicker';
 import Navbar from '../components/Navbar';
@@ -396,6 +396,15 @@ const Loja = () => {
                   </svg>
                 </button>
               </div>
+
+              {/* Botão Cadastrar Produto */}
+              <button
+                onClick={() => window.location.href = '/cadastro'}
+                className="px-6 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors duration-300 flex items-center gap-2"
+              >
+                <Plus className="w-5 h-5" />
+                Cadastrar Produto
+              </button>
             </div>
           </div>
         </div>

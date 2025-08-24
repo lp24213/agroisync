@@ -8,7 +8,7 @@ import {
   CheckCircle, Star, Award, Target, Lightbulb
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+
 import GlobalTicker from '../components/GlobalTicker';
 import WeatherWidget from '../components/WeatherWidget';
 import Chatbot from '../components/Chatbot';
@@ -398,8 +398,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <Footer />
+      
 
       {/* Chatbot */}
       <Chatbot />
