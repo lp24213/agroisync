@@ -171,6 +171,44 @@ const AgroConecta = () => {
       reviews: 89,
       insurance: 'Seguro de carga incluído',
       tracking: 'Rastreamento em tempo real'
+    },
+    {
+      id: 7,
+      product: 'Café Arábica Especial',
+      quantity: '100 sacas',
+      weight: '6 toneladas',
+      origin: 'Machado - MG',
+      destination: 'São Paulo - SP',
+      truckType: 'Truck 2 eixos baú',
+      value: 2800.00,
+      deadline: '2 dias',
+      status: 'Disponível',
+      carrier: 'Transportes Café MG Ltda',
+      phone: '(35) 77777-7777',
+      whatsapp: '(35) 77777-7777',
+      rating: 4.8,
+      reviews: 45,
+      insurance: 'Seguro de carga incluído',
+      tracking: 'Rastreamento em tempo real'
+    },
+    {
+      id: 8,
+      product: 'Trigo Nacional',
+      quantity: '400 sacas',
+      weight: '24 toneladas',
+      origin: 'Passo Fundo - RS',
+      destination: 'São Paulo - SP',
+      truckType: 'Truck 3 eixos graneleiro',
+      value: 5200.00,
+      deadline: '3 dias',
+      status: 'Disponível',
+      carrier: 'Fretes Sul RS Ltda',
+      phone: '(54) 88888-8888',
+      whatsapp: '(54) 88888-8888',
+      rating: 4.7,
+      reviews: 67,
+      insurance: 'Seguro de carga incluído',
+      tracking: 'Rastreamento em tempo real'
     }
   ];
 

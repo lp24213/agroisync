@@ -20,7 +20,9 @@ const GlobalTicker = () => {
     { symbol: 'MILHO', value: 'R$ 95,30', change: '-0,45%', trend: 'down', type: 'commodity', description: 'Milho Seco' },
     { symbol: 'BOI GORDO', value: 'R$ 320,00', change: '+0,89%', trend: 'up', type: 'commodity', description: 'Boi Nelore' },
     { symbol: 'CAFÉ', value: 'R$ 1.250,00', change: '+2,15%', trend: 'up', type: 'commodity', description: 'Café Arábica' },
-    { symbol: 'ALGODÃO', value: 'R$ 4,85', change: '-0,32%', trend: 'down', type: 'commodity', description: 'Algodão Pluma' }
+    { symbol: 'ALGODÃO', value: 'R$ 4,85', change: '-0,32%', trend: 'down', type: 'commodity', description: 'Algodão Pluma' },
+    { symbol: 'TRIGO', value: 'R$ 1.180,00', change: '+0,75%', trend: 'up', type: 'commodity', description: 'Trigo Nacional' },
+    { symbol: 'SUCRO', value: 'R$ 2.450,00', change: '+1,45%', trend: 'up', type: 'commodity', description: 'Açúcar Cristal' }
   ];
 
   useEffect(() => {

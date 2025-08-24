@@ -4,7 +4,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import { 
   Menu, X, Globe, Sun, Moon, ShoppingCart, Truck, 
-  Coins, User, LogIn, ChevronDown
+  Coins, User, LogIn, ChevronDown, Home, Info, CreditCard, HelpCircle, BookOpen, Activity, Mail
 } from 'lucide-react';
 
 const Navbar = () => {
@@ -57,40 +57,56 @@ const Navbar = () => {
   }, []);
 
   const menuItems = [
-    { name: t('nav.home'), href: '/', icon: null },
-    { name: t('nav.about'), href: '/sobre', icon: null },
-    { 
-      name: t('nav.store'), 
-      href: '/loja', 
-      icon: <ShoppingCart className="w-4 h-4" />,
-      submenu: [
-        { name: t('nav.store.products'), href: '/loja' },
-        { name: t('nav.store.categories'), href: '/loja' },
-        { name: t('nav.store.sellers'), href: '/loja' }
-      ]
+    {
+      name: t('nav.home'),
+      href: '/',
+      icon: <Home className="w-4 h-4" />
     },
-    { 
-      name: t('nav.freight'), 
-      href: '/agroconecta', 
-      icon: <Truck className="w-4 h-4" />,
-      submenu: [
-        { name: t('nav.freight.search'), href: '/agroconecta' },
-        { name: t('nav.freight.register'), href: '/agroconecta' },
-        { name: t('nav.freight.carriers'), href: '/agroconecta' }
-      ]
+    {
+      name: t('nav.about'),
+      href: '/sobre',
+      icon: <Info className="w-4 h-4" />
     },
-    { 
-      name: t('nav.crypto'), 
-      href: '/cripto', 
-      icon: <Coins className="w-4 h-4" />,
-      submenu: [
-        { name: t('nav.crypto.quotes'), href: '/cripto' },
-        { name: t('nav.crypto.wallet'), href: '/cripto' },
-        { name: t('nav.crypto.payments'), href: '/cripto' }
-      ]
+    {
+      name: 'Loja',
+      href: '/loja',
+      icon: <ShoppingCart className="w-4 h-4" />
     },
-    { name: t('nav.contact'), href: '/contato', icon: null },
-    { name: t('nav.plans'), href: '/planos', icon: null }
+    {
+      name: 'AgroConecta',
+      href: '/agroconecta',
+      icon: <Truck className="w-4 h-4" />
+    },
+    {
+      name: 'Cripto',
+      href: '/cripto',
+      icon: <Coins className="w-4 h-4" />
+    },
+    {
+      name: 'Planos',
+      href: '/planos',
+      icon: <CreditCard className="w-4 h-4" />
+    },
+    {
+      name: 'FAQ',
+      href: '/faq',
+      icon: <HelpCircle className="w-4 h-4" />
+    },
+    {
+      name: 'Ajuda',
+      href: '/ajuda',
+      icon: <BookOpen className="w-4 h-4" />
+    },
+    {
+      name: 'Status',
+      href: '/status',
+      icon: <Activity className="w-4 h-4" />
+    },
+    {
+      name: t('nav.contact'),
+      href: '/contato',
+      icon: <Mail className="w-4 h-4" />
+    }
   ];
 
   return (

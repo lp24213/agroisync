@@ -139,6 +139,38 @@ const Loja = () => {
       reviews: 67,
       certification: 'CREA',
       delivery: 'Atendimento em 24h'
+    },
+    {
+      id: 7,
+      name: 'Milho em Grão Seco - Proteína 9%',
+      category: 'Commodities',
+      price: 95.30,
+      unit: 'Saca 60kg',
+      stock: 1500,
+      description: 'Milho em grão seco, proteína 9%, umidade 13%, impurezas 1%. Ideal para ração animal e processamento.',
+      image: '/images/milho.svg',
+      location: 'Primavera do Leste - MT',
+      seller: 'Produtores MT Ltda',
+      rating: 4.7,
+      reviews: 234,
+      certification: 'Certificado de Origem',
+      delivery: 'Entrega em 24h'
+    },
+    {
+      id: 8,
+      name: 'Café Arábica - Grão Especial',
+      category: 'Commodities',
+      price: 1250.00,
+      unit: 'Saca 60kg',
+      stock: 300,
+      description: 'Café arábica grão especial, altitude 1200m, torra média, acidez cítrica, corpo encorpado.',
+      image: '/images/logo.svg',
+      location: 'Machado - MG',
+      seller: 'Café Premium MG Ltda',
+      rating: 4.9,
+      reviews: 89,
+      certification: 'Certificado de Origem',
+      delivery: 'Entrega em 48h'
     }
   ];
 
