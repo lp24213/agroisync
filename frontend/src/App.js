@@ -23,53 +23,7 @@ import Termos from './pages/Termos';
 import Privacidade from './pages/Privacidade';
 import LGPD from './pages/LGPD';
 
-// Serviços de Segurança
-import securityService from './services/securityService';
-import advancedSecurityService from './services/advancedSecurityService';
-
-// Inicializar serviços de segurança
-securityService.initSecurity();
-advancedSecurityService.initAdvancedSecurity();
-
 function App() {
-  // Verificar ambiente de segurança
-  React.useEffect(() => {
-    // Log de inicialização segura
-    console.log('🔒 AGROSYNC - Sistema de Segurança Ativado');
-    console.log('🛡️ AGROSYNC - Segurança Avançada Ativada');
-
-    // Verificar integridade do ambiente
-    try {
-      securityService.validateEnvironment();
-      advancedSecurityService.validateSecurityEnvironment();
-      console.log('✅ Ambiente validado com sucesso');
-    } catch (error) {
-      console.error('❌ Erro de validação de ambiente:', error);
-      // Em produção, redirecionar para página de erro
-      if (process.env.NODE_ENV === 'production') {
-        window.location.href = '/security-error';
-      }
-    }
-
-    // Monitor de segurança contínuo
-    const securityInterval = setInterval(() => {
-      const report = securityService.getSecurityReport();
-      const advancedReport = advancedSecurityService.getSecurityReport();
-      
-      if (report.metrics.emergencyMode) {
-        console.warn('🚨 MODO DE EMERGÊNCIA ATIVADO');
-        // Implementar ações de emergência
-      }
-      
-      if (advancedReport.threatLevel === 'HIGH' || advancedReport.threatLevel === 'CRITICAL') {
-        console.warn('🚨 NÍVEL DE AMEAÇA ALTO:', advancedReport.threatLevel);
-        // Ativar proteções adicionais
-      }
-    }, 30000); // A cada 30 segundos
-
-    return () => clearInterval(securityInterval);
-  }, []);
-
   return (
     <ThemeProvider>
       <AuthProvider>

@@ -91,7 +91,9 @@ const Layout = ({ children }) => {
           </motion.div>
 
           {/* Widget de Clima Global - SEMPRE VISÍVEL */}
-          <GlobalWeatherWidget />
+          <div className="fixed top-20 right-8 z-50">
+            <GlobalWeatherWidget />
+          </div>
         </div>
       </div>
     </>
