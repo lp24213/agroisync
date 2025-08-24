@@ -228,6 +228,24 @@ html {
 .stagger-children > *:nth-child(5) { animation-delay: 0.5s; }
 .stagger-children > *:nth-child(6) { animation-delay: 0.6s; }
 
+/* ===== ANIMAÇÕES DE TICKER ===== */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll {
+  animation: scroll 30s linear infinite;
+}
+
+.animate-scroll:hover {
+  animation-play-state: paused;
+}
+
 /* ===== RESPONSIVIDADE ===== */
 @media (max-width: 768px) {
   .card {
@@ -243,5 +261,9 @@ html {
   .modal-content {
     margin: 16px;
     padding: 16px;
+  }
+  
+  .animate-scroll {
+    animation-duration: 45s;
   }
 }

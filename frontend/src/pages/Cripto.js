@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
+import CryptoTicker from '../components/crypto/CryptoTicker';
+import CryptoChart from '../components/crypto/CryptoChart';
 
 const Cripto = () => {
   const [walletAddress, setWalletAddress] = useState('');
   const [isConnected, setIsConnected] = useState(false);
   const [balance, setBalance] = useState('0');
   const [loading, setLoading] = useState(false);
-
-  // Endereço público especificado
-  const PUBLIC_ADDRESS = '0x5Ea5C5970e8AE23A5336d631707CF31C5916E8b1';
 
   const connectWallet = async () => {
     setLoading(true);
@@ -42,10 +41,7 @@ const Cripto = () => {
     setBalance('0');
   };
 
-  const copyAddress = () => {
-    navigator.clipboard.writeText(PUBLIC_ADDRESS);
-    alert('Endereço copiado para a área de transferência!');
-  };
+
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -59,6 +55,19 @@ const Cripto = () => {
             Plataforma avançada de finanças descentralizadas integrando Metamask, 
             Stripe e soluções Web3 para o agronegócio.
           </p>
+        </div>
+      </section>
+
+      {/* Cryptocurrency Ticker */}
+      <CryptoTicker />
+
+      {/* Cryptocurrency Chart Section */}
+      <section className="py-20 px-4 bg-black">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-4xl font-bold text-center mb-16 text-white">
+            Dashboard de Criptomoedas
+          </h2>
+          <CryptoChart />
         </div>
       </section>
 
@@ -93,7 +102,9 @@ const Cripto = () => {
                 <div className="flex items-center justify-between p-4 bg-gray-700 rounded-lg">
                   <div>
                     <p className="text-sm text-gray-400">Carteira Conectada</p>
-                    <p className="text-white font-mono text-sm">{walletAddress}</p>
+                    <p className="text-white font-mono text-sm">
+                      {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+                    </p>
                   </div>
                   <div className="text-right">
                     <p className="text-sm text-gray-400">Balance</p>
@@ -167,31 +178,7 @@ const Cripto = () => {
         </div>
       </section>
 
-      {/* Public Address Section */}
-      <section className="py-20 px-4 bg-gray-900">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-8 text-white">
-            Endereço Público da Plataforma
-          </h2>
-          <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
-            <p className="text-sm text-gray-400 mb-2">Endereço Ethereum</p>
-            <div className="flex items-center justify-center space-x-4">
-              <code className="text-white font-mono text-lg break-all">
-                {PUBLIC_ADDRESS}
-              </code>
-              <button
-                onClick={copyAddress}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300"
-              >
-                Copiar
-              </button>
-            </div>
-            <p className="text-gray-400 text-sm mt-4">
-              Este endereço é usado para transações e contratos inteligentes da plataforma
-            </p>
-          </div>
-        </div>
-      </section>
+
 
       {/* Stripe Integration Section */}
       <section className="py-20 px-4 bg-black">
