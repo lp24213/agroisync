@@ -107,6 +107,11 @@ const freightSchema = new mongoose.Schema({
       trim: true
     }
   },
+  ownerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   status: {
     type: String,
     enum: ['available', 'in_negotiation', 'assigned', 'in_transit', 'delivered', 'cancelled'],

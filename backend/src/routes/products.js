@@ -93,11 +93,12 @@ router.post('/', async (req, res) => {
       quality,
       seller,
       location,
-      images
+      images,
+      sellerId
     } = req.body;
     
     // Validate required fields
-    if (!name || !type || !price || !minimumQuantity || !description || !seller || !location) {
+    if (!name || !type || !price || !minimumQuantity || !description || !seller || !location || !sellerId) {
       return res.status(400).json({
         success: false,
         error: 'Todos os campos obrigatórios devem ser preenchidos'
@@ -129,7 +130,8 @@ router.post('/', async (req, res) => {
       quality: quality || {},
       seller,
       location,
-      images: images || []
+      images: images || [],
+      sellerId
     });
     
     const savedProduct = await product.save();

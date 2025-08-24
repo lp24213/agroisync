@@ -7,11 +7,7 @@ import {
   Users, Package, Truck, Coins, BarChart3,
   CheckCircle, Star, Award, Target, Lightbulb
 } from 'lucide-react';
-import Navbar from '../components/Navbar';
-
-import GlobalTicker from '../components/GlobalTicker';
 import WeatherWidget from '../components/WeatherWidget';
-import Chatbot from '../components/Chatbot';
 
 const Home = () => {
   const { isDark } = useTheme();
@@ -401,7 +397,7 @@ const Home = () => {
       
 
       {/* Chatbot */}
-      <Chatbot />
+      {/* Chatbot is now in Layout.js */}
     </div>
   );
 };

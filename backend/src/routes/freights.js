@@ -115,11 +115,12 @@ router.post('/', async (req, res) => {
       truckType,
       freightValue,
       deliveryTime,
-      carrier
+      carrier,
+      ownerId
     } = req.body;
     
     // Validate required fields
-    if (!product || !quantity || !origin || !destination || !truckType || !freightValue || !deliveryTime || !carrier) {
+    if (!product || !quantity || !origin || !destination || !truckType || !freightValue || !deliveryTime || !carrier || !ownerId) {
       return res.status(400).json({
         success: false,
         error: 'Todos os campos obrigatórios devem ser preenchidos'
@@ -163,7 +164,8 @@ router.post('/', async (req, res) => {
       truckType,
       freightValue: parseFloat(freightValue),
       deliveryTime: parseInt(deliveryTime),
-      carrier
+      carrier,
+      ownerId
     });
     
     const savedFreight = await freight.save();

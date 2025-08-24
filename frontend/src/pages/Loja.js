@@ -5,8 +5,6 @@ import {
   Search, Filter, MapPin, Star, ShoppingCart, Heart, Eye,
   Truck, Package, Leaf, Wrench, User, Circle, DollarSign, Plus
 } from 'lucide-react';
-import GlobalTicker from '../components/GlobalTicker';
-import Navbar from '../components/Navbar';
 import { productService } from '../services/productService';
 
 const Loja = () => {
@@ -182,9 +180,6 @@ const Loja = () => {
 
   return (
     <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300`}>
-      <GlobalTicker />
-      <Navbar />
-      
       {/* Header Section */}
       <section className="relative pt-40 pb-20 px-4 overflow-hidden">
         {/* Background */}

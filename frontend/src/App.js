@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { AuthProvider } from './contexts/AuthContext';
 import Layout from './components/layout/Layout';
 import Home from './pages/Home';
 import Sobre from './pages/Sobre';
@@ -63,23 +64,25 @@ function App() {
 
   return (
     <ThemeProvider>
-      <Router>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/sobre" element={<Sobre />} />
-            <Route path="/cotacao" element={<Cotacao />} />
-            <Route path="/loja" element={<Loja />} />
-            <Route path="/agroconecta" element={<AgroConecta />} />
-            <Route path="/cripto" element={<Cripto />} />
-            <Route path="/cadastro" element={<Cadastro />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/planos" element={<Planos />} />
-            <Route path="/payment-success" element={<PaymentSuccess />} />
-            <Route path="/contato" element={<Contato />} />
-          </Routes>
-        </Layout>
-      </Router>
+      <AuthProvider>
+        <Router>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/sobre" element={<Sobre />} />
+              <Route path="/cotacao" element={<Cotacao />} />
+              <Route path="/loja" element={<Loja />} />
+              <Route path="/agroconecta" element={<AgroConecta />} />
+              <Route path="/cripto" element={<Cripto />} />
+              <Route path="/cadastro" element={<Cadastro />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/planos" element={<Planos />} />
+              <Route path="/payment-success" element={<PaymentSuccess />} />
+              <Route path="/contato" element={<Contato />} />
+            </Routes>
+          </Layout>
+        </Router>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

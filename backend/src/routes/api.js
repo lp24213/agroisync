@@ -1,17 +1,19 @@
 import express, { Router } from 'express';
 import productRoutes from './products.js';
 import freightRoutes from './freights.js';
+import authRoutes from './auth.js';
 
-const router: Router = express.Router();
+const router = Router();
 
 // API info endpoint
-router.get('/', (_req, res) => {
+router.get('/', (req, res) => {
   res.json({
     message: 'AGROISYNC API',
     version: '2.3.1',
     endpoints: {
       health: '/health',
       api: '/api',
+      auth: '/api/auth',
       products: '/api/products',
       freights: '/api/freights',
       blockchain: '/api/blockchain',
@@ -20,6 +22,9 @@ router.get('/', (_req, res) => {
   });
 });
 
+// Auth routes
+router.use('/auth', authRoutes);
+
 // Product routes
 router.use('/products', productRoutes);
 
@@ -27,7 +32,7 @@ router.use('/products', productRoutes);
 router.use('/freights', freightRoutes);
 
 // Blockchain endpoint
-router.get('/blockchain', (_req, res) => {
+router.get('/blockchain', (req, res) => {
   res.json({
     message: 'Blockchain services available',
     networks: ['solana', 'ethereum', 'polygon'],
@@ -36,7 +41,7 @@ router.get('/blockchain', (_req, res) => {
 });
 
 // Agriculture endpoint
-router.get('/agriculture', (_req, res) => {
+router.get('/agriculture', (req, res) => {
   res.json({
     message: 'Agriculture services available',
     services: ['crop-monitoring', 'weather-data', 'market-prices'],

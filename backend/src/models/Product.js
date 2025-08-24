@@ -70,6 +70,11 @@ const productSchema = new mongoose.Schema({
       trim: true
     }
   },
+  sellerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   location: {
     city: {
       type: String,

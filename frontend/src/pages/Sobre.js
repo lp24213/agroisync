@@ -7,11 +7,7 @@ import {
   TrendingUp, Shield, Lightbulb, CheckCircle,
   ArrowRight, Star, MapPin, Phone, Mail
 } from 'lucide-react';
-import Navbar from '../components/Navbar';
-
-import GlobalTicker from '../components/GlobalTicker';
 import WeatherWidget from '../components/WeatherWidget';
-import Chatbot from '../components/Chatbot';
 
 const Sobre = () => {
   const { isDark } = useTheme();
@@ -106,11 +102,7 @@ const Sobre = () => {
     <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}>
       
       {/* Global Ticker */}
-      <GlobalTicker />
-      
       {/* Navbar */}
-      <Navbar />
-
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 overflow-hidden">
         <div className="absolute inset-0">
@@ -401,7 +393,7 @@ const Sobre = () => {
       
 
       {/* Chatbot */}
-      <Chatbot />
+      {/* WeatherWidget */}
     </div>
   );
 };

@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import cookieParser from 'cookie-parser';
 
 // Import MongoDB connection
 import { connectMongoDB } from './config/mongodb.js';
@@ -20,6 +21,9 @@ app.use(cors({
   origin: process.env.CORS_ORIGIN || 'https://your-domain.amplifyapp.com',
   credentials: true
 }));
+
+// Cookie parser middleware
+app.use(cookieParser());
 
 // Rate limiting
 const limiter = rateLimit({
@@ -52,7 +56,7 @@ app.use('/health', healthRoutes);
 app.use('/api', apiRoutes);
 
 // Health check endpoint
-app.get('/', (_req, res) => {
+app.get('/', (req, res) => {
   res.json({ 
     status: 'ok', 
     timestamp: new Date().toISOString(),
@@ -63,12 +67,12 @@ app.get('/', (_req, res) => {
 });
 
 // 404 handler
-app.use('*', (_req, res) => {
+app.use('*', (req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
 // Error handler
-app.use((err, _req, res, _next) => {
+app.use((err, req, res, next) => {
   console.error('Error:', err);
   res.status(500).json({ error: 'Internal server error' });
 });

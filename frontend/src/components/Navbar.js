@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { 
   Menu, X, Globe, Sun, Moon, ChevronDown, User, 
@@ -10,11 +11,12 @@ import {
 
 const Navbar = () => {
   const { isDark, toggleTheme } = useTheme();
+  const { user, logout } = useAuth();
   const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [showLanguageMenu, setShowLanguageMenu] = useState(false);
-  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   const languages = [
     { code: 'pt', name: 'Português', flag: '🇧🇷' },
@@ -32,10 +34,7 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
-    setShowLanguageMenu(false);
-  };
+  const currentLanguage = languages.find(lang => lang.code === i18n.language);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -44,8 +43,6 @@ const Navbar = () => {
   const closeMenu = () => {
     setIsOpen(false);
   };
-
-  const currentLanguage = languages.find(lang => lang.code === i18n.language);
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -109,32 +106,33 @@ const Navbar = () => {
             {/* Language Selector */}
             <div className="relative">
               <button
-                onClick={() => setShowLanguageMenu(!showLanguageMenu)}
+                onClick={() => setIsLanguageOpen(!isLanguageOpen)}
                 className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
               >
                 <Globe className="w-5 h-5" />
                 <span className="text-sm">{currentLanguage?.flag}</span>
-                <ChevronDown className="w-4 h-4" />
               </button>
 
+              {/* Language Dropdown */}
               <AnimatePresence>
-                {showLanguageMenu && (
+                {isLanguageOpen && (
                   <motion.div
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2"
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50"
                   >
-                    {languages.map((language) => (
+                    {languages.map((lang) => (
                       <button
-                        key={language.code}
-                        onClick={() => changeLanguage(language.code)}
-                        className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 ${
-                          i18n.language === language.code ? 'bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400' : ''
-                        }`}
+                        key={lang.code}
+                        onClick={() => {
+                          i18n.changeLanguage(lang.code);
+                          setIsLanguageOpen(false);
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 flex items-center space-x-3"
                       >
-                        <span className="mr-2">{language.flag}</span>
-                        {language.name}
+                        <span>{lang.flag}</span>
+                        <span>{lang.name}</span>
                       </button>
                     ))}
                   </motion.div>
@@ -150,57 +148,63 @@ const Navbar = () => {
               {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
 
-            {/* User Menu */}
-            <div className="relative">
-              <button
-                onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
-              >
-                <User className="w-5 h-5" />
-                <ChevronDown className="w-4 h-4" />
-              </button>
+            {/* User Menu or Login/Register */}
+            {user ? (
+              <div className="relative">
+                <button
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+                >
+                  <User className="w-5 h-5" />
+                  <span className="text-sm font-medium">{user.name}</span>
+                </button>
 
-              <AnimatePresence>
-                {showUserMenu && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2"
-                  >
-                    <a href="/perfil" className="flex items-center px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
-                      <User className="w-4 h-4 mr-2" />
-                      {t('common.profile')}
-                    </a>
-                    <a href="/configuracoes" className="flex items-center px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
-                      <Settings className="w-4 h-4 mr-2" />
-                      {t('common.settings')}
-                    </a>
-                    <hr className="my-2 border-gray-200 dark:border-gray-700" />
-                    <button className="w-full text-left flex items-center px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
-                      <LogOut className="w-4 h-4 mr-2" />
-                      {t('common.logout')}
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {/* CTA Buttons */}
-            <div className="flex items-center space-x-3">
-              <a
-                href="/login"
-                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
-              >
-                {t('nav.login')}
-              </a>
-              <a
-                href="/cadastro"
-                className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors duration-200"
-              >
-                {t('nav.register')}
-              </a>
-            </div>
+                {/* User Dropdown */}
+                <AnimatePresence>
+                  {isUserMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50"
+                    >
+                      <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
+                        <p className="text-sm font-medium text-gray-900 dark:text-white">{user.name}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
+                      </div>
+                      
+                      <div className="py-1">
+                        <button
+                          onClick={() => {
+                            setIsUserMenuOpen(false);
+                            logout();
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200 flex items-center space-x-2"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          <span>Sair</span>
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-3">
+                <a
+                  href="/login"
+                  className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
+                >
+                  {t('nav.login')}
+                </a>
+                <a
+                  href="/cadastro"
+                  className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors duration-200"
+                >
+                  {t('nav.register')}
+                </a>
+              </div>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -286,18 +290,41 @@ const Navbar = () => {
 
               {/* Mobile CTA Buttons */}
               <div className="flex flex-col space-y-3 pt-4">
-                <a
-                  href="/login"
-                  className="w-full px-4 py-3 text-center text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200"
-                >
-                  {t('nav.login')}
-                </a>
-                <a
-                  href="/cadastro"
-                  className="w-full px-4 py-3 bg-green-600 text-white text-center rounded-lg hover:bg-green-700 transition-colors duration-200"
-                >
-                  {t('nav.register')}
-                </a>
+                {user ? (
+                  <>
+                    <div className="px-3 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">{user.name}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setIsOpen(false);
+                        logout();
+                      }}
+                      className="w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200 flex items-center justify-center space-x-2"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Sair</span>
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <a
+                      href="/login"
+                      onClick={() => setIsOpen(false)}
+                      className="w-full px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 text-center"
+                    >
+                      {t('nav.login')}
+                    </a>
+                    <a
+                      href="/cadastro"
+                      onClick={() => setIsOpen(false)}
+                      className="w-full px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors duration-200 text-center"
+                    >
+                      {t('nav.register')}
+                    </a>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>
