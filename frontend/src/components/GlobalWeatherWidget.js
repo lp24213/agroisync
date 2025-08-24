@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 import { MapPin, Thermometer, Droplets, Wind, Sun, Moon } from 'lucide-react';
@@ -9,6 +9,9 @@ const GlobalWeatherWidget = () => {
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const dragRef = useRef(null);
 
   useEffect(() => {
     loadWeatherData();
@@ -57,13 +60,89 @@ const GlobalWeatherWidget = () => {
     });
   };
 
+  // Funções de drag-and-drop
+  const handleMouseDown = (e) => {
+    if (e.target.closest('button') || e.target.closest('input')) return;
+    
+    setIsDragging(true);
+    const startX = e.clientX - position.x;
+    const startY = e.clientY - position.y;
+    
+    const handleMouseMove = (e) => {
+      if (isDragging) {
+        const newX = e.clientX - startX;
+        const newY = e.clientY - startY;
+        
+        // Limitar movimento dentro da tela
+        const maxX = window.innerWidth - 160;
+        const maxY = window.innerHeight - 120;
+        
+        setPosition({
+          x: Math.max(0, Math.min(newX, maxX)),
+          y: Math.max(0, Math.min(newY, maxY))
+        });
+      }
+    };
+    
+    const handleMouseUp = () => {
+      setIsDragging(false);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+    
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  };
+
+  const handleTouchStart = (e) => {
+    if (e.target.closest('button') || e.target.closest('input')) return;
+    
+    const touch = e.touches[0];
+    const startX = touch.clientX - position.x;
+    const startY = touch.clientY - position.y;
+    
+    const handleTouchMove = (e) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      const newX = touch.clientX - startX;
+      const newY = touch.clientY - startY;
+      
+      // Limitar movimento dentro da tela
+      const maxX = window.innerWidth - 160;
+      const maxY = window.innerHeight - 120;
+      
+      setPosition({
+        x: Math.max(0, Math.min(newX, maxX)),
+        y: Math.max(0, Math.min(newY, maxY))
+      });
+    };
+    
+    const handleTouchEnd = () => {
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+    
+    document.addEventListener('touchmove', handleTouchMove);
+    document.addEventListener('touchend', handleTouchEnd);
+  };
+
   return (
     <motion.div
+      ref={dragRef}
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
-      className={`relative z-50 transition-all duration-300 ${
+      style={{
+        position: 'fixed',
+        top: position.y,
+        left: position.x,
+        zIndex: 50,
+        cursor: isDragging ? 'grabbing' : 'grab'
+      }}
+      className={`transition-all duration-300 ${
         expanded ? 'w-80' : 'w-40'
       }`}
+      onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
     >
       {/* Widget Compacto */}
       <motion.div
