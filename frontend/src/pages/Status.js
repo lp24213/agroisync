@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { 
   CheckCircle, AlertCircle, XCircle, Clock, 
   Server, Database, Globe, Shield, Activity,
-  Wifi, WifiOff, Settings, Zap, Cpu, Lock
+  Wifi, WifiOff, Settings, Zap, Cpu, Lock, Store, Truck
 } from 'lucide-react';
 
 const Status = () => {
@@ -17,6 +17,38 @@ const Status = () => {
   // Dados simulados de status dos serviços com atualizações em tempo real
   useEffect(() => {
     const initialServices = [
+      {
+        id: 'loja',
+        name: 'Loja / Marketplace',
+        description: 'Plataforma de compra e venda de produtos agropecuários',
+        status: 'operational',
+        uptime: '99.95%',
+        responseTime: '120ms',
+        lastIncident: null,
+        icon: <Store className="w-6 h-6" />,
+        details: {
+          activeUsers: '12,847',
+          products: '45,623',
+          transactions: '89,234',
+          revenue: 'R$ 2.4M'
+        }
+      },
+      {
+        id: 'agroconecta',
+        name: 'AgroConecta (Fretes)',
+        description: 'Sistema de fretes e logística agropecuária',
+        status: 'operational',
+        uptime: '99.97%',
+        responseTime: '95ms',
+        lastIncident: null,
+        icon: <Truck className="w-6 h-6" />,
+        details: {
+          activeFreights: '3,456',
+          transportCompanies: '1,234',
+          completedDeliveries: '67,890',
+          avgResponseTime: '2.3h'
+        }
+      },
       {
         id: 'blockchain',
         name: 'Blockchain Solana',
@@ -31,22 +63,6 @@ const Status = () => {
           validators: '1,747',
           tps: '65,000',
           blockHeight: '234,567,890'
-        }
-      },
-      {
-        id: 'marketplace',
-        name: 'Marketplace',
-        description: 'Plataforma de compra e venda de produtos agropecuários',
-        status: 'operational',
-        uptime: '99.95%',
-        responseTime: '120ms',
-        lastIncident: null,
-        icon: <Globe className="w-6 h-6" />,
-        details: {
-          activeUsers: '12,847',
-          products: '45,623',
-          transactions: '89,234',
-          revenue: 'R$ 2.4M'
         }
       },
       {
@@ -66,8 +82,8 @@ const Status = () => {
         }
       },
       {
-        id: 'api',
-        name: 'API REST',
+        id: 'apis',
+        name: 'APIs (AWS Lambda + API Gateway)',
         description: 'Interface de programação para integrações',
         status: 'operational',
         uptime: '99.97%',
@@ -83,7 +99,7 @@ const Status = () => {
       },
       {
         id: 'database',
-        name: 'MongoDB',
+        name: 'Banco de Dados MongoDB',
         description: 'Banco de dados NoSQL para armazenamento flexível',
         status: 'operational',
         uptime: '99.96%',
@@ -99,7 +115,7 @@ const Status = () => {
       },
       {
         id: 'auth',
-        name: 'Firebase Auth',
+        name: 'Autenticação AWS Cognito',
         description: 'Sistema de autenticação e autorização',
         status: 'operational',
         uptime: '99.94%',

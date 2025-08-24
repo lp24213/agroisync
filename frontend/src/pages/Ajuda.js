@@ -6,7 +6,8 @@ import {
   BookOpen, Video, FileText, MessageCircle, 
   Phone, Mail, Clock, Users, Shield, Zap,
   Truck, Coins, ShoppingCart, Settings,
-  HelpCircle, Star, Award, Bookmark, Ticket
+  HelpCircle, Star, Award, Bookmark, Ticket,
+  UserPlus, Store, Database, Lock, Wallet
 } from 'lucide-react';
 
 const Ajuda = () => {
@@ -18,179 +19,247 @@ const Ajuda = () => {
     {
       id: 'primeiros-passos',
       title: 'Primeiros Passos',
-      icon: <BookOpen className="w-6 h-6" />,
+      icon: <UserPlus className="w-6 h-6" />,
       description: 'Guia completo para começar a usar a plataforma Agroisync',
       items: [
         {
           title: 'Criar Conta',
-          description: 'Aprenda a criar sua conta e configurar seu perfil de empresa',
-          duration: '5 min',
+          description: 'Crie sua conta pessoal ou empresarial na plataforma',
+          duration: '3 min',
           type: 'video',
           link: '#',
           steps: [
             'Acesse a página de cadastro',
-            'Preencha seus dados pessoais e da empresa',
-            'Verifique seu email',
-            'Configure seu perfil completo'
+            'Escolha entre conta pessoal ou empresarial',
+            'Preencha seus dados básicos',
+            'Verifique seu email para ativação'
           ]
         },
         {
-          title: 'Conectar Carteira',
-          description: 'Conecte sua carteira digital para transações seguras',
+          title: 'Completar Cadastro',
+          description: 'Configure seu perfil completo com dados pessoais, empresa, produtos e fretes',
           duration: '8 min',
           type: 'video',
           link: '#',
           steps: [
-            'Escolha sua carteira (MetaMask, Phantom, etc.)',
-            'Conecte a carteira à plataforma',
-            'Autorize as transações necessárias',
-            'Configure preferências de segurança'
+            'Adicione informações pessoais completas',
+            'Configure dados da empresa (se aplicável)',
+            'Cadastre produtos da sua loja',
+            'Configure ofertas de frete no AgroConecta'
           ]
         },
         {
-          title: 'Usar Marketplace',
-          description: 'Navegue e compre produtos no marketplace agropecuário',
-          duration: '6 min',
+          title: 'Navegar na Loja e AgroConecta',
+          description: 'Aprenda a usar as principais funcionalidades da plataforma',
+          duration: '5 min',
           type: 'video',
           link: '#',
           steps: [
-            'Explore categorias de produtos',
-            'Filtre por localização e preço',
-            'Compare opções disponíveis',
-            'Realize sua primeira compra'
-          ]
-        },
-        {
-          title: 'AgroConecta - Fretes',
-          description: 'Encontre e ofereça serviços de transporte de carga',
-          duration: '10 min',
-          type: 'video',
-          link: '#',
-          steps: [
-            'Registre suas necessidades de frete',
-            'Configure rotas e prazos',
-            'Receba propostas de transportadoras',
-            'Selecione a melhor opção'
+            'Explore o marketplace de produtos',
+            'Navegue pelo sistema de fretes',
+            'Configure filtros e preferências',
+            'Teste as funcionalidades básicas'
           ]
         }
       ]
     },
     {
-      id: 'nft-staking',
-      title: 'NFTs e Staking',
-      icon: <Coins className="w-6 h-6" />,
-      description: 'Entenda como funcionam os NFTs e o sistema de staking',
+      id: 'loja',
+      title: 'Loja (Marketplace de Produtos)',
+      icon: <Store className="w-6 h-6" />,
+      description: 'Como cadastrar e gerenciar produtos no marketplace',
       items: [
         {
-          title: 'Mintagem de NFTs',
-          description: 'Crie NFTs únicos para seus produtos e serviços',
+          title: 'Cadastrar Produtos',
+          description: 'Aprenda a cadastrar produtos com todas as informações necessárias',
+          duration: '6 min',
+          type: 'video',
+          link: '#',
+          steps: [
+            'Nome e descrição do produto',
+            'Especificações técnicas detalhadas',
+            'Upload de imagens de qualidade',
+            'Definir preço e quantidade disponível'
+          ]
+        },
+        {
+          title: 'Dados Públicos vs Privados',
+          description: 'Entenda o que é visível para todos e o que é confidencial',
+          duration: '4 min',
+          type: 'video',
+          link: '#',
+          steps: [
+            'Dados públicos: nome, preço, descrição, imagens',
+            'Dados privados: NF, contatos diretos, custos internos',
+            'Configurar visibilidade de cada campo',
+            'Gerenciar permissões de acesso'
+          ]
+        },
+        {
+          title: 'Anunciar e Comprar',
+          description: 'Como criar anúncios atrativos e realizar compras seguras',
           duration: '7 min',
           type: 'video',
           link: '#',
           steps: [
-            'Prepare os metadados do seu produto',
-            'Configure as características únicas',
-            'Escolha a blockchain (Solana)',
-            'Mint seu primeiro NFT'
+            'Criar anúncios com palavras-chave',
+            'Configurar categorias e tags',
+            'Processo de compra passo a passo',
+            'Sistema de avaliações e feedback'
           ]
-        },
+        }
+      ]
+    },
+    {
+      id: 'agroconecta',
+      title: 'AgroConecta (Fretes e Logística)',
+      icon: <Truck className="w-6 h-6" />,
+      description: 'Sistema completo de fretes e logística agropecuária',
+      items: [
         {
-          title: 'Sistema de Staking',
-          description: 'Aprenda a fazer staking e ganhar recompensas',
-          duration: '9 min',
+          title: 'Cadastrar Frete',
+          description: 'Como registrar suas necessidades de transporte',
+          duration: '8 min',
           type: 'video',
           link: '#',
           steps: [
-            'Entenda como funciona o staking',
-            'Escolha o período de lock',
-            'Configure suas recompensas',
-            'Monitore seu progresso'
+            'Peso e tipo da carga',
+            'Rota de origem e destino',
+            'Dados fiscais (NF)',
+            'Informações sigilosas e específicas'
           ]
         },
         {
-          title: 'Recompensas e Benefícios',
-          description: 'Descubra todas as vantagens do sistema de recompensas',
+          title: 'Visibilidade de Informações',
+          description: 'Controle o que é público e o que é privado',
           duration: '5 min',
           type: 'video',
           link: '#',
           steps: [
-            'Tipos de recompensas disponíveis',
-            'Como acumular pontos',
-            'Trocar por benefícios exclusivos',
-            'Programa de fidelidade'
+            'Informações públicas: rota geral, tipo de carga',
+            'Informações privadas: NF, contatos, preços',
+            'Configurar níveis de acesso',
+            'Gerenciar permissões por usuário'
           ]
         },
         {
-          title: 'Segurança dos NFTs',
-          description: 'Proteja seus NFTs e entenda as melhores práticas',
-          duration: '8 min',
+          title: 'Negociação entre Partes',
+          description: 'Como negociar entre anunciante e transportador',
+          duration: '6 min',
+          type: 'video',
+          link: '#',
+          steps: [
+            'Sistema de propostas',
+            'Chat interno para negociação',
+            'Contratos digitais',
+            'Acompanhamento de entrega'
+          ]
+        }
+      ]
+    },
+    {
+      id: 'cripto-nfts',
+      title: 'Cripto, NFTs e Staking',
+      icon: <Coins className="w-6 h-6" />,
+      description: 'Tecnologias blockchain para o agronegócio',
+      items: [
+        {
+          title: 'Conectar Carteira Solana',
+          description: 'Configure sua carteira digital para transações',
+          duration: '4 min',
+          type: 'video',
+          link: '#',
+          steps: [
+            'Instalar Phantom ou Solflare',
+            'Criar ou importar carteira',
+            'Conectar à plataforma Agroisync',
+            'Configurar permissões de transação'
+          ]
+        },
+        {
+          title: 'Mintagem de NFTs',
+          description: 'Crie NFTs únicos para seus produtos',
+          duration: '7 min',
+          type: 'video',
+          link: '#',
+          steps: [
+            'Preparar metadados do produto',
+            'Configurar características únicas',
+            'Escolher blockchain Solana',
+            'Mintar NFT com custos mínimos'
+          ]
+        },
+        {
+          title: 'Staking e Recompensas',
+          description: 'Sistema de recompensas por participação',
+          duration: '6 min',
+          type: 'video',
+          link: '#',
+          steps: [
+            'Como funciona o staking',
+            'Períodos de lock disponíveis',
+            'Configurar recompensas',
+            'Monitorar ganhos e progresso'
+          ]
+        },
+        {
+          title: 'Segurança e Boas Práticas',
+          description: 'Proteja seus ativos digitais',
+          duration: '5 min',
           type: 'video',
           link: '#',
           steps: [
             'Armazenamento seguro de chaves',
             'Verificação de contratos inteligentes',
             'Proteção contra fraudes',
-            'Backup e recuperação'
+            'Backup e recuperação de carteira'
           ]
         }
       ]
     },
     {
       id: 'pagamentos-seguranca',
-      title: 'Pagamentos e Segurança',
+      title: 'Pagamentos & Segurança',
       icon: <Shield className="w-6 h-6" />,
-      description: 'Informações sobre métodos de pagamento e segurança da plataforma',
+      description: 'Métodos de pagamento e proteção de dados',
       items: [
         {
-          title: 'Métodos de Pagamento',
-          description: 'Conheça todas as formas de pagamento aceitas',
+          title: 'Formas de Pagamento Aceitas',
+          description: 'Conheça todas as opções disponíveis',
+          duration: '4 min',
+          type: 'video',
+          link: '#',
+          steps: [
+            'PIX e transferências bancárias',
+            'Cartões de crédito e débito',
+            'Criptomoedas (Bitcoin, Ethereum, Solana)',
+            'Boleto bancário'
+          ]
+        },
+        {
+          title: 'Proteção de Dados (LGPD)',
+          description: 'Conformidade total com a legislação brasileira',
           duration: '6 min',
           type: 'video',
           link: '#',
           steps: [
-            'Cartões de crédito e débito',
-            'PIX e transferências bancárias',
-            'Criptomoedas (Bitcoin, Ethereum, Solana)',
-            'Carteiras digitais'
+            'Criptografia de dados em trânsito',
+            'Armazenamento seguro em MongoDB',
+            'Autenticação AWS Cognito',
+            'Seus direitos como usuário'
           ]
         },
         {
-          title: 'Boas Práticas de Segurança',
-          description: 'Mantenha sua conta e transações sempre seguras',
-          duration: '8 min',
-          type: 'video',
-          link: '#',
-          steps: [
-            'Senhas fortes e autenticação 2FA',
-            'Verificação de emails e transações',
-            'Proteção contra phishing',
-            'Monitoramento de atividades'
-          ]
-        },
-        {
-          title: 'Processo KYC',
-          description: 'Entenda o processo de verificação de identidade',
-          duration: '10 min',
-          type: 'video',
-          link: '#',
-          steps: [
-            'Documentos necessários',
-            'Processo de verificação',
-            'Tempo de aprovação',
-            'Manutenção da verificação'
-          ]
-        },
-        {
-          title: 'Proteção de Dados',
-          description: 'Como seus dados pessoais são protegidos',
+          title: 'Políticas de Sigilo',
+          description: 'Como suas informações são protegidas',
           duration: '5 min',
           type: 'video',
           link: '#',
           steps: [
-            'Criptografia de dados',
-            'Conformidade com LGPD',
-            'Política de privacidade',
-            'Seus direitos como usuário'
+            'Dados nunca compartilhados com terceiros',
+            'Controle total sobre visibilidade',
+            'Auditoria de acesso',
+            'Política de retenção de dados'
           ]
         }
       ]
@@ -199,25 +268,25 @@ const Ajuda = () => {
       id: 'chatbot-ia',
       title: 'Chatbot IA',
       icon: <MessageCircle className="w-6 h-6" />,
-      description: 'Aproveite ao máximo o assistente virtual inteligente',
+      description: 'Assistente virtual inteligente 24/7',
       items: [
         {
-          title: 'Funcionalidades de Voz',
-          description: 'Use comandos de voz para interagir com o chatbot',
-          duration: '4 min',
+          title: 'Ativar Funcionalidade de Voz',
+          description: 'Use comandos de voz para interagir',
+          duration: '3 min',
           type: 'video',
           link: '#',
           steps: [
-            'Ativar reconhecimento de voz',
-            'Comandos de voz disponíveis',
+            'Permitir acesso ao microfone',
             'Configurar idioma preferido',
+            'Testar comandos de voz',
             'Ajustar sensibilidade do microfone'
           ]
         },
         {
-          title: 'Processamento de Imagens',
-          description: 'Envie imagens para análise e identificação',
-          duration: '6 min',
+          title: 'Enviar Imagens para Análise',
+          description: 'Chatbot analisa imagens de produtos',
+          duration: '4 min',
           type: 'video',
           link: '#',
           steps: [
@@ -228,8 +297,8 @@ const Ajuda = () => {
           ]
         },
         {
-          title: 'Suporte Multilíngue',
-          description: 'Chatbot disponível em português, inglês, espanhol e chinês',
+          title: 'Uso Multilíngue',
+          description: 'Suporte em português, inglês, espanhol e chinês',
           duration: '3 min',
           type: 'video',
           link: '#',
@@ -239,18 +308,52 @@ const Ajuda = () => {
             'Idiomas específicos por região',
             'Personalização de respostas'
           ]
-        },
+        }
+      ]
+    },
+    {
+      id: 'planos-assinaturas',
+      title: 'Planos & Assinaturas',
+      icon: <Award className="w-6 h-6" />,
+      description: 'Diferenças entre planos e benefícios exclusivos',
+      items: [
         {
-          title: 'Integração com Produtos',
-          description: 'Como o chatbot pode ajudar com produtos e fretes',
-          duration: '7 min',
+          title: 'Plano Grátis vs AGROCONNECT+',
+          description: 'Compare as funcionalidades disponíveis',
+          duration: '5 min',
           type: 'video',
           link: '#',
           steps: [
-            'Busca inteligente de produtos',
-            'Recomendações personalizadas',
-            'Acompanhamento de pedidos',
-            'Suporte ao cliente 24/7'
+            'Funcionalidades do plano grátis',
+            'Benefícios exclusivos do AGROCONNECT+',
+            'Limitações de cada plano',
+            'Casos de uso recomendados'
+          ]
+        },
+        {
+          title: 'Benefícios Exclusivos',
+          description: 'Recursos premium disponíveis',
+          duration: '6 min',
+          type: 'video',
+          link: '#',
+          steps: [
+            'Mensageria privada entre usuários',
+            'Destaque na loja e busca',
+            'Frete premium com prioridade',
+            'Suporte técnico prioritário'
+          ]
+        },
+        {
+          title: 'Como Fazer Upgrade',
+          description: 'Processo para migrar para planos superiores',
+          duration: '4 min',
+          type: 'video',
+          link: '#',
+          steps: [
+            'Acessar página de planos',
+            'Comparar opções disponíveis',
+            'Escolher método de pagamento',
+            'Ativação imediata do plano'
           ]
         }
       ]
@@ -293,7 +396,7 @@ const Ajuda = () => {
             className="mb-8"
           >
             <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
-              Central de Ajuda
+              Central de Suporte
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Encontre respostas para todas as suas dúvidas sobre a plataforma Agroisync

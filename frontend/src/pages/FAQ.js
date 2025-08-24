@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { 
   ChevronDown, Search, HelpCircle, MessageCircle, 
   FileText, Phone, Mail, Globe, Clock,
-  Shield, Coins, Truck, ShoppingCart, Zap, Lock
+  Shield, Coins, Truck, ShoppingCart, Zap, Lock, Store, Award
 } from 'lucide-react';
 
 const FAQ = () => {
@@ -21,20 +21,16 @@ const FAQ = () => {
       icon: <HelpCircle className="w-5 h-5" />,
       items: [
         {
-          question: 'O que é Agroisync?',
-          answer: 'Agroisync é uma plataforma completa de agronegócio que conecta produtores, compradores e transportadores. Oferecemos marketplace de produtos agropecuários, sistema de fretes (AgroConecta), pagamentos em criptomoedas, NFTs e um chatbot IA inteligente para suporte 24/7.'
+          question: 'O que é a Agroisync?',
+          answer: 'Agroisync é uma plataforma completa de agronegócio que conecta produtores, compradores e transportadores. Oferecemos marketplace de produtos agropecuários, sistema de fretes (AgroConecta), pagamentos em criptomoedas, NFTs e um chatbot IA inteligente para suporte 24/7. Nossa missão é digitalizar e otimizar o agronegócio brasileiro.'
         },
         {
           question: 'Preciso pagar para usar a plataforma?',
-          answer: 'A plataforma oferece planos gratuitos e premium. O plano gratuito permite acesso básico ao marketplace e funcionalidades essenciais. Os planos premium (AGROCONNECT+ e AGROCONNECT PRO) oferecem recursos avançados como mensageria privada, analytics detalhados e suporte prioritário.'
+          answer: 'A plataforma oferece planos gratuitos e premium. O plano gratuito permite acesso básico ao marketplace e funcionalidades essenciais. Os planos premium (AGROCONNECT+ e AGROCONNECT PRO) oferecem recursos avançados como mensageria privada, analytics detalhados, destaque na loja e suporte prioritário.'
         },
         {
-          question: 'Como funciona o marketplace?',
-          answer: 'O marketplace funciona como uma vitrine digital onde produtores podem cadastrar produtos com fotos, especificações técnicas e preços. Compradores podem navegar por categorias, filtrar por localização e preço, e realizar compras seguras com diversos métodos de pagamento, incluindo criptomoedas.'
-        },
-        {
-          question: 'Os NFTs dão direito real a produtos?',
-          answer: 'Sim! Nossos NFTs são certificados digitais únicos que representam propriedade real sobre produtos físicos. Cada NFT contém metadados detalhados do produto, incluindo especificações técnicas, origem e histórico de propriedade, garantindo transparência e autenticidade.'
+          question: 'Como funciona o sistema de planos?',
+          answer: 'O sistema de planos é flexível e escalável. O plano gratuito é ideal para começar, com funcionalidades básicas. O AGROCONNECT+ oferece mensageria privada, destaque na loja e frete premium. O AGROCONNECT PRO inclui analytics avançados, API personalizada e suporte VIP. Você pode fazer upgrade a qualquer momento.'
         },
         {
           question: 'Como entrar em contato com suporte?',
@@ -43,46 +39,46 @@ const FAQ = () => {
       ]
     },
     {
-      id: 'marketplace',
-      title: 'Marketplace',
-      icon: <ShoppingCart className="w-5 h-5" />,
+      id: 'loja',
+      title: 'Loja (Marketplace)',
+      icon: <Store className="w-5 h-5" />,
       items: [
         {
-          question: 'Como cadastrar produtos no marketplace?',
+          question: 'Como cadastrar produtos na Loja?',
           answer: 'Para cadastrar produtos, você precisa ter uma conta verificada. Acesse "Minha Loja" e clique em "Adicionar Produto". Preencha todas as informações obrigatórias: nome, categoria, especificações técnicas, imagens, preço, quantidade e descrição detalhada. Produtos são aprovados em até 24h.'
         },
         {
-          question: 'Quais categorias de produtos são aceitas?',
-          answer: 'Aceitamos produtos agropecuários como grãos (soja, milho, trigo), máquinas e implementos agrícolas, insumos, animais, produtos orgânicos e derivados. Todos os produtos devem estar em conformidade com as regulamentações brasileiras e ter documentação adequada.'
+          question: 'Quais informações são privadas e quais são públicas?',
+          answer: 'Informações públicas incluem: nome do produto, preço, descrição básica, imagens e categoria. Informações privadas incluem: dados fiscais (NF), contatos diretos, custos internos, margens de lucro e informações específicas da empresa. Você controla a visibilidade de cada campo.'
         },
         {
-          question: 'Como funcionam os pagamentos?',
-          answer: 'Aceitamos múltiplos métodos: cartões de crédito/débito, PIX, transferências bancárias e criptomoedas (Bitcoin, Ethereum, Solana). Para criptomoedas, utilizamos contratos inteligentes na blockchain Solana para garantir transparência e segurança nas transações.'
+          question: 'Como funciona o processo de compra?',
+          answer: 'O processo de compra é simples e seguro. Navegue pelos produtos, use filtros para encontrar o que precisa, compare preços e especificações, adicione ao carrinho e finalize a compra. Aceitamos PIX, cartões, transferências e criptomoedas. Todas as transações são protegidas.'
         }
       ]
     },
     {
-      id: 'freight',
-      title: 'AgroConecta - Fretes',
+      id: 'agroconecta',
+      title: 'AgroConecta (Fretes)',
       icon: <Truck className="w-5 h-5" />,
       items: [
         {
-          question: 'Como registrar uma necessidade de frete?',
-          answer: 'Acesse a seção AgroConecta e clique em "Solicitar Frete". Preencha os campos obrigatórios: peso da carga, tipo de carga, origem, destino, prazo desejado e informações específicas. O sistema conectará você com transportadoras disponíveis na rota.'
+          question: 'Como cadastrar fretes no AgroConecta?',
+          answer: 'Acesse a seção AgroConecta e clique em "Solicitar Frete". Preencha os campos obrigatórios: peso da carga, tipo de carga, origem, destino, prazo desejado e informações específicas. Para transportadores, cadastre sua disponibilidade com rotas, capacidade e preços.'
         },
         {
-          question: 'Quais tipos de carga são aceitos?',
-          answer: 'Aceitamos todos os tipos de carga agropecuária: grãos a granel, produtos embalados, máquinas agrícolas, insumos químicos (com documentação adequada), animais vivos e produtos refrigerados. Cada tipo tem requisitos específicos de transporte e documentação.'
+          question: 'Quais informações são visíveis para todos?',
+          answer: 'Informações públicas incluem: rota geral (origem-destino), tipo de carga, peso aproximado e prazo desejado. Informações privadas incluem: dados fiscais (NF), contatos diretos, preços específicos e informações internas da empresa. Você controla o nível de detalhe.'
         },
         {
-          question: 'Como encontrar transportadoras confiáveis?',
-          answer: 'Nossa plataforma verifica todas as transportadoras cadastradas, incluindo documentação, seguro de carga e histórico de entregas. Você pode ver avaliações de outros usuários, tempo de resposta e preços competitivos. Recomendamos sempre verificar a documentação antes de fechar negócio.'
+          question: 'Como negociar entre anunciante e transportador?',
+          answer: 'O sistema oferece chat interno para negociação, sistema de propostas com preços e condições, contratos digitais para formalização e acompanhamento de entrega em tempo real. Todas as comunicações são seguras e auditáveis.'
         }
       ]
     },
     {
-      id: 'crypto',
-      title: 'Criptomoedas e NFTs',
+      id: 'cripto-nfts',
+      title: 'Cripto, NFTs e Staking',
       icon: <Coins className="w-5 h-5" />,
       items: [
         {
@@ -90,23 +86,23 @@ const FAQ = () => {
           answer: 'Aceitamos Bitcoin (BTC), Ethereum (ETH) e Solana (SOL) como principais moedas. Também aceitamos stablecoins como USDT e USDC para maior estabilidade de preço. Todas as transações são processadas na blockchain Solana para maior velocidade e menor custo.'
         },
         {
-          question: 'Como conectar minha carteira digital?',
-          answer: 'Suportamos as principais carteiras: MetaMask, Phantom, Solflare e WalletConnect. Clique em "Conectar Carteira" e escolha sua preferida. Autorize a conexão e configure as permissões necessárias. Suas chaves privadas nunca são acessadas pela plataforma.'
+          question: 'Como conectar minha carteira Solana?',
+          answer: 'Suportamos as principais carteiras: Phantom, Solflare e WalletConnect. Clique em "Conectar Carteira" e escolha sua preferida. Autorize a conexão e configure as permissões necessárias. Suas chaves privadas nunca são acessadas pela plataforma.'
         },
         {
-          question: 'Os NFTs são seguros?',
-          answer: 'Sim! Nossos NFTs são construídos na blockchain Solana com contratos inteligentes auditados. Cada NFT é único, imutável e contém metadados criptografados. Utilizamos padrões ERC-721 e SPL para máxima compatibilidade e segurança.'
+          question: 'NFTs representam produtos reais?',
+          answer: 'Sim! Nossos NFTs são certificados digitais únicos que representam propriedade real sobre produtos físicos. Cada NFT contém metadados detalhados do produto, incluindo especificações técnicas, origem e histórico de propriedade, garantindo transparência e autenticidade.'
         }
       ]
     },
     {
-      id: 'security',
+      id: 'seguranca',
       title: 'Segurança e Privacidade',
       icon: <Shield className="w-5 h-5" />,
       items: [
         {
           question: 'Como meus dados são protegidos?',
-          answer: 'Seguimos rigorosamente a LGPD (Lei Geral de Proteção de Dados). Todos os dados são criptografados em trânsito e em repouso. Utilizamos autenticação de dois fatores (2FA), monitoramento de atividades suspeitas e backups seguros. Seus dados nunca são compartilhados com terceiros sem consentimento.'
+          answer: 'Seguimos rigorosamente a LGPD (Lei Geral de Proteção de Dados). Todos os dados são criptografados em trânsito e em repouso. Utilizamos autenticação AWS Cognito, monitoramento de atividades suspeitas e backups seguros. Seus dados nunca são compartilhados com terceiros sem consentimento.'
         },
         {
           question: 'A plataforma é segura para transações?',
@@ -119,21 +115,40 @@ const FAQ = () => {
       ]
     },
     {
-      id: 'technical',
-      title: 'Suporte Técnico',
+      id: 'tecnologia',
+      title: 'Tecnologia e Infraestrutura',
       icon: <Zap className="w-5 h-5" />,
       items: [
         {
-          question: 'O chatbot IA funciona 24/7?',
-          answer: 'Sim! Nosso chatbot IA está disponível 24 horas por dia, 7 dias por semana. Ele pode responder perguntas frequentes, ajudar com navegação na plataforma, processar imagens de produtos e oferecer suporte em português, inglês, espanhol e chinês.'
+          question: 'Qual tecnologia blockchain vocês usam?',
+          answer: 'Utilizamos a blockchain Solana por sua alta velocidade (65.000 TPS), baixos custos de transação e escalabilidade. Nossos contratos inteligentes são auditados e seguem padrões de segurança internacionais. A integração é feita via APIs seguras.'
         },
         {
-          question: 'Como reportar um problema técnico?',
-          answer: 'Para problemas técnicos, use o botão "Abrir Ticket de Suporte" na página de Ajuda. Descreva detalhadamente o problema, inclua screenshots se possível e especifique seu navegador e sistema operacional. Nossa equipe técnica responderá em até 4 horas.'
+          question: 'Como funciona o chatbot IA?',
+          answer: 'Nosso chatbot IA utiliza tecnologia de linguagem natural avançada, processamento de imagens e reconhecimento de voz. Ele pode responder perguntas frequentes, ajudar com navegação, analisar imagens de produtos e oferecer suporte em português, inglês, espanhol e chinês 24/7.'
         },
         {
           question: 'A plataforma funciona em dispositivos móveis?',
           answer: 'Sim! A plataforma é totalmente responsiva e funciona perfeitamente em smartphones e tablets. Oferecemos aplicativo móvel nativo para iOS e Android com todas as funcionalidades da versão web, incluindo notificações push e acesso offline básico.'
+        }
+      ]
+    },
+    {
+      id: 'planos',
+      title: 'Planos e Assinaturas',
+      icon: <Award className="w-5 h-5" />,
+      items: [
+        {
+          question: 'Qual a diferença entre os planos?',
+          answer: 'O plano gratuito oferece funcionalidades básicas do marketplace. O AGROCONNECT+ inclui mensageria privada, destaque na loja e frete premium. O AGROCONNECT PRO adiciona analytics avançados, API personalizada e suporte VIP. Cada plano é projetado para diferentes necessidades de negócio.'
+        },
+        {
+          question: 'Posso mudar de plano a qualquer momento?',
+          answer: 'Sim! Você pode fazer upgrade ou downgrade do seu plano a qualquer momento. O upgrade é ativado imediatamente, enquanto o downgrade entra em vigor no próximo ciclo de cobrança. Não há taxas de cancelamento ou mudança de plano.'
+        },
+        {
+          question: 'Os planos incluem suporte técnico?',
+          answer: 'Todos os planos incluem suporte básico via chatbot IA e email. O AGROCONNECT+ inclui suporte por telefone e chat ao vivo. O AGROCONNECT PRO oferece suporte VIP com resposta em até 2 horas e atendimento dedicado.'
         }
       ]
     }
