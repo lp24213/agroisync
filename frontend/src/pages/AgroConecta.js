@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import GlobalTicker from '../components/GlobalTicker';
 import Navbar from '../components/Navbar';
+import { freightService } from '../services/freightService';
 
 const AgroConecta = () => {
   const { isDark } = useTheme();
@@ -19,16 +20,17 @@ const AgroConecta = () => {
   const [selectedTruckType, setSelectedTruckType] = useState('all');
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [error, setError] = useState(null);
 
   // Tipos de produtos agrícolas
   const productTypes = [
     { id: 'all', name: 'Todos os Produtos' },
     { id: 'soja', name: 'Soja' },
     { id: 'milho', name: 'Milho' },
-    { id: 'algodao', name: 'Algodão' },
-    { id: 'carne', name: 'Carne' },
+    { id: 'algodão', name: 'Algodão' },
+    { id: 'café', name: 'Café' },
     { id: 'insumo', name: 'Insumos' },
-    { id: 'maquinario', name: 'Maquinário' }
+    { id: 'maquinário', name: 'Maquinário' }
   ];
 
   // Estados brasileiros
@@ -48,226 +50,103 @@ const AgroConecta = () => {
   // Tipos de caminhão
   const truckTypes = [
     { id: 'all', name: 'Todos os Tipos' },
-    { id: 'graneleiro', name: 'Graneleiro' },
-    { id: 'bitrem', name: 'Bitrem' },
-    { id: 'bau', name: 'Baú' },
-    { id: 'refrigerado', name: 'Refrigerado' },
-    { id: 'carreta', name: 'Carreta' },
-    { id: 'truck', name: 'Truck' }
+    { id: 'truck', name: 'Truck' },
+    { id: 'truck-truck', name: 'Truck-Truck' },
+    { id: 'truck-truck-truck', name: 'Truck-Truck-Truck' },
+    { id: 'truck-truck-truck-truck', name: 'Truck-Truck-Truck-Truck' }
   ];
 
-  // Dados simulados mais realistas e profissionais de fretes
-  const mockFreights = [
-    {
-      id: 1,
-      product: 'Soja em Grão Tipo 1',
-      quantity: '500 sacas',
-      weight: '30 toneladas',
-      origin: 'Sinop - MT',
-      destination: 'Porto de Santos - SP',
-      truckType: 'Truck 3 eixos graneleiro',
-      value: 8500.00,
-      deadline: '3 dias',
-      status: 'Disponível',
-      carrier: 'Transportadora Rápida MT Ltda',
-      phone: '(66) 99999-9999',
-      whatsapp: '(66) 99999-9999',
-      rating: 4.8,
-      reviews: 45,
-      insurance: 'Seguro de carga incluído',
-      tracking: 'Rastreamento em tempo real'
-    },
-    {
-      id: 2,
-      product: 'Milho em Grão Seco',
-      quantity: '800 sacas',
-      weight: '48 toneladas',
-      origin: 'Lucas do Rio Verde - MT',
-      destination: 'Goiânia - GO',
-      truckType: 'Truck 2 eixos graneleiro',
-      value: 4200.00,
-      deadline: '2 dias',
-      status: 'Disponível',
-      carrier: 'Fretes Express MT Ltda',
-      phone: '(66) 88888-8888',
-      whatsapp: '(66) 88888-8888',
-      rating: 4.6,
-      reviews: 32,
-      insurance: 'Seguro de carga incluído',
-      tracking: 'Rastreamento em tempo real'
-    },
-    {
-      id: 3,
-      product: 'Algodão em Pluma Premium',
-      quantity: '200 fardos',
-      weight: '15 toneladas',
-      origin: 'Campo Verde - MT',
-      destination: 'São Paulo - SP',
-      truckType: 'Truck 3 eixos baú',
-      value: 6800.00,
-      deadline: '4 dias',
-      status: 'Disponível',
-      carrier: 'Transportes Premium Ltda',
-      phone: '(66) 77777-7777',
-      whatsapp: '(66) 77777-7777',
-      rating: 4.9,
-      reviews: 28,
-      insurance: 'Seguro de carga incluído',
-      tracking: 'Rastreamento em tempo real'
-    },
-    {
-      id: 4,
-      product: 'Fertilizantes NPK',
-      quantity: '50 toneladas',
-      weight: '50 toneladas',
-      origin: 'Sorriso - MT',
-      destination: 'Nova Mutum - MT',
-      truckType: 'Truck 2 eixos baú',
-      value: 1800.00,
-      deadline: '1 dia',
-      status: 'Disponível',
-      carrier: 'Fretes Rápidos MT Ltda',
-      phone: '(66) 66666-6666',
-      whatsapp: '(66) 66666-6666',
-      rating: 4.7,
-      reviews: 67,
-      insurance: 'Seguro de carga incluído',
-      tracking: 'Rastreamento em tempo real'
-    },
-    {
-      id: 5,
-      product: 'Máquinas Agrícolas',
-      quantity: '1 unidade',
-      weight: '8 toneladas',
-      origin: 'Cuiabá - MT',
-      destination: 'Rondonópolis - MT',
-      truckType: 'Truck 3 eixos + prancha baixa',
-      value: 3200.00,
-      deadline: '2 dias',
-      status: 'Disponível',
-      carrier: 'Transportes Especializados Ltda',
-      phone: '(66) 55555-5555',
-      whatsapp: '(66) 55555-5555',
-      rating: 4.8,
-      reviews: 23,
-      insurance: 'Seguro de carga incluído',
-      tracking: 'Rastreamento em tempo real'
-    },
-    {
-      id: 6,
-      product: 'Bovinos Vivos Nelore',
-      quantity: '20 cabeças',
-      weight: '12 toneladas',
-      origin: 'Nova Mutum - MT',
-      destination: 'Campo Grande - MS',
-      truckType: 'Truck boiadeiro 3 eixos',
-      value: 4500.00,
-      deadline: '1 dia',
-      status: 'Disponível',
-      carrier: 'Fretes Bovinos MT Ltda',
-      phone: '(66) 44444-4444',
-      whatsapp: '(66) 44444-4444',
-      rating: 4.9,
-      reviews: 89,
-      insurance: 'Seguro de carga incluído',
-      tracking: 'Rastreamento em tempo real'
-    },
-    {
-      id: 7,
-      product: 'Café Arábica Especial',
-      quantity: '100 sacas',
-      weight: '6 toneladas',
-      origin: 'Machado - MG',
-      destination: 'São Paulo - SP',
-      truckType: 'Truck 2 eixos baú',
-      value: 2800.00,
-      deadline: '2 dias',
-      status: 'Disponível',
-      carrier: 'Transportes Café MG Ltda',
-      phone: '(35) 77777-7777',
-      whatsapp: '(35) 77777-7777',
-      rating: 4.8,
-      reviews: 45,
-      insurance: 'Seguro de carga incluído',
-      tracking: 'Rastreamento em tempo real'
-    },
-    {
-      id: 8,
-      product: 'Trigo Nacional',
-      quantity: '400 sacas',
-      weight: '24 toneladas',
-      origin: 'Passo Fundo - RS',
-      destination: 'São Paulo - SP',
-      truckType: 'Truck 3 eixos graneleiro',
-      value: 5200.00,
-      deadline: '3 dias',
-      status: 'Disponível',
-      carrier: 'Fretes Sul RS Ltda',
-      phone: '(54) 88888-8888',
-      whatsapp: '(54) 88888-8888',
-      rating: 4.7,
-      reviews: 67,
-      insurance: 'Seguro de carga incluído',
-      tracking: 'Rastreamento em tempo real'
-    }
-  ];
-
-  useEffect(() => {
-    // Simular carregamento
-    const timer = setTimeout(() => {
-      setFreights(mockFreights);
-      setFilteredFreights(mockFreights);
+  // Função para buscar fretes do MongoDB
+  const fetchFreights = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const filters = {};
+      if (selectedProduct !== 'all') filters.productType = selectedProduct;
+      if (selectedOrigin !== 'all') filters.originState = selectedOrigin;
+      if (selectedDestination !== 'all') filters.destinationState = selectedDestination;
+      if (selectedTruckType !== 'all') filters.truckType = selectedTruckType;
+      if (priceRange[0] > 0) filters.minValue = priceRange[0];
+      if (priceRange[1] < 1000) filters.maxValue = priceRange[1];
+      if (searchTerm) filters.search = searchTerm;
+      
+      const response = await freightService.getFreights(filters);
+      
+      if (response.success) {
+        setFreights(response.data);
+        setFilteredFreights(response.data);
+      } else {
+        setError('Erro ao carregar fretes');
+      }
+    } catch (error) {
+      console.error('Error fetching freights:', error);
+      setError(error.message || 'Erro ao carregar fretes');
+      
+      // Fallback para dados simulados em caso de erro
+      setFreights([]);
+      setFilteredFreights([]);
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
+  };
 
-    return () => clearTimeout(timer);
+  // Carregar fretes ao montar o componente
+  useEffect(() => {
+    fetchFreights();
   }, []);
 
+  // Atualizar fretes quando filtros mudarem
   useEffect(() => {
-    // Filtrar fretes
-    let filtered = freights;
+    fetchFreights();
+  }, [selectedProduct, selectedOrigin, selectedDestination, selectedTruckType, priceRange, searchTerm]);
 
-    // Filtro por produto
-    if (selectedProduct !== 'all') {
-      filtered = filtered.filter(f => f.product === selectedProduct);
-    }
-
-    // Filtro por origem
-    if (selectedOrigin !== 'all') {
-      filtered = filtered.filter(f => f.origin === selectedOrigin);
-    }
-
-    // Filtro por destino
-    if (selectedDestination !== 'all') {
-      filtered = filtered.filter(f => f.destination === selectedDestination);
-    }
-
-    // Filtro por tipo de caminhão
-    if (selectedTruckType !== 'all') {
-      filtered = filtered.filter(f => f.truckType === selectedTruckType);
-    }
-
-    // Filtro por preço
-    filtered = filtered.filter(f => f.value >= priceRange[0] && f.value <= priceRange[1]);
-
-    // Filtro por busca
-    if (searchTerm) {
-      filtered = filtered.filter(f => 
-        f.product.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        f.carrier.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        f.origin.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        f.destination.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    setFilteredFreights(filtered);
-  }, [freights, selectedProduct, selectedOrigin, selectedDestination, selectedTruckType, priceRange, searchTerm]);
-
+  // Função para formatar preço
   const formatPrice = (price) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
     }).format(price);
+  };
+
+  // Função para obter cor do status
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'available':
+        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+      case 'in_negotiation':
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+      case 'assigned':
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
+      case 'in_transit':
+        return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200';
+      case 'delivered':
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+      case 'cancelled':
+        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+    }
+  };
+
+  // Função para obter texto do status
+  const getStatusText = (status) => {
+    switch (status) {
+      case 'available':
+        return 'Disponível';
+      case 'in_negotiation':
+        return 'Em Negociação';
+      case 'assigned':
+        return 'Assignado';
+      case 'in_transit':
+        return 'Em Trânsito';
+      case 'delivered':
+        return 'Entregue';
+      case 'cancelled':
+        return 'Cancelado';
+      default:
+        return status;
+    }
   };
 
   const getProductIcon = (product) => {
@@ -493,7 +372,7 @@ const AgroConecta = () => {
           <div className="space-y-6">
             {filteredFreights.map((freight, index) => (
               <motion.div
-                key={freight.id}
+                key={freight._id}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
@@ -505,11 +384,13 @@ const AgroConecta = () => {
                     <div className="flex-1">
                       {/* Produto e Categoria */}
                       <div className="flex items-center space-x-3 mb-3">
-                        <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getProductColor(freight.product)}`}>
-                          {getProductIcon(freight.product)}
-                          <span className="ml-2">{freight.product}</span>
+                        <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getProductColor(freight.product?.type)}`}>
+                          {getProductIcon(freight.product?.type)}
+                          <span className="ml-2">{freight.product?.name}</span>
                         </div>
-                        {/* Removed featured and urgent badges as they are not in mockFreights */}
+                        <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(freight.status)}`}>
+                          {getStatusText(freight.status)}
+                        </div>
                       </div>
 
                       {/* Rota */}
@@ -517,14 +398,14 @@ const AgroConecta = () => {
                         <div className="flex items-center space-x-2">
                           <MapPin className="w-4 h-4 text-green-600" />
                           <span className="text-sm text-gray-600">
-                            <strong>{freight.origin}</strong>
+                            <strong>{freight.origin?.city}, {freight.origin?.state}</strong>
                           </span>
                         </div>
                         <Route className="w-4 h-4 text-gray-400" />
                         <div className="flex items-center space-x-2">
                           <MapPin className="w-4 h-4 text-red-600" />
                           <span className="text-sm text-gray-600">
-                            <strong>{freight.destination}</strong>
+                            <strong>{freight.destination?.city}, {freight.destination?.state}</strong>
                           </span>
                         </div>
                       </div>
@@ -534,7 +415,7 @@ const AgroConecta = () => {
                         <div className="flex items-center space-x-2">
                           <Weight className="w-4 h-4 text-blue-600" />
                           <span className="text-sm text-gray-600">
-                            <strong>{freight.quantity}</strong>
+                            <strong>{freight.quantity} {freight.product?.unit}</strong>
                           </span>
                         </div>
                         <div className="flex items-center space-x-2">
@@ -546,13 +427,13 @@ const AgroConecta = () => {
                         <div className="flex items-center space-x-2">
                           <Clock className="w-4 h-4 text-purple-600" />
                           <span className="text-sm text-gray-600">
-                            <strong>{freight.deadline}</strong>
+                            <strong>{freight.deliveryTime} dias</strong>
                           </span>
                         </div>
                         <div className="flex items-center space-x-2">
                           <DollarSign className="w-4 h-4 text-green-600" />
                           <span className="text-sm text-gray-600">
-                            <strong>{formatPrice(freight.value)}</strong>
+                            <strong>{formatPrice(freight.freightValue)}</strong>
                           </span>
                         </div>
                       </div>
@@ -561,7 +442,7 @@ const AgroConecta = () => {
                     {/* Preço */}
                     <div className="text-right ml-6">
                       <div className="text-3xl font-bold text-blue-600 mb-1">
-                        {formatPrice(freight.value)}
+                        {formatPrice(freight.freightValue)}
                       </div>
                       <div className="text-sm text-gray-600 mb-2">
                         Valor por carga
@@ -578,13 +459,12 @@ const AgroConecta = () => {
                       <div className="flex items-center space-x-4">
                         <div className="flex items-center space-x-2">
                           <Building className="w-4 h-4 text-gray-600" />
-                          <span className="font-medium text-gray-900">{freight.carrier}</span>
-                          {/* Removed verified badge as it's not in mockFreights */}
+                          <span className="font-medium text-gray-900">{freight.carrier?.name}</span>
                         </div>
                         <div className="flex items-center space-x-2">
                           <Star className="w-4 h-4 text-yellow-400 fill-current" />
                           <span className="text-sm text-gray-600">
-                            {freight.rating} ({freight.reviews} avaliações)
+                            {freight.carrier?.rating || 'N/A'} ({freight.carrier?.reviews || 0} avaliações)
                           </span>
                         </div>
                       </div>
@@ -613,11 +493,39 @@ const AgroConecta = () => {
           </div>
 
           {/* Sem Fretes */}
-          {filteredFreights.length === 0 && (
+          {!loading && !error && filteredFreights.length === 0 && (
             <div className="text-center py-20">
               <Truck className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-600 mb-2">Nenhum frete encontrado</h3>
               <p className="text-gray-500">Tente ajustar os filtros ou termos de busca</p>
+            </div>
+          )}
+
+          {/* Estado de Erro */}
+          {error && (
+            <div className="text-center py-20">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Truck className="w-8 h-8 text-red-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-red-600 mb-2">Erro ao carregar fretes</h3>
+              <p className="text-gray-500 mb-4">{error}</p>
+              <button 
+                onClick={fetchFreights}
+                className="bg-red-600 text-white px-6 py-2 rounded-xl hover:bg-red-700 transition-colors"
+              >
+                Tentar novamente
+              </button>
+            </div>
+          )}
+
+          {/* Estado de Carregamento */}
+          {loading && (
+            <div className="text-center py-20">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-spin">
+                <Truck className="w-8 h-8 text-blue-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-blue-600 mb-2">Carregando fretes...</h3>
+              <p className="text-gray-500">Aguarde enquanto buscamos os melhores fretes para você</p>
             </div>
           )}
         </div>

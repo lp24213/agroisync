@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import GlobalTicker from '../components/GlobalTicker';
 import Navbar from '../components/Navbar';
+import { productService } from '../services/productService';
 
 const Loja = () => {
   const { isDark } = useTheme();
@@ -18,14 +19,17 @@ const Loja = () => {
   const [priceRange, setPriceRange] = useState([0, 10000]);
   const [selectedState, setSelectedState] = useState('all');
   const [viewMode, setViewMode] = useState('grid');
+  const [error, setError] = useState(null);
 
   // Categorias reais do agronegócio
   const categories = [
     { id: 'all', name: 'Todas', icon: <Package className="w-5 h-5" />, count: 0 },
-    { id: 'insumos', name: 'Insumos Agrícolas', icon: <Leaf className="w-5 h-5" />, count: 0 },
-    { id: 'maquinas', name: 'Máquinas e Implementos', icon: <Wrench className="w-5 h-5" />, count: 0 },
-    { id: 'pecuaria', name: 'Pecuária', icon: <User className="w-5 h-5" />, count: 0 },
-    { id: 'commodities', name: 'Commodities', icon: <Circle className="w-5 h-5" />, count: 0 }
+    { id: 'soja', name: 'Soja', icon: <Leaf className="w-5 h-5" />, count: 0 },
+    { id: 'milho', name: 'Milho', icon: <Circle className="w-5 h-5" />, count: 0 },
+    { id: 'café', name: 'Café', icon: <Leaf className="w-5 h-5" />, count: 0 },
+    { id: 'algodão', name: 'Algodão', icon: <Leaf className="w-5 h-5" />, count: 0 },
+    { id: 'insumo', name: 'Insumos', icon: <Wrench className="w-5 h-5" />, count: 0 },
+    { id: 'maquinário', name: 'Maquinário', icon: <Truck className="w-5 h-5" />, count: 0 }
   ];
 
   // Estados brasileiros
@@ -42,154 +46,54 @@ const Loja = () => {
     { id: 'TO', name: 'Tocantins' }
   ];
 
-  // Dados simulados mais realistas e profissionais de produtos agrícolas
-  const mockProducts = [
-    {
-      id: 1,
-      name: 'Semente de Soja RR2 PRO - Intacta 2 Xtend',
-      category: 'Insumos',
-      price: 189.90,
-      unit: 'Saca 60kg',
-      stock: 150,
-      description: 'Semente de soja de alta produtividade, resistente a herbicidas e insetos. Ideal para plantio direto e alta tecnologia.',
-      image: '/images/soja.svg',
-      location: 'Sinop - MT',
-      seller: 'AgroSementes MT Ltda',
-      rating: 4.8,
-      reviews: 127,
-      certification: 'Certificado MAPA',
-      delivery: 'Entrega em 24h'
-    },
-    {
-      id: 2,
-      name: 'Fertilizante NPK 20-20-20 + Micronutrientes',
-      category: 'Insumos',
-      price: 89.50,
-      unit: 'Saca 50kg',
-      stock: 80,
-      description: 'Fertilizante balanceado com micronutrientes para todas as culturas. Aplicação via solo ou foliar com alta eficiência.',
-      image: '/images/milho.svg',
-      location: 'Lucas do Rio Verde - MT',
-      seller: 'Fertilizantes do Brasil S/A',
-      rating: 4.6,
-      reviews: 89,
-      certification: 'Registro MAPA',
-      delivery: 'Entrega em 48h'
-    },
-    {
-      id: 3,
-      name: 'Trator Massey Ferguson 6713 Dyna-6',
-      category: 'Máquinas/Implementos',
-      price: 285000.00,
-      unit: 'Unidade',
-      stock: 3,
-      description: 'Trator 130cv, 4x4, cabine climatizada, direção hidráulica, transmissão Dyna-6. Ano 2022, 800h de uso.',
-      image: '/images/logo.svg',
-      location: 'Sorriso - MT',
-      seller: 'Máquinas Agro MT Ltda',
-      rating: 4.9,
-      reviews: 23,
-      certification: 'Garantia 12 meses',
-      delivery: 'Entrega em 7 dias'
-    },
-    {
-      id: 4,
-      name: 'Boi Nelore Mocho - Acabamento A',
-      category: 'Pecuária',
-      price: 4200.00,
-      unit: 'Arroba',
-      stock: 45,
-      description: 'Boi gordo Nelore mocho, peso médio 18@, acabamento A, saúde atestada, vacinação completa, rastreabilidade.',
-      image: '/images/logo.svg',
-      location: 'Nova Mutum - MT',
-      seller: 'Fazenda Boa Vista Ltda',
-      rating: 4.7,
-      reviews: 156,
-      certification: 'SIF',
-      delivery: 'Entrega em 24h'
-    },
-    {
-      id: 5,
-      name: 'Soja em Grão Tipo 1 - Proteína 38%',
-      category: 'Commodities',
-      price: 180.50,
-      unit: 'Saca 60kg',
-      stock: 2000,
-      description: 'Soja em grão tipo 1, proteína 38%, óleo 20%, umidade 13%, impurezas 1%. Entrega em silo ou caminhão.',
-      image: '/images/soja.svg',
-      location: 'Campo Verde - MT',
-      seller: 'Cooperativa Agro MT Ltda',
-      rating: 4.8,
-      reviews: 342,
-      certification: 'Certificado de Origem',
-      delivery: 'Entrega em 24h'
-    },
-    {
-      id: 6,
-      name: 'Consultoria Agronômica Especializada',
-      category: 'Serviços',
-      price: 150.00,
-      unit: 'Hora',
-      stock: null,
-      description: 'Consultoria técnica especializada em soja, milho e algodão. Atendimento em campo, análise de solo, recomendação de insumos.',
-      image: '/images/logo.svg',
-      location: 'Toda MT',
-      seller: 'AgroConsult MT Ltda',
-      rating: 4.9,
-      reviews: 67,
-      certification: 'CREA',
-      delivery: 'Atendimento em 24h'
-    },
-    {
-      id: 7,
-      name: 'Milho em Grão Seco - Proteína 9%',
-      category: 'Commodities',
-      price: 95.30,
-      unit: 'Saca 60kg',
-      stock: 1500,
-      description: 'Milho em grão seco, proteína 9%, umidade 13%, impurezas 1%. Ideal para ração animal e processamento.',
-      image: '/images/milho.svg',
-      location: 'Primavera do Leste - MT',
-      seller: 'Produtores MT Ltda',
-      rating: 4.7,
-      reviews: 234,
-      certification: 'Certificado de Origem',
-      delivery: 'Entrega em 24h'
-    },
-    {
-      id: 8,
-      name: 'Café Arábica - Grão Especial',
-      category: 'Commodities',
-      price: 1250.00,
-      unit: 'Saca 60kg',
-      stock: 300,
-      description: 'Café arábica grão especial, altitude 1200m, torra média, acidez cítrica, corpo encorpado.',
-      image: '/images/logo.svg',
-      location: 'Machado - MG',
-      seller: 'Café Premium MG Ltda',
-      rating: 4.9,
-      reviews: 89,
-      certification: 'Certificado de Origem',
-      delivery: 'Entrega em 48h'
-    }
-  ];
-
-  useEffect(() => {
-    // Simular carregamento
-    const timer = setTimeout(() => {
-      setProducts(mockProducts);
-      setFilteredProducts(mockProducts);
+  // Função para buscar produtos do MongoDB
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const filters = {};
+      if (selectedCategory !== 'all') filters.type = selectedCategory;
+      if (priceRange[0] > 0) filters.minPrice = priceRange[0];
+      if (priceRange[1] < 10000) filters.maxPrice = priceRange[1];
+      if (selectedState !== 'all') filters.state = selectedState;
+      if (searchTerm) filters.search = searchTerm;
+      
+      const response = await productService.getProducts(filters);
+      
+      if (response.success) {
+        setProducts(response.data);
+        setFilteredProducts(response.data);
+      } else {
+        setError('Erro ao carregar produtos');
+      }
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      setError(error.message || 'Erro ao carregar produtos');
+      
+      // Fallback para dados simulados em caso de erro
+      setProducts([]);
+      setFilteredProducts([]);
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
+  };
 
-    return () => clearTimeout(timer);
+  // Carregar produtos ao montar o componente
+  useEffect(() => {
+    fetchProducts();
   }, []);
 
+  // Atualizar produtos quando filtros mudarem
   useEffect(() => {
-    // Atualizar contadores de categorias
+    fetchProducts();
+  }, [selectedCategory, priceRange, selectedState, searchTerm]);
+
+  // Atualizar contadores de categorias
+  useEffect(() => {
     const updatedCategories = categories.map(cat => ({
       ...cat,
-      count: cat.id === 'all' ? products.length : products.filter(p => p.category === cat.id).length
+      count: cat.id === 'all' ? products.length : products.filter(p => p.type === cat.id).length
     }));
     
     // Filtrar produtos
@@ -197,7 +101,15 @@ const Loja = () => {
 
     // Filtro por categoria
     if (selectedCategory !== 'all') {
-      filtered = filtered.filter(p => p.category === selectedCategory);
+      filtered = filtered.filter(p => p.type === selectedCategory);
+    }
+
+    // Filtro por preço
+    filtered = filtered.filter(p => p.price >= priceRange[0] && p.price <= priceRange[1]);
+
+    // Filtro por estado
+    if (selectedState !== 'all') {
+      filtered = filtered.filter(p => p.location?.state === selectedState);
     }
 
     // Filtro por busca
@@ -205,21 +117,14 @@ const Loja = () => {
       filtered = filtered.filter(p => 
         p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.seller.toLowerCase().includes(searchTerm.toLowerCase())
+        p.seller?.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
-    // Filtro por estado
-    if (selectedState !== 'all') {
-      filtered = filtered.filter(p => p.location.includes(selectedState));
-    }
-
-    // Filtro por preço
-    filtered = filtered.filter(p => p.price >= priceRange[0] && p.price <= priceRange[1]);
-
     setFilteredProducts(filtered);
-  }, [products, selectedCategory, searchTerm, selectedState, priceRange]);
+  }, [products, selectedCategory, priceRange, selectedState, searchTerm]);
 
+  // Função para formatar preço
   const formatPrice = (price) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -227,37 +132,40 @@ const Loja = () => {
     }).format(price);
   };
 
-  const getCategoryIcon = (category) => {
-    switch (category) {
-      case 'Insumos':
-        return <Leaf className="w-5 h-5 text-green-600" />;
-      case 'Máquinas/Implementos':
-        return <Wrench className="w-5 h-5 text-blue-600" />;
-      case 'Pecuária':
-        return <User className="w-5 h-5 text-orange-600" />;
-      case 'Commodities':
-        return <Circle className="w-5 h-5 text-yellow-600" />;
-      case 'Serviços':
-        return <DollarSign className="w-5 h-5 text-purple-600" />;
+  // Função para obter ícone da categoria
+  const getCategoryIcon = (type) => {
+    switch (type) {
+      case 'soja':
+      case 'milho':
+      case 'café':
+      case 'algodão':
+        return <Leaf className="w-5 h-5" />;
+      case 'insumo':
+        return <Wrench className="w-5 h-5" />;
+      case 'maquinário':
+        return <Truck className="w-5 h-5" />;
       default:
-        return <Package className="w-5 h-5 text-gray-600" />;
+        return <Package className="w-5 h-5" />;
     }
   };
 
-  const getCategoryColor = (category) => {
-    switch (category) {
-      case 'Insumos':
-        return 'bg-green-100 text-green-800 border-green-200';
-      case 'Máquinas/Implementos':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'Pecuária':
-        return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'Commodities':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'Serviços':
-        return 'bg-purple-100 text-purple-800 border-purple-200';
+  // Função para obter cor da categoria
+  const getCategoryColor = (type) => {
+    switch (type) {
+      case 'soja':
+        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+      case 'milho':
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+      case 'café':
+        return 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200';
+      case 'algodão':
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
+      case 'insumo':
+        return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200';
+      case 'maquinário':
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
     }
   };
 
@@ -426,7 +334,7 @@ const Loja = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredProducts.map((product, index) => (
                 <motion.div
-                  key={product.id}
+                  key={product._id}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
@@ -435,7 +343,7 @@ const Loja = () => {
                   {/* Imagem do Produto */}
                   <div className="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
                     <div className="text-6xl text-gray-400">
-                      {getCategoryIcon(product.category)}
+                      {getCategoryIcon(product.type)}
                     </div>
                     {product.featured && (
                       <div className="absolute top-2 right-2 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold">
@@ -452,9 +360,9 @@ const Loja = () => {
                   {/* Informações do Produto */}
                   <div className="p-4">
                     {/* Categoria */}
-                    <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getCategoryColor(product.category)} mb-2`}>
-                      {getCategoryIcon(product.category)}
-                      <span className="ml-1">{categories.find(c => c.id === product.category)?.name}</span>
+                    <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getCategoryColor(product.type)} mb-2`}>
+                      {getCategoryIcon(product.type)}
+                      <span className="ml-1">{categories.find(c => c.id === product.type)?.name}</span>
                     </div>
 
                     {/* Nome */}
@@ -472,7 +380,7 @@ const Loja = () => {
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center space-x-1">
                         <MapPin className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm text-gray-600">{product.location}</span>
+                        <span className="text-sm text-gray-600">{product.location?.city}, {product.location?.state}</span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <Star className="w-4 h-4 text-yellow-400 fill-current" />
@@ -482,7 +390,7 @@ const Loja = () => {
                     </div>
 
                     {/* Vendedor */}
-                    <p className="text-sm text-gray-700 mb-3 font-medium">{product.seller}</p>
+                    <p className="text-sm text-gray-700 mb-3 font-medium">{product.seller?.name}</p>
 
                     {/* Estoque */}
                     <p className="text-sm text-gray-600 mb-4">
@@ -508,7 +416,7 @@ const Loja = () => {
             <div className="space-y-4">
               {filteredProducts.map((product, index) => (
                 <motion.div
-                  key={product.id}
+                  key={product._id}
                   initial={{ opacity: 0, x: -30 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
@@ -518,7 +426,7 @@ const Loja = () => {
                     {/* Imagem */}
                     <div className="relative w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
                       <div className="text-3xl text-gray-400">
-                        {getCategoryIcon(product.category)}
+                        {getCategoryIcon(product.type)}
                       </div>
                       {product.featured && (
                         <div className="absolute -top-1 -right-1 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold">
@@ -531,9 +439,9 @@ const Loja = () => {
                     <div className="flex-1">
                       <div className="flex items-start justify-between mb-2">
                         <div>
-                          <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getCategoryColor(product.category)} mb-2`}>
-                            {getCategoryIcon(product.category)}
-                            <span className="ml-1">{categories.find(c => c.id === product.category)?.name}</span>
+                          <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getCategoryColor(product.type)} mb-2`}>
+                            {getCategoryIcon(product.type)}
+                            <span className="ml-1">{categories.find(c => c.id === product.type)?.name}</span>
                           </div>
                           <h3 className="text-lg font-bold text-gray-900 mb-1">{product.name}</h3>
                           <p className="text-sm text-gray-600 mb-2">{product.description}</p>
@@ -550,7 +458,7 @@ const Loja = () => {
                         <div className="flex items-center space-x-4 text-sm text-gray-600">
                           <div className="flex items-center space-x-1">
                             <MapPin className="w-4 h-4" />
-                            <span>{product.location}</span>
+                            <span>{product.location?.city}, {product.location?.state}</span>
                           </div>
                           <div className="flex items-center space-x-1">
                             <Star className="w-4 h-4 text-yellow-400 fill-current" />
@@ -578,11 +486,39 @@ const Loja = () => {
           )}
 
           {/* Sem Produtos */}
-          {filteredProducts.length === 0 && (
+          {!loading && !error && filteredProducts.length === 0 && (
             <div className="text-center py-20">
               <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-600 mb-2">Nenhum produto encontrado</h3>
               <p className="text-gray-500">Tente ajustar os filtros ou termos de busca</p>
+            </div>
+          )}
+
+          {/* Estado de Erro */}
+          {error && (
+            <div className="text-center py-20">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Package className="w-8 h-8 text-red-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-red-600 mb-2">Erro ao carregar produtos</h3>
+              <p className="text-gray-500 mb-4">{error}</p>
+              <button 
+                onClick={fetchProducts}
+                className="bg-red-600 text-white px-6 py-2 rounded-xl hover:bg-red-700 transition-colors"
+              >
+                Tentar novamente
+              </button>
+            </div>
+          )}
+
+          {/* Estado de Carregamento */}
+          {loading && (
+            <div className="text-center py-20">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-spin">
+                <Package className="w-8 h-8 text-blue-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-blue-600 mb-2">Carregando produtos...</h3>
+              <p className="text-gray-500">Aguarde enquanto buscamos os melhores produtos para você</p>
             </div>
           )}
         </div>

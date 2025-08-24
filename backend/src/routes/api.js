@@ -1,4 +1,6 @@
 import express, { Router } from 'express';
+import productRoutes from './products.js';
+import freightRoutes from './freights.js';
 
 const router: Router = express.Router();
 
@@ -10,11 +12,19 @@ router.get('/', (_req, res) => {
     endpoints: {
       health: '/health',
       api: '/api',
+      products: '/api/products',
+      freights: '/api/freights',
       blockchain: '/api/blockchain',
       agriculture: '/api/agriculture'
     }
   });
 });
+
+// Product routes
+router.use('/products', productRoutes);
+
+// Freight routes
+router.use('/freights', freightRoutes);
 
 // Blockchain endpoint
 router.get('/blockchain', (_req, res) => {

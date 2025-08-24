@@ -3,6 +3,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 
+// Import MongoDB connection
+import { connectMongoDB } from './config/mongodb.js';
+
 // Import routes
 import healthRoutes from './routes/health.js';
 import apiRoutes from './routes/api.js';
@@ -30,6 +33,20 @@ app.use(limiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Initialize MongoDB connection
+const initializeMongoDB = async () => {
+  try {
+    const isConnected = await connectMongoDB();
+    if (isConnected) {
+      console.log('✅ MongoDB initialized successfully');
+    } else {
+      console.log('⚠️ MongoDB initialization failed, running in offline mode');
+    }
+  } catch (error) {
+    console.error('❌ MongoDB initialization error:', error);
+  }
+};
+
 // Routes
 app.use('/health', healthRoutes);
 app.use('/api', apiRoutes);
@@ -40,7 +57,8 @@ app.get('/', (_req, res) => {
     status: 'ok', 
     timestamp: new Date().toISOString(),
     service: 'AGROISYNC Backend',
-    version: '2.3.1'
+    version: '2.3.1',
+    database: 'MongoDB'
   });
 });
 
@@ -57,8 +75,11 @@ app.use((err, _req, res, _next) => {
 
 // Start server
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(PORT, async () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+  
+  // Initialize MongoDB after server starts
+  await initializeMongoDB();
 });
 
 export default app;
