@@ -1,17 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
+import { paymentService } from '../services/paymentService';
 import { 
   Check, Star, ShoppingCart, Truck, Package, Leaf, Wrench, User, 
-  Circle, Settings, BarChart3, Headphones, Zap, Shield, Globe
+  Circle, Settings, BarChart3, Headphones, Zap, Shield, Globe, Coins
 } from 'lucide-react';
 import GlobalTicker from '../components/GlobalTicker';
 import Navbar from '../components/Navbar';
 
 const Planos = () => {
   const { isDark } = useTheme();
-  const [selectedModule, setSelectedModule] = useState('loja');
+  const { user, hasActivePlan } = useAuth();
+  const [selectedModule, setSelectedModule] = useState('store');
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    document.title = 'Planos - Agroisync';
+  }, []);
 
   // Planos da Loja AgroSync
   const lojaPlans = [
@@ -156,22 +165,66 @@ const Planos = () => {
     }
   ];
 
-  const handlePlanSelection = (planId) => {
-    setSelectedPlan(planId);
-    // Aqui você implementaria a lógica de seleção de plano
-    console.log('Plano selecionado:', planId);
+  const handlePlanSelection = (module, plan) => {
+    setSelectedModule(module);
+    setSelectedPlan(plan);
+  };
+
+  const handlePayment = async (module, tier) => {
+    try {
+      setLoading(true);
+      setError('');
+
+      if (module === 'crypto') {
+        // Pagamento via cripto
+        const invoice = await paymentService.createCryptoInvoice(tier);
+        // Aqui seria integrado com MetaMask
+        alert(`Fatura cripto criada: ${invoice.data.id}. Integre com MetaMask para finalizar.`);
+      } else {
+        // Pagamento via Stripe
+        const session = await paymentService.createStripeSession(module, tier);
+        // Redirecionar para Stripe
+        window.location.href = session.data.url;
+      }
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getCurrentPlans = () => {
-    return selectedModule === 'loja' ? lojaPlans : agroconectaPlans;
+    return selectedModule === 'store' ? lojaPlans : agroconectaPlans;
   };
 
-  const getModuleIcon = () => {
-    return selectedModule === 'loja' ? <ShoppingCart className="w-6 h-6" /> : <Truck className="w-6 h-6" />;
+  const getModuleIcon = (module) => {
+    switch (module) {
+      case 'store':
+        return <ShoppingCart className="w-6 h-6" />;
+      case 'freight':
+        return <Truck className="w-6 h-6" />;
+      case 'crypto':
+        return <Coins className="w-6 h-6" />;
+      default:
+        return <Package className="w-6 h-6" />;
+    }
+  };
+
+  const getModuleTitle = (module) => {
+    switch (module) {
+      case 'store':
+        return 'Loja de Produtos';
+      case 'freight':
+        return 'AgroConecta (Fretes)';
+      case 'crypto':
+        return 'Criptomoedas';
+      default:
+        return 'Selecionar Módulo';
+    }
   };
 
   const getModuleColor = () => {
-    return selectedModule === 'loja' ? 'from-green-500 to-blue-600' : 'from-blue-500 to-purple-600';
+    return selectedModule === 'store' ? 'from-green-500 to-blue-600' : 'from-blue-500 to-purple-600';
   };
 
   return (
@@ -219,9 +272,9 @@ const Planos = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Loja AgroSync */}
               <button
-                onClick={() => setSelectedModule('loja')}
+                onClick={() => setSelectedModule('store')}
                 className={`p-6 rounded-xl border-2 transition-all duration-300 ${
-                  selectedModule === 'loja'
+                  selectedModule === 'store'
                     ? 'border-green-500 bg-green-50 shadow-lg'
                     : 'border-gray-200 hover:border-green-300 hover:bg-gray-50'
                 }`}
@@ -234,7 +287,7 @@ const Planos = () => {
                   <p className="text-gray-600 text-sm">
                     Marketplace completo para vender e comprar produtos agrícolas
                   </p>
-                  {selectedModule === 'loja' && (
+                  {selectedModule === 'store' && (
                     <div className="mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
                       <Check className="w-4 h-4 mr-1" />
                       Selecionado
@@ -245,9 +298,9 @@ const Planos = () => {
 
               {/* AgroConecta */}
               <button
-                onClick={() => setSelectedModule('agroconecta')}
+                onClick={() => setSelectedModule('freight')}
                 className={`p-6 rounded-xl border-2 transition-all duration-300 ${
-                  selectedModule === 'agroconecta'
+                  selectedModule === 'freight'
                     ? 'border-blue-500 bg-blue-50 shadow-lg'
                     : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
                 }`}
@@ -260,8 +313,34 @@ const Planos = () => {
                   <p className="text-gray-600 text-sm">
                     Plataforma de fretes para conectar produtores e transportadoras
                   </p>
-                  {selectedModule === 'agroconecta' && (
+                  {selectedModule === 'freight' && (
                     <div className="mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                      <Check className="w-4 h-4 mr-1" />
+                      Selecionado
+                    </div>
+                  )}
+                </div>
+              </button>
+
+              {/* Criptomoedas */}
+              <button
+                onClick={() => setSelectedModule('crypto')}
+                className={`p-6 rounded-xl border-2 transition-all duration-300 ${
+                  selectedModule === 'crypto'
+                    ? 'border-purple-500 bg-purple-50 shadow-lg'
+                    : 'border-gray-200 hover:border-purple-300 hover:bg-gray-50'
+                }`}
+              >
+                <div className="text-center">
+                  <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 flex items-center justify-center text-white`}>
+                    <Coins className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Criptomoedas</h3>
+                  <p className="text-gray-600 text-sm">
+                    Investimentos e negociações em criptomoedas
+                  </p>
+                  {selectedModule === 'crypto' && (
+                    <div className="mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
                       <Check className="w-4 h-4 mr-1" />
                       Selecionado
                     </div>
@@ -284,15 +363,17 @@ const Planos = () => {
             className="text-center mb-12"
           >
             <div className={`inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-r ${getModuleColor()} text-white mb-6`}>
-              {getModuleIcon()}
+              {getModuleIcon(selectedModule)}
             </div>
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Planos {selectedModule === 'loja' ? 'Loja AgroSync' : 'AgroConecta'}
+              Planos {getModuleTitle(selectedModule)}
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              {selectedModule === 'loja' 
+              {selectedModule === 'store' 
                 ? 'Escolha o plano ideal para vender seus produtos agrícolas no maior marketplace do Brasil'
-                : 'Selecione o plano perfeito para conectar sua transportadora aos melhores fretes do agronegócio'
+                : selectedModule === 'freight'
+                ? 'Selecione o plano perfeito para conectar sua transportadora aos melhores fretes do agronegócio'
+                : 'Escolha o plano ideal para investir em criptomoedas e negociações'
               }
             </p>
           </motion.div>
@@ -366,10 +447,11 @@ const Planos = () => {
 
                   {/* CTA Button */}
                   <button
-                    onClick={() => handlePlanSelection(plan.id)}
+                    onClick={() => handlePayment(selectedModule, plan.id)}
                     className={`w-full py-4 px-6 rounded-xl text-white font-bold transition-all duration-300 hover:scale-105 ${plan.buttonColor}`}
+                    disabled={loading}
                   >
-                    {plan.price === 'R$ 0,00' ? 'Começar Grátis' : 'Escolher Plano'}
+                    {loading ? 'Processando...' : plan.price === 'R$ 0,00' ? 'Começar Grátis' : 'Escolher Plano'}
                   </button>
 
                   {/* Additional Info */}
@@ -422,14 +504,14 @@ const Planos = () => {
                   {/* Anúncios/Fretes */}
                   <tr>
                     <td className="px-6 py-4 text-sm text-gray-900 font-medium">
-                      {selectedModule === 'loja' ? 'Anúncios Ativos' : 'Fretes Ativos'}
+                      {selectedModule === 'store' ? 'Anúncios Ativos' : 'Fretes Ativos'}
                     </td>
                     {getCurrentPlans().map((plan) => (
                       <td key={plan.id} className="px-6 py-4 text-center text-sm text-gray-600">
                         {plan.id.includes('basico') 
-                          ? (selectedModule === 'loja' ? '3' : '5/mês')
+                          ? (selectedModule === 'store' ? '3' : '5/mês')
                           : plan.id.includes('pro')
-                          ? (selectedModule === 'loja' ? '50' : '100/mês')
+                          ? (selectedModule === 'store' ? '50' : '100/mês')
                           : 'Ilimitado'
                         }
                       </td>
@@ -481,7 +563,7 @@ const Planos = () => {
                   {/* Chat/API */}
                   <tr>
                     <td className="px-6 py-4 text-sm text-gray-900 font-medium">
-                      {selectedModule === 'loja' ? 'API de Integração' : 'Chat Direto'}
+                      {selectedModule === 'store' ? 'API de Integração' : 'Chat Direto'}
                     </td>
                     {getCurrentPlans().map((plan) => (
                       <td key={plan.id} className="px-6 py-4 text-center text-sm text-gray-600">

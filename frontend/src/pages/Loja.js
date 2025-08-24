@@ -308,6 +308,15 @@ const Loja = () => {
                 <Plus className="w-5 h-5" />
                 Cadastrar Produto
               </button>
+
+              {/* Botão Assinar Plano */}
+              <button
+                onClick={() => window.location.href = '/planos'}
+                className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors duration-300 flex items-center gap-2"
+              >
+                <Star className="w-5 h-5" />
+                Assinar Plano
+              </button>
             </div>
           </div>
         </div>

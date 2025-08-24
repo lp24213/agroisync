@@ -2,6 +2,7 @@ import express, { Router } from 'express';
 import productRoutes from './products.js';
 import freightRoutes from './freights.js';
 import authRoutes from './auth.js';
+import paymentRoutes from './payments.js';
 
 const router = Router();
 
@@ -16,6 +17,7 @@ router.get('/', (req, res) => {
       auth: '/api/auth',
       products: '/api/products',
       freights: '/api/freights',
+      payments: '/api/payments',
       blockchain: '/api/blockchain',
       agriculture: '/api/agriculture'
     }
@@ -30,6 +32,9 @@ router.use('/products', productRoutes);
 
 // Freight routes
 router.use('/freights', freightRoutes);
+
+// Payment routes
+router.use('/payments', paymentRoutes);
 
 // Blockchain endpoint
 router.get('/blockchain', (req, res) => {
