@@ -1,9 +1,13 @@
 import React from 'react';
-// Componente removido - já renderizado pelo Layout global
-// Componente removido - já renderizado pelo Layout global
+import { motion } from 'framer-motion';
+import { useTheme } from '../contexts/ThemeContext';
+import { useTranslation } from 'react-i18next';
 import GrainsDashboard from '../components/grains/GrainsDashboard';
 
 const Cotacao = () => {
+  const { isDark } = useTheme();
+  const { t } = useTranslation();
+  
   return (
     <div className="min-h-screen bg-black text-white">
 
@@ -12,11 +16,10 @@ const Cotacao = () => {
       <section className="relative py-20 px-4 bg-gradient-to-br from-blue-900/20 to-green-900/20">
         <div className="max-w-6xl mx-auto text-center">
           <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-green-400 to-yellow-400 bg-clip-text text-transparent">
-            Cotação de Grãos
+            {t('cotacao.title')}
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Preços em tempo real baseados na sua localização detectada por IP. 
-            Dados atualizados automaticamente com cotações regionais personalizadas.
+            {t('cotacao.description')}
           </p>
         </div>
       </section>
@@ -32,7 +35,7 @@ const Cotacao = () => {
       <section className="py-20 px-4 bg-gray-900">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-16 text-white">
-            Como Funciona a Detecção de Localização
+            {t('cotacao.detectionTitle')}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center p-6 bg-gray-800 rounded-lg">
@@ -42,8 +45,8 @@ const Cotacao = () => {
                   <circle cx="12" cy="10" r="3"/>
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-white">1. Detecção por IP</h3>
-              <p className="text-gray-400">Detectamos automaticamente sua localização através do seu endereço IP</p>
+              <h3 className="text-xl font-semibold mb-2 text-white">1. {t('cotacao.detectionStep1')}</h3>
+              <p className="text-gray-400">{t('cotacao.detectionStep1Desc')}</p>
             </div>
             
             <div className="text-center p-6 bg-gray-800 rounded-lg">
@@ -54,8 +57,8 @@ const Cotacao = () => {
                   <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-white">2. Cotações Regionais</h3>
-              <p className="text-gray-400">Preços personalizados baseados na sua região detectada automaticamente</p>
+              <h3 className="text-xl font-semibold mb-2 text-white">2. {t('cotacao.detectionStep2')}</h3>
+              <p className="text-gray-400">{t('cotacao.detectionStep2Desc')}</p>
             </div>
             
             <div className="text-center p-6 bg-gray-800 rounded-lg">
@@ -66,8 +69,8 @@ const Cotacao = () => {
                   <path d="M6 16h12"/>
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-white">3. Atualização Automática</h3>
-              <p className="text-gray-400">Dados atualizados a cada 5 minutos para informações sempre precisas</p>
+              <h3 className="text-xl font-semibold mb-2 text-white">3. {t('cotacao.detectionStep3')}</h3>
+              <p className="text-gray-400">{t('cotacao.detectionStep3Desc')}</p>
             </div>
           </div>
         </div>
@@ -77,7 +80,7 @@ const Cotacao = () => {
       <section className="py-20 px-4 bg-black">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-16 text-white">
-            Grãos Monitorados
+            {t('cotacao.grainsTitle')}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
@@ -97,7 +100,7 @@ const Cotacao = () => {
                   </svg>
                 </div>
                 <h3 className="text-xl font-semibold mb-2 text-white">{grain.name}</h3>
-                <p className="text-gray-400">Unidade: {grain.unit}</p>
+                <p className="text-gray-400">{t('cotacao.unit')}: {grain.unit}</p>
               </div>
             ))}
           </div>

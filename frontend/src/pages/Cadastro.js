@@ -34,7 +34,28 @@ const Cadastro = () => {
       store: false,
       freight: false,
       crypto: false
-    }
+    },
+    
+    // Produtos (Loja)
+    products: [{
+      name: '',
+      category: '',
+      specifications: '',
+      images: [],
+      price: '',
+      quantity: '',
+      description: ''
+    }],
+    
+    // Fretes (AgroConecta)
+    freights: [{
+      cargoWeight: '',
+      cargoType: '',
+      distance: '',
+      route: '',
+      nf: '',
+      confidentialInfo: ''
+    }]
   });
 
   const [loading, setLoading] = useState(false);
@@ -106,6 +127,69 @@ const Cadastro = () => {
     }));
   };
 
+  // Gerenciar produtos
+  const addProduct = () => {
+    setFormData(prev => ({
+      ...prev,
+      products: [...prev.products, {
+        name: '',
+        category: '',
+        specifications: '',
+        images: [],
+        price: '',
+        quantity: '',
+        description: ''
+      }]
+    }));
+  };
+
+  const removeProduct = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      products: prev.products.filter((_, i) => i !== index)
+    }));
+  };
+
+  const updateProduct = (index, field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      products: prev.products.map((product, i) => 
+        i === index ? { ...product, [field]: value } : product
+      )
+    }));
+  };
+
+  // Gerenciar fretes
+  const addFreight = () => {
+    setFormData(prev => ({
+      ...prev,
+      freights: [...prev.freights, {
+        cargoWeight: '',
+        cargoType: '',
+        distance: '',
+        route: '',
+        nf: '',
+        confidentialInfo: ''
+      }]
+    }));
+  };
+
+  const removeFreight = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      freights: prev.freights.filter((_, i) => i !== index)
+    }));
+  };
+
+  const updateFreight = (index, field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      freights: prev.freights.map((freight, i) => 
+        i === index ? { ...freight, [field]: value } : freight
+      )
+    }));
+  };
+
   const validateForm = () => {
     const newErrors = {};
 
@@ -119,6 +203,25 @@ const Cadastro = () => {
     }
     if (!formData.city) newErrors.city = 'Cidade é obrigatória';
     if (!formData.state) newErrors.state = 'Estado é obrigatório';
+
+    // Validar produtos se módulo Loja selecionado
+    if (formData.modules.store) {
+      formData.products.forEach((product, index) => {
+        if (!product.name) newErrors[`product_${index}_name`] = 'Nome do produto é obrigatório';
+        if (!product.category) newErrors[`product_${index}_category`] = 'Categoria é obrigatória';
+        if (!product.price) newErrors[`product_${index}_price`] = 'Preço é obrigatório';
+        if (!product.quantity) newErrors[`product_${index}_quantity`] = 'Quantidade é obrigatória';
+      });
+    }
+
+    // Validar fretes se módulo AgroConecta selecionado
+    if (formData.modules.freight) {
+      formData.freights.forEach((freight, index) => {
+        if (!freight.cargoWeight) newErrors[`freight_${index}_weight`] = 'Peso da carga é obrigatório';
+        if (!freight.cargoType) newErrors[`freight_${index}_type`] = 'Tipo de carga é obrigatório';
+        if (!freight.route) newErrors[`freight_${index}_route`] = 'Rota é obrigatória';
+      });
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -134,7 +237,8 @@ const Cadastro = () => {
     try {
       setLoading(true);
       await register(formData);
-      // Redirect will be handled by AuthContext
+      // Redirecionar para página de planos após cadastro bem-sucedido
+      window.location.href = '/planos';
     } catch (error) {
       console.error('Registration error:', error);
     } finally {

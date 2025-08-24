@@ -415,7 +415,7 @@ const Ajuda = () => {
               className="inline-flex items-center space-x-3 px-8 py-4 bg-gradient-to-r from-red-600 to-pink-600 text-white font-bold rounded-xl hover:from-red-700 hover:to-pink-700 transition-all duration-300 hover:scale-105 shadow-lg"
             >
               <Ticket className="w-6 h-6" />
-              <span>Abrir Ticket de Suporte</span>
+                                  <span>{t('help.supportTicket')}</span>
             </button>
           </motion.div>
         </div>
@@ -512,17 +512,17 @@ const Ajuda = () => {
 
                       {/* Action Button */}
                       <div className="mt-6">
-                        <a
-                          href={item.link}
+                        <button
+                          onClick={() => window.location.href = '/#chatbot'}
                           className={`inline-flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
                             isDark
                               ? 'bg-green-600 text-white hover:bg-green-700'
                               : 'bg-green-600 text-white hover:bg-green-700'
                           }`}
                         >
-                          <Video className="w-4 h-4" />
-                          <span>Assistir Tutorial</span>
-                        </a>
+                          <MessageCircle className="w-4 h-4" />
+                          <span>{t('help.supportTicket')}</span>
+                        </button>
                       </div>
                     </motion.div>
                   ))}

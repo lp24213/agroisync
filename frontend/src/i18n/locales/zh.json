@@ -27,6 +27,7 @@
     "tagline": "巴西农业综合企业的完整中心"
   },
   "nav": {
+    "brand": "Agroisync",
     "home": "首页",
     "about": "关于",
     "store": "商店",
@@ -204,6 +205,7 @@
     "title": "帮助中心",
     "subtitle": "Agroisync教程、文档和支持",
     "contactTitle": "需要更多帮助？",
+    "supportTicket": "打开支持工单",
     "sections": {
       "firstSteps": {
         "title": "第一步",
@@ -640,6 +642,7 @@
   },
   "footer": {
     "description": "巴西农业综合企业的完整中心，集成实时数据、高级分析和全球连接。",
+    "tagline": "巴西农业综合企业中心",
     "quickLinks": "快速链接",
     "company": {
       "title": "公司",
@@ -676,5 +679,371 @@
     "social": "社交媒体",
     "newsletter": "通讯",
     "subscribe": "订阅"
+  },
+  "admin": {
+    "dashboard": "仪表板",
+    "users": "用户",
+    "payments": "付款",
+    "products": "产品",
+    "freights": "货运",
+    "settings": "设置",
+    "totalUsers": "用户总数",
+    "totalPayments": "付款总数",
+    "activeProducts": "活跃产品",
+    "availableFreights": "可用货运",
+    "usersByPlan": "按计划用户",
+    "freePlan": "免费",
+    "agroconnectPlus": "AGROCONNECT+",
+    "paymentStatus": "付款状态",
+    "completed": "已完成",
+    "pending": "待处理",
+    "manageUsers": "管理用户",
+    "newUser": "新用户",
+    "name": "姓名",
+    "email": "邮箱",
+    "plan": "计划",
+    "status": "状态",
+    "date": "日期",
+    "actions": "操作",
+    "paymentHistory": "付款历史",
+    "export": "导出",
+    "id": "ID",
+    "user": "用户",
+    "value": "价值",
+    "registeredProducts": "已注册产品",
+    "newProduct": "新产品",
+    "category": "类别",
+    "view": "查看",
+    "edit": "编辑",
+    "agroConnectFreights": "AgroConnect货运",
+    "newFreight": "新货运",
+    "freight": "货运",
+    "origin": "起点",
+    "destination": "目的地",
+    "weight": "重量",
+    "details": "详情",
+    "systemSettings": "系统设置",
+    "generalSettings": "常规设置",
+    "platformName": "平台名称",
+    "contactEmail": "联系邮箱",
+    "saveSettings": "保存设置",
+    "loadingDashboard": "加载管理面板...",
+    "logout": "退出"
+  },
+  "agroconecta": {
+    "products": {
+      "all": "所有产品",
+      "soy": "大豆",
+      "corn": "玉米",
+      "cotton": "棉花",
+      "coffee": "咖啡",
+      "inputs": "投入品",
+      "machinery": "机械"
+    },
+    "states": {
+      "all": "所有州",
+      "mt": "马托格罗索",
+      "go": "戈亚斯",
+      "ms": "南马托格罗索",
+      "pr": "巴拉那",
+      "rs": "南里奥格兰德",
+      "sp": "圣保罗",
+      "mg": "米纳斯吉拉斯",
+      "ba": "巴伊亚",
+      "to": "托坎廷斯"
+    },
+    "trucks": {
+      "all": "所有类型",
+      "truck": "卡车",
+      "truckTruck": "卡车-卡车",
+      "truckTruckTruck": "卡车-卡车-卡车",
+      "truckTruckTruckTruck": "卡车-卡车-卡车-卡车"
+    },
+    "search": {
+      "placeholder": "搜索货运、承运商..."
+    },
+    "price": {
+      "label": "价格",
+      "min": "最低",
+      "max": "最高"
+    },
+    "register": {
+      "freight": "注册货运",
+      "plan": "订阅计划"
+    },
+    "freights": {
+      "showing": "显示 {{count}} 个，共 {{total}} 个可用货运",
+      "days": "天",
+      "value_per_load": "每载价值",
+      "request_freight": "申请货运",
+      "no_freights_found": "未找到货运",
+      "try_adjusting_filters": "尝试调整过滤器或搜索词",
+      "error_loading": "加载货运时出错",
+      "try_again": "重试",
+      "loading_freights": "加载货运中...",
+      "waiting_best_freights": "等待我们为您搜索最佳货运"
+    },
+    "reviews": "评价"
+  },
+  "store": {
+    "title": "Agroisync商店",
+    "description": "完整农产品市场",
+    "categories": {
+      "all": "全部",
+      "grains": "谷物",
+      "inputs": "投入品",
+      "machinery": "机械",
+      "livestock": "畜牧",
+      "fruits": "水果",
+      "vegetables": "蔬菜"
+    },
+    "states": {
+      "all": "所有州",
+      "mt": "马托格罗索",
+      "go": "戈亚斯",
+      "ms": "南马托格罗索",
+      "pr": "巴拉那",
+      "rs": "南里奥格兰德",
+      "sp": "圣保罗",
+      "mg": "米纳斯吉拉斯",
+      "ba": "巴伊亚",
+      "to": "托坎廷斯"
+    },
+    "search": {
+      "placeholder": "搜索产品、卖家..."
+    },
+    "price": {
+      "label": "价格",
+      "min": "最低",
+      "max": "最高"
+    },
+    "addProduct": "注册产品",
+    "subscribe": "订阅计划",
+    "showing": "显示",
+    "of": "共",
+    "products": "产品",
+    "featured": "特色",
+    "unit": "每",
+    "stock": "库存",
+    "buy": "购买",
+    "noProductsFound": "未找到产品",
+    "tryAdjustFilters": "尝试调整过滤器或搜索词",
+    "errorLoadingProducts": "加载产品时出错",
+    "tryAgain": "重试",
+    "loading": "加载市场中...",
+    "loadingProducts": "加载产品中...",
+    "waitWhileSearching": "等待我们为您搜索最佳产品"
+  },
+  "plans": {
+    "free": {
+      "name": "免费",
+      "price": "R$ 0,00",
+      "description": "开始使用基本功能的理想选择",
+      "features": {
+        "ads": "最多3个活跃广告",
+        "basic_support": "邮件支持",
+        "marketplace_access": "市场访问",
+        "basic_chatbot": "基础聊天机器人（5,000条消息）"
+      },
+      "limitations": {
+        "ads_count": "3个广告限制",
+        "chat_messages": "消息限制",
+        "no_private_chat": "无私人聊天"
+      }
+    },
+    "agroconnectPlus": {
+      "name": "AGROCONNECT+",
+      "price": "R$ 99,00",
+      "originalPrice": "R$ 149,00",
+      "description": "活跃生产商和承运商的完美选择",
+      "features": {
+        "unlimited_ads": "无限广告",
+        "private_chat": "无限私人聊天",
+        "priority_support": "优先支持",
+        "advanced_chatbot": "高级聊天机器人（完整GPT）",
+        "freight_premium": "高级货运",
+        "store_highlight": "商店突出显示"
+      }
+    },
+    "agroconnectPro": {
+      "name": "AGROCONNECT PRO",
+      "price": "R$ 299,00",
+      "originalPrice": "R$ 399,00",
+      "description": "适合大型公司和车队",
+      "features": {
+        "everything_plus": "AGROCONNECT+的所有功能",
+        "analytics_advanced": "高级分析",
+        "api_custom": "自定义API",
+        "vip_support": "VIP支持24/7",
+        "white_label": "白标解决方案",
+        "dedicated_manager": "专属经理"
+      }
+    },
+    "lojaBasico": {
+      "name": "基础版",
+      "price": "R$ 0,00",
+      "period": "永久免费",
+      "description": "小型生产商和初学者的理想选择",
+      "features": {
+        "ads_count": "最多3个活跃广告",
+        "basic_support": "邮件支持",
+        "marketplace_access": "市场访问",
+        "basic_chatbot": "基础聊天机器人"
+      },
+      "limitations": {
+        "ads_count": "无广告突出显示",
+        "chat_messages": "无高级报告",
+        "no_private_chat": "无搜索优先级"
+      }
+    },
+    "lojaPro": {
+      "name": "专业版",
+      "price": "R$ 99,00",
+      "period": "每月",
+      "description": "活跃生产商和卖家的完美选择",
+      "features": {
+        "ads_count": "最多50个活跃广告",
+        "private_chat": "私人聊天",
+        "priority_support": "优先支持",
+        "advanced_chatbot": "高级聊天机器人",
+        "freight_premium": "高级货运",
+        "store_highlight": "商店突出显示"
+      }
+    },
+    "lojaEnterprise": {
+      "name": "企业版",
+      "price": "R$ 399,00",
+      "period": "每月",
+      "description": "适合大型生产商和农业企业",
+      "features": {
+        "everything_plus": "专业版的所有功能",
+        "analytics_advanced": "高级分析",
+        "api_custom": "自定义API",
+        "vip_support": "VIP支持24/7",
+        "white_label": "白标解决方案",
+        "dedicated_manager": "专属经理"
+      }
+    },
+    "agroconectaBasico": {
+      "name": "基础版",
+      "price": "R$ 0,00",
+      "period": "永久免费",
+      "description": "适合初学者司机和承运商",
+      "features": {
+        "ads_count": "每月最多5个活跃货运",
+        "basic_support": "邮件支持",
+        "marketplace_access": "货运列表访问",
+        "basic_chatbot": "基础聊天机器人"
+      },
+      "limitations": {
+        "ads_count": "无列表突出显示",
+        "chat_messages": "无直接聊天访问",
+        "no_private_chat": "无报告"
+      }
+    },
+    "agroconectaPro": {
+      "name": "专业版",
+      "price": "R$ 149,00",
+      "period": "每月",
+      "description": "适合专业承运商和司机",
+      "features": {
+        "ads_count": "每月最多100个活跃货运",
+        "private_chat": "直接聊天",
+        "priority_support": "优先支持",
+        "advanced_chatbot": "高级聊天机器人",
+        "freight_premium": "高级货运",
+        "store_highlight": "列表突出显示"
+      }
+    },
+    "agroconectaEnterprise": {
+      "name": "企业版",
+      "price": "R$ 499,00",
+      "period": "每月",
+      "description": "适合大型承运商和车队",
+      "features": {
+        "everything_plus": "专业版的所有功能",
+        "analytics_advanced": "高级分析",
+        "api_custom": "自定义API",
+        "vip_support": "VIP支持24/7",
+        "white_label": "白标解决方案",
+        "dedicated_manager": "专属经理"
+      }
+    },
+    "title": "{{module}}计划",
+    "storeDescription": "选择理想计划在巴西最大市场销售您的农产品",
+    "freightDescription": "选择完美计划将您的承运商连接到最佳农业货运",
+    "cryptoDescription": "选择理想计划投资加密货币和交易",
+    "popular": "最受欢迎",
+    "included": "计划包含：",
+    "limitations": "限制：",
+    "processing": "处理中...",
+    "startFree": "免费开始",
+    "choosePlan": "选择计划",
+    "cancelAnytime": "随时取消",
+    "noSetupFee": "无设置费"
+  },
+  "module": {
+    "store": "产品商店",
+    "freight": "AgroConnect（货运）",
+    "crypto": "加密货币",
+    "select": "选择模块",
+    "choose": "选择您的模块",
+    "storeDescription": "完整的农产品买卖市场",
+    "freightDescription": "连接生产商和承运商的货运平台",
+    "cryptoDescription": "加密货币投资和交易",
+    "selected": "已选择"
+  },
+  "header": {
+    "title": "计划和定价",
+    "description": "为您的农业企业选择理想计划"
+  },
+  "comparison": {
+    "title": "详细比较",
+    "description": "查看每个计划包含的所有功能",
+    "feature": "功能",
+    "activeAds": "活跃广告",
+    "activeFreights": "活跃货运",
+    "highlight": "列表突出显示",
+    "reports": "报告",
+    "basicReports": "基础",
+    "intermediateReports": "中级",
+    "advancedReports": "高级",
+    "support": "支持",
+    "emailSupport": "邮件",
+    "prioritySupport": "优先",
+    "dedicatedSupport": "专属24/7",
+    "apiIntegration": "API集成",
+    "directChat": "直接聊天"
+  },
+  "cta": {
+    "ready": "准备提升您的业务？",
+    "joinThousands": "加入数千名已经选择AgroSync的生产商和承运商",
+    "startNow": "立即开始",
+    "talkToExpert": "与专家交谈"
+  },
+  "cotacao": {
+    "title": "谷物报价",
+    "description": "基于您IP检测位置的实时价格。数据自动更新，提供个性化区域报价。",
+    "form": {
+      "productType": "产品类型",
+      "quantity": "数量",
+      "origin": "起点",
+      "destination": "目的地",
+      "deliveryDate": "交货日期",
+      "specialRequirements": "特殊要求"
+    },
+    "submit": "申请报价",
+    "loading": "计算报价中...",
+    "success": "报价发送成功！",
+    "error": "发送报价时出错",
+    "detectionTitle": "位置检测工作原理",
+    "detectionStep1": "IP检测",
+    "detectionStep1Desc": "我们通过您的IP地址自动检测您的位置",
+    "detectionStep2": "区域报价",
+    "detectionStep2Desc": "基于您自动检测区域的个性化价格",
+    "detectionStep3": "自动更新",
+    "detectionStep3Desc": "数据每5分钟更新一次，确保信息始终准确",
+    "grainsTitle": "监控谷物",
+    "unit": "单位"
   }
 }

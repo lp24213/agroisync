@@ -27,6 +27,7 @@
     "tagline": "El Hub Completo del Agronegocio Brasileño"
   },
   "nav": {
+    "brand": "Agroisync",
     "home": "Inicio",
     "about": "Acerca de",
     "store": "Tienda",
@@ -204,6 +205,7 @@
     "title": "Centro de Ayuda",
     "subtitle": "Tutoriales, Documentación y Soporte para Agroisync",
     "contactTitle": "¿Necesitas más ayuda?",
+    "supportTicket": "Abrir Ticket de Soporte",
     "sections": {
       "firstSteps": {
         "title": "Primeros Pasos",
@@ -640,6 +642,7 @@
   },
   "footer": {
     "description": "El Hub Completo del Agronegocio Brasileño, integrando datos en tiempo real, análisis avanzados y conectividad global.",
+    "tagline": "Hub del Agronegocio Brasileño",
     "quickLinks": "Enlaces Rápidos",
     "company": {
       "title": "Empresa",
@@ -676,5 +679,371 @@
     "social": "Redes Sociales",
     "newsletter": "Boletín",
     "subscribe": "Suscribirse"
+  },
+  "admin": {
+    "dashboard": "Panel",
+    "users": "Usuarios",
+    "payments": "Pagos",
+    "products": "Productos",
+    "freights": "Fletes",
+    "settings": "Configuración",
+    "totalUsers": "Total de Usuarios",
+    "totalPayments": "Total de Pagos",
+    "activeProducts": "Productos Activos",
+    "availableFreights": "Fletes Disponibles",
+    "usersByPlan": "Usuarios por Plan",
+    "freePlan": "Gratuito",
+    "agroconnectPlus": "AGROCONNECT+",
+    "paymentStatus": "Estado de Pagos",
+    "completed": "Completado",
+    "pending": "Pendiente",
+    "manageUsers": "Gestionar Usuarios",
+    "newUser": "Nuevo Usuario",
+    "name": "Nombre",
+    "email": "Email",
+    "plan": "Plan",
+    "status": "Estado",
+    "date": "Fecha",
+    "actions": "Acciones",
+    "paymentHistory": "Historial de Pagos",
+    "export": "Exportar",
+    "id": "ID",
+    "user": "Usuario",
+    "value": "Valor",
+    "registeredProducts": "Productos Registrados",
+    "newProduct": "Nuevo Producto",
+    "category": "Categoría",
+    "view": "Ver",
+    "edit": "Editar",
+    "agroConnectFreights": "Fletes AgroConecta",
+    "newFreight": "Nuevo Flete",
+    "freight": "Flete",
+    "origin": "Origen",
+    "destination": "Destino",
+    "weight": "Peso",
+    "details": "Detalles",
+    "systemSettings": "Configuración del Sistema",
+    "generalSettings": "Configuración General",
+    "platformName": "Nombre de la Plataforma",
+    "contactEmail": "Email de Contacto",
+    "saveSettings": "Guardar Configuración",
+    "loadingDashboard": "Cargando panel administrativo...",
+    "logout": "Salir"
+  },
+  "agroconecta": {
+    "products": {
+      "all": "Todos los Productos",
+      "soy": "Soja",
+      "corn": "Maíz",
+      "cotton": "Algodón",
+      "coffee": "Café",
+      "inputs": "Insumos",
+      "machinery": "Maquinaria"
+    },
+    "states": {
+      "all": "Todos los Estados",
+      "mt": "Mato Grosso",
+      "go": "Goiás",
+      "ms": "Mato Grosso do Sul",
+      "pr": "Paraná",
+      "rs": "Rio Grande do Sul",
+      "sp": "São Paulo",
+      "mg": "Minas Gerais",
+      "ba": "Bahia",
+      "to": "Tocantins"
+    },
+    "trucks": {
+      "all": "Todos los Tipos",
+      "truck": "Camión",
+      "truckTruck": "Camión-Camión",
+      "truckTruckTruck": "Camión-Camión-Camión",
+      "truckTruckTruckTruck": "Camión-Camión-Camión-Camión"
+    },
+    "search": {
+      "placeholder": "Buscar fletes, transportistas..."
+    },
+    "price": {
+      "label": "Precio",
+      "min": "Min",
+      "max": "Max"
+    },
+    "register": {
+      "freight": "Registrar Flete",
+      "plan": "Suscribir Plan"
+    },
+    "freights": {
+      "showing": "Mostrando {{count}} de {{total}} fletes disponibles",
+      "days": "días",
+      "value_per_load": "Valor por carga",
+      "request_freight": "Solicitar Flete",
+      "no_freights_found": "No se encontraron fletes",
+      "try_adjusting_filters": "Intenta ajustar los filtros o términos de búsqueda",
+      "error_loading": "Error al cargar fletes",
+      "try_again": "Intentar de nuevo",
+      "loading_freights": "Cargando fletes...",
+      "waiting_best_freights": "Espera mientras buscamos los mejores fletes para ti"
+    },
+    "reviews": "reseñas"
+  },
+  "store": {
+    "title": "Tienda Agroisync",
+    "description": "Marketplace Completo de Productos Agrícolas",
+    "categories": {
+      "all": "Todos",
+      "grains": "Granos",
+      "inputs": "Insumos",
+      "machinery": "Maquinaria",
+      "livestock": "Ganadería",
+      "fruits": "Frutas",
+      "vegetables": "Verduras"
+    },
+    "states": {
+      "all": "Todos los Estados",
+      "mt": "Mato Grosso",
+      "go": "Goiás",
+      "ms": "Mato Grosso do Sul",
+      "pr": "Paraná",
+      "rs": "Rio Grande do Sul",
+      "sp": "São Paulo",
+      "mg": "Minas Gerais",
+      "ba": "Bahia",
+      "to": "Tocantins"
+    },
+    "search": {
+      "placeholder": "Buscar productos, vendedores..."
+    },
+    "price": {
+      "label": "Precio",
+      "min": "Min",
+      "max": "Max"
+    },
+    "addProduct": "Registrar Producto",
+    "subscribe": "Suscribir Plan",
+    "showing": "Mostrando",
+    "of": "de",
+    "products": "productos",
+    "featured": "DESTACADO",
+    "unit": "por",
+    "stock": "Stock",
+    "buy": "Comprar",
+    "noProductsFound": "No se encontraron productos",
+    "tryAdjustFilters": "Intenta ajustar los filtros o términos de búsqueda",
+    "errorLoadingProducts": "Error al cargar productos",
+    "tryAgain": "Intentar de nuevo",
+    "loading": "Cargando marketplace...",
+    "loadingProducts": "Cargando productos...",
+    "waitWhileSearching": "Espera mientras buscamos los mejores productos para ti"
+  },
+  "plans": {
+    "free": {
+      "name": "Gratuito",
+      "price": "R$ 0,00",
+      "description": "Ideal para comenzar con funciones básicas",
+      "features": {
+        "ads": "Hasta 3 anuncios activos",
+        "basic_support": "Soporte por email",
+        "marketplace_access": "Acceso al marketplace",
+        "basic_chatbot": "Chatbot básico (5.000 mensajes)"
+      },
+      "limitations": {
+        "ads_count": "Límite de 3 anuncios",
+        "chat_messages": "Límite de mensajes",
+        "no_private_chat": "Sin chat privado"
+      }
+    },
+    "agroconnectPlus": {
+      "name": "AGROCONNECT+",
+      "price": "R$ 99,00",
+      "originalPrice": "R$ 149,00",
+      "description": "Perfecto para productores y transportistas activos",
+      "features": {
+        "unlimited_ads": "Anuncios ilimitados",
+        "private_chat": "Chat privado ilimitado",
+        "priority_support": "Soporte prioritario",
+        "advanced_chatbot": "Chatbot avanzado (GPT completo)",
+        "freight_premium": "Fletes premium",
+        "store_highlight": "Destacado en la tienda"
+      }
+    },
+    "agroconnectPro": {
+      "name": "AGROCONNECT PRO",
+      "price": "R$ 299,00",
+      "originalPrice": "R$ 399,00",
+      "description": "Para grandes empresas y flotas",
+      "features": {
+        "everything_plus": "Todo del AGROCONNECT+",
+        "analytics_advanced": "Analytics avanzados",
+        "api_custom": "API personalizada",
+        "vip_support": "Soporte VIP 24/7",
+        "white_label": "Solución white label",
+        "dedicated_manager": "Gerente dedicado"
+      }
+    },
+    "lojaBasico": {
+      "name": "Básico",
+      "price": "R$ 0,00",
+      "period": "Siempre gratis",
+      "description": "Ideal para pequeños productores y vendedores principiantes",
+      "features": {
+        "ads_count": "Hasta 3 anuncios activos",
+        "basic_support": "Soporte por email",
+        "marketplace_access": "Acceso al marketplace",
+        "basic_chatbot": "Chatbot básico"
+      },
+      "limitations": {
+        "ads_count": "Sin destacados en anuncios",
+        "chat_messages": "Sin reportes avanzados",
+        "no_private_chat": "Sin prioridad en búsqueda"
+      }
+    },
+    "lojaPro": {
+      "name": "Pro",
+      "price": "R$ 99,00",
+      "period": "por mes",
+      "description": "Perfecto para productores y vendedores activos",
+      "features": {
+        "ads_count": "Hasta 50 anuncios activos",
+        "private_chat": "Chat privado",
+        "priority_support": "Soporte prioritario",
+        "advanced_chatbot": "Chatbot avanzado",
+        "freight_premium": "Fletes premium",
+        "store_highlight": "Destacado en la tienda"
+      }
+    },
+    "lojaEnterprise": {
+      "name": "Enterprise",
+      "price": "R$ 399,00",
+      "period": "por mes",
+      "description": "Para grandes productores y empresas del agronegocio",
+      "features": {
+        "everything_plus": "Todo del plan Pro",
+        "analytics_advanced": "Analytics avanzados",
+        "api_custom": "API personalizada",
+        "vip_support": "Soporte VIP 24/7",
+        "white_label": "Solución white label",
+        "dedicated_manager": "Gerente dedicado"
+      }
+    },
+    "agroconectaBasico": {
+      "name": "Básico",
+      "price": "R$ 0,00",
+      "period": "Siempre gratis",
+      "description": "Para conductores y transportistas principiantes",
+      "features": {
+        "ads_count": "Hasta 5 fletes activos/mes",
+        "basic_support": "Soporte por email",
+        "marketplace_access": "Acceso a listado de fletes",
+        "basic_chatbot": "Chatbot básico"
+      },
+      "limitations": {
+        "ads_count": "Sin destacados en listados",
+        "chat_messages": "Sin acceso al chat directo",
+        "no_private_chat": "Sin reportes"
+      }
+    },
+    "agroconectaPro": {
+      "name": "Pro",
+      "price": "R$ 149,00",
+      "period": "por mes",
+      "description": "Para transportistas y conductores profesionales",
+      "features": {
+        "ads_count": "Hasta 100 fletes activos/mes",
+        "private_chat": "Chat directo",
+        "priority_support": "Soporte prioritario",
+        "advanced_chatbot": "Chatbot avanzado",
+        "freight_premium": "Fletes premium",
+        "store_highlight": "Destacados en listados"
+      }
+    },
+    "agroconectaEnterprise": {
+      "name": "Enterprise",
+      "price": "R$ 499,00",
+      "period": "por mes",
+      "description": "Para grandes transportistas y flotas",
+      "features": {
+        "everything_plus": "Todo del plan Pro",
+        "analytics_advanced": "Analytics avanzados",
+        "api_custom": "API personalizada",
+        "vip_support": "Soporte VIP 24/7",
+        "white_label": "Solución white label",
+        "dedicated_manager": "Gerente dedicado"
+      }
+    },
+    "title": "Planes {{module}}",
+    "storeDescription": "Elige el plan ideal para vender tus productos agrícolas en el mayor marketplace de Brasil",
+    "freightDescription": "Selecciona el plan perfecto para conectar tu transportista a los mejores fletes del agronegocio",
+    "cryptoDescription": "Elige el plan ideal para invertir en criptomonedas y trading",
+    "popular": "Más Popular",
+    "included": "Incluido en el plan:",
+    "limitations": "Limitaciones:",
+    "processing": "Procesando...",
+    "startFree": "Comenzar Gratis",
+    "choosePlan": "Elegir Plan",
+    "cancelAnytime": "Cancelación en cualquier momento",
+    "noSetupFee": "Sin tarifa de configuración"
+  },
+  "module": {
+    "store": "Tienda de Productos",
+    "freight": "AgroConecta (Fletes)",
+    "crypto": "Criptomonedas",
+    "select": "Seleccionar Módulo",
+    "choose": "Elige tu Módulo",
+    "storeDescription": "Marketplace completo para vender y comprar productos agrícolas",
+    "freightDescription": "Plataforma de fletes para conectar productores y transportistas",
+    "cryptoDescription": "Inversiones y trading en criptomonedas",
+    "selected": "Seleccionado"
+  },
+  "header": {
+    "title": "Planes y Precios",
+    "description": "Elige el Plan Ideal para tu Agronegocio"
+  },
+  "comparison": {
+    "title": "Comparación Detallada",
+    "description": "Ve todas las funcionalidades incluidas en cada plan",
+    "feature": "Funcionalidad",
+    "activeAds": "Anuncios Activos",
+    "activeFreights": "Fletes Activos",
+    "highlight": "Destacado en Listados",
+    "reports": "Reportes",
+    "basicReports": "Básicos",
+    "intermediateReports": "Intermedios",
+    "advancedReports": "Avanzados",
+    "support": "Soporte",
+    "emailSupport": "Email",
+    "prioritySupport": "Prioritario",
+    "dedicatedSupport": "Dedicado 24/7",
+    "apiIntegration": "API de Integración",
+    "directChat": "Chat Directo"
+  },
+  "cta": {
+    "ready": "¿Listo para Impulsar tu Negocio?",
+    "joinThousands": "Únete a miles de productores y transportistas que ya eligieron AgroSync",
+    "startNow": "Comenzar Ahora",
+    "talkToExpert": "Hablar con Experto"
+  },
+  "cotacao": {
+    "title": "Cotización de Granos",
+    "description": "Precios en tiempo real basados en tu ubicación detectada por IP. Datos actualizados automáticamente con cotizaciones regionales personalizadas.",
+    "form": {
+      "productType": "Tipo de Producto",
+      "quantity": "Cantidad",
+      "origin": "Origen",
+      "destination": "Destino",
+      "deliveryDate": "Fecha de Entrega",
+      "specialRequirements": "Requisitos Especiales"
+    },
+    "submit": "Solicitar Cotización",
+    "loading": "Calculando cotización...",
+    "success": "¡Cotización enviada con éxito!",
+    "error": "Error al enviar cotización",
+    "detectionTitle": "Cómo Funciona la Detección de Ubicación",
+    "detectionStep1": "Detección por IP",
+    "detectionStep1Desc": "Detectamos automáticamente tu ubicación a través de tu dirección IP",
+    "detectionStep2": "Cotizaciones Regionales",
+    "detectionStep2Desc": "Precios personalizados basados en tu región detectada automáticamente",
+    "detectionStep3": "Actualización Automática",
+    "detectionStep3Desc": "Datos actualizados cada 5 minutos para información siempre precisa",
+    "grainsTitle": "Granos Monitoreados",
+    "unit": "Unidad"
   }
 }

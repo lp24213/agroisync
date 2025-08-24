@@ -40,7 +40,7 @@ const Footer = () => {
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold">Agroisync</h3>
-                  <p className="text-green-400 text-sm">Hub do Agronegócio Brasileiro</p>
+                  <p className="text-green-400 text-sm">{t('footer.tagline')}</p>
                 </div>
               </div>
               <p className="text-gray-300 text-sm leading-relaxed max-w-md">
@@ -163,7 +163,7 @@ const Footer = () => {
               <MapPin className="w-5 h-5 text-green-400" />
               <div>
                 <p className="text-sm text-gray-300">{t('contact.info.address.title')}</p>
-                <p className="text-white font-medium">Sinop - MT, Brasil</p>
+                <p className="text-white font-medium">{t('contact.info.address.content')}</p>
               </div>
             </div>
             
@@ -201,16 +201,16 @@ const Footer = () => {
             
             <div className="flex items-center space-x-6 text-sm">
               <a href="/privacidade" className="text-gray-400 hover:text-green-400 transition-colors duration-200">
-                Política de Privacidade
+                {t('footer.legal.privacy')}
               </a>
               <a href="/termos" className="text-gray-400 hover:text-green-400 transition-colors duration-200">
-                Termos de Uso
+                {t('footer.legal.terms')}
               </a>
               <a href="/cookies" className="text-gray-400 hover:text-green-400 transition-colors duration-200">
-                Política de Cookies
+                {t('footer.legal.cookies')}
               </a>
               <a href="/lgpd" className="text-gray-400 hover:text-green-400 transition-colors duration-200">
-                LGPD
+                {t('footer.legal.compliance')}
               </a>
             </div>
           </div>

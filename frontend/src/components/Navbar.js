@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { 
   Menu, X, Globe, Sun, Moon, User, 
   ShoppingCart, Truck, Coins, BarChart3, HelpCircle, 
-  Activity, LogOut
+  Activity, LogOut, Award, MessageCircle
 } from 'lucide-react';
 
 const Navbar = () => {
@@ -59,7 +59,7 @@ const Navbar = () => {
             <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-green-500 to-blue-600 flex items-center justify-center">
                 <span className="text-white font-bold text-lg">A</span>
               </div>
-            <span className="text-xl font-bold">Agroisync</span>
+            <span className="text-xl font-bold">{t('nav.brand')}</span>
           </motion.div>
 
           {/* Desktop Navigation - Centralizado */}
@@ -234,46 +234,89 @@ const Navbar = () => {
               className="lg:hidden bg-black border-t border-gray-700"
             >
               <div className="py-4 space-y-2">
-                <a href="/" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
-                  <BarChart3 className="w-5 h-5 text-white" />
-                  <span>{t('nav.home')}</span>
-                </a>
-                <a href="/sobre" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
-                  <HelpCircle className="w-5 h-5 text-white" />
-                  <span>{t('nav.about')}</span>
-                </a>
-                <a href="/loja" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
-                  <ShoppingCart className="w-5 h-5 text-white" />
-                  <span>{t('nav.store')}</span>
-                </a>
-                <a href="/agroconecta" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
-                  <Truck className="w-5 h-5 text-white" />
-                  <span>{t('nav.agroconnect')}</span>
-                </a>
-                <a href="/cripto" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
-                  <Coins className="w-5 h-5 text-white" />
-                  <span>{t('nav.crypto')}</span>
-                </a>
-                <a href="/planos" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
-                  <Activity className="w-5 h-5 text-white" />
-                  <span>{t('nav.plans')}</span>
-                </a>
-                <a href="/faq" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
-                  <HelpCircle className="w-5 h-5 text-white" />
-                  <span>{t('nav.faq')}</span>
-                </a>
-                <a href="/ajuda" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
-                  <HelpCircle className="w-5 h-5 text-white" />
-                  <span>{t('nav.help')}</span>
-                </a>
-                <a href="/status" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
-                  <Activity className="w-5 h-5 text-white" />
-                  <span>{t('nav.status')}</span>
-                </a>
-                <a href="/contato" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
-                  <HelpCircle className="w-5 h-5 text-white" />
-                  <span>{t('nav.contact')}</span>
-                </a>
+                {/* Grupo 1: Navegação Principal */}
+                <div className="px-3 py-2">
+                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Navegação</h3>
+                  <div className="space-y-2">
+                    <a href="/" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                      <BarChart3 className="w-5 h-5 text-green-400" />
+                      <span>{t('nav.home')}</span>
+                    </a>
+                    <a href="/cripto" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                      <Coins className="w-5 h-5 text-yellow-400" />
+                      <span>{t('nav.crypto')}</span>
+                    </a>
+                    <a href="/faq" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                      <HelpCircle className="w-5 h-5 text-blue-400" />
+                      <span>{t('nav.faq')}</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Grupo 2: Serviços */}
+                <div className="px-3 py-2">
+                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Serviços</h3>
+                  <div className="space-y-2">
+                    <a href="/agroconecta" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                      <Truck className="w-5 h-5 text-green-400" />
+                      <span>{t('nav.agroconnect')}</span>
+                    </a>
+                    <a href="/loja" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                      <ShoppingCart className="w-5 h-5 text-blue-400" />
+                      <span>{t('nav.store')}</span>
+                    </a>
+                    <a href="/planos" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                      <Activity className="w-5 h-5 text-purple-400" />
+                      <span>{t('nav.plans')}</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Grupo 3: Suporte e Informações */}
+                <div className="px-3 py-2">
+                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Suporte</h3>
+                  <div className="space-y-2">
+                    <a href="/ajuda" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                      <HelpCircle className="w-5 h-5 text-green-400" />
+                      <span>{t('nav.help')}</span>
+                    </a>
+                    <a href="/status" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                      <Activity className="w-5 h-5 text-blue-400" />
+                      <span>{t('nav.status')}</span>
+                    </a>
+                    <a href="/contato" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                      <HelpCircle className="w-5 h-5 text-purple-400" />
+                      <span>{t('nav.contact')}</span>
+                    </a>
+                    <a href="/parcerias" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                      <Award className="w-5 h-5 text-yellow-400" />
+                      <span>Parcerias</span>
+                    </a>
+                    <a href="/sobre" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                      <HelpCircle className="w-5 h-5 text-gray-400" />
+                      <span>{t('nav.about')}</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Chatbot IA */}
+                <div className="px-3 py-2">
+                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Assistente IA</h3>
+                  <button
+                    onClick={() => {
+                      setIsOpen(false);
+                      // Scroll para o chatbot
+                      const chatbotElement = document.getElementById('chatbot');
+                      if (chatbotElement) {
+                        chatbotElement.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }}
+                    className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white bg-gradient-to-r from-green-600/20 to-blue-600/20 border border-green-500/30"
+                  >
+                    <MessageCircle className="w-5 h-5 text-green-400" />
+                    <span>{t('chatbot.name')}</span>
+                  </button>
+                </div>
 
                 {/* Mobile Language & Theme */}
                 <div className="flex items-center justify-between p-3 border-t border-gray-700">

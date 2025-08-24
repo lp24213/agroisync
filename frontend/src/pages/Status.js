@@ -67,7 +67,7 @@ const Status = () => {
       },
       {
         id: 'chatbot',
-        name: 'Chatbot IA',
+        name: t('chatbot.name'),
         description: 'Assistente virtual inteligente com suporte multilíngue',
         status: 'operational',
         uptime: '99.99%',
@@ -84,7 +84,7 @@ const Status = () => {
       {
         id: 'apis',
         name: 'APIs (AWS Lambda + API Gateway)',
-        description: 'Interface de programação para integrações',
+        description: 'Interface de programação para integrações - usado apenas para APIs',
         status: 'operational',
         uptime: '99.97%',
         responseTime: '85ms',
@@ -99,7 +99,7 @@ const Status = () => {
       },
       {
         id: 'database',
-        name: 'Banco de Dados MongoDB',
+        name: t('status.services.database.name'),
         description: 'Banco de dados NoSQL para armazenamento flexível',
         status: 'operational',
         uptime: '99.96%',
@@ -116,7 +116,7 @@ const Status = () => {
       {
         id: 'auth',
         name: 'Autenticação AWS Cognito',
-        description: 'Sistema de autenticação e autorização',
+        description: 'Sistema de autenticação e autorização - usado apenas para autenticação',
         status: 'operational',
         uptime: '99.94%',
         responseTime: '150ms',

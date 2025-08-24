@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
+import { useTranslation } from 'react-i18next';
 import { 
   Search, Filter, MapPin, Truck, Package, Clock, DollarSign,
   Star, Phone, Mail, Calendar, Weight, Route, User, Building, Plus
@@ -9,6 +10,7 @@ import { freightService } from '../services/freightService';
 
 const AgroConecta = () => {
   const { isDark } = useTheme();
+  const { t } = useTranslation();
   const [freights, setFreights] = useState([]);
   const [filteredFreights, setFilteredFreights] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,36 +24,36 @@ const AgroConecta = () => {
 
   // Tipos de produtos agrícolas
   const productTypes = [
-    { id: 'all', name: 'Todos os Produtos' },
-    { id: 'soja', name: 'Soja' },
-    { id: 'milho', name: 'Milho' },
-    { id: 'algodão', name: 'Algodão' },
-    { id: 'café', name: 'Café' },
-    { id: 'insumo', name: 'Insumos' },
-    { id: 'maquinário', name: 'Maquinário' }
+    { id: 'all', name: t('agroconecta.products.all') },
+    { id: 'soja', name: t('agroconecta.products.soy') },
+    { id: 'milho', name: t('agroconecta.products.corn') },
+    { id: 'algodão', name: t('agroconecta.products.cotton') },
+    { id: 'café', name: t('agroconecta.products.coffee') },
+    { id: 'insumo', name: t('agroconecta.products.inputs') },
+    { id: 'maquinário', name: t('agroconecta.products.machinery') }
   ];
 
   // Estados brasileiros
   const states = [
-    { id: 'all', name: 'Todos os Estados' },
-    { id: 'MT', name: 'Mato Grosso' },
-    { id: 'GO', name: 'Goiás' },
-    { id: 'MS', name: 'Mato Grosso do Sul' },
-    { id: 'PR', name: 'Paraná' },
-    { id: 'RS', name: 'Rio Grande do Sul' },
-    { id: 'SP', name: 'São Paulo' },
-    { id: 'MG', name: 'Minas Gerais' },
-    { id: 'BA', name: 'Bahia' },
-    { id: 'TO', name: 'Tocantins' }
+    { id: 'all', name: t('agroconecta.states.all') },
+    { id: 'MT', name: t('agroconecta.states.mt') },
+    { id: 'GO', name: t('agroconecta.states.go') },
+    { id: 'MS', name: t('agroconecta.states.ms') },
+    { id: 'PR', name: t('agroconecta.states.pr') },
+    { id: 'RS', name: t('agroconecta.states.rs') },
+    { id: 'SP', name: t('agroconecta.states.sp') },
+    { id: 'MG', name: t('agroconecta.states.mg') },
+    { id: 'BA', name: t('agroconecta.states.ba') },
+    { id: 'TO', name: t('agroconecta.states.to') }
   ];
 
   // Tipos de caminhão
   const truckTypes = [
-    { id: 'all', name: 'Todos os Tipos' },
-    { id: 'truck', name: 'Truck' },
-    { id: 'truck-truck', name: 'Truck-Truck' },
-    { id: 'truck-truck-truck', name: 'Truck-Truck-Truck' },
-    { id: 'truck-truck-truck-truck', name: 'Truck-Truck-Truck-Truck' }
+    { id: 'all', name: t('agroconecta.trucks.all') },
+    { id: 'truck', name: t('agroconecta.trucks.truck') },
+    { id: 'truck-truck', name: t('agroconecta.trucks.truckTruck') },
+    { id: 'truck-truck-truck', name: t('agroconecta.trucks.truckTruckTruck') },
+    { id: 'truck-truck-truck-truck', name: t('agroconecta.trucks.truckTruckTruckTruck') }
   ];
 
   // Função para buscar fretes do MongoDB
@@ -257,7 +259,7 @@ const AgroConecta = () => {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Buscar fretes, transportadoras..."
+                  placeholder={t('agroconecta.search.placeholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -321,10 +323,10 @@ const AgroConecta = () => {
 
               {/* Faixa de Preço */}
               <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-600">Preço:</span>
+                <span className="text-sm text-gray-600">{t('agroconecta.price.label')}:</span>
                 <input
                   type="number"
-                  placeholder="Min"
+                  placeholder={t('agroconecta.price.min')}
                   value={priceRange[0]}
                   onChange={(e) => setPriceRange([parseInt(e.target.value) || 0, priceRange[1]])}
                   className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -332,7 +334,7 @@ const AgroConecta = () => {
                 <span className="text-gray-400">-</span>
                 <input
                   type="number"
-                  placeholder="Max"
+                  placeholder={t('agroconecta.price.max')}
                   value={priceRange[1]}
                   onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value) || 10000])}
                   className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -345,7 +347,7 @@ const AgroConecta = () => {
                 className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors duration-300 flex items-center gap-2"
               >
                 <Plus className="w-5 h-5" />
-                Cadastrar Frete
+                {t('agroconecta.register.freight')}
               </button>
 
               {/* Botão Assinar Plano */}
@@ -354,7 +356,7 @@ const AgroConecta = () => {
                 className="px-6 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors duration-300 flex items-center gap-2"
               >
                 <Star className="w-5 h-5" />
-                Assinar Plano
+                {t('agroconecta.register.plan')}
               </button>
             </div>
           </div>
@@ -367,8 +369,7 @@ const AgroConecta = () => {
           {/* Estatísticas */}
           <div className="mb-8 text-center">
             <p className="text-gray-600">
-              Mostrando <span className="font-semibold text-blue-600">{filteredFreights.length}</span> de{' '}
-              <span className="font-semibold text-blue-600">{freights.length}</span> fretes disponíveis
+              {t('agroconecta.freights.showing', { count: filteredFreights.length, total: freights.length })}
             </p>
           </div>
 
@@ -431,7 +432,7 @@ const AgroConecta = () => {
                         <div className="flex items-center space-x-2">
                           <Clock className="w-4 h-4 text-purple-600" />
                           <span className="text-sm text-gray-600">
-                            <strong>{freight.deliveryTime} dias</strong>
+                            <strong>{freight.deliveryTime} {t('agroconecta.freights.days')}</strong>
                           </span>
                         </div>
                         <div className="flex items-center space-x-2">
@@ -449,10 +450,10 @@ const AgroConecta = () => {
                         {formatPrice(freight.freightValue)}
                       </div>
                       <div className="text-sm text-gray-600 mb-2">
-                        Valor por carga
+                        {t('agroconecta.freights.value_per_load')}
                       </div>
                       <button className="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors font-medium">
-                        Solicitar Frete
+                        {t('agroconecta.freights.request_freight')}
                       </button>
                     </div>
                   </div>
@@ -468,7 +469,7 @@ const AgroConecta = () => {
                         <div className="flex items-center space-x-2">
                           <Star className="w-4 h-4 text-yellow-400 fill-current" />
                           <span className="text-sm text-gray-600">
-                            {freight.carrier?.rating || 'N/A'} ({freight.carrier?.reviews || 0} avaliações)
+                            {freight.carrier?.rating || 'N/A'} ({freight.carrier?.reviews || 0} {t('agroconecta.reviews')})
                           </span>
                         </div>
                       </div>
@@ -500,8 +501,8 @@ const AgroConecta = () => {
           {!loading && !error && filteredFreights.length === 0 && (
             <div className="text-center py-20">
               <Truck className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-600 mb-2">Nenhum frete encontrado</h3>
-              <p className="text-gray-500">Tente ajustar os filtros ou termos de busca</p>
+              <h3 className="text-xl font-semibold text-gray-600 mb-2">{t('agroconecta.freights.no_freights_found')}</h3>
+              <p className="text-gray-500">{t('agroconecta.freights.try_adjusting_filters')}</p>
             </div>
           )}
 
@@ -511,13 +512,13 @@ const AgroConecta = () => {
               <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Truck className="w-8 h-8 text-red-600" />
               </div>
-              <h3 className="text-xl font-semibold text-red-600 mb-2">Erro ao carregar fretes</h3>
+              <h3 className="text-xl font-semibold text-red-600 mb-2">{t('agroconecta.freights.error_loading')}</h3>
               <p className="text-gray-500 mb-4">{error}</p>
               <button 
                 onClick={fetchFreights}
                 className="bg-red-600 text-white px-6 py-2 rounded-xl hover:bg-red-700 transition-colors"
               >
-                Tentar novamente
+                {t('agroconecta.freights.try_again')}
               </button>
             </div>
           )}
@@ -528,8 +529,8 @@ const AgroConecta = () => {
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-spin">
                 <Truck className="w-8 h-8 text-blue-600" />
               </div>
-              <h3 className="text-xl font-semibold text-blue-600 mb-2">Carregando fretes...</h3>
-              <p className="text-gray-500">Aguarde enquanto buscamos os melhores fretes para você</p>
+              <h3 className="text-xl font-semibold text-blue-600 mb-2">{t('agroconecta.freights.loading_freights')}</h3>
+              <p className="text-gray-500">{t('agroconecta.freights.waiting_best_freights')}</p>
             </div>
           )}
         </div>

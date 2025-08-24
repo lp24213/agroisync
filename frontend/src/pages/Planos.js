@@ -3,15 +3,17 @@ import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { paymentService } from '../services/paymentService';
+import { useTranslation } from 'react-i18next';
 import { 
   Check, Star, ShoppingCart, Truck, Package, Leaf, Wrench, User, 
-  Circle, Settings, BarChart3, Headphones, Zap, Shield, Globe, Coins
+  Circle, Settings, BarChart3, Headphones, Zap, Shield, Globe, Coins, Users, Crown
 } from 'lucide-react';
 // Componentes removidos - já renderizados pelo Layout global
 
 const Planos = () => {
   const { isDark } = useTheme();
   const { user, hasActivePlan } = useAuth();
+  const { t } = useTranslation();
   const [selectedModule, setSelectedModule] = useState('store');
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -25,21 +27,20 @@ const Planos = () => {
   const lojaPlans = [
     {
       id: 'loja-basico',
-      name: 'Básico',
-      price: 'R$ 0,00',
-      period: 'Sempre grátis',
-      description: 'Ideal para pequenos produtores e vendedores iniciantes',
+      name: t('plans.lojaBasico.name'),
+      price: t('plans.lojaBasico.price'),
+      period: t('plans.lojaBasico.period'),
+      description: t('plans.lojaBasico.description'),
       features: [
-        'Até 3 anúncios ativos',
-        'Perfil básico de vendedor',
-        'Suporte por email',
-        'Estatísticas básicas',
-        'Acesso ao marketplace'
+        t('plans.lojaBasico.features.ads_count'),
+        t('plans.lojaBasico.features.basic_support'),
+        t('plans.lojaBasico.features.marketplace_access'),
+        t('plans.lojaBasico.features.basic_chatbot')
       ],
       limitations: [
-        'Sem destaque nos anúncios',
-        'Sem relatórios avançados',
-        'Sem prioridade na busca'
+        t('plans.lojaBasico.limitations.ads_count'),
+        t('plans.lojaBasico.limitations.chat_messages'),
+        t('plans.lojaBasico.limitations.no_private_chat')
       ],
       color: 'from-gray-500 to-gray-600',
       buttonColor: 'bg-gray-600 hover:bg-gray-700',
@@ -47,43 +48,36 @@ const Planos = () => {
     },
     {
       id: 'loja-pro',
-      name: 'Pro',
-      price: 'R$ 99,00',
-      period: 'por mês',
-      description: 'Perfeito para produtores e vendedores ativos',
+      name: t('plans.lojaPro.name'),
+      price: t('plans.lojaPro.price'),
+      period: t('plans.lojaPro.period'),
+      description: t('plans.lojaPro.description'),
       features: [
-        'Até 50 anúncios ativos',
-        'Anúncios em destaque',
-        'Relatórios básicos de vendas',
-        'Suporte prioritário',
-        'Perfil verificado',
-        'Acesso a ferramentas de marketing',
-        'Notificações de interesse'
+        t('plans.lojaPro.features.ads_count'),
+        t('plans.lojaPro.features.private_chat'),
+        t('plans.lojaPro.features.priority_support'),
+        t('plans.lojaPro.features.advanced_chatbot'),
+        t('plans.lojaPro.features.freight_premium'),
+        t('plans.lojaPro.features.store_highlight')
       ],
-      limitations: [
-        'Limite de anúncios',
-        'Sem relatórios avançados'
-      ],
+      limitations: [],
       color: 'from-green-500 to-green-600',
       buttonColor: 'bg-green-600 hover:bg-green-700',
       popular: true
     },
     {
       id: 'loja-enterprise',
-      name: 'Enterprise',
-      price: 'R$ 399,00',
-      period: 'por mês',
-      description: 'Para grandes produtores e empresas do agronegócio',
+      name: t('plans.lojaEnterprise.name'),
+      price: t('plans.lojaEnterprise.price'),
+      period: t('plans.lojaEnterprise.period'),
+      description: t('plans.lojaEnterprise.description'),
       features: [
-        'Anúncios ilimitados',
-        'Destaque premium',
-        'Relatórios avançados',
-        'Prioridade máxima na busca',
-        'Suporte dedicado 24/7',
-        'API de integração',
-        'Dashboard personalizado',
-        'Consultoria especializada',
-        'Acesso antecipado a novos recursos'
+        t('plans.lojaEnterprise.features.everything_plus'),
+        t('plans.lojaEnterprise.features.analytics_advanced'),
+        t('plans.lojaEnterprise.features.api_custom'),
+        t('plans.lojaEnterprise.features.vip_support'),
+        t('plans.lojaEnterprise.features.white_label'),
+        t('plans.lojaEnterprise.features.dedicated_manager')
       ],
       limitations: [],
       color: 'from-blue-600 to-purple-600',
@@ -96,21 +90,20 @@ const Planos = () => {
   const agroconectaPlans = [
     {
       id: 'agroconecta-basico',
-      name: 'Básico',
-      price: 'R$ 0,00',
-      period: 'Sempre grátis',
-      description: 'Para motoristas e transportadoras iniciantes',
+      name: t('plans.agroconectaBasico.name'),
+      price: t('plans.agroconectaBasico.price'),
+      period: t('plans.agroconectaBasico.period'),
+      description: t('plans.agroconectaBasico.description'),
       features: [
-        'Até 5 fretes ativos/mês',
-        'Perfil básico de transportador',
-        'Acesso à listagem de fretes',
-        'Suporte por email',
-        'Notificações básicas'
+        t('plans.agroconectaBasico.features.ads_count'),
+        t('plans.agroconectaBasico.features.basic_support'),
+        t('plans.agroconectaBasico.features.marketplace_access'),
+        t('plans.agroconectaBasico.features.basic_chatbot')
       ],
       limitations: [
-        'Sem destaque nas listagens',
-        'Sem acesso ao chat direto',
-        'Sem relatórios'
+        t('plans.agroconectaBasico.limitations.ads_count'),
+        t('plans.agroconectaBasico.limitations.chat_messages'),
+        t('plans.agroconectaBasico.limitations.no_private_chat')
       ],
       color: 'from-orange-500 to-orange-600',
       buttonColor: 'bg-orange-600 hover:bg-orange-700',
@@ -118,44 +111,36 @@ const Planos = () => {
     },
     {
       id: 'agroconecta-pro',
-      name: 'Pro',
-      price: 'R$ 149,00',
-      period: 'por mês',
-      description: 'Para transportadoras e motoristas profissionais',
+      name: t('plans.agroconectaPro.name'),
+      price: t('plans.agroconectaPro.price'),
+      period: t('plans.agroconectaPro.period'),
+      description: t('plans.agroconectaPro.description'),
       features: [
-        'Até 100 fretes ativos/mês',
-        'Destaque em listagens',
-        'Chat direto com contratantes',
-        'Relatórios de fretes',
-        'Suporte prioritário',
-        'Perfil verificado',
-        'Notificações avançadas',
-        'Histórico completo de fretes'
+        t('plans.agroconectaPro.features.ads_count'),
+        t('plans.agroconectaPro.features.private_chat'),
+        t('plans.agroconectaPro.features.priority_support'),
+        t('plans.agroconectaPro.features.advanced_chatbot'),
+        t('plans.agroconectaPro.features.freight_premium'),
+        t('plans.agroconectaPro.features.store_highlight')
       ],
-      limitations: [
-        'Limite de fretes ativos',
-        'Sem relatórios detalhados'
-      ],
+      limitations: [],
       color: 'from-blue-500 to-blue-600',
       buttonColor: 'bg-blue-600 hover:bg-blue-700',
       popular: true
     },
     {
       id: 'agroconecta-enterprise',
-      name: 'Enterprise',
-      price: 'R$ 499,00',
-      period: 'por mês',
-      description: 'Para grandes transportadoras e frotas',
+      name: t('plans.agroconectaEnterprise.name'),
+      price: t('plans.agroconectaEnterprise.price'),
+      period: t('plans.agroconectaEnterprise.period'),
+      description: t('plans.agroconectaEnterprise.description'),
       features: [
-        'Fretes ilimitados',
-        'Prioridade máxima nas buscas',
-        'Relatórios detalhados',
-        'Suporte dedicado 24/7',
-        'API de integração',
-        'Dashboard de frota',
-        'Gestão de motoristas',
-        'Consultoria logística',
-        'Acesso antecipado a novos recursos'
+        t('plans.agroconectaEnterprise.features.everything_plus'),
+        t('plans.agroconectaEnterprise.features.analytics_advanced'),
+        t('plans.agroconectaEnterprise.features.api_custom'),
+        t('plans.agroconectaEnterprise.features.vip_support'),
+        t('plans.agroconectaEnterprise.features.white_label'),
+        t('plans.agroconectaEnterprise.features.dedicated_manager')
       ],
       limitations: [],
       color: 'from-purple-600 to-indigo-600',
@@ -164,9 +149,58 @@ const Planos = () => {
     }
   ];
 
-  const handlePlanSelection = (module, plan) => {
+  const handlePlanSelection = async (module, plan) => {
     setSelectedModule(module);
     setSelectedPlan(plan);
+    setLoading(true);
+    setError('');
+
+    try {
+      // Simular integração com gateway de pagamento
+      if (plan.price !== 'R$ 0,00') {
+        // Redirecionar para página de pagamento
+        const paymentData = {
+          planId: plan.id,
+          planName: plan.name,
+          amount: parseFloat(plan.price.replace('R$ ', '').replace(',', '.')),
+          module: module
+        };
+        
+        // Salvar dados do plano selecionado no localStorage
+        localStorage.setItem('selectedPlan', JSON.stringify(paymentData));
+        
+        // Redirecionar para página de pagamento (simulada)
+        window.location.href = '/payment-success';
+      } else {
+        // Plano gratuito - ativar imediatamente
+        await activateFreePlan(plan, module);
+      }
+    } catch (error) {
+      setError('Erro ao processar seleção do plano. Tente novamente.');
+      console.error('Erro na seleção do plano:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const activateFreePlan = async (plan, module) => {
+    try {
+      // Simular ativação do plano gratuito
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Atualizar status do usuário
+      if (user) {
+        // Aqui seria feita a chamada para a API para atualizar o plano
+        console.log('Plano gratuito ativado:', plan.name, 'para módulo:', module);
+        
+        // Redirecionar para dashboard ou página de sucesso
+        alert('Plano gratuito ativado com sucesso!');
+        window.location.href = '/';
+      }
+    } catch (error) {
+      setError('Erro ao ativar plano gratuito. Tente novamente.');
+      console.error('Erro na ativação:', error);
+    }
   };
 
   const handlePayment = async (module, tier) => {
@@ -212,13 +246,13 @@ const Planos = () => {
   const getModuleTitle = (module) => {
     switch (module) {
       case 'store':
-        return 'Loja de Produtos';
+        return t('module.store');
       case 'freight':
-        return 'AgroConecta (Fretes)';
+        return t('module.freight');
       case 'crypto':
-        return 'Criptomoedas';
+        return t('module.crypto');
       default:
-        return 'Selecionar Módulo';
+        return t('module.select');
     }
   };
 
@@ -245,10 +279,10 @@ const Planos = () => {
         </div>
         <div className="max-w-6xl mx-auto text-center">
           <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
-            Planos e Preços
+            {t('header.title')}
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Escolha o Plano Ideal para o Seu Agronegócio
+            {t('header.description')}
           </p>
         </div>
       </section>
@@ -263,7 +297,7 @@ const Planos = () => {
             className="bg-white rounded-2xl shadow-lg p-8"
           >
             <h2 className="text-2xl font-bold text-center mb-8 text-gray-900">
-              Escolha seu Módulo
+              {t('module.choose')}
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -280,14 +314,14 @@ const Planos = () => {
                   <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center text-white`}>
                     <ShoppingCart className="w-8 h-8" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Loja AgroSync</h3>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{t('module.store')}</h3>
                   <p className="text-gray-600 text-sm">
-                    Marketplace completo para vender e comprar produtos agrícolas
+                    {t('module.storeDescription')}
                   </p>
                   {selectedModule === 'store' && (
                     <div className="mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
                       <Check className="w-4 h-4 mr-1" />
-                      Selecionado
+                      {t('module.selected')}
                     </div>
                   )}
                 </div>
@@ -306,14 +340,14 @@ const Planos = () => {
                   <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white`}>
                     <Truck className="w-8 h-8" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">AgroConecta</h3>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{t('module.freight')}</h3>
                   <p className="text-gray-600 text-sm">
-                    Plataforma de fretes para conectar produtores e transportadoras
+                    {t('module.freightDescription')}
                   </p>
                   {selectedModule === 'freight' && (
                     <div className="mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
                       <Check className="w-4 h-4 mr-1" />
-                      Selecionado
+                      {t('module.selected')}
                     </div>
                   )}
                 </div>
@@ -332,14 +366,14 @@ const Planos = () => {
                   <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 flex items-center justify-center text-white`}>
                     <Coins className="w-8 h-8" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Criptomoedas</h3>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{t('module.crypto')}</h3>
                   <p className="text-gray-600 text-sm">
-                    Investimentos e negociações em criptomoedas
+                    {t('module.cryptoDescription')}
                   </p>
                   {selectedModule === 'crypto' && (
                     <div className="mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
                       <Check className="w-4 h-4 mr-1" />
-                      Selecionado
+                      {t('module.selected')}
                     </div>
                   )}
                 </div>
@@ -363,14 +397,14 @@ const Planos = () => {
               {getModuleIcon(selectedModule)}
             </div>
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Planos {getModuleTitle(selectedModule)}
+              {t('plans.title', { module: getModuleTitle(selectedModule) })}
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               {selectedModule === 'store' 
-                ? 'Escolha o plano ideal para vender seus produtos agrícolas no maior marketplace do Brasil'
+                ? t('plans.storeDescription')
                 : selectedModule === 'freight'
-                ? 'Selecione o plano perfeito para conectar sua transportadora aos melhores fretes do agronegócio'
-                : 'Escolha o plano ideal para investir em criptomoedas e negociações'
+                ? t('plans.freightDescription')
+                : t('plans.cryptoDescription')
               }
             </p>
           </motion.div>
@@ -392,7 +426,7 @@ const Planos = () => {
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                     <div className="bg-green-500 text-white px-6 py-2 rounded-full text-sm font-bold flex items-center">
                       <Star className="w-4 h-4 mr-2 fill-current" />
-                      Mais Popular
+                      {t('plans.popular')}
                     </div>
                   </div>
                 )}
@@ -412,7 +446,7 @@ const Planos = () => {
                   <div className="mb-8">
                     <h4 className="font-semibold text-gray-900 mb-4 flex items-center">
                       <Check className="w-5 h-5 text-green-500 mr-2" />
-                      Incluído no plano:
+                      {t('plans.included')}
                     </h4>
                     <ul className="space-y-3">
                       {plan.features.map((feature, featureIndex) => (
@@ -429,7 +463,7 @@ const Planos = () => {
                     <div className="mb-8">
                       <h4 className="font-semibold text-gray-900 mb-4 flex items-center">
                         <Package className="w-5 h-5 text-gray-500 mr-2" />
-                        Limitações:
+                        {t('plans.limitations')}
                       </h4>
                       <ul className="space-y-3">
                         {plan.limitations.map((limitation, limitationIndex) => (
@@ -448,13 +482,13 @@ const Planos = () => {
                     className={`w-full py-4 px-6 rounded-xl text-white font-bold transition-all duration-300 hover:scale-105 ${plan.buttonColor}`}
                     disabled={loading}
                   >
-                    {loading ? 'Processando...' : plan.price === 'R$ 0,00' ? 'Começar Grátis' : 'Escolher Plano'}
+                    {loading ? t('plans.processing') : plan.price === 'R$ 0,00' ? t('plans.startFree') : t('plans.choosePlan')}
                   </button>
 
                   {/* Additional Info */}
                   {plan.price !== 'R$ 0,00' && (
                     <p className="text-center text-sm text-gray-500 mt-4">
-                      Cancelamento a qualquer momento • Sem taxa de setup
+                      {t('plans.cancelAnytime')} • {t('plans.noSetupFee')}
                     </p>
                   )}
                 </div>
@@ -474,10 +508,10 @@ const Planos = () => {
             className="text-center mb-12"
           >
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Comparação Detalhada
+              {t('comparison.title')}
             </h2>
             <p className="text-xl text-gray-600">
-              Veja todas as funcionalidades incluídas em cada plano
+              {t('comparison.description')}
             </p>
           </motion.div>
 
@@ -488,7 +522,7 @@ const Planos = () => {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
-                      Funcionalidade
+                      {t('comparison.feature')}
                     </th>
                     {getCurrentPlans().map((plan) => (
                       <th key={plan.id} className="px-6 py-4 text-center text-sm font-semibold text-gray-900">
@@ -501,7 +535,7 @@ const Planos = () => {
                   {/* Anúncios/Fretes */}
                   <tr>
                     <td className="px-6 py-4 text-sm text-gray-900 font-medium">
-                      {selectedModule === 'store' ? 'Anúncios Ativos' : 'Fretes Ativos'}
+                      {selectedModule === 'store' ? t('comparison.activeAds') : t('comparison.activeFreights')}
                     </td>
                     {getCurrentPlans().map((plan) => (
                       <td key={plan.id} className="px-6 py-4 text-center text-sm text-gray-600">
@@ -518,7 +552,7 @@ const Planos = () => {
                   {/* Destaque */}
                   <tr className="bg-gray-50">
                     <td className="px-6 py-4 text-sm text-gray-900 font-medium">
-                      Destaque nas Listagens
+                      {t('comparison.highlight')}
                     </td>
                     {getCurrentPlans().map((plan) => (
                       <td key={plan.id} className="px-6 py-4 text-center text-sm text-gray-600">
@@ -534,12 +568,12 @@ const Planos = () => {
                   {/* Relatórios */}
                   <tr>
                     <td className="px-6 py-4 text-sm text-gray-900 font-medium">
-                      Relatórios
+                      {t('comparison.reports')}
                     </td>
                     {getCurrentPlans().map((plan) => (
                       <td key={plan.id} className="px-6 py-4 text-center text-sm text-gray-600">
-                        {plan.id.includes('basico') ? 'Básicos' : 
-                         plan.id.includes('pro') ? 'Intermediários' : 'Avançados'}
+                        {plan.id.includes('basico') ? t('comparison.basicReports') : 
+                         plan.id.includes('pro') ? t('comparison.intermediateReports') : t('comparison.advancedReports')}
                       </td>
                     ))}
                   </tr>
@@ -547,12 +581,12 @@ const Planos = () => {
                   {/* Suporte */}
                   <tr className="bg-gray-50">
                     <td className="px-6 py-4 text-sm text-gray-900 font-medium">
-                      Suporte
+                      {t('comparison.support')}
                     </td>
                     {getCurrentPlans().map((plan) => (
                       <td key={plan.id} className="px-6 py-4 text-center text-sm text-gray-600">
-                        {plan.id.includes('basico') ? 'Email' : 
-                         plan.id.includes('pro') ? 'Prioritário' : 'Dedicado 24/7'}
+                        {plan.id.includes('basico') ? t('comparison.emailSupport') : 
+                         plan.id.includes('pro') ? t('comparison.prioritySupport') : t('comparison.dedicatedSupport')}
                       </td>
                     ))}
                   </tr>
@@ -560,7 +594,7 @@ const Planos = () => {
                   {/* Chat/API */}
                   <tr>
                     <td className="px-6 py-4 text-sm text-gray-900 font-medium">
-                      {selectedModule === 'store' ? 'API de Integração' : 'Chat Direto'}
+                      {selectedModule === 'store' ? t('comparison.apiIntegration') : t('comparison.directChat')}
                     </td>
                     {getCurrentPlans().map((plan) => (
                       <td key={plan.id} className="px-6 py-4 text-center text-sm text-gray-600">
@@ -588,7 +622,7 @@ const Planos = () => {
             transition={{ duration: 0.6 }}
             className="text-4xl font-bold text-white mb-6"
           >
-            Pronto para Impulsionar seu Negócio?
+            {t('cta.ready')}
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -596,7 +630,7 @@ const Planos = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-xl text-green-100 mb-8"
           >
-            Junte-se a milhares de produtores e transportadoras que já escolheram o AgroSync
+            {t('cta.joinThousands')}
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -605,10 +639,10 @@ const Planos = () => {
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
             <button className="px-8 py-4 bg-white text-green-600 font-bold rounded-xl hover:bg-gray-100 transition-colors duration-300">
-              Começar Agora
+              {t('cta.startNow')}
             </button>
             <button className="px-8 py-4 bg-transparent border-2 border-white text-white font-bold rounded-xl hover:bg-white hover:text-green-600 transition-colors duration-300">
-              Falar com Especialista
+              {t('cta.talkToExpert')}
             </button>
           </motion.div>
         </div>

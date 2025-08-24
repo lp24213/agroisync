@@ -1,47 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
+import { useTranslation } from 'react-i18next';
 import { 
-  Search, Filter, MapPin, Star, ShoppingCart, Heart, Eye,
-  Truck, Package, Leaf, Wrench, User, Circle, DollarSign, Plus
+  Search, Filter, ShoppingCart, Star, Heart, Eye, 
+  Package, Truck, Shield, Clock, MapPin, User, Building
 } from 'lucide-react';
 import { productService } from '../services/productService';
 
 const Loja = () => {
   const { isDark } = useTheme();
+  const { t } = useTranslation();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [priceRange, setPriceRange] = useState([0, 10000]);
   const [selectedState, setSelectedState] = useState('all');
+  const [priceRange, setPriceRange] = useState([0, 10000]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState('grid');
   const [error, setError] = useState(null);
 
-  // Categorias reais do agronegócio
+  // Categorias de produtos
   const categories = [
-    { id: 'all', name: 'Todas', icon: <Package className="w-5 h-5" />, count: 0 },
-    { id: 'soja', name: 'Soja', icon: <Leaf className="w-5 h-5" />, count: 0 },
-    { id: 'milho', name: 'Milho', icon: <Circle className="w-5 h-5" />, count: 0 },
-    { id: 'café', name: 'Café', icon: <Leaf className="w-5 h-5" />, count: 0 },
-    { id: 'algodão', name: 'Algodão', icon: <Leaf className="w-5 h-5" />, count: 0 },
-    { id: 'insumo', name: 'Insumos', icon: <Wrench className="w-5 h-5" />, count: 0 },
-    { id: 'maquinário', name: 'Maquinário', icon: <Truck className="w-5 h-5" />, count: 0 }
+    { id: 'all', name: t('store.categories.all') },
+    { id: 'grains', name: t('store.categories.grains') },
+    { id: 'inputs', name: t('store.categories.inputs') },
+    { id: 'machinery', name: t('store.categories.machinery') },
+    { id: 'livestock', name: t('store.categories.livestock') },
+    { id: 'fruits', name: t('store.categories.fruits') },
+    { id: 'vegetables', name: t('store.categories.vegetables') }
   ];
 
   // Estados brasileiros
   const states = [
-    { id: 'all', name: 'Todos os Estados' },
-    { id: 'MT', name: 'Mato Grosso' },
-    { id: 'GO', name: 'Goiás' },
-    { id: 'MS', name: 'Mato Grosso do Sul' },
-    { id: 'PR', name: 'Paraná' },
-    { id: 'RS', name: 'Rio Grande do Sul' },
-    { id: 'SP', name: 'São Paulo' },
-    { id: 'MG', name: 'Minas Gerais' },
-    { id: 'BA', name: 'Bahia' },
-    { id: 'TO', name: 'Tocantins' }
+    { id: 'all', name: t('store.states.all') },
+    { id: 'MT', name: t('store.states.mt') },
+    { id: 'GO', name: t('store.states.go') },
+    { id: 'MS', name: t('store.states.ms') },
+    { id: 'PR', name: t('store.states.pr') },
+    { id: 'RS', name: t('store.states.rs') },
+    { id: 'SP', name: t('store.states.sp') },
+    { id: 'MG', name: t('store.states.mg') },
+    { id: 'BA', name: t('store.states.ba') },
+    { id: 'TO', name: t('store.states.to') }
   ];
 
   // Função para buscar produtos do MongoDB
@@ -133,15 +135,16 @@ const Loja = () => {
   // Função para obter ícone da categoria
   const getCategoryIcon = (type) => {
     switch (type) {
-      case 'soja':
-      case 'milho':
-      case 'café':
-      case 'algodão':
-        return <Leaf className="w-5 h-5" />;
-      case 'insumo':
-        return <Wrench className="w-5 h-5" />;
-      case 'maquinário':
+      case 'grains':
+      case 'fruits':
+      case 'vegetables':
+        return <Package className="w-5 h-5" />;
+      case 'inputs':
+        return <Shield className="w-5 h-5" />;
+      case 'machinery':
         return <Truck className="w-5 h-5" />;
+      case 'livestock':
+        return <Building className="w-5 h-5" />;
       default:
         return <Package className="w-5 h-5" />;
     }
@@ -150,18 +153,18 @@ const Loja = () => {
   // Função para obter cor da categoria
   const getCategoryColor = (type) => {
     switch (type) {
-      case 'soja':
+      case 'grains':
         return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-      case 'milho':
+      case 'fruits':
         return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
-      case 'café':
+      case 'vegetables':
         return 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200';
-      case 'algodão':
+      case 'inputs':
         return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
-      case 'insumo':
+      case 'machinery':
         return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200';
-      case 'maquinário':
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+      case 'livestock':
+        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
       default:
         return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
     }
@@ -172,7 +175,7 @@ const Loja = () => {
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Carregando marketplace...</p>
+          <p className="text-gray-600">{t('store.loading')}</p>
         </div>
       </div>
     );
@@ -201,7 +204,7 @@ const Loja = () => {
             transition={{ duration: 0.8 }}
             className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent"
           >
-                         Loja Agroisync
+                         {t('store.title')}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 30 }}
@@ -209,7 +212,7 @@ const Loja = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-xl text-gray-600 max-w-3xl mx-auto"
           >
-            Marketplace Completo de Produtos Agrícolas
+            {t('store.description')}
           </motion.p>
         </div>
       </section>
@@ -224,7 +227,7 @@ const Loja = () => {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Buscar produtos, vendedores..."
+                  placeholder={t('store.search.placeholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
@@ -262,10 +265,10 @@ const Loja = () => {
 
               {/* Faixa de Preço */}
               <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-600">Preço:</span>
+                <span className="text-sm text-gray-600">{t('store.price.label')}:</span>
                 <input
                   type="number"
-                  placeholder="Min"
+                  placeholder={t('store.price.min')}
                   value={priceRange[0]}
                   onChange={(e) => setPriceRange([parseInt(e.target.value) || 0, priceRange[1]])}
                   className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -273,7 +276,7 @@ const Loja = () => {
                 <span className="text-gray-400">-</span>
                 <input
                   type="number"
-                  placeholder="Max"
+                  placeholder={t('store.price.max')}
                   value={priceRange[1]}
                   onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value) || 10000])}
                   className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -305,8 +308,8 @@ const Loja = () => {
                 onClick={() => window.location.href = '/cadastro'}
                 className="px-6 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors duration-300 flex items-center gap-2"
               >
-                <Plus className="w-5 h-5" />
-                Cadastrar Produto
+                <Package className="w-5 h-5" />
+                {t('store.addProduct')}
               </button>
 
               {/* Botão Assinar Plano */}
@@ -315,7 +318,7 @@ const Loja = () => {
                 className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors duration-300 flex items-center gap-2"
               >
                 <Star className="w-5 h-5" />
-                Assinar Plano
+                {t('store.subscribe')}
               </button>
             </div>
           </div>
@@ -328,8 +331,8 @@ const Loja = () => {
           {/* Estatísticas */}
           <div className="mb-8 text-center">
             <p className="text-gray-600">
-              Mostrando <span className="font-semibold text-green-600">{filteredProducts.length}</span> de{' '}
-              <span className="font-semibold text-green-600">{products.length}</span> produtos
+              {t('store.showing')} <span className="font-semibold text-green-600">{filteredProducts.length}</span> {t('store.of')}
+              <span className="font-semibold text-green-600">{products.length}</span> {t('store.products')}
             </p>
           </div>
 
@@ -351,7 +354,7 @@ const Loja = () => {
                     </div>
                     {product.featured && (
                       <div className="absolute top-2 right-2 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold">
-                        DESTAQUE
+                        {t('store.featured')}
                       </div>
                     )}
                     <div className="absolute top-2 left-2">
@@ -378,7 +381,7 @@ const Loja = () => {
                     </div>
 
                     {/* Unidade */}
-                    <p className="text-sm text-gray-600 mb-3">por {product.unit}</p>
+                    <p className="text-sm text-gray-600 mb-3">{t('store.unit')}: {product.unit}</p>
 
                     {/* Vendedor e Localização */}
                     <div className="flex items-center justify-between mb-3">
@@ -398,14 +401,14 @@ const Loja = () => {
 
                     {/* Estoque */}
                     <p className="text-sm text-gray-600 mb-4">
-                      Estoque: <span className="font-semibold text-green-600">{product.stock} {product.unit}</span>
+                      {t('store.stock')}: <span className="font-semibold text-green-600">{product.stock} {product.unit}</span>
                     </p>
 
                     {/* Botões */}
                     <div className="flex space-x-2">
                       <button className="flex-1 bg-green-600 text-white py-2 px-4 rounded-xl hover:bg-green-700 transition-colors font-medium flex items-center justify-center space-x-2">
                         <ShoppingCart className="w-4 h-4" />
-                        <span>Comprar</span>
+                        <span>{t('store.buy')}</span>
                       </button>
                       <button className="px-4 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors">
                         <Eye className="w-4 h-4 text-gray-600" />
@@ -434,7 +437,7 @@ const Loja = () => {
                       </div>
                       {product.featured && (
                         <div className="absolute -top-1 -right-1 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold">
-                          DESTAQUE
+                          {t('store.featured')}
                         </div>
                       )}
                     </div>
@@ -454,7 +457,7 @@ const Loja = () => {
                           <div className="text-2xl font-bold text-green-600 mb-1">
                             {formatPrice(product.price)}
                           </div>
-                          <p className="text-sm text-gray-600">por {product.unit}</p>
+                          <p className="text-sm text-gray-600">{t('store.unit')}: {product.unit}</p>
                         </div>
                       </div>
 
@@ -469,13 +472,13 @@ const Loja = () => {
                             <span>{product.rating}</span>
                             <span>({product.reviews})</span>
                           </div>
-                          <span>Estoque: {product.stock} {product.unit}</span>
+                          <span>{t('store.stock')}: {product.stock} {product.unit}</span>
                         </div>
 
                         <div className="flex space-x-2">
                           <button className="bg-green-600 text-white py-2 px-6 rounded-xl hover:bg-green-700 transition-colors font-medium flex items-center space-x-2">
                             <ShoppingCart className="w-4 h-4" />
-                            <span>Comprar</span>
+                            <span>{t('store.buy')}</span>
                           </button>
                           <button className="px-4 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors">
                             <Eye className="w-4 h-4 text-gray-600" />
@@ -493,8 +496,8 @@ const Loja = () => {
           {!loading && !error && filteredProducts.length === 0 && (
             <div className="text-center py-20">
               <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-600 mb-2">Nenhum produto encontrado</h3>
-              <p className="text-gray-500">Tente ajustar os filtros ou termos de busca</p>
+              <h3 className="text-xl font-semibold text-gray-600 mb-2">{t('store.noProductsFound')}</h3>
+              <p className="text-gray-500">{t('store.tryAdjustFilters')}</p>
             </div>
           )}
 
@@ -504,13 +507,13 @@ const Loja = () => {
               <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Package className="w-8 h-8 text-red-600" />
               </div>
-              <h3 className="text-xl font-semibold text-red-600 mb-2">Erro ao carregar produtos</h3>
+              <h3 className="text-xl font-semibold text-red-600 mb-2">{t('store.errorLoadingProducts')}</h3>
               <p className="text-gray-500 mb-4">{error}</p>
               <button 
                 onClick={fetchProducts}
                 className="bg-red-600 text-white px-6 py-2 rounded-xl hover:bg-red-700 transition-colors"
               >
-                Tentar novamente
+                {t('store.tryAgain')}
               </button>
             </div>
           )}
@@ -521,8 +524,8 @@ const Loja = () => {
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-spin">
                 <Package className="w-8 h-8 text-blue-600" />
               </div>
-              <h3 className="text-xl font-semibold text-blue-600 mb-2">Carregando produtos...</h3>
-              <p className="text-gray-500">Aguarde enquanto buscamos os melhores produtos para você</p>
+              <h3 className="text-xl font-semibold text-blue-600 mb-2">{t('store.loadingProducts')}</h3>
+              <p className="text-gray-500">{t('store.waitWhileSearching')}</p>
             </div>
           )}
         </div>

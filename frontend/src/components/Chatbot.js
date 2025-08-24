@@ -204,27 +204,50 @@ const Chatbot = () => {
   const generateBotResponse = (userInput) => {
     const input = userInput.toLowerCase();
     
+    // Verificar se usuário tem plano pago para respostas avançadas
+    const hasPaidPlan = user && user.plan && user.plan.includes('AGROCONNECT+');
+    
     if (input.includes('cotação') || input.includes('preço') || input.includes('grãos')) {
-      return 'Aqui estão as cotações atuais dos principais grãos:\n\nSoja: R$ 180,50 (+1.8%)\nMilho: R$ 85,30 (-0.3%)\nCafé: R$ 1.250,00 (+2.5%)\n\nQuer que eu analise alguma tendência específica?';
+      if (hasPaidPlan) {
+        return '🔍 **ANÁLISE AVANÇADA (Plano AGROCONNECT+)**\n\n**Cotações em tempo real:**\n• Soja: R$ 180,50 (+1.8%) - Tendência de alta\n• Milho: R$ 85,30 (-0.3%) - Suporte em R$ 84,00\n• Café: R$ 1.250,00 (+2.5%) - Resistência em R$ 1.280,00\n\n**Análise técnica:**\n• Soja: Momentum positivo, alvo R$ 185,00\n• Milho: Consolidando, aguardar confirmação\n• Café: Breakout confirmado, próximo alvo R$ 1.300,00\n\n**Recomendação:** Manter posições em Soja e Café.';
+      } else {
+        return 'Aqui estão as cotações atuais dos principais grãos:\n\nSoja: R$ 180,50 (+1.8%)\nMilho: R$ 85,30 (-0.3%)\nCafé: R$ 1.250,00 (+2.5%)\n\n💡 **Upgrade para AGROCONNECT+** e receba análises técnicas avançadas, tendências e recomendações de trading!';
+      }
     }
     
     if (input.includes('marketplace') || input.includes('loja') || input.includes('comprar')) {
-      return 'Nossa loja oferece:\n\n• Grãos certificados\n• Preços competitivos\n• Entrega segura\n• Pagamento flexível\n\nPosso te ajudar a encontrar o produto ideal!';
+      if (hasPaidPlan) {
+        return '🛒 **MARKETPLACE PREMIUM (Plano AGROCONNECT+)**\n\n**Produtos em destaque:**\n• Soja Premium: R$ 185,00/kg (5% desconto)\n• Fertilizante NPK: R$ 89,90/saco\n• Sementes certificadas: R$ 45,90/kg\n\n**Análise de mercado:**\n• Preços 15% abaixo da média regional\n• Fornecedores verificados e certificados\n• Entrega em até 48h\n\n**Recomendação:** Comprar Soja Premium - melhor custo-benefício.';
+      } else {
+        return 'Nossa loja oferece:\n\n• Grãos certificados\n• Preços competitivos\n• Entrega segura\n• Pagamento flexível\n\n💡 **Upgrade para AGROCONNECT+** e receba análises de mercado, produtos em destaque e recomendações personalizadas!';
+      }
     }
     
     if (input.includes('cripto') || input.includes('defi') || input.includes('blockchain')) {
-      return 'DeFi no agronegócio:\n\n• Staking de grãos\n• NFTs de propriedades\n• Smart contracts para contratos\n• Pagamentos em criptomoedas\n\nQuer saber mais sobre algum aspecto?';
+      if (hasPaidPlan) {
+        return '₿ **DEFI AGRO PREMIUM (Plano AGROCONNECT+)**\n\n**Oportunidades atuais:**\n• Staking de grãos: APY 12-18%\n• NFTs de propriedades: Valorização 25%\n• Yield farming: Retorno médio 15%\n\n**Análise de risco:**\n• Baixo risco: Staking de grãos\n• Médio risco: NFTs agrícolas\n• Alto risco: Yield farming\n\n**Recomendação:** Começar com staking de grãos para baixo risco.';
+      } else {
+        return 'DeFi no agronegócio:\n\n• Staking de grãos\n• NFTs de propriedades\n• Smart contracts para contratos\n• Pagamentos em criptomoedas\n\n💡 **Upgrade para AGROCONNECT+** e receba análises de risco, oportunidades de investimento e estratégias de DeFi!';
+      }
     }
     
     if (input.includes('ibge') || input.includes('dados') || input.includes('estatísticas')) {
-      return 'Dados do IBGE disponíveis:\n\n• Produção agrícola\n• Área plantada\n• Produtividade por região\n• Preços médios\n\nQue tipo de informação você precisa?';
+      if (hasPaidPlan) {
+        return '📊 **DADOS IBGE PREMIUM (Plano AGROCONNECT+)**\n\n**Análise regional detalhada:**\n• Mato Grosso: Produção +8.5% vs ano anterior\n• Paraná: Área plantada +12.3%\n• Goiás: Produtividade +15.2%\n\n**Tendências identificadas:**\n• Migração para culturas de alto valor\n• Aumento da mecanização\n• Crescimento da agricultura de precisão\n\n**Previsões:** Manutenção da tendência de alta para 2024.';
+      } else {
+        return 'Dados do IBGE disponíveis:\n\n• Produção agrícola\n• Área plantada\n• Produtividade por região\n• Preços médios\n\n💡 **Upgrade para AGROCONNECT+** e receba análises regionais detalhadas, tendências e previsões de mercado!';
+      }
     }
     
     if (input.includes('pagamento') || input.includes('pagar') || input.includes('cartão')) {
-      return 'Formas de pagamento:\n\n• Cartão de crédito/débito\n• PIX\n• Boleto bancário\n• Criptomoedas\n• Transferência bancária\n\nQual prefere?';
+      return 'Formas de pagamento disponíveis:\n\n• Cartão de crédito/débito\n• PIX\n• Boleto bancário\n• Criptomoedas\n• Transferência bancária\n\n💡 **Upgrade para AGROCONNECT+** e receba descontos exclusivos e condições especiais de pagamento!';
     }
     
-    return 'Interessante! Posso te ajudar com:\n\nCotações e análises\nMarketplace de grãos\nDeFi e criptomoedas\nDados do IBGE\nPagamentos\n\nMe diga mais sobre o que você precisa!';
+    if (hasPaidPlan) {
+      return '🚀 **ASSISTENTE PREMIUM ATIVO**\n\nPosso te ajudar com análises avançadas em:\n\n• **Cotações:** Análises técnicas e recomendações\n• **Marketplace:** Produtos em destaque e análises de mercado\n• **DeFi:** Oportunidades de investimento e análise de risco\n• **IBGE:** Dados regionais e tendências\n• **Pagamentos:** Condições especiais\n\nO que você gostaria de saber?';
+    } else {
+      return 'Interessante! Posso te ajudar com:\n\nCotações e análises\nMarketplace de grãos\nDeFi e criptomoedas\nDados do IBGE\nPagamentos\n\n💡 **Upgrade para AGROCONNECT+** e desbloqueie respostas avançadas, análises técnicas e recomendações personalizadas!';
+    }
   };
 
   const handleKeyPress = (e) => {
