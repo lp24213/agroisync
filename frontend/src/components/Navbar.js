@@ -5,11 +5,13 @@ import { useTheme } from '../contexts/ThemeContext';
 import { Link, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
-  const { t } = useTranslation();
-  const { isDark, isLight } = useTheme();
+  const { t, i18n } = useTranslation();
+  const { isDark, isLight, toggleTheme } = useTheme();
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [currentLanguage, setCurrentLanguage] = useState(i18n.language || 'pt');
+  const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,6 +21,19 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const languages = [
+    { code: 'pt', name: 'Português', flag: '🇧🇷' },
+    { code: 'en', name: 'English', flag: '🇺🇸' },
+    { code: 'es', name: 'Español', flag: '🇪🇸' },
+    { code: 'zh', name: '中文', flag: '🇨🇳' }
+  ];
+
+  const handleLanguageChange = (langCode) => {
+    setCurrentLanguage(langCode);
+    i18n.changeLanguage(langCode);
+    setIsLanguageDropdownOpen(false);
+  };
 
   const navigationLinks = [
     { path: '/', label: t('navigation.home') },
@@ -130,25 +145,110 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Mobile menu button */}
-          <div className="lg:hidden">
+          {/* Theme and Language Controls */}
+          <div className="flex items-center space-x-3">
+            {/* Theme Toggle */}
             <motion.button
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`p-2 rounded-xl transition-all duration-300 ${
+              onClick={toggleTheme}
+              className={`flex items-center justify-center w-10 h-10 backdrop-blur-md border rounded-xl transition-all duration-300 shadow-md hover:shadow-lg ${
                 isDark
-                  ? 'bg-dark-bg-card-hover border border-dark-border-primary text-dark-text-primary hover:bg-dark-bg-card-hover'
-                  : 'bg-light-bg-card-hover border border-light-border-primary text-light-text-primary hover:bg-light-bg-card-hover'
+                  ? 'bg-dark-glass-bg border-dark-border-primary text-dark-text-primary hover:bg-dark-bg-card-hover hover:border-dark-border-accent'
+                  : 'bg-light-glass-bg border-light-border-primary text-light-text-primary hover:bg-light-bg-card-hover hover:border-light-border-accent'
               }`}
+              title={isDark ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {isMobileMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
+              {isDark ? (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              )}
             </motion.button>
+
+            {/* Language Selector */}
+            <div className="relative">
+              <button 
+                onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}
+                className={`flex items-center space-x-2 px-3 py-2 backdrop-blur-md border rounded-xl transition-all duration-300 shadow-md hover:shadow-lg ${
+                  isDark
+                    ? 'bg-dark-glass-bg border-dark-border-primary text-dark-text-primary hover:bg-dark-bg-card-hover hover:border-dark-border-accent'
+                    : 'bg-light-glass-bg border-light-border-primary text-light-text-primary hover:bg-light-bg-card-hover hover:border-light-border-accent'
+                }`}
+              >
+                <span className="text-sm">
+                  {languages.find(lang => lang.code === currentLanguage)?.flag}
+                </span>
+                <span className="hidden sm:block text-xs font-medium">
+                  {languages.find(lang => lang.code === currentLanguage)?.name}
+                </span>
+                <svg className={`w-3 h-3 transition-transform duration-300 ${isLanguageDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {/* Language Dropdown */}
+              <AnimatePresence>
+                {isLanguageDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                    className={`absolute top-full right-0 mt-2 w-40 backdrop-blur-md border rounded-xl shadow-2xl overflow-hidden z-50 ${
+                      isDark
+                        ? 'bg-dark-bg-card border-dark-border-primary'
+                        : 'bg-light-bg-card border-light-border-primary'
+                    }`}
+                  >
+                    {languages.map((language) => (
+                      <button
+                        key={language.code}
+                        onClick={() => handleLanguageChange(language.code)}
+                        className={`w-full flex items-center space-x-2 px-3 py-2 text-left transition-colors duration-200 ${
+                          currentLanguage === language.code 
+                            ? (isDark ? 'bg-dark-accent-primary/20 text-dark-accent-primary' : 'bg-light-accent-primary/20 text-light-accent-primary')
+                            : (isDark ? 'text-dark-text-primary hover:bg-dark-bg-card-hover' : 'text-light-text-primary hover:bg-light-bg-card-hover')
+                        }`}
+                      >
+                        <span className="text-sm">{language.flag}</span>
+                        <span className="text-xs font-medium">{language.name}</span>
+                        {currentLanguage === language.code && (
+                          <svg className={`w-3 h-3 ml-auto ${isDark ? 'text-dark-accent-primary' : 'text-light-accent-primary'}`} fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        )}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Mobile menu button */}
+            <div className="lg:hidden">
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className={`p-2 rounded-xl transition-all duration-300 ${
+                  isDark
+                    ? 'bg-dark-bg-card-hover border border-dark-border-primary text-dark-text-primary hover:bg-dark-bg-card-hover'
+                    : 'bg-light-bg-card-hover border border-light-border-primary text-light-text-primary hover:bg-light-bg-card-hover'
+                }`}
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  {isMobileMenuOpen ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  )}
+                </svg>
+              </motion.button>
+            </div>
           </div>
         </div>
 
