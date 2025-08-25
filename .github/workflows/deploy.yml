@@ -79,10 +79,25 @@ jobs:
         
     - name: 📦 Install Dependencies
       run: |
+        # Configure npm to suppress deprecation warnings during build
+        npm config set ignore-deprecation true
+        
         cd backend
-        npm ci
+        npm ci --no-audit --no-fund
         cd ../frontend
-        npm ci
+        npm ci --no-audit --no-fund
+        
+    - name: 🔄 Update Dependencies (Optional)
+      run: |
+        echo "🔄 Checking for dependency updates..."
+        
+        cd backend
+        npm outdated || true
+        
+        cd ../frontend
+        npm outdated || true
+        
+        echo "✅ Dependency check completed"
         
     - name: 🔐 Validate Required Secrets
       run: |
@@ -104,6 +119,9 @@ jobs:
       run: |
         cd frontend
         echo "🔧 Configurando variáveis de ambiente para o build..."
+        
+        # Configure npm to suppress deprecation warnings during build
+        npm config set ignore-deprecation true
         
         # Configurar variáveis de ambiente usando valores padrão
         export REACT_APP_API_URL="${{ env.REACT_APP_API_URL }}"
@@ -127,6 +145,8 @@ jobs:
     - name: 📦 Build Backend
       run: |
         cd backend
+        # Configure npm to suppress deprecation warnings during build
+        npm config set ignore-deprecation true
         npm run build
         
     - name: 📤 Upload Build Artifacts
