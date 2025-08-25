@@ -6,10 +6,27 @@ import { User } from '../models/User.js';
 const router = Router();
 
 // GET /api/messaging/conversations - Listar conversas do usuário
-router.get('/conversations', authenticateToken, requireActivePlan('store'), async (req, res) => {
+router.get('/conversations', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
     const { module } = req.query;
+
+    // Verificar se o usuário tem plano ativo para o módulo
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: 'Usuário não encontrado'
+      });
+    }
+
+    // Verificar se o usuário tem plano ativo para o módulo solicitado
+    if (module && !user.plans[module] || user.plans[module].status !== 'active') {
+      return res.status(403).json({
+        success: false,
+        error: 'Plano ativo necessário para acessar mensagens privadas'
+      });
+    }
 
     const conversations = await Conversation.findByUser(userId, module);
 
@@ -27,10 +44,28 @@ router.get('/conversations', authenticateToken, requireActivePlan('store'), asyn
 });
 
 // GET /api/messaging/conversations/:id - Obter conversa específica
-router.get('/conversations/:id', authenticateToken, requireActivePlan('store'), async (req, res) => {
+router.get('/conversations/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.user.id;
+
+    // Verificar se o usuário tem plano ativo
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: 'Usuário não encontrado'
+      });
+    }
+
+    // Verificar se o usuário tem pelo menos um plano ativo
+    const hasActivePlan = Object.values(user.plans).some(plan => plan.status === 'active');
+    if (!hasActivePlan) {
+      return res.status(403).json({
+        success: false,
+        error: 'Plano ativo necessário para acessar mensagens privadas'
+      });
+    }
 
     const conversation = await Conversation.findById(id)
       .populate('participants', 'name email')
@@ -68,7 +103,7 @@ router.get('/conversations/:id', authenticateToken, requireActivePlan('store'), 
 });
 
 // POST /api/messaging/conversations - Criar nova conversa
-router.post('/conversations', authenticateToken, requireActivePlan('store'), async (req, res) => {
+router.post('/conversations', authenticateToken, async (req, res) => {
   try {
     const { participants, listing, module, subject, initialMessage } = req.body;
     const senderId = req.user.id;
@@ -77,6 +112,23 @@ router.post('/conversations', authenticateToken, requireActivePlan('store'), asy
       return res.status(400).json({
         success: false,
         error: 'Todos os campos obrigatórios devem ser preenchidos'
+      });
+    }
+
+    // Verificar se o usuário tem plano ativo para o módulo
+    const user = await User.findById(senderId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: 'Usuário não encontrado'
+      });
+    }
+
+    // Verificar se o usuário tem plano ativo para o módulo
+    if (!user.plans[module] || user.plans[module].status !== 'active') {
+      return res.status(403).json({
+        success: false,
+        error: 'Plano ativo necessário para enviar mensagens privadas'
       });
     }
 

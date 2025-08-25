@@ -35,21 +35,29 @@ router.post('/stripe/session', authenticateToken, async (req, res) => {
       });
     }
 
-    // Definir preços por tier
+    // Definir preços por módulo e tier (em centavos)
     const prices = {
-      basic: 9900, // R$ 99,00
-      pro: 19900,  // R$ 199,00
-      enterprise: 49900 // R$ 499,00
+      store: {
+        basic: 2500,    // R$ 25,00/mês até 3 anúncios
+        pro: 5000,      // R$ 50,00/mês até 10 anúncios
+        enterprise: 10000 // R$ 100,00/mês até 50 anúncios
+      },
+      freight: {
+        basic: 5000,    // R$ 50,00/mês (fretes básico)
+        pro: 14900,     // R$ 149,00/mês até 30 fretes
+        enterprise: 29900 // R$ 299,00/mês até 100 fretes
+      }
     };
 
     // Criar sessão do Stripe (simulado por enquanto)
     const session = {
       id: `stripe_session_${Date.now()}`,
       url: `https://checkout.stripe.com/pay/${Date.now()}`,
-      amount: prices[tier],
+      amount: prices[module][tier],
       currency: 'brl',
       module,
-      tier
+      tier,
+      description: `${module === 'store' ? 'Loja' : 'AgroConecta'} - ${tier.charAt(0).toUpperCase() + tier.slice(1)}`
     };
 
     res.json({

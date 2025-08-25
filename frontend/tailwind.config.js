@@ -3,26 +3,11 @@ module.exports = {
   content: [
     './src/**/*.{js,jsx,ts,tsx}',
   ],
+  darkMode: 'class', // Habilita modo escuro baseado em classe
   theme: {
     extend: {
       colors: {
-        // Tema Escuro - Futurista com fundo preto fosco
-        'dark': {
-          'bg-primary': '#0a0a0a',
-          'bg-secondary': '#111111',
-          'bg-card': 'rgba(17, 17, 17, 0.8)',
-          'bg-card-hover': 'rgba(26, 26, 26, 0.9)',
-          'text-primary': '#ffffff',
-          'text-secondary': '#e5e5e5',
-          'text-tertiary': '#a3a3a3',
-          'border-primary': 'rgba(255, 255, 255, 0.1)',
-          'border-accent': 'rgba(0, 212, 255, 0.3)',
-          'accent-primary': '#00d4ff',
-          'accent-secondary': '#8b5cf6',
-          'accent-tertiary': '#ec4899',
-          'glass-bg': 'rgba(17, 17, 17, 0.7)',
-        },
-        // Tema Claro - Agro moderno sofisticado
+        // Tema Claro - Padrão (sempre ativo por padrão)
         'light': {
           'bg-primary': '#ffffff',
           'bg-secondary': '#f8fafc',
@@ -37,6 +22,22 @@ module.exports = {
           'accent-secondary': '#f59e0b', // Dourado metálico sutil
           'accent-tertiary': '#8b5a2b', // Marrom terra suave
           'glass-bg': 'rgba(255, 255, 255, 0.8)',
+        },
+        // Tema Escuro - Futurista com fundo preto fosco (só quando ativado)
+        'dark': {
+          'bg-primary': '#0a0a0a',
+          'bg-secondary': '#111111',
+          'bg-card': 'rgba(17, 17, 17, 0.8)',
+          'bg-card-hover': 'rgba(26, 26, 26, 0.9)',
+          'text-primary': '#ffffff',
+          'text-secondary': '#e5e5e5',
+          'text-tertiary': '#a3a3a3',
+          'border-primary': 'rgba(255, 255, 255, 0.1)',
+          'border-accent': 'rgba(0, 212, 255, 0.3)',
+          'accent-primary': '#00d4ff',
+          'accent-secondary': '#8b5cf6',
+          'accent-tertiary': '#ec4899',
+          'glass-bg': 'rgba(17, 17, 17, 0.7)',
         },
         // Cores específicas do agro
         'agro': {
@@ -90,7 +91,7 @@ module.exports = {
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
         "starfield": "starfield 20s linear infinite",
         "meteor": "meteor 3s linear infinite",
-        "shimmer": "shimmer 2s linear infinite",
+        "shimmer": "shimmer 2s ease-in-out infinite",
       },
       keyframes: {
         "fadeIn": {

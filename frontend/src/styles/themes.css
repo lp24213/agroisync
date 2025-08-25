@@ -1,51 +1,6 @@
 /* ===== VARIÁVEIS DE TEMA ===== */
 :root {
-  /* Tema Escuro - Padrão */
-  --bg-primary: #0f0f23;
-  --bg-secondary: #1a1a2e;
-  --bg-tertiary: #16213e;
-  --bg-card: rgba(26, 26, 46, 0.95);
-  --bg-card-hover: rgba(26, 26, 46, 0.98);
-  --text-primary: #ffffff;
-  --text-secondary: #e2e8f0;
-  --text-tertiary: #94a3b8;
-  --text-accent: #00ffff;
-  --border-primary: rgba(255, 255, 255, 0.1);
-  --border-secondary: rgba(255, 255, 255, 0.05);
-  --border-accent: rgba(0, 255, 255, 0.3);
-  --accent-primary: #00ffff;
-  --accent-secondary: #ff6b6b;
-  --accent-tertiary: #4ecdc4;
-  --accent-success: #00ff88;
-  --accent-warning: #ffd93d;
-  --accent-error: #ff6b6b;
-  --shadow-primary: 0 8px 32px rgba(0, 0, 0, 0.3);
-  --shadow-secondary: 0 4px 16px rgba(0, 0, 0, 0.2);
-  --shadow-accent: 0 0 20px rgba(0, 255, 255, 0.2);
-  --glass-bg: rgba(26, 26, 46, 0.9);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  
-  /* Tons prateados e futuristas */
-  --silver-primary: #c0c0c0;
-  --silver-secondary: #a8a8a8;
-  --silver-tertiary: #808080;
-  --metallic-primary: #b8c5d6;
-  --metallic-secondary: #9ba5b4;
-  --futuristic-primary: #00ffff;
-  --futuristic-secondary: #ff00ff;
-  
-  /* Cores específicas para componentes */
-  --navbar-bg: rgba(15, 15, 35, 0.95);
-  --footer-bg: rgba(15, 15, 35, 0.9);
-  --card-bg: rgba(26, 26, 46, 0.95);
-  --button-primary: linear-gradient(135deg, #00ffff 0%, #0099ff 100%);
-  --button-secondary: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
-  --button-success: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
-  --button-warning: linear-gradient(135deg, #ffd93d 0%, #ffb347 100%);
-}
-
-[data-theme="light"] {
-  /* Tema Claro - Agro moderno sofisticado com fundo branco */
+  /* Tema Claro - Padrão (sempre ativo por padrão) */
   --bg-primary: #ffffff;
   --bg-secondary: #f8fafc;
   --bg-tertiary: #e2e8f0;
@@ -87,6 +42,51 @@
   --button-secondary: linear-gradient(135deg, #d97706 0%, #b45309 100%);
   --button-success: linear-gradient(135deg, #059669 0%, #047857 100%);
   --button-warning: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+}
+
+[data-theme="dark"] {
+  /* Tema Escuro - Futurista com fundo preto fosco (só quando ativado) */
+  --bg-primary: #0f0f23;
+  --bg-secondary: #1a1a2e;
+  --bg-tertiary: #16213e;
+  --bg-card: rgba(26, 26, 46, 0.95);
+  --bg-card-hover: rgba(26, 26, 46, 0.98);
+  --text-primary: #ffffff;
+  --text-secondary: #e2e8f0;
+  --text-tertiary: #94a3b8;
+  --text-accent: #00ffff;
+  --border-primary: rgba(255, 255, 255, 0.1);
+  --border-secondary: rgba(255, 255, 255, 0.05);
+  --border-accent: rgba(0, 255, 255, 0.3);
+  --accent-primary: #00ffff;
+  --accent-secondary: #ff6b6b;
+  --accent-tertiary: #4ecdc4;
+  --accent-success: #00ff88;
+  --accent-warning: #ffd93d;
+  --accent-error: #ff6b6b;
+  --shadow-primary: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --shadow-secondary: 0 4px 16px rgba(0, 0, 0, 0.2);
+  --shadow-accent: 0 0 20px rgba(0, 255, 255, 0.2);
+  --glass-bg: rgba(26, 26, 46, 0.9);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  
+  /* Tons prateados e futuristas */
+  --silver-primary: #c0c0c0;
+  --silver-secondary: #a8a8a8;
+  --silver-tertiary: #808080;
+  --metallic-primary: #b8c5d6;
+  --metallic-secondary: #9ba5b4;
+  --futuristic-primary: #00ffff;
+  --futuristic-secondary: #ff00ff;
+  
+  /* Cores específicas para componentes */
+  --navbar-bg: rgba(15, 15, 35, 0.95);
+  --footer-bg: rgba(15, 15, 35, 0.9);
+  --card-bg: rgba(26, 26, 46, 0.95);
+  --button-primary: linear-gradient(135deg, #00ffff 0%, #0099ff 100%);
+  --button-secondary: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+  --button-success: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+  --button-warning: linear-gradient(135deg, #ffd93d 0%, #ffb347 100%);
 }
 
 /* ===== ESTILOS GLOBAIS ===== */

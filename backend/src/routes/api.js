@@ -4,6 +4,7 @@ import freightRoutes from './freights.js';
 import authRoutes from './auth.js';
 import paymentRoutes from './payments.js';
 import messagingRoutes from './messaging.js';
+import adminRoutes from './admin.js';
 
 const router = Router();
 
@@ -20,6 +21,7 @@ router.get('/', (req, res) => {
       freights: '/api/freights',
       payments: '/api/payments',
       messaging: '/api/messaging',
+      admin: '/api/admin',
       blockchain: '/api/blockchain',
       agriculture: '/api/agriculture'
     }
@@ -40,6 +42,9 @@ router.use('/payments', paymentRoutes);
 
 // Messaging routes
 router.use('/messaging', messagingRoutes);
+
+// Admin routes
+router.use('/admin', adminRoutes);
 
 // Blockchain endpoint
 router.get('/blockchain', (req, res) => {

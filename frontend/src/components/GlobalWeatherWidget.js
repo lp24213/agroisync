@@ -1,110 +1,77 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, PanInfo } from 'framer-motion';
+import { X, MapPin, Thermometer, Droplets, Wind, Sun, Cloud, CloudRain, CloudLightning } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
-import { MapPin, Thermometer, Droplets, Wind, Sun, Moon, X } from 'lucide-react';
-import weatherService from '../services/weatherService';
 
 const GlobalWeatherWidget = () => {
   const { isDark } = useTheme();
-  const [weatherData, setWeatherData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [expanded, setExpanded] = useState(false);
-  const [position, setPosition] = useState({ x: 20, y: 20 });
-  const [isDragging, setIsDragging] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const dragRef = useRef(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [weather, setWeather] = useState(null);
+  const [news, setNews] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isDragging, setIsDragging] = useState(false);
+  const widgetRef = useRef(null);
 
   useEffect(() => {
-    // Verificar se widget foi fechado anteriormente
+    // Verificar se o widget foi fechado anteriormente
     const widgetClosed = localStorage.getItem('weatherWidgetClosed');
     if (widgetClosed === 'true') {
       setIsVisible(false);
     }
 
+    // Carregar dados iniciais
     loadWeatherData();
-    
-    // Atualizar a cada 10 minutos
-    const interval = setInterval(loadWeatherData, 600000);
-    return () => clearInterval(interval);
+    loadNewsData();
   }, []);
 
   const loadWeatherData = async () => {
     try {
-      setLoading(true);
-      const data = await weatherService.getWeatherByLocation();
-      setWeatherData(data);
+      // Simular dados de clima (substituir por API real)
+      const mockWeather = {
+        location: 'São Paulo, SP',
+        temperature: 24,
+        feelsLike: 26,
+        humidity: 65,
+        windSpeed: 12,
+        condition: 'partly-cloudy',
+        description: 'Parcialmente nublado'
+      };
+      setWeather(mockWeather);
     } catch (error) {
       console.error('Erro ao carregar dados do clima:', error);
-      // Usar dados de fallback
-      setWeatherData(weatherService.getFallbackWeatherData());
-    } finally {
-      setLoading(false);
     }
   };
 
-  const handleMouseDown = (e) => {
-    if (e.target.closest('button') || e.target.closest('input')) return;
-    
-    setIsDragging(true);
-    const startX = e.clientX - position.x;
-    const startY = e.clientY - position.y;
-    
-    const handleMouseMove = (e) => {
-      if (isDragging) {
-        const newX = e.clientX - startX;
-        const newY = e.clientY - startY;
-        
-        // Limitar movimento dentro da tela
-        const maxX = window.innerWidth - 160;
-        const maxY = window.innerHeight - 120;
-        
-        setPosition({
-          x: Math.max(0, Math.min(newX, maxX)),
-          y: Math.max(0, Math.min(newY, maxY))
-        });
-      }
-    };
-    
-    const handleMouseUp = () => {
-      setIsDragging(false);
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-    
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-  };
-
-  const handleTouchStart = (e) => {
-    if (e.target.closest('button') || e.target.closest('input')) return;
-    
-    const touch = e.touches[0];
-    const startX = touch.clientX - position.x;
-    const startY = touch.clientY - position.y;
-    
-    const handleTouchMove = (e) => {
-      e.preventDefault();
-      const touch = e.touches[0];
-      const newX = touch.clientX - startX;
-      const newY = touch.clientY - startY;
-      
-      // Limitar movimento dentro da tela
-      const maxX = window.innerWidth - 160;
-      const maxY = window.innerHeight - 120;
-      
-      setPosition({
-        x: Math.max(0, Math.min(newX, maxX)),
-        y: Math.max(0, Math.min(newY, maxY))
-      });
-    };
-    
-    const handleTouchEnd = () => {
-      document.removeEventListener('touchmove', handleTouchMove);
-      document.removeEventListener('touchend', handleTouchEnd);
-    };
-    
-    document.addEventListener('touchmove', handleTouchMove);
-    document.addEventListener('touchend', handleTouchEnd);
+  const loadNewsData = async () => {
+    try {
+      // Simular dados de notícias (substituir por RSS real)
+      const mockNews = [
+        {
+          id: 1,
+          title: 'Preços da soja sobem no mercado internacional',
+          summary: 'Commodity registra alta de 2,5% na bolsa de Chicago',
+          timestamp: '2h atrás'
+        },
+        {
+          id: 2,
+          title: 'Nova tecnologia de irrigação aumenta produtividade',
+          summary: 'Sistema inteligente reduz consumo de água em 30%',
+          timestamp: '4h atrás'
+        },
+        {
+          id: 3,
+          title: 'Exportações agrícolas batem recorde em janeiro',
+          summary: 'Setor registra crescimento de 15% em relação ao ano anterior',
+          timestamp: '6h atrás'
+        }
+      ];
+      setNews(mockNews);
+    } catch (error) {
+      console.error('Erro ao carregar notícias:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleClose = () => {
@@ -112,177 +79,163 @@ const GlobalWeatherWidget = () => {
     localStorage.setItem('weatherWidgetClosed', 'true');
   };
 
-  if (!isVisible) return null;
-
-  if (loading || !weatherData) {
-    return (
-      <motion.div
-        ref={dragRef}
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        style={{
-          position: 'fixed',
-          top: position.y,
-          left: position.x,
-          zIndex: 50,
-          cursor: isDragging ? 'grabbing' : 'move'
-        }}
-        className="transition-all duration-300"
-        onMouseDown={handleMouseDown}
-        onTouchStart={handleTouchStart}
-      >
-        <div className="bg-black/70 text-white p-4 rounded-2xl shadow-lg backdrop-blur-sm border border-gray-600">
-          <div className="flex justify-between items-start mb-2">
-            <div className="animate-pulse">
-              <div className="w-32 h-20 bg-gray-700 rounded-lg"></div>
-            </div>
-            <button
-              onClick={handleClose}
-              className="text-white hover:text-red-400 transition-colors duration-200 p-1"
-              title="Fechar"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </motion.div>
-    );
-  }
-
-  const formatTime = (date) => {
-    return date.toLocaleTimeString('pt-BR', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  const handleDragEnd = (event, info) => {
+    setPosition({ x: info.point.x, y: info.point.y });
+    setIsDragging(false);
   };
+
+  const getWeatherIcon = (condition) => {
+    switch (condition) {
+      case 'sunny':
+        return <Sun className="w-6 h-6 text-yellow-500" />;
+      case 'partly-cloudy':
+        return <Cloud className="w-6 h-6 text-gray-400" />;
+      case 'cloudy':
+        return <Cloud className="w-6 h-6 text-gray-500" />;
+      case 'rainy':
+        return <CloudRain className="w-6 h-6 text-blue-500" />;
+      case 'stormy':
+        return <CloudLightning className="w-6 h-6 text-purple-500" />;
+      default:
+        return <Sun className="w-6 h-6 text-yellow-500" />;
+    }
+  };
+
+  if (!isVisible) return null;
 
   return (
     <motion.div
-      ref={dragRef}
+      ref={widgetRef}
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.8 }}
+      drag
+      dragMomentum={false}
+      onDragStart={() => setIsDragging(true)}
+      onDragEnd={handleDragEnd}
       style={{
         position: 'fixed',
-        top: position.y,
-        left: position.x,
-        zIndex: 50,
-        cursor: isDragging ? 'grabbing' : 'move'
+        top: '20px',
+        right: '20px',
+        zIndex: 1000,
+        cursor: isDragging ? 'grabbing' : 'grab'
       }}
-      className="transition-all duration-300"
-      onMouseDown={handleMouseDown}
-      onTouchStart={handleTouchStart}
+      className={`w-80 ${isDark ? 'bg-dark-bg-card' : 'bg-light-bg-card'} rounded-xl shadow-lg border ${
+        isDark ? 'border-dark-border-primary' : 'border-light-border-primary'
+      } backdrop-blur-md`}
     >
-      {/* Widget Compacto */}
-      <motion.div
-        whileHover={{ scale: 1.02 }}
-        className="bg-black/70 text-white p-4 rounded-2xl shadow-lg backdrop-blur-sm border border-gray-600 hover:border-gray-500 transition-all duration-300 max-w-[90vw] md:max-w-none"
-      >
-        {/* Header com botão fechar */}
-        <div className="flex justify-between items-start mb-3">
-          <div className="flex items-center space-x-2">
-            <MapPin className="w-4 h-4 text-blue-400" />
-            <div className="text-xs">
-              <div className="font-semibold text-white">
-                {weatherData.location.city}
-              </div>
-              <div className="text-xs text-gray-300">
-                {weatherData.location.state}
-              </div>
-            </div>
-          </div>
+      {/* Header */}
+      <div className={`p-4 border-b ${
+        isDark ? 'border-dark-border-primary' : 'border-light-border-primary'
+      }`}>
+        <div className="flex items-center justify-between">
+          <h3 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            Clima & Notícias
+          </h3>
           <button
             onClick={handleClose}
-            className="text-white hover:text-red-400 transition-colors duration-200 p-1"
-            title="Fechar"
+            className={`p-1 rounded-full hover:bg-opacity-20 ${
+              isDark ? 'hover:bg-white text-white' : 'hover:bg-gray-900 text-gray-600'
+            } transition-colors duration-200`}
           >
             <X className="w-4 h-4" />
           </button>
         </div>
+      </div>
 
-        {/* Clima Atual */}
-        <div className="text-center mb-3">
-          <div className="text-2xl font-bold text-white mb-1">
-            {weatherData.current.temp}°C
+      {/* Weather Section */}
+      {weather && (
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center space-x-3 mb-3">
+            <MapPin className="w-4 h-4 text-gray-500" />
+            <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+              {weather.location}
+            </span>
           </div>
-          <div className="text-sm text-gray-300">
-            {weatherData.current.description}
-          </div>
-        </div>
-
-        {/* Ícone do Tempo */}
-        <div className="flex items-center justify-center mb-3">
-          <div className="text-center">
-            <div className="w-12 h-12 mx-auto mb-1 text-yellow-400">
-              {weatherData.current.icon === 'sun' ? (
-                <Sun className="w-full h-full" />
-              ) : (
-                <Moon className="w-full h-full" />
-              )}
+          
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              {getWeatherIcon(weather.condition)}
+              <div>
+                <div className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  {weather.temperature}°C
+                </div>
+                <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                  {weather.description}
+                </div>
+              </div>
+            </div>
+            
+            <div className="text-right space-y-1">
+              <div className="flex items-center space-x-2 text-sm">
+                <Thermometer className="w-4 h-4 text-red-500" />
+                <span className={isDark ? 'text-gray-300' : 'text-gray-600'}>
+                  Sensação: {weather.feelsLike}°C
+                </span>
+              </div>
+              <div className="flex items-center space-x-2 text-sm">
+                <Droplets className="w-4 h-4 text-blue-500" />
+                <span className={isDark ? 'text-gray-300' : 'text-gray-600'}>
+                  {weather.humidity}%
+                </span>
+              </div>
+              <div className="flex items-center space-x-2 text-sm">
+                <Wind className="w-4 h-4 text-gray-500" />
+                <span className={isDark ? 'text-gray-300' : 'text-gray-600'}>
+                  {weather.windSpeed} km/h
+                </span>
+              </div>
             </div>
           </div>
         </div>
+      )}
 
-        {/* Informações Adicionais */}
-        <div className="grid grid-cols-2 gap-2 text-xs">
-          <div className="flex items-center space-x-1">
-            <Droplets className="w-3 h-3 text-blue-400" />
-            <span className="text-gray-300">
-              {weatherData.current.humidity}%
-            </span>
-          </div>
-          <div className="flex items-center space-x-1">
-            <Wind className="w-3 h-3 text-gray-400" />
-            <span className="text-gray-300">
-              {weatherData.current.wind_speed} km/h
-            </span>
-          </div>
-        </div>
-
-        {/* Indicador de Expansão */}
-        <div className="text-center mt-2">
-          <div className="w-1 h-1 rounded-full mx-auto bg-blue-400"></div>
-        </div>
-      </motion.div>
-
-      {/* Widget Expandido */}
-      {expanded && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          className="mt-4 bg-black/70 text-white p-4 rounded-2xl shadow-lg backdrop-blur-sm border border-gray-600"
-        >
-          {/* Previsão para os Próximos Dias */}
-          <h4 className="text-sm font-semibold mb-3 text-white">
-            Previsão 5 Dias
-          </h4>
-          
-          <div className="space-y-2">
-            {weatherData.forecast.slice(0, 5).map((day, index) => (
-              <div key={index} className="flex items-center justify-between text-xs">
-                <span className="text-gray-300">
-                  {day.date}
-                </span>
-                <div className="flex items-center space-x-2">
-                  <span className="text-gray-300">
-                    {day.temp_min}°C
-                  </span>
-                  <span className="text-white">
-                    {day.temp_max}°C
-                  </span>
-                </div>
+      {/* News Section */}
+      <div className="p-4">
+        <h4 className={`font-medium mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+          Últimas Notícias
+        </h4>
+        
+        {isLoading ? (
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="animate-pulse">
+                <div className={`h-4 bg-gray-300 dark:bg-gray-600 rounded mb-2`}></div>
+                <div className={`h-3 bg-gray-200 dark:bg-gray-700 rounded w-3/4`}></div>
               </div>
             ))}
           </div>
-
-          {/* Última Atualização */}
-          <div className="mt-3 pt-3 border-t border-gray-600">
-            <p className="text-xs text-center text-gray-400">
-              Atualizado: {formatTime(new Date())}
-            </p>
+        ) : (
+          <div className="space-y-3">
+            {news.map((item) => (
+              <div
+                key={item.id}
+                className={`p-3 rounded-lg cursor-pointer transition-colors duration-200 ${
+                  isDark 
+                    ? 'hover:bg-dark-bg-card-hover border border-dark-border-primary' 
+                    : 'hover:bg-light-bg-card-hover border border-light-border-primary'
+                }`}
+              >
+                <h5 className={`font-medium text-sm mb-1 line-clamp-2 ${
+                  isDark ? 'text-white' : 'text-gray-900'
+                }`}>
+                  {item.title}
+                </h5>
+                <p className={`text-xs mb-2 line-clamp-2 ${
+                  isDark ? 'text-gray-400' : 'text-gray-600'
+                }`}>
+                  {item.summary}
+                </p>
+                <span className={`text-xs ${
+                  isDark ? 'text-gray-500' : 'text-gray-500'
+                }`}>
+                  {item.timestamp}
+                </span>
+              </div>
+            ))}
           </div>
-        </motion.div>
-      )}
+        )}
+      </div>
     </motion.div>
   );
 };

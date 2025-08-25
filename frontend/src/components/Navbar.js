@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { 
   Menu, X, Globe, Sun, Moon, User, 
   ShoppingCart, Truck, Coins, BarChart3, HelpCircle, 
-  Activity, LogOut, Award, MessageCircle
+  Activity, LogOut, Award, MessageCircle, Newspaper
 } from 'lucide-react';
 
 const Navbar = () => {
@@ -40,6 +40,13 @@ const Navbar = () => {
     setIsOpen(!isOpen);
   };
 
+  const scrollToNews = () => {
+    const newsSection = document.getElementById('news-section');
+    if (newsSection) {
+      newsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <nav className={`w-full transition-all duration-300 ${
       isScrolled 
@@ -67,6 +74,13 @@ const Navbar = () => {
             <a href="/" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
               {t('nav.home')}
             </a>
+            <button 
+              onClick={scrollToNews}
+              className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap flex items-center space-x-1"
+            >
+              <Newspaper className="w-4 h-4" />
+              <span>Notícias</span>
+            </button>
             <a href="/loja" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
               {t('nav.store')}
             </a>
@@ -75,9 +89,6 @@ const Navbar = () => {
             </a>
             <a href="/cripto" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
               {t('nav.crypto')}
-            </a>
-            <a href="/planos" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
-              Planos
             </a>
             <a href="/parcerias" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
               Parcerias
@@ -250,6 +261,16 @@ const Navbar = () => {
                       <BarChart3 className="w-5 h-5 text-green-400" />
                       <span>{t('nav.home')}</span>
                     </a>
+                    <button 
+                      onClick={() => {
+                        setIsOpen(false);
+                        scrollToNews();
+                      }}
+                      className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white"
+                    >
+                      <Newspaper className="w-5 h-5 text-blue-400" />
+                      <span>Notícias</span>
+                    </button>
                     <a 
                       href="/loja" 
                       onClick={() => setIsOpen(false)}
@@ -332,18 +353,10 @@ const Navbar = () => {
                   </div>
                 </div>
 
-                {/* Grupo 3: Planos e Serviços */}
+                {/* Grupo 3: Serviços */}
                 <div className="px-3 py-2">
                   <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Serviços</h3>
                   <div className="space-y-2">
-                    <a 
-                      href="/planos" 
-                      onClick={() => setIsOpen(false)}
-                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white"
-                    >
-                      <Activity className="w-5 h-5 text-purple-400" />
-                      <span>{t('nav.plans')}</span>
-                    </a>
                     <a 
                       href="/cotacao" 
                       onClick={() => setIsOpen(false)}

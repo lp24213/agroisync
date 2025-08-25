@@ -12,7 +12,6 @@ import Cripto from './pages/Cripto';
 import Login from './pages/Login';
 import Cadastro from './pages/Cadastro';
 import Admin from './pages/Admin';
-import Planos from './pages/Planos';
 import PaymentSuccess from './pages/PaymentSuccess';
 import Contato from './pages/Contato';
 import Ajuda from './pages/Ajuda';
@@ -40,7 +39,6 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/cadastro" element={<Cadastro />} />
               <Route path="/admin" element={<Admin />} />
-              <Route path="/planos" element={<Planos />} />
               <Route path="/payment-success" element={<PaymentSuccess />} />
               <Route path="/contato" element={<Contato />} />
               <Route path="/ajuda" element={<Ajuda />} />

@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../contexts/ThemeContext';
 import { 
-  BitcoinIcon, EthereumIcon, USDTIcon, BNBIcon, SolanaIcon,
-  MetaMaskIcon, PhantomIcon, WalletConnectIcon 
+  BitcoinIcon, EthereumIcon, USDTIcon, BNBIcon, SolanaIcon
 } from '../components/icons/CryptoIcons';
 import CryptoTicker from '../components/crypto/CryptoTicker';
 import CryptoChart from '../components/crypto/CryptoChart';
@@ -16,8 +15,6 @@ const Cripto = () => {
   const [walletAddress, setWalletAddress] = useState('');
   const [isConnected, setIsConnected] = useState(false);
   const [balance, setBalance] = useState('0');
-  const [loading, setLoading] = useState(false);
-  const [selectedWallet, setSelectedWallet] = useState('metamask');
 
   // Dados simulados mais profissionais de cotações em tempo real
   const cryptoQuotes = [
@@ -46,19 +43,15 @@ const Cripto = () => {
   ];
 
   const handleWalletConnect = (walletName) => {
-    setSelectedWallet(walletName);
     // Simular conexão segura sem expor dados
-    setLoading(true);
     setTimeout(() => {
       setIsConnected(true);
-      setLoading(false);
       // Não expor endereço real - apenas simular
       setWalletAddress('0x****' + Math.random().toString(36).substr(2, 4));
     }, 2000);
   };
 
   const connectWallet = async () => {
-    setLoading(true);
     try {
       if (typeof window.ethereum !== 'undefined') {
         const accounts = await window.ethereum.request({
@@ -79,8 +72,6 @@ const Cripto = () => {
     } catch (error) {
       console.error('Erro ao conectar carteira:', error);
       alert(t('crypto.walletConnectionError'));
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -88,12 +79,6 @@ const Cripto = () => {
     setWalletAddress('');
     setIsConnected(false);
     setBalance('0');
-  };
-
-  const getChangeColor = (change) => {
-    if (change.startsWith('+')) return 'text-green-500';
-    if (change.startsWith('-')) return 'text-red-500';
-    return 'text-gray-400';
   };
 
   return (

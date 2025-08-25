@@ -1,142 +1,95 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
-import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../contexts/AuthContext';
 import { 
-  User, Building, Truck, ShoppingCart, Package, MapPin, Phone, Mail,
-  FileText, Shield, CheckCircle, AlertCircle, Eye, EyeOff, Check, Coins
+  User, Building, Phone, Mail, Package, Truck, 
+  FileText, Upload, CheckCircle, AlertCircle
 } from 'lucide-react';
-// Componentes removidos - já renderizados pelo Layout global
 
 const Cadastro = () => {
   const { isDark } = useTheme();
-  const { register, error: authError } = useAuth();
   const { t } = useTranslation();
-  const [selectedModule, setSelectedModule] = useState('store');
+  const { signUp, loading } = useAuth();
+  
+  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    // Dados pessoais
     name: '',
-    cpfCnpj: '',
-    email: '',
+    company: '',
     phone: '',
+    email: '',
     password: '',
     confirmPassword: '',
-    
-    // Endereço
-    cep: '',
-    state: '',
-    city: '',
-    country: 'Brasil',
-    
-    // Módulos selecionados
     modules: {
       store: false,
       freight: false
     },
-    
-    // Produtos (Loja)
+    // Dados específicos para Loja
     products: [{
       name: '',
-      category: '',
-      specifications: '',
-      images: [],
+      specs: '',
       price: '',
-      quantity: '',
-      description: ''
+      images: []
     }],
-    
-    // Fretes (AgroConecta)
-    freights: [{
-      cargoWeight: '',
-      cargoType: '',
-      distance: '',
-      route: '',
-      nf: '',
-      confidentialInfo: ''
-    }]
+    // Dados específicos para AgroConecta
+    freightData: {
+      routeFrom: '',
+      routeTo: '',
+      estimatedDays: '',
+      freightPrice: '',
+      weightKg: '',
+      nfNumber: '',
+      notes: ''
+    }
   });
 
-  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  useEffect(() => {
-    document.title = 'Cadastro - Agroisync';
-  }, []);
-
-  // Estados brasileiros
-  const estados = [
-    'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
-    'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN',
-    'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
-  ];
-
-  // Tipos de veículo para AgroConecta
-  const tiposVeiculo = [
-    'Graneleiro',
-    'Bitrem',
-    'Baú',
-    'Refrigerado',
-    'Tanque',
-    'Carreta',
-    'Truck',
-    'Prancha',
-    'Cegonha'
-  ];
-
-  // Áreas de atuação para Loja
-  const areasAtuacao = [
-    'Insumos Agrícolas',
-    'Máquinas e Implementos',
-    'Pecuária',
-    'Commodities',
-    'Serviços Agrícolas',
-    'Tecnologia Agrícola',
-    'Consultoria',
-    'Manutenção'
-  ];
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  const handleInputChange = (field, value) => {
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [field]: value
     }));
     
     // Limpar erro do campo
-    if (errors[name]) {
+    if (errors[field]) {
       setErrors(prev => ({
         ...prev,
-        [name]: ''
+        [field]: null
       }));
     }
   };
 
   const handleModuleChange = (module) => {
-    setSelectedModule(module);
     setFormData(prev => ({
       ...prev,
       modules: {
-        store: module === 'store',
-        freight: module === 'freight'
+        ...prev.modules,
+        [module]: !prev.modules[module]
       }
     }));
   };
 
-  // Gerenciar produtos
+  const handleProductChange = (index, field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      products: prev.products.map((product, i) => 
+        i === index ? { ...product, [field]: value } : product
+      )
+    }));
+  };
+
   const addProduct = () => {
     setFormData(prev => ({
       ...prev,
       products: [...prev.products, {
         name: '',
-        category: '',
-        specifications: '',
-        images: [],
+        specs: '',
         price: '',
-        quantity: '',
-        description: ''
+        images: []
       }]
     }));
   };
@@ -148,815 +101,610 @@ const Cadastro = () => {
     }));
   };
 
-  const updateProduct = (index, field, value) => {
+  const handleFreightDataChange = (field, value) => {
     setFormData(prev => ({
       ...prev,
-      products: prev.products.map((product, i) => 
-        i === index ? { ...product, [field]: value } : product
-      )
+      freightData: {
+        ...prev.freightData,
+        [field]: value
+      }
     }));
   };
 
-  // Gerenciar fretes
-  const addFreight = () => {
-    setFormData(prev => ({
-      ...prev,
-      freights: [...prev.freights, {
-        cargoWeight: '',
-        cargoType: '',
-        distance: '',
-        route: '',
-        nf: '',
-        confidentialInfo: ''
-      }]
-    }));
-  };
-
-  const removeFreight = (index) => {
-    setFormData(prev => ({
-      ...prev,
-      freights: prev.freights.filter((_, i) => i !== index)
-    }));
-  };
-
-  const updateFreight = (index, field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      freights: prev.freights.map((freight, i) => 
-        i === index ? { ...freight, [field]: value } : freight
-      )
-    }));
-  };
-
-  const validateForm = () => {
+  const validateStep1 = () => {
     const newErrors = {};
-
-    if (!formData.name) newErrors.name = 'Nome é obrigatório';
-    if (!formData.cpfCnpj) newErrors.cpfCnpj = 'CPF/CNPJ é obrigatório';
-    if (!formData.email) newErrors.email = 'E-mail é obrigatório';
-    if (!formData.phone) newErrors.phone = 'Telefone é obrigatório';
+    
+    if (!formData.name.trim()) newErrors.name = 'Nome é obrigatório';
+    if (!formData.company.trim()) newErrors.company = 'Empresa é obrigatória';
+    if (!formData.phone.trim()) newErrors.phone = 'Telefone é obrigatório';
+    if (!formData.email.trim()) newErrors.email = 'E-mail é obrigatório';
     if (!formData.password) newErrors.password = 'Senha é obrigatória';
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Senhas não coincidem';
     }
-    if (!formData.city) newErrors.city = 'Cidade é obrigatória';
-    if (!formData.state) newErrors.state = 'Estado é obrigatório';
     
-    // Validar se pelo menos um módulo foi selecionado
-    const hasModuleSelected = Object.values(formData.modules).some(module => module);
-    if (!hasModuleSelected) {
-      newErrors.modules = 'Selecione pelo menos um módulo (Loja ou AgroConecta)';
+    // Validar senha
+    if (formData.password && formData.password.length < 8) {
+      newErrors.password = 'Senha deve ter pelo menos 8 caracteres';
     }
-
-    // Validar produtos se módulo Loja selecionado
-    if (formData.modules.store) {
-      formData.products.forEach((product, index) => {
-        if (!product.name) newErrors[`product_${index}_name`] = 'Nome do produto é obrigatório';
-        if (!product.specifications) newErrors[`product_${index}_specifications`] = 'Especificações são obrigatórias';
-        if (!product.images || product.images.length === 0) newErrors[`product_${index}_images`] = 'Pelo menos uma imagem é obrigatória';
-        if (!product.category) newErrors[`product_${index}_category`] = 'Categoria é obrigatória';
-        if (!product.price) newErrors[`product_${index}_price`] = 'Preço é obrigatório';
-        if (!product.quantity) newErrors[`product_${index}_quantity`] = 'Quantidade é obrigatória';
-      });
-    }
-
-    // Validar fretes se módulo AgroConecta selecionado
-    if (formData.modules.freight) {
-      formData.freights.forEach((freight, index) => {
-        if (!freight.cargoWeight) newErrors[`freight_${index}_weight`] = 'Peso da carga é obrigatório';
-        if (!freight.cargoType) newErrors[`freight_${index}_type`] = 'Tipo de carga é obrigatório';
-        if (!freight.route) newErrors[`freight_${index}_route`] = 'Rota é obrigatória';
-        if (!freight.nf) newErrors[`freight_${index}_nf`] = 'Nota Fiscal é obrigatória';
-        if (!freight.confidentialInfo) newErrors[`freight_${index}_confidential`] = 'Informações sigilosas são obrigatórias';
-      });
+    
+    if (formData.password && !/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
+      newErrors.password = 'Senha deve conter maiúsculas, minúsculas e números';
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const validateStep2 = () => {
+    const newErrors = {};
     
-    if (!validateForm()) {
-      return;
+    if (!formData.modules.store && !formData.modules.freight) {
+      newErrors.modules = 'Selecione pelo menos um módulo';
     }
 
+    // Validar produtos se Loja selecionado
+    if (formData.modules.store) {
+      formData.products.forEach((product, index) => {
+        if (!product.name.trim()) {
+          newErrors[`product${index}Name`] = 'Nome do produto é obrigatório';
+        }
+        if (!product.specs.trim()) {
+          newErrors[`product${index}Specs`] = 'Especificações são obrigatórias';
+        }
+        if (!product.price.trim()) {
+          newErrors[`product${index}Price`] = 'Preço é obrigatório';
+        }
+      });
+    }
+
+    // Validar dados de frete se AgroConecta selecionado
+    if (formData.modules.freight) {
+      const { freightData } = formData;
+      if (!freightData.routeFrom.trim()) {
+        newErrors.routeFrom = 'Rota de origem é obrigatória';
+      }
+      if (!freightData.routeTo.trim()) {
+        newErrors.routeTo = 'Rota de destino é obrigatória';
+      }
+      if (!freightData.estimatedDays.trim()) {
+        newErrors.estimatedDays = 'Dias estimados são obrigatórios';
+      }
+      if (!freightData.freightPrice.trim()) {
+        newErrors.freightPrice = 'Preço do frete é obrigatório';
+      }
+      if (!freightData.weightKg.trim()) {
+        newErrors.weightKg = 'Peso é obrigatório';
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const nextStep = () => {
+    if (step === 1 && validateStep1()) {
+      setStep(2);
+    } else if (step === 2 && validateStep2()) {
+      handleSubmit();
+    }
+  };
+
+  const prevStep = () => {
+    setStep(step - 1);
+  };
+
+  const handleSubmit = async () => {
     try {
-      setLoading(true);
-      await register(formData);
-      // Redirecionar para página de planos após cadastro bem-sucedido
-      window.location.href = '/planos';
+      // Cadastrar usuário no Cognito
+      const result = await signUp(formData.email, formData.password, formData.name);
+      
+      if (result.success) {
+        // Salvar dados adicionais no localStorage para uso posterior
+        localStorage.setItem('cadastroData', JSON.stringify({
+          company: formData.company,
+          phone: formData.phone,
+          modules: formData.modules,
+          products: formData.products,
+          freightData: formData.freightData
+        }));
+
+        // Redirecionar para Planos
+        window.location.href = '/planos';
+      } else {
+        setErrors({ submit: result.error });
+      }
     } catch (error) {
-      console.error('Registration error:', error);
-    } finally {
-      setLoading(false);
+      setErrors({ submit: 'Erro ao realizar cadastro. Tente novamente.' });
     }
   };
 
-  const getModuleIcon = (module) => {
-    switch (module) {
-      case 'store':
-        return <ShoppingCart className="w-6 h-6" />;
-      case 'freight':
-        return <Truck className="w-6 h-6" />;
-      default:
-        return <Package className="w-6 h-6" />;
-    }
-  };
+  const renderStep1 = () => (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.5 }}
+      className="space-y-6"
+    >
+      <div>
+        <label className="block text-sm font-medium mb-2">
+          <User className="inline w-4 h-4 mr-2" />
+          Nome Completo *
+        </label>
+        <input
+          type="text"
+          value={formData.name}
+          onChange={(e) => handleInputChange('name', e.target.value)}
+          className={`w-full px-4 py-3 rounded-lg border ${
+            errors.name ? 'border-red-500' : 'border-gray-300'
+          } focus:ring-2 focus:ring-green-500 focus:border-transparent`}
+          placeholder="Digite seu nome completo"
+        />
+        {errors.name && (
+          <p className="text-red-500 text-sm mt-1 flex items-center">
+            <AlertCircle className="w-4 h-4 mr-1" />
+            {errors.name}
+          </p>
+        )}
+      </div>
 
-  const getModuleTitle = (module) => {
-    switch (module) {
-      case 'store':
-        return 'Loja de Produtos';
-      case 'freight':
-        return 'AgroConecta (Fretes)';
-      default:
-        return 'Selecionar Módulo';
-    }
-  };
+      <div>
+        <label className="block text-sm font-medium mb-2">
+          <Building className="inline w-4 h-4 mr-2" />
+          Nome da Empresa *
+        </label>
+        <input
+          type="text"
+          value={formData.company}
+          onChange={(e) => handleInputChange('company', e.target.value)}
+          className={`w-full px-4 py-3 rounded-lg border ${
+            errors.company ? 'border-red-500' : 'border-gray-300'
+          } focus:ring-2 focus:ring-green-500 focus:border-transparent`}
+          placeholder="Digite o nome da sua empresa"
+        />
+        {errors.company && (
+          <p className="text-red-500 text-sm mt-1 flex items-center">
+            <AlertCircle className="w-4 h-4 mr-1" />
+            {errors.company}
+          </p>
+        )}
+      </div>
 
-  const getModuleDescription = (module) => {
-    switch (module) {
-      case 'store':
-        return 'Cadastre-se para vender produtos agrícolas no marketplace';
-      case 'freight':
-        return 'Cadastre-se para oferecer serviços de transporte';
-      default:
-        return 'Escolha o módulo que melhor atende suas necessidades';
-    }
-  };
+      <div>
+        <label className="block text-sm font-medium mb-2">
+          <Phone className="inline w-4 h-4 mr-2" />
+          Telefone *
+        </label>
+        <input
+          type="tel"
+          value={formData.phone}
+          onChange={(e) => handleInputChange('phone', e.target.value)}
+          className={`w-full px-4 py-3 rounded-lg border ${
+            errors.phone ? 'border-red-500' : 'border-gray-300'
+          } focus:ring-2 focus:ring-green-500 focus:border-transparent`}
+          placeholder="(00) 00000-0000"
+        />
+        {errors.phone && (
+          <p className="text-red-500 text-sm mt-1 flex items-center">
+            <AlertCircle className="w-4 h-4 mr-1" />
+            {errors.phone}
+          </p>
+        )}
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-2">
+          <Mail className="inline w-4 h-4 mr-2" />
+          E-mail *
+        </label>
+        <input
+          type="email"
+          value={formData.email}
+          onChange={(e) => handleInputChange('email', e.target.value)}
+          className={`w-full px-4 py-3 rounded-lg border ${
+            errors.email ? 'border-red-500' : 'border-gray-300'
+          } focus:ring-2 focus:ring-green-500 focus:border-transparent`}
+          placeholder="seu@email.com"
+        />
+        {errors.email && (
+          <p className="text-red-500 text-sm mt-1 flex items-center">
+            <AlertCircle className="w-4 h-4 mr-1" />
+            {errors.email}
+          </p>
+        )}
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-2">
+          Senha *
+        </label>
+        <div className="relative">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            value={formData.password}
+            onChange={(e) => handleInputChange('password', e.target.value)}
+            className={`w-full px-4 py-3 rounded-lg border ${
+              errors.password ? 'border-red-500' : 'border-gray-300'
+            } focus:ring-2 focus:ring-green-500 focus:border-transparent pr-12`}
+            placeholder="Mínimo 8 caracteres"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+          >
+            {showPassword ? '👁️' : '👁️‍🗨️'}
+          </button>
+        </div>
+        {errors.password && (
+          <p className="text-red-500 text-sm mt-1 flex items-center">
+            <AlertCircle className="w-4 h-4 mr-1" />
+            {errors.password}
+          </p>
+        )}
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-2">
+          Confirmar Senha *
+        </label>
+        <div className="relative">
+          <input
+            type={showConfirmPassword ? 'text' : 'password'}
+            value={formData.confirmPassword}
+            onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+            className={`w-full px-4 py-3 rounded-lg border ${
+              errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
+            } focus:ring-2 focus:ring-green-500 focus:border-transparent pr-12`}
+            placeholder="Confirme sua senha"
+          />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+          >
+            {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
+          </button>
+        </div>
+        {errors.confirmPassword && (
+          <p className="text-red-500 text-sm mt-1 flex items-center">
+            <AlertCircle className="w-4 h-4 mr-1" />
+            {errors.confirmPassword}
+          </p>
+        )}
+      </div>
+    </motion.div>
+  );
+
+  const renderStep2 = () => (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.5 }}
+      className="space-y-6"
+    >
+      <div>
+        <h3 className="text-lg font-semibold mb-4">Selecione os Módulos</h3>
+        <div className="space-y-3">
+          <label className="flex items-center space-x-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={formData.modules.store}
+              onChange={() => handleModuleChange('store')}
+              className="w-5 h-5 text-green-600 border-gray-300 rounded focus:ring-green-500"
+            />
+            <div className="flex items-center space-x-2">
+              <Package className="w-5 h-5 text-blue-500" />
+              <span>Loja - Marketplace de Produtos</span>
+            </div>
+          </label>
+          
+          <label className="flex items-center space-x-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={formData.modules.freight}
+              onChange={() => handleModuleChange('freight')}
+              className="w-5 h-5 text-green-600 border-gray-300 rounded focus:ring-green-500"
+            />
+            <div className="flex items-center space-x-2">
+              <Truck className="w-5 h-5 text-green-500" />
+              <span>AgroConecta - Gestão de Fretes</span>
+            </div>
+          </label>
+        </div>
+        {errors.modules && (
+          <p className="text-red-500 text-sm mt-1 flex items-center">
+            <AlertCircle className="w-4 h-4 mr-1" />
+            {errors.modules}
+          </p>
+        )}
+      </div>
+
+      {/* Módulo Loja */}
+      {formData.modules.store && (
+        <div className="border border-gray-200 rounded-lg p-4">
+          <h4 className="text-md font-semibold mb-3 flex items-center">
+            <Package className="w-4 h-4 mr-2 text-blue-500" />
+            Produtos para Loja
+          </h4>
+          {formData.products.map((product, index) => (
+            <div key={index} className="mb-4 p-3 border border-gray-100 rounded-lg">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-medium">Produto {index + 1}</span>
+                {formData.products.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeProduct(index)}
+                    className="text-red-500 hover:text-red-700 text-sm"
+                  >
+                    Remover
+                  </button>
+                )}
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div>
+                  <input
+                    type="text"
+                    value={product.name}
+                    onChange={(e) => handleProductChange(index, 'name', e.target.value)}
+                    className={`w-full px-3 py-2 rounded border ${
+                      errors[`product${index}Name`] ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    placeholder="Nome do produto"
+                  />
+                  {errors[`product${index}Name`] && (
+                    <p className="text-red-500 text-xs mt-1">{errors[`product${index}Name`]}</p>
+                  )}
+                </div>
+                
+                <div>
+                  <input
+                    type="text"
+                    value={product.specs}
+                    onChange={(e) => handleProductChange(index, 'specs', e.target.value)}
+                    className={`w-full px-3 py-2 rounded border ${
+                      errors[`product${index}Specs`] ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    placeholder="Especificações"
+                  />
+                  {errors[`product${index}Specs`] && (
+                    <p className="text-red-500 text-xs mt-1">{errors[`product${index}Specs`]}</p>
+                  )}
+                </div>
+                
+                <div>
+                  <input
+                    type="text"
+                    value={product.price}
+                    onChange={(e) => handleProductChange(index, 'price', e.target.value)}
+                    className={`w-full px-3 py-2 rounded border ${
+                      errors[`product${index}Price`] ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    placeholder="Preço (R$)"
+                  />
+                  {errors[`product${index}Price`] && (
+                    <p className="text-red-500 text-xs mt-1">{errors[`product${index}Price`]}</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+          
+          <button
+            type="button"
+            onClick={addProduct}
+            className="w-full py-2 px-4 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-gray-400 hover:text-gray-700 transition-colors"
+          >
+            + Adicionar Produto
+          </button>
+        </div>
+      )}
+
+      {/* Módulo AgroConecta */}
+      {formData.modules.freight && (
+        <div className="border border-gray-200 rounded-lg p-4">
+          <h4 className="text-md font-semibold mb-3 flex items-center">
+            <Truck className="w-4 h-4 mr-2 text-green-500" />
+            Dados de Frete (AgroConecta)
+          </h4>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Rota de Origem *</label>
+              <input
+                type="text"
+                value={formData.freightData.routeFrom}
+                onChange={(e) => handleFreightDataChange('routeFrom', e.target.value)}
+                className={`w-full px-3 py-2 rounded border ${
+                  errors.routeFrom ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="Cidade/Estado de origem"
+              />
+              {errors.routeFrom && (
+                <p className="text-red-500 text-xs mt-1">{errors.routeFrom}</p>
+              )}
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-1">Rota de Destino *</label>
+              <input
+                type="text"
+                value={formData.freightData.routeTo}
+                onChange={(e) => handleFreightDataChange('routeTo', e.target.value)}
+                className={`w-full px-3 py-2 rounded border ${
+                  errors.routeTo ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="Cidade/Estado de destino"
+              />
+              {errors.routeTo && (
+                <p className="text-red-500 text-xs mt-1">{errors.routeTo}</p>
+              )}
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-1">Dias Estimados *</label>
+              <input
+                type="number"
+                value={formData.freightData.estimatedDays}
+                onChange={(e) => handleFreightDataChange('estimatedDays', e.target.value)}
+                className={`w-full px-3 py-2 rounded border ${
+                  errors.estimatedDays ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="Número de dias"
+              />
+              {errors.estimatedDays && (
+                <p className="text-red-500 text-xs mt-1">{errors.estimatedDays}</p>
+              )}
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-1">Preço do Frete *</label>
+              <input
+                type="text"
+                value={formData.freightData.freightPrice}
+                onChange={(e) => handleFreightDataChange('freightPrice', e.target.value)}
+                className={`w-full px-3 py-2 rounded border ${
+                  errors.freightPrice ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="R$ 0,00"
+              />
+              {errors.freightPrice && (
+                <p className="text-red-500 text-xs mt-1">{errors.freightPrice}</p>
+              )}
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-1">Peso (kg) *</label>
+              <input
+                type="number"
+                value={formData.freightData.weightKg}
+                onChange={(e) => handleFreightDataChange('weightKg', e.target.value)}
+                className={`w-full px-3 py-2 rounded border ${
+                  errors.weightKg ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="0.00"
+              />
+              {errors.weightKg && (
+                <p className="text-red-500 text-xs mt-1">{errors.weightKg}</p>
+              )}
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-1">Número da NF</label>
+              <input
+                type="text"
+                value={formData.freightData.nfNumber}
+                onChange={(e) => handleFreightDataChange('nfNumber', e.target.value)}
+                className="w-full px-3 py-2 rounded border border-gray-300"
+                placeholder="Opcional"
+              />
+            </div>
+          </div>
+          
+          <div className="mt-4">
+            <label className="block text-sm font-medium mb-1">Observações</label>
+            <textarea
+              value={formData.freightData.notes}
+              onChange={(e) => handleFreightDataChange('notes', e.target.value)}
+              className="w-full px-3 py-2 rounded border border-gray-300"
+              rows="3"
+              placeholder="Informações adicionais sobre o frete..."
+            />
+          </div>
+        </div>
+      )}
+    </motion.div>
+  );
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300`}>
+    <div className={`min-h-screen py-20 ${isDark ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            Cadastro AgroTM
+          </h1>
+          <p className="text-xl text-gray-600 dark:text-gray-300">
+            Crie sua conta e comece a usar a plataforma completa do agronegócio
+          </p>
+        </motion.div>
 
-      
-      {/* Header Section */}
-      <section className="relative pt-40 pb-20 px-4 overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0">
-          {isDark ? (
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900">
-              <div className="absolute inset-0 bg-gray-800 opacity-20"></div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8"
+        >
+          {/* Progress Bar */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium">Passo {step} de 2</span>
+              <span className="text-sm text-gray-500">
+                {step === 1 ? 'Informações Pessoais' : 'Módulos e Dados'}
+              </span>
             </div>
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50">
-              <div className="absolute inset-0 bg-white opacity-95"></div>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div 
+                className="bg-green-600 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${(step / 2) * 100}%` }}
+              ></div>
+            </div>
+          </div>
+
+          {/* Form Steps */}
+          {step === 1 ? renderStep1() : renderStep2()}
+
+          {/* Error de submissão */}
+          {errors.submit && (
+            <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg flex items-center">
+              <AlertCircle className="w-5 h-5 mr-2" />
+              {errors.submit}
             </div>
           )}
-        </div>
-        <div className="max-w-6xl mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
-                         Cadastro Agroisync
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Junte-se ao Hub do Agronegócio Brasileiro
-          </p>
-        </div>
-      </section>
 
-      {/* Module and Type Selection */}
-      <section className="py-12 px-4 bg-gray-50">
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="bg-white rounded-2xl shadow-lg p-8"
-          >
-            {/* Module Selection */}
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-center mb-6 text-gray-900">
-                Escolha seu Módulo
-              </h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Loja AgroSync */}
-                <button
-                  onClick={() => handleModuleChange('store')}
-                  className={`p-6 rounded-xl border-2 transition-all duration-300 ${
-                    formData.modules.store
-                      ? 'border-green-500 bg-green-50 shadow-lg'
-                      : 'border-gray-200 hover:border-green-300 hover:bg-gray-50'
-                  }`}
-                >
-                  <div className="text-center">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center text-white">
-                      <ShoppingCart className="w-8 h-8" />
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">Loja AgroSync</h3>
-                    <p className="text-gray-600 text-sm">
-                      Marketplace para produtos agrícolas
-                    </p>
-                  </div>
-                </button>
-
-                {/* AgroConecta */}
-                <button
-                  onClick={() => handleModuleChange('freight')}
-                  className={`p-6 rounded-xl border-2 transition-all duration-300 ${
-                    formData.modules.freight
-                      ? 'border-blue-500 bg-blue-50 shadow-lg'
-                      : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
-                  }`}
-                >
-                  <div className="text-center">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white">
-                      <Truck className="w-8 h-8" />
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">AgroConecta</h3>
-                    <p className="text-gray-600 text-sm">
-                      Plataforma de fretes agrícolas
-                    </p>
-                  </div>
-                </button>
-
-
-              </div>
-            </div>
-
-            {/* Type Selection (only for Loja) */}
-            {formData.modules.store && (
-              <div>
-                <h3 className="text-xl font-bold text-center mb-6 text-gray-900">
-                  Tipo de Cadastro
-                </h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <button
-                    onClick={() => handleModuleChange('store')}
-                    className={`p-4 rounded-xl border-2 transition-all duration-300 ${
-                      formData.modules.store
-                        ? 'border-green-500 bg-green-50'
-                        : 'border-gray-200 hover:border-green-300 hover:bg-gray-50'
-                    }`}
-                  >
-                    <div className="text-center">
-                      <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-green-100 flex items-center justify-center">
-                        <Package className="w-6 h-6 text-green-600" />
-                      </div>
-                      <h4 className="font-bold text-gray-900 mb-1">Vendedor</h4>
-                      <p className="text-sm text-gray-600">Venda seus produtos</p>
-                    </div>
-                  </button>
-
-                  <button
-                    onClick={() => handleModuleChange('store')}
-                    className={`p-4 rounded-xl border-2 transition-all duration-300 ${
-                      formData.modules.store
-                        ? 'border-green-500 bg-green-50'
-                        : 'border-gray-200 hover:border-green-300 hover:bg-gray-50'
-                    }`}
-                  >
-                    <div className="text-center">
-                      <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-blue-100 flex items-center justify-center">
-                        <ShoppingCart className="w-6 h-6 text-blue-600" />
-                      </div>
-                      <h4 className="font-bold text-gray-900 mb-1">Cliente</h4>
-                      <p className="text-sm text-gray-600">Compre produtos</p>
-                    </div>
-                  </button>
-                </div>
-              </div>
+          {/* Navigation Buttons */}
+          <div className="flex justify-between mt-8">
+            {step > 1 && (
+              <button
+                onClick={prevStep}
+                className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:border-gray-400 transition-colors"
+              >
+                Voltar
+              </button>
             )}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Registration Form */}
-      <section className="py-16 px-4">
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="bg-white rounded-2xl shadow-lg p-8"
-          >
-            {/* Form Header */}
-            <div className="text-center mb-8">
-              <div className={`inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-r ${
-                formData.modules.store ? 'from-green-500 to-blue-500' :
-                formData.modules.freight ? 'from-blue-500 to-purple-500' :
-                'from-purple-500 to-pink-500'
-              } text-white mb-6`}>
-                {getModuleIcon(selectedModule)}
-              </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                {getModuleTitle(selectedModule)} - {getModuleDescription(selectedModule)}
-              </h2>
-              <p className="text-gray-600">{getModuleDescription(selectedModule)}</p>
-            </div>
-
-            {/* Progress Steps */}
-            <div className="flex items-center justify-center mb-8">
-              {[1, 2, 3].map((stepNumber) => (
-                <div key={stepNumber} className="flex items-center">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
-                    stepNumber <= stepNumber // This logic needs to be updated for multi-step form
-                      ? 'bg-green-500 text-white'
-                      : 'bg-gray-200 text-gray-600'
-                  }`}>
-                    {stepNumber < stepNumber ? <Check className="w-5 h-5" /> : stepNumber}
-                  </div>
-                  {stepNumber < 3 && (
-                    <div className={`w-16 h-1 mx-2 ${
-                      stepNumber < stepNumber ? 'bg-green-500' : 'bg-gray-200'
-                    }`} />
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* Form Steps */}
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Step 1: Dados Pessoais */}
-              {/* This step will be replaced by a multi-step form */}
-              {/* For now, it's a placeholder */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-                className="space-y-6"
-              >
-                <h3 className="text-xl font-bold text-gray-900 mb-4">
-                  Dados Pessoais
-                </h3>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Nome Completo *
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                        errors.name ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                      placeholder="Seu nome completo"
-                    />
-                    {errors.name && (
-                      <p className="text-red-500 text-sm mt-1">{errors.name}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      CPF/CNPJ *
-                    </label>
-                    <input
-                      type="text"
-                      name="cpfCnpj"
-                      value={formData.cpfCnpj}
-                      onChange={handleInputChange}
-                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                        errors.cpfCnpj ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                      placeholder="000.000.000-00 ou 00.000.000/0000-00"
-                    />
-                    {errors.cpfCnpj && (
-                      <p className="text-red-500 text-sm mt-1">{errors.cpfCnpj}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Email *
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                        errors.email ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                      placeholder="seu@email.com"
-                    />
-                    {errors.email && (
-                      <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Telefone/WhatsApp *
-                    </label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                        errors.phone ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                      placeholder="(00) 00000-0000"
-                    />
-                    {errors.phone && (
-                      <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Senha *
-                    </label>
-                    <div className="relative">
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        name="password"
-                        value={formData.password}
-                        onChange={handleInputChange}
-                        className={`w-full p-3 pr-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                          errors.password ? 'border-red-500' : 'border-gray-300'
-                        }`}
-                        placeholder="Mínimo 8 caracteres"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                      >
-                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                      </button>
-                    </div>
-                    {errors.password && (
-                      <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Confirmar Senha *
-                    </label>
-                    <div className="relative">
-                      <input
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        name="confirmPassword"
-                        value={formData.confirmPassword}
-                        onChange={handleInputChange}
-                        className={`w-full p-3 pr-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                          errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
-                        }`}
-                        placeholder="Confirme sua senha"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                      >
-                        {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                      </button>
-                    </div>
-                    {errors.confirmPassword && (
-                      <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Step 2: Endereço */}
-              {/* This step will be replaced by a multi-step form */}
-              {/* For now, it's a placeholder */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-                className="space-y-6"
-              >
-                <h3 className="text-xl font-bold text-gray-900 mb-4">
-                  Endereço
-                </h3>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      CEP *
-                    </label>
-                    <input
-                      type="text"
-                      name="cep"
-                      value={formData.cep}
-                      onChange={handleInputChange}
-                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                        errors.cep ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                      placeholder="00000-000"
-                    />
-                    {errors.cep && (
-                      <p className="text-red-500 text-sm mt-1">{errors.cep}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Estado *
-                    </label>
-                    <select
-                      name="state"
-                      value={formData.state}
-                      onChange={handleInputChange}
-                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                        errors.state ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                    >
-                      <option value="">Selecione o estado</option>
-                      {estados.map(estado => (
-                        <option key={estado} value={estado}>{estado}</option>
-                      ))}
-                    </select>
-                    {errors.state && (
-                      <p className="text-red-500 text-sm mt-1">{errors.state}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Cidade *
-                    </label>
-                    <input
-                      type="text"
-                      name="city"
-                      value={formData.city}
-                      onChange={handleInputChange}
-                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                        errors.city ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                      placeholder="Nome da cidade"
-                    />
-                    {errors.city && (
-                      <p className="text-red-500 text-sm mt-1">{errors.city}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Bairro
-                    </label>
-                    <input
-                      type="text"
-                      name="bairro"
-                      value={formData.bairro}
-                      onChange={handleInputChange}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder="Nome do bairro"
-                    />
-                  </div>
-
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Endereço *
-                    </label>
-                    <input
-                      type="text"
-                      name="endereco"
-                      value={formData.endereco}
-                      onChange={handleInputChange}
-                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                        errors.endereco ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                      placeholder="Rua, Avenida, etc."
-                    />
-                    {errors.endereco && (
-                      <p className="text-red-500 text-sm mt-1">{errors.endereco}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Número
-                    </label>
-                    <input
-                      type="text"
-                      name="numero"
-                      value={formData.numero}
-                      onChange={handleInputChange}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder="Número"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Complemento
-                    </label>
-                    <input
-                      type="text"
-                      name="complemento"
-                      value={formData.complemento}
-                      onChange={handleInputChange}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder="Apto, sala, etc."
-                    />
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Step 3: Dados Específicos */}
-              {/* This step will be replaced by a multi-step form */}
-              {/* For now, it's a placeholder */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-                className="space-y-6"
-              >
-                <h3 className="text-xl font-bold text-gray-900 mb-4">
-                  Dados Específicos
-                </h3>
-
-                {formData.modules.store ? (
-                  /* Dados da Empresa para Vendedor */
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Nome da Empresa *
-                      </label>
-                      <input
-                        type="text"
-                        name="empresa"
-                        value={formData.empresa}
-                        onChange={handleInputChange}
-                        className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                          errors.empresa ? 'border-red-500' : 'border-gray-300'
-                        }`}
-                        placeholder="Nome da empresa ou fazenda"
-                      />
-                      {errors.empresa && (
-                        <p className="text-red-500 text-sm mt-1">{errors.empresa}</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Razão Social
-                      </label>
-                      <input
-                        type="text"
-                        name="razaoSocial"
-                        value={formData.razaoSocial}
-                        onChange={handleInputChange}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                        placeholder="Razão social (se aplicável)"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Inscrição Estadual
-                      </label>
-                      <input
-                        type="text"
-                        name="inscricaoEstadual"
-                        value={formData.inscricaoEstadual}
-                        onChange={handleInputChange}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                        placeholder="Inscrição estadual"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Área de Atuação *
-                      </label>
-                      <select
-                        name="areaAtuacao"
-                        value={formData.areaAtuacao}
-                        onChange={handleInputChange}
-                        className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                          errors.areaAtuacao ? 'border-red-500' : 'border-gray-300'
-                        }`}
-                      >
-                        <option value="">Selecione a área</option>
-                        {areasAtuacao.map(area => (
-                          <option key={area} value={area}>{area}</option>
-                        ))}
-                      </select>
-                      {errors.areaAtuacao && (
-                        <p className="text-red-500 text-sm mt-1">{errors.areaAtuacao}</p>
-                      )}
-                    </div>
-                  </div>
-                ) : formData.modules.freight ? (
-                  /* Dados do Veículo para AgroConecta */
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Placa do Veículo *
-                      </label>
-                      <input
-                        type="text"
-                        name="placa"
-                        value={formData.placa}
-                        onChange={handleInputChange}
-                        className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                          errors.placa ? 'border-red-500' : 'border-gray-300'
-                        }`}
-                        placeholder="ABC-1234 ou ABC1D23"
-                      />
-                      {errors.placa && (
-                        <p className="text-red-500 text-sm mt-1">{errors.placa}</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Tipo de Veículo *
-                      </label>
-                      <select
-                        name="tipoVeiculo"
-                        value={formData.tipoVeiculo}
-                        onChange={handleInputChange}
-                        className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                          errors.tipoVeiculo ? 'border-red-500' : 'border-gray-300'
-                        }`}
-                      >
-                        <option value="">Selecione o tipo</option>
-                        {tiposVeiculo.map(tipo => (
-                          <option key={tipo} value={tipo}>{tipo}</option>
-                        ))}
-                      </select>
-                      {errors.tipoVeiculo && (
-                        <p className="text-red-500 text-sm mt-1">{errors.tipoVeiculo}</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Capacidade *
-                      </label>
-                      <input
-                        type="text"
-                        name="capacidade"
-                        value={formData.capacidade}
-                        onChange={handleInputChange}
-                        className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                          errors.capacidade ? 'border-red-500' : 'border-gray-300'
-                        }`}
-                        placeholder="Ex: 30 toneladas, 1000 sacas"
-                      />
-                      {errors.capacidade && (
-                        <p className="text-red-500 text-sm mt-1">{errors.capacidade}</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Documentos do Veículo
-                      </label>
-                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                        <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                        <p className="text-gray-600 mb-2">
-                          Arraste documentos ou clique para selecionar
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          DUT, CRV, CRLV, etc. (opcional)
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  /* Dados adicionais para clientes */
-                  <div className="text-center py-8">
-                    <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                    <h4 className="text-xl font-bold text-gray-900 mb-2">
-                      Dados Completos!
-                    </h4>
-                    <p className="text-gray-600">
-                      Seus dados pessoais e endereço foram preenchidos com sucesso.
-                    </p>
-                  </div>
-                )}
-              </motion.div>
-
-              {/* Navigation Buttons */}
-              <div className="flex justify-between pt-8">
-                {/* This navigation logic needs to be updated for multi-step form */}
-                {/* For now, it's a placeholder */}
-                <div></div>
-
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="ml-auto px-8 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
-                >
-                  {loading ? (
-                    <>
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                      Processando...
-                    </>
-                  ) : (
-                    'Finalizar Cadastro'
-                  )}
-                </button>
-              </div>
-            </form>
-          </motion.div>
-        </div>
-      </section>
+            
+            <button
+              onClick={nextStep}
+              disabled={loading}
+              className={`ml-auto px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center ${
+                loading ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
+            >
+              {loading ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                  Processando...
+                </>
+              ) : step === 2 ? (
+                <>
+                  <CheckCircle className="w-5 h-5 mr-2" />
+                  Finalizar Cadastro
+                </>
+              ) : (
+                <>
+                  Próximo
+                  <FileText className="w-5 h-5 ml-2" />
+                </>
+              )}
+            </button>
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 };
