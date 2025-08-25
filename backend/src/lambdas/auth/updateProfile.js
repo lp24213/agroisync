@@ -3,14 +3,14 @@ const jwt = require('jsonwebtoken');
 
 const mongoClient = new MongoClient(process.env.MONGODB_URI);
 
-exports.handler = async (event) => {
+exports.handler = async event => {
   try {
     // Configurar CORS
     const corsHeaders = {
       'Access-Control-Allow-Origin': process.env.AMPLIFY_DOMAIN || '*',
       'Access-Control-Allow-Headers': 'Content-Type,Authorization',
       'Access-Control-Allow-Methods': 'PUT,OPTIONS',
-      'Access-Control-Allow-Credentials': true,
+      'Access-Control-Allow-Credentials': true
     };
 
     // Handle preflight OPTIONS request
@@ -18,7 +18,7 @@ exports.handler = async (event) => {
       return {
         statusCode: 200,
         headers: corsHeaders,
-        body: JSON.stringify({ message: 'OK' }),
+        body: JSON.stringify({ message: 'OK' })
       };
     }
 
@@ -26,12 +26,12 @@ exports.handler = async (event) => {
       return {
         statusCode: 405,
         headers: corsHeaders,
-        body: JSON.stringify({ 
-          error: { 
-            code: 'METHOD_NOT_ALLOWED', 
-            message: 'Método não permitido' 
-          } 
-        }),
+        body: JSON.stringify({
+          error: {
+            code: 'METHOD_NOT_ALLOWED',
+            message: 'Método não permitido'
+          }
+        })
       };
     }
 
@@ -41,17 +41,17 @@ exports.handler = async (event) => {
       return {
         statusCode: 401,
         headers: corsHeaders,
-        body: JSON.stringify({ 
-          error: { 
-            code: 'UNAUTHORIZED', 
-            message: 'Token de autorização não fornecido' 
-          } 
-        }),
+        body: JSON.stringify({
+          error: {
+            code: 'UNAUTHORIZED',
+            message: 'Token de autorização não fornecido'
+          }
+        })
       };
     }
 
     const token = authHeader.substring(7);
-    
+
     // Verificar JWT do Cognito
     let decodedToken;
     try {
@@ -63,12 +63,12 @@ exports.handler = async (event) => {
       return {
         statusCode: 401,
         headers: corsHeaders,
-        body: JSON.stringify({ 
-          error: { 
-            code: 'INVALID_TOKEN', 
-            message: 'Token inválido' 
-          } 
-        }),
+        body: JSON.stringify({
+          error: {
+            code: 'INVALID_TOKEN',
+            message: 'Token inválido'
+          }
+        })
       };
     }
 
@@ -79,12 +79,12 @@ exports.handler = async (event) => {
       return {
         statusCode: 400,
         headers: corsHeaders,
-        body: JSON.stringify({ 
-          error: { 
-            code: 'INVALID_TOKEN_DATA', 
-            message: 'Dados do token inválidos' 
-          } 
-        }),
+        body: JSON.stringify({
+          error: {
+            code: 'INVALID_TOKEN_DATA',
+            message: 'Dados do token inválidos'
+          }
+        })
       };
     }
 
@@ -98,12 +98,12 @@ exports.handler = async (event) => {
       return {
         statusCode: 404,
         headers: corsHeaders,
-        body: JSON.stringify({ 
-          error: { 
-            code: 'USER_NOT_FOUND', 
-            message: 'Usuário não encontrado' 
-          } 
-        }),
+        body: JSON.stringify({
+          error: {
+            code: 'USER_NOT_FOUND',
+            message: 'Usuário não encontrado'
+          }
+        })
       };
     }
 
@@ -115,28 +115,28 @@ exports.handler = async (event) => {
       return {
         statusCode: 400,
         headers: corsHeaders,
-        body: JSON.stringify({ 
-          error: { 
-            code: 'INVALID_JSON', 
-            message: 'JSON inválido no body da requisição' 
-          } 
-        }),
+        body: JSON.stringify({
+          error: {
+            code: 'INVALID_JSON',
+            message: 'JSON inválido no body da requisição'
+          }
+        })
       };
     }
 
     // Validar dados de entrada
     const { profile, wallets } = requestBody;
-    
+
     if (!profile && !wallets) {
       return {
         statusCode: 400,
         headers: corsHeaders,
-        body: JSON.stringify({ 
-          error: { 
-            code: 'MISSING_DATA', 
-            message: 'Dados de perfil ou carteiras devem ser fornecidos' 
-          } 
-        }),
+        body: JSON.stringify({
+          error: {
+            code: 'MISSING_DATA',
+            message: 'Dados de perfil ou carteiras devem ser fornecidos'
+          }
+        })
       };
     }
 
@@ -167,12 +167,12 @@ exports.handler = async (event) => {
           return {
             statusCode: 400,
             headers: corsHeaders,
-            body: JSON.stringify({ 
-              error: { 
-                code: 'INVALID_ADDRESS', 
-                message: 'Endereço Ethereum inválido' 
-              } 
-            }),
+            body: JSON.stringify({
+              error: {
+                code: 'INVALID_ADDRESS',
+                message: 'Endereço Ethereum inválido'
+              }
+            })
           };
         }
         updateData['wallets.evmAddress'] = wallets.evmAddress.toLowerCase();
@@ -180,21 +180,18 @@ exports.handler = async (event) => {
     }
 
     // Atualizar usuário
-    const result = await db.collection('users').updateOne(
-      { cognitoSub },
-      { $set: updateData }
-    );
+    const result = await db.collection('users').updateOne({ cognitoSub }, { $set: updateData });
 
     if (result.matchedCount === 0) {
       return {
         statusCode: 404,
         headers: corsHeaders,
-        body: JSON.stringify({ 
-          error: { 
-            code: 'USER_NOT_FOUND', 
-            message: 'Usuário não encontrado' 
-          } 
-        }),
+        body: JSON.stringify({
+          error: {
+            code: 'USER_NOT_FOUND',
+            message: 'Usuário não encontrado'
+          }
+        })
       };
     }
 
@@ -214,26 +211,25 @@ exports.handler = async (event) => {
           wallets: updatedUser.wallets,
           plan: updatedUser.plan
         }
-      }),
+      })
     };
-
   } catch (error) {
     console.error('Erro na atualização de perfil:', error);
-    
+
     return {
       statusCode: 500,
       headers: {
         'Access-Control-Allow-Origin': process.env.AMPLIFY_DOMAIN || '*',
         'Access-Control-Allow-Headers': 'Content-Type,Authorization',
         'Access-Control-Allow-Methods': 'PUT,OPTIONS',
-        'Access-Control-Allow-Credentials': true,
+        'Access-Control-Allow-Credentials': true
       },
-      body: JSON.stringify({ 
-        error: { 
-          code: 'INTERNAL_ERROR', 
-          message: 'Erro interno do servidor' 
-        } 
-      }),
+      body: JSON.stringify({
+        error: {
+          code: 'INTERNAL_ERROR',
+          message: 'Erro interno do servidor'
+        }
+      })
     };
   } finally {
     if (mongoClient) {

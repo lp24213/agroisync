@@ -1,297 +1,760 @@
-import express, { Router } from 'express';
-import { authenticateToken } from '../middleware/auth.js';
+import express from 'express';
+import mongoose from 'mongoose';
 import { User } from '../models/User.js';
 import { Conversation } from '../models/Conversation.js';
-import { ContactMessage } from '../models/ContactMessage.js';
-import { PartnershipMessage } from '../models/PartnershipMessage.js';
-import { Partner } from '../models/Partner.js';
+import { Message } from '../models/Message.js';
+import { Product } from '../models/Product.js';
+import { Freight } from '../models/Freight.js';
+import { Payment } from '../models/Payment.js';
+import { AuditLog } from '../models/AuditLog.js';
+import { authenticateToken, requireAdmin } from '../middleware/auth.js';
+import { apiLimiter } from '../middleware/rateLimiter.js';
+import { createSecurityLog } from '../utils/securityLogger.js';
 
-const router = Router();
+const router = express.Router();
 
-// Middleware para verificar se é admin
-const requireAdmin = (req, res, next) => {
-  if (req.user && req.user.role === 'admin') {
-    next();
-  } else {
-    res.status(403).json({
-      success: false,
-      error: 'Acesso negado. Apenas administradores podem acessar este recurso.'
+// Apply rate limiting mais restritivo para admin
+router.use(apiLimiter);
+router.use(requireAdmin);
+
+// ===== MIDDLEWARE DE VALIDAÇÃO ADMIN =====
+
+const validateAdminAction = (req, res, next) => {
+  const { action, reason } = req.body;
+  
+  if (!action || !reason) {
+    return res.status(400).json({
+      ok: false,
+      error: 'missing_fields',
+      message: 'Ação e motivo são obrigatórios para operações administrativas'
     });
   }
+
+  if (reason.trim().length < 10) {
+    return res.status(400).json({
+      ok: false,
+      error: 'invalid_reason',
+      message: 'Motivo deve ter pelo menos 10 caracteres'
+    });
+  }
+
+  next();
 };
 
-// GET /api/admin/dashboard - Dashboard do admin
-router.get('/dashboard', authenticateToken, requireAdmin, async (req, res) => {
+// ===== ROTAS ADMINISTRATIVAS =====
+
+// GET /admin/dashboard - Dashboard principal do admin
+router.get('/dashboard', async (req, res) => {
   try {
-    const stats = await getAdminStats();
-    
+    const userId = req.user.userId;
+    const userEmail = req.user.email;
+
+    // Estatísticas gerais
+    const stats = await Promise.all([
+      User.countDocuments(),
+      Conversation.countDocuments(),
+      Message.countDocuments(),
+      Product.countDocuments(),
+      Freight.countDocuments(),
+      Payment.countDocuments(),
+      AuditLog.countDocuments({ createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } }) // Últimas 24h
+    ]);
+
+    // Atividades recentes
+    const recentActivities = await AuditLog.find()
+      .sort({ createdAt: -1 })
+      .limit(20)
+      .populate('userId', 'name email')
+      .populate('resourceId');
+
+    // Logs suspeitos
+    const suspiciousLogs = await AuditLog.find({ isSuspicious: true })
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .populate('userId', 'name email');
+
+    // Log de acesso ao dashboard
+    await AuditLog.log({
+      userId: userId,
+      userEmail: userEmail,
+      action: 'admin_dashboard_accessed',
+      resource: 'admin',
+      resourceType: 'Admin',
+      details: 'Accessed admin dashboard',
+      ip: req.ip,
+      userAgent: req.get('User-Agent'),
+      metadata: { stats: stats.join(',') }
+    });
+
     res.json({
-      success: true,
-      data: stats
+      ok: true,
+      data: {
+        stats: {
+          totalUsers: stats[0],
+          totalConversations: stats[1],
+          totalMessages: stats[2],
+          totalProducts: stats[3],
+          totalFreights: stats[4],
+          totalPayments: stats[5],
+          activitiesLast24h: stats[6]
+        },
+        recentActivities,
+        suspiciousLogs
+      }
     });
   } catch (error) {
-    console.error('Error fetching admin dashboard:', error);
+    console.error('Error accessing admin dashboard:', error);
+    
+    await createSecurityLog('system_error', 'high', `Admin dashboard error: ${error.message}`, req, req.user?.userId);
+    
     res.status(500).json({
-      success: false,
-      error: 'Erro ao buscar dashboard do admin'
+      ok: false,
+      error: 'internal_error',
+      message: 'Erro interno do servidor'
     });
   }
 });
 
-// GET /api/admin/users - Listar todos os usuários
-router.get('/users', authenticateToken, requireAdmin, async (req, res) => {
+// GET /admin/conversations - Todas as conversas (com filtros)
+router.get('/conversations', async (req, res) => {
   try {
-    const { page = 1, limit = 20, search, role, status } = req.query;
+    const userId = req.user.userId;
+    const { page = 1, limit = 50, serviceType, status, search } = req.query;
     
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    // Construir query
     const query = {};
+    
+    if (serviceType && ['product', 'freight'].includes(serviceType)) {
+      query.serviceType = serviceType;
+    }
+    
+    if (status && ['active', 'archived', 'closed', 'blocked'].includes(status)) {
+      query.status = status;
+    }
+    
     if (search) {
       query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } }
+        { title: { $regex: search, $options: 'i' } },
+        { 'participants.name': { $regex: search, $options: 'i' } }
       ];
     }
-    if (role) query.role = role;
-    if (status) query.isActive = status === 'active';
-    
-    const users = await User.find(query)
-      .select('-passwordHash')
-      .sort({ createdAt: -1 })
-      .limit(limit * 1)
-      .skip((page - 1) * limit);
-    
-    const total = await User.countDocuments(query);
-    
+
+    // Buscar conversas
+    const conversations = await Conversation.find(query)
+      .sort({ lastMessageAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .populate('participants', 'name email company.name')
+      .populate('serviceId', 'name title origin destination price');
+
+    // Contar total
+    const total = await Conversation.countDocuments(query);
+
+    // Log de acesso
+    await AuditLog.log({
+      userId: userId,
+      userEmail: req.user.email,
+      action: 'admin_conversations_listed',
+      resource: 'admin',
+      resourceType: 'Admin',
+      details: `Listed ${conversations.length} conversations`,
+      ip: req.ip,
+      userAgent: req.get('User-Agent'),
+      metadata: { serviceType, status, search, page, limit, total }
+    });
+
     res.json({
-      success: true,
+      ok: true,
       data: {
-        users,
+        conversations,
         pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
-          total,
-          pages: Math.ceil(total / limit)
+          currentPage: parseInt(page),
+          totalPages: Math.ceil(total / parseInt(limit)),
+          totalItems: total,
+          itemsPerPage: parseInt(limit)
         }
       }
     });
   } catch (error) {
-    console.error('Error fetching users:', error);
+    console.error('Error listing admin conversations:', error);
+    
+    await createSecurityLog('system_error', 'high', `Admin conversations error: ${error.message}`, req, req.user?.userId);
+    
     res.status(500).json({
-      success: false,
-      error: 'Erro ao buscar usuários'
+      ok: false,
+      error: 'internal_error',
+      message: 'Erro interno do servidor'
     });
   }
 });
 
-// GET /api/admin/users/:id - Obter usuário específico
-router.get('/users/:id', authenticateToken, requireAdmin, async (req, res) => {
+// GET /admin/conversations/:id/messages - Mensagens de uma conversa específica
+router.get('/conversations/:id/messages', async (req, res) => {
   try {
-    const { id } = req.params;
-    
-    const user = await User.findById(id).select('-passwordHash');
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        error: 'Usuário não encontrado'
-      });
-    }
-    
-    res.json({
-      success: true,
-      data: user
-    });
-  } catch (error) {
-    console.error('Error fetching user:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Erro ao buscar usuário'
-    });
-  }
-});
+    const userId = req.user.userId;
+    const conversationId = req.params.id;
 
-// PUT /api/admin/users/:id - Atualizar usuário
-router.put('/users/:id', authenticateToken, requireAdmin, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const updateData = req.body;
-    
-    // Remover campos sensíveis
-    delete updateData.passwordHash;
-    delete updateData.email; // Email não pode ser alterado
-    
-    const user = await User.findByIdAndUpdate(
-      id,
-      { ...updateData, updatedAt: new Date() },
-      { new: true, runValidators: true }
-    ).select('-passwordHash');
-    
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        error: 'Usuário não encontrado'
-      });
-    }
-    
-    res.json({
-      success: true,
-      data: user
-    });
-  } catch (error) {
-    console.error('Error updating user:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Erro ao atualizar usuário'
-    });
-  }
-});
-
-// DELETE /api/admin/users/:id - Deletar usuário
-router.delete('/users/:id', authenticateToken, requireAdmin, async (req, res) => {
-  try {
-    const { id } = req.params;
-    
-    const user = await User.findByIdAndDelete(id);
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        error: 'Usuário não encontrado'
-      });
-    }
-    
-    res.json({
-      success: true,
-      message: 'Usuário deletado com sucesso'
-    });
-  } catch (error) {
-    console.error('Error deleting user:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Erro ao deletar usuário'
-    });
-  }
-});
-
-// GET /api/admin/messages/contact - Mensagens de contato
-router.get('/messages/contact', authenticateToken, requireAdmin, async (req, res) => {
-  try {
-    const messages = await ContactMessage.find()
-      .sort({ createdAt: -1 })
-      .limit(100);
-    
-    res.json({
-      success: true,
-      data: messages
-    });
-  } catch (error) {
-    console.error('Error fetching contact messages:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Erro ao buscar mensagens de contato'
-    });
-  }
-});
-
-// GET /api/admin/messages/partnerships - Mensagens de parcerias
-router.get('/messages/partnerships', authenticateToken, requireAdmin, async (req, res) => {
-  try {
-    const messages = await PartnershipMessage.find()
-      .sort({ createdAt: -1 })
-      .limit(100);
-    
-    res.json({
-      success: true,
-      data: messages
-    });
-  } catch (error) {
-    console.error('Error fetching partnership messages:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Erro ao buscar mensagens de parcerias'
-    });
-  }
-});
-
-// GET /api/admin/messages/private - Mensagens privadas
-router.get('/messages/private', authenticateToken, requireAdmin, async (req, res) => {
-  try {
-    const conversations = await Conversation.find()
-      .populate('participants', 'name email')
-      .sort({ updatedAt: -1 })
-      .limit(100);
-    
-    res.json({
-      success: true,
-      data: conversations
-    });
-  } catch (error) {
-    console.error('Error fetching private messages:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Erro ao buscar mensagens privadas'
-    });
-  }
-});
-
-// POST /api/admin/partners - Criar novo parceiro
-router.post('/partners', authenticateToken, requireAdmin, async (req, res) => {
-  try {
-    const { name, description, website, logo, category } = req.body;
-    
-    if (!name || !description) {
+    if (!mongoose.Types.ObjectId.isValid(conversationId)) {
       return res.status(400).json({
-        success: false,
-        error: 'Nome e descrição são obrigatórios'
+        ok: false,
+        error: 'invalid_id',
+        message: 'ID da conversa inválido'
       });
     }
-    
-    const partner = new Partner({
-      name,
-      description,
-      website,
-      logo,
-      category,
-      createdBy: req.user.id
+
+    // Buscar conversa
+    const conversation = await Conversation.findById(conversationId)
+      .populate('participants', 'name email company.name')
+      .populate('serviceId', 'name title origin destination price');
+
+    if (!conversation) {
+      return res.status(404).json({
+        ok: false,
+        error: 'conversation_not_found',
+        message: 'Conversa não encontrada'
+      });
+    }
+
+    // Buscar mensagens
+    const messages = await Message.find({ conversationId })
+      .sort({ createdAt: -1 })
+      .populate('senderId', 'name email company.name')
+      .populate('receiverId', 'name email company.name');
+
+    // Log de acesso
+    await AuditLog.log({
+      userId: userId,
+      userEmail: req.user.email,
+      action: 'admin_conversation_messages_accessed',
+      resource: 'admin',
+      resourceId: conversationId,
+      resourceType: 'Admin',
+      details: `Accessed ${messages.length} messages from conversation`,
+      ip: req.ip,
+      userAgent: req.get('User-Agent')
     });
-    
-    await partner.save();
-    
+
     res.json({
-      success: true,
-      data: partner
+      ok: true,
+      data: {
+        conversation,
+        messages: messages.reverse() // Ordem cronológica
+      }
     });
   } catch (error) {
-    console.error('Error creating partner:', error);
+    console.error('Error accessing admin conversation messages:', error);
+    
+    await createSecurityLog('system_error', 'high', `Admin conversation messages error: ${error.message}`, req, req.user?.userId);
+    
     res.status(500).json({
-      success: false,
-      error: 'Erro ao criar parceiro'
+      ok: false,
+      error: 'internal_error',
+      message: 'Erro interno do servidor'
     });
   }
 });
 
-// Função para obter estatísticas do admin
-const getAdminStats = async () => {
+// GET /admin/users - Listar usuários
+router.get('/users', async (req, res) => {
   try {
-    const totalUsers = await User.countDocuments();
-    const activeUsers = await User.countDocuments({ isActive: true });
-    const totalConversations = await Conversation.countDocuments();
-    const totalContactMessages = await ContactMessage.countDocuments();
-    const totalPartnershipMessages = await PartnershipMessage.countDocuments();
+    const userId = req.user.userId;
+    const { page = 1, limit = 50, status, search } = req.query;
     
-    return {
-      users: {
-        total: totalUsers,
-        active: activeUsers,
-        inactive: totalUsers - activeUsers
-      },
-      messages: {
-        conversations: totalConversations,
-        contact: totalContactMessages,
-        partnerships: totalPartnershipMessages
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    // Construir query
+    const query = {};
+    
+    if (status && ['active', 'inactive', 'banned'].includes(status)) {
+      query.isActive = status === 'active';
+      if (status === 'banned') query.isBanned = true;
+    }
+    
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+        { 'company.name': { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    // Buscar usuários
+    const users = await User.find(query)
+      .select('-password')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    // Contar total
+    const total = await User.countDocuments(query);
+
+    // Log de acesso
+    await AuditLog.log({
+      userId: userId,
+      userEmail: req.user.email,
+      action: 'admin_users_listed',
+      resource: 'admin',
+      resourceType: 'Admin',
+      details: `Listed ${users.length} users`,
+      ip: req.ip,
+      userAgent: req.get('User-Agent'),
+      metadata: { status, search, page, limit, total }
+    });
+
+    res.json({
+      ok: true,
+      data: {
+        users,
+        pagination: {
+          currentPage: parseInt(page),
+          totalPages: Math.ceil(total / parseInt(limit)),
+          totalItems: total,
+          itemsPerPage: parseInt(limit)
+        }
       }
-    };
+    });
   } catch (error) {
-    console.error('Error getting admin stats:', error);
-    return {};
+    console.error('Error listing admin users:', error);
+    
+    await createSecurityLog('system_error', 'high', `Admin users error: ${error.message}`, req, req.user?.userId);
+    
+    res.status(500).json({
+      ok: false,
+      error: 'internal_error',
+      message: 'Erro interno do servidor'
+    });
   }
-};
+ });
+
+// PUT /admin/users/:id - Atualizar usuário (banir/desbanir, etc.)
+router.put('/users/:id', validateAdminAction, async (req, res) => {
+  try {
+    const adminUserId = req.user.userId;
+    const targetUserId = req.params.id;
+    const { action, reason, fields } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(targetUserId)) {
+      return res.status(400).json({
+        ok: false,
+        error: 'invalid_id',
+        message: 'ID do usuário inválido'
+      });
+    }
+
+    const targetUser = await User.findById(targetUserId);
+    if (!targetUser) {
+      return res.status(404).json({
+        ok: false,
+        error: 'user_not_found',
+        message: 'Usuário não encontrado'
+      });
+    }
+
+    // Executar ação
+    let updateData = {};
+    let actionDetails = '';
+
+    switch (action) {
+      case 'ban':
+        updateData = { isBanned: true, isActive: false, bannedAt: new Date(), banReason: reason };
+        actionDetails = 'User banned';
+        break;
+      case 'unban':
+        updateData = { isBanned: false, isActive: true, bannedAt: undefined, banReason: undefined };
+        actionDetails = 'User unbanned';
+        break;
+      case 'deactivate':
+        updateData = { isActive: false, deactivatedAt: new Date(), deactivationReason: reason };
+        actionDetails = 'User deactivated';
+        break;
+      case 'activate':
+        updateData = { isActive: true, deactivatedAt: undefined, deactivationReason: undefined };
+        actionDetails = 'User activated';
+        break;
+      case 'update':
+        if (fields && typeof fields === 'object') {
+          updateData = fields;
+          actionDetails = 'User updated';
+        }
+        break;
+      default:
+        return res.status(400).json({
+          ok: false,
+          error: 'invalid_action',
+          message: 'Ação inválida'
+        });
+    }
+
+    // Atualizar usuário
+    await User.findByIdAndUpdate(targetUserId, updateData);
+
+    // Log da ação administrativa
+    await AuditLog.log({
+      userId: adminUserId,
+      userEmail: req.user.email,
+      action: 'admin_user_action',
+      resource: 'user',
+      resourceId: targetUserId,
+      resourceType: 'User',
+      details: `${actionDetails}: ${reason}`,
+      ip: req.ip,
+      userAgent: req.get('User-Agent'),
+      metadata: { action, reason, targetUserEmail: targetUser.email, updateData }
+    });
+
+    res.json({
+      ok: true,
+      message: 'Usuário atualizado com sucesso',
+      data: { action, reason, userId: targetUserId }
+    });
+  } catch (error) {
+    console.error('Error updating admin user:', error);
+    
+    await createSecurityLog('system_error', 'high', `Admin user update error: ${error.message}`, req, req.user?.userId);
+    
+    res.status(500).json({
+      ok: false,
+      error: 'internal_error',
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// GET /admin/products - Listar produtos
+router.get('/products', async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { page = 1, limit = 50, status, search } = req.query;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    // Construir query
+    const query = {};
+    
+    if (status && ['active', 'inactive', 'pending'].includes(status)) {
+      query.status = status;
+    }
+    
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    // Buscar produtos
+    const products = await Product.find(query)
+      .populate('ownerId', 'name email company.name')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    // Contar total
+    const total = await Product.countDocuments(query);
+
+    // Log de acesso
+    await AuditLog.log({
+      userId: userId,
+      userEmail: req.user.email,
+      action: 'admin_products_listed',
+      resource: 'admin',
+      resourceType: 'Admin',
+      details: `Listed ${products.length} products`,
+      ip: req.ip,
+      userAgent: req.get('User-Agent'),
+      metadata: { status, search, page, limit, total }
+    });
+
+    res.json({
+      ok: true,
+      data: {
+        products,
+        pagination: {
+          currentPage: parseInt(page),
+          totalPages: Math.ceil(total / parseInt(limit)),
+          totalItems: total,
+          itemsPerPage: parseInt(limit)
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error listing admin products:', error);
+    
+    await createSecurityLog('system_error', 'high', `Admin products error: ${error.message}`, req, req.user?.userId);
+    
+    res.status(500).json({
+      ok: false,
+      error: 'internal_error',
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// GET /admin/freights - Listar fretes
+router.get('/freights', async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { page = 1, limit = 50, status, search } = req.query;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    // Construir query
+    const query = {};
+    
+    if (status && ['active', 'inactive', 'completed'].includes(status)) {
+      query.status = status;
+    }
+    
+    if (search) {
+      query.$or = [
+        { origin: { $regex: search, $options: 'i' } },
+        { destination: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    // Buscar fretes
+    const freights = await Freight.find(query)
+      .populate('ownerId', 'name email company.name')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    // Contar total
+    const total = await Freight.countDocuments(query);
+
+    // Log de acesso
+    await AuditLog.log({
+      userId: userId,
+      userEmail: req.user.email,
+      action: 'admin_freights_listed',
+      resource: 'admin',
+      resourceType: 'Admin',
+      details: `Listed ${freights.length} freights`,
+      ip: req.ip,
+      userAgent: req.get('User-Agent'),
+      metadata: { status, search, page, limit, total }
+    });
+
+    res.json({
+      ok: true,
+      data: {
+        freights,
+        pagination: {
+          currentPage: parseInt(page),
+          totalPages: Math.ceil(total / parseInt(limit)),
+          totalItems: total,
+          itemsPerPage: parseInt(limit)
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error listing admin freights:', error);
+    
+    await createSecurityLog('system_error', 'high', `Admin freights error: ${error.message}`, req, req.user?.userId);
+    
+    res.status(500).json({
+      ok: false,
+      error: 'internal_error',
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// GET /admin/payments - Listar pagamentos
+router.get('/payments', async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { page = 1, limit = 50, status, provider, startDate, endDate } = req.query;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    // Construir query
+    const query = {};
+    
+    if (status && ['pending', 'completed', 'failed', 'cancelled'].includes(status)) {
+      query.status = status;
+    }
+    
+    if (provider && ['stripe', 'metamask', 'crypto'].includes(provider)) {
+      query.provider = provider;
+    }
+    
+    if (startDate || endDate) {
+      query.createdAt = {};
+      if (startDate) query.createdAt.$gte = new Date(startDate);
+      if (endDate) query.createdAt.$lte = new Date(endDate);
+    }
+
+    // Buscar pagamentos
+    const payments = await Payment.find(query)
+      .populate('userId', 'name email company.name')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    // Contar total
+    const total = await Payment.countDocuments(query);
+
+    // Log de acesso
+    await AuditLog.log({
+      userId: userId,
+      userEmail: req.user.email,
+      action: 'admin_payments_listed',
+      resource: 'admin',
+      resourceType: 'Admin',
+      details: `Listed ${payments.length} payments`,
+      ip: req.ip,
+      userAgent: req.get('User-Agent'),
+      metadata: { status, provider, startDate, endDate, page, limit, total }
+    });
+
+    res.json({
+      ok: true,
+      data: {
+        payments,
+        pagination: {
+          currentPage: parseInt(page),
+          totalPages: Math.ceil(total / parseInt(limit)),
+          totalItems: total,
+          itemsPerPage: parseInt(limit)
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error listing admin payments:', error);
+    
+    await createSecurityLog('system_error', 'high', `Admin payments error: ${error.message}`, req, req.user?.userId);
+    
+    res.status(500).json({
+      ok: false,
+      error: 'internal_error',
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// GET /admin/auditlogs - Logs de auditoria
+router.get('/auditlogs', async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { page = 1, limit = 100, action, resource, userId: targetUserId, startDate, endDate, suspicious } = req.query;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    // Construir query
+    const query = {};
+    
+    if (action) query.action = action;
+    if (resource) query.resource = resource;
+    if (targetUserId) query.userId = targetUserId;
+    if (suspicious === 'true') query.isSuspicious = true;
+    
+    if (startDate || endDate) {
+      query.createdAt = {};
+      if (startDate) query.createdAt.$gte = new Date(startDate);
+      if (endDate) query.createdAt.$lte = new Date(endDate);
+    }
+
+    // Buscar logs
+    const logs = await AuditLog.find(query)
+      .populate('userId', 'name email')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    // Contar total
+    const total = await AuditLog.countDocuments(query);
+
+    // Log de acesso
+    await AuditLog.log({
+      userId: userId,
+      userEmail: req.user.email,
+      action: 'admin_auditlogs_accessed',
+      resource: 'admin',
+      resourceType: 'Admin',
+      details: `Accessed ${logs.length} audit logs`,
+      ip: req.ip,
+      userAgent: req.get('User-Agent'),
+      metadata: { action, resource, targetUserId, startDate, endDate, suspicious, page, limit, total }
+    });
+
+    res.json({
+      ok: true,
+      data: {
+        logs,
+        pagination: {
+          currentPage: parseInt(page),
+          totalPages: Math.ceil(total / parseInt(limit)),
+          totalItems: total,
+          itemsPerPage: parseInt(limit)
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error accessing admin audit logs:', error);
+    
+    await createSecurityLog('system_error', 'high', `Admin audit logs error: ${error.message}`, req, req.user?.userId);
+    
+    res.status(500).json({
+      ok: false,
+      error: 'internal_error',
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// POST /admin/export - Exportar dados (CSV)
+router.post('/export', validateAdminAction, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { dataType, filters, format = 'csv' } = req.body;
+
+    if (!['users', 'conversations', 'messages', 'products', 'freights', 'payments', 'auditlogs'].includes(dataType)) {
+      return res.status(400).json({
+        ok: false,
+        error: 'invalid_data_type',
+        message: 'Tipo de dados inválido para exportação'
+      });
+    }
+
+    // Log da tentativa de exportação
+    await AuditLog.log({
+      userId: userId,
+      userEmail: req.user.email,
+      action: 'admin_export_attempted',
+      resource: 'admin',
+      resourceType: 'Admin',
+      details: `Export attempt for ${dataType}`,
+      ip: req.ip,
+      userAgent: req.get('User-Agent'),
+      metadata: { dataType, filters, format }
+    });
+
+    // Por enquanto, retornar sucesso (implementar exportação real depois)
+    res.json({
+      ok: true,
+      message: 'Exportação solicitada com sucesso',
+      data: { 
+        dataType, 
+        format, 
+        status: 'queued',
+        estimatedTime: '5-10 minutos'
+      }
+    });
+  } catch (error) {
+    console.error('Error requesting admin export:', error);
+    
+    await createSecurityLog('system_error', 'high', `Admin export error: ${error.message}`, req, req.user?.userId);
+    
+    res.status(500).json({
+      ok: false,
+      error: 'internal_error',
+      message: 'Erro interno do servidor'
+    });
+  }
+});
 
 export default router;

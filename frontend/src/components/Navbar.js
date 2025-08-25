@@ -93,6 +93,7 @@ const Navbar = () => {
             <a href="/parcerias" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
               Parcerias
             </a>
+            {/* Mensageria só visível para usuários com plano ativo - NÃO MOSTRAR NO MENU PÚBLICO */}
             <a href="/faq" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
               {t('nav.faq')}
             </a>

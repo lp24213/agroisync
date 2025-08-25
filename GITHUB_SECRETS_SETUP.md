@@ -1,131 +1,77 @@
-# 🔐 Configuração de Secrets no GitHub
+# 🔐 GitHub Secrets Setup Guide for AGROTM
 
-Este documento explica como configurar os secrets necessários para o deploy automático do AGROISYNC.
+## ⚠️ Required Secrets for Deployment
 
-## 📋 Secrets Necessários
+The following secrets must be configured in your GitHub repository settings to ensure successful deployment:
 
-### 1. **AWS Credentials**
-- `AWS_ACCESS_KEY_ID` - Sua AWS Access Key ID
-- `AWS_SECRET_ACCESS_KEY` - Sua AWS Secret Access Key
-
-### 2. **Stripe Keys**
-- `STRIPE_SECRET_KEY` - `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`
-
-### 3. **Web3 Configuration**
-- `METAMASK_ADMIN_ADDRESS` - `0x5Ea5C5970e8AE23A5336d631707CF31C5916E8b1`
-
-## 🚀 Como Configurar
-
-### Passo 1: Acessar Settings do Repositório
-1. Vá para seu repositório no GitHub
-2. Clique em **Settings** (aba)
-3. No menu lateral, clique em **Secrets and variables**
-4. Clique em **Actions**
-
-### Passo 2: Adicionar Secrets
-Para cada secret, clique em **New repository secret** e adicione:
-
-#### AWS Credentials
+### 🔑 AWS Credentials (Required)
 ```
-Name: AWS_ACCESS_KEY_ID
-Value: AKIA... (sua AWS Access Key ID)
-
-Name: AWS_SECRET_ACCESS_KEY
-Value: ... (sua AWS Secret Access Key)
+AWS_ACCESS_KEY_ID=your_aws_access_key_here
+AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key_here
 ```
 
-#### Stripe Secret Key
+### 🌐 Frontend Environment Variables
 ```
-Name: STRIPE_SECRET_KEY
-Value: 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
-```
-
-#### Metamask Admin Address
-```
-Name: METAMASK_ADMIN_ADDRESS
-Value: 0x5Ea5C5970e8AE23A5336d631707CF31C5916E8b1
+REACT_APP_API_URL=https://api.agrotm.com
+REACT_APP_STRIPE_PUBLIC_KEY=pk_test_your_stripe_public_key
+REACT_APP_METAMASK_NETWORK=mainnet
 ```
 
-## 🔒 Segurança dos Secrets
-
-### ✅ **Permitido:**
-- Usar secrets no GitHub Actions
-- Referenciar secrets em workflows
-- Usar secrets em deploy automático
-
-### ❌ **Nunca:**
-- Commitar secrets no código
-- Compartilhar secrets em logs
-- Expor secrets em screenshots
-- Usar secrets em branches públicas
-
-## 🧪 Testando a Configuração
-
-### 1. Verificar Secrets
-```bash
-# No workflow, você pode verificar se os secrets estão disponíveis
-echo "Stripe Key: ${{ secrets.STRIPE_SECRET_KEY }}"
-echo "Metamask: ${{ secrets.METAMASK_ADMIN_ADDRESS }}"
+### 🔒 Security & Monitoring (Optional but Recommended)
+```
+SNYK_TOKEN=your_snyk_token_here
 ```
 
-### 2. Testar Deploy
-1. Faça push para a branch `main`
-2. Verifique se o workflow é executado
-3. Monitore os logs do deploy
-4. Verifique se os recursos foram criados na AWS
+## 📋 How to Set Up Secrets
 
-## 🆘 Troubleshooting
+### 1. Go to Your GitHub Repository
+- Navigate to your repository on GitHub
+- Click on **Settings** tab
+- Click on **Secrets and variables** → **Actions**
 
-### Erro: "Secret not found"
-- Verifique se o nome do secret está correto
-- Confirme se o secret foi adicionado ao repositório correto
-- Verifique se o workflow está na branch correta
+### 2. Add Each Secret
+- Click **New repository secret**
+- Enter the secret name (exactly as shown above)
+- Enter the secret value
+- Click **Add secret**
 
-### Erro: "Access denied"
-- Verifique se as credenciais AWS estão corretas
-- Confirme se o usuário AWS tem permissões adequadas
-- Verifique se a região está configurada corretamente
+### 3. Verify All Secrets Are Set
+You should see all required secrets listed in your repository secrets.
 
-### Erro: "Parameter validation failed"
-- Verifique se os valores dos secrets estão no formato correto
-- Confirme se não há espaços extras ou caracteres especiais
-- Verifique se o template SAM está correto
+## 🚨 Important Notes
 
-## 📊 Monitoramento
+1. **Never commit secrets to your code** - they should only exist in GitHub repository secrets
+2. **Secrets are encrypted** and cannot be viewed after creation
+3. **Update secrets** if you need to change values
+4. **Test deployment** after setting up secrets
 
-### GitHub Actions
-- Verifique o status dos workflows na aba **Actions**
-- Monitore os logs de execução
-- Configure notificações para falhas
+## 🔍 Troubleshooting
 
-### AWS Console
-- Verifique o status das stacks no CloudFormation
-- Monitore os logs da Lambda no CloudWatch
-- Verifique os recursos criados (S3, DynamoDB, etc.)
+### If you get "Context access might be invalid" errors:
+1. Verify the secret name is exactly correct (case-sensitive)
+2. Ensure the secret has a value (not empty)
+3. Check that the secret is accessible to the workflow
 
-## 🔄 Rotação de Secrets
+### If deployment fails:
+1. Check the workflow logs for specific error messages
+2. Verify all required secrets are set
+3. Ensure AWS credentials have proper permissions
 
-### Quando Rotacionar
-- A cada 90 dias (recomendado)
-- Após suspeita de comprometimento
-- Após mudança de funcionários
-- Após auditoria de segurança
+## 📱 Current Workflow Status
 
-### Como Rotacionar
-1. Gere novos secrets
-2. Atualize no GitHub
-3. Teste o deploy
-4. Remova os secrets antigos
-5. Atualize a documentação
+The updated workflow now includes:
+- ✅ Secret validation before build
+- ✅ Fallback values for missing secrets
+- ✅ Better error handling and logging
+- ✅ AGROTM-specific deployment messages
 
-## 📞 Suporte
+## 🎯 Next Steps
 
-Para problemas com secrets ou deploy:
-1. Verifique os logs do GitHub Actions
-2. Consulte a documentação da AWS
-3. Abra uma issue no repositório
-4. Entre em contato com a equipe de DevOps
+1. Set up all required secrets in GitHub
+2. Test the workflow with a small change
+3. Monitor the deployment process
+4. Verify your application is working correctly
 
 ---
 
-**⚠️ IMPORTANTE**: Mantenha seus secrets seguros e nunca os compartilhe publicamente!
+**Need Help?** Check the workflow logs or review this guide again.

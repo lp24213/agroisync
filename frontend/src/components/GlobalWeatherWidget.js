@@ -103,18 +103,18 @@ const GlobalWeatherWidget = () => {
 
   if (!isVisible) return null;
 
-  return (
-    <motion.div
+    return (
+      <motion.div
       ref={widgetRef}
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.8 }}
       drag
       dragMomentum={false}
       onDragStart={() => setIsDragging(true)}
       onDragEnd={handleDragEnd}
-      style={{
-        position: 'fixed',
+        style={{
+          position: 'fixed',
         top: '20px',
         right: '20px',
         zIndex: 1000,
@@ -132,16 +132,16 @@ const GlobalWeatherWidget = () => {
           <h3 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
             Clima & Notícias
           </h3>
-          <button
-            onClick={handleClose}
+            <button
+              onClick={handleClose}
             className={`p-1 rounded-full hover:bg-opacity-20 ${
               isDark ? 'hover:bg-white text-white' : 'hover:bg-gray-900 text-gray-600'
             } transition-colors duration-200`}
-          >
-            <X className="w-4 h-4" />
-          </button>
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
-      </div>
 
       {/* Weather Section */}
       {weather && (
@@ -151,21 +151,21 @@ const GlobalWeatherWidget = () => {
             <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
               {weather.location}
             </span>
-          </div>
-          
+        </div>
+
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               {getWeatherIcon(weather.condition)}
               <div>
                 <div className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
                   {weather.temperature}°C
-                </div>
+          </div>
                 <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                   {weather.description}
-                </div>
-              </div>
             </div>
-            
+          </div>
+        </div>
+
             <div className="text-right space-y-1">
               <div className="flex items-center space-x-2 text-sm">
                 <Thermometer className="w-4 h-4 text-red-500" />
@@ -177,15 +177,15 @@ const GlobalWeatherWidget = () => {
                 <Droplets className="w-4 h-4 text-blue-500" />
                 <span className={isDark ? 'text-gray-300' : 'text-gray-600'}>
                   {weather.humidity}%
-                </span>
-              </div>
+            </span>
+          </div>
               <div className="flex items-center space-x-2 text-sm">
                 <Wind className="w-4 h-4 text-gray-500" />
                 <span className={isDark ? 'text-gray-300' : 'text-gray-600'}>
                   {weather.windSpeed} km/h
-                </span>
-              </div>
-            </div>
+            </span>
+          </div>
+        </div>
           </div>
         </div>
       )}
@@ -194,8 +194,8 @@ const GlobalWeatherWidget = () => {
       <div className="p-4">
         <h4 className={`font-medium mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
           Últimas Notícias
-        </h4>
-        
+          </h4>
+          
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
@@ -235,7 +235,7 @@ const GlobalWeatherWidget = () => {
             ))}
           </div>
         )}
-      </div>
+          </div>
     </motion.div>
   );
 };

@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const mongoClient = new MongoClient(process.env.MONGODB_URI);
 
 // Função auxiliar para verificar autorização
-const verifyAuth = (event) => {
+const verifyAuth = event => {
   const authHeader = event.headers.Authorization || event.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return { error: 'UNAUTHORIZED', message: 'Token de autorização não fornecido' };
@@ -12,7 +12,7 @@ const verifyAuth = (event) => {
 
   const token = authHeader.substring(7);
   let decodedToken;
-  
+
   try {
     decodedToken = jwt.decode(token);
     if (!decodedToken) {
@@ -44,18 +44,24 @@ const checkPlanLimits = async (db, cognitoSub, operation) => {
   if (operation === 'create') {
     // Verificar se pode criar mais produtos
     if (plan.status !== 'active') {
-      return { error: 'PLAN_INACTIVE', message: 'Plano inativo. Ative um plano para criar produtos.' };
+      return {
+        error: 'PLAN_INACTIVE',
+        message: 'Plano inativo. Ative um plano para criar produtos.'
+      };
     }
 
     if (plan.type === 'loja') {
       // Plano Loja: máximo 3 anúncios
-      const currentProducts = await db.collection('products').countDocuments({ 
-        ownerId: cognitoSub, 
-        status: 'active' 
+      const currentProducts = await db.collection('products').countDocuments({
+        ownerId: cognitoSub,
+        status: 'active'
       });
-      
+
       if (currentProducts >= 3) {
-        return { error: 'LIMIT_EXCEEDED', message: 'Limite de 3 anúncios atingido para o plano Loja.' };
+        return {
+          error: 'LIMIT_EXCEEDED',
+          message: 'Limite de 3 anúncios atingido para o plano Loja.'
+        };
       }
     }
     // Planos pagos: ilimitado
@@ -64,14 +70,14 @@ const checkPlanLimits = async (db, cognitoSub, operation) => {
   return { user, plan };
 };
 
-exports.handler = async (event) => {
+exports.handler = async event => {
   try {
     // Configurar CORS
     const corsHeaders = {
       'Access-Control-Allow-Origin': process.env.AMPLIFY_DOMAIN || '*',
       'Access-Control-Allow-Headers': 'Content-Type,Authorization',
       'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
-      'Access-Control-Allow-Credentials': true,
+      'Access-Control-Allow-Credentials': true
     };
 
     // Handle preflight OPTIONS request
@@ -79,7 +85,7 @@ exports.handler = async (event) => {
       return {
         statusCode: 200,
         headers: corsHeaders,
-        body: JSON.stringify({ message: 'OK' }),
+        body: JSON.stringify({ message: 'OK' })
       };
     }
 
@@ -96,18 +102,19 @@ exports.handler = async (event) => {
       const category = queryStringParameters?.category;
 
       let filter = { status: 'active' };
-      
+
       if (search) {
         filter.$text = { $search: search };
       }
-      
+
       if (category) {
         filter.category = category;
       }
 
       const skip = (page - 1) * limit;
-      
-      const products = await db.collection('products')
+
+      const products = await db
+        .collection('products')
         .find(filter)
         .sort({ createdAt: -1 })
         .skip(skip)
@@ -127,7 +134,7 @@ exports.handler = async (event) => {
             total,
             pages: Math.ceil(total / limit)
           }
-        }),
+        })
       };
     }
 
@@ -138,9 +145,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 401,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: auth.error, message: auth.message } 
-          }),
+          body: JSON.stringify({
+            error: { code: auth.error, message: auth.message }
+          })
         };
       }
 
@@ -153,9 +160,9 @@ exports.handler = async (event) => {
           return {
             statusCode: 400,
             headers: corsHeaders,
-            body: JSON.stringify({ 
-              error: { code: 'INVALID_ID', message: 'ID inválido' } 
-            }),
+            body: JSON.stringify({
+              error: { code: 'INVALID_ID', message: 'ID inválido' }
+            })
           };
         }
 
@@ -164,22 +171,23 @@ exports.handler = async (event) => {
           return {
             statusCode: 404,
             headers: corsHeaders,
-            body: JSON.stringify({ 
-              error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto não encontrado' } 
-            }),
+            body: JSON.stringify({
+              error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto não encontrado' }
+            })
           };
         }
 
         return {
           statusCode: 200,
           headers: corsHeaders,
-          body: JSON.stringify({ product }),
+          body: JSON.stringify({ product })
         };
       }
 
       // Buscar produtos do usuário
       const filter = owner === 'me' ? { ownerId: auth.cognitoSub } : {};
-      const products = await db.collection('products')
+      const products = await db
+        .collection('products')
         .find(filter)
         .sort({ createdAt: -1 })
         .toArray();
@@ -187,7 +195,7 @@ exports.handler = async (event) => {
       return {
         statusCode: 200,
         headers: corsHeaders,
-        body: JSON.stringify({ products }),
+        body: JSON.stringify({ products })
       };
     }
 
@@ -198,9 +206,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 401,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: auth.error, message: auth.message } 
-          }),
+          body: JSON.stringify({
+            error: { code: auth.error, message: auth.message }
+          })
         };
       }
 
@@ -210,9 +218,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 403,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: planCheck.error, message: planCheck.message } 
-          }),
+          body: JSON.stringify({
+            error: { code: planCheck.error, message: planCheck.message }
+          })
         };
       }
 
@@ -224,22 +232,25 @@ exports.handler = async (event) => {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'INVALID_JSON', message: 'JSON inválido' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'INVALID_JSON', message: 'JSON inválido' }
+          })
         };
       }
 
       // Validar dados obrigatórios
       const { name, specs, images, priceBRL } = requestBody;
-      
+
       if (!name || !specs || !priceBRL) {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'MISSING_FIELDS', message: 'Nome, especificações e preço são obrigatórios' } 
-          }),
+          body: JSON.stringify({
+            error: {
+              code: 'MISSING_FIELDS',
+              message: 'Nome, especificações e preço são obrigatórios'
+            }
+          })
         };
       }
 
@@ -270,7 +281,7 @@ exports.handler = async (event) => {
             id: result.insertedId,
             ...newProduct
           }
-        }),
+        })
       };
     }
 
@@ -281,9 +292,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 401,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: auth.error, message: auth.message } 
-          }),
+          body: JSON.stringify({
+            error: { code: auth.error, message: auth.message }
+          })
         };
       }
 
@@ -295,25 +306,25 @@ exports.handler = async (event) => {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'INVALID_ID', message: 'ID inválido' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'INVALID_ID', message: 'ID inválido' }
+          })
         };
       }
 
       // Verificar se o produto existe e pertence ao usuário
-      const existingProduct = await db.collection('products').findOne({ 
-        _id: new ObjectId(id), 
-        ownerId: auth.cognitoSub 
+      const existingProduct = await db.collection('products').findOne({
+        _id: new ObjectId(id),
+        ownerId: auth.cognitoSub
       });
 
       if (!existingProduct) {
         return {
           statusCode: 404,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto não encontrado' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto não encontrado' }
+          })
         };
       }
 
@@ -325,9 +336,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'INVALID_JSON', message: 'JSON inválido' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'INVALID_JSON', message: 'JSON inválido' }
+          })
         };
       }
 
@@ -338,23 +349,23 @@ exports.handler = async (event) => {
 
       if (requestBody.name) updateData.name = requestBody.name.trim();
       if (requestBody.specs) updateData.specs = requestBody.specs.trim();
-      if (requestBody.images) updateData.images = Array.isArray(requestBody.images) ? requestBody.images : [];
+      if (requestBody.images)
+        updateData.images = Array.isArray(requestBody.images) ? requestBody.images : [];
       if (requestBody.priceBRL) updateData.priceBRL = parseFloat(requestBody.priceBRL);
       if (requestBody.status) updateData.status = requestBody.status;
 
       // Atualizar produto
-      const result = await db.collection('products').updateOne(
-        { _id: new ObjectId(id) },
-        { $set: updateData }
-      );
+      const result = await db
+        .collection('products')
+        .updateOne({ _id: new ObjectId(id) }, { $set: updateData });
 
       if (result.matchedCount === 0) {
         return {
           statusCode: 404,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto não encontrado' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto não encontrado' }
+          })
         };
       }
 
@@ -363,7 +374,7 @@ exports.handler = async (event) => {
         headers: corsHeaders,
         body: JSON.stringify({
           message: 'Produto atualizado com sucesso'
-        }),
+        })
       };
     }
 
@@ -374,9 +385,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 401,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: auth.error, message: auth.message } 
-          }),
+          body: JSON.stringify({
+            error: { code: auth.error, message: auth.message }
+          })
         };
       }
 
@@ -388,40 +399,40 @@ exports.handler = async (event) => {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'INVALID_ID', message: 'ID inválido' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'INVALID_ID', message: 'ID inválido' }
+          })
         };
       }
 
       // Verificar se o produto existe e pertence ao usuário
-      const existingProduct = await db.collection('products').findOne({ 
-        _id: new ObjectId(id), 
-        ownerId: auth.cognitoSub 
+      const existingProduct = await db.collection('products').findOne({
+        _id: new ObjectId(id),
+        ownerId: auth.cognitoSub
       });
 
       if (!existingProduct) {
         return {
           statusCode: 404,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto não encontrado' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto não encontrado' }
+          })
         };
       }
 
       // Deletar produto
-      const result = await db.collection('products').deleteOne({ 
-        _id: new ObjectId(id) 
+      const result = await db.collection('products').deleteOne({
+        _id: new ObjectId(id)
       });
 
       if (result.deletedCount === 0) {
         return {
           statusCode: 404,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto não encontrado' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'PRODUCT_NOT_FOUND', message: 'Produto não encontrado' }
+          })
         };
       }
 
@@ -430,7 +441,7 @@ exports.handler = async (event) => {
         headers: corsHeaders,
         body: JSON.stringify({
           message: 'Produto deletado com sucesso'
-        }),
+        })
       };
     }
 
@@ -438,25 +449,24 @@ exports.handler = async (event) => {
     return {
       statusCode: 405,
       headers: corsHeaders,
-      body: JSON.stringify({ 
-        error: { code: 'METHOD_NOT_ALLOWED', message: 'Método não permitido' } 
-      }),
+      body: JSON.stringify({
+        error: { code: 'METHOD_NOT_ALLOWED', message: 'Método não permitido' }
+      })
     };
-
   } catch (error) {
     console.error('Erro no gerenciamento de produtos:', error);
-    
+
     return {
       statusCode: 500,
       headers: {
         'Access-Control-Allow-Origin': process.env.AMPLIFY_DOMAIN || '*',
         'Access-Control-Allow-Headers': 'Content-Type,Authorization',
         'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
-        'Access-Control-Allow-Credentials': true,
+        'Access-Control-Allow-Credentials': true
       },
-      body: JSON.stringify({ 
-        error: { code: 'INTERNAL_ERROR', message: 'Erro interno do servidor' } 
-      }),
+      body: JSON.stringify({
+        error: { code: 'INTERNAL_ERROR', message: 'Erro interno do servidor' }
+      })
     };
   } finally {
     if (mongoClient) {

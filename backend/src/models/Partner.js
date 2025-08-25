@@ -64,15 +64,19 @@ const partnerSchema = new mongoose.Schema({
       trim: true
     }
   },
-  services: [{
-    type: String,
-    trim: true
-  }],
-  certifications: [{
-    name: String,
-    issuer: String,
-    validUntil: Date
-  }],
+  services: [
+    {
+      type: String,
+      trim: true
+    }
+  ],
+  certifications: [
+    {
+      name: String,
+      issuer: String,
+      validUntil: Date
+    }
+  ],
   status: {
     type: String,
     enum: ['active', 'inactive', 'pending', 'suspended'],
@@ -114,7 +118,7 @@ const partnerSchema = new mongoose.Schema({
 });
 
 // Atualizar timestamp antes de salvar
-partnerSchema.pre('save', function(next) {
+partnerSchema.pre('save', function (next) {
   this.updatedAt = new Date();
   next();
 });
@@ -125,25 +129,25 @@ partnerSchema.index({ category: 1, status: 1 });
 partnerSchema.index({ 'location.country': 1, 'location.state': 1 });
 
 // Método para ativar parceiro
-partnerSchema.methods.activate = function() {
+partnerSchema.methods.activate = function () {
   this.status = 'active';
   return this.save();
 };
 
 // Método para desativar parceiro
-partnerSchema.methods.deactivate = function() {
+partnerSchema.methods.deactivate = function () {
   this.status = 'inactive';
   return this.save();
 };
 
 // Método para atualizar nível de parceria
-partnerSchema.methods.updatePartnershipLevel = function(level) {
+partnerSchema.methods.updatePartnershipLevel = function (level) {
   this.partnershipLevel = level;
   return this.save();
 };
 
 // Método para marcar como destaque
-partnerSchema.methods.toggleFeatured = function() {
+partnerSchema.methods.toggleFeatured = function () {
   this.isFeatured = !this.isFeatured;
   return this.save();
 };

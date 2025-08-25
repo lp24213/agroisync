@@ -1,308 +1,563 @@
-import express, { Router } from 'express';
-import { authenticateToken, requireActivePlan } from '../middleware/auth.js';
-import { Conversation } from '../models/Conversation.js';
+import express from 'express';
+import { PrivateMessage } from '../models/PrivateMessage.js';
+import { ContactMessage } from '../models/ContactMessage.js';
+import { PartnershipMessage } from '../models/PartnershipMessage.js';
 import { User } from '../models/User.js';
+import { validateMessage } from '../middleware/validation.js';
+import { apiLimiter } from '../middleware/rateLimiter.js';
+import { authenticateToken, requireStorePlan, requireFreightPlan } from '../middleware/auth.js';
 
-const router = Router();
+const router = express.Router();
 
-// GET /api/messaging/conversations - Listar conversas do usuário
+// Apply rate limiting
+router.use(apiLimiter);
+
+// ===== PRIVATE MESSAGES (requires active subscription) =====
+
+// GET /api/messaging/conversations - Get user's conversations
 router.get('/conversations', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.id;
-    const { module } = req.query;
+    const userId = req.user.userId;
 
-    // Verificar se o usuário tem plano ativo para o módulo
+    // Check if user has any active plan
     const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        error: 'Usuário não encontrado'
-      });
-    }
-
-    // Verificar se o usuário tem plano ativo para o módulo solicitado
-    if (module && !user.plans[module] || user.plans[module].status !== 'active') {
+    if (!user.hasActivePlan('store') && !user.hasActivePlan('freight')) {
       return res.status(403).json({
         success: false,
-        error: 'Plano ativo necessário para acessar mensagens privadas'
+        message: 'Plano ativo necessário para acessar mensagens privadas'
       });
     }
 
-    const conversations = await Conversation.findByUser(userId, module);
+    // Get conversations (simplified - you might want to implement a more sophisticated approach)
+    const conversations = await PrivateMessage.aggregate([
+      {
+        $match: {
+          $or: [{ senderId: userId }, { receiverId: userId }]
+        }
+      },
+      {
+        $group: {
+          _id: {
+            $cond: [{ $eq: ['$senderId', userId] }, '$receiverId', '$senderId']
+          },
+          lastMessage: { $first: '$$ROOT' },
+          unreadCount: {
+            $sum: {
+              $cond: [
+                { $and: [{ $eq: ['$receiverId', userId] }, { $eq: ['$isRead', false] }] },
+                1,
+                0
+              ]
+            }
+          }
+        }
+      },
+      {
+        $sort: { 'lastMessage.createdAt': -1 }
+      }
+    ]);
+
+    // Populate user information
+    const populatedConversations = await PrivateMessage.populate(conversations, [
+      { path: '_id', select: 'name company.name' },
+      { path: 'lastMessage.senderId', select: 'name company.name' },
+      { path: 'lastMessage.receiverId', select: 'name company.name' }
+    ]);
 
     res.json({
       success: true,
-      data: conversations
+      data: { conversations: populatedConversations }
     });
   } catch (error) {
     console.error('Error fetching conversations:', error);
     res.status(500).json({
       success: false,
-      error: 'Erro ao buscar conversas'
+      message: 'Erro interno do servidor'
     });
   }
 });
 
-// GET /api/messaging/conversations/:id - Obter conversa específica
-router.get('/conversations/:id', authenticateToken, async (req, res) => {
+// GET /api/messaging/conversation/:otherUserId - Get conversation with specific user
+router.get('/conversation/:otherUserId', authenticateToken, async (req, res) => {
   try {
-    const { id } = req.params;
-    const userId = req.user.id;
+    const userId = req.user.userId;
+    const otherUserId = req.params.otherUserId;
 
-    // Verificar se o usuário tem plano ativo
+    // Check if user has any active plan
     const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        error: 'Usuário não encontrado'
-      });
-    }
-
-    // Verificar se o usuário tem pelo menos um plano ativo
-    const hasActivePlan = Object.values(user.plans).some(plan => plan.status === 'active');
-    if (!hasActivePlan) {
+    if (!user.hasActivePlan('store') && !user.hasActivePlan('freight')) {
       return res.status(403).json({
         success: false,
-        error: 'Plano ativo necessário para acessar mensagens privadas'
+        message: 'Plano ativo necessário para acessar mensagens privadas'
       });
     }
 
-    const conversation = await Conversation.findById(id)
-      .populate('participants', 'name email')
-      .populate('listing.id');
-
-    if (!conversation) {
-      return res.status(404).json({
-        success: false,
-        error: 'Conversa não encontrada'
-      });
-    }
-
-    // Verificar se o usuário é participante
-    if (!conversation.participants.some(p => p._id.toString() === userId)) {
-      return res.status(403).json({
-        success: false,
-        error: 'Acesso negado'
-      });
-    }
-
-    // Marcar mensagens como lidas
-    await conversation.markAsRead(userId);
+    const messages = await PrivateMessage.getConversation(userId, otherUserId, 100);
 
     res.json({
       success: true,
-      data: conversation
+      data: { messages }
     });
   } catch (error) {
     console.error('Error fetching conversation:', error);
     res.status(500).json({
       success: false,
-      error: 'Erro ao buscar conversa'
+      message: 'Erro interno do servidor'
     });
   }
 });
 
-// POST /api/messaging/conversations - Criar nova conversa
-router.post('/conversations', authenticateToken, async (req, res) => {
+// POST /api/messaging/send - Send private message
+router.post('/send', authenticateToken, validateMessage, async (req, res) => {
   try {
-    const { participants, listing, module, subject, initialMessage } = req.body;
-    const senderId = req.user.id;
+    const userId = req.user.userId;
+    const { receiverId, subject, content, messageType, relatedProduct, relatedFreight } = req.body;
 
-    if (!participants || !listing || !module || !subject || !initialMessage) {
-      return res.status(400).json({
-        success: false,
-        error: 'Todos os campos obrigatórios devem ser preenchidos'
-      });
-    }
-
-    // Verificar se o usuário tem plano ativo para o módulo
-    const user = await User.findById(senderId);
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        error: 'Usuário não encontrado'
-      });
-    }
-
-    // Verificar se o usuário tem plano ativo para o módulo
-    if (!user.plans[module] || user.plans[module].status !== 'active') {
+    // Check if user has any active plan
+    const user = await User.findById(userId);
+    if (!user.hasActivePlan('store') && !user.hasActivePlan('freight')) {
       return res.status(403).json({
         success: false,
-        error: 'Plano ativo necessário para enviar mensagens privadas'
+        message: 'Plano ativo necessário para enviar mensagens privadas'
       });
     }
 
-    // Verificar se já existe uma conversa entre os participantes para este listing
-    const existingConversation = await Conversation.findOne({
-      participants: { $all: participants },
-      'listing.id': listing.id,
-      'listing.type': listing.type,
-      module,
-      isActive: true
-    });
-
-    if (existingConversation) {
-      // Adicionar mensagem à conversa existente
-      await existingConversation.addMessage(senderId, initialMessage);
-      
-      return res.json({
-        success: true,
-        data: existingConversation,
-        message: 'Mensagem adicionada à conversa existente'
+    // Check if receiver exists
+    const receiver = await User.findById(receiverId);
+    if (!receiver) {
+      return res.status(404).json({
+        success: false,
+        message: 'Destinatário não encontrado'
       });
     }
 
-    // Criar nova conversa
-    const conversation = new Conversation({
-      participants,
-      listing,
-      module,
-      subject
+    // Create message
+    const message = new PrivateMessage({
+      senderId: userId,
+      receiverId,
+      subject,
+      content,
+      messageType: messageType || 'general',
+      relatedProduct,
+      relatedFreight
     });
 
-    // Adicionar mensagem inicial
-    await conversation.addMessage(senderId, initialMessage);
+    await message.save();
 
-    const savedConversation = await conversation.save();
-
-    // Popular dados para retorno
-    await savedConversation.populate('participants', 'name email');
-    await savedConversation.populate('listing.id');
+    // Populate sender and receiver info
+    await message.populate([
+      { path: 'senderId', select: 'name company.name' },
+      { path: 'receiverId', select: 'name company.name' }
+    ]);
 
     res.status(201).json({
       success: true,
-      data: savedConversation,
-      message: 'Conversa criada com sucesso'
-    });
-  } catch (error) {
-    console.error('Error creating conversation:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Erro ao criar conversa'
-    });
-  }
-});
-
-// POST /api/messaging/conversations/:id/messages - Enviar mensagem
-router.post('/conversations/:id/messages', authenticateToken, requireActivePlan('store'), async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { content, attachments } = req.body;
-    const senderId = req.user.id;
-
-    if (!content) {
-      return res.status(400).json({
-        success: false,
-        error: 'Conteúdo da mensagem é obrigatório'
-      });
-    }
-
-    const conversation = await Conversation.findById(id);
-    if (!conversation) {
-      return res.status(404).json({
-        success: false,
-        error: 'Conversa não encontrada'
-      });
-    }
-
-    // Verificar se o usuário é participante
-    if (!conversation.participants.some(p => p.toString() === senderId)) {
-      return res.status(403).json({
-        success: false,
-        error: 'Acesso negado'
-      });
-    }
-
-    // Adicionar mensagem
-    await conversation.addMessage(senderId, content, attachments || []);
-
-    // Popular dados para retorno
-    await conversation.populate('participants', 'name email');
-    await conversation.populate('listing.id');
-
-    res.json({
-      success: true,
-      data: conversation,
-      message: 'Mensagem enviada com sucesso'
+      message: 'Mensagem enviada com sucesso',
+      data: { message }
     });
   } catch (error) {
     console.error('Error sending message:', error);
     res.status(500).json({
       success: false,
-      error: 'Erro ao enviar mensagem'
+      message: 'Erro interno do servidor'
     });
   }
 });
 
-// PUT /api/messaging/conversations/:id/status - Atualizar status da conversa
-router.put('/conversations/:id/status', authenticateToken, requireActivePlan('store'), async (req, res) => {
+// PUT /api/messaging/:messageId/read - Mark message as read
+router.put('/:messageId/read', authenticateToken, async (req, res) => {
   try {
-    const { id } = req.params;
-    const { status } = req.body;
-    const userId = req.user.id;
+    const userId = req.user.userId;
+    const { messageId } = req.params;
 
-    if (!status || !['active', 'archived', 'closed'].includes(status)) {
-      return res.status(400).json({
-        success: false,
-        error: 'Status inválido'
-      });
-    }
-
-    const conversation = await Conversation.findById(id);
-    if (!conversation) {
-      return res.status(404).json({
-        success: false,
-        error: 'Conversa não encontrada'
-      });
-    }
-
-    // Verificar se o usuário é participante
-    if (!conversation.participants.some(p => p.toString() === userId)) {
+    // Check if user has any active plan
+    const user = await User.findById(userId);
+    if (!user.hasActivePlan('store') && !user.hasActivePlan('freight')) {
       return res.status(403).json({
         success: false,
-        error: 'Acesso negado'
+        message: 'Plano ativo necessário para acessar mensagens privadas'
       });
     }
 
-    conversation.status = status;
-    await conversation.save();
+    const message = await PrivateMessage.findById(messageId);
+    if (!message) {
+      return res.status(404).json({
+        success: false,
+        message: 'Mensagem não encontrada'
+      });
+    }
+
+    // Check if user is the receiver
+    if (message.receiverId.toString() !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: 'Acesso negado'
+      });
+    }
+
+    await message.markAsRead();
 
     res.json({
       success: true,
-      data: conversation,
-      message: 'Status atualizado com sucesso'
+      message: 'Mensagem marcada como lida'
     });
   } catch (error) {
-    console.error('Error updating conversation status:', error);
+    console.error('Error marking message as read:', error);
     res.status(500).json({
       success: false,
-      error: 'Erro ao atualizar status'
+      message: 'Erro interno do servidor'
     });
   }
 });
 
-// GET /api/messaging/unread-count - Obter contador de mensagens não lidas
-router.get('/unread-count', authenticateToken, async (req, res) => {
+// GET /api/messaging/unread - Get unread messages count
+router.get('/unread', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
-    const conversations = await Conversation.findByUser(userId);
-    let totalUnread = 0;
+    // Check if user has any active plan
+    const user = await User.findById(userId);
+    if (!user.hasActivePlan('store') && !user.hasActivePlan('freight')) {
+      return res.status(403).json({
+        success: false,
+        message: 'Plano ativo necessário para acessar mensagens privadas'
+      });
+    }
 
-    conversations.forEach(conversation => {
-      const unreadCount = conversation.unreadCount.get(userId.toString()) || 0;
-      totalUnread += unreadCount;
-    });
+    const unreadMessages = await PrivateMessage.getUnreadMessages(userId);
+    const unreadCount = unreadMessages.length;
 
     res.json({
       success: true,
-      data: { totalUnread }
+      data: { unreadCount, unreadMessages }
     });
   } catch (error) {
-    console.error('Error fetching unread count:', error);
+    console.error('Error fetching unread messages:', error);
     res.status(500).json({
       success: false,
-      error: 'Erro ao buscar contador de não lidas'
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// ===== CONTACT FORM (public, goes to admin) =====
+
+// POST /api/messaging/contact - Send contact message
+router.post('/contact', async (req, res) => {
+  try {
+    const { name, email, subject, message } = req.body;
+
+    // Basic validation
+    if (!name || !email || !subject || !message) {
+      return res.status(400).json({
+        success: false,
+        message: 'Todos os campos são obrigatórios'
+      });
+    }
+
+    if (message.trim().length < 10) {
+      return res.status(400).json({
+        success: false,
+        message: 'Mensagem deve ter pelo menos 10 caracteres'
+      });
+    }
+
+    // Create contact message
+    const contactMessage = new ContactMessage({
+      name,
+      email,
+      subject,
+      message
+    });
+
+    await contactMessage.save();
+
+    res.status(201).json({
+      success: true,
+      message: 'Mensagem de contato enviada com sucesso'
+    });
+  } catch (error) {
+    console.error('Error sending contact message:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// ===== PARTNERSHIP INQUIRIES (public, goes to admin) =====
+
+// POST /api/messaging/partnership - Send partnership inquiry
+router.post('/partnership', async (req, res) => {
+  try {
+    const { company, contactPerson, email, phone, partnershipType, description } = req.body;
+
+    // Basic validation
+    if (!company || !contactPerson || !email || !partnershipType || !description) {
+      return res.status(400).json({
+        success: false,
+        message: 'Todos os campos obrigatórios devem ser preenchidos'
+      });
+    }
+
+    if (description.trim().length < 20) {
+      return res.status(400).json({
+        success: false,
+        message: 'Descrição deve ter pelo menos 20 caracteres'
+      });
+    }
+
+    // Create partnership message
+    const partnershipMessage = new PartnershipMessage({
+      company,
+      contactPerson,
+      email,
+      phone,
+      partnershipType,
+      description
+    });
+
+    await partnershipMessage.save();
+
+    res.status(201).json({
+      success: true,
+      message: 'Solicitação de parceria enviada com sucesso'
+    });
+  } catch (error) {
+    console.error('Error sending partnership inquiry:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// ===== ADMIN ROUTES (protected) =====
+
+// GET /api/messaging/admin/contact - Get contact messages (admin only)
+router.get('/admin/contact', authenticateToken, async (req, res) => {
+  try {
+    // Check if user is admin
+    if (req.user.userType !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Acesso negado. Privilégios de administrador necessários.'
+      });
+    }
+
+    const { page = 1, limit = 20, status } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const query = {};
+    if (status) query.status = status;
+
+    const messages = await ContactMessage.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .lean();
+
+    const total = await ContactMessage.countDocuments(query);
+
+    res.json({
+      success: true,
+      data: {
+        messages,
+        pagination: {
+          currentPage: parseInt(page),
+          totalPages: Math.ceil(total / parseInt(limit)),
+          totalItems: total,
+          itemsPerPage: parseInt(limit)
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching contact messages:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// GET /api/messaging/admin/partnership - Get partnership messages (admin only)
+router.get('/admin/partnership', authenticateToken, async (req, res) => {
+  try {
+    // Check if user is admin
+    if (req.user.userType !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Acesso negado. Privilégios de administrador necessários.'
+      });
+    }
+
+    const { page = 1, limit = 20, status } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const query = {};
+    if (status) query.status = status;
+
+    const messages = await PartnershipMessage.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .lean();
+
+    const total = await PartnershipMessage.countDocuments(query);
+
+    res.json({
+      success: true,
+      data: {
+        messages,
+        pagination: {
+          currentPage: parseInt(page),
+          totalPages: Math.ceil(total / parseInt(limit)),
+          totalItems: total,
+          itemsPerPage: parseInt(limit)
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching partnership messages:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// GET /api/messaging/admin/private - Get private messages (admin only)
+router.get('/admin/private', authenticateToken, async (req, res) => {
+  try {
+    // Check if user is admin
+    if (req.user.userType !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Acesso negado. Privilégios de administrador necessários.'
+      });
+    }
+
+    const { page = 1, limit = 20, status } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const query = {};
+    if (status) query.status = status;
+
+    const messages = await PrivateMessage.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .populate('senderId', 'name email company.name')
+      .populate('receiverId', 'name email company.name')
+      .lean();
+
+    const total = await PrivateMessage.countDocuments(query);
+
+    res.json({
+      success: true,
+      data: {
+        messages,
+        pagination: {
+          currentPage: parseInt(page),
+          totalPages: Math.ceil(total / parseInt(limit)),
+          totalItems: total,
+          itemsPerPage: parseInt(limit)
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching private messages:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// PUT /api/messaging/admin/contact/:id/status - Update contact message status (admin only)
+router.put('/admin/contact/:id/status', authenticateToken, async (req, res) => {
+  try {
+    // Check if user is admin
+    if (req.user.userType !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Acesso negado. Privilégios de administrador necessários.'
+      });
+    }
+
+    const { id } = req.params;
+    const { status, adminResponse } = req.body;
+
+    const message = await ContactMessage.findById(id);
+    if (!message) {
+      return res.status(404).json({
+        success: false,
+        message: 'Mensagem não encontrada'
+      });
+    }
+
+    if (status === 'replied' && adminResponse) {
+      message.adminResponse = adminResponse;
+      message.repliedAt = new Date();
+      message.repliedBy = req.user.userId;
+    }
+
+    message.status = status;
+    await message.save();
+
+    res.json({
+      success: true,
+      message: 'Status da mensagem atualizado com sucesso'
+    });
+  } catch (error) {
+    console.error('Error updating contact message status:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// PUT /api/messaging/admin/partnership/:id/status - Update partnership message status (admin only)
+router.put('/admin/partnership/:id/status', authenticateToken, async (req, res) => {
+  try {
+    // Check if user is admin
+    if (req.user.userType !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Acesso negado. Privilégios de administrador necessários.'
+      });
+    }
+
+    const { id } = req.params;
+    const { status, adminResponse } = req.body;
+
+    const message = await PartnershipMessage.findById(id);
+    if (!message) {
+      return res.status(404).json({
+        success: false,
+        message: 'Mensagem não encontrada'
+      });
+    }
+
+    if (status === 'contacted' && adminResponse) {
+      message.adminResponse = adminResponse;
+      message.contactedAt = new Date();
+      message.contactedBy = req.user.userId;
+    }
+
+    message.status = status;
+    await message.save();
+
+    res.json({
+      success: true,
+      message: 'Status da mensagem atualizado com sucesso'
+    });
+  } catch (error) {
+    console.error('Error updating partnership message status:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
     });
   }
 });

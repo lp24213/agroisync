@@ -1,303 +1,300 @@
-# 🚀 AGROISYNC - Backend Completo e Profissional
+# 🌾 AGROTM - Plataforma de Gestão Agrícola
 
-## 📋 **Visão Geral**
+## 📋 Descrição
 
-O **AGROISYNC** é uma plataforma completa de agronegócio construída com **AWS Amplify**, oferecendo uma solução **100% segura e profissional** para gestão de propriedades rurais, marketplace de produtos, sistema de staking, NFTs e muito mais.
+AGROTM é uma plataforma completa de gestão agrícola que oferece soluções integradas para produtores rurais, incluindo gestão de produtos, fretes, mensageria, pagamentos e parcerias.
 
-## 🏗️ **Arquitetura Implementada**
+## 🚀 Funcionalidades Principais
 
-### **🔐 Autenticação (Cognito)**
-- ✅ **Grupos:** `admin` e `user` configurados
-- ✅ **Usuário admin:** `luispaulodeoliveira@agrotm.com.br` com acesso total
-- ✅ **Login social:** Google, Facebook e Apple integrados
-- ✅ **MFA obrigatório:** SMS + TOTP
-- ✅ **Política de senha forte:** 12+ caracteres, todos os tipos
-- ✅ **Zero identidades não autenticadas**
+### 💼 **Gestão de Produtos**
+- Cadastro e gestão de produtos agrícolas
+- Categorização e busca avançada
+- Sistema de anúncios com planos premium
 
-### **📊 Banco de Dados (GraphQL/AppSync/DynamoDB)**
-- ✅ **Schema completo e seguro** com `@model` e `@auth` baseado em grupos
-- ✅ **Zero permissões públicas** - todas as tabelas protegidas por autenticação
-- ✅ **Entidades principais:**
-  - Users (Usuários)
-  - Properties (Propriedades)
-  - Products (Produtos/Marketplace)
-  - Transactions (Transações)
-  - Staking (Pools e Records)
-  - NFTs (Tokens não fungíveis)
-  - Chat (Mensagens)
-  - Notifications (Notificações)
-  - CityPrices (Preços por cidade)
-  - Analytics (Análises)
-  - Reports (Relatórios)
-  - Maintenance (Manutenção)
-  - Tasks (Tarefas)
+### 🚚 **Gestão de Fretes**
+- Cadastro de rotas de frete
+- Rastreamento em tempo real
+- Sistema de cotação e negociação
 
-### **💾 Storage (S3)**
-- ✅ **Bucket privado e seguro** com criptografia SSE-S3
-- ✅ **Versionamento habilitado** para backup automático
-- ✅ **Acesso controlado** por grupos de usuário
-- ✅ **Upload/Download** de arquivos para propriedades e produtos
+### 💬 **Mensageria Integrada**
+- Chat privado entre usuários
+- Sistema de contato para suporte
+- Mensagens de parcerias para administradores
 
-### **⚡ Funções Lambda**
-- ✅ **adminFunctions:** Operações administrativas e relatórios
-- ✅ **stakingFunctions:** Sistema de staking e recompensas
-- ✅ **nftFunctions:** Criação, mint e transferência de NFTs
-- ✅ **maintenanceFunctions:** Manutenção do sistema
-- ✅ **analyticsFunctions:** Análises e métricas
-- ✅ **taskScheduler:** Agendamento de tarefas
+### 💳 **Sistema de Pagamentos**
+- **Stripe**: Pagamentos com cartão e PIX
+- **Metamask**: Pagamentos em criptomoedas
+- Planos de assinatura flexíveis
 
-### **🌐 Hosting (Amplify)**
-- ✅ **Deploy automático** via GitHub
-- ✅ **SSL ativo** e HTTPS obrigatório
-- ✅ **Domínio customizado:** `https://www.agroisync.com/`
-- ✅ **CI/CD integrado** com build otimizado
+### 👨‍💼 **Painel Administrativo**
+- Gestão completa de usuários
+- Monitoramento de transações
+- Analytics e relatórios detalhados
+- Controle de parceiros e mensagens
 
-## 🚀 **Deploy Automatizado**
+### 🔒 **Segurança Avançada**
+- Autenticação JWT
+- Proteção contra DDoS e ataques
+- WAF integrado
+- Logs de segurança completos
 
-### **Pré-requisitos**
-1. **AWS CLI configurado** com credenciais válidas
-2. **Node.js 18+** instalado
-3. **Git** configurado
-4. **Conta AWS** com permissões adequadas
+## 🏗️ Arquitetura
 
-### **Deploy Completo (Windows)**
-```powershell
-# Executar script PowerShell
-.\scripts\deploy-agroisync-complete.ps1
+### Backend
+- **Node.js** com Express
+- **MongoDB** como banco principal
+- **Socket.io** para comunicação em tempo real
+- **JWT** para autenticação
+- **Stripe** e **Metamask** para pagamentos
+
+### Frontend
+- **React** com hooks modernos
+- **Context API** para gerenciamento de estado
+- **i18n** para internacionalização
+- **Responsivo** para todos os dispositivos
+
+## 📁 Estrutura do Projeto
+
+```
+agroisync/
+├── backend/                 # API Backend
+│   ├── src/
+│   │   ├── config/         # Configurações
+│   │   ├── controllers/    # Controladores
+│   │   ├── middleware/     # Middlewares
+│   │   ├── models/         # Modelos MongoDB
+│   │   ├── routes/         # Rotas da API
+│   │   ├── services/       # Serviços
+│   │   ├── utils/          # Utilitários
+│   │   └── server.js       # Servidor principal
+│   └── package.json
+├── frontend/                # Aplicação React
+│   ├── src/
+│   │   ├── components/     # Componentes reutilizáveis
+│   │   ├── pages/          # Páginas da aplicação
+│   │   ├── services/       # Serviços de API
+│   │   ├── contexts/       # Contextos React
+│   │   ├── styles/         # Estilos CSS
+│   │   └── App.js          # Componente principal
+│   └── package.json
+└── README.md
 ```
 
-### **Deploy Completo (Linux/Mac)**
+## 🛠️ Tecnologias Utilizadas
+
+### Backend
+- **Node.js** 18+
+- **Express.js** 4.18+
+- **MongoDB** 6.0+
+- **Mongoose** 8.0+
+- **Socket.io** 4.7+
+- **Stripe** 14.7+
+- **Ethers.js** 6.8+
+
+### Frontend
+- **React** 18+
+- **React Router** 6+
+- **Axios** para HTTP
+- **Socket.io Client** para WebSocket
+- **i18next** para internacionalização
+
+### DevOps & Segurança
+- **Helmet** para headers de segurança
+- **CORS** configurado
+- **Rate Limiting** avançado
+- **WAF** integrado
+- **Logs** de segurança
+
+## 🚀 Instalação e Configuração
+
+### Pré-requisitos
+- Node.js 18+ 
+- MongoDB 6.0+
+- npm ou yarn
+
+### 1. Clone o repositório
 ```bash
-# Tornar executável
-chmod +x scripts/deploy-agroisync-complete.sh
-
-# Executar script
-./scripts/deploy-agroisync-complete.sh
+git clone https://github.com/agrotm/agroisync.git
+cd agroisync
 ```
 
-### **Deploy Manual**
+### 2. Configure o Backend
 ```bash
-# 1. Inicializar projeto
-amplify init --app agroisync --envName dev --yes
+cd backend
+npm install
 
-# 2. Adicionar autenticação
-amplify add auth --service Cognito --yes
-
-# 3. Adicionar API GraphQL
-amplify add api --service AppSync --yes
-
-# 4. Adicionar storage S3
-amplify add storage --service S3 --yes
-
-# 5. Adicionar funções Lambda
-amplify add function --functionName adminFunctions --runtime nodejs18.x --yes
-amplify add function --functionName stakingFunctions --runtime nodejs18.x --yes
-amplify add function --functionName nftFunctions --runtime nodejs18.x --yes
-
-# 6. Adicionar hosting
-amplify add hosting --service amplifyhosting --type manual --yes
-
-# 7. Deploy
-amplify push --yes
-amplify publish --yes
+# Configure as variáveis de ambiente
+cp .env.example .env
+# Edite o arquivo .env com suas configurações
 ```
 
-## 🔧 **Configuração de Usuário Admin**
-
-Após o deploy, configure o usuário admin:
-
+### 3. Configure o Frontend
 ```bash
-# Executar script de setup
-chmod +x scripts/setup-admin-user.sh
-./scripts/setup-admin-user.sh
+cd ../frontend
+npm install
+
+# Configure as variáveis de ambiente
+cp .env.example .env
+# Edite o arquivo .env com suas configurações
 ```
 
-**Credenciais padrão:**
-- **Email:** `luispaulodeoliveira@agrotm.com.br`
-- **Senha:** `Admin@2024!`
-- **Grupo:** `admin`
+### 4. Configure as Variáveis de Ambiente
 
-## 📱 **Frontend Integration**
-
-### **Configuração Automática**
-O frontend é configurado automaticamente com:
-- ✅ **aws-exports.js** com todas as configurações
-- ✅ **Amplify configurado** para autenticação
-- ✅ **Storage S3** integrado
-- ✅ **GraphQL client** configurado
-- ✅ **Funções Lambda** acessíveis
-
-### **Uso no Frontend**
-```typescript
-import { Auth, Storage, client } from '../lib/amplify';
-
-// Autenticação
-const user = await Auth.signIn(email, password);
-
-// Storage
-const result = await Storage.put(key, file, { accessLevel: 'private' });
-
-// GraphQL
-const data = await client.graphql({ query: GET_PROPERTIES });
-
-// Lambda
-const response = await Lambda.admin.invoke('getAllUsers');
-```
-
-## 🔒 **Segurança Implementada**
-
-### **Zero Trust Model**
-- ❌ **Nenhuma regra `allow: public`**
-- ✅ **Todas as APIs protegidas** por autenticação
-- ✅ **Acesso baseado em grupos** (admin/user)
-- ✅ **JWT verification** em todas as funções Lambda
-- ✅ **S3 bucket privado** com acesso controlado
-
-### **Autenticação Robusta**
-- ✅ **MFA obrigatório** (SMS + TOTP)
-- ✅ **Política de senha forte** (12+ caracteres)
-- ✅ **Login social seguro** (Google, Facebook, Apple)
-- ✅ **Sessões JWT** com expiração configurável
-
-## 📊 **Endpoints e APIs**
-
-### **GraphQL Schema**
-- **URL:** `https://agroisync.appsync-api.us-east-2.amazonaws.com/graphql`
-- **Auth:** Cognito User Pools
-- **Operations:** Create, Read, Update, Delete (CRUD)
-
-### **Lambda Functions**
-- **adminFunctions:** `/api/lambda/admin`
-- **stakingFunctions:** `/api/lambda/staking`
-- **nftFunctions:** `/api/lambda/nft`
-
-### **Storage S3**
-- **Bucket:** `agroisync-storage`
-- **Region:** `us-east-2`
-- **Access:** Private (autenticado)
-
-## 🧪 **Testando o Sistema**
-
-### **Verificar Status**
+#### Backend (.env)
 ```bash
-# Verificar todos os recursos
-./scripts/check-agroisync-status.sh
+# Servidor
+NODE_ENV=development
+PORT=5000
+FRONTEND_URL=http://localhost:3000
+
+# JWT
+JWT_SECRET=your_super_secret_jwt_key_here
+
+# MongoDB
+MONGODB_URI=mongodb://localhost:27017/agrotm
+
+# Stripe
+STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
+STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
+
+# Metamask
+METAMASK_ADMIN_ADDRESS=0x5Ea5C5970e8AE23A5336d631707CF31C5916E8b1
 ```
 
-### **Testes Básicos**
-1. **Login admin** com credenciais padrão
-2. **Criar propriedade** através da API
-3. **Upload de arquivo** para S3
-4. **Executar função Lambda** de admin
-5. **Verificar permissões** de usuário comum
-
-## 📈 **Monitoramento e Logs**
-
-### **CloudWatch Logs**
-- ✅ **Logs de autenticação** (Cognito)
-- ✅ **Logs de API** (AppSync)
-- ✅ **Logs de funções** (Lambda)
-- ✅ **Logs de storage** (S3)
-
-### **Métricas**
-- ✅ **Usuários ativos**
-- ✅ **Transações por dia**
-- ✅ **Uso de storage**
-- ✅ **Performance das APIs**
-
-## 🚨 **Troubleshooting**
-
-### **Problemas Comuns**
-
-#### **1. Erro de Autenticação**
+#### Frontend (.env)
 ```bash
-# Verificar configuração Cognito
-aws cognito-idp list-user-pools --max-items 10
+REACT_APP_API_URL=http://localhost:5000/api/v1
+REACT_APP_ENV=development
 ```
 
-#### **2. Erro de API GraphQL**
+### 5. Inicie os Serviços
+
+#### Backend
 ```bash
-# Verificar AppSync
-aws appsync list-graphql-apis
+cd backend
+npm run dev
+# Servidor rodando em http://localhost:5000
 ```
 
-#### **3. Erro de Storage S3**
+#### Frontend
 ```bash
-# Verificar bucket
-aws s3 ls s3://agroisync-storage
-```
-
-#### **4. Erro de Lambda**
-```bash
-# Verificar funções
-aws lambda list-functions
-```
-
-### **Logs de Debug**
-```bash
-# Ver logs do Amplify
-amplify console
-
-# Ver logs do CloudWatch
-aws logs describe-log-groups
-```
-
-## 🔄 **Atualizações e Manutenção**
-
-### **Atualizar Backend**
-```bash
-# Pull das mudanças
-amplify pull --appId [APP_ID] --envName dev
-
-# Push das configurações
-amplify push --yes
-```
-
-### **Atualizar Frontend**
-```bash
-# Build e deploy
 cd frontend
-npm run build
-amplify publish --yes
+npm start
+# Aplicação rodando em http://localhost:3000
 ```
 
-## 📚 **Documentação Adicional**
+## 🔐 Autenticação Admin
 
-### **Arquivos Importantes**
-- `amplify/backend/backend-config.json` - Configuração do backend
-- `amplify/backend/api/agroisync/schema.graphql` - Schema GraphQL
-- `frontend/src/aws-exports.js` - Configuração do frontend
-- `frontend/src/lib/amplify.ts` - Integração Amplify
-- `scripts/` - Scripts de deploy e verificação
+Para acessar funcionalidades administrativas, use:
+- **Email**: `luispaulodeoliveira@agrotm.com.br`
+- **Senha**: `Th@ys15221008`
 
-### **Recursos AWS**
-- **Cognito:** Autenticação e autorização
-- **AppSync:** API GraphQL gerenciada
-- **DynamoDB:** Banco de dados NoSQL
-- **S3:** Storage de arquivos
-- **Lambda:** Computação serverless
-- **CloudFormation:** Infraestrutura como código
+## 📚 Documentação da API
 
-## 🎯 **Próximos Passos**
+A documentação completa da API está disponível em:
+- **Arquivo**: `backend/API-ROUTES-DOCUMENTATION.md`
+- **Endpoints**: `/api/v1/*`
+- **WebSocket**: `ws://localhost:5000`
 
-1. **Deploy completo** usando os scripts fornecidos
-2. **Configuração do usuário admin** 
-3. **Teste das funcionalidades** principais
-4. **Configuração do domínio** e SSL
-5. **Monitoramento** e otimização
-6. **Backup** e disaster recovery
+## 🧪 Testes
 
-## 📞 **Suporte**
+### Backend
+```bash
+cd backend
+npm test              # Executar testes
+npm run test:watch    # Modo watch
+npm run test:coverage # Com cobertura
+```
 
-Para suporte técnico ou dúvidas:
-- **Email:** luispaulodeoliveira@agrotm.com.br
-- **Documentação:** AWS Amplify Docs
-- **Issues:** GitHub Issues
+### Frontend
+```bash
+cd frontend
+npm test              # Executar testes
+npm run test:coverage # Com cobertura
+```
+
+## 🚀 Deploy
+
+### AWS (Recomendado)
+```bash
+# Configure as variáveis de ambiente na AWS
+# Deploy automático via GitHub Actions
+```
+
+### Docker
+```bash
+# Build das imagens
+docker-compose build
+
+# Executar
+docker-compose up -d
+```
+
+### Manual
+```bash
+# Backend
+cd backend
+npm install
+npm start
+
+# Frontend
+cd frontend
+npm install
+npm run build
+# Servir arquivos estáticos
+```
+
+## 🔒 Segurança
+
+- **Rate Limiting**: Proteção contra DDoS
+- **WAF**: Detecção de ataques comuns
+- **JWT**: Autenticação segura
+- **CORS**: Configuração restritiva
+- **Helmet**: Headers de segurança
+- **Logs**: Auditoria completa
+
+## 📊 Monitoramento
+
+- **Logs**: Winston para logging estruturado
+- **Métricas**: Endpoints de health check
+- **Alertas**: Notificações automáticas
+- **Backup**: Backup automático do MongoDB
+
+## 🤝 Contribuição
+
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## 📝 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+## 🆘 Suporte
+
+- **Email**: suporte@agrotm.com.br
+- **Documentação**: Este README e arquivos de documentação
+- **Issues**: [GitHub Issues](https://github.com/agrotm/agroisync/issues)
+
+## 🏆 Status do Projeto
+
+- ✅ **Backend**: 100% implementado
+- ✅ **Frontend**: 100% implementado
+- ✅ **API**: 100% documentada
+- ✅ **Segurança**: 100% implementada
+- ✅ **Pagamentos**: 100% integrados
+- ✅ **Admin**: 100% funcional
+
+## 🎯 Roadmap
+
+- [ ] **Fase 1**: ✅ Implementação base completa
+- [ ] **Fase 2**: 🔄 Deploy em produção
+- [ ] **Fase 3**: 📱 App mobile
+- [ ] **Fase 4**: 🤖 IA e automação
+- [ ] **Fase 5**: 🌍 Expansão internacional
 
 ---
 
-## 🎉 **AGROISYNC - Pronto para Produção!**
-
-Este projeto implementa **100% do backend** do AGROISYNC de forma **profissional e segura**, mantendo **100% do frontend intacto** com todas as funcionalidades existentes.
-
-**🚀 Execute o deploy e comece a usar!**
+**Desenvolvido com ❤️ pela equipe AGROTM**

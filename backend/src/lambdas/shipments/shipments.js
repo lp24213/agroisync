@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const mongoClient = new MongoClient(process.env.MONGODB_URI);
 
 // Função auxiliar para verificar autorização
-const verifyAuth = (event) => {
+const verifyAuth = event => {
   const authHeader = event.headers.Authorization || event.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return { error: 'UNAUTHORIZED', message: 'Token de autorização não fornecido' };
@@ -12,7 +12,7 @@ const verifyAuth = (event) => {
 
   const token = authHeader.substring(7);
   let decodedToken;
-  
+
   try {
     decodedToken = jwt.decode(token);
     if (!decodedToken) {
@@ -44,7 +44,10 @@ const checkFreightLimits = async (db, cognitoSub, operation) => {
   if (operation === 'create') {
     // Verificar se pode criar mais fretes
     if (plan.status !== 'active') {
-      return { error: 'PLAN_INACTIVE', message: 'Plano inativo. Ative um plano para criar fretes.' };
+      return {
+        error: 'PLAN_INACTIVE',
+        message: 'Plano inativo. Ative um plano para criar fretes.'
+      };
     }
 
     if (plan.type === 'fretes_avancado') {
@@ -53,13 +56,16 @@ const checkFreightLimits = async (db, cognitoSub, operation) => {
       currentMonth.setDate(1);
       currentMonth.setHours(0, 0, 0, 0);
 
-      const currentFreights = await db.collection('shipments').countDocuments({ 
-        ownerId: cognitoSub, 
+      const currentFreights = await db.collection('shipments').countDocuments({
+        ownerId: cognitoSub,
         createdAt: { $gte: currentMonth }
       });
-      
+
       if (currentFreights >= 30) {
-        return { error: 'LIMIT_EXCEEDED', message: 'Limite de 30 fretes/mês atingido para o plano Fretes Avançado.' };
+        return {
+          error: 'LIMIT_EXCEEDED',
+          message: 'Limite de 30 fretes/mês atingido para o plano Fretes Avançado.'
+        };
       }
     }
     // Planos básicos: ilimitado
@@ -68,14 +74,14 @@ const checkFreightLimits = async (db, cognitoSub, operation) => {
   return { user, plan };
 };
 
-exports.handler = async (event) => {
+exports.handler = async event => {
   try {
     // Configurar CORS
     const corsHeaders = {
       'Access-Control-Allow-Origin': process.env.AMPLIFY_DOMAIN || '*',
       'Access-Control-Allow-Headers': 'Content-Type,Authorization',
       'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
-      'Access-Control-Allow-Credentials': true,
+      'Access-Control-Allow-Credentials': true
     };
 
     // Handle preflight OPTIONS request
@@ -83,7 +89,7 @@ exports.handler = async (event) => {
       return {
         statusCode: 200,
         headers: corsHeaders,
-        body: JSON.stringify({ message: 'OK' }),
+        body: JSON.stringify({ message: 'OK' })
       };
     }
 
@@ -98,9 +104,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 401,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: auth.error, message: auth.message } 
-          }),
+          body: JSON.stringify({
+            error: { code: auth.error, message: auth.message }
+          })
         };
       }
 
@@ -113,9 +119,9 @@ exports.handler = async (event) => {
           return {
             statusCode: 400,
             headers: corsHeaders,
-            body: JSON.stringify({ 
-              error: { code: 'INVALID_ID', message: 'ID inválido' } 
-            }),
+            body: JSON.stringify({
+              error: { code: 'INVALID_ID', message: 'ID inválido' }
+            })
           };
         }
 
@@ -124,9 +130,9 @@ exports.handler = async (event) => {
           return {
             statusCode: 404,
             headers: corsHeaders,
-            body: JSON.stringify({ 
-              error: { code: 'SHIPMENT_NOT_FOUND', message: 'Frete não encontrado' } 
-            }),
+            body: JSON.stringify({
+              error: { code: 'SHIPMENT_NOT_FOUND', message: 'Frete não encontrado' }
+            })
           };
         }
 
@@ -141,20 +147,21 @@ exports.handler = async (event) => {
           return {
             statusCode: 200,
             headers: corsHeaders,
-            body: JSON.stringify({ shipment: publicShipment }),
+            body: JSON.stringify({ shipment: publicShipment })
           };
         }
 
         return {
           statusCode: 200,
           headers: corsHeaders,
-          body: JSON.stringify({ shipment }),
+          body: JSON.stringify({ shipment })
         };
       }
 
       // Buscar fretes do usuário
       const filter = owner === 'me' ? { ownerId: auth.cognitoSub } : {};
-      const shipments = await db.collection('shipments')
+      const shipments = await db
+        .collection('shipments')
         .find(filter)
         .sort({ createdAt: -1 })
         .toArray();
@@ -162,7 +169,7 @@ exports.handler = async (event) => {
       return {
         statusCode: 200,
         headers: corsHeaders,
-        body: JSON.stringify({ shipments }),
+        body: JSON.stringify({ shipments })
       };
     }
 
@@ -173,9 +180,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 401,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: auth.error, message: auth.message } 
-          }),
+          body: JSON.stringify({
+            error: { code: auth.error, message: auth.message }
+          })
         };
       }
 
@@ -185,9 +192,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 403,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: planCheck.error, message: planCheck.message } 
-          }),
+          body: JSON.stringify({
+            error: { code: planCheck.error, message: planCheck.message }
+          })
         };
       }
 
@@ -199,22 +206,30 @@ exports.handler = async (event) => {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'INVALID_JSON', message: 'JSON inválido' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'INVALID_JSON', message: 'JSON inválido' }
+          })
         };
       }
 
       // Validar dados obrigatórios
       const { public: publicData, private: privateData } = requestBody;
-      
-      if (!publicData || !publicData.routeFrom || !publicData.routeTo || !publicData.estimatedDays) {
+
+      if (
+        !publicData ||
+        !publicData.routeFrom ||
+        !publicData.routeTo ||
+        !publicData.estimatedDays
+      ) {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'MISSING_FIELDS', message: 'Dados públicos obrigatórios: rota de origem, destino e dias estimados' } 
-          }),
+          body: JSON.stringify({
+            error: {
+              code: 'MISSING_FIELDS',
+              message: 'Dados públicos obrigatórios: rota de origem, destino e dias estimados'
+            }
+          })
         };
       }
 
@@ -222,9 +237,12 @@ exports.handler = async (event) => {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'MISSING_FIELDS', message: 'Dados privados obrigatórios: preço do frete e peso' } 
-          }),
+          body: JSON.stringify({
+            error: {
+              code: 'MISSING_FIELDS',
+              message: 'Dados privados obrigatórios: preço do frete e peso'
+            }
+          })
         };
       }
 
@@ -260,7 +278,7 @@ exports.handler = async (event) => {
             id: result.insertedId,
             ...newShipment
           }
-        }),
+        })
       };
     }
 
@@ -271,9 +289,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 401,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: auth.error, message: auth.message } 
-          }),
+          body: JSON.stringify({
+            error: { code: auth.error, message: auth.message }
+          })
         };
       }
 
@@ -285,25 +303,25 @@ exports.handler = async (event) => {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'INVALID_ID', message: 'ID inválido' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'INVALID_ID', message: 'ID inválido' }
+          })
         };
       }
 
       // Verificar se o frete existe e pertence ao usuário
-      const existingShipment = await db.collection('shipments').findOne({ 
-        _id: new ObjectId(id), 
-        ownerId: auth.cognitoSub 
+      const existingShipment = await db.collection('shipments').findOne({
+        _id: new ObjectId(id),
+        ownerId: auth.cognitoSub
       });
 
       if (!existingShipment) {
         return {
           statusCode: 404,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'SHIPMENT_NOT_FOUND', message: 'Frete não encontrado' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'SHIPMENT_NOT_FOUND', message: 'Frete não encontrado' }
+          })
         };
       }
 
@@ -315,9 +333,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'INVALID_JSON', message: 'JSON inválido' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'INVALID_JSON', message: 'JSON inválido' }
+          })
         };
       }
 
@@ -327,31 +345,41 @@ exports.handler = async (event) => {
       };
 
       if (requestBody.public) {
-        if (requestBody.public.routeFrom) updateData['public.routeFrom'] = requestBody.public.routeFrom.trim();
-        if (requestBody.public.routeTo) updateData['public.routeTo'] = requestBody.public.routeTo.trim();
-        if (requestBody.public.estimatedDays) updateData['public.estimatedDays'] = parseInt(requestBody.public.estimatedDays);
+        if (requestBody.public.routeFrom)
+          updateData['public.routeFrom'] = requestBody.public.routeFrom.trim();
+        if (requestBody.public.routeTo)
+          updateData['public.routeTo'] = requestBody.public.routeTo.trim();
+        if (requestBody.public.estimatedDays)
+          updateData['public.estimatedDays'] = parseInt(requestBody.public.estimatedDays);
       }
 
       if (requestBody.private) {
-        if (requestBody.private.freightPrice) updateData['private.freightPrice'] = parseFloat(requestBody.private.freightPrice);
-        if (requestBody.private.weightKg) updateData['private.weightKg'] = parseFloat(requestBody.private.weightKg);
-        if (requestBody.private.nfNumber !== undefined) updateData['private.nfNumber'] = requestBody.private.nfNumber ? requestBody.private.nfNumber.trim() : '';
-        if (requestBody.private.notes !== undefined) updateData['private.notes'] = requestBody.private.notes ? requestBody.private.notes.trim() : '';
+        if (requestBody.private.freightPrice)
+          updateData['private.freightPrice'] = parseFloat(requestBody.private.freightPrice);
+        if (requestBody.private.weightKg)
+          updateData['private.weightKg'] = parseFloat(requestBody.private.weightKg);
+        if (requestBody.private.nfNumber !== undefined)
+          updateData['private.nfNumber'] = requestBody.private.nfNumber
+            ? requestBody.private.nfNumber.trim()
+            : '';
+        if (requestBody.private.notes !== undefined)
+          updateData['private.notes'] = requestBody.private.notes
+            ? requestBody.private.notes.trim()
+            : '';
       }
 
       // Atualizar frete
-      const result = await db.collection('shipments').updateOne(
-        { _id: new ObjectId(id) },
-        { $set: updateData }
-      );
+      const result = await db
+        .collection('shipments')
+        .updateOne({ _id: new ObjectId(id) }, { $set: updateData });
 
       if (result.matchedCount === 0) {
         return {
           statusCode: 404,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'SHIPMENT_NOT_FOUND', message: 'Frete não encontrado' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'SHIPMENT_NOT_FOUND', message: 'Frete não encontrado' }
+          })
         };
       }
 
@@ -360,7 +388,7 @@ exports.handler = async (event) => {
         headers: corsHeaders,
         body: JSON.stringify({
           message: 'Frete atualizado com sucesso'
-        }),
+        })
       };
     }
 
@@ -371,9 +399,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 401,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: auth.error, message: auth.message } 
-          }),
+          body: JSON.stringify({
+            error: { code: auth.error, message: auth.message }
+          })
         };
       }
 
@@ -385,40 +413,40 @@ exports.handler = async (event) => {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'INVALID_ID', message: 'ID inválido' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'INVALID_ID', message: 'ID inválido' }
+          })
         };
       }
 
       // Verificar se o frete existe e pertence ao usuário
-      const existingShipment = await db.collection('shipments').findOne({ 
-        _id: new ObjectId(id), 
-        ownerId: auth.cognitoSub 
+      const existingShipment = await db.collection('shipments').findOne({
+        _id: new ObjectId(id),
+        ownerId: auth.cognitoSub
       });
 
       if (!existingShipment) {
         return {
           statusCode: 404,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'SHIPMENT_NOT_FOUND', message: 'Frete não encontrado' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'SHIPMENT_NOT_FOUND', message: 'Frete não encontrado' }
+          })
         };
       }
 
       // Deletar frete
-      const result = await db.collection('shipments').deleteOne({ 
-        _id: new ObjectId(id) 
+      const result = await db.collection('shipments').deleteOne({
+        _id: new ObjectId(id)
       });
 
       if (result.deletedCount === 0) {
         return {
           statusCode: 404,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'SHIPMENT_NOT_FOUND', message: 'Frete não encontrado' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'SHIPMENT_NOT_FOUND', message: 'Frete não encontrado' }
+          })
         };
       }
 
@@ -427,7 +455,7 @@ exports.handler = async (event) => {
         headers: corsHeaders,
         body: JSON.stringify({
           message: 'Frete deletado com sucesso'
-        }),
+        })
       };
     }
 
@@ -435,25 +463,24 @@ exports.handler = async (event) => {
     return {
       statusCode: 405,
       headers: corsHeaders,
-      body: JSON.stringify({ 
-        error: { code: 'METHOD_NOT_ALLOWED', message: 'Método não permitido' } 
-      }),
+      body: JSON.stringify({
+        error: { code: 'METHOD_NOT_ALLOWED', message: 'Método não permitido' }
+      })
     };
-
   } catch (error) {
     console.error('Erro no gerenciamento de fretes:', error);
-    
+
     return {
       statusCode: 500,
       headers: {
         'Access-Control-Allow-Origin': process.env.AMPLIFY_DOMAIN || '*',
         'Access-Control-Allow-Headers': 'Content-Type,Authorization',
         'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
-        'Access-Control-Allow-Credentials': true,
+        'Access-Control-Allow-Credentials': true
       },
-      body: JSON.stringify({ 
-        error: { code: 'INTERNAL_ERROR', message: 'Erro interno do servidor' } 
-      }),
+      body: JSON.stringify({
+        error: { code: 'INTERNAL_ERROR', message: 'Erro interno do servidor' }
+      })
     };
   } finally {
     if (mongoClient) {

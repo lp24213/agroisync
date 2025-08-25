@@ -1,37 +1,33 @@
-# Dependencies
+# ===== AGROTM - ARQUIVOS IGNORADOS =====
+
+# Dependências
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
+package-lock.json
+yarn.lock
 
-# Build outputs
-.next/
-out/
-dist/
-build/
-
-# Environment variables
+# Arquivos de ambiente
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# Cache
-.npm
-.eslintcache
-*.tsbuildinfo
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
 
 # Runtime data
-pids
+pids/
 *.pid
 *.seed
 *.pid.lock
-
-# Logs
-logs
-*.log
 
 # Coverage directory used by tools like istanbul
 coverage/
@@ -39,6 +35,18 @@ coverage/
 
 # nyc test coverage
 .nyc_output
+
+# Grunt intermediate storage
+.grunt
+
+# Bower dependency directory
+bower_components
+
+# node-waf configuration
+.lock-wscript
+
+# Compiled binary addons
+build/Release
 
 # Dependency directories
 jspm_packages/
@@ -52,6 +60,12 @@ jspm_packages/
 # Optional eslint cache
 .eslintcache
 
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
 # Optional REPL history
 .node_repl_history
 
@@ -61,7 +75,10 @@ jspm_packages/
 # Yarn Integrity file
 .yarn-integrity
 
-# parcel-bundler cache (https://parceljs.org/)
+# dotenv environment variables file
+.env.test
+
+# parcel-bundler cache
 .cache
 .parcel-cache
 
@@ -73,6 +90,10 @@ out
 .nuxt
 dist
 
+# Gatsby files
+.cache/
+public
+
 # Storybook build outputs
 .out
 .storybook-out
@@ -82,9 +103,8 @@ tmp/
 temp/
 
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+.vscode/
+.idea/
 *.swp
 *.swo
 *~
@@ -98,29 +118,126 @@ temp/
 ehthumbs.db
 Thumbs.db
 
+# Build outputs
+build/
+dist/
+out/
+
+# Uploads
+uploads/
+public/uploads/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# SSL certificates
+*.pem
+*.key
+*.crt
+*.csr
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
 # AWS
 .aws/
+amplify/
+amplify-app.json
+amplify-environment-variables.json
 
-# Local Netlify folder
-.netlify
+# Testing
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+test-results.xml
 
-# Amplify
-amplify/backend/awscloudformation/
-amplify/.config/
-amplify/mock-data/
-amplify/mock-api-resources/
+# Security
+.secrets
+.secrets.*
 
-# ZIP files
-*.zip
+# Backup files
+*.bak
+*.backup
+*.old
 
-# Temporary files
-h origin main
-how HEADamplify.yml
-tatus
-tatus --porcelain
-s... && git add . && git commit*
+# Cache
+.cache/
+.parcel-cache/
+.eslintcache
 
-# Build artifacts
-function.zip
-AGROTM-AWS-DEPLOY-COMPLETO.zip
-*.tmp
+# Local development
+.local/
+local/
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+
+# parcel-bundler cache
+.cache
+.parcel-cache
+
+# next.js build output
+.next
+
+# nuxt.js build output
+.nuxt
+
+# vuepress build output
+.vuepress/dist
+
+# Serverless directories
+.serverless/
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port

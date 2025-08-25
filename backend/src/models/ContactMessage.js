@@ -74,13 +74,13 @@ const contactMessageSchema = new mongoose.Schema({
 });
 
 // Atualizar timestamp antes de salvar
-contactMessageSchema.pre('save', function(next) {
+contactMessageSchema.pre('save', function (next) {
   this.updatedAt = new Date();
   next();
 });
 
 // Método para marcar como lido
-contactMessageSchema.methods.markAsRead = function() {
+contactMessageSchema.methods.markAsRead = function () {
   this.isRead = true;
   this.readAt = new Date();
   this.status = 'read';
@@ -88,14 +88,14 @@ contactMessageSchema.methods.markAsRead = function() {
 };
 
 // Método para marcar como respondido
-contactMessageSchema.methods.markAsReplied = function() {
+contactMessageSchema.methods.markAsReplied = function () {
   this.status = 'replied';
   this.repliedAt = new Date();
   return this.save();
 };
 
 // Método para fechar ticket
-contactMessageSchema.methods.close = function() {
+contactMessageSchema.methods.close = function () {
   this.status = 'closed';
   return this.save();
 };

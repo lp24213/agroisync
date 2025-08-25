@@ -1,28 +1,39 @@
-module.exports = {
-  preset: 'ts-jest',
+export default {
+  // Test environment
   testEnvironment: 'node',
-  roots: ['<rootDir>/src', '<rootDir>/tests'],
+  
+  // File extensions to test
   testMatch: [
-    '**/__tests__/**/*.ts',
-    '**/?(*.)+(spec|test).ts'
+    '**/__tests__/**/*.js',
+    '**/?(*.)+(spec|test).js'
   ],
-  transform: {
-    '^.+\\.ts$': 'ts-jest',
-  },
+  
+  // Directories to ignore
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/dist/',
+    '/build/',
+    '/coverage/',
+    '/uploads/',
+    '/logs/',
+    '/temp/'
+  ],
+  
+  // Coverage configuration
+  collectCoverage: true,
   collectCoverageFrom: [
-    'src/**/*.ts',
-    '!src/**/*.d.ts',
-    '!src/**/*.test.ts',
-    '!src/**/*.spec.ts',
-    '!src/types/**/*',
-    '!src/**/index.ts'
+    'src/**/*.js',
+    '!src/**/*.test.js',
+    '!src/**/*.spec.js',
+    '!src/server.js',
+    '!src/config/**',
+    '!src/scripts/**'
   ],
   coverageDirectory: 'coverage',
   coverageReporters: [
     'text',
     'lcov',
-    'html',
-    'json'
+    'html'
   ],
   coverageThreshold: {
     global: {
@@ -32,74 +43,37 @@ module.exports = {
       statements: 70
     }
   },
-  setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
+  
+  // Setup files
+  setupFilesAfterEnv: ['<rootDir>/src/tests/setup.js'],
+  
+  // Test timeout
   testTimeout: 30000,
+  
+  // Verbose output
   verbose: true,
+  
+  // Clear mocks between tests
   clearMocks: true,
+  
+  // Restore mocks between tests
   restoreMocks: true,
+  
+  // Module name mapping
   moduleNameMapping: {
-    '^@/(.*)$': '<rootDir>/src/$1',
-    '^@/config/(.*)$': '<rootDir>/src/config/$1',
-    '^@/middleware/(.*)$': '<rootDir>/src/middleware/$1',
-    '^@/routes/(.*)$': '<rootDir>/src/routes/$1',
-    '^@/services/(.*)$': '<rootDir>/src/services/$1',
-    '^@/utils/(.*)$': '<rootDir>/src/utils/$1',
-    '^@/types/(.*)$': '<rootDir>/src/types/$1'
+    '^@/(.*)$': '<rootDir>/src/$1'
   },
+  
+  // Transform configuration
+  transform: {},
+  
+  // Extensions to treat as ES modules
+  extensionsToTreatAsEsm: ['.js'],
+  
+  // Global variables
   globals: {
     'ts-jest': {
-      tsconfig: 'tsconfig.json',
-      diagnostics: {
-        ignoreCodes: [151001]
-      }
+      useESM: true
     }
-  },
-  testPathIgnorePatterns: [
-    '/node_modules/',
-    '/dist/',
-    '/coverage/',
-    '/logs/',
-    '/uploads/',
-    '/temp/'
-  ],
-  moduleFileExtensions: [
-    'ts',
-    'js',
-    'json'
-  ],
-  collectCoverage: true,
-  coverageProvider: 'v8',
-  reporters: [
-    'default',
-    [
-      'jest-junit',
-      {
-        outputDirectory: 'coverage',
-        outputName: 'junit.xml',
-        classNameTemplate: '{classname}',
-        titleTemplate: '{title}',
-        ancestorSeparator: ' › ',
-        usePathForSuiteName: true
-      }
-    ]
-  ],
-  projects: [
-    {
-      displayName: 'unit',
-      testMatch: ['<rootDir>/src/**/*.test.ts'],
-      testEnvironment: 'node'
-    },
-    {
-      displayName: 'integration',
-      testMatch: ['<rootDir>/tests/integration/**/*.test.ts'],
-      testEnvironment: 'node',
-      setupFilesAfterEnv: ['<rootDir>/tests/integration/setup.ts']
-    },
-    {
-      displayName: 'e2e',
-      testMatch: ['<rootDir>/tests/e2e/**/*.test.ts'],
-      testEnvironment: 'node',
-      setupFilesAfterEnv: ['<rootDir>/tests/e2e/setup.ts']
-    }
-  ]
+  }
 };

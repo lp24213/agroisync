@@ -1,4 +1,7 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://api.agrotm.com';
+import { config } from '../config/config.js';
+
+// Configuração da API
+const API_BASE_URL = config.api.baseURL;
 
 class ApiService {
   constructor() {
@@ -31,7 +34,7 @@ class ApiService {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error?.message || `HTTP error! status: ${response.status}`);
+        throw new Error(errorData.message || errorData.error?.message || `HTTP error! status: ${response.status}`);
       }
 
       return await response.json();
@@ -41,29 +44,64 @@ class ApiService {
     }
   }
 
-  // Auth - Bootstrap de usuário
-  async bootstrapUser(token) {
-    return this.request('/users/bootstrap', {
+  // ===== AUTENTICAÇÃO =====
+  
+  // Login
+  async login(credentials) {
+    return this.request('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+    });
+  }
+
+  // Registro
+  async register(userData) {
+    return this.request('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(userData),
+    });
+  }
+
+  // Logout
+  async logout(token) {
+    return this.request('/auth/logout', {
       method: 'POST',
       token,
     });
   }
 
-  // Auth - Atualizar perfil
+  // Obter usuário atual
+  async getCurrentUser(token) {
+    return this.request('/auth/me', { token });
+  }
+
+  // Alterar senha
+  async changePassword(token, passwordData) {
+    return this.request('/auth/change-password', {
+      method: 'POST',
+      body: JSON.stringify(passwordData),
+      token,
+    });
+  }
+
+  // ===== USUÁRIOS =====
+  
+  // Atualizar perfil
   async updateProfile(token, profileData) {
-    return this.request('/users/me', {
+    return this.request('/users/profile', {
       method: 'PUT',
       body: JSON.stringify(profileData),
       token,
     });
   }
 
-  // Produtos - Lista pública
-  async getPublicProducts(params = {}) {
-    const queryString = new URLSearchParams(params).toString();
-    return this.request(`/products/public?${queryString}`);
+  // Obter assinaturas
+  async getUserSubscriptions(token) {
+    return this.request('/users/subscriptions', { token });
   }
 
+  // ===== PRODUTOS =====
+  
   // Produtos - CRUD
   async getProducts(token, params = {}) {
     const queryString = new URLSearchParams(params).toString();
@@ -71,7 +109,7 @@ class ApiService {
   }
 
   async getProduct(token, productId) {
-    return this.request(`/products?id=${productId}`, { token });
+    return this.request(`/products/${productId}`, { token });
   }
 
   async createProduct(token, productData) {
@@ -97,146 +135,337 @@ class ApiService {
     });
   }
 
+  // ===== FRETES =====
+  
   // Fretes - CRUD
-  async getShipments(token, params = {}) {
+  async getFreights(token, params = {}) {
     const queryString = new URLSearchParams(params).toString();
-    return this.request(`/shipments?${queryString}`, { token });
+    return this.request(`/freights?${queryString}`, { token });
   }
 
-  async getShipment(token, shipmentId) {
-    return this.request(`/shipments?id=${shipmentId}`, { token });
+  async getFreight(token, freightId) {
+    return this.request(`/freights/${freightId}`, { token });
   }
 
-  async createShipment(token, shipmentData) {
-    return this.request('/shipments', {
+  async createFreight(token, freightData) {
+    return this.request('/freights', {
       method: 'POST',
-      body: JSON.stringify(shipmentData),
+      body: JSON.stringify(freightData),
       token,
     });
   }
 
-  async updateShipment(token, shipmentId, shipmentData) {
-    return this.request(`/shipments/${shipmentId}`, {
+  async updateFreight(token, freightId, freightData) {
+    return this.request(`/freights/${freightId}`, {
       method: 'PUT',
-      body: JSON.stringify(shipmentData),
+      body: JSON.stringify(freightData),
       token,
     });
   }
 
-  async deleteShipment(token, shipmentId) {
-    return this.request(`/shipments/${shipmentId}`, {
+  async deleteFreight(token, freightId) {
+    return this.request(`/freights/${freightId}`, {
       method: 'DELETE',
       token,
     });
   }
 
-  // Planos e Pagamentos
-  async getPlans() {
-    return this.request('/plans');
+  // ===== MENSAGENS PRIVADAS =====
+  
+  async getConversations(token, params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return this.request(`/messages?${queryString}`, { token });
   }
 
-  async createStripeCheckout(token, planType) {
-    return this.request('/payments/stripe/checkout', {
+  async getConversation(token, userId) {
+    return this.request(`/messages/conversation/${userId}`, { token });
+  }
+
+  async sendMessage(token, messageData) {
+    return this.request('/messages', {
       method: 'POST',
-      body: JSON.stringify({ planType }),
+      body: JSON.stringify(messageData),
       token,
     });
   }
 
-  async submitCryptoPayment(token, txHash, planType) {
-    return this.request('/payments/crypto/submit', {
-      method: 'POST',
-      body: JSON.stringify({ txHash, planType }),
+  async getMessage(token, messageId) {
+    return this.request(`/messages/${messageId}`, { token });
+  }
+
+  async updateMessage(token, messageId, messageData) {
+    return this.request(`/messages/${messageId}`, {
+      method: 'PUT',
+      body: JSON.stringify(messageData),
       token,
     });
   }
 
-  // Mensageria - Parcerias
-  async submitPartnership(partnershipData) {
-    return this.request('/partners/submit', {
-      method: 'POST',
-      body: JSON.stringify(partnershipData),
+  async deleteMessage(token, messageId) {
+    return this.request(`/messages/${messageId}`, {
+      method: 'DELETE',
+      token,
     });
   }
 
-  // Mensageria - Contato
+  async getUnreadCount(token) {
+    return this.request('/messages/unread/count', { token });
+  }
+
+  async searchMessages(token, searchTerm, params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return this.request(`/messages/search/${searchTerm}?${queryString}`, { token });
+  }
+
+  // ===== MENSAGENS DE CONTATO =====
+  
   async submitContact(contactData) {
-    return this.request('/contact/submit', {
+    return this.request('/contact', {
       method: 'POST',
       body: JSON.stringify(contactData),
     });
   }
 
-  // Admin - Dashboard
-  async getAdminDashboard(token) {
-    return this.request('/admin/dashboard', { token });
+  async submitPartnership(partnershipData) {
+    return this.request('/contact/partnership', {
+      method: 'POST',
+      body: JSON.stringify(partnershipData),
+    });
   }
 
-  // Admin - Usuários
-  async getAdminUsers(token, params = {}) {
+  // ===== PARCEIROS =====
+  
+  async getPartners(token, params = {}) {
     const queryString = new URLSearchParams(params).toString();
-    return this.request(`/admin/users?${queryString}`, { token });
+    return this.request(`/partners?${queryString}`, { token });
   }
 
-  async updateUserPlan(token, userId, planData) {
-    return this.request(`/admin/users/${userId}/plan`, {
-      method: 'PUT',
-      body: JSON.stringify(planData),
+  async getPartner(token, partnerId) {
+    return this.request(`/partners/${partnerId}`, { token });
+  }
+
+  async createPartner(token, partnerData) {
+    return this.request('/partners', {
+      method: 'POST',
+      body: JSON.stringify(partnerData),
       token,
     });
   }
 
-  // Admin - Pagamentos
-  async getAdminPayments(token, params = {}) {
-    const queryString = new URLSearchParams(params).toString();
-    return this.request(`/admin/payments?${queryString}`, { token });
+  async updatePartner(token, partnerId, partnerData) {
+    return this.request(`/partners/${partnerId}`, {
+      method: 'PUT',
+      body: JSON.stringify(partnerData),
+      token,
+    });
   }
 
-  // Admin - Produtos
-  async getAdminProducts(token, params = {}) {
-    const queryString = new URLSearchParams(params).toString();
-    return this.request(`/admin/products?${queryString}`, { token });
-  }
-
-  async deleteAdminProduct(token, productId) {
-    return this.request(`/admin/products/${productId}`, {
+  async deletePartner(token, partnerId) {
+    return this.request(`/partners/${partnerId}`, {
       method: 'DELETE',
       token,
     });
   }
 
-  // Admin - Fretes
-  async getAdminShipments(token, params = {}) {
+  // ===== MENSAGENS DE PARCEIROS =====
+  
+  async getPartnershipMessages(token, params = {}) {
     const queryString = new URLSearchParams(params).toString();
-    return this.request(`/admin/shipments?${queryString}`, { token });
+    return this.request(`/partnership-messages?${queryString}`, { token });
   }
 
-  // Admin - Parcerias
-  async getAdminPartners(token, params = {}) {
-    const queryString = new URLSearchParams(params).toString();
-    return this.request(`/admin/partners?${queryString}`, { token });
+  async getPartnershipMessage(token, messageId) {
+    return this.request(`/partnership-messages/${messageId}`, { token });
   }
 
-  async updatePartnerStatus(token, partnerId, status) {
-    return this.request(`/admin/partners/${partnerId}`, {
-      method: 'PUT',
-      body: JSON.stringify({ status }),
+  async createPartnershipMessage(token, messageData) {
+    return this.request('/partnership-messages', {
+      method: 'POST',
+      body: JSON.stringify(messageData),
       token,
     });
   }
 
-  // Admin - Contatos
-  async getAdminContacts(token, params = {}) {
-    const queryString = new URLSearchParams(params).toString();
-    return this.request(`/admin/contacts?${queryString}`, { token });
-  }
-
-  async updateContactStatus(token, contactId, status) {
-    return this.request(`/admin/contacts/${contactId}`, {
+  async updatePartnershipMessage(token, messageId, messageData) {
+    return this.request(`/partnership-messages/${messageId}`, {
       method: 'PUT',
-      body: JSON.stringify({ status }),
+      body: JSON.stringify(messageData),
       token,
     });
+  }
+
+  async updatePartnershipMessageStatus(token, messageId, statusData) {
+    return this.request(`/partnership-messages/${messageId}/status`, {
+      method: 'PUT',
+      body: JSON.stringify(statusData),
+      token,
+    });
+  }
+
+  async deletePartnershipMessage(token, messageId) {
+    return this.request(`/partnership-messages/${messageId}`, {
+      method: 'DELETE',
+      token,
+    });
+  }
+
+  async getPartnershipMessageStats(token) {
+    return this.request('/partnership-messages/stats/overview', { token });
+  }
+
+  async searchPartnershipMessages(token, searchTerm, params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return this.request(`/partnership-messages/search/${searchTerm}?${queryString}`, { token });
+  }
+
+  // ===== PAGAMENTOS =====
+  
+  // Planos disponíveis
+  async getPlans(token) {
+    return this.request('/payments/plans', { token });
+  }
+
+  // Histórico de pagamentos
+  async getPaymentHistory(token, params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return this.request(`/payments/history?${queryString}`, { token });
+  }
+
+  // Obter pagamento específico
+  async getPayment(token, paymentId) {
+    return this.request(`/payments/${paymentId}`, { token });
+  }
+
+  // ===== STRIPE =====
+  
+  async createStripePaymentIntent(token, paymentData) {
+    return this.request('/payments/stripe/create-payment-intent', {
+      method: 'POST',
+      body: JSON.stringify(paymentData),
+      token,
+    });
+  }
+
+  async confirmStripePayment(token, paymentData) {
+    return this.request('/payments/stripe/confirm', {
+      method: 'POST',
+      body: JSON.stringify(paymentData),
+      token,
+    });
+  }
+
+  async createStripeCheckoutSession(token, checkoutData) {
+    return this.request('/payments/stripe/create-checkout-session', {
+      method: 'POST',
+      body: JSON.stringify(checkoutData),
+      token,
+    });
+  }
+
+  async getStripeSubscription(token, subscriptionId) {
+    return this.request(`/payments/stripe/subscriptions/${subscriptionId}`, { token });
+  }
+
+  async cancelStripeSubscription(token, subscriptionId) {
+    return this.request(`/payments/stripe/subscriptions/${subscriptionId}/cancel`, {
+      method: 'POST',
+      token,
+    });
+  }
+
+  // ===== METAMASK =====
+  
+  async createMetamaskInvoice(token, invoiceData) {
+    return this.request('/payments/metamask/create-invoice', {
+      method: 'POST',
+      body: JSON.stringify(invoiceData),
+      token,
+    });
+  }
+
+  async verifyMetamaskPayment(token, verificationData) {
+    return this.request('/payments/metamask/verify', {
+      method: 'POST',
+      body: JSON.stringify(verificationData),
+      token,
+    });
+  }
+
+  async getMetamaskBalance(token, address) {
+    return this.request(`/payments/metamask/balance/${address}`, { token });
+  }
+
+  async getMetamaskTransactions(token, address, params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return this.request(`/payments/metamask/transactions/${address}?${queryString}`, { token });
+  }
+
+  // ===== ADMIN =====
+  
+  // Dashboard
+  async getAdminDashboard(token) {
+    return this.request('/admin/dashboard', { token });
+  }
+
+  // Usuários
+  async getAdminUsers(token, params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return this.request(`/admin/users?${queryString}`, { token });
+  }
+
+  async getAdminUser(token, userId) {
+    return this.request(`/admin/users/${userId}`, { token });
+  }
+
+  async updateAdminUser(token, userId, userData) {
+    return this.request(`/admin/users/${userId}`, {
+      method: 'PUT',
+      body: JSON.stringify(userData),
+      token,
+    });
+  }
+
+  async blockAdminUser(token, userId, blockData) {
+    return this.request(`/admin/users/${userId}/block`, {
+      method: 'PUT',
+      body: JSON.stringify(blockData),
+      token,
+    });
+  }
+
+  async deleteAdminUser(token, userId) {
+    return this.request(`/admin/users/${userId}`, {
+      method: 'DELETE',
+      token,
+    });
+  }
+
+  // Mensagens
+  async getAdminContactMessages(token, params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return this.request(`/admin/messages/contact?${queryString}`, { token });
+  }
+
+  async getAdminPartnershipMessages(token, params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return this.request(`/admin/messages/partnerships?${queryString}`, { token });
+  }
+
+  async getAdminPrivateMessages(token, params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return this.request(`/admin/messages/private?${queryString}`, { token });
+  }
+
+  // Pagamentos
+  async getAdminPayments(token, params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return this.request(`/admin/payments?${queryString}`, { token });
+  }
+
+  // Analytics
+  async getAdminAnalytics(token, params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return this.request(`/admin/analytics?${queryString}`, { token });
   }
 }
 

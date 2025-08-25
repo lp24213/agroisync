@@ -1,32 +1,93 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose from 'mongoose';
 
-export interface IStakingPool extends Document {
-  name: string;
-  description?: string;
-  apy: number;
-  minStake: number;
-  maxStake: number;
-  totalStaked: number;
-  isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-const StakingPoolSchema = new Schema<IStakingPool>(
-  {
-    name: { type: String, required: true, unique: true },
-    description: { type: String },
-    apy: { type: Number, required: true },
-    minStake: { type: Number, required: true, default: 0 },
-    maxStake: { type: Number, required: true, default: 1000000 },
-    totalStaked: { type: Number, default: 0 },
-    isActive: { type: Boolean, default: true },
+// Staking Pool schema for cryptocurrency staking
+const stakingPoolSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true
   },
-  { timestamps: true },
-);
+  description: {
+    type: String,
+    trim: true
+  },
+  apy: {
+    type: Number,
+    required: true,
+    min: 0,
+    max: 100
+  },
+  minStake: {
+    type: Number,
+    required: true,
+    min: 0,
+    default: 0
+  },
+  maxStake: {
+    type: Number,
+    required: true,
+    min: 0,
+    default: 1000000
+  },
+  totalStaked: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  },
+  token: {
+    type: String,
+    required: true,
+    enum: ['ETH', 'BTC', 'SOL', 'USDT', 'USDC'],
+    default: 'ETH'
+  },
+  lockPeriod: {
+    type: Number,
+    required: true,
+    min: 0,
+    default: 0 // 0 = no lock period
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
+});
 
-StakingPoolSchema.statics.findActive = function () {
-  return this.find({ isActive: true });
+// Índices para melhor performance
+stakingPoolSchema.index({ name: 1 });
+stakingPoolSchema.index({ isActive: 1 });
+stakingPoolSchema.index({ token: 1 });
+stakingPoolSchema.index({ apy: -1 });
+
+// Middleware para atualizar timestamp
+stakingPoolSchema.pre('save', function (next) {
+  this.updatedAt = new Date();
+  next();
+});
+
+// Método para encontrar pools ativos
+stakingPoolSchema.statics.findActive = function () {
+  return this.find({ isActive: true }).sort({ apy: -1 });
 };
 
-export const StakingPool = mongoose.model<IStakingPool>('StakingPool', StakingPoolSchema);
+// Método para encontrar pools por token
+stakingPoolSchema.statics.findByToken = function (token) {
+  return this.find({ token, isActive: true }).sort({ apy: -1 });
+};
+
+// Método para atualizar total staked
+stakingPoolSchema.methods.updateTotalStaked = function (amount) {
+  this.totalStaked = Math.max(0, this.totalStaked + amount);
+  return this.save();
+};
+
+// Create StakingPool model
+export const StakingPool = mongoose.model('StakingPool', stakingPoolSchema);

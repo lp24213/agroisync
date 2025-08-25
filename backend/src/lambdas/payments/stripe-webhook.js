@@ -6,14 +6,14 @@ const mongoClient = new MongoClient(process.env.MONGODB_URI);
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const webhookSecret = process.env.WEBHOOK_SECRET;
 
-exports.handler = async (event) => {
+exports.handler = async event => {
   try {
     // Configurar CORS
     const corsHeaders = {
       'Access-Control-Allow-Origin': process.env.AMPLIFY_DOMAIN || '*',
       'Access-Control-Allow-Headers': 'Content-Type,Stripe-Signature',
       'Access-Control-Allow-Methods': 'POST,OPTIONS',
-      'Access-Control-Allow-Credentials': true,
+      'Access-Control-Allow-Credentials': true
     };
 
     // Handle preflight OPTIONS request
@@ -21,7 +21,7 @@ exports.handler = async (event) => {
       return {
         statusCode: 200,
         headers: corsHeaders,
-        body: JSON.stringify({ message: 'OK' }),
+        body: JSON.stringify({ message: 'OK' })
       };
     }
 
@@ -29,9 +29,9 @@ exports.handler = async (event) => {
       return {
         statusCode: 405,
         headers: corsHeaders,
-        body: JSON.stringify({ 
-          error: { code: 'METHOD_NOT_ALLOWED', message: 'Método não permitido' } 
-        }),
+        body: JSON.stringify({
+          error: { code: 'METHOD_NOT_ALLOWED', message: 'Método não permitido' }
+        })
       };
     }
 
@@ -41,9 +41,9 @@ exports.handler = async (event) => {
       return {
         statusCode: 400,
         headers: corsHeaders,
-        body: JSON.stringify({ 
-          error: { code: 'MISSING_SIGNATURE', message: 'Assinatura do webhook não fornecida' } 
-        }),
+        body: JSON.stringify({
+          error: { code: 'MISSING_SIGNATURE', message: 'Assinatura do webhook não fornecida' }
+        })
       };
     }
 
@@ -55,9 +55,9 @@ exports.handler = async (event) => {
       return {
         statusCode: 400,
         headers: corsHeaders,
-        body: JSON.stringify({ 
-          error: { code: 'INVALID_SIGNATURE', message: 'Assinatura inválida' } 
-        }),
+        body: JSON.stringify({
+          error: { code: 'INVALID_SIGNATURE', message: 'Assinatura inválida' }
+        })
       };
     }
 
@@ -70,19 +70,19 @@ exports.handler = async (event) => {
       case 'checkout.session.completed':
         await handleCheckoutSessionCompleted(db, stripeEvent.data.object);
         break;
-      
+
       case 'invoice.payment_succeeded':
         await handleInvoicePaymentSucceeded(db, stripeEvent.data.object);
         break;
-      
+
       case 'invoice.payment_failed':
         await handleInvoicePaymentFailed(db, stripeEvent.data.object);
         break;
-      
+
       case 'customer.subscription.deleted':
         await handleSubscriptionDeleted(db, stripeEvent.data.object);
         break;
-      
+
       default:
         console.log(`Evento não processado: ${stripeEvent.type}`);
     }
@@ -90,23 +90,22 @@ exports.handler = async (event) => {
     return {
       statusCode: 200,
       headers: corsHeaders,
-      body: JSON.stringify({ received: true }),
+      body: JSON.stringify({ received: true })
     };
-
   } catch (error) {
     console.error('Erro no webhook do Stripe:', error);
-    
+
     return {
       statusCode: 500,
       headers: {
         'Access-Control-Allow-Origin': process.env.AMPLIFY_DOMAIN || '*',
         'Access-Control-Allow-Headers': 'Content-Type,Stripe-Signature',
         'Access-Control-Allow-Methods': 'POST,OPTIONS',
-        'Access-Control-Allow-Credentials': true,
+        'Access-Control-Allow-Credentials': true
       },
-      body: JSON.stringify({ 
-        error: { code: 'INTERNAL_ERROR', message: 'Erro interno do servidor' } 
-      }),
+      body: JSON.stringify({
+        error: { code: 'INTERNAL_ERROR', message: 'Erro interno do servidor' }
+      })
     };
   } finally {
     if (mongoClient) {
@@ -119,7 +118,7 @@ exports.handler = async (event) => {
 async function handleCheckoutSessionCompleted(db, session) {
   try {
     console.log('Processando checkout.session.completed:', session.id);
-    
+
     const { cognitoSub, planType } = session.metadata;
     if (!cognitoSub || !planType) {
       console.error('Metadados ausentes na sessão:', session.id);
@@ -187,7 +186,6 @@ async function handleCheckoutSessionCompleted(db, session) {
     );
 
     console.log(`Plano ${planType} ativado para usuário ${cognitoSub}`);
-
   } catch (error) {
     console.error('Erro ao processar checkout.session.completed:', error);
   }
@@ -197,7 +195,7 @@ async function handleCheckoutSessionCompleted(db, session) {
 async function handleInvoicePaymentSucceeded(db, invoice) {
   try {
     console.log('Processando invoice.payment_succeeded:', invoice.id);
-    
+
     // Buscar assinatura
     const subscription = await stripe.subscriptions.retrieve(invoice.subscription);
     if (!subscription) {
@@ -233,7 +231,6 @@ async function handleInvoicePaymentSucceeded(db, invoice) {
     );
 
     console.log(`Plano renovado para usuário ${user.cognitoSub}`);
-
   } catch (error) {
     console.error('Erro ao processar invoice.payment_succeeded:', error);
   }
@@ -243,7 +240,7 @@ async function handleInvoicePaymentSucceeded(db, invoice) {
 async function handleInvoicePaymentFailed(db, invoice) {
   try {
     console.log('Processando invoice.payment_failed:', invoice.id);
-    
+
     // Buscar usuário
     const user = await db.collection('users').findOne({
       $or: [
@@ -269,7 +266,6 @@ async function handleInvoicePaymentFailed(db, invoice) {
     );
 
     console.log(`Plano marcado como expirado para usuário ${user.cognitoSub}`);
-
   } catch (error) {
     console.error('Erro ao processar invoice.payment_failed:', error);
   }
@@ -279,7 +275,7 @@ async function handleInvoicePaymentFailed(db, invoice) {
 async function handleSubscriptionDeleted(db, subscription) {
   try {
     console.log('Processando customer.subscription.deleted:', subscription.id);
-    
+
     // Buscar usuário
     const user = await db.collection('users').findOne({
       'stripe.subscriptionId': subscription.id
@@ -302,7 +298,6 @@ async function handleSubscriptionDeleted(db, subscription) {
     );
 
     console.log(`Plano marcado como expirado para usuário ${user.cognitoSub}`);
-
   } catch (error) {
     console.error('Erro ao processar customer.subscription.deleted:', error);
   }

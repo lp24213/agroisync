@@ -7,7 +7,7 @@ const mongoClient = new MongoClient(process.env.MONGODB_URI);
 
 const ADMIN_EMAIL = 'luispaulodeoliveira@agrotm.com.br';
 
-exports.handler = async (event) => {
+exports.handler = async event => {
   try {
     // Verificar se é uma requisição HTTP
     if (!event.httpMethod) {
@@ -19,7 +19,7 @@ exports.handler = async (event) => {
       'Access-Control-Allow-Origin': process.env.AMPLIFY_DOMAIN || '*',
       'Access-Control-Allow-Headers': 'Content-Type,Authorization',
       'Access-Control-Allow-Methods': 'POST,OPTIONS',
-      'Access-Control-Allow-Credentials': true,
+      'Access-Control-Allow-Credentials': true
     };
 
     // Handle preflight OPTIONS request
@@ -27,7 +27,7 @@ exports.handler = async (event) => {
       return {
         statusCode: 200,
         headers: corsHeaders,
-        body: JSON.stringify({ message: 'OK' }),
+        body: JSON.stringify({ message: 'OK' })
       };
     }
 
@@ -35,12 +35,12 @@ exports.handler = async (event) => {
       return {
         statusCode: 405,
         headers: corsHeaders,
-        body: JSON.stringify({ 
-          error: { 
-            code: 'METHOD_NOT_ALLOWED', 
-            message: 'Método não permitido' 
-          } 
-        }),
+        body: JSON.stringify({
+          error: {
+            code: 'METHOD_NOT_ALLOWED',
+            message: 'Método não permitido'
+          }
+        })
       };
     }
 
@@ -50,17 +50,17 @@ exports.handler = async (event) => {
       return {
         statusCode: 401,
         headers: corsHeaders,
-        body: JSON.stringify({ 
-          error: { 
-            code: 'UNAUTHORIZED', 
-            message: 'Token de autorização não fornecido' 
-          } 
-        }),
+        body: JSON.stringify({
+          error: {
+            code: 'UNAUTHORIZED',
+            message: 'Token de autorização não fornecido'
+          }
+        })
       };
     }
 
     const token = authHeader.substring(7);
-    
+
     // Verificar JWT do Cognito
     let decodedToken;
     try {
@@ -72,12 +72,12 @@ exports.handler = async (event) => {
       return {
         statusCode: 401,
         headers: corsHeaders,
-        body: JSON.stringify({ 
-          error: { 
-            code: 'INVALID_TOKEN', 
-            message: 'Token inválido' 
-          } 
-        }),
+        body: JSON.stringify({
+          error: {
+            code: 'INVALID_TOKEN',
+            message: 'Token inválido'
+          }
+        })
       };
     }
 
@@ -88,12 +88,12 @@ exports.handler = async (event) => {
       return {
         statusCode: 400,
         headers: corsHeaders,
-        body: JSON.stringify({ 
-          error: { 
-            code: 'INVALID_TOKEN_DATA', 
-            message: 'Dados do token inválidos' 
-          } 
-        }),
+        body: JSON.stringify({
+          error: {
+            code: 'INVALID_TOKEN_DATA',
+            message: 'Dados do token inválidos'
+          }
+        })
       };
     }
 
@@ -102,23 +102,20 @@ exports.handler = async (event) => {
     const db = mongoClient.db();
 
     // Verificar se usuário já existe
-    const existingUser = await db.collection('users').findOne({ 
-      $or: [
-        { cognitoSub },
-        { email: email.toLowerCase() }
-      ]
+    const existingUser = await db.collection('users').findOne({
+      $or: [{ cognitoSub }, { email: email.toLowerCase() }]
     });
 
     if (existingUser) {
       return {
         statusCode: 409,
         headers: corsHeaders,
-        body: JSON.stringify({ 
-          error: { 
-            code: 'USER_ALREADY_EXISTS', 
-            message: 'Usuário já existe' 
-          } 
-        }),
+        body: JSON.stringify({
+          error: {
+            code: 'USER_ALREADY_EXISTS',
+            message: 'Usuário já existe'
+          }
+        })
       };
     }
 
@@ -165,26 +162,25 @@ exports.handler = async (event) => {
           role: newUser.role,
           plan: newUser.plan
         }
-      }),
+      })
     };
-
   } catch (error) {
     console.error('Erro no bootstrap:', error);
-    
+
     return {
       statusCode: 500,
       headers: {
         'Access-Control-Allow-Origin': process.env.AMPLIFY_DOMAIN || '*',
         'Access-Control-Allow-Headers': 'Content-Type,Authorization',
         'Access-Control-Allow-Methods': 'POST,OPTIONS',
-        'Access-Control-Allow-Credentials': true,
+        'Access-Control-Allow-Credentials': true
       },
-      body: JSON.stringify({ 
-        error: { 
-          code: 'INTERNAL_ERROR', 
-          message: 'Erro interno do servidor' 
-        } 
-      }),
+      body: JSON.stringify({
+        error: {
+          code: 'INTERNAL_ERROR',
+          message: 'Erro interno do servidor'
+        }
+      })
     };
   } finally {
     if (mongoClient) {

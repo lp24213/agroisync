@@ -45,19 +45,14 @@ const env = process.env.NODE_ENV || 'development';
 const dbConfig = config[env] || config.development;
 
 // Create Sequelize instance
-const sequelize = new Sequelize(
-  dbConfig.database,
-  dbConfig.username,
-  dbConfig.password,
-  {
-    host: dbConfig.host,
-    port: dbConfig.port,
-    dialect: dbConfig.dialect,
-    logging: dbConfig.logging,
-    pool: dbConfig.pool,
-    dialectOptions: dbConfig.dialectOptions
-  }
-);
+const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, {
+  host: dbConfig.host,
+  port: dbConfig.port,
+  dialect: dbConfig.dialect,
+  logging: dbConfig.logging,
+  pool: dbConfig.pool,
+  dialectOptions: dbConfig.dialectOptions
+});
 
 // Test database connection
 const testConnection = async () => {
@@ -76,7 +71,7 @@ const initializeDatabase = async () => {
   try {
     // Test connection
     const isConnected = await testConnection();
-    
+
     if (!isConnected) {
       logger.warn('⚠️ Database connection failed, running in offline mode');
       return false;

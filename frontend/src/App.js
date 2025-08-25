@@ -14,6 +14,10 @@ import Cadastro from './pages/Cadastro';
 import Admin from './pages/Admin';
 import PaymentSuccess from './pages/PaymentSuccess';
 import Contato from './pages/Contato';
+import Mensageria from './pages/Mensageria';
+import MessagesProducts from './pages/MessagesProducts';
+import MessagesFreights from './pages/MessagesFreights';
+import ProtectedRoute from './components/ProtectedRoute';
 import Ajuda from './pages/Ajuda';
 import FAQ from './pages/FAQ';
 import Status from './pages/Status';
@@ -39,6 +43,9 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/cadastro" element={<Cadastro />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/mensageria" element={<ProtectedRoute requirePlan={true}><Mensageria /></ProtectedRoute>} />
+              <Route path="/messages/products" element={<ProtectedRoute requirePlan={true}><MessagesProducts /></ProtectedRoute>} />
+              <Route path="/messages/freights" element={<ProtectedRoute requirePlan={true}><MessagesFreights /></ProtectedRoute>} />
               <Route path="/payment-success" element={<PaymentSuccess />} />
               <Route path="/contato" element={<Contato />} />
               <Route path="/ajuda" element={<Ajuda />} />

@@ -5,7 +5,7 @@ const mongoClient = new MongoClient(process.env.MONGODB_URI);
 const ADMIN_EMAIL = 'luispaulodeoliveira@agrotm.com.br';
 
 // Função auxiliar para verificar autorização
-const verifyAuth = (event) => {
+const verifyAuth = event => {
   const authHeader = event.headers.Authorization || event.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return { error: 'UNAUTHORIZED', message: 'Token de autorização não fornecido' };
@@ -13,7 +13,7 @@ const verifyAuth = (event) => {
 
   const token = authHeader.substring(7);
   let decodedToken;
-  
+
   try {
     decodedToken = jwt.decode(token);
     if (!decodedToken) {
@@ -34,18 +34,18 @@ const verifyAuth = (event) => {
 };
 
 // Função para verificar se é admin
-const verifyAdmin = (email) => {
+const verifyAdmin = email => {
   return email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 };
 
-exports.handler = async (event) => {
+exports.handler = async event => {
   try {
     // Configurar CORS
     const corsHeaders = {
       'Access-Control-Allow-Origin': process.env.AMPLIFY_DOMAIN || '*',
       'Access-Control-Allow-Headers': 'Content-Type,Authorization',
       'Access-Control-Allow-Methods': 'GET,POST,PUT,OPTIONS',
-      'Access-Control-Allow-Credentials': true,
+      'Access-Control-Allow-Credentials': true
     };
 
     // Handle preflight OPTIONS request
@@ -53,7 +53,7 @@ exports.handler = async (event) => {
       return {
         statusCode: 200,
         headers: corsHeaders,
-        body: JSON.stringify({ message: 'OK' }),
+        body: JSON.stringify({ message: 'OK' })
       };
     }
 
@@ -71,22 +71,22 @@ exports.handler = async (event) => {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'INVALID_JSON', message: 'JSON inválido' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'INVALID_JSON', message: 'JSON inválido' }
+          })
         };
       }
 
       // Validar dados obrigatórios
       const { fromName, fromEmail, message, attachments } = requestBody;
-      
+
       if (!fromName || !fromEmail || !message) {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'MISSING_FIELDS', message: 'Nome, e-mail e mensagem são obrigatórios' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'MISSING_FIELDS', message: 'Nome, e-mail e mensagem são obrigatórios' }
+          })
         };
       }
 
@@ -96,9 +96,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'INVALID_EMAIL', message: 'Formato de e-mail inválido' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'INVALID_EMAIL', message: 'Formato de e-mail inválido' }
+          })
         };
       }
 
@@ -121,7 +121,7 @@ exports.handler = async (event) => {
         body: JSON.stringify({
           message: 'Submissão de parceria enviada com sucesso',
           id: result.insertedId
-        }),
+        })
       };
     }
 
@@ -135,22 +135,25 @@ exports.handler = async (event) => {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'INVALID_JSON', message: 'JSON inválido' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'INVALID_JSON', message: 'JSON inválido' }
+          })
         };
       }
 
       // Validar dados obrigatórios
       const { fromName, fromEmail, subject, message, attachments } = requestBody;
-      
+
       if (!fromName || !fromEmail || !subject || !message) {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'MISSING_FIELDS', message: 'Nome, e-mail, assunto e mensagem são obrigatórios' } 
-          }),
+          body: JSON.stringify({
+            error: {
+              code: 'MISSING_FIELDS',
+              message: 'Nome, e-mail, assunto e mensagem são obrigatórios'
+            }
+          })
         };
       }
 
@@ -160,9 +163,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'INVALID_EMAIL', message: 'Formato de e-mail inválido' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'INVALID_EMAIL', message: 'Formato de e-mail inválido' }
+          })
         };
       }
 
@@ -186,7 +189,7 @@ exports.handler = async (event) => {
         body: JSON.stringify({
           message: 'Mensagem de contato enviada com sucesso',
           id: result.insertedId
-        }),
+        })
       };
     }
 
@@ -197,9 +200,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 401,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: auth.error, message: auth.message } 
-          }),
+          body: JSON.stringify({
+            error: { code: auth.error, message: auth.message }
+          })
         };
       }
 
@@ -208,9 +211,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 403,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'FORBIDDEN', message: 'Acesso negado. Apenas administradores.' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'FORBIDDEN', message: 'Acesso negado. Apenas administradores.' }
+          })
         };
       }
 
@@ -225,8 +228,9 @@ exports.handler = async (event) => {
       }
 
       const skip = (page - 1) * limit;
-      
-      const submissions = await db.collection('partnerSubmissions')
+
+      const submissions = await db
+        .collection('partnerSubmissions')
         .find(filter)
         .sort({ createdAt: -1 })
         .skip(skip)
@@ -246,7 +250,7 @@ exports.handler = async (event) => {
             total,
             pages: Math.ceil(total / limit)
           }
-        }),
+        })
       };
     }
 
@@ -257,9 +261,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 401,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: auth.error, message: auth.message } 
-          }),
+          body: JSON.stringify({
+            error: { code: auth.error, message: auth.message }
+          })
         };
       }
 
@@ -268,9 +272,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 403,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'FORBIDDEN', message: 'Acesso negado. Apenas administradores.' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'FORBIDDEN', message: 'Acesso negado. Apenas administradores.' }
+          })
         };
       }
 
@@ -285,8 +289,9 @@ exports.handler = async (event) => {
       }
 
       const skip = (page - 1) * limit;
-      
-      const messages = await db.collection('contactMessages')
+
+      const messages = await db
+        .collection('contactMessages')
         .find(filter)
         .sort({ createdAt: -1 })
         .skip(skip)
@@ -306,7 +311,7 @@ exports.handler = async (event) => {
             total,
             pages: Math.ceil(total / limit)
           }
-        }),
+        })
       };
     }
 
@@ -317,9 +322,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 401,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: auth.error, message: auth.message } 
-          }),
+          body: JSON.stringify({
+            error: { code: auth.error, message: auth.message }
+          })
         };
       }
 
@@ -328,9 +333,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 403,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'FORBIDDEN', message: 'Acesso negado. Apenas administradores.' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'FORBIDDEN', message: 'Acesso negado. Apenas administradores.' }
+          })
         };
       }
 
@@ -342,9 +347,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'INVALID_ID', message: 'ID inválido' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'INVALID_ID', message: 'ID inválido' }
+          })
         };
       }
 
@@ -356,32 +361,32 @@ exports.handler = async (event) => {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'INVALID_JSON', message: 'JSON inválido' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'INVALID_JSON', message: 'JSON inválido' }
+          })
         };
       }
 
       const { status } = requestBody;
-      
+
       if (!status || !['new', 'read', 'archived'].includes(status)) {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'INVALID_STATUS', message: 'Status deve ser: new, read ou archived' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'INVALID_STATUS', message: 'Status deve ser: new, read ou archived' }
+          })
         };
       }
 
       // Atualizar status
       const result = await db.collection('partnerSubmissions').updateOne(
         { _id: new ObjectId(id) },
-        { 
-          $set: { 
+        {
+          $set: {
             status: status,
             updatedAt: new Date()
-          } 
+          }
         }
       );
 
@@ -389,9 +394,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 404,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'SUBMISSION_NOT_FOUND', message: 'Submissão não encontrada' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'SUBMISSION_NOT_FOUND', message: 'Submissão não encontrada' }
+          })
         };
       }
 
@@ -400,7 +405,7 @@ exports.handler = async (event) => {
         headers: corsHeaders,
         body: JSON.stringify({
           message: 'Status atualizado com sucesso'
-        }),
+        })
       };
     }
 
@@ -411,9 +416,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 401,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: auth.error, message: auth.message } 
-          }),
+          body: JSON.stringify({
+            error: { code: auth.error, message: auth.message }
+          })
         };
       }
 
@@ -422,9 +427,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 403,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'FORBIDDEN', message: 'Acesso negado. Apenas administradores.' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'FORBIDDEN', message: 'Acesso negado. Apenas administradores.' }
+          })
         };
       }
 
@@ -436,9 +441,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'INVALID_ID', message: 'ID inválido' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'INVALID_ID', message: 'ID inválido' }
+          })
         };
       }
 
@@ -450,32 +455,32 @@ exports.handler = async (event) => {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'INVALID_JSON', message: 'JSON inválido' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'INVALID_JSON', message: 'JSON inválido' }
+          })
         };
       }
 
       const { status } = requestBody;
-      
+
       if (!status || !['new', 'read', 'archived'].includes(status)) {
         return {
           statusCode: 400,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'INVALID_STATUS', message: 'Status deve ser: new, read ou archived' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'INVALID_STATUS', message: 'Status deve ser: new, read ou archived' }
+          })
         };
       }
 
       // Atualizar status
       const result = await db.collection('contactMessages').updateOne(
         { _id: new ObjectId(id) },
-        { 
-          $set: { 
+        {
+          $set: {
             status: status,
             updatedAt: new Date()
-          } 
+          }
         }
       );
 
@@ -483,9 +488,9 @@ exports.handler = async (event) => {
         return {
           statusCode: 404,
           headers: corsHeaders,
-          body: JSON.stringify({ 
-            error: { code: 'MESSAGE_NOT_FOUND', message: 'Mensagem não encontrada' } 
-          }),
+          body: JSON.stringify({
+            error: { code: 'MESSAGE_NOT_FOUND', message: 'Mensagem não encontrada' }
+          })
         };
       }
 
@@ -494,7 +499,7 @@ exports.handler = async (event) => {
         headers: corsHeaders,
         body: JSON.stringify({
           message: 'Status atualizado com sucesso'
-        }),
+        })
       };
     }
 
@@ -502,25 +507,24 @@ exports.handler = async (event) => {
     return {
       statusCode: 405,
       headers: corsHeaders,
-      body: JSON.stringify({ 
-        error: { code: 'METHOD_NOT_ALLOWED', message: 'Método não permitido' } 
-      }),
+      body: JSON.stringify({
+        error: { code: 'METHOD_NOT_ALLOWED', message: 'Método não permitido' }
+      })
     };
-
   } catch (error) {
     console.error('Erro na mensageria:', error);
-    
+
     return {
       statusCode: 500,
       headers: {
         'Access-Control-Allow-Origin': process.env.AMPLIFY_DOMAIN || '*',
         'Access-Control-Allow-Headers': 'Content-Type,Authorization',
         'Access-Control-Allow-Methods': 'GET,POST,PUT,OPTIONS',
-        'Access-Control-Allow-Credentials': true,
+        'Access-Control-Allow-Credentials': true
       },
-      body: JSON.stringify({ 
-        error: { code: 'INTERNAL_ERROR', message: 'Erro interno do servidor' } 
-      }),
+      body: JSON.stringify({
+        error: { code: 'INTERNAL_ERROR', message: 'Erro interno do servidor' }
+      })
     };
   } finally {
     if (mongoClient) {

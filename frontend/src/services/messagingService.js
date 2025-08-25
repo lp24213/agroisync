@@ -12,109 +12,129 @@ const api = axios.create({
   },
 });
 
-// Messaging service
+// Serviço de mensageria para comunicação entre usuários
 export const messagingService = {
-  // Get user conversations
-  async getConversations(module = null) {
+  // Obter conversas do usuário
+  async getConversations(serviceType = null) {
     try {
-      const params = module ? `?module=${module}` : '';
-      const response = await api.get(`/messaging/conversations${params}`);
+      const params = serviceType ? `?serviceType=${serviceType}` : '';
+      const response = await api.get(`/conversations${params}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching conversations:', error);
       if (error.response?.data?.error) {
-        throw new Error(error.response.data.error);
+        return { ok: false, message: error.response.data.error };
       }
-      throw new Error('Erro ao buscar conversas');
+      return { ok: false, message: 'Erro ao buscar conversas' };
     }
   },
 
-  // Get specific conversation
-  async getConversation(conversationId) {
+  // Obter mensagens de uma conversa
+  async getMessages(conversationId, page = 1, limit = 50) {
     try {
-      const response = await api.get(`/messaging/conversations/${conversationId}`);
+      const response = await api.get(`/conversations/${conversationId}/messages?page=${page}&limit=${limit}`);
       return response.data;
     } catch (error) {
-      console.error('Error fetching conversation:', error);
+      console.error('Error fetching messages:', error);
       if (error.response?.data?.error) {
-        throw new Error(error.response.data.error);
+        return { ok: false, message: error.response.data.error };
       }
-      throw new Error('Erro ao buscar conversa');
+      return { ok: false, message: 'Erro ao buscar mensagens' };
     }
   },
 
-  // Create new conversation
-  async createConversation(conversationData) {
+  // Enviar mensagem
+  async sendMessage(conversationId, content, attachments = []) {
     try {
-      const response = await api.post('/messaging/conversations', conversationData);
-      return response.data;
-    } catch (error) {
-      console.error('Error creating conversation:', error);
-      if (error.response?.data?.error) {
-        throw new Error(error.response.data.error);
-      }
-      throw new Error('Erro ao criar conversa');
-    }
-  },
-
-  // Send message
-  async sendMessage(conversationId, messageData) {
-    try {
-      const response = await api.post(`/messaging/conversations/${conversationId}/messages`, messageData);
+      const response = await api.post(`/conversations/${conversationId}/messages`, { 
+        content, 
+        attachments 
+      });
       return response.data;
     } catch (error) {
       console.error('Error sending message:', error);
       if (error.response?.data?.error) {
-        throw new Error(error.response.data.error);
+        return { ok: false, message: error.response.data.error };
       }
-      throw new Error('Erro ao enviar mensagem');
+      return { ok: false, message: 'Erro ao enviar mensagem' };
     }
   },
 
-  // Update conversation status
-  async updateConversationStatus(conversationId, status) {
+  // Criar nova conversa
+  async createConversation(serviceType, serviceId, participants, title = null) {
     try {
-      const response = await api.put(`/messaging/conversations/${conversationId}/status`, { status });
+      const response = await api.post('/conversations', {
+        serviceType,
+        serviceId,
+        participants,
+        title
+      });
       return response.data;
     } catch (error) {
-      console.error('Error updating conversation status:', error);
+      console.error('Error creating conversation:', error);
       if (error.response?.data?.error) {
-        throw new Error(error.response.data.error);
+        return { ok: false, message: error.response.data.error };
       }
-      throw new Error('Erro ao atualizar status da conversa');
+      return { ok: false, message: 'Erro ao criar conversa' };
     }
   },
 
-  // Get unread message count
-  async getUnreadCount() {
+  // Marcar mensagens como lidas
+  async markAsRead(conversationId) {
     try {
-      const response = await api.get('/messaging/unread-count');
+      const response = await api.put(`/conversations/${conversationId}`, { 
+        status: 'read' 
+      });
       return response.data;
     } catch (error) {
-      console.error('Error fetching unread count:', error);
+      console.error('Error marking as read:', error);
       if (error.response?.data?.error) {
-        throw new Error(error.response.data.error);
+        return { ok: false, message: error.response.data.error };
       }
-      throw new Error('Erro ao buscar contador de não lidas');
+      return { ok: false, message: 'Erro ao marcar como lida' };
     }
   },
 
-  // Start conversation from product/freight
+  // Obter estatísticas
+  async getStats() {
+    try {
+      const response = await api.get('/conversations/stats/summary');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+      if (error.response?.data?.error) {
+        return { ok: false, message: error.response.data.error };
+      }
+      return { ok: false, message: 'Erro ao buscar estatísticas' };
+    }
+  },
+
+  // Iniciar conversa a partir de produto/frete
   async startConversationFromListing(listing, participants, subject, initialMessage) {
     try {
+      const serviceType = listing.type === 'product' ? 'product' : 'freight';
       const conversationData = {
+        serviceType,
+        serviceId: listing._id,
         participants,
-        listing,
-        module: listing.type === 'product' ? 'store' : 'freight',
-        subject,
-        initialMessage
+        title: subject
       };
 
-      const response = await this.createConversation(conversationData);
+      const response = await this.createConversation(
+        conversationData.serviceType,
+        conversationData.serviceId,
+        conversationData.participants,
+        conversationData.title
+      );
+
+      if (response.ok && initialMessage) {
+        await this.sendMessage(response.data.conversation._id, initialMessage);
+      }
+
       return response;
     } catch (error) {
       console.error('Error starting conversation from listing:', error);
-      throw error;
+      return { ok: false, message: 'Erro ao iniciar conversa' };
     }
   }
 };

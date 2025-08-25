@@ -14,10 +14,12 @@ const app = express();
 app.use(helmet());
 
 // CORS configuration
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'https://your-domain.amplifyapp.com',
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN || 'https://your-domain.amplifyapp.com',
+    credentials: true
+  })
+);
 
 // Rate limiting
 const limiter = rateLimit({
@@ -37,8 +39,8 @@ app.use('/api', apiRoutes);
 
 // Health check endpoint
 app.get('/', (_req, res) => {
-  res.json({ 
-    status: 'ok', 
+  res.json({
+    status: 'ok',
     timestamp: new Date().toISOString(),
     service: 'AGROISYNC Backend',
     version: '2.3.1'
@@ -60,10 +62,11 @@ app.use((err, _req, res, _next) => {
 export const handler = async (event, context) => {
   // Convert API Gateway event to Express request
   const server = serverless.createServer(app);
-  
+
   return new Promise((resolve, reject) => {
-    serverless.proxy(server, event, context, 'PROMISE').promise
-      .then((response) => {
+    serverless
+      .proxy(server, event, context, 'PROMISE')
+      .promise.then(response => {
         resolve({
           statusCode: response.statusCode,
           headers: response.headers,
