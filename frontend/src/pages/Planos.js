@@ -247,8 +247,6 @@ const Planos = () => {
         return <ShoppingCart className="w-6 h-6" />;
       case 'freight':
         return <Truck className="w-6 h-6" />;
-      case 'crypto':
-        return <Coins className="w-6 h-6" />;
       default:
         return <Package className="w-6 h-6" />;
     }
@@ -260,8 +258,6 @@ const Planos = () => {
         return t('module.store');
       case 'freight':
         return t('module.freight');
-      case 'crypto':
-        return t('module.crypto');
       default:
         return t('module.select');
     }
@@ -364,31 +360,7 @@ const Planos = () => {
                 </div>
               </button>
 
-              {/* Criptomoedas */}
-              <button
-                onClick={() => setSelectedModule('crypto')}
-                className={`p-6 rounded-xl border-2 transition-all duration-300 ${
-                  selectedModule === 'crypto'
-                    ? 'border-purple-500 bg-purple-50 shadow-lg'
-                    : 'border-gray-200 hover:border-purple-300 hover:bg-gray-50'
-                }`}
-              >
-                <div className="text-center">
-                  <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 flex items-center justify-center text-white`}>
-                    <Coins className="w-8 h-8" />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{t('module.crypto')}</h3>
-                  <p className="text-gray-600 text-sm">
-                    {t('module.cryptoDescription')}
-                  </p>
-                  {selectedModule === 'crypto' && (
-                    <div className="mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
-                      <Check className="w-4 h-4 mr-1" />
-                      {t('module.selected')}
-                    </div>
-                  )}
-                </div>
-              </button>
+
             </div>
           </motion.div>
         </div>
@@ -413,9 +385,7 @@ const Planos = () => {
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               {selectedModule === 'store' 
                 ? t('plans.storeDescription')
-                : selectedModule === 'freight'
-                ? t('plans.freightDescription')
-                : t('plans.cryptoDescription')
+                : t('plans.freightDescription')
               }
             </p>
           </motion.div>

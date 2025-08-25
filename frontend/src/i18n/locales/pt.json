@@ -911,13 +911,13 @@
       }
     },
     "agroconectaPro": {
-      "name": "Pro",
+      "name": "Avançado",
       "price": "R$ 149,00",
       "period": "por mês",
       "description": "Para transportadoras e motoristas profissionais",
       "features": {
-        "ads_count": "Até 100 fretes ativos/mês",
-        "private_chat": "Chat direto",
+        "ads_count": "Até 30 fretes ativos/mês",
+        "private_chat": "Chat direto (GPT completo)",
         "priority_support": "Suporte prioritário",
         "advanced_chatbot": "Chatbot avançado",
         "freight_premium": "Fretes premium",

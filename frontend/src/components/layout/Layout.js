@@ -90,8 +90,8 @@ const Layout = ({ children }) => {
             <Chatbot />
           </motion.div>
 
-          {/* Widget de Clima Global - SEMPRE VISÍVEL */}
-          <div>
+          {/* Widget de Clima Global - CENTRALIZADO NO CANTO SUPERIOR DIREITO */}
+          <div className="fixed top-24 right-6 z-40">
             <GlobalWeatherWidget />
           </div>
         </div>

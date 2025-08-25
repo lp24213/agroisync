@@ -32,8 +32,7 @@ const Cadastro = () => {
     // Módulos selecionados
     modules: {
       store: false,
-      freight: false,
-      crypto: false
+      freight: false
     },
     
     // Produtos (Loja)
@@ -121,8 +120,7 @@ const Cadastro = () => {
       ...prev,
       modules: {
         store: module === 'store',
-        freight: module === 'freight',
-        crypto: module === 'crypto'
+        freight: module === 'freight'
       }
     }));
   };
@@ -207,7 +205,7 @@ const Cadastro = () => {
     // Validar se pelo menos um módulo foi selecionado
     const hasModuleSelected = Object.values(formData.modules).some(module => module);
     if (!hasModuleSelected) {
-      newErrors.modules = 'Selecione pelo menos um módulo (Loja, AgroConecta ou Cripto)';
+      newErrors.modules = 'Selecione pelo menos um módulo (Loja ou AgroConecta)';
     }
 
     // Validar produtos se módulo Loja selecionado
@@ -262,8 +260,6 @@ const Cadastro = () => {
         return <ShoppingCart className="w-6 h-6" />;
       case 'freight':
         return <Truck className="w-6 h-6" />;
-      case 'crypto':
-        return <Coins className="w-6 h-6" />;
       default:
         return <Package className="w-6 h-6" />;
     }
@@ -275,8 +271,6 @@ const Cadastro = () => {
         return 'Loja de Produtos';
       case 'freight':
         return 'AgroConecta (Fretes)';
-      case 'crypto':
-        return 'Criptomoedas';
       default:
         return 'Selecionar Módulo';
     }
@@ -288,8 +282,6 @@ const Cadastro = () => {
         return 'Cadastre-se para vender produtos agrícolas no marketplace';
       case 'freight':
         return 'Cadastre-se para oferecer serviços de transporte';
-      case 'crypto':
-        return 'Cadastre-se para operar com criptomoedas';
       default:
         return 'Escolha o módulo que melhor atende suas necessidades';
     }
@@ -379,25 +371,7 @@ const Cadastro = () => {
                   </div>
                 </button>
 
-                {/* Criptomoedas */}
-                <button
-                  onClick={() => handleModuleChange('crypto')}
-                  className={`p-6 rounded-xl border-2 transition-all duration-300 ${
-                    formData.modules.crypto
-                      ? 'border-purple-500 bg-purple-50 shadow-lg'
-                      : 'border-gray-200 hover:border-purple-300 hover:bg-gray-50'
-                  }`}
-                >
-                  <div className="text-center">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white">
-                      <Coins className="w-8 h-8" />
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">Criptomoedas</h3>
-                    <p className="text-gray-600 text-sm">
-                      Operação com criptomoedas
-                    </p>
-                  </div>
-                </button>
+
               </div>
             </div>
 

@@ -62,39 +62,36 @@ const Navbar = () => {
             <span className="text-xl font-bold">{t('nav.brand')}</span>
           </motion.div>
 
-          {/* Desktop Navigation - Centralizado */}
-          <div className="hidden lg:flex items-center space-x-8">
-            <a href="/" className="hover:text-green-500 transition-colors duration-200">
+          {/* Desktop Navigation - Ajustado para todas as páginas */}
+          <div className="hidden lg:flex items-center space-x-4 text-sm">
+            <a href="/" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
               {t('nav.home')}
             </a>
-            <a href="/sobre" className="hover:text-green-500 transition-colors duration-200">
-              {t('nav.about')}
-            </a>
-            <a href="/loja" className="hover:text-green-500 transition-colors duration-200">
+            <a href="/loja" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
               {t('nav.store')}
             </a>
-            <a href="/agroconecta" className="hover:text-green-500 transition-colors duration-200">
+            <a href="/agroconecta" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
               {t('nav.agroconnect')}
             </a>
-            <a href="/cripto" className="hover:text-green-500 transition-colors duration-200">
+            <a href="/cripto" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
               {t('nav.crypto')}
             </a>
-            <a href="/planos" className="hover:text-green-500 transition-colors duration-200">
-              {t('nav.plans')}
-            </a>
-            <a href="/faq" className="hover:text-green-500 transition-colors duration-200">
-              {t('nav.faq')}
-            </a>
-            <a href="/ajuda" className="hover:text-green-500 transition-colors duration-200">
-              {t('nav.help')}
-            </a>
-            <a href="/status" className="hover:text-green-500 transition-colors duration-200">
-              {t('nav.status')}
-            </a>
-            <a href="/parcerias" className="hover:text-green-500 transition-colors duration-200">
+            <a href="/parcerias" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
               Parcerias
             </a>
-            <a href="/contato" className="hover:text-green-500 transition-colors duration-200">
+            <a href="/faq" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
+              {t('nav.faq')}
+            </a>
+            <a href="/status" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
+              {t('nav.status')}
+            </a>
+            <a href="/ajuda" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
+              {t('nav.help')}
+            </a>
+            <a href="/sobre" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
+              {t('nav.about')}
+            </a>
+            <a href="/contato" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
               {t('nav.contact')}
             </a>
           </div>

@@ -942,13 +942,13 @@
       }
     },
     "agroconectaPro": {
-      "name": "Pro",
+      "name": "Advanced",
       "price": "R$ 149.00",
       "period": "per month",
       "description": "For professional carriers and drivers",
       "features": {
-        "ads_count": "Up to 100 active freights/month",
-        "private_chat": "Direct chat",
+        "ads_count": "Up to 30 active freights/month",
+        "private_chat": "Direct chat (Full GPT)",
         "priority_support": "Priority support",
         "advanced_chatbot": "Advanced chatbot",
         "freight_premium": "Premium freights",

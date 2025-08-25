@@ -60,7 +60,7 @@ const GlobalWeatherWidget = () => {
     });
   };
 
-  // Funções de drag-and-drop
+
   const handleMouseDown = (e) => {
     if (e.target.closest('button') || e.target.closest('input')) return;
     

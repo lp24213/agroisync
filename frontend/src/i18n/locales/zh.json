@@ -942,13 +942,13 @@
       }
     },
     "agroconectaPro": {
-      "name": "专业版",
+      "name": "高级版",
       "price": "R$ 149,00",
       "period": "每月",
       "description": "适合专业承运商和司机",
       "features": {
-        "ads_count": "每月最多100个活跃货运",
-        "private_chat": "直接聊天",
+        "ads_count": "每月最多30个活跃货运",
+        "private_chat": "直接聊天（完整GPT）",
         "priority_support": "优先支持",
         "advanced_chatbot": "高级聊天机器人",
         "freight_premium": "高级货运",
