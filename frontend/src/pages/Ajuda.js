@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import { 
-  BookOpen, Video, FileText, MessageCircle, 
+  BookOpen, FileText, MessageCircle, 
   Phone, Mail, Clock, Users, Shield, Zap,
   Truck, Coins, ShoppingCart, Settings,
   HelpCircle, Star, Award, Bookmark, Ticket,
@@ -26,7 +26,7 @@ const Ajuda = () => {
           title: 'Criar Conta',
           description: 'Crie sua conta pessoal ou empresarial na plataforma',
           duration: '3 min',
-          type: 'video',
+          type: 'guide',
           link: '#',
           steps: [
             'Acesse a página de cadastro',
@@ -39,7 +39,7 @@ const Ajuda = () => {
           title: 'Completar Cadastro',
           description: 'Configure seu perfil completo com dados pessoais, empresa, produtos e fretes',
           duration: '8 min',
-          type: 'video',
+          type: 'guide',
           link: '#',
           steps: [
             'Adicione informações pessoais completas',
@@ -52,7 +52,7 @@ const Ajuda = () => {
           title: 'Navegar na Loja e AgroConecta',
           description: 'Aprenda a usar as principais funcionalidades da plataforma',
           duration: '5 min',
-          type: 'video',
+          type: 'guide',
           link: '#',
           steps: [
             'Explore o marketplace de produtos',
@@ -73,7 +73,7 @@ const Ajuda = () => {
           title: 'Cadastrar Produtos',
           description: 'Aprenda a cadastrar produtos com todas as informações necessárias',
           duration: '6 min',
-          type: 'video',
+          type: 'guide',
           link: '#',
           steps: [
             'Nome e descrição do produto',
@@ -86,7 +86,7 @@ const Ajuda = () => {
           title: 'Dados Públicos vs Privados',
           description: 'Entenda o que é visível para todos e o que é confidencial',
           duration: '4 min',
-          type: 'video',
+          type: 'guide',
           link: '#',
           steps: [
             'Dados públicos: nome, preço, descrição, imagens',
@@ -99,7 +99,7 @@ const Ajuda = () => {
           title: 'Anunciar e Comprar',
           description: 'Como criar anúncios atrativos e realizar compras seguras',
           duration: '7 min',
-          type: 'video',
+          type: 'guide',
           link: '#',
           steps: [
             'Criar anúncios com palavras-chave',
@@ -120,7 +120,7 @@ const Ajuda = () => {
           title: 'Cadastrar Frete',
           description: 'Como registrar suas necessidades de transporte',
           duration: '8 min',
-          type: 'video',
+          type: 'guide',
           link: '#',
           steps: [
             'Peso e tipo da carga',
@@ -133,7 +133,7 @@ const Ajuda = () => {
           title: 'Visibilidade de Informações',
           description: 'Controle o que é público e o que é privado',
           duration: '5 min',
-          type: 'video',
+          type: 'guide',
           link: '#',
           steps: [
             'Informações públicas: rota geral, tipo de carga',
@@ -146,7 +146,7 @@ const Ajuda = () => {
           title: 'Negociação entre Partes',
           description: 'Como negociar entre anunciante e transportador',
           duration: '6 min',
-          type: 'video',
+          type: 'guide',
           link: '#',
           steps: [
             'Sistema de propostas',
@@ -167,7 +167,7 @@ const Ajuda = () => {
           title: 'Conectar Carteira Solana',
           description: 'Configure sua carteira digital para transações',
           duration: '4 min',
-          type: 'video',
+          type: 'guide',
           link: '#',
           steps: [
             'Instalar Phantom ou Solflare',
@@ -180,7 +180,7 @@ const Ajuda = () => {
           title: 'Mintagem de NFTs',
           description: 'Crie NFTs únicos para seus produtos',
           duration: '7 min',
-          type: 'video',
+          type: 'guide',
           link: '#',
           steps: [
             'Preparar metadados do produto',
@@ -193,7 +193,7 @@ const Ajuda = () => {
           title: 'Staking e Recompensas',
           description: 'Sistema de recompensas por participação',
           duration: '6 min',
-          type: 'video',
+          type: 'guide',
           link: '#',
           steps: [
             'Como funciona o staking',
@@ -206,7 +206,7 @@ const Ajuda = () => {
           title: 'Segurança e Boas Práticas',
           description: 'Proteja seus ativos digitais',
           duration: '5 min',
-          type: 'video',
+          type: 'guide',
           link: '#',
           steps: [
             'Armazenamento seguro de chaves',
@@ -227,7 +227,7 @@ const Ajuda = () => {
           title: 'Formas de Pagamento Aceitas',
           description: 'Conheça todas as opções disponíveis',
           duration: '4 min',
-          type: 'video',
+          type: 'guide',
           link: '#',
           steps: [
             'PIX e transferências bancárias',
@@ -240,7 +240,7 @@ const Ajuda = () => {
           title: 'Proteção de Dados (LGPD)',
           description: 'Conformidade total com a legislação brasileira',
           duration: '6 min',
-          type: 'video',
+          type: 'guide',
           link: '#',
           steps: [
             'Criptografia de dados em trânsito',
@@ -253,7 +253,7 @@ const Ajuda = () => {
           title: 'Políticas de Sigilo',
           description: 'Como suas informações são protegidas',
           duration: '5 min',
-          type: 'video',
+          type: 'guide',
           link: '#',
           steps: [
             'Dados nunca compartilhados com terceiros',
@@ -274,7 +274,7 @@ const Ajuda = () => {
           title: 'Ativar Funcionalidade de Voz',
           description: 'Use comandos de voz para interagir',
           duration: '3 min',
-          type: 'video',
+          type: 'guide',
           link: '#',
           steps: [
             'Permitir acesso ao microfone',
@@ -287,7 +287,7 @@ const Ajuda = () => {
           title: 'Enviar Imagens para Análise',
           description: 'Chatbot analisa imagens de produtos',
           duration: '4 min',
-          type: 'video',
+          type: 'guide',
           link: '#',
           steps: [
             'Tipos de imagens aceitas',
@@ -300,7 +300,7 @@ const Ajuda = () => {
           title: 'Uso Multilíngue',
           description: 'Suporte em português, inglês, espanhol e chinês',
           duration: '3 min',
-          type: 'video',
+          type: 'guide',
           link: '#',
           steps: [
             'Mudar idioma do chatbot',
@@ -321,7 +321,7 @@ const Ajuda = () => {
           title: 'Plano Grátis vs AGROCONNECT+',
           description: 'Compare as funcionalidades disponíveis',
           duration: '5 min',
-          type: 'video',
+          type: 'guide',
           link: '#',
           steps: [
             'Funcionalidades do plano grátis',
@@ -334,7 +334,7 @@ const Ajuda = () => {
           title: 'Benefícios Exclusivos',
           description: 'Recursos premium disponíveis',
           duration: '6 min',
-          type: 'video',
+          type: 'guide',
           link: '#',
           steps: [
             'Mensageria privada entre usuários',
@@ -347,7 +347,7 @@ const Ajuda = () => {
           title: 'Como Fazer Upgrade',
           description: 'Processo para migrar para planos superiores',
           duration: '4 min',
-          type: 'video',
+          type: 'guide',
           link: '#',
           steps: [
             'Acessar página de planos',
@@ -365,8 +365,8 @@ const Ajuda = () => {
   };
 
   const handleOpenTicket = () => {
-    // Implementar abertura de ticket de suporte
-    alert('Sistema de tickets será implementado em breve. Entre em contato via email: suporte@agroisync.com');
+    // Redirecionar para o chatbot IA
+    window.location.href = '/#chatbot';
   };
 
   return (

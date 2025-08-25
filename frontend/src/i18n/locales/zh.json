@@ -881,8 +881,8 @@
     },
     "lojaBasico": {
       "name": "基础版",
-      "price": "R$ 0,00",
-      "period": "永久免费",
+      "price": "R$ 25,00",
+      "period": "每月",
       "description": "小型生产商和初学者的理想选择",
       "features": {
         "ads_count": "最多3个活跃广告",

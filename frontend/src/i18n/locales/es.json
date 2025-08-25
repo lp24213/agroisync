@@ -881,8 +881,8 @@
     },
     "lojaBasico": {
       "name": "Básico",
-      "price": "R$ 0,00",
-      "period": "Siempre gratis",
+      "price": "R$ 25,00",
+      "period": "por mes",
       "description": "Ideal para pequeños productores y vendedores principiantes",
       "features": {
         "ads_count": "Hasta 3 anuncios activos",

@@ -270,6 +270,52 @@ const Parcerias = () => {
             Junte-se à nossa rede de parceiros e ajude a transformar o agronegócio brasileiro
           </p>
           
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="p-6 rounded-2xl bg-white dark:bg-gray-700 shadow-lg"
+            >
+              <div className="text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center text-white">
+                  <Building2 className="w-8 h-8" />
+                </div>
+                <h3 className="text-xl font-bold mb-2">Email</h3>
+                <p className="text-gray-600 mb-4">contato@agroisync.com</p>
+                <a
+                  href="mailto:contato@agroisync.com"
+                  className="text-green-600 hover:text-green-700 text-sm font-medium"
+                >
+                  Enviar Email
+                </a>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="p-6 rounded-2xl bg-white dark:bg-gray-700 shadow-lg"
+            >
+              <div className="text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white">
+                  <Users className="w-8 h-8" />
+                </div>
+                <h3 className="text-xl font-bold mb-2">WhatsApp</h3>
+                <p className="text-gray-600 mb-4">+55 66 99236-2830</p>
+                <a
+                  href="https://wa.me/5566992362830"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                >
+                  Abrir WhatsApp
+                </a>
+              </div>
+            </motion.div>
+          </div>
+
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}

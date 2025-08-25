@@ -208,11 +208,22 @@ const Planos = () => {
       setLoading(true);
       setError('');
 
+      // Salvar plano selecionado no localStorage para uso posterior
+      localStorage.setItem('selectedPlan', JSON.stringify({
+        module,
+        tier,
+        timestamp: Date.now()
+      }));
+
       if (module === 'crypto') {
         // Pagamento via cripto
         const invoice = await paymentService.createCryptoInvoice(tier);
         // Aqui seria integrado com MetaMask
         alert(`Fatura cripto criada: ${invoice.data.id}. Integre com MetaMask para finalizar.`);
+        // Após pagamento bem-sucedido, redirecionar para login
+        setTimeout(() => {
+          window.location.href = '/login?plan=activated';
+        }, 2000);
       } else {
         // Pagamento via Stripe
         const session = await paymentService.createStripeSession(module, tier);

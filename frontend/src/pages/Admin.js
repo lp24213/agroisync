@@ -18,6 +18,12 @@ const Admin = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [loading, setLoading] = useState(false);
+  const [adminCredentials, setAdminCredentials] = useState({
+    email: '',
+    password: ''
+  });
+  const [adminLoginError, setAdminLoginError] = useState('');
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
 
   // Estados para dados
   const [users, setUsers] = useState([]);
@@ -26,15 +32,15 @@ const Admin = () => {
   const [freights, setFreights] = useState([]);
 
   useEffect(() => {
-    // Verificar se usuário é admin
-    if (!user || !user.isAdmin) {
-      navigate('/login');
+    // Verificar se usuário é admin ou se admin está autenticado
+    if ((!user || !user.isAdmin) && !isAdminAuthenticated) {
+      // Não redirecionar automaticamente, mostrar tela de login
       return;
     }
 
     document.title = 'Painel Administrativo - Agroisync';
     loadDashboardData();
-  }, [user, navigate]);
+  }, [user, navigate, isAdminAuthenticated]);
 
   const loadDashboardData = async () => {
     setLoading(true);
@@ -70,8 +76,28 @@ const Admin = () => {
     }
   };
 
+  const handleAdminLogin = (e) => {
+    e.preventDefault();
+    if (adminCredentials.email === 'contato@agrotm.com.br' && adminCredentials.password === 'Th@ys15221008') {
+      setIsAdminAuthenticated(true);
+      setAdminLoginError('');
+      // Simular usuário admin
+      const adminUser = {
+        id: 'admin',
+        name: 'Administrador',
+        email: 'contato@agrotm.com.br',
+        isAdmin: true
+      };
+      // Atualizar contexto de autenticação
+      // Nota: Em produção, isso seria feito via contexto
+    } else {
+      setAdminLoginError('Credenciais inválidas');
+    }
+  };
+
   const handleLogout = () => {
     logout();
+    setIsAdminAuthenticated(false);
     navigate('/');
   };
 
@@ -447,6 +473,83 @@ const Admin = () => {
         <div className="text-center">
           <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4" />
           <p>{t('loadingDashboard')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Se não estiver autenticado como admin, mostrar tela de login
+  if (!isAdminAuthenticated && (!user || !user.isAdmin)) {
+    return (
+      <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300`}>
+        <div className="flex items-center justify-center min-h-screen">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className={`w-full max-w-md p-8 rounded-2xl shadow-2xl ${
+              isDark ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
+            }`}
+          >
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                Painel Administrativo
+              </h1>
+              <p className="text-gray-600 mt-2">Acesso exclusivo para administradores</p>
+            </div>
+
+            <form onSubmit={handleAdminLogin} className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={adminCredentials.email}
+                  onChange={(e) => setAdminCredentials({...adminCredentials, email: e.target.value})}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="contato@agrotm.com.br"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Senha
+                </label>
+                <input
+                  type="password"
+                  value={adminCredentials.password}
+                  onChange={(e) => setAdminCredentials({...adminCredentials, password: e.target.value})}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Senha de administrador"
+                  required
+                />
+              </div>
+
+              {adminLoginError && (
+                <div className="text-red-500 text-sm text-center">
+                  {adminLoginError}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                className="w-full py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors duration-300"
+              >
+                Acessar Painel
+              </button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <button
+                onClick={() => navigate('/')}
+                className="text-green-600 hover:text-green-700 text-sm"
+              >
+                Voltar ao site
+              </button>
+            </div>
+          </motion.div>
         </div>
       </div>
     );

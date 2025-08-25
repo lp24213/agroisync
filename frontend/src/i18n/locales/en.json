@@ -881,8 +881,8 @@
     },
     "lojaBasico": {
       "name": "Basic",
-      "price": "R$ 0.00",
-      "period": "Always free",
+      "price": "R$ 25.00",
+      "period": "per month",
       "description": "Ideal for small producers and beginner sellers",
       "features": {
         "ads_count": "Up to 3 active ads",

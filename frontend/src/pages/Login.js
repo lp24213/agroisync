@@ -19,6 +19,16 @@ const Login = () => {
 
   useEffect(() => {
     document.title = 'Login - Agroisync';
+    
+    // Verificar se usuário vem de um pagamento bem-sucedido
+    const urlParams = new URLSearchParams(window.location.search);
+    const planActivated = urlParams.get('plan');
+    
+    if (planActivated === 'activated') {
+      // Mostrar mensagem de sucesso para usuário com plano ativado
+      setError('');
+      // Aqui você pode adicionar uma mensagem de sucesso
+    }
   }, []);
 
   const handleChange = (e) => {

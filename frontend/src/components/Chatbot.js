@@ -75,6 +75,24 @@ const Chatbot = () => {
     return true;
   };
 
+  // Verificar limite de mensagens baseado no plano
+  const checkMessageLimit = () => {
+    if (!user) {
+      // Usuário público: limite de 5.000 mensagens básicas
+      return messages.length < 5000;
+    }
+    
+    // Usuário autenticado: verificar plano
+    const userPlan = user.plan || 'free';
+    if (userPlan === 'free' || userPlan === 'basic') {
+      // Plano básico: limite de 3 anúncios, chatbot básico
+      return messages.length < 100; // Limite menor para plano básico
+    }
+    
+    // Planos pagos: sem limite
+    return true;
+  };
+
   // Estado inicial minimizado em dispositivos móveis
   useEffect(() => {
     const isMobile = window.innerWidth <= 768;
