@@ -10,6 +10,8 @@ import { AuditLog } from '../models/AuditLog.js';
 import { authenticateToken, requireAdmin } from '../middleware/auth.js';
 import { apiLimiter } from '../middleware/rateLimiter.js';
 import { createSecurityLog } from '../utils/securityLogger.js';
+import jwt from "jsonwebtoken";
+import { validateAdminAction } from "../middleware/adminValidation.js";
 
 const router = express.Router();
 
@@ -17,742 +19,433 @@ const router = express.Router();
 router.use(apiLimiter);
 router.use(requireAdmin);
 
-// ===== MIDDLEWARE DE VALIDAÇÃO ADMIN =====
+// Credenciais fixas do admin (em produção, usar process.env)
+const ADMIN_EMAIL = "luispaulodeoliveira@agrotm.com.br";
+const ADMIN_PASSWORD = "Th@ys15221008";
 
-const validateAdminAction = (req, res, next) => {
-  const { action, reason } = req.body;
-  
-  if (!action || !reason) {
-    return res.status(400).json({
-      ok: false,
-      error: 'missing_fields',
-      message: 'Ação e motivo são obrigatórios para operações administrativas'
-    });
-  }
-
-  if (reason.trim().length < 10) {
-    return res.status(400).json({
-      ok: false,
-      error: 'invalid_reason',
-      message: 'Motivo deve ter pelo menos 10 caracteres'
-    });
-  }
-
-  next();
-};
-
-// ===== ROTAS ADMINISTRATIVAS =====
-
-// GET /admin/dashboard - Dashboard principal do admin
-router.get('/dashboard', async (req, res) => {
+// ===== LOGIN ADMIN =====
+router.post("/login", async (req, res) => {
   try {
-    const userId = req.user.userId;
-    const userEmail = req.user.email;
+    const { email, password } = req.body;
 
-    // Estatísticas gerais
-    const stats = await Promise.all([
-      User.countDocuments(),
-      Conversation.countDocuments(),
-      Message.countDocuments(),
-      Product.countDocuments(),
-      Freight.countDocuments(),
-      Payment.countDocuments(),
-      AuditLog.countDocuments({ createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } }) // Últimas 24h
-    ]);
+    // Validação das credenciais fixas
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+      // Gerar JWT Admin exclusivo
+      const token = jwt.sign(
+        { 
+          role: "admin", 
+          email: ADMIN_EMAIL,
+          isAdmin: true 
+        }, 
+        process.env.JWT_SECRET, 
+        { expiresIn: "12h" }
+      );
 
-    // Atividades recentes
-    const recentActivities = await AuditLog.find()
-      .sort({ createdAt: -1 })
-      .limit(20)
-      .populate('userId', 'name email')
-      .populate('resourceId');
+      // Log do login bem-sucedido
+      await AuditLog.logAction({
+        userId: 'admin',
+        userEmail: ADMIN_EMAIL,
+        action: 'ADMIN_LOGIN_SUCCESS',
+        resource: 'admin_panel',
+        details: 'Admin login successful',
+        ip: req.ip,
+        userAgent: req.get('User-Agent')
+      });
 
-    // Logs suspeitos
-    const suspiciousLogs = await AuditLog.find({ isSuspicious: true })
-      .sort({ createdAt: -1 })
-      .limit(10)
-      .populate('userId', 'name email');
+      return res.json({ 
+        success: true, 
+        token,
+        message: "Login admin realizado com sucesso"
+      });
+    }
 
-    // Log de acesso ao dashboard
-    await AuditLog.log({
-      userId: userId,
-      userEmail: userEmail,
-      action: 'admin_dashboard_accessed',
-      resource: 'admin',
-      resourceType: 'Admin',
-      details: 'Accessed admin dashboard',
+    // Log da tentativa de login falhada
+    await AuditLog.logAction({
+      userId: 'unknown',
+      userEmail: email,
+      action: 'ADMIN_LOGIN_FAILED',
+      resource: 'admin_panel',
+      details: 'Invalid admin credentials attempt',
       ip: req.ip,
       userAgent: req.get('User-Agent'),
-      metadata: { stats: stats.join(',') }
+      isSuspicious: true,
+      riskLevel: 'medium'
     });
 
-    res.json({
-      ok: true,
-      data: {
-        stats: {
-          totalUsers: stats[0],
-          totalConversations: stats[1],
-          totalMessages: stats[2],
-          totalProducts: stats[3],
-          totalFreights: stats[4],
-          totalPayments: stats[5],
-          activitiesLast24h: stats[6]
-        },
-        recentActivities,
-        suspiciousLogs
-      }
+    return res.status(401).json({ 
+      success: false, 
+      message: "Credenciais inválidas" 
     });
+
   } catch (error) {
-    console.error('Error accessing admin dashboard:', error);
+    console.error("Erro no login admin:", error);
     
-    await createSecurityLog('system_error', 'high', `Admin dashboard error: ${error.message}`, req, req.user?.userId);
-    
-    res.status(500).json({
-      ok: false,
-      error: 'internal_error',
-      message: 'Erro interno do servidor'
+    await AuditLog.logAction({
+      userId: 'system',
+      userEmail: 'system',
+      action: 'ADMIN_LOGIN_ERROR',
+      resource: 'admin_panel',
+      details: `Login error: ${error.message}`,
+      ip: req.ip,
+      userAgent: req.get('User-Agent'),
+      errorCode: 'LOGIN_ERROR',
+      errorMessage: error.message
+    });
+
+    return res.status(500).json({ 
+      success: false, 
+      message: "Erro interno do servidor" 
     });
   }
 });
 
-// GET /admin/conversations - Todas as conversas (com filtros)
-router.get('/conversations', async (req, res) => {
+// ===== DASHBOARD ADMIN =====
+router.get("/dashboard", authenticateToken, requireAdmin, async (req, res) => {
   try {
-    const userId = req.user.userId;
-    const { page = 1, limit = 50, serviceType, status, search } = req.query;
-    
-    const skip = (parseInt(page) - 1) * parseInt(limit);
-    
-    // Construir query
-    const query = {};
-    
-    if (serviceType && ['product', 'freight'].includes(serviceType)) {
-      query.serviceType = serviceType;
-    }
-    
-    if (status && ['active', 'archived', 'closed', 'blocked'].includes(status)) {
-      query.status = status;
-    }
-    
-    if (search) {
-      query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { 'participants.name': { $regex: search, $options: 'i' } }
-      ];
-    }
-
-    // Buscar conversas
-    const conversations = await Conversation.find(query)
-      .sort({ lastMessageAt: -1 })
-      .skip(skip)
-      .limit(parseInt(limit))
-      .populate('participants', 'name email company.name')
-      .populate('serviceId', 'name title origin destination price');
-
-    // Contar total
-    const total = await Conversation.countDocuments(query);
-
-    // Log de acesso
-    await AuditLog.log({
-      userId: userId,
+    // Log do acesso ao dashboard
+    await AuditLog.logAction({
+      userId: req.user.id,
       userEmail: req.user.email,
-      action: 'admin_conversations_listed',
-      resource: 'admin',
-      resourceType: 'Admin',
-      details: `Listed ${conversations.length} conversations`,
-      ip: req.ip,
-      userAgent: req.get('User-Agent'),
-      metadata: { serviceType, status, search, page, limit, total }
-    });
-
-    res.json({
-      ok: true,
-      data: {
-        conversations,
-        pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(total / parseInt(limit)),
-          totalItems: total,
-          itemsPerPage: parseInt(limit)
-        }
-      }
-    });
-  } catch (error) {
-    console.error('Error listing admin conversations:', error);
-    
-    await createSecurityLog('system_error', 'high', `Admin conversations error: ${error.message}`, req, req.user?.userId);
-    
-    res.status(500).json({
-      ok: false,
-      error: 'internal_error',
-      message: 'Erro interno do servidor'
-    });
-  }
-});
-
-// GET /admin/conversations/:id/messages - Mensagens de uma conversa específica
-router.get('/conversations/:id/messages', async (req, res) => {
-  try {
-    const userId = req.user.userId;
-    const conversationId = req.params.id;
-
-    if (!mongoose.Types.ObjectId.isValid(conversationId)) {
-      return res.status(400).json({
-        ok: false,
-        error: 'invalid_id',
-        message: 'ID da conversa inválido'
-      });
-    }
-
-    // Buscar conversa
-    const conversation = await Conversation.findById(conversationId)
-      .populate('participants', 'name email company.name')
-      .populate('serviceId', 'name title origin destination price');
-
-    if (!conversation) {
-      return res.status(404).json({
-        ok: false,
-        error: 'conversation_not_found',
-        message: 'Conversa não encontrada'
-      });
-    }
-
-    // Buscar mensagens
-    const messages = await Message.find({ conversationId })
-      .sort({ createdAt: -1 })
-      .populate('senderId', 'name email company.name')
-      .populate('receiverId', 'name email company.name');
-
-    // Log de acesso
-    await AuditLog.log({
-      userId: userId,
-      userEmail: req.user.email,
-      action: 'admin_conversation_messages_accessed',
-      resource: 'admin',
-      resourceId: conversationId,
-      resourceType: 'Admin',
-      details: `Accessed ${messages.length} messages from conversation`,
+      action: 'ADMIN_DASHBOARD_ACCESS',
+      resource: 'admin_dashboard',
+      details: 'Admin dashboard accessed',
       ip: req.ip,
       userAgent: req.get('User-Agent')
     });
 
-    res.json({
-      ok: true,
-      data: {
-        conversation,
-        messages: messages.reverse() // Ordem cronológica
-      }
-    });
+    // Estatísticas gerais da plataforma
+    const stats = {
+      totalUsers: await User.countDocuments(),
+      totalProducts: await Product.countDocuments(),
+      totalFreights: await Freight.countDocuments(),
+      totalConversations: await Conversation.countDocuments(),
+      totalMessages: await Message.countDocuments(),
+      recentAuditLogs: await AuditLog.find()
+        .sort({ createdAt: -1 })
+        .limit(10)
+        .select('action userEmail createdAt ip')
+    };
+
+    res.json({ success: true, stats });
+
   } catch (error) {
-    console.error('Error accessing admin conversation messages:', error);
-    
-    await createSecurityLog('system_error', 'high', `Admin conversation messages error: ${error.message}`, req, req.user?.userId);
-    
-    res.status(500).json({
-      ok: false,
-      error: 'internal_error',
-      message: 'Erro interno do servidor'
+    console.error("Erro ao acessar dashboard admin:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Erro ao carregar dashboard" 
     });
   }
 });
 
-// GET /admin/users - Listar usuários
-router.get('/users', async (req, res) => {
+// ===== CONVERSAS ADMIN =====
+router.get("/conversations", authenticateToken, requireAdmin, async (req, res) => {
   try {
-    const userId = req.user.userId;
-    const { page = 1, limit = 50, status, search } = req.query;
-    
-    const skip = (parseInt(page) - 1) * parseInt(limit);
-    
-    // Construir query
-    const query = {};
-    
-    if (status && ['active', 'inactive', 'banned'].includes(status)) {
-      query.isActive = status === 'active';
-      if (status === 'banned') query.isBanned = true;
-    }
-    
-    if (search) {
-      query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } },
-        { 'company.name': { $regex: search, $options: 'i' } }
-      ];
-    }
+    const { page = 1, limit = 50, status } = req.query;
+    const skip = (page - 1) * limit;
 
-    // Buscar usuários
+    let query = {};
+    if (status) query.status = status;
+
+    const conversations = await Conversation.find(query)
+      .populate('participants', 'email name')
+      .populate('serviceId', 'title price')
+      .sort({ lastMessageAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    const total = await Conversation.countDocuments(query);
+
+    res.json({
+      success: true,
+      conversations,
+      pagination: { page: parseInt(page), limit: parseInt(limit), total }
+    });
+
+  } catch (error) {
+    console.error("Erro ao buscar conversas:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Erro ao buscar conversas" 
+    });
+  }
+});
+
+router.get("/conversations/:id/messages", authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { page = 1, limit = 100 } = req.query;
+    const skip = (page - 1) * limit;
+
+    const messages = await Message.find({ conversationId: id })
+      .populate('senderId', 'email name')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    const total = await Message.countDocuments({ conversationId: id });
+
+    res.json({
+      success: true,
+      messages,
+      pagination: { page: parseInt(page), limit: parseInt(limit), total }
+    });
+
+  } catch (error) {
+    console.error("Erro ao buscar mensagens:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Erro ao buscar mensagens" 
+    });
+  }
+});
+
+// ===== USUÁRIOS ADMIN =====
+router.get("/users", authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const { page = 1, limit = 50, status } = req.query;
+    const skip = (page - 1) * limit;
+
+    let query = {};
+    if (status) query.status = status;
+
     const users = await User.find(query)
       .select('-password')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit));
 
-    // Contar total
     const total = await User.countDocuments(query);
 
-    // Log de acesso
-    await AuditLog.log({
-      userId: userId,
-      userEmail: req.user.email,
-      action: 'admin_users_listed',
-      resource: 'admin',
-      resourceType: 'Admin',
-      details: `Listed ${users.length} users`,
-      ip: req.ip,
-      userAgent: req.get('User-Agent'),
-      metadata: { status, search, page, limit, total }
+    res.json({
+      success: true,
+      users,
+      pagination: { page: parseInt(page), limit: parseInt(limit), total }
     });
 
-    res.json({
-      ok: true,
-      data: {
-        users,
-        pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(total / parseInt(limit)),
-          totalItems: total,
-          itemsPerPage: parseInt(limit)
-        }
-      }
-    });
   } catch (error) {
-    console.error('Error listing admin users:', error);
-    
-    await createSecurityLog('system_error', 'high', `Admin users error: ${error.message}`, req, req.user?.userId);
-    
-    res.status(500).json({
-      ok: false,
-      error: 'internal_error',
-      message: 'Erro interno do servidor'
+    console.error("Erro ao buscar usuários:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Erro ao buscar usuários" 
     });
   }
- });
+});
 
-// PUT /admin/users/:id - Atualizar usuário (banir/desbanir, etc.)
-router.put('/users/:id', validateAdminAction, async (req, res) => {
+router.put("/users/:id", authenticateToken, requireAdmin, validateAdminAction, async (req, res) => {
   try {
-    const adminUserId = req.user.userId;
-    const targetUserId = req.params.id;
-    const { action, reason, fields } = req.body;
+    const { id } = req.params;
+    const { action, reason } = req.body;
 
-    if (!mongoose.Types.ObjectId.isValid(targetUserId)) {
-      return res.status(400).json({
-        ok: false,
-        error: 'invalid_id',
-        message: 'ID do usuário inválido'
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ 
+        success: false, 
+        message: "Usuário não encontrado" 
       });
     }
-
-    const targetUser = await User.findById(targetUserId);
-    if (!targetUser) {
-      return res.status(404).json({
-        ok: false,
-        error: 'user_not_found',
-        message: 'Usuário não encontrado'
-      });
-    }
-
-    // Executar ação
-    let updateData = {};
-    let actionDetails = '';
 
     switch (action) {
       case 'ban':
-        updateData = { isBanned: true, isActive: false, bannedAt: new Date(), banReason: reason };
-        actionDetails = 'User banned';
-        break;
-      case 'unban':
-        updateData = { isBanned: false, isActive: true, bannedAt: undefined, banReason: undefined };
-        actionDetails = 'User unbanned';
-        break;
-      case 'deactivate':
-        updateData = { isActive: false, deactivatedAt: new Date(), deactivationReason: reason };
-        actionDetails = 'User deactivated';
+        user.status = 'banned';
+        user.bannedAt = new Date();
+        user.banReason = reason;
         break;
       case 'activate':
-        updateData = { isActive: true, deactivatedAt: undefined, deactivationReason: undefined };
-        actionDetails = 'User activated';
-        break;
-      case 'update':
-        if (fields && typeof fields === 'object') {
-          updateData = fields;
-          actionDetails = 'User updated';
-        }
+        user.status = 'active';
+        user.bannedAt = undefined;
+        user.banReason = undefined;
         break;
       default:
-        return res.status(400).json({
-          ok: false,
-          error: 'invalid_action',
-          message: 'Ação inválida'
+        return res.status(400).json({ 
+          success: false, 
+          message: "Ação inválida" 
         });
     }
 
-    // Atualizar usuário
-    await User.findByIdAndUpdate(targetUserId, updateData);
+    await user.save();
 
     // Log da ação administrativa
-    await AuditLog.log({
-      userId: adminUserId,
+    await AuditLog.logAction({
+      userId: req.user.id,
       userEmail: req.user.email,
-      action: 'admin_user_action',
+      action: `ADMIN_USER_${action.toUpperCase()}`,
       resource: 'user',
-      resourceId: targetUserId,
-      resourceType: 'User',
-      details: `${actionDetails}: ${reason}`,
+      resourceId: id,
+      details: `User ${action}ed. Reason: ${reason}`,
       ip: req.ip,
-      userAgent: req.get('User-Agent'),
-      metadata: { action, reason, targetUserEmail: targetUser.email, updateData }
+      userAgent: req.get('User-Agent')
     });
 
-    res.json({
-      ok: true,
-      message: 'Usuário atualizado com sucesso',
-      data: { action, reason, userId: targetUserId }
+    res.json({ 
+      success: true, 
+      message: `Usuário ${action === 'ban' ? 'banido' : 'ativado'} com sucesso` 
     });
+
   } catch (error) {
-    console.error('Error updating admin user:', error);
-    
-    await createSecurityLog('system_error', 'high', `Admin user update error: ${error.message}`, req, req.user?.userId);
-    
-    res.status(500).json({
-      ok: false,
-      error: 'internal_error',
-      message: 'Erro interno do servidor'
+    console.error("Erro ao modificar usuário:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Erro ao modificar usuário" 
     });
   }
 });
 
-// GET /admin/products - Listar produtos
-router.get('/products', async (req, res) => {
+// ===== PRODUTOS ADMIN =====
+router.get("/products", authenticateToken, requireAdmin, async (req, res) => {
   try {
-    const userId = req.user.userId;
-    const { page = 1, limit = 50, status, search } = req.query;
-    
-    const skip = (parseInt(page) - 1) * parseInt(limit);
-    
-    // Construir query
-    const query = {};
-    
-    if (status && ['active', 'inactive', 'pending'].includes(status)) {
-      query.status = status;
-    }
-    
-    if (search) {
-      query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
-      ];
-    }
+    const { page = 1, limit = 50, status } = req.query;
+    const skip = (page - 1) * limit;
 
-    // Buscar produtos
+    let query = {};
+    if (status) query.status = status;
+
     const products = await Product.find(query)
-      .populate('ownerId', 'name email company.name')
+      .populate('sellerId', 'email name')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit));
 
-    // Contar total
     const total = await Product.countDocuments(query);
 
-    // Log de acesso
-    await AuditLog.log({
-      userId: userId,
-      userEmail: req.user.email,
-      action: 'admin_products_listed',
-      resource: 'admin',
-      resourceType: 'Admin',
-      details: `Listed ${products.length} products`,
-      ip: req.ip,
-      userAgent: req.get('User-Agent'),
-      metadata: { status, search, page, limit, total }
+    res.json({
+      success: true,
+      products,
+      pagination: { page: parseInt(page), limit: parseInt(limit), total }
     });
 
-    res.json({
-      ok: true,
-      data: {
-        products,
-        pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(total / parseInt(limit)),
-          totalItems: total,
-          itemsPerPage: parseInt(limit)
-        }
-      }
-    });
   } catch (error) {
-    console.error('Error listing admin products:', error);
-    
-    await createSecurityLog('system_error', 'high', `Admin products error: ${error.message}`, req, req.user?.userId);
-    
-    res.status(500).json({
-      ok: false,
-      error: 'internal_error',
-      message: 'Erro interno do servidor'
+    console.error("Erro ao buscar produtos:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Erro ao buscar produtos" 
     });
   }
 });
 
-// GET /admin/freights - Listar fretes
-router.get('/freights', async (req, res) => {
+// ===== FRETES ADMIN =====
+router.get("/freights", authenticateToken, requireAdmin, async (req, res) => {
   try {
-    const userId = req.user.userId;
-    const { page = 1, limit = 50, status, search } = req.query;
-    
-    const skip = (parseInt(page) - 1) * parseInt(limit);
-    
-    // Construir query
-    const query = {};
-    
-    if (status && ['active', 'inactive', 'completed'].includes(status)) {
-      query.status = status;
-    }
-    
-    if (search) {
-      query.$or = [
-        { origin: { $regex: search, $options: 'i' } },
-        { destination: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
-      ];
-    }
+    const { page = 1, limit = 50, status } = req.query;
+    const skip = (page - 1) * limit;
 
-    // Buscar fretes
+    let query = {};
+    if (status) query.status = status;
+
     const freights = await Freight.find(query)
-      .populate('ownerId', 'name email company.name')
+      .populate('ownerId', 'email name')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit));
 
-    // Contar total
     const total = await Freight.countDocuments(query);
 
-    // Log de acesso
-    await AuditLog.log({
-      userId: userId,
-      userEmail: req.user.email,
-      action: 'admin_freights_listed',
-      resource: 'admin',
-      resourceType: 'Admin',
-      details: `Listed ${freights.length} freights`,
-      ip: req.ip,
-      userAgent: req.get('User-Agent'),
-      metadata: { status, search, page, limit, total }
+    res.json({
+      success: true,
+      freights,
+      pagination: { page: parseInt(page), limit: parseInt(limit), total }
     });
 
-    res.json({
-      ok: true,
-      data: {
-        freights,
-        pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(total / parseInt(limit)),
-          totalItems: total,
-          itemsPerPage: parseInt(limit)
-        }
-      }
-    });
   } catch (error) {
-    console.error('Error listing admin freights:', error);
-    
-    await createSecurityLog('system_error', 'high', `Admin freights error: ${error.message}`, req, req.user?.userId);
-    
-    res.status(500).json({
-      ok: false,
-      error: 'internal_error',
-      message: 'Erro interno do servidor'
+    console.error("Erro ao buscar fretes:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Erro ao buscar fretes" 
     });
   }
 });
 
-// GET /admin/payments - Listar pagamentos
-router.get('/payments', async (req, res) => {
+// ===== PAGAMENTOS ADMIN =====
+router.get("/payments", authenticateToken, requireAdmin, async (req, res) => {
   try {
-    const userId = req.user.userId;
-    const { page = 1, limit = 50, status, provider, startDate, endDate } = req.query;
-    
-    const skip = (parseInt(page) - 1) * parseInt(limit);
-    
-    // Construir query
-    const query = {};
-    
-    if (status && ['pending', 'completed', 'failed', 'cancelled'].includes(status)) {
-      query.status = status;
-    }
-    
-    if (provider && ['stripe', 'metamask', 'crypto'].includes(provider)) {
-      query.provider = provider;
-    }
-    
-    if (startDate || endDate) {
-      query.createdAt = {};
-      if (startDate) query.createdAt.$gte = new Date(startDate);
-      if (endDate) query.createdAt.$lte = new Date(endDate);
-    }
+    const { page = 1, limit = 50, status } = req.query;
+    const skip = (page - 1) * limit;
 
-    // Buscar pagamentos
+    let query = {};
+    if (status) query.status = status;
+
     const payments = await Payment.find(query)
-      .populate('userId', 'name email company.name')
+      .populate('userId', 'email name')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit));
 
-    // Contar total
     const total = await Payment.countDocuments(query);
 
-    // Log de acesso
-    await AuditLog.log({
-      userId: userId,
-      userEmail: req.user.email,
-      action: 'admin_payments_listed',
-      resource: 'admin',
-      resourceType: 'Admin',
-      details: `Listed ${payments.length} payments`,
-      ip: req.ip,
-      userAgent: req.get('User-Agent'),
-      metadata: { status, provider, startDate, endDate, page, limit, total }
+    res.json({
+      success: true,
+      payments,
+      pagination: { page: parseInt(page), limit: parseInt(limit), total }
     });
 
-    res.json({
-      ok: true,
-      data: {
-        payments,
-        pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(total / parseInt(limit)),
-          totalItems: total,
-          itemsPerPage: parseInt(limit)
-        }
-      }
-    });
   } catch (error) {
-    console.error('Error listing admin payments:', error);
-    
-    await createSecurityLog('system_error', 'high', `Admin payments error: ${error.message}`, req, req.user?.userId);
-    
-    res.status(500).json({
-      ok: false,
-      error: 'internal_error',
-      message: 'Erro interno do servidor'
+    console.error("Erro ao buscar pagamentos:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Erro ao buscar pagamentos" 
     });
   }
 });
 
-// GET /admin/auditlogs - Logs de auditoria
-router.get('/auditlogs', async (req, res) => {
+// ===== LOGS DE AUDITORIA ADMIN =====
+router.get("/auditlogs", authenticateToken, requireAdmin, async (req, res) => {
   try {
-    const userId = req.user.userId;
-    const { page = 1, limit = 100, action, resource, userId: targetUserId, startDate, endDate, suspicious } = req.query;
-    
-    const skip = (parseInt(page) - 1) * parseInt(limit);
-    
-    // Construir query
-    const query = {};
-    
-    if (action) query.action = action;
-    if (resource) query.resource = resource;
-    if (targetUserId) query.userId = targetUserId;
-    if (suspicious === 'true') query.isSuspicious = true;
-    
-    if (startDate || endDate) {
-      query.createdAt = {};
-      if (startDate) query.createdAt.$gte = new Date(startDate);
-      if (endDate) query.createdAt.$lte = new Date(endDate);
-    }
+    const { page = 1, limit = 100, action, userId, suspicious } = req.query;
+    const skip = (page - 1) * limit;
 
-    // Buscar logs
+    let query = {};
+    if (action) query.action = action;
+    if (userId) query.userId = userId;
+    if (suspicious === 'true') query.isSuspicious = true;
+
     const logs = await AuditLog.find(query)
-      .populate('userId', 'name email')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit));
 
-    // Contar total
     const total = await AuditLog.countDocuments(query);
 
-    // Log de acesso
-    await AuditLog.log({
-      userId: userId,
-      userEmail: req.user.email,
-      action: 'admin_auditlogs_accessed',
-      resource: 'admin',
-      resourceType: 'Admin',
-      details: `Accessed ${logs.length} audit logs`,
-      ip: req.ip,
-      userAgent: req.get('User-Agent'),
-      metadata: { action, resource, targetUserId, startDate, endDate, suspicious, page, limit, total }
+    res.json({
+      success: true,
+      logs,
+      pagination: { page: parseInt(page), limit: parseInt(limit), total }
     });
 
-    res.json({
-      ok: true,
-      data: {
-        logs,
-        pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(total / parseInt(limit)),
-          totalItems: total,
-          itemsPerPage: parseInt(limit)
-        }
-      }
-    });
   } catch (error) {
-    console.error('Error accessing admin audit logs:', error);
-    
-    await createSecurityLog('system_error', 'high', `Admin audit logs error: ${error.message}`, req, req.user?.userId);
-    
-    res.status(500).json({
-      ok: false,
-      error: 'internal_error',
-      message: 'Erro interno do servidor'
+    console.error("Erro ao buscar logs de auditoria:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Erro ao buscar logs de auditoria" 
     });
   }
 });
 
-// POST /admin/export - Exportar dados (CSV)
-router.post('/export', validateAdminAction, async (req, res) => {
+// ===== EXPORTAÇÃO DE DADOS =====
+router.post("/export", authenticateToken, requireAdmin, validateAdminAction, async (req, res) => {
   try {
-    const userId = req.user.userId;
-    const { dataType, filters, format = 'csv' } = req.body;
-
-    if (!['users', 'conversations', 'messages', 'products', 'freights', 'payments', 'auditlogs'].includes(dataType)) {
-      return res.status(400).json({
-        ok: false,
-        error: 'invalid_data_type',
-        message: 'Tipo de dados inválido para exportação'
-      });
-    }
+    const { dataType, format, filters } = req.body;
 
     // Log da tentativa de exportação
-    await AuditLog.log({
-      userId: userId,
+    await AuditLog.logAction({
+      userId: req.user.id,
       userEmail: req.user.email,
-      action: 'admin_export_attempted',
-      resource: 'admin',
-      resourceType: 'Admin',
-      details: `Export attempt for ${dataType}`,
+      action: 'ADMIN_DATA_EXPORT',
+      resource: 'data_export',
+      details: `Export attempt: ${dataType} in ${format}`,
       ip: req.ip,
-      userAgent: req.get('User-Agent'),
-      metadata: { dataType, filters, format }
+      userAgent: req.get('User-Agent')
     });
 
-    // Por enquanto, retornar sucesso (implementar exportação real depois)
-    res.json({
-      ok: true,
-      message: 'Exportação solicitada com sucesso',
-      data: { 
-        dataType, 
-        format, 
-        status: 'queued',
-        estimatedTime: '5-10 minutos'
-      }
+    // TODO: Implementar lógica de exportação real
+    res.json({ 
+      success: true, 
+      message: "Exportação solicitada. Será processada em background." 
     });
+
   } catch (error) {
-    console.error('Error requesting admin export:', error);
-    
-    await createSecurityLog('system_error', 'high', `Admin export error: ${error.message}`, req, req.user?.userId);
-    
-    res.status(500).json({
-      ok: false,
-      error: 'internal_error',
-      message: 'Erro interno do servidor'
+    console.error("Erro na exportação:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Erro na exportação" 
     });
   }
 });

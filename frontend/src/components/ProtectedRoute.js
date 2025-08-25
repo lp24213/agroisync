@@ -1,99 +1,97 @@
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
-import { Shield, Lock, AlertTriangle } from 'lucide-react';
 
-const ProtectedRoute = ({ children, requirePlan = false }) => {
-  const { user, isAdmin, loading } = useAuth();
+const ProtectedRoute = ({ children, requirePlan = false, requireAdmin = false }) => {
+  const { user, loading } = useAuth();
 
-  // Se ainda está carregando, mostrar loading
+  // Mostrar loading enquanto verifica autenticação
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Verificando permissões...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Verificando autenticação...</p>
         </div>
       </div>
     );
   }
 
-  // Se não está autenticado, redirecionar para login
+  // Se não há usuário autenticado, redirecionar para login
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  // Se requer plano específico (como mensageria)
-  if (requirePlan) {
-    // Admin tem acesso total
-    if (isAdmin) {
-      return children;
-    }
+  // Se a rota requer admin e o usuário não é admin
+  if (requireAdmin && !user.isAdmin) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-6">
+          <div className="mb-6">
+            <div className="mx-auto h-16 w-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+              <svg className="h-8 w-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Acesso Negado</h2>
+            <p className="text-gray-600 mb-6">
+              Esta área é restrita apenas para administradores autorizados.
+            </p>
+          </div>
+          
+          <div className="space-y-3">
+            <button
+              onClick={() => window.history.back()}
+              className="w-full px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+            >
+              Voltar
+            </button>
+            <button
+              onClick={() => window.location.href = '/'}
+              className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+            >
+              Ir para o Início
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-    // Verificar se tem plano ativo
-    const hasActivePlan = () => {
-      if (!user.subscriptions) return false;
-      
-      const storeSubscription = user.subscriptions.store;
-      const agroconectaSubscription = user.subscriptions.agroconecta;
-      
-      return (storeSubscription && storeSubscription.status === 'active') ||
-             (agroconectaSubscription && agroconectaSubscription.status === 'active');
-    };
-
-    if (!hasActivePlan()) {
+  // Se a rota requer plano ativo e o usuário não tem plano
+  if (requirePlan && !user.isAdmin) {
+    // Verificar se o usuário tem plano ativo
+    const hasActivePlan = user.activePlan || user.subscriptionStatus === 'active';
+    
+    if (!hasActivePlan) {
       return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-              <Lock className="w-16 h-16 text-red-500 mx-auto mb-4" />
-              <h1 className="text-3xl font-bold text-gray-800 mb-4">
-                Acesso Restrito
-              </h1>
-              <p className="text-lg text-gray-600 mb-6">
-                Esta funcionalidade requer um plano ativo.
+        <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+          <div className="text-center max-w-md mx-auto p-6">
+            <div className="mb-6">
+              <div className="mx-auto h-16 w-16 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
+                <svg className="h-8 w-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Funcionalidade Bloqueada</h2>
+              <p className="text-gray-600 mb-6">
+                Esta funcionalidade requer um plano ativo. Ative um plano para continuar.
               </p>
-              
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-                <div className="flex items-start space-x-3">
-                  <AlertTriangle className="w-6 h-6 text-red-500 mt-1 flex-shrink-0" />
-                  <div className="text-left">
-                    <h3 className="font-semibold text-red-800 mb-2">
-                      ⚠️ AVISO DE SEGURANÇA
-                    </h3>
-                    <p className="text-red-700 text-sm">
-                      Nunca faça pagamentos sem confirmar a veracidade do produto. 
-                      A Agroisync não se responsabiliza por pagamentos entre usuários.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-                <h3 className="font-semibold text-yellow-800 mb-2">
-                  📋 Planos Disponíveis:
-                </h3>
-                <ul className="text-yellow-700 text-left space-y-2">
-                  <li>• <strong>Loja:</strong> R$25/mês (até 3 anúncios) + Mensageria</li>
-                  <li>• <strong>AgroConecta Básico:</strong> R$50/mês + Mensageria</li>
-                  <li>• <strong>AgroConecta Pro:</strong> R$149/mês (até 30 fretes) + Mensageria</li>
-                </ul>
-              </div>
-
-              <div className="space-x-4">
-                <a 
-                  href="/planos" 
-                  className="inline-flex items-center px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors"
-                >
-                  Ver Planos
-                </a>
-                <a 
-                  href="/loja" 
-                  className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  Ir para Loja
-                </a>
-              </div>
+            </div>
+            
+            <div className="space-y-3">
+              <button
+                onClick={() => window.location.href = '/planos'}
+                className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              >
+                Ver Planos
+              </button>
+              <button
+                onClick={() => window.history.back()}
+                className="w-full px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+              >
+                Voltar
+              </button>
             </div>
           </div>
         </div>
@@ -101,7 +99,7 @@ const ProtectedRoute = ({ children, requirePlan = false }) => {
     }
   }
 
-  // Se passou por todas as verificações, renderizar o conteúdo
+  // Se todas as verificações passaram, renderizar o conteúdo
   return children;
 };
 

@@ -1,7 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Amplify } from 'aws-amplify';
-import { signIn as amplifySignIn, getCurrentUser, fetchAuthSession } from 'aws-amplify/auth';
-import apiService from '../services/api';
+import { authService } from '../services/authService';
 
 const AuthContext = createContext();
 
@@ -16,266 +14,152 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [userProfile, setUserProfile] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    checkAuthState();
+    // Verificar se há um token salvo
+    const token = localStorage.getItem('token');
+    const adminToken = localStorage.getItem('adminToken');
+    
+    if (adminToken) {
+      // Verificar token admin
+      verifyAdminToken(adminToken);
+    } else if (token) {
+      // Verificar token de usuário normal
+      verifyUserToken(token);
+    } else {
+      setLoading(false);
+    }
   }, []);
 
-  const checkAuthState = async () => {
+  const verifyUserToken = async (token) => {
     try {
-      const currentUser = await getCurrentUser();
-      if (currentUser) {
-        await handleUserLogin(currentUser);
-      }
+      const userData = await authService.verifyToken(token);
+      setUser(userData);
+      setIsAdmin(false);
     } catch (error) {
-      console.log('Usuário não autenticado');
+      console.error('Token inválido:', error);
+      localStorage.removeItem('token');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleUserLogin = async (cognitoUser) => {
+  const verifyAdminToken = async (token) => {
     try {
-      const session = await fetchAuthSession();
-      const token = session.getIdToken().getJwtToken();
-      
-      // Decodificar token para obter informações do usuário
+      // Decodificar token JWT para verificar se é admin
       const payload = JSON.parse(atob(token.split('.')[1]));
       
-      const userData = {
-        id: payload.sub,
-        email: payload.email,
-        name: payload.name || '',
-        cognitoUser,
-        token
-      };
-
-      setUser(userData);
-
-      // Verificar se é admin com credenciais específicas
-      const adminCheck = payload.email === 'luispaulodeoliveira@agrotm.com.br';
-      setIsAdmin(adminCheck);
-
-      // Buscar perfil do usuário no backend
-      try {
-        const profile = await apiService.getProducts(token, { owner: 'me' });
-        setUserProfile(profile);
-      } catch (error) {
-        console.log('Usuário ainda não tem perfil no backend');
-        // Tentar fazer bootstrap do usuário
-        try {
-          await apiService.bootstrapUser(token);
-          console.log('Usuário bootstrapado com sucesso');
-        } catch (bootstrapError) {
-          console.error('Erro no bootstrap:', bootstrapError);
-        }
+      if (payload.role === 'admin' && payload.isAdmin) {
+        setUser({
+          id: 'admin',
+          email: payload.email,
+          role: 'admin',
+          isAdmin: true
+        });
+        setIsAdmin(true);
+      } else {
+        throw new Error('Token não é de admin');
       }
-
     } catch (error) {
-      console.error('Erro ao processar login:', error);
+      console.error('Token admin inválido:', error);
+      localStorage.removeItem('adminToken');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const signIn = async (email, password) => {
+  const login = async (email, password) => {
     try {
-      setLoading(true);
+      const response = await authService.login(email, password);
+      if (response.success) {
+        setUser(response.user);
+        setIsAdmin(false);
+        localStorage.setItem('token', response.token);
+        return { success: true };
+      } else {
+        return { success: false, message: response.message };
+      }
+    } catch (error) {
+      console.error('Erro no login:', error);
+      return { success: false, message: 'Erro de conexão' };
+    }
+  };
+
+  const loginAdmin = async (token) => {
+    try {
+      // Decodificar token JWT para verificar se é admin
+      const payload = JSON.parse(atob(token.split('.')[1]));
       
-      // Verificação especial para admin
-      if (email === 'luispaulodeoliveira@agrotm.com.br' && password === 'Th@ys15221008') {
-        // Login direto como admin (bypass do Cognito para desenvolvimento)
+      if (payload.role === 'admin' && payload.isAdmin) {
         const adminUser = {
-          id: 'admin-001',
-          email: 'luispaulodeoliveira@agrotm.com.br',
-          name: 'Luis Paulo de Oliveira',
+          id: 'admin',
+          email: payload.email,
           role: 'admin',
-          token: 'admin-token-' + Date.now()
+          isAdmin: true
         };
         
         setUser(adminUser);
         setIsAdmin(true);
+        localStorage.setItem('adminToken', token);
         return { success: true };
+      } else {
+        throw new Error('Token não é de admin');
       }
-      
-      const cognitoUser = await amplifySignIn(email, password);
-      await handleUserLogin(cognitoUser);
-      return { success: true };
     } catch (error) {
-      console.error('Erro no login:', error);
-      let message = 'Erro no login';
-      
-      if (error.code === 'UserNotConfirmedException') {
-        message = 'Usuário não confirmado. Verifique seu e-mail.';
-      } else if (error.code === 'NotAuthorizedException') {
-        message = 'Credenciais inválidas.';
-      } else if (error.code === 'UserNotFoundException') {
-        message = 'Usuário não encontrado.';
-      } else if (error.code === 'LimitExceededException') {
-        message = 'Muitas tentativas de login. Tente novamente mais tarde.';
+      console.error('Erro no login admin:', error);
+      return { success: false, message: 'Token admin inválido' };
+    }
+  };
+
+  const register = async (userData) => {
+    try {
+      const response = await authService.register(userData);
+      if (response.success) {
+        setUser(response.user);
+        setIsAdmin(false);
+        localStorage.setItem('token', response.token);
+        return { success: true };
+      } else {
+        return { success: false, message: response.message };
       }
-      
-      return { success: false, error: message };
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      console.error('Erro no registro:', error);
+      return { success: false, message: 'Erro de conexão' };
     }
   };
 
-  const signUp = async (email, password, name) => {
-    try {
-      setLoading(true);
-      await Amplify.signUp({
-        username: email,
-        password,
-        attributes: {
-          email,
-          name
-        }
-      });
-      return { success: true };
-    } catch (error) {
-      console.error('Erro no cadastro:', error);
-      let message = 'Erro no cadastro';
-      
-      if (error.code === 'UsernameExistsException') {
-        message = 'Usuário já existe.';
-      } else if (error.code === 'InvalidPasswordException') {
-        message = 'Senha deve ter pelo menos 8 caracteres, incluindo maiúsculas, minúsculas e números.';
-      } else if (error.code === 'InvalidParameterException') {
-        message = 'Parâmetros inválidos.';
-      }
-      
-      return { success: false, error: message };
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const confirmSignUp = async (email, code) => {
-    try {
-      setLoading(true);
-      await Amplify.confirmSignUp(email, code);
-      return { success: true };
-    } catch (error) {
-      console.error('Erro na confirmação:', error);
-      let message = 'Erro na confirmação';
-      
-      if (error.code === 'CodeMismatchException') {
-        message = 'Código de confirmação inválido.';
-      } else if (error.code === 'ExpiredCodeException') {
-        message = 'Código de confirmação expirado.';
-      }
-      
-      return { success: false, error: message };
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const resendConfirmationCode = async (email) => {
-    try {
-      setLoading(true);
-      await Amplify.resendSignUp(email);
-      return { success: true };
-    } catch (error) {
-      console.error('Erro ao reenviar código:', error);
-      return { success: false, error: 'Erro ao reenviar código de confirmação.' };
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const signOut = async () => {
-    try {
-      await Amplify.signOut();
-      setUser(null);
-      setUserProfile(null);
-      setIsAdmin(false);
-    } catch (error) {
-      console.error('Erro no logout:', error);
-    }
-  };
-
-  const forgotPassword = async (email) => {
-    try {
-      setLoading(true);
-      await Amplify.forgotPassword(email);
-      return { success: true };
-    } catch (error) {
-      console.error('Erro ao solicitar reset de senha:', error);
-      return { success: false, error: 'Erro ao solicitar reset de senha.' };
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const confirmNewPassword = async (email, code, newPassword) => {
-    try {
-      setLoading(true);
-      await Amplify.forgotPasswordSubmit(email, code, newPassword);
-      return { success: true };
-    } catch (error) {
-      console.error('Erro ao confirmar nova senha:', error);
-      let message = 'Erro ao confirmar nova senha';
-      
-      if (error.code === 'CodeMismatchException') {
-        message = 'Código de confirmação inválido.';
-      } else if (error.code === 'ExpiredCodeException') {
-        message = 'Código de confirmação expirado.';
-      } else if (error.code === 'InvalidPasswordException') {
-        message = 'Nova senha inválida.';
-      }
-      
-      return { success: false, error: message };
-    } finally {
-      setLoading(false);
-    }
+  const logout = () => {
+    setUser(null);
+    setIsAdmin(false);
+    localStorage.removeItem('token');
+    localStorage.removeItem('adminToken');
   };
 
   const updateProfile = async (profileData) => {
-    if (!user?.token) {
-      return { success: false, error: 'Usuário não autenticado' };
-    }
-
     try {
-      setLoading(true);
-      const result = await apiService.updateProfile(user.token, profileData);
-      setUserProfile(result.user);
-      return { success: true, data: result };
+      const response = await authService.updateProfile(profileData);
+      if (response.success) {
+        setUser(prevUser => ({ ...prevUser, ...response.user }));
+        return { success: true };
+      } else {
+        return { success: false, message: response.message };
+      }
     } catch (error) {
       console.error('Erro ao atualizar perfil:', error);
-      return { success: false, error: error.message };
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const refreshUserProfile = async () => {
-    if (!user?.token) return;
-
-    try {
-      const profile = await apiService.getProducts(user.token, { owner: 'me' });
-      setUserProfile(profile);
-    } catch (error) {
-      console.error('Erro ao atualizar perfil:', error);
+      return { success: false, message: 'Erro de conexão' };
     }
   };
 
   const value = {
     user,
-    userProfile,
-    isAdmin,
     loading,
-    signIn,
-    signUp,
-    confirmSignUp,
-    resendConfirmationCode,
-    signOut,
-    forgotPassword,
-    confirmNewPassword,
-    updateProfile,
-    refreshUserProfile,
-    checkAuthState
+    isAdmin,
+    login,
+    loginAdmin,
+    register,
+    logout,
+    updateProfile
   };
 
   return (
