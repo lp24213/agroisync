@@ -234,70 +234,123 @@ const Navbar = () => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
               className="lg:hidden bg-black border-t border-gray-700"
             >
               <div className="py-4 space-y-2">
-                {/* Grupo 1: Navegação Principal */}
+                {/* Grupo 1: Páginas Principais */}
                 <div className="px-3 py-2">
-                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Navegação</h3>
+                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Páginas Principais</h3>
                   <div className="space-y-2">
-                    <a href="/" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                    <a 
+                      href="/" 
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white"
+                    >
                       <BarChart3 className="w-5 h-5 text-green-400" />
                       <span>{t('nav.home')}</span>
                     </a>
-                    <a href="/cripto" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
-                      <Coins className="w-5 h-5 text-yellow-400" />
-                      <span>{t('nav.crypto')}</span>
+                    <a 
+                      href="/loja" 
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white"
+                    >
+                      <ShoppingCart className="w-5 h-5 text-blue-400" />
+                      <span>Marketplace</span>
                     </a>
-                    <a href="/faq" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
-                      <HelpCircle className="w-5 h-5 text-blue-400" />
-                      <span>{t('nav.faq')}</span>
-                    </a>
-                  </div>
-                </div>
-
-                {/* Grupo 2: Serviços */}
-                <div className="px-3 py-2">
-                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Serviços</h3>
-                  <div className="space-y-2">
-                    <a href="/agroconecta" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                    <a 
+                      href="/agroconecta" 
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white"
+                    >
                       <Truck className="w-5 h-5 text-green-400" />
                       <span>{t('nav.agroconnect')}</span>
                     </a>
-                    <a href="/loja" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
-                      <ShoppingCart className="w-5 h-5 text-blue-400" />
-                      <span>{t('nav.store')}</span>
-                    </a>
-                    <a href="/planos" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
-                      <Activity className="w-5 h-5 text-purple-400" />
-                      <span>{t('nav.plans')}</span>
+                    <a 
+                      href="/cripto" 
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white"
+                    >
+                      <Coins className="w-5 h-5 text-yellow-400" />
+                      <span>{t('nav.crypto')}</span>
                     </a>
                   </div>
                 </div>
 
-                {/* Grupo 3: Suporte e Informações */}
+                {/* Grupo 2: Informações e Suporte */}
                 <div className="px-3 py-2">
-                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Suporte</h3>
+                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Informações</h3>
                   <div className="space-y-2">
-                    <a href="/ajuda" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
-                      <HelpCircle className="w-5 h-5 text-green-400" />
-                      <span>{t('nav.help')}</span>
-                    </a>
-                    <a href="/status" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
-                      <Activity className="w-5 h-5 text-blue-400" />
-                      <span>{t('nav.status')}</span>
-                    </a>
-                    <a href="/contato" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
-                      <HelpCircle className="w-5 h-5 text-purple-400" />
-                      <span>{t('nav.contact')}</span>
-                    </a>
-                    <a href="/parcerias" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                    <a 
+                      href="/parcerias" 
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white"
+                    >
                       <Award className="w-5 h-5 text-yellow-400" />
                       <span>Parcerias</span>
                     </a>
-                    <a href="/sobre" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white">
+                    <a 
+                      href="/faq" 
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white"
+                    >
+                      <HelpCircle className="w-5 h-5 text-blue-400" />
+                      <span>{t('nav.faq')}</span>
+                    </a>
+                    <a 
+                      href="/status" 
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white"
+                    >
+                      <Activity className="w-5 h-5 text-purple-400" />
+                      <span>{t('nav.status')}</span>
+                    </a>
+                    <a 
+                      href="/sobre" 
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white"
+                    >
                       <HelpCircle className="w-5 h-5 text-gray-400" />
                       <span>{t('nav.about')}</span>
+                    </a>
+                    <a 
+                      href="/ajuda" 
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white"
+                    >
+                      <HelpCircle className="w-5 h-5 text-green-400" />
+                      <span>{t('nav.help')}</span>
+                    </a>
+                    <a 
+                      href="/contato" 
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white"
+                    >
+                      <HelpCircle className="w-5 h-5 text-purple-400" />
+                      <span>{t('nav.contact')}</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Grupo 3: Planos e Serviços */}
+                <div className="px-3 py-2">
+                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Serviços</h3>
+                  <div className="space-y-2">
+                    <a 
+                      href="/planos" 
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white"
+                    >
+                      <Activity className="w-5 h-5 text-purple-400" />
+                      <span>{t('nav.plans')}</span>
+                    </a>
+                    <a 
+                      href="/cotacao" 
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white"
+                    >
+                      <BarChart3 className="w-5 h-5 text-orange-400" />
+                      <span>Cotação</span>
                     </a>
                   </div>
                 </div>
@@ -320,6 +373,23 @@ const Navbar = () => {
                     <span>{t('chatbot.name')}</span>
                   </button>
                 </div>
+
+                {/* Admin - Somente se logado como admin */}
+                {user && user.role === 'admin' && (
+                  <div className="px-3 py-2">
+                    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Administração</h3>
+                    <div className="space-y-2">
+                      <a 
+                        href="/admin" 
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white bg-gradient-to-r from-red-600/20 to-red-800/20 border border-red-500/30"
+                      >
+                        <BarChart3 className="w-5 h-5 text-red-400" />
+                        <span>Painel Admin</span>
+                      </a>
+                    </div>
+                  </div>
+                )}
 
                 {/* Mobile Language & Theme */}
                 <div className="flex items-center justify-between p-3 border-t border-gray-700">
