@@ -129,11 +129,11 @@ jobs:
         cd frontend
         echo "🔧 Configurando variáveis de ambiente para o build..."
         
-        # Configurar variáveis de ambiente
-        export REACT_APP_API_URL="${{ secrets.REACT_APP_API_URL || env.REACT_APP_API_URL }}"
-        export REACT_APP_STRIPE_PUBLIC_KEY="${{ secrets.REACT_APP_STRIPE_PUBLIC_KEY || env.REACT_APP_STRIPE_PUBLIC_KEY }}"
-        export REACT_APP_METAMASK_ADDRESS="${{ secrets.REACT_APP_METAMASK_ADDRESS || env.REACT_APP_METAMASK_ADDRESS }}"
-        export REACT_APP_METAMASK_NETWORK="${{ secrets.REACT_APP_METAMASK_NETWORK || env.REACT_APP_METAMASK_NETWORK }}"
+        # Configurar variáveis de ambiente usando valores padrão
+        export REACT_APP_API_URL="${{ env.REACT_APP_API_URL }}"
+        export REACT_APP_STRIPE_PUBLIC_KEY="${{ env.REACT_APP_STRIPE_PUBLIC_KEY }}"
+        export REACT_APP_METAMASK_ADDRESS="${{ env.REACT_APP_METAMASK_ADDRESS }}"
+        export REACT_APP_METAMASK_NETWORK="${{ env.REACT_APP_METAMASK_NETWORK }}"
         
         echo "✅ Variáveis configuradas:"
         echo "  API URL: $REACT_APP_API_URL"
@@ -143,10 +143,10 @@ jobs:
         
         npm run build
       env:
-        REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL || env.REACT_APP_API_URL }}
-        REACT_APP_STRIPE_PUBLIC_KEY: ${{ secrets.REACT_APP_STRIPE_PUBLIC_KEY || env.REACT_APP_STRIPE_PUBLIC_KEY }}
-        REACT_APP_METAMASK_ADDRESS: ${{ secrets.REACT_APP_METAMASK_ADDRESS || env.REACT_APP_METAMASK_ADDRESS }}
-        REACT_APP_METAMASK_NETWORK: ${{ secrets.REACT_APP_METAMASK_NETWORK || env.REACT_APP_METAMASK_NETWORK }}
+        REACT_APP_API_URL: ${{ env.REACT_APP_API_URL }}
+        REACT_APP_STRIPE_PUBLIC_KEY: ${{ env.REACT_APP_STRIPE_PUBLIC_KEY }}
+        REACT_APP_METAMASK_ADDRESS: ${{ env.REACT_APP_METAMASK_ADDRESS }}
+        REACT_APP_METAMASK_NETWORK: ${{ env.REACT_APP_METAMASK_NETWORK }}
         
     - name: 📦 Build Backend
       run: |
