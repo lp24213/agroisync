@@ -78,8 +78,13 @@ const Login = () => {
       const result = await signIn(formData.email, formData.password);
       
       if (result.success) {
-        // Login bem-sucedido - redirecionar para dashboard ou home
-        window.location.href = '/';
+        if (result.isAdmin) {
+          // ADMIN - redirecionar para painel admin
+          window.location.href = '/admin/secure-panel';
+        } else {
+          // Usuário normal - redirecionar para dashboard
+          window.location.href = '/dashboard';
+        }
       } else {
         setErrors({ submit: result.error });
       }
@@ -98,7 +103,7 @@ const Login = () => {
           className="text-center mb-12"
         >
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Login AgroTM
+            Login AGROISYNC
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300">
             Acesse sua conta e continue usando a plataforma

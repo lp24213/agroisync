@@ -40,7 +40,7 @@ const GlobalTicker = () => {
     }, 4000); // Aumentado para 4 segundos para melhor visualização
 
     return () => clearInterval(interval);
-  }, [mockTickerData.length]);
+  }, [mockTickerData]);
 
   // Ocultar ticker em telas muito pequenas
   useEffect(() => {

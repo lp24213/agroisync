@@ -77,12 +77,25 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
+      // Verificar se é ADMIN primeiro
+      if (email === 'luispaulodeoliveira@agrotm.com.br') {
+        // Tentar login admin
+        const adminResult = await authService.loginAdmin(email, password);
+        if (adminResult.ok) {
+          localStorage.setItem('adminToken', adminResult.adminToken);
+          setUser({ ...adminResult.user, isAdmin: true });
+          setIsAdmin(true);
+          return { success: true, isAdmin: true };
+        }
+      }
+      
+      // Login normal de usuário
       const result = await authService.login(email, password);
       if (result.ok) {
         localStorage.setItem('token', result.token);
         setUser(result.user);
         setIsAdmin(false);
-        return { success: true };
+        return { success: true, isAdmin: false };
       } else {
         return { success: false, message: result.message };
       }

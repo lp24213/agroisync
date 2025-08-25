@@ -43,7 +43,6 @@ import Receita from './pages/receita';
 import Global from './pages/global';
 
 // Componentes
-import Layout from './components/layout/Layout';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 

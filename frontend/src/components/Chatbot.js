@@ -102,7 +102,7 @@ const Chatbot = () => {
   // Scroll para última mensagem
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, messagesEndRef]);
 
   // Configurar reconhecimento de voz
   useEffect(() => {
@@ -125,7 +125,7 @@ const Chatbot = () => {
         setIsListening(false);
       };
     }
-  }, []);
+  }, [handleSendMessage]);
 
   const toggleChatbot = () => {
     // Verificar acesso antes de abrir o chatbot

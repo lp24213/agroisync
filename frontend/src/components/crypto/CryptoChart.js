@@ -12,7 +12,7 @@ const CryptoChart = () => {
     loadCryptoData();
     const interval = setInterval(loadCryptoData, 30000); // Atualizar a cada 30 segundos
     return () => clearInterval(interval);
-  }, []);
+  }, [loadCryptoData]);
 
   useEffect(() => {
     if (cryptoData.length > 0 && canvasRef.current) {
@@ -23,7 +23,7 @@ const CryptoChart = () => {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [cryptoData]);
+  }, [cryptoData, startAnimation]);
 
   const loadCryptoData = async () => {
     try {
