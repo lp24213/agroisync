@@ -155,7 +155,7 @@ const Cadastro = () => {
   // Validar formulário
   const validateForm = () => {
     const newErrors = {};
-
+    
     // Validações básicas
     if (!formData.name.trim()) newErrors.name = 'Nome é obrigatório';
     if (!formData.email.trim()) newErrors.email = 'Email é obrigatório';
@@ -303,12 +303,12 @@ const Cadastro = () => {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-green-400 mb-4">📢 Dados do Anunciante</h3>
             
-            <div>
+      <div>
               <label className="block text-sm font-medium text-neutral-300 mb-2">
                 Nome da Empresa *
-              </label>
-              <input
-                type="text"
+        </label>
+        <input
+          type="text"
                 value={formData.companyName}
                 onChange={(e) => handleChange('companyName', e.target.value)}
                 className={`w-full px-3 py-2 bg-neutral-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
@@ -317,9 +317,9 @@ const Cadastro = () => {
                 placeholder="Nome da sua empresa"
               />
               {errors.companyName && <p className="text-red-400 text-sm mt-1">{errors.companyName}</p>}
-            </div>
+      </div>
 
-            <div>
+      <div>
               <label className="block text-sm font-medium text-neutral-300 mb-2">
                 Tipo de Negócio *
               </label>
@@ -393,10 +393,10 @@ const Cadastro = () => {
             
             <div>
               <label className="block text-sm font-medium text-neutral-300 mb-2">
-                Nome da Empresa *
-              </label>
-              <input
-                type="text"
+          Nome da Empresa *
+        </label>
+        <input
+          type="text"
                 value={formData.companyName}
                 onChange={(e) => handleChange('companyName', e.target.value)}
                 className={`w-full px-3 py-2 bg-neutral-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${
@@ -463,13 +463,13 @@ const Cadastro = () => {
                   placeholder="CPF ou CNPJ"
                 />
                 {(errors.cpf || errors.cnpj) && <p className="text-red-400 text-sm mt-1">{errors.cpf || errors.cnpj}</p>}
-              </div>
+      </div>
 
-              <div>
+      <div>
                 <label className="block text-sm font-medium text-neutral-300 mb-2">
                   Placa do Veículo *
-                </label>
-                <input
+        </label>
+        <input
                   type="text"
                   value={formData.vehiclePlate}
                   onChange={(e) => handleChange('vehiclePlate', e.target.value.toUpperCase())}
@@ -641,43 +641,43 @@ const Cadastro = () => {
                       placeholder="Seu nome completo"
                     />
                     {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name}</p>}
-                  </div>
+      </div>
 
-                  <div>
+      <div>
                     <label className="block text-sm font-medium text-neutral-300 mb-2">
                       Email *
-                    </label>
-                    <input
-                      type="email"
-                      value={formData.email}
+        </label>
+        <input
+          type="email"
+          value={formData.email}
                       onChange={(e) => handleChange('email', e.target.value)}
                       className={`w-full px-3 py-2 bg-neutral-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
                         errors.email ? 'border-red-500' : 'border-neutral-600'
                       }`}
-                      placeholder="seu@email.com"
-                    />
+          placeholder="seu@email.com"
+        />
                     {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
                   </div>
-                </div>
+      </div>
 
                 <div className="grid md:grid-cols-2 gap-4">
-                  <div>
+      <div>
                     <label className="block text-sm font-medium text-neutral-300 mb-2">
-                      Senha *
-                    </label>
-                    <div className="relative">
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        value={formData.password}
+          Senha *
+        </label>
+        <div className="relative">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            value={formData.password}
                         onChange={(e) => handleChange('password', e.target.value)}
                         className={`w-full px-3 py-2 pr-10 bg-neutral-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
                           errors.password ? 'border-red-500' : 'border-neutral-600'
                         }`}
                         placeholder="••••••••"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
                         className="absolute right-3 top-1/2 transform -translate-y-1/2"
                       >
                         {showPassword ? (
@@ -685,18 +685,18 @@ const Cadastro = () => {
                         ) : (
                           <Eye className="w-5 h-5 text-neutral-400" />
                         )}
-                      </button>
-                    </div>
+          </button>
+        </div>
                     {errors.password && <p className="text-red-400 text-sm mt-1">{errors.password}</p>}
-                  </div>
+      </div>
 
-                  <div>
+      <div>
                     <label className="block text-sm font-medium text-neutral-300 mb-2">
-                      Confirmar Senha *
-                    </label>
-                    <input
+          Confirmar Senha *
+        </label>
+          <input
                       type="password"
-                      value={formData.confirmPassword}
+            value={formData.confirmPassword}
                       onChange={(e) => handleChange('confirmPassword', e.target.value)}
                       className={`w-full px-3 py-2 bg-neutral-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
                         errors.confirmPassword ? 'border-red-500' : 'border-neutral-600'
@@ -704,9 +704,9 @@ const Cadastro = () => {
                       placeholder="••••••••"
                     />
                     {errors.confirmPassword && <p className="text-red-400 text-sm mt-1">{errors.confirmPassword}</p>}
-                  </div>
                 </div>
-
+                </div>
+                
                 <div>
                   <label className="block text-sm font-medium text-neutral-300 mb-2">
                     Telefone *
@@ -721,25 +721,25 @@ const Cadastro = () => {
                     placeholder="(00) 00000-0000"
                   />
                   {errors.phone && <p className="text-red-400 text-sm mt-1">{errors.phone}</p>}
-                </div>
               </div>
+            </div>
 
               {/* Dados Específicos por Categoria */}
               <div className="mb-8">
                 {renderCategoryFields()}
-              </div>
+        </div>
 
               {/* Localização */}
               <div className="space-y-4 mb-8">
                 <h3 className="text-lg font-semibold text-neutral-300 mb-4">📍 Localização</h3>
                 
                 <div className="grid md:grid-cols-2 gap-4">
-                  <div>
+            <div>
                     <label className="block text-sm font-medium text-neutral-300 mb-2">
                       CEP *
                     </label>
-                    <input
-                      type="text"
+              <input
+                type="text"
                       value={formData.zipCode}
                       onChange={(e) => handleChange('zipCode', e.target.value.replace(/\D/g, ''))}
                       className={`w-full px-3 py-2 bg-neutral-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
@@ -749,14 +749,14 @@ const Cadastro = () => {
                       maxLength="8"
                     />
                     {errors.zipCode && <p className="text-red-400 text-sm mt-1">{errors.zipCode}</p>}
-                  </div>
-
-                  <div>
+            </div>
+            
+            <div>
                     <label className="block text-sm font-medium text-neutral-300 mb-2">
                       Endereço *
                     </label>
-                    <input
-                      type="text"
+              <input
+                type="text"
                       value={formData.address}
                       onChange={(e) => handleChange('address', e.target.value)}
                       className={`w-full px-3 py-2 bg-neutral-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
@@ -765,16 +765,16 @@ const Cadastro = () => {
                       placeholder="Rua, número, complemento"
                     />
                     {errors.address && <p className="text-red-400 text-sm mt-1">{errors.address}</p>}
-                  </div>
-                </div>
-
+            </div>
+            </div>
+            
                 <div className="grid md:grid-cols-2 gap-4">
-                  <div>
+            <div>
                     <label className="block text-sm font-medium text-neutral-300 mb-2">
                       Cidade *
                     </label>
-                    <input
-                      type="text"
+              <input
+                type="text"
                       value={formData.city}
                       onChange={(e) => handleChange('city', e.target.value)}
                       className={`w-full px-3 py-2 bg-neutral-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
@@ -783,9 +783,9 @@ const Cadastro = () => {
                       placeholder="Sua cidade"
                     />
                     {errors.city && <p className="text-red-400 text-sm mt-1">{errors.city}</p>}
-                  </div>
-
-                  <div>
+            </div>
+            
+            <div>
                     <label className="block text-sm font-medium text-neutral-300 mb-2">
                       Estado *
                     </label>
@@ -826,20 +826,20 @@ const Cadastro = () => {
                       <option value="TO">Tocantins</option>
                     </select>
                     {errors.state && <p className="text-red-400 text-sm mt-1">{errors.state}</p>}
-                  </div>
-                </div>
-              </div>
-
+            </div>
+            </div>
+          </div>
+          
               {/* Mensagens de erro/sucesso */}
               {error && (
-                <motion.div
+        <motion.div
                   initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
+          animate={{ opacity: 1, y: 0 }}
                   className="flex items-center space-x-2 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 mb-4"
                 >
                   <AlertCircle className="w-5 h-5" />
                   <span>{error}</span>
-                </motion.div>
+        </motion.div>
               )}
 
               {success && (
@@ -854,20 +854,20 @@ const Cadastro = () => {
               )}
 
               {/* Botão de Envio */}
-              <button
+            <button
                 type="submit"
-                disabled={loading}
+              disabled={loading}
                 className="w-full py-3 px-6 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? (
+            >
+              {loading ? (
                   <div className="flex items-center justify-center space-x-2">
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                     <span>Processando...</span>
                   </div>
                 ) : (
                   <span>Finalizar Cadastro</span>
-                )}
-              </button>
+              )}
+            </button>
 
               {/* Informações Adicionais */}
               <div className="mt-6 text-center text-sm text-neutral-400">
@@ -916,7 +916,7 @@ const Cadastro = () => {
                   O acesso completo aos painéis secretos será liberado após a confirmação de pagamento.
                 </p>
               </div>
-            </div>
+          </div>
           )}
         </motion.div>
       </div>

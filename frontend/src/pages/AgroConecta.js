@@ -148,7 +148,7 @@ const AgroConecta = () => {
                   </div>
                 </div>
               ))}
-            </div>
+        </div>
           </div>
         </main>
       </div>
@@ -180,12 +180,12 @@ const AgroConecta = () => {
                   <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                     {userMessages.filter(m => m.unread).length}
                   </span>
-                )}
+          )}
+        </div>
+            </div>
+        </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
 
       <div className="flex">
         {/* Painel Secreto (lado esquerdo) */}
@@ -216,7 +216,7 @@ const AgroConecta = () => {
                 >
                   Fretes
                 </button>
-                <button
+              <button
                   onClick={() => setActiveTab('messages')}
                   className={`px-3 py-2 rounded-lg text-sm transition-colors ${
                     activeTab === 'messages' 
@@ -225,8 +225,8 @@ const AgroConecta = () => {
                   }`}
                 >
                   Mensagens
-                </button>
-                <button
+              </button>
+              <button
                   onClick={() => setActiveTab('profile')}
                   className={`px-3 py-2 rounded-lg text-sm transition-colors ${
                     activeTab === 'profile' 
@@ -235,11 +235,11 @@ const AgroConecta = () => {
                   }`}
                 >
                   Perfil
-                </button>
-              </div>
+              </button>
+            </div>
 
               {/* Conteúdo das tabs */}
-              <div className="space-y-6">
+          <div className="space-y-6">
                 {/* Dashboard */}
                 {activeTab === 'dashboard' && (
                   <div>
@@ -256,7 +256,7 @@ const AgroConecta = () => {
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="bg-neutral-700 rounded-lg p-4">
                       <h3 className="font-semibold mb-2">Atividade Recente</h3>
                       <div className="space-y-2 text-sm">
@@ -276,8 +276,8 @@ const AgroConecta = () => {
                       <button className="p-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
                         <Plus className="w-4 h-4" />
                       </button>
-                    </div>
-                    
+                      </div>
+
                     <div className="space-y-3">
                       {userFreights.map((freight) => (
                         <div key={freight.id} className="bg-neutral-700 rounded-lg p-3">
@@ -286,20 +286,20 @@ const AgroConecta = () => {
                               <h4 className="font-medium">{freight.origin} → {freight.destination}</h4>
                               <p className="text-sm text-neutral-400">{freight.weight} • {freight.date}</p>
                               <p className="text-sm text-blue-400">R$ {freight.price.toFixed(2)}</p>
-                            </div>
-                            <div className="flex space-x-2">
+                        </div>
+                        <div className="flex space-x-2">
                               <button className="p-1 bg-blue-600 rounded hover:bg-blue-700">
                                 <Edit className="w-3 h-3" />
-                              </button>
+                          </button>
                               <button 
                                 onClick={() => handleDeleteFreight(freight.id)}
                                 className="p-1 bg-red-600 rounded hover:bg-red-700"
                               >
                                 <Trash className="w-3 h-3" />
-                              </button>
-                            </div>
-                          </div>
+                          </button>
                         </div>
+                      </div>
+                    </div>
                       ))}
                     </div>
                   </div>
@@ -323,25 +323,25 @@ const AgroConecta = () => {
                             {message.unread && (
                               <span className="w-2 h-2 bg-green-500 rounded-full"></span>
                             )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
                   </div>
-                )}
+                </div>
+            ))}
+          </div>
+            </div>
+          )}
 
                 {/* Perfil */}
                 {activeTab === 'profile' && (
                   <div>
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="font-semibold">Meu Perfil</h3>
-                      <button 
+              <button 
                         onClick={handleEditProfile}
                         className="px-3 py-1 bg-blue-600 rounded text-sm hover:bg-blue-700 transition-colors"
-                      >
+              >
                         {isEditing ? 'Cancelar' : 'Editar'}
-                      </button>
-                    </div>
+              </button>
+            </div>
                     
                     <div className="space-y-3">
                       <div>
@@ -393,10 +393,10 @@ const AgroConecta = () => {
                           Salvar Alterações
                         </button>
                       )}
-                    </div>
-                  </div>
-                )}
               </div>
+            </div>
+          )}
+        </div>
             </div>
           </div>
         )}

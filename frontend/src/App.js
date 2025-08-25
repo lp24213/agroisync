@@ -104,33 +104,12 @@ function App() {
                   } 
                 />
 
-                {/* Rota de mensagens unificada - requer autenticação */}
-                <Route 
-                  path="/messages" 
-                  element={
-                    <RouteGuard requireAuth={true}>
-                      <Messages />
-                    </RouteGuard>
-                  } 
-                />
+                {/* Rota de mensagens unificada - pública */}
+                <Route path="/messages" element={<Messages />} />
 
-                {/* Rotas protegidas que requerem plano ativo */}
-                <Route 
-                  path="/messages/products" 
-                  element={
-                    <RouteGuard requireAuth={true}>
-                      <MessagesProducts />
-                    </RouteGuard>
-                  } 
-                />
-                <Route 
-                  path="/messages/freights" 
-                  element={
-                    <RouteGuard requireAuth={true}>
-                      <MessagesFreights />
-                    </RouteGuard>
-                  } 
-                />
+                {/* Rotas de mensagens - públicas */}
+                <Route path="/messages/products" element={<MessagesProducts />} />
+                <Route path="/messages/freights" element={<MessagesFreights />} />
 
                 {/* Rotas protegidas por autenticação */}
                 <Route 
@@ -143,11 +122,7 @@ function App() {
                 />
                 <Route 
                   path="/loja" 
-                  element={
-                    <RouteGuard requireAuth={true}>
-                      <Loja />
-                    </RouteGuard>
-                  } 
+                  element={<Loja />} 
                 />
               </Routes>
               <Footer />

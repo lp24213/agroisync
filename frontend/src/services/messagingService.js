@@ -28,7 +28,7 @@ class MessagingService {
       }
 
       const data = await response.json();
-      return { ok: true, data: data.conversations };
+        return { ok: true, data: data.conversations };
     } catch (error) {
       console.error('Erro ao buscar conversas:', error);
       // Em caso de erro, retornar dados mock para desenvolvimento
@@ -58,7 +58,7 @@ class MessagingService {
       }
 
       const data = await response.json();
-      return { ok: true, data: data.messages };
+        return { ok: true, data: data.messages };
     } catch (error) {
       console.error('Erro ao buscar mensagens:', error);
       // Em caso de erro, retornar dados mock para desenvolvimento
@@ -108,7 +108,7 @@ class MessagingService {
         await this.consumeFreeProduct();
       }
 
-      return { ok: true, data: data.message };
+        return { ok: true, data: data.message };
     } catch (error) {
       console.error('Erro ao enviar mensagem:', error);
       return { ok: false, message: error.message };
@@ -198,7 +198,7 @@ class MessagingService {
       }
 
       const data = await response.json();
-      return { ok: true, data: data.conversation };
+        return { ok: true, data: data.conversation };
     } catch (error) {
       console.error('Erro ao criar conversa:', error);
       return { ok: false, message: error.message };
@@ -226,7 +226,7 @@ class MessagingService {
       }
 
       const data = await response.json();
-      return { ok: true, data: data.message };
+        return { ok: true, data: data.message };
     } catch (error) {
       console.error('Erro ao marcar mensagem como lida:', error);
       return { ok: false, message: error.message };
@@ -254,7 +254,7 @@ class MessagingService {
       }
 
       const data = await response.json();
-      return { ok: true, data: data.stats };
+        return { ok: true, data: data.stats };
     } catch (error) {
       console.error('Erro ao buscar estatísticas:', error);
       // Em caso de erro, retornar dados mock para desenvolvimento
@@ -422,7 +422,7 @@ class MessagingService {
       return '🎁 Você tem 3 produtos gratuitos disponíveis para visualização completa.';
     } else if (freeProductsRemaining === 0) {
       return '⚠️ Você consumiu todos os produtos gratuitos. Faça um pagamento para continuar.';
-    } else {
+      } else {
       return `ℹ️ Você consumiu ${freeProductsConsumed}/3 produtos gratuitos. Restam ${freeProductsRemaining} produtos.`;
     }
   }
