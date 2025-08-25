@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Amplify, Auth } from 'aws-amplify';
+import { Amplify } from 'aws-amplify';
+import { signIn as amplifySignIn, getCurrentUser, fetchAuthSession } from 'aws-amplify/auth';
 import apiService from '../services/api';
 
 const AuthContext = createContext();
@@ -24,7 +25,7 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuthState = async () => {
     try {
-      const currentUser = await Auth.currentAuthenticatedUser();
+      const currentUser = await getCurrentUser();
       if (currentUser) {
         await handleUserLogin(currentUser);
       }
@@ -37,7 +38,7 @@ export const AuthProvider = ({ children }) => {
 
   const handleUserLogin = async (cognitoUser) => {
     try {
-      const session = await Auth.currentSession();
+      const session = await fetchAuthSession();
       const token = session.getIdToken().getJwtToken();
       
       // Decodificar token para obter informações do usuário
@@ -97,7 +98,7 @@ export const AuthProvider = ({ children }) => {
         return { success: true };
       }
       
-      const cognitoUser = await Auth.signIn(email, password);
+      const cognitoUser = await amplifySignIn(email, password);
       await handleUserLogin(cognitoUser);
       return { success: true };
     } catch (error) {
@@ -123,7 +124,7 @@ export const AuthProvider = ({ children }) => {
   const signUp = async (email, password, name) => {
     try {
       setLoading(true);
-      await Auth.signUp({
+      await Amplify.signUp({
         username: email,
         password,
         attributes: {
@@ -153,7 +154,7 @@ export const AuthProvider = ({ children }) => {
   const confirmSignUp = async (email, code) => {
     try {
       setLoading(true);
-      await Auth.confirmSignUp(email, code);
+      await Amplify.confirmSignUp(email, code);
       return { success: true };
     } catch (error) {
       console.error('Erro na confirmação:', error);
@@ -174,7 +175,7 @@ export const AuthProvider = ({ children }) => {
   const resendConfirmationCode = async (email) => {
     try {
       setLoading(true);
-      await Auth.resendSignUp(email);
+      await Amplify.resendSignUp(email);
       return { success: true };
     } catch (error) {
       console.error('Erro ao reenviar código:', error);
@@ -186,7 +187,7 @@ export const AuthProvider = ({ children }) => {
 
   const signOut = async () => {
     try {
-      await Auth.signOut();
+      await Amplify.signOut();
       setUser(null);
       setUserProfile(null);
       setIsAdmin(false);
@@ -198,7 +199,7 @@ export const AuthProvider = ({ children }) => {
   const forgotPassword = async (email) => {
     try {
       setLoading(true);
-      await Auth.forgotPassword(email);
+      await Amplify.forgotPassword(email);
       return { success: true };
     } catch (error) {
       console.error('Erro ao solicitar reset de senha:', error);
@@ -211,7 +212,7 @@ export const AuthProvider = ({ children }) => {
   const confirmNewPassword = async (email, code, newPassword) => {
     try {
       setLoading(true);
-      await Auth.forgotPasswordSubmit(email, code, newPassword);
+      await Amplify.forgotPasswordSubmit(email, code, newPassword);
       return { success: true };
     } catch (error) {
       console.error('Erro ao confirmar nova senha:', error);
