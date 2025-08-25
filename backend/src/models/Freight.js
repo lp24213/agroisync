@@ -107,6 +107,16 @@ const freightSchema = new mongoose.Schema({
     enum: ['truck', 'pickup', 'van', 'tractor', 'trailer', 'other'],
     default: 'truck'
   },
+  truckNumber: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  plate: {
+    type: String,
+    required: true,
+    trim: true
+  },
 
   vehicleCapacity: {
     weight: Number,

@@ -17,7 +17,8 @@
     "check": "npm run lint && npm run test",
     "seed": "node src/scripts/seed.js",
     "migrate": "node src/scripts/migrate.js",
-    "health": "node src/scripts/health-check.js"
+    "health": "node src/scripts/health-check.js",
+    "create-admin": "node src/scripts/create-admin-user.js"
   },
   "keywords": [
     "agriculture",

@@ -4,8 +4,10 @@ import { apiLimiter } from '../middleware/rateLimiter.js';
 // Import route modules
 import authRoutes from './auth.js';
 import adminRoutes from './admin.js';
+import clientRoutes from './clients.js';
 import productRoutes from './products.js';
 import freightRoutes from './freights.js';
+import externalAPIRoutes from './external-apis.js';
 import messagingRoutes from './messaging.js';
 import messageRoutes from './messages.js';
 import newsRoutes from './news.js';
@@ -29,8 +31,14 @@ router.use('/v1/auth', authRoutes);
 // ===== ADMIN ROUTES =====
 router.use('/v1/admin', adminRoutes);
 
+// ===== CLIENT ROUTES =====
+router.use('/v1/clients', clientRoutes);
+
 // ===== PRODUCT ROUTES =====
 router.use('/v1/products', productRoutes);
+
+// ===== EXTERNAL API ROUTES =====
+router.use('/v1/external', externalAPIRoutes);
 
 // ===== FREIGHT ROUTES =====
 router.use('/v1/freights', freightRoutes);

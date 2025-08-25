@@ -1,540 +1,439 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { useTheme } from '../contexts/ThemeContext';
-import { useTranslation } from 'react-i18next';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { 
-  Search, Filter, MapPin, Truck, Package, Clock, DollarSign,
-  Star, Phone, Mail, Calendar, Weight, Route, User, Building, Plus
+  Truck, MessageCircle, User, Plus, Edit, Trash, 
+  Eye, Route, CreditCard, Settings, LogOut, Bell, MapPin
 } from 'lucide-react';
-import { freightService } from '../services/freightService';
 
 const AgroConecta = () => {
-  const { isDark } = useTheme();
-  const { t } = useTranslation();
-  const [freights, setFreights] = useState([]);
-  const [filteredFreights, setFilteredFreights] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedProduct, setSelectedProduct] = useState('all');
-  const [selectedOrigin, setSelectedOrigin] = useState('all');
-  const [selectedDestination, setSelectedDestination] = useState('all');
-  const [selectedTruckType, setSelectedTruckType] = useState('all');
-  const [priceRange, setPriceRange] = useState([0, 1000]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [error, setError] = useState(null);
+  const { user, isAdmin, loading } = useAuth();
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('freights');
+  const [showSecretPanel, setShowSecretPanel] = useState(false);
+  const [userFreights, setUserFreights] = useState([]);
+  const [userMessages, setUserMessages] = useState([]);
+  const [userProfile, setUserProfile] = useState(null);
+  const [userHistory, setUserHistory] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [newFreight, setNewFreight] = useState({
+    origin: '',
+    destination: '',
+    weight: '',
+    price: '',
+    date: '',
+    description: ''
+  });
 
-  // Tipos de produtos agrícolas
-  const productTypes = [
-    { id: 'all', name: t('agroconecta.products.all') },
-    { id: 'soja', name: t('agroconecta.products.soy') },
-    { id: 'milho', name: t('agroconecta.products.corn') },
-    { id: 'algodão', name: t('agroconecta.products.cotton') },
-    { id: 'café', name: t('agroconecta.products.coffee') },
-    { id: 'insumo', name: t('agroconecta.products.inputs') },
-    { id: 'maquinário', name: t('agroconecta.products.machinery') }
-  ];
+  useEffect(() => {
+    if (user && !isAdmin) {
+      // Carregar dados do usuário
+      loadUserData();
+    }
+  }, [user, isAdmin]);
 
-  // Estados brasileiros
-  const states = [
-    { id: 'all', name: t('agroconecta.states.all') },
-    { id: 'MT', name: t('agroconecta.states.mt') },
-    { id: 'GO', name: t('agroconecta.states.go') },
-    { id: 'MS', name: t('agroconecta.states.ms') },
-    { id: 'PR', name: t('agroconecta.states.pr') },
-    { id: 'RS', name: t('agroconecta.states.rs') },
-    { id: 'SP', name: t('agroconecta.states.sp') },
-    { id: 'MG', name: t('agroconecta.states.mg') },
-    { id: 'BA', name: t('agroconecta.states.ba') },
-    { id: 'TO', name: t('agroconecta.states.to') }
-  ];
-
-  // Tipos de caminhão
-  const truckTypes = [
-    { id: 'all', name: t('agroconecta.trucks.all') },
-    { id: 'truck', name: t('agroconecta.trucks.truck') },
-    { id: 'truck-truck', name: t('agroconecta.trucks.truckTruck') },
-    { id: 'truck-truck-truck', name: t('agroconecta.trucks.truckTruckTruck') },
-    { id: 'truck-truck-truck-truck', name: t('agroconecta.trucks.truckTruckTruckTruck') }
-  ];
-
-  // Função para buscar fretes do MongoDB
-  const fetchFreights = async () => {
+  const loadUserData = async () => {
     try {
-      setLoading(true);
-      setError(null);
-      
-      const filters = {};
-      if (selectedProduct !== 'all') filters.productType = selectedProduct;
-      if (selectedOrigin !== 'all') filters.originState = selectedOrigin;
-      if (selectedDestination !== 'all') filters.destinationState = selectedDestination;
-      if (selectedTruckType !== 'all') filters.truckType = selectedTruckType;
-      if (priceRange[0] > 0) filters.minValue = priceRange[0];
-      if (priceRange[1] < 1000) filters.maxValue = priceRange[1];
-      if (searchTerm) filters.search = searchTerm;
-      
-      const response = await freightService.getFreights(filters);
-      
-      if (response.success) {
-        setFreights(response.data);
-        setFilteredFreights(response.data);
-      } else {
-        setError('Erro ao carregar fretes');
-      }
+      // Simular carregamento de dados do usuário
+      setUserFreights([
+        {
+          id: 1,
+          origin: 'Cuiabá, MT',
+          destination: 'São Paulo, SP',
+          weight: '20 ton',
+          price: 2500.00,
+          date: '2024-01-20',
+          status: 'Ativo'
+        },
+        {
+          id: 2,
+          origin: 'Goiânia, GO',
+          destination: 'Brasília, DF',
+          weight: '15 ton',
+          price: 1800.00,
+          date: '2024-01-25',
+          status: 'Ativo'
+        }
+      ]);
+
+      setUserMessages([
+        {
+          id: 1,
+          from: 'Maria Santos',
+          subject: 'Consulta sobre frete Cuiabá-SP',
+          content: 'Gostaria de saber mais detalhes...',
+          date: '2024-01-15',
+          unread: true
+        }
+      ]);
+
+      setUserProfile({
+        name: user.name,
+        email: user.email,
+        phone: '(66) 99236-2830',
+        address: 'Cuiabá, MT',
+        plan: 'Frete Premium',
+        vehicle: 'Truck 3/4'
+      });
+
+      setUserHistory([
+        {
+          id: 1,
+          route: 'Cuiabá → São Paulo',
+          price: 2500.00,
+          date: '2024-01-10',
+          status: 'Concluído'
+        }
+      ]);
     } catch (error) {
-      console.error('Error fetching freights:', error);
-      setError(error.message || 'Erro ao carregar fretes');
-      
-      // Fallback para dados simulados em caso de erro
-      setFreights([]);
-      setFilteredFreights([]);
-    } finally {
-      setLoading(false);
+      console.error('Erro ao carregar dados do usuário:', error);
     }
   };
 
-  // Carregar fretes ao montar o componente
-  useEffect(() => {
-    fetchFreights();
-  }, []);
-
-  // Atualizar fretes quando filtros mudarem
-  useEffect(() => {
-    fetchFreights();
-  }, [selectedProduct, selectedOrigin, selectedDestination, selectedTruckType, priceRange, searchTerm]);
-
-  // Função para formatar preço
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(price);
-  };
-
-  // Função para obter cor do status
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'available':
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-      case 'in_negotiation':
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
-      case 'assigned':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
-      case 'in_transit':
-        return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200';
-      case 'delivered':
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
-      case 'cancelled':
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
-      default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+  const handleAddFreight = () => {
+    if (newFreight.origin && newFreight.destination && newFreight.price) {
+      const freight = {
+        id: Date.now(),
+        ...newFreight,
+        price: parseFloat(newFreight.price),
+        status: 'Ativo'
+      };
+      setUserFreights([...userFreights, freight]);
+      setNewFreight({ origin: '', destination: '', weight: '', price: '', date: '', description: '' });
     }
   };
 
-  // Função para obter texto do status
-  const getStatusText = (status) => {
-    switch (status) {
-      case 'available':
-        return 'Disponível';
-      case 'in_negotiation':
-        return 'Em Negociação';
-      case 'assigned':
-        return 'Assignado';
-      case 'in_transit':
-        return 'Em Trânsito';
-      case 'delivered':
-        return 'Entregue';
-      case 'cancelled':
-        return 'Cancelado';
-      default:
-        return status;
-    }
+  const handleDeleteFreight = (freightId) => {
+    setUserFreights(userFreights.filter(f => f.id !== freightId));
   };
 
-  const getProductIcon = (product) => {
-    switch (product) {
-      case 'Soja em Grão Tipo 1':
-        return <Package className="w-5 h-5 text-green-600" />;
-      case 'Milho em Grão Seco':
-        return <Package className="w-5 h-5 text-yellow-600" />;
-      case 'Algodão em Pluma Premium':
-        return <Package className="w-5 h-5 text-white" />;
-      case 'Fertilizantes NPK':
-        return <Package className="w-5 h-5 text-blue-600" />;
-      case 'Máquinas Agrícolas':
-        return <Package className="w-5 h-5 text-gray-600" />;
-      case 'Bovinos Vivos Nelore':
-        return <Package className="w-5 h-5 text-red-600" />;
-      default:
-        return <Package className="w-5 h-5 text-gray-400" />;
-    }
+  const handleEditProfile = () => {
+    setIsEditing(!isEditing);
   };
 
-  const getTruckIcon = (truckType) => {
-    switch (truckType) {
-      case 'Truck 3 eixos graneleiro':
-        return <Truck className="w-5 h-5 text-orange-600" />;
-      case 'Truck 2 eixos graneleiro':
-        return <Truck className="w-5 h-5 text-blue-600" />;
-      case 'Truck 3 eixos baú':
-        return <Truck className="w-5 h-5 text-purple-600" />;
-      case 'Truck boiadeiro 3 eixos':
-        return <Truck className="w-5 h-5 text-cyan-600" />;
-      default:
-        return <Truck className="w-5 h-5 text-gray-400" />;
-    }
+  const handleSaveProfile = () => {
+    setIsEditing(false);
+    // Aqui você implementaria a lógica para salvar no backend
   };
 
-  const getProductColor = (product) => {
-    switch (product) {
-      case 'Soja em Grão Tipo 1':
-        return 'bg-green-100 text-green-800 border-green-200';
-      case 'Milho em Grão Seco':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'Algodão em Pluma Premium':
-        return 'bg-white text-gray-800 border-gray-200';
-      case 'Fertilizantes NPK':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'Máquinas Agrícolas':
-        return 'bg-gray-100 text-gray-800 border-gray-200';
-      case 'Bovinos Vivos Nelore':
-        return 'bg-red-100 text-red-800 border-red-200';
-      default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
+  const toggleSecretPanel = () => {
+    setShowSecretPanel(!showSecretPanel);
   };
 
-  if (loading) {
+  // Se não estiver logado, mostrar apenas os fretes públicos
+  if (!user || isAdmin) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Carregando fretes...</p>
-        </div>
+      <div className="min-h-screen bg-neutral-900 text-white">
+        <main className="pt-24 pb-16">
+          <div className="max-w-7xl mx-auto px-4">
+            <h1 className="text-5xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+              AgroConecta - Sistema de Fretes
+            </h1>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Fretes mock para demonstração */}
+              {[1, 2, 3, 4, 5, 6].map((item) => (
+                <div key={item} className="bg-neutral-800 rounded-2xl p-6 border border-neutral-700 hover:border-green-500/50 transition-all duration-300">
+                  <div className="w-full h-48 bg-gradient-to-br from-blue-500/20 to-green-500/20 rounded-xl mb-4 flex items-center justify-center">
+                    <Truck className="w-16 h-16 text-blue-400" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">Frete {item}</h3>
+                  <p className="text-neutral-400 mb-2">Cuiabá, MT → São Paulo, SP</p>
+                  <p className="text-neutral-400 mb-4">20 ton • Disponível</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold text-green-400">R$ {(item * 500 + 1500).toFixed(2)}</span>
+                    <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                      Ver Detalhes
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </main>
       </div>
     );
   }
 
+  // Usuário logado - mostrar fretes + painel secreto
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300`}>
-      {/* Header Section */}
-      <section className="relative pt-40 pb-20 px-4 overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0">
-          {isDark ? (
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900">
-              <div className="absolute inset-0 bg-gray-800 opacity-20"></div>
-            </div>
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50">
-              <div className="absolute inset-0 bg-white opacity-95"></div>
-            </div>
-          )}
-        </div>
-        <div className="max-w-6xl mx-auto text-center">
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent"
-          >
-            AgroConecta
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl text-gray-600 max-w-3xl mx-auto"
-          >
-            Plataforma de Fretes e Transportes Agrícolas
-          </motion.p>
-        </div>
-      </section>
-
-      {/* Filtros e Busca */}
-      <section className="py-8 px-4 bg-gray-50 border-b">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
-            {/* Busca */}
-            <div className="flex-1 max-w-md">
+    <div className="min-h-screen bg-neutral-900 text-white">
+      {/* Header com botão do painel secreto */}
+      <div className="bg-neutral-800 border-b border-neutral-700">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold">AgroConecta - Sistema de Fretes</h1>
+            
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={toggleSecretPanel}
+                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-green-600 rounded-lg hover:from-blue-700 hover:to-green-700 transition-all duration-300"
+              >
+                <User className="w-5 h-5" />
+                <span>Meu Painel</span>
+                {showSecretPanel && <span className="ml-2">←</span>}
+              </button>
+              
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <input
-                  type="text"
-                  placeholder={t('agroconecta.search.placeholder')}
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
+                <Bell className="w-6 h-6 text-yellow-400 cursor-pointer" />
+                {userMessages.filter(m => m.unread).length > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {userMessages.filter(m => m.unread).length}
+                  </span>
+                )}
               </div>
-            </div>
-
-            {/* Filtros */}
-            <div className="flex flex-wrap gap-4">
-              {/* Produto */}
-              <select
-                value={selectedProduct}
-                onChange={(e) => setSelectedProduct(e.target.value)}
-                className="px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                {productTypes.map(product => (
-                  <option key={product.id} value={product.id}>
-                    {product.name}
-                  </option>
-                ))}
-              </select>
-
-              {/* Origem */}
-              <select
-                value={selectedOrigin}
-                onChange={(e) => setSelectedOrigin(e.target.value)}
-                className="px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                {states.map(state => (
-                  <option key={state.id} value={state.id}>
-                    {state.name}
-                  </option>
-                ))}
-              </select>
-
-              {/* Destino */}
-              <select
-                value={selectedDestination}
-                onChange={(e) => setSelectedDestination(e.target.value)}
-                className="px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                {states.map(state => (
-                  <option key={state.id} value={state.id}>
-                    {state.name}
-                  </option>
-                ))}
-              </select>
-
-              {/* Tipo de Caminhão */}
-              <select
-                value={selectedTruckType}
-                onChange={(e) => setSelectedTruckType(e.target.value)}
-                className="px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                {truckTypes.map(truck => (
-                  <option key={truck.id} value={truck.id}>
-                    {truck.name}
-                  </option>
-                ))}
-              </select>
-
-              {/* Faixa de Preço */}
-              <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-600">{t('agroconecta.price.label')}:</span>
-                <input
-                  type="number"
-                  placeholder={t('agroconecta.price.min')}
-                  value={priceRange[0]}
-                  onChange={(e) => setPriceRange([parseInt(e.target.value) || 0, priceRange[1]])}
-                  className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <span className="text-gray-400">-</span>
-                <input
-                  type="number"
-                  placeholder={t('agroconecta.price.max')}
-                  value={priceRange[1]}
-                  onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value) || 10000])}
-                  className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              {/* Botão Cadastrar Frete */}
-              <button
-                onClick={() => window.location.href = '/cadastro'}
-                className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors duration-300 flex items-center gap-2"
-              >
-                <Plus className="w-5 h-5" />
-                {t('agroconecta.register.freight')}
-              </button>
-
-              {/* Botão Assinar Plano */}
-              <button
-                onClick={() => window.location.href = '/planos'}
-                className="px-6 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors duration-300 flex items-center gap-2"
-              >
-                <Star className="w-5 h-5" />
-                {t('agroconecta.register.plan')}
-              </button>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Fretes */}
-      <section className="py-12 px-4">
-        <div className="max-w-7xl mx-auto">
-          {/* Estatísticas */}
-          <div className="mb-8 text-center">
-            <p className="text-gray-600">
-              {t('agroconecta.freights.showing', { count: filteredFreights.length, total: freights.length })}
-            </p>
-          </div>
+      <div className="flex">
+        {/* Painel Secreto (lado esquerdo) */}
+        {showSecretPanel && (
+          <div className="w-80 bg-neutral-800 border-r border-neutral-700 min-h-screen">
+            <div className="p-6">
+              <h2 className="text-xl font-bold mb-6 text-blue-400">Painel Secreto</h2>
+              
+              {/* Tabs do painel */}
+              <div className="flex space-x-2 mb-6">
+                <button
+                  onClick={() => setActiveTab('dashboard')}
+                  className={`px-3 py-2 rounded-lg text-sm transition-colors ${
+                    activeTab === 'dashboard' 
+                      ? 'bg-blue-600 text-white' 
+                      : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
+                  }`}
+                >
+                  Dashboard
+                </button>
+                <button
+                  onClick={() => setActiveTab('freights')}
+                  className={`px-3 py-2 rounded-lg text-sm transition-colors ${
+                    activeTab === 'freights' 
+                      ? 'bg-blue-600 text-white' 
+                      : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
+                  }`}
+                >
+                  Fretes
+                </button>
+                <button
+                  onClick={() => setActiveTab('messages')}
+                  className={`px-3 py-2 rounded-lg text-sm transition-colors ${
+                    activeTab === 'messages' 
+                      ? 'bg-blue-600 text-white' 
+                      : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
+                  }`}
+                >
+                  Mensagens
+                </button>
+                <button
+                  onClick={() => setActiveTab('profile')}
+                  className={`px-3 py-2 rounded-lg text-sm transition-colors ${
+                    activeTab === 'profile' 
+                      ? 'bg-blue-600 text-white' 
+                      : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
+                  }`}
+                >
+                  Perfil
+                </button>
+              </div>
 
-          {/* Lista de Fretes */}
-          <div className="space-y-6">
-            {filteredFreights.map((freight, index) => (
-              <motion.div
-                key={freight._id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 overflow-hidden"
-              >
-                <div className="p-6">
-                  {/* Header do Frete */}
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
-                      {/* Produto e Categoria */}
-                      <div className="flex items-center space-x-3 mb-3">
-                        <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getProductColor(freight.product?.type)}`}>
-                          {getProductIcon(freight.product?.type)}
-                          <span className="ml-2">{freight.product?.name}</span>
+              {/* Conteúdo das tabs */}
+              <div className="space-y-6">
+                {/* Dashboard */}
+                {activeTab === 'dashboard' && (
+                  <div>
+                    <div className="bg-neutral-700 rounded-lg p-4 mb-4">
+                      <h3 className="font-semibold mb-2">Resumo</h3>
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <p className="text-neutral-400">Fretes Ativos</p>
+                          <p className="text-xl font-bold text-blue-400">{userFreights.length}</p>
                         </div>
-                        <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(freight.status)}`}>
-                          {getStatusText(freight.status)}
-                        </div>
-                      </div>
-
-                      {/* Rota */}
-                      <div className="flex items-center space-x-4 mb-3">
-                        <div className="flex items-center space-x-2">
-                          <MapPin className="w-4 h-4 text-green-600" />
-                          <span className="text-sm text-gray-600">
-                            <strong>{freight.origin?.city}, {freight.origin?.state}</strong>
-                          </span>
-                        </div>
-                        <Route className="w-4 h-4 text-gray-400" />
-                        <div className="flex items-center space-x-2">
-                          <MapPin className="w-4 h-4 text-red-600" />
-                          <span className="text-sm text-gray-600">
-                            <strong>{freight.destination?.city}, {freight.destination?.state}</strong>
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Detalhes do Frete */}
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                        <div className="flex items-center space-x-2">
-                          <Weight className="w-4 h-4 text-blue-600" />
-                          <span className="text-sm text-gray-600">
-                            <strong>{freight.quantity} {freight.product?.unit}</strong>
-                          </span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Truck className="w-4 h-4 text-orange-600" />
-                          <span className="text-sm text-gray-600">
-                            <strong>{freight.truckType}</strong>
-                          </span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Clock className="w-4 h-4 text-purple-600" />
-                          <span className="text-sm text-gray-600">
-                            <strong>{freight.deliveryTime} {t('agroconecta.freights.days')}</strong>
-                          </span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <DollarSign className="w-4 h-4 text-green-600" />
-                          <span className="text-sm text-gray-600">
-                            <strong>{formatPrice(freight.freightValue)}</strong>
-                          </span>
+                        <div>
+                          <p className="text-neutral-400">Mensagens</p>
+                          <p className="text-xl font-bold text-green-400">{userMessages.length}</p>
                         </div>
                       </div>
                     </div>
+                    
+                    <div className="bg-neutral-700 rounded-lg p-4">
+                      <h3 className="font-semibold mb-2">Atividade Recente</h3>
+                      <div className="space-y-2 text-sm">
+                        <p>• Novo frete adicionado: Cuiabá → São Paulo</p>
+                        <p>• Mensagem recebida de Maria Santos</p>
+                        <p>• Frete concluído: R$ 2.500,00</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
-                    {/* Preço */}
-                    <div className="text-right ml-6">
-                      <div className="text-3xl font-bold text-blue-600 mb-1">
-                        {formatPrice(freight.freightValue)}
+                {/* Fretes */}
+                {activeTab === 'freights' && (
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="font-semibold">Meus Fretes</h3>
+                      <button className="p-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                        <Plus className="w-4 h-4" />
+                      </button>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      {userFreights.map((freight) => (
+                        <div key={freight.id} className="bg-neutral-700 rounded-lg p-3">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h4 className="font-medium">{freight.origin} → {freight.destination}</h4>
+                              <p className="text-sm text-neutral-400">{freight.weight} • {freight.date}</p>
+                              <p className="text-sm text-blue-400">R$ {freight.price.toFixed(2)}</p>
+                            </div>
+                            <div className="flex space-x-2">
+                              <button className="p-1 bg-blue-600 rounded hover:bg-blue-700">
+                                <Edit className="w-3 h-3" />
+                              </button>
+                              <button 
+                                onClick={() => handleDeleteFreight(freight.id)}
+                                className="p-1 bg-red-600 rounded hover:bg-red-700"
+                              >
+                                <Trash className="w-3 h-3" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Mensagens */}
+                {activeTab === 'messages' && (
+                  <div>
+                    <h3 className="font-semibold mb-4">Minhas Mensagens</h3>
+                    <div className="space-y-3">
+                      {userMessages.map((message) => (
+                        <div key={message.id} className={`bg-neutral-700 rounded-lg p-3 cursor-pointer hover:bg-neutral-600 transition-colors ${
+                          message.unread ? 'border-l-4 border-green-500' : ''
+                        }`}>
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h4 className="font-medium">{message.from}</h4>
+                              <p className="text-sm text-neutral-400">{message.subject}</p>
+                              <p className="text-xs text-neutral-500">{message.date}</p>
+                            </div>
+                            {message.unread && (
+                              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Perfil */}
+                {activeTab === 'profile' && (
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="font-semibold">Meu Perfil</h3>
+                      <button 
+                        onClick={handleEditProfile}
+                        className="px-3 py-1 bg-blue-600 rounded text-sm hover:bg-blue-700 transition-colors"
+                      >
+                        {isEditing ? 'Cancelar' : 'Editar'}
+                      </button>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-sm text-neutral-400">Nome</label>
+                        {isEditing ? (
+                          <input 
+                            type="text" 
+                            value={userProfile?.name || ''} 
+                            className="w-full bg-neutral-700 border border-neutral-600 rounded px-3 py-2 mt-1"
+                          />
+                        ) : (
+                          <p className="font-medium">{userProfile?.name}</p>
+                        )}
                       </div>
-                      <div className="text-sm text-gray-600 mb-2">
-                        {t('agroconecta.freights.value_per_load')}
+                      
+                      <div>
+                        <label className="text-sm text-neutral-400">Email</label>
+                        <p className="font-medium">{userProfile?.email}</p>
                       </div>
-                      <button className="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors font-medium">
-                        {t('agroconecta.freights.request_freight')}
+                      
+                      <div>
+                        <label className="text-sm text-neutral-400">Telefone</label>
+                        {isEditing ? (
+                          <input 
+                            type="text" 
+                            value={userProfile?.phone || ''} 
+                            className="w-full bg-neutral-700 border border-neutral-600 rounded px-3 py-2 mt-1"
+                          />
+                        ) : (
+                          <p className="font-medium">{userProfile?.phone}</p>
+                        )}
+                      </div>
+                      
+                      <div>
+                        <label className="text-sm text-neutral-400">Veículo</label>
+                        <p className="font-medium text-blue-400">{userProfile?.vehicle}</p>
+                      </div>
+                      
+                      <div>
+                        <label className="text-sm text-neutral-400">Plano</label>
+                        <p className="font-medium text-green-400">{userProfile?.plan}</p>
+                      </div>
+                      
+                      {isEditing && (
+                        <button 
+                          onClick={handleSaveProfile}
+                          className="w-full px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+                        >
+                          Salvar Alterações
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Fretes (lado direito) */}
+        <div className={`flex-1 ${showSecretPanel ? 'ml-0' : ''}`}>
+          <main className="pt-8 pb-16">
+            <div className="max-w-7xl mx-auto px-4">
+              {!showSecretPanel && (
+                <h1 className="text-5xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                  AgroConecta - Sistema de Fretes
+                </h1>
+              )}
+              
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Fretes mock para demonstração */}
+                {[1, 2, 3, 4, 5, 6].map((item) => (
+                  <div key={item} className="bg-neutral-800 rounded-2xl p-6 border border-neutral-700 hover:border-blue-500/50 transition-all duration-300">
+                    <div className="w-full h-48 bg-gradient-to-br from-blue-500/20 to-green-500/20 rounded-xl mb-4 flex items-center justify-center">
+                      <Truck className="w-16 h-16 text-blue-400" />
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2">Frete {item}</h3>
+                    <p className="text-neutral-400 mb-2">Cuiabá, MT → São Paulo, SP</p>
+                    <p className="text-neutral-400 mb-4">20 ton • Disponível</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-2xl font-bold text-green-400">R$ {(item * 500 + 1500).toFixed(2)}</span>
+                      <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                        Ver Detalhes
                       </button>
                     </div>
                   </div>
-
-                  {/* Informações da Transportadora */}
-                  <div className="border-t border-gray-200 pt-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <div className="flex items-center space-x-2">
-                          <Building className="w-4 h-4 text-gray-600" />
-                          <span className="font-medium text-gray-900">{freight.carrier?.name}</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                          <span className="text-sm text-gray-600">
-                            {freight.carrier?.rating || 'N/A'} ({freight.carrier?.reviews || 0} {t('agroconecta.reviews')})
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center space-x-3">
-                        <div className="flex items-center space-x-2">
-                          <Truck className="w-4 h-4 text-gray-600" />
-                          <span className="text-sm text-gray-600">
-                            {freight.truckType}
-                          </span>
-                        </div>
-                        <div className="flex space-x-2">
-                          <button className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
-                            <Phone className="w-4 h-4 text-gray-600" />
-                          </button>
-                          <button className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
-                            <Mail className="w-4 h-4 text-gray-600" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Sem Fretes */}
-          {!loading && !error && filteredFreights.length === 0 && (
-            <div className="text-center py-20">
-              <Truck className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-600 mb-2">{t('agroconecta.freights.no_freights_found')}</h3>
-              <p className="text-gray-500">{t('agroconecta.freights.try_adjusting_filters')}</p>
-            </div>
-          )}
-
-          {/* Estado de Erro */}
-          {error && (
-            <div className="text-center py-20">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Truck className="w-8 h-8 text-red-600" />
+                ))}
               </div>
-              <h3 className="text-xl font-semibold text-red-600 mb-2">{t('agroconecta.freights.error_loading')}</h3>
-              <p className="text-gray-500 mb-4">{error}</p>
-              <button 
-                onClick={fetchFreights}
-                className="bg-red-600 text-white px-6 py-2 rounded-xl hover:bg-red-700 transition-colors"
-              >
-                {t('agroconecta.freights.try_again')}
-              </button>
             </div>
-          )}
-
-          {/* Estado de Carregamento */}
-          {loading && (
-            <div className="text-center py-20">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-spin">
-                <Truck className="w-8 h-8 text-blue-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-blue-600 mb-2">{t('agroconecta.freights.loading_freights')}</h3>
-              <p className="text-gray-500">{t('agroconecta.freights.waiting_best_freights')}</p>
-            </div>
-          )}
+          </main>
         </div>
-      </section>
+      </div>
     </div>
   );
 };

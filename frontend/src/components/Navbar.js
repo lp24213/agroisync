@@ -201,6 +201,13 @@ const Navbar = () => {
                         <div className="px-4 py-2 border-t border-gray-200 dark:border-gray-700">
                           <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Mensageria</p>
                           <a
+                            href="/messages"
+                            className="flex items-center space-x-2 px-2 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 rounded"
+                          >
+                            <MessageCircle className="w-4 h-4 text-blue-500" />
+                            <span>Painel de Mensagens</span>
+                          </a>
+                          <a
                             href="/messages/products"
                             className="flex items-center space-x-2 px-2 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 rounded"
                           >
@@ -395,6 +402,14 @@ const Navbar = () => {
                     <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Mensageria Privada</h3>
                     <div className="space-y-2">
                       <a 
+                        href="/messages" 
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white bg-gradient-to-r from-purple-600/20 to-purple-800/20 border border-purple-500/30"
+                      >
+                        <MessageCircle className="w-5 h-5 text-purple-400" />
+                        <span>Painel de Mensagens</span>
+                      </a>
+                      <a 
                         href="/messages/products" 
                         onClick={() => setIsOpen(false)}
                         className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white bg-gradient-to-r from-blue-600/20 to-blue-800/20 border border-blue-500/30"
@@ -434,7 +449,7 @@ const Navbar = () => {
                 </div>
 
                 {/* Admin - Somente se logado como admin */}
-                {user && user.role === 'admin' && (
+                {user && user.isAdmin && (
                   <div className="px-3 py-2">
                     <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Administração</h3>
                     <div className="space-y-2">

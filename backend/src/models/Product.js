@@ -69,6 +69,11 @@ const productSchema = new mongoose.Schema({
   },
 
   // Quantity and Availability
+  stock: {
+    type: Number,
+    required: true,
+    min: 0
+  },
   quantity: {
     available: {
       type: Number,

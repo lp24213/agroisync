@@ -1,14 +1,15 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { PaymentProvider } from './contexts/PaymentContext';
 import { ThemeProvider } from './contexts/ThemeContext';
-import ProtectedRoute from './components/ProtectedRoute';
+import RouteGuard from './components/RouteGuard';
 
 // Páginas principais
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Cadastro from './pages/Cadastro';
-import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/dashboard';
 import Loja from './pages/Loja';
 import Parcerias from './pages/Parcerias';
 import Contato from './pages/Contato';
@@ -23,6 +24,7 @@ import Planos from './pages/Planos';
 import PaymentSuccess from './pages/PaymentSuccess';
 
 // Páginas de mensageria
+import Messages from './pages/Messages';
 import MessagesProducts from './pages/MessagesProducts';
 import MessagesFreights from './pages/MessagesFreights';
 
@@ -50,93 +52,108 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <Router>
-          <div className="App">
-            <Navbar />
-            <Routes>
-              {/* Rotas públicas */}
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/cadastro" element={<Cadastro />} />
-              <Route path="/sobre" element={<Sobre />} />
-              <Route path="/parcerias" element={<Parcerias />} />
-              <Route path="/contato" element={<Contato />} />
-              <Route path="/faq" element={<FAQ />} />
-              <Route path="/termos" element={<Termos />} />
-              <Route path="/privacidade" element={<Privacidade />} />
-              <Route path="/lgpd" element={<LGPD />} />
-              <Route path="/cookies" element={<Cookies />} />
-              <Route path="/ajuda" element={<Ajuda />} />
-              <Route path="/planos" element={<Planos />} />
-              <Route path="/payment-success" element={<PaymentSuccess />} />
-              <Route path="/agroconecta" element={<AgroConecta />} />
-              <Route path="/cripto" element={<Cripto />} />
-              <Route path="/cotacao" element={<Cotacao />} />
-              <Route path="/status" element={<Status />} />
-              <Route path="/commodities" element={<Commodities />} />
-              <Route path="/grains-dashboard" element={<GrainsDashboard />} />
-              <Route path="/ibge-data" element={<IBGEData />} />
-              <Route path="/receita" element={<Receita />} />
-              <Route path="/global" element={<Global />} />
+        <PaymentProvider>
+          <Router>
+            <div className="App">
+              <Navbar />
+              <Routes>
+                {/* Rotas públicas */}
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/cadastro" element={<Cadastro />} />
+                <Route path="/sobre" element={<Sobre />} />
+                <Route path="/parcerias" element={<Parcerias />} />
+                <Route path="/contato" element={<Contato />} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/termos" element={<Termos />} />
+                <Route path="/privacidade" element={<Privacidade />} />
+                <Route path="/lgpd" element={<LGPD />} />
+                <Route path="/cookies" element={<Cookies />} />
+                <Route path="/ajuda" element={<Ajuda />} />
+                <Route path="/planos" element={<Planos />} />
+                <Route path="/payment-success" element={<PaymentSuccess />} />
+                <Route path="/agroconecta" element={<AgroConecta />} />
+                <Route path="/cripto" element={<Cripto />} />
+                <Route path="/cotacao" element={<Cotacao />} />
+                <Route path="/status" element={<Status />} />
+                <Route path="/commodities" element={<Commodities />} />
+                <Route path="/grains-dashboard" element={<GrainsDashboard />} />
+                <Route path="/ibge-data" element={<IBGEData />} />
+                <Route path="/receita" element={<Receita />} />
+                <Route path="/global" element={<Global />} />
 
-              {/* Rotas admin */}
-              <Route path="/admin/login" element={<AdminLogin />} />
-              <Route 
-                path="/admin/secure-panel" 
-                element={
-                  <ProtectedRoute requireAdmin={true}>
-                    <AdminSecurePanel />
-                  </ProtectedRoute>
-                } 
-              />
+                {/* Rotas admin - requerem autenticação e permissão de admin */}
+                <Route 
+                  path="/admin" 
+                  element={
+                    <RouteGuard requireAdmin={true}>
+                      <Admin />
+                    </RouteGuard>
+                  } 
+                />
+                <Route 
+                  path="/admin/login" 
+                  element={<AdminLogin />} 
+                />
+                <Route 
+                  path="/admin/secure-panel" 
+                  element={
+                    <RouteGuard requireAdmin={true}>
+                      <AdminSecurePanel />
+                    </RouteGuard>
+                  } 
+                />
 
-              {/* Rotas protegidas que requerem plano ativo */}
-              <Route 
-                path="/messages/products" 
-                element={
-                  <ProtectedRoute requirePlan={true}>
-                    <MessagesProducts />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/messages/freights" 
-                element={
-                  <ProtectedRoute requirePlan={true}>
-                    <MessagesFreights />
-                  </ProtectedRoute>
-                } 
-              />
+                {/* Rota de mensagens unificada - requer autenticação */}
+                <Route 
+                  path="/messages" 
+                  element={
+                    <RouteGuard requireAuth={true}>
+                      <Messages />
+                    </RouteGuard>
+                  } 
+                />
 
-              {/* Rotas protegidas por autenticação */}
-              <Route 
-                path="/dashboard" 
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/loja" 
-                element={
-                  <ProtectedRoute>
-                    <Loja />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/admin" 
-                element={
-                  <ProtectedRoute requireAdmin={true}>
-                    <Admin />
-                  </ProtectedRoute>
-                } 
-              />
-            </Routes>
-            <Footer />
-          </div>
-        </Router>
+                {/* Rotas protegidas que requerem plano ativo */}
+                <Route 
+                  path="/messages/products" 
+                  element={
+                    <RouteGuard requireAuth={true}>
+                      <MessagesProducts />
+                    </RouteGuard>
+                  } 
+                />
+                <Route 
+                  path="/messages/freights" 
+                  element={
+                    <RouteGuard requireAuth={true}>
+                      <MessagesFreights />
+                    </RouteGuard>
+                  } 
+                />
+
+                {/* Rotas protegidas por autenticação */}
+                <Route 
+                  path="/dashboard" 
+                  element={
+                    <RouteGuard requireAuth={true}>
+                      <Dashboard />
+                    </RouteGuard>
+                  } 
+                />
+                <Route 
+                  path="/loja" 
+                  element={
+                    <RouteGuard requireAuth={true}>
+                      <Loja />
+                    </RouteGuard>
+                  } 
+                />
+              </Routes>
+              <Footer />
+            </div>
+          </Router>
+        </PaymentProvider>
       </AuthProvider>
     </ThemeProvider>
   );

@@ -63,6 +63,10 @@ const paymentSchema = new mongoose.Schema({
     type: String,
     sparse: true
   },
+  transactionId: {
+    type: String,
+    sparse: true
+  },
   description: {
     type: String,
     required: true,

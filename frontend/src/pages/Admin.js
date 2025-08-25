@@ -1,553 +1,589 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { 
-  Users, ShoppingCart, Truck, CreditCard, 
-  BarChart3, Settings, LogOut, Eye, Edit, Trash2,
-  Plus, Search, Filter, Download, RefreshCw,
-  UserPlus, DollarSign, TrendingUp, AlertCircle, MessageCircle
+  Users, 
+  Activity, 
+  Database, 
+  Shield, 
+  Settings, 
+  LogOut,
+  Eye,
+  Edit,
+  Trash2,
+  Plus,
+  Search,
+  Filter,
+  Download,
+  RefreshCw,
+  BarChart3,
+  PieChart,
+  TrendingUp,
+  DollarSign,
+  Package,
+  Truck,
+  CreditCard,
+  UserPlus,
+  Calendar,
+  Globe,
+  Target
 } from 'lucide-react';
 
 const Admin = () => {
-  const { isDark } = useTheme();
-  const { user, logout } = useAuth();
+  const { user, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
-  const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState('dashboard');
   const [loading, setLoading] = useState(false);
-  const [adminCredentials, setAdminCredentials] = useState({
-    email: '',
-    password: ''
-  });
-  const [adminLoginError, setAdminLoginError] = useState('');
-  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [activeTab, setActiveTab] = useState('dashboard');
 
-  // Estados para dados
-  const [users, setUsers] = useState([]);
-  const [payments, setPayments] = useState([]);
-  const [products, setProducts] = useState([]);
-  const [freights, setFreights] = useState([]);
-  const [cryptoTransactions, setCryptoTransactions] = useState([]);
-  const [privateChats, setPrivateChats] = useState([]);
+  // Mock data para usuários
+  const [users, setUsers] = useState([
+    {
+      id: 1,
+      name: 'João Silva',
+      email: 'joao.silva@agro.com',
+      status: 'active',
+      plan: 'Premium',
+      lastLogin: '2024-01-15 14:30',
+      role: 'user',
+      region: 'São Paulo',
+      products: 12,
+      revenue: 15420.50
+    },
+    {
+      id: 2,
+      name: 'Maria Santos',
+      email: 'maria.santos@agro.com',
+      status: 'active',
+      plan: 'Basic',
+      lastLogin: '2024-01-15 12:15',
+      role: 'user',
+      region: 'Rio de Janeiro',
+      products: 8,
+      revenue: 8900.00
+    },
+    {
+      id: 3,
+      name: 'Pedro Oliveira',
+      email: 'pedro.oliveira@agro.com',
+      status: 'inactive',
+      plan: 'Basic',
+      lastLogin: '2024-01-10 09:45',
+      role: 'user',
+      region: 'Minas Gerais',
+      products: 5,
+      revenue: 3200.00
+    },
+    {
+      id: 4,
+      name: 'Ana Costa',
+      email: 'ana.costa@agro.com',
+      status: 'active',
+      plan: 'Premium',
+      lastLogin: '2024-01-15 16:20',
+      role: 'admin',
+      region: 'Paraná',
+      products: 15,
+      revenue: 22000.00
+    },
+    {
+      id: 5,
+      name: 'Carlos Ferreira',
+      email: 'carlos.ferreira@agro.com',
+      status: 'pending',
+      plan: 'Basic',
+      lastLogin: '2024-01-14 11:30',
+      role: 'user',
+      region: 'Goiás',
+      products: 3,
+      revenue: 1500.00
+    }
+  ]);
+
+  // Mock data para estatísticas
+  const [stats, setStats] = useState({
+    totalUsers: 1247,
+    activeUsers: 1189,
+    premiumUsers: 456,
+    newUsersToday: 23,
+    totalRevenue: 125000,
+    systemHealth: 99.8,
+    totalProducts: 5678,
+    totalOrders: 8923,
+    avgOrderValue: 89.50
+  });
+
+  // Mock data para gráficos
+  const [chartData, setChartData] = useState({
+    usersByRegion: [
+      { region: 'São Paulo', users: 456, revenue: 45000 },
+      { region: 'Rio de Janeiro', users: 234, revenue: 28000 },
+      { region: 'Minas Gerais', users: 189, revenue: 22000 },
+      { region: 'Paraná', users: 156, revenue: 18000 },
+      { region: 'Goiás', users: 98, revenue: 12000 }
+    ],
+    revenueByMonth: [
+      { month: 'Jan', revenue: 125000 },
+      { month: 'Fev', revenue: 138000 },
+      { month: 'Mar', revenue: 142000 },
+      { month: 'Abr', revenue: 156000 },
+      { month: 'Mai', revenue: 168000 },
+      { month: 'Jun', revenue: 175000 }
+    ]
+  });
 
   useEffect(() => {
-    // Verificar se usuário é admin ou se admin está autenticado
-    if ((!user || !user.isAdmin) && !isAdminAuthenticated) {
-      // Não redirecionar automaticamente, mostrar tela de login
+    // Verificar se o usuário é admin
+    if (!isAdmin) {
+      navigate('/login');
       return;
     }
+  }, [isAdmin, navigate]);
 
-    document.title = 'Painel Administrativo - Agroisync';
-    loadDashboardData();
-  }, [user, navigate, isAdminAuthenticated]);
-
-  const loadDashboardData = async () => {
+  const handleLogout = async () => {
     setLoading(true);
     try {
-      // Simular carregamento de dados
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Dados mockados para demonstração
-      setUsers([
-        { id: 1, name: 'João Silva', email: 'joao@email.com', plan: 'AGROCONNECT+', status: 'active', createdAt: '2024-01-15' },
-        { id: 2, name: 'Maria Santos', email: 'maria@email.com', plan: 'Gratuito', status: 'active', createdAt: '2024-01-10' },
-        { id: 3, name: 'Pedro Costa', email: 'pedro@email.com', plan: 'AGROCONNECT+', status: 'pending', createdAt: '2024-01-20' }
-      ]);
-
-      setPayments([
-        { id: 1, userId: 1, amount: 99.90, plan: 'AGROCONNECT+', status: 'completed', date: '2024-01-15' },
-        { id: 2, userId: 3, amount: 99.90, plan: 'AGROCONNECT+', status: 'pending', date: '2024-01-20' }
-      ]);
-
-      setProducts([
-        { id: 1, name: 'Sementes de Soja', category: 'Insumos', price: 45.90, status: 'active', userId: 1 },
-        { id: 2, name: 'Fertilizante NPK', category: 'Insumos', price: 89.90, status: 'active', userId: 1 }
-      ]);
-
-      setFreights([
-        { id: 1, origin: 'São Paulo', destination: 'Mato Grosso', weight: '25 ton', status: 'available', userId: 2 },
-        { id: 2, origin: 'Paraná', destination: 'Goiás', weight: '30 ton', status: 'in_transit', userId: 2 }
-      ]);
-
-      setCryptoTransactions([
-        { id: 1, userId: 1, type: 'purchase', amount: '0.5 ETH', value: 'R$ 1.250,00', status: 'completed', date: '2024-01-15' },
-        { id: 2, userId: 3, type: 'transfer', amount: '0.2 ETH', value: 'R$ 500,00', status: 'pending', date: '2024-01-20' }
-      ]);
-
-      setPrivateChats([
-        { id: 1, userId: 1, partnerId: 2, lastMessage: 'Olá, gostaria de saber mais sobre o produto', status: 'active', unreadCount: 2 },
-        { id: 2, userId: 3, partnerId: 1, lastMessage: 'Qual o prazo de entrega?', status: 'active', unreadCount: 1 }
-      ]);
+      await logout();
     } catch (error) {
-      console.error('Erro ao carregar dados:', error);
+      console.error('Erro no logout:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAdminLogin = (e) => {
-    e.preventDefault();
-    if (adminCredentials.email === 'contato@agrotm.com.br' && adminCredentials.password === 'Th@ys15221008') {
-      setIsAdminAuthenticated(true);
-      setAdminLoginError('');
-      // Simular usuário admin
-      const adminUser = {
-        id: 'admin',
-        name: 'Administrador',
-        email: 'contato@agrotm.com.br',
-        isAdmin: true
-      };
-      // Atualizar contexto de autenticação
-      // Nota: Em produção, isso seria feito via contexto
-    } else {
-      setAdminLoginError('Credenciais inválidas');
-    }
-  };
-
-  const handleLogout = () => {
-    logout();
-    setIsAdminAuthenticated(false);
-    navigate('/');
-  };
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         user.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter = filterStatus === 'all' || user.status === filterStatus;
+    return matchesSearch && matchesFilter;
+  });
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'active':
-      case 'completed':
-      case 'available':
-        return 'text-green-500 bg-green-100 dark:bg-green-900/20';
-      case 'pending':
-        return 'text-yellow-500 bg-yellow-100 dark:bg-yellow-900/20';
-      case 'inactive':
-      case 'cancelled':
-        return 'text-red-500 bg-red-100 dark:bg-red-900/20';
-      case 'in_transit':
-        return 'text-blue-500 bg-blue-100 dark:bg-blue-900/20';
-      default:
-        return 'text-gray-500 bg-gray-100 dark:bg-gray-900/20';
+      case 'active': return 'text-green-400 bg-green-400/10';
+      case 'inactive': return 'text-red-400 bg-red-400/10';
+      case 'pending': return 'text-yellow-400 bg-yellow-400/10';
+      default: return 'text-gray-400 bg-gray-400/10';
+    }
+  };
+
+  const getPlanColor = (plan) => {
+    switch (plan) {
+      case 'Premium': return 'text-blue-400 bg-blue-400/10';
+      case 'Basic': return 'text-gray-400 bg-gray-400/10';
+      default: return 'text-gray-400 bg-gray-400/10';
     }
   };
 
   const tabs = [
-    { id: 'dashboard', name: t('dashboard'), icon: BarChart3 },
-    { id: 'users', name: t('users'), icon: Users },
-    { id: 'payments', name: t('payments'), icon: CreditCard },
-    { id: 'products', name: t('products'), icon: ShoppingCart },
-    { id: 'freights', name: t('freights'), icon: Truck },
-    { id: 'crypto', name: 'Criptomoedas', icon: TrendingUp },
-    { id: 'chats', name: 'Chats Privados', icon: MessageCircle },
-    { id: 'settings', name: t('settings'), icon: Settings }
+    { id: 'dashboard', name: 'Dashboard', icon: BarChart3 },
+    { id: 'users', name: 'Usuários', icon: Users },
+    { id: 'analytics', name: 'Analytics', icon: TrendingUp },
+    { id: 'settings', name: 'Configurações', icon: Settings }
   ];
 
   const renderDashboard = () => (
     <div className="space-y-6">
-      {/* Cards de estatísticas */}
+      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[
-          { title: t('totalUsers'), value: users.length, icon: Users, color: 'from-blue-500 to-cyan-500' },
-          { title: t('totalPayments'), value: payments.length, icon: CreditCard, color: 'from-green-500 to-emerald-500' },
-          { title: t('activeProducts'), value: products.length, icon: ShoppingCart, color: 'from-purple-500 to-pink-500' },
-          { title: t('availableFreights'), value: freights.filter(f => f.status === 'available').length, icon: Truck, color: 'from-orange-500 to-red-500' }
-        ].map((stat, index) => (
-          <motion.div
-            key={stat.title}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className={`p-6 rounded-2xl shadow-lg ${
-              isDark ? 'bg-gray-800' : 'bg-white'
-            } border border-gray-200 dark:border-gray-700`}
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium opacity-70">{stat.title}</p>
-                <p className="text-2xl font-bold mt-1">{stat.value}</p>
-              </div>
-              <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${stat.color} flex items-center justify-center`}>
-                <stat.icon className="w-6 h-6 text-white" />
-              </div>
+        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 hover:border-blue-500 transition-colors">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-400">Total de Usuários</p>
+              <p className="text-2xl font-bold text-white">{stats.totalUsers.toLocaleString()}</p>
             </div>
-          </motion.div>
-        ))}
+            <Users className="w-8 h-8 text-blue-400" />
+          </div>
+        </div>
+
+        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 hover:border-green-500 transition-colors">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-400">Usuários Ativos</p>
+              <p className="text-2xl font-bold text-green-400">{stats.activeUsers.toLocaleString()}</p>
+            </div>
+            <Activity className="w-8 h-8 text-green-400" />
+          </div>
+        </div>
+
+        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 hover:border-blue-500 transition-colors">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-400">Usuários Premium</p>
+              <p className="text-2xl font-bold text-blue-400">{stats.premiumUsers.toLocaleString()}</p>
+            </div>
+            <Shield className="w-8 h-8 text-blue-400" />
+          </div>
+        </div>
+
+        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 hover:border-green-500 transition-colors">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-400">Receita Total</p>
+              <p className="text-2xl font-bold text-green-400">R$ {stats.totalRevenue.toLocaleString()}</p>
+            </div>
+            <DollarSign className="w-8 h-8 text-green-400" />
+          </div>
+        </div>
       </div>
 
-      {/* Gráficos e análises */}
+      {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.4 }}
-          className={`p-6 rounded-2xl shadow-lg ${
-            isDark ? 'bg-gray-800' : 'bg-white'
-          } border border-gray-200 dark:border-gray-700`}
-        >
-          <h3 className="text-lg font-semibold mb-4">{t('usersByPlan')}</h3>
+        {/* Revenue Chart */}
+        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
+          <h3 className="text-lg font-medium text-white mb-4">Receita Mensal</h3>
+          <div className="h-64 flex items-end justify-between space-x-2">
+            {chartData.revenueByMonth.map((item, index) => (
+              <div key={index} className="flex-1 flex flex-col items-center">
+                <div 
+                  className="w-full bg-gradient-to-t from-blue-500 to-cyan-400 rounded-t"
+                  style={{ height: `${(item.revenue / 200000) * 200}px` }}
+                ></div>
+                <span className="text-xs text-gray-400 mt-2">{item.month}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Users by Region */}
+        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
+          <h3 className="text-lg font-medium text-white mb-4">Usuários por Região</h3>
           <div className="space-y-3">
-            {[
-              { plan: t('freePlan'), count: users.filter(u => u.plan === 'Gratuito').length, color: 'bg-gray-400' },
-              { plan: t('agroconnectPlus'), count: users.filter(u => u.plan === 'AGROCONNECT+').length, color: 'bg-green-500' }
-            ].map((item) => (
-              <div key={item.plan} className="flex items-center justify-between">
-                <span className="text-sm">{item.plan}</span>
-                <div className="flex items-center gap-2">
-                  <div className="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            {chartData.usersByRegion.map((item, index) => (
+              <div key={index} className="flex items-center justify-between">
+                <span className="text-sm text-gray-300">{item.region}</span>
+                <div className="flex items-center space-x-2">
+                  <div className="w-20 bg-gray-700 rounded-full h-2">
                     <div 
-                      className={`h-2 rounded-full ${item.color}`}
-                      style={{ width: `${(item.count / users.length) * 100}%` }}
+                      className="bg-gradient-to-r from-blue-500 to-cyan-400 h-2 rounded-full"
+                      style={{ width: `${(item.users / 500) * 100}%` }}
                     ></div>
                   </div>
-                  <span className="text-sm font-medium">{item.count}</span>
+                  <span className="text-sm text-white">{item.users}</span>
                 </div>
               </div>
             ))}
           </div>
-        </motion.div>
+        </div>
+      </div>
 
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.5 }}
-          className={`p-6 rounded-2xl shadow-lg ${
-            isDark ? 'bg-gray-800' : 'bg-white'
-          } border border-gray-200 dark:border-gray-700`}
-        >
-          <h3 className="text-lg font-semibold mb-4">{t('paymentStatus')}</h3>
-          <div className="space-y-3">
-            {[
-              { status: t('completed'), count: payments.filter(p => p.status === 'completed').length, color: 'bg-green-500' },
-              { status: t('pending'), count: payments.filter(p => p.status === 'pending').length, color: 'bg-yellow-500' }
-            ].map((item) => (
-              <div key={item.status} className="flex items-center justify-between">
-                <span className="text-sm">{item.status}</span>
-                <div className="flex items-center gap-2">
-                  <div className={`w-3 h-3 rounded-full ${item.color}`}></div>
-                  <span className="text-sm font-medium">{item.count}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
+      {/* Quick Actions */}
+      <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
+        <h3 className="text-lg font-medium text-white mb-4">Ações Rápidas</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <button className="p-4 bg-blue-600 hover:bg-blue-700 rounded-lg text-white text-center transition-colors">
+            <UserPlus className="w-6 h-6 mx-auto mb-2" />
+            <span className="text-sm">Adicionar Usuário</span>
+          </button>
+          <button className="p-4 bg-green-600 hover:bg-green-700 rounded-lg text-white text-center transition-colors">
+            <Package className="w-6 h-6 mx-auto mb-2" />
+            <span className="text-sm">Gerenciar Produtos</span>
+          </button>
+          <button className="p-4 bg-purple-600 hover:bg-purple-700 rounded-lg text-white text-center transition-colors">
+            <Truck className="w-6 h-6 mx-auto mb-2" />
+            <span className="text-sm">Gestão de Fretes</span>
+          </button>
+          <button className="p-4 bg-orange-600 hover:bg-orange-700 rounded-lg text-white text-center transition-colors">
+            <CreditCard className="w-6 h-6 mx-auto mb-2" />
+            <span className="text-sm">Relatórios</span>
+          </button>
+        </div>
       </div>
     </div>
   );
 
   const renderUsers = () => (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">{t('manageUsers')}</h2>
-        <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
-          <Plus className="w-4 h-4 inline mr-2" />
-          {t('newUser')}
-        </button>
-      </div>
+      {/* Users Table Section */}
+      <div className="bg-gray-800 border border-gray-700 rounded-lg">
+        <div className="p-6 border-b border-gray-700">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold text-white">Gerenciamento de Usuários</h2>
+            <button className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+              <Plus className="w-4 h-4" />
+              <span>Adicionar Usuário</span>
+            </button>
+          </div>
+        </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className={`border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-              <th className="text-left py-3 px-4">{t('name')}</th>
-              <th className="text-left py-3 px-4">{t('email')}</th>
-              <th className="text-left py-3 px-4">{t('plan')}</th>
-              <th className="text-left py-3 px-4">{t('status')}</th>
-              <th className="text-left py-3 px-4">{t('date')}</th>
-              <th className="text-left py-3 px-4">{t('actions')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.id} className={`border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-                <td className="py-3 px-4">{user.name}</td>
-                <td className="py-3 px-4">{user.email}</td>
-                <td className="py-3 px-4">{user.plan}</td>
-                <td className="py-3 px-4">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(user.status)}`}>
-                    {user.status}
-                  </span>
-                </td>
-                <td className="py-3 px-4">{user.createdAt}</td>
-                <td className="py-3 px-4">
-                  <div className="flex gap-2">
-                    <button className="text-blue-500 hover:text-blue-600">
-                      <Eye className="w-4 h-4" />
-                    </button>
-                    <button className="text-green-500 hover:text-green-600">
-                      <Edit className="w-4 h-4" />
-                    </button>
-                    <button className="text-red-500 hover:text-red-600">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </td>
+        {/* Filters and Search */}
+        <div className="p-6 border-b border-gray-700">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Buscar usuários..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="all">Todos os Status</option>
+                <option value="active">Ativos</option>
+                <option value="inactive">Inativos</option>
+                <option value="pending">Pendentes</option>
+              </select>
+              
+              <button className="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
+                <Filter className="w-4 h-4" />
+              </button>
+              
+              <button className="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
+                <Download className="w-4 h-4" />
+              </button>
+              
+              <button className="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
+                <RefreshCw className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Table */}
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-700">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  Usuário
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  Plano
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  Produtos
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  Receita
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  Último Login
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  Ações
+                </th>
               </tr>
+            </thead>
+            <tbody className="bg-gray-800 divide-y divide-gray-700">
+              {filteredUsers.map((user) => (
+                <tr key={user.id} className="hover:bg-gray-700 transition-colors">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div>
+                      <div className="text-sm font-medium text-white">{user.name}</div>
+                      <div className="text-sm text-gray-400">{user.email}</div>
+                      <div className="text-xs text-gray-500">{user.region}</div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(user.status)}`}>
+                      {user.status === 'active' ? 'Ativo' : 
+                       user.status === 'inactive' ? 'Inativo' : 'Pendente'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPlanColor(user.plan)}`}>
+                      {user.plan}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                    {user.products}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-green-400 font-medium">
+                    R$ {user.revenue.toLocaleString()}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                    {user.lastLogin}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <div className="flex items-center space-x-2">
+                      <button className="text-blue-400 hover:text-blue-300 transition-colors">
+                        <Eye className="w-4 h-4" />
+                      </button>
+                      <button className="text-yellow-400 hover:text-yellow-300 transition-colors">
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button className="text-red-400 hover:text-red-300 transition-colors">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination */}
+        <div className="px-6 py-4 border-t border-gray-700">
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-gray-400">
+              Mostrando 1-5 de {filteredUsers.length} resultados
+            </div>
+            <div className="flex items-center space-x-2">
+              <button className="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-sm text-white transition-colors">
+                Anterior
+              </button>
+              <span className="px-3 py-1 bg-blue-600 rounded text-sm text-white">1</span>
+              <button className="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-sm text-white transition-colors">
+                Próximo
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderAnalytics = () => (
+    <div className="space-y-6">
+      {/* Analytics Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
+          <h3 className="text-lg font-medium text-white mb-4">Métricas de Vendas</h3>
+          <div className="space-y-3">
+            <div className="flex justify-between">
+              <span className="text-gray-400">Total de Pedidos</span>
+              <span className="text-white font-medium">{stats.totalOrders.toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-400">Valor Médio</span>
+              <span className="text-white font-medium">R$ {stats.avgOrderValue}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-400">Total de Produtos</span>
+              <span className="text-white font-medium">{stats.totalProducts.toLocaleString()}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
+          <h3 className="text-lg font-medium text-white mb-4">Crescimento</h3>
+          <div className="space-y-3">
+            <div className="flex items-center space-x-2">
+              <TrendingUp className="w-5 h-5 text-green-400" />
+              <span className="text-green-400">+15.3%</span>
+              <span className="text-gray-400 text-sm">usuários este mês</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <TrendingUp className="w-5 h-5 text-blue-400" />
+              <span className="text-blue-400">+8.7%</span>
+              <span className="text-gray-400 text-sm">receita este mês</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <TrendingUp className="w-5 h-5 text-purple-400" />
+              <span className="text-purple-400">+12.1%</span>
+              <span className="text-gray-400 text-sm">produtos este mês</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
+          <h3 className="text-lg font-medium text-white mb-4">Distribuição</h3>
+          <div className="space-y-3">
+            <div className="flex justify-between">
+              <span className="text-gray-400">Premium</span>
+              <span className="text-white font-medium">{((stats.premiumUsers / stats.totalUsers) * 100).toFixed(1)}%</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-400">Basic</span>
+              <span className="text-white font-medium">{(((stats.totalUsers - stats.premiumUsers) / stats.totalUsers) * 100).toFixed(1)}%</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-400">Ativos</span>
+              <span className="text-white font-medium">{((stats.activeUsers / stats.totalUsers) * 100).toFixed(1)}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
+          <h3 className="text-lg font-medium text-white mb-4">Distribuição Regional</h3>
+          <div className="space-y-4">
+            {chartData.usersByRegion.map((item, index) => (
+              <div key={index} className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className={`w-3 h-3 rounded-full ${
+                    index === 0 ? 'bg-blue-500' : 
+                    index === 1 ? 'bg-green-500' : 
+                    index === 2 ? 'bg-purple-500' : 
+                    index === 3 ? 'bg-yellow-500' : 'bg-red-500'
+                  }`}></div>
+                  <span className="text-sm text-gray-300">{item.region}</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm text-white">{item.users}</span>
+                  <span className="text-xs text-gray-400">({((item.users / stats.totalUsers) * 100).toFixed(1)}%)</span>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
+          </div>
+        </div>
 
-  const renderPayments = () => (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">{t('paymentHistory')}</h2>
-        <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
-          <Download className="w-4 h-4 inline mr-2" />
-          {t('export')}
-        </button>
-      </div>
-
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className={`border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-              <th className="text-left py-3 px-4">{t('id')}</th>
-              <th className="text-left py-3 px-4">{t('user')}</th>
-              <th className="text-left py-3 px-4">{t('value')}</th>
-              <th className="text-left py-3 px-4">{t('plan')}</th>
-              <th className="text-left py-3 px-4">{t('status')}</th>
-              <th className="text-left py-3 px-4">{t('date')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {payments.map((payment) => (
-              <tr key={payment.id} className={`border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-                <td className="py-3 px-4">#{payment.id}</td>
-                <td className="py-3 px-4">{users.find(u => u.id === payment.userId)?.name || 'N/A'}</td>
-                <td className="py-3 px-4">R$ {payment.amount}</td>
-                <td className="py-3 px-4">{payment.plan}</td>
-                <td className="py-3 px-4">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(payment.status)}`}>
-                    {payment.status}
-                  </span>
-                </td>
-                <td className="py-3 px-4">{payment.date}</td>
-              </tr>
+        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
+          <h3 className="text-lg font-medium text-white mb-4">Tendência de Receita</h3>
+          <div className="h-48 flex items-end justify-between space-x-1">
+            {chartData.revenueByMonth.map((item, index) => (
+              <div key={index} className="flex-1 flex flex-col items-center">
+                <div 
+                  className="w-full bg-gradient-to-t from-green-500 to-emerald-400 rounded-t"
+                  style={{ height: `${(item.revenue / 200000) * 150}px` }}
+                ></div>
+                <span className="text-xs text-gray-400 mt-2">{item.month}</span>
+              </div>
             ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-
-  const renderProducts = () => (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">{t('registeredProducts')}</h2>
-        <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
-          <Plus className="w-4 h-4 inline mr-2" />
-          {t('newProduct')}
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {products.map((product) => (
-          <motion.div
-            key={product.id}
-            whileHover={{ scale: 1.02 }}
-            className={`p-6 rounded-2xl shadow-lg ${
-              isDark ? 'bg-gray-800' : 'bg-white'
-            } border border-gray-200 dark:border-gray-700`}
-          >
-            <div className="flex justify-between items-start mb-4">
-              <h3 className="text-lg font-semibold">{product.name}</h3>
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(product.status)}`}>
-                {product.status}
-              </span>
-            </div>
-            <p className="text-sm opacity-70 mb-2">{t('category')}: {product.category}</p>
-            <p className="text-lg font-bold text-green-500 mb-4">R$ {product.price}</p>
-            <div className="flex gap-2">
-              <button className="text-blue-500 hover:text-blue-600 text-sm">
-                <Eye className="w-4 h-4 inline mr-1" />
-                {t('view')}
-              </button>
-              <button className="text-green-500 hover:text-green-600 text-sm">
-                <Edit className="w-4 h-4 inline mr-1" />
-                {t('edit')}
-              </button>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </div>
-  );
-
-  const renderFreights = () => (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">{t('agroConnectFreights')}</h2>
-        <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
-          <Plus className="w-4 h-4 inline mr-2" />
-          {t('newFreight')}
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {freights.map((freight) => (
-          <motion.div
-            key={freight.id}
-            whileHover={{ scale: 1.02 }}
-            className={`p-6 rounded-2xl shadow-lg ${
-              isDark ? 'bg-gray-800' : 'bg-white'
-            } border border-gray-200 dark:border-gray-700`}
-          >
-            <div className="flex justify-between items-start mb-4">
-              <h3 className="text-lg font-semibold">{t('freight')} #{freight.id}</h3>
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(freight.status)}`}>
-                {freight.status}
-              </span>
-            </div>
-            <div className="space-y-2 text-sm">
-              <p><strong>{t('origin')}:</strong> {freight.origin}</p>
-              <p><strong>{t('destination')}:</strong> {freight.destination}</p>
-              <p><strong>{t('weight')}:</strong> {freight.weight}</p>
-            </div>
-            <div className="flex gap-2 mt-4">
-              <button className="text-blue-500 hover:text-blue-600 text-sm">
-                <Eye className="w-4 h-4 inline mr-1" />
-                {t('details')}
-              </button>
-              <button className="text-green-500 hover:text-green-600 text-sm">
-                <Edit className="w-4 h-4 inline mr-1" />
-                {t('edit')}
-              </button>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </div>
-  );
-
-  const renderCrypto = () => (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Transações de Criptomoedas</h2>
-        <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
-          <Plus className="w-4 h-4 inline mr-2" />
-          Nova Transação
-        </button>
-      </div>
-
-      <div className="overflow-x-auto">
-        <table className={`w-full ${isDark ? 'text-white' : 'text-gray-900'}`}>
-          <thead>
-            <tr className={`border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-              <th className="py-3 px-4 text-left">ID</th>
-              <th className="py-3 px-4 text-left">Usuário</th>
-              <th className="py-3 px-4 text-left">Tipo</th>
-              <th className="py-3 px-4 text-left">Quantidade</th>
-              <th className="py-3 px-4 text-left">Valor</th>
-              <th className="py-3 px-4 text-left">Status</th>
-              <th className="py-3 px-4 text-left">Data</th>
-            </tr>
-          </thead>
-          <tbody>
-            {cryptoTransactions.map((transaction) => (
-              <tr key={transaction.id} className={`border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-                <td className="py-3 px-4">#{transaction.id}</td>
-                <td className="py-3 px-4">{users.find(u => u.id === transaction.userId)?.name || 'N/A'}</td>
-                <td className="py-3 px-4">{transaction.type}</td>
-                <td className="py-3 px-4">{transaction.amount}</td>
-                <td className="py-3 px-4">{transaction.value}</td>
-                <td className="py-3 px-4">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(transaction.status)}`}>
-                    {transaction.status}
-                  </span>
-                </td>
-                <td className="py-3 px-4">{transaction.date}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-
-  const renderChats = () => (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Chats Privados</h2>
-        <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
-          <Eye className="w-4 h-4 inline mr-2" />
-          Monitorar Todos
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {privateChats.map((chat) => (
-          <motion.div
-            key={chat.id}
-            whileHover={{ scale: 1.02 }}
-            className={`p-6 rounded-2xl shadow-lg ${
-              isDark ? 'bg-gray-800' : 'bg-white'
-            } border border-gray-200 dark:border-gray-700`}
-          >
-            <div className="flex justify-between items-start mb-4">
-              <h3 className="text-lg font-semibold">Chat #{chat.id}</h3>
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(chat.status)}`}>
-                {chat.status}
-              </span>
-            </div>
-            <div className="space-y-2 text-sm">
-              <p><strong>Usuário:</strong> {users.find(u => u.id === chat.userId)?.name || 'N/A'}</p>
-              <p><strong>Parceiro:</strong> {users.find(u => u.id === chat.partnerId)?.name || 'N/A'}</p>
-              <p><strong>Última mensagem:</strong> {chat.lastMessage}</p>
-              <p><strong>Não lidas:</strong> <span className="text-red-500 font-bold">{chat.unreadCount}</span></p>
-            </div>
-            <div className="flex gap-2 mt-4">
-              <button className="text-blue-500 hover:text-blue-600 text-sm">
-                <Eye className="w-4 h-4 inline mr-1" />
-                Ver Chat
-              </button>
-              <button className="text-green-500 hover:text-green-600 text-sm">
-                <Edit className="w-4 h-4 inline mr-1" />
-                Moderar
-              </button>
-            </div>
-          </motion.div>
-        ))}
+          </div>
+        </div>
       </div>
     </div>
   );
 
   const renderSettings = () => (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold">{t('systemSettings')}</h2>
-      
-      <div className={`p-6 rounded-2xl shadow-lg ${
-        isDark ? 'bg-gray-800' : 'bg-white'
-      } border border-gray-200 dark:border-gray-700`}>
-        <h3 className="text-lg font-semibold mb-4">{t('generalSettings')}</h3>
+      <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
+        <h3 className="text-lg font-medium text-white mb-4">Configurações do Sistema</h3>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-2">{t('platformName')}</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Nome da Plataforma</label>
             <input
               type="text"
-              defaultValue="Agroisync"
-              className={`w-full p-3 rounded-lg border ${
-                isDark 
-                  ? 'bg-gray-700 border-gray-600 text-white' 
-                  : 'bg-gray-50 border-gray-300 text-gray-900'
-              }`}
+              defaultValue="AGROSYNC"
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">{t('contactEmail')}</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Email de Contato</label>
             <input
               type="email"
-              defaultValue="admin@agroisync.com"
-              className={`w-full p-3 rounded-lg border ${
-                isDark 
-                  ? 'bg-gray-700 border-gray-600 text-white' 
-                  : 'bg-gray-50 border-gray-300 text-gray-900'
-              }`}
+              defaultValue="admin@agrosync.com"
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          <button className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors">
-            {t('saveSettings')}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Região Padrão</label>
+            <select className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option>Brasil</option>
+              <option>América Latina</option>
+              <option>Global</option>
+            </select>
+          </div>
+          <button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+            Salvar Configurações
           </button>
         </div>
       </div>
@@ -560,16 +596,8 @@ const Admin = () => {
         return renderDashboard();
       case 'users':
         return renderUsers();
-      case 'payments':
-        return renderPayments();
-      case 'products':
-        return renderProducts();
-      case 'freights':
-        return renderFreights();
-      case 'crypto':
-        return renderCrypto();
-      case 'chats':
-        return renderChats();
+      case 'analytics':
+        return renderAnalytics();
       case 'settings':
         return renderSettings();
       default:
@@ -577,152 +605,88 @@ const Admin = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4" />
-          <p>{t('loadingDashboard')}</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Se não estiver autenticado como admin, mostrar tela de login
-  if (!isAdminAuthenticated && (!user || !user.isAdmin)) {
-    return (
-      <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300`}>
-        <div className="flex items-center justify-center min-h-screen">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className={`w-full max-w-md p-8 rounded-2xl shadow-2xl ${
-              isDark ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
-            }`}
-          >
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
-                Painel Administrativo
-              </h1>
-              <p className="text-gray-600 mt-2">Acesso exclusivo para administradores</p>
-            </div>
-
-            <form onSubmit={handleAdminLogin} className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  value={adminCredentials.email}
-                  onChange={(e) => setAdminCredentials({...adminCredentials, email: e.target.value})}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                  placeholder="contato@agrotm.com.br"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Senha
-                </label>
-                <input
-                  type="password"
-                  value={adminCredentials.password}
-                  onChange={(e) => setAdminCredentials({...adminCredentials, password: e.target.value})}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                  placeholder="Senha de administrador"
-                  required
-                />
-              </div>
-
-              {adminLoginError && (
-                <div className="text-red-500 text-sm text-center">
-                  {adminLoginError}
-                </div>
-              )}
-
-              <button
-                type="submit"
-                className="w-full py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors duration-300"
-              >
-                Acessar Painel
-              </button>
-            </form>
-
-            <div className="mt-6 text-center">
-              <button
-                onClick={() => navigate('/')}
-                className="text-green-600 hover:text-green-700 text-sm"
-              >
-                Voltar ao site
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-    );
+  if (!isAdmin) {
+    return null;
   }
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300`}>
+    <div className="min-h-screen bg-gray-900 text-white">
       {/* Header */}
-      <header className={`border-b ${isDark ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'} sticky top-0 z-40`}>
+      <header className="bg-gray-800 border-b border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
-              <h1 className="text-xl font-bold">Painel Administrativo</h1>
+            <div className="flex items-center space-x-4">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+                <Shield className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-white">Painel Central - ADMIN</h1>
+                <p className="text-sm text-gray-400">Bem-vindo, {user?.email}</p>
+              </div>
             </div>
-            <div className="flex items-center gap-4">
-              <span className="text-sm opacity-70">Admin: {user?.name}</span>
+            
+            <div className="flex items-center space-x-4">
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 text-red-500 hover:text-red-600 transition-colors"
+                disabled={loading}
+                className="flex items-center space-x-2 px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors disabled:opacity-50"
               >
                 <LogOut className="w-4 h-4" />
-                {t('logout')}
+                <span>Sair</span>
               </button>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Tabs */}
         <div className="flex flex-wrap gap-2 mb-8">
           {tabs.map((tab) => (
-            <motion.button
+            <button
               key={tab.id}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                 activeTab === tab.id
-                  ? (isDark
-                      ? 'bg-cyan-400 text-gray-900 shadow-lg shadow-cyan-400/25'
-                      : 'bg-green-500 text-white shadow-lg shadow-green-500/25')
-                  : (isDark
-                      ? 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-600'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300')
+                  ? 'bg-blue-600 text-white shadow-lg'
+                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-600'
               }`}
             >
               <tab.icon className="w-4 h-4" />
-              {tab.name}
-            </motion.button>
+              <span>{tab.name}</span>
+            </button>
           ))}
         </div>
 
         {/* Content */}
-        <motion.div
-          key={activeTab}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
+        <div className="transition-all duration-200">
           {renderContent()}
-        </motion.div>
-      </div>
+        </div>
+
+        {/* System Health */}
+        <div className="mt-8 bg-gray-800 border border-gray-700 rounded-lg p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-medium text-white">Status do Sistema</h3>
+              <p className="text-sm text-gray-400">Monitoramento em tempo real</p>
+            </div>
+            <div className="text-right">
+              <div className="text-2xl font-bold text-green-400">{stats.systemHealth}%</div>
+              <div className="text-sm text-gray-400">Saúde do Sistema</div>
+            </div>
+          </div>
+          
+          <div className="mt-4">
+            <div className="w-full bg-gray-700 rounded-full h-2">
+              <div 
+                className="bg-gradient-to-r from-green-500 to-blue-500 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${stats.systemHealth}%` }}
+              ></div>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 };

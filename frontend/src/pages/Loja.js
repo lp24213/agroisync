@@ -2,15 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { 
   Search, Filter, ShoppingCart, Star, Heart, Eye, 
-  Package, Truck, Shield, Clock, MapPin, User, Building
+  Package, Truck, Shield, Clock, MapPin, User, Building,
+  Plus, Edit, Trash, MessageCircle, CreditCard, Settings, LogOut, Bell
 } from 'lucide-react';
 import { productService } from '../services/productService';
 
 const Loja = () => {
   const { isDark } = useTheme();
   const { t } = useTranslation();
+  const { user, isAdmin, authLoading } = useAuth();
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,6 +25,20 @@ const Loja = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState('grid');
   const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState('marketplace');
+  const [showSecretPanel, setShowSecretPanel] = useState(false);
+  const [userProducts, setUserProducts] = useState([]);
+  const [userMessages, setUserMessages] = useState([]);
+  const [userProfile, setUserProfile] = useState(null);
+  const [userPurchases, setUserPurchases] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [newProduct, setNewProduct] = useState({
+    name: '',
+    description: '',
+    price: '',
+    category: '',
+    stock: ''
+  });
 
   // Categorias de produtos
   const categories = [
@@ -170,6 +189,99 @@ const Loja = () => {
     }
   };
 
+  useEffect(() => {
+    if (user && !isAdmin) {
+      // Carregar dados do usuário
+      loadUserData();
+    }
+  }, [user, isAdmin]);
+
+  const loadUserData = async () => {
+    try {
+      // Simular carregamento de dados do usuário
+      setUserProducts([
+        {
+          id: 1,
+          name: 'Produto A',
+          price: 150.00,
+          category: 'Fertilizantes',
+          stock: 50,
+          status: 'active'
+        },
+        {
+          id: 2,
+          name: 'Produto B',
+          price: 89.90,
+          category: 'Sementes',
+          stock: 100,
+          status: 'active'
+        }
+      ]);
+
+      setUserMessages([
+        {
+          id: 1,
+          from: 'João Silva',
+          subject: 'Consulta sobre Produto A',
+          content: 'Gostaria de saber mais detalhes...',
+          date: '2024-01-15',
+          unread: true
+        }
+      ]);
+
+      setUserProfile({
+        name: user.name,
+        email: user.email,
+        phone: '(66) 99236-2830',
+        address: 'Cuiabá, MT',
+        plan: 'Anunciante Premium'
+      });
+
+      setUserPurchases([
+        {
+          id: 1,
+          product: 'Fertilizante Orgânico',
+          price: 120.00,
+          date: '2024-01-10',
+          status: 'Entregue'
+        }
+      ]);
+    } catch (error) {
+      console.error('Erro ao carregar dados do usuário:', error);
+    }
+  };
+
+  const handleAddProduct = () => {
+    if (newProduct.name && newProduct.price) {
+      const product = {
+        id: Date.now(),
+        ...newProduct,
+        price: parseFloat(newProduct.price),
+        stock: parseInt(newProduct.stock),
+        status: 'active'
+      };
+      setUserProducts([...userProducts, product]);
+      setNewProduct({ name: '', description: '', price: '', category: '', stock: '' });
+    }
+  };
+
+  const handleDeleteProduct = (productId) => {
+    setUserProducts(userProducts.filter(p => p.id !== productId));
+  };
+
+  const handleEditProfile = () => {
+    setIsEditing(!isEditing);
+  };
+
+  const handleSaveProfile = () => {
+    setIsEditing(false);
+    // Aqui você implementaria a lógica para salvar no backend
+  };
+
+  const toggleSecretPanel = () => {
+    setShowSecretPanel(!showSecretPanel);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
@@ -181,355 +293,608 @@ const Loja = () => {
     );
   }
 
-  return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300`}>
-      {/* Header Section */}
-      <section className="relative pt-40 pb-20 px-4 overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0">
-          {isDark ? (
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900">
-              <div className="absolute inset-0 bg-gray-800 opacity-20"></div>
-            </div>
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50">
-              <div className="absolute inset-0 bg-white opacity-95"></div>
-            </div>
-          )}
-        </div>
-        <div className="max-w-6xl mx-auto text-center">
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent"
-          >
-                         {t('store.title')}
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl text-gray-600 max-w-3xl mx-auto"
-          >
-            {t('store.description')}
-          </motion.p>
-        </div>
-      </section>
-
-      {/* Filtros e Busca */}
-      <section className="py-8 px-4 bg-gray-50 border-b">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
-            {/* Busca */}
-            <div className="flex-1 max-w-md">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <input
-                  type="text"
-                  placeholder={t('store.search.placeholder')}
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                />
-              </div>
-            </div>
-
-            {/* Filtros */}
-            <div className="flex flex-wrap gap-4">
-              {/* Categoria */}
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              >
-                {categories.map(cat => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name} ({cat.count})
-                  </option>
-                ))}
-              </select>
-
-              {/* Estado */}
-              <select
-                value={selectedState}
-                onChange={(e) => setSelectedState(e.target.value)}
-                className="px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              >
-                {states.map(state => (
-                  <option key={state.id} value={state.id}>
-                    {state.name}
-                  </option>
-                ))}
-              </select>
-
-              {/* Faixa de Preço */}
-              <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-600">{t('store.price.label')}:</span>
-                <input
-                  type="number"
-                  placeholder={t('store.price.min')}
-                  value={priceRange[0]}
-                  onChange={(e) => setPriceRange([parseInt(e.target.value) || 0, priceRange[1]])}
-                  className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-                <span className="text-gray-400">-</span>
-                <input
-                  type="number"
-                  placeholder={t('store.price.max')}
-                  value={priceRange[1]}
-                  onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value) || 10000])}
-                  className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-              </div>
-
-              {/* Modo de Visualização */}
-              <div className="flex border border-gray-300 rounded-xl overflow-hidden">
-                <button
-                  onClick={() => setViewMode('grid')}
-                  className={`px-3 py-2 ${viewMode === 'grid' ? 'bg-green-500 text-white' : 'bg-white text-gray-600'}`}
-                >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                  </svg>
-                </button>
-                <button
-                  onClick={() => setViewMode('list')}
-                  className={`px-3 py-2 ${viewMode === 'list' ? 'bg-green-500 text-white' : 'bg-white text-gray-600'}`}
-                >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                  </svg>
-                </button>
-              </div>
-
-              {/* Botão Cadastrar Produto */}
-              <button
-                onClick={() => window.location.href = '/cadastro'}
-                className="px-6 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors duration-300 flex items-center gap-2"
-              >
-                <Package className="w-5 h-5" />
-                {t('store.addProduct')}
-              </button>
-
-              {/* Botão Assinar Plano */}
-              <button
-                onClick={() => window.location.href = '/planos'}
-                className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors duration-300 flex items-center gap-2"
-              >
-                <Star className="w-5 h-5" />
-                {t('store.subscribe')}
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Produtos */}
-      <section className="py-12 px-4">
-        <div className="max-w-7xl mx-auto">
-          {/* Estatísticas */}
-          <div className="mb-8 text-center">
-            <p className="text-gray-600">
-              {t('store.showing')} <span className="font-semibold text-green-600">{filteredProducts.length}</span> {t('store.of')}
-              <span className="font-semibold text-green-600">{products.length}</span> {t('store.products')}
-            </p>
-          </div>
-
-          {/* Grid de Produtos */}
-          {viewMode === 'grid' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredProducts.map((product, index) => (
-                <motion.div
-                  key={product._id}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-gray-200 overflow-hidden"
-                >
-                  {/* Imagem do Produto */}
-                  <div className="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                    <div className="text-6xl text-gray-400">
-                      {getCategoryIcon(product.type)}
-                    </div>
-                    {product.featured && (
-                      <div className="absolute top-2 right-2 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold">
-                        {t('store.featured')}
-                      </div>
-                    )}
-                    <div className="absolute top-2 left-2">
-                      <button className="p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors">
-                        <Heart className="w-4 h-4 text-gray-600" />
-                      </button>
-                    </div>
+  // Se não estiver logado, mostrar apenas o marketplace público
+  if (!user || isAdmin) {
+    return (
+      <div className="min-h-screen bg-neutral-900 text-white">
+        <main className="pt-24 pb-16">
+          <div className="max-w-7xl mx-auto px-4">
+            <h1 className="text-5xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+              Marketplace AgroSync
+            </h1>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Produtos mock para demonstração */}
+              {[1, 2, 3, 4, 5, 6].map((item) => (
+                <div key={item} className="bg-neutral-800 rounded-2xl p-6 border border-neutral-700 hover:border-green-500/50 transition-all duration-300">
+                  <div className="w-full h-48 bg-gradient-to-br from-green-500/20 to-blue-500/20 rounded-xl mb-4 flex items-center justify-center">
+                    <Package className="w-16 h-16 text-green-400" />
                   </div>
-
-                  {/* Informações do Produto */}
-                  <div className="p-4">
-                    {/* Categoria */}
-                    <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getCategoryColor(product.type)} mb-2`}>
-                      {getCategoryIcon(product.type)}
-                      <span className="ml-1">{categories.find(c => c.id === product.type)?.name}</span>
-                    </div>
-
-                    {/* Nome */}
-                    <h3 className="font-bold text-gray-900 mb-2 line-clamp-2">{product.name}</h3>
-
-                    {/* Preço */}
-                    <div className="text-2xl font-bold text-green-600 mb-2">
-                      {formatPrice(product.price)}
-                    </div>
-
-                    {/* Unidade */}
-                    <p className="text-sm text-gray-600 mb-3">{t('store.unit')}: {product.unit}</p>
-
-                    {/* Vendedor e Localização */}
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-1">
-                        <MapPin className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm text-gray-600">{product.location?.city}, {product.location?.state}</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                        <span className="text-sm text-gray-600">{product.rating}</span>
-                        <span className="text-xs text-gray-400">({product.reviews})</span>
-                      </div>
-                    </div>
-
-                    {/* Vendedor */}
-                    <p className="text-sm text-gray-700 mb-3 font-medium">{product.seller?.name}</p>
-
-                    {/* Estoque */}
-                    <p className="text-sm text-gray-600 mb-4">
-                      {t('store.stock')}: <span className="font-semibold text-green-600">{product.stock} {product.unit}</span>
-                    </p>
-
-                    {/* Botões */}
-                    <div className="flex space-x-2">
-                      <button className="flex-1 bg-green-600 text-white py-2 px-4 rounded-xl hover:bg-green-700 transition-colors font-medium flex items-center justify-center space-x-2">
-                        <ShoppingCart className="w-4 h-4" />
-                        <span>{t('store.buy')}</span>
-                      </button>
-                      <button className="px-4 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors">
-                        <Eye className="w-4 h-4 text-gray-600" />
-                      </button>
-                    </div>
+                  <h3 className="text-xl font-semibold mb-2">Produto {item}</h3>
+                  <p className="text-neutral-400 mb-4">Descrição do produto {item} com detalhes importantes.</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold text-green-400">R$ {(item * 25 + 50).toFixed(2)}</span>
+                    <button className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg transition-colors">
+                      Ver Detalhes
+                    </button>
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
-          ) : (
-            /* Lista de Produtos */
-            <div className="space-y-4">
-              {filteredProducts.map((product, index) => (
-                <motion.div
-                  key={product._id}
-                  initial={{ opacity: 0, x: -30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200 p-6"
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // Usuário logado - mostrar marketplace + painel secreto
+  return (
+    <div className="min-h-screen bg-neutral-900 text-white">
+      {/* Header com botão do painel secreto */}
+      <div className="bg-neutral-800 border-b border-neutral-700">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold">Marketplace AgroSync</h1>
+            
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={toggleSecretPanel}
+                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-green-600 to-blue-600 rounded-lg hover:from-green-700 hover:to-blue-700 transition-all duration-300"
+              >
+                <User className="w-5 h-5" />
+                <span>Meu Painel</span>
+                {showSecretPanel && <span className="ml-2">←</span>}
+              </button>
+              
+              <div className="relative">
+                <Bell className="w-6 h-6 text-yellow-400 cursor-pointer" />
+                {userMessages.filter(m => m.unread).length > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {userMessages.filter(m => m.unread).length}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex">
+        {/* Painel Secreto (lado esquerdo) */}
+        {showSecretPanel && (
+          <div className="w-80 bg-neutral-800 border-r border-neutral-700 min-h-screen">
+            <div className="p-6">
+              <h2 className="text-xl font-bold mb-6 text-green-400">Painel Secreto</h2>
+              
+              {/* Tabs do painel */}
+              <div className="flex space-x-2 mb-6">
+                <button
+                  onClick={() => setActiveTab('dashboard')}
+                  className={`px-3 py-2 rounded-lg text-sm transition-colors ${
+                    activeTab === 'dashboard' 
+                      ? 'bg-green-600 text-white' 
+                      : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
+                  }`}
                 >
-                  <div className="flex items-center space-x-6">
-                    {/* Imagem */}
-                    <div className="relative w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <div className="text-3xl text-gray-400">
-                        {getCategoryIcon(product.type)}
-                      </div>
-                      {product.featured && (
-                        <div className="absolute -top-1 -right-1 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold">
-                          {t('store.featured')}
+                  Dashboard
+                </button>
+                <button
+                  onClick={() => setActiveTab('products')}
+                  className={`px-3 py-2 rounded-lg text-sm transition-colors ${
+                    activeTab === 'products' 
+                      ? 'bg-green-600 text-white' 
+                      : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
+                  }`}
+                >
+                  Produtos
+                </button>
+                <button
+                  onClick={() => setActiveTab('messages')}
+                  className={`px-3 py-2 rounded-lg text-sm transition-colors ${
+                    activeTab === 'messages' 
+                      ? 'bg-green-600 text-white' 
+                      : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
+                  }`}
+                >
+                  Mensagens
+                </button>
+                <button
+                  onClick={() => setActiveTab('profile')}
+                  className={`px-3 py-2 rounded-lg text-sm transition-colors ${
+                    activeTab === 'profile' 
+                      ? 'bg-green-600 text-white' 
+                      : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
+                  }`}
+                >
+                  Perfil
+                </button>
+              </div>
+
+              {/* Conteúdo das tabs */}
+              <div className="space-y-6">
+                {/* Dashboard */}
+                {activeTab === 'dashboard' && (
+                  <div>
+                    <div className="bg-neutral-700 rounded-lg p-4 mb-4">
+                      <h3 className="font-semibold mb-2">Resumo</h3>
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <p className="text-neutral-400">Produtos Ativos</p>
+                          <p className="text-xl font-bold text-green-400">{userProducts.length}</p>
                         </div>
+                        <div>
+                          <p className="text-neutral-400">Mensagens</p>
+                          <p className="text-xl font-bold text-blue-400">{userMessages.length}</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-neutral-700 rounded-lg p-4">
+                      <h3 className="font-semibold mb-2">Atividade Recente</h3>
+                      <div className="space-y-2 text-sm">
+                        <p>• Novo produto adicionado: Produto A</p>
+                        <p>• Mensagem recebida de João Silva</p>
+                        <p>• Venda realizada: R$ 120,00</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Produtos */}
+                {activeTab === 'products' && (
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="font-semibold">Meus Produtos</h3>
+                      <button className="p-2 bg-green-600 rounded-lg hover:bg-green-700 transition-colors">
+                        <Plus className="w-4 h-4" />
+                      </button>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      {userProducts.map((product) => (
+                        <div key={product.id} className="bg-neutral-700 rounded-lg p-3">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h4 className="font-medium">{product.name}</h4>
+                              <p className="text-sm text-neutral-400">{product.category}</p>
+                              <p className="text-sm text-green-400">R$ {product.price.toFixed(2)}</p>
+                            </div>
+                            <div className="flex space-x-2">
+                              <button className="p-1 bg-blue-600 rounded hover:bg-blue-700">
+                                <Edit className="w-3 h-3" />
+                              </button>
+                              <button 
+                                onClick={() => handleDeleteProduct(product.id)}
+                                className="p-1 bg-red-600 rounded hover:bg-red-700"
+                              >
+                                <Trash className="w-3 h-3" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Mensagens */}
+                {activeTab === 'messages' && (
+                  <div>
+                    <h3 className="font-semibold mb-4">Minhas Mensagens</h3>
+                    <div className="space-y-3">
+                      {userMessages.map((message) => (
+                        <div key={message.id} className={`bg-neutral-700 rounded-lg p-3 cursor-pointer hover:bg-neutral-600 transition-colors ${
+                          message.unread ? 'border-l-4 border-blue-500' : ''
+                        }`}>
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h4 className="font-medium">{message.from}</h4>
+                              <p className="text-sm text-neutral-400">{message.subject}</p>
+                              <p className="text-xs text-neutral-500">{message.date}</p>
+                            </div>
+                            {message.unread && (
+                              <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Perfil */}
+                {activeTab === 'profile' && (
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="font-semibold">Meu Perfil</h3>
+                      <button 
+                        onClick={handleEditProfile}
+                        className="px-3 py-1 bg-blue-600 rounded text-sm hover:bg-blue-700 transition-colors"
+                      >
+                        {isEditing ? 'Cancelar' : 'Editar'}
+                      </button>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-sm text-neutral-400">Nome</label>
+                        {isEditing ? (
+                          <input 
+                            type="text" 
+                            value={userProfile?.name || ''} 
+                            className="w-full bg-neutral-700 border border-neutral-600 rounded px-3 py-2 mt-1"
+                          />
+                        ) : (
+                          <p className="font-medium">{userProfile?.name}</p>
+                        )}
+                      </div>
+                      
+                      <div>
+                        <label className="text-sm text-neutral-400">Email</label>
+                        <p className="font-medium">{userProfile?.email}</p>
+                      </div>
+                      
+                      <div>
+                        <label className="text-sm text-neutral-400">Telefone</label>
+                        {isEditing ? (
+                          <input 
+                            type="text" 
+                            value={userProfile?.phone || ''} 
+                            className="w-full bg-neutral-700 border border-neutral-600 rounded px-3 py-2 mt-1"
+                          />
+                        ) : (
+                          <p className="font-medium">{userProfile?.phone}</p>
+                        )}
+                      </div>
+                      
+                      <div>
+                        <label className="text-sm text-neutral-400">Plano</label>
+                        <p className="font-medium text-green-400">{userProfile?.plan}</p>
+                      </div>
+                      
+                      {isEditing && (
+                        <button 
+                          onClick={handleSaveProfile}
+                          className="w-full px-4 py-2 bg-green-600 rounded-lg hover:bg-green-700 transition-colors"
+                        >
+                          Salvar Alterações
+                        </button>
                       )}
                     </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
-                    {/* Informações */}
-                    <div className="flex-1">
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getCategoryColor(product.type)} mb-2`}>
-                            {getCategoryIcon(product.type)}
-                            <span className="ml-1">{categories.find(c => c.id === product.type)?.name}</span>
-                          </div>
-                          <h3 className="text-lg font-bold text-gray-900 mb-1">{product.name}</h3>
-                          <p className="text-sm text-gray-600 mb-2">{product.description}</p>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-2xl font-bold text-green-600 mb-1">
-                            {formatPrice(product.price)}
-                          </div>
-                          <p className="text-sm text-gray-600">{t('store.unit')}: {product.unit}</p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4 text-sm text-gray-600">
-                          <div className="flex items-center space-x-1">
-                            <MapPin className="w-4 h-4" />
-                            <span>{product.location?.city}, {product.location?.state}</span>
-                          </div>
-                          <div className="flex items-center space-x-1">
-                            <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                            <span>{product.rating}</span>
-                            <span>({product.reviews})</span>
-                          </div>
-                          <span>{t('store.stock')}: {product.stock} {product.unit}</span>
-                        </div>
-
-                        <div className="flex space-x-2">
-                          <button className="bg-green-600 text-white py-2 px-6 rounded-xl hover:bg-green-700 transition-colors font-medium flex items-center space-x-2">
-                            <ShoppingCart className="w-4 h-4" />
-                            <span>{t('store.buy')}</span>
-                          </button>
-                          <button className="px-4 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors">
-                            <Eye className="w-4 h-4 text-gray-600" />
-                          </button>
-                        </div>
+        {/* Marketplace (lado direito) */}
+        <div className={`flex-1 ${showSecretPanel ? 'ml-0' : ''}`}>
+          <main className="pt-8 pb-16">
+            <div className="max-w-7xl mx-auto px-4">
+              {!showSecretPanel && (
+                <h1 className="text-5xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                  Marketplace AgroSync
+                </h1>
+              )}
+              
+              {/* Filtros e Busca */}
+              <section className="py-8 px-4 bg-gray-50 border-b">
+                <div className="max-w-7xl mx-auto">
+                  <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
+                    {/* Busca */}
+                    <div className="flex-1 max-w-md">
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                        <input
+                          type="text"
+                          placeholder={t('store.search.placeholder')}
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        />
                       </div>
                     </div>
+
+                    {/* Filtros */}
+                    <div className="flex flex-wrap gap-4">
+                      {/* Categoria */}
+                      <select
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                        className="px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      >
+                        {categories.map(cat => (
+                          <option key={cat.id} value={cat.id}>
+                            {cat.name} ({cat.count})
+                          </option>
+                        ))}
+                      </select>
+
+                      {/* Estado */}
+                      <select
+                        value={selectedState}
+                        onChange={(e) => setSelectedState(e.target.value)}
+                        className="px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      >
+                        {states.map(state => (
+                          <option key={state.id} value={state.id}>
+                            {state.name}
+                          </option>
+                        ))}
+                      </select>
+
+                      {/* Faixa de Preço */}
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm text-gray-600">{t('store.price.label')}:</span>
+                        <input
+                          type="number"
+                          placeholder={t('store.price.min')}
+                          value={priceRange[0]}
+                          onChange={(e) => setPriceRange([parseInt(e.target.value) || 0, priceRange[1]])}
+                          className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                        />
+                        <span className="text-gray-400">-</span>
+                        <input
+                          type="number"
+                          placeholder={t('store.price.max')}
+                          value={priceRange[1]}
+                          onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value) || 10000])}
+                          className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                        />
+                      </div>
+
+                      {/* Modo de Visualização */}
+                      <div className="flex border border-gray-300 rounded-xl overflow-hidden">
+                        <button
+                          onClick={() => setViewMode('grid')}
+                          className={`px-3 py-2 ${viewMode === 'grid' ? 'bg-green-500 text-white' : 'bg-white text-gray-600'}`}
+                        >
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={() => setViewMode('list')}
+                          className={`px-3 py-2 ${viewMode === 'list' ? 'bg-green-500 text-white' : 'bg-white text-gray-600'}`}
+                        >
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                          </svg>
+                        </button>
+                      </div>
+
+                      {/* Botão Cadastrar Produto */}
+                      <button
+                        onClick={() => window.location.href = '/cadastro'}
+                        className="px-6 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors duration-300 flex items-center gap-2"
+                      >
+                        <Package className="w-5 h-5" />
+                        {t('store.addProduct')}
+                      </button>
+
+                      {/* Botão Assinar Plano */}
+                      <button
+                        onClick={() => window.location.href = '/planos'}
+                        className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors duration-300 flex items-center gap-2"
+                      >
+                        <Star className="w-5 h-5" />
+                        {t('store.subscribe')}
+                      </button>
+                    </div>
                   </div>
-                </motion.div>
-              ))}
-            </div>
-          )}
+                </div>
+              </section>
 
-          {/* Sem Produtos */}
-          {!loading && !error && filteredProducts.length === 0 && (
-            <div className="text-center py-20">
-              <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-600 mb-2">{t('store.noProductsFound')}</h3>
-              <p className="text-gray-500">{t('store.tryAdjustFilters')}</p>
-            </div>
-          )}
+              {/* Produtos */}
+              <section className="py-12 px-4">
+                <div className="max-w-7xl mx-auto">
+                  {/* Estatísticas */}
+                  <div className="mb-8 text-center">
+                    <p className="text-gray-600">
+                      {t('store.showing')} <span className="font-semibold text-green-600">{filteredProducts.length}</span> {t('store.of')}
+                      <span className="font-semibold text-green-600">{products.length}</span> {t('store.products')}
+                    </p>
+                  </div>
 
-          {/* Estado de Erro */}
-          {error && (
-            <div className="text-center py-20">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Package className="w-8 h-8 text-red-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-red-600 mb-2">{t('store.errorLoadingProducts')}</h3>
-              <p className="text-gray-500 mb-4">{error}</p>
-              <button 
-                onClick={fetchProducts}
-                className="bg-red-600 text-white px-6 py-2 rounded-xl hover:bg-red-700 transition-colors"
-              >
-                {t('store.tryAgain')}
-              </button>
-            </div>
-          )}
+                  {/* Grid de Produtos */}
+                  {viewMode === 'grid' ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                      {filteredProducts.map((product, index) => (
+                        <motion.div
+                          key={product._id}
+                          initial={{ opacity: 0, y: 30 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.6, delay: index * 0.1 }}
+                          className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-gray-200 overflow-hidden"
+                        >
+                          {/* Imagem do Produto */}
+                          <div className="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                            <div className="text-6xl text-gray-400">
+                              {getCategoryIcon(product.type)}
+                            </div>
+                            {product.featured && (
+                              <div className="absolute top-2 right-2 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold">
+                                {t('store.featured')}
+                              </div>
+                            )}
+                            <div className="absolute top-2 left-2">
+                              <button className="p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors">
+                                <Heart className="w-4 h-4 text-gray-600" />
+                              </button>
+                            </div>
+                          </div>
 
-          {/* Estado de Carregamento */}
-          {loading && (
-            <div className="text-center py-20">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-spin">
-                <Package className="w-8 h-8 text-blue-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-blue-600 mb-2">{t('store.loadingProducts')}</h3>
-              <p className="text-gray-500">{t('store.waitWhileSearching')}</p>
+                          {/* Informações do Produto */}
+                          <div className="p-4">
+                            {/* Categoria */}
+                            <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getCategoryColor(product.type)} mb-2`}>
+                              {getCategoryIcon(product.type)}
+                              <span className="ml-1">{categories.find(c => c.id === product.type)?.name}</span>
+                            </div>
+
+                            {/* Nome */}
+                            <h3 className="font-bold text-gray-900 mb-2 line-clamp-2">{product.name}</h3>
+
+                            {/* Preço */}
+                            <div className="text-2xl font-bold text-green-600 mb-2">
+                              {formatPrice(product.price)}
+                            </div>
+
+                            {/* Unidade */}
+                            <p className="text-sm text-gray-600 mb-3">{t('store.unit')}: {product.unit}</p>
+
+                            {/* Vendedor e Localização */}
+                            <div className="flex items-center justify-between mb-3">
+                              <div className="flex items-center space-x-1">
+                                <MapPin className="w-4 h-4 text-gray-400" />
+                                <span className="text-sm text-gray-600">{product.location?.city}, {product.location?.state}</span>
+                              </div>
+                              <div className="flex items-center space-x-1">
+                                <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                                <span className="text-sm text-gray-600">{product.rating}</span>
+                                <span className="text-xs text-gray-400">({product.reviews})</span>
+                              </div>
+                            </div>
+
+                            {/* Vendedor */}
+                            <p className="text-sm text-gray-700 mb-3 font-medium">{product.seller?.name}</p>
+
+                            {/* Estoque */}
+                            <p className="text-sm text-gray-600 mb-4">
+                              {t('store.stock')}: <span className="font-semibold text-green-600">{product.stock} {product.unit}</span>
+                            </p>
+
+                            {/* Botões */}
+                            <div className="flex space-x-2">
+                              <button className="flex-1 bg-green-600 text-white py-2 px-4 rounded-xl hover:bg-green-700 transition-colors font-medium flex items-center justify-center space-x-2">
+                                <ShoppingCart className="w-4 h-4" />
+                                <span>{t('store.buy')}</span>
+                              </button>
+                              <button className="px-4 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors">
+                                <Eye className="w-4 h-4 text-gray-600" />
+                              </button>
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  ) : (
+                    /* Lista de Produtos */
+                    <div className="space-y-4">
+                      {filteredProducts.map((product, index) => (
+                        <motion.div
+                          key={product._id}
+                          initial={{ opacity: 0, x: -30 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.6, delay: index * 0.1 }}
+                          className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200 p-6"
+                        >
+                          <div className="flex items-center space-x-6">
+                            {/* Imagem */}
+                            <div className="relative w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
+                              <div className="text-3xl text-gray-400">
+                                {getCategoryIcon(product.type)}
+                              </div>
+                              {product.featured && (
+                                <div className="absolute -top-1 -right-1 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold">
+                                  {t('store.featured')}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Informações */}
+                            <div className="flex-1">
+                              <div className="flex items-start justify-between mb-2">
+                                <div>
+                                  <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getCategoryColor(product.type)} mb-2`}>
+                                    {getCategoryIcon(product.type)}
+                                    <span className="ml-1">{categories.find(c => c.id === product.type)?.name}</span>
+                                  </div>
+                                  <h3 className="text-lg font-bold text-gray-900 mb-1">{product.name}</h3>
+                                  <p className="text-sm text-gray-600 mb-2">{product.description}</p>
+                                </div>
+                                <div className="text-right">
+                                  <div className="text-2xl font-bold text-green-600 mb-1">
+                                    {formatPrice(product.price)}
+                                  </div>
+                                  <p className="text-sm text-gray-600">{t('store.unit')}: {product.unit}</p>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-4 text-sm text-gray-600">
+                                  <div className="flex items-center space-x-1">
+                                    <MapPin className="w-4 h-4" />
+                                    <span>{product.location?.city}, {product.location?.state}</span>
+                                  </div>
+                                  <div className="flex items-center space-x-1">
+                                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                                    <span>{product.rating}</span>
+                                    <span>({product.reviews})</span>
+                                  </div>
+                                  <span>{t('store.stock')}: {product.stock} {product.unit}</span>
+                                </div>
+
+                                <div className="flex space-x-2">
+                                  <button className="bg-green-600 text-white py-2 px-6 rounded-xl hover:bg-green-700 transition-colors font-medium flex items-center space-x-2">
+                                    <ShoppingCart className="w-4 h-4" />
+                                    <span>{t('store.buy')}</span>
+                                  </button>
+                                  <button className="px-4 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors">
+                                    <Eye className="w-4 h-4 text-gray-600" />
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Sem Produtos */}
+                  {!loading && !error && filteredProducts.length === 0 && (
+                    <div className="text-center py-20">
+                      <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                      <h3 className="text-xl font-semibold text-gray-600 mb-2">{t('store.noProductsFound')}</h3>
+                      <p className="text-gray-500">{t('store.tryAdjustFilters')}</p>
+                    </div>
+                  )}
+
+                  {/* Estado de Erro */}
+                  {error && (
+                    <div className="text-center py-20">
+                      <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Package className="w-8 h-8 text-red-600" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-red-600 mb-2">{t('store.errorLoadingProducts')}</h3>
+                      <p className="text-gray-500 mb-4">{error}</p>
+                      <button 
+                        onClick={fetchProducts}
+                        className="bg-red-600 text-white px-6 py-2 rounded-xl hover:bg-red-700 transition-colors"
+                      >
+                        {t('store.tryAgain')}
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Estado de Carregamento */}
+                  {loading && (
+                    <div className="text-center py-20">
+                      <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-spin">
+                        <Package className="w-8 h-8 text-blue-600" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-blue-600 mb-2">{t('store.loadingProducts')}</h3>
+                      <p className="text-gray-500">{t('store.waitWhileSearching')}</p>
+                    </div>
+                  )}
+                </div>
+              </section>
             </div>
-          )}
+          </main>
         </div>
-      </section>
+      </div>
     </div>
   );
 };

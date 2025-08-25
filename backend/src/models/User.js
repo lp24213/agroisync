@@ -53,6 +53,10 @@ const userSchema = new mongoose.Schema({
     enum: ['buyer', 'seller', 'freight', 'admin'],
     default: 'buyer'
   },
+  isAdmin: {
+    type: Boolean,
+    default: false
+  },
   isActive: {
     type: Boolean,
     default: true
