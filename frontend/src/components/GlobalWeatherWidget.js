@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
-import { MapPin, Thermometer, Droplets, Wind, Sun, Moon } from 'lucide-react';
+import { MapPin, Thermometer, Droplets, Wind, Sun, Moon, X } from 'lucide-react';
 import weatherService from '../services/weatherService';
 
 const GlobalWeatherWidget = () => {
@@ -9,11 +9,18 @@ const GlobalWeatherWidget = () => {
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState({ x: 20, y: 20 });
   const [isDragging, setIsDragging] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const dragRef = useRef(null);
 
   useEffect(() => {
+    // Verificar se widget foi fechado anteriormente
+    const widgetClosed = localStorage.getItem('weatherWidgetClosed');
+    if (widgetClosed === 'true') {
+      setIsVisible(false);
+    }
+
     loadWeatherData();
     
     // Atualizar a cada 10 minutos
@@ -34,32 +41,6 @@ const GlobalWeatherWidget = () => {
       setLoading(false);
     }
   };
-
-  if (loading || !weatherData) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className={`relative z-50 p-4 rounded-2xl shadow-xl transition-all duration-300 ${
-          isDark
-            ? 'bg-gray-800/90 backdrop-blur-xl border border-gray-700'
-            : 'bg-white/90 backdrop-blur-xl border border-gray-200'
-        }`}
-      >
-        <div className="animate-pulse">
-          <div className="w-32 h-20 bg-gray-300 rounded-lg"></div>
-        </div>
-      </motion.div>
-    );
-  }
-
-  const formatTime = (date) => {
-    return date.toLocaleTimeString('pt-BR', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
 
   const handleMouseDown = (e) => {
     if (e.target.closest('button') || e.target.closest('input')) return;
@@ -126,6 +107,55 @@ const GlobalWeatherWidget = () => {
     document.addEventListener('touchend', handleTouchEnd);
   };
 
+  const handleClose = () => {
+    setIsVisible(false);
+    localStorage.setItem('weatherWidgetClosed', 'true');
+  };
+
+  if (!isVisible) return null;
+
+  if (loading || !weatherData) {
+    return (
+      <motion.div
+        ref={dragRef}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        style={{
+          position: 'fixed',
+          top: position.y,
+          left: position.x,
+          zIndex: 50,
+          cursor: isDragging ? 'grabbing' : 'move'
+        }}
+        className="transition-all duration-300"
+        onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
+      >
+        <div className="bg-black/70 text-white p-4 rounded-2xl shadow-lg backdrop-blur-sm border border-gray-600">
+          <div className="flex justify-between items-start mb-2">
+            <div className="animate-pulse">
+              <div className="w-32 h-20 bg-gray-700 rounded-lg"></div>
+            </div>
+            <button
+              onClick={handleClose}
+              className="text-white hover:text-red-400 transition-colors duration-200 p-1"
+              title="Fechar"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
+
+  const formatTime = (date) => {
+    return date.toLocaleTimeString('pt-BR', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   return (
     <motion.div
       ref={dragRef}
@@ -136,73 +166,58 @@ const GlobalWeatherWidget = () => {
         top: position.y,
         left: position.x,
         zIndex: 50,
-        cursor: isDragging ? 'grabbing' : 'grab'
+        cursor: isDragging ? 'grabbing' : 'move'
       }}
-      className={`transition-all duration-300 ${
-        expanded ? 'w-80' : 'w-40'
-      }`}
+      className="transition-all duration-300"
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
     >
       {/* Widget Compacto */}
       <motion.div
         whileHover={{ scale: 1.02 }}
-        className={`p-4 rounded-2xl shadow-xl cursor-pointer transition-all duration-300 ${
-          isDark
-            ? 'bg-gray-800/90 backdrop-blur-xl border border-gray-700 hover:border-cyan-400'
-            : 'bg-white/90 backdrop-blur-xl border border-gray-200 hover:border-green-500'
-        }`}
-        onClick={() => setExpanded(!expanded)}
+        className="bg-black/70 text-white p-4 rounded-2xl shadow-lg backdrop-blur-sm border border-gray-600 hover:border-gray-500 transition-all duration-300 max-w-[90vw] md:max-w-none"
       >
-        {/* Localização */}
-        <div className="flex items-center space-x-2 mb-3">
-          <MapPin className={`w-4 h-4 ${
-            isDark ? 'text-cyan-400' : 'text-green-600'
-          }`} />
-          <div className="text-xs">
-            <div className={`font-semibold ${
-              isDark ? 'text-white' : 'text-gray-900'
-            }`}>
-              {weatherData.location.city}
-            </div>
-            <div className={`text-xs ${
-              isDark ? 'text-gray-400' : 'text-gray-600'
-            }`}>
-              {weatherData.location.state}
+        {/* Header com botão fechar */}
+        <div className="flex justify-between items-start mb-3">
+          <div className="flex items-center space-x-2">
+            <MapPin className="w-4 h-4 text-blue-400" />
+            <div className="text-xs">
+              <div className="font-semibold text-white">
+                {weatherData.location.city}
+              </div>
+              <div className="text-xs text-gray-300">
+                {weatherData.location.state}
+              </div>
             </div>
           </div>
+          <button
+            onClick={handleClose}
+            className="text-white hover:text-red-400 transition-colors duration-200 p-1"
+            title="Fechar"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
 
-        {/* Temperatura Principal */}
+        {/* Clima Atual */}
         <div className="text-center mb-3">
-          <div className={`text-2xl font-bold ${
-            isDark ? 'text-white' : 'text-gray-900'
-          }`}>
+          <div className="text-2xl font-bold text-white mb-1">
             {weatherData.current.temp}°C
           </div>
-          <div className={`text-xs ${
-            isDark ? 'text-gray-400' : 'text-gray-600'
-          }`}>
-            Sensação: {weatherData.current.feels_like}°C
+          <div className="text-sm text-gray-300">
+            {weatherData.current.description}
           </div>
         </div>
 
-        {/* Condições do Tempo */}
+        {/* Ícone do Tempo */}
         <div className="flex items-center justify-center mb-3">
           <div className="text-center">
-            <div className={`w-12 h-12 mx-auto mb-1 ${
-              isDark ? 'text-cyan-400' : 'text-green-600'
-            }`}>
+            <div className="w-12 h-12 mx-auto mb-1 text-yellow-400">
               {weatherData.current.icon === 'sun' ? (
                 <Sun className="w-full h-full" />
               ) : (
                 <Moon className="w-full h-full" />
               )}
-            </div>
-            <div className={`text-xs ${
-              isDark ? 'text-gray-400' : 'text-gray-600'
-            }`}>
-              {weatherData.current.description}
             </div>
           </div>
         </div>
@@ -210,18 +225,14 @@ const GlobalWeatherWidget = () => {
         {/* Informações Adicionais */}
         <div className="grid grid-cols-2 gap-2 text-xs">
           <div className="flex items-center space-x-1">
-            <Droplets className={`w-3 h-3 ${
-              isDark ? 'text-blue-400' : 'text-blue-600'
-            }`} />
-            <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>
+            <Droplets className="w-3 h-3 text-blue-400" />
+            <span className="text-gray-300">
               {weatherData.current.humidity}%
             </span>
           </div>
           <div className="flex items-center space-x-1">
-            <Wind className={`w-3 h-3 ${
-              isDark ? 'text-gray-400' : 'text-gray-600'
-            }`} />
-            <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>
+            <Wind className="w-3 h-3 text-gray-400" />
+            <span className="text-gray-300">
               {weatherData.current.wind_speed} km/h
             </span>
           </div>
@@ -229,9 +240,7 @@ const GlobalWeatherWidget = () => {
 
         {/* Indicador de Expansão */}
         <div className="text-center mt-2">
-          <div className={`w-1 h-1 rounded-full mx-auto ${
-            isDark ? 'bg-cyan-400' : 'bg-green-500'
-          }`}></div>
+          <div className="w-1 h-1 rounded-full mx-auto bg-blue-400"></div>
         </div>
       </motion.div>
 
@@ -241,30 +250,24 @@ const GlobalWeatherWidget = () => {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
-          className={`mt-4 p-4 rounded-2xl shadow-xl ${
-            isDark
-              ? 'bg-gray-800/90 backdrop-blur-xl border border-gray-700'
-              : 'bg-white/90 backdrop-blur-xl border border-gray-200'
-          }`}
+          className="mt-4 bg-black/70 text-white p-4 rounded-2xl shadow-lg backdrop-blur-sm border border-gray-600"
         >
           {/* Previsão para os Próximos Dias */}
-          <h4 className={`text-sm font-semibold mb-3 ${
-            isDark ? 'text-white' : 'text-gray-900'
-          }`}>
+          <h4 className="text-sm font-semibold mb-3 text-white">
             Previsão 5 Dias
           </h4>
           
           <div className="space-y-2">
             {weatherData.forecast.slice(0, 5).map((day, index) => (
               <div key={index} className="flex items-center justify-between text-xs">
-                <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>
+                <span className="text-gray-300">
                   {day.date}
                 </span>
                 <div className="flex items-center space-x-2">
-                  <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>
+                  <span className="text-gray-300">
                     {day.temp_min}°C
                   </span>
-                  <span className={isDark ? 'text-white' : 'text-gray-900'}>
+                  <span className="text-white">
                     {day.temp_max}°C
                   </span>
                 </div>
@@ -273,10 +276,8 @@ const GlobalWeatherWidget = () => {
           </div>
 
           {/* Última Atualização */}
-          <div className="mt-3 pt-3 border-t border-gray-600 dark:border-gray-600">
-            <p className={`text-xs text-center ${
-              isDark ? 'text-gray-400' : 'text-gray-500'
-            }`}>
+          <div className="mt-3 pt-3 border-t border-gray-600">
+            <p className="text-xs text-center text-gray-400">
               Atualizado: {formatTime(new Date())}
             </p>
           </div>

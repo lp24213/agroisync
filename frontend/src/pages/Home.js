@@ -7,6 +7,7 @@ import {
   Users, Package, Truck, Coins, BarChart3,
   CheckCircle, Star, Award, Target, Lightbulb
 } from 'lucide-react';
+import AgroNews from '../components/AgroNews';
 // Componente removido - já renderizado pelo Layout global
 
 const Home = () => {
@@ -317,6 +318,9 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* AgroNews Section */}
+      <AgroNews />
 
       {/* Testimonials Section */}
       <section className="py-20 bg-gray-50 dark:bg-gray-800">

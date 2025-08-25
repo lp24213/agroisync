@@ -63,7 +63,7 @@ const Navbar = () => {
           </motion.div>
 
           {/* Desktop Navigation - Ajustado para todas as páginas */}
-          <div className="hidden lg:flex items-center space-x-4 text-sm">
+          <div className="hidden lg:flex items-center space-x-3 text-sm">
             <a href="/" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
               {t('nav.home')}
             </a>
@@ -75,6 +75,9 @@ const Navbar = () => {
             </a>
             <a href="/cripto" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
               {t('nav.crypto')}
+            </a>
+            <a href="/planos" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
+              Planos
             </a>
             <a href="/parcerias" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
               Parcerias
