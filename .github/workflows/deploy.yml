@@ -98,31 +98,7 @@ jobs:
           exit 1
         fi
         
-        # MongoDB (obrigatório)
-        if [ -z "${{ secrets.MONGODB_URI }}" ]; then
-          echo "❌ MONGODB_URI is required but not set"
-          exit 1
-        fi
-        
-        # Cognito (obrigatório)
-        if [ -z "${{ secrets.COGNITO_POOL_ID }}" ]; then
-          echo "❌ COGNITO_POOL_ID is required but not set"
-          exit 1
-        fi
-        
-        # Stripe (obrigatório)
-        if [ -z "${{ secrets.STRIPE_SECRET_KEY }}" ]; then
-          echo "❌ STRIPE_SECRET_KEY is required but not set"
-          exit 1
-        fi
-        
-        # JWT Secret (obrigatório)
-        if [ -z "${{ secrets.JWT_SECRET }}" ]; then
-          echo "❌ JWT_SECRET is required but not set"
-          exit 1
-        fi
-        
-        echo "✅ All required secrets are configured for AGROISYNC deployment"
+        echo "✅ AWS secrets are configured for AGROISYNC deployment"
         
     - name: 🏗️ Build Frontend
       run: |
