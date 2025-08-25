@@ -1,56 +1,119 @@
-import React from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
-const ProtectedRoute = ({ children, requirePlan = false, requireAdmin = false }) => {
+const ProtectedRoute = ({ children, requireAdmin = false, requirePlan = false }) => {
   const { user, loading } = useAuth();
+  const [planStatus, setPlanStatus] = useState(null);
+  const [checkingPlan, setCheckingPlan] = useState(false);
+
+  useEffect(() => {
+    if (requirePlan && user && !checkingPlan) {
+      checkPlanStatus();
+    }
+  }, [user, requirePlan, checkingPlan]);
+
+  const checkPlanStatus = async () => {
+    setCheckingPlan(true);
+    try {
+      const response = await fetch('/api/users/me', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (response.ok) {
+        const userData = await response.json();
+        const hasActivePlan = userData.subscriptions?.store?.active || 
+                            userData.subscriptions?.agroconecta?.active;
+        setPlanStatus(hasActivePlan);
+      } else {
+        setPlanStatus(false);
+      }
+    } catch (error) {
+      console.error('Erro ao verificar plano:', error);
+      setPlanStatus(false);
+    } finally {
+      setCheckingPlan(false);
+    }
+  };
 
   // Mostrar loading enquanto verifica autenticação
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Verificando autenticação...</p>
+          <p className="text-gray-600">Verificando acesso...</p>
         </div>
       </div>
     );
   }
 
-  // Se não há usuário autenticado, redirecionar para login
+  // Se não está autenticado, redirecionar para login
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  // Se a rota requer admin e o usuário não é admin
+  // Se requer admin mas usuário não é admin
   if (requireAdmin && !user.isAdmin) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto p-6">
-          <div className="mb-6">
-            <div className="mx-auto h-16 w-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
-              <svg className="h-8 w-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
-              </svg>
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Acesso Negado</h2>
-            <p className="text-gray-600 mb-6">
-              Esta área é restrita apenas para administradores autorizados.
-            </p>
-          </div>
-          
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="max-w-md w-full text-center">
+          <div className="text-6xl mb-4">🚫</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Acesso Negado
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Você não tem permissão para acessar esta área.
+          </p>
+          <button
+            onClick={() => window.history.back()}
+            className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Voltar
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Se requer plano ativo mas ainda está verificando
+  if (requirePlan && checkingPlan) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Verificando plano...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Se requer plano ativo mas usuário não tem
+  if (requirePlan && planStatus === false) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="max-w-md w-full text-center">
+          <div className="text-6xl mb-4">🔒</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Funcionalidade Bloqueada
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Para acessar esta funcionalidade, você precisa ter um plano ativo.
+          </p>
           <div className="space-y-3">
             <button
-              onClick={() => window.history.back()}
-              className="w-full px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+              onClick={() => window.location.href = '/planos'}
+              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors"
             >
-              Voltar
+              📋 Ver Planos Disponíveis
             </button>
             <button
-              onClick={() => window.location.href = '/'}
-              className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              onClick={() => window.history.back()}
+              className="w-full bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 transition-colors"
             >
-              Ir para o Início
+              Voltar
             </button>
           </div>
         </div>
@@ -58,48 +121,7 @@ const ProtectedRoute = ({ children, requirePlan = false, requireAdmin = false })
     );
   }
 
-  // Se a rota requer plano ativo e o usuário não tem plano
-  if (requirePlan && !user.isAdmin) {
-    // Verificar se o usuário tem plano ativo
-    const hasActivePlan = user.activePlan || user.subscriptionStatus === 'active';
-    
-    if (!hasActivePlan) {
-      return (
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-          <div className="text-center max-w-md mx-auto p-6">
-            <div className="mb-6">
-              <div className="mx-auto h-16 w-16 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
-                <svg className="h-8 w-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Funcionalidade Bloqueada</h2>
-              <p className="text-gray-600 mb-6">
-                Esta funcionalidade requer um plano ativo. Ative um plano para continuar.
-              </p>
-            </div>
-            
-            <div className="space-y-3">
-              <button
-                onClick={() => window.location.href = '/planos'}
-                className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-              >
-                Ver Planos
-              </button>
-              <button
-                onClick={() => window.history.back()}
-                className="w-full px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
-              >
-                Voltar
-              </button>
-            </div>
-          </div>
-        </div>
-      );
-    }
-  }
-
-  // Se todas as verificações passaram, renderizar o conteúdo
+  // Se chegou até aqui, usuário tem acesso
   return children;
 };
 

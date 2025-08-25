@@ -1,452 +1,236 @@
 import express from 'express';
-import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 import { User } from '../models/User.js';
-import { Conversation } from '../models/Conversation.js';
-import { Message } from '../models/Message.js';
 import { Product } from '../models/Product.js';
 import { Freight } from '../models/Freight.js';
 import { Payment } from '../models/Payment.js';
+import { Message } from '../models/Message.js';
+import { Conversation } from '../models/Conversation.js';
 import { AuditLog } from '../models/AuditLog.js';
-import { authenticateToken, requireAdmin } from '../middleware/auth.js';
-import { apiLimiter } from '../middleware/rateLimiter.js';
-import { createSecurityLog } from '../utils/securityLogger.js';
-import jwt from "jsonwebtoken";
-import { validateAdminAction } from "../middleware/adminValidation.js";
+import { requireAdmin, validateAdminAction } from '../middleware/adminAuth.js';
 
 const router = express.Router();
+const JWT_SECRET = process.env.JWT_SECRET;
 
-// Apply rate limiting mais restritivo para admin
-router.use(apiLimiter);
-router.use(requireAdmin);
+// Credenciais fixas do admin
+const ADMIN_EMAIL = 'luispaulodeoliveira@agrotm.com.br';
+const ADMIN_PASSWORD = 'Th@ys15221008';
 
-// Credenciais fixas do admin (em produção, usar process.env)
-const ADMIN_EMAIL = "luispaulodeoliveira@agrotm.com.br";
-const ADMIN_PASSWORD = "Th@ys15221008";
-
-// ===== LOGIN ADMIN =====
-router.post("/login", async (req, res) => {
+// Login do admin
+router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // Validação das credenciais fixas
-    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-      // Gerar JWT Admin exclusivo
-      const token = jwt.sign(
-        { 
-          role: "admin", 
-          email: ADMIN_EMAIL,
-          isAdmin: true 
-        }, 
-        process.env.JWT_SECRET, 
-        { expiresIn: "12h" }
-      );
-
-      // Log do login bem-sucedido
+    
+    if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
       await AuditLog.logAction({
-        userId: 'admin',
-        userEmail: ADMIN_EMAIL,
-        action: 'ADMIN_LOGIN_SUCCESS',
-        resource: 'admin_panel',
-        details: 'Admin login successful',
+        userId: 'unknown',
+        userEmail: email,
+        action: 'ADMIN_LOGIN_FAILED',
+        resource: '/api/admin/login',
+        details: 'Invalid admin credentials',
         ip: req.ip,
-        userAgent: req.get('User-Agent')
+        userAgent: req.get('User-Agent'),
+        isSuspicious: true,
+        riskLevel: 'HIGH'
       });
-
-      return res.json({ 
-        success: true, 
-        token,
-        message: "Login admin realizado com sucesso"
+      
+      return res.status(401).json({ 
+        error: 'Credenciais inválidas.' 
       });
     }
-
-    // Log da tentativa de login falhada
-    await AuditLog.logAction({
-      userId: 'unknown',
-      userEmail: email,
-      action: 'ADMIN_LOGIN_FAILED',
-      resource: 'admin_panel',
-      details: 'Invalid admin credentials attempt',
-      ip: req.ip,
-      userAgent: req.get('User-Agent'),
-      isSuspicious: true,
-      riskLevel: 'medium'
-    });
-
-    return res.status(401).json({ 
-      success: false, 
-      message: "Credenciais inválidas" 
-    });
-
-  } catch (error) {
-    console.error("Erro no login admin:", error);
+    
+    const adminToken = jwt.sign(
+      { 
+        email: ADMIN_EMAIL, 
+        role: 'admin',
+        timestamp: Date.now()
+      }, 
+      JWT_SECRET, 
+      { expiresIn: '24h' }
+    );
     
     await AuditLog.logAction({
-      userId: 'system',
-      userEmail: 'system',
-      action: 'ADMIN_LOGIN_ERROR',
-      resource: 'admin_panel',
-      details: `Login error: ${error.message}`,
+      userId: 'admin',
+      userEmail: ADMIN_EMAIL,
+      action: 'ADMIN_LOGIN_SUCCESS',
+      resource: '/api/admin/login',
+      details: 'Admin login successful',
       ip: req.ip,
       userAgent: req.get('User-Agent'),
-      errorCode: 'LOGIN_ERROR',
-      errorMessage: error.message
+      isSuspicious: false,
+      riskLevel: 'LOW'
     });
-
-    return res.status(500).json({ 
-      success: false, 
-      message: "Erro interno do servidor" 
-    });
-  }
-});
-
-// ===== DASHBOARD ADMIN =====
-router.get("/dashboard", authenticateToken, requireAdmin, async (req, res) => {
-  try {
-    // Log do acesso ao dashboard
-    await AuditLog.logAction({
-      userId: req.user.id,
-      userEmail: req.user.email,
-      action: 'ADMIN_DASHBOARD_ACCESS',
-      resource: 'admin_dashboard',
-      details: 'Admin dashboard accessed',
-      ip: req.ip,
-      userAgent: req.get('User-Agent')
-    });
-
-    // Estatísticas gerais da plataforma
-    const stats = {
-      totalUsers: await User.countDocuments(),
-      totalProducts: await Product.countDocuments(),
-      totalFreights: await Freight.countDocuments(),
-      totalConversations: await Conversation.countDocuments(),
-      totalMessages: await Message.countDocuments(),
-      recentAuditLogs: await AuditLog.find()
-        .sort({ createdAt: -1 })
-        .limit(10)
-        .select('action userEmail createdAt ip')
-    };
-
-    res.json({ success: true, stats });
-
-  } catch (error) {
-    console.error("Erro ao acessar dashboard admin:", error);
-    res.status(500).json({ 
-      success: false, 
-      message: "Erro ao carregar dashboard" 
-    });
-  }
-});
-
-// ===== CONVERSAS ADMIN =====
-router.get("/conversations", authenticateToken, requireAdmin, async (req, res) => {
-  try {
-    const { page = 1, limit = 50, status } = req.query;
-    const skip = (page - 1) * limit;
-
-    let query = {};
-    if (status) query.status = status;
-
-    const conversations = await Conversation.find(query)
-      .populate('participants', 'email name')
-      .populate('serviceId', 'title price')
-      .sort({ lastMessageAt: -1 })
-      .skip(skip)
-      .limit(parseInt(limit));
-
-    const total = await Conversation.countDocuments(query);
-
-    res.json({
-      success: true,
-      conversations,
-      pagination: { page: parseInt(page), limit: parseInt(limit), total }
-    });
-
-  } catch (error) {
-    console.error("Erro ao buscar conversas:", error);
-    res.status(500).json({ 
-      success: false, 
-      message: "Erro ao buscar conversas" 
-    });
-  }
-});
-
-router.get("/conversations/:id/messages", authenticateToken, requireAdmin, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { page = 1, limit = 100 } = req.query;
-    const skip = (page - 1) * limit;
-
-    const messages = await Message.find({ conversationId: id })
-      .populate('senderId', 'email name')
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(parseInt(limit));
-
-    const total = await Message.countDocuments({ conversationId: id });
-
-    res.json({
-      success: true,
-      messages,
-      pagination: { page: parseInt(page), limit: parseInt(limit), total }
-    });
-
-  } catch (error) {
-    console.error("Erro ao buscar mensagens:", error);
-    res.status(500).json({ 
-      success: false, 
-      message: "Erro ao buscar mensagens" 
-    });
-  }
-});
-
-// ===== USUÁRIOS ADMIN =====
-router.get("/users", authenticateToken, requireAdmin, async (req, res) => {
-  try {
-    const { page = 1, limit = 50, status } = req.query;
-    const skip = (page - 1) * limit;
-
-    let query = {};
-    if (status) query.status = status;
-
-    const users = await User.find(query)
-      .select('-password')
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(parseInt(limit));
-
-    const total = await User.countDocuments(query);
-
-    res.json({
-      success: true,
-      users,
-      pagination: { page: parseInt(page), limit: parseInt(limit), total }
-    });
-
-  } catch (error) {
-    console.error("Erro ao buscar usuários:", error);
-    res.status(500).json({ 
-      success: false, 
-      message: "Erro ao buscar usuários" 
-    });
-  }
-});
-
-router.put("/users/:id", authenticateToken, requireAdmin, validateAdminAction, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { action, reason } = req.body;
-
-    const user = await User.findById(id);
-    if (!user) {
-      return res.status(404).json({ 
-        success: false, 
-        message: "Usuário não encontrado" 
-      });
-    }
-
-    switch (action) {
-      case 'ban':
-        user.status = 'banned';
-        user.bannedAt = new Date();
-        user.banReason = reason;
-        break;
-      case 'activate':
-        user.status = 'active';
-        user.bannedAt = undefined;
-        user.banReason = undefined;
-        break;
-      default:
-        return res.status(400).json({ 
-          success: false, 
-          message: "Ação inválida" 
-        });
-    }
-
-    await user.save();
-
-    // Log da ação administrativa
-    await AuditLog.logAction({
-      userId: req.user.id,
-      userEmail: req.user.email,
-      action: `ADMIN_USER_${action.toUpperCase()}`,
-      resource: 'user',
-      resourceId: id,
-      details: `User ${action}ed. Reason: ${reason}`,
-      ip: req.ip,
-      userAgent: req.get('User-Agent')
-    });
-
+    
     res.json({ 
       success: true, 
-      message: `Usuário ${action === 'ban' ? 'banido' : 'ativado'} com sucesso` 
+      adminToken,
+      message: 'Login administrativo realizado com sucesso.' 
     });
-
   } catch (error) {
-    console.error("Erro ao modificar usuário:", error);
-    res.status(500).json({ 
-      success: false, 
-      message: "Erro ao modificar usuário" 
-    });
+    console.error('Erro no login admin:', error);
+    res.status(500).json({ error: 'Erro interno do servidor.' });
   }
 });
 
-// ===== PRODUTOS ADMIN =====
-router.get("/products", authenticateToken, requireAdmin, async (req, res) => {
+// Dashboard admin (protegido)
+router.get('/dashboard', requireAdmin, async (req, res) => {
   try {
-    const { page = 1, limit = 50, status } = req.query;
-    const skip = (page - 1) * limit;
-
-    let query = {};
-    if (status) query.status = status;
-
-    const products = await Product.find(query)
-      .populate('sellerId', 'email name')
+    const stats = await AuditLog.getStats();
+    
+    const totalUsers = await User.countDocuments();
+    const totalProducts = await Product.countDocuments();
+    const totalFreights = await Freight.countDocuments();
+    const totalConversations = await Conversation.countDocuments();
+    const totalMessages = await Message.countDocuments();
+    
+    const recentAuditLogs = await AuditLog.find()
       .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(parseInt(limit));
-
-    const total = await Product.countDocuments(query);
-
+      .limit(10)
+      .select('action userEmail ip createdAt riskLevel');
+    
     res.json({
-      success: true,
-      products,
-      pagination: { page: parseInt(page), limit: parseInt(limit), total }
+      stats: {
+        totalUsers,
+        totalProducts,
+        totalFreights,
+        totalConversations,
+        totalMessages,
+        ...stats
+      },
+      recentAuditLogs
     });
-
   } catch (error) {
-    console.error("Erro ao buscar produtos:", error);
-    res.status(500).json({ 
-      success: false, 
-      message: "Erro ao buscar produtos" 
-    });
+    console.error('Erro ao carregar dashboard admin:', error);
+    res.status(500).json({ error: 'Erro interno do servidor.' });
   }
 });
 
-// ===== FRETES ADMIN =====
-router.get("/freights", authenticateToken, requireAdmin, async (req, res) => {
+// Listar todas as conversas (protegido)
+router.get('/conversations', requireAdmin, async (req, res) => {
   try {
-    const { page = 1, limit = 50, status } = req.query;
-    const skip = (page - 1) * limit;
+    const conversations = await Conversation.find()
+      .populate('participants', 'name email')
+      .populate('lastMessage')
+      .sort({ lastMessageAt: -1 });
+    
+    res.json({ conversations });
+  } catch (error) {
+    console.error('Erro ao listar conversas:', error);
+    res.status(500).json({ error: 'Erro interno do servidor.' });
+  }
+});
 
-    let query = {};
-    if (status) query.status = status;
+// Listar todos os usuários (protegido)
+router.get('/users', requireAdmin, async (req, res) => {
+  try {
+    const users = await User.find()
+      .select('name email phone createdAt lastLogin ipAddress')
+      .sort({ createdAt: -1 });
+    
+    res.json({ users });
+  } catch (error) {
+    console.error('Erro ao listar usuários:', error);
+    res.status(500).json({ error: 'Erro interno do servidor.' });
+  }
+});
 
-    const freights = await Freight.find(query)
-      .populate('ownerId', 'email name')
+// Listar todos os produtos (protegido)
+router.get('/products', requireAdmin, async (req, res) => {
+  try {
+    const products = await Product.find()
+      .populate('owner', 'name email')
+      .sort({ createdAt: -1 });
+    
+    res.json({ products });
+  } catch (error) {
+    console.error('Erro ao listar produtos:', error);
+    res.status(500).json({ error: 'Erro interno do servidor.' });
+  }
+});
+
+// Listar todos os fretes (protegido)
+router.get('/freights', requireAdmin, async (req, res) => {
+  try {
+    const freights = await Freight.find()
+      .populate('owner', 'name email')
+      .sort({ createdAt: -1 });
+    
+    res.json({ freights });
+  } catch (error) {
+    console.error('Erro ao listar fretes:', error);
+    res.status(500).json({ error: 'Erro interno do servidor.' });
+  }
+});
+
+// Listar todos os pagamentos (protegido)
+router.get('/payments', requireAdmin, async (req, res) => {
+  try {
+    const payments = await Payment.find()
+      .populate('userId', 'name email')
+      .sort({ createdAt: -1 });
+    
+    res.json({ payments });
+  } catch (error) {
+    console.error('Erro ao listar pagamentos:', error);
+    res.status(500).json({ error: 'Erro interno do servidor.' });
+  }
+});
+
+// Listar logs de auditoria (protegido)
+router.get('/auditlogs', requireAdmin, async (req, res) => {
+  try {
+    const { page = 1, limit = 50, riskLevel, action } = req.query;
+    
+    const filter = {};
+    if (riskLevel) filter.riskLevel = riskLevel;
+    if (action) filter.action = action;
+    
+    const auditLogs = await AuditLog.find(filter)
       .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(parseInt(limit));
-
-    const total = await Freight.countDocuments(query);
-
-    res.json({
-      success: true,
-      freights,
-      pagination: { page: parseInt(page), limit: parseInt(limit), total }
-    });
-
-  } catch (error) {
-    console.error("Erro ao buscar fretes:", error);
-    res.status(500).json({ 
-      success: false, 
-      message: "Erro ao buscar fretes" 
-    });
-  }
-});
-
-// ===== PAGAMENTOS ADMIN =====
-router.get("/payments", authenticateToken, requireAdmin, async (req, res) => {
-  try {
-    const { page = 1, limit = 50, status } = req.query;
-    const skip = (page - 1) * limit;
-
-    let query = {};
-    if (status) query.status = status;
-
-    const payments = await Payment.find(query)
-      .populate('userId', 'email name')
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(parseInt(limit));
-
-    const total = await Payment.countDocuments(query);
-
-    res.json({
-      success: true,
-      payments,
-      pagination: { page: parseInt(page), limit: parseInt(limit), total }
-    });
-
-  } catch (error) {
-    console.error("Erro ao buscar pagamentos:", error);
-    res.status(500).json({ 
-      success: false, 
-      message: "Erro ao buscar pagamentos" 
-    });
-  }
-});
-
-// ===== LOGS DE AUDITORIA ADMIN =====
-router.get("/auditlogs", authenticateToken, requireAdmin, async (req, res) => {
-  try {
-    const { page = 1, limit = 100, action, userId, suspicious } = req.query;
-    const skip = (page - 1) * limit;
-
-    let query = {};
-    if (action) query.action = action;
-    if (userId) query.userId = userId;
-    if (suspicious === 'true') query.isSuspicious = true;
-
-    const logs = await AuditLog.find(query)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(parseInt(limit));
-
-    const total = await AuditLog.countDocuments(query);
-
-    res.json({
-      success: true,
-      logs,
-      pagination: { page: parseInt(page), limit: parseInt(limit), total }
-    });
-
-  } catch (error) {
-    console.error("Erro ao buscar logs de auditoria:", error);
-    res.status(500).json({ 
-      success: false, 
-      message: "Erro ao buscar logs de auditoria" 
-    });
-  }
-});
-
-// ===== EXPORTAÇÃO DE DADOS =====
-router.post("/export", authenticateToken, requireAdmin, validateAdminAction, async (req, res) => {
-  try {
-    const { dataType, format, filters } = req.body;
-
-    // Log da tentativa de exportação
-    await AuditLog.logAction({
-      userId: req.user.id,
-      userEmail: req.user.email,
-      action: 'ADMIN_DATA_EXPORT',
-      resource: 'data_export',
-      details: `Export attempt: ${dataType} in ${format}`,
-      ip: req.ip,
-      userAgent: req.get('User-Agent')
-    });
-
-    // TODO: Implementar lógica de exportação real
+      .limit(limit * 1)
+      .skip((page - 1) * limit);
+    
+    const total = await AuditLog.countDocuments(filter);
+    
     res.json({ 
-      success: true, 
-      message: "Exportação solicitada. Será processada em background." 
+      auditLogs, 
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+      total
     });
-
   } catch (error) {
-    console.error("Erro na exportação:", error);
-    res.status(500).json({ 
-      success: false, 
-      message: "Erro na exportação" 
+    console.error('Erro ao listar logs de auditoria:', error);
+    res.status(500).json({ error: 'Erro interno do servidor.' });
+  }
+});
+
+// Exportar dados (protegido)
+router.post('/export', requireAdmin, validateAdminAction, async (req, res) => {
+  try {
+    const { action, reason } = req.adminAction;
+    
+    await AuditLog.logAction({
+      userId: req.admin.email,
+      userEmail: req.admin.email,
+      action: 'ADMIN_EXPORT',
+      resource: '/api/admin/export',
+      details: `Export action: ${action}, Reason: ${reason}`,
+      ip: req.ip,
+      userAgent: req.get('User-Agent'),
+      isSuspicious: false,
+      riskLevel: 'LOW'
     });
+    
+    // Aqui você pode implementar a lógica de exportação
+    res.json({ 
+      message: 'Exportação solicitada com sucesso.',
+      action,
+      reason
+    });
+  } catch (error) {
+    console.error('Erro na exportação:', error);
+    res.status(500).json({ error: 'Erro interno do servidor.' });
   }
 });
 

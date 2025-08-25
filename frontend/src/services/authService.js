@@ -1,13 +1,10 @@
 // Serviço de autenticação para AGROISYNC
-class AuthService {
-  constructor() {
-    this.baseURL = process.env.REACT_APP_API_URL || '/api';
-  }
+const API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
 
-  // Login de usuário normal
+class AuthService {
   async login(email, password) {
     try {
-      const response = await fetch(`${this.baseURL}/auth/login`, {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -18,30 +15,19 @@ class AuthService {
       const data = await response.json();
 
       if (response.ok) {
-        return {
-          success: true,
-          user: data.user,
-          token: data.token,
-        };
+        return { ok: true, token: data.token, user: data.user };
       } else {
-        return {
-          success: false,
-          message: data.message || 'Erro no login',
-        };
+        return { ok: false, message: data.error || 'Erro no login' };
       }
     } catch (error) {
-      console.error('Erro no serviço de login:', error);
-      return {
-        success: false,
-        message: 'Erro de conexão',
-      };
+      console.error('Erro no login:', error);
+      return { ok: false, message: 'Erro de conexão' };
     }
   }
 
-  // Login de administrador
   async loginAdmin(email, password) {
     try {
-      const response = await fetch(`${this.baseURL}/admin/login`, {
+      const response = await fetch(`${API_BASE_URL}/admin/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -52,30 +38,19 @@ class AuthService {
       const data = await response.json();
 
       if (response.ok) {
-        return {
-          success: true,
-          user: data.user,
-          token: data.token,
-        };
+        return { ok: true, adminToken: data.adminToken, user: data.user };
       } else {
-        return {
-          success: false,
-          message: data.message || 'Credenciais inválidas',
-        };
+        return { ok: false, message: data.error || 'Erro no login admin' };
       }
     } catch (error) {
-      console.error('Erro no serviço de login admin:', error);
-      return {
-        success: false,
-        message: 'Erro de conexão',
-      };
+      console.error('Erro no login admin:', error);
+      return { ok: false, message: 'Erro de conexão' };
     }
   }
 
-  // Registro de usuário
   async register(userData) {
     try {
-      const response = await fetch(`${this.baseURL}/auth/register`, {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -86,79 +61,69 @@ class AuthService {
       const data = await response.json();
 
       if (response.ok) {
-        return {
-          success: true,
-          user: data.user,
-          token: data.token,
-        };
+        return { ok: true, token: data.token, user: data.user };
       } else {
-        return {
-          success: false,
-          message: data.message || 'Erro no registro',
-        };
+        return { ok: false, message: data.error || 'Erro no registro' };
       }
     } catch (error) {
-      console.error('Erro no serviço de registro:', error);
-      return {
-        success: false,
-        message: 'Erro de conexão',
-      };
+      console.error('Erro no registro:', error);
+      return { ok: false, message: 'Erro de conexão' };
     }
   }
 
-  // Verificar token de usuário
   async verifyToken(token) {
     try {
-      const response = await fetch(`${this.baseURL}/auth/verify`, {
-        method: 'GET',
+      const response = await fetch(`${API_BASE_URL}/auth/verify`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        const data = await response.json();
-        return data.user;
+        return { ok: true, user: data.user };
       } else {
-        throw new Error('Token inválido');
+        return { ok: false, message: data.error || 'Token inválido' };
       }
     } catch (error) {
-      console.error('Erro na verificação do token:', error);
-      throw error;
+      console.error('Erro ao verificar token:', error);
+      return { ok: false, message: 'Erro de conexão' };
     }
   }
 
-  // Verificar token de admin
-  async verifyAdminToken(token) {
+  async verifyAdminToken(adminToken) {
     try {
-      const response = await fetch(`${this.baseURL}/admin/verify`, {
-        method: 'GET',
+      const response = await fetch(`${API_BASE_URL}/admin/dashboard`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${adminToken}`,
         },
       });
 
       if (response.ok) {
-        const data = await response.json();
-        return data.user;
+        // Se conseguiu acessar o dashboard, o token é válido
+        return { 
+          ok: true, 
+          user: { 
+            id: 'admin', 
+            email: 'luispaulodeoliveira@agrotm.com.br',
+            role: 'admin',
+            isAdmin: true 
+          } 
+        };
       } else {
-        throw new Error('Token admin inválido');
+        return { ok: false, message: 'Token admin inválido' };
       }
     } catch (error) {
-      console.error('Erro na verificação do token admin:', error);
-      throw error;
+      console.error('Erro ao verificar token admin:', error);
+      return { ok: false, message: 'Erro de conexão' };
     }
   }
 
-  // Atualizar perfil do usuário
   async updateProfile(profileData) {
     try {
       const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('Usuário não autenticado');
-      }
-
-      const response = await fetch(`${this.baseURL}/auth/profile`, {
+      const response = await fetch(`${API_BASE_URL}/auth/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -170,29 +135,19 @@ class AuthService {
       const data = await response.json();
 
       if (response.ok) {
-        return {
-          success: true,
-          user: data.user,
-        };
+        return { ok: true, user: data.user };
       } else {
-        return {
-          success: false,
-          message: data.message || 'Erro ao atualizar perfil',
-        };
+        return { ok: false, message: data.error || 'Erro ao atualizar perfil' };
       }
     } catch (error) {
       console.error('Erro ao atualizar perfil:', error);
-      return {
-        success: false,
-        message: 'Erro de conexão',
-      };
+      return { ok: false, message: 'Erro de conexão' };
     }
   }
 
-  // Recuperar senha
   async forgotPassword(email) {
     try {
-      const response = await fetch(`${this.baseURL}/auth/forgot-password`, {
+      const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -203,29 +158,19 @@ class AuthService {
       const data = await response.json();
 
       if (response.ok) {
-        return {
-          success: true,
-          message: data.message || 'Email de recuperação enviado',
-        };
+        return { ok: true, message: data.message };
       } else {
-        return {
-          success: false,
-          message: data.message || 'Erro ao enviar email de recuperação',
-        };
+        return { ok: false, message: data.error || 'Erro ao solicitar reset' };
       }
     } catch (error) {
-      console.error('Erro ao solicitar recuperação de senha:', error);
-      return {
-        success: false,
-        message: 'Erro de conexão',
-      };
+      console.error('Erro ao solicitar reset de senha:', error);
+      return { ok: false, message: 'Erro de conexão' };
     }
   }
 
-  // Resetar senha
   async resetPassword(token, newPassword) {
     try {
-      const response = await fetch(`${this.baseURL}/auth/reset-password`, {
+      const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -236,67 +181,66 @@ class AuthService {
       const data = await response.json();
 
       if (response.ok) {
-        return {
-          success: true,
-          message: data.message || 'Senha alterada com sucesso',
-        };
+        return { ok: true, message: data.message };
       } else {
-        return {
-          success: false,
-          message: data.message || 'Erro ao alterar senha',
-        };
+        return { ok: false, message: data.error || 'Erro ao resetar senha' };
       }
     } catch (error) {
       console.error('Erro ao resetar senha:', error);
-      return {
-        success: false,
-        message: 'Erro de conexão',
-      };
+      return { ok: false, message: 'Erro de conexão' };
     }
   }
 
-  // Verificar se o usuário tem plano ativo
   async checkSubscriptionStatus() {
     try {
       const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('Usuário não autenticado');
-      }
-
-      const response = await fetch(`${this.baseURL}/auth/subscription-status`, {
-        method: 'GET',
+      const response = await fetch(`${API_BASE_URL}/users/me`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        const data = await response.json();
-        return {
-          success: true,
-          subscription: data.subscription,
+        return { 
+          ok: true, 
+          subscriptions: data.subscriptions,
+          hasActivePlan: data.subscriptions?.store?.active || data.subscriptions?.agroconecta?.active
         };
       } else {
-        throw new Error('Erro ao verificar status da assinatura');
+        return { ok: false, message: data.error || 'Erro ao verificar assinatura' };
       }
     } catch (error) {
-      console.error('Erro ao verificar status da assinatura:', error);
-      return {
-        success: false,
-        message: 'Erro de conexão',
-      };
+      console.error('Erro ao verificar assinatura:', error);
+      return { ok: false, message: 'Erro de conexão' };
     }
   }
 
-  // Logout
-  logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('adminToken');
-    // Redirecionar para a página inicial
-    window.location.href = '/';
+  async logout() {
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        await fetch(`${API_BASE_URL}/auth/logout`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+      }
+      
+      localStorage.removeItem('token');
+      localStorage.removeItem('adminToken');
+      
+      return { ok: true };
+    } catch (error) {
+      console.error('Erro no logout:', error);
+      // Mesmo com erro, limpar tokens locais
+      localStorage.removeItem('token');
+      localStorage.removeItem('adminToken');
+      return { ok: true };
+    }
   }
 }
 
-// Exportar instância única do serviço
-export const authService = new AuthService();
-export default authService;
+export default new AuthService();

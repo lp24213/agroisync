@@ -1,330 +1,310 @@
 import mongoose from 'mongoose';
 
-// Message schema for private user-to-user communication
 const messageSchema = new mongoose.Schema({
-  // ID da conversa (obrigatório)
-  conversationId: {
+  // Usuários da conversa
+  remetente: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Conversation',
+    ref: 'User',
     required: true,
     index: true
   },
-
-  // Sender and Receiver
-  senderId: {
+  destinatario: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: true,
+    index: true
   },
-  receiverId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-
-  // Message Content
-  subject: {
+  
+  // Conteúdo da mensagem
+  conteudo: {
     type: String,
     required: true,
     trim: true,
-    maxlength: 200
+    maxlength: 2000
   },
-  content: {
+  
+  // Tipo de serviço (product ou freight)
+  tipo: {
     type: String,
+    enum: ['product', 'freight'],
     required: true,
-    trim: true,
-    maxlength: 5000
+    index: true
   },
-
-  // Message Type and Context - SUPORTE PARA DUAS MENSAGERIAS
-  messageType: {
-    type: String,
-    required: true,
-    enum: [
-      // Mensageria de Produtos (Loja)
-      'product_inquiry', 'product_offer', 'product_negotiation', 'product_support',
-      // Mensageria de Fretes (AgroConecta)
-      'freight_request', 'freight_offer', 'freight_negotiation', 'freight_support',
-      // Tipos gerais
-      'general', 'support', 'admin'
-    ],
-    default: 'general'
-  },
-
-  // Categoria da mensageria (PRODUTOS ou FRETES)
-  messagingCategory: {
-    type: String,
-    required: true,
-    enum: ['products', 'freights'],
-    default: 'products'
-  },
-
-  // Related Items (optional)
-  relatedProduct: {
+  
+  // ID do produto ou frete relacionado
+  servico_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Product'
+    required: true,
+    index: true
   },
-  relatedFreight: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Freight'
-  },
-
-  // Status and Read Tracking
+  
+  // Status da mensagem
   status: {
     type: String,
-    required: true,
-    enum: ['sent', 'delivered', 'read', 'replied', 'archived', 'deleted'],
-    default: 'sent'
+    enum: ['sent', 'delivered', 'read', 'deleted'],
+    default: 'sent',
+    index: true
   },
-  isRead: {
+  
+  // Timestamps
+  timestamp: {
+    type: Date,
+    default: Date.now,
+    index: true
+  },
+  
+  // Metadados adicionais
+  metadata: {
+    // Para mensagens de produto
+    productTitle: String,
+    productPrice: Number,
+    
+    // Para mensagens de frete
+    freightOrigin: String,
+    freightDestination: String,
+    freightPrice: Number
+  },
+  
+  // Sistema de segurança
+  isReported: {
     type: Boolean,
     default: false
   },
-  readAt: Date,
-
-  // Reply Chain
-  parentMessage: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Message'
-  },
-  replies: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Message'
-    }
-  ],
-
-  // Attachments
-  attachments: [
-    {
-      filename: {
-        type: String,
-        required: true,
-        trim: true
-      },
-      originalName: {
-        type: String,
-        required: true,
-        trim: true
-      },
-      mimeType: {
-        type: String,
-        required: true
-      },
-      size: {
-        type: Number,
-        required: true,
-        min: 0
-      },
-      url: {
-        type: String,
-        required: true
-      },
-      uploadedAt: {
-        type: Date,
-        default: Date.now
-      }
-    }
-  ],
-
-  // Metadata
-  priority: {
-    type: String,
-    enum: ['low', 'normal', 'high', 'urgent'],
-    default: 'normal'
-  },
-  tags: [
-    {
-      type: String,
-      trim: true,
-      maxlength: 50
-    }
-  ],
-
-  // Security and Moderation
-  isFlagged: {
-    type: Boolean,
-    default: false
-  },
-  flagReason: {
-    type: String,
-    trim: true
-  },
-  flaggedBy: {
+  
+  reportReason: String,
+  
+  // Para auditoria
+  ipAddress: String,
+  userAgent: String,
+  
+  // Soft delete
+  deletedAt: Date,
+  deletedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
-  },
-  flaggedAt: Date,
-
-  // Timestamps
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
   }
+}, {
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
 });
 
-// Índices para melhor performance
-messageSchema.index({ conversationId: 1, createdAt: -1 });
-messageSchema.index({ senderId: 1, receiverId: 1 });
-messageSchema.index({ receiverId: 1, status: 1 });
+// Índices para performance
+messageSchema.index({ remetente: 1, destinatario: 1, timestamp: -1 });
+messageSchema.index({ tipo: 1, servico_id: 1, timestamp: -1 });
+messageSchema.index({ status: 1, timestamp: -1 });
 messageSchema.index({ createdAt: -1 });
-messageSchema.index({ messageType: 1 });
-messageSchema.index({ messagingCategory: 1 });
-messageSchema.index({ parentMessage: 1 });
-messageSchema.index({ isRead: 1 });
-messageSchema.index({ isFlagged: 1 });
 
-// Middleware para atualizar timestamp
-messageSchema.pre('save', function (next) {
-  this.updatedAt = new Date();
-  next();
+// Virtual para verificar se a mensagem é recente (últimas 24h)
+messageSchema.virtual('isRecent').get(function() {
+  const now = new Date();
+  const messageTime = new Date(this.timestamp);
+  const diffHours = (now - messageTime) / (1000 * 60 * 60);
+  return diffHours <= 24;
 });
 
-// Middleware para validar tamanho dos anexos
-messageSchema.pre('save', function (next) {
-  if (this.attachments && this.attachments.length > 10) {
-    return next(new Error('Máximo de 10 anexos permitidos'));
+// Virtual para obter o nome do serviço
+messageSchema.virtual('servicoNome').get(function() {
+  if (this.tipo === 'product') {
+    return this.metadata?.productTitle || 'Produto';
+  } else if (this.tipo === 'freight') {
+    return `${this.metadata?.freightOrigin || 'Origem'} → ${this.metadata?.freightDestination || 'Destino'}`;
+  }
+  return 'Serviço';
+});
+
+// Middleware para limpar dados sensíveis antes de salvar
+messageSchema.pre('save', function(next) {
+  // Sanitizar conteúdo da mensagem
+  if (this.conteudo) {
+    this.conteudo = this.conteudo.trim();
   }
   
-  const totalSize = this.attachments.reduce((sum, att) => sum + att.size, 0);
-  if (totalSize > 50 * 1024 * 1024) { // 50MB
-    return next(new Error('Tamanho total dos anexos excede 50MB'));
+  // Validar tamanho da mensagem
+  if (this.conteudo && this.conteudo.length > 2000) {
+    return next(new Error('Mensagem muito longa. Máximo 2000 caracteres.'));
   }
   
   next();
 });
 
 // Método para marcar mensagem como lida
-messageSchema.methods.markAsRead = function () {
-  this.isRead = true;
+messageSchema.methods.markAsRead = function() {
   this.status = 'read';
-  this.readAt = new Date();
   return this.save();
 };
 
-// Método para marcar mensagem como respondida
-messageSchema.methods.markAsReplied = function () {
-  this.status = 'replied';
+// Método para marcar mensagem como entregue
+messageSchema.methods.markAsDelivered = function() {
+  this.status = 'delivered';
   return this.save();
 };
 
-// Método para arquivar mensagem
-messageSchema.methods.archive = function () {
-  this.status = 'archived';
+// Método para deletar mensagem (soft delete)
+messageSchema.methods.softDelete = function(userId) {
+  this.deletedAt = new Date();
+  this.deletedBy = userId;
+  this.status = 'deleted';
   return this.save();
 };
 
-// Método para marcar mensagem como sinalizada
-messageSchema.methods.flag = function (reason, flaggedBy) {
-  this.isFlagged = true;
-  this.flagReason = reason;
-  this.flaggedBy = flaggedBy;
-  this.flaggedAt = new Date();
+// Método para reportar mensagem
+messageSchema.methods.report = function(reason) {
+  this.isReported = true;
+  this.reportReason = reason;
   return this.save();
 };
 
-// Método para remover sinalização
-messageSchema.methods.unflag = function () {
-  this.isFlagged = false;
-  this.flagReason = undefined;
-  this.flaggedBy = undefined;
-  this.flaggedAt = undefined;
-  return this.save();
-};
-
-// Método para obter conversa entre dois usuários
-messageSchema.statics.getConversation = function (user1Id, user2Id, limit = 50, skip = 0) {
+// Métodos estáticos para consultas comuns
+messageSchema.statics.findConversation = function(user1Id, user2Id, tipo, servicoId) {
   return this.find({
     $or: [
-      { senderId: user1Id, receiverId: user2Id },
-      { senderId: user2Id, receiverId: user1Id }
+      { remetente: user1Id, destinatario: user2Id },
+      { remetente: user2Id, destinatario: user1Id }
     ],
-    status: { $ne: 'deleted' }
-  })
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit)
-    .populate('senderId', 'name company.name email')
-    .populate('receiverId', 'name company.name email')
-    .populate('relatedProduct', 'name price images')
-    .populate('relatedFreight', 'origin destination price')
-    .populate('parentMessage', 'subject content');
+    tipo: tipo,
+    servico_id: servicoId,
+    deletedAt: { $exists: false }
+  }).sort({ timestamp: 1 });
 };
 
-// Método para obter mensagens não lidas de um usuário
-messageSchema.statics.getUnreadMessages = function (userId, limit = 100) {
+messageSchema.statics.findUserMessages = function(userId, tipo = null) {
+  const query = {
+    $or: [
+      { remetente: userId },
+      { destinatario: userId }
+    ],
+    deletedAt: { $exists: false }
+  };
+  
+  if (tipo) {
+    query.tipo = tipo;
+  }
+  
+  return this.find(query).sort({ timestamp: -1 });
+};
+
+messageSchema.statics.findUnreadMessages = function(userId) {
   return this.find({
-    receiverId: userId,
-    isRead: false,
-    status: { $nin: ['deleted', 'archived'] }
-  })
-    .sort({ createdAt: -1 })
-    .limit(limit)
-    .populate('senderId', 'name company.name email')
-    .populate('relatedProduct', 'name price images')
-    .populate('relatedFreight', 'origin destination price');
+    destinatario: userId,
+    status: { $in: ['sent', 'delivered'] },
+    deletedAt: { $exists: false }
+  });
 };
 
-// Método para obter estatísticas de mensagens
-messageSchema.statics.getMessageStats = async function (userId) {
-  const stats = await this.aggregate([
+messageSchema.statics.getMessageStats = function(userId) {
+  return this.aggregate([
     {
       $match: {
         $or: [
-          { senderId: mongoose.Types.ObjectId(userId) },
-          { receiverId: mongoose.Types.ObjectId(userId) }
+          { remetente: userId },
+          { destinatario: userId }
         ],
-        status: { $ne: 'deleted' }
+        deletedAt: { $exists: false }
       }
     },
     {
       $group: {
-        _id: '$status',
-        count: { $sum: 1 }
+        _id: '$tipo',
+        total: { $sum: 1 },
+        unread: {
+          $sum: {
+            $cond: [
+              {
+                $and: [
+                  { $eq: ['$destinatario', userId] },
+                  { $in: ['$status', ['sent', 'delivered']] }
+                ]
+              },
+              1,
+              0
+            ]
+          }
+        }
       }
     }
   ]);
-
-  return stats.reduce((acc, stat) => {
-    acc[stat._id] = stat.count;
-    return acc;
-  }, {});
 };
 
-// Método para obter mensagens sinalizadas
-messageSchema.statics.getFlaggedMessages = function (limit = 100) {
+// Método para buscar mensagens por serviço
+messageSchema.statics.findByService = function(tipo, servicoId) {
   return this.find({
-    isFlagged: true
-  })
-    .sort({ flaggedAt: -1 })
-    .limit(limit)
-    .populate('senderId', 'name email')
-    .populate('receiverId', 'name email')
-    .populate('flaggedBy', 'name email');
+    tipo: tipo,
+    servico_id: servicoId,
+    deletedAt: { $exists: false }
+  }).sort({ timestamp: 1 });
 };
 
-// Método para buscar mensagens por texto
-messageSchema.statics.searchMessages = function (userId, searchTerm, limit = 50) {
+// Método para limpar mensagens antigas (mais de 30 dias)
+messageSchema.statics.cleanOldMessages = function() {
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  
+  return this.updateMany(
+    {
+      timestamp: { $lt: thirtyDaysAgo },
+      status: { $in: ['read', 'deleted'] }
+    },
+    {
+      $set: { deletedAt: new Date() }
+    }
+  );
+};
+
+// Método para buscar mensagens reportadas
+messageSchema.statics.findReportedMessages = function() {
   return this.find({
-    $or: [
-      { senderId: userId },
-      { receiverId: userId }
-    ],
-    $or: [
-      { subject: { $regex: searchTerm, $options: 'i' } },
-      { content: { $regex: searchTerm, $options: 'i' } }
-    ],
-    status: { $ne: 'deleted' }
-  })
-    .sort({ createdAt: -1 })
-    .limit(limit)
-    .populate('senderId', 'name company.name email')
-    .populate('receiverId', 'name company.name email');
+    isReported: true,
+    deletedAt: { $exists: false }
+  }).populate('remetente', 'email name')
+    .populate('destinatario', 'email name')
+    .sort({ createdAt: -1 });
 };
 
-// Create Message model
-export const Message = mongoose.model('Message', messageSchema);
+// Método para estatísticas gerais
+messageSchema.statics.getGeneralStats = function() {
+  return this.aggregate([
+    {
+      $match: {
+        deletedAt: { $exists: false }
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        totalMessages: { $sum: 1 },
+        totalProducts: {
+          $sum: {
+            $cond: [{ $eq: ['$tipo', 'product'] }, 1, 0]
+          }
+        },
+        totalFreights: {
+          $sum: {
+            $cond: [{ $eq: ['$tipo', 'freight'] }, 1, 0]
+          }
+        },
+        unreadMessages: {
+          $sum: {
+            $cond: [
+              { $in: ['$status', ['sent', 'delivered']] },
+              1,
+              0
+            ]
+          }
+        },
+        reportedMessages: {
+          $sum: {
+            $cond: ['$isReported', 1, 0]
+          }
+        }
+      }
+    }
+  ]);
+};
+
+// Configurar TTL para mensagens antigas (opcional)
+// messageSchema.index({ timestamp: 1 }, { expireAfterSeconds: 2592000 }); // 30 dias
+
+const Message = mongoose.model('Message', messageSchema);
+
+export default Message;

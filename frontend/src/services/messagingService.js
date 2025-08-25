@@ -1,142 +1,236 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
 
-// Create axios instance with credentials
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: 10000,
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-// Serviço de mensageria para comunicação entre usuários
-export const messagingService = {
-  // Obter conversas do usuário
-  async getConversations(serviceType = null) {
+class MessagingService {
+  async getConversations(serviceType) {
     try {
-      const params = serviceType ? `?serviceType=${serviceType}` : '';
-      const response = await api.get(`/conversations${params}`);
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching conversations:', error);
-      if (error.response?.data?.error) {
-        return { ok: false, message: error.response.data.error };
-      }
-      return { ok: false, message: 'Erro ao buscar conversas' };
-    }
-  },
-
-  // Obter mensagens de uma conversa
-  async getMessages(conversationId, page = 1, limit = 50) {
-    try {
-      const response = await api.get(`/conversations/${conversationId}/messages?page=${page}&limit=${limit}`);
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching messages:', error);
-      if (error.response?.data?.error) {
-        return { ok: false, message: error.response.data.error };
-      }
-      return { ok: false, message: 'Erro ao buscar mensagens' };
-    }
-  },
-
-  // Enviar mensagem
-  async sendMessage(conversationId, content, attachments = []) {
-    try {
-      const response = await api.post(`/conversations/${conversationId}/messages`, { 
-        content, 
-        attachments 
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/conversations?serviceType=${serviceType}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
       });
-      return response.data;
-    } catch (error) {
-      console.error('Error sending message:', error);
-      if (error.response?.data?.error) {
-        return { ok: false, message: error.response.data.error };
-      }
-      return { ok: false, message: 'Erro ao enviar mensagem' };
-    }
-  },
 
-  // Criar nova conversa
-  async createConversation(serviceType, serviceId, participants, title = null) {
+      const data = await response.json();
+
+      if (response.ok) {
+        return { ok: true, data: data.conversations };
+      } else {
+        return { ok: false, message: data.error || 'Erro ao carregar conversas' };
+      }
+    } catch (error) {
+      console.error('Erro ao carregar conversas:', error);
+      return { ok: false, message: 'Erro de conexão' };
+    }
+  }
+
+  async getMessages(conversationId) {
     try {
-      const response = await api.post('/conversations', {
-        serviceType,
-        serviceId,
-        participants,
-        title
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/messages?conversationId=${conversationId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
       });
-      return response.data;
-    } catch (error) {
-      console.error('Error creating conversation:', error);
-      if (error.response?.data?.error) {
-        return { ok: false, message: error.response.data.error };
-      }
-      return { ok: false, message: 'Erro ao criar conversa' };
-    }
-  },
 
-  // Marcar mensagens como lidas
-  async markAsRead(conversationId) {
+      const data = await response.json();
+
+      if (response.ok) {
+        return { ok: true, data: data.messages };
+      } else {
+        return { ok: false, message: data.error || 'Erro ao carregar mensagens' };
+      }
+    } catch (error) {
+      console.error('Erro ao carregar mensagens:', error);
+      return { ok: false, message: 'Erro de conexão' };
+    }
+  }
+
+  async sendMessage(messageData) {
     try {
-      const response = await api.put(`/conversations/${conversationId}`, { 
-        status: 'read' 
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/messages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(messageData),
       });
-      return response.data;
-    } catch (error) {
-      console.error('Error marking as read:', error);
-      if (error.response?.data?.error) {
-        return { ok: false, message: error.response.data.error };
-      }
-      return { ok: false, message: 'Erro ao marcar como lida' };
-    }
-  },
 
-  // Obter estatísticas
+      const data = await response.json();
+
+      if (response.ok) {
+        return { ok: true, data: data.message };
+      } else {
+        return { ok: false, message: data.error || 'Erro ao enviar mensagem' };
+      }
+    } catch (error) {
+      console.error('Erro ao enviar mensagem:', error);
+      return { ok: false, message: 'Erro de conexão' };
+    }
+  }
+
+  async createConversation(participants, serviceType, serviceId, title) {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/conversations`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          participants,
+          serviceType,
+          serviceId,
+          title,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        return { ok: true, data: data.conversation };
+      } else {
+        return { ok: false, message: data.error || 'Erro ao criar conversa' };
+      }
+    } catch (error) {
+      console.error('Erro ao criar conversa:', error);
+      return { ok: false, message: 'Erro de conexão' };
+    }
+  }
+
+  async markAsRead(messageId) {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/messages/${messageId}/read`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        return { ok: true, data: data.message };
+      } else {
+        return { ok: false, message: data.error || 'Erro ao marcar como lida' };
+      }
+    } catch (error) {
+      console.error('Erro ao marcar como lida:', error);
+      return { ok: false, message: 'Erro de conexão' };
+    }
+  }
+
   async getStats() {
     try {
-      const response = await api.get('/conversations/stats/summary');
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching stats:', error);
-      if (error.response?.data?.error) {
-        return { ok: false, message: error.response.data.error };
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/messages/stats`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        return { ok: true, data: data.stats };
+      } else {
+        return { ok: false, message: data.error || 'Erro ao carregar estatísticas' };
       }
-      return { ok: false, message: 'Erro ao buscar estatísticas' };
+    } catch (error) {
+      console.error('Erro ao carregar estatísticas:', error);
+      return { ok: false, message: 'Erro de conexão' };
     }
-  },
+  }
 
-  // Iniciar conversa a partir de produto/frete
-  async startConversationFromListing(listing, participants, subject, initialMessage) {
+  async startConversationFromListing(serviceType, serviceId, otherUserId, initialMessage) {
     try {
-      const serviceType = listing.type === 'product' ? 'product' : 'freight';
-      const conversationData = {
+      // Primeiro, criar a conversa
+      const conversationResult = await this.createConversation(
+        [otherUserId],
         serviceType,
-        serviceId: listing._id,
-        participants,
-        title: subject
-      };
-
-      const response = await this.createConversation(
-        conversationData.serviceType,
-        conversationData.serviceId,
-        conversationData.participants,
-        conversationData.title
+        serviceId,
+        `Conversa sobre ${serviceType === 'product' ? 'produto' : 'frete'}`
       );
 
-      if (response.ok && initialMessage) {
-        await this.sendMessage(response.data.conversation._id, initialMessage);
+      if (!conversationResult.ok) {
+        return conversationResult;
       }
 
-      return response;
+      // Depois, enviar a mensagem inicial
+      const messageResult = await this.sendMessage({
+        destinatarioId: otherUserId,
+        tipo: serviceType,
+        servicoId: serviceId,
+        conteudo: initialMessage,
+      });
+
+      if (!messageResult.ok) {
+        return messageResult;
+      }
+
+      return { 
+        ok: true, 
+        conversation: conversationResult.data,
+        message: messageResult.data 
+      };
     } catch (error) {
-      console.error('Error starting conversation from listing:', error);
+      console.error('Erro ao iniciar conversa:', error);
       return { ok: false, message: 'Erro ao iniciar conversa' };
     }
   }
-};
 
-export default messagingService;
+  async deleteMessage(messageId) {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/messages/${messageId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        return { ok: true, message: data.message };
+      } else {
+        return { ok: false, message: data.error || 'Erro ao deletar mensagem' };
+      }
+    } catch (error) {
+      console.error('Erro ao deletar mensagem:', error);
+      return { ok: false, message: 'Erro de conexão' };
+    }
+  }
+
+  async reportMessage(messageId, reason) {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/messages/${messageId}/report`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ reason }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        return { ok: true, message: data.message };
+      } else {
+        return { ok: false, message: data.error || 'Erro ao reportar mensagem' };
+      }
+    } catch (error) {
+      console.error('Erro ao reportar mensagem:', error);
+      return { ok: false, message: 'Erro de conexão' };
+    }
+  }
+}
+
+export default new MessagingService();

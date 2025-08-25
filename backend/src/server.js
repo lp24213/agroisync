@@ -25,6 +25,7 @@ import stakingRoutes from './routes/staking.js';
 import newsRoutes from './routes/news.js';
 import uploadRoutes from './routes/upload.js';
 import healthRoutes from './routes/health.js';
+import paymentVerificationRoutes from './routes/payment-verification.js';
 
 // Importar middleware
 import { errorHandler } from './middleware/errorHandler.js';
@@ -199,6 +200,7 @@ app.use('/api/products', apiRateLimiter, productRoutes);
 app.use('/api/freights', apiRateLimiter, freightRoutes);
 app.use('/api/messages', apiRateLimiter, messageRoutes);
 app.use('/api/conversations', apiRateLimiter, conversationRoutes);
+app.use('/api/payment-verification', apiRateLimiter, paymentVerificationRoutes);
 app.use('/api/contact', apiRateLimiter, contactRoutes);
 app.use('/api/partners', apiRateLimiter, partnerRoutes);
 app.use('/api/partnership-messages', apiRateLimiter, partnershipMessageRoutes);
@@ -262,7 +264,7 @@ const connectDB = async () => {
 };
 
 // Função para criar índices
-const createIndexes = async () => {
+async function createIndexes() {
   try {
     // Índices para usuários
     await mongoose.model('User').createIndexes();
@@ -292,7 +294,7 @@ const createIndexes = async () => {
   } catch (error) {
     console.error('⚠️ Erro ao criar índices:', error);
   }
-};
+}
 
 // ===== INICIALIZAÇÃO DO SERVIDOR =====
 

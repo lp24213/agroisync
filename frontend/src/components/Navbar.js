@@ -196,6 +196,26 @@ const Navbar = () => {
                           <User className="w-4 h-4" />
                           <span>Perfil</span>
                         </a>
+                        
+                        {/* Mensagerias */}
+                        <div className="px-4 py-2 border-t border-gray-200 dark:border-gray-700">
+                          <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Mensageria</p>
+                          <a
+                            href="/messages/products"
+                            className="flex items-center space-x-2 px-2 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 rounded"
+                          >
+                            <ShoppingCart className="w-4 h-4 text-blue-500" />
+                            <span>Produtos</span>
+                          </a>
+                          <a
+                            href="/messages/freights"
+                            className="flex items-center space-x-2 px-2 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 rounded"
+                          >
+                            <Truck className="w-4 h-4 text-green-500" />
+                            <span>Fretes</span>
+                          </a>
+                        </div>
+                        
                         <button
                           onClick={logout}
                           className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200"
@@ -368,6 +388,31 @@ const Navbar = () => {
                     </a>
                   </div>
                 </div>
+
+                {/* Mensagerias - Só visível para usuários logados */}
+                {user && (
+                  <div className="px-3 py-2">
+                    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Mensageria Privada</h3>
+                    <div className="space-y-2">
+                      <a 
+                        href="/messages/products" 
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white bg-gradient-to-r from-blue-600/20 to-blue-800/20 border border-blue-500/30"
+                      >
+                        <ShoppingCart className="w-5 h-5 text-blue-400" />
+                        <span>Produtos</span>
+                      </a>
+                      <a 
+                        href="/messages/freights" 
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white bg-gradient-to-r from-green-600/20 to-green-800/20 border border-green-500/30"
+                      >
+                        <Truck className="w-5 h-5 text-green-400" />
+                        <span>Fretes</span>
+                      </a>
+                    </div>
+                  </div>
+                )}
 
                 {/* Chatbot IA */}
                 <div className="px-3 py-2">
