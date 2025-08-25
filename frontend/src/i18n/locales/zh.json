@@ -926,8 +926,8 @@
     },
     "agroconectaBasico": {
       "name": "基础版",
-      "price": "R$ 0,00",
-      "period": "永久免费",
+      "price": "R$ 50,00",
+      "period": "每月",
       "description": "适合初学者司机和承运商",
       "features": {
         "ads_count": "每月最多5个活跃货运",

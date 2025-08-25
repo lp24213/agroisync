@@ -8,7 +8,7 @@ import {
   Users, ShoppingCart, Truck, CreditCard, 
   BarChart3, Settings, LogOut, Eye, Edit, Trash2,
   Plus, Search, Filter, Download, RefreshCw,
-  UserPlus, DollarSign, TrendingUp, AlertCircle
+  UserPlus, DollarSign, TrendingUp, AlertCircle, MessageCircle
 } from 'lucide-react';
 
 const Admin = () => {
@@ -30,6 +30,8 @@ const Admin = () => {
   const [payments, setPayments] = useState([]);
   const [products, setProducts] = useState([]);
   const [freights, setFreights] = useState([]);
+  const [cryptoTransactions, setCryptoTransactions] = useState([]);
+  const [privateChats, setPrivateChats] = useState([]);
 
   useEffect(() => {
     // Verificar se usuário é admin ou se admin está autenticado
@@ -68,6 +70,16 @@ const Admin = () => {
       setFreights([
         { id: 1, origin: 'São Paulo', destination: 'Mato Grosso', weight: '25 ton', status: 'available', userId: 2 },
         { id: 2, origin: 'Paraná', destination: 'Goiás', weight: '30 ton', status: 'in_transit', userId: 2 }
+      ]);
+
+      setCryptoTransactions([
+        { id: 1, userId: 1, type: 'purchase', amount: '0.5 ETH', value: 'R$ 1.250,00', status: 'completed', date: '2024-01-15' },
+        { id: 2, userId: 3, type: 'transfer', amount: '0.2 ETH', value: 'R$ 500,00', status: 'pending', date: '2024-01-20' }
+      ]);
+
+      setPrivateChats([
+        { id: 1, userId: 1, partnerId: 2, lastMessage: 'Olá, gostaria de saber mais sobre o produto', status: 'active', unreadCount: 2 },
+        { id: 2, userId: 3, partnerId: 1, lastMessage: 'Qual o prazo de entrega?', status: 'active', unreadCount: 1 }
       ]);
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
@@ -125,6 +137,8 @@ const Admin = () => {
     { id: 'payments', name: t('payments'), icon: CreditCard },
     { id: 'products', name: t('products'), icon: ShoppingCart },
     { id: 'freights', name: t('freights'), icon: Truck },
+    { id: 'crypto', name: 'Criptomoedas', icon: TrendingUp },
+    { id: 'chats', name: 'Chats Privados', icon: MessageCircle },
     { id: 'settings', name: t('settings'), icon: Settings }
   ];
 
@@ -407,6 +421,98 @@ const Admin = () => {
     </div>
   );
 
+  const renderCrypto = () => (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold">Transações de Criptomoedas</h2>
+        <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
+          <Plus className="w-4 h-4 inline mr-2" />
+          Nova Transação
+        </button>
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className={`w-full ${isDark ? 'text-white' : 'text-gray-900'}`}>
+          <thead>
+            <tr className={`border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+              <th className="py-3 px-4 text-left">ID</th>
+              <th className="py-3 px-4 text-left">Usuário</th>
+              <th className="py-3 px-4 text-left">Tipo</th>
+              <th className="py-3 px-4 text-left">Quantidade</th>
+              <th className="py-3 px-4 text-left">Valor</th>
+              <th className="py-3 px-4 text-left">Status</th>
+              <th className="py-3 px-4 text-left">Data</th>
+            </tr>
+          </thead>
+          <tbody>
+            {cryptoTransactions.map((transaction) => (
+              <tr key={transaction.id} className={`border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+                <td className="py-3 px-4">#{transaction.id}</td>
+                <td className="py-3 px-4">{users.find(u => u.id === transaction.userId)?.name || 'N/A'}</td>
+                <td className="py-3 px-4">{transaction.type}</td>
+                <td className="py-3 px-4">{transaction.amount}</td>
+                <td className="py-3 px-4">{transaction.value}</td>
+                <td className="py-3 px-4">
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(transaction.status)}`}>
+                    {transaction.status}
+                  </span>
+                </td>
+                <td className="py-3 px-4">{transaction.date}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
+  const renderChats = () => (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold">Chats Privados</h2>
+        <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+          <Eye className="w-4 h-4 inline mr-2" />
+          Monitorar Todos
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {privateChats.map((chat) => (
+          <motion.div
+            key={chat.id}
+            whileHover={{ scale: 1.02 }}
+            className={`p-6 rounded-2xl shadow-lg ${
+              isDark ? 'bg-gray-800' : 'bg-white'
+            } border border-gray-200 dark:border-gray-700`}
+          >
+            <div className="flex justify-between items-start mb-4">
+              <h3 className="text-lg font-semibold">Chat #{chat.id}</h3>
+              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(chat.status)}`}>
+                {chat.status}
+              </span>
+            </div>
+            <div className="space-y-2 text-sm">
+              <p><strong>Usuário:</strong> {users.find(u => u.id === chat.userId)?.name || 'N/A'}</p>
+              <p><strong>Parceiro:</strong> {users.find(u => u.id === chat.partnerId)?.name || 'N/A'}</p>
+              <p><strong>Última mensagem:</strong> {chat.lastMessage}</p>
+              <p><strong>Não lidas:</strong> <span className="text-red-500 font-bold">{chat.unreadCount}</span></p>
+            </div>
+            <div className="flex gap-2 mt-4">
+              <button className="text-blue-500 hover:text-blue-600 text-sm">
+                <Eye className="w-4 h-4 inline mr-1" />
+                Ver Chat
+              </button>
+              <button className="text-green-500 hover:text-green-600 text-sm">
+                <Edit className="w-4 h-4 inline mr-1" />
+                Moderar
+              </button>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+
   const renderSettings = () => (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold">{t('systemSettings')}</h2>
@@ -460,6 +566,10 @@ const Admin = () => {
         return renderProducts();
       case 'freights':
         return renderFreights();
+      case 'crypto':
+        return renderCrypto();
+      case 'chats':
+        return renderChats();
       case 'settings':
         return renderSettings();
       default:

@@ -175,20 +175,19 @@ const Chatbot = () => {
   const handleSendMessage = async (text) => {
     if (!text.trim()) return;
 
-    // Verificar limite de mensagens para usuários gratuitos
-    if (!user || (!user.plan || !user.plan.includes('AGROCONNECT+'))) {
-      const messageCount = messages.filter(m => m.sender === 'user').length;
-      if (messageCount >= 5000) {
-        const limitMessage = {
-          id: Date.now() + 1,
-          text: 'Você atingiu o limite de 5.000 respostas básicas do plano gratuito. Faça upgrade para AGROCONNECT+ para acesso ao GPT completo e respostas avançadas!',
-          sender: 'bot',
-          timestamp: new Date(),
-          type: 'limit-warning'
-        };
-        setMessages(prev => [...prev, limitMessage]);
-        return;
-      }
+    // Verificar limite de mensagens baseado no plano
+    if (!checkMessageLimit()) {
+      const limitMessage = {
+        id: Date.now() + 1,
+        text: user ? 
+          'Você atingiu o limite de mensagens do seu plano. Faça upgrade para acesso completo ao GPT!' :
+          'Você atingiu o limite de 5.000 respostas básicas. Faça login ou cadastre-se para mais funcionalidades!',
+        sender: 'bot',
+        timestamp: new Date(),
+        type: 'limit-warning'
+      };
+      setMessages(prev => [...prev, limitMessage]);
+      return;
     }
 
     const userMessage = {

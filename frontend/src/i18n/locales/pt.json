@@ -895,8 +895,8 @@
     },
     "agroconectaBasico": {
       "name": "Básico",
-      "price": "R$ 0,00",
-      "period": "Sempre grátis",
+      "price": "R$ 50,00",
+      "period": "por mês",
       "description": "Para motoristas e transportadoras iniciantes",
       "features": {
         "ads_count": "Até 5 fretes ativos/mês",

@@ -926,8 +926,8 @@
     },
     "agroconectaBasico": {
       "name": "Basic",
-      "price": "R$ 0.00",
-      "period": "Always free",
+      "price": "R$ 50.00",
+      "period": "per month",
       "description": "For beginner drivers and carriers",
       "features": {
         "ads_count": "Up to 5 active freights/month",

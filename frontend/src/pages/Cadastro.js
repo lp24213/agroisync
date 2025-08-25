@@ -203,11 +203,19 @@ const Cadastro = () => {
     }
     if (!formData.city) newErrors.city = 'Cidade é obrigatória';
     if (!formData.state) newErrors.state = 'Estado é obrigatório';
+    
+    // Validar se pelo menos um módulo foi selecionado
+    const hasModuleSelected = Object.values(formData.modules).some(module => module);
+    if (!hasModuleSelected) {
+      newErrors.modules = 'Selecione pelo menos um módulo (Loja, AgroConecta ou Cripto)';
+    }
 
     // Validar produtos se módulo Loja selecionado
     if (formData.modules.store) {
       formData.products.forEach((product, index) => {
         if (!product.name) newErrors[`product_${index}_name`] = 'Nome do produto é obrigatório';
+        if (!product.specifications) newErrors[`product_${index}_specifications`] = 'Especificações são obrigatórias';
+        if (!product.images || product.images.length === 0) newErrors[`product_${index}_images`] = 'Pelo menos uma imagem é obrigatória';
         if (!product.category) newErrors[`product_${index}_category`] = 'Categoria é obrigatória';
         if (!product.price) newErrors[`product_${index}_price`] = 'Preço é obrigatório';
         if (!product.quantity) newErrors[`product_${index}_quantity`] = 'Quantidade é obrigatória';
@@ -220,6 +228,8 @@ const Cadastro = () => {
         if (!freight.cargoWeight) newErrors[`freight_${index}_weight`] = 'Peso da carga é obrigatório';
         if (!freight.cargoType) newErrors[`freight_${index}_type`] = 'Tipo de carga é obrigatório';
         if (!freight.route) newErrors[`freight_${index}_route`] = 'Rota é obrigatória';
+        if (!freight.nf) newErrors[`freight_${index}_nf`] = 'Nota Fiscal é obrigatória';
+        if (!freight.confidentialInfo) newErrors[`freight_${index}_confidential`] = 'Informações sigilosas são obrigatórias';
       });
     }
 

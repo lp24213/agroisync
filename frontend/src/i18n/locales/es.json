@@ -926,8 +926,8 @@
     },
     "agroconectaBasico": {
       "name": "Básico",
-      "price": "R$ 0,00",
-      "period": "Siempre gratis",
+      "price": "R$ 50,00",
+      "period": "por mes",
       "description": "Para conductores y transportistas principiantes",
       "features": {
         "ads_count": "Hasta 5 fletes activos/mes",

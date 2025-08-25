@@ -414,6 +414,192 @@ const Cripto = () => {
         </div>
       </section>
 
+      {/* Carteira Blockchain Section */}
+      <section className="py-20 px-4">
+        <div className="max-w-6xl mx-auto">
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className={`text-3xl font-bold mb-8 text-center ${
+              isDark ? 'text-white' : 'text-gray-900'
+            }`}
+          >
+            Carteira Blockchain Integrada
+          </motion.h2>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Carteira do Usuário */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className={`p-8 rounded-2xl ${
+                isDark
+                  ? 'bg-gray-800/80 backdrop-blur-xl border border-gray-700'
+                  : 'bg-white/80 backdrop-blur-xl border border-gray-200'
+              }`}
+            >
+              <div className="text-center mb-6">
+                <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-3xl">💼</span>
+                </div>
+                <h3 className={`text-xl font-semibold ${
+                  isDark ? 'text-white' : 'text-gray-900'
+                }`}>
+                  Sua Carteira
+                </h3>
+                <p className={`text-sm ${
+                  isDark ? 'text-gray-400' : 'text-gray-600'
+                }`}>
+                  Custódia descentralizada via MetaMask
+                </p>
+              </div>
+
+              {isConnected ? (
+                <div className="space-y-4">
+                  <div className={`p-4 rounded-xl ${
+                    isDark ? 'bg-gray-700' : 'bg-gray-100'
+                  }`}>
+                    <p className={`text-xs ${
+                      isDark ? 'text-gray-400' : 'text-gray-600'
+                    }`}>
+                      Endereço da Carteira
+                    </p>
+                    <p className={`font-mono text-sm break-all ${
+                      isDark ? 'text-green-400' : 'text-green-600'
+                    }`}>
+                      {walletAddress}
+                    </p>
+                  </div>
+                  
+                  <div className={`p-4 rounded-xl ${
+                    isDark ? 'bg-gray-700' : 'bg-gray-100'
+                  }`}>
+                    <p className={`text-xs ${
+                      isDark ? 'text-gray-400' : 'text-gray-600'
+                    }`}>
+                      Saldo ETH
+                    </p>
+                    <p className={`text-2xl font-bold ${
+                      isDark ? 'text-white' : 'text-gray-900'
+                    }`}>
+                      {balance} ETH
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      onClick={() => {/* Implementar envio */}}
+                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300"
+                    >
+                      Enviar
+                    </button>
+                    <button
+                      onClick={() => {/* Implementar recebimento */}}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300"
+                    >
+                      Receber
+                    </button>
+                  </div>
+
+                  <button
+                    onClick={disconnectWallet}
+                    className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300"
+                  >
+                    Desconectar
+                  </button>
+                </div>
+              ) : (
+                <div className="text-center">
+                  <button
+                    onClick={connectWallet}
+                    className="px-6 py-3 bg-gradient-to-r from-green-600 to-blue-600 text-white font-semibold rounded-lg hover:from-green-700 hover:to-blue-700 transition-all duration-300"
+                  >
+                    Conectar MetaMask
+                  </button>
+                  <p className={`text-xs mt-3 ${
+                    isDark ? 'text-gray-400' : 'text-gray-600'
+                  }`}>
+                    Suas chaves privadas permanecem seguras na sua carteira
+                  </p>
+                </div>
+              )}
+            </motion.div>
+
+            {/* Histórico de Transações */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className={`p-8 rounded-2xl ${
+                isDark
+                  ? 'bg-gray-800/80 backdrop-blur-xl border border-gray-700'
+                  : 'bg-white/80 backdrop-blur-xl border border-gray-200'
+              }`}
+            >
+              <div className="text-center mb-6">
+                <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-3xl">📊</span>
+                </div>
+                <h3 className={`text-xl font-semibold ${
+                  isDark ? 'text-white' : 'text-gray-900'
+                }`}>
+                  Histórico de Transações
+                </h3>
+                <p className={`text-sm ${
+                  isDark ? 'text-gray-400' : 'text-gray-600'
+                }`}>
+                  Todas as suas operações em blockchain
+                </p>
+              </div>
+
+              <div className="space-y-3 max-h-80 overflow-y-auto">
+                {isConnected ? (
+                  <>
+                    <div className={`p-3 rounded-lg ${
+                      isDark ? 'bg-gray-700' : 'bg-gray-100'
+                    }`}>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Recebimento</span>
+                        <span className="text-green-500 text-sm">+0.05 ETH</span>
+                      </div>
+                      <p className={`text-xs ${
+                        isDark ? 'text-gray-400' : 'text-gray-600'
+                      }`}>
+                        De: 0x1234...5678 • 2 horas atrás
+                      </p>
+                    </div>
+                    <div className={`p-3 rounded-lg ${
+                      isDark ? 'bg-gray-700' : 'bg-gray-100'
+                    }`}>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Envio</span>
+                        <span className="text-red-500 text-sm">-0.02 ETH</span>
+                      </div>
+                      <p className={`text-xs ${
+                        isDark ? 'text-gray-400' : 'text-gray-600'
+                      }`}>
+                        Para: 0x8765...4321 • 1 dia atrás
+                      </p>
+                    </div>
+                  </>
+                ) : (
+                  <div className={`text-center py-8 ${
+                    isDark ? 'text-gray-400' : 'text-gray-600'
+                  }`}>
+                    <p>Conecte sua carteira para ver o histórico</p>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* Integração Stripe Section */}
       <section className="py-20 px-4">
         <div className="max-w-4xl mx-auto text-center">

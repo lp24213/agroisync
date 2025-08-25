@@ -91,6 +91,9 @@ const Navbar = () => {
             <a href="/status" className="hover:text-green-500 transition-colors duration-200">
               {t('nav.status')}
             </a>
+            <a href="/parcerias" className="hover:text-green-500 transition-colors duration-200">
+              Parcerias
+            </a>
             <a href="/contato" className="hover:text-green-500 transition-colors duration-200">
               {t('nav.contact')}
             </a>
