@@ -10,10 +10,11 @@ on:
 env:
   NODE_VERSION: '18.x'
   AWS_REGION: 'us-east-1'
-  # Variáveis de ambiente críticas para AGROISYNC
+  # Variáveis de ambiente padrão para AGROISYNC
   REACT_APP_API_URL: 'https://main.d3nvjszcpksd6p.amplifyapp.com/api'
   REACT_APP_STRIPE_PUBLIC_KEY: 'pk_live_51QVXlZGYY0MfrP1aPEJhU9TAd2zdJ7ZIOVdhji34IzdgLyFkXHDiWUaved6J7HKQiQpXKk1E9SHrAmiJKmDnETow00omwjh2Bg'
   REACT_APP_METAMASK_ADDRESS: '0x5Ea5C5970e8AE23A5336d631707CF31C5916E8b1'
+  REACT_APP_METAMASK_NETWORK: '1'
 
 jobs:
   # ===== TESTES =====
@@ -121,77 +122,31 @@ jobs:
           exit 1
         fi
         
-        # Variáveis opcionais (com fallback)
-        if [ -z "${{ secrets.REACT_APP_API_URL }}" ]; then
-          echo "⚠️ REACT_APP_API_URL not set, using fallback"
-        else
-          echo "✅ REACT_APP_API_URL configured"
-        fi
-        
-        if [ -z "${{ secrets.REACT_APP_STRIPE_PUBLIC_KEY }}" ]; then
-          echo "⚠️ REACT_APP_STRIPE_PUBLIC_KEY not set, using fallback"
-        else
-          echo "✅ REACT_APP_STRIPE_PUBLIC_KEY configured"
-        fi
-        
-        if [ -z "${{ secrets.REACT_APP_METAMASK_ADDRESS }}" ]; then
-          echo "⚠️ REACT_APP_METAMASK_ADDRESS not set, using fallback"
-        else
-          echo "✅ REACT_APP_METAMASK_ADDRESS configured"
-        fi
-        
         echo "✅ All required secrets are configured for AGROISYNC deployment"
         
     - name: 🏗️ Build Frontend
       run: |
         cd frontend
-        # Configurar variáveis de ambiente para o build
         echo "🔧 Configurando variáveis de ambiente para o build..."
         
-        # API URL
-        if [ -z "${{ secrets.REACT_APP_API_URL }}" ]; then
-          echo "⚠️ REACT_APP_API_URL secret not found, using fallback"
-          export REACT_APP_API_URL="https://main.d3nvjszcpksd6p.amplifyapp.com/api"
-        else
-          export REACT_APP_API_URL="${{ secrets.REACT_APP_API_URL }}"
-        fi
-        
-        # Stripe Keys
-        if [ -z "${{ secrets.REACT_APP_STRIPE_PUBLIC_KEY }}" ]; then
-          echo "⚠️ REACT_APP_STRIPE_PUBLIC_KEY secret not found, using fallback"
-          export REACT_APP_STRIPE_PUBLIC_KEY="pk_live_51QVXlZGYY0MfrP1aPEJhU9TAd2zdJ7ZIOVdhji34IzdgLyFkXHDiWUaved6J7HKQiQpXKk1E9SHrAmiJKmDnETow00omwjh2Bg"
-        else
-          export REACT_APP_STRIPE_PUBLIC_KEY="${{ secrets.REACT_APP_STRIPE_PUBLIC_KEY }}"
-        fi
-        
-        if [ -z "${{ secrets.REACT_APP_STRIPE_SECRET_KEY }}" ]; then
-          echo "⚠️ REACT_APP_STRIPE_SECRET_KEY secret not found, using fallback"
-          export REACT_APP_STRIPE_SECRET_KEY="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"
-        else
-          export REACT_APP_STRIPE_SECRET_KEY="${{ secrets.REACT_APP_STRIPE_SECRET_KEY }}"
-        fi
-        
-        # Metamask Address
-        if [ -z "${{ secrets.REACT_APP_METAMASK_ADDRESS }}" ]; then
-          echo "⚠️ REACT_APP_METAMASK_ADDRESS secret not found, using fallback"
-          export REACT_APP_METAMASK_ADDRESS="0x5Ea5C5970e8AE23A5336d631707CF31C5916E8b1"
-        else
-          export REACT_APP_METAMASK_ADDRESS="${{ secrets.REACT_APP_METAMASK_ADDRESS }}"
-        fi
+        # Configurar variáveis de ambiente
+        export REACT_APP_API_URL="${{ secrets.REACT_APP_API_URL || env.REACT_APP_API_URL }}"
+        export REACT_APP_STRIPE_PUBLIC_KEY="${{ secrets.REACT_APP_STRIPE_PUBLIC_KEY || env.REACT_APP_STRIPE_PUBLIC_KEY }}"
+        export REACT_APP_METAMASK_ADDRESS="${{ secrets.REACT_APP_METAMASK_ADDRESS || env.REACT_APP_METAMASK_ADDRESS }}"
+        export REACT_APP_METAMASK_NETWORK="${{ secrets.REACT_APP_METAMASK_NETWORK || env.REACT_APP_METAMASK_NETWORK }}"
         
         echo "✅ Variáveis configuradas:"
         echo "  API URL: $REACT_APP_API_URL"
         echo "  Stripe Public: ${REACT_APP_STRIPE_PUBLIC_KEY:0:20}..."
-        echo "  Stripe Secret: ${REACT_APP_STRIPE_SECRET_KEY:0:20}..."
         echo "  Metamask: ${REACT_APP_METAMASK_ADDRESS:0:10}..."
+        echo "  Network: $REACT_APP_METAMASK_NETWORK"
+        
         npm run build
       env:
-        # Variáveis de ambiente para o build do frontend
-        REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL != '' && secrets.REACT_APP_API_URL || env.REACT_APP_API_URL }}
-        REACT_APP_ENV: production
-        REACT_APP_STRIPE_PUBLIC_KEY: ${{ secrets.REACT_APP_STRIPE_PUBLIC_KEY != '' && secrets.REACT_APP_STRIPE_PUBLIC_KEY || env.REACT_APP_STRIPE_PUBLIC_KEY }}
-        REACT_APP_METAMASK_ADDRESS: ${{ secrets.REACT_APP_METAMASK_ADDRESS != '' && secrets.REACT_APP_METAMASK_ADDRESS || env.REACT_APP_METAMASK_ADDRESS }}
-        REACT_APP_METAMASK_NETWORK: ${{ secrets.REACT_APP_METAMASK_NETWORK != '' && secrets.REACT_APP_METAMASK_NETWORK || 'mainnet' }}
+        REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL || env.REACT_APP_API_URL }}
+        REACT_APP_STRIPE_PUBLIC_KEY: ${{ secrets.REACT_APP_STRIPE_PUBLIC_KEY || env.REACT_APP_STRIPE_PUBLIC_KEY }}
+        REACT_APP_METAMASK_ADDRESS: ${{ secrets.REACT_APP_METAMASK_ADDRESS || env.REACT_APP_METAMASK_ADDRESS }}
+        REACT_APP_METAMASK_NETWORK: ${{ secrets.REACT_APP_METAMASK_NETWORK || env.REACT_APP_METAMASK_NETWORK }}
         
     - name: 📦 Build Backend
       run: |
