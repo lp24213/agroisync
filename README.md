@@ -1,264 +1,257 @@
-# 🌾 AGROTM - Plataforma de Gestão Agrícola
+# AgroSync - Plataforma de Inteligência Agrícola
 
-## 📋 Descrição
+## 🚀 Funcionalidades Implementadas
 
-AGROTM é uma plataforma completa de gestão agrícola que oferece soluções integradas para produtores rurais, incluindo gestão de produtos, fretes, mensageria, pagamentos e parcerias.
+### ✅ Página de Planos (`/planos`)
+- **Integração completa com Stripe Checkout** para pagamentos via cartão
+- **Integração com Metamask** para pagamentos em criptomoedas
+- **Sistema de planos diferenciados** para Anunciantes e Freteiros
+- **Liberação automática** do painel privado após confirmação de pagamento
+- **Registro completo** de transações no MongoDB
 
-## 🚀 Funcionalidades Principais
+### ✅ Página de Cripto (`/cripto`)
+- **Integração com CoinGecko API** para dados reais em tempo real
+- **Conectividade Metamask** para carteiras blockchain
+- **Gráficos interativos** de preços e histórico
+- **Suporte a múltiplas redes** (Ethereum, Polygon, BSC)
+- **Pagamentos cripto** para planos e serviços
 
-### 💼 **Gestão de Produtos**
-- Cadastro e gestão de produtos agrícolas
-- Categorização e busca avançada
-- Sistema de anúncios com planos premium
+### ✅ Sistema de Notícias
+- **Integração com Globo Rural RSS** para notícias atualizadas
+- **APIs de Agrolink e Canal Rural** para cobertura completa
+- **Sistema de cache inteligente** para performance
+- **Categorização automática** de notícias por tema
+- **Fallback robusto** em caso de indisponibilidade das APIs
 
-### 🚚 **Gestão de Fretes**
-- Cadastro de rotas de frete
-- Rastreamento em tempo real
-- Sistema de cotação e negociação
+### ✅ Sistema de Pagamentos
+- **Webhook Stripe** para confirmação automática
+- **Verificação on-chain** para pagamentos cripto
+- **Gestão de planos** com expiração automática
+- **Histórico completo** de transações
+- **Notificações automáticas** para usuários
 
-### 💬 **Mensageria Integrada**
-- Chat privado entre usuários
-- Sistema de contato para suporte
-- Mensagens de parcerias para administradores
+## 🔧 Configuração das APIs
 
-### 💳 **Sistema de Pagamentos**
-- **Stripe**: Pagamentos com cartão e PIX
-- **Metamask**: Pagamentos em criptomoedas
-- Planos de assinatura flexíveis
+### 1. Stripe (Pagamentos)
+```bash
+# Backend (.env)
+STRIPE_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxxxxxx
+STRIPE_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxxxxx
+STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxxxxxxxxxxxxxxxxx
 
-### 👨‍💼 **Painel Administrativo**
-- Gestão completa de usuários
-- Monitoramento de transações
-- Analytics e relatórios detalhados
-- Controle de parceiros e mensagens
-
-### 🔒 **Segurança Avançada**
-- Autenticação JWT
-- Proteção contra DDoS e ataques
-- WAF integrado
-- Logs de segurança completos
-
-## 🏗️ Arquitetura
-
-### Backend
-- **Node.js** com Express
-- **MongoDB** como banco principal
-- **Socket.io** para comunicação em tempo real
-- **JWT** para autenticação
-- **Stripe** e **Metamask** para pagamentos
-
-### Frontend
-- **React** com hooks modernos
-- **Context API** para gerenciamento de estado
-- **i18n** para internacionalização
-- **Responsivo** para todos os dispositivos
-
-## 📁 Estrutura do Projeto
-
-```
-agroisync/
-├── backend/                 # API Backend
-│   ├── src/
-│   │   ├── config/         # Configurações
-│   │   ├── controllers/    # Controladores
-│   │   ├── middleware/     # Middlewares
-│   │   ├── models/         # Modelos MongoDB
-│   │   ├── routes/         # Rotas da API
-│   │   ├── services/       # Serviços
-│   │   ├── utils/          # Utilitários
-│   │   └── server.js       # Servidor principal
-│   └── package.json
-├── frontend/                # Aplicação React
-│   ├── src/
-│   │   ├── components/     # Componentes reutilizáveis
-│   │   ├── pages/          # Páginas da aplicação
-│   │   ├── services/       # Serviços de API
-│   │   ├── contexts/       # Contextos React
-│   │   ├── styles/         # Estilos CSS
-│   │   └── App.js          # Componente principal
-│   └── package.json
-└── README.md
+# Frontend (.env.local)
+REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-## 🛠️ Tecnologias Utilizadas
+### 2. Metamask (Criptomoedas)
+```bash
+# Backend (.env)
+ETHEREUM_NETWORK=mainnet
+ETHEREUM_RPC_URL=https://mainnet.infura.io/v3/your-project-id
+METAMASK_PRIVATE_KEY=your-metamask-private-key
 
-### Backend
-- **Node.js** 18+
-- **Express.js** 4.18+
-- **MongoDB** 6.0+
-- **Mongoose** 8.0+
-- **Socket.io** 4.7+
-- **Stripe** 14.7+
-- **Ethers.js** 6.8+
+# Frontend (.env.local)
+REACT_APP_OWNER_WALLET=0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6
+REACT_APP_ETHEREUM_NETWORK=mainnet
+```
 
-### Frontend
-- **React** 18+
-- **React Router** 6+
-- **Axios** para HTTP
-- **Socket.io Client** para WebSocket
-- **i18next** para internacionalização
+### 3. CoinGecko (Dados Cripto)
+```bash
+# Frontend (.env.local)
+REACT_APP_COINGECKO_API_URL=https://api.coingecko.com/api/v3
+# API Key opcional para limites mais altos
+REACT_APP_COINGECKO_API_KEY=your-api-key
+```
 
-### DevOps & Segurança
-- **Helmet** para headers de segurança
-- **CORS** configurado
-- **Rate Limiting** avançado
-- **WAF** integrado
-- **Logs** de segurança
+### 4. OpenWeather (Clima)
+```bash
+# Backend (.env)
+OPENWEATHER_API_KEY=your-openweather-api-key-here
 
-## 🚀 Instalação e Configuração
+# Frontend (.env.local)
+REACT_APP_OPENWEATHER_API_KEY=your-openweather-api-key-here
+```
 
-### Pré-requisitos
-- Node.js 18+ 
-- MongoDB 6.0+
-- npm ou yarn
+### 5. APIs de Notícias
+```bash
+# Backend (.env)
+# As APIs de notícias são públicas e não requerem chaves
+# RSS URLs configuradas automaticamente:
+# - Globo Rural: https://g1.globo.com/rss/g1/economia/agronegocios/
+# - Agrolink: https://www.agrolink.com.br/rss/noticias
+# - Canal Rural: https://www.canalrural.com.br/rss/noticias
+```
+
+## 📦 Instalação e Configuração
 
 ### 1. Clone o repositório
 ```bash
-git clone https://github.com/agrotm/agroisync.git
+git clone https://github.com/agroisync/agroisync.git
 cd agroisync
 ```
 
-### 2. Configure o Backend
-```bash
-cd backend
-npm install
-
-# Configure as variáveis de ambiente
-cp .env.example .env
-# Edite o arquivo .env com suas configurações
-```
-
-### 3. Configure o Frontend
-```bash
-cd ../frontend
-npm install
-
-# Configure as variáveis de ambiente
-cp .env.example .env
-# Edite o arquivo .env com suas configurações
-```
-
-### 4. Configure as Variáveis de Ambiente
-
-#### Backend (.env)
-```bash
-# Servidor
-NODE_ENV=development
-PORT=5000
-FRONTEND_URL=http://localhost:3000
-
-# JWT
-JWT_SECRET=your_super_secret_jwt_key_here
-
-# MongoDB
-MONGODB_URI=mongodb://localhost:27017/agrotm
-
-# Stripe
-STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
-STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
-
-# Metamask
-METAMASK_ADMIN_ADDRESS=0x5Ea5C5970e8AE23A5336d631707CF31C5916E8b1
-```
-
-#### Frontend (.env)
-```bash
-REACT_APP_API_URL=http://localhost:5000/api/v1
-REACT_APP_ENV=development
-```
-
-### 5. Inicie os Serviços
-
-#### Backend
-```bash
-cd backend
-npm run dev
-# Servidor rodando em http://localhost:5000
-```
-
-#### Frontend
-```bash
-cd frontend
-npm start
-# Aplicação rodando em http://localhost:3000
-```
-
-## 🔐 Autenticação Admin
-
-Para acessar funcionalidades administrativas, use:
-- **Email**: `luispaulodeoliveira@agrotm.com.br`
-- **Senha**: `Th@ys15221008`
-
-## 📚 Documentação da API
-
-A documentação completa da API está disponível em:
-- **Arquivo**: `backend/API-ROUTES-DOCUMENTATION.md`
-- **Endpoints**: `/api/v1/*`
-- **WebSocket**: `ws://localhost:5000`
-
-## 🧪 Testes
-
-### Backend
-```bash
-cd backend
-npm test              # Executar testes
-npm run test:watch    # Modo watch
-npm run test:coverage # Com cobertura
-```
-
-### Frontend
-```bash
-cd frontend
-npm test              # Executar testes
-npm run test:coverage # Com cobertura
-```
-
-## 🚀 Deploy
-
-### AWS (Recomendado)
-```bash
-# Configure as variáveis de ambiente na AWS
-# Deploy automático via GitHub Actions
-```
-
-### Docker
-```bash
-# Build das imagens
-docker-compose build
-
-# Executar
-docker-compose up -d
-```
-
-### Manual
+### 2. Instale as dependências
 ```bash
 # Backend
 cd backend
 npm install
-npm start
 
 # Frontend
-cd frontend
+cd ../frontend
 npm install
-npm run build
-# Servir arquivos estáticos
 ```
 
-## 🔒 Segurança
+### 3. Configure as variáveis de ambiente
+```bash
+# Backend
+cp backend/env.example backend/.env
+# Edite backend/.env com suas chaves de API
 
-- **Rate Limiting**: Proteção contra DDoS
-- **WAF**: Detecção de ataques comuns
-- **JWT**: Autenticação segura
-- **CORS**: Configuração restritiva
-- **Helmet**: Headers de segurança
-- **Logs**: Auditoria completa
+# Frontend
+cp frontend/env.example frontend/.env.local
+# Edite frontend/.env.local com suas chaves de API
+```
+
+### 4. Configure o MongoDB
+```bash
+# Backend (.env)
+MONGODB_URI=mongodb://localhost:27017/agroisync
+# Ou MongoDB Atlas
+MONGODB_URI_PRODUCTION=mongodb+srv://username:password@cluster.mongodb.net/agroisync
+```
+
+### 5. Inicie os serviços
+```bash
+# Backend
+cd backend
+npm run dev
+
+# Frontend (em outro terminal)
+cd frontend
+npm start
+```
+
+## 🔐 Configuração de Segurança
+
+### 1. JWT Secrets
+```bash
+# Backend (.env)
+JWT_SECRET=your-super-secret-jwt-key-here
+JWT_REFRESH_SECRET=your-super-secret-refresh-key-here
+```
+
+### 2. Rate Limiting
+```bash
+# Backend (.env)
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX_REQUESTS=100
+```
+
+### 3. CORS
+```bash
+# Backend (.env)
+CORS_ORIGIN=http://localhost:3000
+# Em produção: https://yourdomain.com
+```
+
+## 🚀 Deploy
+
+### AWS Amplify (Recomendado)
+```bash
+# O projeto está configurado para deploy automático via GitHub
+# Push para main branch dispara deploy automático
+git push origin main
+```
+
+### Deploy Manual
+```bash
+# Build do frontend
+cd frontend
+npm run build
+
+# Deploy do backend
+cd ../backend
+npm run build
+# Deploy para AWS Lambda ou seu servidor preferido
+```
 
 ## 📊 Monitoramento
 
-- **Logs**: Winston para logging estruturado
-- **Métricas**: Endpoints de health check
-- **Alertas**: Notificações automáticas
-- **Backup**: Backup automático do MongoDB
+### 1. Logs
+- **Backend**: Logs estruturados com Winston
+- **Frontend**: Console logs para desenvolvimento
+- **Produção**: Integração com Sentry para monitoramento de erros
+
+### 2. Métricas
+- **Performance**: New Relic APM
+- **Infraestrutura**: AWS CloudWatch
+- **Aplicação**: Métricas customizadas no MongoDB
+
+### 3. Alertas
+- **Erros**: Notificações automáticas via Sentry
+- **Performance**: Alertas de latência via New Relic
+- **Infraestrutura**: Alertas AWS CloudWatch
+
+## 🔧 Manutenção
+
+### 1. Atualizações de Dependências
+```bash
+# Verificar dependências desatualizadas
+npm audit
+
+# Atualizar dependências
+npm update
+
+# Atualizar dependências com breaking changes
+npm audit fix --force
+```
+
+### 2. Backup do Banco
+```bash
+# MongoDB local
+mongodump --db agroisync --out ./backup
+
+# MongoDB Atlas
+# Usar ferramentas de backup automático do Atlas
+```
+
+### 3. Limpeza de Cache
+```bash
+# Limpar cache de notícias
+# Acessar endpoint: POST /api/news/clear-cache
+# Requer autenticação de admin
+```
+
+## 🆘 Suporte
+
+### 1. Documentação da API
+- **Backend**: `backend/API-ROUTES-DOCUMENTATION.md`
+- **Swagger**: Disponível em `/api/docs` (quando implementado)
+
+### 2. Logs de Erro
+- **Desenvolvimento**: Console do navegador e terminal
+- **Produção**: Sentry dashboard e AWS CloudWatch
+
+### 3. Contato
+- **Email**: suporte@agroisync.com
+- **WhatsApp**: (66) 99236-2830
+- **Issues**: GitHub Issues do projeto
+
+## 📝 Changelog
+
+### v2.0.0 (Atual)
+- ✅ Integração completa Stripe + Metamask
+- ✅ APIs reais de criptomoedas (CoinGecko)
+- ✅ Sistema de notícias com RSS feeds
+- ✅ Página de planos funcional
+- ✅ Sistema de pagamentos robusto
+- ✅ Tema branco consistente em todas as páginas
+
+### v1.0.0
+- ✅ Estrutura base do projeto
+- ✅ Autenticação e autorização
+- ✅ Dashboard básico
+- ✅ Sistema de mensageria
 
 ## 🤝 Contribuição
 
@@ -268,33 +261,14 @@ npm run build
 4. Push para a branch (`git push origin feature/AmazingFeature`)
 5. Abra um Pull Request
 
-## 📝 Licença
+## 📄 Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
 
-## 🆘 Suporte
+## 🙏 Agradecimentos
 
-- **Email**: suporte@agrotm.com.br
-- **Documentação**: Este README e arquivos de documentação
-- **Issues**: [GitHub Issues](https://github.com/agrotm/agroisync/issues)
-
-## 🏆 Status do Projeto
-
-- ✅ **Backend**: 100% implementado
-- ✅ **Frontend**: 100% implementado
-- ✅ **API**: 100% documentada
-- ✅ **Segurança**: 100% implementada
-- ✅ **Pagamentos**: 100% integrados
-- ✅ **Admin**: 100% funcional
-
-## 🎯 Roadmap
-
-- [ ] **Fase 1**: ✅ Implementação base completa
-- [ ] **Fase 2**: 🔄 Deploy em produção
-- [ ] **Fase 3**: 📱 App mobile
-- [ ] **Fase 4**: 🤖 IA e automação
-- [ ] **Fase 5**: 🌍 Expansão internacional
-
----
-
-**Desenvolvido com ❤️ pela equipe AGROTM**
+- **Stripe** pela infraestrutura de pagamentos
+- **CoinGecko** pelos dados de criptomoedas
+- **OpenWeather** pelos dados climáticos
+- **Globo Rural, Agrolink, Canal Rural** pelas notícias agrícolas
+- **Comunidade open source** pelas bibliotecas utilizadas
