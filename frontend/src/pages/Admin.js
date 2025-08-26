@@ -187,43 +187,43 @@ const Admin = () => {
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 hover:border-blue-500 transition-colors">
+        <div className="bg-white border border-gray-200 rounded-lg p-6 hover:border-blue-500 transition-colors shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-400">Total de Usuários</p>
-              <p className="text-2xl font-bold text-white">{stats.totalUsers.toLocaleString()}</p>
+              <p className="text-sm text-gray-600">Total de Usuários</p>
+              <p className="text-2xl font-bold text-gray-900">{stats.totalUsers.toLocaleString()}</p>
             </div>
-            <Users className="w-8 h-8 text-blue-400" />
+            <Users className="w-8 h-8 text-blue-600" />
           </div>
         </div>
 
-        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 hover:border-green-500 transition-colors">
+        <div className="bg-white border border-gray-200 rounded-lg p-6 hover:border-green-500 transition-colors shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-400">Usuários Ativos</p>
-              <p className="text-2xl font-bold text-green-400">{stats.activeUsers.toLocaleString()}</p>
+              <p className="text-sm text-gray-600">Usuários Ativos</p>
+              <p className="text-2xl font-bold text-green-600">{stats.activeUsers.toLocaleString()}</p>
             </div>
-            <Activity className="w-8 h-8 text-green-400" />
+            <Activity className="w-8 h-8 text-green-600" />
           </div>
         </div>
 
-        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 hover:border-blue-500 transition-colors">
+        <div className="bg-white border border-gray-200 rounded-lg p-6 hover:border-blue-500 transition-colors shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-400">Usuários Premium</p>
-              <p className="text-2xl font-bold text-blue-400">{stats.premiumUsers.toLocaleString()}</p>
+              <p className="text-sm text-gray-600">Usuários Premium</p>
+              <p className="text-2xl font-bold text-blue-600">{stats.premiumUsers.toLocaleString()}</p>
             </div>
-            <Shield className="w-8 h-8 text-blue-400" />
+            <Shield className="w-8 h-8 text-blue-600" />
           </div>
         </div>
 
-        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 hover:border-green-500 transition-colors">
+        <div className="bg-white border border-gray-200 rounded-lg p-6 hover:border-green-500 transition-colors shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-400">Receita Total</p>
-              <p className="text-2xl font-bold text-green-400">R$ {stats.totalRevenue.toLocaleString()}</p>
+              <p className="text-sm text-gray-600">Receita Total</p>
+              <p className="text-2xl font-bold text-green-600">R$ {stats.totalRevenue.toLocaleString()}</p>
             </div>
-            <DollarSign className="w-8 h-8 text-green-400" />
+            <DollarSign className="w-8 h-8 text-green-600" />
           </div>
         </div>
       </div>
@@ -231,8 +231,8 @@ const Admin = () => {
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Revenue Chart */}
-        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-          <h3 className="text-lg font-medium text-white mb-4">Receita Mensal</h3>
+        <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Receita Mensal</h3>
           <div className="h-64 flex items-end justify-between space-x-2">
             {chartData.revenueByMonth.map((item, index) => (
               <div key={index} className="flex-1 flex flex-col items-center">
@@ -240,27 +240,27 @@ const Admin = () => {
                   className="w-full bg-gradient-to-t from-blue-500 to-cyan-400 rounded-t"
                   style={{ height: `${(item.revenue / 200000) * 200}px` }}
                 ></div>
-                <span className="text-xs text-gray-400 mt-2">{item.month}</span>
+                <span className="text-xs text-gray-600 mt-2">{item.month}</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* Users by Region */}
-        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-          <h3 className="text-lg font-medium text-white mb-4">Usuários por Região</h3>
+        <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Usuários por Região</h3>
           <div className="space-y-3">
             {chartData.usersByRegion.map((item, index) => (
               <div key={index} className="flex items-center justify-between">
-                <span className="text-sm text-gray-300">{item.region}</span>
+                <span className="text-sm text-gray-700">{item.region}</span>
                 <div className="flex items-center space-x-2">
-                  <div className="w-20 bg-gray-700 rounded-full h-2">
+                  <div className="w-20 bg-gray-200 rounded-full h-2">
                     <div 
                       className="bg-gradient-to-r from-blue-500 to-cyan-400 h-2 rounded-full"
                       style={{ width: `${(item.users / 500) * 100}%` }}
                     ></div>
                   </div>
-                  <span className="text-sm text-white">{item.users}</span>
+                  <span className="text-sm text-gray-900">{item.users}</span>
                 </div>
               </div>
             ))}
@@ -269,8 +269,8 @@ const Admin = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-        <h3 className="text-lg font-medium text-white mb-4">Ações Rápidas</h3>
+      <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">Ações Rápidas</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <button className="p-4 bg-blue-600 hover:bg-blue-700 rounded-lg text-white text-center transition-colors">
             <UserPlus className="w-6 h-6 mx-auto mb-2" />
@@ -296,10 +296,10 @@ const Admin = () => {
   const renderUsers = () => (
     <div className="space-y-6">
       {/* Users Table Section */}
-      <div className="bg-gray-800 border border-gray-700 rounded-lg">
-        <div className="p-6 border-b border-gray-700">
+      <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div className="p-6 border-b border-gray-200">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-white">Gerenciamento de Usuários</h2>
+            <h2 className="text-xl font-bold text-gray-900">Gerenciamento de Usuários</h2>
             <button className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
               <Plus className="w-4 h-4" />
               <span>Adicionar Usuário</span>
@@ -308,7 +308,7 @@ const Admin = () => {
         </div>
 
         {/* Filters and Search */}
-        <div className="p-6 border-b border-gray-700">
+        <div className="p-6 border-b border-gray-200">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
@@ -318,7 +318,7 @@ const Admin = () => {
                   placeholder="Buscar usuários..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -327,7 +327,7 @@ const Admin = () => {
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">Todos os Status</option>
                 <option value="active">Ativos</option>
@@ -335,16 +335,16 @@ const Admin = () => {
                 <option value="pending">Pendentes</option>
               </select>
               
-              <button className="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
-                <Filter className="w-4 h-4" />
+              <button className="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                <Filter className="w-4 h-4 text-gray-600" />
               </button>
               
-              <button className="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
-                <Download className="w-4 h-4" />
+              <button className="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                <Download className="w-4 h-4 text-gray-600" />
               </button>
               
-              <button className="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
-                <RefreshCw className="w-4 h-4" />
+              <button className="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                <RefreshCw className="w-4 h-4 text-gray-600" />
               </button>
             </div>
           </div>
@@ -353,38 +353,38 @@ const Admin = () => {
         {/* Table */}
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-700">
+            <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                   Usuário
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                   Plano
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                   Produtos
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                   Receita
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                   Último Login
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                   Ações
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-gray-800 divide-y divide-gray-700">
+                              <tbody className="bg-white divide-y divide-gray-200">
               {filteredUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-700 transition-colors">
+                <tr key={user.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div>
-                      <div className="text-sm font-medium text-white">{user.name}</div>
-                      <div className="text-sm text-gray-400">{user.email}</div>
+                      <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                      <div className="text-sm text-gray-600">{user.email}</div>
                       <div className="text-xs text-gray-500">{user.region}</div>
                     </div>
                   </td>
@@ -399,13 +399,13 @@ const Admin = () => {
                       {user.plan}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                     {user.products}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-green-400 font-medium">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-medium">
                     R$ {user.revenue.toLocaleString()}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                     {user.lastLogin}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -428,17 +428,17 @@ const Admin = () => {
         </div>
 
         {/* Pagination */}
-        <div className="px-6 py-4 border-t border-gray-700">
+        <div className="px-6 py-4 border-t border-gray-200">
           <div className="flex items-center justify-between">
-            <div className="text-sm text-gray-400">
+            <div className="text-sm text-gray-600">
               Mostrando 1-5 de {filteredUsers.length} resultados
             </div>
             <div className="flex items-center space-x-2">
-              <button className="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-sm text-white transition-colors">
+              <button className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded text-sm text-gray-700 transition-colors">
                 Anterior
               </button>
               <span className="px-3 py-1 bg-blue-600 rounded text-sm text-white">1</span>
-              <button className="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-sm text-white transition-colors">
+              <button className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded text-sm text-gray-700 transition-colors">
                 Próximo
               </button>
             </div>
@@ -452,8 +452,8 @@ const Admin = () => {
     <div className="space-y-6">
       {/* Analytics Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-          <h3 className="text-lg font-medium text-white mb-4">Métricas de Vendas</h3>
+        <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Métricas de Vendas</h3>
           <div className="space-y-3">
             <div className="flex justify-between">
               <span className="text-gray-400">Total de Pedidos</span>
@@ -470,41 +470,41 @@ const Admin = () => {
           </div>
         </div>
 
-        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-          <h3 className="text-lg font-medium text-white mb-4">Crescimento</h3>
+        <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Crescimento</h3>
           <div className="space-y-3">
             <div className="flex items-center space-x-2">
-              <TrendingUp className="w-5 h-5 text-green-400" />
-              <span className="text-green-400">+15.3%</span>
-              <span className="text-gray-400 text-sm">usuários este mês</span>
+              <TrendingUp className="w-5 h-5 text-green-600" />
+              <span className="text-green-600">+15.3%</span>
+              <span className="text-gray-600 text-sm">usuários este mês</span>
             </div>
             <div className="flex items-center space-x-2">
-              <TrendingUp className="w-5 h-5 text-blue-400" />
-              <span className="text-blue-400">+8.7%</span>
-              <span className="text-gray-400 text-sm">receita este mês</span>
+              <TrendingUp className="w-5 h-5 text-blue-600" />
+              <span className="text-blue-600">+8.7%</span>
+              <span className="text-gray-600 text-sm">receita este mês</span>
             </div>
             <div className="flex items-center space-x-2">
-              <TrendingUp className="w-5 h-5 text-purple-400" />
-              <span className="text-purple-400">+12.1%</span>
-              <span className="text-gray-400 text-sm">produtos este mês</span>
+              <TrendingUp className="w-5 h-5 text-purple-600" />
+              <span className="text-purple-600">+12.1%</span>
+              <span className="text-gray-600 text-sm">produtos este mês</span>
             </div>
           </div>
         </div>
 
-        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-          <h3 className="text-lg font-medium text-white mb-4">Distribuição</h3>
+        <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Distribuição</h3>
           <div className="space-y-3">
             <div className="flex justify-between">
-              <span className="text-gray-400">Premium</span>
-              <span className="text-white font-medium">{((stats.premiumUsers / stats.totalUsers) * 100).toFixed(1)}%</span>
+              <span className="text-gray-600">Premium</span>
+              <span className="text-gray-900 font-medium">{((stats.premiumUsers / stats.totalUsers) * 100).toFixed(1)}%</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-400">Basic</span>
-              <span className="text-white font-medium">{(((stats.totalUsers - stats.premiumUsers) / stats.totalUsers) * 100).toFixed(1)}%</span>
+              <span className="text-gray-600">Basic</span>
+              <span className="text-gray-900 font-medium">{(((stats.totalUsers - stats.premiumUsers) / stats.totalUsers) * 100).toFixed(1)}%</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-400">Ativos</span>
-              <span className="text-white font-medium">{((stats.activeUsers / stats.totalUsers) * 100).toFixed(1)}%</span>
+              <span className="text-gray-600">Ativos</span>
+              <span className="text-gray-900 font-medium">{((stats.activeUsers / stats.totalUsers) * 100).toFixed(1)}%</span>
             </div>
           </div>
         </div>
@@ -512,8 +512,8 @@ const Admin = () => {
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-          <h3 className="text-lg font-medium text-white mb-4">Distribuição Regional</h3>
+        <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Distribuição Regional</h3>
           <div className="space-y-4">
             {chartData.usersByRegion.map((item, index) => (
               <div key={index} className="flex items-center justify-between">
@@ -524,19 +524,19 @@ const Admin = () => {
                     index === 2 ? 'bg-purple-500' : 
                     index === 3 ? 'bg-yellow-500' : 'bg-red-500'
                   }`}></div>
-                  <span className="text-sm text-gray-300">{item.region}</span>
+                  <span className="text-sm text-gray-700">{item.region}</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm text-white">{item.users}</span>
-                  <span className="text-xs text-gray-400">({((item.users / stats.totalUsers) * 100).toFixed(1)}%)</span>
+                  <span className="text-sm text-gray-900">{item.users}</span>
+                  <span className="text-xs text-gray-600">({((item.users / stats.totalUsers) * 100).toFixed(1)}%)</span>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-          <h3 className="text-lg font-medium text-white mb-4">Tendência de Receita</h3>
+        <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Tendência de Receita</h3>
           <div className="h-48 flex items-end justify-between space-x-1">
             {chartData.revenueByMonth.map((item, index) => (
               <div key={index} className="flex-1 flex flex-col items-center">
@@ -544,7 +544,7 @@ const Admin = () => {
                   className="w-full bg-gradient-to-t from-green-500 to-emerald-400 rounded-t"
                   style={{ height: `${(item.revenue / 200000) * 150}px` }}
                 ></div>
-                <span className="text-xs text-gray-400 mt-2">{item.month}</span>
+                <span className="text-xs text-gray-600 mt-2">{item.month}</span>
               </div>
             ))}
           </div>
@@ -555,15 +555,15 @@ const Admin = () => {
 
   const renderSettings = () => (
     <div className="space-y-6">
-      <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-        <h3 className="text-lg font-medium text-white mb-4">Configurações do Sistema</h3>
+      <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">Configurações do Sistema</h3>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Nome da Plataforma</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Nome da Plataforma</label>
             <input
               type="text"
               defaultValue="AGROSYNC"
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div>
@@ -610,9 +610,9 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      {/* Header */}
-      <header className="bg-gray-800 border-b border-gray-700">
+    <div className="min-h-screen bg-white text-gray-900">
+              {/* Header */}
+        <header className="bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
@@ -620,8 +620,8 @@ const Admin = () => {
                 <Shield className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-white">Painel Central - ADMIN</h1>
-                <p className="text-sm text-gray-400">Bem-vindo, {user?.email}</p>
+                <h1 className="text-xl font-bold text-gray-900">Painel Central - ADMIN</h1>
+                <p className="text-sm text-gray-600">Bem-vindo, {user?.email}</p>
               </div>
             </div>
             
@@ -650,7 +650,7 @@ const Admin = () => {
               className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                 activeTab === tab.id
                   ? 'bg-blue-600 text-white shadow-lg'
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-600'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
               }`}
             >
               <tab.icon className="w-4 h-4" />
@@ -665,20 +665,20 @@ const Admin = () => {
         </div>
 
         {/* System Health */}
-        <div className="mt-8 bg-gray-800 border border-gray-700 rounded-lg p-6">
+        <div className="mt-8 bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-medium text-white">Status do Sistema</h3>
-              <p className="text-sm text-gray-400">Monitoramento em tempo real</p>
+              <h3 className="text-lg font-medium text-gray-900">Status do Sistema</h3>
+              <p className="text-sm text-gray-600">Monitoramento em tempo real</p>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-green-400">{stats.systemHealth}%</div>
-              <div className="text-sm text-gray-400">Saúde do Sistema</div>
+              <div className="text-2xl font-bold text-green-600">{stats.systemHealth}%</div>
+              <div className="text-sm text-gray-600">Saúde do Sistema</div>
             </div>
           </div>
           
           <div className="mt-4">
-            <div className="w-full bg-gray-700 rounded-full h-2">
+            <div className="w-full bg-gray-200 rounded-full h-2">
               <div 
                 className="bg-gradient-to-r from-green-500 to-blue-500 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${stats.systemHealth}%` }}

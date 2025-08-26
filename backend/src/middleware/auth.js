@@ -1,66 +1,57 @@
-import jwt from 'jsonwebtoken';
-import { User } from '../models/User.js';
-import { createSecurityLog } from '../utils/securityLogger.js';
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
-// ===== MIDDLEWARE DE AUTENTICAÇÃO =====
+// Configurações
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
-// Verificar token JWT
-export const authenticateToken = async (req, res, next) => {
+/**
+ * Middleware para autenticar token JWT
+ */
+const authenticateToken = async (req, res, next) => {
   try {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+    // Verificar se token existe no header Authorization ou no cookie
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(' ')[1] || req.cookies?.authToken;
 
     if (!token) {
-      await createSecurityLog('unauthorized_access', 'medium', 'No token provided', req);
-      
       return res.status(401).json({
         success: false,
-        message: 'Token de acesso não fornecido'
+        message: 'Token de autenticação não fornecido'
       });
     }
 
-    // Verificar token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    // Verificar e decodificar token
+    const decoded = jwt.verify(token, JWT_SECRET);
     
     // Buscar usuário no banco
-    const user = await User.findById(decoded.userId).select('-password');
+    const user = await User.findById(decoded.userId);
     if (!user) {
-      await createSecurityLog('unauthorized_access', 'high', 'Invalid token - user not found', req, decoded.userId);
-      
       return res.status(401).json({
         success: false,
-        message: 'Token inválido'
+        message: 'Usuário não encontrado'
       });
     }
 
-    // Verificar se o usuário está ativo
+    // Verificar se usuário está ativo
     if (!user.isActive) {
-      await createSecurityLog('unauthorized_access', 'high', 'Inactive user attempted access', req, user._id);
-      
       return res.status(401).json({
         success: false,
-        message: 'Usuário inativo'
+        message: 'Conta desativada'
       });
     }
 
-    // Adicionar informações do usuário à requisição
+    // Adicionar dados do usuário ao request
     req.user = {
-      userId: user._id.toString(),
+      userId: user._id,
       email: user.email,
-      userType: user.userType,
-      name: user.name,
-      company: user.company,
-      subscriptions: user.subscriptions
+      role: user.role,
+      isPaid: user.isPaid,
+      planActive: user.isPlanActive()
     };
-
-    // Log de acesso bem-sucedido
-    await createSecurityLog('data_access', 'low', 'User authenticated successfully', req, user._id);
 
     next();
   } catch (error) {
     if (error.name === 'JsonWebTokenError') {
-      await createSecurityLog('unauthorized_access', 'medium', 'Invalid JWT token', req);
-      
       return res.status(401).json({
         success: false,
         message: 'Token inválido'
@@ -68,18 +59,13 @@ export const authenticateToken = async (req, res, next) => {
     }
 
     if (error.name === 'TokenExpiredError') {
-      await createSecurityLog('unauthorized_access', 'medium', 'Expired JWT token', req);
-      
       return res.status(401).json({
         success: false,
         message: 'Token expirado'
       });
     }
 
-    console.error('Error in authenticateToken:', error);
-    
-    await createSecurityLog('system_error', 'high', `Authentication error: ${error.message}`, req);
-    
+    console.error('Erro na autenticação:', error);
     return res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -87,224 +73,28 @@ export const authenticateToken = async (req, res, next) => {
   }
 };
 
-// Verificar se é admin
-export const requireAdmin = async (req, res, next) => {
+/**
+ * Middleware para verificar se usuário tem plano ativo
+ */
+const requireActivePlan = async (req, res, next) => {
   try {
     if (!req.user) {
       return res.status(401).json({
         success: false,
-        message: 'Autenticação necessária'
+        message: 'Usuário não autenticado'
       });
     }
 
-    // Verificar se é admin pelo email específico (luispaulodeoliveira@agrotm.com.br)
-    if (req.user.email === 'luispaulodeoliveira@agrotm.com.br') {
-      // Log de acesso admin
-      await createSecurityLog('admin_access', 'low', 'Admin access granted via specific email', req, req.user.userId);
-      return next();
-    }
-
-    // Verificar se tem role de admin
-    if (req.user.userType === 'admin') {
-      // Log de acesso admin
-      await createSecurityLog('admin_access', 'low', 'Admin access granted via userType', req, req.user.userId);
-      return next();
-    }
-
-    // Acesso negado
-    await createSecurityLog('unauthorized_access', 'high', 'Non-admin user attempted admin access', req, req.user.userId);
-    
-    return res.status(403).json({
-      success: false,
-      message: 'Acesso negado. Apenas administradores podem acessar este recurso.'
-    });
-  } catch (error) {
-    console.error('Error in requireAdmin:', error);
-    
-    await createSecurityLog('system_error', 'high', `Admin check error: ${error.message}`, req, req.user?.userId);
-    
-    return res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-};
-
-// Middleware específico para admin com email e senha específicos
-export const requireSpecificAdmin = async (req, res, next) => {
-  try {
-    if (!req.user) {
-      return res.status(401).json({
-        success: false,
-        message: 'Autenticação necessária'
-      });
-    }
-
-    // Verificar se é o admin específico pelo email
-    if (req.user.email === 'luispaulodeoliveira@agrotm.com.br') {
-      // Log de acesso admin específico
-      await createSecurityLog('admin_access', 'low', 'Specific admin access granted', req, req.user.userId);
-      return next();
-    }
-
-    // Acesso negado para todos os outros usuários
-    await createSecurityLog('unauthorized_access', 'high', 'Non-specific admin attempted specific admin access', req, req.user.userId);
-    
-    return res.status(403).json({
-      success: false,
-      message: 'Acesso negado. Apenas o administrador principal pode acessar este recurso.'
-    });
-  } catch (error) {
-    console.error('Error in requireSpecificAdmin:', error);
-    
-    await createSecurityLog('system_error', 'high', `Specific admin check error: ${error.message}`, req, req.user?.userId);
-    
-    return res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-};
-
-// Verificar se tem plano ativo
-export const requireActivePlan = (module) => {
-  return async (req, res, next) => {
-    try {
-      if (!req.user) {
-        return res.status(401).json({
-          success: false,
-          message: 'Autenticação necessária'
-        });
-      }
-
-      // Verificar se é admin (admin tem acesso a tudo)
-      if (req.user.email === 'luispaulodeoliveira@agrotm.com.br' || req.user.userType === 'admin') {
-        return next();
-      }
-
-      // Verificar se tem plano ativo para o módulo
-      const subscription = req.user.subscriptions?.[module];
-      if (!subscription || subscription.status !== 'active') {
-        await createSecurityLog('unauthorized_access', 'medium', `User without active ${module} plan attempted access`, req, req.user.userId);
-        
-        return res.status(403).json({
-          success: false,
-          message: `Plano ativo de ${module} é necessário para acessar este recurso`,
-          requiredPlan: module
-        });
-      }
-
-      // Verificar se o plano não expirou
-      if (subscription.endDate && new Date() > new Date(subscription.endDate)) {
-        await createSecurityLog('unauthorized_access', 'medium', `User with expired ${module} plan attempted access`, req, req.user.userId);
-        
-        return res.status(403).json({
-          success: false,
-          message: `Seu plano de ${module} expirou. Renove para continuar acessando.`,
-          requiredPlan: module
-        });
-      }
-
-      next();
-    } catch (error) {
-      console.error('Error in requireActivePlan:', error);
-      
-      await createSecurityLog('system_error', 'high', `Plan check error: ${error.message}`, req, req.user?.userId);
-      
-      return res.status(500).json({
-        success: false,
-        message: 'Erro interno do servidor'
-      });
-    }
-  };
-};
-
-// Verificar se é o próprio usuário ou admin
-export const requireOwnershipOrAdmin = async (req, res, next) => {
-  try {
-    if (!req.user) {
-      return res.status(401).json({
-        success: false,
-        message: 'Autenticação necessária'
-      });
-    }
-
-    const resourceUserId = req.params.userId || req.params.id;
-
-    // Admin tem acesso a tudo
-    if (req.user.email === 'luispaulodeoliveira@agrotm.com.br' || req.user.userType === 'admin') {
-      return next();
-    }
-
-    // Verificar se é o próprio usuário
-    if (req.user.userId === resourceUserId) {
-      return next();
-    }
-
-    // Acesso negado
-    await createSecurityLog('unauthorized_access', 'high', 'User attempted to access resource they don\'t own', req, req.user.userId, { resourceUserId });
-    
-    return res.status(403).json({
-      success: false,
-      message: 'Acesso negado. Você só pode acessar seus próprios recursos.'
-    });
-  } catch (error) {
-    console.error('Error in requireOwnershipOrAdmin:', error);
-    
-    await createSecurityLog('system_error', 'high', `Ownership check error: ${error.message}`, req, req.user?.userId);
-    
-    return res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-};
-
-// Middleware específico para mensageria - REQUER PLANO ATIVO
-export const requireMessagingAccess = async (req, res, next) => {
-  try {
-    if (!req.user) {
-      await createSecurityLog('unauthorized_access', 'high', 'Messaging access attempted without authentication', req);
-      
-      return res.status(401).json({
-        success: false,
-        message: 'Autenticação necessária para acessar a mensageria'
-      });
-    }
-
-    // Admin tem acesso total
-    if (req.user.email === 'luispaulodeoliveira@agrotm.com.br' || req.user.userType === 'admin') {
-      return next();
-    }
-
-    // Verificar se tem plano ativo (Loja ou AgroConecta)
-    const storeSubscription = req.user.subscriptions?.store;
-    const agroconectaSubscription = req.user.subscriptions?.agroconecta;
-    
-    const hasActivePlan = (storeSubscription && storeSubscription.status === 'active') ||
-                         (agroconectaSubscription && agroconectaSubscription.status === 'active');
-
-    if (!hasActivePlan) {
-      await createSecurityLog('unauthorized_access', 'medium', 'User without active plan attempted messaging access', req, req.user.userId);
-      
+    if (!req.user.isPaid || !req.user.planActive) {
       return res.status(403).json({
         success: false,
-        message: 'Acesso à mensageria requer plano ativo (Loja ou AgroConecta)',
-        requiredPlan: 'store_or_agroconecta',
-        availablePlans: {
-          store: 'R$25/mês - até 3 anúncios + mensageria',
-          agroconecta_basic: 'R$50/mês + mensageria',
-          agroconecta_pro: 'R$149/mês - até 30 fretes + mensageria'
-        }
+        message: 'Acesso negado: usuário não possui plano ativo'
       });
     }
 
     next();
   } catch (error) {
-    console.error('Error in requireMessagingAccess:', error);
-    
-    await createSecurityLog('system_error', 'high', `Messaging access check error: ${error.message}`, req, req.user?.userId);
-    
+    console.error('Erro na verificação de plano:', error);
     return res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -312,62 +102,62 @@ export const requireMessagingAccess = async (req, res, next) => {
   }
 };
 
-// Verificar se tem permissão para módulo específico
-export const requireModulePermission = (module, action = 'read') => {
+/**
+ * Middleware para verificar se usuário é admin
+ */
+const requireAdmin = async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Usuário não autenticado'
+      });
+    }
+
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Acesso negado: permissão de administrador necessária'
+      });
+    }
+
+    next();
+  } catch (error) {
+    console.error('Erro na verificação de admin:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+};
+
+/**
+ * Middleware para verificar se usuário tem role específico
+ */
+const requireRole = (roles) => {
   return async (req, res, next) => {
     try {
       if (!req.user) {
         return res.status(401).json({
           success: false,
-          message: 'Autenticação necessária'
+          message: 'Usuário não autenticado'
         });
       }
 
-      // Admin tem acesso a tudo
-      if (req.user.email === 'luispaulodeoliveira@agrotm.com.br' || req.user.userType === 'admin') {
-        return next();
+      if (!Array.isArray(roles)) {
+        roles = [roles];
       }
 
-      // Verificar se tem plano ativo para o módulo
-      const subscription = req.user.subscriptions?.[module];
-      if (!subscription || subscription.status !== 'active') {
-        await createSecurityLog('unauthorized_access', 'medium', `User without ${module} plan attempted ${action}`, req, req.user.userId);
-        
+      if (!roles.includes(req.user.role)) {
         return res.status(403).json({
           success: false,
-          message: `Plano ativo de ${module} é necessário para ${action} este recurso`,
-          requiredPlan: module,
-          requiredAction: action
+          message: `Acesso negado: permissão necessária para ${roles.join(' ou ')}`
         });
-      }
-
-      // Verificar limites específicos do plano
-      if (action === 'create') {
-        if (module === 'store' && subscription.currentAds >= subscription.maxAds) {
-          return res.status(403).json({
-            success: false,
-            message: 'Limite de anúncios atingido para seu plano atual',
-            current: subscription.currentAds,
-            limit: subscription.maxAds
-          });
-        }
-
-        if (module === 'freight' && subscription.currentFreights >= subscription.maxFreights) {
-          return res.status(403).json({
-            success: false,
-            message: 'Limite de fretes atingido para seu plano atual',
-            current: subscription.currentFreights,
-            limit: subscription.maxFreights
-          });
-        }
       }
 
       next();
     } catch (error) {
-      console.error('Error in requireModulePermission:', error);
-      
-      await createSecurityLog('system_error', 'high', `Permission check error: ${error.message}`, req, req.user?.userId);
-      
+      console.error('Erro na verificação de role:', error);
       return res.status(500).json({
         success: false,
         message: 'Erro interno do servidor'
@@ -376,22 +166,94 @@ export const requireModulePermission = (module, action = 'read') => {
   };
 };
 
-// Middleware para verificar se o usuário está logado (sem verificar plano)
-export const requireAuth = async (req, res, next) => {
+/**
+ * Middleware para verificar se usuário é dono do recurso
+ */
+const requireOwnership = (modelName, idField = 'id') => {
+  return async (req, res, next) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({
+          success: false,
+          message: 'Usuário não autenticado'
+        });
+      }
+
+      const resourceId = req.params[idField] || req.body[idField];
+      if (!resourceId) {
+        return res.status(400).json({
+          success: false,
+          message: 'ID do recurso não fornecido'
+        });
+      }
+
+      // Buscar recurso no banco
+      const Model = require(`../models/${modelName}`);
+      const resource = await Model.findById(resourceId);
+      
+      if (!resource) {
+        return res.status(404).json({
+          success: false,
+          message: 'Recurso não encontrado'
+        });
+      }
+
+      // Verificar se usuário é dono do recurso
+      const ownerField = modelName === 'User' ? '_id' : 
+                        modelName === 'Product' ? 'seller' : 
+                        modelName === 'Freight' ? 'carrier' : 'userId';
+
+      if (resource[ownerField].toString() !== req.user.userId.toString()) {
+        // Se não for dono, verificar se é admin
+        if (req.user.role !== 'admin') {
+          return res.status(403).json({
+            success: false,
+            message: 'Acesso negado: você não é dono deste recurso'
+          });
+        }
+      }
+
+      // Adicionar recurso ao request para uso posterior
+      req.resource = resource;
+      next();
+    } catch (error) {
+      console.error('Erro na verificação de propriedade:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Erro interno do servidor'
+      });
+    }
+  };
+};
+
+/**
+ * Middleware para verificar se usuário pode acessar dados privados
+ */
+const canAccessPrivateData = async (req, res, next) => {
   try {
     if (!req.user) {
       return res.status(401).json({
         success: false,
-        message: 'Autenticação necessária'
+        message: 'Usuário não autenticado'
+      });
+    }
+
+    // Admin pode acessar tudo
+    if (req.user.role === 'admin') {
+      return next();
+    }
+
+    // Usuário comum precisa ter plano ativo
+    if (!req.user.isPaid || !req.user.planActive) {
+      return res.status(403).json({
+        success: false,
+        message: 'Acesso negado: usuário não possui plano ativo'
       });
     }
 
     next();
   } catch (error) {
-    console.error('Error in requireAuth:', error);
-    
-    await createSecurityLog('system_error', 'high', `Auth check error: ${error.message}`, req);
-    
+    console.error('Erro na verificação de acesso a dados privados:', error);
     return res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -399,25 +261,64 @@ export const requireAuth = async (req, res, next) => {
   }
 };
 
-// Middleware para verificar se o usuário não está logado (para rotas públicas)
-export const requireGuest = async (req, res, next) => {
-  try {
-    if (req.user) {
-      return res.status(400).json({
+/**
+ * Middleware para verificar se usuário pode criar recursos
+ */
+const canCreateResource = (resourceType) => {
+  return async (req, res, next) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({
+          success: false,
+          message: 'Usuário não autenticado'
+        });
+      }
+
+      // Admin pode criar qualquer coisa
+      if (req.user.role === 'admin') {
+        return next();
+      }
+
+      // Verificar se usuário tem plano ativo
+      if (!req.user.isPaid || !req.user.planActive) {
+        return res.status(403).json({
+          success: false,
+          message: 'Acesso negado: usuário não possui plano ativo'
+        });
+      }
+
+      // Verificar se usuário tem permissão para criar o tipo de recurso
+      if (resourceType === 'product' && req.user.role !== 'anunciante') {
+        return res.status(403).json({
+          success: false,
+          message: 'Acesso negado: apenas anunciantes podem criar produtos'
+        });
+      }
+
+      if (resourceType === 'freight' && req.user.role !== 'freteiro') {
+        return res.status(403).json({
+          success: false,
+          message: 'Acesso negado: apenas freteiros podem criar fretes'
+        });
+      }
+
+      next();
+    } catch (error) {
+      console.error('Erro na verificação de criação de recurso:', error);
+      return res.status(500).json({
         success: false,
-        message: 'Você já está logado'
+        message: 'Erro interno do servidor'
       });
     }
+  };
+};
 
-    next();
-  } catch (error) {
-    console.error('Error in requireGuest:', error);
-    
-    await createSecurityLog('system_error', 'high', `Guest check error: ${error.message}`, req);
-    
-    return res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
+module.exports = {
+  authenticateToken,
+  requireActivePlan,
+  requireAdmin,
+  requireRole,
+  requireOwnership,
+  canAccessPrivateData,
+  canCreateResource
 };

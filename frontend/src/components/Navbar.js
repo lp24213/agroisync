@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { 
   Menu, X, Globe, Sun, Moon, User, 
   ShoppingCart, Truck, Coins, BarChart3, HelpCircle, 
-  Activity, LogOut, Award, MessageCircle
+  Activity, LogOut, Award, MessageCircle, Crown
 } from 'lucide-react';
 
 const Navbar = () => {
@@ -78,6 +78,9 @@ const Navbar = () => {
             </a>
             <a href="/cripto" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
               {t('nav.crypto')}
+            </a>
+            <a href="/planos" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
+              Planos
             </a>
             <a href="/parcerias" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
               Parcerias
@@ -302,6 +305,14 @@ const Navbar = () => {
                     >
                       <Coins className="w-5 h-5 text-yellow-400" />
                       <span>{t('nav.crypto')}</span>
+                    </a>
+                    <a 
+                      href="/planos" 
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white"
+                    >
+                      <Crown className="w-5 h-5 text-purple-400" />
+                      <span>Planos</span>
                     </a>
                   </div>
                 </div>

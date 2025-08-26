@@ -1,949 +1,586 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useTheme } from '../contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { 
-  Search, Filter, ShoppingCart, Star, Heart, Eye, 
-  Package, Truck, Shield, Clock, MapPin, User, Building,
-  Plus, Edit, Trash, MessageCircle, CreditCard, Settings, LogOut, Bell
+import { usePayment } from '../contexts/PaymentContext';
+import {
+  Store,
+  Package,
+  ShoppingCart,
+  Users,
+  Shield,
+  CreditCard,
+  CheckCircle,
+  AlertCircle,
+  ArrowRight,
+  UserPlus,
+  Building2,
+  Truck
 } from 'lucide-react';
-import { productService } from '../services/productService';
 
 const Loja = () => {
-  const { isDark } = useTheme();
   const { t } = useTranslation();
-  const { user, isAdmin, authLoading } = useAuth();
-  const navigate = useNavigate();
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [selectedState, setSelectedState] = useState('all');
-  const [priceRange, setPriceRange] = useState([0, 10000]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [viewMode, setViewMode] = useState('grid');
-  const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('marketplace');
-  const [showSecretPanel, setShowSecretPanel] = useState(false);
-  const [userProducts, setUserProducts] = useState([]);
-  const [userMessages, setUserMessages] = useState([]);
-  const [userProfile, setUserProfile] = useState(null);
-  const [userPurchases, setUserPurchases] = useState([]);
-  const [isEditing, setIsEditing] = useState(false);
-  const [newProduct, setNewProduct] = useState({
-    name: '',
-    description: '',
-    price: '',
-    category: '',
-    stock: ''
-  });
+  const { isDark } = useTheme();
+  const { user, isAdmin } = useAuth();
+  const { isPaid, planActive } = usePayment();
+  const [activeTab, setActiveTab] = useState('overview');
 
-  // Categorias de produtos
-  const categories = [
-    { id: 'all', name: t('store.categories.all') },
-    { id: 'grains', name: t('store.categories.grains') },
-    { id: 'inputs', name: t('store.categories.inputs') },
-    { id: 'machinery', name: t('store.categories.machinery') },
-    { id: 'livestock', name: t('store.categories.livestock') },
-    { id: 'fruits', name: t('store.categories.fruits') },
-    { id: 'vegetables', name: t('store.categories.vegetables') }
+  // Dados mock para demonstração
+  const mockProducts = [
+    {
+      id: 1,
+      name: 'Soja Premium',
+      category: 'grains',
+      price: 180.00,
+      description: 'Soja de alta qualidade para exportação',
+      city: 'Londrina',
+      state: 'PR',
+      seller: 'Fazenda Santa Maria',
+      isPaid: true
+    },
+    {
+      id: 2,
+      name: 'Milho Especial',
+      category: 'grains',
+      price: 95.50,
+      description: 'Milho especial para ração animal',
+      city: 'Cascavel',
+      state: 'PR',
+      seller: 'Cooperativa Agro',
+      isPaid: false
+    },
+    {
+      id: 3,
+      name: 'Trigo Orgânico',
+      category: 'grains',
+      price: 220.00,
+      description: 'Trigo orgânico certificado',
+      city: 'Passo Fundo',
+      state: 'RS',
+      seller: 'Produtor Orgânico',
+      isPaid: true
+    }
   ];
 
-  // Estados brasileiros
-  const states = [
-    { id: 'all', name: t('store.states.all') },
-    { id: 'MT', name: t('store.states.mt') },
-    { id: 'GO', name: t('store.states.go') },
-    { id: 'MS', name: t('store.states.ms') },
-    { id: 'PR', name: t('store.states.pr') },
-    { id: 'RS', name: t('store.states.rs') },
-    { id: 'SP', name: t('store.states.sp') },
-    { id: 'MG', name: t('store.states.mg') },
-    { id: 'BA', name: t('store.states.ba') },
-    { id: 'TO', name: t('store.states.to') }
-  ];
-
-  // Função para buscar produtos do MongoDB
-  const fetchProducts = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const filters = {};
-      if (selectedCategory !== 'all') filters.type = selectedCategory;
-      if (priceRange[0] > 0) filters.minPrice = priceRange[0];
-      if (priceRange[1] < 10000) filters.maxPrice = priceRange[1];
-      if (selectedState !== 'all') filters.state = selectedState;
-      if (searchTerm) filters.search = searchTerm;
-      
-      const response = await productService.getProducts(filters);
-      
-      if (response.success) {
-        setProducts(response.data);
-        setFilteredProducts(response.data);
-      } else {
-        setError('Erro ao carregar produtos');
-      }
-    } catch (error) {
-      console.error('Error fetching products:', error);
-      setError(error.message || 'Erro ao carregar produtos');
-      
-      // Fallback para dados simulados em caso de erro
-      setProducts([]);
-      setFilteredProducts([]);
-    } finally {
-      setLoading(false);
-    }
+  const getCategoryIcon = (category) => {
+    const icons = {
+      grains: '🌾',
+      inputs: '🧪',
+      machinery: '🚜',
+      livestock: '🐄',
+      fruits: '🍎',
+      vegetables: '🥬'
+    };
+    return icons[category] || '📦';
   };
 
-  // Carregar produtos ao montar o componente
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  // Atualizar produtos quando filtros mudarem
-  useEffect(() => {
-    fetchProducts();
-  }, [selectedCategory, priceRange, selectedState, searchTerm]);
-
-    // Atualizar contadores de categorias
-  useEffect(() => {
-    const updatedCategories = categories.map(cat => ({
-      ...cat,
-      count: cat.id === 'all' ? products.length : products.filter(p => p.type === cat.id).length
-    }));
-    
-    // Filtrar produtos
-    let filtered = products;
-
-    // Filtro por categoria
-    if (selectedCategory !== 'all') {
-      filtered = filtered.filter(p => p.type === selectedCategory);
-    }
-
-    // Filtro por preço
-    filtered = filtered.filter(p => p.price >= priceRange[0] && p.price <= priceRange[1]);
-
-    // Filtro por estado
-    if (selectedState !== 'all') {
-      filtered = filtered.filter(p => p.location?.state === selectedState);
-    }
-
-    // Filtro por busca
-    if (searchTerm) {
-      filtered = filtered.filter(p => 
-        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.seller?.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    setFilteredProducts(filtered);
-  }, [products, selectedCategory, priceRange, selectedState, searchTerm]);
-
-  // Função para formatar preço
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(price);
+  const getCategoryName = (category) => {
+    const names = {
+      grains: 'Grãos',
+      inputs: 'Insumos',
+      machinery: 'Maquinário',
+      livestock: 'Pecuária',
+      fruits: 'Frutas',
+      vegetables: 'Vegetais'
+    };
+    return names[category] || category;
   };
 
-  // Função para obter ícone da categoria
-  const getCategoryIcon = (type) => {
-    switch (type) {
-      case 'grains':
-      case 'fruits':
-      case 'vegetables':
-        return <Package className="w-5 h-5" />;
-      case 'inputs':
-        return <Shield className="w-5 h-5" />;
-      case 'machinery':
-        return <Truck className="w-5 h-5" />;
-      case 'livestock':
-        return <Building className="w-5 h-5" />;
-      default:
-        return <Package className="w-5 h-5" />;
-    }
-  };
-
-  // Função para obter cor da categoria
-  const getCategoryColor = (type) => {
-    switch (type) {
-      case 'grains':
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-      case 'fruits':
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
-      case 'vegetables':
-        return 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200';
-      case 'inputs':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
-      case 'machinery':
-        return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200';
-      case 'livestock':
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
-      default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
-    }
-  };
-
-  useEffect(() => {
-    if (user && !isAdmin) {
-      // Carregar dados do usuário
-      loadUserData();
-    }
-  }, [user, isAdmin]);
-
-  const loadUserData = async () => {
-    try {
-      // Simular carregamento de dados do usuário
-      setUserProducts([
-        {
-          id: 1,
-          name: 'Produto A',
-          price: 150.00,
-          category: 'Fertilizantes',
-          stock: 50,
-          status: 'active'
-        },
-        {
-          id: 2,
-          name: 'Produto B',
-          price: 89.90,
-          category: 'Sementes',
-          stock: 100,
-          status: 'active'
-        }
-      ]);
-
-      setUserMessages([
-        {
-          id: 1,
-          from: 'João Silva',
-          subject: 'Consulta sobre Produto A',
-          content: 'Gostaria de saber mais detalhes...',
-          date: '2024-01-15',
-          unread: true
-        }
-      ]);
-
-      setUserProfile({
-        name: user.name,
-        email: user.email,
-        phone: '(66) 99236-2830',
-        address: 'Cuiabá, MT',
-        plan: 'Anunciante Premium'
-      });
-
-      setUserPurchases([
-        {
-          id: 1,
-          product: 'Fertilizante Orgânico',
-          price: 120.00,
-          date: '2024-01-10',
-          status: 'Entregue'
-        }
-      ]);
-    } catch (error) {
-      console.error('Erro ao carregar dados do usuário:', error);
-    }
-  };
-
-  const handleAddProduct = () => {
-    if (newProduct.name && newProduct.price) {
-      const product = {
-        id: Date.now(),
-        ...newProduct,
-        price: parseFloat(newProduct.price),
-        stock: parseInt(newProduct.stock),
-        status: 'active'
-      };
-      setUserProducts([...userProducts, product]);
-      setNewProduct({ name: '', description: '', price: '', category: '', stock: '' });
-    }
-  };
-
-  const handleDeleteProduct = (productId) => {
-    setUserProducts(userProducts.filter(p => p.id !== productId));
-  };
-
-  const handleEditProfile = () => {
-    setIsEditing(!isEditing);
-  };
-
-  const handleSaveProfile = () => {
-    setIsEditing(false);
-    // Aqui você implementaria a lógica para salvar no backend
-  };
-
-  const toggleSecretPanel = () => {
-    setShowSecretPanel(!showSecretPanel);
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">{t('store.loading')}</p>
-        </div>
-      </div>
-    );
-  }
-
-  // PÁGINA PÚBLICA - mostrar marketplace para todos
-  if (!user || isAdmin) {
-    return (
-      <div className="min-h-screen bg-white text-gray-900">
-        <main className="pt-24 pb-16">
-          <div className="max-w-7xl mx-auto px-4">
-            <h1 className="text-5xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
-              🏪 Loja AgroSync
-            </h1>
-            <p className="text-xl text-gray-600 mb-8 text-center">
-              Marketplace completo para produtos agropecuários
-            </p>
-            
-                         {/* Opções de Cadastro */}
-             <div className="grid md:grid-cols-2 gap-8 mb-12">
-               <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-2xl p-8 border border-green-200">
-                 <h3 className="text-2xl font-bold text-green-800 mb-4">📦 Anunciante</h3>
-                 <p className="text-gray-700 mb-6">
-                   <strong>Campos obrigatórios:</strong> nome, CPF/CNPJ, localização, informações de contato + dados do produto (nome, categoria, descrição, preço, imagens).
-                 </p>
-                 <p className="text-sm text-gray-600 mb-4">
-                   <strong>Exibição pública:</strong> SOMENTE produtos e suas informações. Dados pessoais ficam ocultos até login e pagamento.
-                 </p>
-                 <button 
-                   onClick={() => window.location.href = '/cadastro?type=anunciante'}
-                   className="w-full px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors"
-                 >
-                   Cadastrar como Anunciante
-                 </button>
-               </div>
-               
-               <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-8 border border-blue-200">
-                 <h3 className="text-2xl font-bold text-blue-800 mb-4">🛒 Comprador</h3>
-                 <p className="text-gray-700 mb-6">
-                   <strong>Campos obrigatórios:</strong> nome, CPF, localização, dados básicos.
-                 </p>
-                 <p className="text-sm text-gray-600 mb-4">
-                   <strong>Regra:</strong> 3 produtos gratuitos. A cada mensagem enviada, consome 1 produto. Após esgotar, bloqueia até pagamento.
-                 </p>
-                 <button 
-                   onClick={() => window.location.href = '/cadastro?type=comprador'}
-                   className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
-                 >
-                   Cadastrar como Comprador
-                 </button>
-               </div>
-             </div>
-            
-                         {/* Produtos Públicos - apenas dados básicos */}
-             <div className="bg-gray-50 rounded-2xl p-8 border border-gray-200 mb-8">
-               <h3 className="text-2xl font-bold text-gray-800 mb-6">📦 Produtos Disponíveis (Dados Públicos)</h3>
-               <p className="text-sm text-gray-600 mb-6 text-center">
-                 <strong>Regra de Privacidade:</strong> Apenas informações dos produtos são exibidas publicamente. 
-                 Dados pessoais dos anunciantes (telefone, CPF/CNPJ, endereço) ficam ocultos até login e pagamento.
-               </p>
-               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                 {[1, 2, 3, 4, 5, 6].map((item) => (
-                   <div key={item} className="bg-white rounded-2xl p-6 border border-gray-200 hover:border-green-500/50 transition-all duration-300 shadow-lg">
-                     <div className="w-full h-48 bg-gradient-to-br from-green-500/20 to-blue-500/20 rounded-xl mb-4 flex items-center justify-center">
-                       <Package className="w-16 h-16 text-green-400" />
-                     </div>
-                     <h3 className="text-xl font-semibold mb-2">Produto {item}</h3>
-                     <p className="text-gray-600 mb-4">Descrição do produto {item} com detalhes importantes.</p>
-                     <div className="space-y-2 text-sm text-gray-500 mb-4">
-                       <p><strong>Categoria:</strong> Grãos</p>
-                       <p><strong>Preço:</strong> R$ {(item * 25 + 50).toFixed(2)}</p>
-                       <p className="text-xs text-gray-400">Dados do anunciante disponíveis após login e pagamento</p>
-                     </div>
-                     <div className="flex items-center justify-between">
-                       <span className="text-2xl font-bold text-green-600">R$ {(item * 25 + 50).toFixed(2)}</span>
-                       <button className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
-                         Ver Detalhes
-                       </button>
-                     </div>
-                   </div>
-                 ))}
-               </div>
-             </div>
-          </div>
-        </main>
-      </div>
-    );
-  }
-
-  // Usuário logado - mostrar marketplace + painel secreto
   return (
-    <div className="min-h-screen bg-neutral-900 text-white">
-      {/* Header com botão do painel secreto */}
-      <div className="bg-neutral-800 border-b border-neutral-700">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold">Marketplace AgroSync</h1>
-            
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={toggleSecretPanel}
-                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-green-600 to-blue-600 rounded-lg hover:from-green-700 hover:to-blue-700 transition-all duration-300"
-              >
-                <User className="w-5 h-5" />
-                <span>Meu Painel</span>
-                {showSecretPanel && <span className="ml-2">←</span>}
-              </button>
-              
-              <div className="relative">
-                <Bell className="w-6 h-6 text-yellow-400 cursor-pointer" />
-                {userMessages.filter(m => m.unread).length > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    {userMessages.filter(m => m.unread).length}
-                  </span>
-                )}
+    <div className="min-h-screen bg-white dark:bg-gray-900">
+      {/* Header da Loja */}
+      <section className="bg-gradient-to-r from-green-600 to-green-800 text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <Store className="w-16 h-16 mx-auto mb-6" />
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              AgroSync Loja
+            </h1>
+            <p className="text-xl md:text-2xl text-green-100 max-w-3xl mx-auto">
+              Conectando produtores e compradores em uma plataforma segura e transparente
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Navegação por Abas */}
+      <section className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <nav className="flex space-x-8">
+            {[
+              { id: 'overview', label: 'Visão Geral', icon: Store },
+              { id: 'products', label: 'Produtos', icon: Package },
+              { id: 'registration', label: 'Cadastro', icon: UserPlus },
+              { id: 'plans', label: 'Planos', icon: CreditCard }
+            ].map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                    activeTab === tab.id
+                      ? 'border-green-500 text-green-600 dark:text-green-400'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+      </section>
+
+      {/* Conteúdo das Abas */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Aba: Visão Geral */}
+        {activeTab === 'overview' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-8"
+          >
+            {/* Cards de Estatísticas */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
+                <div className="flex items-center">
+                  <div className="p-3 rounded-full bg-blue-100 dark:bg-blue-900">
+                    <Package className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total de Produtos</p>
+                    <p className="text-2xl font-semibold text-gray-900 dark:text-white">1,247</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
+                <div className="flex items-center">
+                  <div className="p-3 rounded-full bg-green-100 dark:bg-green-900">
+                    <Users className="w-6 h-6 text-green-600 dark:text-green-400" />
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Vendedores Ativos</p>
+                    <p className="text-2xl font-semibold text-gray-900 dark:text-white">89</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
+                <div className="flex items-center">
+                  <div className="p-3 rounded-full bg-purple-100 dark:bg-purple-900">
+                    <ShoppingCart className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Transações Hoje</p>
+                    <p className="text-2xl font-semibold text-gray-900 dark:text-white">23</p>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <div className="flex">
-        {/* Painel Secreto (lado esquerdo) */}
-        {showSecretPanel && (
-          <div className="w-80 bg-neutral-800 border-r border-neutral-700 min-h-screen">
-            <div className="p-6">
-              <h2 className="text-xl font-bold mb-6 text-green-400">Painel Secreto</h2>
-              
-              {/* Tabs do painel */}
-              <div className="flex space-x-2 mb-6">
-                <button
-                  onClick={() => setActiveTab('dashboard')}
-                  className={`px-3 py-2 rounded-lg text-sm transition-colors ${
-                    activeTab === 'dashboard' 
-                      ? 'bg-green-600 text-white' 
-                      : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
-                  }`}
-                >
-                  Dashboard
-                </button>
-                <button
-                  onClick={() => setActiveTab('products')}
-                  className={`px-3 py-2 rounded-lg text-sm transition-colors ${
-                    activeTab === 'products' 
-                      ? 'bg-green-600 text-white' 
-                      : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
-                  }`}
-                >
-                  Produtos
-                </button>
-                <button
-                  onClick={() => setActiveTab('messages')}
-                  className={`px-3 py-2 rounded-lg text-sm transition-colors ${
-                    activeTab === 'messages' 
-                      ? 'bg-green-600 text-white' 
-                      : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
-                  }`}
-                >
-                  Mensagens
-                </button>
-                <button
-                  onClick={() => setActiveTab('profile')}
-                  className={`px-3 py-2 rounded-lg text-sm transition-colors ${
-                    activeTab === 'profile' 
-                      ? 'bg-green-600 text-white' 
-                      : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
-                  }`}
-                >
-                  Perfil
-                </button>
+            {/* Produtos em Destaque */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Produtos em Destaque
+                </h3>
               </div>
-
-              {/* Conteúdo das tabs */}
-              <div className="space-y-6">
-                {/* Dashboard */}
-                {activeTab === 'dashboard' && (
-                  <div>
-                    <div className="bg-neutral-700 rounded-lg p-4 mb-4">
-                      <h3 className="font-semibold mb-2">Resumo</h3>
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <p className="text-neutral-400">Produtos Ativos</p>
-                          <p className="text-xl font-bold text-green-400">{userProducts.length}</p>
-                        </div>
-                        <div>
-                          <p className="text-neutral-400">Mensagens</p>
-                          <p className="text-xl font-bold text-blue-400">{userMessages.length}</p>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="bg-neutral-700 rounded-lg p-4">
-                      <h3 className="font-semibold mb-2">Atividade Recente</h3>
-                      <div className="space-y-2 text-sm">
-                        <p>• Novo produto adicionado: Produto A</p>
-                        <p>• Mensagem recebida de João Silva</p>
-                        <p>• Venda realizada: R$ 120,00</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Produtos */}
-                {activeTab === 'products' && (
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="font-semibold">Meus Produtos</h3>
-                      <button className="p-2 bg-green-600 rounded-lg hover:bg-green-700 transition-colors">
-                        <Plus className="w-4 h-4" />
-                      </button>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      {userProducts.map((product) => (
-                        <div key={product.id} className="bg-neutral-700 rounded-lg p-3">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <h4 className="font-medium">{product.name}</h4>
-                              <p className="text-sm text-neutral-400">{product.category}</p>
-                              <p className="text-sm text-green-400">R$ {product.price.toFixed(2)}</p>
-                            </div>
-                            <div className="flex space-x-2">
-                              <button className="p-1 bg-blue-600 rounded hover:bg-blue-700">
-                                <Edit className="w-3 h-3" />
-                              </button>
-                              <button 
-                                onClick={() => handleDeleteProduct(product.id)}
-                                className="p-1 bg-red-600 rounded hover:bg-red-700"
-                              >
-                                <Trash className="w-3 h-3" />
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Mensagens */}
-                {activeTab === 'messages' && (
-                  <div>
-                    <h3 className="font-semibold mb-4">Minhas Mensagens</h3>
-                    <div className="space-y-3">
-                      {userMessages.map((message) => (
-                        <div key={message.id} className={`bg-neutral-700 rounded-lg p-3 cursor-pointer hover:bg-neutral-600 transition-colors ${
-                          message.unread ? 'border-l-4 border-blue-500' : ''
+              <div className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {mockProducts.slice(0, 3).map((product) => (
+                    <div key={product.id} className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-2xl">{getCategoryIcon(product.category)}</span>
+                        <span className={`px-2 py-1 text-xs rounded-full ${
+                          product.isPaid 
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                            : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
                         }`}>
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <h4 className="font-medium">{message.from}</h4>
-                              <p className="text-sm text-neutral-400">{message.subject}</p>
-                              <p className="text-xs text-neutral-500">{message.date}</p>
-                            </div>
-                            {message.unread && (
-                              <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Perfil */}
-                {activeTab === 'profile' && (
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="font-semibold">Meu Perfil</h3>
-                      <button 
-                        onClick={handleEditProfile}
-                        className="px-3 py-1 bg-blue-600 rounded text-sm hover:bg-blue-700 transition-colors"
-                      >
-                        {isEditing ? 'Cancelar' : 'Editar'}
-                      </button>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      <div>
-                        <label className="text-sm text-neutral-400">Nome</label>
-                        {isEditing ? (
-                          <input 
-                            type="text" 
-                            value={userProfile?.name || ''} 
-                            className="w-full bg-neutral-700 border border-neutral-600 rounded px-3 py-2 mt-1"
-                          />
-                        ) : (
-                          <p className="font-medium">{userProfile?.name}</p>
-                        )}
+                          {product.isPaid ? 'Verificado' : 'Pendente'}
+                        </span>
                       </div>
-                      
-                      <div>
-                        <label className="text-sm text-neutral-400">Email</label>
-                        <p className="font-medium">{userProfile?.email}</p>
-            </div>
-                      
-                      <div>
-                        <label className="text-sm text-neutral-400">Telefone</label>
-                        {isEditing ? (
-                          <input 
-                            type="text" 
-                            value={userProfile?.phone || ''} 
-                            className="w-full bg-neutral-700 border border-neutral-600 rounded px-3 py-2 mt-1"
-                          />
-                        ) : (
-                          <p className="font-medium">{userProfile?.phone}</p>
-                        )}
+                      <h4 className="font-semibold text-gray-900 dark:text-white mb-2">{product.name}</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">{product.description}</p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-lg font-bold text-green-600 dark:text-green-400">
+                          R$ {product.price.toFixed(2)}
+                        </span>
+                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                          {product.city}, {product.state}
+                        </span>
                       </div>
-                      
-                      <div>
-                        <label className="text-sm text-neutral-400">Plano</label>
-                        <p className="font-medium text-green-400">{userProfile?.plan}</p>
-                      </div>
-                      
-                      {isEditing && (
-                        <button 
-                          onClick={handleSaveProfile}
-                          className="w-full px-4 py-2 bg-green-600 rounded-lg hover:bg-green-700 transition-colors"
-                        >
-                          Salvar Alterações
-                        </button>
-                      )}
                     </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          )}
-        </div>
-            </div>
-        </div>
+          </motion.div>
         )}
 
-        {/* Marketplace (lado direito) */}
-        <div className={`flex-1 ${showSecretPanel ? 'ml-0' : ''}`}>
-          <main className="pt-8 pb-16">
-            <div className="max-w-7xl mx-auto px-4">
-              {!showSecretPanel && (
-                <h1 className="text-5xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
-                  Marketplace AgroSync
-                </h1>
-              )}
-
-      {/* Filtros e Busca */}
-      <section className="py-8 px-4 bg-gray-50 border-b">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
-            {/* Busca */}
-            <div className="flex-1 max-w-md">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+        {/* Aba: Produtos */}
+        {activeTab === 'products' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-6"
+          >
+            {/* Filtros */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <select className="border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                  <option value="">Todas as Categorias</option>
+                  <option value="grains">Grãos</option>
+                  <option value="inputs">Insumos</option>
+                  <option value="machinery">Maquinário</option>
+                  <option value="livestock">Pecuária</option>
+                </select>
+                <select className="border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                  <option value="">Todos os Estados</option>
+                  <option value="PR">Paraná</option>
+                  <option value="RS">Rio Grande do Sul</option>
+                  <option value="SC">Santa Catarina</option>
+                  <option value="SP">São Paulo</option>
+                </select>
                 <input
                   type="text"
-                  placeholder={t('store.search.placeholder')}
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  placeholder="Buscar produtos..."
+                  className="border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
-              </div>
-            </div>
-
-            {/* Filtros */}
-            <div className="flex flex-wrap gap-4">
-              {/* Categoria */}
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              >
-                {categories.map(cat => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name} ({cat.count})
-                  </option>
-                ))}
-              </select>
-
-              {/* Estado */}
-              <select
-                value={selectedState}
-                onChange={(e) => setSelectedState(e.target.value)}
-                className="px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              >
-                {states.map(state => (
-                  <option key={state.id} value={state.id}>
-                    {state.name}
-                  </option>
-                ))}
-              </select>
-
-              {/* Faixa de Preço */}
-              <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-600">{t('store.price.label')}:</span>
-                <input
-                  type="number"
-                  placeholder={t('store.price.min')}
-                  value={priceRange[0]}
-                  onChange={(e) => setPriceRange([parseInt(e.target.value) || 0, priceRange[1]])}
-                  className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-                <span className="text-gray-400">-</span>
-                <input
-                  type="number"
-                  placeholder={t('store.price.max')}
-                  value={priceRange[1]}
-                  onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value) || 10000])}
-                  className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-              </div>
-
-              {/* Modo de Visualização */}
-              <div className="flex border border-gray-300 rounded-xl overflow-hidden">
-                <button
-                  onClick={() => setViewMode('grid')}
-                  className={`px-3 py-2 ${viewMode === 'grid' ? 'bg-green-500 text-white' : 'bg-white text-gray-600'}`}
-                >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                  </svg>
-                </button>
-                <button
-                  onClick={() => setViewMode('list')}
-                  className={`px-3 py-2 ${viewMode === 'list' ? 'bg-green-500 text-white' : 'bg-white text-gray-600'}`}
-                >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                  </svg>
+                <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md transition-colors">
+                  Buscar
                 </button>
               </div>
-
-              {/* Botão Cadastrar Produto */}
-              <button
-                onClick={() => window.location.href = '/cadastro'}
-                className="px-6 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors duration-300 flex items-center gap-2"
-              >
-                <Package className="w-5 h-5" />
-                {t('store.addProduct')}
-              </button>
-
-              {/* Botão Assinar Plano */}
-              <button
-                onClick={() => window.location.href = '/planos'}
-                className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors duration-300 flex items-center gap-2"
-              >
-                <Star className="w-5 h-5" />
-                {t('store.subscribe')}
-              </button>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Produtos */}
-      <section className="py-12 px-4">
-        <div className="max-w-7xl mx-auto">
-          {/* Estatísticas */}
-          <div className="mb-8 text-center">
-            <p className="text-gray-600">
-              {t('store.showing')} <span className="font-semibold text-green-600">{filteredProducts.length}</span> {t('store.of')}
-              <span className="font-semibold text-green-600">{products.length}</span> {t('store.products')}
-            </p>
-          </div>
-
-          {/* Grid de Produtos */}
-          {viewMode === 'grid' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredProducts.map((product, index) => (
-                <motion.div
-                  key={product._id}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-gray-200 overflow-hidden"
-                >
-                  {/* Imagem do Produto */}
-                  <div className="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                    <div className="text-6xl text-gray-400">
-                      {getCategoryIcon(product.type)}
-                    </div>
-                    {product.featured && (
-                      <div className="absolute top-2 right-2 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold">
-                        {t('store.featured')}
+            {/* Lista de Produtos */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Produtos Disponíveis
+                </h3>
+              </div>
+              <div className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {mockProducts.map((product) => (
+                    <div key={product.id} className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-shadow">
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-2xl">{getCategoryIcon(product.category)}</span>
+                        <span className={`px-2 py-1 text-xs rounded-full ${
+                          product.isPaid 
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                            : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                        }`}>
+                          {product.isPaid ? 'Verificado' : 'Pendente'}
+                        </span>
                       </div>
-                    )}
-                    <div className="absolute top-2 left-2">
-                      <button className="p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors">
-                        <Heart className="w-4 h-4 text-gray-600" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Informações do Produto */}
-                  <div className="p-4">
-                    {/* Categoria */}
-                    <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getCategoryColor(product.type)} mb-2`}>
-                      {getCategoryIcon(product.type)}
-                      <span className="ml-1">{categories.find(c => c.id === product.type)?.name}</span>
-                    </div>
-
-                    {/* Nome */}
-                    <h3 className="font-bold text-gray-900 mb-2 line-clamp-2">{product.name}</h3>
-
-                    {/* Preço */}
-                    <div className="text-2xl font-bold text-green-600 mb-2">
-                      {formatPrice(product.price)}
-                    </div>
-
-                    {/* Unidade */}
-                    <p className="text-sm text-gray-600 mb-3">{t('store.unit')}: {product.unit}</p>
-
-                    {/* Vendedor e Localização */}
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-1">
-                        <MapPin className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm text-gray-600">{product.location?.city}, {product.location?.state}</span>
+                      <h4 className="font-semibold text-gray-900 dark:text-white mb-2">{product.name}</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">{product.description}</p>
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-lg font-bold text-green-600 dark:text-green-400">
+                          R$ {product.price.toFixed(2)}
+                        </span>
+                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                          {product.city}, {product.state}
+                        </span>
                       </div>
-                      <div className="flex items-center space-x-1">
-                        <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                        <span className="text-sm text-gray-600">{product.rating}</span>
-                        <span className="text-xs text-gray-400">({product.reviews})</span>
-                      </div>
-                    </div>
-
-                    {/* Vendedor */}
-                    <p className="text-sm text-gray-700 mb-3 font-medium">{product.seller?.name}</p>
-
-                    {/* Estoque */}
-                    <p className="text-sm text-gray-600 mb-4">
-                      {t('store.stock')}: <span className="font-semibold text-green-600">{product.stock} {product.unit}</span>
-                    </p>
-
-                    {/* Botões */}
-                    <div className="flex space-x-2">
-                      <button className="flex-1 bg-green-600 text-white py-2 px-4 rounded-xl hover:bg-green-700 transition-colors font-medium flex items-center justify-center space-x-2">
-                        <ShoppingCart className="w-4 h-4" />
-                        <span>{t('store.buy')}</span>
-                      </button>
-                      <button className="px-4 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors">
-                        <Eye className="w-4 h-4 text-gray-600" />
-                      </button>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          ) : (
-            /* Lista de Produtos */
-            <div className="space-y-4">
-              {filteredProducts.map((product, index) => (
-                <motion.div
-                  key={product._id}
-                  initial={{ opacity: 0, x: -30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200 p-6"
-                >
-                  <div className="flex items-center space-x-6">
-                    {/* Imagem */}
-                    <div className="relative w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <div className="text-3xl text-gray-400">
-                        {getCategoryIcon(product.type)}
-                      </div>
-                      {product.featured && (
-                        <div className="absolute -top-1 -right-1 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold">
-                          {t('store.featured')}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Informações */}
-                    <div className="flex-1">
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getCategoryColor(product.type)} mb-2`}>
-                            {getCategoryIcon(product.type)}
-                            <span className="ml-1">{categories.find(c => c.id === product.type)?.name}</span>
-                          </div>
-                          <h3 className="text-lg font-bold text-gray-900 mb-1">{product.name}</h3>
-                          <p className="text-sm text-gray-600 mb-2">{product.description}</p>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-2xl font-bold text-green-600 mb-1">
-                            {formatPrice(product.price)}
-                          </div>
-                          <p className="text-sm text-gray-600">{t('store.unit')}: {product.unit}</p>
-                        </div>
-                      </div>
-
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4 text-sm text-gray-600">
-                          <div className="flex items-center space-x-1">
-                            <MapPin className="w-4 h-4" />
-                            <span>{product.location?.city}, {product.location?.state}</span>
-                          </div>
-                          <div className="flex items-center space-x-1">
-                            <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                            <span>{product.rating}</span>
-                            <span>({product.reviews})</span>
-                          </div>
-                          <span>{t('store.stock')}: {product.stock} {product.unit}</span>
-                        </div>
-
-                        <div className="flex space-x-2">
-                          <button className="bg-green-600 text-white py-2 px-6 rounded-xl hover:bg-green-700 transition-colors font-medium flex items-center space-x-2">
-                            <ShoppingCart className="w-4 h-4" />
-                            <span>{t('store.buy')}</span>
-                          </button>
-                          <button className="px-4 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors">
-                            <Eye className="w-4 h-4 text-gray-600" />
-                          </button>
-                        </div>
+                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                          Vendedor: {product.seller}
+                        </span>
+                        <button className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm transition-colors">
+                          Ver Detalhes
+                        </button>
                       </div>
                     </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Aba: Cadastro */}
+        {activeTab === 'registration' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-8"
+          >
+            {/* Tipos de Cadastro */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Cadastro de Anunciante */}
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-6">
+                <div className="text-center mb-6">
+                  <Building2 className="w-16 h-16 mx-auto text-blue-600 dark:text-blue-400 mb-4" />
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                    Anunciante
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    Cadastre-se para vender seus produtos agrícolas
+                  </p>
+                </div>
+
+                <div className="space-y-4 mb-6">
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Publicar produtos ilimitados</span>
                   </div>
-                </motion.div>
-              ))}
-            </div>
-          )}
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Painel de gestão completo</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Mensageria com compradores</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Relatórios de visualizações</span>
+                  </div>
+                </div>
 
-          {/* Sem Produtos */}
-          {!loading && !error && filteredProducts.length === 0 && (
-            <div className="text-center py-20">
-              <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-600 mb-2">{t('store.noProductsFound')}</h3>
-              <p className="text-gray-500">{t('store.tryAdjustFilters')}</p>
-            </div>
-          )}
-
-          {/* Estado de Erro */}
-          {error && (
-            <div className="text-center py-20">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Package className="w-8 h-8 text-red-600" />
+                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2">
+                  <span>Cadastrar como Anunciante</span>
+                  <ArrowRight className="w-5 h-5" />
+                </button>
               </div>
-              <h3 className="text-xl font-semibold text-red-600 mb-2">{t('store.errorLoadingProducts')}</h3>
-              <p className="text-gray-500 mb-4">{error}</p>
-              <button 
-                onClick={fetchProducts}
-                className="bg-red-600 text-white px-6 py-2 rounded-xl hover:bg-red-700 transition-colors"
-              >
-                {t('store.tryAgain')}
-              </button>
-            </div>
-          )}
 
-          {/* Estado de Carregamento */}
-          {loading && (
-            <div className="text-center py-20">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-spin">
-                <Package className="w-8 h-8 text-blue-600" />
+              {/* Cadastro de Comprador */}
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-6">
+                <div className="text-center mb-6">
+                  <ShoppingCart className="w-16 h-16 mx-auto text-green-600 dark:text-green-400 mb-4" />
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                    Comprador
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    Cadastre-se para comprar produtos agrícolas
+                  </p>
+                </div>
+
+                <div className="space-y-4 mb-6">
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Acesso a todos os produtos</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">3 produtos gratuitos por mês</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Mensageria com vendedores</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Painel de favoritos</span>
+                  </div>
+                </div>
+
+                <button className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2">
+                  <span>Cadastrar como Comprador</span>
+                  <ArrowRight className="w-5 h-5" />
+                </button>
               </div>
-              <h3 className="text-xl font-semibold text-blue-600 mb-2">{t('store.loadingProducts')}</h3>
-              <p className="text-gray-500">{t('store.waitWhileSearching')}</p>
             </div>
-          )}
-        </div>
-      </section>
+
+            {/* Regras de Privacidade */}
+            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800 p-6">
+              <div className="flex items-start space-x-3">
+                <Shield className="w-6 h-6 text-blue-600 dark:text-blue-400 mt-1" />
+                <div>
+                  <h4 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">
+                    Regras de Privacidade e Dados
+                  </h4>
+                  <div className="space-y-2 text-blue-800 dark:text-blue-200">
+                    <p>• <strong>Dados Públicos:</strong> Nome do produto, categoria, preço, cidade e estado ficam visíveis para todos</p>
+                    <p>• <strong>Dados Privados:</strong> CPF/CNPJ, telefone, endereço completo e documentos só são liberados após pagamento</p>
+                    <p>• <strong>Compradores:</strong> Têm acesso a 3 produtos gratuitos por mês, após isso precisam de plano ativo</p>
+                    <p>• <strong>Anunciantes:</strong> Precisam de plano ativo para publicar produtos e acessar dados dos compradores</p>
+                  </div>
+                </div>
+              </div>
             </div>
-          </main>
-        </div>
+          </motion.div>
+        )}
+
+        {/* Aba: Planos */}
+        {activeTab === 'plans' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-8"
+          >
+            {/* Planos Disponíveis */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* Plano Comprador */}
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-6">
+                <div className="text-center mb-6">
+                  <ShoppingCart className="w-16 h-16 mx-auto text-green-600 dark:text-green-400 mb-4" />
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                    Comprador Básico
+                  </h3>
+                  <div className="text-4xl font-bold text-green-600 dark:text-green-400 mb-2">
+                    R$ 25
+                  </div>
+                  <div className="text-gray-600 dark:text-gray-400">por mês</div>
+                </div>
+
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Acesso a todos os produtos</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Mensageria ilimitada</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Dados completos dos vendedores</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Painel de favoritos</span>
+                  </div>
+                </div>
+
+                <button className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition-colors">
+                  Escolher Plano
+                </button>
+              </div>
+
+              {/* Plano Anunciante */}
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border-2 border-blue-500 dark:border-blue-400 p-6 relative">
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    Mais Popular
+                  </span>
+                </div>
+                
+                <div className="text-center mb-6">
+                  <Building2 className="w-16 h-16 mx-auto text-blue-600 dark:text-blue-400 mb-4" />
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                    Anunciante Premium
+                  </h3>
+                  <div className="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">
+                    R$ 49,90
+                  </div>
+                  <div className="text-gray-600 dark:text-gray-400">por mês</div>
+                </div>
+
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Publicar até 10 produtos</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Mensageria ilimitada</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Dados completos dos compradores</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Painel de gestão completo</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Relatórios de visualizações</span>
+                  </div>
+                </div>
+
+                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-medium transition-colors">
+                  Escolher Plano
+                </button>
+              </div>
+
+              {/* Plano Freteiro */}
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-6">
+                <div className="text-center mb-6">
+                  <Truck className="w-16 h-16 mx-auto text-purple-600 dark:text-purple-400 mb-4" />
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                    Freteiro Premium
+                  </h3>
+                  <div className="text-4xl font-bold text-purple-600 dark:text-purple-400 mb-2">
+                    R$ 79,90
+                  </div>
+                  <div className="text-gray-600 dark:text-gray-400">por mês</div>
+                </div>
+
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Publicar até 20 fretes</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Mensageria ilimitada</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Dados completos dos contratantes</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Painel de gestão completo</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Relatórios de rotas</span>
+                  </div>
+                </div>
+
+                <button className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg font-medium transition-colors">
+                  Escolher Plano
+                </button>
+              </div>
+            </div>
+
+            {/* Informações de Pagamento */}
+            <div className="bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800 p-6">
+              <div className="flex items-start space-x-3">
+                <CreditCard className="w-6 h-6 text-green-600 dark:text-green-400 mt-1" />
+                <div>
+                  <h4 className="text-lg font-semibold text-green-900 dark:text-green-100 mb-2">
+                    Formas de Pagamento Aceitas
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-green-800 dark:text-green-200">
+                    <div>
+                      <h5 className="font-medium mb-2">💳 Cartão de Crédito/Débito</h5>
+                      <p className="text-sm">Via Stripe - todas as bandeiras principais</p>
+                    </div>
+                    <div>
+                      <h5 className="font-medium mb-2">₿ Criptomoedas</h5>
+                      <p className="text-sm">Via Metamask - ETH, USDC, BNB</p>
+                    </div>
+                    <div>
+                      <h5 className="font-medium mb-2">📱 PIX</h5>
+                      <p className="text-sm">Pagamento instantâneo</p>
+                    </div>
+                    <div>
+                      <h5 className="font-medium mb-2">🏦 Boleto Bancário</h5>
+                      <p className="text-sm">Vencimento em 3 dias úteis</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
       </div>
     </div>
   );

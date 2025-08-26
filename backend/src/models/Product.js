@@ -1,354 +1,257 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
-// Product schema for sellers
 const productSchema = new mongoose.Schema({
-  // Seller Information
-  sellerId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-
-  // Product Basic Information
-  name: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  description: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  summary: {
-    type: String,
-    trim: true
-  },
-
-  // Product Details
-  category: {
-    type: String,
-    required: true,
-    enum: [
-      'grains',
-      'vegetables',
-      'fruits',
-      'livestock',
-      'machinery',
-      'fertilizers',
-      'seeds',
-      'tools',
-      'other'
-    ],
-    default: 'other'
-  },
-  subcategory: {
-    type: String,
-    trim: true
-  },
-
-  // Pricing
-  price: {
-    type: Number,
-    required: true,
-    min: 0
-  },
-  currency: {
-    type: String,
-    default: 'BRL'
-  },
-  priceType: {
-    type: String,
-    enum: ['fixed', 'negotiable', 'auction', 'per_unit'],
-    default: 'fixed'
-  },
-  unit: {
-    type: String,
-    enum: ['kg', 'ton', 'unit', 'box', 'bag', 'liter', 'other'],
-    default: 'kg'
-  },
-
-  // Quantity and Availability
-  stock: {
-    type: Number,
-    required: true,
-    min: 0
-  },
-  quantity: {
-    available: {
-      type: Number,
-      required: true,
-      min: 0
-    },
-    unit: {
+  // Dados Públicos (visíveis para todos)
+  publicData: {
+    title: {
       type: String,
-      enum: ['kg', 'ton', 'unit', 'box', 'bag', 'liter', 'other'],
-      default: 'kg'
-    }
-  },
-
-  // Specifications
-  specifications: {
-    type: Map,
-    of: String
-  },
-  quality: {
-    type: String,
-    enum: ['premium', 'standard', 'basic'],
-    default: 'standard'
-  },
-
-  // Images and Media
-  images: [
-    {
+      required: [true, 'Título é obrigatório'],
+      trim: true,
+      maxlength: [200, 'Título não pode ter mais de 200 caracteres']
+    },
+    shortDescription: {
+      type: String,
+      required: [true, 'Descrição curta é obrigatória'],
+      trim: true,
+      maxlength: [500, 'Descrição não pode ter mais de 500 caracteres']
+    },
+    price: {
+      type: Number,
+      required: [true, 'Preço é obrigatório'],
+      min: [0, 'Preço não pode ser negativo']
+    },
+    currency: {
+      type: String,
+      default: 'BRL',
+      enum: ['BRL', 'USD', 'EUR']
+    },
+    category: {
+      type: String,
+      required: [true, 'Categoria é obrigatória'],
+      enum: ['grains', 'inputs', 'machinery', 'livestock', 'fruits', 'vegetables', 'other']
+    },
+    images: [{
       url: {
         type: String,
         required: true
       },
       alt: String,
-      isPrimary: {
+      isMain: {
         type: Boolean,
         default: false
-      },
-      order: {
-        type: Number,
-        default: 0
       }
-    }
-  ],
-
-  // Location and Shipping
-  location: {
+    }],
     city: {
       type: String,
-      required: true,
+      required: [true, 'Cidade é obrigatória'],
       trim: true
     },
     state: {
       type: String,
-      required: true,
-      trim: true
+      required: [true, 'Estado é obrigatório'],
+      trim: true,
+      uppercase: true,
+      minlength: 2,
+      maxlength: 2
     },
-    coordinates: {
-      lat: Number,
-      lon: Number
-    }
-  },
-
-  shipping: {
-    available: {
+    stock: {
+      type: Number,
+      required: [true, 'Estoque é obrigatório'],
+      min: [0, 'Estoque não pode ser negativo']
+    },
+    unit: {
+      type: String,
+      required: [true, 'Unidade é obrigatória'],
+      enum: ['kg', 'ton', 'un', 'l', 'm²', 'm³', 'outro']
+    },
+    isActive: {
       type: Boolean,
       default: true
     },
-    methods: [
-      {
-        type: String,
-        enum: ['pickup', 'delivery', 'freight']
-      }
-    ],
-    cost: {
-      type: Number,
-      min: 0
+    featured: {
+      type: Boolean,
+      default: false
     }
   },
 
-  // Status and Visibility
+  // Dados Privados (visíveis apenas após pagamento)
+  privateData: {
+    fullDescription: {
+      type: String,
+      trim: true,
+      maxlength: [2000, 'Descrição completa não pode ter mais de 2000 caracteres']
+    },
+    specifications: {
+      type: Map,
+      of: String
+    },
+    sellerInfo: {
+      name: {
+        type: String,
+        required: true,
+        trim: true
+      },
+      phone: {
+        type: String,
+        required: true,
+        trim: true
+      },
+      email: {
+        type: String,
+        required: true,
+        trim: true
+      },
+      cpfCnpj: {
+        type: String,
+        required: true,
+        trim: true
+      },
+      ie: String,
+      address: {
+        street: String,
+        number: String,
+        complement: String,
+        city: String,
+        state: String,
+        cep: String
+      }
+    },
+    documents: [{
+      type: {
+        type: String,
+        enum: ['certificado', 'laudo', 'foto', 'outro'],
+        required: true
+      },
+      url: {
+        type: String,
+        required: true
+      },
+      filename: String,
+      description: String
+    }],
+    paymentTerms: {
+      type: String,
+      enum: ['à vista', '30 dias', '60 dias', '90 dias', 'negociável']
+    },
+    deliveryInfo: {
+      available: {
+        type: Boolean,
+        default: true
+      },
+      cost: Number,
+      estimatedDays: Number,
+      regions: [String]
+    }
+  },
+
+  // Relacionamentos
+  seller: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: [true, 'Vendedor é obrigatório']
+  },
+
+  // Status e controle
   status: {
     type: String,
-    required: true,
-    enum: ['active', 'inactive', 'sold', 'expired', 'moderation'],
+    enum: ['active', 'inactive', 'sold', 'expired'],
     default: 'active'
   },
-  isFeatured: {
-    type: Boolean,
-    default: false
-  },
-  isVerified: {
-    type: Boolean,
-    default: false
-  },
 
-  // SEO and Search
-  tags: [
-    {
-      type: String,
-      trim: true
-    }
-  ],
-  keywords: [
-    {
-      type: String,
-      trim: true
-    }
-  ],
-
-  // Analytics
+  // Métricas
   views: {
     type: Number,
     default: 0
   },
-  favorites: [
-    {
-      userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-      },
-      addedAt: {
-        type: Date,
-        default: Date.now
-      }
-    }
-  ],
+  favorites: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
 
   // Timestamps
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
-  },
   expiresAt: {
-    type: Date
+    type: Date,
+    default: function() {
+      // Produto expira em 90 dias por padrão
+      const date = new Date();
+      date.setDate(date.getDate() + 90);
+      return date;
+    }
   }
+}, {
+  timestamps: true
 });
 
-// Índices para melhor performance
-productSchema.index({ sellerId: 1 });
-productSchema.index({ category: 1, subcategory: 1 });
+// Índices para performance
+productSchema.index({ 'publicData.category': 1 });
+productSchema.index({ 'publicData.city': 1, 'publicData.state': 1 });
+productSchema.index({ 'publicData.price': 1 });
+productSchema.index({ seller: 1 });
 productSchema.index({ status: 1 });
-productSchema.index({ location: 1 });
-productSchema.index({ price: 1 });
+productSchema.index({ 'publicData.isActive': 1 });
+productSchema.index({ expiresAt: 1 });
 productSchema.index({ createdAt: -1 });
-productSchema.index({ tags: 1 });
-productSchema.index({ 'location.city': 1, 'location.state': 1 });
 
-// Middleware para atualizar timestamp
-productSchema.pre('save', function (next) {
-  this.updatedAt = new Date();
-  next();
+// Middleware para verificar expiração
+productSchema.pre('find', function() {
+  this.where('expiresAt').gt(new Date());
 });
 
-// Middleware para validar limite de anúncios
-productSchema.pre('save', async function (next) {
-  if (this.isNew) {
-    const User = mongoose.model('User');
-    const seller = await User.findById(this.sellerId);
+// Método para obter dados públicos
+productSchema.methods.getPublicData = function() {
+  return {
+    _id: this._id,
+    ...this.publicData,
+    seller: {
+      name: this.privateData.sellerInfo.name,
+      city: this.publicData.city,
+      state: this.publicData.state
+    },
+    createdAt: this.createdAt,
+    expiresAt: this.expiresAt
+  };
+};
 
-    if (!seller) {
-      return next(new Error('Vendedor não encontrado'));
-    }
-
-    if (!seller.hasActivePlan('store')) {
-      return next(new Error('Plano de loja não ativo'));
-    }
-
-    if (!seller.canCreateAd()) {
-      return next(new Error('Limite de anúncios atingido'));
-    }
+// Método para obter dados privados (apenas se usuário pagou)
+productSchema.methods.getPrivateData = function(userId, userIsPaid) {
+  if (!userIsPaid) {
+    throw new Error('Acesso negado: usuário não possui plano ativo');
   }
 
-  next();
-});
-
-// Middleware para incrementar contador de anúncios
-productSchema.post('save', async function (doc) {
-  if (doc.isNew) {
-    const User = mongoose.model('User');
-    await User.findByIdAndUpdate(doc.sellerId, {
-      $inc: { 'subscriptions.store.currentAds': 1 }
-    });
-  }
-});
-
-// Middleware para decrementar contador de anúncios
-productSchema.post('remove', async function (doc) {
-  const User = mongoose.model('User');
-  await User.findByIdAndUpdate(doc.sellerId, {
-    $inc: { 'subscriptions.store.currentAds': -1 }
-  });
-});
+  return {
+    _id: this._id,
+    ...this.publicData,
+    ...this.privateData,
+    seller: this.privateData.sellerInfo,
+    createdAt: this.createdAt,
+    expiresAt: this.expiresAt,
+    views: this.views,
+    favorites: this.favorites.length
+  };
+};
 
 // Método para incrementar visualizações
-productSchema.methods.incrementViews = function () {
+productSchema.methods.incrementViews = function() {
   this.views += 1;
   return this.save();
 };
 
-// Método para adicionar aos favoritos
-productSchema.methods.addToFavorites = function (userId) {
-  const existingIndex = this.favorites.findIndex(
-    fav => fav.userId.toString() === userId.toString()
-  );
-
-  if (existingIndex === -1) {
-    this.favorites.push({ userId });
-    return this.save();
+// Método para adicionar/remover favoritos
+productSchema.methods.toggleFavorite = function(userId) {
+  const index = this.favorites.indexOf(userId);
+  if (index === -1) {
+    this.favorites.push(userId);
+  } else {
+    this.favorites.splice(index, 1);
   }
-
-  return this;
-};
-
-// Método para remover dos favoritos
-productSchema.methods.removeFromFavorites = function (userId) {
-  this.favorites = this.favorites.filter(fav => fav.userId.toString() !== userId.toString());
   return this.save();
 };
 
-// Método para verificar se está nos favoritos
-productSchema.methods.isInFavorites = function (userId) {
-  return this.favorites.some(fav => fav.userId.toString() === userId.toString());
+// Método para verificar se produto está ativo
+productSchema.methods.isActive = function() {
+  return this.status === 'active' && 
+         this.publicData.isActive && 
+         new Date() < this.expiresAt;
 };
 
-// Método para obter produtos por categoria
-productSchema.statics.findByCategory = function (category, limit = 20, skip = 0) {
-  return this.find({
-    category,
-    status: 'active'
-  })
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit)
-    .populate('sellerId', 'name company.name');
-};
-
-// Método para buscar produtos por texto
-productSchema.statics.searchProducts = function (searchTerm, filters = {}, limit = 20, skip = 0) {
-  const query = {
-    status: 'active',
-    $or: [
-      { name: { $regex: searchTerm, $options: 'i' } },
-      { description: { $regex: searchTerm, $options: 'i' } },
-      { tags: { $in: [new RegExp(searchTerm, 'i')] } }
-    ]
-  };
-
-  // Aplicar filtros adicionais
-  if (filters.category) query.category = filters.category;
-  if (filters.minPrice) query.price = { $gte: filters.minPrice };
-  if (filters.maxPrice) query.price = { ...query.price, $lte: filters.maxPrice };
-  if (filters.location) {
-    query['location.city'] = { $regex: filters.location, $options: 'i' };
-  }
-
-  return this.find(query)
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit)
-    .populate('sellerId', 'name company.name');
-};
-
-// Método para obter produtos em destaque
-productSchema.statics.getFeaturedProducts = function (limit = 10) {
-  return this.find({
-    status: 'active',
-    isFeatured: true
-  })
-    .sort({ createdAt: -1 })
-    .limit(limit)
-    .populate('sellerId', 'name company.name');
-};
-
-// Create Product model
-export const Product = mongoose.model('Product', productSchema);
+module.exports = mongoose.model('Product', productSchema);

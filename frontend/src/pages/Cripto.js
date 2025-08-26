@@ -82,22 +82,16 @@ const Cripto = () => {
   };
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300`}>
+    <div className="min-h-screen bg-white text-gray-900">
 
       
       {/* Header Section */}
       <section className="relative pt-40 pb-20 px-4 overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
-          {isDark ? (
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900">
-              <div className="absolute inset-0 bg-gray-800 opacity-20"></div>
-            </div>
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50">
-              <div className="absolute inset-0 bg-white opacity-95"></div>
-            </div>
-          )}
+          <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50">
+            <div className="absolute inset-0 bg-white opacity-95"></div>
+          </div>
         </div>
         <div className="max-w-6xl mx-auto text-center">
           <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
@@ -121,12 +115,10 @@ const Cripto = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-12"
           >
-            <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${
-              isDark ? 'text-white' : 'text-gray-900'
-            }`}>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
               Cotações em Tempo Real
             </h2>
-            <p className={`text-lg ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+            <p className="text-lg text-gray-600">
               Acompanhe as principais criptomoedas do mercado
             </p>
           </motion.div>
@@ -138,11 +130,7 @@ const Cripto = () => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className={`p-6 rounded-xl border ${
-                  isDark 
-                    ? 'bg-gray-800 border-gray-700 hover:border-gray-600' 
-                    : 'bg-white border-gray-200 hover:border-gray-300'
-                } transition-all duration-300 hover:shadow-lg`}
+                className="p-6 rounded-xl border bg-white border-gray-200 hover:border-gray-300 transition-all duration-300 hover:shadow-lg"
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-3">
@@ -152,10 +140,10 @@ const Cripto = () => {
                       </span>
                     </div>
                     <div>
-                      <h3 className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                      <h3 className="font-bold text-gray-900">
                         {crypto.symbol}
                       </h3>
-                      <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                      <p className="text-sm text-gray-600">
                         {crypto.name}
                       </p>
                     </div>
@@ -169,13 +157,11 @@ const Cripto = () => {
                   </div>
                 </div>
                 
-                <div className={`text-3xl font-bold mb-4 ${
-                  isDark ? 'text-white' : 'text-gray-900'
-                }`}>
+                <div className="text-3xl font-bold mb-4 text-gray-900">
                   ${crypto.price.toLocaleString()}
                 </div>
                 
-                <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                <div className="text-sm text-gray-600">
                   Volume 24h: ${crypto.volume24h.toLocaleString()}
                 </div>
               </motion.div>
@@ -187,9 +173,7 @@ const Cripto = () => {
       {/* Cryptocurrency Chart Section */}
       <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
-          <h2 className={`text-4xl font-bold text-center mb-16 ${
-            isDark ? 'text-white' : 'text-gray-900'
-          }`}>
+          <h2 className="text-4xl font-bold text-center mb-16 text-gray-900">
             Dashboard de Criptomoedas
           </h2>
           <CryptoChart />

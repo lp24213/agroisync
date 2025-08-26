@@ -1,333 +1,202 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
-// User schema with complete registration and subscription management
 const userSchema = new mongoose.Schema({
-  // Basic Information
   name: {
     type: String,
-    required: true,
-    trim: true
+    required: [true, 'Nome é obrigatório'],
+    trim: true,
+    maxlength: [100, 'Nome não pode ter mais de 100 caracteres']
   },
   email: {
     type: String,
-    required: true,
+    required: [true, 'Email é obrigatório'],
     unique: true,
+    lowercase: true,
     trim: true,
-    lowercase: true
+    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Email inválido']
   },
-  password: {
+  passwordHash: {
     type: String,
-    required: true
+    required: [true, 'Senha é obrigatória']
+  },
+  role: {
+    type: String,
+    enum: ['comprador', 'anunciante', 'freteiro', 'admin'],
+    required: [true, 'Tipo de usuário é obrigatório'],
+    default: 'comprador'
+  },
+  cpfCnpj: {
+    type: String,
+    required: [true, 'CPF/CNPJ é obrigatório'],
+    unique: true,
+    trim: true
+  },
+  ie: {
+    type: String,
+    trim: true,
+    required: function() { return this.role === 'anunciante'; }
   },
   phone: {
     type: String,
+    required: [true, 'Telefone é obrigatório'],
     trim: true
   },
-
-  // Company Information
-  company: {
-    name: {
+  address: {
+    cep: {
+      type: String,
+      required: [true, 'CEP é obrigatório'],
+      trim: true
+    },
+    street: {
+      type: String,
+      required: [true, 'Logradouro é obrigatório'],
+      trim: true
+    },
+    number: {
+      type: String,
+      required: [true, 'Número é obrigatório'],
+      trim: true
+    },
+    complement: {
       type: String,
       trim: true
     },
-    cnpj: {
+    city: {
       type: String,
+      required: [true, 'Cidade é obrigatória'],
       trim: true
     },
-    address: {
-      street: String,
-      city: String,
-      state: String,
-      zipCode: String,
-      country: {
-        type: String,
-        default: 'Brasil'
-      }
+    state: {
+      type: String,
+      required: [true, 'Estado é obrigatório'],
+      trim: true,
+      uppercase: true,
+      minlength: 2,
+      maxlength: 2
     }
   },
-
-  // User Type and Status
-  userType: {
+  documents: [{
+    type: {
+      type: String,
+      enum: ['cpf', 'cnpj', 'rg', 'ie', 'outro'],
+      required: true
+    },
+    url: {
+      type: String,
+      required: true
+    },
+    filename: String,
+    uploadedAt: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+  stripeCustomerId: {
     type: String,
-    required: true,
-    enum: ['buyer', 'seller', 'freight', 'admin'],
-    default: 'buyer'
+    sparse: true
   },
-  isAdmin: {
+  cryptoAddress: {
+    type: String,
+    trim: true
+  },
+  isPaid: {
     type: Boolean,
     default: false
+  },
+  paidPlan: {
+    planId: {
+      type: String,
+      enum: ['comprador-basic', 'anunciante-premium', 'freteiro-premium', 'admin-full']
+    },
+    expiresAt: Date,
+    amount: Number,
+    currency: {
+      type: String,
+      default: 'BRL'
+    }
   },
   isActive: {
     type: Boolean,
     default: true
   },
-  isVerified: {
+  lastLogin: Date,
+  emailVerified: {
     type: Boolean,
     default: false
   },
-
-  // Subscription Plans
-  subscriptions: {
-    store: {
-      plan: {
-        type: String,
-        enum: ['none', 'basic', 'pro', 'enterprise'],
-        default: 'none'
-      },
-      status: {
-        type: String,
-        enum: ['inactive', 'active', 'expired', 'cancelled'],
-        default: 'inactive'
-      },
-      startDate: Date,
-      endDate: Date,
-      maxAds: {
-        type: Number,
-        default: 0
-      },
-      currentAds: {
-        type: Number,
-        default: 0
-      }
-    },
-    freight: {
-      plan: {
-        type: String,
-        enum: ['none', 'basic', 'pro', 'enterprise'],
-        default: 'none'
-      },
-      status: {
-        type: String,
-        enum: ['inactive', 'active', 'expired', 'cancelled'],
-        default: 'inactive'
-      },
-      startDate: Date,
-      endDate: Date,
-      maxFreights: {
-        type: Number,
-        default: 0
-      },
-      currentFreights: {
-        type: Number,
-        default: 0
-      }
-    }
-  },
-
-  // Products (for sellers)
-  products: [
-    {
-      name: {
-        type: String,
-        required: true,
-        trim: true
-      },
-      description: {
-        type: String,
-        trim: true
-      },
-      specifications: {
-        type: Map,
-        of: String
-      },
-      price: {
-        type: Number,
-        required: true,
-        min: 0
-      },
-      currency: {
-        type: String,
-        default: 'BRL'
-      },
-      images: [
-        {
-          type: String,
-          trim: true
-        }
-      ],
-      category: {
-        type: String,
-        required: true,
-        trim: true
-      },
-      isActive: {
-        type: Boolean,
-        default: true
-      },
-      createdAt: {
-        type: Date,
-        default: Date.now
-      }
-    }
-  ],
-
-  // Freight Details (for freight providers)
-  freightDetails: {
-    vehicleType: {
-      type: String,
-      enum: ['truck', 'pickup', 'van', 'tractor', 'other']
-    },
-    capacity: {
-      weight: Number, // in kg
-      volume: Number, // in m³
-      unit: String
-    },
-    coverage: {
-      states: [String],
-      cities: [String]
-    },
-    documents: {
-      hasLicense: Boolean,
-      hasInsurance: Boolean,
-      hasDocumentation: Boolean
-    },
-    rates: {
-      basePrice: Number,
-      pricePerKm: Number,
-      currency: {
-        type: String,
-        default: 'BRL'
-      }
-    }
-  },
-
-  // AWS Cognito Integration
-  cognitoId: {
-    type: String,
-    sparse: true
-  },
-
-  // Security and Logs
-  lastLogin: Date,
-  loginAttempts: {
-    type: Number,
-    default: 0
-  },
-  lockUntil: Date,
-  securityLogs: [
-    {
-      action: String,
-      timestamp: {
-        type: Date,
-        default: Date.now
-      },
-      ipAddress: String,
-      userAgent: String
-    }
-  ],
-
-  // Timestamps
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
-  }
+  emailVerificationToken: String,
+  emailVerificationExpires: Date,
+  passwordResetToken: String,
+  passwordResetExpires: Date
+}, {
+  timestamps: true
 });
 
-// Índices para melhor performance
+// Índices para performance
 userSchema.index({ email: 1 });
-userSchema.index({ 'company.cnpj': 1 });
-userSchema.index({ userType: 1 });
-userSchema.index({ 'subscriptions.store.status': 1 });
-userSchema.index({ 'subscriptions.freight.status': 1 });
-userSchema.index({ createdAt: -1 });
+userSchema.index({ cpfCnpj: 1 });
+userSchema.index({ role: 1 });
+userSchema.index({ isPaid: 1 });
+userSchema.index({ 'paidPlan.expiresAt': 1 });
 
-// Middleware para atualizar timestamp
-userSchema.pre('save', function (next) {
-  this.updatedAt = new Date();
-  next();
+// Método para verificar senha
+userSchema.methods.comparePassword = async function(candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.passwordHash);
+};
+
+// Método para verificar se plano está ativo
+userSchema.methods.isPlanActive = function() {
+  if (!this.isPaid || !this.paidPlan.expiresAt) return false;
+  return new Date() < this.paidPlan.expiresAt;
+};
+
+// Método para obter dados públicos
+userSchema.methods.getPublicData = function() {
+  return {
+    _id: this._id,
+    name: this.name,
+    role: this.role,
+    city: this.address.city,
+    state: this.address.state,
+    isPaid: this.isPaid,
+    planActive: this.isPlanActive()
+  };
+};
+
+// Método para obter dados privados (apenas se pago)
+userSchema.methods.getPrivateData = function() {
+  if (!this.isPaid || !this.isPlanActive()) {
+    throw new Error('Acesso negado: usuário não possui plano ativo');
+  }
+  
+  return {
+    _id: this._id,
+    name: this.name,
+    email: this.email,
+    role: this.role,
+    cpfCnpj: this.cpfCnpj,
+    ie: this.ie,
+    phone: this.phone,
+    address: this.address,
+    documents: this.documents,
+    cryptoAddress: this.cryptoAddress,
+    paidPlan: this.paidPlan,
+    lastLogin: this.lastLogin
+  };
+};
+
+// Middleware para hash da senha antes de salvar
+userSchema.pre('save', async function(next) {
+  if (!this.isModified('passwordHash')) return next();
+  
+  try {
+    const salt = await bcrypt.genSalt(12);
+    this.passwordHash = await bcrypt.hash(this.passwordHash, salt);
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
-// Método para verificar se usuário tem plano ativo
-userSchema.methods.hasActivePlan = function (module) {
-  const subscription = this.subscriptions[module];
-  if (!subscription) return false;
-
-  return subscription.status === 'active' && subscription.endDate > new Date();
-};
-
-// Método para verificar se pode criar mais anúncios
-userSchema.methods.canCreateAd = function () {
-  if (!this.hasActivePlan('store')) return false;
-
-  const subscription = this.subscriptions.store;
-  return subscription.currentAds < subscription.maxAds;
-};
-
-// Método para verificar se pode criar mais fretes
-userSchema.methods.canCreateFreight = function () {
-  if (!this.hasActivePlan('freight')) return false;
-
-  const subscription = this.subscriptions.freight;
-  return subscription.currentFreights < subscription.maxFreights;
-};
-
-// Método para incrementar contador de anúncios
-userSchema.methods.incrementAdCount = function () {
-  if (this.subscriptions.store.currentAds < this.subscriptions.store.maxAds) {
-    this.subscriptions.store.currentAds += 1;
-    return this.save();
-  }
-  throw new Error('Limite de anúncios atingido');
-};
-
-// Método para incrementar contador de fretes
-userSchema.methods.incrementFreightCount = function () {
-  if (this.subscriptions.freight.currentFreights < this.subscriptions.freight.maxFreights) {
-    this.subscriptions.freight.currentFreights += 1;
-    return this.save();
-  }
-  throw new Error('Limite de fretes atingido');
-};
-
-// Método para verificar se conta está bloqueada
-userSchema.methods.isLocked = function () {
-  return !!(this.lockUntil && this.lockUntil > Date.now());
-};
-
-// Método para incrementar tentativas de login
-userSchema.methods.incLoginAttempts = function () {
-  if (this.lockUntil && this.lockUntil < Date.now()) {
-    return this.updateOne({
-      $unset: { lockUntil: 1 },
-      $set: { loginAttempts: 1 }
-    });
-  }
-
-  const updates = { $inc: { loginAttempts: 1 } };
-
-  if (this.loginAttempts + 1 >= 5 && !this.isLocked()) {
-    updates.$set = { lockUntil: Date.now() + 2 * 60 * 60 * 1000 }; // 2 hours
-  }
-
-  return this.updateOne(updates);
-};
-
-// Método para resetar tentativas de login
-userSchema.methods.resetLoginAttempts = function () {
-  return this.updateOne({
-    $unset: { loginAttempts: 1, lockUntil: 1 }
-  });
-};
-
-// Método para adicionar log de segurança
-userSchema.methods.addSecurityLog = function (action, ipAddress, userAgent) {
-  this.securityLogs.push({
-    action,
-    ipAddress,
-    userAgent
-  });
-
-  // Manter apenas os últimos 100 logs
-  if (this.securityLogs.length > 100) {
-    this.securityLogs = this.securityLogs.slice(-100);
-  }
-
-  return this.save();
-};
-
-// Create User model
-export const User = mongoose.model('User', userSchema);
+module.exports = mongoose.model('User', userSchema);

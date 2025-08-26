@@ -1,219 +1,225 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const messageSchema = new mongoose.Schema({
-  // Usuários da conversa
-  remetente: {
+  // Remetente e destinatário
+  fromUser: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
-    index: true
+    required: [true, 'Usuário remetente é obrigatório']
   },
-  destinatario: {
+  toUser: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
-    index: true
+    required: [true, 'Usuário destinatário é obrigatório']
   },
-  
+
   // Conteúdo da mensagem
-  conteudo: {
+  subject: {
     type: String,
-    required: true,
+    required: [true, 'Assunto é obrigatório'],
     trim: true,
-    maxlength: 2000
+    maxlength: [200, 'Assunto não pode ter mais de 200 caracteres']
   },
-  
-  // Tipo de serviço (product ou freight)
-  tipo: {
+  message: {
     type: String,
-    enum: ['product', 'freight'],
-    required: true,
-    index: true
+    required: [true, 'Mensagem é obrigatória'],
+    trim: true,
+    maxlength: [2000, 'Mensagem não pode ter mais de 2000 caracteres']
   },
-  
-  // ID do produto ou frete relacionado
-  servico_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    index: true
+
+  // Contexto da mensagem (produto ou frete)
+  context: {
+    type: {
+      type: String,
+      enum: ['product', 'freight', 'general', 'payment'],
+      default: 'general'
+    },
+    productId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Product'
+    },
+    freightId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Freight'
+    }
   },
-  
+
   // Status da mensagem
   status: {
     type: String,
-    enum: ['sent', 'delivered', 'read', 'deleted'],
-    default: 'sent',
-    index: true
+    enum: ['sent', 'delivered', 'read', 'archived', 'deleted'],
+    default: 'sent'
   },
-  
-  // Timestamps
-  timestamp: {
-    type: Date,
-    default: Date.now,
-    index: true
-  },
-  
-  // Metadados adicionais
-  metadata: {
-    // Para mensagens de produto
-    productTitle: String,
-    productPrice: Number,
-    
-    // Para mensagens de frete
-    freightOrigin: String,
-    freightDestination: String,
-    freightPrice: Number
-  },
-  
-  // Sistema de segurança
-  isReported: {
+
+  // Metadados
+  isRead: {
     type: Boolean,
     default: false
   },
-  
-  reportReason: String,
-  
-  // Para auditoria
-  ipAddress: String,
-  userAgent: String,
-  
-  // Soft delete
-  deletedAt: Date,
-  deletedBy: {
+  readAt: Date,
+  isArchived: {
+    type: Boolean,
+    default: false
+  },
+  archivedAt: Date,
+
+  // Anexos
+  attachments: [{
+    filename: {
+      type: String,
+      required: true
+    },
+    url: {
+      type: String,
+      required: true
+    },
+    size: Number,
+    mimeType: String,
+    uploadedAt: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+
+  // Respostas (thread de mensagens)
+  parentMessage: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  }
+    ref: 'Message'
+  },
+  replies: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Message'
+  }],
+
+  // Notificações
+  notifications: {
+    emailSent: {
+      type: Boolean,
+      default: false
+    },
+    pushSent: {
+      type: Boolean,
+      default: false
+    },
+    smsSent: {
+      type: Boolean,
+      default: false
+    }
+  },
+
+  // Timestamps
+  sentAt: {
+    type: Date,
+    default: Date.now
+  },
+  deliveredAt: Date
 }, {
-  timestamps: true,
-  toJSON: { virtuals: true },
-  toObject: { virtuals: true }
+  timestamps: true
 });
 
 // Índices para performance
-messageSchema.index({ remetente: 1, destinatario: 1, timestamp: -1 });
-messageSchema.index({ tipo: 1, servico_id: 1, timestamp: -1 });
-messageSchema.index({ status: 1, timestamp: -1 });
+messageSchema.index({ fromUser: 1, createdAt: -1 });
+messageSchema.index({ toUser: 1, createdAt: -1 });
+messageSchema.index({ 'context.productId': 1 });
+messageSchema.index({ 'context.freightId': 1 });
+messageSchema.index({ status: 1 });
+messageSchema.index({ isRead: 1 });
+messageSchema.index({ parentMessage: 1 });
 messageSchema.index({ createdAt: -1 });
 
-// Virtual para verificar se a mensagem é recente (últimas 24h)
-messageSchema.virtual('isRecent').get(function() {
-  const now = new Date();
-  const messageTime = new Date(this.timestamp);
-  const diffHours = (now - messageTime) / (1000 * 60 * 60);
-  return diffHours <= 24;
-});
-
-// Virtual para obter o nome do serviço
-messageSchema.virtual('servicoNome').get(function() {
-  if (this.tipo === 'product') {
-    return this.metadata?.productTitle || 'Produto';
-  } else if (this.tipo === 'freight') {
-    return `${this.metadata?.freightOrigin || 'Origem'} → ${this.metadata?.freightDestination || 'Destino'}`;
-  }
-  return 'Serviço';
-});
-
-// Middleware para limpar dados sensíveis antes de salvar
+// Middleware para marcar como entregue
 messageSchema.pre('save', function(next) {
-  // Sanitizar conteúdo da mensagem
-  if (this.conteudo) {
-    this.conteudo = this.conteudo.trim();
+  if (this.isNew && !this.deliveredAt) {
+    this.deliveredAt = new Date();
   }
-  
-  // Validar tamanho da mensagem
-  if (this.conteudo && this.conteudo.length > 2000) {
-    return next(new Error('Mensagem muito longa. Máximo 2000 caracteres.'));
-  }
-  
   next();
 });
 
-// Método para marcar mensagem como lida
+// Método para marcar como lida
 messageSchema.methods.markAsRead = function() {
+  this.isRead = true;
   this.status = 'read';
+  this.readAt = new Date();
   return this.save();
 };
 
-// Método para marcar mensagem como entregue
-messageSchema.methods.markAsDelivered = function() {
-  this.status = 'delivered';
+// Método para arquivar mensagem
+messageSchema.methods.archive = function() {
+  this.isArchived = true;
+  this.status = 'archived';
+  this.archivedAt = new Date();
   return this.save();
 };
 
-// Método para deletar mensagem (soft delete)
-messageSchema.methods.softDelete = function(userId) {
-  this.deletedAt = new Date();
-  this.deletedBy = userId;
-  this.status = 'deleted';
-  return this.save();
-};
-
-// Método para reportar mensagem
-messageSchema.methods.report = function(reason) {
-  this.isReported = true;
-  this.reportReason = reason;
-  return this.save();
-};
-
-// Métodos estáticos para consultas comuns
-messageSchema.statics.findConversation = function(user1Id, user2Id, tipo, servicoId) {
-  return this.find({
-    $or: [
-      { remetente: user1Id, destinatario: user2Id },
-      { remetente: user2Id, destinatario: user1Id }
-    ],
-    tipo: tipo,
-    servico_id: servicoId,
-    deletedAt: { $exists: false }
-  }).sort({ timestamp: 1 });
-};
-
-messageSchema.statics.findUserMessages = function(userId, tipo = null) {
-  const query = {
-    $or: [
-      { remetente: userId },
-      { destinatario: userId }
-    ],
-    deletedAt: { $exists: false }
+// Método para obter dados da mensagem para exibição
+messageSchema.methods.getDisplayData = function(userId) {
+  const isSender = this.fromUser.toString() === userId.toString();
+  
+  return {
+    _id: this._id,
+    subject: this.subject,
+    message: this.message,
+    context: this.context,
+    status: this.status,
+    isRead: this.isRead,
+    isArchived: this.isArchived,
+    sentAt: this.sentAt,
+    deliveredAt: this.deliveredAt,
+    attachments: this.attachments,
+    isSender,
+    direction: isSender ? 'outgoing' : 'incoming'
   };
-  
-  if (tipo) {
-    query.tipo = tipo;
-  }
-  
-  return this.find(query).sort({ timestamp: -1 });
 };
 
-messageSchema.statics.findUnreadMessages = function(userId) {
-  return this.find({
-    destinatario: userId,
-    status: { $in: ['sent', 'delivered'] },
-    deletedAt: { $exists: false }
-  });
+// Método para obter thread de mensagens
+messageSchema.methods.getThread = function() {
+  return this.model('Message').find({
+    $or: [
+      { _id: this._id },
+      { parentMessage: this._id },
+      { _id: { $in: this.replies } }
+    ]
+  }).sort({ createdAt: 1 }).populate('fromUser', 'name').populate('toUser', 'name');
 };
 
-messageSchema.statics.getMessageStats = function(userId) {
+// Método estático para buscar conversas de um usuário
+messageSchema.statics.getUserConversations = function(userId, limit = 20, skip = 0) {
   return this.aggregate([
     {
       $match: {
         $or: [
-          { remetente: userId },
-          { destinatario: userId }
+          { fromUser: mongoose.Types.ObjectId(userId) },
+          { toUser: mongoose.Types.ObjectId(userId) }
         ],
-        deletedAt: { $exists: false }
+        status: { $ne: 'deleted' }
+      }
+    },
+    {
+      $addFields: {
+        otherUser: {
+          $cond: {
+            if: { $eq: ['$fromUser', mongoose.Types.ObjectId(userId)] },
+            then: '$toUser',
+            else: '$fromUser'
+          }
+        },
+        isOutgoing: {
+          $eq: ['$fromUser', mongoose.Types.ObjectId(userId)]
+        }
       }
     },
     {
       $group: {
-        _id: '$tipo',
-        total: { $sum: 1 },
-        unread: {
+        _id: '$otherUser',
+        lastMessage: { $first: '$$ROOT' },
+        messageCount: { $sum: 1 },
+        unreadCount: {
           $sum: {
             $cond: [
               {
                 $and: [
-                  { $eq: ['$destinatario', userId] },
-                  { $in: ['$status', ['sent', 'delivered']] }
+                  { $eq: ['$toUser', mongoose.Types.ObjectId(userId)] },
+                  { $eq: ['$isRead', false] }
                 ]
               },
               1,
@@ -222,89 +228,57 @@ messageSchema.statics.getMessageStats = function(userId) {
           }
         }
       }
+    },
+    {
+      $sort: { 'lastMessage.createdAt': -1 }
+    },
+    {
+      $skip: skip
+    },
+    {
+      $limit: limit
     }
   ]);
 };
 
-// Método para buscar mensagens por serviço
-messageSchema.statics.findByService = function(tipo, servicoId) {
+// Método estático para buscar mensagens entre dois usuários
+messageSchema.statics.getConversation = function(user1Id, user2Id, limit = 50, skip = 0) {
   return this.find({
-    tipo: tipo,
-    servico_id: servicoId,
-    deletedAt: { $exists: false }
-  }).sort({ timestamp: 1 });
+    $or: [
+      { fromUser: user1Id, toUser: user2Id },
+      { fromUser: user2Id, toUser: user1Id }
+    ],
+    status: { $ne: 'deleted' }
+  })
+  .sort({ createdAt: -1 })
+  .skip(skip)
+  .limit(limit)
+  .populate('fromUser', 'name')
+  .populate('toUser', 'name')
+  .populate('context.productId', 'publicData.title publicData.price')
+  .populate('context.freightId', 'publicData.title publicData.freightValue');
 };
 
-// Método para limpar mensagens antigas (mais de 30 dias)
-messageSchema.statics.cleanOldMessages = function() {
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-  
-  return this.updateMany(
-    {
-      timestamp: { $lt: thirtyDaysAgo },
-      status: { $in: ['read', 'deleted'] }
-    },
-    {
-      $set: { deletedAt: new Date() }
-    }
-  );
-};
-
-// Método para buscar mensagens reportadas
-messageSchema.statics.findReportedMessages = function() {
+// Método estático para buscar mensagens não lidas
+messageSchema.statics.getUnreadMessages = function(userId) {
   return this.find({
-    isReported: true,
-    deletedAt: { $exists: false }
-  }).populate('remetente', 'email name')
-    .populate('destinatario', 'email name')
-    .sort({ createdAt: -1 });
+    toUser: userId,
+    isRead: false,
+    status: { $ne: 'deleted' }
+  })
+  .sort({ createdAt: -1 })
+  .populate('fromUser', 'name')
+  .populate('context.productId', 'publicData.title')
+  .populate('context.freightId', 'publicData.title');
 };
 
-// Método para estatísticas gerais
-messageSchema.statics.getGeneralStats = function() {
-  return this.aggregate([
-    {
-      $match: {
-        deletedAt: { $exists: false }
-      }
-    },
-    {
-      $group: {
-        _id: null,
-        totalMessages: { $sum: 1 },
-        totalProducts: {
-          $sum: {
-            $cond: [{ $eq: ['$tipo', 'product'] }, 1, 0]
-          }
-        },
-        totalFreights: {
-          $sum: {
-            $cond: [{ $eq: ['$tipo', 'freight'] }, 1, 0]
-          }
-        },
-        unreadMessages: {
-          $sum: {
-            $cond: [
-              { $in: ['$status', ['sent', 'delivered']] },
-              1,
-              0
-            ]
-          }
-        },
-        reportedMessages: {
-          $sum: {
-            $cond: ['$isReported', 1, 0]
-          }
-        }
-      }
-    }
-  ]);
+// Método estático para contar mensagens não lidas
+messageSchema.statics.countUnreadMessages = function(userId) {
+  return this.countDocuments({
+    toUser: userId,
+    isRead: false,
+    status: { $ne: 'deleted' }
+  });
 };
 
-// Configurar TTL para mensagens antigas (opcional)
-// messageSchema.index({ timestamp: 1 }, { expireAfterSeconds: 2592000 }); // 30 dias
-
-const Message = mongoose.model('Message', messageSchema);
-
-export default Message;
+module.exports = mongoose.model('Message', messageSchema);

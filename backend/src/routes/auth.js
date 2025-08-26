@@ -1,449 +1,298 @@
-import express from 'express';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import { User } from '../models/User.js';
-import { SecurityLog } from '../models/SecurityLog.js';
-import { validateRegistration, validateLogin } from '../middleware/validation.js';
-import { rateLimiter } from '../middleware/rateLimiter.js';
-import { authRateLimiter } from '../middleware/security.js';
-import { getClientIP } from '../utils/ipUtils.js';
+const express = require('express');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { body, validationResult } = require('express-validator');
+const User = require('../models/User');
+const { authenticateToken } = require('../middleware/auth');
+const { rateLimit } = require('../middleware/rateLimit');
 
 const router = express.Router();
 
-// Rate limiting for auth routes
-router.use(rateLimiter);
-router.use(authRateLimiter);
+// Configurações
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 
-// Helper function to create security log
-const createSecurityLog = async (eventType, severity, description, req, userId = null) => {
-  try {
-    await SecurityLog.create({
-      eventType,
-      severity,
-      description,
-      userId,
-      ipAddress: getClientIP(req),
-      userAgent: req.get('User-Agent'),
-      requestMethod: req.method,
-      requestUrl: req.originalUrl,
-      requestHeaders: req.headers,
-      geolocation: {
-        country: req.headers['cf-ipcountry'] || 'Unknown',
-        region: req.headers['cf-ipregion'] || 'Unknown',
-        city: req.headers['cf-ipcity'] || 'Unknown'
-      },
-      cloudflare: {
-        rayId: req.headers['cf-ray'] || null,
-        country: req.headers['cf-ipcountry'] || null,
-        threatScore: parseInt(req.headers['cf-threat-score']) || 0,
-        botScore: parseInt(req.headers['cf-bot-score']) || 0
+// Validações para registro
+const registerValidation = [
+  body('name')
+    .trim()
+    .isLength({ min: 2, max: 100 })
+    .withMessage('Nome deve ter entre 2 e 100 caracteres'),
+  body('email')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Email inválido'),
+  body('password')
+    .isLength({ min: 6 })
+    .withMessage('Senha deve ter pelo menos 6 caracteres'),
+  body('role')
+    .isIn(['comprador', 'anunciante', 'freteiro'])
+    .withMessage('Tipo de usuário inválido'),
+  body('cpfCnpj')
+    .trim()
+    .isLength({ min: 11, max: 18 })
+    .withMessage('CPF/CNPJ inválido'),
+  body('phone')
+    .trim()
+    .isLength({ min: 10, max: 15 })
+    .withMessage('Telefone inválido'),
+  body('address.cep')
+    .trim()
+    .isLength({ min: 8, max: 9 })
+    .withMessage('CEP inválido'),
+  body('address.street')
+    .trim()
+    .isLength({ min: 3, max: 200 })
+    .withMessage('Logradouro inválido'),
+  body('address.number')
+    .trim()
+    .isLength({ min: 1, max: 10 })
+    .withMessage('Número inválido'),
+  body('address.city')
+    .trim()
+    .isLength({ min: 2, max: 100 })
+    .withMessage('Cidade inválida'),
+  body('address.state')
+    .trim()
+    .isLength({ min: 2, max: 2 })
+    .isUppercase()
+    .withMessage('Estado inválido'),
+  body('aceita_termos')
+    .isBoolean()
+    .custom(value => {
+      if (!value) {
+        throw new Error('Você deve aceitar os termos de uso');
       }
-    });
-  } catch (error) {
-    console.error('Error creating security log:', error);
-  }
-};
+      return true;
+    })
+];
 
-// POST /api/auth/register - User registration
-router.post('/register', validateRegistration, async (req, res) => {
-  try {
-    const { name, email, password, phone, company, userType } = req.body;
+// Validações para login
+const loginValidation = [
+  body('email')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Email inválido'),
+  body('password')
+    .notEmpty()
+    .withMessage('Senha é obrigatória')
+];
 
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      await createSecurityLog(
-        'suspicious_activity',
-        'medium',
-        `Registration attempt with existing email: ${email}`,
-        req
-      );
-      return res.status(400).json({
-        success: false,
-        message: 'Usuário já existe com este email'
+// POST /api/auth/register - Registro de usuário
+router.post('/register', 
+  rateLimit({ windowMs: 15 * 60 * 1000, max: 5 }), // 5 tentativas por 15 min
+  registerValidation,
+  async (req, res) => {
+    try {
+      // Verificar erros de validação
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          errors: errors.array()
+        });
+      }
+
+      const {
+        name,
+        email,
+        password,
+        role,
+        cpfCnpj,
+        ie,
+        phone,
+        address,
+        aceita_termos
+      } = req.body;
+
+      // Verificar se email já existe
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email já cadastrado'
+        });
+      }
+
+      // Verificar se CPF/CNPJ já existe
+      const existingCpfCnpj = await User.findOne({ cpfCnpj });
+      if (existingCpfCnpj) {
+        return res.status(400).json({
+          success: false,
+          message: 'CPF/CNPJ já cadastrado'
+        });
+      }
+
+      // Criar usuário
+      const user = new User({
+        name,
+        email,
+        passwordHash: password, // Será hasheada pelo middleware
+        role,
+        cpfCnpj,
+        ie: role === 'anunciante' ? ie : undefined,
+        phone,
+        address,
+        aceita_termos
       });
-    }
 
-    // Hash password
-    const saltRounds = 12;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+      await user.save();
 
-    // Create user
-    const user = new User({
-      name,
-      email,
-      password: hashedPassword,
-      phone,
-      company,
-      userType: userType || 'buyer'
-    });
-
-    await user.save();
-
-    // Create security log
-    await createSecurityLog('login_success', 'low', `New user registered: ${email}`, req, user._id);
-
-    // Generate JWT token
-    const token = jwt.sign(
-      { userId: user._id, email: user.email, userType: user.userType },
-      process.env.JWT_SECRET,
-      { expiresIn: '24h' }
-    );
-
-    res.status(201).json({
-      success: true,
-      message: 'Usuário registrado com sucesso',
-      data: {
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          userType: user.userType,
-          company: user.company
+      // Gerar JWT
+      const token = jwt.sign(
+        { 
+          userId: user._id, 
+          email: user.email, 
+          role: user.role 
         },
-        token
-      }
-    });
-  } catch (error) {
-    console.error('Registration error:', error);
-
-    await createSecurityLog('system_error', 'high', `Registration error: ${error.message}`, req);
-
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-});
-
-// POST /api/auth/login - User login
-router.post('/login', validateLogin, async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    // Find user
-    const user = await User.findOne({ email });
-    if (!user) {
-      await createSecurityLog(
-        'login_failure',
-        'medium',
-        `Login attempt with non-existent email: ${email}`,
-        req
-      );
-      return res.status(401).json({
-        success: false,
-        message: 'Credenciais inválidas'
-      });
-    }
-
-    // Check if account is locked
-    if (user.isLocked()) {
-      await createSecurityLog(
-        'account_lock',
-        'high',
-        `Login attempt to locked account: ${email}`,
-        req,
-        user._id
-      );
-      return res.status(423).json({
-        success: false,
-        message:
-          'Conta bloqueada devido a múltiplas tentativas de login. Tente novamente em 2 horas.'
-      });
-    }
-
-    // Verify password
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
-      // Increment login attempts
-      await user.incLoginAttempts();
-
-      await createSecurityLog(
-        'login_failure',
-        'medium',
-        `Failed login attempt for: ${email}`,
-        req,
-        user._id
+        JWT_SECRET,
+        { expiresIn: JWT_EXPIRES_IN }
       );
 
-      return res.status(401).json({
-        success: false,
-        message: 'Credenciais inválidas'
+      // Configurar cookie httpOnly
+      res.cookie('authToken', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 dias
       });
-    }
 
-    // Reset login attempts on successful login
-    await user.resetLoginAttempts();
-
-    // Update last login
-    user.lastLogin = new Date();
-    await user.save();
-
-    // Create security log
-    await createSecurityLog('login_success', 'low', `Successful login: ${email}`, req, user._id);
-
-    // Generate JWT token
-    const token = jwt.sign(
-      {
-        userId: user._id,
-        email: user.email,
-        userType: user.userType,
-        hasStorePlan: user.hasActivePlan('store'),
-        hasFreightPlan: user.hasActivePlan('freight')
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: '24h' }
-    );
-
-    res.json({
-      success: true,
-      message: 'Login realizado com sucesso',
-      data: {
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          userType: user.userType,
-          company: user.company,
-          subscriptions: user.subscriptions
-        },
-        token
-      }
-    });
-  } catch (error) {
-    console.error('Login error:', error);
-
-    await createSecurityLog('system_error', 'high', `Login error: ${error.message}`, req);
-
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-});
-
-// POST /api/auth/logout - User logout
-router.post('/logout', async (req, res) => {
-  try {
-    const token = req.headers.authorization?.split(' ')[1];
-
-    if (token) {
-      // In a real implementation, you might want to blacklist the token
-      // For now, we'll just log the logout
-      await createSecurityLog('logout', 'low', 'User logged out', req);
-    }
-
-    res.json({
-      success: true,
-      message: 'Logout realizado com sucesso'
-    });
-  } catch (error) {
-    console.error('Logout error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-});
-
-// POST /api/auth/forgot-password - Password reset request
-router.post('/forgot-password', async (req, res) => {
-  try {
-    const { email } = req.body;
-
-    const user = await User.findOne({ email });
-    if (!user) {
-      // Don't reveal if user exists or not for security
-      return res.json({
+      // Retornar dados do usuário (sem senha)
+      const userData = user.getPublicData();
+      
+      res.status(201).json({
         success: true,
-        message: 'Se o email existir, você receberá instruções para redefinir sua senha'
+        message: 'Usuário registrado com sucesso',
+        user: userData,
+        token
       });
-    }
 
-    // Generate reset token (in production, use crypto.randomBytes)
-    const resetToken =
-      Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-
-    // Store reset token and expiry (you might want to add these fields to User model)
-    // For now, we'll just log the request
-
-    await createSecurityLog(
-      'password_reset',
-      'medium',
-      `Password reset requested for: ${email}`,
-      req,
-      user._id
-    );
-
-    // In production, send email with reset link
-    // For now, just return success message
-
-    res.json({
-      success: true,
-      message: 'Se o email existir, você receberá instruções para redefinir sua senha'
-    });
-  } catch (error) {
-    console.error('Forgot password error:', error);
-
-    await createSecurityLog('system_error', 'high', `Forgot password error: ${error.message}`, req);
-
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-});
-
-// POST /api/auth/reset-password - Password reset
-router.post('/reset-password', async (req, res) => {
-  try {
-    const { token, newPassword } = req.body;
-
-    // In production, validate token and find user
-    // For now, we'll just return a message
-
-    await createSecurityLog('password_reset', 'medium', 'Password reset attempted', req);
-
-    res.json({
-      success: true,
-      message: 'Senha redefinida com sucesso'
-    });
-  } catch (error) {
-    console.error('Reset password error:', error);
-
-    await createSecurityLog('system_error', 'high', `Reset password error: ${error.message}`, req);
-
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-});
-
-// GET /api/auth/me - Get current user info
-router.get('/me', async (req, res) => {
-  try {
-    const token = req.headers.authorization?.split(' ')[1];
-
-    if (!token) {
-      return res.status(401).json({
+    } catch (error) {
+      console.error('Erro no registro:', error);
+      res.status(500).json({
         success: false,
-        message: 'Token não fornecido'
+        message: 'Erro interno do servidor'
       });
     }
+  }
+);
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.userId).select('-password');
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'Usuário não encontrado'
-      });
-    }
-
-    res.json({
-      success: true,
-      data: {
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          userType: user.userType,
-          company: user.company,
-          subscriptions: user.subscriptions,
-          lastLogin: user.lastLogin
-        }
+// POST /api/auth/login - Login de usuário
+router.post('/login',
+  rateLimit({ windowMs: 15 * 60 * 1000, max: 10 }), // 10 tentativas por 15 min
+  loginValidation,
+  async (req, res) => {
+    try {
+      // Verificar erros de validação
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          errors: errors.array()
+        });
       }
-    });
-  } catch (error) {
-    if (error.name === 'JsonWebTokenError') {
-      return res.status(401).json({
-        success: false,
-        message: 'Token inválido'
-      });
-    }
 
-    console.error('Get user error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-});
+      const { email, password } = req.body;
 
-// POST /api/auth/change-password - Change password
-router.post('/change-password', async (req, res) => {
-  try {
-    const token = req.headers.authorization?.split(' ')[1];
+      // Buscar usuário
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.status(401).json({
+          success: false,
+          message: 'Credenciais inválidas'
+        });
+      }
 
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: 'Token não fornecido'
-      });
-    }
+      // Verificar se usuário está ativo
+      if (!user.isActive) {
+        return res.status(401).json({
+          success: false,
+          message: 'Conta desativada'
+        });
+      }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const { currentPassword, newPassword } = req.body;
+      // Verificar senha
+      const isValidPassword = await user.comparePassword(password);
+      if (!isValidPassword) {
+        return res.status(401).json({
+          success: false,
+          message: 'Credenciais inválidas'
+        });
+      }
 
-    const user = await User.findById(decoded.userId);
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'Usuário não encontrado'
-      });
-    }
+      // Atualizar último login
+      user.lastLogin = new Date();
+      await user.save();
 
-    // Verify current password
-    const isValidPassword = await bcrypt.compare(currentPassword, user.password);
-    if (!isValidPassword) {
-      await createSecurityLog(
-        'suspicious_activity',
-        'medium',
-        'Failed password change attempt - invalid current password',
-        req,
-        user._id
+      // Gerar JWT
+      const token = jwt.sign(
+        { 
+          userId: user._id, 
+          email: user.email, 
+          role: user.role 
+        },
+        JWT_SECRET,
+        { expiresIn: JWT_EXPIRES_IN }
       );
 
-      return res.status(401).json({
+      // Configurar cookie httpOnly
+      res.cookie('authToken', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 dias
+      });
+
+      // Retornar dados do usuário
+      const userData = user.getPublicData();
+      
+      res.json({
+        success: true,
+        message: 'Login realizado com sucesso',
+        user: userData,
+        token
+      });
+
+    } catch (error) {
+      console.error('Erro no login:', error);
+      res.status(500).json({
         success: false,
-        message: 'Senha atual incorreta'
+        message: 'Erro interno do servidor'
+      });
+    }
+  }
+);
+
+// POST /api/auth/logout - Logout
+router.post('/logout', (req, res) => {
+  res.clearCookie('authToken');
+  res.json({
+    success: true,
+    message: 'Logout realizado com sucesso'
+  });
+});
+
+// GET /api/auth/me - Obter dados do usuário logado
+router.get('/me', authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuário não encontrado'
       });
     }
 
-    // Hash new password
-    const saltRounds = 12;
-    const hashedPassword = await bcrypt.hash(newPassword, user.password);
-
-    // Update password
-    user.password = hashedPassword;
-    await user.save();
-
-    await createSecurityLog(
-      'password_change',
-      'medium',
-      'Password changed successfully',
-      req,
-      user._id
-    );
-
+    // Retornar dados públicos
+    const userData = user.getPublicData();
+    
     res.json({
       success: true,
-      message: 'Senha alterada com sucesso'
+      user: userData
     });
+
   } catch (error) {
-    if (error.name === 'JsonWebTokenError') {
-      return res.status(401).json({
-        success: false,
-        message: 'Token inválido'
-      });
-    }
-
-    console.error('Change password error:', error);
-
-    await createSecurityLog('system_error', 'high', `Change password error: ${error.message}`, req);
-
+    console.error('Erro ao buscar usuário:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
@@ -451,4 +300,140 @@ router.post('/change-password', async (req, res) => {
   }
 });
 
-export default router;
+// GET /api/auth/me/private - Obter dados privados do usuário (apenas se pago)
+router.get('/me/private', authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuário não encontrado'
+      });
+    }
+
+    // Verificar se usuário pagou
+    if (!user.isPaid || !user.isPlanActive()) {
+      return res.status(403).json({
+        success: false,
+        message: 'Acesso negado: usuário não possui plano ativo'
+      });
+    }
+
+    // Retornar dados privados
+    const privateData = user.getPrivateData();
+    
+    res.json({
+      success: true,
+      user: privateData
+    });
+
+  } catch (error) {
+    console.error('Erro ao buscar dados privados:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// POST /api/auth/refresh - Renovar token
+router.post('/refresh', authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId);
+    if (!user || !user.isActive) {
+      return res.status(401).json({
+        success: false,
+        message: 'Usuário não autorizado'
+      });
+    }
+
+    // Gerar novo token
+    const newToken = jwt.sign(
+      { 
+        userId: user._id, 
+        email: user.email, 
+        role: user.role 
+      },
+      JWT_SECRET,
+      { expiresIn: JWT_EXPIRES_IN }
+    );
+
+    // Configurar novo cookie
+    res.cookie('authToken', newToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 dias
+    });
+
+    res.json({
+      success: true,
+      message: 'Token renovado com sucesso',
+      token: newToken
+    });
+
+  } catch (error) {
+    console.error('Erro ao renovar token:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// POST /api/auth/change-password - Alterar senha
+router.post('/change-password', 
+  authenticateToken,
+  [
+    body('currentPassword').notEmpty().withMessage('Senha atual é obrigatória'),
+    body('newPassword').isLength({ min: 6 }).withMessage('Nova senha deve ter pelo menos 6 caracteres')
+  ],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          errors: errors.array()
+        });
+      }
+
+      const { currentPassword, newPassword } = req.body;
+      const user = await User.findById(req.user.userId);
+
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: 'Usuário não encontrado'
+        });
+      }
+
+      // Verificar senha atual
+      const isValidPassword = await user.comparePassword(currentPassword);
+      if (!isValidPassword) {
+        return res.status(400).json({
+          success: false,
+          message: 'Senha atual incorreta'
+        });
+      }
+
+      // Alterar senha
+      user.passwordHash = newPassword; // Será hasheada pelo middleware
+      await user.save();
+
+      res.json({
+        success: true,
+        message: 'Senha alterada com sucesso'
+      });
+
+    } catch (error) {
+      console.error('Erro ao alterar senha:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erro interno do servidor'
+      });
+    }
+  }
+);
+
+module.exports = router;

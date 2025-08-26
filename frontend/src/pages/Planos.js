@@ -268,21 +268,15 @@ const Planos = () => {
   };
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300`}>
+    <div className="min-h-screen bg-white text-gray-900">
       
       {/* Header Section */}
       <section className="relative pt-40 pb-20 px-4 overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
-          {isDark ? (
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900">
-              <div className="absolute inset-0 bg-gray-800 opacity-20"></div>
-            </div>
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50">
-              <div className="absolute inset-0 bg-white opacity-95"></div>
-            </div>
-          )}
+          <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50">
+            <div className="absolute inset-0 bg-white opacity-95"></div>
+          </div>
         </div>
         <div className="max-w-6xl mx-auto text-center">
           <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
@@ -295,13 +289,13 @@ const Planos = () => {
       </section>
 
       {/* Module Selection */}
-      <section className="py-12 px-4 bg-gray-50">
+      <section className="py-12 px-4 bg-white">
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="bg-white rounded-2xl shadow-lg p-8"
+            className="bg-white rounded-2xl shadow-lg p-8 border border-gray-200"
           >
             <h2 className="text-2xl font-bold text-center mb-8 text-gray-900">
               {t('module.choose')}
@@ -480,7 +474,7 @@ const Planos = () => {
       </section>
 
       {/* Features Comparison */}
-      <section className="py-16 px-4 bg-gray-50">
+      <section className="py-16 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

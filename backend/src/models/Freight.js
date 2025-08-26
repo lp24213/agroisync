@@ -1,401 +1,322 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
-// Freight schema for freight providers
 const freightSchema = new mongoose.Schema({
-  // Provider Information
-  providerId: {
+  // Dados Públicos (visíveis para todos)
+  publicData: {
+    title: {
+      type: String,
+      required: [true, 'Título é obrigatório'],
+      trim: true,
+      maxlength: [200, 'Título não pode ter mais de 200 caracteres']
+    },
+    shortDescription: {
+      type: String,
+      required: [true, 'Descrição curta é obrigatória'],
+      trim: true,
+      maxlength: [500, 'Descrição não pode ter mais de 500 caracteres']
+    },
+    originCity: {
+      type: String,
+      required: [true, 'Cidade de origem é obrigatória'],
+      trim: true
+    },
+    originState: {
+      type: String,
+      required: [true, 'Estado de origem é obrigatório'],
+      trim: true,
+      uppercase: true,
+      minlength: 2,
+      maxlength: 2
+    },
+    destinationCity: {
+      type: String,
+      required: [true, 'Cidade de destino é obrigatória'],
+      trim: true
+    },
+    destinationState: {
+      type: String,
+      required: [true, 'Estado de destino é obrigatório'],
+      trim: true,
+      uppercase: true,
+      minlength: 2,
+      maxlength: 2
+    },
+    freightValue: {
+      type: Number,
+      required: [true, 'Valor do frete é obrigatório'],
+      min: [0, 'Valor não pode ser negativo']
+    },
+    currency: {
+      type: String,
+      default: 'BRL',
+      enum: ['BRL', 'USD', 'EUR']
+    },
+    freightType: {
+      type: String,
+      required: [true, 'Tipo de frete é obrigatório'],
+      enum: ['carga_completa', 'carga_fracionada', 'expresso', 'agendado']
+    },
+    weight: {
+      type: Number,
+      required: [true, 'Peso é obrigatório'],
+      min: [0, 'Peso não pode ser negativo']
+    },
+    weightUnit: {
+      type: String,
+      default: 'kg',
+      enum: ['kg', 'ton']
+    },
+    volume: {
+      type: Number,
+      min: [0, 'Volume não pode ser negativo']
+    },
+    volumeUnit: {
+      type: String,
+      default: 'm³',
+      enum: ['m³', 'm²', 'l']
+    },
+    isActive: {
+      type: Boolean,
+      default: true
+    },
+    featured: {
+      type: Boolean,
+      default: false
+    }
+  },
+
+  // Dados Privados (visíveis apenas após pagamento)
+  privateData: {
+    fullDescription: {
+      type: String,
+      trim: true,
+      maxlength: [2000, 'Descrição completa não pode ter mais de 2000 caracteres']
+    },
+    detailedRoute: {
+      waypoints: [{
+        city: String,
+        state: String,
+        estimatedTime: String
+      }],
+      totalDistance: Number,
+      estimatedDuration: String,
+      tolls: Number,
+      fuelCost: Number
+    },
+    carrierInfo: {
+      name: {
+        type: String,
+        required: true,
+        trim: true
+      },
+      phone: {
+        type: String,
+        required: true,
+        trim: true
+      },
+      email: {
+        type: String,
+        required: true,
+        trim: true
+      },
+      cpfCnpj: {
+        type: String,
+        required: true,
+        trim: true
+      },
+      ie: String,
+      address: {
+        street: String,
+        number: String,
+        complement: String,
+        city: String,
+        state: String,
+        cep: String
+      }
+    },
+    vehicleInfo: {
+      plate: {
+        type: String,
+        required: true,
+        trim: true,
+        uppercase: true
+      },
+      type: {
+        type: String,
+        required: true,
+        enum: ['truck', 'pickup', 'van', 'tractor', 'trailer', 'other']
+      },
+      axles: {
+        type: Number,
+        required: true,
+        min: [2, 'Mínimo de 2 eixos'],
+        max: [9, 'Máximo de 9 eixos']
+      },
+      capacity: {
+        weight: Number,
+        volume: Number
+      },
+      year: Number,
+      brand: String,
+      model: String
+    },
+    documents: [{
+      type: {
+        type: String,
+        enum: ['cnh', 'crlv', 'antt', 'seguro', 'outro'],
+        required: true
+      },
+      url: {
+        type: String,
+        required: true
+      },
+      filename: String,
+      description: String,
+      expiresAt: Date
+    }],
+    insurance: {
+      hasInsurance: {
+        type: Boolean,
+        default: false
+      },
+      company: String,
+      policyNumber: String,
+      coverage: String,
+      expiresAt: Date
+    },
+    paymentTerms: {
+      type: String,
+      enum: ['à vista', '30 dias', '60 dias', '90 dias', 'negociável']
+    },
+    specialRequirements: [String]
+  },
+
+  // Relacionamentos
+  carrier: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: [true, 'Transportador é obrigatório']
   },
 
-  // Freight Basic Information
-  title: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  description: {
-    type: String,
-    required: true,
-    trim: true
-  },
-
-  // Origin and Destination
-  origin: {
-    city: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    state: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    address: String,
-    coordinates: {
-      lat: Number,
-      lon: Number
-    }
-  },
-
-  destination: {
-    city: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    state: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    address: String,
-    coordinates: {
-      lat: Number,
-      lon: Number
-    }
-  },
-
-  // Freight Details
-  cargoType: {
-    type: String,
-    required: true,
-    enum: ['grains', 'vegetables', 'fruits', 'livestock', 'machinery', 'fertilizers', 'general'],
-    default: 'general'
-  },
-
-  weight: {
-    min: {
-      type: Number,
-      required: true,
-      min: 0
-    },
-    max: {
-      type: Number,
-      required: true,
-      min: 0
-    },
-    unit: {
-      type: String,
-      enum: ['kg', 'ton'],
-      default: 'kg'
-    }
-  },
-
-  volume: {
-    min: {
-      type: Number,
-      min: 0
-    },
-    max: {
-      type: Number,
-      min: 0
-    },
-    unit: {
-      type: String,
-      enum: ['m3', 'm2'],
-      default: 'm3'
-    }
-  },
-
-  // Vehicle Information
-  vehicleType: {
-    type: String,
-    required: true,
-    enum: ['truck', 'pickup', 'van', 'tractor', 'trailer', 'other'],
-    default: 'truck'
-  },
-  truckNumber: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  plate: {
-    type: String,
-    required: true,
-    trim: true
-  },
-
-  vehicleCapacity: {
-    weight: Number,
-    volume: Number,
-    unit: String
-  },
-
-  // Pricing
-  price: {
-    type: Number,
-    required: true,
-    min: 0
-  },
-  currency: {
-    type: String,
-    default: 'BRL'
-  },
-  priceType: {
-    type: String,
-    enum: ['fixed', 'per_km', 'per_ton', 'negotiable'],
-    default: 'fixed'
-  },
-
-  // Additional Costs
-  additionalCosts: [
-    {
-      description: String,
-      amount: Number,
-      currency: {
-        type: String,
-        default: 'BRL'
-      }
-    }
-  ],
-
-  // Availability and Scheduling
-  availableFrom: {
-    type: Date,
-    required: true
-  },
-  availableUntil: {
-    type: Date,
-    required: true
-  },
-
-  // Requirements and Restrictions
-  requirements: [
-    {
-      type: String,
-      trim: true
-    }
-  ],
-
-  restrictions: [
-    {
-      type: String,
-      trim: true
-    }
-  ],
-
-  // Insurance and Documentation
-  insurance: {
-    hasInsurance: {
-      type: Boolean,
-      default: false
-    },
-    coverage: String,
-    amount: Number
-  },
-
-  documents: {
-    hasLicense: {
-      type: Boolean,
-      default: false
-    },
-    hasInsurance: {
-      type: Boolean,
-      default: false
-    },
-    hasDocumentation: {
-      type: Boolean,
-      default: false
-    }
-  },
-
-  // Status and Visibility
+  // Status e controle
   status: {
     type: String,
-    required: true,
-    enum: ['active', 'inactive', 'booked', 'completed', 'cancelled', 'moderation'],
+    enum: ['active', 'inactive', 'in_transit', 'completed', 'cancelled'],
     default: 'active'
   },
 
-  isFeatured: {
-    type: Boolean,
-    default: false
-  },
-
-  isVerified: {
-    type: Boolean,
-    default: false
-  },
-
-  // Analytics
+  // Métricas
   views: {
     type: Number,
     default: 0
   },
-
-  inquiries: [
-    {
-      userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-      },
-      message: String,
-      inquiredAt: {
-        type: Date,
-        default: Date.now
-      },
-      status: {
-        type: String,
-        enum: ['pending', 'responded', 'accepted', 'rejected'],
-        default: 'pending'
-      }
-    }
-  ],
+  favorites: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
 
   // Timestamps
-  createdAt: {
+  expiresAt: {
     type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
+    default: function() {
+      // Frete expira em 30 dias por padrão
+      const date = new Date();
+      date.setDate(date.getDate() + 30);
+      return date;
+    }
   }
+}, {
+  timestamps: true
 });
 
-// Índices para melhor performance
-freightSchema.index({ providerId: 1 });
-freightSchema.index({ 'origin.city': 1, 'origin.state': 1 });
-freightSchema.index({ 'destination.city': 1, 'destination.state': 1 });
-freightSchema.index({ cargoType: 1 });
+// Índices para performance
+freightSchema.index({ 'publicData.originCity': 1, 'publicData.originState': 1 });
+freightSchema.index({ 'publicData.destinationCity': 1, 'publicData.destinationState': 1 });
+freightSchema.index({ 'publicData.freightValue': 1 });
+freightSchema.index({ 'publicData.freightType': 1 });
+freightSchema.index({ carrier: 1 });
 freightSchema.index({ status: 1 });
-freightSchema.index({ availableFrom: 1, availableUntil: 1 });
-freightSchema.index({ price: 1 });
+freightSchema.index({ 'publicData.isActive': 1 });
+freightSchema.index({ expiresAt: 1 });
 freightSchema.index({ createdAt: -1 });
 
-// Middleware para atualizar timestamp
-freightSchema.pre('save', function (next) {
-  this.updatedAt = new Date();
-  next();
+// Middleware para verificar expiração
+freightSchema.pre('find', function() {
+  this.where('expiresAt').gt(new Date());
 });
 
-// Middleware para validar limite de fretes
-freightSchema.pre('save', async function (next) {
-  if (this.isNew) {
-    const User = mongoose.model('User');
-    const provider = await User.findById(this.providerId);
+// Método para obter dados públicos
+freightSchema.methods.getPublicData = function() {
+  return {
+    _id: this._id,
+    ...this.publicData,
+    carrier: {
+      name: this.privateData.carrierInfo.name,
+      city: this.privateData.carrierInfo.address?.city || 'Não informado',
+      state: this.privateData.carrierInfo.address?.state || 'Não informado'
+    },
+    createdAt: this.createdAt,
+    expiresAt: this.expiresAt
+  };
+};
 
-    if (!provider) {
-      return next(new Error('Prestador de frete não encontrado'));
-    }
-
-    if (!provider.hasActivePlan('freight')) {
-      return next(new Error('Plano de frete não ativo'));
-    }
-
-    if (!provider.canCreateFreight()) {
-      return next(new Error('Limite de fretes atingido'));
-    }
+// Método para obter dados privados (apenas se usuário pagou)
+freightSchema.methods.getPrivateData = function(userId, userIsPaid) {
+  if (!userIsPaid) {
+    throw new Error('Acesso negado: usuário não possui plano ativo');
   }
 
-  next();
-});
-
-// Middleware para incrementar contador de fretes
-freightSchema.post('save', async function (doc) {
-  if (doc.isNew) {
-    const User = mongoose.model('User');
-    await User.findByIdAndUpdate(doc.providerId, {
-      $inc: { 'subscriptions.freight.currentFreights': 1 }
-    });
-  }
-});
-
-// Middleware para decrementar contador de fretes
-freightSchema.post('remove', async function (doc) {
-  const User = mongoose.model('User');
-  await User.findByIdAndUpdate(doc.providerId, {
-    $inc: { 'subscriptions.freight.currentFreights': -1 }
-  });
-});
+  return {
+    _id: this._id,
+    ...this.publicData,
+    ...this.privateData,
+    carrier: this.privateData.carrierInfo,
+    createdAt: this.createdAt,
+    expiresAt: this.expiresAt,
+    views: this.views,
+    favorites: this.favorites.length
+  };
+};
 
 // Método para incrementar visualizações
-freightSchema.methods.incrementViews = function () {
+freightSchema.methods.incrementViews = function() {
   this.views += 1;
   return this.save();
 };
 
-// Método para adicionar consulta
-freightSchema.methods.addInquiry = function (userId, message) {
-  this.inquiries.push({
-    userId,
-    message
-  });
+// Método para adicionar/remover favoritos
+freightSchema.methods.toggleFavorite = function(userId) {
+  const index = this.favorites.indexOf(userId);
+  if (index === -1) {
+    this.favorites.push(userId);
+  } else {
+    this.favorites.splice(index, 1);
+  }
   return this.save();
 };
 
-// Método para responder consulta
-freightSchema.methods.respondToInquiry = function (inquiryId, status) {
-  const inquiry = this.inquiries.id(inquiryId);
-  if (inquiry) {
-    inquiry.status = status;
-    return this.save();
-  }
-  throw new Error('Consulta não encontrada');
+// Método para verificar se frete está ativo
+freightSchema.methods.isActive = function() {
+  return this.status === 'active' && 
+         this.publicData.isActive && 
+         new Date() < this.expiresAt;
 };
 
-// Método para buscar fretes por rota
-freightSchema.statics.findByRoute = function (
-  originCity,
-  originState,
-  destCity,
-  destState,
-  limit = 20
-) {
-  return this.find({
-    status: 'active',
-    'origin.city': { $regex: originCity, $options: 'i' },
-    'origin.state': { $regex: originState, $options: 'i' },
-    'destination.city': { $regex: destCity, $options: 'i' },
-    'destination.state': { $regex: destState, $options: 'i' },
-    availableFrom: { $lte: new Date() },
-    availableUntil: { $gte: new Date() }
-  })
-    .sort({ price: 1 })
-    .limit(limit)
-    .populate('providerId', 'name company.name');
+// Método para calcular distância estimada (simplificado)
+freightSchema.methods.getEstimatedDistance = function() {
+  // Implementar cálculo real de distância via API de geocoding
+  // Por enquanto retorna valor estimado baseado nos estados
+  const originState = this.publicData.originState;
+  const destState = this.publicData.destinationState;
+  
+  if (originState === destState) return 'Mesmo estado';
+  if (['SP', 'RJ', 'MG', 'ES'].includes(originState) && ['SP', 'RJ', 'MG', 'ES'].includes(destState)) return 'Região Sudeste';
+  if (['RS', 'SC', 'PR'].includes(originState) && ['RS', 'SC', 'PR'].includes(destState)) return 'Região Sul';
+  if (['GO', 'MT', 'MS', 'DF'].includes(originState) && ['GO', 'MT', 'MS', 'DF'].includes(destState)) return 'Região Centro-Oeste';
+  if (['BA', 'SE', 'AL', 'PE', 'PB', 'RN', 'CE', 'PI', 'MA'].includes(originState) && ['BA', 'SE', 'AL', 'PE', 'PB', 'RN', 'CE', 'PI', 'MA'].includes(destState)) return 'Região Nordeste';
+  if (['AM', 'PA', 'AP', 'TO', 'RO', 'AC', 'RR'].includes(originState) && ['AM', 'PA', 'AP', 'TO', 'RO', 'AC', 'RR'].includes(destState)) return 'Região Norte';
+  
+  return 'Interestadual';
 };
 
-// Método para buscar fretes por tipo de carga
-freightSchema.statics.findByCargoType = function (cargoType, limit = 20) {
-  return this.find({
-    status: 'active',
-    cargoType,
-    availableFrom: { $lte: new Date() },
-    availableUntil: { $gte: new Date() }
-  })
-    .sort({ createdAt: -1 })
-    .limit(limit)
-    .populate('providerId', 'name company.name');
-};
-
-// Método para buscar fretes disponíveis
-freightSchema.statics.findAvailable = function (filters = {}, limit = 20, skip = 0) {
-  const query = {
-    status: 'active',
-    availableFrom: { $lte: new Date() },
-    availableUntil: { $gte: new Date() }
-  };
-
-  // Aplicar filtros adicionais
-  if (filters.originCity) query['origin.city'] = { $regex: filters.originCity, $options: 'i' };
-  if (filters.originState) query['origin.state'] = { $regex: filters.originState, $options: 'i' };
-  if (filters.destCity) query['destination.city'] = { $regex: filters.destCity, $options: 'i' };
-  if (filters.destState) query['destination.state'] = { $regex: filters.destState, $options: 'i' };
-  if (filters.cargoType) query.cargoType = filters.cargoType;
-  if (filters.minWeight) query['weight.min'] = { $gte: filters.minWeight };
-  if (filters.maxWeight) query['weight.max'] = { $lte: filters.maxWeight };
-  if (filters.maxPrice) query.price = { $lte: filters.maxPrice };
-
-  return this.find(query)
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit)
-    .populate('providerId', 'name company.name');
-};
-
-// Create Freight model
-export const Freight = mongoose.model('Freight', freightSchema);
+module.exports = mongoose.model('Freight', freightSchema);

@@ -126,16 +126,14 @@ const Home = () => {
   ];
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}>
+    <div className="min-h-screen bg-white text-gray-900">
       
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
-          <div className={`absolute inset-0 ${
-            isDark ? 'bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900' : 'bg-gradient-to-br from-blue-50 via-white to-green-50'
-          }`}></div>
-          <div className="absolute inset-0 bg-gray-100 dark:bg-gray-800 opacity-20"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-green-50"></div>
+          <div className="absolute inset-0 bg-gray-100 opacity-20"></div>
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
@@ -153,7 +151,7 @@ const Home = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed"
+              className="text-xl md:text-2xl text-gray-600 mb-8 max-w-4xl mx-auto leading-relaxed"
             >
               {t('home.hero.subtitle')}
             </motion.p>
@@ -162,7 +160,7 @@ const Home = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-lg text-gray-500 dark:text-gray-400 mb-12 max-w-3xl mx-auto"
+              className="text-lg text-gray-500 mb-12 max-w-3xl mx-auto"
             >
               {t('home.hero.description')}
             </motion.p>
@@ -183,7 +181,7 @@ const Home = () => {
               
               <a
                 href="/sobre"
-                className="group border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-8 py-4 rounded-xl text-lg font-semibold hover:border-green-500 hover:text-green-600 dark:hover:text-green-400 transition-all duration-300 flex items-center space-x-2"
+                className="group border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-xl text-lg font-semibold hover:border-green-500 hover:text-green-600 transition-all duration-300 flex items-center space-x-2"
               >
                 <span>{t('home.hero.cta.secondary')}</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
@@ -194,7 +192,7 @@ const Home = () => {
       </section>
 
       {/* Widgets de Bolsa e Clima */}
-      <section className="py-8 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+      <section className="py-8 bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Widget de Bolsa de Valores */}
