@@ -25,8 +25,8 @@ i18n
       escapeValue: false
     },
     detection: {
-      order: ['localStorage', 'navigator', 'cookie', 'querystring'],
-      caches: ['localStorage'],
+      order: ['navigator', 'cookie', 'querystring'],
+      caches: [],
       lookupLocalStorage: 'agroisync-language'
     },
     react: {

@@ -50,10 +50,10 @@ import Footer from './components/Footer';
 
 function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <PaymentProvider>
-          <Router>
+    <Router>
+      <ThemeProvider>
+        <AuthProvider>
+          <PaymentProvider>
             <div className="App">
               <Navbar />
               <Routes>
@@ -127,10 +127,10 @@ function App() {
               </Routes>
               <Footer />
             </div>
-          </Router>
-        </PaymentProvider>
-      </AuthProvider>
-    </ThemeProvider>
+          </PaymentProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </Router>
   );
 }
 
