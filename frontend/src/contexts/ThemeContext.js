@@ -15,30 +15,39 @@ export const ThemeProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // SEMPRE usar tema claro como padrão, nunca escuro
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-      // Se o usuário tinha salvo tema escuro, perguntar se quer manter
-      const userPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setTheme(userPrefersDark ? 'dark' : 'light');
+    // Verificar se estamos no browser antes de acessar localStorage e window
+    if (typeof window !== 'undefined') {
+      // SEMPRE usar tema claro como padrão, nunca escuro
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        // Se o usuário tinha salvo tema escuro, perguntar se quer manter
+        const userPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        setTheme(userPrefersDark ? 'dark' : 'light');
+      } else {
+        setTheme('light'); // Padrão sempre claro
+      }
     } else {
-      setTheme('light'); // Padrão sempre claro
+      // No servidor, usar tema claro como padrão
+      setTheme('light');
     }
     setIsLoading(false);
   }, []);
 
   useEffect(() => {
-    // Aplicar tema ao documento
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-    
-    // Aplicar classes do Tailwind baseadas no tema
-    if (theme === 'dark') {
-      document.documentElement.classList.remove('light');
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      document.documentElement.classList.add('light');
+    // Verificar se estamos no browser antes de acessar document e localStorage
+    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+      // Aplicar tema ao documento
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+      
+      // Aplicar classes do Tailwind baseadas no tema
+      if (theme === 'dark') {
+        document.documentElement.classList.remove('light');
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light');
+      }
     }
   }, [theme]);
 
