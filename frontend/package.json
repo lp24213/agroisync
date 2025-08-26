@@ -31,7 +31,6 @@
   "overrides": {
     "nth-check": "2.1.1",
     "css-select": "5.1.0",
-    "webpack-dev-server": "5.2.2",
     "resolve-url-loader": "5.0.0"
   },
   "scripts": {
