@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
-import { paymentService } from '../services/paymentService';
+import paymentService from '../services/paymentService';
 import metamaskService from '../services/metamaskService';
 import { useTranslation } from 'react-i18next';
 import { 

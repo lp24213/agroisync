@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { usePayment } from '../contexts/PaymentContext';
-import { cryptoService } from '../services/cryptoService';
+import cryptoService from '../services/cryptoService';
 import metamaskService from '../services/metamaskService';
 import { useTranslation } from 'react-i18next';
 import { 

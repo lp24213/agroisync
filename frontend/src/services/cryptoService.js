@@ -223,3 +223,4 @@ class CryptoService {
 }
 
 export default new CryptoService();
+export const cryptoService = new CryptoService();

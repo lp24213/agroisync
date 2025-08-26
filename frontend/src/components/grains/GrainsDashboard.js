@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import { useTheme } from '../../contexts/ThemeContext';
+import { useAuth } from '../../contexts/AuthContext';
+import { usePayment } from '../../contexts/PaymentContext';
+import { useAgrolinkGrains } from '../../services/agrolinkAPI';
 import GrainsPriceCard from './GrainsPriceCard';
 import GrainsChart from './GrainsChart';
 import FuturesMarket from './FuturesMarket';
 import ExportData from './ExportData';
-import { useAgrolinkGrains } from '../../services/agrolinkAPI';
 
 const GrainsDashboard = () => {
   const { 
