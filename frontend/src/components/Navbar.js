@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { 
   Menu, X, Globe, Sun, Moon, User, 
   ShoppingCart, Truck, Coins, BarChart3, HelpCircle, 
-  Activity, LogOut, Award, MessageCircle, Newspaper
+  Activity, LogOut, Award, MessageCircle
 } from 'lucide-react';
 
 const Navbar = () => {
@@ -40,12 +40,7 @@ const Navbar = () => {
     setIsOpen(!isOpen);
   };
 
-  const scrollToNews = () => {
-    const newsSection = document.getElementById('news-section');
-    if (newsSection) {
-      newsSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+
 
   return (
     <nav className={`w-full transition-all duration-300 ${
@@ -74,13 +69,7 @@ const Navbar = () => {
             <a href="/" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
               {t('nav.home')}
             </a>
-            <button 
-              onClick={scrollToNews}
-              className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap flex items-center space-x-1"
-            >
-              <Newspaper className="w-4 h-4" />
-              <span>Notícias</span>
-            </button>
+
             <a href="/loja" className="hover:text-green-500 transition-colors duration-200 whitespace-nowrap">
               {t('nav.store')}
             </a>
@@ -289,16 +278,7 @@ const Navbar = () => {
                       <BarChart3 className="w-5 h-5 text-green-400" />
                       <span>{t('nav.home')}</span>
                     </a>
-                    <button 
-                      onClick={() => {
-                        setIsOpen(false);
-                        scrollToNews();
-                      }}
-                      className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-white"
-                    >
-                      <Newspaper className="w-5 h-5 text-blue-400" />
-                      <span>Notícias</span>
-                    </button>
+
                     <a 
                       href="/loja" 
                       onClick={() => setIsOpen(false)}

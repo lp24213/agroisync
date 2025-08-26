@@ -293,34 +293,84 @@ const Loja = () => {
     );
   }
 
-  // Se não estiver logado, mostrar apenas o marketplace público
+  // PÁGINA PÚBLICA - mostrar marketplace para todos
   if (!user || isAdmin) {
     return (
-      <div className="min-h-screen bg-neutral-900 text-white">
+      <div className="min-h-screen bg-white text-gray-900">
         <main className="pt-24 pb-16">
           <div className="max-w-7xl mx-auto px-4">
             <h1 className="text-5xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
-              Marketplace AgroSync
+              🏪 Loja AgroSync
             </h1>
+            <p className="text-xl text-gray-600 mb-8 text-center">
+              Marketplace completo para produtos agropecuários
+            </p>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Produtos mock para demonstração */}
-              {[1, 2, 3, 4, 5, 6].map((item) => (
-                <div key={item} className="bg-neutral-800 rounded-2xl p-6 border border-neutral-700 hover:border-green-500/50 transition-all duration-300">
-                  <div className="w-full h-48 bg-gradient-to-br from-green-500/20 to-blue-500/20 rounded-xl mb-4 flex items-center justify-center">
-                    <Package className="w-16 h-16 text-green-400" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2">Produto {item}</h3>
-                  <p className="text-neutral-400 mb-4">Descrição do produto {item} com detalhes importantes.</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold text-green-400">R$ {(item * 25 + 50).toFixed(2)}</span>
-                    <button className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg transition-colors">
-                      Ver Detalhes
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+                         {/* Opções de Cadastro */}
+             <div className="grid md:grid-cols-2 gap-8 mb-12">
+               <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-2xl p-8 border border-green-200">
+                 <h3 className="text-2xl font-bold text-green-800 mb-4">📦 Anunciante</h3>
+                 <p className="text-gray-700 mb-6">
+                   <strong>Campos obrigatórios:</strong> nome, CPF/CNPJ, localização, informações de contato + dados do produto (nome, categoria, descrição, preço, imagens).
+                 </p>
+                 <p className="text-sm text-gray-600 mb-4">
+                   <strong>Exibição pública:</strong> SOMENTE produtos e suas informações. Dados pessoais ficam ocultos até login e pagamento.
+                 </p>
+                 <button 
+                   onClick={() => window.location.href = '/cadastro?type=anunciante'}
+                   className="w-full px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors"
+                 >
+                   Cadastrar como Anunciante
+                 </button>
+               </div>
+               
+               <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-8 border border-blue-200">
+                 <h3 className="text-2xl font-bold text-blue-800 mb-4">🛒 Comprador</h3>
+                 <p className="text-gray-700 mb-6">
+                   <strong>Campos obrigatórios:</strong> nome, CPF, localização, dados básicos.
+                 </p>
+                 <p className="text-sm text-gray-600 mb-4">
+                   <strong>Regra:</strong> 3 produtos gratuitos. A cada mensagem enviada, consome 1 produto. Após esgotar, bloqueia até pagamento.
+                 </p>
+                 <button 
+                   onClick={() => window.location.href = '/cadastro?type=comprador'}
+                   className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
+                 >
+                   Cadastrar como Comprador
+                 </button>
+               </div>
+             </div>
+            
+                         {/* Produtos Públicos - apenas dados básicos */}
+             <div className="bg-gray-50 rounded-2xl p-8 border border-gray-200 mb-8">
+               <h3 className="text-2xl font-bold text-gray-800 mb-6">📦 Produtos Disponíveis (Dados Públicos)</h3>
+               <p className="text-sm text-gray-600 mb-6 text-center">
+                 <strong>Regra de Privacidade:</strong> Apenas informações dos produtos são exibidas publicamente. 
+                 Dados pessoais dos anunciantes (telefone, CPF/CNPJ, endereço) ficam ocultos até login e pagamento.
+               </p>
+               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                 {[1, 2, 3, 4, 5, 6].map((item) => (
+                   <div key={item} className="bg-white rounded-2xl p-6 border border-gray-200 hover:border-green-500/50 transition-all duration-300 shadow-lg">
+                     <div className="w-full h-48 bg-gradient-to-br from-green-500/20 to-blue-500/20 rounded-xl mb-4 flex items-center justify-center">
+                       <Package className="w-16 h-16 text-green-400" />
+                     </div>
+                     <h3 className="text-xl font-semibold mb-2">Produto {item}</h3>
+                     <p className="text-gray-600 mb-4">Descrição do produto {item} com detalhes importantes.</p>
+                     <div className="space-y-2 text-sm text-gray-500 mb-4">
+                       <p><strong>Categoria:</strong> Grãos</p>
+                       <p><strong>Preço:</strong> R$ {(item * 25 + 50).toFixed(2)}</p>
+                       <p className="text-xs text-gray-400">Dados do anunciante disponíveis após login e pagamento</p>
+                     </div>
+                     <div className="flex items-center justify-between">
+                       <span className="text-2xl font-bold text-green-600">R$ {(item * 25 + 50).toFixed(2)}</span>
+                       <button className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
+                         Ver Detalhes
+                       </button>
+                     </div>
+                   </div>
+                 ))}
+               </div>
+             </div>
           </div>
         </main>
       </div>

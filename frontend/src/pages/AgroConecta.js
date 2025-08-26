@@ -120,35 +120,80 @@ const AgroConecta = () => {
     setShowSecretPanel(!showSecretPanel);
   };
 
-  // Se não estiver logado, mostrar apenas os fretes públicos
+  // PÁGINA PÚBLICA - mostrar para todos
   if (!user || isAdmin) {
     return (
-      <div className="min-h-screen bg-neutral-900 text-white">
+      <div className="min-h-screen bg-white text-gray-900">
         <main className="pt-24 pb-16">
           <div className="max-w-7xl mx-auto px-4">
             <h1 className="text-5xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
-              AgroConecta - Sistema de Fretes
+              🚛 AgroConecta
             </h1>
+            <p className="text-xl text-gray-600 mb-8 text-center">
+              Plataforma de fretes e logística agropecuária
+            </p>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Fretes mock para demonstração */}
-              {[1, 2, 3, 4, 5, 6].map((item) => (
-                <div key={item} className="bg-neutral-800 rounded-2xl p-6 border border-neutral-700 hover:border-green-500/50 transition-all duration-300">
-                  <div className="w-full h-48 bg-gradient-to-br from-blue-500/20 to-green-500/20 rounded-xl mb-4 flex items-center justify-center">
-                    <Truck className="w-16 h-16 text-blue-400" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2">Frete {item}</h3>
-                  <p className="text-neutral-400 mb-2">Cuiabá, MT → São Paulo, SP</p>
-                  <p className="text-neutral-400 mb-4">20 ton • Disponível</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold text-green-400">R$ {(item * 500 + 1500).toFixed(2)}</span>
-                    <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
-                      Ver Detalhes
-                    </button>
-                  </div>
-                </div>
-              ))}
-        </div>
+                         {/* Opções de Cadastro */}
+             <div className="grid md:grid-cols-2 gap-8 mb-12">
+               <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-2xl p-8 border border-green-200">
+                 <h3 className="text-2xl font-bold text-green-800 mb-4">📦 Anunciante de Frete</h3>
+                 <p className="text-gray-700 mb-6">
+                   <strong>Campos obrigatórios:</strong> cidade origem, cidade destino, valor do frete, dados gerais (telefone, e-mail, localização, CPF/CNPJ).
+                 </p>
+                 <p className="text-sm text-gray-600 mb-4">
+                   <strong>Exibição pública:</strong> SOMENTE cidade destino + valor do frete. Dados privados liberados após login e pagamento.
+                 </p>
+                 <button 
+                   onClick={() => window.location.href = '/cadastro?type=anunciante-frete'}
+                   className="w-full px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors"
+                 >
+                   Cadastrar como Anunciante
+                 </button>
+               </div>
+               
+               <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-8 border border-blue-200">
+                 <h3 className="text-2xl font-bold text-blue-800 mb-4">🚛 Freteiro</h3>
+                 <p className="text-gray-700 mb-6">
+                   <strong>Campos obrigatórios:</strong> placa do caminhão, tipo de caminhão, nº de eixos, localização, CPF/CNPJ.
+                 </p>
+                 <p className="text-sm text-gray-600 mb-4">
+                   <strong>Exibição pública:</strong> SOMENTE nome do freteiro. Dados privados liberados após login e pagamento.
+                 </p>
+                 <button 
+                   onClick={() => window.location.href = '/cadastro?type=freteiro'}
+                   className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
+                 >
+                   Cadastrar como Freteiro
+                 </button>
+               </div>
+             </div>
+            
+                         {/* Fretes Públicos - apenas dados básicos */}
+             <div className="bg-gray-50 rounded-2xl p-8 border border-gray-200">
+               <h3 className="text-2xl font-bold text-gray-800 mb-6">📋 Fretes Disponíveis (Dados Públicos)</h3>
+               <p className="text-sm text-gray-600 mb-6 text-center">
+                 <strong>Regra de Privacidade:</strong> Apenas cidade destino e valor do frete são exibidos publicamente. 
+                 Dados pessoais (telefone, CPF/CNPJ, endereço) ficam ocultos até login e pagamento.
+               </p>
+               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                 {[1, 2, 3].map((item) => (
+                   <div key={item} className="bg-white rounded-xl p-6 border border-gray-200 shadow-lg">
+                     <div className="w-full h-32 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg mb-4 flex items-center justify-center">
+                       <Truck className="w-12 h-12 text-blue-500" />
+                     </div>
+                     <h4 className="text-lg font-semibold mb-2">Frete {item}</h4>
+                     <div className="space-y-2 text-sm text-gray-600">
+                       <p><strong>Destino:</strong> Cidade {item}</p>
+                       <p><strong>Valor:</strong> R$ {(item * 500 + 1000).toFixed(2)}</p>
+                       <p className="text-xs text-gray-500">Dados completos disponíveis após login e pagamento</p>
+                     </div>
+                     <button className="w-full mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                       Ver Detalhes
+                     </button>
+                   </div>
+                 ))}
+               </div>
+             </div>
           </div>
         </main>
       </div>
