@@ -94,8 +94,8 @@ const Cripto = () => {
 
       const connection = await metamaskService.connect();
       setWalletAddress(connection.account);
-      setIsConnected(true);
-      
+          setIsConnected(true);
+          
       // Obter saldo real
       const realBalance = await metamaskService.getBalance();
       setBalance(realBalance);
@@ -185,9 +185,9 @@ const Cripto = () => {
       <section className="relative pt-40 pb-20 px-4 overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50">
-            <div className="absolute inset-0 bg-white opacity-95"></div>
-          </div>
+            <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50">
+              <div className="absolute inset-0 bg-white opacity-95"></div>
+            </div>
         </div>
         <div className="max-w-6xl mx-auto text-center">
           <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
@@ -236,44 +236,44 @@ const Cripto = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {cryptoQuotes.map((crypto, index) => (
-                <motion.div
+            {cryptoQuotes.map((crypto, index) => (
+              <motion.div
                   key={crypto.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
                   className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
                   onClick={() => handleCryptoChange(crypto.id)}
-                >
-                  <div className="flex items-center justify-between mb-4">
+              >
+                <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center">
                       <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center mr-3">
                         <span className="text-xl">{crypto.symbol.charAt(0)}</span>
-                      </div>
-                      <div>
+                    </div>
+                    <div>
                         <h3 className="font-bold text-gray-900">{crypto.symbol}</h3>
                         <p className="text-sm text-gray-600">{crypto.name}</p>
-                      </div>
                     </div>
+                  </div>
                     <div className={`text-sm font-medium px-2 py-1 rounded ${
                       crypto.change >= 0 
                         ? 'text-green-600 bg-green-100' 
                         : 'text-red-600 bg-red-100'
                     }`}>
                       {crypto.change >= 0 ? '+' : ''}{crypto.change.toFixed(2)}%
-                    </div>
                   </div>
-                  
+                </div>
+                
                   <div className="text-3xl font-bold mb-4 text-gray-900">
-                    ${crypto.price.toLocaleString()}
-                  </div>
-                  
+                  ${crypto.price.toLocaleString()}
+                </div>
+                
                   <div className="text-sm text-gray-600">
                     Volume 24h: ${(crypto.volume_24h / 1000000).toFixed(1)}M
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
           )}
         </div>
       </section>
@@ -392,7 +392,7 @@ const Cripto = () => {
                 <p className="text-sm text-gray-600 mb-2">{crypto.name}</p>
                 <span className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
                   {crypto.description}
-                </span>
+                  </span>
               </motion.div>
             ))}
           </div>

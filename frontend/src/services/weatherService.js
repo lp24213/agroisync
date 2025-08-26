@@ -99,12 +99,12 @@ class WeatherService {
       country: data.sys.country,
       temperature: Math.round(data.main.temp),
       feelsLike: Math.round(data.main.feels_like),
-      humidity: data.main.humidity,
-      pressure: data.main.pressure,
+        humidity: data.main.humidity,
+        pressure: data.main.pressure,
       windSpeed: Math.round(data.wind.speed * 3.6), // Converter m/s para km/h
-      windDirection: this.getWindDirection(data.wind.deg),
-      description: data.weather[0].description,
-      icon: data.weather[0].icon,
+        windDirection: this.getWindDirection(data.wind.deg),
+        description: data.weather[0].description,
+        icon: data.weather[0].icon,
       iconUrl: `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`,
       sunrise: new Date(data.sys.sunrise * 1000).toLocaleTimeString('pt-BR', { 
         hour: '2-digit', 
@@ -178,7 +178,7 @@ class WeatherService {
         windSpeed: avgWindSpeed
       });
     });
-
+    
     return dailyForecasts.slice(0, 5); // Retornar apenas 5 dias
   }
 
@@ -207,7 +207,7 @@ class WeatherService {
       // Obter previsão
       const forecast = await this.getForecast(location.latitude, location.longitude);
       
-      return {
+    return {
         location,
         current: currentWeather,
         forecast

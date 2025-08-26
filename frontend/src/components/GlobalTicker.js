@@ -15,7 +15,7 @@ const GlobalTicker = () => {
     
     // Atualizar dados a cada 30 segundos
     const interval = setInterval(loadMarketData, 30000);
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -139,7 +139,7 @@ const GlobalTicker = () => {
         >
           Câmbio
         </button>
-      </div>
+          </div>
 
       {/* Conteúdo das tabs */}
       <div className="space-y-3">
@@ -171,13 +171,13 @@ const GlobalTicker = () => {
                     {getChangeIcon(stock.change)}
                     <span>
                       {stock.change > 0 ? '+' : ''}{formatPrice(stock.change)} ({stock.changePercent > 0 ? '+' : ''}{stock.changePercent.toFixed(2)}%)
-                    </span>
-                  </div>
+                      </span>
+                    </div>
                 </div>
               </motion.div>
             ))}
-          </div>
-        )}
+                  </div>
+                )}
 
         {activeTab === 'commodities' && (
           <div className="space-y-2">
@@ -197,8 +197,8 @@ const GlobalTicker = () => {
                   <div className="text-xs text-gray-600 mt-1">
                     {commodity.exchange} • {commodity.unit}
                   </div>
-                </div>
-                
+          </div>
+
                 <div className="text-right">
                   <div className="font-semibold text-gray-900">
                     ${commodity.price.toFixed(2)}
@@ -241,8 +241,8 @@ const GlobalTicker = () => {
                     <span>
                       {rate.change > 0 ? '+' : ''}{rate.change.toFixed(4)} ({rate.changePercent > 0 ? '+' : ''}{rate.changePercent.toFixed(2)}%)
                     </span>
-                  </div>
-                </div>
+        </div>
+      </div>
               </motion.div>
             ))}
           </div>
