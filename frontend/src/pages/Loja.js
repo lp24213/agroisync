@@ -18,6 +18,7 @@ import {
   Building2,
   Truck
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Loja = () => {
   const { t } = useTranslation();
@@ -25,6 +26,7 @@ const Loja = () => {
   const { user, isAdmin } = useAuth();
   const { isPaid, planActive } = usePayment();
   const [activeTab, setActiveTab] = useState('overview');
+  const navigate = useNavigate();
 
   // Dados mock para demonstração
   const mockProducts = [
@@ -297,10 +299,60 @@ const Loja = () => {
                         <span className="text-sm text-gray-500 dark:text-gray-400">
                           Vendedor: {product.seller}
                         </span>
-                        <button className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm transition-colors">
-                          Ver Detalhes
-                        </button>
+                        {isPaid ? (
+                          <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition-colors">
+                            Ver Detalhes
+                          </button>
+                        ) : (
+                          <div className="text-center">
+                            <p className="text-xs text-gray-500 mb-2">Dados privados</p>
+                            <button 
+                              onClick={() => navigate('/planos')}
+                              className="bg-orange-600 hover:bg-orange-700 text-white px-3 py-1 rounded text-sm transition-colors"
+                            >
+                              Assinar Plano
+                            </button>
+                          </div>
+                        )}
                       </div>
+                      
+                      {/* Dados Privados - Visíveis apenas após pagamento */}
+                      {isPaid && (
+                        <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
+                          <h5 className="font-semibold text-gray-900 dark:text-white mb-2">Dados de Contato</h5>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-gray-600 dark:text-gray-400">CPF/CNPJ:</span>
+                              <span className="text-gray-900 dark:text-white font-mono">
+                                {product.isPaid ? '123.456.789-00' : '***.***.***-**'}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600 dark:text-gray-400">Telefone:</span>
+                              <span className="text-gray-900 dark:text-white">
+                                {product.isPaid ? '(11) 99999-9999' : '(**) *****-****'}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600 dark:text-gray-400">Email:</span>
+                              <span className="text-gray-900 dark:text-white">
+                                {product.isPaid ? 'contato@empresa.com' : '***@*****.com'}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600 dark:text-gray-400">Endereço:</span>
+                              <span className="text-gray-900 dark:text-white text-right">
+                                {product.isPaid ? 'Rua das Flores, 123 - Centro' : 'Rua ***, *** - ***'}
+                              </span>
+                            </div>
+                          </div>
+                          
+                          {/* Botão de Chat */}
+                          <button className="w-full mt-3 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded text-sm transition-colors">
+                            Iniciar Chat
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

@@ -99,10 +99,9 @@ const Cripto = () => {
       // Obter saldo real
       const realBalance = await metamaskService.getBalance();
       setBalance(realBalance);
-      
     } catch (error) {
       console.error('Erro ao conectar carteira:', error);
-      alert('Erro ao conectar carteira: ' + error.message);
+      setError('Erro ao conectar carteira');
     }
   };
 
@@ -111,6 +110,62 @@ const Cripto = () => {
     setWalletAddress('');
     setIsConnected(false);
     setBalance('0');
+  };
+
+  // Função para processar pagamentos para OWNER_WALLET
+  const handleCryptoPayment = async (amount, cryptoType) => {
+    try {
+      if (!isConnected) {
+        alert('Conecte sua carteira primeiro');
+        return;
+      }
+
+      const OWNER_WALLET = '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'; // Carteira do proprietário
+      
+      const transaction = await metamaskService.sendPayment(
+        OWNER_WALLET,
+        amount,
+        cryptoType
+      );
+
+      if (transaction.success) {
+        alert(`Pagamento de ${amount} ${cryptoType} enviado com sucesso para ${OWNER_WALLET}`);
+        
+        // Atualizar status de pagamento no backend
+        await updatePaymentStatus(transaction.hash, amount, cryptoType);
+      } else {
+        alert('Erro no pagamento: ' + transaction.error);
+      }
+    } catch (error) {
+      console.error('Erro no pagamento:', error);
+      alert('Erro ao processar pagamento');
+    }
+  };
+
+  // Atualizar status de pagamento no backend
+  const updatePaymentStatus = async (txHash, amount, cryptoType) => {
+    try {
+      const response = await fetch('/api/payments/crypto-verification', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          transactionHash: txHash,
+          amount,
+          cryptoType,
+          fromAddress: walletAddress,
+          toAddress: '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'
+        })
+      });
+
+      if (response.ok) {
+        console.log('Status de pagamento atualizado');
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar status:', error);
+    }
   };
 
   const handleWalletConnect = (walletName) => {
