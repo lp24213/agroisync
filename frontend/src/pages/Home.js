@@ -8,7 +8,8 @@ import {
   CheckCircle, Star, Award, Target, Lightbulb
 } from 'lucide-react';
 import AgroNews from '../components/AgroNews';
-// Componente removido - já renderizado pelo Layout global
+import GlobalTicker from '../components/GlobalTicker';
+import GlobalWeatherWidget from '../components/GlobalWeatherWidget';
 
 const Home = () => {
   const { isDark } = useTheme();
@@ -188,6 +189,31 @@ const Home = () => {
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
               </a>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Widgets de Bolsa e Clima */}
+      <section className="py-8 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Widget de Bolsa de Valores */}
+            <div className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
+              <h3 className="text-lg font-semibold mb-4 text-blue-800 dark:text-blue-200 flex items-center">
+                <BarChart3 className="w-5 h-5 mr-2" />
+                Bolsa de Valores em Tempo Real
+              </h3>
+              <GlobalTicker />
+            </div>
+            
+            {/* Widget de Clima */}
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-6 border border-green-200 dark:border-green-800">
+              <h3 className="text-lg font-semibold mb-4 text-green-800 dark:text-green-200 flex items-center">
+                <Globe className="w-5 h-5 mr-2" />
+                Clima Local
+              </h3>
+              <GlobalWeatherWidget />
+            </div>
           </div>
         </div>
       </section>
