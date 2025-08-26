@@ -98,8 +98,73 @@ export const AuthProvider = ({ children }) => {
       await checkAuthStatus();
     } catch (error) {
       console.error('Erro ao renovar token:', error);
-      // Se não conseguir renovar, fazer logout
+      // Se falhar o refresh, fazer logout
       await logout();
+    }
+  };
+
+  const register = async (userData) => {
+    try {
+      setLoading(true);
+      
+      // Chamar API de registro
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: userData.name,
+          email: userData.email,
+          password: userData.password,
+          role: userData.userType,
+          cpfCnpj: userData.cpf || userData.cnpj,
+          ie: userData.inscricaoEstadual,
+          phone: userData.phone,
+          address: {
+            cep: userData.zipCode,
+            street: userData.address,
+            number: userData.number,
+            city: userData.city,
+            state: userData.state
+          },
+          companyName: userData.companyName,
+          businessType: userData.businessType,
+          aceita_termos: true
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Login automático após registro bem-sucedido
+        const loginResult = await login(userData.email, userData.password);
+        
+        if (loginResult.success) {
+          // Redirecionar baseado no tipo de usuário
+          if (userData.userType === 'anunciante') {
+            navigate('/panel/loja');
+          } else if (userData.userType === 'freteiro') {
+            navigate('/panel/agroconecta');
+          } else {
+            navigate('/dashboard');
+          }
+          
+          return { success: true, message: 'Registro realizado com sucesso!' };
+        } else {
+          return { success: false, message: 'Registro realizado, mas falha no login automático' };
+        }
+      } else {
+        return { success: false, message: result.message || 'Erro no registro' };
+      }
+    } catch (error) {
+      console.error('Erro no registro:', error);
+      return { 
+        success: false, 
+        message: error.message || 'Erro de conexão durante o registro' 
+      };
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -177,7 +242,8 @@ export const AuthProvider = ({ children }) => {
     isUserAdmin,
     isUserInGroup,
     getUserGroups,
-    checkAuthStatus
+    checkAuthStatus,
+    register
   };
 
   return (

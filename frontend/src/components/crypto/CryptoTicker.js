@@ -40,7 +40,7 @@ const CryptoTicker = () => {
   const formatPercentage = (percentage) => {
     const isPositive = percentage >= 0;
     return (
-      <span className={`font-mono text-xs ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
+      <span className={`font-mono text-xs ${isPositive ? 'text-blue-400' : 'text-red-400'}`}>
         {isPositive ? '+' : ''}{percentage.toFixed(2)}%
       </span>
     );
@@ -92,7 +92,7 @@ const CryptoTicker = () => {
             <div className="flex items-center space-x-2">
               <span className="text-gray-400">Variação 24h:</span>
               <span className={`font-semibold ${
-                marketData.marketCapChangePercentage24h >= 0 ? 'text-green-400' : 'text-red-400'
+                marketData.marketCapChangePercentage24h >= 0 ? 'text-blue-400' : 'text-red-400'
               }`}>
                 {marketData.marketCapChangePercentage24h >= 0 ? '+' : ''}
                 {marketData.marketCapChangePercentage24h.toFixed(2)}%
@@ -170,8 +170,8 @@ const CryptoTicker = () => {
 
         {/* Indicador de atualização */}
         <div className="absolute top-2 right-4 flex items-center space-x-2">
-          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-          <span className="text-green-400 text-xs font-medium">LIVE</span>
+          <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+          <span className="text-blue-400 text-xs font-medium">LIVE</span>
         </div>
       </div>
     </div>

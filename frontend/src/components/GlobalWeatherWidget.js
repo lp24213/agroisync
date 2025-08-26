@@ -90,7 +90,7 @@ const GlobalWeatherWidget = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
         <span className="ml-3 text-sm text-gray-600">Carregando clima...</span>
       </div>
     );
@@ -102,7 +102,7 @@ const GlobalWeatherWidget = () => {
         <p className="text-red-600 mb-4">{error}</p>
         <button 
           onClick={loadWeatherData}
-          className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm"
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
         >
           Tentar Novamente
         </button>
@@ -121,7 +121,7 @@ const GlobalWeatherWidget = () => {
       {/* Header com localização e busca */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <MapPin className="w-4 h-4 text-green-600" />
+          <MapPin className="w-4 h-4 text-blue-600" />
           <div>
             <p className="font-semibold text-gray-900">{location.city}</p>
             <p className="text-xs text-gray-600">
@@ -150,7 +150,7 @@ const GlobalWeatherWidget = () => {
 
       {/* Busca de cidade */}
       {showSearch && (
-        <motion.div
+      <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
           exit={{ opacity: 0, height: 0 }}
@@ -165,7 +165,7 @@ const GlobalWeatherWidget = () => {
                 handleSearch(e.target.value);
               }}
               placeholder="Buscar cidade..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button
               onClick={() => setShowSearch(false)}
@@ -212,17 +212,17 @@ const GlobalWeatherWidget = () => {
         <p className="text-xs text-gray-500">
           Sensação térmica: {current.feelsLike}°C
         </p>
-      </div>
+        </div>
 
       {/* Detalhes do clima */}
       <div className="grid grid-cols-2 gap-3 text-sm">
         <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
           <Droplets className="w-4 h-4 text-blue-600" />
-          <div>
+              <div>
             <p className="font-medium">{current.humidity}%</p>
             <p className="text-xs text-gray-600">Umidade</p>
           </div>
-        </div>
+            </div>
         
         <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
           <Wind className="w-4 h-4 text-gray-600" />
@@ -231,7 +231,7 @@ const GlobalWeatherWidget = () => {
             <p className="text-xs text-gray-600">{current.windDirection}</p>
           </div>
         </div>
-        
+
         <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
           <Thermometer className="w-4 h-4 text-red-600" />
           <div>
@@ -289,9 +289,9 @@ const GlobalWeatherWidget = () => {
               minute: '2-digit' 
             })}
           </p>
-        </div>
-      )}
-    </div>
+          </div>
+        )}
+          </div>
   );
 };
 

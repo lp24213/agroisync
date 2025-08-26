@@ -117,21 +117,21 @@ const Admin = () => {
             <p className="text-gray-600">
               Acesso administrativo ao sistema AgroSync
             </p>
-          </div>
+        </div>
 
           {/* Formulário de Login Admin */}
           <form className="mt-8 space-y-6" onSubmit={handleAdminLogin}>
             <div className="space-y-4">
               {/* Campo Email */}
-              <div>
+            <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                   Email Administrativo
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Mail className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
+        </div>
+                <input
                     id="email"
                     name="email"
                     type="email"
@@ -141,10 +141,10 @@ const Admin = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                     placeholder="admin@agrosync.com"
-                  />
-                </div>
+                />
               </div>
-
+            </div>
+            
               {/* Campo Senha */}
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
@@ -175,10 +175,10 @@ const Admin = () => {
                     ) : (
                       <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
                     )}
-                  </button>
-                </div>
-              </div>
+              </button>
             </div>
+          </div>
+        </div>
 
             {/* Mensagem de erro */}
             {error && (
@@ -198,18 +198,18 @@ const Admin = () => {
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105"
             >
               {loading ? (
-                <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2">
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                   <span>Entrando...</span>
-                </div>
+            </div>
               ) : (
                 <span>Acessar Painel Admin</span>
               )}
-            </button>
+          </button>
           </form>
         </motion.div>
-      </div>
-    );
+    </div>
+  );
   }
 
   // Dashboard Admin
@@ -218,24 +218,24 @@ const Admin = () => {
       {/* Header */}
       <header className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-purple-500 to-pink-600 flex items-center justify-center">
-              <Shield className="w-6 h-6 text-white" />
-            </div>
-            <div>
+                <Shield className="w-6 h-6 text-white" />
+              </div>
+              <div>
               <h1 className="text-2xl font-bold text-gray-900">Painel Administrativo</h1>
               <p className="text-sm text-gray-600">Sistema AgroSync</p>
+              </div>
             </div>
-          </div>
-          
-          <button
-            onClick={handleLogout}
+            
+              <button
+                onClick={handleLogout}
             className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-          >
-            <LogOut className="w-4 h-4" />
-            <span>Sair</span>
-          </button>
-        </div>
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Sair</span>
+              </button>
+            </div>
       </header>
 
       {/* Dashboard Content */}
@@ -272,8 +272,8 @@ const Admin = () => {
               </div>
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                 <Package className="w-6 h-6 text-green-600" />
-              </div>
-            </div>
+          </div>
+        </div>
           </motion.div>
 
           <motion.div
@@ -290,7 +290,7 @@ const Admin = () => {
               <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
                 <Truck className="w-6 h-6 text-orange-600" />
               </div>
-            </div>
+        </div>
           </motion.div>
 
           <motion.div
@@ -421,8 +421,8 @@ const Admin = () => {
               <p className="text-sm text-gray-600">Configurações do sistema</p>
             </div>
           </motion.div>
-        </div>
-      </div>
+            </div>
+          </div>
     </div>
   );
 };

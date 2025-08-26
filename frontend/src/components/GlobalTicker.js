@@ -53,13 +53,13 @@ const GlobalTicker = () => {
   };
 
   const getChangeColor = (change) => {
-    if (change > 0) return 'text-green-600';
+    if (change > 0) return 'text-blue-600';
     if (change < 0) return 'text-red-600';
     return 'text-gray-600';
   };
 
   const getChangeIcon = (change) => {
-    if (change > 0) return <TrendingUp className="w-4 h-4 text-green-600" />;
+    if (change > 0) return <TrendingUp className="w-4 h-4 text-blue-600" />;
     if (change < 0) return <TrendingDown className="w-4 h-4 text-red-600" />;
     return <BarChart3 className="w-4 h-4 text-gray-600" />;
   };

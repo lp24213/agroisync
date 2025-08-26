@@ -25,11 +25,11 @@ const FormFeedback = ({
     switch (type) {
       case 'success':
         return {
-          bg: isDark ? 'bg-green-500/20' : 'bg-green-50',
-          border: isDark ? 'border-green-500/30' : 'border-green-200',
-          text: isDark ? 'text-green-400' : 'text-green-800',
-          icon: isDark ? 'text-green-400' : 'text-green-600',
-          iconBg: isDark ? 'bg-green-500/20' : 'bg-green-100'
+          bg: isDark ? 'bg-blue-500/20' : 'bg-blue-50',
+          border: isDark ? 'border-blue-500/30' : 'border-blue-200',
+          text: isDark ? 'text-blue-400' : 'text-blue-800',
+          icon: isDark ? 'text-blue-400' : 'text-blue-600',
+          iconBg: isDark ? 'bg-blue-500/20' : 'bg-blue-100'
         };
       case 'error':
         return {

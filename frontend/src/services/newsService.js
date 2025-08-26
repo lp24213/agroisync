@@ -252,7 +252,7 @@ class NewsService {
 
     for (let i = 0; i < limit; i++) {
       const category = categories[Math.floor(Math.random() * categories.length)];
-      const titles = {
+    const titles = {
         'soja': [
           'Soja: Preços sobem com forte demanda da China',
           'Exportação de soja brasileira atinge recorde',
@@ -370,7 +370,7 @@ class NewsService {
         content: 'A agricultura brasileira está sendo revolucionada por novas tecnologias que aumentam significativamente a produtividade.',
         link: '#',
         publishedAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
-        source: 'AgroSync',
+      source: 'AgroSync',
         category: 'tecnologia',
         image: '/images/news/tecnologia.jpg',
         author: 'Equipe AgroSync',

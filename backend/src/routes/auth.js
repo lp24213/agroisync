@@ -57,6 +57,16 @@ const registerValidation = [
     .isLength({ min: 2, max: 2 })
     .isUppercase()
     .withMessage('Estado inválido'),
+  body('companyName')
+    .if(body('role').equals('anunciante'))
+    .trim()
+    .isLength({ min: 2, max: 200 })
+    .withMessage('Nome da empresa é obrigatório para anunciantes'),
+  body('businessType')
+    .if(body('role').equals('anunciante'))
+    .trim()
+    .isLength({ min: 2, max: 100 })
+    .withMessage('Tipo de negócio é obrigatório para anunciantes'),
   body('aceita_termos')
     .isBoolean()
     .custom(value => {
@@ -102,6 +112,8 @@ router.post('/register',
         ie,
         phone,
         address,
+        companyName,
+        businessType,
         aceita_termos
       } = req.body;
 
@@ -133,6 +145,8 @@ router.post('/register',
         ie: role === 'anunciante' ? ie : undefined,
         phone,
         address,
+        companyName: role === 'anunciante' ? companyName : undefined,
+        businessType: role === 'anunciante' ? businessType : undefined,
         aceita_termos
       });
 

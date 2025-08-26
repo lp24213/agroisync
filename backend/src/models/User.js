@@ -76,6 +76,16 @@ const userSchema = new mongoose.Schema({
       maxlength: 2
     }
   },
+  companyName: {
+    type: String,
+    trim: true,
+    required: function() { return this.role === 'anunciante'; }
+  },
+  businessType: {
+    type: String,
+    trim: true,
+    required: function() { return this.role === 'anunciante'; }
+  },
   documents: [{
     type: {
       type: String,

@@ -139,7 +139,7 @@ const CryptoChart = () => {
   const formatPercentage = (percentage) => {
     const isPositive = percentage >= 0;
     return (
-      <span className={`font-mono ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
+      <span className={`font-mono ${isPositive ? 'text-blue-400' : 'text-red-400'}`}>
         {isPositive ? '+' : ''}{percentage.toFixed(2)}%
       </span>
     );

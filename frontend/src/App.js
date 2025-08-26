@@ -9,7 +9,7 @@ import RouteGuard from './components/RouteGuard';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Cadastro from './pages/Cadastro';
-import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/dashboard';
 import Loja from './pages/Loja';
 import Parcerias from './pages/Parcerias';
 import Contato from './pages/Contato';
@@ -104,14 +104,25 @@ function App() {
                   } 
                 />
 
-                {/* Rota de mensagens unificada - pública */}
-                <Route path="/messages" element={<Messages />} />
+                {/* Rotas de painel individual - requerem autenticação */}
+                <Route 
+                  path="/panel/loja" 
+                  element={
+                    <RouteGuard requireAuth={true}>
+                      <Loja />
+                    </RouteGuard>
+                  } 
+                />
+                <Route 
+                  path="/panel/agroconecta" 
+                  element={
+                    <RouteGuard requireAuth={true}>
+                      <AgroConecta />
+                    </RouteGuard>
+                  } 
+                />
 
-                {/* Rotas de mensagens - públicas */}
-                <Route path="/messages/products" element={<MessagesProducts />} />
-                <Route path="/messages/freights" element={<MessagesFreights />} />
-
-                {/* Rotas protegidas por autenticação */}
+                {/* Rotas protegidas - requerem autenticação */}
                 <Route 
                   path="/dashboard" 
                   element={
