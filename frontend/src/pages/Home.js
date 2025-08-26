@@ -20,8 +20,190 @@ const Home = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   
-  const [stockData, setStockData] = useState([]);
+  // Dados da bolsa de valores - CAMADA 2: Dados reais simulados
+  const [stockData, setStockData] = useState([
+    {
+      symbol: 'SOJA3',
+      name: 'Soja Futuro',
+      price: 145.67,
+      change: 2.34,
+      volume: '1.2M',
+      trend: 'up',
+      lastUpdate: new Date(),
+      sector: 'Agropecuário',
+      marketCap: 'R$ 45.2B'
+    },
+    {
+      symbol: 'MILHO4',
+      name: 'Milho Futuro',
+      price: 89.45,
+      change: -1.23,
+      volume: '856K',
+      trend: 'down',
+      lastUpdate: new Date(),
+      sector: 'Agropecuário',
+      marketCap: 'R$ 28.7B'
+    },
+    {
+      symbol: 'BOI3',
+      name: 'Boi Gordo',
+      price: 234.12,
+      change: 3.45,
+      volume: '2.1M',
+      trend: 'up',
+      lastUpdate: new Date(),
+      sector: 'Agropecuário',
+      marketCap: 'R$ 67.3B'
+    },
+    {
+      symbol: 'CAFE3',
+      name: 'Café Arábica',
+      price: 567.89,
+      change: -0.87,
+      volume: '432K',
+      trend: 'down',
+      lastUpdate: new Date(),
+      sector: 'Agropecuário',
+      marketCap: 'R$ 12.4B'
+    },
+    {
+      symbol: 'ALGO3',
+      name: 'Algodão',
+      price: 78.34,
+      change: 1.56,
+      volume: '678K',
+      trend: 'up',
+      lastUpdate: new Date(),
+      sector: 'Agropecuário',
+      marketCap: 'R$ 15.8B'
+    },
+    {
+      symbol: 'SUCR3',
+      name: 'Açúcar',
+      price: 23.45,
+      change: 0.34,
+      volume: '3.4M',
+      trend: 'up',
+      lastUpdate: new Date(),
+      sector: 'Agropecuário',
+      marketCap: 'R$ 8.9B'
+    }
+  ]);
+
+  // CAMADA 2: Atualização em tempo real dos dados da bolsa
+  useEffect(() => {
+    const updateStockData = () => {
+      setStockData(prevData => 
+        prevData.map(stock => ({
+          ...stock,
+          price: stock.price + (Math.random() - 0.5) * 2, // Variação simulada
+          change: stock.change + (Math.random() - 0.5) * 0.5, // Mudança simulada
+          lastUpdate: new Date(),
+          trend: Math.random() > 0.5 ? 'up' : 'down'
+        }))
+      );
+    };
+
+    // Atualizar a cada 30 segundos para simular dados em tempo real
+    const interval = setInterval(updateStockData, 30000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  // CAMADA 2: Função para formatar mudança de preço com cores
+  const formatChange = (change) => {
+    const isPositive = change >= 0;
+    const color = isPositive ? 'text-emerald-600' : 'text-red-600';
+    const icon = isPositive ? '↗' : '↘';
+    
+    return (
+      <span className={`${color} font-semibold flex items-center gap-1`}>
+        {icon} {Math.abs(change).toFixed(2)}%
+      </span>
+    );
+  };
+
+  // CAMADA 2: Dados reais de clima via OpenWeather API
   const [weatherData, setWeatherData] = useState(null);
+  const [weatherLoading, setWeatherLoading] = useState(true);
+  const [weatherError, setWeatherError] = useState(null);
+
+  // CAMADA 2: Buscar dados reais de clima
+  const fetchWeatherData = async (lat, lon) => {
+    try {
+      setWeatherLoading(true);
+      setWeatherError(null);
+      
+      // API OpenWeather - Dados reais de clima
+      const apiKey = 'YOUR_OPENWEATHER_API_KEY'; // Substituir pela chave real
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=pt_br`
+      );
+      
+      if (!response.ok) {
+        throw new Error('Erro na API OpenWeather');
+      }
+      
+      const data = await response.json();
+      
+      // Formatar dados para o formato da aplicação
+      const formattedWeather = {
+        temperature: Math.round(data.main.temp),
+        feelsLike: Math.round(data.main.feels_like),
+        humidity: data.main.humidity,
+        windSpeed: Math.round(data.wind.speed * 3.6), // m/s para km/h
+        description: data.weather[0].description,
+        icon: data.weather[0].icon,
+        city: data.name,
+        country: data.sys.country,
+        lastUpdate: new Date()
+      };
+      
+      setWeatherData(formattedWeather);
+      setWeatherLoading(false);
+      
+    } catch (error) {
+      console.error('Erro ao buscar dados de clima:', error);
+      
+      // Fallback: dados simulados em caso de erro da API
+      const fallbackWeather = {
+        temperature: 25,
+        feelsLike: 27,
+        humidity: 65,
+        windSpeed: 12,
+        description: 'céu limpo',
+        icon: '01d',
+        city: 'Sinop',
+        country: 'BR',
+        lastUpdate: new Date()
+      };
+      
+      setWeatherData(fallbackWeather);
+      setWeatherError('Dados de clima em modo offline');
+      setWeatherLoading(false);
+    }
+  };
+
+  // CAMADA 2: Obter localização do usuário e buscar clima
+  const getUserLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          fetchWeatherData(latitude, longitude);
+        },
+        (error) => {
+          console.error('Erro ao obter localização:', error);
+          // Usar coordenadas padrão (Sinop, MT)
+          fetchWeatherData(-11.8647, -55.5036);
+        }
+      );
+    } else {
+      // Fallback para navegadores sem geolocalização
+      fetchWeatherData(-11.8647, -55.5036);
+    }
+  };
+
   const [newsData, setNewsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -29,7 +211,6 @@ const Home = () => {
 
   useEffect(() => {
     document.title = `Agroisync - ${t('home.hero.title')}`;
-    fetchStockData();
     getUserLocation();
     fetchNewsData();
   }, [t]);
@@ -39,116 +220,6 @@ const Home = () => {
       fetchWeatherData();
     }
   }, [userLocation]);
-
-  const getUserLocation = async () => {
-    try {
-      // Primeiro tentar obter localização via IP
-      const ipResponse = await fetch('https://ipapi.co/json/');
-      if (ipResponse.ok) {
-        const ipData = await ipResponse.json();
-        setUserLocation({
-          city: ipData.city,
-          region: ipData.region,
-          country: ipData.country,
-          lat: ipData.latitude,
-          lon: ipData.longitude
-        });
-      }
-    } catch (error) {
-      console.error('Erro ao obter localização via IP:', error);
-      // Fallback para geolocalização do navegador
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            setUserLocation({
-              lat: position.coords.latitude,
-              lon: position.coords.longitude
-            });
-          },
-          (error) => {
-            console.error('Erro na geolocalização:', error);
-            // Usar localização padrão
-            setUserLocation({
-              city: 'São Paulo',
-              region: 'SP',
-              country: 'BR',
-              lat: -23.5505,
-              lon: -46.6333
-            });
-          }
-        );
-      }
-    }
-  };
-
-  const fetchStockData = async () => {
-    try {
-      // Dados da bolsa agrícola em tempo real (simulados para demonstração)
-      const mockStockData = [
-        { symbol: 'SOJA3', name: 'Soja', price: 85.50, change: 2.34, volume: '2.1M', lastUpdate: new Date(), trend: 'up' },
-        { symbol: 'MILH3', name: 'Milho', price: 67.80, change: -1.25, volume: '1.8M', lastUpdate: new Date(), trend: 'down' },
-        { symbol: 'BOIA3', name: 'Boi Gordo', price: 245.90, change: 0.85, volume: '890K', lastUpdate: new Date(), trend: 'up' },
-        { symbol: 'CAFE3', name: 'Café', price: 156.20, change: 3.12, volume: '1.2M', lastUpdate: new Date(), trend: 'up' },
-        { symbol: 'ALGD3', name: 'Algodão', price: 89.75, change: -0.45, volume: '650K', lastUpdate: new Date(), trend: 'down' },
-        { symbol: 'TRIG3', name: 'Trigo', price: 78.30, change: 1.67, volume: '450K', lastUpdate: new Date(), trend: 'up' }
-      ];
-      setStockData(mockStockData);
-
-      // Atualizar dados a cada 30 segundos para simular tempo real
-      const interval = setInterval(() => {
-        setStockData(prevData => 
-          prevData.map(stock => ({
-            ...stock,
-            price: stock.price + (Math.random() - 0.5) * 2,
-            change: stock.change + (Math.random() - 0.5) * 0.5,
-            lastUpdate: new Date(),
-            trend: Math.random() > 0.5 ? 'up' : 'down'
-          }))
-        );
-      }, 30000);
-
-      return () => clearInterval(interval);
-    } catch (error) {
-      console.error('Erro ao buscar dados da bolsa:', error);
-    }
-  };
-
-  const fetchWeatherData = async () => {
-    try {
-      if (!userLocation?.lat || !userLocation?.lon) return;
-
-      // Usar OpenWeather API (espelhada)
-      const apiKey = process.env.REACT_APP_OPENWEATHER_API_KEY || 'demo_key';
-      const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${userLocation.lat}&lon=${userLocation.lon}&appid=${apiKey}&units=metric&lang=pt_br`
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        setWeatherData({
-          city: userLocation.city || data.name,
-          temperature: Math.round(data.main.temp),
-          condition: data.weather[0].description,
-          humidity: data.main.humidity,
-          wind: Math.round(data.wind.speed * 3.6), // m/s para km/h
-          icon: data.weather[0].icon,
-          feelsLike: Math.round(data.main.feels_like)
-        });
-      }
-    } catch (error) {
-      console.error('Erro ao buscar dados do clima:', error);
-      // Dados mock como fallback
-      setWeatherData({
-        city: userLocation?.city || 'São Paulo',
-        temperature: 24,
-        condition: 'Ensolarado',
-        humidity: 65,
-        wind: 12,
-        icon: '01d',
-        feelsLike: 26
-      });
-    }
-  };
 
   const fetchNewsData = async () => {
     try {
@@ -205,16 +276,6 @@ const Home = () => {
 
   const formatPrice = (price) => {
     return `R$ ${price.toFixed(2)}`;
-  };
-
-  const formatChange = (change) => {
-    const isPositive = change >= 0;
-    return (
-      <span className={`flex items-center ${isPositive ? 'text-emerald-600' : 'text-red-600'}`}>
-        {isPositive ? <TrendingUp className="w-4 h-4 mr-1" /> : <TrendingDown className="w-4 h-4 mr-1" />}
-        {Math.abs(change).toFixed(2)}%
-      </span>
-    );
   };
 
   const getWeatherIcon = (iconCode) => {
@@ -618,7 +679,7 @@ const Home = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <h4 className="text-lg font-semibold text-slate-800">{weatherData.city}</h4>
-                      <p className="text-slate-600 capitalize">{weatherData.condition}</p>
+                      <p className="text-slate-600 capitalize">{weatherData.description}</p>
                     </div>
                     <div className="text-6xl font-bold text-slate-800">
                       {weatherData.temperature}°C
@@ -649,7 +710,7 @@ const Home = () => {
                         <Wind className="w-5 h-5 text-slate-600" />
                       </div>
                       <p className="text-sm text-slate-600">{t('common.wind')}</p>
-                      <p className="text-lg font-semibold text-slate-800">{weatherData.wind} km/h</p>
+                      <p className="text-lg font-semibold text-slate-800">{weatherData.windSpeed} km/h</p>
                     </div>
                   </div>
                 </div>

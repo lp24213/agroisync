@@ -33,9 +33,18 @@ const Cripto = () => {
   const [paymentAmount, setPaymentAmount] = useState('');
   const [paymentLoading, setPaymentLoading] = useState(false);
 
+  // CAMADA 2: Atualizar dados a cada 2 minutos
+  useEffect(() => {
+    fetchCryptoData();
+    
+    const interval = setInterval(fetchCryptoData, 120000); // 2 minutos
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  // CAMADA 2: Definir título da página
   useEffect(() => {
     document.title = `Agroisync - ${t('crypto.title')}`;
-    fetchCryptoData();
   }, [t]);
 
   const fetchCryptoData = async () => {
