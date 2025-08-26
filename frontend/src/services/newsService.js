@@ -5,9 +5,16 @@ class NewsService {
     this.cacheTimeout = 1800000; // 30 minutos
     this.newsSources = [
       {
+        name: 'Globo Rural',
+        url: 'https://g1.globo.com/economia/agronegocios/',
+        type: 'rss',
+        rssUrl: 'https://g1.globo.com/rss/g1/economia/agronegocios/'
+      },
+      {
         name: 'Agrolink',
         url: 'https://www.agrolink.com.br/noticias',
-        type: 'scrape'
+        type: 'api',
+        apiUrl: 'https://api.agrolink.com.br/news'
       },
       {
         name: 'Canal Rural',
@@ -29,8 +36,16 @@ class NewsService {
       const cached = this.getCachedData(cacheKey);
       if (cached) return cached;
 
-      // Simular dados de notícias (em produção, usar APIs reais)
-      const news = await this.getSimulatedNews(limit);
+      // Tentar obter notícias reais primeiro
+      let news = [];
+      
+      try {
+        // Tentar RSS do Globo Rural
+        news = await this.getGloboRuralNews(limit);
+      } catch (error) {
+        console.warn('Falha ao obter notícias do Globo Rural, usando fallback:', error);
+        news = await this.getSimulatedNews(limit);
+      }
       
       this.setCachedData(cacheKey, news);
       return news;
@@ -40,6 +55,85 @@ class NewsService {
     }
   }
 
+  // Obter notícias do Globo Rural via RSS
+  async getGloboRuralNews(limit = 10) {
+    try {
+      // Em produção, usar um proxy CORS ou backend para fazer a requisição
+      const response = await fetch('/api/news/globo-rural', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Falha ao obter notícias do Globo Rural');
+      }
+
+      const data = await response.json();
+      return this.formatGloboRuralNews(data, limit);
+    } catch (error) {
+      console.error('Erro ao obter notícias do Globo Rural:', error);
+      throw error;
+    }
+  }
+
+  // Formatar notícias do Globo Rural
+  formatGloboRuralNews(data, limit) {
+    if (!data.items || !Array.isArray(data.items)) {
+      return this.getFallbackNews(limit);
+    }
+
+    return data.items.slice(0, limit).map(item => ({
+      id: item.guid || item.link,
+      title: item.title,
+      description: item.description || item.contentSnippet,
+      content: item.content,
+      link: item.link,
+      publishedAt: new Date(item.pubDate),
+      source: 'Globo Rural',
+      category: this.categorizeNews(item.title, item.description),
+      image: this.extractImageFromContent(item.content) || '/images/news-placeholder.jpg',
+      author: item.author || 'Globo Rural',
+      readTime: this.calculateReadTime(item.content || item.description)
+    }));
+  }
+
+  // Categorizar notícias baseado no título e descrição
+  categorizeNews(title, description) {
+    const text = `${title} ${description}`.toLowerCase();
+    
+    if (text.includes('soja') || text.includes('soybean')) return 'soja';
+    if (text.includes('milho') || text.includes('corn')) return 'milho';
+    if (text.includes('café') || text.includes('coffee')) return 'café';
+    if (text.includes('cana') || text.includes('sugarcane')) return 'cana';
+    if (text.includes('gado') || text.includes('cattle')) return 'gado';
+    if (text.includes('tecnologia') || text.includes('technology')) return 'tecnologia';
+    if (text.includes('mercado') || text.includes('market')) return 'mercado';
+    if (text.includes('clima') || text.includes('weather')) return 'clima';
+    if (text.includes('exportação') || text.includes('export')) return 'exportação';
+    if (text.includes('importação') || text.includes('import')) return 'importação';
+    
+    return 'geral';
+  }
+
+  // Extrair imagem do conteúdo HTML
+  extractImageFromContent(content) {
+    if (!content) return null;
+    
+    const imgMatch = content.match(/<img[^>]+src="([^"]+)"/i);
+    return imgMatch ? imgMatch[1] : null;
+  }
+
+  // Calcular tempo de leitura
+  calculateReadTime(content) {
+    if (!content) return 2;
+    
+    const wordsPerMinute = 200;
+    const wordCount = content.replace(/<[^>]*>/g, '').split(/\s+/).length;
+    return Math.ceil(wordCount / wordsPerMinute);
+  }
+
   // Obter notícias por categoria
   async getNewsByCategory(category, limit = 10) {
     try {
@@ -47,10 +141,15 @@ class NewsService {
       const cached = this.getCachedData(cacheKey);
       if (cached) return cached;
 
-      const news = await this.getSimulatedNewsByCategory(category, limit);
-      
-      this.setCachedData(cacheKey, news);
-      return news;
+      const allNews = await this.getMainNews(50); // Obter mais notícias para filtrar
+      const filteredNews = allNews.filter(news => 
+        news.category === category || 
+        news.title.toLowerCase().includes(category.toLowerCase()) ||
+        news.description.toLowerCase().includes(category.toLowerCase())
+      ).slice(0, limit);
+
+      this.setCachedData(cacheKey, filteredNews);
+      return filteredNews;
     } catch (error) {
       console.error(`Erro ao obter notícias da categoria ${category}:`, error);
       return this.getFallbackNewsByCategory(category, limit);
@@ -64,9 +163,10 @@ class NewsService {
       const cached = this.getCachedData(cacheKey);
       if (cached) return cached;
 
-      const news = await this.getSimulatedLiveNews(limit);
+      // Para notícias em tempo real, usar cache mais curto
+      const news = await this.getMainNews(limit);
       
-      this.setCachedData(cacheKey, news);
+      this.setCachedData(cacheKey, news, 300000); // 5 minutos para notícias ao vivo
       return news;
     } catch (error) {
       console.error('Erro ao obter notícias em tempo real:', error);
@@ -81,310 +181,220 @@ class NewsService {
       const cached = this.getCachedData(cacheKey);
       if (cached) return cached;
 
-      const news = await this.getSimulatedSearchResults(query, limit);
-      
-      this.setCachedData(cacheKey, news);
-      return news;
+      const allNews = await this.getMainNews(100);
+      const searchResults = allNews.filter(news => 
+        news.title.toLowerCase().includes(query.toLowerCase()) ||
+        news.description.toLowerCase().includes(query.toLowerCase()) ||
+        news.content?.toLowerCase().includes(query.toLowerCase())
+      ).slice(0, limit);
+
+      this.setCachedData(cacheKey, searchResults);
+      return searchResults;
     } catch (error) {
       console.error('Erro ao buscar notícias:', error);
       return this.getFallbackSearchResults(query, limit);
     }
   }
 
-  // Simular notícias principais
+  // Obter notícias de mercado (cotações, preços)
+  async getMarketNews(limit = 10) {
+    try {
+      const cacheKey = `market-news-${limit}`;
+      const cached = this.getCachedData(cacheKey);
+      if (cached) return cached;
+
+      const allNews = await this.getMainNews(50);
+      const marketNews = allNews.filter(news => 
+        news.category === 'mercado' ||
+        news.title.toLowerCase().includes('preço') ||
+        news.title.toLowerCase().includes('cotação') ||
+        news.title.toLowerCase().includes('dólar') ||
+        news.title.toLowerCase().includes('exportação') ||
+        news.title.toLowerCase().includes('importação')
+      ).slice(0, limit);
+
+      this.setCachedData(cacheKey, marketNews);
+      return marketNews;
+    } catch (error) {
+      console.error('Erro ao obter notícias de mercado:', error);
+      return this.getFallbackNewsByCategory('mercado', limit);
+    }
+  }
+
+  // Obter notícias de clima
+  async getWeatherNews(limit = 10) {
+    try {
+      const cacheKey = `weather-news-${limit}`;
+      const cached = this.getCachedData(cacheKey);
+      if (cached) return cached;
+
+      const allNews = await this.getMainNews(50);
+      const weatherNews = allNews.filter(news => 
+        news.category === 'clima' ||
+        news.title.toLowerCase().includes('clima') ||
+        news.title.toLowerCase().includes('chuva') ||
+        news.title.toLowerCase().includes('seca') ||
+        news.title.toLowerCase().includes('temperatura')
+      ).slice(0, limit);
+
+      this.setCachedData(cacheKey, weatherNews);
+      return weatherNews;
+    } catch (error) {
+      console.error('Erro ao obter notícias de clima:', error);
+      return this.getFallbackNewsByCategory('clima', limit);
+    }
+  }
+
+  // Simular notícias principais (fallback)
   async getSimulatedNews(limit) {
     const categories = ['soja', 'milho', 'café', 'cana', 'gado', 'tecnologia', 'mercado', 'clima'];
     const news = [];
 
     for (let i = 0; i < limit; i++) {
       const category = categories[Math.floor(Math.random() * categories.length)];
+      const titles = {
+        'soja': [
+          'Soja: Preços sobem com forte demanda da China',
+          'Exportação de soja brasileira atinge recorde',
+          'Produtores de soja otimistas com safra 2024'
+        ],
+        'milho': [
+          'Milho: Mercado em alta com estoques baixos',
+          'Produção de milho deve crescer 15% este ano',
+          'Exportação de milho brasileiro aumenta 20%'
+        ],
+        'café': [
+          'Café: Preços em alta com geada no Brasil',
+          'Produção de café arábica deve cair 30%',
+          'Exportação de café atinge melhor resultado em 5 anos'
+        ],
+        'cana': [
+          'Cana-de-açúcar: Safra deve crescer 8%',
+          'Etanol: Preços em alta com demanda crescente',
+          'Usinas de açúcar investem em tecnologia'
+        ],
+        'gado': [
+          'Gado: Preços da arroba em alta',
+          'Exportação de carne bovina cresce 25%',
+          'Frigoríficos investem em rastreabilidade'
+        ],
+        'tecnologia': [
+          'Agricultura 4.0: Drones revolucionam plantio',
+          'IoT na agricultura: Sensores monitoram solo',
+          'Blockchain rastreia origem dos alimentos'
+        ],
+        'mercado': [
+          'Dólar cai e favorece exportações agrícolas',
+          'Commodities agrícolas em alta na bolsa',
+          'Mercado futuro registra recorde de negociações'
+        ],
+        'clima': [
+          'La Niña deve trazer mais chuvas ao Sul',
+          'Temperaturas devem ficar acima da média',
+          'Previsão de chuvas regulares para plantio'
+        ]
+      };
+
+      const descriptions = {
+        'soja': 'Análise completa do mercado de soja com preços, tendências e perspectivas para o agronegócio brasileiro.',
+        'milho': 'Cenário atual do mercado de milho com foco na produção, exportação e preços para produtores.',
+        'café': 'Mercado do café em alta com geada e perspectivas de produção para a safra 2024/2025.',
+        'cana': 'Setor sucroenergético em expansão com investimentos em tecnologia e aumento da produção.',
+        'gado': 'Pecuária brasileira em crescimento com forte demanda externa e investimentos em qualidade.',
+        'tecnologia': 'Inovações tecnológicas transformam a agricultura brasileira com foco em produtividade.',
+        'mercado': 'Análise macroeconômica do agronegócio com foco em câmbio e commodities.',
+        'clima': 'Previsões climáticas para o agronegócio com impactos na produção agrícola.'
+      };
+
+      const title = titles[category][Math.floor(Math.random() * titles[category].length)];
+      const description = descriptions[category];
+
       news.push({
-        id: `news-${i + 1}`,
-        title: this.getRandomTitle(category),
-        summary: this.getRandomSummary(category),
-        content: this.getRandomContent(category),
-        category: category,
-        source: this.getRandomSource(),
-        author: this.getRandomAuthor(),
-        publishedAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000), // Últimos 7 dias
-        imageUrl: this.getRandomImage(category),
-        url: `#news-${i + 1}`,
-        readTime: Math.floor(Math.random() * 5) + 2, // 2-7 minutos
-        tags: this.getRandomTags(category),
-        views: Math.floor(Math.random() * 10000) + 100,
-        isBreaking: Math.random() > 0.8 // 20% chance de ser breaking
+        id: `simulated-${i}`,
+        title,
+        description,
+        content: `${title}. ${description} Esta é uma notícia simulada para demonstração do sistema AgroSync.`,
+        link: '#',
+        publishedAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+        source: 'AgroSync',
+        category,
+        image: `/images/news/${category}.jpg`,
+        author: 'Equipe AgroSync',
+        readTime: Math.floor(Math.random() * 5) + 2
       });
     }
 
-    // Ordenar por data de publicação
-    return news.sort((a, b) => b.publishedAt - a.publishedAt);
+    return news;
   }
 
-  // Simular notícias por categoria
-  async getSimulatedNewsByCategory(category, limit) {
-    const news = await this.getSimulatedNews(limit * 2);
-    return news
-      .filter(item => item.category === category)
-      .slice(0, limit);
-  }
-
-  // Simular notícias em tempo real
-  async getSimulatedLiveNews(limit) {
-    const news = await this.getSimulatedNews(limit * 3);
-    return news
-      .filter(item => {
-        const hoursAgo = (Date.now() - item.publishedAt.getTime()) / (1000 * 60 * 60);
-        return hoursAgo <= 24; // Últimas 24 horas
-      })
-      .slice(0, limit);
-  }
-
-  // Simular resultados de busca
-  async getSimulatedSearchResults(query, limit) {
-    const allNews = await this.getSimulatedNews(limit * 3);
-    const queryLower = query.toLowerCase();
-    
-    return allNews
-      .filter(item => 
-        item.title.toLowerCase().includes(queryLower) ||
-        item.summary.toLowerCase().includes(queryLower) ||
-        item.tags.some(tag => tag.toLowerCase().includes(queryLower))
-      )
-      .slice(0, limit);
-  }
-
-  // Gerar títulos aleatórios por categoria
-  getRandomTitle(category) {
-    const titles = {
-      soja: [
-        'Preços da soja atingem máxima histórica no mercado brasileiro',
-        'Exportação de soja cresce 15% no primeiro trimestre',
-        'Nova tecnologia aumenta produtividade da soja em 20%',
-        'Clima favorável impulsiona safra de soja 2024',
-        'Soja brasileira conquista novos mercados internacionais'
-      ],
-      milho: [
-        'Milho segunda safra supera expectativas de produtividade',
-        'Preços do milho se estabilizam após alta histórica',
-        'Tecnologia de irrigação aumenta produção de milho',
-        'Exportação de milho atinge recorde mensal',
-        'Milho transgênico mostra resultados promissores'
-      ],
-      café: [
-        'Café arábica atinge melhor qualidade em 10 anos',
-        'Exportação de café brasileiro cresce na Europa',
-        'Nova variedade de café resiste à seca',
-        'Café sustentável ganha mercado premium',
-        'Produção de café orgânico aumenta 30%'
-      ],
-      cana: [
-        'Safra de cana-de-açúcar supera expectativas',
-        'Etanol de segunda geração revoluciona mercado',
-        'Cana-de-açúcar se adapta às mudanças climáticas',
-        'Produção de açúcar atinge máxima histórica',
-        'Tecnologia reduz custos na produção de cana'
-      ],
-      gado: [
-        'Pecuária sustentável ganha espaço no mercado',
-        'Carne bovina brasileira conquista certificações internacionais',
-        'Genética bovina melhora produtividade do rebanho',
-        'Exportação de carne atinge novos recordes',
-        'Tecnologia rastreia toda cadeia da carne'
-      ],
-      tecnologia: [
-        'Agricultura 4.0 revoluciona produção no campo',
-        'Drone mapeia lavouras com precisão milimétrica',
-        'IA prevê produtividade com 95% de acerto',
-        'Sensores IoT monitoram solo em tempo real',
-        'Blockchain rastreia produtos do campo à mesa'
-      ],
-      mercado: [
-        'Mercado futuro de commodities agrícolas cresce',
-        'Investimentos em agronegócio batem recorde',
-        'Fusões e aquisições movimentam setor agrícola',
-        'Novos fundos investem em tecnologia agrícola',
-        'Agronegócio representa 25% do PIB brasileiro'
-      ],
-      clima: [
-        'Previsão climática favorece safra de grãos',
-        'El Niño afeta produção agrícola no Sul',
-        'Seca histórica impacta agricultura no Nordeste',
-        'Chuvas regulares beneficiam lavouras',
-        'Mudanças climáticas alteram calendário agrícola'
-      ]
-    };
-
-    const categoryTitles = titles[category] || titles.tecnologia;
-    return categoryTitles[Math.floor(Math.random() * categoryTitles.length)];
-  }
-
-  // Gerar resumos aleatórios
-  getRandomSummary(category) {
-    const summaries = [
-      'Nova tecnologia promete revolucionar a produção agrícola brasileira, aumentando a produtividade e reduzindo custos.',
-      'Mercado internacional demonstra forte interesse pelos produtos agrícolas brasileiros, impulsionando exportações.',
-      'Pesquisas avançadas desenvolvem variedades mais resistentes às mudanças climáticas e pragas.',
-      'Sistema de irrigação inteligente otimiza uso da água e aumenta eficiência na produção agrícola.',
-      'Certificações internacionais abrem novos mercados para produtos agrícolas brasileiros.'
-    ];
-
-    return summaries[Math.floor(Math.random() * summaries.length)];
-  }
-
-  // Gerar conteúdo aleatório
-  getRandomContent(category) {
-    const contents = [
-      'A inovação tecnológica tem sido fundamental para o crescimento do agronegócio brasileiro. Com investimentos em pesquisa e desenvolvimento, o setor tem alcançado níveis recordes de produtividade, consolidando o Brasil como um dos principais produtores mundiais de alimentos.',
-      'O mercado internacional reconhece cada vez mais a qualidade dos produtos agrícolas brasileiros. Certificações internacionais e sistemas de rastreabilidade garantem a origem e qualidade dos produtos, abrindo portas para novos mercados consumidores.',
-      'A sustentabilidade tornou-se prioridade no agronegócio brasileiro. Práticas como agricultura de precisão, uso eficiente de recursos naturais e redução de emissões de carbono demonstram o compromisso do setor com o meio ambiente.',
-      'A integração entre diferentes cadeias produtivas tem gerado sinergias importantes para o agronegócio. Desde a produção de insumos até a comercialização, cada elo da cadeia contribui para o sucesso do setor como um todo.',
-      'O desenvolvimento de novas variedades de plantas e animais tem sido crucial para enfrentar os desafios climáticos e de produtividade. Pesquisas em genética e biotecnologia abrem novas possibilidades para o futuro da agricultura.'
-    ];
-
-    return contents[Math.floor(Math.random() * contents.length)];
-  }
-
-  // Gerar fontes aleatórias
-  getRandomSource() {
-    const sources = [
-      'Agrolink',
-      'Canal Rural',
-      'Notícias Agrícolas',
-      'Globo Rural',
-      'Revista Agropecuária',
-      'Portal do Agronegócio',
-      'AgroRevista',
-      'Cultivar'
-    ];
-
-    return sources[Math.floor(Math.random() * sources.length)];
-  }
-
-  // Gerar autores aleatórios
-  getRandomAuthor() {
-    const authors = [
-      'Equipe AgroSync',
-      'Redação Agrolink',
-      'Especialista em Agronegócio',
-      'Analista de Mercado',
-      'Correspondente Rural',
-      'Consultor Agrícola',
-      'Pesquisador Agrícola',
-      'Jornalista Especializado'
-    ];
-
-    return authors[Math.floor(Math.random() * authors.length)];
-  }
-
-  // Gerar imagens aleatórias
-  getRandomImage(category) {
-    const images = {
-      soja: [
-        'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800',
-        'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800'
-      ],
-      milho: [
-        'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800',
-        'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800'
-      ],
-      café: [
-        'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800',
-        'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800'
-      ],
-      cana: [
-        'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800',
-        'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800'
-      ],
-      gado: [
-        'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800',
-        'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800'
-      ],
-      tecnologia: [
-        'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800',
-        'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800'
-      ],
-      mercado: [
-        'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800',
-        'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800'
-      ],
-      clima: [
-        'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800',
-        'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800'
-      ]
-    };
-
-    const categoryImages = images[category] || images.tecnologia;
-    return categoryImages[Math.floor(Math.random() * categoryImages.length)];
-  }
-
-  // Gerar tags aleatórias
-  getRandomTags(category) {
-    const allTags = [
-      'agronegócio', 'agricultura', 'pecuária', 'tecnologia', 'inovação',
-      'sustentabilidade', 'mercado', 'exportação', 'produtividade', 'clima',
-      'pesquisa', 'desenvolvimento', 'certificação', 'qualidade', 'rastreabilidade'
-    ];
-
-    const categoryTags = [category, ...allTags.filter(tag => tag !== category)];
-    const shuffled = categoryTags.sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, Math.floor(Math.random() * 5) + 3); // 3-7 tags
-  }
-
-  // Dados de fallback
-  getFallbackNews(limit) {
-    return Array.from({ length: limit }, (_, i) => ({
-      id: `fallback-${i + 1}`,
-      title: 'Notícias temporariamente indisponíveis',
-      summary: 'Estamos trabalhando para restaurar o serviço de notícias.',
-      content: 'Em breve você terá acesso às últimas notícias do agronegócio.',
-      category: 'geral',
-      source: 'AgroSync',
-      author: 'Sistema',
-      publishedAt: new Date(),
-      imageUrl: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800',
-      url: '#',
-      readTime: 1,
-      tags: ['agronegócio', 'notícias'],
-      views: 0,
-      isBreaking: false
-    }));
-  }
-
+  // Dados de fallback para categorias
   getFallbackNewsByCategory(category, limit) {
-    return this.getFallbackNews(limit).map(news => ({
-      ...news,
-      category: category
-    }));
+    const allNews = this.getFallbackNews(limit * 2);
+    return allNews.filter(news => news.category === category).slice(0, limit);
   }
 
+  // Dados de fallback para notícias ao vivo
   getFallbackLiveNews(limit) {
-    return this.getFallbackNews(limit).map(news => ({
-      ...news,
-      isBreaking: true
-    }));
+    return this.getFallbackNews(limit);
   }
 
+  // Dados de fallback para busca
   getFallbackSearchResults(query, limit) {
-    return this.getFallbackNews(limit).map(news => ({
-      ...news,
-      title: `Resultados para: ${query}`,
-      summary: 'Nenhum resultado encontrado para sua busca.'
-    }));
+    const allNews = this.getFallbackNews(limit * 2);
+    return allNews.filter(news => 
+      news.title.toLowerCase().includes(query.toLowerCase()) ||
+      news.description.toLowerCase().includes(query.toLowerCase())
+    ).slice(0, limit);
+  }
+
+  // Dados de fallback gerais
+  getFallbackNews(limit) {
+    const fallbackNews = [
+      {
+        id: 'fallback-1',
+        title: 'Mercado agrícola em alta com forte demanda',
+        description: 'Commodities agrícolas registram alta expressiva com forte demanda internacional.',
+        content: 'O mercado agrícola brasileiro registra alta expressiva com forte demanda internacional por produtos brasileiros.',
+        link: '#',
+        publishedAt: new Date(),
+        source: 'AgroSync',
+        category: 'mercado',
+        image: '/images/news/mercado.jpg',
+        author: 'Equipe AgroSync',
+        readTime: 3
+      },
+      {
+        id: 'fallback-2',
+        title: 'Tecnologia revoluciona agricultura brasileira',
+        description: 'Novas tecnologias aumentam produtividade no campo.',
+        content: 'A agricultura brasileira está sendo revolucionada por novas tecnologias que aumentam significativamente a produtividade.',
+        link: '#',
+        publishedAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+        source: 'AgroSync',
+        category: 'tecnologia',
+        image: '/images/news/tecnologia.jpg',
+        author: 'Equipe AgroSync',
+        readTime: 4
+      }
+    ];
+
+    return fallbackNews.slice(0, limit);
   }
 
   // Gerenciamento de cache
   getCachedData(key) {
     const cached = this.cache.get(key);
-    if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
+    if (cached && Date.now() - cached.timestamp < (cached.timeout || this.cacheTimeout)) {
       return cached.data;
     }
     return null;
   }
 
-  setCachedData(key, data) {
+  setCachedData(key, data, timeout = null) {
     this.cache.set(key, {
       data,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      timeout: timeout || this.cacheTimeout
     });
   }
 
@@ -393,42 +403,22 @@ class NewsService {
     this.cache.clear();
   }
 
-  // Formatar data de publicação
-  formatPublishedDate(date) {
-    const now = new Date();
-    const diffMs = now - date;
-    const diffMins = Math.floor(diffMs / (1000 * 60));
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  // Obter estatísticas do cache
+  getCacheStats() {
+    const keys = Array.from(this.cache.keys());
+    const totalItems = keys.length;
+    const totalSize = keys.reduce((size, key) => {
+      const item = this.cache.get(key);
+      return size + JSON.stringify(item.data).length;
+    }, 0);
 
-    if (diffMins < 1) return 'Agora mesmo';
-    if (diffMins < 60) return `${diffMins} min atrás`;
-    if (diffHours < 24) return `${diffHours}h atrás`;
-    if (diffDays < 7) return `${diffDays} dias atrás`;
-    
-    return date.toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
-  }
-
-  // Obter categoria em português
-  getCategoryName(category) {
-    const categories = {
-      soja: 'Soja',
-      milho: 'Milho',
-      café: 'Café',
-      cana: 'Cana-de-açúcar',
-      gado: 'Pecuária',
-      tecnologia: 'Tecnologia',
-      mercado: 'Mercado',
-      clima: 'Clima',
-      geral: 'Geral'
+    return {
+      totalItems,
+      totalSize: `${(totalSize / 1024).toFixed(2)} KB`,
+      cacheTimeout: `${this.cacheTimeout / 1000 / 60} minutos`
     };
-
-    return categories[category] || category;
   }
 }
 
-export default new NewsService();
+const newsService = new NewsService();
+export default newsService;

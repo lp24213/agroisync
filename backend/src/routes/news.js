@@ -1,6 +1,7 @@
 import express from 'express';
 import { apiLimiter } from '../middleware/rateLimiter.js';
 import { getClientIP } from '../utils/ipUtils.js';
+import axios from 'axios';
 
 const router = express.Router();
 
@@ -317,5 +318,278 @@ router.get('/featured', async (req, res) => {
     });
   }
 });
+
+// Configurações
+const RSS_URLS = {
+  'globo-rural': 'https://g1.globo.com/rss/g1/economia/agronegocios/',
+  'agrolink': 'https://www.agrolink.com.br/rss/noticias',
+  'canal-rural': 'https://www.canalrural.com.br/rss/noticias'
+};
+
+// GET /api/news/globo-rural - Obter notícias do Globo Rural
+router.get('/globo-rural', 
+  apiLimiter, // Use the existing apiLimiter
+  async (req, res) => {
+    try {
+      const rssUrl = RSS_URLS['globo-rural'];
+      
+      // Fazer requisição para o RSS
+      const response = await axios.get(rssUrl, {
+        timeout: 10000,
+        headers: {
+          'User-Agent': 'AgroSync-News/1.0'
+        }
+      });
+
+      // Parsear o XML RSS (simplificado)
+      const rssData = parseRSSXML(response.data);
+      
+      res.json({
+        success: true,
+        source: 'Globo Rural',
+        lastUpdated: new Date().toISOString(),
+        items: rssData.items || []
+      });
+
+    } catch (error) {
+      console.error('Erro ao obter notícias do Globo Rural:', error);
+      
+      // Retornar dados de fallback
+      res.json({
+        success: true,
+        source: 'Globo Rural (Fallback)',
+        lastUpdated: new Date().toISOString(),
+        items: getFallbackNews()
+      });
+    }
+  }
+);
+
+// GET /api/news/agrolink - Obter notícias do Agrolink
+router.get('/agrolink',
+  apiLimiter, // Use the existing apiLimiter
+  async (req, res) => {
+    try {
+      const rssUrl = RSS_URLS['agrolink'];
+      
+      const response = await axios.get(rssUrl, {
+        timeout: 10000,
+        headers: {
+          'User-Agent': 'AgroSync-News/1.0'
+        }
+      });
+
+      const rssData = parseRSSXML(response.data);
+      
+      res.json({
+        success: true,
+        source: 'Agrolink',
+        lastUpdated: new Date().toISOString(),
+        items: rssData.items || []
+      });
+
+    } catch (error) {
+      console.error('Erro ao obter notícias do Agrolink:', error);
+      
+      res.json({
+        success: true,
+        source: 'Agrolink (Fallback)',
+        lastUpdated: new Date().toISOString(),
+        items: getFallbackNews()
+      });
+    }
+  }
+);
+
+// GET /api/news/canal-rural - Obter notícias do Canal Rural
+router.get('/canal-rural',
+  apiLimiter, // Use the existing apiLimiter
+  async (req, res) => {
+    try {
+      const rssUrl = RSS_URLS['canal-rural'];
+      
+      const response = await axios.get(rssUrl, {
+        timeout: 10000,
+        headers: {
+          'User-Agent': 'AgroSync-News/1.0'
+        }
+      });
+
+      const rssData = parseRSSXML(response.data);
+      
+      res.json({
+        success: true,
+        source: 'Canal Rural',
+        lastUpdated: new Date().toISOString(),
+        items: rssData.items || []
+      });
+
+    } catch (error) {
+      console.error('Erro ao obter notícias do Canal Rural:', error);
+      
+      res.json({
+        success: true,
+        source: 'Canal Rural (Fallback)',
+        lastUpdated: new Date().toISOString(),
+        items: getFallbackNews()
+      });
+    }
+  }
+);
+
+// GET /api/news/all - Obter notícias de todas as fontes
+router.get('/all',
+  apiLimiter, // Use the existing apiLimiter
+  async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit) || 20;
+      const sources = Object.keys(RSS_URLS);
+      const allNews = [];
+
+      // Obter notícias de todas as fontes
+      for (const source of sources) {
+        try {
+          const response = await axios.get(RSS_URLS[source], {
+            timeout: 5000,
+            headers: {
+              'User-Agent': 'AgroSync-News/1.0'
+            }
+          });
+
+          const rssData = parseRSSXML(response.data);
+          if (rssData.items && rssData.items.length > 0) {
+            allNews.push(...rssData.items.slice(0, Math.ceil(limit / sources.length)));
+          }
+        } catch (error) {
+          console.warn(`Erro ao obter notícias de ${source}:`, error.message);
+        }
+      }
+
+      // Ordenar por data e limitar
+      const sortedNews = allNews
+        .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+        .slice(0, limit);
+
+      res.json({
+        success: true,
+        sources: sources,
+        lastUpdated: new Date().toISOString(),
+        totalItems: sortedNews.length,
+        items: sortedNews
+      });
+
+    } catch (error) {
+      console.error('Erro ao obter notícias de todas as fontes:', error);
+      
+      res.json({
+        success: true,
+        sources: ['Fallback'],
+        lastUpdated: new Date().toISOString(),
+        totalItems: 10,
+        items: getFallbackNews(10)
+      });
+    }
+  }
+);
+
+// Função para parsear XML RSS (simplificada)
+function parseRSSXML(xmlString) {
+  try {
+    // Parse básico do XML RSS
+    const items = [];
+    
+    // Extrair itens do RSS
+    const itemRegex = /<item>([\s\S]*?)<\/item>/g;
+    let match;
+    
+    while ((match = itemRegex.exec(xmlString)) !== null) {
+      const itemContent = match[1];
+      
+      const title = extractTag(itemContent, 'title');
+      const description = extractTag(itemContent, 'description');
+      const link = extractTag(itemContent, 'link');
+      const pubDate = extractTag(itemContent, 'pubDate');
+      const guid = extractTag(itemContent, 'guid');
+      
+      if (title && link) {
+        items.push({
+          title: decodeXMLEntities(title),
+          description: decodeXMLEntities(description || ''),
+          link: decodeXMLEntities(link),
+          pubDate: pubDate || new Date().toISOString(),
+          guid: guid || link
+        });
+      }
+    }
+    
+    return { items };
+  } catch (error) {
+    console.error('Erro ao parsear XML RSS:', error);
+    return { items: [] };
+  }
+}
+
+// Função para extrair conteúdo de tags XML
+function extractTag(content, tagName) {
+  const regex = new RegExp(`<${tagName}[^>]*>([\\s\\S]*?)<\\/${tagName}>`, 'i');
+  const match = content.match(regex);
+  return match ? match[1].trim() : null;
+}
+
+// Função para decodificar entidades XML
+function decodeXMLEntities(text) {
+  if (!text) return '';
+  
+  return text
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, ' ');
+}
+
+// Função para gerar notícias de fallback
+function getFallbackNews(limit = 10) {
+  const fallbackNews = [
+    {
+      title: 'Mercado agrícola em alta com forte demanda internacional',
+      description: 'Commodities agrícolas brasileiras registram alta expressiva com forte demanda de países asiáticos.',
+      link: 'https://g1.globo.com/economia/agronegocios/',
+      pubDate: new Date().toISOString(),
+      guid: 'fallback-1'
+    },
+    {
+      title: 'Tecnologia revoluciona agricultura brasileira',
+      description: 'Novas tecnologias como drones e IoT aumentam produtividade no campo brasileiro.',
+      link: 'https://g1.globo.com/economia/agronegocios/',
+      pubDate: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+      guid: 'fallback-2'
+    },
+    {
+      title: 'Clima favorável para safra de grãos 2024',
+      description: 'Previsões climáticas indicam condições favoráveis para a próxima safra de grãos.',
+      link: 'https://g1.globo.com/economia/agronegocios/',
+      pubDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+      guid: 'fallback-3'
+    },
+    {
+      title: 'Exportação de carne bovina atinge recorde',
+      description: 'Setor de carne bovina brasileiro registra recorde de exportações para mercados internacionais.',
+      link: 'https://g1.globo.com/economia/agronegocios/',
+      pubDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+      guid: 'fallback-4'
+    },
+    {
+      title: 'Investimentos em agricultura sustentável crescem',
+      description: 'Produtores rurais investem cada vez mais em práticas sustentáveis e certificações ambientais.',
+      link: 'https://g1.globo.com/economia/agronegocios/',
+      pubDate: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+      guid: 'fallback-5'
+    }
+  ];
+
+  return fallbackNews.slice(0, limit);
+}
 
 export default router;
