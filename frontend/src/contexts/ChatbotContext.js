@@ -26,6 +26,177 @@ export const ChatbotProvider = ({ children }) => {
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
 
+  // CAMADA 3: Sistema de Chatbot Aprimorado
+  const [chatHistory, setChatHistory] = useState([]);
+  const [isTyping, setIsTyping] = useState(false);
+  const [suggestedQuestions, setSuggestedQuestions] = useState([]);
+
+  // CAMADA 3: Perguntas sugeridas inteligentes
+  const defaultSuggestions = [
+    "Como funciona a bolsa de valores agrícola?",
+    "Quais são as principais criptomoedas?",
+    "Como faço para me cadastrar?",
+    "Quais são os planos disponíveis?",
+    "Como funciona o sistema de fretes?",
+    "Preciso de ajuda com pagamentos"
+  ];
+
+  // CAMADA 3: Respostas inteligentes baseadas no contexto
+  const getIntelligentResponse = (message) => {
+    const lowerMessage = message.toLowerCase();
+    
+    // Respostas baseadas em palavras-chave
+    if (lowerMessage.includes('bolsa') || lowerMessage.includes('valores') || lowerMessage.includes('ações')) {
+      return {
+        text: "A bolsa de valores agrícola do Agroisync oferece cotações em tempo real de commodities como soja, milho, boi gordo e café. Você pode acompanhar as variações de preços e volumes de negociação através do nosso painel interativo na página inicial.",
+        type: 'info',
+        relatedLinks: ['/home', '/sobre']
+      };
+    }
+    
+    if (lowerMessage.includes('cripto') || lowerMessage.includes('bitcoin') || lowerMessage.includes('ethereum')) {
+      return {
+        text: "Nossa plataforma oferece dados em tempo real das principais criptomoedas através da API CoinGecko. Você pode acompanhar preços, volumes e variações percentuais, além de integrar com carteiras Metamask para transações seguras.",
+        type: 'info',
+        relatedLinks: ['/cripto']
+      };
+    }
+    
+    if (lowerMessage.includes('cadastrar') || lowerMessage.includes('registrar') || lowerMessage.includes('conta')) {
+      return {
+        text: "Para se cadastrar no Agroisync, clique em 'Cadastrar' no menu superior. O processo é simples e rápido: você precisará fornecer seu email, criar uma senha e confirmar seu cadastro. Após a confirmação, terá acesso a todas as funcionalidades da plataforma.",
+        type: 'help',
+        relatedLinks: ['/cadastro']
+      };
+    }
+    
+    if (lowerMessage.includes('planos') || lowerMessage.includes('preços') || lowerMessage.includes('assinatura')) {
+      return {
+        text: "Oferecemos diferentes planos para atender suas necessidades: Plano Básico (gratuito), Plano Pro e Plano Enterprise. Cada plano inclui funcionalidades específicas como acesso a dados em tempo real, suporte prioritário e recursos avançados. Confira todos os detalhes na página de planos.",
+        type: 'info',
+        relatedLinks: ['/planos']
+      };
+    }
+    
+    if (lowerMessage.includes('fretes') || lowerMessage.includes('transporte') || lowerMessage.includes('logística')) {
+      return {
+        text: "O sistema de fretes do Agroisync conecta produtores e transportadores. Você pode cadastrar cargas, buscar transportadores disponíveis e gerenciar todo o processo de logística de forma integrada e transparente.",
+        type: 'info',
+        relatedLinks: ['/agroconecta']
+      };
+    }
+    
+    if (lowerMessage.includes('pagamento') || lowerMessage.includes('pagar') || lowerMessage.includes('cartão')) {
+      return {
+        text: "Aceitamos diversos métodos de pagamento: cartões de crédito/débito, PIX e boleto bancário. Todos os pagamentos são processados de forma segura através de gateways certificados. Em caso de problemas, nosso suporte está disponível 24/7.",
+        type: 'help',
+        relatedLinks: ['/suporte', '/ajuda']
+      };
+    }
+    
+    if (lowerMessage.includes('ajuda') || lowerMessage.includes('suporte') || lowerMessage.includes('problema')) {
+      return {
+        text: "Estamos aqui para ajudar! Você pode entrar em contato conosco através do email contato@agroisync.com, telefone (66) 99236-2830, ou criar um ticket de suporte diretamente na plataforma. Nossa equipe responde em até 2 horas.",
+        type: 'support',
+        relatedLinks: ['/contato', '/ajuda']
+      };
+    }
+    
+    // Resposta padrão para mensagens não reconhecidas
+    return {
+      text: "Obrigado pela sua mensagem! Sou o assistente virtual do Agroisync e posso ajudar com informações sobre nossa plataforma, incluindo bolsa de valores, criptomoedas, cadastro, planos e muito mais. Como posso te ajudar hoje?",
+      type: 'general',
+      relatedLinks: ['/sobre', '/home']
+    };
+  };
+
+  // CAMADA 3: Processar mensagem do usuário
+  const processUserMessage = async (message) => {
+    try {
+      setIsTyping(true);
+      
+      // Adicionar mensagem do usuário ao histórico
+      const userMessage = {
+        id: Date.now(),
+        text: message,
+        sender: 'user',
+        timestamp: new Date()
+      };
+      
+      setChatHistory(prev => [...prev, userMessage]);
+      
+      // Simular delay de processamento
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Obter resposta inteligente
+      const response = getIntelligentResponse(message);
+      
+      // Adicionar resposta ao histórico
+      const botMessage = {
+        id: Date.now() + 1,
+        text: response.text,
+        sender: 'bot',
+        timestamp: new Date(),
+        type: response.type,
+        relatedLinks: response.relatedLinks
+      };
+      
+      setChatHistory(prev => [...prev, botMessage]);
+      
+      // Atualizar perguntas sugeridas baseadas no contexto
+      updateSuggestedQuestions(response.type);
+      
+    } catch (error) {
+      console.error('Erro ao processar mensagem:', error);
+      
+      // Mensagem de erro amigável
+      const errorMessage = {
+        id: Date.now() + 1,
+        text: "Desculpe, ocorreu um erro ao processar sua mensagem. Por favor, tente novamente ou entre em contato com nosso suporte.",
+        sender: 'bot',
+        timestamp: new Date(),
+        type: 'error'
+      };
+      
+      setChatHistory(prev => [...prev, errorMessage]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+  // CAMADA 3: Atualizar perguntas sugeridas baseadas no contexto
+  const updateSuggestedQuestions = (contextType) => {
+    let newSuggestions = [];
+    
+    switch (contextType) {
+      case 'info':
+        newSuggestions = [
+          "Quer saber mais sobre criptomoedas?",
+          "Como funciona o sistema de fretes?",
+          "Quais são os benefícios dos planos?"
+        ];
+        break;
+      case 'help':
+        newSuggestions = [
+          "Precisa de ajuda com cadastro?",
+          "Como funciona o sistema de pagamentos?",
+          "Quer falar com nosso suporte?"
+        ];
+        break;
+      case 'support':
+        newSuggestions = [
+          "Como criar um ticket de suporte?",
+          "Quais são os canais de atendimento?",
+          "Precisa de ajuda urgente?"
+        ];
+        break;
+      default:
+        newSuggestions = defaultSuggestions;
+    }
+    
+    setSuggestedQuestions(newSuggestions);
+  };
+
   // Inicializar mensagem de boas-vindas
   useEffect(() => {
     const welcomeMessage = {
