@@ -332,6 +332,27 @@ p {
   box-shadow: var(--shadow-accent);
 }
 
+/* ===== ANIMAÇÕES PERSONALIZADAS ===== */
+
+/* Marquee para bolsa de valores - Rolagem lateral contínua */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+/* Pausar animação no hover para melhor usabilidade */
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
 /* ===== SCROLLBAR PERSONALIZADA ===== */
 ::-webkit-scrollbar {
   width: 8px;

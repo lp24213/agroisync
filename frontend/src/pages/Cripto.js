@@ -12,12 +12,14 @@ import {
   Shield, Zap, Globe, BarChart3, PieChart, Activity,
   Lock, Unlock, Eye, EyeOff, Copy, CheckCircle, FileText
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Cripto = () => {
   const { isDark } = useTheme();
   const { user, isAdmin } = useAuth();
   const { isPaid, planActive } = usePayment();
   const { t } = useTranslation();
+  const navigate = useNavigate();
   
   const [cryptoData, setCryptoData] = useState([]);
   const [selectedCrypto, setSelectedCrypto] = useState('bitcoin');
@@ -267,51 +269,137 @@ const Cripto = () => {
   return (
     <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300`}>
       
-      {/* Hero Section */}
-      <section className="relative pt-40 pb-20 px-4 overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0">
-          {isDark ? (
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900">
-              <div className="absolute inset-0 bg-gray-800 opacity-20"></div>
-            </div>
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-blue-50">
-              <div className="absolute inset-0 bg-white opacity-95"></div>
-            </div>
-          )}
-        </div>
-
-        <div className="relative max-w-7xl mx-auto text-center">
-          {/* Main Title */}
+      {/* Hero Section - Animações reforçadas */}
+      <section className="py-16 px-4 bg-gradient-to-br from-slate-50 via-white to-blue-50">
+        <div className="max-w-6xl mx-auto text-center">
           <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className={`text-5xl md:text-7xl font-bold mb-6 ${isDark ? 'text-white' : 'text-slate-800'}`}
+            initial={{ opacity: 0, y: 30, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="text-4xl md:text-6xl font-bold mb-6 text-slate-800"
           >
             {t('crypto.title')}
           </motion.h1>
           
-          {/* Subtitle */}
           <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className={`text-xl md:text-2xl max-w-4xl mx-auto mb-8 ${isDark ? 'text-gray-300' : 'text-slate-600'}`}
+            initial={{ opacity: 0, y: 30, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+            className="text-xl text-slate-600 max-w-3xl mx-auto mb-8"
           >
             {t('crypto.subtitle')}
           </motion.p>
           
-          {/* Description */}
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className={`text-lg max-w-3xl mx-auto ${isDark ? 'text-gray-400' : 'text-slate-500'}`}
+          <motion.div
+            initial={{ opacity: 0, y: 30, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
+            className="flex flex-col sm:flex-row gap-4 justify-center"
           >
-            {t('crypto.cta.subtitle')}
-          </motion.p>
+            <motion.button
+              onClick={() => navigate('/cadastro')}
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-8 py-4 bg-slate-600 text-white font-bold rounded-xl hover:bg-slate-700 transition-colors duration-300"
+            >
+              {t('crypto.cta.primary')}
+            </motion.button>
+            <motion.button
+              onClick={() => navigate('/sobre')}
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-8 py-4 bg-transparent border-2 border-slate-600 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition-colors duration-300"
+            >
+              {t('crypto.cta.secondary')}
+            </motion.button>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Principais Criptomoedas - Animações reforçadas */}
+      <section className="py-16 px-4 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl font-bold text-slate-800 mb-4">{t('crypto.realTimeQuotes')}</h2>
+            <p className="text-slate-600 max-w-2xl mx-auto">{t('crypto.realTimeQuotesDesc')}</p>
+          </motion.div>
+
+          {loading ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-12"
+            >
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-slate-600"></div>
+              <p className="mt-4 text-slate-600">{t('common.loading')}</p>
+            </motion.div>
+          ) : error ? (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center py-12"
+            >
+              <p className="text-red-600 mb-4">{error}</p>
+              <button
+                onClick={fetchCryptoData}
+                className="px-6 py-3 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors duration-300"
+              >
+                {t('common.tryAgain')}
+              </button>
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              {cryptoData.map((crypto, index) => (
+                <motion.div
+                  key={crypto.id}
+                  initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  whileHover={{ scale: 1.02, y: -5 }}
+                  className="bg-white p-6 rounded-xl shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-300"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                      <img src={crypto.image} alt={crypto.name} className="w-8 h-8 rounded-full" />
+                      <div>
+                        <h3 className="font-bold text-slate-800">{crypto.name}</h3>
+                        <p className="text-sm text-slate-500">{crypto.symbol.toUpperCase()}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-lg font-bold text-slate-800">
+                        ${crypto.current_price.toFixed(2)}
+                      </div>
+                      <div className="text-sm">
+                        {formatChange(crypto.price_change_percentage_24h)}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-slate-600">{t('crypto.details.volume')}:</span>
+                      <span className="text-slate-800">${formatVolume(crypto.total_volume)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-600">{t('crypto.details.marketCap')}:</span>
+                      <span className="text-slate-800">${formatMarketCap(crypto.market_cap)}</span>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
         </div>
       </section>
 
