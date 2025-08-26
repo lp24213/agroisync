@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { PaymentProvider } from './contexts/PaymentContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { ChatbotProvider } from './contexts/ChatbotContext';
 import RouteGuard from './components/RouteGuard';
 
 // Páginas principais
@@ -27,6 +28,7 @@ import PaymentSuccess from './pages/PaymentSuccess';
 import Messages from './pages/Messages';
 import MessagesProducts from './pages/MessagesProducts';
 import MessagesFreights from './pages/MessagesFreights';
+import Mensageria from './pages/Mensageria';
 
 // Páginas admin
 import AdminLogin from './pages/AdminLogin';
@@ -43,6 +45,10 @@ import GrainsDashboard from './pages/grains-dashboard';
 import IBGEData from './pages/ibge-data';
 import Receita from './pages/receita';
 import Global from './pages/global';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import OtpVerification from './pages/OtpVerification';
+import VerifyEmail from './pages/VerifyEmail';
 
 // Componentes
 import Navbar from './components/Navbar';
@@ -54,90 +60,104 @@ function App() {
       <ThemeProvider>
         <AuthProvider>
           <PaymentProvider>
-            <div className="App">
-              <Navbar />
-              <Routes>
-                {/* Rotas públicas */}
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/cadastro" element={<Cadastro />} />
-                <Route path="/sobre" element={<Sobre />} />
-                <Route path="/parcerias" element={<Parcerias />} />
-                <Route path="/contato" element={<Contato />} />
-                <Route path="/faq" element={<FAQ />} />
-                <Route path="/termos" element={<Termos />} />
-                <Route path="/privacidade" element={<Privacidade />} />
-                <Route path="/lgpd" element={<LGPD />} />
-                <Route path="/cookies" element={<Cookies />} />
-                <Route path="/ajuda" element={<Ajuda />} />
-                <Route path="/planos" element={<Planos />} />
-                <Route path="/payment-success" element={<PaymentSuccess />} />
-                <Route path="/agroconecta" element={<AgroConecta />} />
-                <Route path="/cripto" element={<Cripto />} />
-                <Route path="/cotacao" element={<Cotacao />} />
-                <Route path="/status" element={<Status />} />
-                <Route path="/commodities" element={<Commodities />} />
-                <Route path="/grains-dashboard" element={<GrainsDashboard />} />
-                <Route path="/ibge-data" element={<IBGEData />} />
-                <Route path="/receita" element={<Receita />} />
-                <Route path="/global" element={<Global />} />
+            <ChatbotProvider>
+              <div className="App">
+                <Navbar />
+                <Routes>
+                  {/* Rotas públicas */}
+                  <Route path="/" element={<Home />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/cadastro" element={<Cadastro />} />
+                  <Route path="/sobre" element={<Sobre />} />
+                  <Route path="/parcerias" element={<Parcerias />} />
+                  <Route path="/contato" element={<Contato />} />
+                  <Route path="/faq" element={<FAQ />} />
+                  <Route path="/termos" element={<Termos />} />
+                  <Route path="/privacidade" element={<Privacidade />} />
+                  <Route path="/lgpd" element={<LGPD />} />
+                  <Route path="/cookies" element={<Cookies />} />
+                  <Route path="/ajuda" element={<Ajuda />} />
+                  <Route path="/planos" element={<Planos />} />
+                  <Route path="/payment-success" element={<PaymentSuccess />} />
+                  <Route path="/agroconecta" element={<AgroConecta />} />
+                  <Route path="/cripto" element={<Cripto />} />
+                  <Route path="/cotacao" element={<Cotacao />} />
+                  <Route path="/status" element={<Status />} />
+                  <Route path="/commodities" element={<Commodities />} />
+                  <Route path="/grains-dashboard" element={<GrainsDashboard />} />
+                  <Route path="/ibge-data" element={<IBGEData />} />
+                  <Route path="/receita" element={<Receita />} />
+                  <Route path="/global" element={<Global />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
+                  <Route path="/reset-password" element={<ResetPassword />} />
+                  <Route path="/otp-verification" element={<OtpVerification />} />
+                  <Route path="/verify-email" element={<VerifyEmail />} />
 
-                {/* Rotas admin - requerem autenticação e permissão de admin */}
-                <Route 
-                  path="/admin" 
-                  element={
-                    <RouteGuard requireAdmin={true}>
-                      <Admin />
-                    </RouteGuard>
-                  } 
-                />
-                <Route 
-                  path="/admin/login" 
-                  element={<AdminLogin />} 
-                />
-                <Route 
-                  path="/admin/secure-panel" 
-                  element={
-                    <RouteGuard requireAdmin={true}>
-                      <AdminSecurePanel />
-                    </RouteGuard>
-                  } 
-                />
+                  {/* Rotas admin - requerem autenticação e permissão de admin */}
+                  <Route 
+                    path="/admin" 
+                    element={
+                      <RouteGuard requireAdmin={true}>
+                        <Admin />
+                      </RouteGuard>
+                    } 
+                  />
+                  <Route 
+                    path="/admin/login" 
+                    element={<AdminLogin />} 
+                  />
+                  <Route 
+                    path="/admin/secure-panel" 
+                    element={
+                      <RouteGuard requireAdmin={true}>
+                        <AdminSecurePanel />
+                      </RouteGuard>
+                    } 
+                  />
 
-                {/* Rotas de painel individual - requerem autenticação */}
-                <Route 
-                  path="/panel/loja" 
-                  element={
-                    <RouteGuard requireAuth={true}>
-                      <Loja />
-                    </RouteGuard>
-                  } 
-                />
-                <Route 
-                  path="/panel/agroconecta" 
-                  element={
-                    <RouteGuard requireAuth={true}>
-                      <AgroConecta />
-                    </RouteGuard>
-                  } 
-                />
+                  {/* Rotas de painel individual - requerem autenticação */}
+                  <Route 
+                    path="/panel/loja" 
+                    element={
+                      <RouteGuard requireAuth={true}>
+                        <Loja />
+                      </RouteGuard>
+                    } 
+                  />
+                  <Route 
+                    path="/panel/agroconecta" 
+                    element={
+                      <RouteGuard requireAuth={true}>
+                        <AgroConecta />
+                      </RouteGuard>
+                    } 
+                  />
 
-                {/* Rotas protegidas - requerem autenticação */}
-                <Route 
-                  path="/dashboard" 
-                  element={
-                    <RouteGuard requireAuth={true}>
-                      <Dashboard />
-                    </RouteGuard>
-                  } 
-                />
-                <Route 
-                  path="/loja" 
-                  element={<Loja />} 
-                />
-              </Routes>
-              <Footer />
-            </div>
+                  {/* Rotas protegidas - requerem autenticação */}
+                  <Route 
+                    path="/dashboard" 
+                    element={
+                      <RouteGuard requireAuth={true}>
+                        <Dashboard />
+                      </RouteGuard>
+                    } 
+                  />
+                  <Route 
+                    path="/loja" 
+                    element={<Loja />} 
+                  />
+                  <Route 
+                    path="/mensageria" 
+                    element={
+                      <RouteGuard requireAuth={true}>
+                        <Mensageria />
+                      </RouteGuard>
+                    } 
+                  />
+                </Routes>
+                <Footer />
+              </div>
+            </ChatbotProvider>
           </PaymentProvider>
         </AuthProvider>
       </ThemeProvider>

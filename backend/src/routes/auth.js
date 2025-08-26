@@ -1,453 +1,839 @@
 const express = require('express');
+const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
+const rateLimit = require('express-rate-limit');
 const User = require('../models/User');
-const { authenticateToken } = require('../middleware/auth');
-const { rateLimit } = require('../middleware/rateLimit');
+const awsService = require('../services/awsService');
 
-const router = express.Router();
-
-// Configurações
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
-
-// Validações para registro
-const registerValidation = [
-  body('name')
-    .trim()
-    .isLength({ min: 2, max: 100 })
-    .withMessage('Nome deve ter entre 2 e 100 caracteres'),
-  body('email')
-    .isEmail()
-    .normalizeEmail()
-    .withMessage('Email inválido'),
-  body('password')
-    .isLength({ min: 6 })
-    .withMessage('Senha deve ter pelo menos 6 caracteres'),
-  body('role')
-    .isIn(['comprador', 'anunciante', 'freteiro'])
-    .withMessage('Tipo de usuário inválido'),
-  body('cpfCnpj')
-    .trim()
-    .isLength({ min: 11, max: 18 })
-    .withMessage('CPF/CNPJ inválido'),
-  body('phone')
-    .trim()
-    .isLength({ min: 10, max: 15 })
-    .withMessage('Telefone inválido'),
-  body('address.cep')
-    .trim()
-    .isLength({ min: 8, max: 9 })
-    .withMessage('CEP inválido'),
-  body('address.street')
-    .trim()
-    .isLength({ min: 3, max: 200 })
-    .withMessage('Logradouro inválido'),
-  body('address.number')
-    .trim()
-    .isLength({ min: 1, max: 10 })
-    .withMessage('Número inválido'),
-  body('address.city')
-    .trim()
-    .isLength({ min: 2, max: 100 })
-    .withMessage('Cidade inválida'),
-  body('address.state')
-    .trim()
-    .isLength({ min: 2, max: 2 })
-    .isUppercase()
-    .withMessage('Estado inválido'),
-  body('companyName')
-    .if(body('role').equals('anunciante'))
-    .trim()
-    .isLength({ min: 2, max: 200 })
-    .withMessage('Nome da empresa é obrigatório para anunciantes'),
-  body('businessType')
-    .if(body('role').equals('anunciante'))
-    .trim()
-    .isLength({ min: 2, max: 100 })
-    .withMessage('Tipo de negócio é obrigatório para anunciantes'),
-  body('aceita_termos')
-    .isBoolean()
-    .custom(value => {
-      if (!value) {
-        throw new Error('Você deve aceitar os termos de uso');
-      }
-      return true;
-    })
-];
-
-// Validações para login
-const loginValidation = [
-  body('email')
-    .isEmail()
-    .normalizeEmail()
-    .withMessage('Email inválido'),
-  body('password')
-    .notEmpty()
-    .withMessage('Senha é obrigatória')
-];
-
-// POST /api/auth/register - Registro de usuário
-router.post('/register', 
-  rateLimit({ windowMs: 15 * 60 * 1000, max: 5 }), // 5 tentativas por 15 min
-  registerValidation,
-  async (req, res) => {
-    try {
-      // Verificar erros de validação
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({
-          success: false,
-          errors: errors.array()
-        });
-      }
-
-      const {
-        name,
-        email,
-        password,
-        role,
-        cpfCnpj,
-        ie,
-        phone,
-        address,
-        companyName,
-        businessType,
-        aceita_termos
-      } = req.body;
-
-      // Verificar se email já existe
-      const existingUser = await User.findOne({ email });
-      if (existingUser) {
-        return res.status(400).json({
-          success: false,
-          message: 'Email já cadastrado'
-        });
-      }
-
-      // Verificar se CPF/CNPJ já existe
-      const existingCpfCnpj = await User.findOne({ cpfCnpj });
-      if (existingCpfCnpj) {
-        return res.status(400).json({
-          success: false,
-          message: 'CPF/CNPJ já cadastrado'
-        });
-      }
-
-      // Criar usuário
-      const user = new User({
-        name,
-        email,
-        passwordHash: password, // Será hasheada pelo middleware
-        role,
-        cpfCnpj,
-        ie: role === 'anunciante' ? ie : undefined,
-        phone,
-        address,
-        companyName: role === 'anunciante' ? companyName : undefined,
-        businessType: role === 'anunciante' ? businessType : undefined,
-        aceita_termos
-      });
-
-      await user.save();
-
-      // Gerar JWT
-      const token = jwt.sign(
-        { 
-          userId: user._id, 
-          email: user.email, 
-          role: user.role 
-        },
-        JWT_SECRET,
-        { expiresIn: JWT_EXPIRES_IN }
-      );
-
-      // Configurar cookie httpOnly
-      res.cookie('authToken', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 dias
-      });
-
-      // Retornar dados do usuário (sem senha)
-      const userData = user.getPublicData();
-      
-      res.status(201).json({
-        success: true,
-        message: 'Usuário registrado com sucesso',
-        user: userData,
-        token
-      });
-
-    } catch (error) {
-      console.error('Erro no registro:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Erro interno do servidor'
-      });
-    }
-  }
-);
-
-// POST /api/auth/login - Login de usuário
-router.post('/login',
-  rateLimit({ windowMs: 15 * 60 * 1000, max: 10 }), // 10 tentativas por 15 min
-  loginValidation,
-  async (req, res) => {
-    try {
-      // Verificar erros de validação
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({
-          success: false,
-          errors: errors.array()
-        });
-      }
-
-      const { email, password } = req.body;
-
-      // Buscar usuário
-      const user = await User.findOne({ email });
-      if (!user) {
-        return res.status(401).json({
-          success: false,
-          message: 'Credenciais inválidas'
-        });
-      }
-
-      // Verificar se usuário está ativo
-      if (!user.isActive) {
-        return res.status(401).json({
-          success: false,
-          message: 'Conta desativada'
-        });
-      }
-
-      // Verificar senha
-      const isValidPassword = await user.comparePassword(password);
-      if (!isValidPassword) {
-        return res.status(401).json({
-          success: false,
-          message: 'Credenciais inválidas'
-        });
-      }
-
-      // Atualizar último login
-      user.lastLogin = new Date();
-      await user.save();
-
-      // Gerar JWT
-      const token = jwt.sign(
-        { 
-          userId: user._id, 
-          email: user.email, 
-          role: user.role 
-        },
-        JWT_SECRET,
-        { expiresIn: JWT_EXPIRES_IN }
-      );
-
-      // Configurar cookie httpOnly
-      res.cookie('authToken', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 dias
-      });
-
-      // Retornar dados do usuário
-      const userData = user.getPublicData();
-      
-      res.json({
-        success: true,
-        message: 'Login realizado com sucesso',
-        user: userData,
-        token
-      });
-
-    } catch (error) {
-      console.error('Erro no login:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Erro interno do servidor'
-      });
-    }
-  }
-);
-
-// POST /api/auth/logout - Logout
-router.post('/logout', (req, res) => {
-  res.clearCookie('authToken');
-  res.json({
-    success: true,
-    message: 'Logout realizado com sucesso'
-  });
+// Rate limiting para autenticação
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 5, // máximo 5 tentativas por IP
+  message: 'Muitas tentativas de autenticação. Tente novamente em 15 minutos.',
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
-// GET /api/auth/me - Obter dados do usuário logado
-router.get('/me', authenticateToken, async (req, res) => {
+const passwordResetLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hora
+  max: 3, // máximo 3 tentativas por IP
+  message: 'Muitas tentativas de recuperação de senha. Tente novamente em 1 hora.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const otpLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000, // 5 minutos
+  max: 3, // máximo 3 tentativas por IP
+  message: 'Muitas tentativas de OTP. Tente novamente em 5 minutos.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Validações comuns
+const emailValidation = body('email')
+  .isEmail()
+  .normalizeEmail()
+  .withMessage('Email inválido');
+
+const passwordValidation = body('password')
+  .isLength({ min: 6 })
+  .withMessage('Senha deve ter pelo menos 6 caracteres');
+
+const phoneValidation = body('phone')
+  .matches(/^\(\d{2}\) \d{4,5}-\d{4}$/)
+  .withMessage('Telefone deve estar no formato (11) 99999-9999');
+
+// POST /auth/register - Registro de usuário
+router.post('/register', [
+  body('name').trim().isLength({ min: 2, max: 100 }).withMessage('Nome deve ter entre 2 e 100 caracteres'),
+  emailValidation,
+  passwordValidation,
+  phoneValidation,
+  body('documentType').isIn(['CPF', 'CNPJ']).withMessage('Tipo de documento inválido'),
+  body('document').trim().isLength({ min: 11, max: 18 }).withMessage('Documento inválido'),
+  body('cep').matches(/^\d{5}-\d{3}$/).withMessage('CEP deve estar no formato 12345-678'),
+  body('address.street').trim().isLength({ min: 3, max: 200 }).withMessage('Rua deve ter entre 3 e 200 caracteres'),
+  body('address.number').trim().isLength({ min: 1, max: 10 }).withMessage('Número inválido'),
+  body('address.neighborhood').trim().isLength({ min: 2, max: 100 }).withMessage('Bairro deve ter entre 2 e 100 caracteres'),
+  body('address.city').trim().isLength({ min: 2, max: 100 }).withMessage('Cidade deve ter entre 2 e 100 caracteres'),
+  body('address.state').trim().isLength({ min: 2, max: 2 }).withMessage('Estado deve ter 2 caracteres'),
+  body('userType').optional().isIn(['loja', 'agroconecta', 'both']).withMessage('Tipo de usuário inválido'),
+  body('userCategory').optional().isIn(['anunciante', 'comprador', 'freteiro', 'ambos']).withMessage('Categoria de usuário inválida')
+], async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId);
-    if (!user) {
-      return res.status(404).json({
+    // Verificar erros de validação
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
         success: false,
-        message: 'Usuário não encontrado'
+        message: 'Dados inválidos',
+        errors: errors.array()
       });
     }
 
-    // Retornar dados públicos
-    const userData = user.getPublicData();
-    
-    res.json({
+    const {
+      name, email, password, phone, documentType, document, ie,
+      cep, address, userType, userCategory
+    } = req.body;
+
+    // Verificar se usuário já existe
+    const existingUser = await User.findOne({
+      $or: [{ email }, { document }]
+    });
+
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: existingUser.email === email ? 'Email já cadastrado' : 'Documento já cadastrado'
+      });
+    }
+
+    // Verificar se IE é obrigatório para CNPJ
+    if (documentType === 'CNPJ' && !ie) {
+      return res.status(400).json({
+        success: false,
+        message: 'Inscrição Estadual é obrigatória para CNPJ'
+      });
+    }
+
+    // Criar usuário
+    const user = new User({
+      name,
+      email,
+      password,
+      phone,
+      documentType,
+      document,
+      ie,
+      cep,
+      address,
+      userType,
+      userCategory
+    });
+
+    await user.save();
+
+    // Gerar token de verificação de email
+    await user.generateEmailVerificationToken();
+
+    // Enviar email de verificação
+    const emailResult = await awsService.sendEmailVerification(email, user.emailVerificationToken, name);
+
+    // Enviar SMS de boas-vindas
+    const smsResult = await awsService.sendWelcomeSMS(phone, name);
+
+    // Gerar JWT
+    const token = jwt.sign(
+      { userId: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+    );
+
+    // Atualizar último login
+    user.lastLoginAt = new Date();
+    await user.save();
+
+    res.status(201).json({
       success: true,
-      user: userData
+      message: 'Usuário criado com sucesso',
+      data: {
+        user: user.getPublicData(),
+        token,
+        requiresEmailVerification: true,
+        emailSent: emailResult.success,
+        smsSent: smsResult.success
+      }
     });
 
   } catch (error) {
-    console.error('Erro ao buscar usuário:', error);
+    console.error('Erro no registro:', error);
     res.status(500).json({
       success: false,
-      message: 'Erro interno do servidor'
+      message: 'Erro interno do servidor',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// GET /api/auth/me/private - Obter dados privados do usuário (apenas se pago)
-router.get('/me/private', authenticateToken, async (req, res) => {
+// POST /auth/login - Login de usuário
+router.post('/login', [
+  emailValidation,
+  body('password').notEmpty().withMessage('Senha é obrigatória')
+], authLimiter, async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId);
+    // Verificar erros de validação
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Dados inválidos',
+        errors: errors.array()
+      });
+    }
+
+    const { email, password } = req.body;
+
+    // Buscar usuário
+    const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'Usuário não encontrado'
-      });
-    }
-
-    // Verificar se usuário pagou
-    if (!user.isPaid || !user.isPlanActive()) {
-      return res.status(403).json({
-        success: false,
-        message: 'Acesso negado: usuário não possui plano ativo'
-      });
-    }
-
-    // Retornar dados privados
-    const privateData = user.getPrivateData();
-    
-    res.json({
-      success: true,
-      user: privateData
-    });
-
-  } catch (error) {
-    console.error('Erro ao buscar dados privados:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-});
-
-// POST /api/auth/refresh - Renovar token
-router.post('/refresh', authenticateToken, async (req, res) => {
-  try {
-    const user = await User.findById(req.user.userId);
-    if (!user || !user.isActive) {
       return res.status(401).json({
         success: false,
-        message: 'Usuário não autorizado'
+        message: 'Email ou senha inválidos'
+      });
+    }
+
+    // Verificar se conta está ativa
+    if (!user.isActive) {
+      return res.status(401).json({
+        success: false,
+        message: 'Conta desativada. Entre em contato com o suporte.'
+      });
+    }
+
+    // Verificar senha
+    const isPasswordValid = await user.comparePassword(password);
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        success: false,
+        message: 'Email ou senha inválidos'
+      });
+    }
+
+    // Verificar se 2FA está habilitado
+    if (user.twoFactorEnabled) {
+      // Gerar token temporário para 2FA
+      const tempToken = jwt.sign(
+        { userId: user._id, email: user.email, requires2FA: true },
+        process.env.JWT_SECRET,
+        { expiresIn: '5m' }
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: '2FA necessário',
+        data: {
+          requires2FA: true,
+          tempToken,
+          userId: user._id
+        }
+      });
+    }
+
+    // Login sem 2FA
+    const token = jwt.sign(
+      { userId: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+    );
+
+    // Atualizar último login
+    user.lastLoginAt = new Date();
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Login realizado com sucesso',
+      data: {
+        user: user.getPublicData(),
+        token,
+        requires2FA: false
+      }
+    });
+
+  } catch (error) {
+    console.error('Erro no login:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// POST /auth/forgot-password - Solicitar recuperação de senha
+router.post('/forgot-password', [
+  emailValidation
+], passwordResetLimiter, async (req, res) => {
+  try {
+    // Verificar erros de validação
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Dados inválidos',
+        errors: errors.array()
+      });
+    }
+
+    const { email } = req.body;
+
+    // Buscar usuário
+    const user = await User.findOne({ email });
+    if (!user) {
+      // Por segurança, não revelar se o email existe ou não
+      return res.json({
+        success: true,
+        message: 'Se o email estiver cadastrado, você receberá um link de recuperação'
+      });
+    }
+
+    // Verificar se conta está ativa
+    if (!user.isActive) {
+      return res.status(400).json({
+        success: false,
+        message: 'Conta desativada. Entre em contato com o suporte.'
+      });
+    }
+
+    // Verificar se não está bloqueado
+    if (user.isPasswordResetLocked) {
+      return res.status(429).json({
+        success: false,
+        message: 'Muitas tentativas. Tente novamente em alguns minutos.'
+      });
+    }
+
+    // Gerar token de recuperação
+    await user.generatePasswordResetToken();
+
+    // Enviar email
+    const emailResult = await awsService.sendPasswordResetEmail(email, user.passwordResetToken, user.name);
+
+    if (emailResult.success) {
+      res.json({
+        success: true,
+        message: 'Link de recuperação enviado para seu email'
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Erro ao enviar email. Tente novamente.'
+      });
+    }
+
+  } catch (error) {
+    console.error('Erro na recuperação de senha:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// POST /auth/reset-password - Redefinir senha
+router.post('/reset-password', [
+  body('token').notEmpty().withMessage('Token é obrigatório'),
+  passwordValidation,
+  body('confirmPassword').custom((value, { req }) => {
+    if (value !== req.body.password) {
+      throw new Error('Senhas não coincidem');
+    }
+    return true;
+  })
+], async (req, res) => {
+  try {
+    // Verificar erros de validação
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Dados inválidos',
+        errors: errors.array()
+      });
+    }
+
+    const { token, password } = req.body;
+
+    // Buscar usuário pelo token
+    const user = await User.findOne({
+      passwordResetToken: token,
+      passwordResetExpires: { $gt: new Date() }
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: 'Token inválido ou expirado'
+      });
+    }
+
+    // Atualizar senha
+    user.password = password;
+    await user.clearPasswordResetToken();
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Senha redefinida com sucesso'
+    });
+
+  } catch (error) {
+    console.error('Erro na redefinição de senha:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// POST /auth/send-otp - Enviar código OTP para 2FA
+router.post('/send-otp', [
+  body('userId').isMongoId().withMessage('ID de usuário inválido')
+], otpLimiter, async (req, res) => {
+  try {
+    // Verificar erros de validação
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Dados inválidos',
+        errors: errors.array()
+      });
+    }
+
+    const { userId } = req.body;
+
+    // Buscar usuário
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuário não encontrado'
+      });
+    }
+
+    // Verificar se 2FA está habilitado
+    if (!user.twoFactorEnabled) {
+      return res.status(400).json({
+        success: false,
+        message: '2FA não está habilitado para esta conta'
+      });
+    }
+
+    // Verificar se não está bloqueado
+    if (user.isTwoFactorLocked) {
+      return res.status(429).json({
+        success: false,
+        message: 'Conta temporariamente bloqueada. Tente novamente em alguns minutos.'
+      });
+    }
+
+    // Gerar código OTP de 6 dígitos
+    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    // Armazenar OTP temporariamente (em produção, usar Redis)
+    user.phoneVerificationToken = otpCode;
+    user.phoneVerificationExpires = new Date(Date.now() + 5 * 60 * 1000); // 5 minutos
+    await user.save();
+
+    // Enviar SMS
+    const smsResult = await awsService.sendOTPSMS(user.phone, otpCode, user.name);
+
+    if (smsResult.success) {
+      res.json({
+        success: true,
+        message: 'Código OTP enviado para seu telefone'
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Erro ao enviar SMS. Tente novamente.'
+      });
+    }
+
+  } catch (error) {
+    console.error('Erro ao enviar OTP:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// POST /auth/verify-otp - Verificar código OTP
+router.post('/verify-otp', [
+  body('userId').isMongoId().withMessage('ID de usuário inválido'),
+  body('otpCode').isLength({ min: 6, max: 6 }).withMessage('Código OTP deve ter 6 dígitos')
+], otpLimiter, async (req, res) => {
+  try {
+    // Verificar erros de validação
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Dados inválidos',
+        errors: errors.array()
+      });
+    }
+
+    const { userId, otpCode } = req.body;
+
+    // Buscar usuário
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuário não encontrado'
+      });
+    }
+
+    // Verificar se 2FA está habilitado
+    if (!user.twoFactorEnabled) {
+      return res.status(400).json({
+        success: false,
+        message: '2FA não está habilitado para esta conta'
+      });
+    }
+
+    // Verificar se não está bloqueado
+    if (user.isTwoFactorLocked) {
+      return res.status(429).json({
+        success: false,
+        message: 'Conta temporariamente bloqueada. Tente novamente em alguns minutos.'
+      });
+    }
+
+    // Verificar código OTP
+    if (user.phoneVerificationToken !== otpCode) {
+      // Incrementar tentativas falhadas
+      user.failedTwoFactorAttempts += 1;
+      
+      // Bloquear após 5 tentativas falhadas
+      if (user.failedTwoFactorAttempts >= 5) {
+        user.twoFactorLockoutUntil = new Date(Date.now() + 15 * 60 * 1000); // 15 minutos
+      }
+      
+      await user.save();
+
+      return res.status(400).json({
+        success: false,
+        message: 'Código OTP inválido'
+      });
+    }
+
+    // Verificar se expirou
+    if (user.phoneVerificationExpires < new Date()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Código OTP expirado'
+      });
+    }
+
+    // Código válido - limpar e gerar token final
+    user.phoneVerificationToken = null;
+    user.phoneVerificationExpires = null;
+    user.failedTwoFactorAttempts = 0;
+    user.lastTwoFactorAttempt = new Date();
+    user.lastLoginAt = new Date();
+    await user.save();
+
+    // Gerar JWT final
+    const token = jwt.sign(
+      { userId: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+    );
+
+    res.json({
+      success: true,
+      message: '2FA verificado com sucesso',
+      data: {
+        user: user.getPublicData(),
+        token,
+        requires2FA: false
+      }
+    });
+
+  } catch (error) {
+    console.error('Erro na verificação OTP:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// POST /auth/verify-email - Verificar email
+router.post('/verify-email', [
+  body('token').notEmpty().withMessage('Token é obrigatório')
+], async (req, res) => {
+  try {
+    // Verificar erros de validação
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Dados inválidos',
+        errors: errors.array()
+      });
+    }
+
+    const { token } = req.body;
+
+    // Buscar usuário pelo token
+    const user = await User.findOne({
+      emailVerificationToken: token,
+      emailVerificationExpires: { $gt: new Date() }
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: 'Token inválido ou expirado'
+      });
+    }
+
+    // Verificar email
+    user.emailVerifiedAt = new Date();
+    user.emailVerificationToken = null;
+    user.emailVerificationExpires = null;
+    user.isVerified = true;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Email verificado com sucesso'
+    });
+
+  } catch (error) {
+    console.error('Erro na verificação de email:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// POST /auth/resend-verification - Reenviar email de verificação
+router.post('/resend-verification', [
+  emailValidation
+], async (req, res) => {
+  try {
+    // Verificar erros de validação
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Dados inválidos',
+        errors: errors.array()
+      });
+    }
+
+    const { email } = req.body;
+
+    // Buscar usuário
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuário não encontrado'
+      });
+    }
+
+    // Verificar se já está verificado
+    if (user.emailVerifiedAt) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email já foi verificado'
       });
     }
 
     // Gerar novo token
-    const newToken = jwt.sign(
-      { 
-        userId: user._id, 
-        email: user.email, 
-        role: user.role 
-      },
-      JWT_SECRET,
-      { expiresIn: JWT_EXPIRES_IN }
-    );
+    await user.generateEmailVerificationToken();
 
-    // Configurar novo cookie
-    res.cookie('authToken', newToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 dias
-    });
+    // Enviar email
+    const emailResult = await awsService.sendEmailVerification(email, user.emailVerificationToken, user.name);
 
-    res.json({
-      success: true,
-      message: 'Token renovado com sucesso',
-      token: newToken
-    });
+    if (emailResult.success) {
+      res.json({
+        success: true,
+        message: 'Email de verificação reenviado'
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Erro ao enviar email. Tente novamente.'
+      });
+    }
 
   } catch (error) {
-    console.error('Erro ao renovar token:', error);
+    console.error('Erro ao reenviar verificação:', error);
     res.status(500).json({
       success: false,
-      message: 'Erro interno do servidor'
+      message: 'Erro interno do servidor',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// POST /api/auth/change-password - Alterar senha
-router.post('/change-password', 
-  authenticateToken,
-  [
-    body('currentPassword').notEmpty().withMessage('Senha atual é obrigatória'),
-    body('newPassword').isLength({ min: 6 }).withMessage('Nova senha deve ter pelo menos 6 caracteres')
-  ],
-  async (req, res) => {
-    try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({
-          success: false,
-          errors: errors.array()
-        });
-      }
-
-      const { currentPassword, newPassword } = req.body;
-      const user = await User.findById(req.user.userId);
-
-      if (!user) {
-        return res.status(404).json({
-          success: false,
-          message: 'Usuário não encontrado'
-        });
-      }
-
-      // Verificar senha atual
-      const isValidPassword = await user.comparePassword(currentPassword);
-      if (!isValidPassword) {
-        return res.status(400).json({
-          success: false,
-          message: 'Senha atual incorreta'
-        });
-      }
-
-      // Alterar senha
-      user.passwordHash = newPassword; // Será hasheada pelo middleware
-      await user.save();
-
-      res.json({
-        success: true,
-        message: 'Senha alterada com sucesso'
-      });
-
-    } catch (error) {
-      console.error('Erro ao alterar senha:', error);
-      res.status(500).json({
+// GET /auth/profile - Obter perfil do usuário
+router.get('/profile', async (req, res) => {
+  try {
+    // Extrair token do header
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({
         success: false,
-        message: 'Erro interno do servidor'
+        message: 'Token de autenticação não fornecido'
       });
     }
+
+    const token = authHeader.substring(7);
+
+    // Verificar token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // Buscar usuário
+    const user = await User.findById(decoded.userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuário não encontrado'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: {
+        user: user.getPublicData()
+      }
+    });
+
+  } catch (error) {
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({
+        success: false,
+        message: 'Token inválido'
+      });
+    }
+    
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({
+        success: false,
+        message: 'Token expirado'
+      });
+    }
+
+    console.error('Erro ao obter perfil:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
-);
+});
+
+// PUT /auth/profile - Atualizar perfil do usuário
+router.put('/profile', [
+  body('name').optional().trim().isLength({ min: 2, max: 100 }).withMessage('Nome deve ter entre 2 e 100 caracteres'),
+  body('phone').optional().matches(/^\(\d{2}\) \d{4,5}-\d{4}$/).withMessage('Telefone deve estar no formato (11) 99999-9999'),
+  body('bio').optional().trim().isLength({ max: 500 }).withMessage('Bio não pode ter mais de 500 caracteres'),
+  body('website').optional().isURL().withMessage('Website deve ser uma URL válida'),
+  body('preferences.language').optional().isIn(['pt', 'en', 'es', 'zh']).withMessage('Idioma inválido'),
+  body('preferences.timezone').optional().isLength({ min: 3, max: 50 }).withMessage('Timezone inválido')
+], async (req, res) => {
+  try {
+    // Verificar erros de validação
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Dados inválidos',
+        errors: errors.array()
+      });
+    }
+
+    // Extrair token do header
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({
+        success: false,
+        message: 'Token de autenticação não fornecido'
+      });
+    }
+
+    const token = authHeader.substring(7);
+
+    // Verificar token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // Buscar usuário
+    const user = await User.findById(decoded.userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuário não encontrado'
+      });
+    }
+
+    // Atualizar campos permitidos
+    const allowedFields = ['name', 'phone', 'bio', 'website', 'socialMedia', 'preferences'];
+    allowedFields.forEach(field => {
+      if (req.body[field] !== undefined) {
+        user[field] = req.body[field];
+      }
+    });
+
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Perfil atualizado com sucesso',
+      data: {
+        user: user.getPublicData()
+      }
+    });
+
+  } catch (error) {
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({
+        success: false,
+        message: 'Token inválido'
+      });
+    }
+    
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({
+        success: false,
+        message: 'Token expirado'
+      });
+    }
+
+    console.error('Erro ao atualizar perfil:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// POST /auth/logout - Logout (opcional, para invalidar tokens)
+router.post('/logout', async (req, res) => {
+  try {
+    // Em uma implementação mais robusta, você pode invalidar o token
+    // Por exemplo, adicionando-o a uma blacklist no Redis
+    
+    res.json({
+      success: true,
+      message: 'Logout realizado com sucesso'
+    });
+  } catch (error) {
+    console.error('Erro no logout:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
 
 module.exports = router;

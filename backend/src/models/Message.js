@@ -1,283 +1,390 @@
 const mongoose = require('mongoose');
 
 const messageSchema = new mongoose.Schema({
-  // Remetente e destinatário
-  fromUser: {
+  // Conversa à qual a mensagem pertence
+  conversation: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: [true, 'Usuário remetente é obrigatório']
+    ref: 'Conversation',
+    required: true,
+    index: true
   },
-  toUser: {
+
+  // Remetente da mensagem
+  sender: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: [true, 'Usuário destinatário é obrigatório']
+    required: true,
+    index: true
   },
 
   // Conteúdo da mensagem
-  subject: {
+  content: {
     type: String,
-    required: [true, 'Assunto é obrigatório'],
+    required: true,
     trim: true,
-    maxlength: [200, 'Assunto não pode ter mais de 200 caracteres']
-  },
-  message: {
-    type: String,
-    required: [true, 'Mensagem é obrigatória'],
-    trim: true,
-    maxlength: [2000, 'Mensagem não pode ter mais de 2000 caracteres']
+    maxlength: [5000, 'Mensagem não pode ter mais de 5000 caracteres']
   },
 
-  // Contexto da mensagem (produto ou frete)
-  context: {
-    type: {
-      type: String,
-      enum: ['product', 'freight', 'general', 'payment'],
-      default: 'general'
-    },
-    productId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Product'
-    },
-    freightId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Freight'
+  // Tipo de mensagem
+  type: {
+    type: String,
+    enum: ['text', 'file', 'image', 'system'],
+    default: 'text'
+  },
+
+  // Arquivo anexado (se aplicável)
+  file: {
+    name: String,
+    size: Number,
+    type: String,
+    url: String,
+    thumbnail: String,
+    uploadedAt: {
+      type: Date,
+      default: Date.now
     }
+  },
+
+  // Metadados da mensagem
+  metadata: {
+    type: Map,
+    of: mongoose.Schema.Types.Mixed
   },
 
   // Status da mensagem
   status: {
     type: String,
-    enum: ['sent', 'delivered', 'read', 'archived', 'deleted'],
+    enum: ['sent', 'delivered', 'read', 'failed'],
     default: 'sent'
   },
 
-  // Metadados
-  isRead: {
-    type: Boolean,
-    default: false
-  },
-  readAt: Date,
-  isArchived: {
-    type: Boolean,
-    default: false
-  },
-  archivedAt: Date,
-
-  // Anexos
-  attachments: [{
-    filename: {
-      type: String,
-      required: true
-    },
-    url: {
-      type: String,
-      required: true
-    },
-    size: Number,
-    mimeType: String,
-    uploadedAt: {
-      type: Date,
-      default: Date.now
-    }
-  }],
-
-  // Respostas (thread de mensagens)
-  parentMessage: {
+  // Usuários que leram a mensagem
+  readBy: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Message'
-  },
-  replies: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Message'
+    ref: 'User'
   }],
-
-  // Notificações
-  notifications: {
-    emailSent: {
-      type: Boolean,
-      default: false
-    },
-    pushSent: {
-      type: Boolean,
-      default: false
-    },
-    smsSent: {
-      type: Boolean,
-      default: false
-    }
-  },
 
   // Timestamps
-  sentAt: {
-    type: Date,
-    default: Date.now
-  },
-  deliveredAt: Date
+  deliveredAt: Date,
+  readAt: Date,
+  failedAt: Date,
+  deletedAt: Date
 }, {
-  timestamps: true
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
 });
 
 // Índices para performance
-messageSchema.index({ fromUser: 1, createdAt: -1 });
-messageSchema.index({ toUser: 1, createdAt: -1 });
-messageSchema.index({ 'context.productId': 1 });
-messageSchema.index({ 'context.freightId': 1 });
-messageSchema.index({ status: 1 });
-messageSchema.index({ isRead: 1 });
-messageSchema.index({ parentMessage: 1 });
-messageSchema.index({ createdAt: -1 });
+messageSchema.index({ conversation: 1, createdAt: -1 });
+messageSchema.index({ sender: 1, createdAt: -1 });
+messageSchema.index({ type: 1, createdAt: -1 });
+messageSchema.index({ status: 1, createdAt: -1 });
+messageSchema.index({ 'readBy': 1 });
 
-// Middleware para marcar como entregue
+// Virtual para verificar se mensagem foi lida
+messageSchema.virtual('isRead').get(function() {
+  return this.readBy.length > 0;
+});
+
+// Virtual para verificar se mensagem foi entregue
+messageSchema.virtual('isDelivered').get(function() {
+  return this.status === 'delivered' || this.status === 'read';
+});
+
+// Virtual para verificar se mensagem falhou
+messageSchema.virtual('isFailed').get(function() {
+  return this.status === 'failed';
+});
+
+// Virtual para verificar se mensagem tem arquivo
+messageSchema.virtual('hasFile').get(function() {
+  return this.type === 'file' && this.file && this.file.url;
+});
+
+// Virtual para verificar se mensagem tem imagem
+messageSchema.virtual('hasImage').get(function() {
+  return this.type === 'image' && this.file && this.file.url;
+});
+
+// Virtual para verificar se mensagem é do sistema
+messageSchema.virtual('isSystem').get(function() {
+  return this.type === 'system';
+});
+
+// Middleware para atualizar timestamps baseado no status
 messageSchema.pre('save', function(next) {
-  if (this.isNew && !this.deliveredAt) {
-    this.deliveredAt = new Date();
+  if (this.isModified('status')) {
+    const now = new Date();
+    
+    switch (this.status) {
+      case 'delivered':
+        this.deliveredAt = now;
+        break;
+      case 'read':
+        this.readAt = now;
+        break;
+      case 'failed':
+        this.failedAt = now;
+        break;
+    }
   }
   next();
 });
 
-// Método para marcar como lida
-messageSchema.methods.markAsRead = function() {
-  this.isRead = true;
-  this.status = 'read';
-  this.readAt = new Date();
+// Método para marcar como entregue
+messageSchema.methods.markAsDelivered = function() {
+  this.status = 'delivered';
+  this.deliveredAt = new Date();
   return this.save();
 };
 
-// Método para arquivar mensagem
-messageSchema.methods.archive = function() {
-  this.isArchived = true;
-  this.status = 'archived';
-  this.archivedAt = new Date();
+// Método para marcar como lida por um usuário
+messageSchema.methods.markAsRead = function(userId) {
+  if (!this.readBy.includes(userId)) {
+    this.readBy.push(userId);
+    this.status = 'read';
+    this.readAt = new Date();
+  }
   return this.save();
 };
 
-// Método para obter dados da mensagem para exibição
-messageSchema.methods.getDisplayData = function(userId) {
-  const isSender = this.fromUser.toString() === userId.toString();
-  
+// Método para marcar como falhou
+messageSchema.methods.markAsFailed = function(reason) {
+  this.status = 'failed';
+  this.failedAt = new Date();
+  if (reason) {
+    this.metadata.set('failureReason', reason);
+  }
+  return this.save();
+};
+
+// Método para verificar se usuário leu a mensagem
+messageSchema.methods.isReadBy = function(userId) {
+  return this.readBy.some(id => id.toString() === userId.toString());
+};
+
+// Método para obter dados públicos da mensagem
+messageSchema.methods.getPublicData = function() {
   return {
-    _id: this._id,
-    subject: this.subject,
-    message: this.message,
-    context: this.context,
+    id: this._id,
+    content: this.content,
+    type: this.type,
     status: this.status,
-    isRead: this.isRead,
-    isArchived: this.isArchived,
-    sentAt: this.sentAt,
-    deliveredAt: this.deliveredAt,
-    attachments: this.attachments,
-    isSender,
-    direction: isSender ? 'outgoing' : 'incoming'
+    createdAt: this.createdAt,
+    updatedAt: this.updatedAt
   };
 };
 
-// Método para obter thread de mensagens
-messageSchema.methods.getThread = function() {
-  return this.model('Message').find({
-    $or: [
-      { _id: this._id },
-      { parentMessage: this._id },
-      { _id: { $in: this.replies } }
-    ]
-  }).sort({ createdAt: 1 }).populate('fromUser', 'name').populate('toUser', 'name');
+// Método para obter dados completos da mensagem
+messageSchema.methods.getFullData = function(userId) {
+  const data = {
+    ...this.getPublicData(),
+    conversation: this.conversation,
+    sender: this.sender,
+    file: this.file,
+    metadata: this.metadata,
+    readBy: this.readBy,
+    deliveredAt: this.deliveredAt,
+    readAt: this.readAt,
+    failedAt: this.failedAt
+  };
+
+  // Adicionar informações de leitura específicas do usuário
+  data.isReadByUser = this.isReadBy(userId);
+  
+  return data;
 };
 
-// Método estático para buscar conversas de um usuário
-messageSchema.statics.getUserConversations = function(userId, limit = 20, skip = 0) {
-  return this.aggregate([
-    {
-      $match: {
-        $or: [
-          { fromUser: mongoose.Types.ObjectId(userId) },
-          { toUser: mongoose.Types.ObjectId(userId) }
-        ],
-        status: { $ne: 'deleted' }
-      }
-    },
-    {
-      $addFields: {
-        otherUser: {
-          $cond: {
-            if: { $eq: ['$fromUser', mongoose.Types.ObjectId(userId)] },
-            then: '$toUser',
-            else: '$fromUser'
-          }
-        },
-        isOutgoing: {
-          $eq: ['$fromUser', mongoose.Types.ObjectId(userId)]
-        }
-      }
-    },
+// Método para obter dados da mensagem para exibição
+messageSchema.methods.getDisplayData = function(currentUserId) {
+  const data = {
+    id: this._id,
+    content: this.content,
+    type: this.type,
+    status: this.status,
+    createdAt: this.createdAt,
+    isRead: this.isRead,
+    isDelivered: this.isDelivered,
+    isFailed: this.isFailed,
+    hasFile: this.hasFile,
+    hasImage: this.hasImage,
+    isSystem: this.isSystem
+  };
+
+  // Adicionar informações específicas do usuário
+  if (currentUserId) {
+    data.isReadByUser = this.isReadBy(currentUserId);
+    data.isOwnMessage = this.sender.toString() === currentUserId.toString();
+  }
+
+  // Adicionar informações do arquivo se existir
+  if (this.file) {
+    data.file = {
+      name: this.file.name,
+      size: this.file.size,
+      type: this.file.type,
+      url: this.file.url,
+      thumbnail: this.file.thumbnail
+    };
+  }
+
+  return data;
+};
+
+// Método estático para buscar mensagens de uma conversa
+messageSchema.statics.findByConversation = function(conversationId, options = {}) {
+  const query = { conversation: conversationId };
+
+  if (options.type) {
+    query.type = options.type;
+  }
+
+  if (options.sender) {
+    query.sender = options.sender;
+  }
+
+  if (options.status) {
+    query.status = options.status;
+  }
+
+  const sort = options.sort || { createdAt: 1 }; // Ordem cronológica
+  const limit = options.limit || 50;
+  const skip = options.skip || 0;
+
+  return this.find(query)
+    .populate('sender', 'name email avatar')
+    .populate('readBy', 'name email avatar')
+    .sort(sort)
+    .limit(limit)
+    .skip(skip);
+};
+
+// Método estático para buscar mensagens não lidas de um usuário
+messageSchema.statics.findUnreadByUser = function(userId, conversationId = null) {
+  const query = {
+    'readBy': { $ne: userId },
+    sender: { $ne: userId } // Não incluir mensagens próprias
+  };
+
+  if (conversationId) {
+    query.conversation = conversationId;
+  }
+
+  return this.find(query)
+    .populate('sender', 'name email avatar')
+    .populate('conversation', 'title type')
+    .sort({ createdAt: -1 });
+};
+
+// Método estático para buscar mensagens de um usuário
+messageSchema.statics.findByUser = function(userId, options = {}) {
+  const query = { sender: userId };
+
+  if (options.conversation) {
+    query.conversation = options.conversation;
+  }
+
+  if (options.type) {
+    query.type = options.type;
+  }
+
+  if (options.status) {
+    query.status = options.status;
+  }
+
+  const sort = options.sort || { createdAt: -1 };
+  const limit = options.limit || 50;
+  const skip = options.skip || 0;
+
+  return this.find(query)
+    .populate('conversation', 'title type participants')
+    .populate('readBy', 'name email avatar')
+    .sort(sort)
+    .limit(limit)
+    .skip(skip);
+};
+
+// Método estático para estatísticas de mensagens
+messageSchema.statics.getStats = async function(userId = null) {
+  const match = {};
+  if (userId) match.sender = userId;
+
+  const stats = await this.aggregate([
+    { $match: match },
     {
       $group: {
-        _id: '$otherUser',
-        lastMessage: { $first: '$$ROOT' },
-        messageCount: { $sum: 1 },
-        unreadCount: {
-          $sum: {
-            $cond: [
-              {
-                $and: [
-                  { $eq: ['$toUser', mongoose.Types.ObjectId(userId)] },
-                  { $eq: ['$isRead', false] }
-                ]
-              },
-              1,
-              0
-            ]
-          }
+        _id: null,
+        totalMessages: { $sum: 1 },
+        textMessages: {
+          $sum: { $cond: [{ $eq: ['$type', 'text'] }, 1, 0] }
+        },
+        fileMessages: {
+          $sum: { $cond: [{ $eq: ['$type', 'file'] }, 1, 0] }
+        },
+        imageMessages: {
+          $sum: { $cond: [{ $eq: ['$type', 'image'] }, 1, 0] }
+        },
+        systemMessages: {
+          $sum: { $cond: [{ $eq: ['$type', 'system'] }, 1, 0] }
+        },
+        sentMessages: {
+          $sum: { $cond: [{ $eq: ['$status', 'sent'] }, 1, 0] }
+        },
+        deliveredMessages: {
+          $sum: { $cond: [{ $eq: ['$status', 'delivered'] }, 1, 0] }
+        },
+        readMessages: {
+          $sum: { $cond: [{ $eq: ['$status', 'read'] }, 1, 0] }
+        },
+        failedMessages: {
+          $sum: { $cond: [{ $eq: ['$status', 'failed'] }, 1, 0] }
         }
       }
-    },
-    {
-      $sort: { 'lastMessage.createdAt': -1 }
-    },
-    {
-      $skip: skip
-    },
-    {
-      $limit: limit
     }
   ]);
+
+  return stats[0] || {
+    totalMessages: 0,
+    textMessages: 0,
+    fileMessages: 0,
+    imageMessages: 0,
+    systemMessages: 0,
+    sentMessages: 0,
+    deliveredMessages: 0,
+    readMessages: 0,
+    failedMessages: 0
+  };
 };
 
-// Método estático para buscar mensagens entre dois usuários
-messageSchema.statics.getConversation = function(user1Id, user2Id, limit = 50, skip = 0) {
-  return this.find({
-    $or: [
-      { fromUser: user1Id, toUser: user2Id },
-      { fromUser: user2Id, toUser: user1Id }
-    ],
-    status: { $ne: 'deleted' }
-  })
-  .sort({ createdAt: -1 })
-  .skip(skip)
-  .limit(limit)
-  .populate('fromUser', 'name')
-  .populate('toUser', 'name')
-  .populate('context.productId', 'publicData.title publicData.price')
-  .populate('context.freightId', 'publicData.title publicData.freightValue');
+// Método estático para buscar mensagens por período
+messageSchema.statics.findByPeriod = function(startDate, endDate, userId = null) {
+  const query = {
+    createdAt: {
+      $gte: startDate,
+      $lte: endDate
+    }
+  };
+
+  if (userId) {
+    query.sender = userId;
+  }
+
+  return this.find(query)
+    .populate('sender', 'name email avatar')
+    .populate('conversation', 'title type')
+    .sort({ createdAt: -1 });
 };
 
-// Método estático para buscar mensagens não lidas
-messageSchema.statics.getUnreadMessages = function(userId) {
-  return this.find({
-    toUser: userId,
-    isRead: false,
-    status: { $ne: 'deleted' }
-  })
-  .sort({ createdAt: -1 })
-  .populate('fromUser', 'name')
-  .populate('context.productId', 'publicData.title')
-  .populate('context.freightId', 'publicData.title');
-};
-
-// Método estático para contar mensagens não lidas
-messageSchema.statics.countUnreadMessages = function(userId) {
-  return this.countDocuments({
-    toUser: userId,
-    isRead: false,
-    status: { $ne: 'deleted' }
+// Método estático para criar mensagem do sistema
+messageSchema.statics.createSystemMessage = function(conversationId, content, metadata = {}) {
+  return this.create({
+    conversation: conversationId,
+    sender: null, // Mensagem do sistema não tem remetente
+    content: content,
+    type: 'system',
+    status: 'delivered',
+    metadata: metadata
   });
 };
 

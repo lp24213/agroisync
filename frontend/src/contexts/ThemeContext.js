@@ -11,71 +11,79 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState('light'); // SEMPRE tema claro como padrão
-  const [isLoading, setIsLoading] = useState(true);
+  const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
-    // Verificar se estamos no browser antes de acessar localStorage e window
-    if (typeof window !== 'undefined') {
-      // SEMPRE usar tema claro como padrão, nunca escuro
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme === 'dark') {
-        // Se o usuário tinha salvo tema escuro, perguntar se quer manter
-        const userPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        setTheme(userPrefersDark ? 'dark' : 'light');
-      } else {
-        setTheme('light'); // Padrão sempre claro
-      }
+    // Verificar preferência salva no localStorage
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      setIsDark(savedTheme === 'dark');
     } else {
-      // No servidor, usar tema claro como padrão
-      setTheme('light');
+      // Verificar preferência do sistema
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setIsDark(prefersDark);
     }
-    setIsLoading(false);
   }, []);
 
   useEffect(() => {
-    // Verificar se estamos no browser antes de acessar document e localStorage
-    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
-      // Aplicar tema ao documento
-      document.documentElement.setAttribute('data-theme', theme);
-      localStorage.setItem('theme', theme);
-      
-      // Aplicar classes do Tailwind baseadas no tema
-      if (theme === 'dark') {
-        document.documentElement.classList.remove('light');
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-        document.documentElement.classList.add('light');
-      }
+    // Aplicar tema ao documento
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
     }
-  }, [theme]);
+    
+    // Salvar preferência no localStorage
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  }, [isDark]);
 
   const toggleTheme = () => {
-    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+    setIsDark(!isDark);
   };
 
-  const setThemeExplicit = (newTheme) => {
-    if (newTheme === 'dark' || newTheme === 'light') {
-      setTheme(newTheme);
-    }
+  const setTheme = (theme) => {
+    setIsDark(theme === 'dark');
   };
 
   const value = {
-    theme,
-    isDark: theme === 'dark',
-    isLight: theme === 'light',
+    isDark,
     toggleTheme,
-    setThemeExplicit
+    setTheme,
+    // Cores do tema claro (padrão)
+    lightColors: {
+      bgPrimary: 'bg-white',
+      bgSecondary: 'bg-slate-50',
+      bgCard: 'bg-white',
+      bgCardHover: 'hover:bg-slate-50',
+      textPrimary: 'text-slate-800',
+      textSecondary: 'text-slate-600',
+      textTertiary: 'text-slate-500',
+      borderPrimary: 'border-slate-200',
+      borderSecondary: 'border-slate-300',
+      accentPrimary: 'bg-slate-600',
+      accentSecondary: 'bg-slate-700',
+      accentHover: 'hover:bg-slate-700',
+      shadowCard: 'shadow-card',
+      shadowElevated: 'shadow-elevated'
+    },
+    // Cores do tema escuro (opcional)
+    darkColors: {
+      bgPrimary: 'bg-slate-900',
+      bgSecondary: 'bg-slate-800',
+      bgCard: 'bg-slate-800',
+      bgCardHover: 'hover:bg-slate-700',
+      textPrimary: 'text-slate-100',
+      textSecondary: 'text-slate-300',
+      textTertiary: 'text-slate-400',
+      borderPrimary: 'border-slate-700',
+      borderSecondary: 'border-slate-600',
+      accentPrimary: 'bg-slate-600',
+      accentSecondary: 'bg-slate-700',
+      accentHover: 'hover:bg-slate-500',
+      shadowCard: 'shadow-card-dark',
+      shadowElevated: 'shadow-elevated-dark'
+    }
   };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600"></div>
-      </div>
-    );
-  }
 
   return (
     <ThemeContext.Provider value={value}>

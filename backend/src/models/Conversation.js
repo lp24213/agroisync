@@ -1,243 +1,341 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
-// Conversation schema para gerenciar conversas entre usuários
 const conversationSchema = new mongoose.Schema({
+  // Tipo de conversa
+  type: {
+    type: String,
+    required: true,
+    enum: ['product', 'freight', 'general'],
+    default: 'general'
+  },
+
   // Participantes da conversa
   participants: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: true,
+    index: true
   }],
 
-  // Tipo de serviço (produto ou frete)
-  serviceType: {
-    type: String,
-    required: true,
-    enum: ['product', 'freight'],
-    index: true
-  },
-
-  // ID do serviço relacionado (Product ou Freight)
-  serviceId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    refPath: 'serviceModel'
-  },
-
-  // Referência dinâmica ao modelo do serviço
-  serviceModel: {
-    type: String,
-    required: true,
-    enum: ['Product', 'Freight']
-  },
-
-  // Metadados da conversa
+  // Título da conversa
   title: {
     type: String,
     trim: true,
-    maxlength: 200
+    maxlength: [200, 'Título não pode ter mais de 200 caracteres']
   },
+
+  // Referência ao produto (se for conversa sobre produto)
+  product: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Product',
+    required: function() {
+      return this.type === 'product';
+    }
+  },
+
+  // Referência ao frete (se for conversa sobre frete)
+  freight: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Freight',
+    required: function() {
+      return this.type === 'freight';
+    }
+  },
+
+  // Mensagens da conversa
+  messages: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Message'
+  }],
 
   // Status da conversa
   status: {
     type: String,
-    required: true,
-    enum: ['active', 'archived', 'closed', 'blocked'],
-    default: 'active',
-    index: true
+    enum: ['active', 'archived', 'closed', 'deleted'],
+    default: 'active'
   },
 
-  // Última mensagem
-  lastMessage: {
-    content: String,
-    senderId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
+  // Configurações da conversa
+  settings: {
+    allowFiles: {
+      type: Boolean,
+      default: true
     },
-    timestamp: Date
+    maxFileSize: {
+      type: Number,
+      default: 10 * 1024 * 1024 // 10MB
+    },
+    allowedFileTypes: {
+      type: [String],
+      default: ['image/*', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+    }
   },
 
-  // Contadores
-  messageCount: {
-    type: Number,
-    default: 0
+  // Metadados
+  metadata: {
+    type: Map,
+    of: mongoose.Schema.Types.Mixed
   },
-
-  unreadCount: {
-    type: Number,
-    default: 0
-  },
-
-  // Configurações
-  isArchived: {
-    type: Boolean,
-    default: false
-  },
-
-  isBlocked: {
-    type: Boolean,
-    default: false
-  },
-
-  blockedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  },
-
-  blockedAt: Date,
-
-  blockReason: String,
 
   // Timestamps
-  createdAt: {
-    type: Date,
-    default: Date.now,
-    index: true
-  },
-
-  updatedAt: {
+  lastMessageAt: {
     type: Date,
     default: Date.now
   },
-
-  lastMessageAt: {
-    type: Date,
-    default: Date.now,
-    index: true
-  }
+  archivedAt: Date,
+  closedAt: Date,
+  deletedAt: Date
+}, {
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
 });
 
 // Índices para performance
-conversationSchema.index({ participants: 1, serviceType: 1 });
-conversationSchema.index({ serviceId: 1, serviceType: 1 });
-conversationSchema.index({ 'lastMessageAt': -1 });
-conversationSchema.index({ status: 1, createdAt: -1 });
+conversationSchema.index({ participants: 1 });
+conversationSchema.index({ type: 1, status: 1 });
+conversationSchema.index({ product: 1 });
+conversationSchema.index({ freight: 1 });
+conversationSchema.index({ lastMessageAt: -1 });
+conversationSchema.index({ status: 1, updatedAt: -1 });
 
-// Middleware para atualizar timestamps
+// Virtual para número de mensagens
+conversationSchema.virtual('messageCount').get(function() {
+  return this.messages.length;
+});
+
+// Virtual para última mensagem
+conversationSchema.virtual('lastMessage').get(function() {
+  if (this.messages.length === 0) return null;
+  return this.messages[this.messages.length - 1];
+});
+
+// Virtual para verificar se conversa está ativa
+conversationSchema.virtual('isActive').get(function() {
+  return this.status === 'active';
+});
+
+// Virtual para verificar se conversa está arquivada
+conversationSchema.virtual('isArchived').get(function() {
+  return this.status === 'archived';
+});
+
+// Virtual para verificar se conversa está fechada
+conversationSchema.virtual('isClosed').get(function() {
+  return this.status === 'closed';
+});
+
+// Middleware para atualizar lastMessageAt quando mensagem é adicionada
 conversationSchema.pre('save', function(next) {
-  this.updatedAt = new Date();
+  if (this.isModified('messages') && this.messages.length > 0) {
+    this.lastMessageAt = new Date();
+  }
   next();
 });
 
-// Método para atualizar última mensagem
-conversationSchema.methods.updateLastMessage = function(messageContent, senderId) {
-  this.lastMessage = {
-    content: messageContent,
-    senderId: senderId,
-    timestamp: new Date()
-  };
+// Método para adicionar mensagem
+conversationSchema.methods.addMessage = function(messageId) {
+  this.messages.push(messageId);
   this.lastMessageAt = new Date();
-  this.messageCount += 1;
+  this.updatedAt = new Date();
   return this.save();
 };
 
-// Método para marcar como lida
-conversationSchema.methods.markAsRead = function(userId) {
-  // Reset unread count para este usuário
-  this.unreadCount = Math.max(0, this.unreadCount - 1);
+// Método para remover mensagem
+conversationSchema.methods.removeMessage = function(messageId) {
+  this.messages = this.messages.filter(id => id.toString() !== messageId.toString());
   return this.save();
 };
 
 // Método para arquivar conversa
 conversationSchema.methods.archive = function() {
   this.status = 'archived';
-  this.isArchived = true;
+  this.archivedAt = new Date();
   return this.save();
 };
 
-// Método para bloquear conversa
-conversationSchema.methods.block = function(reason, blockedBy) {
-  this.status = 'blocked';
-  this.isBlocked = true;
-  this.blockReason = reason;
-  this.blockedBy = blockedBy;
-  this.blockedAt = new Date();
-  return this.save();
-};
-
-// Método para desbloquear conversa
-conversationSchema.methods.unblock = function() {
+// Método para reativar conversa arquivada
+conversationSchema.methods.unarchive = function() {
   this.status = 'active';
-  this.isBlocked = false;
-  this.blockReason = undefined;
-  this.blockedBy = undefined;
-  this.blockedAt = undefined;
+  this.archivedAt = undefined;
   return this.save();
+};
+
+// Método para fechar conversa
+conversationSchema.methods.close = function() {
+  this.status = 'closed';
+  this.closedAt = new Date();
+  return this.save();
+};
+
+// Método para reabrir conversa fechada
+conversationSchema.methods.reopen = function() {
+  this.status = 'active';
+  this.closedAt = undefined;
+  return this.save();
+};
+
+// Método para verificar se usuário é participante
+conversationSchema.methods.isParticipant = function(userId) {
+  return this.participants.some(participant => 
+    participant.toString() === userId.toString()
+  );
+};
+
+// Método para obter outro participante (excluindo o usuário atual)
+conversationSchema.methods.getOtherParticipant = function(userId) {
+  return this.participants.find(participant => 
+    participant.toString() !== userId.toString()
+  );
+};
+
+// Método para obter dados públicos da conversa
+conversationSchema.methods.getPublicData = function() {
+  return {
+    id: this._id,
+    type: this.type,
+    title: this.title,
+    status: this.status,
+    messageCount: this.messageCount,
+    lastMessageAt: this.lastMessageAt,
+    createdAt: this.createdAt,
+    updatedAt: this.updatedAt
+  };
+};
+
+// Método para obter dados completos da conversa
+conversationSchema.methods.getFullData = function(userId) {
+  if (!this.isParticipant(userId)) {
+    throw new Error('Acesso negado: usuário não é participante da conversa');
+  }
+
+  return {
+    ...this.getPublicData(),
+    participants: this.participants,
+    product: this.product,
+    freight: this.freight,
+    messages: this.messages,
+    settings: this.settings,
+    metadata: this.metadata
+  };
 };
 
 // Método estático para buscar conversas de um usuário
-conversationSchema.statics.findByUser = function(userId, serviceType = null, options = {}) {
+conversationSchema.statics.findByUser = function(userId, options = {}) {
   const query = {
-    participants: userId,
-    status: { $ne: 'deleted' }
+    participants: { $in: [userId] },
+    deletedAt: { $exists: false }
   };
 
-  if (serviceType) {
-    query.serviceType = serviceType;
+  if (options.type) {
+    query.type = options.type;
   }
 
+  if (options.status) {
+    query.status = options.status;
+  }
+
+  if (options.product) {
+    query.product = options.product;
+  }
+
+  if (options.freight) {
+    query.freight = options.freight;
+  }
+
+  const sort = options.sort || { lastMessageAt: -1 };
+  const limit = options.limit || 50;
+  const skip = options.skip || 0;
+
   return this.find(query)
-    .sort({ lastMessageAt: -1 })
-    .populate('participants', 'name email company.name')
-    .populate('lastMessage.senderId', 'name email')
-    .populate('serviceId', 'name title origin destination price')
-    .limit(options.limit || 50)
-    .skip(options.skip || 0);
+    .populate('participants', 'name email avatar')
+    .populate('product', 'name price category')
+    .populate('freight', 'origin destination value vehicle')
+    .sort(sort)
+    .limit(limit)
+    .skip(skip);
 };
 
-// Método estático para buscar conversa entre dois usuários para um serviço
-conversationSchema.statics.findBetweenUsers = function(user1Id, user2Id, serviceId, serviceType) {
-  return this.findOne({
-    participants: { $all: [user1Id, user2Id] },
-    serviceId: serviceId,
-    serviceType: serviceType,
-    status: { $ne: 'deleted' }
-  });
+// Método estático para buscar conversa entre dois usuários
+conversationSchema.statics.findBetweenUsers = function(userId1, userId2, type = null) {
+  const query = {
+    participants: { $all: [userId1, userId2] },
+    deletedAt: { $exists: false }
+  };
+
+  if (type) {
+    query.type = type;
+  }
+
+  return this.findOne(query)
+    .populate('participants', 'name email avatar')
+    .populate('product', 'name price category')
+    .populate('freight', 'origin destination value vehicle');
 };
 
-// Método estático para criar nova conversa
-conversationSchema.statics.createConversation = function(participants, serviceId, serviceType, title = null) {
-  return this.create({
-    participants: participants,
-    serviceId: serviceId,
-    serviceType: serviceType,
-    serviceModel: serviceType === 'product' ? 'Product' : 'Freight',
-    title: title
-  });
+// Método estático para criar conversa entre usuários
+conversationSchema.statics.createBetweenUsers = function(userId1, userId2, type, options = {}) {
+  const conversationData = {
+    type: type,
+    participants: [userId1, userId2],
+    title: options.title || `Conversa ${type}`,
+    settings: options.settings || {},
+    metadata: options.metadata || {}
+  };
+
+  if (options.product) {
+    conversationData.product = options.product;
+  }
+
+  if (options.freight) {
+    conversationData.freight = options.freight;
+  }
+
+  return this.create(conversationData);
 };
 
-// Método estático para obter estatísticas
-conversationSchema.statics.getStats = async function(userId) {
+// Método estático para estatísticas de conversas
+conversationSchema.statics.getStats = async function(userId = null) {
+  const match = { deletedAt: { $exists: false } };
+  if (userId) match.participants = { $in: [userId] };
+
   const stats = await this.aggregate([
-    {
-      $match: {
-        participants: mongoose.Types.ObjectId(userId),
-        status: { $ne: 'deleted' }
-      }
-    },
+    { $match: match },
     {
       $group: {
-        _id: '$serviceType',
-        total: { $sum: 1 },
-        active: {
-          $sum: {
-            $cond: [{ $eq: ['$status', 'active'] }, 1, 0]
-          }
+        _id: null,
+        totalConversations: { $sum: 1 },
+        activeConversations: {
+          $sum: { $cond: [{ $eq: ['$status', 'active'] }, 1, 0] }
         },
-        unread: { $sum: '$unreadCount' }
+        archivedConversations: {
+          $sum: { $cond: [{ $eq: ['$status', 'archived'] }, 1, 0] }
+        },
+        closedConversations: {
+          $sum: { $cond: [{ $eq: ['$status', 'closed'] }, 1, 0] }
+        },
+        productConversations: {
+          $sum: { $cond: [{ $eq: ['$type', 'product'] }, 1, 0] }
+        },
+        freightConversations: {
+          $sum: { $cond: [{ $eq: ['$type', 'freight'] }, 1, 0] }
+        },
+        generalConversations: {
+          $sum: { $cond: [{ $eq: ['$type', 'general'] }, 1, 0] }
+        }
       }
     }
   ]);
 
-  return stats.reduce((acc, stat) => {
-    acc[stat._id] = {
-      total: stat.total,
-      active: stat.active,
-      unread: stat.unread
-    };
-    return acc;
-  }, {});
+  return stats[0] || {
+    totalConversations: 0,
+    activeConversations: 0,
+    archivedConversations: 0,
+    closedConversations: 0,
+    productConversations: 0,
+    freightConversations: 0,
+    generalConversations: 0
+  };
 };
 
-// Create Conversation model
-export const Conversation = mongoose.model('Conversation', conversationSchema);
+module.exports = mongoose.model('Conversation', conversationSchema);

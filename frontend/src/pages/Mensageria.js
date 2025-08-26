@@ -1,70 +1,133 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
-import { messagingService } from '../services/messagingService';
+import { usePayment } from '../contexts/PaymentContext';
+import { useTranslation } from 'react-i18next';
 import { 
-  MessageCircle, 
-  Send, 
-  User, 
-  AlertTriangle, 
-  Shield, 
-  Lock,
-  CheckCircle,
-  XCircle,
-  Clock,
-  Search
+  MessageSquare, Send, Search, Filter, MoreVertical,
+  User, Phone, Mail, MapPin, Calendar, Clock,
+  ChevronLeft, ChevronRight, Plus, Edit, Trash,
+  CheckCircle, AlertCircle, Lock, Unlock, Package, Truck, File
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Mensageria = () => {
   const { user, isAdmin } = useAuth();
+  const { isPaid, planActive } = usePayment();
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  
   const [conversations, setConversations] = useState([]);
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-
-  // Verificar se o usuário tem plano ativo - VALIDAÇÃO CRÍTICA
-  const hasActivePlan = () => {
-    if (isAdmin) return true;
-    
-    // Verificar se tem plano ativo no MongoDB
-    if (!user || !user.subscription) return false;
-    
-    // Verificar se o plano está ativo e não expirou
-    const now = new Date();
-    const planExpiry = new Date(user.subscription.expiresAt);
-    
-    return user.subscription.status === 'active' && planExpiry > now;
-  };
-
-  // Avisos de segurança obrigatórios
-  const securityWarnings = [
-    {
-      icon: <Shield className="w-5 h-5 text-red-500" />,
-      title: "⚠️ AVISO DE SEGURANÇA OBRIGATÓRIO",
-      message: "Nunca faça pagamentos sem confirmar a veracidade do produto. A Agroisync não se responsabiliza por pagamentos entre usuários."
-    },
-    {
-      icon: <Lock className="w-5 h-5 text-orange-500" />,
-      title: "🔒 Cláusula de Integridade",
-      message: "Não nos responsabilizamos por pagamentos ou negociações externas. Todas as transações são de responsabilidade do comprador e vendedor."
-    }
-  ];
+  const [filterType, setFilterType] = useState('all');
+  const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState(false);
+  
+  const messagesEndRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
-    if (hasActivePlan()) {
-      loadConversations();
+    document.title = 'Mensageria Privada - AgroSync';
+    
+    if (!user) {
+      navigate('/login');
+      return;
     }
-  }, [user]);
+    
+    if (!isPaid) {
+      navigate('/planos');
+      return;
+    }
+    
+    loadConversations();
+  }, [user, isPaid, navigate]);
+
+  useEffect(() => {
+    if (selectedConversation) {
+      loadMessages(selectedConversation.id);
+    }
+  }, [selectedConversation]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const loadConversations = async () => {
     try {
       setLoading(true);
-      const data = await messagingService.getConversations();
-      setConversations(data.conversations || []);
+      // Simular carregamento de conversas (substituir por API real)
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const mockConversations = [
+        {
+          id: 1,
+          type: 'product',
+          title: 'Soja Premium - João Silva',
+          lastMessage: 'Gostaria de mais informações sobre o produto...',
+          lastMessageTime: '10:30',
+          unreadCount: 2,
+          participant: {
+            name: 'João Silva',
+            email: 'joao@email.com',
+            phone: '(11) 99999-9999',
+            city: 'São Paulo, SP',
+            document: '123.456.789-00'
+          },
+          product: {
+            name: 'Soja Premium',
+            price: 180.00,
+            category: 'Grãos'
+          }
+        },
+        {
+          id: 2,
+          type: 'freight',
+          title: 'Frete SP → RJ - Maria Santos',
+          lastMessage: 'Preciso de frete para Rio de Janeiro...',
+          lastMessageTime: '09:15',
+          unreadCount: 0,
+          participant: {
+            name: 'Maria Santos',
+            email: 'maria@email.com',
+            phone: '(21) 88888-8888',
+            city: 'Rio de Janeiro, RJ',
+            document: '987.654.321-00'
+          },
+          freight: {
+            origin: 'São Paulo',
+            destination: 'Rio de Janeiro',
+            value: 2500.00,
+            vehicle: 'Scania R500'
+          }
+        },
+        {
+          id: 3,
+          type: 'product',
+          title: 'Milho Especial - Carlos Oliveira',
+          lastMessage: 'Qual a disponibilidade para entrega?',
+          lastMessageTime: 'Ontem',
+          unreadCount: 1,
+          participant: {
+            name: 'Carlos Oliveira',
+            email: 'carlos@email.com',
+            phone: '(31) 77777-7777',
+            city: 'Belo Horizonte, MG',
+            document: '456.789.123-00'
+          },
+          product: {
+            name: 'Milho Especial',
+            price: 95.00,
+            category: 'Grãos'
+          }
+        }
+      ];
+      
+      setConversations(mockConversations);
     } catch (error) {
-      setError('Erro ao carregar conversas: ' + error.message);
+      console.error('Erro ao carregar conversas:', error);
     } finally {
       setLoading(false);
     }
@@ -72,318 +135,481 @@ const Mensageria = () => {
 
   const loadMessages = async (conversationId) => {
     try {
-      setLoading(true);
-      const data = await messagingService.getConversation(conversationId);
-      setMessages(data.messages || []);
-      setSelectedConversation(data.conversation);
+      // Simular carregamento de mensagens (substituir por API real)
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const mockMessages = [
+        {
+          id: 1,
+          senderId: 'other',
+          content: 'Olá! Gostaria de mais informações sobre o produto Soja Premium.',
+          timestamp: '2024-01-15 10:00',
+          type: 'text'
+        },
+        {
+          id: 2,
+          senderId: 'user',
+          content: 'Olá! Claro, posso ajudar. A soja é de alta qualidade, certificada para exportação.',
+          timestamp: '2024-01-15 10:05',
+          type: 'text'
+        },
+        {
+          id: 3,
+          senderId: 'other',
+          content: 'Qual o preço por tonelada e disponibilidade?',
+          timestamp: '2024-01-15 10:10',
+          type: 'text'
+        },
+        {
+          id: 4,
+          senderId: 'user',
+          content: 'R$ 180,00 por tonelada. Temos 1000 toneladas disponíveis para entrega imediata.',
+          timestamp: '2024-01-15 10:15',
+          type: 'text'
+        },
+        {
+          id: 5,
+          senderId: 'other',
+          content: 'Perfeito! Gostaria de agendar uma visita técnica.',
+          timestamp: '2024-01-15 10:30',
+          type: 'text'
+        }
+      ];
+      
+      setMessages(mockMessages);
     } catch (error) {
-      setError('Erro ao carregar mensagens: ' + error.message);
-    } finally {
-      setLoading(false);
+      console.error('Erro ao carregar mensagens:', error);
     }
   };
 
   const sendMessage = async () => {
-    if (!newMessage.trim() || !selectedConversation) return;
+    if (!newMessage.trim() || sending) return;
 
     try {
-      setLoading(true);
-      const messageData = {
-        content: newMessage,
-        conversationId: selectedConversation._id
-      };
-
-      await messagingService.sendMessage(selectedConversation._id, messageData);
+      setSending(true);
       
-      // Recarregar mensagens
-      await loadMessages(selectedConversation._id);
+      // Simular envio (substituir por API real)
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const message = {
+        id: Date.now(),
+        senderId: 'user',
+        content: newMessage,
+        timestamp: new Date().toLocaleString('pt-BR'),
+        type: 'text'
+      };
+      
+      setMessages(prev => [...prev, message]);
       setNewMessage('');
+      
+      // Atualizar última mensagem na conversa
+      setConversations(prev => 
+        prev.map(conv => 
+          conv.id === selectedConversation.id 
+            ? { ...conv, lastMessage: newMessage, lastMessageTime: 'Agora' }
+            : conv
+        )
+      );
+      
     } catch (error) {
-      setError('Erro ao enviar mensagem: ' + error.message);
+      console.error('Erro ao enviar mensagem:', error);
     } finally {
-      setLoading(false);
+      setSending(false);
     }
   };
 
-  const filteredConversations = conversations.filter(conv => 
-    conv.participantName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    conv.lastMessage?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
 
-  if (!hasActivePlan()) {
+    if (file.size > 10 * 1024 * 1024) { // 10MB
+      alert('O arquivo deve ter menos de 10MB.');
+      return;
+    }
+
+    // Simular upload (substituir por API real)
+    const reader = new FileReader();
+    reader.onload = () => {
+      const message = {
+        id: Date.now(),
+        senderId: 'user',
+        content: `Arquivo enviado: ${file.name}`,
+        file: {
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          url: reader.result
+        },
+        timestamp: new Date().toLocaleString('pt-BR'),
+        type: 'file'
+      };
+      
+      setMessages(prev => [...prev, message]);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const filteredConversations = conversations.filter(conv => {
+    const matchesSearch = conv.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         conv.lastMessage.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter = filterType === 'all' || conv.type === filterType;
+    return matchesSearch && matchesFilter;
+  });
+
+  const getConversationIcon = (type) => {
+    switch (type) {
+      case 'product':
+        return <Package className="w-5 h-5" />;
+      case 'freight':
+        return <Truck className="w-5 h-5" />;
+      default:
+        return <MessageSquare className="w-5 h-5" />;
+    }
+  };
+
+  const getConversationTypeLabel = (type) => {
+    switch (type) {
+      case 'product':
+        return 'Produto';
+      case 'freight':
+        return 'Frete';
+      default:
+        return 'Geral';
+    }
+  };
+
+  if (!user) {
+    return null;
+  }
+
+  if (!isPaid) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-            <Lock className="w-16 h-16 text-red-500 mx-auto mb-4" />
-            <h1 className="text-3xl font-bold text-gray-800 mb-4">
-              Mensageria Bloqueada
-            </h1>
-            <p className="text-lg text-gray-600 mb-6">
-              Para acessar a mensageria privada, você precisa ter um plano ativo.
-            </p>
-            
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-              <h3 className="font-semibold text-yellow-800 mb-2">
-                📋 Planos Disponíveis:
-              </h3>
-              <ul className="text-yellow-700 text-left space-y-2">
-                <li>• <strong>Loja:</strong> R$25/mês (até 3 anúncios) + Mensageria</li>
-                <li>• <strong>AgroConecta Básico:</strong> R$50/mês + Mensageria</li>
-                <li>• <strong>AgroConecta Pro:</strong> R$149/mês (até 30 fretes) + Mensageria</li>
-              </ul>
-            </div>
-
-            <div className="space-x-4">
-              <a 
-                href="/planos" 
-                className="inline-flex items-center px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors"
-              >
-                Ver Planos
-              </a>
-              <a 
-                href="/loja" 
-                className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Ir para Loja
-              </a>
-            </div>
-          </div>
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <Lock className="w-16 h-16 text-slate-400 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-slate-800 mb-2">
+            Acesso Restrito
+          </h2>
+          <p className="text-slate-600 mb-6">
+            A mensageria privada está disponível apenas para usuários com plano ativo.
+          </p>
+          <button
+            onClick={() => navigate('/planos')}
+            className="px-6 py-3 bg-slate-600 text-white font-medium rounded-lg hover:bg-slate-700 transition-colors duration-200"
+          >
+            Ver Planos
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-4">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-800 flex items-center">
-                <MessageCircle className="w-8 h-8 text-green-600 mr-3" />
-                Mensageria Privada
-              </h1>
-              <p className="text-gray-600 mt-2">
-                Sistema seguro de comunicação entre compradores, vendedores e transportadoras
-              </p>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                Plano Ativo
-              </div>
-              <div className="text-sm text-gray-500">
-                {user?.email}
-              </div>
-            </div>
-          </div>
+    <div className="min-h-screen bg-slate-50">
+      {/* Header */}
+      <section className="pt-32 pb-8 px-4">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-8"
+          >
+            <h1 className="text-4xl font-bold text-slate-800 mb-4">
+              Mensageria Privada
+            </h1>
+            <p className="text-xl text-slate-600">
+              Conecte-se diretamente com compradores, vendedores e transportadores
+            </p>
+          </motion.div>
         </div>
+      </section>
 
-        {/* Avisos de Segurança */}
-        <div className="mb-6 space-y-4">
-          {securityWarnings.map((warning, index) => (
-            <div key={index} className="bg-red-50 border border-red-200 rounded-lg p-4">
-              <div className="flex items-start space-x-3">
-                {warning.icon}
-                <div>
-                  <h3 className="font-semibold text-red-800 text-lg">
-                    {warning.title}
-                  </h3>
-                  <p className="text-red-700 mt-1">
-                    {warning.message}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Lista de Conversas */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <div className="mb-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <input
-                    type="text"
-                    placeholder="Buscar conversas..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                {loading ? (
-                  <div className="text-center py-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto"></div>
-                    <p className="text-gray-500 mt-2">Carregando...</p>
+      {/* Main Content */}
+      <section className="px-4 pb-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-white rounded-2xl shadow-card border border-slate-200 overflow-hidden">
+            <div className="flex h-[600px]">
+              {/* Sidebar - Lista de Conversas */}
+              <div className="w-1/3 border-r border-slate-200 flex flex-col">
+                {/* Header da Sidebar */}
+                <div className="p-4 border-b border-slate-200 bg-slate-50">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-slate-800">
+                      Conversas
+                    </h3>
+                    <button className="p-2 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors duration-200">
+                      <Plus className="w-5 h-5" />
+                    </button>
                   </div>
-                ) : filteredConversations.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
-                    <MessageCircle className="w-12 h-12 mx-auto mb-2 text-gray-300" />
-                    <p>Nenhuma conversa encontrada</p>
+                  
+                  {/* Busca e Filtros */}
+                  <div className="space-y-3">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+                      <input
+                        type="text"
+                        placeholder="Buscar conversas..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-colors duration-200"
+                      />
+                    </div>
+                    
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => setFilterType('all')}
+                        className={`px-3 py-1 text-xs rounded-full transition-colors duration-200 ${
+                          filterType === 'all'
+                            ? 'bg-slate-600 text-white'
+                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        }`}
+                      >
+                        Todas
+                      </button>
+                      <button
+                        onClick={() => setFilterType('product')}
+                        className={`px-3 py-1 text-xs rounded-full transition-colors duration-200 ${
+                          filterType === 'product'
+                            ? 'bg-slate-600 text-white'
+                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        }`}
+                      >
+                        Produtos
+                      </button>
+                      <button
+                        onClick={() => setFilterType('freight')}
+                        className={`px-3 py-1 text-xs rounded-full transition-colors duration-200 ${
+                          filterType === 'freight'
+                            ? 'bg-slate-600 text-white'
+                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        }`}
+                      >
+                        Fretes
+                      </button>
+                    </div>
                   </div>
-                ) : (
-                  filteredConversations.map((conversation) => (
-                    <div
-                      key={conversation._id}
-                      onClick={() => loadMessages(conversation._id)}
-                      className={`p-3 rounded-lg cursor-pointer transition-colors ${
-                        selectedConversation?._id === conversation._id
-                          ? 'bg-green-100 border border-green-300'
-                          : 'hover:bg-gray-50 border border-transparent'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                            <User className="w-5 h-5 text-green-600" />
+                </div>
+
+                {/* Lista de Conversas */}
+                <div className="flex-1 overflow-y-auto">
+                  {loading ? (
+                    <div className="p-8 text-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-600 mx-auto mb-4"></div>
+                      <p className="text-slate-600">Carregando conversas...</p>
+                    </div>
+                  ) : filteredConversations.length === 0 ? (
+                    <div className="p-8 text-center">
+                      <MessageSquare className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                      <p className="text-slate-600">Nenhuma conversa encontrada</p>
+                    </div>
+                  ) : (
+                    filteredConversations.map((conversation) => (
+                      <motion.div
+                        key={conversation.id}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        whileHover={{ backgroundColor: '#f8fafc' }}
+                        className={`p-4 border-b border-slate-100 cursor-pointer transition-colors duration-200 ${
+                          selectedConversation?.id === conversation.id ? 'bg-slate-100' : ''
+                        }`}
+                        onClick={() => setSelectedConversation(conversation)}
+                      >
+                        <div className="flex items-start space-x-3">
+                          <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            {getConversationIcon(conversation.type)}
                           </div>
-                          <div>
-                            <h4 className="font-semibold text-gray-800">
-                              {conversation.participantName || 'Usuário'}
-                            </h4>
-                            <p className="text-sm text-gray-600 truncate max-w-32">
-                              {conversation.lastMessage || 'Nenhuma mensagem'}
+                          
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between mb-1">
+                              <h4 className="text-sm font-semibold text-slate-800 truncate">
+                                {conversation.title}
+                              </h4>
+                              <span className="text-xs text-slate-500">
+                                {conversation.lastMessageTime}
+                              </span>
+                            </div>
+                            
+                            <div className="flex items-center space-x-2 mb-2">
+                              <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                                conversation.type === 'product' 
+                                  ? 'bg-emerald-100 text-emerald-800'
+                                  : 'bg-blue-100 text-blue-800'
+                              }`}>
+                                {getConversationTypeLabel(conversation.type)}
+                              </span>
+                              
+                              {conversation.unreadCount > 0 && (
+                                <span className="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                  {conversation.unreadCount}
+                                </span>
+                              )}
+                            </div>
+                            
+                            <p className="text-sm text-slate-600 truncate">
+                              {conversation.lastMessage}
                             </p>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <div className="text-xs text-gray-500">
-                            {new Date(conversation.lastMessageTime).toLocaleDateString()}
+                      </motion.div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              {/* Área de Mensagens */}
+              <div className="flex-1 flex flex-col">
+                {selectedConversation ? (
+                  <>
+                    {/* Header da Conversa */}
+                    <div className="p-4 border-b border-slate-200 bg-slate-50">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          <button
+                            onClick={() => setSelectedConversation(null)}
+                            className="lg:hidden p-2 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors duration-200"
+                          >
+                            <ChevronLeft className="w-5 h-5" />
+                          </button>
+                          
+                          <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
+                            {getConversationIcon(selectedConversation.type)}
                           </div>
-                          {conversation.unreadCount > 0 && (
-                            <div className="bg-red-500 text-white text-xs rounded-full px-2 py-1 mt-1">
-                              {conversation.unreadCount}
-                            </div>
-                          )}
+                          
+                          <div>
+                            <h3 className="font-semibold text-slate-800">
+                              {selectedConversation.title}
+                            </h3>
+                            <p className="text-sm text-slate-600">
+                              {getConversationTypeLabel(selectedConversation.type)}
+                            </p>
+                          </div>
                         </div>
+                        
+                        <button className="p-2 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors duration-200">
+                          <MoreVertical className="w-5 h-5" />
+                        </button>
                       </div>
                     </div>
-                  ))
+
+                    {/* Mensagens */}
+                    <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                      {messages.map((message) => (
+                        <motion.div
+                          key={message.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className={`flex ${message.senderId === 'user' ? 'justify-end' : 'justify-start'}`}
+                        >
+                          <div className={`max-w-[70%] ${message.senderId === 'user' ? 'order-2' : 'order-1'}`}>
+                            <div className={`flex items-start space-x-2 ${message.senderId === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
+                              <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                message.senderId === 'user' ? 'bg-slate-600' : 'bg-slate-100'
+                              }`}>
+                                {message.senderId === 'user' ? (
+                                  <User className="w-4 h-4 text-white" />
+                                ) : (
+                                  <User className="w-4 h-4 text-slate-600" />
+                                )}
+                              </div>
+                              
+                              <div className={`rounded-lg px-3 py-2 ${
+                                message.senderId === 'user' 
+                                  ? 'bg-slate-600 text-white' 
+                                  : 'bg-slate-100 text-slate-800'
+                              }`}>
+                                {message.type === 'file' && message.file && (
+                                  <div className="mb-2">
+                                    <div className="flex items-center space-x-2 p-2 bg-white/20 rounded">
+                                      <div className="w-8 h-8 bg-white/30 rounded flex items-center justify-center">
+                                        <File className="w-4 h-4" />
+                                      </div>
+                                      <div>
+                                        <p className="text-sm font-medium">{message.file.name}</p>
+                                        <p className="text-xs opacity-80">
+                                          {(message.file.size / 1024 / 1024).toFixed(2)} MB
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                                
+                                <p className="text-sm">{message.content}</p>
+                                <p className="text-xs opacity-70 mt-1">
+                                  {message.timestamp}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                      
+                      <div ref={messagesEndRef} />
+                    </div>
+
+                    {/* Input de Mensagem */}
+                    <div className="p-4 border-t border-slate-200">
+                      <div className="flex items-center space-x-2">
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          onChange={handleFileUpload}
+                          className="hidden"
+                          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                        />
+                        
+                        <button
+                          onClick={() => fileInputRef.current?.click()}
+                          className="p-2 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors duration-200"
+                          title="Anexar arquivo"
+                        >
+                          <Plus className="w-4 h-4" />
+                        </button>
+                        
+                        <input
+                          type="text"
+                          value={newMessage}
+                          onChange={(e) => setNewMessage(e.target.value)}
+                          onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                          placeholder="Digite sua mensagem..."
+                          className="flex-1 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-colors duration-200"
+                          disabled={sending}
+                        />
+                        
+                        <button
+                          onClick={sendMessage}
+                          disabled={!newMessage.trim() || sending}
+                          className="p-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                          title="Enviar mensagem"
+                        >
+                          {sending ? (
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                          ) : (
+                            <Send className="w-4 h-4" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  /* Estado vazio */
+                  <div className="flex-1 flex items-center justify-center">
+                    <div className="text-center">
+                      <MessageSquare className="w-16 h-16 text-slate-400 mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold text-slate-800 mb-2">
+                        Selecione uma conversa
+                      </h3>
+                      <p className="text-slate-600">
+                        Escolha uma conversa da lista para começar a trocar mensagens
+                      </p>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
           </div>
-
-          {/* Área de Mensagens */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-lg h-[600px] flex flex-col">
-              {selectedConversation ? (
-                <>
-                  {/* Header da Conversa */}
-                  <div className="p-4 border-b border-gray-200 bg-gray-50">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                          <User className="w-5 h-5 text-green-600" />
-                        </div>
-                        <div>
-                          <h3 className="font-semibold text-gray-800">
-                            {selectedConversation.participantName || 'Usuário'}
-                          </h3>
-                          <p className="text-sm text-gray-500">
-                            {selectedConversation.module === 'store' ? 'Loja' : 'AgroConecta'}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        {selectedConversation.status === 'active' ? (
-                          <span className="flex items-center text-green-600">
-                            <CheckCircle className="w-4 h-4 mr-1" />
-                            Ativo
-                          </span>
-                        ) : (
-                          <span className="flex items-center text-gray-500">
-                            <Clock className="w-4 h-4 mr-1" />
-                            {selectedConversation.status}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Mensagens */}
-                  <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                    {messages.map((message) => (
-                      <div
-                        key={message._id}
-                        className={`flex ${
-                          message.senderId === user?.id ? 'justify-end' : 'justify-start'
-                        }`}
-                      >
-                        <div
-                          className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                            message.senderId === user?.id
-                              ? 'bg-green-600 text-white'
-                              : 'bg-gray-100 text-gray-800'
-                          }`}
-                        >
-                          <p className="text-sm">{message.content}</p>
-                          <div className={`text-xs mt-1 ${
-                            message.senderId === user?.id ? 'text-green-100' : 'text-gray-500'
-                          }`}>
-                            {new Date(message.createdAt).toLocaleString()}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Input de Nova Mensagem */}
-                  <div className="p-4 border-t border-gray-200">
-                    <div className="flex space-x-3">
-                      <input
-                        type="text"
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                        placeholder="Digite sua mensagem..."
-                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                        disabled={loading}
-                      />
-                      <button
-                        onClick={sendMessage}
-                        disabled={!newMessage.trim() || loading}
-                        className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                      >
-                        <Send className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <div className="flex-1 flex items-center justify-center text-gray-500">
-                  <div className="text-center">
-                    <MessageCircle className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                    <p className="text-lg">Selecione uma conversa para começar</p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
         </div>
-
-        {/* Mensagem de Erro */}
-        {error && (
-          <div className="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg">
-            <div className="flex items-center space-x-2">
-              <XCircle className="w-5 h-5" />
-              <span>{error}</span>
-              <button
-                onClick={() => setError(null)}
-                className="ml-4 hover:text-red-200"
-              >
-                ×
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
+      </section>
     </div>
   );
 };

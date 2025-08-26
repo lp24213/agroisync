@@ -1,374 +1,281 @@
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
-import compression from 'compression';
-import morgan from 'morgan';
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import { createServer } from 'http';
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const compression = require('compression');
+const morgan = require('morgan');
+require('dotenv').config();
 
 // Importar rotas
-import apiRoutes from './routes/api.js';
-import authRoutes from './routes/auth.js';
-import userRoutes from './routes/users.js';
-import productRoutes from './routes/products.js';
-import freightRoutes from './routes/freights.js';
-import messageRoutes from './routes/messages.js';
-import conversationRoutes from './routes/conversations.js';
-import contactRoutes from './routes/contact.js';
-import partnerRoutes from './routes/partners.js';
-import partnershipMessageRoutes from './routes/partnership-messages.js';
-import paymentRoutes from './routes/payments.js';
-import adminRoutes from './routes/admin.js';
-import stakingRoutes from './routes/staking.js';
-import newsRoutes from './routes/news.js';
-import uploadRoutes from './routes/upload.js';
-import healthRoutes from './routes/health.js';
-import paymentVerificationRoutes from './routes/payment-verification.js';
+const authRoutes = require('./routes/auth');
+const validationRoutes = require('./routes/validation');
+const paymentRoutes = require('./routes/payments');
+const messageRoutes = require('./routes/messages');
+const productRoutes = require('./routes/products');
+const freightRoutes = require('./routes/freights');
+const adminRoutes = require('./routes/admin');
 
-// Importar middleware
-import { errorHandler } from './middleware/errorHandler.js';
-import { apiLimiter } from './middleware/rateLimiter.js';
-import { createSecurityLog } from './utils/securityLogger.js';
-import { 
-  wafProtection, 
-  securityLogging, 
-  contentValidation, 
-  bruteForceProtection,
-  apiRateLimiter,
-  authRateLimiter,
-  paymentRateLimiter
-} from './middleware/security.js';
-
-// Importar configuração WebSocket
-import { configureSocket } from './config/socket.js';
-
-// Importar configuração
-import { config, validateConfig } from './config/config.js';
-
-// Configuração de ambiente
-dotenv.config();
-
-// Validar configuração
-validateConfig();
+// Importar middleware de autenticação
+const auth = require('./middleware/auth');
 
 const app = express();
-const server = createServer(app);
-const PORT = config.server.port;
+const PORT = process.env.PORT || 5000;
 
-// ===== MIDDLEWARE DE SEGURANÇA =====
-
-// Helmet para headers de segurança
+// Configurações de segurança
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'"],
       imgSrc: ["'self'", "data:", "https:"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
-      connectSrc: ["'self'", "https://api.stripe.com", "https://api.metamask.io"],
+      connectSrc: ["'self'", "https://api.stripe.com", "https://api.openweathermap.org"],
       frameSrc: ["'self'", "https://js.stripe.com", "https://hooks.stripe.com"],
       objectSrc: ["'none'"],
-      upgradeInsecureRequests: []
-    }
+      upgradeInsecureRequests: [],
+    },
   },
-  crossOriginEmbedderPolicy: false,
-  crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 
-// CORS configurado para produção
+// Configurações de CORS
 app.use(cors({
-  origin: config.server.nodeEnv === 'production' 
-    ? [
-        'https://agroisync.com',
-        'https://www.agroisync.com',
-        'https://agrotm.com.br',
-        'https://www.agrotm.com.br'
-      ]
-    : [config.server.frontendUrl, 'http://localhost:3001'],
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-API-Key'],
-  exposedHeaders: ['X-Total-Count', 'X-Page-Count']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
 // Rate limiting global
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 1000, // máximo 1000 requests por IP
-  message: {
-    success: false,
-    message: 'Muitas requisições. Tente novamente em alguns minutos.'
-  },
+  max: 1000, // máximo 1000 requisições por IP
+  message: 'Muitas requisições. Tente novamente em 15 minutos.',
   standardHeaders: true,
   legacyHeaders: false,
-  handler: async (req, res) => {
-    await createSecurityLog('rate_limit_exceeded', 'medium', 'Global rate limit exceeded', req);
-    res.status(429).json({
-      success: false,
-      message: 'Muitas requisições. Tente novamente em alguns minutos.'
-    });
-  }
 });
 
 app.use(globalLimiter);
 
-// ===== MIDDLEWARES DE SEGURANÇA AVANÇADOS =====
-
-// WAF Protection
-app.use(wafProtection);
-
-// Security Logging
-app.use(securityLogging);
-
-// Content Validation
-app.use(contentValidation(50 * 1024 * 1024)); // 50MB max
-
-// Brute Force Protection
-app.use(bruteForceProtection);
-
-// Rate limiting específico para APIs
-const apiRateLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100, // máximo 100 requests por IP
-  message: {
-    success: false,
-    message: 'Limite de API excedido. Tente novamente em alguns minutos.'
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-  handler: async (req, res) => {
-    await createSecurityLog('rate_limit_exceeded', 'medium', 'API rate limit exceeded', req);
-    res.status(429).json({
-      success: false,
-      message: 'Limite de API excedido. Tente novamente em alguns minutos.'
-    });
-  }
-});
-
-// Rate limiting para autenticação
-const authRateLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 5, // máximo 5 tentativas de login por IP
-  message: {
-    success: false,
-    message: 'Muitas tentativas de login. Tente novamente em alguns minutos.'
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-  handler: async (req, res) => {
-    await createSecurityLog('rate_limit_exceeded', 'high', 'Auth rate limit exceeded', req);
-    res.status(429).json({
-      success: false,
-      message: 'Muitas tentativas de login. Tente novamente em alguns minutos.'
-    });
-  }
-});
-
-// ===== MIDDLEWARE DE PROCESSAMENTO =====
-
-// Compressão para melhor performance
+// Middlewares
 app.use(compression());
-
-// Logging de requisições
-app.use(morgan('combined', {
-  stream: {
-    write: (message) => {
-      console.log(message.trim());
-    }
-  }
-}));
-
-// Parse JSON e URL encoded
+app.use(morgan('combined'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// ===== ROTAS =====
-
-// Health check (sem rate limiting)
-app.use('/api/health', healthRoutes);
-
-// Autenticação (rate limiting específico)
-app.use('/api/auth', authRateLimiter, authRoutes);
-
-// APIs principais (rate limiting padrão)
-app.use('/api', apiRateLimiter, apiRoutes);
-app.use('/api/users', apiRateLimiter, userRoutes);
-app.use('/api/products', apiRateLimiter, productRoutes);
-app.use('/api/freights', apiRateLimiter, freightRoutes);
-app.use('/api/messages', apiRateLimiter, messageRoutes);
-app.use('/api/conversations', apiRateLimiter, conversationRoutes);
-app.use('/api/payment-verification', apiRateLimiter, paymentVerificationRoutes);
-app.use('/api/contact', apiRateLimiter, contactRoutes);
-app.use('/api/partners', apiRateLimiter, partnerRoutes);
-app.use('/api/partnership-messages', apiRateLimiter, partnershipMessageRoutes);
-app.use('/api/payments', apiRateLimiter, paymentRoutes);
-app.use('/api/staking', apiRateLimiter, stakingRoutes);
-app.use('/api/news', apiRateLimiter, newsRoutes);
-app.use('/api/upload', apiRateLimiter, uploadRoutes);
-
-// Admin (rate limiting mais restritivo)
-const adminRateLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 200, // máximo 200 requests por IP
-  message: {
-    success: false,
-    message: 'Limite de admin excedido. Tente novamente em alguns minutos.'
-  },
-  standardHeaders: true,
-  legacyHeaders: false
+// Middleware para capturar IP real
+app.use((req, res, next) => {
+  req.realIP = req.headers['x-forwarded-for'] || 
+               req.headers['x-real-ip'] || 
+               req.connection.remoteAddress || 
+               req.socket.remoteAddress ||
+               req.connection.socket?.remoteAddress;
+  next();
 });
 
-app.use('/api/admin', adminRateLimiter, adminRoutes);
+// Middleware para logging de requisições
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path} - IP: ${req.realIP}`);
+  next();
+});
 
-// ===== MIDDLEWARE DE ERRO =====
+// Rotas públicas
+app.use('/api/auth', authRoutes);
+app.use('/api/validation', validationRoutes);
 
-// 404 para rotas não encontradas
-app.use('*', (req, res) => {
-  res.status(404).json({
-    success: false,
-    message: 'Rota não encontrada'
+// Rotas protegidas
+app.use('/api/payments', auth, paymentRoutes);
+app.use('/api/messages', auth, messageRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/freights', freightRoutes);
+app.use('/api/admin', auth, adminRoutes);
+
+// Rota de health check
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development'
   });
 });
 
-// Handler de erros global
-app.use(errorHandler);
+// Rota de informações da API
+app.get('/api', (req, res) => {
+  res.json({
+    name: 'AgroSync API',
+    version: '1.0.0',
+    description: 'API para plataforma de agronegócio',
+    endpoints: {
+      auth: '/api/auth',
+      validation: '/api/validation',
+      payments: '/api/payments',
+      messages: '/api/messages',
+      products: '/api/products',
+      freights: '/api/freights',
+      admin: '/api/admin'
+    },
+    documentation: '/api/docs'
+  });
+});
 
-// ===== CONEXÃO COM BANCO =====
+// Middleware de tratamento de erros
+app.use((err, req, res, next) => {
+  console.error('Erro na API:', err);
 
-const connectDB = async () => {
+  // Erro de validação do Mongoose
+  if (err.name === 'ValidationError') {
+    const errors = Object.values(err.errors).map(e => e.message);
+    return res.status(400).json({
+      success: false,
+      error: 'Erro de validação',
+      details: errors
+    });
+  }
+
+  // Erro de cast do Mongoose (ID inválido)
+  if (err.name === 'CastError') {
+    return res.status(400).json({
+      success: false,
+      error: 'ID inválido'
+    });
+  }
+
+  // Erro de duplicação (unique constraint)
+  if (err.code === 11000) {
+    const field = Object.keys(err.keyValue)[0];
+    return res.status(400).json({
+      success: false,
+      error: `${field} já existe no sistema`
+    });
+  }
+
+  // Erro JWT
+  if (err.name === 'JsonWebTokenError') {
+    return res.status(401).json({
+      success: false,
+      error: 'Token inválido'
+    });
+  }
+
+  // Erro JWT expirado
+  if (err.name === 'TokenExpiredError') {
+    return res.status(401).json({
+      success: false,
+      error: 'Token expirado'
+    });
+  }
+
+  // Erro genérico
+  res.status(err.status || 500).json({
+    success: false,
+    error: err.message || 'Erro interno do servidor'
+  });
+});
+
+// Middleware para rotas não encontradas
+app.use('*', (req, res) => {
+  res.status(404).json({
+    success: false,
+    error: 'Rota não encontrada'
+  });
+});
+
+// Função para conectar ao MongoDB
+async function connectDB() {
   try {
-    const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/agroisync';
+    const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/agrosync';
     
     await mongoose.connect(mongoURI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      maxPoolSize: 10,
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
-      bufferCommands: false,
-      bufferMaxEntries: 0
     });
 
     console.log('✅ MongoDB conectado com sucesso');
     
-    // Criar índices para melhor performance
+    // Criar índices para performance
     await createIndexes();
     
   } catch (error) {
-    console.error('❌ Erro ao conectar com MongoDB:', error);
+    console.error('❌ Erro ao conectar ao MongoDB:', error);
     process.exit(1);
   }
-};
+}
 
 // Função para criar índices
 async function createIndexes() {
   try {
-    // Índices para usuários
+    // Índices para User
     await mongoose.model('User').createIndexes();
     
-    // Índices para mensagens
-    await mongoose.model('Message').createIndexes();
-    
-    // Índices para conversas
-    await mongoose.model('Conversation').createIndexes();
-    
-    // Índices para produtos
-    await mongoose.model('Product').createIndexes();
-    
-    // Índices para fretes
-    await mongoose.model('Freight').createIndexes();
-    
-    // Índices para pagamentos
+    // Índices para Payment
     await mongoose.model('Payment').createIndexes();
     
-    // Índices para parceiros
-    await mongoose.model('Partner').createIndexes();
+    // Índices para Conversation
+    await mongoose.model('Conversation').createIndexes();
     
-    // Índices para logs de auditoria
-    await mongoose.model('AuditLog').createIndexes();
+    // Índices para Message
+    await mongoose.model('Message').createIndexes();
     
     console.log('✅ Índices criados com sucesso');
   } catch (error) {
-    console.error('⚠️ Erro ao criar índices:', error);
+    console.error('❌ Erro ao criar índices:', error);
   }
 }
 
-// ===== INICIALIZAÇÃO DO SERVIDOR =====
-
-const startServer = async () => {
+// Função para iniciar o servidor
+async function startServer() {
   try {
-    // Conectar ao banco
+    // Conectar ao banco de dados
     await connectDB();
     
-    // Configurar WebSocket
-    const { io, socketService } = configureSocket(server);
-    
-    // Disponibilizar socketService globalmente
-    app.set('socketService', socketService);
-    
     // Iniciar servidor
-    server.listen(PORT, () => {
+    app.listen(PORT, () => {
       console.log(`🚀 Servidor rodando na porta ${PORT}`);
-      console.log(`📊 Ambiente: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`📱 Ambiente: ${process.env.NODE_ENV || 'development'}`);
       console.log(`🌐 URL: http://localhost:${PORT}`);
-      console.log(`🔌 WebSocket ativo`);
-      
-      // Log de inicialização
-      createSecurityLog('system_startup', 'low', 'Server started successfully', { url: `http://localhost:${PORT}` });
+      console.log(`🔗 Health Check: http://localhost:${PORT}/health`);
     });
     
   } catch (error) {
     console.error('❌ Erro ao iniciar servidor:', error);
     process.exit(1);
   }
-};
+}
 
-// ===== HANDLERS DE PROCESSO =====
+// Tratamento de sinais para graceful shutdown
+process.on('SIGTERM', gracefulShutdown);
+process.on('SIGINT', gracefulShutdown);
 
-// Graceful shutdown
-process.on('SIGTERM', async () => {
-  console.log('🔄 SIGTERM recebido. Encerrando servidor...');
+async function gracefulShutdown() {
+  console.log('\n🔄 Recebido sinal de shutdown, fechando servidor...');
   
   try {
+    // Fechar conexão com MongoDB
     await mongoose.connection.close();
     console.log('✅ Conexão com MongoDB fechada');
+    
+    // Fechar servidor
     process.exit(0);
   } catch (error) {
-    console.error('❌ Erro ao fechar conexão:', error);
+    console.error('❌ Erro durante shutdown:', error);
     process.exit(1);
   }
-});
+}
 
-process.on('SIGINT', async () => {
-  console.log('🔄 SIGINT recebido. Encerrando servidor...');
-  
-  try {
-    await mongoose.connection.close();
-    console.log('✅ Conexão com MongoDB fechada');
-    process.exit(0);
-  } catch (error) {
-    console.error('❌ Erro ao fechar conexão:', error);
-    process.exit(1);
-  }
-});
-
-// Handler de erros não capturados
-process.on('uncaughtException', (error) => {
-  console.error('❌ Erro não capturado:', error);
-  createSecurityLog('system_error', 'critical', `Uncaught exception: ${error.message}`, { stack: error.stack });
-  process.exit(1);
-});
-
+// Tratamento de erros não capturados
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('❌ Promise rejeitada não tratada:', reason);
-  createSecurityLog('system_error', 'critical', `Unhandled rejection: ${reason}`, { promise: promise.toString() });
-  process.exit(1);
+  console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('❌ Uncaught Exception:', error);
+  gracefulShutdown();
 });
 
 // Iniciar servidor
 startServer();
 
-export default app;
+module.exports = app;

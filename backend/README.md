@@ -1,216 +1,326 @@
-# AGROISYNC Backend
+# AgroSync Backend
 
-Backend serverless para a plataforma AGROISYNC, construído com AWS SAM e Node.js.
+Backend completo da plataforma AgroSync - Sistema de agronegócio com marketplace, fretes, pagamentos e mensageria privada.
 
-## 🚀 Configuração Rápida
+## 🚀 Funcionalidades
 
-### 1. Pré-requisitos
+### ✅ Implementadas
+- **Autenticação Segura**: JWT, bcrypt, validações
+- **Validações em Tempo Real**: CPF/CNPJ (ReceitaWS), CEP (IBGE), IE (Sefaz)
+- **Sistema de Pagamentos**: Stripe + Metamask (crypto)
+- **Mensageria Privada**: Conversas entre usuários pagos
+- **Controle de Acesso**: Baseado em planos ativos
+- **Rate Limiting**: Proteção contra abuso
+- **Segurança**: Helmet, CORS, validação de entrada
 
-- [Node.js 20+](https://nodejs.org/)
-- [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
-- [AWS CLI](https://aws.amazon.com/cli/) configurado
-- Conta AWS com permissões adequadas
+### 🔄 Em Desenvolvimento
+- **WebSocket**: Mensageria em tempo real
+- **Upload de Arquivos**: AWS S3 ou similar
+- **Notificações**: Email, push, SMS
+- **Analytics**: Métricas e relatórios
 
-### 2. Instalação
+## 🛠️ Tecnologias
 
+- **Runtime**: Node.js 16+
+- **Framework**: Express.js
+- **Database**: MongoDB + Mongoose
+- **Autenticação**: JWT + bcrypt
+- **Pagamentos**: Stripe + Ethers.js
+- **Validação**: Joi + express-validator
+- **Segurança**: Helmet + CORS + Rate Limiting
+
+## 📋 Pré-requisitos
+
+- Node.js 16+ 
+- MongoDB 5+
+- npm ou yarn
+- Conta Stripe (para pagamentos)
+- Chaves de API (ReceitaWS, IBGE, Sefaz)
+
+## 🚀 Instalação
+
+### 1. Clone o repositório
 ```bash
-# Instalar dependências
+git clone https://github.com/agrosync/backend.git
+cd backend
+```
+
+### 2. Instale as dependências
+```bash
 npm install
-
-# Configurar secrets
-cp secrets.example.yaml secrets.yaml
-# Editar secrets.yaml com seus valores reais
 ```
 
-### 3. Configuração dos Secrets
-
-**IMPORTANTE**: Nunca commite o arquivo `secrets.yaml` no repositório!
-
-Edite o arquivo `secrets.yaml` com suas configurações:
-
-```yaml
-StripeSecretKey: "sk_live_sua_chave_stripe_aqui"
-MetamaskAdminAddress: "0xSuaCarteiraMetamaskAqui"
-Environment: "production"
+### 3. Configure as variáveis de ambiente
+```bash
+cp .env.example .env
 ```
 
-### 4. Deploy
+Edite o arquivo `.env` com suas configurações:
+
+```env
+# Servidor
+NODE_ENV=development
+PORT=5000
+FRONTEND_URL=http://localhost:3000
+
+# MongoDB
+MONGODB_URI=mongodb://localhost:27017/agrosync
+
+# JWT
+JWT_SECRET=sua-chave-secreta-muito-segura
+JWT_EXPIRES_IN=7d
+
+# Stripe
+STRIPE_SECRET_KEY=sk_test_sua_chave_stripe
+STRIPE_WEBHOOK_SECRET=whsec_seu_webhook_stripe
+
+# Crypto
+OWNER_WALLET=0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6
+WEB3_PROVIDER=https://mainnet.infura.io/v3/seu_projeto
+
+# APIs Externas
+OPENWEATHER_API_KEY=sua_chave_openweather
+RECEITA_WS_API_KEY=sua_chave_receita
+SEFAZ_API_KEY=sua_chave_sefaz
+```
+
+### 4. Inicie o MongoDB
+```bash
+# Local
+mongod
+
+# Ou usando Docker
+docker run -d -p 27017:27017 --name mongodb mongo:latest
+```
+
+### 5. Execute as migrações (se necessário)
+```bash
+npm run db:migrate
+```
+
+### 6. Inicie o servidor
+```bash
+# Desenvolvimento
+npm run dev
+
+# Produção
+npm start
+```
+
+## 📚 Estrutura do Projeto
+
+```
+backend/
+├── src/
+│   ├── models/          # Modelos Mongoose
+│   │   ├── User.js      # Usuários e autenticação
+│   │   ├── Payment.js   # Pagamentos e planos
+│   │   ├── Conversation.js # Conversas da mensageria
+│   │   └── Message.js   # Mensagens individuais
+│   ├── routes/          # Rotas da API
+│   │   ├── auth.js      # Autenticação
+│   │   ├── validation.js # Validações CPF/CNPJ/CEP/IE
+│   │   ├── payments.js  # Pagamentos Stripe + Crypto
+│   │   ├── messages.js  # Mensageria privada
+│   │   ├── products.js  # Produtos da loja
+│   │   ├── freights.js  # Fretes do AgroConecta
+│   │   └── admin.js     # Painel administrativo
+│   ├── middleware/      # Middlewares customizados
+│   │   └── auth.js      # Autenticação JWT
+│   └── server.js        # Servidor principal
+├── scripts/             # Scripts utilitários
+├── tests/               # Testes automatizados
+├── .env.example         # Exemplo de variáveis
+├── package.json         # Dependências
+└── README.md           # Este arquivo
+```
+
+## 🔌 Endpoints da API
+
+### Autenticação
+- `POST /api/auth/register` - Cadastro de usuário
+- `POST /api/auth/login` - Login
+- `POST /api/auth/logout` - Logout
+- `GET /api/auth/profile` - Perfil do usuário
+- `PUT /api/auth/profile` - Atualizar perfil
+
+### Validações
+- `POST /api/validation/cpf` - Validar CPF via ReceitaWS
+- `POST /api/validation/cnpj` - Validar CNPJ via ReceitaWS
+- `POST /api/validation/cep` - Validar CEP via IBGE
+- `POST /api/validation/ie` - Validar IE via Sefaz
+
+### Pagamentos
+- `GET /api/payments/status` - Status do pagamento
+- `POST /api/payments/stripe/create-session` - Criar sessão Stripe
+- `POST /api/payments/crypto/verify` - Verificar pagamento crypto
+- `POST /api/payments/cancel` - Cancelar assinatura
+- `GET /api/payments/history` - Histórico de pagamentos
+
+### Mensageria
+- `GET /api/messages/conversations` - Listar conversas
+- `GET /api/messages/conversations/:id` - Buscar conversa
+- `POST /api/messages/conversations` - Criar conversa
+- `POST /api/messages/conversations/:id/messages` - Enviar mensagem
+- `PUT /api/messages/conversations/:id/read` - Marcar como lida
+
+### Produtos
+- `GET /api/products` - Listar produtos
+- `POST /api/products` - Criar produto
+- `GET /api/products/:id` - Buscar produto
+- `PUT /api/products/:id` - Atualizar produto
+- `DELETE /api/products/:id` - Deletar produto
+
+### Fretes
+- `GET /api/freights` - Listar fretes
+- `POST /api/freights` - Criar frete
+- `GET /api/freights/:id` - Buscar frete
+- `PUT /api/freights/:id` - Atualizar frete
+- `DELETE /api/freights/:id` - Deletar frete
+
+## 🔐 Autenticação
+
+### JWT Token
+O sistema usa JWT para autenticação. Inclua o token no header:
 
 ```bash
-# Tornar o script executável
-chmod +x deploy.sh
-
-# Executar deploy
-./deploy.sh
+Authorization: Bearer <seu-jwt-token>
 ```
 
-## 🔐 Secrets Configurados
+### Controle de Acesso
+- **Usuários não autenticados**: Apenas endpoints públicos
+- **Usuários autenticados**: Acesso básico + perfil
+- **Usuários pagos**: Acesso completo aos recursos privados
+- **Admins**: Acesso total ao sistema
 
-### ✅ **Já Configurados:**
-- **Stripe Secret Key**: `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`
-- **Metamask Admin Address**: `0x5Ea5C5970e8AE23A5336d631707CF31C5916E8b1`
+## 💳 Sistema de Pagamentos
 
-### ⚠️ **Ainda Necessários:**
-- JWT Secret
-- Encryption Key
-- API Keys externas
-- Configurações de banco de dados
-- Configurações de email/SMS
+### Stripe (Cartão)
+- Criação de sessões de checkout
+- Webhooks para confirmação
+- Assinaturas recorrentes
+- Suporte a múltiplas moedas
 
-## 🏗️ Arquitetura
+### Metamask (Crypto)
+- Integração com Ethereum
+- Verificação de transações
+- Suporte a múltiplas redes
+- Pagamentos para carteira específica
 
-### Recursos AWS Criados:
-- **Lambda Function**: API principal
-- **HTTP API Gateway**: Endpoints da API
-- **S3 Bucket**: Upload de arquivos
-- **DynamoDB**: Banco de dados principal
-- **IAM Roles**: Permissões de acesso
+## 📱 Mensageria
 
-### Funcionalidades:
-- ✅ Autenticação e autorização
-- ✅ Integração com Stripe (pagamentos)
-- ✅ Integração com Metamask (Web3)
-- ✅ Upload de arquivos para S3
-- ✅ Banco de dados DynamoDB
-- ✅ Rate limiting e segurança
+### Conversas
+- Entre compradores e vendedores
+- Entre freteiros e anunciantes
+- Suporte a arquivos e imagens
+- Histórico completo salvo
 
-## 🔧 Desenvolvimento Local
+### Recursos
+- Upload de arquivos (10MB max)
+- Tipos: texto, arquivo, imagem
+- Status: enviada, entregue, lida
+- Notificações em tempo real (em breve)
+
+## 🧪 Testes
 
 ```bash
-# Build local
-npm run build
+# Executar todos os testes
+npm test
 
-# Teste local com SAM
-sam local start-api
+# Testes em modo watch
+npm run test:watch
 
-# Teste de função específica
-sam local invoke ApiFunction --event events/event.json
+# Cobertura de testes
+npm run test:coverage
 ```
+
+## 📝 Linting e Formatação
+
+```bash
+# Verificar código
+npm run lint
+
+# Corrigir problemas automaticamente
+npm run lint:fix
+
+# Formatar código
+npm run format
+```
+
+## 🚀 Deploy
+
+### Variáveis de Produção
+```env
+NODE_ENV=production
+PORT=5000
+FRONTEND_URL=https://agrosync.com
+MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/agrosync
+JWT_SECRET=chave-super-secreta-producao
+```
+
+### PM2 (Recomendado)
+```bash
+npm install -g pm2
+pm2 start ecosystem.config.js
+pm2 save
+pm2 startup
+```
+
+### Docker
+```bash
+docker build -t agrosync-backend .
+docker run -p 5000:5000 agrosync-backend
+```
+
+## 🔒 Segurança
+
+- **Rate Limiting**: Proteção contra abuso
+- **Validação de Entrada**: Sanitização de dados
+- **Headers de Segurança**: Helmet + CORS
+- **Autenticação JWT**: Tokens seguros
+- **Hash de Senhas**: bcrypt com salt
+- **Logs de Auditoria**: Rastreamento de ações
 
 ## 📊 Monitoramento
 
-### CloudWatch Logs
-- Logs automáticos da Lambda
-- Métricas de performance
-- Alertas configuráveis
+- **Health Check**: `/health`
+- **Logs**: Morgan + console
+- **Métricas**: Em desenvolvimento
+- **Alertas**: Em desenvolvimento
 
-### Métricas Importantes
-- Latência da API
-- Taxa de erro
-- Uso de memória
-- Duração das execuções
+## 🤝 Contribuição
 
-## 🚨 Segurança
+1. Fork o projeto
+2. Crie uma branch para sua feature
+3. Commit suas mudanças
+4. Push para a branch
+5. Abra um Pull Request
 
-### Headers de Segurança
-- X-Frame-Options: DENY
-- X-Content-Type-Options: nosniff
-- Referrer-Policy: strict-origin-when-cross-origin
+## 📄 Licença
 
-### Rate Limiting
-- Limite por IP
-- Limite por endpoint
-- Proteção contra DDoS
+Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
 
-### Validação
-- Validação de entrada com Zod
-- Sanitização de dados
-- Verificação de tipos
+## 🆘 Suporte
 
-## 🔄 Deploy Automatizado
+- **Issues**: [GitHub Issues](https://github.com/agrosync/backend/issues)
+- **Documentação**: [Wiki](https://github.com/agrosync/backend/wiki)
+- **Email**: suporte@agrosync.com
 
-### GitHub Actions (Recomendado)
-```yaml
-name: Deploy Backend
-on:
-  push:
-    branches: [main]
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-      - run: npm ci
-      - run: npm run build
-      - uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
-```
+## 🔄 Changelog
 
-### Secrets no GitHub
-Configure os seguintes secrets no seu repositório:
-- `AWS_ACCESS_KEY_ID`
-- `AWS_SECRET_ACCESS_KEY`
-- `STRIPE_SECRET_KEY`
-- `METAMASK_ADMIN_ADDRESS`
+### v1.0.0 (Atual)
+- ✅ Sistema de autenticação completo
+- ✅ Validações em tempo real
+- ✅ Pagamentos Stripe + Crypto
+- ✅ Mensageria privada
+- ✅ Controle de acesso baseado em planos
+- ✅ API REST completa
+- ✅ Segurança e rate limiting
 
-## 📝 Endpoints da API
-
-### Autenticação
-- `POST /auth/login` - Login de usuário
-- `POST /auth/register` - Registro de usuário
-- `POST /auth/logout` - Logout
-- `POST /auth/refresh` - Renovar token
-
-### Pagamentos (Stripe)
-- `POST /stripe/create-checkout-session` - Criar sessão de checkout
-- `POST /stripe/create-payment-link` - Criar link de pagamento
-- `GET /stripe/subscriptions/:id` - Obter assinatura
-- `POST /stripe/subscriptions/:id/cancel` - Cancelar assinatura
-
-### Web3
-- `POST /web3/connect` - Conectar carteira
-- `POST /web3/verify` - Verificar assinatura
-- `GET /web3/balance` - Obter saldo
-
-### Uploads
-- `POST /upload/signed-url` - Gerar URL assinada para upload
-- `POST /upload/verify` - Verificar arquivo enviado
-
-## 🆘 Troubleshooting
-
-### Erro de Deploy
-```bash
-# Verificar logs
-sam logs -n ApiFunction --stack-name agroisync-backend
-
-# Verificar status da stack
-aws cloudformation describe-stacks --stack-name agroisync-backend
-```
-
-### Erro de Permissões
-```bash
-# Verificar IAM roles
-aws iam get-role --role-name agroisync-backend-ApiFunctionRole-XXXXX
-```
-
-### Erro de API
-```bash
-# Testar endpoint
-curl -X POST https://your-api-url/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"password"}'
-```
-
-## 📞 Suporte
-
-Para suporte técnico ou dúvidas sobre o deploy:
-- Abra uma issue no repositório
-- Consulte os logs do CloudWatch
-- Verifique a documentação da AWS SAM
-
-## 🔒 Segurança dos Secrets
-
-**IMPORTANTE**: 
-- ✅ Use `secrets.yaml` apenas localmente
-- ✅ Configure secrets no GitHub Actions
-- ✅ Use AWS Secrets Manager para produção
-- ✅ Rotacione chaves regularmente
-- ❌ Nunca commite secrets no repositório
-- ❌ Não compartilhe chaves em logs ou screenshots
+### Próximas Versões
+- 🔄 WebSocket para mensageria em tempo real
+- 🔄 Upload de arquivos
+- 🔄 Sistema de notificações
+- 🔄 Analytics e métricas
+- 🔄 Cache Redis
+- 🔄 Testes automatizados

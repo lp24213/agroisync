@@ -5,241 +5,269 @@ const paymentSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: [true, 'Usuário é obrigatório']
+    required: true,
+    index: true
   },
 
-  // Detalhes do pagamento
+  // Dados do plano
+  planId: {
+    type: String,
+    required: true,
+    enum: ['loja-basic', 'loja-pro', 'agroconecta-basic', 'agroconecta-pro']
+  },
+  planName: {
+    type: String,
+    required: true
+  },
+
+  // Informações financeiras
   amount: {
     type: Number,
-    required: [true, 'Valor é obrigatório'],
-    min: [0, 'Valor não pode ser negativo']
+    required: true,
+    min: 0
   },
   currency: {
     type: String,
-    required: [true, 'Moeda é obrigatória'],
-    default: 'BRL',
-    enum: ['BRL', 'USD', 'EUR']
+    required: true,
+    enum: ['BRL', 'USD', 'EUR', 'ETH', 'BTC'],
+    default: 'BRL'
   },
 
   // Método de pagamento
-  method: {
+  paymentMethod: {
     type: String,
-    required: [true, 'Método de pagamento é obrigatório'],
-    enum: ['stripe', 'crypto', 'pix', 'bank_transfer']
+    required: true,
+    enum: ['stripe', 'crypto', 'pix', 'boleto']
   },
 
   // Status do pagamento
   status: {
     type: String,
-    required: [true, 'Status é obrigatório'],
+    required: true,
     enum: ['pending', 'processing', 'completed', 'failed', 'cancelled', 'refunded'],
     default: 'pending'
   },
 
-  // Plano adquirido
-  plan: {
-    planId: {
-      type: String,
-      required: [true, 'ID do plano é obrigatório'],
-      enum: ['comprador-basic', 'anunciante-premium', 'freteiro-premium', 'admin-full']
-    },
-    name: {
-      type: String,
-      required: [true, 'Nome do plano é obrigatório']
-    },
-    description: String,
-    duration: {
-      type: Number, // em dias
-      required: [true, 'Duração do plano é obrigatória']
-    },
-    features: [String]
+  // Dados específicos do Stripe
+  stripe: {
+    sessionId: String,
+    customerId: String,
+    subscriptionId: String,
+    paymentIntentId: String,
+    chargeId: String
   },
 
-  // Detalhes específicos por método de pagamento
-  paymentDetails: {
-    // Stripe
-    stripe: {
-      sessionId: String,
-      paymentIntentId: String,
-      customerId: String,
-      subscriptionId: String
+  // Dados específicos de crypto
+  crypto: {
+    transactionHash: String,
+    walletAddress: String,
+    network: {
+      type: String,
+      enum: ['ethereum', 'polygon', 'bsc', 'arbitrum']
     },
-    // Crypto
-    crypto: {
-      transactionHash: {
-        type: String,
-        required: function() { return this.method === 'crypto'; }
-      },
-      network: {
-        type: String,
-        enum: ['ethereum', 'polygon', 'bsc', 'other'],
-        required: function() { return this.method === 'crypto'; }
-      },
-      fromAddress: String,
-      toAddress: String,
-      gasUsed: Number,
-      gasPrice: Number,
-      blockNumber: Number,
-      confirmations: Number
-    },
-    // PIX
-    pix: {
-      qrCode: String,
-      qrCodeText: String,
-      expiresAt: Date
-    }
+    gasUsed: Number,
+    gasPrice: Number
   },
 
-  // Metadados e auditoria
+  // Dados específicos de PIX/Boleto
+  brazilian: {
+    pixKey: String,
+    boletoCode: String,
+    boletoUrl: String,
+    expirationDate: Date
+  },
+
+  // Metadados adicionais
   metadata: {
-    userAgent: String,
-    ipAddress: String,
-    referrer: String
-  },
-
-  // Notificações e webhooks
-  notifications: {
-    emailSent: {
-      type: Boolean,
-      default: false
-    },
-    webhookReceived: {
-      type: Boolean,
-      default: false
-    },
-    webhookPayload: mongoose.Schema.Types.Mixed
+    type: Map,
+    of: mongoose.Schema.Types.Mixed
   },
 
   // Timestamps
-  expiresAt: {
-    type: Date,
-    required: function() {
-      return this.status === 'pending' && this.method === 'pix';
-    }
-  },
-  completedAt: Date,
+  processedAt: Date,
   failedAt: Date,
+  refundedAt: Date,
   cancelledAt: Date,
-  refundedAt: Date
+
+  // Informações de auditoria
+  ipAddress: String,
+  userAgent: String,
+  source: {
+    type: String,
+    enum: ['web', 'mobile', 'api'],
+    default: 'web'
+  },
+
+  // Notas e comentários
+  notes: String,
+  adminNotes: String,
+
+  // Soft delete
+  deletedAt: Date
 }, {
-  timestamps: true
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
 });
 
 // Índices para performance
 paymentSchema.index({ userId: 1, createdAt: -1 });
-paymentSchema.index({ status: 1 });
-paymentSchema.index({ method: 1 });
-paymentSchema.index({ 'plan.planId': 1 });
-paymentSchema.index({ createdAt: -1 });
-paymentSchema.index({ expiresAt: 1 });
+paymentSchema.index({ status: 1, createdAt: -1 });
+paymentSchema.index({ planId: 1, status: 1 });
+paymentSchema.index({ paymentMethod: 1, status: 1 });
+paymentSchema.index({ 'stripe.sessionId': 1 });
+paymentSchema.index({ 'crypto.transactionHash': 1 });
 
-// Middleware para definir data de expiração para PIX
+// Virtual para verificar se pagamento foi bem-sucedido
+paymentSchema.virtual('isSuccessful').get(function() {
+  return this.status === 'completed';
+});
+
+// Virtual para verificar se pagamento está pendente
+paymentSchema.virtual('isPending').get(function() {
+  return ['pending', 'processing'].includes(this.status);
+});
+
+// Virtual para verificar se pagamento falhou
+paymentSchema.virtual('isFailed').get(function() {
+  return ['failed', 'cancelled'].includes(this.status);
+});
+
+// Virtual para verificar se pagamento foi reembolsado
+paymentSchema.virtual('isRefunded').get(function() {
+  return this.status === 'refunded';
+});
+
+// Virtual para duração do processamento
+paymentSchema.virtual('processingDuration').get(function() {
+  if (!this.processedAt || !this.createdAt) return null;
+  return this.processedAt - this.createdAt;
+});
+
+// Middleware para atualizar timestamps baseado no status
 paymentSchema.pre('save', function(next) {
-  if (this.method === 'pix' && this.status === 'pending' && !this.expiresAt) {
-    // PIX expira em 30 minutos
-    this.expiresAt = new Date(Date.now() + 30 * 60 * 1000);
+  if (this.isModified('status')) {
+    const now = new Date();
+    
+    switch (this.status) {
+      case 'completed':
+        this.processedAt = now;
+        break;
+      case 'failed':
+        this.failedAt = now;
+        break;
+      case 'refunded':
+        this.refundedAt = now;
+        break;
+      case 'cancelled':
+        this.cancelledAt = now;
+        break;
+    }
   }
   next();
 });
 
-// Método para marcar como processando
-paymentSchema.methods.markAsProcessing = function() {
-  this.status = 'processing';
-  return this.save();
-};
-
-// Método para marcar como completo
+// Método para marcar como processado
 paymentSchema.methods.markAsCompleted = function() {
   this.status = 'completed';
-  this.completedAt = new Date();
+  this.processedAt = new Date();
   return this.save();
 };
 
 // Método para marcar como falhou
-paymentSchema.methods.markAsFailed = function() {
+paymentSchema.methods.markAsFailed = function(reason) {
   this.status = 'failed';
   this.failedAt = new Date();
-  return this.save();
-};
-
-// Método para marcar como cancelado
-paymentSchema.methods.markAsCancelled = function() {
-  this.status = 'cancelled';
-  this.cancelledAt = new Date();
+  this.notes = reason;
   return this.save();
 };
 
 // Método para marcar como reembolsado
-paymentSchema.methods.markAsRefunded = function() {
+paymentSchema.methods.markAsRefunded = function(reason) {
   this.status = 'refunded';
   this.refundedAt = new Date();
+  this.notes = reason;
   return this.save();
 };
 
-// Método para verificar se pagamento está ativo
-paymentSchema.methods.isActive = function() {
-  return this.status === 'completed';
+// Método para marcar como cancelado
+paymentSchema.methods.markAsCancelled = function(reason) {
+  this.status = 'cancelled';
+  this.cancelledAt = new Date();
+  this.notes = reason;
+  return this.save();
 };
 
-// Método para obter dados do pagamento para exibição
-paymentSchema.methods.getDisplayData = function() {
+// Método para obter dados públicos (sem informações sensíveis)
+paymentSchema.methods.getPublicData = function() {
   return {
-    _id: this._id,
+    id: this._id,
+    planId: this.planId,
+    planName: this.planName,
     amount: this.amount,
     currency: this.currency,
-    method: this.method,
+    paymentMethod: this.paymentMethod,
     status: this.status,
-    plan: this.plan,
     createdAt: this.createdAt,
-    completedAt: this.completedAt,
-    isActive: this.isActive()
+    processedAt: this.processedAt
+  };
+};
+
+// Método para obter dados completos (apenas para usuário dono ou admin)
+paymentSchema.methods.getFullData = function(userId, isAdmin) {
+  if (this.userId.toString() !== userId && !isAdmin) {
+    throw new Error('Acesso negado');
+  }
+
+  return {
+    ...this.getPublicData(),
+    userId: this.userId,
+    stripe: this.stripe,
+    crypto: this.crypto,
+    brazilian: this.brazilian,
+    metadata: this.metadata,
+    ipAddress: this.ipAddress,
+    userAgent: this.userAgent,
+    source: this.source,
+    notes: this.notes,
+    adminNotes: this.adminNotes,
+    updatedAt: this.updatedAt
   };
 };
 
 // Método estático para buscar pagamentos de um usuário
-paymentSchema.statics.getUserPayments = function(userId, limit = 20, skip = 0) {
-  return this.find({ userId })
-    .sort({ createdAt: -1 })
-    .skip(skip)
+paymentSchema.statics.findByUser = function(userId, options = {}) {
+  const query = { userId, deletedAt: { $exists: false } };
+  
+  if (options.status) {
+    query.status = options.status;
+  }
+  
+  if (options.planId) {
+    query.planId = options.planId;
+  }
+  
+  if (options.paymentMethod) {
+    query.paymentMethod = options.paymentMethod;
+  }
+  
+  const sort = options.sort || { createdAt: -1 };
+  const limit = options.limit || 50;
+  const skip = options.skip || 0;
+  
+  return this.find(query)
+    .sort(sort)
     .limit(limit)
-    .populate('userId', 'name email');
+    .skip(skip);
 };
 
-// Método estático para buscar pagamentos por status
-paymentSchema.statics.getPaymentsByStatus = function(status, limit = 50) {
-  return this.find({ status })
-    .sort({ createdAt: -1 })
-    .limit(limit)
-    .populate('userId', 'name email');
-};
-
-// Método estático para buscar pagamentos por método
-paymentSchema.statics.getPaymentsByMethod = function(method, limit = 50) {
-  return this.find({ method })
-    .sort({ createdAt: -1 })
-    .limit(limit)
-    .populate('userId', 'name email');
-};
-
-// Método estático para buscar pagamentos por plano
-paymentSchema.statics.getPaymentsByPlan = function(planId, limit = 50) {
-  return this.find({ 'plan.planId': planId })
-    .sort({ createdAt: -1 })
-    .limit(limit)
-    .populate('userId', 'name email');
-};
-
-// Método estático para buscar pagamentos pendentes expirados
-paymentSchema.statics.getExpiredPendingPayments = function() {
-  return this.find({
-    status: 'pending',
-    expiresAt: { $lt: new Date() }
-  });
-};
-
-// Método estático para estatísticas de pagamento
-paymentSchema.statics.getPaymentStats = function() {
-  return this.aggregate([
+// Método estático para estatísticas de pagamentos
+paymentSchema.statics.getStats = async function(userId = null) {
+  const match = { deletedAt: { $exists: false } };
+  if (userId) match.userId = userId;
+  
+  const stats = await this.aggregate([
+    { $match: match },
     {
       $group: {
         _id: null,
@@ -252,59 +280,40 @@ paymentSchema.statics.getPaymentStats = function() {
           $sum: { $cond: [{ $eq: ['$status', 'completed'] }, '$amount', 0] }
         },
         pendingPayments: {
-          $sum: { $cond: [{ $eq: ['$status', 'pending'] }, 1, 0] }
+          $sum: { $cond: [{ $in: ['$status', ['pending', 'processing']] }, 1, 0] }
         },
         failedPayments: {
-          $sum: { $cond: [{ $eq: ['$status', 'failed'] }, 1, 0] }
+          $sum: { $cond: [{ $in: ['$status', ['failed', 'cancelled']] }, 1, 0] }
         }
       }
     }
   ]);
+  
+  return stats[0] || {
+    totalPayments: 0,
+    totalAmount: 0,
+    completedPayments: 0,
+    completedAmount: 0,
+    pendingPayments: 0,
+    failedPayments: 0
+  };
 };
 
-// Método estático para estatísticas por método de pagamento
-paymentSchema.statics.getPaymentStatsByMethod = function() {
-  return this.aggregate([
-    {
-      $group: {
-        _id: '$method',
-        count: { $sum: 1 },
-        totalAmount: { $sum: '$amount' },
-        completedCount: {
-          $sum: { $cond: [{ $eq: ['$status', 'completed'] }, 1, 0] }
-        },
-        completedAmount: {
-          $sum: { $cond: [{ $eq: ['$status', 'completed'] }, '$amount', 0] }
-        }
-      }
+// Método estático para buscar pagamentos por período
+paymentSchema.statics.findByPeriod = function(startDate, endDate, userId = null) {
+  const query = {
+    createdAt: {
+      $gte: startDate,
+      $lte: endDate
     },
-    {
-      $sort: { count: -1 }
-    }
-  ]);
-};
-
-// Método estático para estatísticas por plano
-paymentSchema.statics.getPaymentStatsByPlan = function() {
-  return this.aggregate([
-    {
-      $group: {
-        _id: '$plan.planId',
-        planName: { $first: '$plan.name' },
-        count: { $sum: 1 },
-        totalAmount: { $sum: '$amount' },
-        completedCount: {
-          $sum: { $cond: [{ $eq: ['$status', 'completed'] }, 1, 0] }
-        },
-        completedAmount: {
-          $sum: { $cond: [{ $eq: ['$status', 'completed'] }, '$amount', 0] }
-        }
-      }
-    },
-    {
-      $sort: { count: -1 }
-    }
-  ]);
+    deletedAt: { $exists: false }
+  };
+  
+  if (userId) {
+    query.userId = userId;
+  }
+  
+  return this.find(query).sort({ createdAt: -1 });
 };
 
 module.exports = mongoose.model('Payment', paymentSchema);

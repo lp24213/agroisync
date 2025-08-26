@@ -1,716 +1,562 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
 import { useTheme } from '../contexts/ThemeContext';
-import { 
-  BitcoinIcon, EthereumIcon, USDTIcon, BNBIcon, SolanaIcon
-} from '../components/icons/CryptoIcons';
-import CryptoTicker from '../components/crypto/CryptoTicker';
-import CryptoChart from '../components/crypto/CryptoChart';
-import cryptoService from '../services/cryptoService';
+import { useAuth } from '../contexts/AuthContext';
+import { usePayment } from '../contexts/PaymentContext';
+import { cryptoService } from '../services/cryptoService';
 import metamaskService from '../services/metamaskService';
+import { useTranslation } from 'react-i18next';
+import { 
+  TrendingUp, TrendingDown, DollarSign, Coins, Wallet, 
+  ArrowUpRight, ArrowDownRight, RefreshCw, AlertCircle,
+  Shield, Zap, Globe, BarChart3, PieChart, Activity,
+  Lock, Unlock, Eye, EyeOff, Copy, CheckCircle
+} from 'lucide-react';
 
 const Cripto = () => {
-  const { t } = useTranslation();
   const { isDark } = useTheme();
-  const [walletAddress, setWalletAddress] = useState('');
-  const [isConnected, setIsConnected] = useState(false);
-  const [balance, setBalance] = useState('0');
-  const [cryptoQuotes, setCryptoQuotes] = useState([]);
+  const { user, isAdmin } = useAuth();
+  const { isPaid, planActive } = usePayment();
+  const { t } = useTranslation();
+  
+  const [cryptoData, setCryptoData] = useState([]);
+  const [selectedCrypto, setSelectedCrypto] = useState('bitcoin');
+  const [timeframe, setTimeframe] = useState('24h');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [selectedCrypto, setSelectedCrypto] = useState('bitcoin');
-  const [chartData, setChartData] = useState(null);
+  const [metamaskConnected, setMetamaskConnected] = useState(false);
+  const [walletAddress, setWalletAddress] = useState('');
+  const [walletBalance, setWalletBalance] = useState('0');
+  const [showSecretPanel, setShowSecretPanel] = useState(false);
+  const [paymentAmount, setPaymentAmount] = useState('');
+  const [paymentLoading, setPaymentLoading] = useState(false);
 
-  // Dados das carteiras suportadas
-  const walletOptions = [
-    { id: 'metamask', name: 'MetaMask', icon: '🦊', description: 'Carteira mais popular do Ethereum', color: 'from-orange-500 to-red-500', secure: true },
-    { id: 'phantom', name: 'Phantom', icon: '👻', description: 'Carteira oficial da Solana', color: 'from-purple-500 to-pink-500', secure: true },
-    { id: 'walletconnect', name: 'WalletConnect', icon: '🔗', description: 'Conecte qualquer carteira de forma segura', color: 'from-blue-500 to-cyan-500', secure: true }
-  ];
-
-  const acceptedCryptos = [
-    { symbol: 'BTC', name: 'Bitcoin', description: 'Pagamento aceito' },
-    { symbol: 'ETH', name: 'Ethereum', description: 'Pagamento aceito' },
-    { symbol: 'USDT', name: 'Tether', description: 'Pagamento aceito' },
-    { symbol: 'BNB', name: 'Binance Coin', description: 'Pagamento aceito' },
-    { symbol: 'SOL', name: 'Solana', description: 'Pagamento aceito' },
-    { symbol: 'ADA', name: 'Cardano', description: 'Pagamento aceito' },
-    { symbol: 'DOT', name: 'Polkadot', description: 'Pagamento aceito' },
-    { symbol: 'LINK', name: 'Chainlink', description: 'Pagamento aceito' }
-  ];
-
-  // Carregar dados das criptomoedas
   useEffect(() => {
-    loadCryptoData();
-    loadChartData();
-    
-    // Atualizar dados a cada 30 segundos
-    const interval = setInterval(loadCryptoData, 30000);
-    
-    return () => clearInterval(interval);
+    document.title = 'Criptomoedas - Agroisync';
+    fetchCryptoData();
+    checkMetamaskConnection();
   }, []);
 
-  const loadCryptoData = async () => {
+  const fetchCryptoData = async () => {
     try {
       setLoading(true);
-      setError('');
-      
-      const data = await cryptoService.getCryptoQuotes();
-      setCryptoQuotes(data);
+      const data = await cryptoService.getTopCryptos();
+      setCryptoData(data);
     } catch (error) {
-      console.error('Erro ao carregar dados:', error);
       setError('Erro ao carregar dados das criptomoedas');
+      console.error('Erro ao buscar dados:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const loadChartData = async () => {
+  const checkMetamaskConnection = async () => {
     try {
-      const data = await cryptoService.getCryptoHistory(selectedCrypto, 7);
-      setChartData(data);
-    } catch (error) {
-      console.error('Erro ao carregar gráfico:', error);
-    }
-  };
-
-  const handleCryptoChange = async (cryptoId) => {
-    setSelectedCrypto(cryptoId);
-    try {
-      const data = await cryptoService.getCryptoHistory(cryptoId, 7);
-      setChartData(data);
-    } catch (error) {
-      console.error('Erro ao carregar gráfico:', error);
-    }
-  };
-
-  const connectWallet = async () => {
-    try {
-      if (!metamaskService.isMetamaskInstalled()) {
-        alert('MetaMask não está instalado. Por favor, instale a extensão MetaMask.');
-        return;
+      if (metamaskService.isMetamaskInstalled()) {
+        const accounts = await metamaskService.getAccounts();
+        if (accounts.length > 0) {
+          setMetamaskConnected(true);
+          setWalletAddress(accounts[0]);
+          const balance = await metamaskService.getBalance();
+          setWalletBalance(balance);
+        }
       }
+    } catch (error) {
+      console.error('Erro ao verificar conexão Metamask:', error);
+    }
+  };
 
+  const connectMetamask = async () => {
+    try {
+      setPaymentLoading(true);
       const connection = await metamaskService.connect();
-      setWalletAddress(connection.account);
-          setIsConnected(true);
-          
-      // Obter saldo real
-      const realBalance = await metamaskService.getBalance();
-      setBalance(realBalance);
+      if (connection.success) {
+        setMetamaskConnected(true);
+        setWalletAddress(connection.address);
+        const balance = await metamaskService.getBalance();
+        setWalletBalance(balance);
+      }
     } catch (error) {
-      console.error('Erro ao conectar carteira:', error);
-      setError('Erro ao conectar carteira');
+      setError('Erro ao conectar Metamask: ' + error.message);
+    } finally {
+      setPaymentLoading(false);
     }
   };
 
-  const disconnectWallet = () => {
-    metamaskService.disconnect();
+  const disconnectMetamask = () => {
+    setMetamaskConnected(false);
     setWalletAddress('');
-    setIsConnected(false);
-    setBalance('0');
+    setWalletBalance('0');
   };
 
-  // Função para processar pagamentos para OWNER_WALLET
-  const handleCryptoPayment = async (amount, cryptoType) => {
-    try {
-      if (!isConnected) {
-        alert('Conecte sua carteira primeiro');
-        return;
-      }
+  const handlePayment = async () => {
+    if (!paymentAmount || parseFloat(paymentAmount) <= 0) {
+      setError('Por favor, insira um valor válido');
+      return;
+    }
 
-      const OWNER_WALLET = '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'; // Carteira do proprietário
+    try {
+      setPaymentLoading(true);
+      setError('');
+
+      // Endereço da carteira do AgroSync
+      const ownerWallet = process.env.REACT_APP_OWNER_WALLET || '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6';
       
-      const transaction = await metamaskService.sendPayment(
-        OWNER_WALLET,
-        amount,
-        cryptoType
+      const payment = await metamaskService.sendPayment(
+        ownerWallet, 
+        parseFloat(paymentAmount), 
+        'Pagamento AgroSync'
       );
 
-      if (transaction.success) {
-        alert(`Pagamento de ${amount} ${cryptoType} enviado com sucesso para ${OWNER_WALLET}`);
-        
-        // Atualizar status de pagamento no backend
-        await updatePaymentStatus(transaction.hash, amount, cryptoType);
+      // Aguardar confirmação
+      let confirmations = 0;
+      while (confirmations < 1) {
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        const status = await metamaskService.getTransactionStatus(payment.hash);
+        confirmations = status.confirmations;
+      }
+
+      // Verificar pagamento no backend
+      const verification = await cryptoService.verifyPayment(payment.hash, paymentAmount);
+      
+      if (verification.success) {
+        alert('Pagamento confirmado com sucesso!');
+        setPaymentAmount('');
+        // Atualizar status do usuário
+        window.location.reload();
       } else {
-        alert('Erro no pagamento: ' + transaction.error);
+        setError('Falha na verificação do pagamento');
       }
+
     } catch (error) {
-      console.error('Erro no pagamento:', error);
-      alert('Erro ao processar pagamento');
+      setError('Erro no pagamento: ' + error.message);
+    } finally {
+      setPaymentLoading(false);
     }
   };
 
-  // Atualizar status de pagamento no backend
-  const updatePaymentStatus = async (txHash, amount, cryptoType) => {
-    try {
-      const response = await fetch('/api/payments/crypto-verification', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({
-          transactionHash: txHash,
-          amount,
-          cryptoType,
-          fromAddress: walletAddress,
-          toAddress: '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'
-        })
-      });
-
-      if (response.ok) {
-        console.log('Status de pagamento atualizado');
-      }
-    } catch (error) {
-      console.error('Erro ao atualizar status:', error);
+  const copyAddress = (address) => {
+    navigator.clipboard.writeText(address);
+    // Mostrar feedback visual
+    const button = document.getElementById('copy-button');
+    if (button) {
+      button.innerHTML = '<CheckCircle className="w-4 h-4" />';
+      setTimeout(() => {
+        button.innerHTML = '<Copy className="w-4 h-4" />';
+      }, 2000);
     }
   };
 
-  const handleWalletConnect = (walletName) => {
-    if (walletName === 'metamask') {
-      connectWallet();
+  const formatPrice = (price) => {
+    if (price < 1) {
+      return `$${price.toFixed(6)}`;
+    } else if (price < 1000) {
+      return `$${price.toFixed(2)}`;
     } else {
-      // Implementar outras carteiras
-      alert(`Carteira ${walletName} será implementada em breve.`);
+      return `$${(price / 1000).toFixed(2)}K`;
     }
+  };
+
+  const formatChange = (change) => {
+    const isPositive = change >= 0;
+    return (
+      <span className={`flex items-center ${isPositive ? 'text-emerald-600' : 'text-red-600'}`}>
+        {isPositive ? <ArrowUpRight className="w-4 h-4 mr-1" /> : <ArrowDownRight className="w-4 h-4 mr-1" />}
+        {Math.abs(change).toFixed(2)}%
+      </span>
+    );
+  };
+
+  const getCryptoIcon = (symbol) => {
+    const icons = {
+      'BTC': '₿',
+      'ETH': 'Ξ',
+      'BNB': 'BNB',
+      'ADA': '₳',
+      'SOL': '◎',
+      'DOT': '●',
+      'MATIC': 'MATIC',
+      'LINK': '🔗'
+    };
+    return icons[symbol] || symbol;
   };
 
   return (
-    <div className="min-h-screen bg-white text-gray-900">
-
+    <div className="min-h-screen bg-white text-slate-900">
       
       {/* Header Section */}
       <section className="relative pt-40 pb-20 px-4 overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
-            <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50">
-              <div className="absolute inset-0 bg-white opacity-95"></div>
-            </div>
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-stone-50">
+            <div className="absolute inset-0 bg-white opacity-95"></div>
+          </div>
         </div>
         <div className="max-w-6xl mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
-                         Criptomoedas Agroisync
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-slate-800">
+            {t('crypto.title')}
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Soluções em Criptomoedas para o Agronegócio
+          <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+            {t('crypto.description')}
           </p>
         </div>
       </section>
 
-      {/* Cryptocurrency Ticker */}
-      <CryptoTicker />
-
-      {/* Cotações em Tempo Real */}
-      <section className="py-16 px-4">
+      {/* Crypto Overview */}
+      <section className="py-12 px-4">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-12"
+            className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
-              Cotações em Tempo Real
-            </h2>
-            <p className="text-lg text-gray-600">
-              Acompanhe os preços das principais criptomoedas do mercado
-            </p>
+            {/* Total Market Cap */}
+            <div className="bg-white rounded-2xl shadow-card p-6 border border-slate-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-slate-600 mb-1">Market Cap Total</p>
+                  <p className="text-2xl font-bold text-slate-800">$2.1T</p>
+                </div>
+                <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center">
+                  <Globe className="w-6 h-6 text-slate-600" />
+                </div>
+              </div>
+            </div>
+
+            {/* 24h Volume */}
+            <div className="bg-white rounded-2xl shadow-card p-6 border border-slate-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-slate-600 mb-1">Volume 24h</p>
+                  <p className="text-2xl font-bold text-slate-800">$89.2B</p>
+                </div>
+                <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center">
+                  <BarChart3 className="w-6 h-6 text-slate-600" />
+                </div>
+              </div>
+            </div>
+
+            {/* BTC Dominance */}
+            <div className="bg-white rounded-2xl shadow-card p-6 border border-slate-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-slate-600 mb-1">Dominância BTC</p>
+                  <p className="text-2xl font-bold text-slate-800">48.2%</p>
+                </div>
+                <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center">
+                  <PieChart className="w-6 h-6 text-slate-600" />
+                </div>
+              </div>
+            </div>
+
+            {/* Fear & Greed */}
+            <div className="bg-white rounded-2xl shadow-card p-6 border border-slate-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-slate-600 mb-1">Fear & Greed</p>
+                  <p className="text-2xl font-bold text-slate-800">65</p>
+                </div>
+                <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center">
+                  <Activity className="w-6 h-6 text-slate-600" />
+                </div>
+              </div>
+            </div>
           </motion.div>
 
-          {loading ? (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-green-600 mx-auto mb-4"></div>
-              <p className="text-gray-600">Carregando cotações...</p>
-            </div>
-          ) : error ? (
-            <div className="text-center py-12">
-              <p className="text-red-600 mb-4">{error}</p>
-              <button 
-                onClick={loadCryptoData}
-                className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors"
-              >
-                Tentar Novamente
-              </button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {cryptoQuotes.map((crypto, index) => (
-              <motion.div
-                  key={crypto.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-                  onClick={() => handleCryptoChange(crypto.id)}
-              >
-                <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center">
-                      <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center mr-3">
-                        <span className="text-xl">{crypto.symbol.charAt(0)}</span>
-                    </div>
-                    <div>
-                        <h3 className="font-bold text-gray-900">{crypto.symbol}</h3>
-                        <p className="text-sm text-gray-600">{crypto.name}</p>
-                    </div>
-                  </div>
-                    <div className={`text-sm font-medium px-2 py-1 rounded ${
-                      crypto.change >= 0 
-                        ? 'text-green-600 bg-green-100' 
-                        : 'text-red-600 bg-red-100'
-                    }`}>
-                      {crypto.change >= 0 ? '+' : ''}{crypto.change.toFixed(2)}%
-                  </div>
-                </div>
-                
-                  <div className="text-3xl font-bold mb-4 text-gray-900">
-                  ${crypto.price.toLocaleString()}
-                </div>
-                
-                  <div className="text-sm text-gray-600">
-                    Volume 24h: ${(crypto.volume_24h / 1000000).toFixed(1)}M
-                </div>
-              </motion.div>
-            ))}
-          </div>
-          )}
-        </div>
-      </section>
-
-      {/* Cryptocurrency Chart Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-16 text-gray-900">
-            Dashboard de Criptomoedas
-          </h2>
-          {chartData ? (
-            <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Selecionar Criptomoeda:
-                </label>
-                <select
-                  value={selectedCrypto}
-                  onChange={(e) => handleCryptoChange(e.target.value)}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+          {/* Crypto Table */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="bg-white rounded-2xl shadow-card overflow-hidden border border-slate-200"
+          >
+            <div className="p-6 border-b border-slate-200">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-slate-800">Top Criptomoedas</h2>
+                <button
+                  onClick={fetchCryptoData}
+                  disabled={loading}
+                  className="flex items-center px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors duration-200"
                 >
-                  {cryptoQuotes.map(crypto => (
-                    <option key={crypto.id} value={crypto.id}>
-                      {crypto.symbol} - {crypto.name}
-                    </option>
-                  ))}
-                </select>
+                  <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                  Atualizar
+                </button>
               </div>
-              <CryptoChart data={chartData} />
             </div>
-          ) : (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-green-600 mx-auto mb-4"></div>
-              <p className="text-gray-600">Carregando gráfico...</p>
-            </div>
-          )}
+
+            {loading ? (
+              <div className="p-12 text-center">
+                <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4 text-slate-400" />
+                <p className="text-slate-600">Carregando dados...</p>
+              </div>
+            ) : error ? (
+              <div className="p-12 text-center">
+                <AlertCircle className="w-8 h-8 mx-auto mb-4 text-red-400" />
+                <p className="text-red-600">{error}</p>
+                <button
+                  onClick={fetchCryptoData}
+                  className="mt-4 px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors duration-200"
+                >
+                  Tentar Novamente
+                </button>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-slate-50">
+                    <tr>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-slate-800">#</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-slate-800">Moeda</th>
+                      <th className="px-6 py-4 text-right text-sm font-semibold text-slate-800">Preço</th>
+                      <th className="px-6 py-4 text-right text-sm font-semibold text-slate-800">24h %</th>
+                      <th className="px-6 py-4 text-right text-sm font-semibold text-slate-800">7d %</th>
+                      <th className="px-6 py-4 text-right text-sm font-semibold text-slate-800">Market Cap</th>
+                      <th className="px-6 py-4 text-right text-sm font-semibold text-slate-800">Volume</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-200">
+                    {cryptoData.map((crypto, index) => (
+                      <tr key={crypto.id} className="hover:bg-slate-50 transition-colors duration-200">
+                        <td className="px-6 py-4 text-sm text-slate-600">{index + 1}</td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center">
+                            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center mr-3">
+                              <span className="text-sm font-medium text-slate-700">
+                                {getCryptoIcon(crypto.symbol)}
+                              </span>
+                            </div>
+                            <div>
+                              <p className="font-medium text-slate-800">{crypto.name}</p>
+                              <p className="text-sm text-slate-600">{crypto.symbol}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-right text-sm font-medium text-slate-800">
+                          {formatPrice(crypto.current_price)}
+                        </td>
+                        <td className="px-6 py-4 text-right text-sm">
+                          {formatChange(crypto.price_change_percentage_24h)}
+                        </td>
+                        <td className="px-6 py-4 text-right text-sm">
+                          {formatChange(crypto.price_change_percentage_7d_in_currency)}
+                        </td>
+                        <td className="px-6 py-4 text-right text-sm text-slate-800">
+                          ${(crypto.market_cap / 1e9).toFixed(2)}B
+                        </td>
+                        <td className="px-6 py-4 text-right text-sm text-slate-800">
+                          ${(crypto.total_volume / 1e6).toFixed(2)}M
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </motion.div>
         </div>
       </section>
 
-      {/* Conectar Carteira */}
-      <section className="py-16 px-4">
+      {/* Metamask Integration */}
+      <section className="py-16 px-4 bg-slate-50">
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
-              Conectar Carteira
+            <h2 className="text-4xl font-bold text-slate-800 mb-4">
+              {t('crypto.metamask.title')}
             </h2>
-            <p className="text-lg text-gray-600">
-              Conecte sua carteira de forma segura para realizar transações
+            <p className="text-xl text-slate-600">
+              {t('crypto.metamask.description')}
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {walletOptions.map((wallet, index) => (
-              <motion.button
-                key={wallet.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="p-6 rounded-xl border-2 border-dashed border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all duration-300"
-                onClick={() => handleWalletConnect(wallet.name)}
-              >
-                <div className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-lg bg-blue-600 flex items-center justify-center">
-                    <span className="text-white text-2xl">{wallet.icon}</span>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="bg-white rounded-2xl shadow-card p-8 border border-slate-200"
+          >
+            {!metamaskConnected ? (
+              <div className="text-center">
+                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-slate-100 flex items-center justify-center">
+                  <Wallet className="w-10 h-10 text-slate-600" />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-800 mb-4">
+                  Conectar Metamask
+                </h3>
+                <p className="text-slate-600 mb-8">
+                  Conecte sua carteira Metamask para fazer pagamentos em criptomoedas
+                </p>
+                <button
+                  onClick={connectMetamask}
+                  disabled={paymentLoading}
+                  className="px-8 py-4 bg-slate-600 text-white font-bold rounded-xl hover:bg-slate-700 transition-colors duration-300 disabled:opacity-50"
+                >
+                  {paymentLoading ? 'Conectando...' : 'Conectar Metamask'}
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                <div className="text-center mb-8">
+                  <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-slate-100 flex items-center justify-center">
+                    <CheckCircle className="w-10 h-10 text-slate-600" />
                   </div>
-                  <h3 className="font-bold text-lg mb-2 text-gray-900">
-                    {wallet.name}
+                  <h3 className="text-2xl font-bold text-slate-800 mb-2">
+                    Metamask Conectado
                   </h3>
-                  <p className="text-sm text-gray-600">
-                    {wallet.description}
+                  <p className="text-slate-600">
+                    Sua carteira está conectada e pronta para transações
                   </p>
                 </div>
-              </motion.button>
-            ))}
-          </div>
+
+                {/* Wallet Info */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-slate-50 rounded-xl p-6">
+                    <h4 className="font-semibold text-slate-800 mb-3 flex items-center">
+                      <Wallet className="w-5 h-5 mr-2" />
+                      Endereço da Carteira
+                    </h4>
+                    <div className="flex items-center space-x-2">
+                      <code className="text-sm text-slate-700 bg-white px-3 py-2 rounded-lg flex-1">
+                        {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+                      </code>
+                      <button
+                        onClick={() => copyAddress(walletAddress)}
+                        id="copy-button"
+                        className="p-2 text-slate-600 hover:text-slate-800 transition-colors duration-200"
+                      >
+                        <Copy className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-50 rounded-xl p-6">
+                    <h4 className="font-semibold text-slate-800 mb-3 flex items-center">
+                      <Coins className="w-5 h-5 mr-2" />
+                      Saldo ETH
+                    </h4>
+                    <p className="text-2xl font-bold text-slate-800">
+                      {parseFloat(walletBalance).toFixed(4)} ETH
+                    </p>
+                  </div>
+                </div>
+
+                {/* Payment Form */}
+                <div className="bg-slate-50 rounded-xl p-6">
+                  <h4 className="font-semibold text-slate-800 mb-4 flex items-center">
+                    <Zap className="w-5 h-5 mr-2" />
+                    Fazer Pagamento
+                  </h4>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Valor em ETH
+                      </label>
+                      <input
+                        type="number"
+                        value={paymentAmount}
+                        onChange={(e) => setPaymentAmount(e.target.value)}
+                        placeholder="0.01"
+                        step="0.001"
+                        min="0.001"
+                        className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
+                      />
+                    </div>
+                    <button
+                      onClick={handlePayment}
+                      disabled={paymentLoading || !paymentAmount}
+                      className="w-full px-6 py-3 bg-slate-600 text-white font-bold rounded-lg hover:bg-slate-700 transition-colors duration-300 disabled:opacity-50"
+                    >
+                      {paymentLoading ? 'Processando...' : 'Enviar Pagamento'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Disconnect Button */}
+                <div className="text-center">
+                  <button
+                    onClick={disconnectMetamask}
+                    className="px-6 py-3 bg-slate-100 text-slate-700 font-medium rounded-lg hover:bg-slate-200 transition-colors duration-300"
+                  >
+                    Desconectar Metamask
+                  </button>
+                </div>
+              </div>
+            )}
+          </motion.div>
         </div>
       </section>
 
-      {/* Pagamentos Aceitos */}
+      {/* Features Section */}
       <section className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
-              Pagamentos Aceitos
+            <h2 className="text-4xl font-bold text-slate-800 mb-4">
+              {t('crypto.features.title')}
             </h2>
-            <p className="text-lg text-gray-600">
-              Aceitamos as principais criptomoedas do mercado
+            <p className="text-xl text-slate-600">
+              {t('crypto.features.description')}
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {acceptedCryptos.map((crypto, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: <Shield className="w-8 h-8" />,
+                title: 'Segurança',
+                description: 'Transações seguras e verificadas na blockchain Ethereum'
+              },
+              {
+                icon: <Zap className="w-8 h-8" />,
+                title: 'Rapidez',
+                description: 'Confirmações rápidas e taxas competitivas'
+              },
+              {
+                icon: <Globe className="w-8 h-8" />,
+                title: 'Global',
+                description: 'Aceite pagamentos de qualquer lugar do mundo'
+              }
+            ].map((feature, index) => (
               <motion.div
-                key={crypto.symbol}
+                key={index}
                 initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-white border border-gray-200 rounded-xl p-6 text-center hover:shadow-md transition-shadow"
+                className="text-center"
               >
-                <div className="w-16 h-16 mx-auto mb-4 rounded-lg bg-green-100 flex items-center justify-center">
-                  <span className="text-2xl text-green-600">{crypto.symbol.charAt(0)}</span>
+                <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
+                  {feature.icon}
                 </div>
-                <h3 className="font-bold text-gray-900 mb-2">{crypto.symbol}</h3>
-                <p className="text-sm text-gray-600 mb-2">{crypto.name}</p>
-                <span className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                  {crypto.description}
-                  </span>
+                <h3 className="text-xl font-bold text-slate-800 mb-3">
+                  {feature.title}
+                </h3>
+                <p className="text-slate-600">
+                  {feature.description}
+                </p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Funcionalidades DeFi Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-16 text-gray-900">
-            Funcionalidades DeFi
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-              className="text-center p-6 rounded-2xl transition-all duration-300 hover:scale-105 bg-white/80 backdrop-blur-xl border border-gray-200 hover:border-green-500"
-            >
-              <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 2L8 8l4 4 4-4-4-6z"/>
-                  <path d="M8 8v8a4 4 0 0 0 8 0V8"/>
-                  <path d="M6 16h12"/>
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold mb-2 text-gray-900">
-                {t('crypto.features.staking')}
-              </h3>
-              <p className="text-sm text-gray-600">
-                {t('crypto.features.stakingDesc')}
-              </p>
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="text-center p-6 rounded-2xl transition-all duration-300 hover:scale-105 bg-white/80 backdrop-blur-xl border border-gray-200 hover:border-green-500"
-            >
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="10"/>
-                  <line x1="2" y1="12" x2="22" y2="12"/>
-                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold mb-2 text-gray-900">
-                {t('crypto.features.yieldFarming')}
-              </h3>
-              <p className="text-sm text-gray-600">
-                {t('crypto.features.yieldFarmingDesc')}
-              </p>
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              viewport={{ once: true }}
-              className="text-center p-6 rounded-2xl transition-all duration-300 hover:scale-105 bg-white/80 backdrop-blur-xl border border-gray-200 hover:border-green-500"
-            >
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-                  <line x1="8" y1="21" x2="16" y2="21"/>
-                  <line x1="12" y1="17" x2="12" y2="21"/>
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold mb-2 text-gray-900">
-                {t('crypto.features.liquidityPools')}
-              </h3>
-              <p className="text-sm text-gray-600">
-                {t('crypto.features.liquidityPoolsDesc')}
-              </p>
-            </motion.div>
+      {/* Error Display */}
+      {error && (
+        <div className="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+          <div className="flex items-center">
+            <AlertCircle className="w-5 h-5 mr-2" />
+            {error}
           </div>
         </div>
-      </section>
-
-      {/* Carteira Blockchain Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-6xl mx-auto">
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-3xl font-bold mb-8 text-center text-gray-900"
-          >
-            Carteira Blockchain Integrada
-          </motion.h2>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Carteira do Usuário */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="p-8 rounded-2xl bg-white/80 backdrop-blur-xl border border-gray-200"
-            >
-              <div className="text-center mb-6">
-                <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-3xl">💼</span>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900">
-                  Sua Carteira
-                </h3>
-                <p className="text-sm text-gray-600">
-                  Custódia descentralizada via MetaMask
-                </p>
-              </div>
-
-              {isConnected ? (
-                <div className="space-y-4">
-                  <div className="p-4 rounded-xl bg-gray-100">
-                    <p className="text-xs text-gray-600">
-                      Endereço da Carteira
-                    </p>
-                    <p className="font-mono text-sm break-all text-green-600">
-                      {walletAddress}
-                    </p>
-                  </div>
-                  
-                  <div className="p-4 rounded-xl bg-gray-100">
-                    <p className="text-xs text-gray-600">
-                      Saldo ETH
-                    </p>
-                    <p className="text-2xl font-bold text-gray-900">
-                      {balance} ETH
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      onClick={() => {/* Implementar envio */}}
-                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300"
-                    >
-                      Enviar
-                    </button>
-                    <button
-                      onClick={() => {/* Implementar recebimento */}}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300"
-                    >
-                      Receber
-                    </button>
-                  </div>
-
-                  <button
-                    onClick={disconnectWallet}
-                    className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300"
-                  >
-                    Desconectar
-                  </button>
-                </div>
-              ) : (
-                <div className="text-center">
-                  <button
-                    onClick={connectWallet}
-                    className="px-6 py-3 bg-gradient-to-r from-green-600 to-blue-600 text-white font-semibold rounded-lg hover:from-green-700 hover:to-blue-700 transition-all duration-300"
-                  >
-                    Conectar MetaMask
-                  </button>
-                  <p className="text-xs mt-3 text-gray-600">
-                    Suas chaves privadas permanecem seguras na sua carteira
-                  </p>
-                </div>
-              )}
-            </motion.div>
-
-            {/* Histórico de Transações */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="p-8 rounded-2xl bg-white/80 backdrop-blur-xl border border-gray-200"
-            >
-              <div className="text-center mb-6">
-                <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-3xl">📊</span>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900">
-                  Histórico de Transações
-                </h3>
-                <p className="text-sm text-gray-600">
-                  Todas as suas operações em blockchain
-                </p>
-              </div>
-
-              <div className="space-y-3 max-h-80 overflow-y-auto">
-                {isConnected ? (
-                  <>
-                    <div className="p-3 rounded-lg bg-gray-100">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm">Recebimento</span>
-                        <span className="text-green-500 text-sm">+0.05 ETH</span>
-                      </div>
-                      <p className="text-xs text-gray-600">
-                        De: 0x1234...5678 • 2 horas atrás
-                      </p>
-                    </div>
-                    <div className="p-3 rounded-lg bg-gray-100">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm">Envio</span>
-                        <span className="text-red-500 text-sm">-0.02 ETH</span>
-                      </div>
-                      <p className="text-xs text-gray-600">
-                        Para: 0x8765...4321 • 1 dia atrás
-                      </p>
-                    </div>
-                  </>
-                ) : (
-                  <div className="text-center py-8 text-gray-600">
-                    <p>Conecte sua carteira para ver o histórico</p>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Integração Stripe Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-3xl font-bold mb-8 text-gray-900"
-          >
-            Integração com Stripe
-          </motion.h2>
-          <div className="p-8 rounded-2xl bg-white/80 backdrop-blur-xl border border-gray-200">
-            <div className="w-24 h-24 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg className="w-12 h-12 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 12l2 2 4-4"/>
-                <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/>
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold mb-4 text-gray-900">
-              {t('crypto.payments.traditional')}
-            </h3>
-            <p className="text-lg mb-6 text-gray-700">
-              {t('crypto.payments.traditionalDesc')}
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-              <div className="p-4 rounded-xl bg-gray-100">
-                <p className="text-sm text-gray-600">
-                  {t('crypto.payments.creditCard')}
-                </p>
-                <p className="font-semibold text-gray-900">
-                  {t('crypto.payments.visaMastercard')}
-                </p>
-              </div>
-              <div className="p-4 rounded-xl bg-gray-100">
-                <p className="text-sm text-gray-600">
-                  {t('crypto.payments.pix')}
-                </p>
-                <p className="font-semibold text-gray-900">
-                  {t('crypto.payments.instantTransfer')}
-                </p>
-              </div>
-              <div className="p-4 rounded-xl bg-gray-100">
-                <p className="text-sm text-gray-600">
-                  {t('crypto.payments.boleto')}
-                </p>
-                <p className="font-semibold text-gray-900">
-                  {t('crypto.payments.bankPayment')}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-cyan-900 to-purple-900">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-4xl font-bold mb-6 text-white"
-          >
-            {t('crypto.cta.title')}
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            viewport={{ once: true }}
-            className="text-xl text-gray-300 mb-8"
-          >
-            {t('crypto.cta.subtitle')}
-          </motion.p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <button
-              onClick={connectWallet}
-              className="px-8 py-4 bg-white text-cyan-900 font-bold rounded-xl hover:bg-gray-100 transition-colors duration-300"
-            >
-              {t('crypto.cta.connectWallet')}
-            </button>
-            <button 
-              onClick={() => window.location.href = '/cadastro'}
-              className="px-8 py-4 bg-transparent border-2 border-white text-white font-bold rounded-xl hover:bg-white hover:text-cyan-900 transition-colors duration-300"
-            >
-              Cadastrar na Plataforma
-            </button>
-          </div>
-        </div>
-      </section>
+      )}
     </div>
   );
 };

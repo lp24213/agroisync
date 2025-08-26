@@ -5,12 +5,18 @@ frontend:
       commands:
         - echo "Starting preBuild phase..."
         - cd frontend
+        - echo "Clearing npm cache..."
+        - npm cache clean --force
         - echo "Installing dependencies..."
-        - npm install --legacy-peer-deps
+        - npm install --legacy-peer-deps --no-audit --no-fund
         - echo "Dependencies installed successfully"
     build:
       commands:
         - echo "Starting build phase..."
+        - echo "Node version:"
+        - node --version
+        - echo "NPM version:"
+        - npm --version
         - npm run build
         - echo "Build completed successfully"
     postBuild:

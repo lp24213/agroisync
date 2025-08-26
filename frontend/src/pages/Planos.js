@@ -9,7 +9,6 @@ import {
   Check, Star, ShoppingCart, Truck, Package, Leaf, Wrench, User, 
   Circle, Settings, BarChart3, Headphones, Zap, Shield, Globe, Coins, Users, Crown
 } from 'lucide-react';
-// Componentes removidos - já renderizados pelo Layout global
 
 const Planos = () => {
   const { isDark } = useTheme();
@@ -43,8 +42,8 @@ const Planos = () => {
         t('plans.lojaBasico.limitations.chat_messages'),
         t('plans.lojaBasico.limitations.no_private_chat')
       ],
-      color: 'from-gray-500 to-gray-600',
-      buttonColor: 'bg-gray-600 hover:bg-gray-700',
+      color: 'from-slate-500 to-slate-600',
+      buttonColor: 'bg-slate-600 hover:bg-slate-700',
       popular: false
     },
     {
@@ -62,8 +61,8 @@ const Planos = () => {
         t('plans.lojaPro.features.store_highlight')
       ],
       limitations: [],
-      color: 'from-green-500 to-green-600',
-      buttonColor: 'bg-green-600 hover:bg-green-700',
+      color: 'from-slate-600 to-slate-700',
+      buttonColor: 'bg-slate-600 hover:bg-slate-700',
       popular: true
     },
     {
@@ -81,8 +80,8 @@ const Planos = () => {
         t('plans.lojaEnterprise.features.dedicated_manager')
       ],
       limitations: [],
-      color: 'from-blue-600 to-purple-600',
-      buttonColor: 'bg-blue-600 hover:bg-blue-700',
+      color: 'from-slate-700 to-slate-800',
+      buttonColor: 'bg-slate-700 hover:bg-slate-800',
       popular: false
     }
   ];
@@ -106,8 +105,8 @@ const Planos = () => {
         t('plans.agroconectaBasico.limitations.chat_messages'),
         t('plans.agroconectaBasico.limitations.no_private_chat')
       ],
-      color: 'from-orange-500 to-orange-600',
-      buttonColor: 'bg-orange-600 hover:bg-orange-700',
+      color: 'from-slate-500 to-slate-600',
+      buttonColor: 'bg-slate-600 hover:bg-slate-700',
       popular: false
     },
     {
@@ -125,8 +124,8 @@ const Planos = () => {
         t('plans.agroconectaPro.features.store_highlight')
       ],
       limitations: [],
-      color: 'from-blue-500 to-blue-600',
-      buttonColor: 'bg-blue-600 hover:bg-blue-700',
+      color: 'from-slate-600 to-slate-700',
+      buttonColor: 'bg-slate-600 hover:bg-slate-700',
       popular: true
     },
     {
@@ -144,8 +143,8 @@ const Planos = () => {
         t('plans.agroconectaEnterprise.features.dedicated_manager')
       ],
       limitations: [],
-      color: 'from-purple-600 to-indigo-600',
-      buttonColor: 'bg-purple-600 hover:bg-purple-700',
+      color: 'from-slate-700 to-slate-800',
+      buttonColor: 'bg-slate-700 hover:bg-slate-800',
       popular: false
     }
   ];
@@ -335,25 +334,25 @@ const Planos = () => {
   };
 
   const getModuleColor = () => {
-    return selectedModule === 'store' ? 'from-green-500 to-blue-600' : 'from-blue-500 to-purple-600';
+    return selectedModule === 'store' ? 'from-slate-500 to-slate-600' : 'from-slate-600 to-slate-700';
   };
 
   return (
-    <div className="min-h-screen bg-white text-gray-900">
+    <div className="min-h-screen bg-white text-slate-900">
       
       {/* Header Section */}
       <section className="relative pt-40 pb-20 px-4 overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50">
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-stone-50">
             <div className="absolute inset-0 bg-white opacity-95"></div>
           </div>
         </div>
         <div className="max-w-6xl mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-slate-800">
             {t('header.title')}
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-slate-600 max-w-3xl mx-auto">
             {t('header.description')}
           </p>
         </div>
@@ -366,9 +365,9 @@ const Planos = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="bg-white rounded-2xl shadow-lg p-8 border border-gray-200"
+            className="bg-white rounded-2xl shadow-card p-8 border border-slate-200"
           >
-            <h2 className="text-2xl font-bold text-center mb-8 text-gray-900">
+            <h2 className="text-2xl font-bold text-center mb-8 text-slate-800">
               {t('module.choose')}
             </h2>
             
@@ -378,20 +377,20 @@ const Planos = () => {
                 onClick={() => setSelectedModule('store')}
                 className={`p-6 rounded-xl border-2 transition-all duration-300 ${
                   selectedModule === 'store'
-                    ? 'border-green-500 bg-green-50 shadow-lg'
-                    : 'border-gray-200 hover:border-green-300 hover:bg-gray-50'
+                    ? 'border-slate-600 bg-slate-50 shadow-elevated'
+                    : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                 }`}
               >
                 <div className="text-center">
-                  <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center text-white`}>
+                  <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-slate-500 to-slate-600 flex items-center justify-center text-white`}>
                     <ShoppingCart className="w-8 h-8" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{t('module.store')}</h3>
-                  <p className="text-gray-600 text-sm">
+                  <h3 className="text-xl font-bold text-slate-800 mb-2">{t('module.store')}</h3>
+                  <p className="text-slate-600 text-sm">
                     {t('module.storeDescription')}
                   </p>
                   {selectedModule === 'store' && (
-                    <div className="mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                    <div className="mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-800">
                       <Check className="w-4 h-4 mr-1" />
                       {t('module.selected')}
                     </div>
@@ -404,28 +403,26 @@ const Planos = () => {
                 onClick={() => setSelectedModule('freight')}
                 className={`p-6 rounded-xl border-2 transition-all duration-300 ${
                   selectedModule === 'freight'
-                    ? 'border-blue-500 bg-blue-50 shadow-lg'
-                    : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
+                    ? 'border-slate-600 bg-slate-50 shadow-elevated'
+                    : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                 }`}
               >
                 <div className="text-center">
-                  <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white`}>
+                  <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-slate-600 to-slate-700 flex items-center justify-center text-white`}>
                     <Truck className="w-8 h-8" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{t('module.freight')}</h3>
-                  <p className="text-gray-600 text-sm">
+                  <h3 className="text-xl font-bold text-slate-800 mb-2">{t('module.freight')}</h3>
+                  <p className="text-slate-600 text-sm">
                     {t('module.freightDescription')}
                   </p>
                   {selectedModule === 'freight' && (
-                    <div className="mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                    <div className="mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-800">
                       <Check className="w-4 h-4 mr-1" />
                       {t('module.selected')}
                     </div>
                   )}
                 </div>
               </button>
-
-
             </div>
           </motion.div>
         </div>
@@ -444,10 +441,10 @@ const Planos = () => {
             <div className={`inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-r ${getModuleColor()} text-white mb-6`}>
               {getModuleIcon(selectedModule)}
             </div>
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl font-bold text-slate-800 mb-4">
               {t('plans.title', { module: getModuleTitle(selectedModule) })}
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
               {selectedModule === 'store' 
                 ? t('plans.storeDescription')
                 : t('plans.freightDescription')
@@ -463,14 +460,14 @@ const Planos = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className={`relative bg-white rounded-2xl shadow-lg border-2 transition-all duration-300 hover:shadow-xl ${
-                  plan.popular ? 'border-green-500 scale-105' : 'border-gray-200'
+                className={`relative bg-white rounded-2xl shadow-card border-2 transition-all duration-300 hover:shadow-elevated ${
+                  plan.popular ? 'border-slate-600 scale-105' : 'border-slate-200'
                 }`}
               >
                 {/* Popular Badge */}
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-green-500 text-white px-6 py-2 rounded-full text-sm font-bold flex items-center">
+                    <div className="bg-slate-600 text-white px-6 py-2 rounded-full text-sm font-bold flex items-center">
                       <Star className="w-4 h-4 mr-2 fill-current" />
                       {t('plans.popular')}
                     </div>
@@ -480,25 +477,25 @@ const Planos = () => {
                 <div className="p-8">
                   {/* Plan Header */}
                   <div className="text-center mb-8">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                    <h3 className="text-2xl font-bold text-slate-800 mb-2">{plan.name}</h3>
                     <div className="mb-4">
-                      <span className="text-4xl font-bold text-gray-900">{plan.price}</span>
-                      <span className="text-gray-600 ml-2">{plan.period}</span>
+                      <span className="text-4xl font-bold text-slate-800">{plan.price}</span>
+                      <span className="text-slate-600 ml-2">{plan.period}</span>
                     </div>
-                    <p className="text-gray-600">{plan.description}</p>
+                    <p className="text-slate-600">{plan.description}</p>
                   </div>
 
                   {/* Features */}
                   <div className="mb-8">
-                    <h4 className="font-semibold text-gray-900 mb-4 flex items-center">
-                      <Check className="w-5 h-5 text-green-500 mr-2" />
+                    <h4 className="font-semibold text-slate-800 mb-4 flex items-center">
+                      <Check className="w-5 h-5 text-slate-600 mr-2" />
                       {t('plans.included')}
                     </h4>
                     <ul className="space-y-3">
                       {plan.features.map((feature, featureIndex) => (
                         <li key={featureIndex} className="flex items-start">
-                          <Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                          <span className="text-gray-700">{feature}</span>
+                          <Check className="w-5 h-5 text-slate-600 mr-3 mt-0.5 flex-shrink-0" />
+                          <span className="text-slate-700">{feature}</span>
                         </li>
                       ))}
                     </ul>
@@ -507,15 +504,15 @@ const Planos = () => {
                   {/* Limitations */}
                   {plan.limitations.length > 0 && (
                     <div className="mb-8">
-                      <h4 className="font-semibold text-gray-900 mb-4 flex items-center">
-                        <Package className="w-5 h-5 text-gray-500 mr-2" />
+                      <h4 className="font-semibold text-slate-800 mb-4 flex items-center">
+                        <Package className="w-5 h-5 text-slate-500 mr-2" />
                         {t('plans.limitations')}
                       </h4>
                       <ul className="space-y-3">
                         {plan.limitations.map((limitation, limitationIndex) => (
                           <li key={limitationIndex} className="flex items-start">
-                            <div className="w-5 h-5 text-gray-400 mr-3 mt-0.5 flex-shrink-0">•</div>
-                            <span className="text-gray-600">{limitation}</span>
+                            <div className="w-5 h-5 text-slate-400 mr-3 mt-0.5 flex-shrink-0">•</div>
+                            <span className="text-slate-600">{limitation}</span>
                           </li>
                         ))}
                       </ul>
@@ -533,7 +530,7 @@ const Planos = () => {
 
                   {/* Additional Info */}
                   {plan.price !== 'R$ 0,00' && (
-                    <p className="text-center text-sm text-gray-500 mt-4">
+                    <p className="text-center text-sm text-slate-500 mt-4">
                       {t('plans.cancelAnytime')} • {t('plans.noSetupFee')}
                     </p>
                   )}
@@ -553,38 +550,38 @@ const Planos = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-12"
           >
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl font-bold text-slate-800 mb-4">
               {t('comparison.title')}
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-slate-600">
               {t('comparison.description')}
             </p>
           </motion.div>
 
           {/* Comparison Table */}
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-card overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50">
+                <thead className="bg-slate-50">
                   <tr>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-800">
                       {t('comparison.feature')}
                     </th>
                     {getCurrentPlans().map((plan) => (
-                      <th key={plan.id} className="px-6 py-4 text-center text-sm font-semibold text-gray-900">
+                      <th key={plan.id} className="px-6 py-4 text-center text-sm font-semibold text-slate-800">
                         {plan.name}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="divide-y divide-slate-200">
                   {/* Anúncios/Fretes */}
                   <tr>
-                    <td className="px-6 py-4 text-sm text-gray-900 font-medium">
+                    <td className="px-6 py-4 text-sm text-slate-800 font-medium">
                       {selectedModule === 'store' ? t('comparison.activeAds') : t('comparison.activeFreights')}
                     </td>
                     {getCurrentPlans().map((plan) => (
-                      <td key={plan.id} className="px-6 py-4 text-center text-sm text-gray-600">
+                      <td key={plan.id} className="px-6 py-4 text-center text-sm text-slate-600">
                         {plan.id.includes('basico') 
                           ? (selectedModule === 'store' ? '3' : '5/mês')
                           : plan.id.includes('pro')
@@ -596,16 +593,16 @@ const Planos = () => {
                   </tr>
 
                   {/* Destaque */}
-                  <tr className="bg-gray-50">
-                    <td className="px-6 py-4 text-sm text-gray-900 font-medium">
+                  <tr className="bg-slate-50">
+                    <td className="px-6 py-4 text-sm text-slate-800 font-medium">
                       {t('comparison.highlight')}
                     </td>
                     {getCurrentPlans().map((plan) => (
-                      <td key={plan.id} className="px-6 py-4 text-center text-sm text-gray-600">
+                      <td key={plan.id} className="px-6 py-4 text-center text-sm text-slate-600">
                         {plan.id.includes('basico') ? (
                           <span className="text-red-500">✗</span>
                         ) : (
-                          <span className="text-green-500">✓</span>
+                          <span className="text-slate-600">✓</span>
                         )}
                       </td>
                     ))}
@@ -613,11 +610,11 @@ const Planos = () => {
 
                   {/* Relatórios */}
                   <tr>
-                    <td className="px-6 py-4 text-sm text-gray-900 font-medium">
+                    <td className="px-6 py-4 text-sm text-slate-800 font-medium">
                       {t('comparison.reports')}
                     </td>
                     {getCurrentPlans().map((plan) => (
-                      <td key={plan.id} className="px-6 py-4 text-center text-sm text-gray-600">
+                      <td key={plan.id} className="px-6 py-4 text-center text-sm text-slate-600">
                         {plan.id.includes('basico') ? t('comparison.basicReports') : 
                          plan.id.includes('pro') ? t('comparison.intermediateReports') : t('comparison.advancedReports')}
                       </td>
@@ -625,12 +622,12 @@ const Planos = () => {
                   </tr>
 
                   {/* Suporte */}
-                  <tr className="bg-gray-50">
-                    <td className="px-6 py-4 text-sm text-gray-900 font-medium">
+                  <tr className="bg-slate-50">
+                    <td className="px-6 py-4 text-sm text-slate-800 font-medium">
                       {t('comparison.support')}
                     </td>
                     {getCurrentPlans().map((plan) => (
-                      <td key={plan.id} className="px-6 py-4 text-center text-sm text-gray-600">
+                      <td key={plan.id} className="px-6 py-4 text-center text-sm text-slate-600">
                         {plan.id.includes('basico') ? t('comparison.emailSupport') : 
                          plan.id.includes('pro') ? t('comparison.prioritySupport') : t('comparison.dedicatedSupport')}
                       </td>
@@ -639,13 +636,13 @@ const Planos = () => {
 
                   {/* Chat/API */}
                   <tr>
-                    <td className="px-6 py-4 text-sm text-gray-900 font-medium">
+                    <td className="px-6 py-4 text-sm text-slate-800 font-medium">
                       {selectedModule === 'store' ? t('comparison.apiIntegration') : t('comparison.directChat')}
                     </td>
                     {getCurrentPlans().map((plan) => (
-                      <td key={plan.id} className="px-6 py-4 text-center text-sm text-gray-600">
+                      <td key={plan.id} className="px-6 py-4 text-center text-sm text-slate-600">
                         {plan.id.includes('enterprise') ? (
-                          <span className="text-green-500">✓</span>
+                          <span className="text-slate-600">✓</span>
                         ) : (
                           <span className="text-red-500">✗</span>
                         )}
@@ -660,7 +657,7 @@ const Planos = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-green-600 to-blue-600">
+      <section className="py-20 bg-gradient-to-r from-slate-600 to-slate-700">
         <div className="max-w-4xl mx-auto text-center">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -674,7 +671,7 @@ const Planos = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-xl text-green-100 mb-8"
+            className="text-xl text-slate-200 mb-8"
           >
             {t('cta.joinThousands')}
           </motion.p>
@@ -684,10 +681,10 @@ const Planos = () => {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
-            <button className="px-8 py-4 bg-white text-green-600 font-bold rounded-xl hover:bg-gray-100 transition-colors duration-300">
+            <button className="px-8 py-4 bg-white text-slate-700 font-bold rounded-xl hover:bg-slate-100 transition-colors duration-300">
               {t('cta.startNow')}
             </button>
-            <button className="px-8 py-4 bg-transparent border-2 border-white text-white font-bold rounded-xl hover:bg-white hover:text-green-600 transition-colors duration-300">
+            <button className="px-8 py-4 bg-transparent border-2 border-white text-white font-bold rounded-xl hover:bg-white hover:text-slate-700 transition-colors duration-300">
               {t('cta.talkToExpert')}
             </button>
           </motion.div>

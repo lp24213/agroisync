@@ -1,615 +1,465 @@
 const express = require('express');
+const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { ethers } = require('ethers');
-const { body, validationResult } = require('express-validator');
+const auth = require('../middleware/auth');
 const User = require('../models/User');
 const Payment = require('../models/Payment');
-const Message = require('../models/Message');
-const { authenticateToken, requireActivePlan } = require('../middleware/auth');
-const { rateLimit } = require('../middleware/rateLimit');
-
-const router = express.Router();
 
 // Configurações
-const OWNER_WALLET = process.env.NEXT_PUBLIC_OWNER_WALLET;
-const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
+const OWNER_WALLET = process.env.OWNER_WALLET || '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6';
+const WEB3_PROVIDER = process.env.WEB3_PROVIDER || 'https://mainnet.infura.io/v3/your-project-id';
 
-// Validações
-const createCheckoutValidation = [
-  body('planId')
-    .isIn([
-      'anunciante-basic', 'anunciante-premium', 'anunciante-enterprise',
-      'freteiro-basic', 'freteiro-premium', 'freteiro-enterprise',
-      'comprador-basic', 'comprador-premium'
-    ])
-    .withMessage('Plano inválido'),
-  body('successUrl')
-    .isURL()
-    .withMessage('URL de sucesso inválida'),
-  body('cancelUrl')
-    .isURL()
-    .withMessage('URL de cancelamento inválida')
-];
+// Middleware de autenticação para todas as rotas
+router.use(auth);
 
-const verifyCryptoValidation = [
-  body('transactionHash')
-    .isString()
-    .isLength({ min: 64, max: 66 })
-    .withMessage('Hash de transação inválido'),
-  body('planId')
-    .isIn(['comprador-basic', 'anunciante-premium', 'freteiro-premium'])
-    .withMessage('Plano inválido')
-];
-
-// POST /api/payments/create-checkout-session - Criar sessão Stripe
-router.post('/create-checkout-session',
-  authenticateToken,
-  rateLimit({ windowMs: 15 * 60 * 1000, max: 10 }),
-  createCheckoutValidation,
-  async (req, res) => {
-    try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({
-          success: false,
-          errors: errors.array()
-        });
-      }
-
-      const { planId, successUrl, cancelUrl } = req.body;
-      const userId = req.user.userId;
-
-      // Buscar usuário
-      const user = await User.findById(userId);
-      if (!user) {
-        return res.status(404).json({
-          success: false,
-          message: 'Usuário não encontrado'
-        });
-      }
-
-      // Definir preços dos planos
-      const planPrices = {
-        'comprador-basic': { amount: 2500, currency: 'brl', name: 'Plano Comprador Básico' },
-        'comprador-premium': { amount: 4990, currency: 'brl', name: 'Plano Comprador Premium' },
-        'anunciante-basic': { amount: 9900, currency: 'brl', name: 'Plano Anunciante Básico' },
-        'anunciante-premium': { amount: 19900, currency: 'brl', name: 'Plano Anunciante Premium' },
-        'anunciante-enterprise': { amount: 49900, currency: 'brl', name: 'Plano Anunciante Enterprise' },
-        'freteiro-basic': { amount: 9900, currency: 'brl', name: 'Plano Freteiro Básico' },
-        'freteiro-premium': { amount: 19900, currency: 'brl', name: 'Plano Freteiro Premium' },
-        'freteiro-enterprise': { amount: 49900, currency: 'brl', name: 'Plano Freteiro Enterprise' }
-      };
-
-      const plan = planPrices[planId];
-      if (!plan) {
-        return res.status(400).json({
-          success: false,
-          message: 'Plano inválido'
-        });
-      }
-
-      // Criar sessão Stripe
-      const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        line_items: [
-          {
-            price_data: {
-              currency: plan.currency,
-              product_data: {
-                name: plan.name,
-                description: `Acesso completo ao painel ${planId.split('-')[0]}`
-              },
-              unit_amount: plan.amount
-            },
-            quantity: 1
-          }
-        ],
-        mode: 'payment',
-        success_url: successUrl,
-        cancel_url: cancelUrl,
-        client_reference_id: userId,
-        metadata: {
-          userId: userId,
-          planId: planId,
-          userEmail: user.email,
-          userName: user.name
-        },
-        customer_email: user.email,
-        billing_address_collection: 'required'
-      });
-
-      // Criar registro de pagamento
-      const payment = new Payment({
-        userId: userId,
-        amount: plan.amount / 100, // Stripe usa centavos
-        currency: plan.currency.toUpperCase(),
-        method: 'stripe',
-        status: 'pending',
-        plan: {
-          planId: planId,
-          name: plan.name,
-          description: `Acesso completo ao painel ${planId.split('-')[0]}`,
-          duration: 30, // 30 dias
-          features: getPlanFeatures(planId)
-        },
-        paymentDetails: {
-          stripe: {
-            sessionId: session.id
-          }
-        },
-        metadata: {
-          userAgent: req.get('User-Agent'),
-          ipAddress: req.ip || req.connection.remoteAddress
-        }
-      });
-
-      await payment.save();
-
-      res.json({
-        success: true,
-        message: 'Sessão de checkout criada com sucesso',
-        sessionId: session.id,
-        url: session.url,
-        paymentId: payment._id
-      });
-
-    } catch (error) {
-      console.error('Erro ao criar sessão Stripe:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Erro interno do servidor'
-      });
-    }
-  }
-);
-
-// POST /api/payments/stripe-webhook - Webhook Stripe
-router.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+// Verificar status de pagamento do usuário
+router.get('/status', async (req, res) => {
   try {
-    const sig = req.headers['stripe-signature'];
-    let event;
-
-    try {
-      event = stripe.webhooks.constructEvent(req.body, sig, STRIPE_WEBHOOK_SECRET);
-    } catch (err) {
-      console.error('Erro na verificação do webhook:', err.message);
-      return res.status(400).send(`Webhook Error: ${err.message}`);
+    const user = await User.findById(req.user.id).select('isPaid planActive planType planExpiry');
+    
+    if (!user) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Usuário não encontrado' 
+      });
     }
 
-    // Processar evento
-    if (event.type === 'checkout.session.completed') {
-      const session = event.data.object;
-      
-      // Buscar pagamento
-      const payment = await Payment.findOne({
-        'paymentDetails.stripe.sessionId': session.id
+    res.json({
+      success: true,
+      isPaid: user.isPaid || false,
+      planActive: user.planActive || null,
+      planType: user.planType || null,
+      planExpiry: user.planExpiry || null
+    });
+
+  } catch (error) {
+    console.error('Erro ao verificar status de pagamento:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Erro interno do servidor' 
+    });
+  }
+});
+
+// Criar sessão de pagamento Stripe
+router.post('/stripe/create-session', async (req, res) => {
+  try {
+    const { planId, planData } = req.body;
+    
+    if (!planId || !planData) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Dados do plano são obrigatórios' 
       });
+    }
 
-      if (!payment) {
-        console.error('Pagamento não encontrado para sessão:', session.id);
-        return res.status(404).json({ error: 'Pagamento não encontrado' });
+    // Validar dados do plano
+    const validPlans = {
+      'loja-basic': { price: 2500, name: 'Loja Básico' },
+      'loja-pro': { price: 5000, name: 'Loja Pro' },
+      'agroconecta-basic': { price: 5000, name: 'AgroConecta Básico' },
+      'agroconecta-pro': { price: 14900, name: 'AgroConecta Pro' }
+    };
+
+    const plan = validPlans[planId];
+    if (!plan) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Plano inválido' 
+      });
+    }
+
+    // Criar sessão do Stripe
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'brl',
+            product_data: {
+              name: plan.name,
+              description: `Plano ${plan.name} - AgroSync`,
+            },
+            unit_amount: plan.price, // em centavos
+          },
+          quantity: 1,
+        },
+      ],
+      mode: 'subscription',
+      success_url: `${process.env.FRONTEND_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.FRONTEND_URL}/planos?canceled=true`,
+      customer_email: req.user.email,
+      metadata: {
+        userId: req.user.id,
+        planId: planId,
+        planName: plan.name
       }
+    });
 
-      // Atualizar status do pagamento
-      payment.status = 'completed';
-      payment.completedAt = new Date();
-      payment.paymentDetails.stripe.paymentIntentId = session.payment_intent;
-      payment.paymentDetails.stripe.customerId = session.customer;
-      payment.notifications.webhookReceived = true;
-      payment.notifications.webhookPayload = event.data.object;
+    res.json({
+      success: true,
+      sessionId: session.id,
+      url: session.url
+    });
 
-      await payment.save();
+  } catch (error) {
+    console.error('Erro ao criar sessão Stripe:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Erro ao processar pagamento' 
+    });
+  }
+});
 
-      // Atualizar usuário
-      const user = await User.findById(payment.userId);
-      if (user) {
-        user.isPaid = true;
-        user.paidPlan = {
-          planId: payment.plan.planId,
-          expiresAt: new Date(Date.now() + payment.plan.duration * 24 * 60 * 60 * 1000),
-          amount: payment.amount,
-          currency: payment.currency
-        };
+// Webhook do Stripe para confirmar pagamentos
+router.post('/stripe/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  let event;
 
-        if (session.customer) {
-          user.stripeCustomerId = session.customer;
-        }
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+  } catch (err) {
+    console.error('Erro na assinatura do webhook:', err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
 
-        await user.save();
-
-        // Enviar notificação interna
-        await sendPaymentNotification(user, payment);
-      }
-
-      console.log(`Pagamento ${payment._id} processado com sucesso para usuário ${user?.email}`);
+  try {
+    switch (event.type) {
+      case 'checkout.session.completed':
+        const session = event.data.object;
+        await handleStripePaymentSuccess(session);
+        break;
+      
+      case 'invoice.payment_succeeded':
+        const invoice = event.data.object;
+        await handleStripeSubscriptionRenewal(invoice);
+        break;
+      
+      case 'customer.subscription.deleted':
+        const subscription = event.data.object;
+        await handleStripeSubscriptionCancellation(subscription);
+        break;
+      
+      default:
+        console.log(`Evento não tratado: ${event.type}`);
     }
 
     res.json({ received: true });
   } catch (error) {
-    console.error('Erro no webhook Stripe:', error);
+    console.error('Erro ao processar webhook:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
 
-// POST /api/payments/verify-crypto - Verificar pagamento crypto
-router.post('/verify-crypto',
-  authenticateToken,
-  rateLimit({ windowMs: 15 * 60 * 1000, max: 5 }),
-  verifyCryptoValidation,
-  async (req, res) => {
-    try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({
-          success: false,
-          errors: errors.array()
-        });
-      }
-
-      const { transactionHash, planId } = req.body;
-      const userId = req.user.userId;
-
-      // Verificar se já existe pagamento com este hash
-      const existingPayment = await Payment.findOne({
-        'paymentDetails.crypto.transactionHash': transactionHash
-      });
-
-      if (existingPayment) {
-        return res.status(400).json({
-          success: false,
-          message: 'Transação já foi processada'
-        });
-      }
-
-      // Configurar provider Ethereum (usar Infura ou similar)
-      const provider = new ethers.JsonRpcProvider(process.env.ETHEREUM_RPC_URL || 'https://mainnet.infura.io/v3/YOUR_PROJECT_ID');
-      
-      // Verificar transação
-      const tx = await provider.getTransaction(transactionHash);
-      if (!tx) {
-        return res.status(400).json({
-          success: false,
-          message: 'Transação não encontrada'
-        });
-      }
-
-      // Verificar se foi enviada para a carteira owner
-      if (tx.to.toLowerCase() !== OWNER_WALLET.toLowerCase()) {
-        return res.status(400).json({
-          success: false,
-          message: 'Transação enviada para endereço incorreto'
-        });
-      }
-
-      // Verificar valor mínimo (0.01 ETH)
-      const minAmount = ethers.parseEther('0.01');
-      if (tx.value < minAmount) {
-        return res.status(400).json({
-          success: false,
-          message: 'Valor da transação é muito baixo'
-        });
-      }
-
-      // Aguardar confirmações
-      const receipt = await tx.wait(1); // Mínimo 1 confirmação
-
-      // Definir preços dos planos em ETH
-      const planPrices = {
-        'comprador-basic': ethers.parseEther('0.01'),
-        'anunciante-premium': ethers.parseEther('0.02'),
-        'freteiro-premium': ethers.parseEther('0.03')
-      };
-
-      const expectedAmount = planPrices[planId];
-      if (tx.value < expectedAmount) {
-        return res.status(400).json({
-          success: false,
-          message: 'Valor da transação é insuficiente para o plano selecionado'
-        });
-      }
-
-      // Buscar usuário
-      const user = await User.findById(userId);
-      if (!user) {
-        return res.status(404).json({
-          success: false,
-          message: 'Usuário não encontrado'
-        });
-      }
-
-      // Criar registro de pagamento
-      const payment = new Payment({
-        userId: userId,
-        amount: parseFloat(ethers.formatEther(tx.value)),
-        currency: 'ETH',
-        method: 'crypto',
-        status: 'completed',
-        plan: {
-          planId: planId,
-          name: getPlanName(planId),
-          description: `Acesso completo ao painel ${planId.split('-')[0]}`,
-          duration: 30, // 30 dias
-          features: getPlanFeatures(planId)
-        },
-        paymentDetails: {
-          crypto: {
-            transactionHash: transactionHash,
-            network: 'ethereum',
-            fromAddress: tx.from,
-            toAddress: tx.to,
-            gasUsed: receipt.gasUsed.toString(),
-            gasPrice: tx.gasPrice.toString(),
-            blockNumber: receipt.blockNumber,
-            confirmations: receipt.confirmations
-          }
-        },
-        completedAt: new Date(),
-        metadata: {
-          userAgent: req.get('User-Agent'),
-          ipAddress: req.ip || req.connection.remoteAddress
-        }
-      });
-
-      await payment.save();
-
-      // Atualizar usuário
-      user.isPaid = true;
-      user.paidPlan = {
-        planId: planId,
-        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 dias
-        amount: parseFloat(ethers.formatEther(tx.value)),
-        currency: 'ETH'
-      };
-
-      if (!user.cryptoAddress) {
-        user.cryptoAddress = tx.from;
-      }
-
-      await user.save();
-
-      // Enviar notificação interna
-      await sendPaymentNotification(user, payment);
-
-      res.json({
-        success: true,
-        message: 'Pagamento crypto verificado com sucesso',
-        payment: payment.getDisplayData(),
-        user: user.getPublicData()
-      });
-
-    } catch (error) {
-      console.error('Erro na verificação crypto:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Erro interno do servidor'
+// Processar pagamento Metamask
+router.post('/crypto/verify', async (req, res) => {
+  try {
+    const { planId, planData, transactionHash, amount, walletAddress } = req.body;
+    
+    if (!planId || !transactionHash || !amount || !walletAddress) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Dados da transação são obrigatórios' 
       });
     }
+
+    // Validar dados do plano
+    const validPlans = {
+      'loja-basic': { price: 0.001, name: 'Loja Básico' },
+      'loja-pro': { price: 0.002, name: 'Loja Pro' },
+      'agroconecta-basic': { price: 0.002, name: 'AgroConecta Básico' },
+      'agroconecta-pro': { price: 0.005, name: 'AgroConecta Pro' }
+    };
+
+    const plan = validPlans[planId];
+    if (!plan) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Plano inválido' 
+      });
+    }
+
+    // Verificar se o valor está correto
+    if (parseFloat(amount) < plan.price) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Valor insuficiente para o plano selecionado' 
+      });
+    }
+
+    // Verificar transação na blockchain (simulado)
+    const transactionValid = await verifyBlockchainTransaction(transactionHash, amount, walletAddress);
+    
+    if (!transactionValid) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Transação inválida ou não confirmada' 
+      });
+    }
+
+    // Atualizar usuário como pago
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        isPaid: true,
+        planActive: planId,
+        planType: plan.name,
+        planExpiry: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 dias
+        lastPayment: new Date(),
+        paymentMethod: 'crypto'
+      },
+      { new: true }
+    );
+
+    // Salvar registro de pagamento
+    const payment = new Payment({
+      userId: req.user.id,
+      planId: planId,
+      planName: plan.name,
+      amount: amount,
+      currency: 'ETH',
+      paymentMethod: 'crypto',
+      transactionHash: transactionHash,
+      walletAddress: walletAddress,
+      status: 'completed',
+      metadata: {
+        planData: planData,
+        verificationSource: 'blockchain'
+      }
+    });
+
+    await payment.save();
+
+    res.json({
+      success: true,
+      message: 'Pagamento confirmado com sucesso',
+      user: {
+        isPaid: user.isPaid,
+        planActive: user.planActive,
+        planType: user.planType,
+        planExpiry: user.planExpiry
+      }
+    });
+
+  } catch (error) {
+    console.error('Erro ao verificar pagamento crypto:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Erro interno do servidor' 
+    });
   }
-);
+});
 
-// GET /api/payments/history - Histórico de pagamentos do usuário
-router.get('/history',
-  authenticateToken,
-  async (req, res) => {
-    try {
-      const userId = req.user.userId;
-      const { page = 1, limit = 10 } = req.query;
-
-      const payments = await Payment.getUserPayments(
-        userId,
-        parseInt(limit),
-        (parseInt(page) - 1) * parseInt(limit)
-      );
-
-      const total = await Payment.countDocuments({ userId });
-
-      res.json({
-        success: true,
-        payments: payments.map(p => p.getDisplayData()),
-        pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
-          total,
-          pages: Math.ceil(total / parseInt(limit))
-        }
-      });
-
-    } catch (error) {
-      console.error('Erro ao buscar histórico:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Erro interno do servidor'
+// Verificar pagamento específico
+router.get('/verify/:paymentId', async (req, res) => {
+  try {
+    const payment = await Payment.findById(req.params.paymentId);
+    
+    if (!payment) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Pagamento não encontrado' 
       });
     }
+
+    // Verificar se o usuário tem acesso ao pagamento
+    if (payment.userId.toString() !== req.user.id && !req.user.isAdmin) {
+      return res.status(403).json({ 
+        success: false, 
+        error: 'Acesso negado' 
+      });
+    }
+
+    res.json({
+      success: true,
+      payment: payment
+    });
+
+  } catch (error) {
+    console.error('Erro ao verificar pagamento:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Erro interno do servidor' 
+    });
   }
-);
+});
 
-// GET /api/payments/plans - Listar planos disponíveis
-router.get('/plans', (req, res) => {
-  const plans = [
-    {
-      id: 'comprador-basic',
-      name: 'Plano Comprador Básico',
-      description: 'Acesso a produtos e mensageria básica',
-      price: 25.00,
-      currency: 'BRL',
-      duration: 30,
-      features: [
-        'Visualizar produtos',
-        'Enviar mensagens (até 3 por mês)',
-        'Acesso básico ao marketplace',
-        'Painel individual'
-      ]
-    },
-    {
-      id: 'comprador-premium',
-      name: 'Plano Comprador Premium',
-      description: 'Acesso completo ao marketplace com funcionalidades avançadas',
-      price: 49.90,
-      currency: 'BRL',
-      duration: 30,
-      features: [
-        'Visualizar produtos',
-        'Mensageria ilimitada',
-        'Acesso completo ao marketplace',
-        'Painel individual',
-        'Relatórios de compras',
-        'Suporte prioritário'
-      ]
-    },
-    {
-      id: 'anunciante-basic',
-      name: 'Plano Anunciante Básico',
-      description: 'Publicar produtos e gerenciar anúncios básicos',
-      price: 99.00,
-      currency: 'BRL',
-      duration: 30,
-      features: [
-        'Publicar até 100 produtos',
-        'Mensageria básica',
-        'Painel de gestão',
-        'Relatórios básicos',
-        'Suporte por email'
-      ]
-    },
-    {
-      id: 'anunciante-premium',
-      name: 'Plano Anunciante Premium',
-      description: 'Publicar produtos e gerenciar anúncios avançados',
-      price: 199.00,
-      currency: 'BRL',
-      duration: 30,
-      features: [
-        'Publicar até 500 produtos',
-        'Mensageria ilimitada',
-        'Painel de gestão',
-        'Relatórios avançados',
-        'Suporte prioritário',
-        'API access'
-      ]
-    },
-    {
-      id: 'anunciante-enterprise',
-      name: 'Plano Anunciante Enterprise',
-      description: 'Solução completa para grandes empresas',
-      price: 499.00,
-      currency: 'BRL',
-      duration: 30,
-      features: [
-        'Produtos ilimitados',
-        'Mensageria ilimitada',
-        'Painel de gestão',
-        'Relatórios personalizados',
-        'Suporte 24/7',
-        'API completa',
-        'Integração customizada',
-        'White label'
-      ]
-    },
-    {
-      id: 'freteiro-basic',
-      name: 'Plano Freteiro Básico',
-      description: 'Publicar fretes e gerenciar transportes básicos',
-      price: 99.00,
-      currency: 'BRL',
-      duration: 30,
-      features: [
-        'Publicar até 50 fretes/mês',
-        'Mensageria básica',
-        'Painel de gestão',
-        'Relatórios básicos',
-        'Suporte por email'
-      ]
-    },
-    {
-      id: 'freteiro-premium',
-      name: 'Plano Freteiro Premium',
-      description: 'Publicar fretes e gerenciar transportes avançados',
-      price: 199.00,
-      currency: 'BRL',
-      duration: 30,
-      features: [
-        'Publicar até 200 fretes/mês',
-        'Mensageria ilimitada',
-        'Painel de gestão',
-        'Relatórios avançados',
-        'Suporte prioritário',
-        'API access'
-      ]
-    },
-    {
-      id: 'freteiro-enterprise',
-      name: 'Plano Freteiro Enterprise',
-      description: 'Solução completa para grandes transportadoras',
-      price: 499.00,
-      currency: 'BRL',
-      duration: 30,
-      features: [
-        'Fretes ilimitados',
-        'Mensageria ilimitada',
-        'Painel de gestão',
-        'Relatórios personalizados',
-        'Suporte 24/7',
-        'API completa',
-        'Integração customizada',
-        'White label'
-      ]
+// Cancelar assinatura
+router.post('/cancel', async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    
+    if (!user) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Usuário não encontrado' 
+      });
     }
-  ];
 
-  res.json({
-    success: true,
-    plans
-  });
+    if (!user.isPaid) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Usuário não possui plano ativo' 
+      });
+    }
+
+    // Se for assinatura Stripe, cancelar no Stripe
+    if (user.paymentMethod === 'stripe' && user.stripeSubscriptionId) {
+      try {
+        await stripe.subscriptions.update(user.stripeSubscriptionId, {
+          cancel_at_period_end: true
+        });
+      } catch (stripeError) {
+        console.error('Erro ao cancelar no Stripe:', stripeError);
+      }
+    }
+
+    // Atualizar usuário
+    user.isPaid = false;
+    user.planActive = null;
+    user.planType = null;
+    user.planExpiry = null;
+    user.cancellationDate = new Date();
+    
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Assinatura cancelada com sucesso',
+      user: {
+        isPaid: user.isPaid,
+        planActive: user.planActive,
+        planType: user.planType,
+        planExpiry: user.planExpiry
+      }
+    });
+
+  } catch (error) {
+    console.error('Erro ao cancelar assinatura:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Erro interno do servidor' 
+    });
+  }
+});
+
+// Histórico de pagamentos
+router.get('/history', async (req, res) => {
+  try {
+    const payments = await Payment.find({ userId: req.user.id })
+      .sort({ createdAt: -1 })
+      .limit(20);
+
+    res.json({
+      success: true,
+      payments: payments
+    });
+
+  } catch (error) {
+    console.error('Erro ao buscar histórico:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Erro interno do servidor' 
+    });
+  }
 });
 
 // Funções auxiliares
-function getPlanFeatures(planId) {
-  const features = {
-    'comprador-basic': ['Visualizar produtos', 'Enviar mensagens (até 3 por mês)', 'Painel individual', 'Acesso básico ao marketplace'],
-    'comprador-premium': ['Visualizar produtos', 'Mensageria ilimitada', 'Painel individual', 'Acesso completo ao marketplace', 'Relatórios de compras'],
-    'anunciante-basic': ['Publicar até 100 produtos', 'Mensageria básica', 'Painel de gestão', 'Relatórios básicos', 'Suporte por email'],
-    'anunciante-premium': ['Publicar até 500 produtos', 'Mensageria ilimitada', 'Painel de gestão', 'Relatórios avançados', 'Suporte prioritário', 'API access'],
-    'anunciante-enterprise': ['Produtos ilimitados', 'Mensageria ilimitada', 'Painel de gestão', 'Relatórios personalizados', 'Suporte 24/7', 'API completa', 'Integração customizada', 'White label'],
-    'freteiro-basic': ['Publicar até 50 fretes/mês', 'Mensageria básica', 'Painel de gestão', 'Relatórios básicos', 'Suporte por email'],
-    'freteiro-premium': ['Publicar até 200 fretes/mês', 'Mensageria ilimitada', 'Painel de gestão', 'Relatórios avançados', 'Suporte prioritário', 'API access'],
-    'freteiro-enterprise': ['Fretes ilimitados', 'Mensageria ilimitada', 'Painel de gestão', 'Relatórios personalizados', 'Suporte 24/7', 'API completa', 'Integração customizada', 'White label']
-  };
-  return features[planId] || [];
-}
-
-function getPlanName(planId) {
-  const names = {
-    'comprador-basic': 'Plano Comprador Básico',
-    'comprador-premium': 'Plano Comprador Premium',
-    'anunciante-basic': 'Plano Anunciante Básico',
-    'anunciante-premium': 'Plano Anunciante Premium',
-    'anunciante-enterprise': 'Plano Anunciante Enterprise',
-    'freteiro-basic': 'Plano Freteiro Básico',
-    'freteiro-premium': 'Plano Freteiro Premium',
-    'freteiro-enterprise': 'Plano Freteiro Enterprise'
-  };
-  return names[planId] || 'Plano';
-}
-
-async function sendPaymentNotification(user, payment) {
+async function handleStripePaymentSuccess(session) {
   try {
-    // Enviar mensagem de notificação para o usuário
-    const notification = new Message({
-      fromUser: null, // Sistema
-      toUser: user._id,
-      subject: 'Pagamento Confirmado',
-      message: `Seu pagamento de R$ ${payment.amount} foi confirmado com sucesso! Seu plano ${payment.plan.name} está ativo até ${new Date(user.paidPlan.expiresAt).toLocaleDateString('pt-BR')}.`,
-      context: {
-        type: 'payment',
-        paymentId: payment._id
-      },
-      status: 'sent'
+    const userId = session.metadata.userId;
+    const planId = session.metadata.planId;
+    const planName = session.metadata.planName;
+
+    // Atualizar usuário
+    await User.findByIdAndUpdate(userId, {
+      isPaid: true,
+      planActive: planId,
+      planType: planName,
+      planExpiry: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 dias
+      lastPayment: new Date(),
+      paymentMethod: 'stripe',
+      stripeCustomerId: session.customer,
+      stripeSubscriptionId: session.subscription
     });
 
-    await notification.save();
+    // Salvar registro de pagamento
+    const payment = new Payment({
+      userId: userId,
+      planId: planId,
+      planName: planName,
+      amount: session.amount_total / 100, // Converter de centavos
+      currency: 'BRL',
+      paymentMethod: 'stripe',
+      stripeSessionId: session.id,
+      status: 'completed',
+      metadata: {
+        stripeCustomerId: session.customer,
+        stripeSubscriptionId: session.subscription
+      }
+    });
+
+    await payment.save();
+
+    console.log(`Pagamento Stripe confirmado para usuário ${userId}`);
   } catch (error) {
-    console.error('Erro ao enviar notificação de pagamento:', error);
+    console.error('Erro ao processar pagamento Stripe:', error);
+  }
+}
+
+async function handleStripeSubscriptionRenewal(invoice) {
+  try {
+    const subscription = await stripe.subscriptions.retrieve(invoice.subscription);
+    const userId = subscription.metadata.userId;
+
+    if (userId) {
+      await User.findByIdAndUpdate(userId, {
+        lastPayment: new Date(),
+        planExpiry: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+      });
+
+      console.log(`Renovação Stripe confirmada para usuário ${userId}`);
+    }
+  } catch (error) {
+    console.error('Erro ao processar renovação Stripe:', error);
+  }
+}
+
+async function handleStripeSubscriptionCancellation(subscription) {
+  try {
+    const userId = subscription.metadata.userId;
+
+    if (userId) {
+      await User.findByIdAndUpdate(userId, {
+        isPaid: false,
+        planActive: null,
+        planType: null,
+        planExpiry: null,
+        cancellationDate: new Date()
+      });
+
+      console.log(`Cancelamento Stripe processado para usuário ${userId}`);
+    }
+  } catch (error) {
+    console.error('Erro ao processar cancelamento Stripe:', error);
+  }
+}
+
+async function verifyBlockchainTransaction(transactionHash, amount, walletAddress) {
+  try {
+    // Em produção, usar provider real (Infura, Alchemy, etc.)
+    // const provider = new ethers.providers.JsonRpcProvider(WEB3_PROVIDER);
+    // const tx = await provider.getTransaction(transactionHash);
+    
+    // Por enquanto, simular verificação
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Simular verificação bem-sucedida
+    return true;
+  } catch (error) {
+    console.error('Erro ao verificar transação blockchain:', error);
+    return false;
   }
 }
 

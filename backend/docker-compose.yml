@@ -1,0 +1,163 @@
+version: '3.8'
+
+services:
+  # MongoDB
+  mongodb:
+    image: mongo:6.0
+    container_name: agrosync-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: agrosync123
+      MONGO_INITDB_DATABASE: agrosync
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./scripts/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - agrosync-network
+
+  # Redis (para cache e sessões)
+  redis:
+    image: redis:7-alpine
+    container_name: agrosync-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - agrosync-network
+
+  # Backend AgroSync
+  backend:
+    build: .
+    container_name: agrosync-backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      NODE_ENV: development
+      PORT: 5000
+      MONGODB_URI: mongodb://admin:agrosync123@mongodb:27017/agrosync?authSource=admin
+      REDIS_URL: redis://redis:6379
+      FRONTEND_URL: http://localhost:3000
+    volumes:
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+      - ./.env:/app/.env:ro
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - agrosync-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # MongoDB Express (interface web para MongoDB)
+  mongo-express:
+    image: mongo-express:1.0.0
+    container_name: agrosync-mongo-express
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: agrosync123
+      ME_CONFIG_MONGODB_URL: mongodb://admin:agrosync123@mongodb:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: agrosync123
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - agrosync-network
+
+  # Redis Commander (interface web para Redis)
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: agrosync-redis-commander
+    restart: unless-stopped
+    ports:
+      - "8082:8081"
+    environment:
+      REDIS_HOSTS: local:redis:6379
+    depends_on:
+      - redis
+    networks:
+      - agrosync-network
+
+  # Nginx (proxy reverso e load balancer)
+  nginx:
+    image: nginx:alpine
+    container_name: agrosync-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - backend
+    networks:
+      - agrosync-network
+
+volumes:
+  mongodb_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  agrosync-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# Configurações de deploy
+x-deploy: &deploy
+  restart: unless-stopped
+  deploy:
+    resources:
+      limits:
+        memory: 1G
+        cpus: '0.5'
+      reservations:
+        memory: 512M
+        cpus: '0.25'
+    restart_policy:
+      condition: on-failure
+      delay: 5s
+      max_attempts: 3
+      window: 120s
+
+# Configurações de produção
+x-production: &production
+  environment:
+    NODE_ENV: production
+    MONGODB_URI: mongodb://admin:${MONGO_PASSWORD}@mongodb:27017/agrosync?authSource=admin
+    REDIS_URL: redis://redis:6379
+    JWT_SECRET: ${JWT_SECRET}
+    STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+    OWNER_WALLET: ${OWNER_WALLET}
+  deploy:
+    replicas: 3
+    update_config:
+      parallelism: 1
+      delay: 10s
+      order: start-first
+    rollback_config:
+      parallelism: 1
+      delay: 5s
+      order: stop-first
