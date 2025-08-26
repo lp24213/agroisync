@@ -45,6 +45,18 @@
   --button-secondary: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
   --button-success: linear-gradient(135deg, #1f2937 0%, #374151 100%);
   --button-warning: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  
+  /* Cores cinza predominantes para páginas Sobre e Contato */
+  --text-gray-primary: #1f2937;
+  --text-gray-secondary: #374151;
+  --text-gray-tertiary: #4b5563;
+  --text-gray-quaternary: #6b7280;
+  --text-gray-quinary: #9ca3af;
+  --bg-gray-primary: #f8fafc;
+  --bg-gray-secondary: #f1f5f9;
+  --bg-gray-tertiary: #e2e8f0;
+  --border-gray-primary: #e5e7eb;
+  --border-gray-secondary: #d1d5db;
 }
 
 [data-theme="dark"] {
@@ -93,6 +105,18 @@
   --button-secondary: linear-gradient(135deg, #64748b 0%, #475569 100%);
   --button-success: linear-gradient(135deg, #334155 0%, #1f2937 100%);
   --button-warning: linear-gradient(135deg, #ffd93d 0%, #ffb347 100%);
+  
+  /* Cores cinza predominantes para páginas Sobre e Contato (tema escuro) */
+  --text-gray-primary: #f9fafb;
+  --text-gray-secondary: #f3f4f6;
+  --text-gray-tertiary: #e5e7eb;
+  --text-gray-quaternary: #d1d5db;
+  --text-gray-quinary: #9ca3af;
+  --bg-gray-primary: #1f2937;
+  --bg-gray-secondary: #374151;
+  --bg-gray-tertiary: #4b5563;
+  --border-gray-primary: #4b5563;
+  --border-gray-secondary: #6b7280;
 }
 
 /* ===== ESTILOS GLOBAIS ===== */

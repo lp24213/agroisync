@@ -10,7 +10,7 @@ import {
   TrendingUp, TrendingDown, DollarSign, Coins, Wallet, 
   ArrowUpRight, ArrowDownRight, RefreshCw, AlertCircle,
   Shield, Zap, Globe, BarChart3, PieChart, Activity,
-  Lock, Unlock, Eye, EyeOff, Copy, CheckCircle
+  Lock, Unlock, Eye, EyeOff, Copy, CheckCircle, FileText
 } from 'lucide-react';
 
 const Cripto = () => {
@@ -32,19 +32,83 @@ const Cripto = () => {
   const [paymentLoading, setPaymentLoading] = useState(false);
 
   useEffect(() => {
-    document.title = 'Criptomoedas - Agroisync';
+    document.title = `Agroisync - ${t('crypto.title')}`;
     fetchCryptoData();
-    checkMetamaskConnection();
-  }, []);
+  }, [t]);
 
   const fetchCryptoData = async () => {
     try {
       setLoading(true);
-      const data = await cryptoService.getTopCryptos();
-      setCryptoData(data);
+      setError('');
+      
+      // Usar CoinGecko API para dados reais
+      const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&sparkline=false&locale=pt');
+      
+      if (response.ok) {
+        const data = await response.json();
+        setCryptoData(data);
+      } else {
+        throw new Error('Erro na API CoinGecko');
+      }
     } catch (error) {
-      setError('Erro ao carregar dados das criptomoedas');
       console.error('Erro ao buscar dados:', error);
+      
+      // Dados mock como fallback caso a API falhe
+      const fallbackData = [
+        {
+          id: 'bitcoin',
+          symbol: 'btc',
+          name: 'Bitcoin',
+          current_price: 43250.25,
+          price_change_percentage_24h: 2.34,
+          market_cap: 845000000000,
+          total_volume: 28500000000,
+          image: 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png'
+        },
+        {
+          id: 'ethereum',
+          symbol: 'eth',
+          name: 'Ethereum',
+          current_price: 2650.80,
+          price_change_percentage_24h: 1.87,
+          market_cap: 318000000000,
+          total_volume: 15800000000,
+          image: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png'
+        },
+        {
+          id: 'binancecoin',
+          symbol: 'bnb',
+          name: 'BNB',
+          current_price: 315.45,
+          price_change_percentage_24h: -0.65,
+          market_cap: 48500000000,
+          total_volume: 890000000,
+          image: 'https://assets.coingecko.com/coins/images/825/large/bnb-icon2_2x.png'
+        },
+        {
+          id: 'solana',
+          symbol: 'sol',
+          name: 'Solana',
+          current_price: 98.75,
+          price_change_percentage_24h: 5.23,
+          market_cap: 42500000000,
+          total_volume: 2100000000,
+          image: 'https://assets.coingecko.com/coins/images/4128/large/solana.png'
+        },
+        {
+          id: 'cardano',
+          symbol: 'ada',
+          name: 'Cardano',
+          current_price: 0.485,
+          price_change_percentage_24h: -1.23,
+          market_cap: 17200000000,
+          total_volume: 450000000,
+          image: 'https://assets.coingecko.com/coins/images/975/large/cardano.png'
+        }
+      ];
+      
+      setCryptoData(fallbackData);
+      setError('Dados carregados em modo offline');
     } finally {
       setLoading(false);
     }
@@ -148,23 +212,42 @@ const Cripto = () => {
   };
 
   const formatPrice = (price) => {
-    if (price < 1) {
-      return `$${price.toFixed(6)}`;
-    } else if (price < 1000) {
-      return `$${price.toFixed(2)}`;
-    } else {
-      return `$${(price / 1000).toFixed(2)}K`;
-    }
+    if (!price) return '$0.00';
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 6
+    }).format(price);
   };
 
   const formatChange = (change) => {
+    if (change === null || change === undefined) return '0.00%';
     const isPositive = change >= 0;
     return (
       <span className={`flex items-center ${isPositive ? 'text-emerald-600' : 'text-red-600'}`}>
-        {isPositive ? <ArrowUpRight className="w-4 h-4 mr-1" /> : <ArrowDownRight className="w-4 h-4 mr-1" />}
+        {isPositive ? <TrendingUp className="w-4 h-4 mr-1" /> : <TrendingDown className="w-4 h-4 mr-1" />}
         {Math.abs(change).toFixed(2)}%
       </span>
     );
+  };
+
+  const formatMarketCap = (marketCap) => {
+    if (!marketCap) return '$0';
+    if (marketCap >= 1e12) return `$${(marketCap / 1e12).toFixed(2)}T`;
+    if (marketCap >= 1e9) return `$${(marketCap / 1e9).toFixed(2)}B`;
+    if (marketCap >= 1e6) return `$${(marketCap / 1e6).toFixed(2)}M`;
+    if (marketCap >= 1e3) return `$${(marketCap / 1e3).toFixed(2)}K`;
+    return `$${marketCap.toFixed(2)}`;
+  };
+
+  const formatVolume = (volume) => {
+    if (!volume) return '$0';
+    if (volume >= 1e12) return `$${(volume / 1e12).toFixed(2)}T`;
+    if (volume >= 1e9) return `$${(volume / 1e9).toFixed(2)}B`;
+    if (volume >= 1e6) return `$${(volume / 1e6).toFixed(2)}M`;
+    if (volume >= 1e3) return `$${(volume / 1e3).toFixed(2)}K`;
+    return `$${volume.toFixed(2)}`;
   };
 
   const getCryptoIcon = (symbol) => {
@@ -207,7 +290,7 @@ const Cripto = () => {
             transition={{ duration: 0.8 }}
             className={`text-5xl md:text-7xl font-bold mb-6 ${isDark ? 'text-white' : 'text-slate-800'}`}
           >
-            Criptomoedas
+            {t('crypto.title')}
           </motion.h1>
           
           {/* Subtitle */}
@@ -217,7 +300,7 @@ const Cripto = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className={`text-xl md:text-2xl max-w-4xl mx-auto mb-8 ${isDark ? 'text-gray-300' : 'text-slate-600'}`}
           >
-            Acompanhe o mercado de criptomoedas em tempo real e gerencie seus ativos digitais com segurança
+            {t('crypto.subtitle')}
           </motion.p>
           
           {/* Description */}
@@ -227,7 +310,7 @@ const Cripto = () => {
             transition={{ duration: 0.8, delay: 0.4 }}
             className={`text-lg max-w-3xl mx-auto ${isDark ? 'text-gray-400' : 'text-slate-500'}`}
           >
-            Integração completa com Metamask, gráficos interativos e histórico de transações para uma experiência completa de trading
+            {t('crypto.cta.subtitle')}
           </motion.p>
         </div>
       </section>
@@ -245,48 +328,65 @@ const Cripto = () => {
                 transition={{ duration: 0.6 }}
                 className="bg-white rounded-2xl shadow-lg p-6 border border-slate-200"
               >
-                <h3 className="text-2xl font-bold text-slate-800 mb-6">Principais Criptomoedas</h3>
+                <h3 className="text-xl font-bold text-slate-800 mb-4">
+                  {t('crypto.realTimeQuotes')}
+                </h3>
                 
                 {loading ? (
                   <div className="text-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-600 mx-auto mb-4"></div>
-                    <p className="text-slate-600">Carregando dados...</p>
+                    <p className="text-slate-600">{t('common.loading')}</p>
                   </div>
                 ) : error ? (
                   <div className="text-center py-8">
                     <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-                    <p className="text-red-600">{error}</p>
+                    <p className="text-red-600 mb-2">{error}</p>
+                    <button
+                      onClick={fetchCryptoData}
+                      className="px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors duration-200"
+                    >
+                      {t('common.tryAgain')}
+                    </button>
                   </div>
                 ) : (
-                  <div className="space-y-4">
-                    {cryptoData.map((crypto, index) => (
+                  <div className="space-y-3">
+                    {cryptoData.map((crypto) => (
                       <motion.div
                         key={crypto.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: index * 0.1 }}
-                        onClick={() => setSelectedCrypto(crypto.id)}
-                        className={`p-4 rounded-lg cursor-pointer transition-all duration-200 ${
-                          selectedCrypto === crypto.id 
-                            ? 'bg-slate-100 border-2 border-slate-300' 
-                            : 'bg-slate-50 border border-slate-200 hover:bg-slate-100'
+                        whileHover={{ scale: 1.02 }}
+                        className={`p-3 rounded-lg cursor-pointer transition-all duration-200 ${
+                          selectedCrypto === crypto.id
+                            ? 'bg-slate-100 border-2 border-slate-300'
+                            : 'bg-slate-50 hover:bg-slate-100'
                         }`}
+                        onClick={() => setSelectedCrypto(crypto.id)}
                       >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center">
-                              <Coins className="w-5 h-5 text-slate-600" />
+                        <div className="flex items-center space-x-3">
+                          <img
+                            src={crypto.image}
+                            alt={crypto.name}
+                            className="w-8 h-8 rounded-full"
+                            onError={(e) => {
+                              e.target.src = getCryptoIcon(crypto.symbol);
+                            }}
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between">
+                              <h4 className="font-semibold text-slate-800 truncate">
+                                {crypto.name}
+                              </h4>
+                              <span className="text-sm font-mono text-slate-600">
+                                {crypto.symbol.toUpperCase()}
+                              </span>
                             </div>
-                            <div>
-                              <h4 className="font-semibold text-slate-800">{crypto.name}</h4>
-                              <p className="text-sm text-slate-600">{crypto.symbol.toUpperCase()}</p>
+                            <div className="flex items-center justify-between mt-1">
+                              <span className="text-lg font-bold text-slate-900">
+                                {formatPrice(crypto.current_price)}
+                              </span>
+                              <div className="text-sm">
+                                {formatChange(crypto.price_change_percentage_24h)}
+                              </div>
                             </div>
-                          </div>
-                          <div className="text-right">
-                            <p className="font-bold text-slate-800">${crypto.current_price?.toFixed(2) || '0.00'}</p>
-                            <p className={`text-sm ${crypto.price_change_percentage_24h >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-                              {crypto.price_change_percentage_24h?.toFixed(2) || '0.00'}%
-                            </p>
                           </div>
                         </div>
                       </motion.div>
@@ -298,134 +398,201 @@ const Cripto = () => {
 
             {/* Chart and Details */}
             <div className="lg:col-span-2">
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6 }}
-                className="bg-white rounded-2xl shadow-lg p-6 border border-slate-200"
-              >
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-2xl font-bold text-slate-800">Gráfico de Preços</h3>
-                  <div className="flex space-x-2">
-                    {['24h', '7d', '30d', '1y'].map((period) => (
-                      <button
-                        key={period}
-                        onClick={() => setTimeframe(period)}
-                        className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors duration-200 ${
-                          timeframe === period
-                            ? 'bg-slate-600 text-white'
-                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                        }`}
-                      >
-                        {period}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Chart Placeholder */}
-                <div className="h-80 bg-gradient-to-br from-slate-50 to-blue-50 rounded-lg border border-slate-200 flex items-center justify-center">
-                  <div className="text-center">
-                    <BarChart3 className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-                    <p className="text-slate-600 font-medium">Gráfico Interativo</p>
-                    <p className="text-sm text-slate-500">Integração com TradingView ou CoinGecko</p>
-                  </div>
-                </div>
-
-                {/* Crypto Details */}
-                {selectedCrypto && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                    className="mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200"
+              
+              {/* Chart Placeholder */}
+              <div className="h-80 bg-gradient-to-br from-slate-50 to-blue-50 rounded-lg border border-slate-200 flex items-center justify-center">
+                <div className="text-center">
+                  <BarChart3 className="w-16 h-16 text-slate-400 mx-auto mb-4" />
+                  <p className="text-slate-600 font-medium">{t('crypto.chart.title')}</p>
+                  <p className="text-sm text-slate-500 mb-4">{t('crypto.chart.description')}</p>
+                  
+                  {/* Botão para atualizar dados */}
+                  <button
+                    onClick={fetchCryptoData}
+                    disabled={loading}
+                    className="px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors duration-200 disabled:opacity-50"
                   >
-                    <h4 className="text-lg font-semibold text-slate-800 mb-3">Detalhes da Criptomoeda</h4>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="text-center">
-                        <p className="text-sm text-slate-600">Preço Atual</p>
-                        <p className="font-bold text-slate-800">$0.00</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-sm text-slate-600">Variação 24h</p>
-                        <p className="font-bold text-emerald-600">+0.00%</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-sm text-slate-600">Volume</p>
-                        <p className="font-bold text-slate-800">$0.00</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-sm text-slate-600">Market Cap</p>
-                        <p className="font-bold text-slate-800">$0.00</p>
+                    {loading ? t('common.updating') : t('common.refresh')}
+                  </button>
+                </div>
+              </div>
+
+              {/* Crypto Details */}
+              {selectedCrypto && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                  className="mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200"
+                >
+                  <h4 className="text-lg font-semibold text-slate-800 mb-3">{t('crypto.details.title')}</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="text-center">
+                      <p className="text-sm text-slate-600">{t('crypto.details.currentPrice')}</p>
+                      <p className="font-bold text-slate-800">
+                        {formatPrice(cryptoData.find(c => c.id === selectedCrypto)?.current_price)}
+                      </p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-sm text-slate-600">{t('crypto.details.change24h')}</p>
+                      <div className="font-bold">
+                        {formatChange(cryptoData.find(c => c.id === selectedCrypto)?.price_change_percentage_24h)}
                       </div>
                     </div>
-                  </motion.div>
-                )}
-              </motion.div>
+                    <div className="text-center">
+                      <p className="text-sm text-slate-600">{t('crypto.details.volume')}</p>
+                      <p className="font-bold text-slate-800">
+                        {formatVolume(cryptoData.find(c => c.id === selectedCrypto)?.total_volume)}
+                      </p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-sm text-slate-600">{t('crypto.details.marketCap')}</p>
+                      <p className="font-bold text-slate-800">
+                        {formatMarketCap(cryptoData.find(c => c.id === selectedCrypto)?.market_cap)}
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* Metamask Integration */}
+      {/* Metamask Integration */}
+      <section className="py-20 px-4 bg-gradient-to-r from-slate-50 to-blue-50">
+        <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-12 bg-white rounded-2xl shadow-lg p-8 border border-slate-200"
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
           >
-            <div className="text-center mb-8">
-              <h3 className="text-3xl font-bold text-slate-800 mb-4">Integração com Metamask</h3>
-              <p className="text-lg text-slate-600">Conecte sua carteira digital para gerenciar seus ativos</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Wallet Connection */}
-              <div className="text-center">
-                <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-r from-slate-500 to-slate-600 flex items-center justify-center text-white">
-                  <Wallet className="w-10 h-10" />
-                </div>
-                
-                {!metamaskConnected ? (
-                  <div>
-                    <h4 className="text-xl font-semibold text-slate-800 mb-4">Conectar Carteira</h4>
-                    <p className="text-slate-600 mb-6">Clique no botão abaixo para conectar sua carteira Metamask</p>
-                    <button
-                      onClick={connectMetamask}
-                      disabled={paymentLoading}
-                      className="px-8 py-3 bg-slate-600 text-white font-semibold rounded-xl hover:bg-slate-700 transition-colors duration-300 disabled:opacity-50"
-                    >
-                      {paymentLoading ? 'Conectando...' : 'Conectar Metamask'}
-                    </button>
-                  </div>
-                ) : (
-                  <div>
-                    <h4 className="text-xl font-semibold text-slate-800 mb-4">Carteira Conectada</h4>
-                    <p className="text-slate-600 mb-2">Endereço: {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}</p>
-                    <p className="text-slate-600 mb-6">Saldo: {walletBalance} ETH</p>
-                    <button
-                      onClick={disconnectMetamask}
-                      className="px-6 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors duration-300"
-                    >
-                      Desconectar
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* Transaction History */}
-              <div className="text-center">
-                <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-r from-slate-600 to-slate-700 flex items-center justify-center text-white">
-                  <Activity className="w-10 h-10" />
-                </div>
-                <h4 className="text-xl font-semibold text-slate-800 mb-4">Histórico de Transações</h4>
-                <p className="text-slate-600 mb-6">Visualize todas as suas operações em criptomoedas</p>
-                
-                <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-                  <p className="text-sm text-slate-500">Nenhuma transação encontrada</p>
-                  <p className="text-xs text-slate-400">As transações aparecerão aqui após conectar sua carteira</p>
-                </div>
-              </div>
-            </div>
+            <h2 className="text-4xl font-bold text-slate-800 mb-4">
+              {t('crypto.connectWallet')}
+            </h2>
+            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+              {t('crypto.wallet.description')}
+            </p>
           </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            {/* Wallet Connection */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              className="bg-white rounded-2xl shadow-lg p-8 border border-slate-200"
+            >
+              <h3 className="text-2xl font-bold text-slate-800 mb-6">
+                {t('crypto.wallet.connection')}
+              </h3>
+              
+              {!metamaskConnected ? (
+                <div className="space-y-4">
+                  <p className="text-slate-600 mb-6">
+                    {t('crypto.wallet.connectDescription')}
+                  </p>
+                  
+                  <button
+                    onClick={connectMetamask}
+                    disabled={paymentLoading}
+                    className="w-full px-6 py-4 bg-slate-600 text-white font-bold rounded-xl hover:bg-slate-700 transition-colors duration-300 disabled:opacity-50 flex items-center justify-center space-x-3"
+                  >
+                    {paymentLoading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        <span>{t('crypto.connecting')}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Wallet className="w-5 h-5" />
+                        <span>{t('crypto.connectMetaMask')}</span>
+                      </>
+                    )}
+                  </button>
+                  
+                  <div className="text-center">
+                    <p className="text-sm text-slate-500">
+                      {t('crypto.wallet.supportedWallets')}
+                    </p>
+                    <div className="flex items-center justify-center space-x-4 mt-2">
+                      <span className="text-xs bg-slate-100 px-2 py-1 rounded">MetaMask</span>
+                      <span className="text-xs bg-slate-100 px-2 py-1 rounded">Phantom</span>
+                      <span className="text-xs bg-slate-100 px-2 py-1 rounded">WalletConnect</span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+                    <div className="flex items-center space-x-3">
+                      <CheckCircle className="w-6 h-6 text-emerald-600" />
+                      <div>
+                        <h4 className="font-semibold text-emerald-800">{t('crypto.walletConnected')}</h4>
+                        <p className="text-sm text-emerald-600">{t('crypto.wallet.address')}: {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="text-center p-4 bg-slate-50 rounded-lg">
+                      <p className="text-sm text-slate-600">{t('crypto.balance')}</p>
+                      <p className="text-xl font-bold text-slate-800">{walletBalance} ETH</p>
+                    </div>
+                    <div className="text-center p-4 bg-slate-50 rounded-lg">
+                      <p className="text-sm text-slate-600">{t('crypto.network')}</p>
+                      <p className="text-xl font-bold text-slate-800">Ethereum</p>
+                    </div>
+                  </div>
+                  
+                  <button
+                    onClick={disconnectMetamask}
+                    className="w-full px-6 py-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors duration-300"
+                  >
+                    {t('crypto.disconnect')}
+                  </button>
+                </div>
+              )}
+            </motion.div>
+
+            {/* Transaction History */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="bg-white rounded-2xl shadow-lg p-8 border border-slate-200"
+            >
+              <h3 className="text-2xl font-bold text-slate-800 mb-6">
+                {t('crypto.transactionHistory')}
+              </h3>
+              
+              {metamaskConnected ? (
+                <div className="space-y-4">
+                  {/* The original code had transactions.length > 0, but transactions is not defined.
+                      Assuming it should be removed or replaced with a placeholder.
+                      For now, keeping the structure but noting the potential issue. */}
+                  <div className="text-center py-8">
+                    <Activity className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                    <p className="text-slate-600">{t('crypto.noTransactions')}</p>
+                  </div>
+                  
+                  <button
+                    onClick={() => {/* Função para ver mais transações */}}
+                    className="w-full px-6 py-3 bg-slate-600 text-white font-bold rounded-lg hover:bg-slate-700 transition-colors duration-300"
+                  >
+                    {t('crypto.viewTransactions')}
+                  </button>
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <Wallet className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                  <p className="text-slate-600">{t('crypto.connectToViewHistory')}</p>
+                </div>
+              )}
+            </motion.div>
+          </div>
         </div>
       </section>
     </div>

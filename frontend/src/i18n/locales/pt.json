@@ -24,7 +24,16 @@
     "plans": "Planos",
     "language": "Idioma",
     "brand": "Agroisync",
-    "tagline": "O Hub Completo do Agronegócio Brasileiro"
+    "tagline": "O Hub Completo do Agronegócio Brasileiro",
+    "lastUpdate": "Última atualização",
+    "tryAgain": "Tentar novamente",
+    "updating": "Atualizando...",
+    "refresh": "Atualizar",
+    "all": "todas",
+    "news": "notícias",
+    "settings": "Sensação",
+    "humidity": "Umidade",
+    "wind": "Vento"
   },
   "nav": {
     "brand": "Agroisync",
@@ -320,7 +329,7 @@
       "subtitle": "O Hub Completo do Agronegócio Brasileiro",
       "description": "Conectando produtores, compradores e investidores com tecnologia de ponta. Marketplace de anúncios, cotações por região e pagamentos seguros — tudo em uma única plataforma.",
       "cta": {
-        "primary": "Explorar Marketplace",
+        "primary": "Começar Agora",
         "secondary": "Saiba Mais"
       }
     },
@@ -413,7 +422,8 @@
       "point4": "Inovação contínua",
       "vision": "Ser o hub líder do agronegócio brasileiro, criando um ecossistema sustentável e conectado para o futuro da agricultura.",
       "users": "Usuários Ativos",
-      "products": "Produtos Cadastrados"
+      "products": "Produtos Cadastrados",
+      "platform": "Plataforma Integrada"
     },
     "values": {
       "title": "Nossos Valores",
@@ -463,17 +473,28 @@
       "title": "Nossa Equipe",
       "subtitle": "Especialistas dedicados ao seu sucesso",
       "ceo": {
+        "name": "Luis Paulo Oliveira",
         "role": "CEO & Fundador",
         "description": "Líder visionário com vasta experiência no setor"
       },
       "developers": {
-        "role": "Equipe de Desenvolvimento",
-        "description": "Especialistas em tecnologia e inovação"
+        "name": "Equipe de Desenvolvimento",
+        "role": "Especialistas em tecnologia e inovação",
+        "description": "Desenvolvedores experientes em React, Node.js e blockchain"
       },
       "consultants": {
-        "role": "Consultores Agrícolas",
-        "description": "Profissionais com conhecimento profundo do setor"
+        "name": "Consultores Agrícolas",
+        "role": "Profissionais com conhecimento profundo do setor",
+        "description": "Especialistas em agronomia e mercado agrícola"
       }
+    },
+    "stats": {
+      "title": "Números que Impressionam",
+      "subtitle": "O crescimento do Agroisync em números",
+      "users": "Usuários Ativos",
+      "products": "Produtos Cadastrados",
+      "freights": "Fretes Realizados",
+      "transactions": "Volume de Transações"
     },
     "cta": {
       "title": "Faça Parte da Revolução",
@@ -588,6 +609,27 @@
     "connecting": "Conectando...",
     "metamaskNotInstalled": "MetaMask não está instalado!",
     "walletConnectionError": "Erro ao conectar carteira",
+    "noTransactions": "Nenhuma transação encontrada",
+    "connectToViewHistory": "Conecte sua carteira para ver o histórico",
+    "network": "Rede",
+    "chart": {
+      "title": "Gráfico Interativo",
+      "description": "Integração com TradingView ou CoinGecko"
+    },
+    "details": {
+      "title": "Detalhes da Criptomoeda",
+      "currentPrice": "Preço Atual",
+      "change24h": "Variação 24h",
+      "volume": "Volume",
+      "marketCap": "Market Cap"
+    },
+    "wallet": {
+      "description": "Conecte sua carteira digital para gerenciar seus ativos",
+      "connection": "Conexão da Carteira",
+      "connectDescription": "Clique no botão abaixo para conectar sua carteira Metamask",
+      "supportedWallets": "Carteiras Suportadas",
+      "address": "Endereço"
+    },
     "features": {
       "staking": "Staking",
       "stakingDesc": "Stake seus tokens e ganhe recompensas",

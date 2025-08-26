@@ -28,11 +28,11 @@ const Home = () => {
   const [userLocation, setUserLocation] = useState(null);
 
   useEffect(() => {
-    document.title = 'Agroisync - Plataforma de Agronegócio';
+    document.title = `Agroisync - ${t('home.hero.title')}`;
     fetchStockData();
     getUserLocation();
     fetchNewsData();
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     if (userLocation) {
@@ -83,25 +83,26 @@ const Home = () => {
 
   const fetchStockData = async () => {
     try {
-      // Simular dados da bolsa agrícola em tempo real
+      // Dados da bolsa agrícola em tempo real (simulados para demonstração)
       const mockStockData = [
-        { symbol: 'SOJA3', name: 'Soja', price: 85.50, change: 2.34, volume: '2.1M', lastUpdate: new Date() },
-        { symbol: 'MILH3', name: 'Milho', price: 67.80, change: -1.25, volume: '1.8M', lastUpdate: new Date() },
-        { symbol: 'BOIA3', name: 'Boi Gordo', price: 245.90, change: 0.85, volume: '890K', lastUpdate: new Date() },
-        { symbol: 'CAFE3', name: 'Café', price: 156.20, change: 3.12, volume: '1.2M', lastUpdate: new Date() },
-        { symbol: 'ALGD3', name: 'Algodão', price: 89.75, change: -0.45, volume: '650K', lastUpdate: new Date() },
-        { symbol: 'TRIG3', name: 'Trigo', price: 78.30, change: 1.67, volume: '450K', lastUpdate: new Date() }
+        { symbol: 'SOJA3', name: 'Soja', price: 85.50, change: 2.34, volume: '2.1M', lastUpdate: new Date(), trend: 'up' },
+        { symbol: 'MILH3', name: 'Milho', price: 67.80, change: -1.25, volume: '1.8M', lastUpdate: new Date(), trend: 'down' },
+        { symbol: 'BOIA3', name: 'Boi Gordo', price: 245.90, change: 0.85, volume: '890K', lastUpdate: new Date(), trend: 'up' },
+        { symbol: 'CAFE3', name: 'Café', price: 156.20, change: 3.12, volume: '1.2M', lastUpdate: new Date(), trend: 'up' },
+        { symbol: 'ALGD3', name: 'Algodão', price: 89.75, change: -0.45, volume: '650K', lastUpdate: new Date(), trend: 'down' },
+        { symbol: 'TRIG3', name: 'Trigo', price: 78.30, change: 1.67, volume: '450K', lastUpdate: new Date(), trend: 'up' }
       ];
       setStockData(mockStockData);
 
-      // Atualizar dados a cada 30 segundos
+      // Atualizar dados a cada 30 segundos para simular tempo real
       const interval = setInterval(() => {
         setStockData(prevData => 
           prevData.map(stock => ({
             ...stock,
             price: stock.price + (Math.random() - 0.5) * 2,
             change: stock.change + (Math.random() - 0.5) * 0.5,
-            lastUpdate: new Date()
+            lastUpdate: new Date(),
+            trend: Math.random() > 0.5 ? 'up' : 'down'
           }))
         );
       }, 30000);
@@ -243,42 +244,109 @@ const Home = () => {
   const features = [
     {
       icon: <Package className="w-8 h-8" />,
-      title: 'Marketplace',
-      description: 'Compre e venda produtos agrícolas com segurança',
+      title: t('home.features.marketplace.title'),
+      description: t('home.features.marketplace.description'),
       color: 'from-slate-500 to-slate-600'
     },
     {
       icon: <Truck className="w-8 h-8" />,
-      title: 'AgroConecta',
-      description: 'Conecte-se com transportadores e anunciantes',
+      title: t('home.features.freight.title'),
+      description: t('home.features.freight.description'),
       color: 'from-slate-600 to-slate-700'
     },
     {
       icon: <DollarSign className="w-8 h-8" />,
-      title: 'Pagamentos',
-      description: 'Stripe e Metamask para transações seguras',
+      title: t('home.features.crypto.title'),
+      description: t('home.features.crypto.description'),
       color: 'from-slate-700 to-slate-800'
     },
     {
       icon: <Shield className="w-8 h-8" />,
-      title: 'Segurança',
-      description: 'Dados protegidos e transações verificadas',
+      title: t('home.features.quotes.title'),
+      description: t('home.features.quotes.description'),
       color: 'from-slate-800 to-slate-900'
     }
   ];
 
   const stats = [
-    { label: 'Usuários Ativos', value: '15.2K', icon: <Users className="w-6 h-6" /> },
-    { label: 'Produtos', value: '8.7K', icon: <Package className="w-6 h-6" /> },
-    { label: 'Fretes', value: '3.4K', icon: <Truck className="w-6 h-6" /> },
-    { label: 'Transações', value: '12.1K', icon: <DollarSign className="w-6 h-6" /> }
+    { label: t('home.stats.users'), value: '15.2K', icon: <Users className="w-6 h-6" /> },
+    { label: t('home.stats.products'), value: '8.7K', icon: <Package className="w-6 h-6" /> },
+    { label: t('home.stats.freights'), value: '3.4K', icon: <Truck className="w-6 h-6" /> },
+    { label: t('home.stats.uptime'), value: '99.9%', icon: <DollarSign className="w-6 h-6" /> }
   ];
 
   return (
     <div className="min-h-screen bg-white text-slate-900">
       
+      {/* Bolsa de Valores Animada - NO TOPO, abaixo do menu */}
+      <section className="py-8 px-4 bg-gradient-to-r from-slate-50 via-white to-blue-50 border-b border-slate-200">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-6"
+          >
+            <h2 className="text-2xl font-bold text-slate-800 mb-2">📈 {t('home.highlights.realTimeData')}</h2>
+            <p className="text-slate-600">{t('home.highlights.realTimeDataDesc')}</p>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            className="flex items-center justify-center overflow-x-auto"
+          >
+            <div className="flex items-center space-x-4 min-w-max">
+              {stockData.map((stock, index) => (
+                <motion.div
+                  key={stock.symbol}
+                  initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  className="flex flex-col items-center space-y-2 bg-white px-5 py-4 rounded-xl shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-300 min-w-[120px]"
+                >
+                  <div className="text-lg font-bold text-slate-800">
+                    {stock.symbol}
+                  </div>
+                  <div className="text-xl font-bold text-slate-900">
+                    R$ {stock.price.toFixed(2)}
+                  </div>
+                  <div className="text-sm">
+                    {formatChange(stock.change)}
+                  </div>
+                  <div className="text-xs text-slate-600">
+                    Vol: {stock.volume}
+                  </div>
+                  <div className="text-xs text-slate-500">
+                    {stock.lastUpdate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                  </div>
+                  
+                  {/* Indicador de tendência */}
+                  <div className={`w-2 h-2 rounded-full ${stock.trend === 'up' ? 'bg-emerald-500' : 'bg-red-500'}`}></div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+          
+          {/* Indicador de atualização */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+            className="text-center mt-4"
+          >
+            <p className="text-xs text-slate-500">
+              {t('common.lastUpdate')}: {new Date().toLocaleTimeString('pt-BR')} | 
+              <span className="text-emerald-600 ml-1">●</span> {t('home.highlights.realTimeData')}
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Hero Section */}
-      <section className="relative pt-40 pb-20 px-4 overflow-hidden">
+      <section className="relative pt-20 pb-20 px-4 overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-blue-50">
@@ -293,7 +361,7 @@ const Home = () => {
             transition={{ duration: 0.8 }}
             className="text-5xl md:text-7xl font-bold mb-6 text-slate-800"
           >
-            Agroisync
+            {t('home.hero.title')}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 30 }}
@@ -301,78 +369,34 @@ const Home = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-xl md:text-2xl text-slate-600 max-w-4xl mx-auto mb-8"
           >
-            A plataforma completa para o agronegócio brasileiro. 
-            Conecte-se, negocie e cresça com segurança e eficiência.
+            {t('home.hero.subtitle')}
+          </motion.p>
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="text-lg max-w-3xl mx-auto text-slate-500 mb-8"
+          >
+            {t('home.hero.description')}
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
             <button
               onClick={() => navigate('/cadastro')}
               className="px-8 py-4 bg-slate-600 text-white font-bold rounded-xl hover:bg-slate-700 transition-colors duration-300"
             >
-              Começar Agora
+              {t('home.hero.cta.primary')}
             </button>
             <button
               onClick={() => navigate('/sobre')}
               className="px-8 py-4 bg-transparent border-2 border-slate-600 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition-colors duration-300"
             >
-              Saiba Mais
+              {t('home.hero.cta.secondary')}
             </button>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Bolsa Agrícola Animada - Corrigida e abaixo do menu */}
-      <section className="py-12 px-4 bg-gradient-to-r from-slate-50 to-blue-50 border-b border-slate-200">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-8"
-          >
-            <h2 className="text-3xl font-bold text-slate-800 mb-2">Bolsa Agrícola em Tempo Real</h2>
-            <p className="text-slate-600">Acompanhe as principais commodities do agronegócio brasileiro</p>
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="flex items-center justify-center overflow-x-auto"
-          >
-            <div className="flex items-center space-x-6 min-w-max">
-              {stockData.map((stock, index) => (
-                <motion.div
-                  key={stock.symbol}
-                  initial={{ opacity: 0, y: 20, scale: 0.9 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  whileHover={{ scale: 1.05, y: -5 }}
-                  className="flex flex-col items-center space-y-2 bg-white px-6 py-4 rounded-xl shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-300"
-                >
-                  <div className="text-lg font-bold text-slate-800">
-                    {stock.symbol}
-                  </div>
-                  <div className="text-xl font-bold text-slate-900">
-                    {formatPrice(stock.price)}
-                  </div>
-                  <div className="text-sm">
-                    {formatChange(stock.change)}
-                  </div>
-                  <div className="text-xs text-slate-600">
-                    Vol: {stock.volume}
-                  </div>
-                  <div className="text-xs text-slate-500">
-                    {stock.lastUpdate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
           </motion.div>
         </div>
       </section>
@@ -387,15 +411,40 @@ const Home = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl font-bold text-slate-800 mb-4">
-              Por que escolher o Agroisync?
+              {t('home.features.title')}
             </h2>
             <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-              Uma plataforma completa e segura para todas as suas necessidades no agronegócio
+              {t('home.features.subtitle')}
             </p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
+            {[
+              {
+                icon: <Package className="w-8 h-8" />,
+                title: t('home.features.marketplace.title'),
+                description: t('home.features.marketplace.description'),
+                color: 'from-slate-500 to-slate-600'
+              },
+              {
+                icon: <Truck className="w-8 h-8" />,
+                title: t('home.features.freight.title'),
+                description: t('home.features.freight.description'),
+                color: 'from-slate-600 to-slate-700'
+              },
+              {
+                icon: <DollarSign className="w-8 h-8" />,
+                title: t('home.features.crypto.title'),
+                description: t('home.features.crypto.description'),
+                color: 'from-slate-700 to-slate-800'
+              },
+              {
+                icon: <Shield className="w-8 h-8" />,
+                title: t('home.features.quotes.title'),
+                description: t('home.features.quotes.description'),
+                color: 'from-slate-800 to-slate-900'
+              }
+            ].map((feature, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
@@ -429,15 +478,20 @@ const Home = () => {
             className="text-center mb-12"
           >
             <h2 className="text-4xl font-bold text-slate-800 mb-4">
-              Números que impressionam
+              {t('home.cta.title')}
             </h2>
             <p className="text-xl text-slate-600">
-              Milhares de usuários já confiam no Agroisync
+              {t('home.cta.subtitle')}
             </p>
           </motion.div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
+            {[
+              { label: t('home.stats.users'), value: '15.2K', icon: <Users className="w-6 h-6" /> },
+              { label: t('home.stats.products'), value: '8.7K', icon: <Package className="w-6 h-6" /> },
+              { label: t('home.stats.freights'), value: '3.4K', icon: <Truck className="w-6 h-6" /> },
+              { label: t('home.stats.uptime'), value: '99.9%', icon: <DollarSign className="w-6 h-6" /> }
+            ].map((stat, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
@@ -473,7 +527,7 @@ const Home = () => {
               className="bg-white rounded-2xl shadow-lg p-8 border border-slate-200 hover:shadow-xl transition-shadow duration-300"
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold text-slate-800">Clima em Tempo Real</h3>
+                <h3 className="text-2xl font-bold text-slate-800">{t('home.highlights.realTimeData')}</h3>
                 <MapPin className="w-6 h-6 text-slate-600" />
               </div>
               
@@ -498,21 +552,21 @@ const Home = () => {
                       <div className="flex items-center justify-center mb-2">
                         <Thermometer className="w-5 h-5 text-slate-600" />
                       </div>
-                      <p className="text-sm text-slate-600">Sensação</p>
+                      <p className="text-sm text-slate-600">{t('common.settings')}</p>
                       <p className="text-lg font-semibold text-slate-800">{weatherData.feelsLike}°C</p>
                     </div>
                     <div className="text-center">
                       <div className="flex items-center justify-center mb-2">
                         <Droplets className="w-5 h-5 text-slate-600" />
                       </div>
-                      <p className="text-sm text-slate-600">Umidade</p>
+                      <p className="text-sm text-slate-600">{t('common.humidity')}</p>
                       <p className="text-lg font-semibold text-slate-800">{weatherData.humidity}%</p>
                     </div>
                     <div className="text-center">
                       <div className="flex items-center justify-center mb-2">
                         <Wind className="w-5 h-5 text-slate-600" />
                       </div>
-                      <p className="text-sm text-slate-600">Vento</p>
+                      <p className="text-sm text-slate-600">{t('common.wind')}</p>
                       <p className="text-lg font-semibold text-slate-800">{weatherData.wind} km/h</p>
                     </div>
                   </div>
@@ -520,7 +574,7 @@ const Home = () => {
               ) : (
                 <div className="text-center py-8">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-600 mx-auto mb-4"></div>
-                  <p className="text-slate-600">Carregando dados do clima...</p>
+                  <p className="text-slate-600">{t('common.loading')}</p>
                 </div>
               )}
             </motion.div>
@@ -533,14 +587,14 @@ const Home = () => {
               className="bg-white rounded-2xl shadow-lg p-8 border border-slate-200 hover:shadow-xl transition-shadow duration-300"
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold text-slate-800">Notícias do Agronegócio</h3>
+                <h3 className="text-2xl font-bold text-slate-800">{t('home.highlights.marketIntelligence')}</h3>
                 <MessageSquare className="w-6 h-6 text-slate-600" />
               </div>
               
               {loading ? (
                 <div className="text-center py-8">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-600 mx-auto mb-4"></div>
-                  <p className="text-slate-600">Carregando notícias...</p>
+                  <p className="text-slate-600">{t('common.loading')}</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -576,7 +630,7 @@ const Home = () => {
                   ))}
                   
                   <button className="w-full mt-4 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors duration-200">
-                    Ver todas as notícias
+                    {t('common.view')} {t('common.all')} {t('common.news')}
                   </button>
                 </div>
               )}
@@ -594,7 +648,7 @@ const Home = () => {
             transition={{ duration: 0.6 }}
             className="text-4xl font-bold text-white mb-6"
           >
-            Pronto para transformar seu agronegócio?
+            {t('home.cta.title')}
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -602,7 +656,7 @@ const Home = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-xl text-slate-200 mb-8"
           >
-            Junte-se a milhares de produtores que já estão usando o Agroisync
+            {t('home.cta.subtitle')}
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -614,13 +668,13 @@ const Home = () => {
               onClick={() => navigate('/cadastro')}
               className="px-8 py-4 bg-white text-slate-700 font-bold rounded-xl hover:bg-slate-100 transition-colors duration-300"
             >
-              Criar Conta Grátis
+              {t('home.hero.cta.primary')}
             </button>
             <button
               onClick={() => navigate('/contato')}
               className="px-8 py-4 bg-transparent border-2 border-white text-white font-bold rounded-xl hover:bg-white hover:text-slate-700 transition-colors duration-300"
             >
-              Falar com Especialista
+              {t('home.cta.secondary')}
             </button>
           </motion.div>
         </div>
@@ -636,23 +690,23 @@ const Home = () => {
             className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl p-8 border border-slate-200"
           >
             <h3 className="text-2xl font-bold text-slate-800 mb-4">
-              Precisa de ajuda?
+              {t('home.cta.title')}
             </h3>
             <p className="text-slate-600 mb-6">
-              Nossa equipe está pronta para ajudar você a aproveitar ao máximo a plataforma
+              {t('home.cta.subtitle')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={() => navigate('/ajuda')}
                 className="px-6 py-3 bg-slate-600 text-white font-medium rounded-lg hover:bg-slate-700 transition-colors duration-300"
               >
-                Central de Ajuda
+                {t('nav.help')}
               </button>
               <button
                 onClick={() => navigate('/contato')}
                 className="px-6 py-3 bg-transparent border border-slate-600 text-slate-600 font-medium rounded-lg hover:bg-slate-50 transition-colors duration-300"
               >
-                Contato
+                {t('nav.contact')}
               </button>
             </div>
           </motion.div>
