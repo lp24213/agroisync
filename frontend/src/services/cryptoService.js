@@ -1,219 +1,225 @@
-// Serviço para API de criptomoedas usando CoinGecko
+import axios from 'axios';
+
+const COINGECKO_API_URL = 'https://api.coingecko.com/api/v3';
+
 class CryptoService {
   constructor() {
-    this.baseUrl = 'https://api.coingecko.com/api/v3';
-    this.cache = new Map();
-    this.cacheTimeout = 60000; // 1 minuto
+    this.api = axios.create({
+      baseURL: COINGECKO_API_URL,
+      timeout: 10000,
+    });
   }
 
-  // Obter dados das principais criptomoedas
-  async getTopCryptos(limit = 10) {
+  // Obter lista de criptomoedas com preços em tempo real
+  async getCryptoQuotes(ids = ['bitcoin', 'ethereum', 'tether', 'binancecoin', 'solana', 'cardano', 'polkadot', 'chainlink']) {
     try {
-      const cacheKey = `top-${limit}`;
-      const cached = this.getCachedData(cacheKey);
-      if (cached) return cached;
+      const response = await this.api.get('/simple/price', {
+        params: {
+          ids: ids.join(','),
+          vs_currencies: 'usd,brl',
+          include_24hr_change: true,
+          include_24hr_vol: true,
+          include_market_cap: true
+        }
+      });
 
-      const response = await fetch(
-        `${this.baseUrl}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${limit}&page=1&sparkline=false&locale=pt`
-      );
+      return this.formatCryptoData(response.data);
+    } catch (error) {
+      console.error('Erro ao obter cotações:', error);
+      throw new Error('Erro ao obter dados de criptomoedas');
+    }
+  }
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+  // Obter dados históricos para gráficos
+  async getCryptoHistory(coinId, days = 7, currency = 'usd') {
+    try {
+      const response = await this.api.get(`/coins/${coinId}/market_chart`, {
+        params: {
+          vs_currency: currency,
+          days: days,
+          interval: days === 1 ? 'hourly' : 'daily'
+        }
+      });
 
-      const data = await response.json();
-      const formattedData = data.map(coin => ({
+      return this.formatChartData(response.data);
+    } catch (error) {
+      console.error('Erro ao obter histórico:', error);
+      throw new Error('Erro ao obter dados históricos');
+    }
+  }
+
+  // Obter informações detalhadas de uma criptomoeda
+  async getCryptoDetails(coinId) {
+    try {
+      const response = await this.api.get(`/coins/${coinId}`, {
+        params: {
+          localization: false,
+          tickers: false,
+          market_data: true,
+          community_data: false,
+          developer_data: false
+        }
+      });
+
+      return this.formatDetailedData(response.data);
+    } catch (error) {
+      console.error('Erro ao obter detalhes:', error);
+      throw new Error('Erro ao obter detalhes da criptomoeda');
+    }
+    }
+
+  // Obter top criptomoedas por capitalização de mercado
+  async getTopCryptos(limit = 20, currency = 'usd') {
+    try {
+      const response = await this.api.get('/coins/markets', {
+        params: {
+          vs_currency: currency,
+          order: 'market_cap_desc',
+          per_page: limit,
+          page: 1,
+          sparkline: false,
+          price_change_percentage: '24h,7d,30d'
+        }
+      });
+
+      return response.data.map(coin => ({
         id: coin.id,
         symbol: coin.symbol.toUpperCase(),
         name: coin.name,
         price: coin.current_price,
-        priceChange24h: coin.price_change_24h,
-        priceChangePercentage24h: coin.price_change_percentage_24h,
-        marketCap: coin.market_cap,
-        volume24h: coin.total_volume,
-        image: coin.image,
-        lastUpdated: coin.last_updated
+        price_brl: coin.current_price * this.getUSDToBRLRate(),
+        change_24h: coin.price_change_percentage_24h,
+        change_7d: coin.price_change_percentage_7d_in_currency,
+        change_30d: coin.price_change_percentage_30d_in_currency,
+        volume_24h: coin.total_volume,
+        market_cap: coin.market_cap,
+        market_cap_rank: coin.market_cap_rank,
+        image: coin.image
       }));
-
-      this.setCachedData(cacheKey, formattedData);
-      return formattedData;
     } catch (error) {
-      console.error('Erro ao obter dados de criptomoedas:', error);
-      return this.getFallbackData();
+      console.error('Erro ao obter top criptos:', error);
+      throw new Error('Erro ao obter ranking de criptomoedas');
     }
   }
 
-  // Obter dados específicos de uma criptomoeda
-  async getCryptoData(coinId) {
-    try {
-      const cacheKey = `coin-${coinId}`;
-      const cached = this.getCachedData(cacheKey);
-      if (cached) return cached;
+  // Obter taxa de conversão USD para BRL (simulado - em produção usar API real)
+  getUSDToBRLRate() {
+    // Em produção, integrar com API de câmbio
+    return 5.0; // Taxa aproximada
+  }
 
-      const response = await fetch(
-        `${this.baseUrl}/coins/${coinId}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`
-      );
+  // Formatar dados das cotações
+  formatCryptoData(data) {
+    const cryptoInfo = {
+      bitcoin: { symbol: 'BTC', name: 'Bitcoin', description: 'Criptomoeda líder do mercado' },
+      ethereum: { symbol: 'ETH', name: 'Ethereum', description: 'Plataforma de contratos inteligentes' },
+      tether: { symbol: 'USDT', name: 'Tether', description: 'Stablecoin atrelada ao dólar' },
+      binancecoin: { symbol: 'BNB', name: 'Binance Coin', description: 'Token nativo da Binance' },
+      solana: { symbol: 'SOL', name: 'Solana', description: 'Blockchain de alta performance' },
+      cardano: { symbol: 'ADA', name: 'Cardano', description: 'Plataforma de contratos inteligentes' },
+      polkadot: { symbol: 'DOT', name: 'Polkadot', description: 'Protocolo de interoperabilidade' },
+      chainlink: { symbol: 'LINK', name: 'Chainlink', description: 'Oracle descentralizado' }
+    };
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+    return Object.keys(data).map(coinId => {
+      const coin = data[coinId];
+      const info = cryptoInfo[coinId] || { symbol: coinId.toUpperCase(), name: coinId, description: '' };
 
-      const data = await response.json();
-      const formattedData = {
-        id: data.id,
-        symbol: data.symbol.toUpperCase(),
-        name: data.name,
-        price: data.market_data.current_price.usd,
-        priceChange24h: data.market_data.price_change_24h,
-        priceChangePercentage24h: data.market_data.price_change_percentage_24h,
-        marketCap: data.market_data.market_cap.usd,
-        volume24h: data.market_data.total_volume.usd,
-        image: data.image.large,
-        description: data.description.pt || data.description.en,
-        lastUpdated: data.last_updated
+      return {
+        id: coinId,
+        symbol: info.symbol,
+        name: info.name,
+        price: coin.usd,
+        price_brl: coin.brl || (coin.usd * this.getUSDToBRLRate()),
+        change: coin.usd_24h_change || 0,
+        volume_24h: coin.usd_24h_vol || 0,
+        market_cap: coin.usd_market_cap || 0,
+        description: info.description
       };
-
-      this.setCachedData(cacheKey, formattedData);
-      return formattedData;
-    } catch (error) {
-      console.error(`Erro ao obter dados de ${coinId}:`, error);
-      return null;
-    }
-  }
-
-  // Obter dados de mercado em tempo real
-  async getMarketData() {
-    try {
-      const cacheKey = 'market-data';
-      const cached = this.getCachedData(cacheKey);
-      if (cached) return cached;
-
-      const response = await fetch(`${this.baseUrl}/global`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      const marketData = {
-        totalMarketCap: data.data.total_market_cap.usd,
-        totalVolume: data.data.total_volume.usd,
-        marketCapChangePercentage24h: data.data.market_cap_change_percentage_24h_usd,
-        activeCryptocurrencies: data.data.active_cryptocurrencies,
-        lastUpdated: new Date().toISOString()
-      };
-
-      this.setCachedData(cacheKey, marketData);
-      return marketData;
-    } catch (error) {
-      console.error('Erro ao obter dados de mercado:', error);
-      return this.getFallbackMarketData();
-    }
-  }
-
-  // Obter dados de tendências
-  async getTrendingCoins() {
-    try {
-      const cacheKey = 'trending';
-      const cached = this.getCachedData(cacheKey);
-      if (cached) return cached;
-
-      const response = await fetch(`${this.baseUrl}/search/trending`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      const trendingData = data.coins.slice(0, 7).map(coin => ({
-        id: coin.item.id,
-        symbol: coin.item.symbol.toUpperCase(),
-        name: coin.item.name,
-        price: coin.item.price_btc,
-        marketCapRank: coin.item.market_cap_rank,
-        image: coin.item.large,
-        score: coin.item.score
-      }));
-
-      this.setCachedData(cacheKey, trendingData);
-      return trendingData;
-    } catch (error) {
-      console.error('Erro ao obter tendências:', error);
-      return [];
-    }
-  }
-
-  // Gerenciamento de cache
-  getCachedData(key) {
-    const cached = this.cache.get(key);
-    if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
-      return cached.data;
-    }
-    return null;
-  }
-
-  setCachedData(key, data) {
-    this.cache.set(key, {
-      data,
-      timestamp: Date.now()
     });
   }
 
-  // Dados de fallback em caso de erro
-  getFallbackData() {
-    return [
-      {
-        id: 'bitcoin',
-        symbol: 'BTC',
-        name: 'Bitcoin',
-        price: 45000,
-        priceChange24h: 1200,
-        priceChangePercentage24h: 2.7,
-        marketCap: 850000000000,
-        volume24h: 28000000000,
-        image: 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png',
-        lastUpdated: new Date().toISOString()
-      },
-      {
-        id: 'ethereum',
-        symbol: 'ETH',
-        name: 'Ethereum',
-        price: 3200,
-        priceChange24h: 85,
-        priceChangePercentage24h: 2.7,
-        marketCap: 380000000000,
-        volume24h: 15000000000,
-        image: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png',
-        lastUpdated: new Date().toISOString()
-      },
-      {
-        id: 'binancecoin',
-        symbol: 'BNB',
-        name: 'Binance Coin',
-        price: 320,
-        priceChange24h: 8.5,
-        priceChangePercentage24h: 2.7,
-        marketCap: 48000000000,
-        volume24h: 1200000000,
-        image: 'https://assets.coingecko.com/coins/images/825/large/bnb-icon2_2x.png',
-        lastUpdated: new Date().toISOString()
-      }
-    ];
-  }
-
-  getFallbackMarketData() {
+  // Formatar dados para gráficos
+  formatChartData(data) {
+    const { prices, market_caps, total_volumes } = data;
+    
     return {
-      totalMarketCap: 2000000000000,
-      totalVolume: 80000000000,
-      marketCapChangePercentage24h: 2.5,
-      activeCryptocurrencies: 2500,
-      lastUpdated: new Date().toISOString()
+      prices: prices.map(([timestamp, price]) => ({
+        timestamp,
+        price,
+        date: new Date(timestamp)
+      })),
+      marketCaps: market_caps.map(([timestamp, cap]) => ({
+        timestamp,
+        cap,
+        date: new Date(timestamp)
+      })),
+      volumes: total_volumes.map(([timestamp, volume]) => ({
+        timestamp,
+        volume,
+        date: new Date(timestamp)
+      }))
     };
   }
 
-  // Limpar cache
-  clearCache() {
-    this.cache.clear();
+  // Formatar dados detalhados
+  formatDetailedData(data) {
+    return {
+      id: data.id,
+      symbol: data.symbol.toUpperCase(),
+      name: data.name,
+      description: data.description.en,
+      current_price: data.market_data.current_price,
+      market_cap: data.market_data.market_cap,
+      total_volume: data.market_data.total_volume,
+      high_24h: data.market_data.high_24h,
+      low_24h: data.market_data.low_24h,
+      price_change_24h: data.market_data.price_change_24h,
+      price_change_percentage_24h: data.market_data.price_change_percentage_24h,
+      market_cap_rank: data.market_cap_rank,
+      image: data.image.large
+    };
+  }
+
+  // Obter dados em tempo real (WebSocket simulado)
+  async getRealTimeData(coinIds, callback) {
+    // Em produção, usar WebSocket real
+    const interval = setInterval(async () => {
+      try {
+        const data = await this.getCryptoQuotes(coinIds);
+        callback(data);
+      } catch (error) {
+        console.error('Erro ao obter dados em tempo real:', error);
+      }
+    }, 30000); // Atualizar a cada 30 segundos
+
+    return () => clearInterval(interval);
+  }
+
+  // Converter valor entre criptomoedas
+  async convertCrypto(fromCoin, toCoin, amount) {
+    try {
+      const response = await this.api.get('/simple/price', {
+        params: {
+          ids: `${fromCoin},${toCoin}`,
+          vs_currencies: 'usd'
+        }
+      });
+
+      const fromPrice = response.data[fromCoin].usd;
+      const toPrice = response.data[toCoin].usd;
+      const conversionRate = fromPrice / toPrice;
+
+      return {
+        from: { coin: fromCoin, amount, price: fromPrice },
+        to: { coin: toCoin, amount: amount * conversionRate, price: toPrice },
+        rate: conversionRate
+      };
+    } catch (error) {
+      console.error('Erro na conversão:', error);
+      throw new Error('Erro ao converter criptomoedas');
+    }
   }
 }
 
-const cryptoService = new CryptoService();
-export default cryptoService;
+export default new CryptoService();
