@@ -182,381 +182,252 @@ const Cripto = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white text-slate-900">
+    <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300`}>
       
-      {/* Header Section */}
+      {/* Hero Section */}
       <section className="relative pt-40 pb-20 px-4 overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-stone-50">
-            <div className="absolute inset-0 bg-white opacity-95"></div>
-          </div>
+          {isDark ? (
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900">
+              <div className="absolute inset-0 bg-gray-800 opacity-20"></div>
+            </div>
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-blue-50">
+              <div className="absolute inset-0 bg-white opacity-95"></div>
+            </div>
+          )}
         </div>
-        <div className="max-w-6xl mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-slate-800">
-            {t('crypto.title')}
-          </h1>
-          <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-            {t('crypto.description')}
-          </p>
+
+        <div className="relative max-w-7xl mx-auto text-center">
+          {/* Main Title */}
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className={`text-5xl md:text-7xl font-bold mb-6 ${isDark ? 'text-white' : 'text-slate-800'}`}
+          >
+            Criptomoedas
+          </motion.h1>
+          
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className={`text-xl md:text-2xl max-w-4xl mx-auto mb-8 ${isDark ? 'text-gray-300' : 'text-slate-600'}`}
+          >
+            Acompanhe o mercado de criptomoedas em tempo real e gerencie seus ativos digitais com segurança
+          </motion.p>
+          
+          {/* Description */}
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className={`text-lg max-w-3xl mx-auto ${isDark ? 'text-gray-400' : 'text-slate-500'}`}
+          >
+            Integração completa com Metamask, gráficos interativos e histórico de transações para uma experiência completa de trading
+          </motion.p>
         </div>
       </section>
 
-      {/* Crypto Overview */}
-      <section className="py-12 px-4">
+      {/* Main Content */}
+      <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8"
-          >
-            {/* Total Market Cap */}
-            <div className="bg-white rounded-2xl shadow-card p-6 border border-slate-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-slate-600 mb-1">Market Cap Total</p>
-                  <p className="text-2xl font-bold text-slate-800">$2.1T</p>
-                </div>
-                <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center">
-                  <Globe className="w-6 h-6 text-slate-600" />
-                </div>
-              </div>
-            </div>
-
-            {/* 24h Volume */}
-            <div className="bg-white rounded-2xl shadow-card p-6 border border-slate-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-slate-600 mb-1">Volume 24h</p>
-                  <p className="text-2xl font-bold text-slate-800">$89.2B</p>
-                </div>
-                <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center">
-                  <BarChart3 className="w-6 h-6 text-slate-600" />
-                </div>
-              </div>
-            </div>
-
-            {/* BTC Dominance */}
-            <div className="bg-white rounded-2xl shadow-card p-6 border border-slate-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-slate-600 mb-1">Dominância BTC</p>
-                  <p className="text-2xl font-bold text-slate-800">48.2%</p>
-                </div>
-                <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center">
-                  <PieChart className="w-6 h-6 text-slate-600" />
-                </div>
-              </div>
-            </div>
-
-            {/* Fear & Greed */}
-            <div className="bg-white rounded-2xl shadow-card p-6 border border-slate-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-slate-600 mb-1">Fear & Greed</p>
-                  <p className="text-2xl font-bold text-slate-800">65</p>
-                </div>
-                <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center">
-                  <Activity className="w-6 h-6 text-slate-600" />
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Crypto Table */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="bg-white rounded-2xl shadow-card overflow-hidden border border-slate-200"
-          >
-            <div className="p-6 border-b border-slate-200">
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-slate-800">Top Criptomoedas</h2>
-                <button
-                  onClick={fetchCryptoData}
-                  disabled={loading}
-                  className="flex items-center px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors duration-200"
-                >
-                  <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-                  Atualizar
-                </button>
-              </div>
-            </div>
-
-            {loading ? (
-              <div className="p-12 text-center">
-                <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4 text-slate-400" />
-                <p className="text-slate-600">Carregando dados...</p>
-              </div>
-            ) : error ? (
-              <div className="p-12 text-center">
-                <AlertCircle className="w-8 h-8 mx-auto mb-4 text-red-400" />
-                <p className="text-red-600">{error}</p>
-                <button
-                  onClick={fetchCryptoData}
-                  className="mt-4 px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors duration-200"
-                >
-                  Tentar Novamente
-                </button>
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-slate-50">
-                    <tr>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-slate-800">#</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-slate-800">Moeda</th>
-                      <th className="px-6 py-4 text-right text-sm font-semibold text-slate-800">Preço</th>
-                      <th className="px-6 py-4 text-right text-sm font-semibold text-slate-800">24h %</th>
-                      <th className="px-6 py-4 text-right text-sm font-semibold text-slate-800">7d %</th>
-                      <th className="px-6 py-4 text-right text-sm font-semibold text-slate-800">Market Cap</th>
-                      <th className="px-6 py-4 text-right text-sm font-semibold text-slate-800">Volume</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-200">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            {/* Crypto List */}
+            <div className="lg:col-span-1">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6 }}
+                className="bg-white rounded-2xl shadow-lg p-6 border border-slate-200"
+              >
+                <h3 className="text-2xl font-bold text-slate-800 mb-6">Principais Criptomoedas</h3>
+                
+                {loading ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-600 mx-auto mb-4"></div>
+                    <p className="text-slate-600">Carregando dados...</p>
+                  </div>
+                ) : error ? (
+                  <div className="text-center py-8">
+                    <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+                    <p className="text-red-600">{error}</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
                     {cryptoData.map((crypto, index) => (
-                      <tr key={crypto.id} className="hover:bg-slate-50 transition-colors duration-200">
-                        <td className="px-6 py-4 text-sm text-slate-600">{index + 1}</td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center">
-                            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center mr-3">
-                              <span className="text-sm font-medium text-slate-700">
-                                {getCryptoIcon(crypto.symbol)}
-                              </span>
+                      <motion.div
+                        key={crypto.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: index * 0.1 }}
+                        onClick={() => setSelectedCrypto(crypto.id)}
+                        className={`p-4 rounded-lg cursor-pointer transition-all duration-200 ${
+                          selectedCrypto === crypto.id 
+                            ? 'bg-slate-100 border-2 border-slate-300' 
+                            : 'bg-slate-50 border border-slate-200 hover:bg-slate-100'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center">
+                              <Coins className="w-5 h-5 text-slate-600" />
                             </div>
                             <div>
-                              <p className="font-medium text-slate-800">{crypto.name}</p>
-                              <p className="text-sm text-slate-600">{crypto.symbol}</p>
+                              <h4 className="font-semibold text-slate-800">{crypto.name}</h4>
+                              <p className="text-sm text-slate-600">{crypto.symbol.toUpperCase()}</p>
                             </div>
                           </div>
-                        </td>
-                        <td className="px-6 py-4 text-right text-sm font-medium text-slate-800">
-                          {formatPrice(crypto.current_price)}
-                        </td>
-                        <td className="px-6 py-4 text-right text-sm">
-                          {formatChange(crypto.price_change_percentage_24h)}
-                        </td>
-                        <td className="px-6 py-4 text-right text-sm">
-                          {formatChange(crypto.price_change_percentage_7d_in_currency)}
-                        </td>
-                        <td className="px-6 py-4 text-right text-sm text-slate-800">
-                          ${(crypto.market_cap / 1e9).toFixed(2)}B
-                        </td>
-                        <td className="px-6 py-4 text-right text-sm text-slate-800">
-                          ${(crypto.total_volume / 1e6).toFixed(2)}M
-                        </td>
-                      </tr>
+                          <div className="text-right">
+                            <p className="font-bold text-slate-800">${crypto.current_price?.toFixed(2) || '0.00'}</p>
+                            <p className={`text-sm ${crypto.price_change_percentage_24h >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                              {crypto.price_change_percentage_24h?.toFixed(2) || '0.00'}%
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
                     ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </motion.div>
-        </div>
-      </section>
+                  </div>
+                )}
+              </motion.div>
+            </div>
 
-      {/* Metamask Integration */}
-      <section className="py-16 px-4 bg-slate-50">
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-4xl font-bold text-slate-800 mb-4">
-              {t('crypto.metamask.title')}
-            </h2>
-            <p className="text-xl text-slate-600">
-              {t('crypto.metamask.description')}
-            </p>
-          </motion.div>
+            {/* Chart and Details */}
+            <div className="lg:col-span-2">
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6 }}
+                className="bg-white rounded-2xl shadow-lg p-6 border border-slate-200"
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-2xl font-bold text-slate-800">Gráfico de Preços</h3>
+                  <div className="flex space-x-2">
+                    {['24h', '7d', '30d', '1y'].map((period) => (
+                      <button
+                        key={period}
+                        onClick={() => setTimeframe(period)}
+                        className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors duration-200 ${
+                          timeframe === period
+                            ? 'bg-slate-600 text-white'
+                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        }`}
+                      >
+                        {period}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
+                {/* Chart Placeholder */}
+                <div className="h-80 bg-gradient-to-br from-slate-50 to-blue-50 rounded-lg border border-slate-200 flex items-center justify-center">
+                  <div className="text-center">
+                    <BarChart3 className="w-16 h-16 text-slate-400 mx-auto mb-4" />
+                    <p className="text-slate-600 font-medium">Gráfico Interativo</p>
+                    <p className="text-sm text-slate-500">Integração com TradingView ou CoinGecko</p>
+                  </div>
+                </div>
+
+                {/* Crypto Details */}
+                {selectedCrypto && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                    className="mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200"
+                  >
+                    <h4 className="text-lg font-semibold text-slate-800 mb-3">Detalhes da Criptomoeda</h4>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="text-center">
+                        <p className="text-sm text-slate-600">Preço Atual</p>
+                        <p className="font-bold text-slate-800">$0.00</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-sm text-slate-600">Variação 24h</p>
+                        <p className="font-bold text-emerald-600">+0.00%</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-sm text-slate-600">Volume</p>
+                        <p className="font-bold text-slate-800">$0.00</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-sm text-slate-600">Market Cap</p>
+                        <p className="font-bold text-slate-800">$0.00</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </motion.div>
+            </div>
+          </div>
+
+          {/* Metamask Integration */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="bg-white rounded-2xl shadow-card p-8 border border-slate-200"
+            className="mt-12 bg-white rounded-2xl shadow-lg p-8 border border-slate-200"
           >
-            {!metamaskConnected ? (
+            <div className="text-center mb-8">
+              <h3 className="text-3xl font-bold text-slate-800 mb-4">Integração com Metamask</h3>
+              <p className="text-lg text-slate-600">Conecte sua carteira digital para gerenciar seus ativos</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Wallet Connection */}
               <div className="text-center">
-                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-slate-100 flex items-center justify-center">
-                  <Wallet className="w-10 h-10 text-slate-600" />
+                <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-r from-slate-500 to-slate-600 flex items-center justify-center text-white">
+                  <Wallet className="w-10 h-10" />
                 </div>
-                <h3 className="text-2xl font-bold text-slate-800 mb-4">
-                  Conectar Metamask
-                </h3>
-                <p className="text-slate-600 mb-8">
-                  Conecte sua carteira Metamask para fazer pagamentos em criptomoedas
-                </p>
-                <button
-                  onClick={connectMetamask}
-                  disabled={paymentLoading}
-                  className="px-8 py-4 bg-slate-600 text-white font-bold rounded-xl hover:bg-slate-700 transition-colors duration-300 disabled:opacity-50"
-                >
-                  {paymentLoading ? 'Conectando...' : 'Conectar Metamask'}
-                </button>
-              </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="text-center mb-8">
-                  <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-slate-100 flex items-center justify-center">
-                    <CheckCircle className="w-10 h-10 text-slate-600" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-slate-800 mb-2">
-                    Metamask Conectado
-                  </h3>
-                  <p className="text-slate-600">
-                    Sua carteira está conectada e pronta para transações
-                  </p>
-                </div>
-
-                {/* Wallet Info */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="bg-slate-50 rounded-xl p-6">
-                    <h4 className="font-semibold text-slate-800 mb-3 flex items-center">
-                      <Wallet className="w-5 h-5 mr-2" />
-                      Endereço da Carteira
-                    </h4>
-                    <div className="flex items-center space-x-2">
-                      <code className="text-sm text-slate-700 bg-white px-3 py-2 rounded-lg flex-1">
-                        {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
-                      </code>
-                      <button
-                        onClick={() => copyAddress(walletAddress)}
-                        id="copy-button"
-                        className="p-2 text-slate-600 hover:text-slate-800 transition-colors duration-200"
-                      >
-                        <Copy className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="bg-slate-50 rounded-xl p-6">
-                    <h4 className="font-semibold text-slate-800 mb-3 flex items-center">
-                      <Coins className="w-5 h-5 mr-2" />
-                      Saldo ETH
-                    </h4>
-                    <p className="text-2xl font-bold text-slate-800">
-                      {parseFloat(walletBalance).toFixed(4)} ETH
-                    </p>
-                  </div>
-                </div>
-
-                {/* Payment Form */}
-                <div className="bg-slate-50 rounded-xl p-6">
-                  <h4 className="font-semibold text-slate-800 mb-4 flex items-center">
-                    <Zap className="w-5 h-5 mr-2" />
-                    Fazer Pagamento
-                  </h4>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-2">
-                        Valor em ETH
-                      </label>
-                      <input
-                        type="number"
-                        value={paymentAmount}
-                        onChange={(e) => setPaymentAmount(e.target.value)}
-                        placeholder="0.01"
-                        step="0.001"
-                        min="0.001"
-                        className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
-                      />
-                    </div>
+                
+                {!metamaskConnected ? (
+                  <div>
+                    <h4 className="text-xl font-semibold text-slate-800 mb-4">Conectar Carteira</h4>
+                    <p className="text-slate-600 mb-6">Clique no botão abaixo para conectar sua carteira Metamask</p>
                     <button
-                      onClick={handlePayment}
-                      disabled={paymentLoading || !paymentAmount}
-                      className="w-full px-6 py-3 bg-slate-600 text-white font-bold rounded-lg hover:bg-slate-700 transition-colors duration-300 disabled:opacity-50"
+                      onClick={connectMetamask}
+                      disabled={paymentLoading}
+                      className="px-8 py-3 bg-slate-600 text-white font-semibold rounded-xl hover:bg-slate-700 transition-colors duration-300 disabled:opacity-50"
                     >
-                      {paymentLoading ? 'Processando...' : 'Enviar Pagamento'}
+                      {paymentLoading ? 'Conectando...' : 'Conectar Metamask'}
                     </button>
                   </div>
-                </div>
+                ) : (
+                  <div>
+                    <h4 className="text-xl font-semibold text-slate-800 mb-4">Carteira Conectada</h4>
+                    <p className="text-slate-600 mb-2">Endereço: {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}</p>
+                    <p className="text-slate-600 mb-6">Saldo: {walletBalance} ETH</p>
+                    <button
+                      onClick={disconnectMetamask}
+                      className="px-6 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors duration-300"
+                    >
+                      Desconectar
+                    </button>
+                  </div>
+                )}
+              </div>
 
-                {/* Disconnect Button */}
-                <div className="text-center">
-                  <button
-                    onClick={disconnectMetamask}
-                    className="px-6 py-3 bg-slate-100 text-slate-700 font-medium rounded-lg hover:bg-slate-200 transition-colors duration-300"
-                  >
-                    Desconectar Metamask
-                  </button>
+              {/* Transaction History */}
+              <div className="text-center">
+                <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-r from-slate-600 to-slate-700 flex items-center justify-center text-white">
+                  <Activity className="w-10 h-10" />
+                </div>
+                <h4 className="text-xl font-semibold text-slate-800 mb-4">Histórico de Transações</h4>
+                <p className="text-slate-600 mb-6">Visualize todas as suas operações em criptomoedas</p>
+                
+                <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                  <p className="text-sm text-slate-500">Nenhuma transação encontrada</p>
+                  <p className="text-xs text-slate-400">As transações aparecerão aqui após conectar sua carteira</p>
                 </div>
               </div>
-            )}
+            </div>
           </motion.div>
         </div>
       </section>
-
-      {/* Features Section */}
-      <section className="py-16 px-4">
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-4xl font-bold text-slate-800 mb-4">
-              {t('crypto.features.title')}
-            </h2>
-            <p className="text-xl text-slate-600">
-              {t('crypto.features.description')}
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: <Shield className="w-8 h-8" />,
-                title: 'Segurança',
-                description: 'Transações seguras e verificadas na blockchain Ethereum'
-              },
-              {
-                icon: <Zap className="w-8 h-8" />,
-                title: 'Rapidez',
-                description: 'Confirmações rápidas e taxas competitivas'
-              },
-              {
-                icon: <Globe className="w-8 h-8" />,
-                title: 'Global',
-                description: 'Aceite pagamentos de qualquer lugar do mundo'
-              }
-            ].map((feature, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="text-center"
-              >
-                <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
-                  {feature.icon}
-                </div>
-                <h3 className="text-xl font-bold text-slate-800 mb-3">
-                  {feature.title}
-                </h3>
-                <p className="text-slate-600">
-                  {feature.description}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Error Display */}
-      {error && (
-        <div className="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
-          <div className="flex items-center">
-            <AlertCircle className="w-5 h-5 mr-2" />
-            {error}
-          </div>
-        </div>
-      )}
     </div>
   );
 };

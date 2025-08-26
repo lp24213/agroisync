@@ -28,7 +28,7 @@ const Home = () => {
   const [userLocation, setUserLocation] = useState(null);
 
   useEffect(() => {
-    document.title = 'AgroSync - Plataforma de Agronegócio';
+    document.title = 'Agroisync - Plataforma de Agronegócio';
     fetchStockData();
     getUserLocation();
     fetchNewsData();
@@ -281,7 +281,7 @@ const Home = () => {
       <section className="relative pt-40 pb-20 px-4 overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-stone-50">
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-blue-50">
             <div className="absolute inset-0 bg-white opacity-95"></div>
           </div>
         </div>
@@ -293,7 +293,7 @@ const Home = () => {
             transition={{ duration: 0.8 }}
             className="text-5xl md:text-7xl font-bold mb-6 text-slate-800"
           >
-            AgroSync
+            Agroisync
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 30 }}
@@ -326,31 +326,42 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Bolsa Agrícola Animada */}
-      <section className="py-8 px-4 bg-slate-50 border-b border-slate-200">
+      {/* Bolsa Agrícola Animada - Corrigida e abaixo do menu */}
+      <section className="py-12 px-4 bg-gradient-to-r from-slate-50 to-blue-50 border-b border-slate-200">
         <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-8"
+          >
+            <h2 className="text-3xl font-bold text-slate-800 mb-2">Bolsa Agrícola em Tempo Real</h2>
+            <p className="text-slate-600">Acompanhe as principais commodities do agronegócio brasileiro</p>
+          </motion.div>
+          
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            className="flex items-center justify-between overflow-x-auto"
+            transition={{ duration: 0.8 }}
+            className="flex items-center justify-center overflow-x-auto"
           >
-            <div className="flex items-center space-x-8 min-w-max">
+            <div className="flex items-center space-x-6 min-w-max">
               {stockData.map((stock, index) => (
                 <motion.div
                   key={stock.symbol}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="flex items-center space-x-3 bg-white px-4 py-3 rounded-lg shadow-card border border-slate-200"
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  className="flex flex-col items-center space-y-2 bg-white px-6 py-4 rounded-xl shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-300"
                 >
-                  <div className="text-sm font-medium text-slate-800">
+                  <div className="text-lg font-bold text-slate-800">
                     {stock.symbol}
                   </div>
-                  <div className="text-sm font-bold text-slate-900">
+                  <div className="text-xl font-bold text-slate-900">
                     {formatPrice(stock.price)}
                   </div>
-                  <div className="text-xs">
+                  <div className="text-sm">
                     {formatChange(stock.change)}
                   </div>
                   <div className="text-xs text-slate-600">
@@ -376,7 +387,7 @@ const Home = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl font-bold text-slate-800 mb-4">
-              Por que escolher o AgroSync?
+              Por que escolher o Agroisync?
             </h2>
             <p className="text-xl text-slate-600 max-w-3xl mx-auto">
               Uma plataforma completa e segura para todas as suas necessidades no agronegócio
@@ -390,6 +401,7 @@ const Home = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
+                whileHover={{ y: -10 }}
                 className="text-center group"
               >
                 <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-r ${feature.color} flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300`}>
@@ -408,7 +420,7 @@ const Home = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 px-4 bg-slate-50">
+      <section className="py-20 px-4 bg-gradient-to-r from-slate-50 to-blue-50">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -420,7 +432,7 @@ const Home = () => {
               Números que impressionam
             </h2>
             <p className="text-xl text-slate-600">
-              Milhares de usuários já confiam no AgroSync
+              Milhares de usuários já confiam no Agroisync
             </p>
           </motion.div>
 
@@ -431,9 +443,10 @@ const Home = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
+                whileHover={{ scale: 1.05 }}
                 className="text-center"
               >
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white shadow-lg flex items-center justify-center text-slate-600">
                   {stat.icon}
                 </div>
                 <div className="text-3xl font-bold text-slate-800 mb-2">
@@ -457,7 +470,7 @@ const Home = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
-              className="bg-white rounded-2xl shadow-card p-8 border border-slate-200"
+              className="bg-white rounded-2xl shadow-lg p-8 border border-slate-200 hover:shadow-xl transition-shadow duration-300"
             >
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-2xl font-bold text-slate-800">Clima em Tempo Real</h3>
@@ -517,7 +530,7 @@ const Home = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
-              className="bg-white rounded-2xl shadow-card p-8 border border-slate-200"
+              className="bg-white rounded-2xl shadow-lg p-8 border border-slate-200 hover:shadow-xl transition-shadow duration-300"
             >
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-2xl font-bold text-slate-800">Notícias do Agronegócio</h3>
@@ -589,7 +602,7 @@ const Home = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-xl text-slate-200 mb-8"
           >
-            Junte-se a milhares de produtores que já estão usando o AgroSync
+            Junte-se a milhares de produtores que já estão usando o Agroisync
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -620,7 +633,7 @@ const Home = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="bg-slate-50 rounded-2xl p-8 border border-slate-200"
+            className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl p-8 border border-slate-200"
           >
             <h3 className="text-2xl font-bold text-slate-800 mb-4">
               Precisa de ajuda?

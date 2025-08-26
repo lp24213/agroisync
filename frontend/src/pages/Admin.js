@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { 
   Users, Package, Truck, DollarSign, BarChart3, 
   Settings, LogOut, Eye, EyeOff, Lock, Mail,
-  TrendingUp, Activity, Shield, Database
+  TrendingUp, Activity, Shield, Database, Building
 } from 'lucide-react';
 
 const Admin = () => {
@@ -99,330 +99,263 @@ const Admin = () => {
   // Página de Login Admin
   if (!isLoggedIn) {
     return (
-      <div className="min-h-screen bg-white text-gray-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="max-w-md w-full space-y-8"
+          transition={{ duration: 0.6 }}
+          className="w-full max-w-md"
         >
-          {/* Header */}
-          <div className="text-center">
-            <div className="w-20 h-20 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-600 flex items-center justify-center mx-auto mb-6">
-              <Shield className="w-12 h-12 text-white" />
+          {/* Logo e Título */}
+          <div className="text-center mb-8">
+            <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-r from-slate-600 to-slate-700 flex items-center justify-center">
+              <Building className="w-10 h-10 text-white" />
             </div>
-            <h2 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
-              Admin Login
-            </h2>
-            <p className="text-gray-600">
-              Acesso administrativo ao sistema AgroSync
-            </p>
-        </div>
-
-          {/* Formulário de Login Admin */}
-          <form className="mt-8 space-y-6" onSubmit={handleAdminLogin}>
-            <div className="space-y-4">
-              {/* Campo Email */}
-            <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                  Email Administrativo
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Mail className="h-5 w-5 text-gray-400" />
-        </div>
-                <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                    placeholder="admin@agrosync.com"
-                />
-              </div>
-            </div>
-            
-              {/* Campo Senha */}
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                  Senha
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                    id="password"
-                    name="password"
-                    type={showPassword ? 'text' : 'password'}
-                    autoComplete="current-password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                    placeholder="••••••••"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
-                    ) : (
-                      <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
-                    )}
-              </button>
-            </div>
+            <h1 className="text-3xl font-bold text-slate-800 mb-2">Painel Administrativo</h1>
+            <p className="text-slate-600">Agroisync - Sistema de Gestão</p>
           </div>
-        </div>
 
-            {/* Mensagem de erro */}
+          {/* Formulário de Login */}
+          <div className="bg-white rounded-2xl shadow-lg p-8 border border-slate-200">
+            <h2 className="text-2xl font-bold text-slate-800 mb-6 text-center">Acesso Restrito</h2>
+            
             {error && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center space-x-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700"
+                className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg"
               >
-                <span>{error}</span>
+                <p className="text-red-600 text-sm">{error}</p>
               </motion.div>
             )}
 
-            {/* Botão de Login */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105"
-            >
-              {loading ? (
-            <div className="flex items-center space-x-2">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                  <span>Entrando...</span>
+            <form onSubmit={handleAdminLogin} className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  E-mail Administrativo
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
+                    placeholder="admin@agroisync.com"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Senha
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full pl-10 pr-12 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
+                    placeholder="••••••••"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-3 bg-slate-600 text-white font-semibold rounded-lg hover:bg-slate-700 transition-colors duration-300 disabled:opacity-50"
+              >
+                {loading ? 'Entrando...' : 'Acessar Painel'}
+              </button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <p className="text-sm text-slate-500">
+                Acesso restrito apenas para administradores autorizados
+              </p>
             </div>
-              ) : (
-                <span>Acessar Painel Admin</span>
-              )}
-          </button>
-          </form>
+          </div>
+
+          {/* Voltar ao site */}
+          <div className="text-center mt-6">
+            <button
+              onClick={() => navigate('/')}
+              className="text-slate-600 hover:text-slate-800 transition-colors duration-200"
+            >
+              ← Voltar ao site principal
+            </button>
+          </div>
         </motion.div>
-    </div>
-  );
+      </div>
+    );
   }
 
-  // Dashboard Admin
+  // Painel Administrativo
   return (
-    <div className="min-h-screen bg-white text-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4">
-        <div className="flex items-center justify-between">
+      <header className="bg-white shadow-lg border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-purple-500 to-pink-600 flex items-center justify-center">
-                <Shield className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-slate-600 to-slate-700 flex items-center justify-center">
+                <Building className="w-6 h-6 text-white" />
               </div>
               <div>
-              <h1 className="text-2xl font-bold text-gray-900">Painel Administrativo</h1>
-              <p className="text-sm text-gray-600">Sistema AgroSync</p>
+                <h1 className="text-xl font-bold text-slate-800">Painel Administrativo</h1>
+                <p className="text-sm text-slate-600">Agroisync</p>
               </div>
             </div>
             
+            <div className="flex items-center space-x-4">
+              <span className="text-sm text-slate-600">
+                Logado como: {email}
+              </span>
               <button
                 onClick={handleLogout}
-            className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Sair</span>
               </button>
             </div>
+          </div>
+        </div>
       </header>
 
-      {/* Dashboard Content */}
-      <div className="p-6">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm"
-          >
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Stats Overview */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+        >
+          <div className="bg-white rounded-2xl shadow-lg p-6 border border-slate-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Usuários</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.users}</p>
+                <p className="text-sm text-slate-600 mb-1">Usuários Ativos</p>
+                <p className="text-3xl font-bold text-slate-800">{stats.users.toLocaleString()}</p>
               </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
                 <Users className="w-6 h-6 text-blue-600" />
               </div>
             </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Produtos</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.products}</p>
-              </div>
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <Package className="w-6 h-6 text-green-600" />
           </div>
-        </div>
-          </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm"
-          >
+          <div className="bg-white rounded-2xl shadow-lg p-6 border border-slate-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Fretes</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.freights}</p>
+                <p className="text-sm text-slate-600 mb-1">Produtos</p>
+                <p className="text-3xl font-bold text-slate-800">{stats.products.toLocaleString()}</p>
               </div>
-              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                <Truck className="w-6 h-6 text-orange-600" />
-              </div>
-        </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Receita</p>
-                <p className="text-3xl font-bold text-gray-900">R$ {stats.revenue.toLocaleString()}</p>
-              </div>
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-green-600" />
+              <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                <Package className="w-6 h-6 text-green-600" />
               </div>
             </div>
-          </motion.div>
-        </div>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-lg p-6 border border-slate-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-slate-600 mb-1">Fretes</p>
+                <p className="text-3xl font-bold text-slate-800">{stats.freights.toLocaleString()}</p>
+              </div>
+              <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center">
+                <Truck className="w-6 h-6 text-orange-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-lg p-6 border border-slate-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-slate-600 mb-1">Receita Total</p>
+                <p className="text-3xl font-bold text-slate-800">R$ {stats.revenue.toLocaleString()}</p>
+              </div>
+              <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center">
+                <DollarSign className="w-6 h-6 text-emerald-600" />
+              </div>
+            </div>
+          </div>
+        </motion.div>
 
         {/* System Status */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm mb-8"
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="bg-white rounded-2xl shadow-lg p-6 border border-slate-200 mb-8"
         >
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">Status do Sistema</h3>
-              <p className="text-sm text-gray-600">Monitoramento em tempo real</p>
-            </div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-slate-800">Status do Sistema</h2>
             <div className="flex items-center space-x-2">
               <div className={`w-3 h-3 rounded-full ${stats.systemStatus === 'Operacional' ? 'bg-green-500' : 'bg-red-500'}`}></div>
-              <span className="text-sm font-medium text-gray-900">{stats.systemStatus}</span>
+              <span className="text-sm font-medium text-slate-600">{stats.systemStatus}</span>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="text-center p-4 bg-slate-50 rounded-lg">
+              <Activity className="w-8 h-8 text-slate-600 mx-auto mb-2" />
+              <p className="text-sm text-slate-600">API</p>
+              <p className="font-semibold text-slate-800">Online</p>
+            </div>
+            <div className="text-center p-4 bg-slate-50 rounded-lg">
+              <Database className="w-8 h-8 text-slate-600 mx-auto mb-2" />
+              <p className="text-sm text-slate-600">Banco de Dados</p>
+              <p className="font-semibold text-slate-800">Online</p>
+            </div>
+            <div className="text-center p-4 bg-slate-50 rounded-lg">
+              <Shield className="w-8 h-8 text-slate-600 mx-auto mb-2" />
+              <p className="text-sm text-slate-600">Segurança</p>
+              <p className="font-semibold text-slate-800">Ativo</p>
             </div>
           </div>
         </motion.div>
 
-        {/* Admin Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-          >
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Users className="w-8 h-8 text-blue-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Gestão de Usuários</h3>
-              <p className="text-sm text-gray-600">Gerenciar contas e permissões</p>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-            className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-          >
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Package className="w-8 h-8 text-green-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Gestão de Produtos</h3>
-              <p className="text-sm text-gray-600">Controlar anúncios e produtos</p>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.7 }}
-            className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-          >
-            <div className="text-center">
-              <div className="w-16 h-16 bg-orange-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Truck className="w-8 h-8 text-orange-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Gestão de Fretes</h3>
-              <p className="text-sm text-gray-600">Administrar serviços de frete</p>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.8 }}
-            className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-          >
-            <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <BarChart3 className="w-8 h-8 text-purple-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Relatórios</h3>
-              <p className="text-sm text-gray-600">Analytics e métricas do sistema</p>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.9 }}
-            className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-          >
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Database className="w-8 h-8 text-gray-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Backup</h3>
-              <p className="text-sm text-gray-600">Sistema de backup e restauração</p>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 1.0 }}
-            className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-          >
-            <div className="text-center">
-              <div className="w-16 h-16 bg-red-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Settings className="w-8 h-8 text-red-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Configurações</h3>
-              <p className="text-sm text-gray-600">Configurações do sistema</p>
-            </div>
-          </motion.div>
-            </div>
+        {/* Quick Actions */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="bg-white rounded-2xl shadow-lg p-6 border border-slate-200"
+        >
+          <h2 className="text-xl font-bold text-slate-800 mb-6">Ações Rápidas</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <button className="p-4 bg-slate-50 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors duration-200 text-left">
+              <Users className="w-6 h-6 text-slate-600 mb-2" />
+              <h3 className="font-semibold text-slate-800">Gerenciar Usuários</h3>
+              <p className="text-sm text-slate-600">Visualizar e editar usuários</p>
+            </button>
+            
+            <button className="p-4 bg-slate-50 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors duration-200 text-left">
+              <Package className="w-6 h-6 text-slate-600 mb-2" />
+              <h3 className="font-semibold text-slate-800">Gerenciar Produtos</h3>
+              <p className="text-sm text-slate-600">Adicionar e remover produtos</p>
+            </button>
+            
+            <button className="p-4 bg-slate-50 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors duration-200 text-left">
+              <Settings className="w-6 h-6 text-slate-600 mb-2" />
+              <h3 className="font-semibold text-slate-800">Configurações</h3>
+              <p className="text-sm text-slate-600">Configurar sistema</p>
+            </button>
           </div>
+        </motion.div>
+      </main>
     </div>
   );
 };

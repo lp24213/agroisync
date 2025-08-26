@@ -56,25 +56,25 @@ const Contato = () => {
       icon: <MapPin className="w-6 h-6" />,
       title: t('contact.info.address.title'),
       content: 'Sinop - MT, Brasil',
-      color: 'from-green-500 to-green-600'
+      color: 'from-slate-500 to-slate-600'
     },
     {
       icon: <Phone className="w-6 h-6" />,
       title: t('contact.info.phone.title'),
       content: '(66) 99236-2830',
-      color: 'from-blue-500 to-blue-600'
+      color: 'from-slate-600 to-slate-700'
     },
     {
       icon: <Mail className="w-6 h-6" />,
       title: t('contact.info.email.title'),
       content: 'contato@agroisync.com',
-      color: 'from-purple-500 to-purple-600'
+      color: 'from-slate-700 to-slate-800'
     },
     {
       icon: <Clock className="w-6 h-6" />,
       title: t('contact.info.hours.title'),
       content: 'Segunda a Sexta: 8h às 18h',
-      color: 'from-orange-500 to-orange-600'
+      color: 'from-slate-800 to-slate-900'
     }
   ];
 
@@ -90,7 +90,7 @@ const Contato = () => {
               <div className="absolute inset-0 bg-gray-800 opacity-20"></div>
             </div>
           ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50">
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-blue-50">
               <div className="absolute inset-0 bg-white opacity-95"></div>
             </div>
           )}
@@ -98,21 +98,34 @@ const Contato = () => {
 
         <div className="relative max-w-7xl mx-auto text-center">
           {/* Main Title */}
-          <motion.div
+          <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="mb-8"
+            className={`text-5xl md:text-7xl font-bold mb-6 ${isDark ? 'text-white' : 'text-slate-800'}`}
           >
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
-              Entre em Contato
-            </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Estamos Aqui para Ajudar o Seu Agronegócio
-            </p>
-          </motion.div>
-
-
+            Entre em Contato
+          </motion.h1>
+          
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className={`text-xl md:text-2xl max-w-4xl mx-auto mb-8 ${isDark ? 'text-gray-300' : 'text-slate-600'}`}
+          >
+            Estamos aqui para ajudar você a aproveitar ao máximo a plataforma Agroisync
+          </motion.p>
+          
+          {/* Description */}
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className={`text-lg max-w-3xl mx-auto ${isDark ? 'text-gray-400' : 'text-slate-500'}`}
+          >
+            Nossa equipe está pronta para responder suas dúvidas e auxiliar em qualquer questão relacionada ao agronegócio
+          </motion.p>
         </div>
       </section>
 
@@ -121,15 +134,15 @@ const Contato = () => {
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              {t('contact.info.title')}
+            <h2 className={`text-4xl font-bold mb-4 ${isDark ? 'text-white' : 'text-slate-800'}`}>
+              Informações de Contato
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              {t('contact.info.subtitle')}
+            <p className={`text-xl max-w-3xl mx-auto ${isDark ? 'text-gray-300' : 'text-slate-600'}`}>
+              Entre em contato conosco através dos canais abaixo
             </p>
           </motion.div>
 
@@ -138,102 +151,115 @@ const Contato = () => {
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
+                whileHover={{ y: -10 }}
                 className="text-center group"
               >
-                <div className={`w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-r ${info.color} flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300`}>
+                <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-r ${info.color} flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300`}>
                   {info.icon}
                 </div>
-                <h3 className="text-xl font-bold mb-4">{info.title}</h3>
-                <p className="text-gray-600">{info.content}</p>
+                <h3 className={`text-xl font-bold mb-3 ${isDark ? 'text-white' : 'text-slate-800'}`}>
+                  {info.title}
+                </h3>
+                <p className={`${isDark ? 'text-gray-300' : 'text-slate-600'}`}>
+                  {info.content}
+                </p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Contact Form & Map Section */}
-      <section className={`py-20 px-4 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Contact Form */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <h2 className="text-3xl font-bold mb-8">
-                {t('contact.form.title')}
-              </h2>
-              
-              {success ? (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="text-center py-12"
-                >
-                  <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                  <h3 className="text-2xl font-bold mb-2">{t('contact.form.success.title')}</h3>
-                  <p className="text-gray-600 mb-6">{t('contact.form.success.message')}</p>
-                  <button
-                    onClick={() => setSuccess(false)}
-                    className="px-6 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors duration-300"
-                  >
-                    {t('contact.form.success.cta')}
-                  </button>
-                </motion.div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        {t('contact.form.name')} *
-                      </label>
-                      <input
-                        type="text"
-                        name="nome"
-                        value={formData.nome}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                        placeholder={t('contact.form.namePlaceholder')}
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        {t('contact.form.email')} *
-                      </label>
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                        placeholder={t('contact.form.emailPlaceholder')}
-                      />
-                    </div>
-                  </div>
+      {/* Contact Form Section */}
+      <section className="py-20 px-4 bg-gradient-to-r from-slate-50 to-blue-50">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <h2 className={`text-4xl font-bold mb-4 ${isDark ? 'text-white' : 'text-slate-800'}`}>
+              Envie sua Mensagem
+            </h2>
+            <p className={`text-xl ${isDark ? 'text-gray-300' : 'text-slate-600'}`}>
+              Preencha o formulário abaixo e entraremos em contato o mais breve possível
+            </p>
+          </motion.div>
 
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="bg-white rounded-2xl shadow-lg p-8 border border-slate-200"
+          >
+            {success ? (
+              <div className="text-center py-12">
+                <CheckCircle className="w-16 h-16 text-emerald-600 mx-auto mb-6" />
+                <h3 className="text-2xl font-bold text-slate-800 mb-4">Mensagem Enviada!</h3>
+                <p className="text-slate-600 mb-6">
+                  Obrigado pelo seu contato. Retornaremos em breve!
+                </p>
+                <button
+                  onClick={() => setSuccess(false)}
+                  className="px-6 py-3 bg-slate-600 text-white font-medium rounded-lg hover:bg-slate-700 transition-colors duration-300"
+                >
+                  Enviar Nova Mensagem
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      {t('contact.form.phone')}
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Nome Completo *
+                    </label>
+                    <input
+                      type="text"
+                      name="nome"
+                      value={formData.nome}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
+                      placeholder="Seu nome completo"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      E-mail *
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
+                      placeholder="seu@email.com"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Telefone
                     </label>
                     <input
                       type="tel"
                       name="telefone"
                       value={formData.telefone}
                       onChange={handleInputChange}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder={t('contact.form.phonePlaceholder')}
+                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
+                      placeholder="(00) 00000-0000"
                     />
                   </div>
-
+                  
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      {t('contact.form.subject')} *
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Assunto *
                     </label>
                     <input
                       type="text"
@@ -241,128 +267,123 @@ const Contato = () => {
                       value={formData.assunto}
                       onChange={handleInputChange}
                       required
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder={t('contact.form.subjectPlaceholder')}
+                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
+                      placeholder="Como podemos ajudar?"
                     />
                   </div>
+                </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      {t('contact.form.message')} *
-                    </label>
-                    <textarea
-                      name="mensagem"
-                      value={formData.mensagem}
-                      onChange={handleInputChange}
-                      required
-                      rows={5}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder={t('contact.form.messagePlaceholder')}
-                    />
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Mensagem *
+                  </label>
+                  <textarea
+                    name="mensagem"
+                    value={formData.mensagem}
+                    onChange={handleInputChange}
+                    required
+                    rows={6}
+                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
+                    placeholder="Descreva sua dúvida ou solicitação..."
+                  />
+                </div>
 
+                <div className="text-center">
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full px-8 py-4 bg-gradient-to-r from-green-600 to-blue-600 text-white font-bold rounded-xl hover:from-green-700 hover:to-blue-700 transition-all duration-300 hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                    className="px-8 py-4 bg-slate-600 text-white font-bold rounded-xl hover:bg-slate-700 transition-colors duration-300 disabled:opacity-50 flex items-center justify-center mx-auto space-x-2"
                   >
                     {loading ? (
                       <>
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                        {t('contact.form.sending')}
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        <span>Enviando...</span>
                       </>
                     ) : (
                       <>
-                        {t('contact.form.send')}
-                        <Send className="w-5 h-5 ml-2" />
+                        <Send className="w-5 h-5" />
+                        <span>Enviar Mensagem</span>
                       </>
                     )}
                   </button>
-                </form>
-              )}
-            </motion.div>
-
-            {/* Map */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <h2 className="text-3xl font-bold mb-8">
-                {t('contact.map.title')}
-              </h2>
-              
-              <div className={`rounded-2xl overflow-hidden shadow-lg ${
-                isDark ? 'bg-gray-800' : 'bg-white'
-              }`}>
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3926.1234567890123!2d-55.6333!3d-11.8333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTHCsDUwJzAwLjAiUyA1NcKwMzcnNTkuOSJX!5e0!3m2!1spt-BR!2sbr!4v1234567890123"
-                  width="100%"
-                  height="400"
-                  style={{ border: 0 }}
-                  allowFullScreen=""
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Agroisync - Sinop, MT"
-                />
-              </div>
-
-              <div className="mt-6 p-6 rounded-2xl bg-gradient-to-r from-green-500 to-blue-600 text-white">
-                <h3 className="text-xl font-bold mb-4">{t('contact.map.office.title')}</h3>
-                <div className="space-y-2">
-                  <p className="flex items-center">
-                    <Building className="w-5 h-5 mr-2" />
-                    {t('contact.map.office.name')}
-                  </p>
-                  <p className="flex items-center">
-                    <MapPin className="w-5 h-5 mr-2" />
-                    {t('contact.map.office.address')}
-                  </p>
-                  <p className="flex items-center">
-                    <Globe className="w-5 h-5 mr-2" />
-                    {t('contact.map.office.city')}
-                  </p>
                 </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              {t('contact.cta.title')}
-            </h2>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              {t('contact.cta.subtitle')}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="/cadastro"
-                className="px-8 py-4 bg-gradient-to-r from-green-600 to-blue-600 text-white font-bold rounded-xl hover:from-green-700 hover:to-blue-700 transition-all duration-300 hover:scale-105 shadow-lg flex items-center justify-center"
-              >
-                {t('contact.cta.primary')}
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </a>
-              <a
-                href="/planos"
-                className="px-8 py-4 bg-transparent border-2 border-green-600 text-green-600 font-bold rounded-xl hover:bg-green-600 hover:text-white transition-all duration-300 hover:scale-105"
-              >
-                {t('contact.cta.secondary')}
-              </a>
-            </div>
+              </form>
+            )}
           </motion.div>
         </div>
       </section>
 
+      {/* Additional Contact Section */}
+      <section className="py-20 px-4">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <h2 className={`text-4xl font-bold mb-4 ${isDark ? 'text-white' : 'text-slate-800'}`}>
+              Outras Formas de Contato
+            </h2>
+            <p className={`text-xl max-w-3xl mx-auto ${isDark ? 'text-gray-300' : 'text-slate-600'}`}>
+              Além do formulário, você pode nos encontrar em outras plataformas
+            </p>
+          </motion.div>
 
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="text-center group"
+            >
+              <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-r from-slate-500 to-slate-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300">
+                <MessageSquare className="w-10 h-10" />
+              </div>
+              <h3 className={`text-xl font-bold mb-3 ${isDark ? 'text-white' : 'text-slate-800'}`}>
+                Chat Online
+              </h3>
+              <p className={`${isDark ? 'text-gray-300' : 'text-slate-600'}`}>
+                Converse conosco em tempo real através do chat da plataforma
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-center group"
+            >
+              <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-r from-slate-600 to-slate-700 flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300">
+                <Building className="w-10 h-10" />
+              </div>
+              <h3 className={`text-xl font-bold mb-3 ${isDark ? 'text-white' : 'text-slate-800'}`}>
+                Escritório
+              </h3>
+              <p className={`${isDark ? 'text-gray-300' : 'text-slate-600'}`}>
+                Visite nosso escritório em Sinop - MT para atendimento presencial
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="text-center group"
+            >
+              <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-r from-slate-700 to-slate-800 flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300">
+                <Globe className="w-10 h-10" />
+              </div>
+              <h3 className={`text-xl font-bold mb-3 ${isDark ? 'text-white' : 'text-slate-800'}`}>
+                Redes Sociais
+              </h3>
+              <p className={`${isDark ? 'text-gray-300' : 'text-slate-600'}`}>
+                Siga-nos nas redes sociais para novidades e atualizações
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

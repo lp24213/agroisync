@@ -25,7 +25,7 @@
   --glass-bg: rgba(255, 255, 255, 0.9);
   --glass-border: rgba(15, 23, 42, 0.08);
   
-  /* Tons prateados e futuristas para tema claro */
+  /* Tons prateados e azuis sutis para tema claro */
   --silver-primary: #6b7280;
   --silver-secondary: #9ca3af;
   --silver-tertiary: #d1d5db;
@@ -33,10 +33,13 @@
   --metallic-secondary: #6b7280;
   --futuristic-primary: #111827;
   --futuristic-secondary: #6b7280;
+  --blue-subtle: #e0f2fe;
+  --blue-light: #bae6fd;
+  --blue-medium: #7dd3fc;
   
   /* Cores específicas para componentes no tema claro */
   --navbar-bg: rgba(255, 255, 255, 0.95);
-  --footer-bg: rgba(255, 255, 255, 0.9);
+  --footer-bg: rgba(248, 250, 252, 0.95);
   --card-bg: rgba(255, 255, 255, 0.95);
   --button-primary: linear-gradient(135deg, #1f2937 0%, #374151 100%);
   --button-secondary: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
@@ -70,7 +73,7 @@
   --glass-bg: rgba(26, 26, 46, 0.9);
   --glass-border: rgba(255, 255, 255, 0.1);
   
-  /* Tons prateados e futuristas */
+  /* Tons prateados e azuis sutis */
   --silver-primary: #c0c0c0;
   --silver-secondary: #a8a8a8;
   --silver-tertiary: #808080;
@@ -78,10 +81,13 @@
   --metallic-secondary: #9ba5b4;
   --futuristic-primary: #cbd5e1;
   --futuristic-secondary: #94a3b8;
+  --blue-subtle: #1e3a8a;
+  --blue-light: #3b82f6;
+  --blue-medium: #60a5fa;
   
   /* Cores específicas para componentes */
   --navbar-bg: rgba(15, 15, 35, 0.95);
-  --footer-bg: rgba(15, 15, 35, 0.9);
+  --footer-bg: rgba(15, 15, 35, 0.95);
   --card-bg: rgba(26, 26, 46, 0.95);
   --button-primary: linear-gradient(135deg, #334155 0%, #1f2937 100%);
   --button-secondary: linear-gradient(135deg, #64748b 0%, #475569 100%);
