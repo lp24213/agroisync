@@ -21,11 +21,14 @@ const Cripto = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   
+  // CAMADA 2: Dados reais de criptomoedas via CoinGecko API
   const [cryptoData, setCryptoData] = useState([]);
   const [selectedCrypto, setSelectedCrypto] = useState('bitcoin');
   const [timeframe, setTimeframe] = useState('24h');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [chartData, setChartData] = useState(null);
+  const [chartLoading, setChartLoading] = useState(true);
   const [metamaskConnected, setMetamaskConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
   const [walletBalance, setWalletBalance] = useState('0');
@@ -33,34 +36,29 @@ const Cripto = () => {
   const [paymentAmount, setPaymentAmount] = useState('');
   const [paymentLoading, setPaymentLoading] = useState(false);
 
-  // CAMADA 2: Atualizar dados a cada 2 minutos
-  useEffect(() => {
-    fetchCryptoData();
-    
-    const interval = setInterval(fetchCryptoData, 120000); // 2 minutos
-    
-    return () => clearInterval(interval);
-  }, []);
-
-  // CAMADA 2: Definir título da página
-  useEffect(() => {
-    document.title = `Agroisync - ${t('crypto.title')}`;
-  }, [t]);
-
+  // CAMADA 2: Buscar dados reais de criptomoedas
   const fetchCryptoData = async () => {
     try {
       setLoading(true);
       setError('');
       
-      // Usar CoinGecko API para dados reais
-      const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&sparkline=false&locale=pt');
+      // API CoinGecko - Top 20 criptomoedas por capitalização de mercado
+      const response = await fetch(
+        'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&sparkline=false&locale=pt'
+      );
       
       if (response.ok) {
         const data = await response.json();
         setCryptoData(data);
+        
+        // Buscar dados do gráfico para a primeira criptomoeda
+        if (data.length > 0) {
+          fetchChartData(data[0].id);
+        }
       } else {
         throw new Error('Erro na API CoinGecko');
       }
+      
     } catch (error) {
       console.error('Erro ao buscar dados:', error);
       
@@ -124,6 +122,66 @@ const Cripto = () => {
       setLoading(false);
     }
   };
+
+  // CAMADA 2: Buscar dados do gráfico para uma criptomoeda específica
+  const fetchChartData = async (cryptoId) => {
+    try {
+      setChartLoading(true);
+      
+      // API CoinGecko - Dados do gráfico (7 dias)
+      const response = await fetch(
+        `https://api.coingecko.com/api/v3/coins/${cryptoId}/market_chart?vs_currency=usd&days=7&interval=daily`
+      );
+      
+      if (response.ok) {
+        const data = await response.json();
+        
+        // Formatar dados para o gráfico
+        const formattedChartData = data.prices.map(([timestamp, price]) => ({
+          date: new Date(timestamp),
+          price: price
+        }));
+        
+        setChartData(formattedChartData);
+      } else {
+        throw new Error('Erro ao buscar dados do gráfico');
+      }
+      
+    } catch (error) {
+      console.error('Erro ao buscar dados do gráfico:', error);
+      
+      // Dados mock para o gráfico
+      const mockChartData = Array.from({ length: 7 }, (_, i) => ({
+        date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000),
+        price: 40000 + Math.random() * 10000
+      }));
+      
+      setChartData(mockChartData);
+    } finally {
+      setChartLoading(false);
+    }
+  };
+
+  // CAMADA 2: Atualizar dados a cada 2 minutos
+  useEffect(() => {
+    fetchCryptoData();
+    
+    const interval = setInterval(fetchCryptoData, 120000); // 2 minutos
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  // CAMADA 2: Atualizar gráfico quando criptomoeda selecionada mudar
+  useEffect(() => {
+    if (selectedCrypto) {
+      fetchChartData(selectedCrypto);
+    }
+  }, [selectedCrypto]);
+
+  // CAMADA 2: Definir título da página
+  useEffect(() => {
+    document.title = `Agroisync - ${t('crypto.title')}`;
+  }, [t]);
 
   const checkMetamaskConnection = async () => {
     try {

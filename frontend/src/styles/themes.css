@@ -1,122 +1,103 @@
-/* ===== VARIÁVEIS DE TEMA ===== */
+/* ===== TEMA CLARO (PADRÃO) ===== */
 :root {
-  /* Tema Claro - Padrão (sempre ativo por padrão) */
+  /* Cores principais - Branco/Cinza/Azul sutil */
   --bg-primary: #ffffff;
   --bg-secondary: #f8fafc;
-  --bg-tertiary: #e2e8f0;
-  --bg-card: rgba(255, 255, 255, 0.95);
-  --bg-card-hover: rgba(248, 250, 252, 0.98);
-  --text-primary: #0f172a;
-  --text-secondary: #334155;
+  --bg-tertiary: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-overlay: rgba(255, 255, 255, 0.95);
+  
+  /* Textos - Cinza/Azul sutil */
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
   --text-tertiary: #64748b;
-  --text-accent: #1f2937;
-  --border-primary: rgba(15, 23, 42, 0.08);
-  --border-secondary: rgba(15, 23, 42, 0.04);
-  --border-accent: rgba(31, 41, 55, 0.2);
-  --accent-primary: #1f2937; /* Neutro escuro */
-  --accent-secondary: #6b7280; /* Cinza médio */
-  --accent-tertiary: #9ca3af; /* Cinza claro */
-  --accent-success: #1f2937; /* Neutro (sem verde) */
-  --accent-warning: #d97706;
-  --accent-error: #dc2626;
-  --shadow-primary: 0 8px 32px rgba(15, 23, 42, 0.08);
-  --shadow-secondary: 0 4px 16px rgba(15, 23, 42, 0.06);
-  --shadow-accent: 0 0 20px rgba(31, 41, 55, 0.12);
-  --glass-bg: rgba(255, 255, 255, 0.9);
-  --glass-border: rgba(15, 23, 42, 0.08);
+  --text-muted: #94a3b8;
+  --text-inverse: #ffffff;
   
-  /* Tons prateados e azuis sutis para tema claro */
-  --silver-primary: #6b7280;
-  --silver-secondary: #9ca3af;
-  --silver-tertiary: #d1d5db;
-  --metallic-primary: #4b5563;
-  --metallic-secondary: #6b7280;
-  --futuristic-primary: #111827;
-  --futuristic-secondary: #6b7280;
-  --blue-subtle: #e0f2fe;
-  --blue-light: #bae6fd;
-  --blue-medium: #7dd3fc;
+  /* Azul sutil para acentos */
+  --accent-primary: #3b82f6;
+  --accent-secondary: #60a5fa;
+  --accent-tertiary: #93c5fd;
+  --accent-light: #dbeafe;
+  --accent-subtle: #eff6ff;
   
-  /* Cores específicas para componentes no tema claro */
-  --navbar-bg: rgba(255, 255, 255, 0.95);
-  --footer-bg: rgba(248, 250, 252, 0.95);
-  --card-bg: rgba(255, 255, 255, 0.95);
-  --button-primary: linear-gradient(135deg, #1f2937 0%, #374151 100%);
-  --button-secondary: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
-  --button-success: linear-gradient(135deg, #1f2937 0%, #374151 100%);
-  --button-warning: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  /* Bordas e divisores */
+  --border-primary: #e2e8f0;
+  --border-secondary: #cbd5e1;
+  --border-accent: #3b82f6;
   
-  /* Cores cinza predominantes para páginas Sobre e Contato */
-  --text-gray-primary: #1f2937;
-  --text-gray-secondary: #374151;
-  --text-gray-tertiary: #4b5563;
-  --text-gray-quaternary: #6b7280;
-  --text-gray-quinary: #9ca3af;
-  --bg-gray-primary: #f8fafc;
-  --bg-gray-secondary: #f1f5f9;
-  --bg-gray-tertiary: #e2e8f0;
-  --border-gray-primary: #e5e7eb;
-  --border-gray-secondary: #d1d5db;
+  /* Sombras */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  
+  /* Estados */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #3b82f6;
+  
+  /* Gradientes */
+  --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  --gradient-secondary: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  --gradient-accent: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  
+  /* Transparências */
+  --opacity-light: 0.1;
+  --opacity-medium: 0.3;
+  --opacity-heavy: 0.7;
 }
 
+/* ===== TEMA ESCURO ===== */
 [data-theme="dark"] {
-  /* Tema Escuro - Futurista com fundo preto fosco (só quando ativado) */
-  --bg-primary: #0f0f23;
-  --bg-secondary: #1a1a2e;
-  --bg-tertiary: #16213e;
-  --bg-card: rgba(26, 26, 46, 0.95);
-  --bg-card-hover: rgba(26, 26, 46, 0.98);
-  --text-primary: #ffffff;
-  --text-secondary: #e2e8f0;
+  /* Cores principais - Preto fosco/Azul neon */
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --bg-card: #1e293b;
+  --bg-overlay: rgba(15, 23, 42, 0.95);
+  
+  /* Textos - Azul/Cinza neon */
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
   --text-tertiary: #94a3b8;
-  --text-accent: #cbd5e1;
-  --border-primary: rgba(255, 255, 255, 0.1);
-  --border-secondary: rgba(255, 255, 255, 0.05);
-  --border-accent: rgba(203, 213, 225, 0.3);
-  --accent-primary: #cbd5e1;
-  --accent-secondary: #94a3b8;
-  --accent-tertiary: #64748b;
-  --accent-success: #cbd5e1;
-  --accent-warning: #ffd93d;
-  --accent-error: #ff6b6b;
-  --shadow-primary: 0 8px 32px rgba(0, 0, 0, 0.3);
-  --shadow-secondary: 0 4px 16px rgba(0, 0, 0, 0.2);
-  --shadow-accent: 0 0 20px rgba(203, 213, 225, 0.2);
-  --glass-bg: rgba(26, 26, 46, 0.9);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  --text-muted: #64748b;
+  --text-inverse: #0f172a;
   
-  /* Tons prateados e azuis sutis */
-  --silver-primary: #c0c0c0;
-  --silver-secondary: #a8a8a8;
-  --silver-tertiary: #808080;
-  --metallic-primary: #b8c5d6;
-  --metallic-secondary: #9ba5b4;
-  --futuristic-primary: #cbd5e1;
-  --futuristic-secondary: #94a3b8;
-  --blue-subtle: #1e3a8a;
-  --blue-light: #3b82f6;
-  --blue-medium: #60a5fa;
+  /* Azul neon para acentos */
+  --accent-primary: #60a5fa;
+  --accent-secondary: #93c5fd;
+  --accent-tertiary: #bfdbfe;
+  --accent-light: #1e40af;
+  --accent-subtle: #1e3a8a;
   
-  /* Cores específicas para componentes */
-  --navbar-bg: rgba(15, 15, 35, 0.95);
-  --footer-bg: rgba(15, 15, 35, 0.95);
-  --card-bg: rgba(26, 26, 46, 0.95);
-  --button-primary: linear-gradient(135deg, #334155 0%, #1f2937 100%);
-  --button-secondary: linear-gradient(135deg, #64748b 0%, #475569 100%);
-  --button-success: linear-gradient(135deg, #334155 0%, #1f2937 100%);
-  --button-warning: linear-gradient(135deg, #ffd93d 0%, #ffb347 100%);
+  /* Bordas e divisores */
+  --border-primary: #334155;
+  --border-secondary: #475569;
+  --border-accent: #60a5fa;
   
-  /* Cores cinza predominantes para páginas Sobre e Contato (tema escuro) */
-  --text-gray-primary: #f9fafb;
-  --text-gray-secondary: #f3f4f6;
-  --text-gray-tertiary: #e5e7eb;
-  --text-gray-quaternary: #d1d5db;
-  --text-gray-quinary: #9ca3af;
-  --bg-gray-primary: #1f2937;
-  --bg-gray-secondary: #374151;
-  --bg-gray-tertiary: #4b5563;
-  --border-gray-primary: #4b5563;
-  --border-gray-secondary: #6b7280;
+  /* Sombras */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+  
+  /* Estados */
+  --success: #34d399;
+  --warning: #fbbf24;
+  --error: #f87171;
+  --info: #60a5fa;
+  
+  /* Gradientes */
+  --gradient-primary: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+  --gradient-secondary: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  --gradient-accent: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+  
+  /* Transparências */
+  --opacity-light: 0.2;
+  --opacity-medium: 0.4;
+  --opacity-heavy: 0.8;
 }
 
 /* ===== ESTILOS GLOBAIS ===== */
@@ -412,4 +393,121 @@ p {
   h3 {
     font-size: clamp(1.25rem, 2.5vw, 2rem);
   }
+}
+
+/* ===== CORREÇÕES ESPECÍFICAS - REMOÇÃO DO VERDE ===== */
+
+/* Bolsa de Valores - Cores corrigidas */
+.bolsa-valores {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+}
+
+.bolsa-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  color: var(--text-primary);
+}
+
+.bolsa-card:hover {
+  border-color: var(--accent-primary);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Gráfico de Grãos - Cores corrigidas */
+.grafico-graos {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+}
+
+.grafico-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  color: var(--text-primary);
+}
+
+/* Clima - Cores corrigidas */
+.clima-widget {
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  color: var(--text-primary);
+}
+
+.clima-temp {
+  color: var(--text-primary);
+}
+
+.clima-desc {
+  color: var(--text-secondary);
+}
+
+/* Cripto - Cores corrigidas */
+.crypto-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  color: var(--text-primary);
+}
+
+.crypto-price {
+  color: var(--text-primary);
+}
+
+.crypto-change-positive {
+  color: var(--success);
+}
+
+.crypto-change-negative {
+  color: var(--error);
+}
+
+/* Botões - Cores corrigidas */
+.btn-primary {
+  background: var(--accent-primary);
+  color: var(--text-inverse);
+  border: 1px solid var(--accent-primary);
+}
+
+.btn-primary:hover {
+  background: var(--accent-secondary);
+  border-color: var(--accent-secondary);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--accent-primary);
+  border: 1px solid var(--accent-primary);
+}
+
+.btn-secondary:hover {
+  background: var(--accent-subtle);
+}
+
+/* Links - Cores corrigidas */
+.link-primary {
+  color: var(--accent-primary);
+}
+
+.link-primary:hover {
+  color: var(--accent-secondary);
+}
+
+/* Ícones - Cores corrigidas */
+.icon-primary {
+  color: var(--accent-primary);
+}
+
+.icon-secondary {
+  color: var(--text-secondary);
+}
+
+.icon-success {
+  color: var(--success);
+}
+
+.icon-warning {
+  color: var(--warning);
+}
+
+.icon-error {
+  color: var(--error);
 }
