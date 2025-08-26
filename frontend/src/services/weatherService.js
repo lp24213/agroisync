@@ -1,156 +1,125 @@
-// Serviço para previsão do tempo usando OpenWeatherMap API + Detecção por IP
+import axios from 'axios';
+
 class WeatherService {
   constructor() {
-    this.apiKey = 'YOUR_OPENWEATHER_API_KEY'; // Substitua pela sua chave
+    this.apiKey = process.env.REACT_APP_OPENWEATHER_API_KEY || 'your_openweather_api_key';
     this.baseUrl = 'https://api.openweathermap.org/data/2.5';
-    this.ipApiUrl = 'https://ipapi.co/json'; // API gratuita para detectar localização por IP
-    this.cache = new Map();
-    this.cacheTimeout = 300000; // 5 minutos
+    this.ipApiUrl = 'https://ipapi.co/json';
   }
 
   // Detectar localização por IP
   async detectLocationByIP() {
     try {
-      const response = await fetch(this.ipApiUrl);
-      const data = await response.json();
-      
+      const response = await axios.get(this.ipApiUrl);
       return {
-        city: data.city,
-        state: data.region,
-        country: data.country_name,
-        lat: data.latitude,
-        lon: data.longitude,
-        timezone: data.timezone
+        city: response.data.city,
+        region: response.data.region,
+        country: response.data.country,
+        latitude: response.data.latitude,
+        longitude: response.data.longitude,
+        timezone: response.data.timezone
       };
     } catch (error) {
       console.error('Erro ao detectar localização por IP:', error);
-      // Fallback para localização padrão (Sinop, MT)
+      // Fallback para localização padrão (São Paulo)
       return {
-        city: 'Sinop',
-        state: 'Mato Grosso',
-        country: 'Brasil',
-        lat: -11.8333,
-        lon: -55.6333,
-        timezone: 'America/Cuiaba'
+        city: 'São Paulo',
+        region: 'SP',
+        country: 'BR',
+        latitude: -23.5505,
+        longitude: -46.6333,
+        timezone: 'America/Sao_Paulo'
       };
     }
   }
 
-  // Obter clima por coordenadas
-  async getWeatherByCoords(lat, lon) {
+  // Obter clima atual por coordenadas
+  async getCurrentWeather(lat, lon) {
     try {
-      const url = `${this.baseUrl}/weather?lat=${lat}&lon=${lon}&appid=${this.apiKey}&units=metric&lang=pt_br`;
-      const response = await fetch(url);
-      const data = await response.json();
-      
-      if (data.cod !== 200) {
-        throw new Error(data.message);
-      }
-      
-      return this.formatWeatherData(data);
+      const response = await axios.get(`${this.baseUrl}/weather`, {
+        params: {
+          lat,
+          lon,
+          appid: this.apiKey,
+          units: 'metric',
+          lang: 'pt_br'
+        }
+      });
+
+      return this.formatCurrentWeather(response.data);
     } catch (error) {
-      console.error('Erro ao obter clima por coordenadas:', error);
-      throw error;
+      console.error('Erro ao obter clima atual:', error);
+      throw new Error('Não foi possível obter dados do clima');
     }
   }
 
-  // Obter clima por cidade
-  async getWeatherByCity(cityName) {
-    try {
-      const url = `${this.baseUrl}/weather?q=${encodeURIComponent(cityName)}&appid=${this.apiKey}&units=metric&lang=pt_br`;
-      const response = await fetch(url);
-      const data = await response.json();
-      
-      if (data.cod !== 200) {
-        throw new Error(data.message);
-      }
-      
-      return this.formatWeatherData(data);
-    } catch (error) {
-      console.error('Erro ao obter clima por cidade:', error);
-      throw error;
-    }
-  }
-
-  // Obter previsão
+  // Obter previsão para 5 dias
   async getForecast(lat, lon) {
     try {
-      const url = `${this.baseUrl}/forecast?lat=${lat}&lon=${lon}&appid=${this.apiKey}&units=metric&lang=pt_br`;
-      const response = await fetch(url);
-      const data = await response.json();
-      
-      if (data.cod !== '200') {
-        throw new Error(data.message);
-      }
-      
-      return this.formatForecastData(data);
+      const response = await axios.get(`${this.baseUrl}/forecast`, {
+        params: {
+          lat,
+          lon,
+          appid: this.apiKey,
+          units: 'metric',
+          lang: 'pt_br'
+        }
+      });
+
+      return this.formatForecast(response.data);
     } catch (error) {
       console.error('Erro ao obter previsão:', error);
-      throw error;
+      throw new Error('Não foi possível obter previsão do tempo');
     }
   }
 
-  // Obter clima pela localização do usuário (IP)
-  async getWeatherByLocation() {
+  // Obter clima por nome da cidade
+  async getWeatherByCity(cityName) {
     try {
-      // Verificar cache primeiro
-      const cacheKey = 'user_location_weather';
-      const cachedData = this.getCachedData(cacheKey);
-      if (cachedData) {
-        return cachedData;
-      }
-
-      // Detectar localização por IP
-      const location = await this.detectLocationByIP();
-      
-      // Obter clima para a localização detectada
-      const weather = await this.getWeatherByCoords(location.lat, location.lon);
-      
-      // Combinar dados de localização e clima
-      const result = {
-        ...weather,
-        location: {
-          city: location.city,
-          state: location.state,
-          country: location.country,
-          timezone: location.timezone
+      const response = await axios.get(`${this.baseUrl}/weather`, {
+        params: {
+          q: cityName,
+          appid: this.apiKey,
+          units: 'metric',
+          lang: 'pt_br'
         }
-      };
-      
-      // Salvar no cache
-      this.setCachedData(cacheKey, result);
-      
-      return result;
+      });
+
+      return this.formatCurrentWeather(response.data);
     } catch (error) {
-      console.error('Erro ao obter clima por localização:', error);
-      // Retornar dados de fallback
-      return this.getFallbackWeatherData();
+      console.error('Erro ao obter clima por cidade:', error);
+      throw new Error('Cidade não encontrada');
     }
   }
 
-  // Formatar dados do clima
-  formatWeatherData(data) {
+  // Formatar dados do clima atual
+  formatCurrentWeather(data) {
     return {
-      current: {
-        temp: Math.round(data.main.temp),
-        feels_like: Math.round(data.main.feels_like),
-        humidity: data.main.humidity,
-        pressure: data.main.pressure,
-        windSpeed: Math.round(data.wind.speed * 3.6), // m/s para km/h
-        windDirection: this.getWindDirection(data.wind.deg),
-        description: data.weather[0].description,
-        icon: data.weather[0].icon,
-        sunrise: new Date(data.sys.sunrise * 1000),
-        sunset: new Date(data.sys.sunset * 1000),
-        visibility: data.visibility / 1000, // metros para km
-        clouds: data.clouds.all,
-        timestamp: new Date()
-      }
+      city: data.name,
+      country: data.sys.country,
+      temperature: Math.round(data.main.temp),
+      feelsLike: Math.round(data.main.feels_like),
+      humidity: data.main.humidity,
+      pressure: data.main.pressure,
+      windSpeed: Math.round(data.wind.speed * 3.6), // Converter m/s para km/h
+      windDirection: this.getWindDirection(data.wind.deg),
+      description: data.weather[0].description,
+      icon: data.weather[0].icon,
+      iconUrl: `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`,
+      sunrise: new Date(data.sys.sunrise * 1000).toLocaleTimeString('pt-BR', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      }),
+      sunset: new Date(data.sys.sunset * 1000).toLocaleTimeString('pt-BR', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      }),
+      timestamp: new Date(data.dt * 1000)
     };
   }
 
   // Formatar dados da previsão
-  formatForecastData(data) {
+  formatForecast(data) {
     const dailyForecasts = [];
     const today = new Date();
     
@@ -161,37 +130,62 @@ class WeatherService {
       const dayKey = date.toDateString();
       
       if (!dailyData[dayKey]) {
-        dailyData[dayKey] = [];
+        dailyData[dayKey] = {
+          date: date,
+          dayName: this.getDayName(date),
+          temperatures: [],
+          descriptions: [],
+          icons: [],
+          humidity: [],
+          windSpeed: []
+        };
       }
-      dailyData[dayKey].push(item);
+      
+      dailyData[dayKey].temperatures.push(item.main.temp);
+      dailyData[dayKey].descriptions.push(item.weather[0].description);
+      dailyData[dayKey].icons.push(item.weather[0].icon);
+      dailyData[dayKey].humidity.push(item.main.humidity);
+      dailyData[dayKey].windSpeed.push(item.wind.speed * 3.6);
     });
-    
-    // Processar cada dia
-    Object.keys(dailyData).forEach(dayKey => {
-      const dayData = dailyData[dayKey];
-      const date = new Date(dayKey);
+
+    // Calcular médias e selecionar descrição mais frequente
+    Object.values(dailyData).forEach(day => {
+      const avgTemp = Math.round(day.temperatures.reduce((a, b) => a + b, 0) / day.temperatures.length);
+      const avgHumidity = Math.round(day.humidity.reduce((a, b) => a + b, 0) / day.humidity.length);
+      const avgWindSpeed = Math.round(day.windSpeed.reduce((a, b) => a + b, 0) / day.windSpeed.length);
       
-      // Calcular médias e extremos
-      const temps = dayData.map(item => item.main.temp);
-      const humidities = dayData.map(item => item.main.humidity);
-      const descriptions = dayData.map(item => item.weather[0].description);
+      // Encontrar descrição mais frequente
+      const descriptionCount = {};
+      day.descriptions.forEach(desc => {
+        descriptionCount[desc] = (descriptionCount[desc] || 0) + 1;
+      });
+      const mostFrequentDesc = Object.keys(descriptionCount).reduce((a, b) => 
+        descriptionCount[a] > descriptionCount[b] ? a : b
+      );
       
-      const forecast = {
-        date: date,
-        dayName: this.getDayName(date),
-        minTemp: Math.round(Math.min(...temps)),
-        maxTemp: Math.round(Math.max(...temps)),
-        avgTemp: Math.round(temps.reduce((a, b) => a + b, 0) / temps.length),
-        avgHumidity: Math.round(humidities.reduce((a, b) => a + b, 0) / humidities.length),
-        description: this.getMostFrequent(descriptions),
-        icon: dayData[0].weather[0].icon,
-        precipitation: dayData.reduce((total, item) => total + (item.pop || 0), 0) / dayData.length
-      };
-      
-      dailyForecasts.push(forecast);
+      // Encontrar ícone correspondente à descrição mais frequente
+      const mostFrequentIndex = day.descriptions.indexOf(mostFrequentDesc);
+      const icon = day.icons[mostFrequentIndex];
+
+      dailyForecasts.push({
+        date: day.date,
+        dayName: day.dayName,
+        temperature: avgTemp,
+        description: mostFrequentDesc,
+        icon: icon,
+        iconUrl: `https://openweathermap.org/img/wn/${icon}.png`,
+        humidity: avgHumidity,
+        windSpeed: avgWindSpeed
+      });
     });
-    
+
     return dailyForecasts.slice(0, 5); // Retornar apenas 5 dias
+  }
+
+  // Obter nome do dia da semana
+  getDayName(date) {
+    const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+    return days[date.getDay()];
   }
 
   // Obter direção do vento
@@ -201,124 +195,52 @@ class WeatherService {
     return directions[index];
   }
 
-  // Obter nome do dia
-  getDayName(date) {
-    const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-    return days[date.getDay()];
-  }
-
-  // Obter valor mais frequente em um array
-  getMostFrequent(array) {
-    const counts = {};
-    let maxCount = 0;
-    let mostFrequent = array[0];
-    
-    array.forEach(item => {
-      counts[item] = (counts[item] || 0) + 1;
-      if (counts[item] > maxCount) {
-        maxCount = counts[item];
-        mostFrequent = item;
-      }
-    });
-    
-    return mostFrequent;
-  }
-
-  // Dados de fallback
-  getFallbackWeatherData() {
-    return {
-      current: {
-        temp: 25,
-        feels_like: 27,
-        humidity: 65,
-        pressure: 1013,
-        windSpeed: 12,
-        windDirection: 'SE',
-        description: 'céu limpo',
-        icon: 'sun',
-        sunrise: new Date(),
-        sunset: new Date(),
-        visibility: 10,
-        clouds: 0,
-        timestamp: new Date()
-      },
-      location: {
-        city: 'Sinop',
-        state: 'Mato Grosso',
-        country: 'Brasil',
-        timezone: 'America/Cuiaba'
-      }
-    };
-  }
-
-  // Dados de previsão de fallback
-  getFallbackForecastData() {
-    const today = new Date();
-    const forecasts = [];
-    
-    for (let i = 0; i < 5; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + i);
+  // Obter clima completo (localização + clima atual + previsão)
+  async getCompleteWeather() {
+    try {
+      // Detectar localização
+      const location = await this.detectLocationByIP();
       
-      forecasts.push({
-        date: date,
-        dayName: this.getDayName(date),
-        minTemp: 20 + Math.floor(Math.random() * 10),
-        maxTemp: 30 + Math.floor(Math.random() * 10),
-        avgTemp: 25 + Math.floor(Math.random() * 10),
-        avgHumidity: 60 + Math.floor(Math.random() * 20),
-        description: 'céu limpo',
-        icon: 'sun',
-        precipitation: Math.random() * 0.3
+      // Obter clima atual
+      const currentWeather = await this.getCurrentWeather(location.latitude, location.longitude);
+      
+      // Obter previsão
+      const forecast = await this.getForecast(location.latitude, location.longitude);
+      
+      return {
+        location,
+        current: currentWeather,
+        forecast
+      };
+    } catch (error) {
+      console.error('Erro ao obter clima completo:', error);
+      throw error;
+    }
+  }
+
+  // Buscar cidade
+  async searchCity(query) {
+    try {
+      const response = await axios.get('https://api.openweathermap.org/geo/1.0/direct', {
+        params: {
+          q: query,
+          limit: 5,
+          appid: this.apiKey
+        }
       });
+
+      return response.data.map(city => ({
+        name: city.name,
+        country: city.country,
+        state: city.state,
+        lat: city.lat,
+        lon: city.lon
+      }));
+    } catch (error) {
+      console.error('Erro ao buscar cidade:', error);
+      return [];
     }
-    
-    return forecasts;
-  }
-
-  // Cache
-  getCachedData(key) {
-    const cached = this.cache.get(key);
-    if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
-      return cached.data;
-    }
-    return null;
-  }
-
-  setCachedData(key, data) {
-    this.cache.set(key, {
-      data: data,
-      timestamp: Date.now()
-    });
-  }
-
-  clearCache() {
-    this.cache.clear();
-  }
-
-  // Obter ícone do clima
-  getWeatherIcon(iconCode, size = '2x') {
-    return `https://openweathermap.org/img/wn/${iconCode}@${size}.png`;
-  }
-
-  // Obter descrição do clima
-  getWeatherDescription(description) {
-    const descriptions = {
-      'céu limpo': 'Céu limpo e ensolarado',
-      'poucas nuvens': 'Poucas nuvens no céu',
-      'nuvens dispersas': 'Nuvens dispersas',
-      'nublado': 'Céu nublado',
-      'chuva leve': 'Chuva leve',
-      'chuva moderada': 'Chuva moderada',
-      'chuva forte': 'Chuva forte',
-      'tempestade': 'Tempestade',
-      'neve': 'Neve',
-      'névoa': 'Névoa'
-    };
-    
-    return descriptions[description] || description;
   }
 }
 
-const weatherService = new WeatherService();
-export default weatherService;
+export default new WeatherService();

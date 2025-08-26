@@ -12,21 +12,11 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [isAdminLogin, setIsAdminLogin] = useState(false);
   
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
   const { t } = useTranslation();
-
-  // Verificar se é tentativa de login admin
-  useEffect(() => {
-    if (email === 'luispaulodeoliveira@agrotm.com.br') {
-      setIsAdminLogin(true);
-    } else {
-      setIsAdminLogin(false);
-    }
-  }, [email]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -69,18 +59,6 @@ const Login = () => {
     }
   };
 
-  const handleAdminLogin = () => {
-    setEmail('luispaulodeoliveira@agrotm.com.br');
-    setPassword('Th@ys15221008');
-    setIsAdminLogin(true);
-  };
-
-  const handleUserLogin = () => {
-    setEmail('');
-    setPassword('');
-    setIsAdminLogin(false);
-  };
-
   return (
     <div className="min-h-screen bg-white text-gray-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <motion.div
@@ -95,38 +73,11 @@ const Login = () => {
             <span className="text-white font-bold text-3xl">A</span>
           </div>
           <h2 className="text-4xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent mb-2">
-            {isAdminLogin ? 'Admin Login' : 'Login'}
+            Login
           </h2>
-          <p className="text-neutral-400">
-            {isAdminLogin 
-              ? 'Acesso administrativo ao sistema AgroSync'
-              : 'Acesse sua conta AgroSync'
-            }
+          <p className="text-gray-600">
+            Acesse sua conta AgroSync
           </p>
-        </div>
-
-        {/* Tabs de tipo de login */}
-        <div className="flex bg-neutral-800 rounded-lg p-1">
-          <button
-            onClick={handleUserLogin}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${
-              !isAdminLogin
-                ? 'bg-green-600 text-white shadow-lg'
-                : 'text-neutral-400 hover:text-white'
-            }`}
-          >
-            👤 Usuário Comum
-          </button>
-          <button
-            onClick={handleAdminLogin}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${
-              isAdminLogin
-                ? 'bg-purple-600 text-white shadow-lg'
-                : 'text-neutral-400 hover:text-white'
-            }`}
-          >
-            👑 Admin
-          </button>
         </div>
 
         {/* Formulário de Login */}
@@ -134,12 +85,12 @@ const Login = () => {
           <div className="space-y-4">
             {/* Campo Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-neutral-300 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                 Email
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-neutral-400" />
+                  <Mail className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
                   id="email"
@@ -149,20 +100,20 @@ const Login = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-neutral-600 rounded-lg bg-neutral-800 text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
-                  placeholder={isAdminLogin ? 'luispaulodeoliveira@agrotm.com.br' : 'seu@email.com'}
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                  placeholder="seu@email.com"
                 />
               </div>
             </div>
 
             {/* Campo Senha */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-neutral-300 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                 Senha
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-neutral-400" />
+                  <Lock className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
                   id="password"
@@ -172,7 +123,7 @@ const Login = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 pr-12 py-3 border border-neutral-600 rounded-lg bg-neutral-800 text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                  className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
                   placeholder="••••••••"
                 />
                 <button
@@ -181,9 +132,9 @@ const Login = () => {
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
                 >
                   {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-neutral-400 hover:text-white transition-colors" />
+                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
                   ) : (
-                    <Eye className="h-5 w-5 text-neutral-400 hover:text-white transition-colors" />
+                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
                   )}
                 </button>
               </div>
@@ -195,7 +146,7 @@ const Login = () => {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex items-center space-x-2 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400"
+              className="flex items-center space-x-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700"
             >
               <AlertCircle className="w-5 h-5" />
               <span>{error}</span>
@@ -206,7 +157,7 @@ const Login = () => {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex items-center space-x-2 p-3 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400"
+              className="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700"
             >
               <CheckCircle className="w-5 h-5" />
               <span>{success}</span>
@@ -231,39 +182,24 @@ const Login = () => {
 
           {/* Informações adicionais */}
           <div className="text-center space-y-4">
-            {isAdminLogin && (
-              <div className="p-4 bg-purple-500/10 border border-purple-500/30 rounded-lg">
-                <h3 className="font-semibold text-purple-400 mb-2">🔐 Acesso Administrativo</h3>
-                <p className="text-sm text-purple-300">
-                  Credenciais fixas para administradores do sistema AgroSync
-                </p>
-                <div className="mt-2 text-xs text-purple-400">
-                  <p>Email: luispaulodeoliveira@agrotm.com.br</p>
-                  <p>Senha: Th@ys15221008</p>
-                </div>
+            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <h3 className="font-semibold text-blue-700 mb-2">💡 Painel Privado</h3>
+              <p className="text-sm text-blue-600">
+                Após o login, você terá acesso ao seu painel privado na área Loja ou AgroConecta
+              </p>
+              <div className="mt-2 text-xs text-blue-500">
+                <p>• Controle de anúncios/produtos</p>
+                <p>• Caixa de mensagens pessoal</p>
+                <p>• Histórico de atividades</p>
+                <p>• Dados pessoais</p>
               </div>
-            )}
+            </div>
 
-            {!isAdminLogin && (
-              <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
-                <h3 className="font-semibold text-green-400 mb-2">💡 Painel Secreto</h3>
-                <p className="text-sm text-green-300">
-                  Após o login, você terá acesso ao seu painel secreto na área Loja ou AgroConecta
-                </p>
-                <div className="mt-2 text-xs text-green-400">
-                  <p>• Controle de anúncios/produtos</p>
-                  <p>• Caixa de mensagens pessoal</p>
-                  <p>• Histórico de atividades</p>
-                  <p>• Dados pessoais</p>
-                </div>
-              </div>
-            )}
-
-            <div className="text-sm text-neutral-400">
+            <div className="text-sm text-gray-600">
               <p>Não tem uma conta? </p>
               <a 
                 href="/cadastro" 
-                className="text-green-400 hover:text-green-300 transition-colors font-medium"
+                className="text-green-600 hover:text-green-700 transition-colors font-medium"
               >
                 Cadastre-se aqui
               </a>
