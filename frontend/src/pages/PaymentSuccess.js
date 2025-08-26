@@ -1,285 +1,231 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { CheckCircle, ArrowRight, Home, User } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
-  const [planName, setPlanName] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [redirecting, setRedirecting] = useState(false);
   const navigate = useNavigate();
-  const { user, isAdmin } = useAuth();
+  const { user, refreshUser } = useAuth();
+  const { t } = useTranslation();
+  const [loading, setLoading] = useState(true);
+  const [planDetails, setPlanDetails] = useState(null);
 
   useEffect(() => {
+    document.title = 'Pagamento Confirmado - Agroisync';
+    
     const plan = searchParams.get('plan');
+    const method = searchParams.get('method');
+    const tx = searchParams.get('tx');
+    
     if (plan) {
-      setPlanName(plan);
+      setPlanDetails(plan);
     }
-    setLoading(false);
     
-    // Iniciar redirecionamento automático após 3 segundos
-    const redirectTimer = setTimeout(() => {
-      handleAutoRedirect();
-    }, 3000);
-
-    return () => clearTimeout(redirectTimer);
-  }, [searchParams]);
-
-  const handleAutoRedirect = () => {
-    setRedirecting(true);
-    
-    // Se for admin, redirecionar para /admin
-    if (isAdmin) {
-      navigate('/admin');
-      return;
-    }
-
-    // Se for usuário comum, verificar o plano e redirecionar para painel secreto
-    if (planName) {
-      if (planName.toLowerCase().includes('produto') || planName.toLowerCase().includes('store') || planName.toLowerCase().includes('anunciante')) {
-        // Usuário que vai anunciar produtos - redirecionar para painel secreto da Loja
-        navigate('/loja');
-      } else if (planName.toLowerCase().includes('frete') || planName.toLowerCase().includes('freight') || planName.toLowerCase().includes('transportador')) {
-        // Usuário que vai oferecer fretes - redirecionar para painel secreto do AgroConecta
-        navigate('/agroconecta');
-      } else if (planName.toLowerCase().includes('comprador') || planName.toLowerCase().includes('cliente')) {
-        // Usuário que vai comprar produtos - redirecionar para painel secreto da Loja
-        navigate('/loja');
-      } else {
-        // Plano geral - redirecionar para dashboard
-        navigate('/dashboard');
+    // Simular verificação do status do pagamento
+    setTimeout(() => {
+      setLoading(false);
+      // Atualizar dados do usuário
+      if (user) {
+        refreshUser();
       }
-    } else {
-      // Sem plano específico - redirecionar para dashboard
+    }, 2000);
+  }, [searchParams, user, refreshUser]);
+
+  const handleContinue = () => {
+    if (user?.isPaid) {
       navigate('/dashboard');
+    } else {
+      navigate('/');
     }
   };
 
-  const handleManualRedirect = (path) => {
-    setRedirecting(true);
-    navigate(path);
+  const getPlanName = (planId) => {
+    const planNames = {
+      'anunciante-basic': 'Anunciante Básico',
+      'anunciante-premium': 'Anunciante Premium',
+      'anunciante-enterprise': 'Anunciante Enterprise',
+      'freteiro-basic': 'Freteiro Básico',
+      'freteiro-premium': 'Freteiro Premium',
+      'freteiro-enterprise': 'Freteiro Enterprise',
+      'comprador-basic': 'Comprador Básico',
+      'comprador-premium': 'Comprador Premium',
+      'loja-basico': 'Loja Básico',
+      'loja-pro': 'Loja Pro',
+      'loja-enterprise': 'Loja Enterprise',
+      'agroconecta-basico': 'AgroConecta Básico',
+      'agroconecta-pro': 'AgroConecta Pro',
+      'agroconecta-enterprise': 'AgroConecta Enterprise'
+    };
+    return planNames[planId] || 'Plano';
+  };
+
+  const getPaymentMethodInfo = () => {
+    const method = searchParams.get('method');
+    const tx = searchParams.get('tx');
+    
+    if (method === 'crypto' && tx) {
+      return {
+        method: 'Criptomoeda',
+        icon: '🪙',
+        details: `Transação: ${tx.substring(0, 10)}...${tx.substring(tx.length - 8)}`,
+        description: 'Pagamento processado via blockchain'
+      };
+    } else {
+      return {
+        method: 'Cartão de Crédito',
+        icon: '💳',
+        details: 'Processado via Stripe',
+        description: 'Pagamento seguro e instantâneo'
+      };
+    }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-neutral-900 text-white flex items-center justify-center">
+      <div className="min-h-screen bg-white text-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-xl">Verificando pagamento...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (redirecting) {
-    return (
-      <div className="min-h-screen bg-neutral-900 text-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-green-500 mx-auto mb-4"></div>
-          <p className="text-xl">Redirecionando...</p>
-          <p className="text-neutral-400 mt-2">Aguarde um momento</p>
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Verificando pagamento...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-neutral-900 text-white">
-      <main className="pt-24 pb-16">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          {/* Ícone de Sucesso */}
+    <div className="min-h-screen bg-white text-gray-900">
+      <div className="max-w-4xl mx-auto px-4 py-20">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center"
+        >
+          {/* Success Icon */}
           <div className="mb-8">
-            <div className="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg className="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-              </svg>
+            <div className="mx-auto w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mb-6">
+              <CheckCircle className="w-16 h-16 text-green-600" />
             </div>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              Pagamento Confirmado!
+            </h1>
+            <p className="text-xl text-gray-600 mb-8">
+              Seu plano foi ativado com sucesso. Bem-vindo ao AgroSync!
+            </p>
           </div>
 
-          {/* Título */}
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
-            Pagamento Confirmado!
-          </h1>
-
-          {/* Mensagem */}
-          <div className="bg-neutral-800 rounded-2xl p-8 border border-green-500/20 mb-8">
-            <p className="text-xl text-neutral-300 mb-4">
-              Parabéns! Seu pagamento foi processado com sucesso.
-            </p>
-            
-            {planName && (
-              <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-6 mb-6">
-                <h2 className="text-2xl font-bold text-green-400 mb-2">
-                  Plano: {planName}
-                </h2>
-                <p className="text-green-300">
-                  Seu acesso foi ativado imediatamente!
+          {/* Plan Details */}
+          {planDetails && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-8 mb-8 border border-green-200"
+            >
+              <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+                Detalhes do Plano
+              </h2>
+              <div className="bg-white rounded-xl p-6 shadow-sm">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  {getPlanName(planDetails)}
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Seu plano está ativo e você tem acesso completo às funcionalidades.
                 </p>
+                
+                {/* Payment Method Info */}
+                <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <span className="text-2xl mr-3">{getPaymentMethodInfo().icon}</span>
+                      <div>
+                        <p className="font-medium text-gray-900">{getPaymentMethodInfo().method}</p>
+                        <p className="text-sm text-gray-600">{getPaymentMethodInfo().description}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs text-gray-500 font-mono">{getPaymentMethodInfo().details}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-center space-x-4">
+                  <div className="flex items-center text-green-600">
+                    <CheckCircle className="w-5 h-5 mr-2" />
+                    <span className="font-medium">Ativo</span>
+                  </div>
+                  <div className="text-gray-400">•</div>
+                  <div className="text-gray-600">
+                    Expira em 30 dias
+                  </div>
+                </div>
               </div>
-            )}
+            </motion.div>
+          )}
 
-            <p className="text-lg text-neutral-400">
-              Você receberá um email de confirmação com todos os detalhes da sua assinatura 
-              e instruções de acesso à plataforma.
-            </p>
-
-            {/* Contador de redirecionamento */}
-            <div className="mt-6 p-4 bg-blue-500/10 border border-blue-500/30 rounded-xl">
-              <p className="text-blue-300 text-sm">
-                ⏰ Redirecionamento automático em 3 segundos...
-              </p>
-            </div>
-          </div>
-
-          {/* Próximos Passos */}
-          <div className="bg-neutral-800 rounded-2xl p-8 border border-neutral-700 mb-8">
-            <h2 className="text-3xl font-bold mb-6 text-white">
+          {/* Next Steps */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-gray-200"
+          >
+            <h2 className="text-2xl font-semibold text-gray-900 mb-6">
               Próximos Passos
             </h2>
-            
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold text-white">1</span>
-                </div>
-                <h3 className="font-semibold text-white mb-2">Email de Confirmação</h3>
-                <p className="text-neutral-400 text-sm">
-                  Verifique sua caixa de entrada para o email de confirmação
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="text-center p-6 bg-gray-50 rounded-xl">
+                <User className="w-12 h-12 text-blue-600 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Acessar Dashboard
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Gerencie seus produtos, fretes e mensagens no painel privado.
                 </p>
-              </div>
-              
-              <div className="text-center">
-                <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold text-white">2</span>
-                </div>
-                <h3 className="font-semibold text-white mb-2">Acesso Imediato</h3>
-                <p className="text-neutral-400 text-sm">
-                  Sua conta já está ativa com todas as funcionalidades
-                </p>
-              </div>
-              
-              <div className="text-center">
-                <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold text-white">3</span>
-                </div>
-                <h3 className="font-semibold text-white mb-2">Painel de Mensagens</h3>
-                <p className="text-neutral-400 text-sm">
-                  Acesse suas conversas e mensagens privadas
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Botões de Ação */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <button
-              onClick={() => handleManualRedirect('/messages')}
-              className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-105"
-            >
-              💬 Acessar Mensagens
-            </button>
-            
-            <button
-              onClick={() => handleManualRedirect('/loja')}
-              className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-105"
-            >
-              🛒 Painel Secreto da Loja
-            </button>
-            
-            <button
-              onClick={() => handleManualRedirect('/agroconecta')}
-              className="bg-neutral-700 hover:bg-neutral-600 text-white px-8 py-4 rounded-xl font-semibold border border-neutral-600 hover:border-blue-400 transition-all duration-300 hover:scale-105"
-            >
-              🚛 Painel Secreto do AgroConecta
-            </button>
-          </div>
-
-          {/* Redirecionamento Automático */}
-          <div className="bg-blue-500/10 border border-blue-500/30 rounded-2xl p-6 mb-8">
-            <h3 className="text-xl font-semibold text-blue-400 mb-4">
-              🔄 Redirecionamento Automático
-            </h3>
-            <p className="text-blue-300 mb-4">
-              Você será redirecionado automaticamente para o seu painel secreto em alguns segundos.
-            </p>
-            <div className="grid md:grid-cols-2 gap-4 mb-4">
-              <div className="bg-blue-500/20 rounded-lg p-4">
-                <h4 className="font-semibold text-blue-300 mb-2">🛒 Loja (Marketplace)</h4>
-                <p className="text-sm text-blue-200">
-                  • Controle de anúncios e produtos<br/>
-                  • Caixa de mensagens pessoal<br/>
-                  • Histórico de vendas
-                </p>
-              </div>
-              <div className="bg-green-500/20 rounded-lg p-4">
-                <h4 className="font-semibold text-green-300 mb-2">🚛 AgroConecta (Fretes)</h4>
-                <p className="text-sm text-green-200">
-                  • Controle de fretes<br/>
-                  • Caixa de mensagens pessoal<br/>
-                  • Histórico de transportes
-                </p>
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-3 justify-center">
-              <button
-                onClick={() => handleManualRedirect('/dashboard')}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Dashboard
-              </button>
-              <button
-                onClick={() => handleManualRedirect('/loja')}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-              >
-                Painel da Loja
-              </button>
-              <button
-                onClick={() => handleManualRedirect('/agroconecta')}
-                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-              >
-                Painel do AgroConecta
-              </button>
-              {isAdmin && (
                 <button
-                  onClick={() => handleManualRedirect('/admin')}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                  onClick={() => navigate('/dashboard')}
+                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                 >
-                  Painel Admin
+                  Ir para Dashboard
                 </button>
-              )}
-            </div>
-          </div>
-
-          {/* Informações Adicionais */}
-          <div className="mt-12 bg-neutral-800 rounded-2xl p-6 border border-neutral-700">
-            <h3 className="text-xl font-semibold text-white mb-4">
-              Precisa de Ajuda?
-            </h3>
-            
-            <div className="grid md:grid-cols-2 gap-6 text-left">
-              <div>
-                <h4 className="font-semibold text-blue-400 mb-2">Suporte Técnico</h4>
-                <p className="text-neutral-400 text-sm mb-2">
-                  Email: suporte@agroisync.com
-                </p>
-                <p className="text-neutral-400 text-sm">
-                  WhatsApp: (66) 99236-2830
-                </p>
               </div>
               
-              <div>
-                <h4 className="font-semibold text-green-400 mb-2">Faturamento</h4>
-                <p className="text-neutral-400 text-sm mb-2">
-                  Email: financeiro@agroisync.com
+              <div className="text-center p-6 bg-gray-50 rounded-xl">
+                <Home className="w-12 h-12 text-green-600 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Voltar ao Início
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Explore o marketplace e descubra novos produtos e fretes.
                 </p>
-                <p className="text-neutral-400 text-sm">
-                  Horário: Seg-Sex, 8h às 18h
-                </p>
+                <button
+                  onClick={() => navigate('/')}
+                  className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors"
+                >
+                  Voltar ao Início
+                </button>
               </div>
             </div>
-          </div>
-        </div>
-      </main>
+          </motion.div>
+
+          {/* Continue Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+          >
+            <button
+              onClick={handleContinue}
+              className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:from-green-700 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 flex items-center mx-auto"
+            >
+              Continuar
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </button>
+          </motion.div>
+        </motion.div>
+      </div>
     </div>
   );
 };

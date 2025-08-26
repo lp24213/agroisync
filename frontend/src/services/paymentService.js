@@ -17,9 +17,13 @@ export const paymentService = {
   // Stripe payments
   async createStripeSession(module, tier) {
     try {
-      const response = await api.post('/payments/stripe/session', {
-        module,
-        tier
+      // Mapear módulo e tier para planId do backend
+      const planId = this.mapModuleTierToPlanId(module, tier);
+      
+      const response = await api.post('/payments/create-checkout-session', {
+        planId,
+        successUrl: `${window.location.origin}/payment-success?plan=${planId}`,
+        cancelUrl: `${window.location.origin}/planos?canceled=true`
       });
       return response.data;
     } catch (error) {
@@ -29,6 +33,24 @@ export const paymentService = {
       }
       throw new Error('Erro ao criar sessão de pagamento');
     }
+  },
+
+  // Mapear módulo e tier para planId do backend
+  mapModuleTierToPlanId(module, tier) {
+    const mapping = {
+      'store': {
+        'loja-basico': 'anunciante-basic',
+        'loja-pro': 'anunciante-premium',
+        'loja-enterprise': 'anunciante-enterprise'
+      },
+      'freight': {
+        'agroconecta-basico': 'freteiro-basic',
+        'agroconecta-pro': 'freteiro-premium',
+        'agroconecta-enterprise': 'freteiro-enterprise'
+      }
+    };
+    
+    return mapping[module]?.[tier] || 'anunciante-basic';
   },
 
   // Crypto payments
@@ -60,6 +82,17 @@ export const paymentService = {
         throw new Error(error.response.data.error);
       }
       throw new Error('Erro ao verificar pagamento cripto');
+    }
+  },
+
+  // Verificar status do pagamento
+  async checkPaymentStatus(paymentId) {
+    try {
+      const response = await api.get(`/payments/status/${paymentId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error checking payment status:', error);
+      throw new Error('Erro ao verificar status do pagamento');
     }
   },
 

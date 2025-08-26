@@ -17,7 +17,11 @@ const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 // Validações
 const createCheckoutValidation = [
   body('planId')
-    .isIn(['comprador-basic', 'anunciante-premium', 'freteiro-premium'])
+    .isIn([
+      'anunciante-basic', 'anunciante-premium', 'anunciante-enterprise',
+      'freteiro-basic', 'freteiro-premium', 'freteiro-enterprise',
+      'comprador-basic', 'comprador-premium'
+    ])
     .withMessage('Plano inválido'),
   body('successUrl')
     .isURL()
@@ -67,8 +71,13 @@ router.post('/create-checkout-session',
       // Definir preços dos planos
       const planPrices = {
         'comprador-basic': { amount: 2500, currency: 'brl', name: 'Plano Comprador Básico' },
-        'anunciante-premium': { amount: 4990, currency: 'brl', name: 'Plano Anunciante Premium' },
-        'freteiro-premium': { amount: 7990, currency: 'brl', name: 'Plano Freteiro Premium' }
+        'comprador-premium': { amount: 4990, currency: 'brl', name: 'Plano Comprador Premium' },
+        'anunciante-basic': { amount: 9900, currency: 'brl', name: 'Plano Anunciante Básico' },
+        'anunciante-premium': { amount: 19900, currency: 'brl', name: 'Plano Anunciante Premium' },
+        'anunciante-enterprise': { amount: 49900, currency: 'brl', name: 'Plano Anunciante Enterprise' },
+        'freteiro-basic': { amount: 9900, currency: 'brl', name: 'Plano Freteiro Básico' },
+        'freteiro-premium': { amount: 19900, currency: 'brl', name: 'Plano Freteiro Premium' },
+        'freteiro-enterprise': { amount: 49900, currency: 'brl', name: 'Plano Freteiro Enterprise' }
       };
 
       const plan = planPrices[planId];
@@ -428,38 +437,122 @@ router.get('/plans', (req, res) => {
       features: [
         'Visualizar produtos',
         'Enviar mensagens (até 3 por mês)',
-        'Acesso a dados básicos dos vendedores',
+        'Acesso básico ao marketplace',
         'Painel individual'
+      ]
+    },
+    {
+      id: 'comprador-premium',
+      name: 'Plano Comprador Premium',
+      description: 'Acesso completo ao marketplace com funcionalidades avançadas',
+      price: 49.90,
+      currency: 'BRL',
+      duration: 30,
+      features: [
+        'Visualizar produtos',
+        'Mensageria ilimitada',
+        'Acesso completo ao marketplace',
+        'Painel individual',
+        'Relatórios de compras',
+        'Suporte prioritário'
+      ]
+    },
+    {
+      id: 'anunciante-basic',
+      name: 'Plano Anunciante Básico',
+      description: 'Publicar produtos e gerenciar anúncios básicos',
+      price: 99.00,
+      currency: 'BRL',
+      duration: 30,
+      features: [
+        'Publicar até 100 produtos',
+        'Mensageria básica',
+        'Painel de gestão',
+        'Relatórios básicos',
+        'Suporte por email'
       ]
     },
     {
       id: 'anunciante-premium',
       name: 'Plano Anunciante Premium',
-      description: 'Publicar produtos e gerenciar anúncios',
-      price: 49.90,
+      description: 'Publicar produtos e gerenciar anúncios avançados',
+      price: 199.00,
       currency: 'BRL',
       duration: 30,
       features: [
-        'Publicar até 10 produtos',
+        'Publicar até 500 produtos',
         'Mensageria ilimitada',
-        'Dados completos dos compradores',
         'Painel de gestão',
-        'Relatórios de visualizações'
+        'Relatórios avançados',
+        'Suporte prioritário',
+        'API access'
+      ]
+    },
+    {
+      id: 'anunciante-enterprise',
+      name: 'Plano Anunciante Enterprise',
+      description: 'Solução completa para grandes empresas',
+      price: 499.00,
+      currency: 'BRL',
+      duration: 30,
+      features: [
+        'Produtos ilimitados',
+        'Mensageria ilimitada',
+        'Painel de gestão',
+        'Relatórios personalizados',
+        'Suporte 24/7',
+        'API completa',
+        'Integração customizada',
+        'White label'
+      ]
+    },
+    {
+      id: 'freteiro-basic',
+      name: 'Plano Freteiro Básico',
+      description: 'Publicar fretes e gerenciar transportes básicos',
+      price: 99.00,
+      currency: 'BRL',
+      duration: 30,
+      features: [
+        'Publicar até 50 fretes/mês',
+        'Mensageria básica',
+        'Painel de gestão',
+        'Relatórios básicos',
+        'Suporte por email'
       ]
     },
     {
       id: 'freteiro-premium',
       name: 'Plano Freteiro Premium',
-      description: 'Publicar fretes e gerenciar transportes',
-      price: 79.90,
+      description: 'Publicar fretes e gerenciar transportes avançados',
+      price: 199.00,
       currency: 'BRL',
       duration: 30,
       features: [
-        'Publicar até 20 fretes',
+        'Publicar até 200 fretes/mês',
         'Mensageria ilimitada',
-        'Dados completos dos contratantes',
         'Painel de gestão',
-        'Relatórios de rotas'
+        'Relatórios avançados',
+        'Suporte prioritário',
+        'API access'
+      ]
+    },
+    {
+      id: 'freteiro-enterprise',
+      name: 'Plano Freteiro Enterprise',
+      description: 'Solução completa para grandes transportadoras',
+      price: 499.00,
+      currency: 'BRL',
+      duration: 30,
+      features: [
+        'Fretes ilimitados',
+        'Mensageria ilimitada',
+        'Painel de gestão',
+        'Relatórios personalizados',
+        'Suporte 24/7',
+        'API completa',
+        'Integração customizada',
+        'White label'
       ]
     }
   ];
@@ -473,9 +566,14 @@ router.get('/plans', (req, res) => {
 // Funções auxiliares
 function getPlanFeatures(planId) {
   const features = {
-    'comprador-basic': ['Visualizar produtos', 'Enviar mensagens', 'Painel individual'],
-    'anunciante-premium': ['Publicar produtos', 'Mensageria ilimitada', 'Painel de gestão'],
-    'freteiro-premium': ['Publicar fretes', 'Mensageria ilimitada', 'Painel de gestão']
+    'comprador-basic': ['Visualizar produtos', 'Enviar mensagens (até 3 por mês)', 'Painel individual', 'Acesso básico ao marketplace'],
+    'comprador-premium': ['Visualizar produtos', 'Mensageria ilimitada', 'Painel individual', 'Acesso completo ao marketplace', 'Relatórios de compras'],
+    'anunciante-basic': ['Publicar até 100 produtos', 'Mensageria básica', 'Painel de gestão', 'Relatórios básicos', 'Suporte por email'],
+    'anunciante-premium': ['Publicar até 500 produtos', 'Mensageria ilimitada', 'Painel de gestão', 'Relatórios avançados', 'Suporte prioritário', 'API access'],
+    'anunciante-enterprise': ['Produtos ilimitados', 'Mensageria ilimitada', 'Painel de gestão', 'Relatórios personalizados', 'Suporte 24/7', 'API completa', 'Integração customizada', 'White label'],
+    'freteiro-basic': ['Publicar até 50 fretes/mês', 'Mensageria básica', 'Painel de gestão', 'Relatórios básicos', 'Suporte por email'],
+    'freteiro-premium': ['Publicar até 200 fretes/mês', 'Mensageria ilimitada', 'Painel de gestão', 'Relatórios avançados', 'Suporte prioritário', 'API access'],
+    'freteiro-enterprise': ['Fretes ilimitados', 'Mensageria ilimitada', 'Painel de gestão', 'Relatórios personalizados', 'Suporte 24/7', 'API completa', 'Integração customizada', 'White label']
   };
   return features[planId] || [];
 }
@@ -483,8 +581,13 @@ function getPlanFeatures(planId) {
 function getPlanName(planId) {
   const names = {
     'comprador-basic': 'Plano Comprador Básico',
+    'comprador-premium': 'Plano Comprador Premium',
+    'anunciante-basic': 'Plano Anunciante Básico',
     'anunciante-premium': 'Plano Anunciante Premium',
-    'freteiro-premium': 'Plano Freteiro Premium'
+    'anunciante-enterprise': 'Plano Anunciante Enterprise',
+    'freteiro-basic': 'Plano Freteiro Básico',
+    'freteiro-premium': 'Plano Freteiro Premium',
+    'freteiro-enterprise': 'Plano Freteiro Enterprise'
   };
   return names[planId] || 'Plano';
 }

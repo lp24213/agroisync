@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { paymentService } from '../services/paymentService';
+import metamaskService from '../services/metamaskService';
 import { useTranslation } from 'react-i18next';
 import { 
   Check, Star, ShoppingCart, Truck, Package, Leaf, Wrench, User, 
@@ -217,23 +218,93 @@ const Planos = () => {
 
       if (module === 'crypto') {
         // Pagamento via cripto
-        const invoice = await paymentService.createCryptoInvoice(tier);
-        // Aqui seria integrado com MetaMask
-        alert(`Fatura cripto criada: ${invoice.data.id}. Integre com MetaMask para finalizar.`);
-        // Após pagamento bem-sucedido, redirecionar para login
-        setTimeout(() => {
-          window.location.href = '/login?plan=activated';
-        }, 2000);
+        await handleCryptoPayment(tier);
       } else {
         // Pagamento via Stripe
-        const session = await paymentService.createStripeSession(module, tier);
-        // Redirecionar para Stripe
-        window.location.href = session.data.url;
+        await handleStripePayment(module, tier);
       }
     } catch (error) {
       setError(error.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCryptoPayment = async (tier) => {
+    try {
+      // Verificar se Metamask está instalado
+      if (!metamaskService.isMetamaskInstalled()) {
+        throw new Error('Metamask não está instalado. Por favor, instale a extensão Metamask.');
+      }
+
+      // Conectar ao Metamask
+      const connection = await metamaskService.connect();
+      
+      // Obter saldo
+      const balance = await metamaskService.getBalance();
+      
+      // Mapear tier para valor em ETH
+      const planValues = {
+        'loja-basico': 0.01,
+        'loja-pro': 0.02,
+        'loja-enterprise': 0.05,
+        'agroconecta-basico': 0.01,
+        'agroconecta-pro': 0.02,
+        'agroconecta-enterprise': 0.05
+      };
+      
+      const amount = planValues[tier] || 0.01;
+      
+      if (parseFloat(balance) < amount) {
+        throw new Error(`Saldo insuficiente. Você tem ${balance} ETH, mas precisa de ${amount} ETH.`);
+      }
+
+      // Endereço da carteira do AgroSync (deve ser configurado)
+      const ownerWallet = process.env.REACT_APP_OWNER_WALLET || '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6';
+      
+      // Enviar pagamento
+      const payment = await metamaskService.sendPayment(ownerWallet, amount, tier);
+      
+      // Verificar status da transação
+      let status = 'pending';
+      let confirmations = 0;
+      
+      // Aguardar confirmações
+      while (status === 'pending' && confirmations < 1) {
+        await new Promise(resolve => setTimeout(resolve, 5000)); // Aguardar 5 segundos
+        const txStatus = await metamaskService.getTransactionStatus(payment.hash);
+        status = txStatus.status;
+        confirmations = txStatus.confirmations;
+      }
+      
+      if (status === 'confirmed' || confirmations >= 1) {
+        // Verificar pagamento no backend
+        const verification = await paymentService.verifyCryptoPayment(payment.hash, tier);
+        
+        if (verification.success) {
+          // Redirecionar para página de sucesso
+          window.location.href = `/payment-success?plan=${tier}&method=crypto&tx=${payment.hash}`;
+        } else {
+          throw new Error('Falha na verificação do pagamento. Entre em contato com o suporte.');
+        }
+      } else {
+        throw new Error('Transação não foi confirmada. Tente novamente.');
+      }
+      
+    } catch (error) {
+      console.error('Erro no pagamento cripto:', error);
+      throw error;
+    }
+  };
+
+  const handleStripePayment = async (module, tier) => {
+    try {
+      const session = await paymentService.createStripeSession(module, tier);
+      // Redirecionar para Stripe
+      window.location.href = session.url;
+    } catch (error) {
+      console.error('Erro no pagamento Stripe:', error);
+      throw error;
     }
   };
 
