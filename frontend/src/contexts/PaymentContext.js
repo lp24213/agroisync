@@ -12,6 +12,7 @@ export const usePayment = () => {
 };
 
 export const PaymentProvider = ({ children }) => {
+  const { user, isAdmin } = useAuth();
   const [paymentStatus, setPaymentStatus] = useState({
     hasActivePayment: false,
     planType: null,
@@ -25,42 +26,17 @@ export const PaymentProvider = ({ children }) => {
   const [userProfile, setUserProfile] = useState(null);
 
   useEffect(() => {
-    // Verificar se o contexto de autenticação está disponível
-    const checkAuth = () => {
-      try {
-        const { user, isAdmin } = useAuth();
-        if (user) {
-          checkPaymentStatus();
-          loadUserProfile();
-        } else {
-          setLoading(false);
-        }
-      } catch (error) {
-        // Contexto ainda não disponível, aguardar
-        setLoading(false);
-      }
-    };
-    
-    checkAuth();
-  }, []);
+    if (user) {
+      checkPaymentStatus();
+      loadUserProfile();
+    } else {
+      setLoading(false);
+    }
+  }, [user]);
 
   const checkPaymentStatus = async () => {
     try {
       setLoading(true);
-      
-      // Obter dados do contexto de autenticação
-      let user = null;
-      let isAdmin = false;
-      
-      try {
-        const auth = useAuth();
-        user = auth.user;
-        isAdmin = auth.isAdmin;
-      } catch (error) {
-        // Contexto não disponível ainda
-        setLoading(false);
-        return;
-      }
       
       // Simular verificação de pagamento
       // Em produção, isso seria uma chamada para a API
