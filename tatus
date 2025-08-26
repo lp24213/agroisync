@@ -113,3 +113,16 @@ Date:   Thu Aug 21 22:47:57 2025 -0300
 [33me3fd540f[m fix: Correção de erro de compilação e vulnerabilidades de segurança - Corrigido erro de sintaxe JSX no Layout.js (div não fechada) - Atualizado react-scripts para versão 5.0.1 - Resolvidas vulnerabilidades de segurança com npm audit fix --force - Build funcionando corretamente - Projeto pronto para deploy
 [33m61e9851e[m feat: Implementação completa de melhorias do AgroSync - Sistema de autenticação modular para Cripto, AgroConecta e Loja - Tema claro/escuro com fundo branco na Home - Gráfico animado de criptomoedas e ticker em tempo real - Widgets de clima e notícias do agronegócio - Componentes de UX: preloader, transições e feedback - Fundo animado aprimorado para modo escuro - Chatbot otimizado para mobile - Cores futuristas e prateadas consistentes - Integração com APIs: IBGE, OpenWeatherMap, CoinGecko
 [33m8d158ffd[m  SECURITY: Remove public Ethereum addresses +  FEATURE: Add professional crypto dashboard with real-time data
+[1mdiff --git a/frontend/src/App.js b/frontend/src/App.js[m
+[1mindex 49d1c1e8..0d788832 100644[m
+[1m--- a/frontend/src/App.js[m
+[1m+++ b/frontend/src/App.js[m
+[36m@@ -9,7 +9,7 @@[m [mimport RouteGuard from './components/RouteGuard';[m
+ import Home from './pages/Home';[m
+ import Login from './pages/Login';[m
+ import Cadastro from './pages/Cadastro';[m
+[31m-import Dashboard from './pages/dashboard';[m
+[32m+[m[32mimport Dashboard from './pages/Dashboard';[m
+ import Loja from './pages/Loja';[m
+ import Parcerias from './pages/Parcerias';[m
+ import Contato from './pages/Contato';[m

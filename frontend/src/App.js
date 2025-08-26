@@ -9,7 +9,7 @@ import RouteGuard from './components/RouteGuard';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Cadastro from './pages/Cadastro';
-import Dashboard from './pages/dashboard';
+import Dashboard from './pages/Dashboard';
 import Loja from './pages/Loja';
 import Parcerias from './pages/Parcerias';
 import Contato from './pages/Contato';
