@@ -431,7 +431,7 @@ class ChatbotService {
       return faqMessage;
     } catch (error) {
       console.error('Erro ao buscar FAQ:', error);
-      throw error);
+      throw error;
     }
   }
 

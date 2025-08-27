@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ShoppingCart, X, Plus, Minus, Trash, Package, 
-  Truck, CreditCard, ArrowRight, Download, Upload 
+  Truck, CreditCard, ArrowRight, Download, Upload,
+  MessageSquare
 } from 'lucide-react';
 import cartService from '../services/cartService';
 
