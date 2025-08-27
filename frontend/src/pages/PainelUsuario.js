@@ -12,6 +12,7 @@ import TransactionList from '../components/TransactionList';
 import transactionService, { TRANSACTION_STATUS, TRANSACTION_TYPES } from '../services/transactionService';
 import ChatInterface from '../components/ChatInterface';
 import messagingService from '../services/messagingService';
+import notificationService, { NOTIFICATION_TYPES, NOTIFICATION_STATUS } from '../services/notificationService';
 
 const PainelUsuario = () => {
   const { user, isAuthenticated } = useAuth();
@@ -86,17 +87,17 @@ const PainelUsuario = () => {
         }
       });
 
-      // Carregar notificações (mock por enquanto)
-      setUserNotifications([
-        {
-          id: 1,
-          type: 'info',
-          title: 'Bem-vindo ao AgroSync',
-          message: 'Seu painel de controle está ativo',
-          read: false,
-          createdAt: new Date().toISOString()
-        }
-      ]);
+      // Inicializar serviço de notificações
+      await notificationService.initialize(user.id);
+      
+      // Carregar notificações reais
+      const notifications = await notificationService.getUserNotifications();
+      setUserNotifications(notifications);
+      
+      // Registrar handler para notificações no app
+      notificationService.registerInAppHandler((notification) => {
+        setUserNotifications(prev => [notification, ...prev]);
+      });
 
     } catch (error) {
       console.error('Erro ao carregar dados do usuário:', error);
@@ -158,6 +159,70 @@ const PainelUsuario = () => {
       await loadUserData(); // Recarregar dados
     } catch (error) {
       console.error('Erro ao atualizar status:', error);
+    }
+  };
+
+  // Funções para gerenciar notificações
+  const handleMarkAsRead = async (notificationId) => {
+    try {
+      await notificationService.markAsRead(notificationId);
+      await loadUserData(); // Recarregar dados
+    } catch (error) {
+      console.error('Erro ao marcar como lida:', error);
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    try {
+      await notificationService.markAllAsRead();
+      await loadUserData(); // Recarregar dados
+    } catch (error) {
+      console.error('Erro ao marcar todas como lidas:', error);
+    }
+  };
+
+  const handleDeleteNotification = async (notificationId) => {
+    try {
+      await notificationService.deleteNotification(notificationId);
+      await loadUserData(); // Recarregar dados
+    } catch (error) {
+      console.error('Erro ao deletar notificação:', error);
+    }
+  };
+
+  const handleClearOldNotifications = async () => {
+    try {
+      const result = await notificationService.clearOldNotifications(30);
+      if (result.success) {
+        await loadUserData(); // Recarregar dados
+        console.log(`${result.deleted} notificações antigas foram removidas`);
+      }
+    } catch (error) {
+      console.error('Erro ao limpar notificações antigas:', error);
+    }
+  };
+
+  const handleNotificationPreferenceChange = async (key, value) => {
+    try {
+      await notificationService.updatePreferences({ [key]: value });
+      // Recarregar dados para atualizar a interface
+      await loadUserData();
+    } catch (error) {
+      console.error('Erro ao atualizar preferência:', error);
+    }
+  };
+
+  const handleSaveAllPreferences = async () => {
+    try {
+      // Salvar preferências de notificação
+      await notificationService.saveUserPreferences();
+      
+      // Aqui você pode adicionar outras preferências (idioma, tema, etc.)
+      
+      alert('Preferências salvas com sucesso!');
+    } catch (error) {
+      console.error('Erro ao salvar preferências:', error);
+      alert('Erro ao salvar preferências. Tente novamente.');
     }
   };
 
@@ -370,42 +435,95 @@ const PainelUsuario = () => {
               </div>
             )}
 
-            {/* Aba: Notificações */}
-            {activeTab === 'notifications' && (
-              <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-800">Notificações</h3>
-                
-                {userNotifications.length === 0 ? (
-                  <div className="text-center py-12 bg-white rounded-lg">
-                    <Bell className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                    <h4 className="text-lg font-medium text-gray-600 mb-2">
-                      Nenhuma notificação
-                    </h4>
-                    <p className="text-gray-500">
-                      Suas notificações aparecerão aqui
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {userNotifications.map((notification) => (
-                      <div key={notification.id} className="bg-white p-4 rounded-lg shadow-sm">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h4 className="font-medium text-gray-800 mb-1">
-                              {notification.title}
-                            </h4>
-                            <p className="text-gray-600">{notification.message}</p>
-                          </div>
-                          <span className="text-xs text-gray-500">
-                            {new Date(notification.createdAt).toLocaleDateString('pt-BR')}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
+                         {/* Aba: Notificações */}
+             {activeTab === 'notifications' && (
+               <div className="space-y-6">
+                 <div className="flex items-center justify-between">
+                   <h3 className="text-lg font-semibold text-gray-800">Notificações</h3>
+                   <div className="flex items-center space-x-2">
+                     <button
+                       onClick={handleMarkAllAsRead}
+                       className="px-3 py-1 text-sm bg-agro-green-600 text-white rounded-lg hover:bg-agro-green-700 transition-colors"
+                     >
+                       Marcar todas como lidas
+                     </button>
+                     <button
+                       onClick={handleClearOldNotifications}
+                       className="px-3 py-1 text-sm bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                     >
+                       Limpar antigas
+                     </button>
+                   </div>
+                 </div>
+                 
+                 {userNotifications.length === 0 ? (
+                   <div className="text-center py-12 bg-white rounded-lg">
+                     <Bell className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                     <h4 className="text-lg font-medium text-gray-600 mb-2">
+                       Nenhuma notificação
+                     </h4>
+                     <p className="text-gray-500">
+                       Suas notificações aparecerão aqui
+                     </p>
+                   </div>
+                 ) : (
+                   <div className="space-y-4">
+                     {userNotifications.map((notification) => (
+                       <div 
+                         key={notification.id} 
+                         className={`bg-white p-4 rounded-lg shadow-sm border-l-4 ${
+                           notification.readAt ? 'border-gray-200' : 'border-agro-green-500'
+                         }`}
+                       >
+                         <div className="flex items-start justify-between">
+                           <div className="flex-1">
+                             <div className="flex items-center space-x-2 mb-2">
+                               <span className="text-lg">{NOTIFICATION_TYPES[notification.type]?.icon || '📢'}</span>
+                               <h4 className="font-medium text-gray-800">
+                                 {notification.title}
+                               </h4>
+                               <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                 NOTIFICATION_TYPES[notification.type]?.color || 'bg-gray-100 text-gray-800'
+                               }`}>
+                                 {NOTIFICATION_TYPES[notification.type]?.name || notification.type}
+                               </span>
+                             </div>
+                             <p className="text-gray-600 mb-2">{notification.message}</p>
+                             <div className="flex items-center space-x-4 text-xs text-gray-500">
+                               <span>Status: {NOTIFICATION_STATUS[notification.status] || notification.status}</span>
+                               <span>Canais: {notification.channels?.map(c => c).join(', ')}</span>
+                             </div>
+                           </div>
+                           <div className="flex flex-col items-end space-y-2">
+                             <span className="text-xs text-gray-500">
+                               {new Date(notification.createdAt).toLocaleDateString('pt-BR')}
+                             </span>
+                             <div className="flex items-center space-x-2">
+                               {!notification.readAt && (
+                                 <button
+                                   onClick={() => handleMarkAsRead(notification.id)}
+                                   className="p-1 text-agro-green-600 hover:bg-agro-green-50 rounded"
+                                   title="Marcar como lida"
+                                 >
+                                   <Eye className="w-4 h-4" />
+                                 </button>
+                               )}
+                               <button
+                                 onClick={() => handleDeleteNotification(notification.id)}
+                                 className="p-1 text-red-600 hover:bg-red-50 rounded"
+                                 title="Deletar"
+                               >
+                                 <Trash className="w-4 h-4" />
+                               </button>
+                             </div>
+                           </div>
+                         </div>
+                       </div>
+                     ))}
+                   </div>
+                 )}
+               </div>
+             )}
 
             {/* Aba: Perfil */}
             {activeTab === 'profile' && (
@@ -477,23 +595,95 @@ const PainelUsuario = () => {
                 
                 <div className="bg-white p-6 rounded-lg shadow-sm">
                   <div className="space-y-6">
-                    <div>
-                      <h4 className="font-medium text-gray-800 mb-4">Notificações</h4>
-                      <div className="space-y-3">
-                        <label className="flex items-center">
-                          <input type="checkbox" className="rounded border-gray-300 text-agro-green-600 focus:ring-agro-green-500" defaultChecked />
-                          <span className="ml-2 text-gray-700">E-mail</span>
-                        </label>
-                        <label className="flex items-center">
-                          <input type="checkbox" className="rounded border-gray-300 text-agro-green-600 focus:ring-agro-green-500" defaultChecked />
-                          <span className="ml-2 text-gray-700">SMS</span>
-                        </label>
-                        <label className="flex items-center">
-                          <input type="checkbox" className="rounded border-gray-300 text-agro-green-600 focus:ring-agro-green-500" defaultChecked />
-                          <span className="ml-2 text-gray-700">Push</span>
-                        </label>
-                      </div>
-                    </div>
+                                         <div>
+                       <h4 className="font-medium text-gray-800 mb-4">Notificações</h4>
+                       <div className="space-y-3">
+                         <label className="flex items-center">
+                           <input 
+                             type="checkbox" 
+                             className="rounded border-gray-300 text-agro-green-600 focus:ring-agro-green-500"
+                             checked={notificationService.userPreferences?.email || false}
+                             onChange={(e) => handleNotificationPreferenceChange('email', e.target.checked)}
+                           />
+                           <span className="ml-2 text-gray-700">E-mail</span>
+                         </label>
+                         <label className="flex items-center">
+                           <input 
+                             type="checkbox" 
+                             className="rounded border-gray-300 text-agro-green-600 focus:ring-agro-green-500"
+                             checked={notificationService.userPreferences?.sms || false}
+                             onChange={(e) => handleNotificationPreferenceChange('sms', e.target.checked)}
+                           />
+                           <span className="ml-2 text-gray-700">SMS</span>
+                         </label>
+                         <label className="flex items-center">
+                           <input 
+                             type="checkbox" 
+                             className="rounded border-gray-300 text-agro-green-600 focus:ring-agro-green-500"
+                             checked={notificationService.userPreferences?.push || false}
+                             onChange={(e) => handleNotificationPreferenceChange('push', e.target.checked)}
+                           />
+                           <span className="ml-2 text-gray-700">Push</span>
+                         </label>
+                         <label className="flex items-center">
+                           <input 
+                             type="checkbox" 
+                             className="rounded border-gray-300 text-agro-green-600 focus:ring-agro-green-500"
+                             checked={notificationService.userPreferences?.inApp || false}
+                             onChange={(e) => handleNotificationPreferenceChange('inApp', e.target.checked)}
+                           />
+                           <span className="ml-2 text-gray-700">No App</span>
+                         </label>
+                       </div>
+                       
+                       <div className="mt-4">
+                         <label className="block text-sm font-medium text-gray-700 mb-2">
+                           Frequência de Notificações
+                         </label>
+                         <select 
+                           className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-agro-green-500 focus:border-agro-green-500"
+                           value={notificationService.userPreferences?.frequency || 'immediate'}
+                           onChange={(e) => handleNotificationPreferenceChange('frequency', e.target.value)}
+                         >
+                           <option value="immediate">Imediata</option>
+                           <option value="hourly">A cada hora</option>
+                           <option value="daily">Diária</option>
+                         </select>
+                       </div>
+                       
+                       <div className="mt-4">
+                         <label className="flex items-center">
+                           <input 
+                             type="checkbox" 
+                             className="rounded border-gray-300 text-agro-green-600 focus:ring-agro-green-500"
+                             checked={notificationService.userPreferences?.quietHours?.enabled || false}
+                             onChange={(e) => handleNotificationPreferenceChange('quietHours', { ...notificationService.userPreferences?.quietHours, enabled: e.target.checked })}
+                           />
+                           <span className="ml-2 text-gray-700">Horário Silencioso</span>
+                         </label>
+                         
+                         {notificationService.userPreferences?.quietHours?.enabled && (
+                           <div className="mt-2 ml-6 space-y-2">
+                             <div className="flex items-center space-x-2">
+                               <span className="text-sm text-gray-600">De:</span>
+                               <input 
+                                 type="time" 
+                                 className="px-2 py-1 border border-gray-300 rounded text-sm"
+                                 value={notificationService.userPreferences?.quietHours?.start || '22:00'}
+                                 onChange={(e) => handleNotificationPreferenceChange('quietHours', { ...notificationService.userPreferences?.quietHours, start: e.target.value })}
+                               />
+                               <span className="text-sm text-gray-600">Até:</span>
+                               <input 
+                                 type="time" 
+                                 className="px-2 py-1 border border-gray-300 rounded text-sm"
+                                 value={notificationService.userPreferences?.quietHours?.end || '08:00'}
+                                 onChange={(e) => handleNotificationPreferenceChange('quietHours', { ...notificationService.userPreferences?.quietHours, end: e.target.value })}
+                               />
+                             </div>
+                           </div>
+                         )}
+                       </div>
+                     </div>
                     
                     <div>
                       <h4 className="font-medium text-gray-800 mb-4">Idioma</h4>
@@ -505,11 +695,14 @@ const PainelUsuario = () => {
                       </select>
                     </div>
                     
-                    <div className="pt-4 border-t border-gray-200">
-                      <button className="px-4 py-2 bg-agro-green-600 text-white rounded-lg hover:bg-agro-green-700 transition-colors">
-                        Salvar Preferências
-                      </button>
-                    </div>
+                                         <div className="pt-4 border-t border-gray-200">
+                       <button 
+                         onClick={handleSaveAllPreferences}
+                         className="px-4 py-2 bg-agro-green-600 text-white rounded-lg hover:bg-agro-green-700 transition-colors"
+                       >
+                         Salvar Preferências
+                       </button>
+                     </div>
                   </div>
                 </div>
               </div>
