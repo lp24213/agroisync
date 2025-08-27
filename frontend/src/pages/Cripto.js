@@ -36,13 +36,27 @@ const Cripto = () => {
   const [paymentAmount, setPaymentAmount] = useState('');
   const [paymentLoading, setPaymentLoading] = useState(false);
 
-  // Buscar dados reais de criptomoedas via CoinGecko API
+  // INTEGRAÇÃO DUPLA: Binance API + CoinGecko failover para garantir dados SEMPRE
   const fetchCryptoData = async () => {
     try {
       setLoading(true);
       setError('');
       
-      // API CoinGecko - Criptomoedas específicas solicitadas
+      // TENTATIVA 1: Binance API (mais rápida e confiável)
+      try {
+        const binanceData = await fetchBinanceData();
+        if (binanceData && binanceData.length > 0) {
+          setCryptoData(binanceData);
+          setError(''); // Limpar qualquer erro anterior
+          fetchChartData('bitcoin'); // Gráfico padrão BTC
+          setLoading(false);
+          return; // Sucesso - sair da função
+        }
+      } catch (binanceError) {
+        console.log('Binance API falhou, tentando CoinGecko...', binanceError);
+      }
+      
+      // TENTATIVA 2: CoinGecko API (fallback)
       const response = await fetch(
         'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum,solana&order=market_cap_desc&sparkline=false&locale=pt'
       );
@@ -50,12 +64,9 @@ const Cripto = () => {
       if (response.ok) {
         const data = await response.json();
         
-        // Verificar se os dados são válidos
         if (data && Array.isArray(data) && data.length > 0) {
           setCryptoData(data);
-          setError(''); // Limpar qualquer erro anterior
-          
-          // Buscar dados do gráfico para Bitcoin por padrão
+          setError('');
           fetchChartData('bitcoin');
         } else {
           throw new Error('Dados inválidos recebidos da API');
@@ -67,22 +78,139 @@ const Cripto = () => {
     } catch (error) {
       console.error('Erro ao buscar dados:', error);
       
-      // Definir erro claro para o usuário
-      setError('Não foi possível carregar os dados. Tente novamente.');
-      
-      // Limpar dados antigos em caso de erro
-      setCryptoData([]);
+      // ÚLTIMO RECURSO: Dados simulados para evitar tela em branco
+      const fallbackData = generateFallbackData();
+      setCryptoData(fallbackData);
+      setError('⚠️ Sem conexão. Atualize a página.');
     } finally {
       setLoading(false);
     }
   };
 
-  // Buscar dados do gráfico para uma criptomoeda específica
+  // Função para buscar dados da Binance API
+  const fetchBinanceData = async () => {
+    const symbols = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT'];
+    const cryptoData = [];
+    
+    for (const symbol of symbols) {
+      try {
+        const response = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`);
+        if (response.ok) {
+          const data = await response.json();
+          
+          // Mapear dados Binance para formato padrão
+          const crypto = {
+            id: symbol.toLowerCase().replace('usdt', ''),
+            symbol: symbol.replace('USDT', ''),
+            name: getCryptoName(symbol),
+            current_price: parseFloat(data.lastPrice),
+            price_change_percentage_24h: parseFloat(data.priceChangePercent),
+            total_volume: parseFloat(data.volume),
+            market_cap: parseFloat(data.lastPrice) * parseFloat(data.volume), // Aproximação
+            image: getCryptoImage(symbol),
+            last_updated: new Date().toISOString()
+          };
+          
+          cryptoData.push(crypto);
+        }
+      } catch (error) {
+        console.error(`Erro ao buscar ${symbol}:`, error);
+      }
+    }
+    
+    return cryptoData.length === 3 ? cryptoData : null;
+  };
+
+  // Função para gerar dados de fallback (último recurso)
+  const generateFallbackData = () => {
+    const now = new Date();
+    return [
+      {
+        id: 'bitcoin',
+        symbol: 'BTC',
+        name: 'Bitcoin',
+        current_price: 45000 + (Math.random() - 0.5) * 2000,
+        price_change_percentage_24h: -2.5 + (Math.random() - 0.5) * 5,
+        total_volume: 25000000000 + (Math.random() - 0.5) * 5000000000,
+        market_cap: 850000000000 + (Math.random() - 0.5) * 100000000000,
+        image: 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png',
+        last_updated: now.toISOString()
+      },
+      {
+        id: 'ethereum',
+        symbol: 'ETH',
+        name: 'Ethereum',
+        current_price: 2800 + (Math.random() - 0.5) * 200,
+        price_change_percentage_24h: -1.8 + (Math.random() - 0.5) * 4,
+        total_volume: 15000000000 + (Math.random() - 0.5) * 3000000000,
+        market_cap: 320000000000 + (Math.random() - 0.5) * 40000000000,
+        image: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png',
+        last_updated: now.toISOString()
+      },
+      {
+        id: 'solana',
+        symbol: 'SOL',
+        name: 'Solana',
+        current_price: 95 + (Math.random() - 0.5) * 10,
+        price_change_percentage_24h: 1.2 + (Math.random() - 0.5) * 3,
+        total_volume: 8000000000 + (Math.random() - 0.5) * 2000000000,
+        market_cap: 45000000000 + (Math.random() - 0.5) * 8000000000,
+        image: 'https://assets.coingecko.com/coins/images/4128/large/solana.png',
+        last_updated: now.toISOString()
+      }
+    ];
+  };
+
+  // Funções auxiliares para Binance API
+  const getCryptoName = (symbol) => {
+    const names = {
+      'BTCUSDT': 'Bitcoin',
+      'ETHUSDT': 'Ethereum',
+      'SOLUSDT': 'Solana'
+    };
+    return names[symbol] || symbol;
+  };
+
+  const getCryptoImage = (symbol) => {
+    const images = {
+      'BTCUSDT': 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png',
+      'ETHUSDT': 'https://assets.coingecko.com/coins/images/279/large/ethereum.png',
+      'SOLUSDT': 'https://assets.coingecko.com/coins/images/4128/large/solana.png'
+    };
+    return images[symbol] || '';
+  };
+
+  // Buscar dados do gráfico com failover Binance + CoinGecko
   const fetchChartData = async (cryptoId) => {
     try {
       setChartLoading(true);
       
-      // API CoinGecko - Dados do gráfico (7 dias)
+      // TENTATIVA 1: Binance API para dados em tempo real
+      try {
+        const binanceSymbol = getBinanceSymbol(cryptoId);
+        if (binanceSymbol) {
+          const response = await fetch(`https://api.binance.com/api/v3/klines?symbol=${binanceSymbol}&interval=1d&limit=7`);
+          if (response.ok) {
+            const data = await response.json();
+            
+            if (data && Array.isArray(data) && data.length > 0) {
+              // Formatar dados Binance para o gráfico
+              const formattedChartData = data.map(([timestamp, open, high, low, close, volume]) => ({
+                date: new Date(timestamp),
+                price: parseFloat(close) || 0
+              }));
+              
+              setChartData(formattedChartData);
+              setChartLoading(false);
+              return; // Sucesso - sair da função
+            }
+          }
+        }
+      } catch (binanceError) {
+        console.log('Binance gráfico falhou, tentando CoinGecko...', binanceError);
+      }
+      
+      // TENTATIVA 2: CoinGecko API (fallback)
       const response = await fetch(
         `https://api.coingecko.com/api/v3/coins/${cryptoId}/market_chart?vs_currency=usd&days=7&interval=daily`
       );
@@ -90,9 +218,7 @@ const Cripto = () => {
       if (response.ok) {
         const data = await response.json();
         
-        // Verificar se os dados são válidos
-        if (data && data.prices && Array.isArray(data.prices) && data.prices.length > 0) {
-          // Formatar dados para o gráfico
+        if (data && data.prices && Array.isArray(data.prices) && data.length > 0) {
           const formattedChartData = data.prices.map(([timestamp, price]) => ({
             date: new Date(timestamp),
             price: parseFloat(price) || 0
@@ -108,19 +234,27 @@ const Cripto = () => {
       
     } catch (error) {
       console.error('Erro ao buscar dados do gráfico:', error);
-      
-      // Em caso de erro, limpar dados do gráfico
       setChartData(null);
     } finally {
       setChartLoading(false);
     }
   };
 
-  // Atualizar dados a cada 1 minuto para cotações em tempo real
+  // Função auxiliar para converter ID da cripto para símbolo Binance
+  const getBinanceSymbol = (cryptoId) => {
+    const symbols = {
+      'bitcoin': 'BTCUSDT',
+      'ethereum': 'ETHUSDT',
+      'solana': 'SOLUSDT'
+    };
+    return symbols[cryptoId] || null;
+  };
+
+  // Atualizar dados a cada 30 segundos para cotações em tempo real
   useEffect(() => {
     fetchCryptoData();
     
-    const interval = setInterval(fetchCryptoData, 60000); // 1 minuto
+    const interval = setInterval(fetchCryptoData, 30000); // 30 segundos
     
     return () => clearInterval(interval);
   }, []);
@@ -308,7 +442,7 @@ const Cripto = () => {
             transition={{ duration: 1, ease: "easeOut" }}
             className="text-4xl md:text-6xl font-bold mb-6 text-slate-800"
           >
-            {t('crypto.title')}
+            Criptomoedas
           </motion.h1>
           
           <motion.p
@@ -317,7 +451,7 @@ const Cripto = () => {
             transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
             className="text-xl text-slate-600 max-w-3xl mx-auto mb-8"
           >
-            {t('crypto.subtitle')}
+            Acompanhe cotações em tempo real das principais criptomoedas
           </motion.p>
           
           <motion.div
@@ -356,7 +490,7 @@ const Cripto = () => {
             className="text-center mb-12"
           >
             <h2 className="text-3xl font-bold text-slate-800 mb-4">Cotações em Tempo Real</h2>
-            <p className="text-slate-600 max-w-2xl mx-auto">Acompanhe os preços das principais criptomoedas atualizados em tempo real via CoinGecko</p>
+            <p className="text-slate-600 max-w-2xl mx-auto">Acompanhe os preços das principais criptomoedas atualizados em tempo real via Binance e CoinGecko</p>
           </motion.div>
 
           {loading ? (
@@ -366,7 +500,7 @@ const Cripto = () => {
               className="text-center py-12"
             >
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-slate-600"></div>
-              <p className="mt-4 text-slate-600">{t('common.loading')}</p>
+              <p className="mt-4 text-slate-600">Carregando...</p>
             </motion.div>
           ) : error ? (
             <motion.div
@@ -379,7 +513,7 @@ const Cripto = () => {
                 onClick={fetchCryptoData}
                 className="px-6 py-3 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors duration-300"
               >
-                {t('common.tryAgain')}
+                Tentar Novamente
               </button>
             </motion.div>
           ) : (
@@ -579,10 +713,10 @@ const Cripto = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl font-bold text-slate-800 mb-4">
-              {t('crypto.connectWallet')}
+              Conectar Carteira
             </h2>
             <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-              {t('crypto.wallet.description')}
+              Gerencie seus ativos digitais de forma segura
             </p>
           </motion.div>
 
@@ -596,13 +730,13 @@ const Cripto = () => {
               className="bg-white rounded-2xl shadow-lg p-8 border border-slate-200"
             >
               <h3 className="text-2xl font-bold text-slate-800 mb-6">
-                {t('crypto.wallet.connection')}
+                Conexão de Carteira
               </h3>
               
               {!metamaskConnected ? (
                 <div className="space-y-4">
                   <p className="text-slate-600 mb-6">
-                    Conecte sua carteira MetaMask para gerenciar criptomoedas e visualizar transações
+                    Conecte sua carteira digital para gerenciar seus ativos
                   </p>
                   
                   <button
