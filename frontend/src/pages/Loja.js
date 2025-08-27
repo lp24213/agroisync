@@ -4,7 +4,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { usePayment } from '../contexts/PaymentContext';
 import { useTranslation } from 'react-i18next';
-import { 
+import {
   Store, Package, Truck, Users, CheckCircle, ArrowRight, 
   UserPlus, Building2, Search, Star, ShoppingCart
 } from 'lucide-react';
@@ -64,19 +64,19 @@ const Loja = () => {
 
   return (
     <div className="min-h-screen bg-white text-slate-900">
-      {/* Hero Section - Animação de entrada */}
+      {/* Hero Section - DESIGN PREMIUM */}
       <motion.section
         initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="py-20 px-4 bg-gradient-to-br from-slate-50 via-white to-blue-50"
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+        className="py-24 px-4 bg-gradient-to-br from-slate-50 via-white to-blue-50"
       >
         <div className="max-w-7xl mx-auto text-center">
           <motion.h1
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-5xl md:text-6xl font-bold text-slate-800 mb-6"
+            className="text-5xl md:text-6xl font-bold text-gradient-agro mb-6"
           >
             🛒 {t('store.title')}
           </motion.h1>
@@ -92,12 +92,12 @@ const Loja = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
+            className="flex flex-col sm:flex-row gap-6 justify-center"
           >
             <motion.button
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors duration-300 flex items-center justify-center space-x-2"
+              className="btn-premium px-10 py-5 text-lg flex items-center justify-center space-x-2"
             >
               <span>{t('store.cta.primary')}</span>
               <ArrowRight className="w-5 h-5" />
@@ -185,7 +185,7 @@ const Loja = () => {
               </motion.div>
             ))}
           </motion.div>
-        </div>
+          </div>
       </motion.section>
 
       {/* Products Section - Animação de entrada */}
@@ -263,7 +263,7 @@ const Loja = () => {
                   >
                     {t('store.products.buy')}
                   </motion.button>
-                </div>
+            </div>
               </motion.div>
             ))}
           </motion.div>

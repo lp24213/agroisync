@@ -148,7 +148,7 @@ const Cadastro = () => {
   return (
     <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
+        {/* Header - DESIGN PREMIUM */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -156,11 +156,14 @@ const Cadastro = () => {
           className="text-center mb-8"
         >
           <div className="flex justify-center">
-            <div className="w-20 h-20 bg-gradient-to-r from-slate-600 to-slate-700 rounded-2xl flex items-center justify-center">
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              className="w-20 h-20 bg-gradient-to-r from-agro-green to-tech-green rounded-2xl flex items-center justify-center shadow-lg"
+            >
               <span className="text-4xl">🌾</span>
-            </div>
+            </motion.div>
           </div>
-          <h2 className="mt-6 text-4xl font-bold text-slate-900">
+          <h2 className="mt-6 text-4xl font-bold text-gradient-agro">
             Criar Conta
           </h2>
           <p className="mt-2 text-lg text-slate-600">

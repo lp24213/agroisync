@@ -42,8 +42,8 @@ const Planos = () => {
         t('plans.lojaBasico.limitations.chat_messages'),
         t('plans.lojaBasico.limitations.no_private_chat')
       ],
-      color: 'from-slate-500 to-slate-600',
-      buttonColor: 'bg-slate-600 hover:bg-slate-700',
+      color: 'from-agro-green to-tech-green',
+      buttonColor: 'btn-premium',
       popular: false
     },
     {
@@ -61,8 +61,8 @@ const Planos = () => {
         t('plans.lojaPro.features.store_highlight')
       ],
       limitations: [],
-      color: 'from-slate-600 to-slate-700',
-      buttonColor: 'bg-slate-600 hover:bg-slate-700',
+      color: 'from-agro-gold to-tech-blue',
+      buttonColor: 'btn-premium',
       popular: true
     },
     {
@@ -80,8 +80,8 @@ const Planos = () => {
         t('plans.lojaEnterprise.features.dedicated_manager')
       ],
       limitations: [],
-      color: 'from-slate-700 to-slate-800',
-      buttonColor: 'bg-slate-700 hover:bg-slate-800',
+      color: 'from-tech-blue to-agro-green',
+      buttonColor: 'btn-premium',
       popular: false
     }
   ];

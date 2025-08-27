@@ -49,10 +49,10 @@ const Home = () => {
     } catch (error) {
       console.error('Erro ao obter localização por IP:', error);
       // Fallback para localização padrão (Sinop, MT)
-      setUserLocation({
+            setUserLocation({
         city: 'Sinop',
         region: 'MT',
-        country: 'BR',
+              country: 'BR',
         lat: -11.8647,
         lon: -55.5036,
         ip: 'fallback'
@@ -283,7 +283,7 @@ const Home = () => {
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=pt_br`
       );
-      
+
       if (response.ok) {
         const data = await response.json();
         
@@ -517,9 +517,9 @@ const Home = () => {
           >
             <div className="flex items-center animate-marquee-fast">
               <div className="flex items-center space-x-6 min-w-max">
-                {stockData.map((stock, index) => (
-                  <motion.div
-                    key={stock.symbol}
+              {stockData.map((stock, index) => (
+                <motion.div
+                  key={stock.symbol}
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.05 }}
@@ -527,14 +527,14 @@ const Home = () => {
                     className="flex items-center space-x-3 bg-white px-4 py-3 rounded-xl shadow-md border border-slate-200 hover:shadow-lg transition-all duration-300 min-w-[180px] card-premium"
                   >
                     <div className="text-sm font-bold text-slate-800">
-                      {stock.symbol}
-                    </div>
+                    {stock.symbol}
+                  </div>
                     <div className="text-sm font-semibold text-slate-900">
                       R$ {stock.price.toFixed(2)}
-                    </div>
-                    <div className="text-xs">
-                      {formatChange(stock.change)}
-                    </div>
+                  </div>
+                  <div className="text-xs">
+                    {formatChange(stock.change)}
+                  </div>
                     
                     {/* Indicador de tendência - Animado */}
                     <motion.div 
@@ -569,10 +569,10 @@ const Home = () => {
                     </div>
                     <div className="text-sm font-semibold text-slate-900">
                       R$ {stock.price.toFixed(2)}
-                    </div>
+                  </div>
                     <div className="text-xs">
                       {formatChange(stock.change)}
-                    </div>
+                  </div>
                     
                     {/* Indicador de tendência - Animado */}
                     <motion.div 
@@ -587,9 +587,9 @@ const Home = () => {
                         ease: "easeInOut" 
                       }}
                     ></motion.div>
-                  </motion.div>
-                ))}
-              </div>
+                </motion.div>
+              ))}
+            </div>
             </div>
             
             {/* Indicador de dados em tempo real */}

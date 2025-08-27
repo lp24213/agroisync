@@ -65,7 +65,7 @@ const Cripto = () => {
         const data = await response.json();
         
         if (data && Array.isArray(data) && data.length > 0) {
-          setCryptoData(data);
+      setCryptoData(data);
           setError('');
           fetchChartData('bitcoin');
         } else {
@@ -503,18 +503,18 @@ const Cripto = () => {
               <p className="mt-4 text-slate-600">Carregando...</p>
             </motion.div>
           ) : error ? (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
               className="text-center py-12"
-            >
+          >
               <p className="text-red-600 mb-4">{error}</p>
-              <button
-                onClick={fetchCryptoData}
+                <button
+                  onClick={fetchCryptoData}
                 className="px-6 py-3 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors duration-300"
-              >
-                Tentar Novamente
-              </button>
+                >
+                  Tentar Novamente
+                </button>
             </motion.div>
           ) : (
             <motion.div
@@ -523,7 +523,7 @@ const Cripto = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             >
-              {cryptoData.map((crypto, index) => (
+                    {cryptoData.map((crypto, index) => (
                 <motion.div
                   key={crypto.id}
                   initial={{ opacity: 0, y: 20, scale: 0.9 }}
@@ -535,17 +535,17 @@ const Cripto = () => {
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-3">
                       <img src={crypto.image} alt={crypto.name} className="w-8 h-8 rounded-full" />
-                      <div>
+                            <div>
                         <h3 className="font-bold text-slate-800">{crypto.name}</h3>
                         <p className="text-sm text-slate-500">{crypto.symbol.toUpperCase()}</p>
-                      </div>
-                    </div>
+                            </div>
+                          </div>
                     <div className="text-right">
                       <div className="text-lg font-bold text-slate-800">
                         ${crypto.current_price ? crypto.current_price.toFixed(2) : '0.00'}
                       </div>
                       <div className="text-sm">
-                        {formatChange(crypto.price_change_percentage_24h)}
+                          {formatChange(crypto.price_change_percentage_24h)}
                       </div>
                     </div>
                   </div>
@@ -608,7 +608,7 @@ const Cripto = () => {
                   </div>
                 </button>
               ))}
-            </div>
+              </div>
           </motion.div>
 
           {/* Gráfico TradingView */}
@@ -637,11 +637,11 @@ const Cripto = () => {
                     {cryptoData.find(c => c.id === selectedCrypto) && 
                       formatChange(cryptoData.find(c => c.id === selectedCrypto).price_change_percentage_24h)
                     }
+                    </div>
+                  </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            
+
             {/* TradingView Widget */}
             <div className="h-96 w-full">
               <iframe
@@ -651,8 +651,8 @@ const Cripto = () => {
                 allowTransparency={true}
                 allowFullScreen={true}
                 title={`Gráfico ${getTradingViewSymbol(selectedCrypto)}`}
-              />
-            </div>
+                      />
+                    </div>
           </motion.div>
 
           {/* Estatísticas em Tempo Real */}
@@ -723,7 +723,7 @@ const Cripto = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             
             {/* Wallet Connection */}
-            <motion.div
+              <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
@@ -731,7 +731,7 @@ const Cripto = () => {
             >
               <h3 className="text-2xl font-bold text-slate-800 mb-6">
                 Conexão de Carteira
-              </h3>
+                </h3>
               
               {!metamaskConnected ? (
                 <div className="space-y-4">
@@ -777,8 +777,8 @@ const Cripto = () => {
                         <h4 className="font-semibold text-emerald-800">Carteira Conectada</h4>
                         <p className="text-sm text-emerald-600">Endereço: {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}</p>
                       </div>
-                    </div>
-                  </div>
+          </div>
+        </div>
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div className="text-center p-4 bg-slate-50 rounded-lg">
@@ -788,7 +788,7 @@ const Cripto = () => {
                     <div className="text-center p-4 bg-slate-50 rounded-lg">
                       <p className="text-sm text-slate-600">Rede</p>
                       <p className="text-xl font-bold text-slate-800">Ethereum</p>
-                    </div>
+          </div>
                   </div>
                   
                   <button
@@ -832,8 +832,8 @@ const Cripto = () => {
                 <div className="text-center py-8">
                   <Wallet className="w-12 h-12 text-slate-400 mx-auto mb-4" />
                   <p className="text-slate-600">Conecte sua carteira para ver o histórico</p>
-                </div>
-              )}
+        </div>
+      )}
             </motion.div>
           </div>
         </div>

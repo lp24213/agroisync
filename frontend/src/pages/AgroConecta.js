@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -204,21 +205,30 @@ const AgroConecta = () => {
   // Usuário logado - mostrar fretes + painel secreto
   return (
     <div className="min-h-screen bg-white text-slate-900">
-      {/* Header com botão do painel secreto */}
-      <div className="bg-slate-100 border-b border-slate-200">
+      {/* Header com botão do painel secreto - DESIGN PREMIUM */}
+      <div className="bg-slate-100 border-b-2 border-gradient-to-r from-agro-green to-agro-gold">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-slate-800">AgroConecta - Sistema de Fretes</h1>
+            <motion.h1 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-2xl font-bold text-gradient-agro"
+            >
+              AgroConecta - Sistema de Fretes
+            </motion.h1>
             
             <div className="flex items-center space-x-4">
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={toggleSecretPanel}
-                className="flex items-center space-x-2 px-4 py-2 bg-slate-600 hover:bg-slate-700 text-white rounded-lg transition-all duration-300"
+                className="btn-premium flex items-center space-x-2 px-4 py-2"
               >
                 <User className="w-5 h-5" />
                 <span>Meu Painel</span>
                 {showSecretPanel && <span className="ml-2">←</span>}
-              </button>
+              </motion.button>
               
               <div className="relative">
                 <Bell className="w-6 h-6 text-amber-500 cursor-pointer" />

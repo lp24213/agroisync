@@ -249,12 +249,15 @@ const Admin = () => {
           transition={{ duration: 0.6 }}
           className="w-full max-w-md"
         >
-          {/* Logo e Título */}
+          {/* Logo e Título - DESIGN PREMIUM */}
           <div className="text-center mb-8">
-            <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-r from-slate-600 to-slate-700 flex items-center justify-center">
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-r from-agro-green to-tech-green flex items-center justify-center shadow-lg"
+            >
               <Building className="w-10 h-10 text-white" />
-            </div>
-            <h1 className="text-3xl font-bold text-slate-800 mb-2">Painel Administrativo</h1>
+            </motion.div>
+            <h1 className="text-3xl font-bold text-gradient-agro mb-2">Painel Administrativo</h1>
             <p className="text-slate-600">Agroisync - Sistema de Gestão</p>
           </div>
 

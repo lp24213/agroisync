@@ -64,11 +64,14 @@ const Login = () => {
           className="text-center"
         >
           <div className="flex justify-center">
-            <div className="w-16 h-16 bg-gradient-to-r from-slate-600 to-slate-700 rounded-2xl flex items-center justify-center">
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              className="w-16 h-16 bg-gradient-to-r from-agro-green to-tech-green rounded-2xl flex items-center justify-center shadow-lg"
+            >
               <span className="text-3xl">🌾</span>
-            </div>
+            </motion.div>
           </div>
-          <h2 className="mt-6 text-3xl font-bold text-slate-900">
+          <h2 className="mt-6 text-3xl font-bold text-gradient-agro">
             Bem-vindo de volta
           </h2>
           <p className="mt-2 text-sm text-slate-600">

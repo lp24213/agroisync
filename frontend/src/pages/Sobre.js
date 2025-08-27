@@ -19,28 +19,28 @@ const Sobre = () => {
 
   const values = [
     {
-      icon: <Lightbulb className="w-8 h-8" />,
+      icon: <Lightbulb className="w-8 h-8 text-agro-gold" />,
       title: t('about.values.innovation.title'),
       description: t('about.values.innovation.description'),
-      color: 'from-slate-500 to-slate-600'
+      color: 'from-agro-gold to-tech-green'
     },
     {
-      icon: <Shield className="w-8 h-8" />,
+      icon: <Shield className="w-8 h-8 text-agro-green" />,
       title: t('about.values.trust.title'),
       description: t('about.values.trust.description'),
-      color: 'from-slate-600 to-slate-700'
+      color: 'from-agro-green to-tech-blue'
     },
     {
-      icon: <Globe className="w-8 h-8" />,
+      icon: <Globe className="w-8 h-8 text-tech-blue" />,
       title: t('about.values.global.title'),
       description: t('about.values.global.description'),
-      color: 'from-slate-700 to-slate-800'
+      color: 'from-tech-blue to-agro-green'
     },
     {
-      icon: <Users className="w-8 h-8" />,
+      icon: <Users className="w-8 h-8 text-agro-brown" />,
       title: t('about.values.community.title'),
       description: t('about.values.community.description'),
-      color: 'from-slate-800 to-slate-900'
+      color: 'from-agro-brown to-agro-gold'
     }
   ];
 
@@ -115,7 +115,7 @@ const Sobre = () => {
             </div>
           )}
         </div>
-
+        
         <div className="relative max-w-7xl mx-auto text-center">
           {/* Main Title */}
           <motion.h1
@@ -152,7 +152,7 @@ const Sobre = () => {
       {/* Nossa Missão Section */}
       <section className="py-20 px-4">
         <div className="max-w-6xl mx-auto">
-          <motion.div
+            <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -162,11 +162,11 @@ const Sobre = () => {
               {t('about.mission.title')}
             </h2>
             <p className={`text-xl max-w-4xl mx-auto leading-relaxed ${isDark ? 'text-gray-300' : 'text-slate-600'}`}>
-              {t('about.mission.description')}
-            </p>
-          </motion.div>
+                {t('about.mission.description')}
+              </p>
+            </motion.div>
 
-          <motion.div
+            <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -178,8 +178,8 @@ const Sobre = () => {
                   {t('about.mission.point1')}
                 </h3>
                 <p className={`text-lg leading-relaxed ${isDark ? 'text-gray-300' : 'text-slate-600'}`}>
-                  {t('about.mission.vision')}
-                </p>
+                {t('about.mission.vision')}
+              </p>
               </div>
               <div className="text-center">
                 <div className="w-24 h-24 mx-auto mb-4 rounded-2xl bg-gradient-to-r from-slate-500 to-slate-600 flex items-center justify-center text-white">
@@ -190,7 +190,7 @@ const Sobre = () => {
                 </p>
               </div>
             </div>
-          </motion.div>
+            </motion.div>
         </div>
       </section>
 
@@ -277,8 +277,8 @@ const Sobre = () => {
               {t('about.timeline.subtitle')}
             </p>
           </motion.div>
-
-          <div className="space-y-12">
+            
+            <div className="space-y-12">
             {[
               {
                 year: '2020',
@@ -311,8 +311,8 @@ const Sobre = () => {
                 icon: <Star className="w-8 h-8" />
               }
             ].map((item, index) => (
-              <motion.div
-                key={index}
+                <motion.div
+                  key={index}
                 initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.2 }}
@@ -320,25 +320,25 @@ const Sobre = () => {
               >
                 <div className="flex-1 text-center">
                   <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full bg-white shadow-lg border-4 border-slate-200 ${isDark ? 'text-gray-800' : 'text-slate-600'}`}>
-                    {item.icon}
-                  </div>
+                          {item.icon}
+                        </div>
                 </div>
                 
                 <div className="flex-1 px-8">
                   <div className={`text-center ${index % 2 === 0 ? 'text-left' : 'text-right'}`}>
                     <div className={`inline-block px-4 py-2 rounded-full text-sm font-bold mb-3 ${isDark ? 'bg-gray-700 text-white' : 'bg-slate-600 text-white'}`}>
                       {item.year}
-                    </div>
+                      </div>
                     <h3 className={`text-2xl font-bold mb-3 ${isDark ? 'text-white' : 'text-slate-800'}`}>
                       {item.title}
                     </h3>
                     <p className={`${isDark ? 'text-gray-300' : 'text-slate-600'}`}>
                       {item.description}
                     </p>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))}
           </div>
         </div>
       </section>
@@ -410,10 +410,10 @@ const Sobre = () => {
       {/* Statistics Section */}
       <section className="py-20 px-4">
         <div className="max-w-6xl mx-auto">
-          <motion.div
+            <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+              transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
             <h2 className={`text-4xl font-bold mb-4 ${isDark ? 'text-white' : 'text-slate-800'}`}>
@@ -422,8 +422,8 @@ const Sobre = () => {
             <p className={`text-xl max-w-3xl mx-auto ${isDark ? 'text-gray-300' : 'text-slate-600'}`}>
               {t('about.stats.subtitle')}
             </p>
-          </motion.div>
-
+            </motion.div>
+            
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
               { value: '10K+', label: t('about.stats.users'), icon: <Users className="w-8 h-8" /> },
@@ -431,14 +431,14 @@ const Sobre = () => {
               { value: '2K+', label: t('about.stats.freights'), icon: <Truck className="w-8 h-8" /> },
               { value: 'R$ 50M+', label: t('about.stats.transactions'), icon: <DollarSign className="w-8 h-8" /> }
             ].map((stat, index) => (
-              <motion.div
+            <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 whileHover={{ scale: 1.05 }}
-                className="text-center"
-              >
+              className="text-center"
+            >
                 <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-white shadow-lg flex items-center justify-center text-slate-600">
                   {stat.icon}
                 </div>
@@ -448,7 +448,7 @@ const Sobre = () => {
                 <div className="text-slate-600">
                   {stat.label}
                 </div>
-              </motion.div>
+            </motion.div>
             ))}
           </div>
         </div>

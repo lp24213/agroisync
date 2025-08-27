@@ -74,21 +74,24 @@ const Navbar = () => {
 
   return (
     <>
-      {/* Navbar */}
+      {/* Navbar Premium */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled 
-          ? 'bg-white/95 backdrop-blur-md shadow-card border-b border-slate-200' 
+          ? 'bg-white/95 backdrop-blur-md shadow-lg border-b-2 border-gradient-to-r from-agro-green to-agro-gold' 
           : 'bg-white/80 backdrop-blur-sm'
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             
-            {/* Logo */}
+            {/* Logo Premium */}
             <Link to="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-slate-600 to-slate-700 rounded-lg flex items-center justify-center">
+              <motion.div 
+                whileHover={{ scale: 1.05 }}
+                className="w-8 h-8 bg-gradient-to-r from-agro-green to-tech-green rounded-lg flex items-center justify-center shadow-md"
+              >
                 <Leaf className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-xl font-bold text-slate-800">AgroSync</span>
+              </motion.div>
+              <span className="text-xl font-bold text-gradient-agro">AgroSync</span>
             </Link>
 
             {/* Desktop Navigation */}

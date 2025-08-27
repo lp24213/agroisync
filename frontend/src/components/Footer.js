@@ -19,10 +19,13 @@ const Footer = () => {
 
   return (
     <footer className={`relative ${isDark ? 'bg-black text-white' : 'bg-slate-900 text-white'}`}>
-      {/* Background Pattern */}
+      {/* Background Pattern Premium */}
       <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-400 to-blue-500"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-agro-green via-agro-gold to-tech-blue"></div>
       </div>
+      
+      {/* Linha superior premium */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-agro-green via-agro-gold to-tech-green"></div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -35,11 +38,14 @@ const Footer = () => {
               className="mb-6"
             >
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-slate-500 to-slate-600 flex items-center justify-center">
+                <motion.div 
+                  whileHover={{ scale: 1.05 }}
+                  className="w-12 h-12 rounded-xl bg-gradient-to-r from-agro-green to-tech-green flex items-center justify-center shadow-md"
+                >
                   <span className="text-white font-bold text-xl">A</span>
-                </div>
+                </motion.div>
                 <div>
-                  <h3 className="text-2xl font-bold">Agroisync</h3>
+                  <h3 className="text-2xl font-bold text-gradient-agro">Agroisync</h3>
                   <p className="text-slate-400 text-sm">{t('footer.tagline')}</p>
                 </div>
               </div>
