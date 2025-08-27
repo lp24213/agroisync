@@ -5,6 +5,7 @@ import {
   AlertTriangle, Calendar, DollarSign, Package, Truck 
 } from 'lucide-react';
 import { TRANSACTION_STATUS, TRANSACTION_TYPES } from '../services/transactionService';
+import EscrowBadge from './EscrowBadge';
 
 const TransactionList = ({ transactions, title, emptyMessage, onViewTransaction, onSendMessage }) => {
   const [expandedTransaction, setExpandedTransaction] = useState(null);
@@ -218,6 +219,13 @@ const TransactionList = ({ transactions, title, emptyMessage, onViewTransaction,
                     </div>
                   </div>
                 )}
+
+                {/* Badge de Escrow */}
+                <div className="pt-4 border-t border-slate-200">
+                  <div className="flex items-center justify-center">
+                    <EscrowBadge showInfo={true} size="small" />
+                  </div>
+                </div>
 
                 {/* Ações */}
                 <div className="flex space-x-3 pt-4 border-t border-slate-200">

@@ -15,6 +15,7 @@ import CartWidget from '../components/CartWidget';
 import productService, { PRODUCT_CATEGORIES, PRODUCT_STATUS } from '../services/productService';
 import cartService from '../services/cartService';
 import transactionService, { TRANSACTION_STATUS, TRANSACTION_TYPES } from '../services/transactionService';
+import EscrowBadge from '../components/EscrowBadge';
 
 const Loja = () => {
   const { user, isAuthenticated, isAdmin } = useAuth();
