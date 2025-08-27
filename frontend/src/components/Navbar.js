@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import NotificationManager from './NotificationManager';
+import MessagingCenter from './MessagingCenter';
 
 const Navbar = () => {
   const { isDark, toggleTheme } = useTheme();
@@ -24,6 +25,7 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+  const [showMessagingCenter, setShowMessagingCenter] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -115,6 +117,17 @@ const Navbar = () => {
 
             {/* Right Side Actions */}
             <div className="flex items-center space-x-4">
+              
+              {/* Messaging Center */}
+              {user && (
+                <button
+                  onClick={() => setShowMessagingCenter(true)}
+                  className="relative p-2 text-gray-600 hover:text-gray-800 transition-colors"
+                  title="Mensageria"
+                >
+                  <MessageSquare className="w-6 h-6" />
+                </button>
+              )}
               
               {/* Notification Manager */}
               {user && (
@@ -316,8 +329,14 @@ const Navbar = () => {
         </AnimatePresence>
       </nav>
 
-      {/* Spacer for fixed navbar */}
-      <div className="h-16"></div>
+      {/* Messaging Center */}
+      {user && (
+        <MessagingCenter
+          userId={user.id}
+          isOpen={showMessagingCenter}
+          onClose={() => setShowMessagingCenter(false)}
+        />
+      )}
     </>
   );
 };
