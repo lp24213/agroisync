@@ -193,86 +193,117 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
           className="text-center"
         >
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-agro-green mx-auto mb-4"></div>
-          <p className="text-gray-600">Carregando dashboard...</p>
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+            className="w-16 h-16 border-4 border-agro-green border-t-transparent rounded-full mx-auto mb-4"
+          />
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="text-gray-600 text-lg"
+          >
+            Carregando dashboard...
+          </motion.p>
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header do Dashboard */}
-      <motion.header
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-agro-green to-agro-yellow rounded-full flex items-center justify-center">
-                <User className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  Painel de Controle
-                </h1>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Bem-vindo, {user?.name || 'Usuário'}
-                </p>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                <Bell className="w-5 h-5" />
-              </button>
-              <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                <Settings className="w-5 h-5" />
-              </button>
-              <button
-                onClick={handleLogout}
-                className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-red-600 transition-colors"
-              >
-                <LogOut className="w-4 h-4" />
-                <span>Sair</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </motion.header>
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-8"
+        >
+          <h1 className="title-premium text-4xl font-bold mb-4">
+            Dashboard AgroSync
+          </h1>
+          <p className="text-lg text-gray-600">
+            Bem-vindo de volta, {user?.name || 'Usuário'}! Acompanhe suas atividades e resultados
+          </p>
+        </motion.div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Estatísticas Rápidas */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8"
+        >
+          {[
+            { icon: Package, label: 'Produtos', value: stats.products, color: 'blue', bg: 'bg-blue-50', text: 'text-blue-600' },
+            { icon: Truck, label: 'Fretes', value: stats.freights, color: 'green', bg: 'bg-green-50', text: 'text-green-600' },
+            { icon: MessageSquare, label: 'Mensagens', value: stats.messages, color: 'purple', bg: 'bg-purple-50', text: 'text-purple-600' },
+            { icon: DollarSign, label: 'Vendas', value: stats.sales, color: 'yellow', bg: 'bg-yellow-50', text: 'text-yellow-600' },
+            { icon: BarChart3, label: 'Receita', value: `R$ ${stats.revenue.toLocaleString('pt-BR')}`, color: 'emerald', bg: 'bg-emerald-50', text: 'text-emerald-600' }
+          ].map((stat, index) => {
+            const Icon = stat.icon;
+            return (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.1 * index }}
+                whileHover={{ 
+                  scale: 1.05,
+                  y: -5,
+                  transition: { duration: 0.2 }
+                }}
+                className={`${stat.bg} rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-all duration-300`}
+              >
+                <Icon className={`w-8 h-8 ${stat.text} mx-auto mb-3`} />
+                <p className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</p>
+                <p className="text-sm text-gray-600">{stat.label}</p>
+              </motion.div>
+            );
+          })}
+        </motion.div>
+
         {/* Navegação por Abas */}
         <motion.nav
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
           className="mb-8"
         >
-          <div className="border-b border-gray-200 dark:border-gray-700">
+          <div className="border-b border-gray-200">
             <div className="flex space-x-8">
-              {tabs.map((tab) => {
+              {[
+                { id: 'overview', name: 'Visão Geral', icon: BarChart3 },
+                { id: 'products', name: 'Produtos', icon: Package },
+                { id: 'freights', name: 'Fretes', icon: Truck },
+                { id: 'messages', name: 'Mensagens', icon: MessageSquare },
+                { id: 'settings', name: 'Configurações', icon: Settings }
+              ].map((tab) => {
                 const Icon = tab.icon;
                 return (
-                  <button
+                  <motion.button
                     key={tab.id}
-                    onClick={() => handleTabChange(tab.id)}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setActiveTab(tab.id)}
                     className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
                       activeTab === tab.id
                         ? 'border-agro-green text-agro-green'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
                     <span>{tab.name}</span>
-                  </button>
+                  </motion.button>
                 );
               })}
             </div>
@@ -290,123 +321,63 @@ const Dashboard = () => {
           >
             {/* Visão Geral */}
             {activeTab === 'overview' && (
-              <div className="space-y-6">
-                {/* Cards de Estatísticas */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    className="card-premium p-6"
-                  >
-                    <div className="flex items-center">
-                      <div className="p-2 bg-blue-100 rounded-lg">
-                        <Package className="w-6 h-6 text-blue-600" />
-                      </div>
-                      <div className="ml-4">
-                        <p className="text-sm font-medium text-gray-600">Produtos Ativos</p>
-                        <p className="text-2xl font-semibold text-gray-900">{stats.products}</p>
-                      </div>
-                    </div>
-                  </motion.div>
-
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    className="card-premium p-6"
-                  >
-                    <div className="flex items-center">
-                      <div className="p-2 bg-green-100 rounded-lg">
-                        <Truck className="w-6 h-6 text-green-600" />
-                      </div>
-                      <div className="ml-4">
-                        <p className="text-sm font-medium text-gray-600">Fretes Ativos</p>
-                        <p className="text-2xl font-semibold text-gray-900">{stats.freights}</p>
-                      </div>
-                    </div>
-                  </motion.div>
-
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    className="card-premium p-6"
-                  >
-                    <div className="flex items-center">
-                      <div className="p-2 bg-purple-100 rounded-lg">
-                        <MessageSquare className="w-6 h-6 text-purple-600" />
-                      </div>
-                      <div className="ml-4">
-                        <p className="text-sm font-medium text-gray-600">Mensagens</p>
-                        <p className="text-2xl font-semibold text-gray-900">{stats.messages}</p>
-                      </div>
-                    </div>
-                  </motion.div>
-
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    className="card-premium p-6"
-                  >
-                    <div className="flex items-center">
-                      <div className="p-2 bg-yellow-100 rounded-lg">
-                        <DollarSign className="w-6 h-6 text-yellow-600" />
-                      </div>
-                      <div className="ml-4">
-                        <p className="text-sm font-medium text-gray-600">Receita Total</p>
-                        <p className="text-2xl font-semibold text-gray-900">{formatCurrency(stats.revenue)}</p>
-                      </div>
-                    </div>
-                  </motion.div>
-                </div>
-
-                {/* Ações Rápidas */}
-                <div className="card-premium p-6">
-                  <h3 className="title-premium text-lg font-semibold mb-4">Ações Rápidas</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Link
-                      to="/cadastro-produto"
-                      className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-agro-green hover:bg-green-50 transition-colors"
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="space-y-8"
+              >
+                {/* Resumo de Atividades */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  className="card-premium p-6"
+                >
+                  <h3 className="title-premium text-xl font-semibold mb-4">Resumo de Atividades</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      className="text-center p-4 bg-blue-50 rounded-lg"
                     >
-                      <Plus className="w-5 h-5 text-agro-green mr-3" />
-                      <div>
-                        <p className="font-medium text-gray-900">Cadastrar Produto</p>
-                        <p className="text-sm text-gray-600">Adicione um novo produto</p>
-                      </div>
-                    </Link>
-
-                    <Link
-                      to="/agroconecta"
-                      className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-agro-green hover:bg-green-50 transition-colors"
+                      <Package className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+                      <p className="text-2xl font-bold text-blue-600">{stats.products}</p>
+                      <p className="text-sm text-blue-600">Produtos Ativos</p>
+                    </motion.div>
+                    
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      className="text-center p-4 bg-green-50 rounded-lg"
                     >
-                      <Truck className="w-5 h-5 text-agro-green mr-3" />
-                      <div>
-                        <p className="font-medium text-gray-900">Anunciar Frete</p>
-                        <p className="text-sm text-gray-600">Cadastre um novo frete</p>
-                      </div>
-                    </Link>
-
-                    <Link
-                      to="/mensageria"
-                      className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-agro-green hover:bg-green-50 transition-colors"
+                      <Truck className="w-8 h-8 text-green-600 mx-auto mb-2" />
+                      <p className="text-2xl font-bold text-green-600">{stats.freights}</p>
+                      <p className="text-sm text-green-600">Fretes Ativos</p>
+                    </motion.div>
+                    
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      className="text-center p-4 bg-purple-50 rounded-lg"
                     >
-                      <MessageSquare className="w-5 h-5 text-agro-green mr-3" />
-                      <div>
-                        <p className="font-medium text-gray-900">Ver Mensagens</p>
-                        <p className="text-sm text-gray-600">Acesse sua caixa de entrada</p>
-                      </div>
-                    </Link>
+                      <MessageSquare className="w-8 h-8 text-purple-600 mx-auto mb-2" />
+                      <p className="text-2xl font-bold text-purple-600">{stats.messages}</p>
+                      <p className="text-sm text-purple-600">Mensagens</p>
+                    </motion.div>
                   </div>
-                </div>
+                </motion.div>
 
-                {/* Atividade Recente */}
-                <div className="card-premium p-6">
-                  <h3 className="title-premium text-lg font-semibold mb-4">Atividade Recente</h3>
-                  <div className="space-y-4">
-                    {notifications.slice(0, 5).map((notification) => (
-                      <div key={notification.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                        <div className={`w-2 h-2 rounded-full ${notification.read ? 'bg-gray-400' : 'bg-agro-green'}`}></div>
-                        <p className="text-sm text-gray-700 flex-1">{notification.message}</p>
-                        <span className="text-xs text-gray-500">{formatDate(notification.timestamp)}</span>
-                      </div>
-                    ))}
+                {/* Gráfico de Receita */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="card-premium p-6"
+                >
+                  <h3 className="title-premium text-xl font-semibold mb-4">Receita dos Últimos 6 Meses</h3>
+                  <div className="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <p className="text-gray-500">Gráfico de Receita (Integração futura com Chart.js)</p>
                   </div>
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
             )}
 
             {/* Meus Produtos */}

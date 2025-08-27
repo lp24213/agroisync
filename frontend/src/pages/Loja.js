@@ -6,7 +6,8 @@ import {
   Building2, Search, Star, ShoppingCart, Leaf, User,
   Eye, Heart, Phone, Mail, Calendar, Package,
   Plus, Edit, Trash, Filter, Grid, List,
-  TrendingUp, DollarSign, MapPin, Clock, Tag, MessageSquare, BarChart3
+  TrendingUp, DollarSign, MapPin, Clock, Tag, MessageSquare, BarChart3,
+  Map, FileText, Shield, Globe
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
@@ -16,6 +17,9 @@ import productService, { PRODUCT_CATEGORIES, PRODUCT_STATUS } from '../services/
 import cartService from '../services/cartService';
 import transactionService, { TRANSACTION_STATUS, TRANSACTION_TYPES } from '../services/transactionService';
 import EscrowBadge from '../components/EscrowBadge';
+import DocumentValidator from '../components/DocumentValidator';
+import baiduMapsService from '../services/baiduMapsService';
+import receitaService from '../services/receitaService';
 
 const Loja = () => {
   const { user, isAuthenticated, isAdmin } = useAuth();
@@ -44,12 +48,31 @@ const Loja = () => {
   const [showCart, setShowCart] = useState(false);
   const [showWishlist, setShowWishlist] = useState(false);
 
+  // Estados para integrações de serviços
+  const [showDocumentValidator, setShowDocumentValidator] = useState(false);
+  const [showLocationValidator, setShowLocationValidator] = useState(false);
+  const [documentValidationResult, setDocumentValidationResult] = useState(null);
+  const [locationValidationResult, setLocationValidationResult] = useState(null);
+  const [isValidatingDocument, setIsValidatingDocument] = useState(false);
+  const [isValidatingLocation, setIsValidatingLocation] = useState(false);
+
   useEffect(() => {
     loadProducts();
     if (isAuthenticated) {
       loadUserData();
     }
+    // Inicializar serviços
+    initializeServices();
   }, [isAuthenticated]);
+
+  const initializeServices = async () => {
+    try {
+      await baiduMapsService.initialize();
+      await receitaService.initialize();
+    } catch (error) {
+      console.error('Erro ao inicializar serviços:', error);
+    }
+  };
 
   useEffect(() => {
     applyFilters();
@@ -102,7 +125,7 @@ const Loja = () => {
     } catch (error) {
       console.error('Erro ao carregar dados do usuário:', error);
     }
-
+  };
 
   const applyFilters = () => {
     let filtered = [...products];
@@ -219,6 +242,36 @@ const Loja = () => {
     } catch (error) {
       console.error('Erro ao processar intenção de compra:', error);
       alert('Erro ao registrar intenção de compra. Tente novamente.');
+    }
+  };
+
+  // Funções de validação de documentos
+  const handleDocumentValidation = async (documents) => {
+    setIsValidatingDocument(true);
+    try {
+      const results = await receitaService.validateDocuments(documents);
+      setDocumentValidationResult(results);
+      setShowDocumentValidator(false);
+    } catch (error) {
+      console.error('Erro na validação de documentos:', error);
+      alert('Erro ao validar documentos. Tente novamente.');
+    } finally {
+      setIsValidatingDocument(false);
+    }
+  };
+
+  // Funções de validação de localização
+  const handleLocationValidation = async (address) => {
+    setIsValidatingLocation(true);
+    try {
+      const result = await baiduMapsService.validateBrazilianAddress(address);
+      setLocationValidationResult(result);
+      setShowLocationValidator(false);
+    } catch (error) {
+      console.error('Erro na validação de localização:', error);
+      alert('Erro ao validar endereço. Tente novamente.');
+    } finally {
+      setIsValidatingLocation(false);
     }
   };
 
@@ -465,6 +518,28 @@ const Loja = () => {
                       </div>
                     </Link>
 
+                    <button
+                      onClick={() => setShowDocumentValidator(true)}
+                      className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-agro-green hover:bg-green-50 transition-colors text-left"
+                    >
+                      <FileText className="w-5 h-5 text-agro-green mr-3" />
+                      <div>
+                        <p className="font-medium text-gray-900">Validar Documentos</p>
+                        <p className="text-sm text-gray-600">CPF, CNPJ e Inscrição Estadual</p>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() => setShowLocationValidator(true)}
+                      className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-agro-green hover:bg-green-50 transition-colors text-left"
+                    >
+                      <Map className="w-5 h-5 text-agro-green mr-3" />
+                      <div>
+                        <p className="font-medium text-gray-900">Validar Endereço</p>
+                        <p className="text-sm text-gray-600">CEP e localização via Baidu Maps</p>
+                      </div>
+                    </button>
+
                     <Link
                       to="/mensageria"
                       className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-agro-green hover:bg-green-50 transition-colors"
@@ -502,135 +577,81 @@ const Loja = () => {
                     </Link>
                   </div>
                   
-                  <div className="space-y-4">
-                    {myProducts.map((product) => (
-                      <div key={product.id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                        <div className="flex-1">
-                          <h4 className="font-semibold text-gray-900 dark:text-white">{product.name}</h4>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">{product.category}</p>
+                  {myProducts.length === 0 ? (
+                    <div className="text-center py-8">
+                      <Package className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                      <p className="text-gray-600 dark:text-gray-400">
+                        Você ainda não cadastrou produtos
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {myProducts.map((product) => (
+                        <div key={product.id} className="border border-gray-200 rounded-lg p-4">
+                          <div className="flex justify-between items-start mb-2">
+                            <h4 className="font-medium text-gray-900 dark:text-white">{product.name}</h4>
+                            <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(product.status)}`}>
+                              {getStatusText(product.status)}
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{product.description}</p>
+                          <div className="flex justify-between items-center">
+                            <span className="font-semibold text-agro-green">{formatCurrency(product.price)}</span>
+                            <div className="flex space-x-2">
+                              <button className="text-blue-600 hover:text-blue-700">
+                                <Edit className="w-4 h-4" />
+                              </button>
+                              <button className="text-red-600 hover:text-red-700">
+                                <Trash className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
                         </div>
-                        <div className="text-center mx-4">
-                          <p className="font-semibold text-agro-green">{formatCurrency(product.price)}</p>
-                          <p className="text-xs text-gray-500">por {product.unit}</p>
-                        </div>
-                        <div className="text-center mx-4">
-                          <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(product.status)}`}>
-                            {getStatusText(product.status)}
-                          </span>
-                        </div>
-                        <div className="text-center mx-4">
-                          <p className="text-sm text-gray-600">👁️ {product.views}</p>
-                          <p className="text-sm text-gray-600">❤️ {product.favorites}</p>
-                        </div>
-                        <div className="flex space-x-2">
-                          <button className="p-2 text-gray-600 hover:text-agro-green transition-colors">
-                            <Eye className="w-4 h-4" />
-                          </button>
-                          <button className="p-2 text-gray-600 hover:text-agro-green transition-colors">
-                            <Edit className="w-4 h-4" />
-                          </button>
-                          <button className="p-2 text-red-600 hover:text-red-700 transition-colors">
-                            <Trash className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Minhas Compras */}
                 <div className="card-premium p-6">
                   <h3 className="title-premium text-lg font-semibold mb-4">Minhas Compras</h3>
-                  <div className="space-y-4">
-                    {myPurchases.map((purchase) => (
-                      <div key={purchase.id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                        <div className="flex-1">
-                          <h4 className="font-semibold text-gray-900 dark:text-white">{purchase.name}</h4>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Vendedor: {purchase.seller}</p>
-                        </div>
-                        <div className="text-center mx-4">
-                          <p className="font-semibold text-agro-green">{formatCurrency(purchase.price)}</p>
-                          <p className="text-xs text-gray-500">Qtd: {purchase.quantity}</p>
-                        </div>
-                        <div className="text-center mx-4">
-                          <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(purchase.status)}`}>
-                            {getStatusText(purchase.status)}
-                          </span>
-                        </div>
-                        <div className="text-center mx-4">
-                          <p className="text-xs text-gray-500">Compra: {formatDate(purchase.purchaseDate)}</p>
-                          {purchase.deliveryDate && (
-                            <p className="text-xs text-gray-500">Entrega: {formatDate(purchase.deliveryDate)}</p>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Estoque */}
-                <div className="card-premium p-6">
-                  <h3 className="title-premium text-lg font-semibold mb-4">Controle de Estoque</h3>
-                  <div className="space-y-4">
-                    {myStock.map((item) => (
-                      <div key={item.id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                        <div className="flex-1">
-                          <h4 className="font-semibold text-gray-900 dark:text-white">{item.name}</h4>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">{item.category}</p>
-                        </div>
-                        <div className="text-center mx-4">
-                          <p className="font-semibold text-gray-900 dark:text-white">{item.currentStock}</p>
-                          <p className="text-xs text-gray-500">{item.unit}</p>
-                        </div>
-                        <div className="text-center mx-4">
-                          <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(item.status)}`}>
-                            {getStatusText(item.status)}
-                          </span>
-                        </div>
-                        <div className="text-center mx-4">
-                          <p className="text-xs text-gray-500">Mín: {item.minStock}</p>
-                          <p className="text-xs text-gray-500">Atualizado: {formatDate(item.lastUpdated)}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Mensagens */}
-                <div className="card-premium p-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="title-premium text-lg font-semibold">Mensagens</h3>
-                    <Link
-                      to="/mensageria"
-                      className="text-sm text-agro-green hover:text-agro-yellow transition-colors"
-                    >
-                      Ver todas →
-                    </Link>
-                  </div>
-                  <div className="space-y-4">
-                    {myMessages.slice(0, 3).map((message) => (
-                      <div key={message.id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-2 mb-1">
-                            <h4 className="font-semibold text-gray-900 dark:text-white">{message.from}</h4>
-                            {message.unread && (
-                              <span className="w-2 h-2 bg-agro-green rounded-full"></span>
-                            )}
+                  
+                  {myPurchases.length === 0 ? (
+                    <div className="text-center py-8">
+                      <ShoppingCart className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                      <p className="text-gray-600 dark:text-gray-400">
+                        Você ainda não fez compras
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {myPurchases.map((purchase) => (
+                        <div key={purchase.id} className="border border-gray-200 rounded-lg p-4">
+                          <div className="flex justify-between items-start mb-2">
+                            <div>
+                              <h4 className="font-medium text-gray-900 dark:text-white">
+                                {purchase.items?.[0]?.name || 'Produto'}
+                              </h4>
+                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                                Vendedor: {purchase.seller?.name || 'N/A'}
+                              </p>
+                            </div>
+                            <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(purchase.status)}`}>
+                              {getStatusText(purchase.status)}
+                            </span>
                           </div>
-                          <p className="font-medium text-gray-800">{message.subject}</p>
-                          <p className="text-sm text-gray-600">{message.preview}</p>
+                          <div className="flex justify-between items-center">
+                            <span className="font-semibold text-agro-green">
+                              {formatCurrency(purchase.total || 0)}
+                            </span>
+                            <span className="text-sm text-gray-500">
+                              {formatDate(purchase.createdAt)}
+                            </span>
+                          </div>
                         </div>
-                        <div className="text-right">
-                          <span className="text-xs text-gray-500">{formatDate(message.timestamp)}</span>
-                          <span className={`ml-2 px-2 py-1 text-xs rounded-full ${
-                            message.type === 'inquiry' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
-                          }`}>
-                            {message.type === 'inquiry' ? 'Consulta' : 'Suporte'}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -638,52 +659,47 @@ const Loja = () => {
             {/* Carrinho */}
             {activeTab === 'cart' && (
               <div className="space-y-6">
-                <h2 className="title-premium text-2xl font-bold">Carrinho de Compras</h2>
+                <h2 className="title-premium text-2xl font-bold">Carrinho de Interesse</h2>
                 
                 {cart.length === 0 ? (
                   <div className="text-center py-12">
                     <ShoppingCart className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                      Seu carrinho está vazio
+                      Carrinho vazio
                     </h3>
                     <p className="text-gray-600 dark:text-gray-400 mb-4">
-                      Adicione produtos para começar suas compras
+                      Adicione produtos ao carrinho para registrar seu interesse
                     </p>
                     <button
                       onClick={() => handleTabChange('marketplace')}
                       className="btn-accent-green"
                     >
-                      Continuar Comprando
+                      Explorar Produtos
                     </button>
                   </div>
                 ) : (
                   <div className="space-y-4">
                     {cart.map((item) => (
                       <div key={item.id} className="card-premium p-4">
-                        <div className="flex items-center space-x-4">
-                          <img
-                            src={item.image}
-                            alt={item.name}
-                            className="w-20 h-20 object-cover rounded-lg"
-                          />
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-gray-900 dark:text-white">{item.name}</h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">{item.seller}</p>
-                            <p className="text-lg font-bold text-agro-green">{formatCurrency(item.price)}</p>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-4">
+                            <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
+                              <Package className="w-8 h-8 text-gray-400" />
+                            </div>
+                            <div>
+                              <h4 className="font-medium text-gray-900 dark:text-white">{item.name}</h4>
+                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                                Vendedor: {item.seller?.name || 'N/A'}
+                              </p>
+                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                                Quantidade: {item.quantity}
+                              </p>
+                            </div>
                           </div>
-                          <div className="flex items-center space-x-2">
-                            <button className="p-1 text-gray-600 hover:text-agro-green transition-colors">
-                              -
-                            </button>
-                            <span className="px-3 py-1 border border-gray-300 rounded">{item.quantity}</span>
-                            <button className="p-1 text-gray-600 hover:text-agro-green transition-colors">
-                              +
-                            </button>
-                          </div>
-                          <div className="text-right">
-                            <p className="font-semibold text-gray-900 dark:text-white">
+                          <div className="flex items-center space-x-4">
+                            <span className="font-semibold text-agro-green">
                               {formatCurrency(item.price * item.quantity)}
-                            </p>
+                            </span>
                             <button
                               onClick={() => removeFromCart(item.id)}
                               className="text-red-600 hover:text-red-700 transition-colors"
@@ -778,6 +794,90 @@ const Loja = () => {
           </motion.div>
         </AnimatePresence>
       </div>
+
+      {/* Modal de Validação de Documentos */}
+      <AnimatePresence>
+        {showDocumentValidator && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            >
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="title-premium text-lg font-semibold">Validação de Documentos</h3>
+                  <button
+                    onClick={() => setShowDocumentValidator(false)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <span className="sr-only">Fechar</span>
+                    <span className="text-2xl">&times;</span>
+                  </button>
+                </div>
+                <DocumentValidator onValidationComplete={handleDocumentValidation} />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Modal de Validação de Localização */}
+      <AnimatePresence>
+        {showLocationValidator && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            >
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="title-premium text-lg font-semibold">Validação de Endereço</h3>
+                  <button
+                    onClick={() => setShowLocationValidator(false)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <span className="sr-only">Fechar</span>
+                    <span className="text-2xl">&times;</span>
+                  </button>
+                </div>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Endereço para Validação
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Digite o endereço completo"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-agro-green focus:border-transparent"
+                    />
+                  </div>
+                  <button
+                    onClick={() => handleLocationValidation({ address: 'Endereço de teste' })}
+                    disabled={isValidatingLocation}
+                    className="btn-accent-green w-full"
+                  >
+                    {isValidatingLocation ? 'Validando...' : 'Validar Endereço'}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

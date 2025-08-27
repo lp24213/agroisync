@@ -7,12 +7,16 @@ import {
   Eye, Route, CreditCard, Settings, LogOut, Bell, MapPin,
   Lock, Package, Search, Filter, Star, Calendar, Weight,
   DollarSign, Shield, CheckCircle, AlertTriangle, TrendingUp,
-  Users, Globe, Award, Zap, Leaf, Building2, ArrowRight
+  Users, Globe, Award, Zap, Leaf, Building2, ArrowRight,
+  Map, FileText, ShieldCheck
 } from 'lucide-react';
 import FreightCard from '../components/FreightCard';
 import FreightFilters from '../components/FreightFilters';
 import freightService, { TRUCK_TYPES, CARGO_TYPES, FREIGHT_STATUS } from '../services/freightService';
 import transactionService from '../services/transactionService';
+import DocumentValidator from '../components/DocumentValidator';
+import baiduMapsService from '../services/baiduMapsService';
+import receitaService from '../services/receitaService';
 
 const AgroConecta = () => {
   const { user, isAdmin, loading } = useAuth();
@@ -68,12 +72,33 @@ const AgroConecta = () => {
     negotiable: true
   });
 
+  // Estados para integrações de serviços
+  const [showDocumentValidator, setShowDocumentValidator] = useState(false);
+  const [showLocationValidator, setShowLocationValidator] = useState(false);
+  const [documentValidationResult, setDocumentValidationResult] = useState(null);
+  const [locationValidationResult, setLocationValidationResult] = useState(null);
+  const [isValidatingDocument, setIsValidatingDocument] = useState(false);
+  const [isValidatingLocation, setIsValidatingLocation] = useState(false);
+  const [originCoordinates, setOriginCoordinates] = useState(null);
+  const [destinationCoordinates, setDestinationCoordinates] = useState(null);
+
   useEffect(() => {
     if (user && !isAdmin) {
       loadUserData();
     }
     loadPublicFreights();
+    // Inicializar serviços
+    initializeServices();
   }, [user, isAdmin]);
+
+  const initializeServices = async () => {
+    try {
+      await baiduMapsService.initialize();
+      await receitaService.initialize();
+    } catch (error) {
+      console.error('Erro ao inicializar serviços:', error);
+    }
+  };
 
   const loadUserData = async () => {
     try {
@@ -101,33 +126,80 @@ const AgroConecta = () => {
         })));
       }
       setUserMessages(allMessages);
-
-      // Carregar histórico (transações completadas)
-      const completedTransactions = freightTransactions.filter(txn => 
-        txn.status === 'COMPLETED'
-      );
-      setUserHistory(completedTransactions.map(txn => ({
-        id: txn.id,
-        origin: txn.shipping?.origin || 'N/A',
-        destination: txn.shipping?.destination || 'N/A',
-        date: txn.updatedAt,
-        status: txn.status,
-        earnings: txn.total
-      })));
-
-      // Perfil do usuário
+      
+      // Carregar perfil do usuário
       setUserProfile({
-        name: user?.name || 'Usuário',
-        email: user?.email || 'usuario@email.com',
-        phone: '(11) 99999-9999',
-        vehicle: 'Truck 3/4 - ABC-1234',
-        plan: 'Premium',
+        name: user.name,
+        email: user.email,
+        phone: user.phone || 'Não informado',
         rating: 4.8,
-        reviews: 127
+        completedFreights: 45,
+        totalEarnings: 12500
       });
-
+      
+      // Carregar histórico
+      setUserHistory([
+        { id: 1, type: 'freight_posted', description: 'Frete São Paulo → Rio de Janeiro', date: '2024-01-15', amount: 1200 },
+        { id: 2, type: 'freight_completed', description: 'Frete Minas Gerais → Paraná', date: '2024-01-10', amount: 800 },
+        { id: 3, type: 'payment_received', description: 'Pagamento recebido', date: '2024-01-08', amount: 800 }
+      ]);
+      
     } catch (error) {
       console.error('Erro ao carregar dados do usuário:', error);
+    }
+  };
+
+  // Funções de validação de documentos
+  const handleDocumentValidation = async (documents) => {
+    setIsValidatingDocument(true);
+    try {
+      const results = await receitaService.validateDocuments(documents);
+      setDocumentValidationResult(results);
+      setShowDocumentValidator(false);
+    } catch (error) {
+      console.error('Erro na validação de documentos:', error);
+      alert('Erro ao validar documentos. Tente novamente.');
+    } finally {
+      setIsValidatingDocument(false);
+    }
+  };
+
+  // Funções de validação de localização
+  const handleLocationValidation = async (address, type) => {
+    setIsValidatingLocation(true);
+    try {
+      const result = await baiduMapsService.validateBrazilianAddress(address);
+      if (type === 'origin') {
+        setOriginCoordinates(result.coordinates);
+        setNewFreight(prev => ({ ...prev, origin: address }));
+      } else if (type === 'destination') {
+        setDestinationCoordinates(result.coordinates);
+        setNewFreight(prev => ({ ...prev, destination: address }));
+      }
+      setLocationValidationResult(result);
+      setShowLocationValidator(false);
+    } catch (error) {
+      console.error('Erro na validação de localização:', error);
+      alert('Erro ao validar endereço. Tente novamente.');
+    } finally {
+      setIsValidatingLocation(false);
+    }
+  };
+
+  // Função para calcular rota entre origem e destino
+  const calculateRoute = async () => {
+    if (originCoordinates && destinationCoordinates) {
+      try {
+        const route = await baiduMapsService.calculateRoute(
+          originCoordinates,
+          destinationCoordinates,
+          'driving'
+        );
+        console.log('Rota calculada:', route);
+        // Aqui você pode exibir a rota no mapa ou em uma interface
+      } catch (error) {
+        console.error('Erro ao calcular rota:', error);
+      }
     }
   };
 
@@ -854,6 +926,34 @@ const AgroConecta = () => {
                         </button>
                       )}
                     </div>
+
+                    {/* Ações de Validação */}
+                    <div className="mt-6 pt-6 border-t border-slate-200">
+                      <h4 className="font-medium text-slate-800 mb-3">Validações e Verificações</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <button
+                          onClick={() => setShowDocumentValidator(true)}
+                          className="flex items-center p-3 border border-slate-200 rounded-lg hover:border-emerald-500 hover:bg-emerald-50 transition-colors"
+                        >
+                          <FileText className="w-5 h-5 text-emerald-600 mr-3" />
+                          <div className="text-left">
+                            <p className="font-medium text-slate-800">Validar Documentos</p>
+                            <p className="text-sm text-slate-600">CPF, CNPJ e IE</p>
+                          </div>
+                        </button>
+
+                        <button
+                          onClick={() => setShowLocationValidator(true)}
+                          className="flex items-center p-3 border border-slate-200 rounded-lg hover:border-emerald-500 hover:bg-emerald-50 transition-colors"
+                        >
+                          <Map className="w-5 h-5 text-emerald-600 mr-3" />
+                          <div className="text-left">
+                            <p className="font-medium text-slate-800">Validar Endereços</p>
+                            <p className="text-sm text-slate-600">Origem e destino</p>
+                          </div>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
@@ -978,6 +1078,99 @@ const AgroConecta = () => {
           </main>
         </div>
       </div>
+
+      {/* Modal de Validação de Documentos */}
+      <AnimatePresence>
+        {showDocumentValidator && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            >
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-semibold text-slate-800">Validação de Documentos</h3>
+                  <button
+                    onClick={() => setShowDocumentValidator(false)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <span className="sr-only">Fechar</span>
+                    <span className="text-2xl">&times;</span>
+                  </button>
+                </div>
+                <DocumentValidator onValidationComplete={handleDocumentValidation} />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Modal de Validação de Localização */}
+      <AnimatePresence>
+        {showLocationValidator && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            >
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-semibold text-slate-800">Validação de Endereço</h3>
+                  <button
+                    onClick={() => setShowLocationValidator(false)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <span className="sr-only">Fechar</span>
+                    <span className="text-2xl">&times;</span>
+                  </button>
+                </div>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Tipo de Endereço
+                    </label>
+                    <select className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                      <option value="origin">Origem</option>
+                      <option value="destination">Destino</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Endereço para Validação
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Digite o endereço completo"
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    />
+                  </div>
+                  <button
+                    onClick={() => handleLocationValidation('Endereço de teste', 'origin')}
+                    disabled={isValidatingLocation}
+                    className="w-full bg-gradient-to-r from-emerald-500 to-blue-500 text-white py-2 px-4 rounded-lg hover:from-emerald-600 hover:to-blue-600 transition-colors disabled:opacity-50"
+                  >
+                    {isValidatingLocation ? 'Validando...' : 'Validar Endereço'}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
