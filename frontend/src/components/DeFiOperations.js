@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   TrendingUp, TrendingDown, Lock, Unlock, 
   DollarSign, Coins, RefreshCw, ArrowRight,
-  CheckCircle, XCircle, AlertTriangle, Info,
-  BarChart3, PieChart, Activity
+  CheckCircle, XCircle
 } from 'lucide-react';
 import cryptoService from '../services/cryptoService';
 
@@ -38,7 +37,7 @@ const DeFiOperations = () => {
     const interval = setInterval(loadCryptoPrices, 30000);
     
     return () => clearInterval(interval);
-  }, []);
+  }, [loadCryptoPrices, loadPortfolio, loadTransactionHistory]);
 
   useEffect(() => {
     if (selectedCrypto && cryptoPrices[selectedCrypto]) {
@@ -46,7 +45,7 @@ const DeFiOperations = () => {
     }
   }, [selectedCrypto, cryptoPrices]);
 
-  const loadCryptoPrices = async () => {
+  const loadCryptoPrices = useCallback(async () => {
     try {
       const symbols = popularCryptos.map(crypto => crypto.id);
       const prices = await cryptoService.getCryptoPrices(symbols);
@@ -54,25 +53,25 @@ const DeFiOperations = () => {
     } catch (error) {
       console.error('Erro ao carregar preços:', error);
     }
-  };
+  }, []);
 
-  const loadPortfolio = async () => {
+  const loadPortfolio = useCallback(async () => {
     try {
       const userPortfolio = await cryptoService.getUserPortfolio();
       setPortfolio(userPortfolio);
     } catch (error) {
       console.error('Erro ao carregar portfólio:', error);
     }
-  };
+  }, []);
 
-  const loadTransactionHistory = async () => {
+  const loadTransactionHistory = useCallback(async () => {
     try {
       const history = await cryptoService.getTransactionHistory();
       setTransactionHistory(history);
     } catch (error) {
       console.error('Erro ao carregar histórico:', error);
     }
-  };
+  }, []);
 
   const handleOperation = async () => {
     if (!selectedCrypto || !amount || !price) {

@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   TrendingUp, TrendingDown, BarChart3, LineChart, 
   PieChart, Activity, RefreshCw, Calendar,
   DollarSign, Percent, Users, Globe,
-  ArrowUpRight, ArrowDownRight, Minus,
-  Info, AlertTriangle, CheckCircle
+  ArrowUpRight, ArrowDownRight, Minus
 } from 'lucide-react';
 import cryptoService from '../services/cryptoService';
 
@@ -40,9 +38,9 @@ const MarketAnalysis = () => {
     loadMarketData();
     loadTechnicalIndicators();
     loadNews();
-  }, [selectedCrypto, timeframe]);
+  }, [loadCryptoData, loadMarketData, loadTechnicalIndicators]);
 
-  const loadCryptoData = async () => {
+  const loadCryptoData = useCallback(async () => {
     setLoading(true);
     try {
       const data = await cryptoService.getCryptoInfo(selectedCrypto);
@@ -52,20 +50,20 @@ const MarketAnalysis = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedCrypto]);
 
-  const loadMarketData = async () => {
+  const loadMarketData = useCallback(async () => {
     try {
       const data = await cryptoService.getBinanceMarketData(selectedCrypto.toUpperCase() + 'USDT');
       setMarketData(data);
     } catch (error) {
       console.error('Erro ao carregar dados de mercado:', error);
     }
-  };
+  }, [selectedCrypto]);
 
-  const loadTechnicalIndicators = async () => {
+  const loadTechnicalIndicators = useCallback(async () => {
     try {
-      const historicalData = await cryptoService.getHistoricalData(selectedCrypto, timeframe === '1d' ? 1 : parseInt(timeframe), 'usd');
+      const historicalData = await cryptoService.getBinanceMarketData(selectedCrypto, timeframe === '1d' ? 1 : parseInt(timeframe), 'usd');
       
       // Calcular indicadores técnicos
       const indicators = calculateTechnicalIndicators(historicalData);
@@ -73,7 +71,7 @@ const MarketAnalysis = () => {
     } catch (error) {
       console.error('Erro ao carregar indicadores técnicos:', error);
     }
-  };
+  }, [selectedCrypto, timeframe]);
 
   const loadNews = async () => {
     // Simular notícias do mercado

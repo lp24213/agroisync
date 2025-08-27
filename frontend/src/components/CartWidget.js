@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
   ShoppingCart, X, Plus, Minus, Trash, Package, 
-  Truck, CreditCard, ArrowRight, Download, Upload,
+  Truck, ArrowRight, Download, Upload,
   MessageSquare
 } from 'lucide-react';
 import cartService from '../services/cartService';
 
 const CartWidget = ({ isOpen, onClose, onCheckout }) => {
   const [cart, setCart] = useState([]);
-  const [isExpanded, setIsExpanded] = useState(false);
+
   const [shippingInfo, setShippingInfo] = useState({
     destination: '',
     address: '',

@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Wallet, Link, Unlink, Copy, ExternalLink, 
-  RefreshCw, TrendingUp, TrendingDown, Shield,
+  RefreshCw, Shield,
   CheckCircle, XCircle, AlertTriangle
 } from 'lucide-react';
-import cryptoService, { NETWORKS } from '../services/cryptoService';
+import cryptoService from '../services/cryptoService';
 
 const Web3Wallet = () => {
   const [connectionStatus, setConnectionStatus] = useState({});
@@ -22,21 +22,21 @@ const Web3Wallet = () => {
     const unsubscribe = cryptoService.subscribe(handleStatusUpdate);
     
     return () => unsubscribe();
-  }, []);
+  }, [handleStatusUpdate]);
 
   const updateConnectionStatus = () => {
     const status = cryptoService.getConnectionStatus();
     setConnectionStatus(status);
   };
 
-  const handleStatusUpdate = (status) => {
+  const handleStatusUpdate = useCallback((status) => {
     setConnectionStatus(status);
     if (status.isConnected) {
       loadWalletBalance();
     } else {
       setWalletBalance(null);
     }
-  };
+  }, []);
 
   const handleConnectWallet = async () => {
     setLoading(true);
