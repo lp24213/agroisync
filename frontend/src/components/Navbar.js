@@ -10,6 +10,7 @@ import {
   ChevronDown, Bell, Search, Package, MessageSquare, Leaf, CheckCircle, DollarSign, Shield
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import NotificationManager from './NotificationManager';
 
 const Navbar = () => {
   const { isDark, toggleTheme } = useTheme();
@@ -114,6 +115,11 @@ const Navbar = () => {
 
             {/* Right Side Actions */}
             <div className="flex items-center space-x-4">
+              
+              {/* Notification Manager */}
+              {user && (
+                <NotificationManager userId={user.id} />
+              )}
               
               {/* Language Selector */}
               <div className="relative">
