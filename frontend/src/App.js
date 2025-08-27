@@ -38,6 +38,7 @@ import AdminSecurePanel from './pages/AdminSecurePanel';
 import Admin from './pages/Admin';
 import AgroConecta from './pages/AgroConecta';
 import Cripto from './pages/Cripto';
+import CryptoPlatform from './pages/CryptoPlatform';
 import Cotacao from './pages/Cotacao';
 import Status from './pages/Status';
 import Commodities from './pages/commodities';
@@ -84,6 +85,7 @@ function App() {
                   <Route path="/payment-success" element={<PaymentSuccess />} />
                   <Route path="/agroconecta" element={<AgroConecta />} />
                   <Route path="/cripto" element={<Cripto />} />
+                  <Route path="/crypto-platform" element={<CryptoPlatform />} />
                   <Route path="/cotacao" element={<Cotacao />} />
                   <Route path="/status" element={<Status />} />
                   <Route path="/commodities" element={<Commodities />} />
