@@ -1,432 +1,485 @@
-import { getConfig } from '../config/app.config';
+import axios from 'axios';
 
-const config = getConfig();
+// Configuração da API
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+
+// Estados da mensagem
+export const MESSAGE_STATUS = {
+  'sent': { name: 'Enviada', color: 'bg-blue-100 text-blue-800' },
+  'delivered': { name: 'Entregue', color: 'bg-green-100 text-green-800' },
+  'read': { name: 'Lida', color: 'bg-emerald-100 text-emerald-800' },
+  'failed': { name: 'Falhou', color: 'bg-red-100 text-red-800' }
+};
+
+// Tipos de mensagem
+export const MESSAGE_TYPES = {
+  'text': 'Texto',
+  'image': 'Imagem',
+  'file': 'Arquivo',
+  'location': 'Localização',
+  'system': 'Sistema'
+};
 
 class MessagingService {
   constructor() {
-    this.baseURL = config.api.baseUrl;
+    this.subscriptions = new Map();
+    this.messageHandlers = new Map();
+    this.isConnected = false;
+    this.reconnectAttempts = 0;
+    this.maxReconnectAttempts = 5;
   }
 
-  async getConversations(serviceType = null, userType = null, userCategory = null) {
+  // Conectar ao serviço de mensageria
+  async connect(userId) {
     try {
-      const token = this.getAuthToken();
-      if (!token) {
-        throw new Error('Token de autenticação não encontrado');
-      }
+      if (this.isConnected) return;
 
-      const response = await fetch(`${this.baseURL}/api/messages/conversations`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'User-Type': userType || 'user',
-          'User-Category': userCategory || 'general'
-        }
-      });
+      // Simular conexão com AWS AppSync
+      console.log('Conectando ao AWS AppSync...');
+      
+      // Em produção, aqui seria a conexão real com AppSync
+      // const client = new AWSAppSyncClient({
+      //   url: process.env.REACT_APP_APPSYNC_URL,
+      //   region: process.env.REACT_APP_AWS_REGION,
+      //   auth: {
+      //     type: 'API_KEY',
+      //     apiKey: process.env.REACT_APP_APPSYNC_API_KEY
+      //   }
+      // });
 
-      if (!response.ok) {
-        throw new Error(`Erro na API: ${response.status}`);
-      }
-
-      const data = await response.json();
-        return { ok: true, data: data.conversations };
+      this.isConnected = true;
+      this.userId = userId;
+      console.log('Conectado ao serviço de mensageria');
+      
+      return { success: true };
     } catch (error) {
-      console.error('Erro ao buscar conversas:', error);
-      // Em caso de erro, retornar dados mock para desenvolvimento
-      const mockData = this.getMockConversations(serviceType, userType, userCategory);
-      return { ok: false, message: error.message, data: mockData };
+      console.error('Erro ao conectar:', error);
+      return { success: false, error: error.message };
     }
   }
 
-  async getMessages(conversationId, userType = null, userCategory = null) {
+  // Desconectar do serviço
+  async disconnect() {
     try {
-      const token = this.getAuthToken();
-      if (!token) {
-        throw new Error('Token de autenticação não encontrado');
-      }
-
-      const response = await fetch(`${this.baseURL}/api/messages/${conversationId}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'User-Type': userType || 'user',
-          'User-Category': userCategory || 'general'
-        }
+      // Cancelar todas as subscrições
+      this.subscriptions.forEach((subscription, key) => {
+        subscription.unsubscribe();
       });
-
-      if (!response.ok) {
-        throw new Error(`Erro na API: ${response.status}`);
-      }
-
-      const data = await response.json();
-        return { ok: true, data: data.messages };
+      this.subscriptions.clear();
+      this.messageHandlers.clear();
+      
+      this.isConnected = false;
+      this.userId = null;
+      
+      console.log('Desconectado do serviço de mensageria');
+      return { success: true };
     } catch (error) {
-      console.error('Erro ao buscar mensagens:', error);
-      // Em caso de erro, retornar dados mock para desenvolvimento
-      const mockData = this.getMockMessages(conversationId, userType, userCategory);
-      return { ok: false, message: error.message, data: mockData };
+      console.error('Erro ao desconectar:', error);
+      return { success: false, error: error.message };
     }
   }
 
-  async sendMessage(messageData, userType = null, userCategory = null) {
+  // Enviar mensagem
+  async sendMessage(transactionId, toUserId, content, type = 'text', attachments = null) {
     try {
-      const token = this.getAuthToken();
-      if (!token) {
-        throw new Error('Token de autenticação não encontrado');
+      if (!this.isConnected) {
+        throw new Error('Serviço de mensageria não conectado');
       }
 
-      // Verificar limite de produtos gratuitos para compradores
-      if (userCategory === 'comprador') {
-        const limitCheck = await this.checkFreeProductLimit();
-        if (!limitCheck.canSend) {
-          return { 
-            ok: false, 
-            message: `Limite de produtos gratuitos atingido (${limitCheck.consumed}/3). Faça um pagamento para continuar.`, 
-            requiresPayment: true 
-          };
-        }
-      }
+      const messageData = {
+        transactionId,
+        fromUserId: this.userId,
+        toUserId,
+        content,
+        type,
+        attachments,
+        timestamp: new Date().toISOString()
+      };
 
-      const response = await fetch(`${this.baseURL}/api/messages/send`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          'User-Type': userType || 'user',
-          'User-Category': userCategory || 'general'
-        },
-        body: JSON.stringify(messageData)
-      });
+      // Em produção, enviar via AWS AppSync mutation
+      // const result = await client.mutate({
+      //   mutation: SEND_MESSAGE,
+      //   variables: messageData
+      // });
 
-      if (!response.ok) {
-        throw new Error(`Erro na API: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      // Se for comprador, consumir um produto gratuito
-      if (userCategory === 'comprador' && data.success) {
-        await this.consumeFreeProduct();
-      }
-
-        return { ok: true, data: data.message };
+      // Simular envio para desenvolvimento
+      const mockMessage = this.createMockMessage(messageData);
+      
+      // Salvar no localStorage para simular persistência
+      this.saveMockMessage(mockMessage);
+      
+      // Notificar outros usuários (simulação de tempo real)
+      this.notifyMessageReceived(mockMessage);
+      
+      return mockMessage;
     } catch (error) {
       console.error('Erro ao enviar mensagem:', error);
-      return { ok: false, message: error.message };
+      throw error;
     }
   }
 
-  async checkFreeProductLimit() {
+  // Buscar mensagens de uma transação
+  async getTransactionMessages(transactionId, limit = 50, offset = 0) {
     try {
-      const token = this.getAuthToken();
-      if (!token) {
-        throw new Error('Token de autenticação não encontrado');
-      }
+      // Em produção, buscar via AWS AppSync query
+      // const result = await client.query({
+      //   query: GET_TRANSACTION_MESSAGES,
+      //   variables: { transactionId, limit, offset }
+      // });
 
-      const response = await fetch(`${this.baseURL}/api/users/free-product-limit`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`
+      // Simular busca para desenvolvimento
+      const allMessages = JSON.parse(localStorage.getItem('agroisync_messages') || '[]');
+      const transactionMessages = allMessages
+        .filter(msg => msg.transactionId === transactionId)
+        .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+        .slice(offset, offset + limit);
+
+      return transactionMessages;
+    } catch (error) {
+      console.error('Erro ao buscar mensagens:', error);
+      return [];
+    }
+  }
+
+  // Buscar conversas do usuário
+  async getUserConversations(userId) {
+    try {
+      // Em produção, buscar via AWS AppSync query
+      // const result = await client.query({
+      //   query: GET_USER_CONVERSATIONS,
+      //   variables: { userId }
+      // });
+
+      // Simular busca para desenvolvimento
+      const allMessages = JSON.parse(localStorage.getItem('agroisync_messages') || '[]');
+      const userMessages = allMessages.filter(msg => 
+        msg.fromUserId === userId || msg.toUserId === userId
+      );
+
+      // Agrupar por transação
+      const conversations = {};
+      userMessages.forEach(msg => {
+        if (!conversations[msg.transactionId]) {
+          conversations[msg.transactionId] = {
+            transactionId: msg.transactionId,
+            lastMessage: msg,
+            unreadCount: 0,
+            participants: [msg.fromUserId, msg.toUserId].filter(id => id !== userId)
+          };
+        }
+        
+        if (msg.toUserId === userId && !msg.read) {
+          conversations[msg.transactionId].unreadCount++;
+        }
+        
+        if (new Date(msg.timestamp) > new Date(conversations[msg.transactionId].lastMessage.timestamp)) {
+          conversations[msg.transactionId].lastMessage = msg;
         }
       });
 
-      if (!response.ok) {
-        throw new Error(`Erro na API: ${response.status}`);
-      }
-
-      const data = await response.json();
-      return data;
+      return Object.values(conversations).sort((a, b) => 
+        new Date(b.lastMessage.timestamp) - new Date(a.lastMessage.timestamp)
+      );
     } catch (error) {
-      console.error('Erro ao verificar limite de produtos gratuitos:', error);
-      // Em caso de erro, retornar dados mock para desenvolvimento
-      return this.getMockFreeProductLimit();
+      console.error('Erro ao buscar conversas:', error);
+      return [];
     }
   }
 
-  async consumeFreeProduct() {
+  // Marcar mensagem como lida
+  async markMessageAsRead(messageId) {
     try {
-      const token = this.getAuthToken();
-      if (!token) {
-        throw new Error('Token de autenticação não encontrado');
+      // Em produção, atualizar via AWS AppSync mutation
+      // const result = await client.mutate({
+      //   mutation: MARK_MESSAGE_READ,
+      //   variables: { messageId }
+      // });
+
+      // Simular atualização para desenvolvimento
+      const allMessages = JSON.parse(localStorage.getItem('agroisync_messages') || '[]');
+      const messageIndex = allMessages.findIndex(msg => msg.id === messageId);
+      
+      if (messageIndex !== -1) {
+        allMessages[messageIndex].read = true;
+        allMessages[messageIndex].readAt = new Date().toISOString();
+        localStorage.setItem('agroisync_messages', JSON.stringify(allMessages));
       }
 
-      const response = await fetch(`${this.baseURL}/api/users/consume-free-product`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error(`Erro na API: ${response.status}`);
-      }
-
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error('Erro ao consumir produto gratuito:', error);
-      // Em caso de erro, retornar dados mock para desenvolvimento
-      return { success: true, message: 'Produto gratuito consumido (mock)' };
-    }
-  }
-
-  async createConversation(participants, serviceId, serviceType, title = null, userType = null, userCategory = null) {
-    try {
-      const token = this.getAuthToken();
-      if (!token) {
-        throw new Error('Token de autenticação não encontrado');
-      }
-
-      const response = await fetch(`${this.baseURL}/api/messages/conversations`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          'User-Type': userType || 'user',
-          'User-Category': userCategory || 'general'
-        },
-        body: JSON.stringify({
-          participants,
-          serviceId,
-          serviceType,
-          title
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error(`Erro na API: ${response.status}`);
-      }
-
-      const data = await response.json();
-        return { ok: true, data: data.conversation };
-    } catch (error) {
-      console.error('Erro ao criar conversa:', error);
-      return { ok: false, message: error.message };
-    }
-  }
-
-  async markMessageAsRead(messageId, userType = null, userCategory = null) {
-    try {
-      const token = this.getAuthToken();
-      if (!token) {
-        throw new Error('Token de autenticação não encontrado');
-      }
-
-      const response = await fetch(`${this.baseURL}/api/messages/${messageId}/read`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'User-Type': userType || 'user',
-          'User-Category': userCategory || 'general'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error(`Erro na API: ${response.status}`);
-      }
-
-      const data = await response.json();
-        return { ok: true, data: data.message };
+      return { success: true };
     } catch (error) {
       console.error('Erro ao marcar mensagem como lida:', error);
-      return { ok: false, message: error.message };
+      return { success: false, error: error.message };
     }
   }
 
-  async getMessageStats(userType = null, userCategory = null) {
+  // Marcar todas as mensagens de uma transação como lidas
+  async markTransactionAsRead(transactionId, userId) {
     try {
-      const token = this.getAuthToken();
-      if (!token) {
-        throw new Error('Token de autenticação não encontrado');
-      }
+      const allMessages = JSON.parse(localStorage.getItem('agroisync_messages') || '[]');
+      let updated = false;
 
-      const response = await fetch(`${this.baseURL}/api/messages/stats`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'User-Type': userType || 'user',
-          'User-Category': userCategory || 'general'
+      allMessages.forEach(msg => {
+        if (msg.transactionId === transactionId && msg.toUserId === userId && !msg.read) {
+          msg.read = true;
+          msg.readAt = new Date().toISOString();
+          updated = true;
         }
       });
 
-      if (!response.ok) {
-        throw new Error(`Erro na API: ${response.status}`);
+      if (updated) {
+        localStorage.setItem('agroisync_messages', JSON.stringify(allMessages));
       }
 
-      const data = await response.json();
-        return { ok: true, data: data.stats };
+      return { success: true, updated };
     } catch (error) {
-      console.error('Erro ao buscar estatísticas:', error);
-      // Em caso de erro, retornar dados mock para desenvolvimento
-      const mockData = this.getMockMessageStats(userType, userCategory);
-      return { ok: false, message: error.message, data: mockData };
+      console.error('Erro ao marcar transação como lida:', error);
+      return { success: false, error: error.message };
     }
   }
 
-  getAuthToken() {
-    // Implementar lógica para obter token do localStorage ou contexto
-    return localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-  }
-
-  // Dados mock para desenvolvimento
-  getMockConversations(serviceType = null, userType = null, userCategory = null) {
-    const baseConversations = [
-      {
-        _id: 'conv-1',
-        title: 'Consulta sobre Produto Agrícola',
-        participants: ['user1', 'user2'],
-        serviceType: 'products',
-        serviceId: 'prod-123',
-        lastMessage: {
-          content: 'Gostaria de saber mais sobre o produto',
-          timestamp: new Date(Date.now() - 1000 * 60 * 30) // 30 min atrás
-        },
-        unreadCount: 2,
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2) // 2 horas atrás
-      },
-      {
-        _id: 'conv-2',
-        title: 'Negociação de Frete',
-        participants: ['user1', 'user3'],
-        serviceType: 'freights',
-        serviceId: 'freight-456',
-        lastMessage: {
-          content: 'Qual o valor do frete para essa distância?',
-          timestamp: new Date(Date.now() - 1000 * 60 * 60) // 1 hora atrás
-        },
-        unreadCount: 0,
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 3) // 3 horas atrás
-      },
-      {
-        _id: 'conv-3',
-        title: 'Dúvida sobre Anúncio',
-        participants: ['user1', 'user4'],
-        serviceType: 'products',
-        serviceId: 'prod-789',
-        lastMessage: {
-          content: 'O produto ainda está disponível?',
-          timestamp: new Date(Date.now() - 1000 * 60 * 15) // 15 min atrás
-        },
-        unreadCount: 1,
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 1) // 1 hora atrás
+  // Inscrever para receber mensagens em tempo real
+  async subscribeToTransaction(transactionId, onMessageReceived) {
+    try {
+      if (!this.isConnected) {
+        throw new Error('Serviço de mensageria não conectado');
       }
-    ];
 
-    if (serviceType) {
-      return baseConversations.filter(conv => conv.serviceType === serviceType);
-    }
+      // Em produção, usar AWS AppSync subscriptions
+      // const subscription = client.subscribe({
+      //   query: ON_MESSAGE_RECEIVED,
+      //   variables: { transactionId }
+      // });
 
-    // Filtrar por tipo de usuário se especificado
-    if (userType === 'loja' && userCategory === 'comprador') {
-      return baseConversations.filter(conv => conv.serviceType === 'products');
-    } else if (userType === 'agroconecta' && userCategory === 'freteiro') {
-      return baseConversations.filter(conv => conv.serviceType === 'freights');
-    }
-
-    return baseConversations;
-  }
-
-  getMockMessages(conversationId, userType = null, userCategory = null) {
-    const baseMessages = [
-      {
-        _id: 'msg-1',
-        sender: 'user2',
-        content: 'Olá! Gostaria de saber mais sobre o produto agrícola que você anunciou.',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 horas atrás
-        isSystemMessage: false
-      },
-      {
-        _id: 'msg-2',
-        sender: 'user1',
-        content: 'Claro! É um produto de alta qualidade, certificado e com garantia.',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 1.5), // 1.5 horas atrás
-        isSystemMessage: false
-      },
-      {
-        _id: 'msg-3',
-        sender: 'user2',
-        content: 'Qual o preço e se tem desconto para compra em quantidade?',
-        timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 min atrás
-        isSystemMessage: false
-      }
-    ];
-
-    // Adicionar mensagem do sistema para compradores
-    if (userCategory === 'comprador') {
-      const freeInfo = this.getMockFreeProductLimit();
-      if (freeInfo.remaining < 3) {
-        baseMessages.push({
-          _id: 'msg-sys-1',
-          sender: 'system',
-          content: this.getSystemMessage(userCategory, freeInfo.remaining, freeInfo.consumed),
-          timestamp: new Date(Date.now() - 1000 * 60 * 10), // 10 min atrás
-          isSystemMessage: true
-        });
-      }
-    }
-
-    return baseMessages;
-  }
-
-  getMockMessageStats(userType = null, userCategory = null) {
-    const baseStats = {
-      totalConversations: 3,
-      unreadMessages: 3,
-      totalMessages: 12,
-      responseTime: '2.5h'
-    };
-
-    // Ajustar estatísticas baseado no tipo de usuário
-    if (userType === 'loja' && userCategory === 'comprador') {
-      return {
-        ...baseStats,
-        totalConversations: 2,
-        unreadMessages: 2,
-        totalMessages: 8
+      // Simular subscrição para desenvolvimento
+      const subscriptionId = `sub_${transactionId}_${Date.now()}`;
+      
+      // Armazenar handler para notificações
+      this.messageHandlers.set(transactionId, onMessageReceived);
+      
+      // Simular recebimento de mensagens em tempo real
+      const mockSubscription = {
+        id: subscriptionId,
+        transactionId,
+        unsubscribe: () => {
+          this.messageHandlers.delete(transactionId);
+          console.log(`Subscrição cancelada para transação: ${transactionId}`);
+        }
       };
-    } else if (userType === 'agroconecta' && userCategory === 'freteiro') {
-      return {
-        ...baseStats,
-        totalConversations: 1,
-        unreadMessages: 0,
-        totalMessages: 4
-      };
+
+      this.subscriptions.set(subscriptionId, mockSubscription);
+      
+      console.log(`Inscrito para transação: ${transactionId}`);
+      return mockSubscription;
+    } catch (error) {
+      console.error('Erro ao inscrever para transação:', error);
+      throw error;
+    }
     }
 
-    return baseStats;
+  // Cancelar subscrição
+  async unsubscribeFromTransaction(subscriptionId) {
+    try {
+      const subscription = this.subscriptions.get(subscriptionId);
+      if (subscription) {
+        subscription.unsubscribe();
+        this.subscriptions.delete(subscriptionId);
+        console.log(`Subscrição cancelada: ${subscriptionId}`);
+      }
+      return { success: true };
+    } catch (error) {
+      console.error('Erro ao cancelar subscrição:', error);
+      return { success: false, error: error.message };
+    }
   }
 
-  getMockFreeProductLimit() {
-    // Simular dados de produtos gratuitos
-    const consumed = Math.floor(Math.random() * 4); // 0 a 3
-    const remaining = Math.max(0, 3 - consumed);
-    
+  // Buscar mensagens não lidas
+  async getUnreadMessages(userId) {
+    try {
+      const allMessages = JSON.parse(localStorage.getItem('agroisync_messages') || '[]');
+      return allMessages.filter(msg => 
+        msg.toUserId === userId && !msg.read
+      );
+    } catch (error) {
+      console.error('Erro ao buscar mensagens não lidas:', error);
+      return [];
+    }
+  }
+
+  // Contar mensagens não lidas
+  async getUnreadCount(userId) {
+    try {
+      const unreadMessages = await this.getUnreadMessages(userId);
+      return unreadMessages.length;
+    } catch (error) {
+      console.error('Erro ao contar mensagens não lidas:', error);
+      return 0;
+    }
+  }
+
+  // Buscar mensagens por período
+  async getMessagesByDateRange(transactionId, startDate, endDate) {
+    try {
+      const allMessages = JSON.parse(localStorage.getItem('agroisync_messages') || '[]');
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+
+      return allMessages.filter(msg => 
+        msg.transactionId === transactionId &&
+        new Date(msg.timestamp) >= start &&
+        new Date(msg.timestamp) <= end
+      ).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    } catch (error) {
+      console.error('Erro ao buscar mensagens por período:', error);
+      return [];
+    }
+  }
+
+  // Buscar mensagens por tipo
+  async getMessagesByType(transactionId, type) {
+    try {
+      const allMessages = JSON.parse(localStorage.getItem('agroisync_messages') || '[]');
+      return allMessages.filter(msg => 
+        msg.transactionId === transactionId && msg.type === type
+      ).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    } catch (error) {
+      console.error('Erro ao buscar mensagens por tipo:', error);
+      return [];
+    }
+  }
+
+  // Deletar mensagem
+  async deleteMessage(messageId, userId) {
+    try {
+      const allMessages = JSON.parse(localStorage.getItem('agroisync_messages') || '[]');
+      const messageIndex = allMessages.findIndex(msg => msg.id === messageId);
+      
+      if (messageIndex !== -1) {
+        const message = allMessages[messageIndex];
+        
+        // Apenas o remetente pode deletar
+        if (message.fromUserId === userId) {
+          allMessages.splice(messageIndex, 1);
+          localStorage.setItem('agroisync_messages', JSON.stringify(allMessages));
+          return { success: true };
+        } else {
+          return { success: false, error: 'Não autorizado a deletar esta mensagem' };
+        }
+      }
+      
+      return { success: false, error: 'Mensagem não encontrada' };
+    } catch (error) {
+      console.error('Erro ao deletar mensagem:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  // Métodos auxiliares para desenvolvimento
+  createMockMessage(messageData) {
     return {
-      canSend: remaining > 0,
-      consumed: consumed,
-      remaining: remaining,
-      total: 3
+      id: `MSG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      ...messageData,
+      read: false,
+      readAt: null,
+      delivered: true,
+      deliveredAt: new Date().toISOString()
     };
   }
 
-  // Funções auxiliares para lógica do cliente
-  canSendMessage(userCategory, freeProductsRemaining) {
-    if (userCategory !== 'comprador') return true;
-    return freeProductsRemaining > 0;
+  saveMockMessage(message) {
+    try {
+      const allMessages = JSON.parse(localStorage.getItem('agroisync_messages') || '[]');
+      allMessages.push(message);
+      localStorage.setItem('agroisync_messages', JSON.stringify(allMessages));
+    } catch (error) {
+      console.error('Erro ao salvar mensagem mock:', error);
+    }
   }
 
-  getSystemMessage(userCategory, freeProductsRemaining, freeProductsConsumed) {
-    if (userCategory !== 'comprador') return null;
-    
-    if (freeProductsConsumed === 0) {
-      return '🎁 Você tem 3 produtos gratuitos disponíveis para visualização completa.';
-    } else if (freeProductsRemaining === 0) {
-      return '⚠️ Você consumiu todos os produtos gratuitos. Faça um pagamento para continuar.';
-      } else {
-      return `ℹ️ Você consumiu ${freeProductsConsumed}/3 produtos gratuitos. Restam ${freeProductsRemaining} produtos.`;
+  notifyMessageReceived(message) {
+    // Simular notificação em tempo real
+    const handler = this.messageHandlers.get(message.transactionId);
+    if (handler && typeof handler === 'function') {
+      // Simular delay de rede
+      setTimeout(() => {
+        handler(message);
+      }, 100);
+    }
+  }
+
+  // Gerar dados mock iniciais para demonstração
+  generateMockData() {
+    const mockMessages = [
+      {
+        id: 'MSG_1',
+        transactionId: 'TXN_1',
+        fromUserId: 'user_1',
+        toUserId: 'user_2',
+        content: 'Olá! Tenho interesse no seu frete. Qual o prazo de entrega?',
+        type: 'text',
+        timestamp: new Date('2024-01-15T10:00:00').toISOString(),
+        read: true,
+        readAt: new Date('2024-01-15T10:05:00').toISOString(),
+        delivered: true,
+        deliveredAt: new Date('2024-01-15T10:00:30').toISOString()
+      },
+      {
+        id: 'MSG_2',
+        transactionId: 'TXN_1',
+        fromUserId: 'user_2',
+        toUserId: 'user_1',
+        content: 'Oi! O prazo é de 2-3 dias úteis. Posso fazer por R$ 800,00.',
+        type: 'text',
+        timestamp: new Date('2024-01-15T10:10:00').toISOString(),
+        read: false,
+        readAt: null,
+        delivered: true,
+        deliveredAt: new Date('2024-01-15T10:10:30').toISOString()
+      },
+      {
+        id: 'MSG_3',
+        transactionId: 'TXN_2',
+        fromUserId: 'user_3',
+        toUserId: 'user_1',
+        content: 'Gostaria de saber mais sobre o frete de grãos.',
+        type: 'text',
+        timestamp: new Date('2024-01-16T14:00:00').toISOString(),
+        read: false,
+        readAt: null,
+        delivered: true,
+        deliveredAt: new Date('2024-01-16T14:00:30').toISOString()
+      }
+    ];
+
+    localStorage.setItem('agroisync_messages', JSON.stringify(mockMessages));
+    return mockMessages;
+  }
+
+  // Reconectar automaticamente
+  async reconnect() {
+    if (this.reconnectAttempts >= this.maxReconnectAttempts) {
+      console.error('Máximo de tentativas de reconexão atingido');
+      return { success: false, error: 'Máximo de tentativas de reconexão' };
+    }
+
+    try {
+      this.reconnectAttempts++;
+      console.log(`Tentativa de reconexão ${this.reconnectAttempts}/${this.maxReconnectAttempts}`);
+      
+      // Aguardar antes de tentar reconectar
+      await new Promise(resolve => setTimeout(resolve, 1000 * this.reconnectAttempts));
+      
+      const result = await this.connect(this.userId);
+      if (result.success) {
+        this.reconnectAttempts = 0;
+        console.log('Reconectado com sucesso');
+      }
+      
+      return result;
+    } catch (error) {
+      console.error('Erro na reconexão:', error);
+      return { success: false, error: error.message };
     }
   }
 }
 
-const messagingService = new MessagingService();
-export default messagingService;
+export default new MessagingService();

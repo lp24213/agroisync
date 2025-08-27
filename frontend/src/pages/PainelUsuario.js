@@ -10,6 +10,8 @@ import {
 } from 'lucide-react';
 import TransactionList from '../components/TransactionList';
 import transactionService, { TRANSACTION_STATUS, TRANSACTION_TYPES } from '../services/transactionService';
+import ChatInterface from '../components/ChatInterface';
+import messagingService from '../services/messagingService';
 
 const PainelUsuario = () => {
   const { user, isAuthenticated } = useAuth();
@@ -28,6 +30,10 @@ const PainelUsuario = () => {
   // Estados para filtros
   const [transactionFilter, setTransactionFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
+  
+  // Estados para mensageria
+  const [chatOpen, setChatOpen] = useState(false);
+  const [currentChat, setCurrentChat] = useState(null);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -135,8 +141,15 @@ const PainelUsuario = () => {
   const handleSendMessage = (transaction) => {
     // Abrir mensageria para a transação
     setActiveTab('messages');
-    // Aqui seria implementada a abertura do chat
-    console.log('Abrir mensageria para transação:', transaction.id);
+    
+    // Determinar o outro usuário da transação
+    const otherUserId = transaction.buyerId === user.id ? transaction.sellerId : transaction.buyerId;
+    
+    setCurrentChat({
+      transactionId: transaction.id,
+      otherUserId: otherUserId
+    });
+    setChatOpen(true);
   };
 
   const handleUpdateStatus = async (transactionId, newStatus) => {
@@ -334,13 +347,17 @@ const PainelUsuario = () => {
                 ) : (
                   <div className="space-y-4">
                     {userMessages.map((message) => (
-                      <div key={message.id} className="bg-white p-4 rounded-lg shadow-sm">
+                      <div key={message.id} className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                           onClick={() => handleSendMessage({ id: message.transactionId })}>
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <p className="text-sm text-gray-600 mb-2">
                               Transação: {message.transactionId}
                             </p>
                             <p className="text-gray-800">{message.body || 'Mensagem'}</p>
+                            <p className="text-xs text-gray-500 mt-1">
+                              De: {message.from || 'Usuário'}
+                            </p>
                           </div>
                           <span className="text-xs text-gray-500">
                             {new Date(message.createdAt).toLocaleDateString('pt-BR')}
@@ -500,6 +517,18 @@ const PainelUsuario = () => {
           </motion.div>
         </AnimatePresence>
       </div>
+      
+      {/* Chat Interface */}
+      <ChatInterface
+        isOpen={chatOpen}
+        transactionId={currentChat?.transactionId}
+        currentUserId={user?.id}
+        otherUserId={currentChat?.otherUserId}
+        onClose={() => {
+          setChatOpen(false);
+          setCurrentChat(null);
+        }}
+      />
     </div>
   );
 };
