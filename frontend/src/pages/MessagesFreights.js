@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import messagingService from '../services/messagingService';
+import { Lock } from 'lucide-react';
 
 const MessagesFreights = () => {
   const [conversations, setConversations] = useState([]);
@@ -118,7 +119,9 @@ const MessagesFreights = () => {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="max-w-md w-full text-center">
-          <div className="text-6xl mb-4">🔒</div>
+                     <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-red-500 flex items-center justify-center">
+             <Lock className="w-8 h-8 text-white" />
+           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
             Acesso Bloqueado
           </h2>
@@ -130,7 +133,7 @@ const MessagesFreights = () => {
               onClick={() => navigate('/planos')}
               className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors"
             >
-              📋 Ver Planos Disponíveis
+                             Ver Planos Disponíveis
             </button>
             <button
               onClick={() => navigate('/agroconecta')}
@@ -150,7 +153,7 @@ const MessagesFreights = () => {
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-gradient-agro">
               🚚 Mensageria de Fretes
             </h1>
             <button

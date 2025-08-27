@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, User, Phone, FileText, MapPin, AlertCircle, CheckCircle, Building2 } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Phone, FileText, MapPin, AlertCircle, CheckCircle, Building2, Leaf } from 'lucide-react';
 
 const Cadastro = () => {
   const { register, loading, error, clearError } = useAuth();
@@ -158,9 +158,9 @@ const Cadastro = () => {
           <div className="flex justify-center">
             <motion.div 
               whileHover={{ scale: 1.05 }}
-              className="w-20 h-20 bg-gradient-to-r from-agro-green to-tech-green rounded-2xl flex items-center justify-center shadow-lg"
+              className="w-20 h-20 bg-gradient-to-r from-emerald-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg"
             >
-              <span className="text-4xl">🌾</span>
+              <Leaf className="w-10 h-10 text-white" />
             </motion.div>
           </div>
           <h2 className="mt-6 text-4xl font-bold text-gradient-agro">

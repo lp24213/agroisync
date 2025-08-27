@@ -4,19 +4,44 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import { 
   Building2, Globe, Award, Handshake, Users, 
-  TrendingUp, Shield, Zap, Leaf, Truck
+  TrendingUp, Shield, Zap, Leaf, Truck, Sprout,
+  Bitcoin, Bot, CreditCard, Dna
 } from 'lucide-react';
 
 const Parcerias = () => {
   const { isDark } = useTheme();
   const { t } = useTranslation();
 
+  // Função para renderizar os ícones dos parceiros
+  const getIconComponent = (iconName) => {
+    switch (iconName) {
+      case 'Leaf':
+        return <Leaf className="w-10 h-10" />;
+      case 'Sprout':
+        return <Sprout className="w-10 h-10" />;
+      case 'Truck':
+        return <Truck className="w-10 h-10" />;
+      case 'Bitcoin':
+        return <Bitcoin className="w-10 h-10" />;
+      case 'Bot':
+        return <Bot className="w-10 h-10" />;
+      case 'Seedling':
+        return <Sprout className="w-10 h-10" />;
+      case 'CreditCard':
+        return <CreditCard className="w-10 h-10" />;
+      case 'Dna':
+        return <Dna className="w-10 h-10" />;
+      default:
+        return <Leaf className="w-10 h-10" />;
+    }
+  };
+
   // Lista de parceiros
   const parceiros = [
     {
       id: 1,
       nome: 'AgroTech Solutions',
-      logo: '🌾',
+      logo: 'Leaf',
       descricao: 'Tecnologia avançada para agricultura de precisão e IoT agrícola',
       website: 'https://agrotech-solutions.com',
       categoria: 'Tecnologia',
@@ -25,7 +50,7 @@ const Parcerias = () => {
     {
       id: 2,
       nome: 'GreenHarvest Corp',
-      logo: '🌱',
+      logo: 'Sprout',
       descricao: 'Sementes certificadas e insumos orgânicos de alta qualidade',
       website: 'https://greenharvest.com',
       categoria: 'Insumos',
@@ -34,7 +59,7 @@ const Parcerias = () => {
     {
       id: 3,
       nome: 'FarmLogistics',
-      logo: '🚛',
+      logo: 'Truck',
       descricao: 'Soluções logísticas especializadas em transporte agrícola',
       website: 'https://farmlogistics.com',
       categoria: 'Logística',
@@ -43,7 +68,7 @@ const Parcerias = () => {
     {
       id: 4,
       nome: 'CryptoAgro',
-      logo: '₿',
+      logo: 'Bitcoin',
       descricao: 'Plataforma de DeFi para financiamento agrícola via blockchain',
       website: 'https://cryptoagro.io',
       categoria: 'Fintech',
@@ -52,7 +77,7 @@ const Parcerias = () => {
     {
       id: 5,
       nome: 'SmartFarm Systems',
-      logo: '🤖',
+      logo: 'Bot',
       descricao: 'Automação inteligente para estufas e sistemas de irrigação',
       website: 'https://smartfarm.com',
       categoria: 'Automação',
@@ -61,7 +86,7 @@ const Parcerias = () => {
     {
       id: 6,
       nome: 'EcoSeed Bank',
-      logo: '🌿',
+      logo: 'Seedling',
       descricao: 'Banco de sementes nativas e preservação de biodiversidade',
       website: 'https://ecoseedbank.org',
       categoria: 'Conservação',
@@ -70,7 +95,7 @@ const Parcerias = () => {
     {
       id: 7,
       nome: 'AgroFinance',
-      logo: '💳',
+      logo: 'CreditCard',
       descricao: 'Crédito rural digital e seguros agrícolas inovadores',
       website: 'https://agrofinance.com',
       categoria: 'Finanças',
@@ -79,7 +104,7 @@ const Parcerias = () => {
     {
       id: 8,
       nome: 'BioControl Labs',
-      logo: '🧬',
+      logo: 'Dna',
       descricao: 'Pesquisa em controle biológico e produtos naturais',
       website: 'https://biocontrol-labs.com',
       categoria: 'Pesquisa',
@@ -136,7 +161,7 @@ const Parcerias = () => {
             }`} />
           </motion.div>
           
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-500 to-blue-600 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-gradient-agro">
             Nossos Parceiros
           </h1>
           
@@ -152,13 +177,9 @@ const Parcerias = () => {
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setCategoriaAtiva(categoria)}
                 className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
-                  categoriaAtiva === categoria
-                    ? (isDark
-                        ? 'bg-cyan-400 text-gray-900 shadow-lg shadow-cyan-400/25'
-                        : 'bg-green-500 text-white shadow-lg shadow-green-500/25')
-                    : (isDark
-                        ? 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-600'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300')
+                                     categoriaAtiva === categoria
+                     ? 'bg-gradient-to-r from-emerald-600 to-blue-600 text-white shadow-lg'
+                     : 'bg-slate-100 text-slate-700 hover:bg-gradient-to-r hover:from-emerald-600 hover:to-blue-600 hover:text-white hover:shadow-md border border-slate-300'
                 }`}
               >
                 {categoria}
@@ -204,10 +225,10 @@ const Parcerias = () => {
               {/* Logo e informações */}
               <div className="p-6">
                 <div className="text-center mb-4">
-                  <div className={`text-6xl mb-4 ${
+                  <div className={`w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-blue-600 flex items-center justify-center text-white ${
                     parceiro.destaque ? 'animate-pulse' : ''
                   }`}>
-                    {parceiro.logo}
+                    {getIconComponent(parceiro.logo)}
                   </div>
                   
                   <h3 className="text-xl font-bold mb-2">

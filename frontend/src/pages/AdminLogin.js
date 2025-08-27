@@ -49,7 +49,7 @@ const AdminLogin = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 flex items-center justify-center p-4">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-white mb-2">
+          <h2 className="text-3xl font-bold text-gradient-agro mb-2">
             🔐 Painel Administrativo
           </h2>
           <p className="text-gray-300">

@@ -788,6 +788,43 @@
   "store": {
     "title": "Agroisync商店",
     "description": "完整农产品市场",
+    "cta": {
+      "primary": "探索产品",
+      "secondary": "注册产品"
+    },
+    "features": {
+      "title": "商店特色",
+      "description": "您农业业务所需的一切都在一个地方",
+      "products": {
+        "title": "多样化产品",
+        "description": "广泛的农产品和投入品"
+      },
+      "freight": {
+        "title": "货运系统",
+        "description": "高效连接生产者和承运商"
+      },
+      "community": {
+        "title": "活跃社区",
+        "description": "可靠的生产者和买家网络"
+      },
+      "quality": {
+        "title": "质量保证",
+        "description": "产品经过社区验证和评级"
+      },
+      "business": {
+        "title": "商业工具",
+        "description": "优化销售和购买的资源"
+      },
+      "support": {
+        "title": "专业支持",
+        "description": "技术团队随时准备帮助"
+      }
+    },
+    "products": {
+      "title": "精选产品",
+      "description": "为您精选的最佳产品",
+      "buy": "立即购买"
+    },
     "categories": {
       "all": "全部",
       "grains": "谷物",

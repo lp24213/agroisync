@@ -42,7 +42,7 @@ const Planos = () => {
         t('plans.lojaBasico.limitations.chat_messages'),
         t('plans.lojaBasico.limitations.no_private_chat')
       ],
-      color: 'from-agro-green to-tech-green',
+              color: 'from-emerald-600 to-blue-600',
       buttonColor: 'btn-premium',
       popular: false
     },
@@ -61,7 +61,7 @@ const Planos = () => {
         t('plans.lojaPro.features.store_highlight')
       ],
       limitations: [],
-      color: 'from-agro-gold to-tech-blue',
+              color: 'from-yellow-500 to-blue-600',
       buttonColor: 'btn-premium',
       popular: true
     },
@@ -80,7 +80,7 @@ const Planos = () => {
         t('plans.lojaEnterprise.features.dedicated_manager')
       ],
       limitations: [],
-      color: 'from-tech-blue to-agro-green',
+              color: 'from-blue-600 to-emerald-600',
       buttonColor: 'btn-premium',
       popular: false
     }

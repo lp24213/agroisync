@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, AlertCircle, CheckCircle } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, AlertCircle, CheckCircle, Leaf } from 'lucide-react';
 
 const Login = () => {
   const { login, loading, error, clearError } = useAuth();
@@ -66,9 +66,9 @@ const Login = () => {
           <div className="flex justify-center">
             <motion.div 
               whileHover={{ scale: 1.05 }}
-              className="w-16 h-16 bg-gradient-to-r from-agro-green to-tech-green rounded-2xl flex items-center justify-center shadow-lg"
+              className="w-16 h-16 bg-gradient-to-r from-emerald-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg"
             >
-              <span className="text-3xl">🌾</span>
+              <Leaf className="w-8 h-8 text-white" />
             </motion.div>
           </div>
           <h2 className="mt-6 text-3xl font-bold text-gradient-agro">

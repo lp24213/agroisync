@@ -56,25 +56,25 @@ const Contato = () => {
       icon: <MapPin className="w-6 h-6 text-agro-green" />,
       title: t('contact.info.address.title'),
       content: 'Sinop - MT, Brasil',
-      color: 'from-agro-green to-tech-green'
+              color: 'from-emerald-600 to-blue-600'
     },
     {
       icon: <Phone className="w-6 h-6 text-agro-gold" />,
       title: t('contact.info.phone.title'),
       content: '(66) 99236-2830',
-      color: 'from-agro-gold to-tech-blue'
+              color: 'from-yellow-500 to-blue-600'
     },
     {
       icon: <Mail className="w-6 h-6 text-tech-blue" />,
       title: t('contact.info.email.title'),
       content: 'contato@agroisync.com',
-      color: 'from-tech-blue to-agro-green'
+              color: 'from-blue-600 to-emerald-600'
     },
     {
       icon: <Clock className="w-6 h-6 text-agro-brown" />,
       title: t('contact.info.hours.title'),
       content: 'Segunda a Sexta: 8h às 18h',
-      color: 'from-agro-brown to-agro-gold'
+              color: 'from-amber-700 to-yellow-500'
     }
   ];
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { usePayment } from '../contexts/PaymentContext';
 
@@ -10,7 +11,7 @@ import {
 
 const Dashboard = () => {
   const { user } = useAuth();
-  const { paymentStatus, userProfile, getFreeProductInfo } = usePayment();
+  const { userProfile } = usePayment();
   
   const [activeTab, setActiveTab] = useState('overview');
   const [messages, setMessages] = useState([]);
@@ -106,53 +107,65 @@ const Dashboard = () => {
 
   const renderOverview = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <motion.div 
+        whileHover={{ scale: 1.02, y: -2 }}
+        className="card-premium p-6"
+      >
         <div className="flex items-center">
-          <div className="p-2 bg-blue-100 rounded-lg">
-            <MessageCircle className="h-6 w-6 text-blue-600" />
+          <div className="p-2 bg-gradient-to-r from-blue-600 to-emerald-600 rounded-lg">
+            <MessageCircle className="h-6 w-6 text-white" />
           </div>
           <div className="ml-4">
-            <p className="text-sm font-medium text-gray-600">Mensagens</p>
-            <p className="text-2xl font-bold text-gray-900">{messages.length}</p>
+            <p className="text-sm font-medium text-slate-600">Mensagens</p>
+            <p className="text-2xl font-bold text-slate-900">{messages.length}</p>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <motion.div 
+        whileHover={{ scale: 1.02, y: -2 }}
+        className="card-premium p-6"
+      >
         <div className="flex items-center">
-          <div className="p-2 bg-green-100 rounded-lg">
-            <Package className="h-6 w-6 text-green-600" />
+          <div className="p-2 bg-gradient-to-r from-emerald-600 to-blue-600 rounded-lg">
+            <Package className="h-6 w-6 text-white" />
           </div>
           <div className="ml-4">
-            <p className="text-sm font-medium text-gray-600">Produtos</p>
-            <p className="text-2xl font-bold text-gray-900">{products.length}</p>
+            <p className="text-sm font-medium text-slate-600">Produtos</p>
+            <p className="text-2xl font-bold text-slate-900">{products.length}</p>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <motion.div 
+        whileHover={{ scale: 1.02, y: -2 }}
+        className="card-premium p-6"
+      >
         <div className="flex items-center">
-          <div className="p-2 bg-purple-100 rounded-lg">
-            <Truck className="h-6 w-6 text-purple-600" />
+          <div className="p-2 bg-gradient-to-r from-agro-gold to-tech-blue rounded-lg">
+            <Truck className="h-6 w-6 text-white" />
           </div>
           <div className="ml-4">
-            <p className="text-sm font-medium text-gray-600">Fretes</p>
-            <p className="text-2xl font-bold text-gray-900">{freights.length}</p>
+            <p className="text-sm font-medium text-slate-600">Fretes</p>
+            <p className="text-2xl font-bold text-slate-900">{freights.length}</p>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <motion.div 
+        whileHover={{ scale: 1.02, y: -2 }}
+        className="card-premium p-6"
+      >
         <div className="flex items-center">
-          <div className="p-2 bg-orange-100 rounded-lg">
-            <Star className="h-6 w-6 text-orange-600" />
+          <div className="p-2 bg-gradient-to-r from-agro-brown to-agro-gold rounded-lg">
+            <Star className="h-6 w-6 text-white" />
           </div>
           <div className="ml-4">
-            <p className="text-sm font-medium text-gray-600">Avaliações</p>
-            <p className="text-2xl font-bold text-gray-900">4.8</p>
+            <p className="text-sm font-medium text-slate-600">Avaliações</p>
+            <p className="text-2xl font-bold text-slate-900">4.8</p>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 

@@ -1,34 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { useTheme } from '../contexts/ThemeContext';
-import { useAuth } from '../contexts/AuthContext';
-import { usePayment } from '../contexts/PaymentContext';
 import { useTranslation } from 'react-i18next';
 import { 
-  TrendingUp, TrendingDown, DollarSign, Package, Truck, 
-  Users, Shield, Zap, Globe, BarChart3, ArrowRight,
-  CheckCircle, Star, Award, Clock, MapPin, Phone,
-  Mail, MessageSquare, Calendar, Target, Leaf,
+  DollarSign, Package, Truck, 
+  Users, Shield, TrendingUp, TrendingDown,
+  MapPin, MessageSquare, Leaf,
   Sun, Cloud, CloudRain, Thermometer, Droplets, Wind
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
-  const { isDark } = useTheme();
-  const { user, isAdmin } = useAuth();
-  const { isPaid, planActive } = usePayment();
   const { t } = useTranslation();
   const navigate = useNavigate();
   
   // CAMADA 2: Dados reais da bolsa de valores via API Agrolink
   const [stockData, setStockData] = useState([]);
-  const [grainsData, setGrainsData] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
-  const [agrolinkLoading, setAgrolinkLoading] = useState(true);
-  const [agrolinkError, setAgrolinkError] = useState(null);
   const [weatherData, setWeatherData] = useState(null);
-  const [weatherLoading, setWeatherLoading] = useState(true);
-  const [weatherError, setWeatherError] = useState(null);
 
   // CAMADA 2: Obter localização do usuário via IP
   const getUserLocationByIP = async () => {
@@ -61,11 +49,8 @@ const Home = () => {
   };
 
   // CAMADA 2: Buscar dados da API Agrolink
-  const fetchAgrolinkData = async () => {
+  const fetchAgrolinkData = useCallback(async () => {
     try {
-      setAgrolinkLoading(true);
-      setAgrolinkError(null);
-
       if (!userLocation) {
         await getUserLocationByIP();
         return;
@@ -90,20 +75,7 @@ const Home = () => {
           marketCap: stock.market_cap
         })) || [];
 
-        // Formatar dados dos grãos
-        const formattedGrainsData = data.grains?.map(grain => ({
-          id: grain.id,
-          name: grain.name,
-          currentPrice: grain.current_price,
-          previousPrice: grain.previous_price,
-          change: grain.price_change_percentage,
-          volume: grain.volume,
-          region: grain.region,
-          lastUpdate: new Date(grain.last_update)
-        })) || [];
-
         setStockData(formattedStockData);
-        setGrainsData(formattedGrainsData);
         
       } else {
         throw new Error('Erro na API Agrolink');
@@ -182,67 +154,9 @@ const Home = () => {
         }
       ];
 
-      const fallbackGrainsData = [
-        {
-          id: 'soja',
-          name: 'Soja',
-          currentPrice: 145.67 + (Math.random() - 0.5) * 10,
-          previousPrice: 143.33,
-          change: 2.34 + (Math.random() - 0.5) * 2,
-          volume: '1.2M',
-          region: userLocation?.region || 'MT',
-          lastUpdate: new Date()
-        },
-        {
-          id: 'milho',
-          name: 'Milho',
-          currentPrice: 89.45 + (Math.random() - 0.5) * 8,
-          previousPrice: 90.68,
-          change: -1.23 + (Math.random() - 0.5) * 1.5,
-          volume: '856K',
-          region: userLocation?.region || 'MT',
-          lastUpdate: new Date()
-        },
-        {
-          id: 'cafe',
-          name: 'Café',
-          currentPrice: 567.89 + (Math.random() - 0.5) * 25,
-          previousPrice: 572.76,
-          change: -0.87 + (Math.random() - 0.5) * 1.5,
-          volume: '432K',
-          region: userLocation?.region || 'MT',
-          lastUpdate: new Date()
-        },
-        {
-          id: 'algodao',
-          name: 'Algodão',
-          currentPrice: 78.34 + (Math.random() - 0.5) * 12,
-          previousPrice: 77.18,
-          change: 1.56 + (Math.random() - 0.5) * 1.5,
-          volume: '678K',
-          region: userLocation?.region || 'MT',
-          lastUpdate: new Date()
-        },
-        {
-          id: 'trigo',
-          name: 'Trigo',
-          currentPrice: 123.45 + (Math.random() - 0.5) * 18,
-          previousPrice: 122.67,
-          change: 0.78 + (Math.random() - 0.5) * 1.5,
-          volume: '345K',
-          region: userLocation?.region || 'MT',
-          lastUpdate: new Date()
-        }
-      ];
-
       setStockData(fallbackStockData);
-      setGrainsData(fallbackGrainsData);
-      setAgrolinkError('Dados carregados em modo offline');
-      
-    } finally {
-      setAgrolinkLoading(false);
     }
-  };
+  }, [userLocation]);
 
   // CAMADA 2: Atualizar dados a cada 5 minutos
   useEffect(() => {
@@ -256,28 +170,25 @@ const Home = () => {
       const interval = setInterval(fetchAgrolinkData, 30000); // 30 segundos
       return () => clearInterval(interval);
     }
-  }, [userLocation]);
+  }, [userLocation, fetchAgrolinkData]);
 
   // CAMADA 2: Função para formatar mudança de preço com cores
   const formatChange = (change) => {
     const isPositive = change >= 0;
     const color = isPositive ? 'text-emerald-600' : 'text-red-600';
-    const icon = isPositive ? '↗' : '↘';
+    const Icon = isPositive ? TrendingUp : TrendingDown;
     
     return (
       <span className={`${color} font-semibold flex items-center gap-1`}>
-        {icon} {Math.abs(change).toFixed(2)}%
+        <Icon className="w-4 h-4" /> {Math.abs(change).toFixed(2)}%
       </span>
     );
   };
 
   // CAMADA 2: Dados reais de clima via OpenWeather API
   // CAMADA 2: Buscar dados reais de clima
-  const fetchWeatherData = async (lat, lon) => {
+  const fetchWeatherData = useCallback(async (lat, lon) => {
     try {
-      setWeatherLoading(true);
-      setWeatherError(null);
-      
       // API OpenWeather - Dados reais de clima
       const apiKey = process.env.REACT_APP_OPENWEATHER_API_KEY || 'demo_key';
       const response = await fetch(
@@ -305,7 +216,6 @@ const Home = () => {
         };
         
         setWeatherData(formattedWeather);
-        setWeatherLoading(false);
         
       } else {
         throw new Error('Erro na API OpenWeather');
@@ -326,17 +236,15 @@ const Home = () => {
         country: userLocation?.country || 'BR',
         lastUpdate: new Date(),
         pressure: Math.round(1013 + (Math.random() - 0.5) * 20),
-        visibility: parseFloat(10 + (Math.random() - 0.5) * 5).toFixed(1)
+        visibility: parseFloat(10 + (Math.random() - 0.5) * 1).toFixed(1) // metros para km
       };
       
       setWeatherData(fallbackWeather);
-      setWeatherError('Dados de clima em modo offline');
-      setWeatherLoading(false);
     }
-  };
+  }, [userLocation]);
 
   // CAMADA 2: Obter localização do usuário e buscar clima
-  const getUserLocation = () => {
+  const getUserLocation = useCallback(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -362,32 +270,19 @@ const Home = () => {
         fetchWeatherData(-11.8647, -55.5036);
       }
     }
-  };
+  }, [userLocation, fetchWeatherData]);
 
   // CAMADA 2: Atualizar clima quando localização mudar
   useEffect(() => {
     if (userLocation?.lat && userLocation?.lon) {
       getUserLocation();
     }
-  }, [userLocation]);
+  }, [userLocation, getUserLocation]);
 
   const [newsData, setNewsData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
 
-  useEffect(() => {
-    document.title = `Agroisync - ${t('home.hero.title')}`;
-    getUserLocation();
-    fetchNewsData();
-  }, [t]);
-
-  useEffect(() => {
-    if (userLocation) {
-      fetchWeatherData();
-    }
-  }, [userLocation]);
-
-  const fetchNewsData = async () => {
+  const fetchNewsData = useCallback(async () => {
     try {
       // Simular notícias reais do agronegócio
       const mockNewsData = [
@@ -438,11 +333,20 @@ const Home = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const formatPrice = (price) => {
-    return `R$ ${price.toFixed(2)}`;
-  };
+  // useEffect para carregar notícias e definir título da página
+  useEffect(() => {
+    document.title = `Agroisync - ${t('home.hero.title')}`;
+    fetchNewsData();
+  }, [t, fetchNewsData]);
+
+  // useEffect para atualizar clima quando localização mudar
+  useEffect(() => {
+    if (userLocation?.lat && userLocation?.lon) {
+      fetchWeatherData(userLocation.lat, userLocation.lon);
+    }
+  }, [userLocation, fetchWeatherData]);
 
   const getWeatherIcon = (iconCode) => {
     const iconMap = {
@@ -506,8 +410,10 @@ const Home = () => {
     <div className="min-h-screen bg-white text-slate-900">
       
       {/* Bolsa de Valores - TICKER PREMIUM ABAIXO DO MENU */}
-      <section className="py-3 px-6 bg-gradient-to-r from-slate-50 via-white to-blue-50 border-b-2 border-gradient-to-r from-agro-green to-tech-blue">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-3 px-6 header-premium border-b-2 border-agro-green-500 relative overflow-hidden">
+        {/* Linha gradiente sutil animada */}
+        <div className="absolute inset-0 bg-gradient-to-r from-agro-green-500/20 via-agro-yellow-500/20 to-web3-neon-blue/20 opacity-30"></div>
+        <div className="max-w-7xl mx-auto relative z-10">
           {/* Ticker horizontal fino com rolagem suave */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -515,26 +421,67 @@ const Home = () => {
             transition={{ duration: 0.4 }}
             className="relative overflow-hidden h-16 flex items-center"
           >
-            <div className="flex items-center animate-marquee-fast">
+            <div className="flex items-center animate-pulse">
               <div className="flex items-center space-x-6 min-w-max">
-              {stockData.map((stock, index) => (
-                <motion.div
-                  key={stock.symbol}
+                {stockData.map((stock, index) => (
+                  <motion.div
+                    key={stock.symbol}
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.05 }}
                     whileHover={{ scale: 1.05, y: -2 }}
-                    className="flex items-center space-x-3 bg-white px-4 py-3 rounded-xl shadow-md border border-slate-200 hover:shadow-lg transition-all duration-300 min-w-[180px] card-premium"
+                    className="flex items-center space-x-3 card-premium px-4 py-3 min-w-[180px] group relative overflow-hidden hover-lift"
                   >
                     <div className="text-sm font-bold text-slate-800">
-                    {stock.symbol}
-                  </div>
+                      {stock.symbol}
+                    </div>
                     <div className="text-sm font-semibold text-slate-900">
                       R$ {stock.price.toFixed(2)}
-                  </div>
-                  <div className="text-xs">
-                    {formatChange(stock.change)}
-                  </div>
+                    </div>
+                    <div className="text-xs">
+                      {formatChange(stock.change)}
+                    </div>
+                    
+                    {/* Indicador de tendência - Animado */}
+                    <motion.div 
+                      className={`w-2 h-2 rounded-full ${stock.trend === 'up' ? 'bg-emerald-500' : 'bg-red-500'} shadow-lg`}
+                      animate={{ 
+                        scale: [1, 1.2, 1],
+                        opacity: [0.7, 1, 0.7]
+                      }}
+                      transition={{ 
+                        duration: 1.5, 
+                        repeat: Infinity, 
+                        ease: "easeInOut" 
+                      }}
+                    ></motion.div>
+                    
+                    {/* Efeito de glow sutil */}
+                    <div className={`absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${stock.trend === 'up' ? 'bg-agro-green-500/10' : 'bg-red-500/10'}`}></div>
+                  </motion.div>
+                ))}
+              </div>
+              
+              {/* Duplicar para efeito marquee contínuo */}
+              <div className="flex items-center space-x-6 min-w-max ml-12">
+                {stockData.map((stock, index) => (
+                  <motion.div
+                    key={`${stock.symbol}-duplicate`}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: (index + stockData.length) * 0.05 }}
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    className="flex items-center space-x-3 card-premium px-4 py-2 min-w-[180px] hover-lift"
+                  >
+                    <div className="text-sm font-bold text-slate-800">
+                      {stock.symbol}
+                    </div>
+                    <div className="text-sm font-semibold text-slate-900">
+                      R$ {stock.price.toFixed(2)}
+                    </div>
+                    <div className="text-xs">
+                      {formatChange(stock.change)}
+                    </div>
                     
                     {/* Indicador de tendência - Animado */}
                     <motion.div 
@@ -552,44 +499,6 @@ const Home = () => {
                   </motion.div>
                 ))}
               </div>
-              
-              {/* Duplicar para efeito marquee contínuo */}
-              <div className="flex items-center space-x-6 min-w-max ml-12">
-                {stockData.map((stock, index) => (
-                  <motion.div
-                    key={`${stock.symbol}-duplicate`}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: (index + stockData.length) * 0.05 }}
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    className="flex items-center space-x-3 bg-white px-4 py-2 rounded-lg shadow-md border border-slate-200 hover:shadow-lg transition-all duration-300 min-w-[180px] card-premium"
-                  >
-                    <div className="text-sm font-bold text-slate-800">
-                      {stock.symbol}
-                    </div>
-                    <div className="text-sm font-semibold text-slate-900">
-                      R$ {stock.price.toFixed(2)}
-                  </div>
-                    <div className="text-xs">
-                      {formatChange(stock.change)}
-                  </div>
-                    
-                    {/* Indicador de tendência - Animado */}
-                    <motion.div 
-                      className={`w-2 h-2 rounded-full ${stock.trend === 'up' ? 'bg-emerald-500' : 'bg-red-500'}`}
-                      animate={{ 
-                        scale: [1, 1.2, 1],
-                        opacity: [0.7, 1, 0.7]
-                      }}
-                      transition={{ 
-                        duration: 1.5, 
-                        repeat: Infinity, 
-                        ease: "easeInOut" 
-                      }}
-                    ></motion.div>
-                </motion.div>
-              ))}
-            </div>
             </div>
             
             {/* Indicador de dados em tempo real */}
@@ -618,15 +527,18 @@ const Home = () => {
       </section>
 
       {/* Hero Section - DESIGN PREMIUM AGROISYNC MAIORAL */}
-      <section className="relative pt-24 pb-24 px-4 overflow-hidden">
+      <section className="relative pt-24 pb-24 px-4 overflow-hidden header-premium">
         {/* Background Premium */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-blue-50">
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-slate-100">
             <div className="absolute inset-0 bg-white opacity-95"></div>
           </div>
+          {/* Linha gradiente sutil no topo */}
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-agro-green-500 via-agro-yellow-500 to-web3-neon-blue opacity-60"></div>
           {/* Elementos decorativos premium */}
-          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-agro-green to-tech-green rounded-full opacity-10 blur-xl"></div>
-          <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-agro-gold to-tech-blue rounded-full opacity-10 blur-xl"></div>
+          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-agro-green-600 to-web3-neon-blue rounded-full opacity-10 blur-xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-agro-yellow-500 to-web3-neon-blue rounded-full opacity-10 blur-xl animate-pulse"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-br from-agro-green-500/5 via-agro-yellow-500/5 to-web3-neon-blue/5 rounded-full blur-3xl"></div>
         </div>
         
         <div className="max-w-6xl mx-auto text-center relative z-10">
@@ -635,7 +547,7 @@ const Home = () => {
             initial={{ opacity: 0, y: 30, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 1, ease: "easeOut" }}
-            className="text-5xl md:text-7xl font-bold mb-6 text-gradient-agro"
+            className="text-5xl md:text-7xl font-bold mb-6 title-premium"
           >
             {t('home.hero.title')}
           </motion.h1>
@@ -671,32 +583,38 @@ const Home = () => {
               onClick={() => navigate('/cadastro')}
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
-              className="btn-premium px-10 py-5 text-lg"
+              className="btn-accent-green px-10 py-5 text-lg relative overflow-hidden group"
             >
-              {t('home.hero.cta.primary')}
+              {/* Efeito de glow no hover */}
+              <div className="absolute inset-0 bg-gradient-to-r from-agro-green-400 via-agro-yellow-400 to-web3-neon-blue opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <span className="relative z-10">{t('home.hero.cta.primary')}</span>
             </motion.button>
             <motion.button
               onClick={() => navigate('/sobre')}
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
-              className="btn-premium-secondary px-10 py-5 text-lg"
+              className="bg-transparent border-2 border-emerald-500 text-emerald-600 font-bold rounded-xl hover:bg-emerald-500 hover:text-white transition-all duration-300 px-10 py-5 text-lg relative overflow-hidden group"
             >
-              {t('home.hero.cta.secondary')}
+              {/* Efeito de glow no hover */}
+              <div className="absolute inset-0 bg-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+              <span className="relative z-10">{t('home.hero.cta.secondary')}</span>
             </motion.button>
           </motion.div>
         </div>
       </section>
 
       {/* Features Section - DESIGN PREMIUM */}
-      <section className="py-24 px-4 bg-gradient-to-br from-slate-50 to-white">
-        <div className="max-w-7xl mx-auto">
+      <section className="section-premium header-premium relative overflow-hidden">
+        {/* Linha gradiente sutil */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-agro-green-500 via-agro-yellow-500 to-web3-neon-blue opacity-40"></div>
+        <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="text-center mb-20"
           >
-            <h2 className="text-4xl font-bold text-gradient-agro mb-6">
+            <h2 className="text-4xl font-bold title-premium mb-6">
               {t('home.features.title')}
             </h2>
             <p className="text-xl text-slate-600 max-w-3xl mx-auto">
@@ -705,41 +623,16 @@ const Home = () => {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              {
-                icon: <Package className="w-8 h-8" />,
-                title: t('home.features.marketplace.title'),
-                description: t('home.features.marketplace.description'),
-                color: 'from-slate-500 to-slate-600'
-              },
-              {
-                icon: <Truck className="w-8 h-8" />,
-                title: t('home.features.freight.title'),
-                description: t('home.features.freight.description'),
-                color: 'from-slate-600 to-slate-700'
-              },
-              {
-                icon: <DollarSign className="w-8 h-8" />,
-                title: t('home.features.crypto.title'),
-                description: t('home.features.crypto.description'),
-                color: 'from-slate-700 to-slate-800'
-              },
-              {
-                icon: <Shield className="w-8 h-8" />,
-                title: t('home.features.quotes.title'),
-                description: t('home.features.quotes.description'),
-                color: 'from-slate-800 to-slate-900'
-              }
-            ].map((feature, index) => (
+            {features.map((feature, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ y: -10 }}
-                className="text-center group"
+                whileHover={{ y: -10, scale: 1.02 }}
+                className="text-center group card-premium p-6 hover-lift"
               >
-                <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-r ${feature.color} flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300`}>
+                <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-r ${feature.color} flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300 shadow-lg group-hover:shadow-xl`}>
                   {feature.icon}
                 </div>
                 <h3 className="text-xl font-bold text-slate-800 mb-3">
@@ -755,41 +648,38 @@ const Home = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-slate-50 to-blue-50">
-        <div className="max-w-6xl mx-auto">
+      <section className="section-premium-compact bg-gradient-to-r from-slate-50 to-slate-100 relative overflow-hidden">
+        {/* Linha gradiente sutil */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-agro-green-500 via-agro-yellow-500 to-web3-neon-blue opacity-40"></div>
+        <div className="max-w-6xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="text-center mb-12"
           >
-            <h2 className="text-4xl font-bold text-slate-800 mb-4">
-              {t('home.cta.title')}
+            <h2 className="text-4xl font-bold title-premium mb-4">
+              Estatísticas da Plataforma
             </h2>
             <p className="text-xl text-slate-600">
-              {t('home.cta.subtitle')}
+              Números que demonstram o crescimento e sucesso do Agroisync
             </p>
           </motion.div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              { label: t('home.stats.users'), value: '15.2K', icon: <Users className="w-6 h-6" /> },
-              { label: t('home.stats.products'), value: '8.7K', icon: <Package className="w-6 h-6" /> },
-              { label: t('home.stats.freights'), value: '3.4K', icon: <Truck className="w-6 h-6" /> },
-              { label: t('home.stats.uptime'), value: '99.9%', icon: <DollarSign className="w-6 h-6" /> }
-            ].map((stat, index) => (
+            {stats.map((stat, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ scale: 1.05 }}
-                className="text-center"
+                whileHover={{ scale: 1.05, y: -5 }}
+                className="text-center card-premium p-6 hover-lift"
               >
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white shadow-lg flex items-center justify-center text-slate-600">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-slate-100 to-slate-200 shadow-lg flex items-center justify-center text-slate-600 group-hover:scale-110 transition-transform duration-300 icon-premium">
                   {stat.icon}
                 </div>
-                <div className="text-3xl font-bold text-slate-800 mb-2">
+                <div className="text-3xl font-bold text-gradient-premium mb-2">
                   {stat.value}
                 </div>
                 <div className="text-slate-600">
@@ -802,20 +692,25 @@ const Home = () => {
       </section>
 
       {/* Weather & News Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-7xl mx-auto">
+      <section className="section-premium header-premium relative overflow-hidden">
+        {/* Linha gradiente sutil */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-agro-green-500 via-agro-yellow-500 to-web3-neon-blue opacity-40"></div>
+        <div className="max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Weather Widget */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
-              className="bg-white rounded-2xl shadow-lg p-8 border border-slate-200 hover:shadow-xl transition-shadow duration-300"
+              className="card-premium p-8 hover-lift"
             >
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold text-slate-800">🌤️ Clima em Tempo Real</h3>
-                <MapPin className="w-6 h-6 text-slate-600" />
-              </div>
+                                <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-2xl font-bold title-premium-small flex items-center gap-2">
+                      <Sun className="w-6 h-6 text-agro-yellow-500" />
+                      Clima em Tempo Real
+                    </h3>
+                    <MapPin className="w-6 h-6 text-slate-600" />
+                  </div>
               
               {weatherData ? (
                 <div className="space-y-6">
@@ -824,36 +719,41 @@ const Home = () => {
                       <h4 className="text-lg font-semibold text-slate-800 truncate">{weatherData.city}</h4>
                       <p className="text-slate-600 capitalize text-sm truncate">{weatherData.description}</p>
                     </div>
-                    <div className="text-5xl font-bold text-slate-800 ml-4 flex-shrink-0">
+                    <div className="text-5xl font-bold text-gradient-premium ml-4 flex-shrink-0">
                       {weatherData.temperature}°C
                     </div>
                   </div>
                   
-                  <div className="flex items-center justify-center text-slate-600 mb-6">
-                    {getWeatherIcon(weatherData.icon)}
+                  <div className="flex items-center justify-center text-slate-600 mb-6 group">
+                    <motion.div
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {getWeatherIcon(weatherData.icon)}
+                    </motion.div>
                   </div>
                   
                   <div className="grid grid-cols-3 gap-6 pt-4 border-t border-slate-200">
-                    <div className="text-center">
-                      <div className="flex items-center justify-center mb-2">
+                    <div className="text-center group">
+                      <div className="flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-200">
                         <Thermometer className="w-5 h-5 text-slate-600" />
                       </div>
                       <p className="text-xs text-slate-600 mb-1">Sensação</p>
-                      <p className="text-lg font-semibold text-slate-800">{weatherData.feelsLike}°C</p>
+                      <p className="text-lg font-semibold text-gradient-premium">{weatherData.feelsLike}°C</p>
                     </div>
-                    <div className="text-center">
-                      <div className="flex items-center justify-center mb-2">
+                    <div className="text-center group">
+                      <div className="flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-200">
                         <Droplets className="w-5 h-5 text-slate-600" />
                       </div>
                       <p className="text-xs text-slate-600 mb-1">Umidade</p>
-                      <p className="text-lg font-semibold text-slate-800">{weatherData.humidity}%</p>
+                      <p className="text-lg font-semibold text-gradient-premium">{weatherData.humidity}%</p>
                     </div>
-                    <div className="text-center">
-                      <div className="flex items-center justify-center mb-2">
+                    <div className="text-center group">
+                      <div className="flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-200">
                         <Wind className="w-5 h-5 text-slate-600" />
                       </div>
                       <p className="text-xs text-slate-600 mb-1">Vento</p>
-                      <p className="text-lg font-semibold text-slate-800">{weatherData.windSpeed} km/h</p>
+                      <p className="text-lg font-semibold text-gradient-premium">{weatherData.windSpeed} km/h</p>
                     </div>
                   </div>
                 </div>
@@ -870,10 +770,10 @@ const Home = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
-              className="bg-white rounded-2xl shadow-lg p-8 border border-slate-200 hover:shadow-xl transition-shadow duration-300"
+              className="card-premium p-8 hover-lift"
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold text-slate-800">{t('home.highlights.marketIntelligence')}</h3>
+                <h3 className="text-2xl font-bold title-premium-small">{t('home.highlights.marketIntelligence')}</h3>
                 <MessageSquare className="w-6 h-6 text-slate-600" />
               </div>
               
@@ -890,34 +790,38 @@ const Home = () => {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: index * 0.1 }}
-                      className="border-b border-slate-200 pb-4 last:border-b-0"
+                      className="border-b border-slate-200 pb-4 last:border-b-0 hover:bg-slate-50 p-2 rounded-lg transition-colors duration-200"
                     >
                       <div className="flex items-start space-x-3">
-                        <div className="w-16 h-16 bg-slate-100 rounded-lg flex-shrink-0 flex items-center justify-center">
+                        <div className="w-16 h-16 bg-gradient-to-r from-slate-100 to-slate-200 rounded-lg flex-shrink-0 flex items-center justify-center hover:scale-105 transition-transform duration-200">
                           <Leaf className="w-6 h-6 text-slate-600" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h4 className="text-sm font-semibold text-slate-800 mb-1 line-clamp-2">
+                          <h4 className="text-sm font-semibold text-slate-800 mb-1 overflow-hidden text-ellipsis whitespace-nowrap hover:text-emerald-700 transition-colors duration-200 cursor-pointer">
                             {news.title}
                           </h4>
-                          <p className="text-xs text-slate-600 mb-2">
+                          <p className="text-xs text-slate-600 mb-2 line-clamp-2">
                             {news.excerpt}
                           </p>
-                          <div className="flex items-center space-x-4 text-xs text-slate-500">
-                            <span className="bg-slate-100 px-2 py-1 rounded">
-                              {news.category}
-                            </span>
-                            <span>{news.source}</span>
-                            <span>{news.date}</span>
-                          </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                    <span className="badge-accent-green">
+                      {news.category}
+                    </span>
+                    <span className="text-slate-600">{news.source}</span>
+                    <span className="text-slate-500">{news.date}</span>
+                  </div>
                         </div>
                       </div>
                     </motion.div>
                   ))}
                   
-                  <button className="w-full mt-4 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors duration-200">
+                  <motion.button 
+                    whileHover={{ scale: 1.02, y: -1 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full mt-4 px-4 py-2 bg-gradient-to-r from-slate-100 to-slate-200 text-slate-700 rounded-lg hover:from-slate-200 hover:to-slate-300 transition-all duration-200 font-medium"
+                  >
                     {t('common.view')} {t('common.all')} {t('common.news')}
-                  </button>
+                  </motion.button>
                 </div>
               )}
             </motion.div>
@@ -926,8 +830,12 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-slate-600 to-slate-700">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="section-premium bg-gradient-to-r from-slate-600 via-slate-700 to-slate-800 relative overflow-hidden">
+        {/* Background elements */}
+        <div className="absolute inset-0 bg-gradient-to-br from-agro-green-600/20 via-agro-yellow-500/20 to-web3-neon-blue/20"></div>
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-agro-green-500 via-agro-yellow-500 to-web3-neon-blue"></div>
+        
+        <div className="max-w-4xl mx-auto text-center relative z-10">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -950,50 +858,66 @@ const Home = () => {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
-            <button
+            <motion.button
               onClick={() => navigate('/cadastro')}
-              className="px-8 py-4 bg-white text-slate-700 font-bold rounded-xl hover:bg-slate-100 transition-colors duration-300"
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-8 py-4 bg-gradient-to-r from-emerald-500 via-yellow-500 to-blue-500 text-white font-bold rounded-xl hover:from-emerald-600 hover:via-yellow-600 hover:to-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl relative overflow-hidden group"
             >
-              {t('home.hero.cta.primary')}
-            </button>
-            <button
+              {/* Efeito de glow no hover */}
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 via-yellow-400 to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <span className="relative z-10">{t('home.hero.cta.primary')}</span>
+            </motion.button>
+            <motion.button
               onClick={() => navigate('/contato')}
-              className="px-8 py-4 bg-transparent border-2 border-white text-white font-bold rounded-xl hover:bg-white hover:text-slate-700 transition-colors duration-300"
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-8 py-4 bg-transparent border-2 border-white text-white font-bold rounded-xl hover:bg-white hover:text-slate-700 transition-all duration-300"
             >
               {t('home.cta.secondary')}
-            </button>
+            </motion.button>
           </motion.div>
         </div>
       </section>
 
       {/* Footer CTA */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="py-16 px-4 bg-gradient-to-br from-slate-50 to-white relative overflow-hidden">
+        {/* Linha gradiente sutil */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-yellow-500 to-blue-500 opacity-40"></div>
+        <div className="max-w-4xl mx-auto text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl p-8 border border-slate-200"
+            className="bg-gradient-to-r from-slate-50 to-slate-100 rounded-2xl p-8 border border-slate-200 hover:shadow-xl transition-all duration-300 relative overflow-hidden group"
           >
-            <h3 className="text-2xl font-bold text-slate-800 mb-4">
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-yellow-600 bg-clip-text text-transparent mb-4">
               {t('home.cta.title')}
             </h3>
             <p className="text-slate-600 mb-6">
               {t('home.cta.subtitle')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button
+              <motion.button
                 onClick={() => navigate('/ajuda')}
-                className="px-6 py-3 bg-slate-600 text-white font-medium rounded-lg hover:bg-slate-700 transition-colors duration-300"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-6 py-3 bg-gradient-to-r from-slate-600 via-slate-700 to-slate-800 text-white font-medium rounded-lg hover:from-slate-700 hover:via-slate-800 hover:to-slate-900 transition-all duration-300 shadow-md hover:shadow-lg relative overflow-hidden group"
               >
-                {t('nav.help')}
-              </button>
-              <button
+                {/* Efeito de glow no hover */}
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 via-yellow-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
+                <span className="relative z-10">{t('nav.help')}</span>
+              </motion.button>
+              <motion.button
                 onClick={() => navigate('/contato')}
-                className="px-6 py-3 bg-transparent border border-slate-600 text-slate-600 font-medium rounded-lg hover:bg-slate-50 transition-colors duration-300"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-6 py-3 bg-transparent border border-gradient-to-r from-emerald-500 via-yellow-500 to-blue-500 text-slate-600 font-medium rounded-lg hover:bg-gradient-to-r hover:from-emerald-50 hover:via-yellow-50 hover:to-blue-50 hover:border-emerald-600 transition-all duration-300 relative overflow-hidden group"
               >
-                {t('nav.contact')}
-              </button>
+                {/* Efeito de glow no hover */}
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-yellow-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
+                <span className="relative z-10">{t('nav.contact')}</span>
+              </motion.button>
             </div>
           </motion.div>
         </div>

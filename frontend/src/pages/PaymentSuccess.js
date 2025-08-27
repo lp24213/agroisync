@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { CheckCircle, ArrowRight, Home, User } from 'lucide-react';
+import { CheckCircle, ArrowRight, Home, User, CreditCard, Coins } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 
@@ -69,14 +69,14 @@ const PaymentSuccess = () => {
     if (method === 'crypto' && tx) {
       return {
         method: 'Criptomoeda',
-        icon: '🪙',
+        icon: 'Coins',
         details: `Transação: ${tx.substring(0, 10)}...${tx.substring(tx.length - 8)}`,
         description: 'Pagamento processado via blockchain'
       };
     } else {
       return {
         method: 'Cartão de Crédito',
-        icon: '💳',
+        icon: 'CreditCard',
         details: 'Processado via Stripe',
         description: 'Pagamento seguro e instantâneo'
       };
@@ -108,7 +108,7 @@ const PaymentSuccess = () => {
             <div className="mx-auto w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mb-6">
               <CheckCircle className="w-16 h-16 text-green-600" />
             </div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            <h1 className="text-4xl font-bold text-gradient-agro mb-4">
               Pagamento Confirmado!
             </h1>
             <p className="text-xl text-gray-600 mb-8">

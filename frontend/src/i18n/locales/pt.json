@@ -799,6 +799,43 @@
   "store": {
     "title": "Loja Agroisync",
     "description": "Marketplace Completo de Produtos Agrícolas",
+    "cta": {
+      "primary": "Explorar Produtos",
+      "secondary": "Cadastrar Produto"
+    },
+    "features": {
+      "title": "Recursos da Loja",
+      "description": "Tudo que você precisa para seu agronegócio em um só lugar",
+      "products": {
+        "title": "Produtos Diversificados",
+        "description": "Ampla variedade de produtos agrícolas e insumos"
+      },
+      "freight": {
+        "title": "Sistema de Fretes",
+        "description": "Conecta produtores e transportadoras de forma eficiente"
+      },
+      "community": {
+        "title": "Comunidade Ativa",
+        "description": "Rede de produtores e compradores confiáveis"
+      },
+      "quality": {
+        "title": "Qualidade Garantida",
+        "description": "Produtos verificados e avaliados pela comunidade"
+      },
+      "business": {
+        "title": "Ferramentas de Negócio",
+        "description": "Recursos para otimizar suas vendas e compras"
+      },
+      "support": {
+        "title": "Suporte Especializado",
+        "description": "Equipe técnica pronta para ajudar"
+      }
+    },
+    "products": {
+      "title": "Produtos em Destaque",
+      "description": "Os melhores produtos selecionados para você",
+      "buy": "Comprar Agora"
+    },
     "categories": {
       "all": "Todas",
       "grains": "Grãos",

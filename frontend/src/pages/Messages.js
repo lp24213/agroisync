@@ -180,7 +180,7 @@ const Messages = () => {
         }
       } else {
         if (result.requiresPayment) {
-          setError('💳 Limite de produtos gratuitos atingido. Faça um pagamento para continuar enviando mensagens.');
+          setError('Limite de produtos gratuitos atingido. Faça um pagamento para continuar enviando mensagens.');
         } else {
           setError(result.message || 'Erro ao enviar mensagem');
         }
@@ -321,7 +321,7 @@ const Messages = () => {
         <div className="max-w-7xl mx-auto px-4">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent mb-2">
+            <h1 className="text-4xl font-bold text-gradient-agro mb-2">
               Painel de Mensagens
             </h1>
             <p className="text-neutral-400">
@@ -379,10 +379,10 @@ const Messages = () => {
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
-                      className={`px-3 py-2 rounded-lg text-sm transition-colors ${
-                        activeTab === tab
-                          ? 'bg-green-600 text-white'
-                          : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
+                      className={`px-3 py-2 rounded-lg text-sm transition-all duration-300 ${
+                                                 activeTab === tab
+                           ? 'bg-gradient-to-r from-emerald-600 to-blue-600 text-white shadow-md'
+                           : 'bg-neutral-700 text-neutral-300 hover:bg-gradient-to-r hover:from-emerald-600 hover:to-blue-600 hover:text-white hover:shadow-md'
                       }`}
                     >
                       <div className="flex items-center space-x-2">

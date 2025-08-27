@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './i18n/index'; // Importar i18n antes de qualquer renderização
-import './styles/globals.css';
+import './styles/global.css'; // Importar estilos globais premium
 import App from './App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import messagingService from '../services/messagingService';
+import { ShoppingCart, AlertTriangle, Lock, MessageSquare } from 'lucide-react';
 
 const MessagesProducts = () => {
   const [conversations, setConversations] = useState([]);
@@ -118,7 +119,9 @@ const MessagesProducts = () => {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="max-w-md w-full text-center">
-          <div className="text-6xl mb-4">🔒</div>
+                     <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-red-500 flex items-center justify-center">
+             <Lock className="w-8 h-8 text-white" />
+           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
             Acesso Bloqueado
           </h2>
@@ -130,13 +133,14 @@ const MessagesProducts = () => {
               onClick={() => navigate('/planos')}
               className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors"
             >
-              📋 Ver Planos Disponíveis
+                             Ver Planos Disponíveis
             </button>
             <button
               onClick={() => navigate('/loja')}
-              className="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors"
+              className="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center space-x-2"
             >
-              🛒 Acessar Loja
+              <ShoppingCart className="w-5 h-5" />
+              <span>Acessar Loja</span>
             </button>
           </div>
         </div>
@@ -150,8 +154,8 @@ const MessagesProducts = () => {
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900">
-              💬 Mensageria de Produtos
+            <h1 className="text-2xl font-bold text-gradient-agro">
+              Mensageria de Produtos
             </h1>
             <button
               onClick={() => navigate('/')}
@@ -167,7 +171,7 @@ const MessagesProducts = () => {
       <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
         <div className="flex">
           <div className="flex-shrink-0">
-            <span className="text-yellow-400 text-lg">⚠️</span>
+            <AlertTriangle className="w-5 h-5 text-yellow-400" />
           </div>
           <div className="ml-3">
             <p className="text-sm text-yellow-700">
@@ -302,7 +306,9 @@ const MessagesProducts = () => {
               ) : (
                 <div className="flex-1 flex items-center justify-center">
                   <div className="text-center text-gray-500">
-                    <div className="text-4xl mb-2">💬</div>
+                                         <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-blue-500 flex items-center justify-center">
+                       <MessageSquare className="w-6 h-6 text-white" />
+                     </div>
                     <p>Selecione uma conversa para começar</p>
                   </div>
                 </div>

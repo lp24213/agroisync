@@ -22,25 +22,25 @@ const Sobre = () => {
       icon: <Lightbulb className="w-8 h-8 text-agro-gold" />,
       title: t('about.values.innovation.title'),
       description: t('about.values.innovation.description'),
-      color: 'from-agro-gold to-tech-green'
+              color: 'from-yellow-500 to-emerald-600'
     },
     {
       icon: <Shield className="w-8 h-8 text-agro-green" />,
       title: t('about.values.trust.title'),
       description: t('about.values.trust.description'),
-      color: 'from-agro-green to-tech-blue'
+              color: 'from-emerald-600 to-blue-600'
     },
     {
       icon: <Globe className="w-8 h-8 text-tech-blue" />,
       title: t('about.values.global.title'),
       description: t('about.values.global.description'),
-      color: 'from-tech-blue to-agro-green'
+              color: 'from-blue-600 to-emerald-600'
     },
     {
       icon: <Users className="w-8 h-8 text-agro-brown" />,
       title: t('about.values.community.title'),
       description: t('about.values.community.description'),
-      color: 'from-agro-brown to-agro-gold'
+              color: 'from-amber-700 to-yellow-500'
     }
   ];
 
@@ -184,7 +184,7 @@ const Sobre = () => {
               <div className="text-center">
                 <motion.div 
                   whileHover={{ scale: 1.05 }}
-                  className="w-24 h-24 mx-auto mb-4 rounded-2xl bg-gradient-to-r from-agro-green to-tech-green flex items-center justify-center text-white shadow-lg"
+                  className="w-24 h-24 mx-auto mb-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-blue-600 flex items-center justify-center text-white shadow-lg"
                 >
                   <Globe className="w-12 h-12" />
                 </motion.div>
@@ -419,7 +419,7 @@ const Sobre = () => {
             >
                 <motion.div 
                   whileHover={{ scale: 1.05 }}
-                  className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-r from-agro-green to-tech-green flex items-center justify-center text-white shadow-lg"
+                  className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-r from-emerald-600 to-blue-600 flex items-center justify-center text-white shadow-lg"
                 >
                   {stat.icon}
                 </motion.div>

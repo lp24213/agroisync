@@ -253,7 +253,7 @@ const Admin = () => {
           <div className="text-center mb-8">
             <motion.div 
               whileHover={{ scale: 1.05 }}
-              className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-r from-agro-green to-tech-green flex items-center justify-center shadow-lg"
+              className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-blue-600 flex items-center justify-center shadow-lg"
             >
               <Building className="w-10 h-10 text-white" />
             </motion.div>

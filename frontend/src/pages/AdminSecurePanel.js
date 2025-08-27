@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { 
+  BarChart3, MessageSquare, Users, Package, Truck, 
+  CreditCard, Search, Shield, LogOut 
+} from 'lucide-react';
 
 const AdminSecurePanel = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -68,8 +72,8 @@ const AdminSecurePanel = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <h1 className="text-xl font-semibold text-white">
-                🔐 Painel Administrativo AGROISYNC
+              <h1 className="text-xl font-semibold text-gradient-agro">
+                Painel Administrativo AGROISYNC
               </h1>
             </div>
             <div className="flex items-center space-x-4">
@@ -78,9 +82,10 @@ const AdminSecurePanel = () => {
               </span>
               <button
                 onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center"
               >
-                🚪 Sair
+                <LogOut className="w-4 h-4 mr-2" />
+                Sair
               </button>
             </div>
           </div>
@@ -92,13 +97,13 @@ const AdminSecurePanel = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex space-x-8">
             {[
-              { id: 'dashboard', label: '📊 Dashboard', icon: '📊' },
-              { id: 'conversations', label: '💬 Conversas', icon: '💬' },
-              { id: 'users', label: '👥 Usuários', icon: '👥' },
-              { id: 'products', label: '📦 Produtos', icon: '📦' },
-              { id: 'freights', label: '🚚 Fretes', icon: '🚚' },
-              { id: 'payments', label: '💳 Pagamentos', icon: '💳' },
-              { id: 'audit', label: '🔍 Auditoria', icon: '🔍' }
+                          { id: 'dashboard', label: 'Dashboard', icon: 'BarChart3' },
+            { id: 'conversations', label: 'Conversas', icon: 'MessageSquare' },
+            { id: 'users', label: 'Usuários', icon: 'Users' },
+            { id: 'products', label: 'Produtos', icon: 'Package' },
+            { id: 'freights', label: 'Fretes', icon: 'Truck' },
+            { id: 'payments', label: 'Pagamentos', icon: 'CreditCard' },
+            { id: 'audit', label: 'Auditoria', icon: 'Search' }
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -125,7 +130,7 @@ const AdminSecurePanel = () => {
               <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
                 <div className="flex items-center">
                   <div className="p-2 bg-blue-500 rounded-lg">
-                    <span className="text-white text-2xl">👥</span>
+                    <Users className="w-6 h-6 text-white" />
                   </div>
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-400">Total de Usuários</p>
@@ -137,7 +142,7 @@ const AdminSecurePanel = () => {
               <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
                 <div className="flex items-center">
                   <div className="p-2 bg-green-500 rounded-lg">
-                    <span className="text-white text-2xl">📦</span>
+                    <Package className="w-6 h-6 text-white" />
                   </div>
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-400">Total de Produtos</p>
@@ -149,7 +154,7 @@ const AdminSecurePanel = () => {
               <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
                 <div className="flex items-center">
                   <div className="p-2 bg-yellow-500 rounded-lg">
-                    <span className="text-white text-2xl">🚚</span>
+                    <Truck className="w-6 h-6 text-white" />
                   </div>
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-400">Total de Fretes</p>
@@ -161,7 +166,7 @@ const AdminSecurePanel = () => {
               <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
                 <div className="flex items-center">
                   <div className="p-2 bg-purple-500 rounded-lg">
-                    <span className="text-white text-2xl">💬</span>
+                    <MessageSquare className="w-6 h-6 text-white" />
                   </div>
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-400">Total de Conversas</p>
@@ -173,7 +178,7 @@ const AdminSecurePanel = () => {
 
             <div className="bg-gray-800 rounded-lg border border-gray-700">
               <div className="px-6 py-4 border-b border-gray-700">
-                <h3 className="text-lg font-medium text-white">📋 Logs de Auditoria Recentes</h3>
+                <h3 className="text-lg font-medium text-white">Logs de Auditoria Recentes</h3>
               </div>
               <div className="p-6">
                 <div className="space-y-4">
@@ -205,7 +210,9 @@ const AdminSecurePanel = () => {
         {activeTab !== 'dashboard' && (
           <div className="bg-gray-800 rounded-lg border border-gray-700 p-8">
             <div className="text-center">
-              <div className="text-6xl mb-4">🚧</div>
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-yellow-500 flex items-center justify-center">
+               <Shield className="w-8 h-8 text-white" />
+             </div>
               <h3 className="text-xl font-medium text-white mb-2">
                 Funcionalidade em Desenvolvimento
               </h3>

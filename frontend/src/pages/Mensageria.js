@@ -315,7 +315,7 @@ const Mensageria = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-8"
           >
-            <h1 className="text-4xl font-bold text-slate-800 mb-4">
+            <h1 className="text-4xl font-bold text-gradient-agro mb-4">
               Mensageria Privada
             </h1>
             <p className="text-xl text-slate-600">
@@ -359,30 +359,30 @@ const Mensageria = () => {
                     <div className="flex space-x-2">
                       <button
                         onClick={() => setFilterType('all')}
-                        className={`px-3 py-1 text-xs rounded-full transition-colors duration-200 ${
+                        className={`px-3 py-1 text-xs rounded-full transition-all duration-300 ${
                           filterType === 'all'
-                            ? 'bg-slate-600 text-white'
-                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                            ? 'bg-gradient-to-r from-emerald-600 to-blue-600 text-white shadow-md'
+                            : 'bg-slate-100 text-slate-600 hover:bg-gradient-to-r hover:from-emerald-600 hover:to-blue-600 hover:text-white hover:shadow-md'
                         }`}
                       >
                         Todas
                       </button>
                       <button
                         onClick={() => setFilterType('product')}
-                        className={`px-3 py-1 text-xs rounded-full transition-colors duration-200 ${
+                        className={`px-3 py-1 text-xs rounded-full transition-all duration-300 ${
                           filterType === 'product'
-                            ? 'bg-slate-600 text-white'
-                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                            ? 'bg-gradient-to-r from-yellow-500 to-blue-600 text-white shadow-md'
+                            : 'bg-slate-100 text-slate-600 hover:bg-gradient-to-r hover:from-yellow-500 hover:to-blue-600 hover:text-white hover:shadow-md'
                         }`}
                       >
                         Produtos
                       </button>
                       <button
                         onClick={() => setFilterType('freight')}
-                        className={`px-3 py-1 text-xs rounded-full transition-colors duration-200 ${
+                        className={`px-3 py-1 text-xs rounded-full transition-all duration-300 ${
                           filterType === 'freight'
-                            ? 'bg-slate-600 text-white'
-                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                            ? 'bg-gradient-to-r from-amber-700 to-yellow-500 text-white shadow-md'
+                            : 'bg-slate-100 text-slate-600 hover:bg-gradient-to-r hover:from-amber-700 hover:to-yellow-500 hover:text-white hover:shadow-md'
                         }`}
                       >
                         Fretes

@@ -1,0 +1,385 @@
+/* ===== ESTILOS GLOBAIS AGROISYNC PREMIUM ===== */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* ===== RESET E BASE ===== */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  color: #1e293b;
+  background-color: #ffffff;
+}
+
+/* ===== ANIMAÇÕES GLOBAIS PREMIUM ===== */
+@layer utilities {
+  /* Animações de entrada em cascata */
+  .animate-cascade-1 { animation-delay: 0.1s; }
+  .animate-cascade-2 { animation-delay: 0.2s; }
+  .animate-cascade-3 { animation-delay: 0.3s; }
+  .animate-cascade-4 { animation-delay: 0.4s; }
+  .animate-cascade-5 { animation-delay: 0.5s; }
+  
+  /* Efeitos de hover premium */
+  .hover-lift {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+  
+  /* Glow effects */
+  .glow-green { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+  .glow-yellow { box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); }
+  .glow-blue { box-shadow: 0 0 20px rgba(0, 212, 255, 0.3); }
+  .glow-emerald { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+  .glow-neon { box-shadow: 0 0 30px rgba(0, 212, 255, 0.4); }
+  
+  /* Gradientes animados */
+  .gradient-animated {
+    background-size: 200% 200%;
+    animation: gradientShift 4s ease-in-out infinite;
+  }
+  
+  /* Bordas animadas */
+  .border-gradient {
+    background: linear-gradient(135deg, #16a34a, #f59e0b, #00d4ff);
+    padding: 2px;
+    border-radius: inherit;
+  }
+  
+  .border-gradient > * {
+    background: white;
+    border-radius: inherit;
+  }
+}
+
+/* ===== COMPONENTES GLOBAIS PREMIUM ===== */
+@layer components {
+  /* Botões premium */
+  .btn-premium {
+    @apply px-6 py-3 font-semibold rounded-xl transition-all duration-300 relative overflow-hidden;
+    @apply bg-gradient-to-r from-slate-600 to-slate-700 text-white;
+    @apply hover:from-slate-700 hover:to-slate-800;
+    @apply shadow-lg hover:shadow-xl;
+  }
+  
+  .btn-premium:hover {
+    transform: translateY(-2px);
+  }
+  
+  .btn-premium::before {
+    content: '';
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+    @apply bg-gradient-to-r from-agro-green-500/20 via-agro-yellow-500/20 to-web3-neon-blue/20;
+  }
+  
+  .btn-premium:hover::before {
+    @apply opacity-100;
+  }
+  
+  /* Botões de acento */
+  .btn-accent-green {
+    @apply px-6 py-3 font-semibold rounded-xl transition-all duration-300 relative overflow-hidden;
+    @apply bg-gradient-to-r from-agro-green-600 to-agro-green-700 text-white;
+    @apply hover:from-agro-green-700 hover:to-agro-green-800;
+    @apply shadow-lg hover:shadow-xl;
+  }
+  
+  .btn-accent-yellow {
+    @apply px-6 py-3 font-semibold rounded-xl transition-all duration-300 relative overflow-hidden;
+    @apply bg-gradient-to-r from-agro-yellow-600 to-agro-yellow-700 text-white;
+    @apply hover:from-agro-yellow-700 hover:to-agro-yellow-800;
+    @apply shadow-lg hover:shadow-xl;
+  }
+  
+  .btn-accent-blue {
+    @apply px-6 py-3 font-semibold rounded-xl transition-all duration-300 relative overflow-hidden;
+    @apply bg-gradient-to-r from-web3-neon-blue to-blue-600 text-white;
+    @apply hover:from-blue-700 hover:to-blue-800;
+    @apply shadow-lg hover:shadow-xl;
+  }
+  
+  /* Cards premium */
+  .card-premium {
+    @apply bg-white rounded-2xl shadow-lg border border-slate-200;
+    @apply transition-all duration-300 hover:shadow-xl;
+    @apply relative overflow-hidden;
+  }
+  
+  .card-premium::before {
+    content: '';
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+    @apply bg-gradient-to-r from-agro-green-500/5 via-agro-yellow-500/5 to-web3-neon-blue/5;
+  }
+  
+  .card-premium:hover::before {
+    @apply opacity-100;
+  }
+  
+  .card-premium:hover {
+    transform: translateY(-5px);
+  }
+  
+  /* Headers premium */
+  .header-premium {
+    @apply bg-gradient-to-br from-slate-50 via-white to-slate-100;
+    @apply relative overflow-hidden;
+  }
+  
+  .header-premium::before {
+    content: '';
+    @apply absolute top-0 left-0 right-0 h-1;
+    @apply bg-gradient-to-r from-agro-green-500 via-agro-yellow-500 to-web3-neon-blue;
+    @apply opacity-60;
+  }
+  
+  /* Inputs premium */
+  .input-premium {
+    @apply w-full px-4 py-3 border border-slate-300 rounded-xl;
+    @apply focus:ring-2 focus:ring-agro-green-500/20 focus:border-agro-green-500;
+    @apply transition-all duration-200;
+    @apply bg-white text-slate-900 placeholder-slate-500;
+  }
+  
+  .input-premium:focus {
+    @apply shadow-lg;
+  }
+  
+  /* Links premium */
+  .link-premium {
+    @apply text-slate-600 hover:text-agro-green-600 transition-colors duration-200;
+    @apply relative;
+  }
+  
+  .link-premium::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-0.5;
+    @apply bg-gradient-to-r from-agro-green-500 to-web3-neon-blue;
+    @apply transition-all duration-300;
+  }
+  
+  .link-premium:hover::after {
+    @apply w-full;
+  }
+  
+  /* Ícones premium */
+  .icon-premium {
+    @apply transition-all duration-300;
+  }
+  
+  .icon-premium:hover {
+    @apply scale-110;
+    filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.4));
+  }
+  
+  /* Títulos premium */
+  .title-premium {
+    @apply font-bold bg-gradient-to-r from-slate-800 via-agro-green-700 to-agro-yellow-600;
+    @apply bg-clip-text text-transparent;
+  }
+  
+  .title-premium-small {
+    @apply font-semibold bg-gradient-to-r from-slate-700 via-agro-green-600 to-agro-yellow-600;
+    @apply bg-clip-text text-transparent;
+  }
+  
+  /* Badges premium */
+  .badge-premium {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+    @apply bg-gradient-to-r from-slate-100 to-slate-200 text-slate-700;
+    @apply border border-slate-300;
+  }
+  
+  .badge-accent-green {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+    @apply bg-gradient-to-r from-agro-green-100 to-agro-green-200 text-agro-green-700;
+    @apply border border-agro-green-300;
+  }
+  
+  .badge-accent-yellow {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+    @apply bg-gradient-to-r from-agro-yellow-100 to-agro-yellow-200 text-agro-yellow-700;
+    @apply border border-agro-yellow-300;
+  }
+  
+  .badge-accent-blue {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+    @apply bg-gradient-to-r from-web3-neon-blue/20 to-blue-100 text-blue-700;
+    @apply border border-blue-300;
+  }
+}
+
+/* ===== ANIMAÇÕES ESPECÍFICAS ===== */
+@layer utilities {
+  /* Marquee para tickers */
+  .marquee-container {
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  
+  .marquee-content {
+    display: inline-block;
+    animation: marquee 20s linear infinite;
+  }
+  
+  /* Loading spinners premium */
+  .spinner-premium {
+    @apply w-8 h-8 border-4 border-slate-200 border-t-agro-green-500;
+    @apply rounded-full animate-spin;
+  }
+  
+  .spinner-accent {
+    @apply w-6 h-6 border-3 border-slate-200 border-t-web3-neon-blue;
+    @apply rounded-full animate-spin;
+  }
+  
+  /* Progress bars premium */
+  .progress-premium {
+    @apply w-full bg-slate-200 rounded-full h-2 overflow-hidden;
+  }
+  
+  .progress-bar-premium {
+    @apply h-full bg-gradient-to-r from-agro-green-500 via-agro-yellow-500 to-web3-neon-blue;
+    @apply transition-all duration-500 ease-out;
+  }
+  
+  /* Tooltips premium */
+  .tooltip-premium {
+    @apply absolute z-50 px-3 py-2 text-sm text-white bg-slate-800 rounded-lg;
+    @apply opacity-0 invisible transition-all duration-200;
+    @apply shadow-lg;
+  }
+  
+  .tooltip-premium::before {
+    content: '';
+    @apply absolute top-full left-1/2 transform -translate-x-1/2;
+    @apply border-4 border-transparent border-t-slate-800;
+  }
+  
+  .tooltip-premium.show {
+    @apply opacity-100 visible;
+  }
+}
+
+/* ===== RESPONSIVIDADE PREMIUM ===== */
+@layer utilities {
+  /* Grid responsivo aprimorado */
+  .grid-premium {
+    @apply grid gap-6;
+    @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+  }
+  
+  .grid-premium-compact {
+    @apply grid gap-4;
+    @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
+  }
+  
+  /* Espaçamentos consistentes */
+  .section-premium {
+    @apply py-20 px-4;
+  }
+  
+  .section-premium-compact {
+    @apply py-16 px-4;
+  }
+  
+  .container-premium {
+    @apply max-w-7xl mx-auto;
+  }
+  
+  .container-premium-compact {
+    @apply max-w-6xl mx-auto;
+  }
+}
+
+/* ===== UTILITÁRIOS ESPECIAIS ===== */
+@layer utilities {
+  /* Texto com gradiente */
+  .text-gradient-agro {
+    @apply bg-gradient-to-r from-agro-green-600 via-agro-yellow-600 to-web3-neon-blue;
+    @apply bg-clip-text text-transparent;
+  }
+  
+  .text-gradient-premium {
+    @apply bg-gradient-to-r from-slate-800 via-slate-700 to-slate-600;
+    @apply bg-clip-text text-transparent;
+  }
+  
+  /* Bordas com gradiente */
+  .border-gradient-agro {
+    border: 2px solid transparent;
+    background: linear-gradient(white, white) padding-box,
+                linear-gradient(135deg, #16a34a, #f59e0b, #00d4ff) border-box;
+  }
+  
+  /* Sombras com cores */
+  .shadow-agro-green {
+    box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.3);
+  }
+  
+  .shadow-agro-yellow {
+    box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.3);
+  }
+  
+  .shadow-web3-blue {
+    box-shadow: 0 10px 25px -5px rgba(0, 212, 255, 0.3);
+  }
+}
+
+/* ===== SCROLLBAR PREMIUM ===== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #64748b, #475569);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #475569, #334155);
+}
+
+/* ===== SELEÇÃO DE TEXTO PREMIUM ===== */
+::selection {
+  background: rgba(16, 185, 129, 0.3);
+  color: #1e293b;
+}
+
+::-moz-selection {
+  background: rgba(16, 185, 129, 0.3);
+  color: #1e293b;
+}
+
+/* ===== FOCUS VISIBLE PREMIUM ===== */
+*:focus-visible {
+  outline: 2px solid #16a34a;
+  outline-offset: 2px;
+}
+
+/* ===== REDUÇÃO DE MOVIMENTO ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

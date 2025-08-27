@@ -112,7 +112,7 @@ const AgroConecta = () => {
         <main className="pt-24 pb-16">
           <div className="max-w-7xl mx-auto px-4">
             <h1 className="text-5xl md:text-6xl font-bold mb-8 text-slate-800 text-center">
-              🚛 AgroConecta
+              AgroConecta
             </h1>
             <p className="text-xl text-slate-600 mb-8 text-center">
               Plataforma de fretes e logística agropecuária
@@ -121,7 +121,7 @@ const AgroConecta = () => {
             {/* Opções de Cadastro */}
             <div className="grid md:grid-cols-2 gap-8 mb-12">
               <div className="bg-slate-50 rounded-2xl p-8 border border-slate-200">
-                <h3 className="text-2xl font-bold text-slate-800 mb-4">📦 Anunciante de Frete</h3>
+                <h3 className="text-2xl font-bold text-slate-800 mb-4">Anunciante de Frete</h3>
                 <p className="text-slate-700 mb-6">
                   <strong>Campos obrigatórios:</strong> cidade origem, cidade destino, valor do frete, dados gerais (telefone, e-mail, localização, CPF/CNPJ).
                 </p>
@@ -137,7 +137,7 @@ const AgroConecta = () => {
               </div>
               
               <div className="bg-slate-50 rounded-2xl p-8 border border-slate-200">
-                <h3 className="text-2xl font-bold text-slate-800 mb-4">🚛 Freteiro</h3>
+                <h3 className="text-2xl font-bold text-slate-800 mb-4">Freteiro</h3>
                 <p className="text-slate-700 mb-6">
                   <strong>Campos obrigatórios:</strong> placa do caminhão, tipo de caminhão, nº de eixos, localização, CPF/CNPJ.
                 </p>
@@ -155,7 +155,7 @@ const AgroConecta = () => {
             
             {/* Fretes Públicos - apenas dados básicos */}
             <div className="bg-slate-50 rounded-2xl p-8 border border-slate-200">
-              <h3 className="text-2xl font-bold text-slate-800 mb-6">📋 Fretes Disponíveis (Dados Públicos)</h3>
+              <h3 className="text-2xl font-bold text-slate-800 mb-6">Fretes Disponíveis (Dados Públicos)</h3>
               <p className="text-sm text-slate-600 mb-6 text-center">
                 <strong>Regra de Privacidade:</strong> Apenas cidade destino e valor do frete são exibidos publicamente. 
                 Dados pessoais (telefone, CPF/CNPJ, endereço) ficam ocultos até login e pagamento.
@@ -206,7 +206,7 @@ const AgroConecta = () => {
   return (
     <div className="min-h-screen bg-white text-slate-900">
       {/* Header com botão do painel secreto - DESIGN PREMIUM */}
-      <div className="bg-slate-100 border-b-2 border-gradient-to-r from-agro-green to-agro-gold">
+              <div className="bg-slate-100 border-b-2 border-gradient-to-r from-emerald-600 to-yellow-500">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <motion.h1 
