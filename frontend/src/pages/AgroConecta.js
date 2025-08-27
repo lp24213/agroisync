@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { 
   Truck, MessageCircle, User, Plus, Edit, Trash, 
   Eye, Route, CreditCard, Settings, LogOut, Bell, MapPin,
-  Lock, Package
+  Lock, Package, Search, Filter, Star, Calendar, Weight,
+  DollarSign, Shield, CheckCircle, AlertTriangle, TrendingUp,
+  Users, Globe, Award, Zap, Leaf, Building2, ArrowRight
 } from 'lucide-react';
+import FreightCard from '../components/FreightCard';
+import FreightFilters from '../components/FreightFilters';
 
 const AgroConecta = () => {
   const { user, isAdmin, loading } = useAuth();
@@ -20,40 +24,122 @@ const AgroConecta = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [freights, setFreights] = useState([]);
   const [loadingFreights, setLoadingFreights] = useState(true);
+  const [viewMode, setViewMode] = useState('grid');
+  const [filters, setFilters] = useState({
+    search: '',
+    truckTypes: [],
+    locations: [],
+    minPrice: '',
+    maxPrice: '',
+    minWeight: '',
+    maxWeight: '',
+    minRating: 0,
+    sortBy: 'relevance',
+    dateRange: 'any'
+  });
+
+  // Dados simulados para demonstração
+  const truckTypes = [
+    { value: 'truck_3_4', label: 'Truck 3/4' },
+    { value: 'truck_toco', label: 'Truck Toco' },
+    { value: 'truck_truck', label: 'Truck Truck' },
+    { value: 'truck_carreta', label: 'Carreta' },
+    { value: 'truck_pickup', label: 'Pickup' },
+    { value: 'truck_van', label: 'Van' }
+  ];
+
+  const locations = [
+    'São Paulo', 'Rio de Janeiro', 'Minas Gerais', 'Paraná', 'Santa Catarina',
+    'Rio Grande do Sul', 'Goiás', 'Mato Grosso', 'Mato Grosso do Sul', 'Bahia'
+  ];
+
   const [newFreight, setNewFreight] = useState({
     origin: '',
     destination: '',
     weight: '',
     price: '',
     date: '',
-    description: ''
+    description: '',
+    truckType: 'truck_3_4',
+    requirements: '',
+    insurance: false,
+    negotiable: true
   });
 
   useEffect(() => {
     if (user && !isAdmin) {
-      // Carregar dados do usuário
       loadUserData();
     }
-    // Carregar fretes públicos
     loadPublicFreights();
   }, [user, isAdmin]);
 
   const loadUserData = async () => {
     try {
-      // Carregar dados reais do usuário
-      const response = await fetch('/api/user/profile', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setUserProfile(data.profile);
-        setUserFreights(data.freights || []);
-        setUserMessages(data.messages || []);
-        setUserHistory(data.history || []);
-      }
+      // Simular carregamento de dados do usuário
+      const mockUserData = {
+        profile: {
+          name: user?.name || 'Usuário',
+          email: user?.email || 'usuario@email.com',
+          phone: '(11) 99999-9999',
+          vehicle: 'Truck 3/4 - ABC-1234',
+          plan: 'Premium',
+          rating: 4.8,
+          reviews: 127
+        },
+        freights: [
+          {
+            id: 1,
+            origin: 'São Paulo, SP',
+            destination: 'Rio de Janeiro, RJ',
+            weight: '5.000 kg',
+            price: 850.00,
+            date: '2024-01-15',
+            status: 'available',
+            truckType: 'truck_3_4'
+          },
+          {
+            id: 2,
+            origin: 'Campinas, SP',
+            destination: 'Curitiba, PR',
+            weight: '3.500 kg',
+            price: 650.00,
+            date: '2024-01-20',
+            status: 'in_progress',
+            truckType: 'truck_toco'
+          }
+        ],
+        messages: [
+          {
+            id: 1,
+            from: 'João Silva',
+            subject: 'Interesse no frete SP-RJ',
+            date: '2024-01-10',
+            unread: true
+          },
+          {
+            id: 2,
+            from: 'Maria Santos',
+            subject: 'Proposta para frete Campinas',
+            date: '2024-01-08',
+            unread: false
+          }
+        ],
+        history: [
+          {
+            id: 1,
+            description: 'Frete SP-RJ concluído com sucesso'
+          },
+          {
+            id: 2,
+            description: 'Novo frete cadastrado para Campinas'
+          }
+        ]
+      };
+
+      setUserProfile(mockUserData.profile);
+      setUserFreights(mockUserData.freights);
+      setUserMessages(mockUserData.messages);
+      setUserHistory(mockUserData.history);
     } catch (error) {
       console.error('Erro ao carregar dados do usuário:', error);
     }
@@ -62,12 +148,125 @@ const AgroConecta = () => {
   const loadPublicFreights = async () => {
     try {
       setLoadingFreights(true);
-      // Carregar fretes públicos da API
-      const response = await fetch('/api/freights/public');
-      if (response.ok) {
-        const data = await response.json();
-        setFreights(data.freights || []);
-      }
+      // Simular carregamento de fretes públicos
+      const mockFreights = [
+        {
+          id: 1,
+          origin: 'São Paulo, SP',
+          destination: 'Rio de Janeiro, RJ',
+          weight: 5000,
+          price: 850.00,
+          date: '2024-01-15',
+          status: 'available',
+          truckType: 'truck_3_4',
+          description: 'Carga de produtos agrícolas para o Rio de Janeiro',
+          requirements: 'Caminhão com baú refrigerado',
+          insurance: true,
+          negotiable: true,
+          announcerName: 'João Silva',
+          verified: true,
+          announcerRating: 4.8,
+          announcerReviews: 127,
+          createdAt: new Date('2024-01-10')
+        },
+        {
+          id: 2,
+          origin: 'Campinas, SP',
+          destination: 'Curitiba, PR',
+          weight: 3500,
+          price: 650.00,
+          date: '2024-01-20',
+          status: 'available',
+          truckType: 'truck_toco',
+          description: 'Transporte de máquinas agrícolas',
+          requirements: 'Caminhão com plataforma',
+          insurance: false,
+          negotiable: true,
+          announcerName: 'Maria Santos',
+          verified: true,
+          announcerRating: 4.6,
+          announcerReviews: 89,
+          createdAt: new Date('2024-01-08')
+        },
+        {
+          id: 3,
+          origin: 'Goiânia, GO',
+          destination: 'Brasília, DF',
+          weight: 8000,
+          price: 450.00,
+          date: '2024-01-18',
+          status: 'available',
+          truckType: 'truck_carreta',
+          description: 'Carga de grãos para Brasília',
+          requirements: 'Carreta graneleira',
+          insurance: true,
+          negotiable: false,
+          announcerName: 'Pedro Oliveira',
+          verified: false,
+          announcerRating: 4.2,
+          announcerReviews: 45,
+          createdAt: new Date('2024-01-05')
+        },
+        {
+          id: 4,
+          origin: 'Uberlândia, MG',
+          destination: 'São Paulo, SP',
+          weight: 6000,
+          price: 750.00,
+          date: '2024-01-22',
+          status: 'available',
+          truckType: 'truck_truck',
+          description: 'Transporte de produtos lácteos',
+          requirements: 'Caminhão com baú refrigerado',
+          insurance: true,
+          negotiable: true,
+          announcerName: 'Ana Costa',
+          verified: true,
+          announcerRating: 4.9,
+          announcerReviews: 156,
+          createdAt: new Date('2024-01-12')
+        },
+        {
+          id: 5,
+          origin: 'Londrina, PR',
+          destination: 'Porto Alegre, RS',
+          weight: 4000,
+          price: 580.00,
+          date: '2024-01-25',
+          status: 'available',
+          truckType: 'truck_3_4',
+          description: 'Carga de frutas para Porto Alegre',
+          requirements: 'Caminhão com baú ventilado',
+          insurance: false,
+          negotiable: true,
+          announcerName: 'Carlos Ferreira',
+          verified: true,
+          announcerRating: 4.4,
+          announcerReviews: 67,
+          createdAt: new Date('2024-01-09')
+        },
+        {
+          id: 6,
+          origin: 'Vitória, ES',
+          destination: 'Belo Horizonte, MG',
+          weight: 7000,
+          price: 680.00,
+          date: '2024-01-28',
+          status: 'available',
+          truckType: 'truck_toco',
+          description: 'Transporte de equipamentos',
+          requirements: 'Caminhão com plataforma',
+          insurance: true,
+          negotiable: false,
+          announcerName: 'Roberto Lima',
+          verified: false,
+          announcerRating: 4.1,
+          announcerReviews: 34,
+          createdAt: new Date('2024-01-06')
+        }
+      ];
+
+      setFreights(mockFreights);
     } catch (error) {
       console.error('Erro ao carregar fretes:', error);
     } finally {
@@ -81,10 +280,15 @@ const AgroConecta = () => {
         id: Date.now(),
         ...newFreight,
         price: parseFloat(newFreight.price),
-        status: 'Ativo'
+        status: 'available',
+        createdAt: new Date()
       };
       setUserFreights([...userFreights, freight]);
-      setNewFreight({ origin: '', destination: '', weight: '', price: '', date: '', description: '' });
+      setNewFreight({ 
+        origin: '', destination: '', weight: '', price: '', 
+        date: '', description: '', truckType: 'truck_3_4',
+        requirements: '', insurance: false, negotiable: true
+      });
     }
   };
 
@@ -98,11 +302,35 @@ const AgroConecta = () => {
 
   const handleSaveProfile = () => {
     setIsEditing(false);
-    // Aqui você implementaria a lógica para salvar no backend
   };
 
   const toggleSecretPanel = () => {
     setShowSecretPanel(!showSecretPanel);
+  };
+
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+    // Aqui você implementaria a lógica de filtros reais
+  };
+
+  const handleFreightContact = (freight) => {
+    // Implementar contato com o anunciante
+    console.log('Contatando anunciante do frete:', freight.id);
+  };
+
+  const handleFreightFavorite = (freightId, isFavorite) => {
+    // Implementar sistema de favoritos
+    console.log('Favoritando frete:', freightId, isFavorite);
+  };
+
+  const handleFreightView = (freight) => {
+    // Implementar visualização detalhada
+    console.log('Visualizando frete:', freight.id);
+  };
+
+  const handleFreightApply = (freight) => {
+    // Implementar candidatura para o frete
+    console.log('Candidatando-se ao frete:', freight.id);
   };
 
   // PÁGINA PÚBLICA - mostrar para todos
@@ -111,75 +339,170 @@ const AgroConecta = () => {
       <div className="min-h-screen bg-white text-slate-900">
         <main className="pt-24 pb-16">
           <div className="max-w-7xl mx-auto px-4">
-            <h1 className="text-5xl md:text-6xl font-bold mb-8 text-slate-800 text-center">
-              AgroConecta
-            </h1>
-            <p className="text-xl text-slate-600 mb-8 text-center">
-              Plataforma de fretes e logística agropecuária
-            </p>
+            {/* Hero Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-16"
+            >
+              <h1 className="text-5xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-slate-800 via-emerald-700 to-blue-600 bg-clip-text text-transparent">
+                AgroConecta
+              </h1>
+              <p className="text-xl text-slate-600 mb-8 max-w-3xl mx-auto">
+                Plataforma de fretes e logística agropecuária que conecta produtores e transportadores de forma inteligente e segura
+              </p>
+              
+              {/* Estatísticas */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, delay: 0.1 }}
+                  className="text-center"
+                >
+                  <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <Truck className="w-8 h-8 text-white" />
+                  </div>
+                  <div className="text-3xl font-bold text-slate-800 mb-2">3.4K+</div>
+                  <div className="text-sm text-slate-600">Fretes Ativos</div>
+                </motion.div>
+                
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  className="text-center"
+                >
+                  <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <Users className="w-8 h-8 text-white" />
+                  </div>
+                  <div className="text-3xl font-bold text-slate-800 mb-2">12.5K+</div>
+                  <div className="text-sm text-slate-600">Usuários</div>
+                </motion.div>
+                
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                  className="text-center"
+                >
+                  <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <Globe className="w-8 h-8 text-white" />
+                  </div>
+                  <div className="text-3xl font-bold text-slate-800 mb-2">27</div>
+                  <div className="text-sm text-slate-600">Estados</div>
+                </motion.div>
+                
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                  className="text-center"
+                >
+                  <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <Award className="w-8 h-8 text-white" />
+                  </div>
+                  <div className="text-3xl font-bold text-slate-800 mb-2">98%</div>
+                  <div className="text-sm text-slate-600">Satisfação</div>
+                </motion.div>
+              </div>
+            </motion.div>
             
             {/* Opções de Cadastro */}
-            <div className="grid md:grid-cols-2 gap-8 mb-12">
-              <div className="bg-slate-50 rounded-2xl p-8 border border-slate-200">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="grid md:grid-cols-2 gap-8 mb-16"
+            >
+              <motion.div
+                whileHover={{ y: -5, scale: 1.02 }}
+                className="bg-gradient-to-br from-emerald-50 to-blue-50 rounded-2xl p-8 border border-emerald-200 shadow-lg"
+              >
+                <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-2xl flex items-center justify-center mb-6">
+                  <Package className="w-8 h-8 text-white" />
+                </div>
                 <h3 className="text-2xl font-bold text-slate-800 mb-4">Anunciante de Frete</h3>
                 <p className="text-slate-700 mb-6">
                   <strong>Campos obrigatórios:</strong> cidade origem, cidade destino, valor do frete, dados gerais (telefone, e-mail, localização, CPF/CNPJ).
                 </p>
-                <p className="text-sm text-slate-600 mb-4">
-                  <strong>Exibição pública:</strong> SOMENTE cidade destino + valor do frete. Dados privados liberados após login e pagamento.
+                <p className="text-sm text-slate-600 mb-6">
+                  <strong>Exibição pública:</strong> SOMENTE cidade destino + valor do frete. Dados pessoais (telefone, CPF/CNPJ, endereço) ficam ocultos até login e pagamento.
                 </p>
-                <button 
-                  onClick={() => window.location.href = '/cadastro?type=anunciante-frete'}
-                  className="w-full px-6 py-3 bg-slate-600 hover:bg-slate-700 text-white font-semibold rounded-lg transition-colors"
+                <motion.button 
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => navigate('/cadastro?type=anunciante-frete')}
+                  className="w-full px-6 py-3 bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
                 >
                   Cadastrar como Anunciante
-                </button>
-              </div>
+                </motion.button>
+              </motion.div>
               
-              <div className="bg-slate-50 rounded-2xl p-8 border border-slate-200">
+              <motion.div
+                whileHover={{ y: -5, scale: 1.02 }}
+                className="bg-gradient-to-br from-blue-50 to-emerald-50 rounded-2xl p-8 border border-blue-200 shadow-lg"
+              >
+                <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-2xl flex items-center justify-center mb-6">
+                  <Truck className="w-8 h-8 text-white" />
+                </div>
                 <h3 className="text-2xl font-bold text-slate-800 mb-4">Freteiro</h3>
                 <p className="text-slate-700 mb-6">
                   <strong>Campos obrigatórios:</strong> placa do caminhão, tipo de caminhão, nº de eixos, localização, CPF/CNPJ.
                 </p>
-                <p className="text-sm text-slate-600 mb-4">
+                <p className="text-sm text-slate-600 mb-6">
                   <strong>Exibição pública:</strong> SOMENTE nome do freteiro. Dados privados liberados após login e pagamento.
                 </p>
-                <button 
-                  onClick={() => window.location.href = '/cadastro?type=freteiro'}
-                  className="w-full px-6 py-3 bg-slate-600 hover:bg-slate-700 text-white font-semibold rounded-lg transition-colors"
+                <motion.button 
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => navigate('/cadastro?type=freteiro')}
+                  className="w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-emerald-500 hover:from-blue-600 hover:to-emerald-600 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
                 >
                   Cadastrar como Freteiro
-                </button>
-              </div>
-            </div>
+                </motion.button>
+              </motion.div>
+            </motion.div>
             
-            {/* Fretes Públicos - apenas dados básicos */}
-            <div className="bg-slate-50 rounded-2xl p-8 border border-slate-200">
-              <h3 className="text-2xl font-bold text-slate-800 mb-6">Fretes Disponíveis (Dados Públicos)</h3>
-              <p className="text-sm text-slate-600 mb-6 text-center">
-                <strong>Regra de Privacidade:</strong> Apenas cidade destino e valor do frete são exibidos publicamente. 
-                Dados pessoais (telefone, CPF/CNPJ, endereço) ficam ocultos até login e pagamento.
-              </p>
+            {/* Fretes Públicos */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.7 }}
+              className="bg-gradient-to-br from-slate-50 to-emerald-50 rounded-2xl p-8 border border-slate-200"
+            >
+              <div className="text-center mb-8">
+                <h3 className="text-3xl font-bold text-slate-800 mb-4">Fretes Disponíveis</h3>
+                <p className="text-slate-600 max-w-2xl mx-auto">
+                  <strong>Regra de Privacidade:</strong> Apenas cidade destino e valor do frete são exibidos publicamente. 
+                  Dados pessoais (telefone, CPF/CNPJ, endereço) ficam ocultos até login e pagamento.
+                </p>
+              </div>
               
               {loadingFreights ? (
-                <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-600 mx-auto mb-4"></div>
-                  <p className="text-slate-600">Carregando fretes...</p>
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+                  <p className="text-slate-600 text-lg">Carregando fretes...</p>
                 </div>
               ) : freights.length === 0 ? (
-                <div className="text-center py-8">
-                  <Truck className="w-16 h-16 mx-auto text-slate-400 mb-4" />
-                  <p className="text-slate-600">Nenhum frete disponível</p>
-                  <p className="text-sm text-slate-500 mt-2">Seja o primeiro a cadastrar um frete!</p>
+                <div className="text-center py-12">
+                  <Truck className="w-20 h-20 mx-auto text-slate-400 mb-6" />
+                  <p className="text-slate-600 text-xl mb-2">Nenhum frete disponível</p>
+                  <p className="text-slate-500">Seja o primeiro a cadastrar um frete!</p>
                 </div>
               ) : (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {freights.map((freight) => (
-                    <div key={freight.id} className="bg-white rounded-xl p-6 border border-slate-200 shadow-card">
-                      <div className="w-full h-32 bg-slate-100 rounded-lg mb-4 flex items-center justify-center">
-                        <Truck className="w-12 h-12 text-slate-600" />
+                  {freights.slice(0, 6).map((freight) => (
+                    <motion.div
+                      key={freight.id}
+                      whileHover={{ y: -5, scale: 1.02 }}
+                      className="bg-white rounded-xl p-6 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300"
+                    >
+                      <div className="w-full h-32 bg-gradient-to-br from-emerald-100 to-blue-100 rounded-lg mb-4 flex items-center justify-center">
+                        <Truck className="w-16 h-16 text-emerald-600" />
                       </div>
-                      <h4 className="text-lg font-semibold mb-2 text-slate-800">Frete {freight.id}</h4>
+                      <h4 className="text-lg font-semibold mb-2 text-slate-800">Frete #{freight.id}</h4>
                       <div className="space-y-2 text-sm text-slate-600">
                         <p><strong>Destino:</strong> {freight.destination}</p>
                         <p><strong>Valor:</strong> R$ {freight.price.toFixed(2)}</p>
@@ -188,14 +511,30 @@ const AgroConecta = () => {
                           Dados completos disponíveis após login e pagamento
                         </p>
                       </div>
-                      <button className="w-full mt-4 px-4 py-2 bg-slate-600 hover:bg-slate-700 text-white rounded-lg transition-colors">
+                      <motion.button 
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="w-full mt-4 px-4 py-2 bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 text-white rounded-lg transition-all duration-300"
+                      >
                         Ver Detalhes
-                      </button>
-                    </div>
+                      </motion.button>
+                    </motion.div>
                   ))}
                 </div>
               )}
-            </div>
+              
+              {freights.length > 6 && (
+                <div className="text-center mt-8">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="px-8 py-3 bg-slate-600 hover:bg-slate-700 text-white font-semibold rounded-xl transition-colors duration-300"
+                  >
+                    Ver Todos os Fretes
+                  </motion.button>
+                </div>
+              )}
+            </motion.div>
           </div>
         </main>
       </div>
@@ -206,14 +545,14 @@ const AgroConecta = () => {
   return (
     <div className="min-h-screen bg-white text-slate-900">
       {/* Header com botão do painel secreto - DESIGN PREMIUM */}
-              <div className="bg-slate-100 border-b-2 border-gradient-to-r from-emerald-600 to-yellow-500">
+      <div className="bg-gradient-to-r from-slate-100 to-emerald-50 border-b-2 border-gradient-to-r from-emerald-600 to-blue-500">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <motion.h1 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-2xl font-bold text-gradient-agro"
+              className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-blue-600 bg-clip-text text-transparent"
             >
               AgroConecta - Sistema de Fretes
             </motion.h1>
@@ -223,7 +562,7 @@ const AgroConecta = () => {
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={toggleSecretPanel}
-                className="btn-premium flex items-center space-x-2 px-4 py-2"
+                className="bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 text-white font-medium px-6 py-2 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg flex items-center space-x-2"
               >
                 <User className="w-5 h-5" />
                 <span>Meu Painel</span>
@@ -246,52 +585,34 @@ const AgroConecta = () => {
       <div className="flex">
         {/* Painel Secreto (lado esquerdo) */}
         {showSecretPanel && (
-          <div className="w-80 bg-slate-50 border-r border-slate-200 min-h-screen">
+          <motion.div
+            initial={{ x: -320, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: -320, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="w-80 bg-slate-50 border-r border-slate-200 min-h-screen"
+          >
             <div className="p-6">
               <h2 className="text-xl font-bold mb-6 text-slate-800">Painel Privado</h2>
               
               {/* Tabs do painel */}
               <div className="flex space-x-2 mb-6">
-                <button
-                  onClick={() => setActiveTab('dashboard')}
-                  className={`px-3 py-2 rounded-lg text-sm transition-colors ${
-                    activeTab === 'dashboard' 
-                      ? 'bg-slate-600 text-white' 
-                      : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
-                  }`}
-                >
-                  Dashboard
-                </button>
-                <button
-                  onClick={() => setActiveTab('freights')}
-                  className={`px-3 py-2 rounded-lg text-sm transition-colors ${
-                    activeTab === 'freights' 
-                      ? 'bg-slate-600 text-white' 
-                      : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
-                  }`}
-                >
-                  Fretes
-                </button>
-                <button
-                  onClick={() => setActiveTab('messages')}
-                  className={`px-3 py-2 rounded-lg text-sm transition-colors ${
-                    activeTab === 'messages' 
-                      ? 'bg-slate-600 text-white' 
-                      : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
-                  }`}
-                >
-                  Mensagens
-                </button>
-                <button
-                  onClick={() => setActiveTab('profile')}
-                  className={`px-3 py-2 rounded-lg text-sm transition-colors ${
-                    activeTab === 'profile' 
-                      ? 'bg-slate-600 text-white' 
-                      : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
-                  }`}
-                >
-                  Perfil
-                </button>
+                {['dashboard', 'freights', 'messages', 'profile'].map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`px-3 py-2 rounded-lg text-sm transition-colors ${
+                      activeTab === tab 
+                        ? 'bg-gradient-to-r from-emerald-500 to-blue-500 text-white' 
+                        : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+                    }`}
+                  >
+                    {tab === 'dashboard' && 'Dashboard'}
+                    {tab === 'freights' && 'Fretes'}
+                    {tab === 'messages' && 'Mensagens'}
+                    {tab === 'profile' && 'Perfil'}
+                  </button>
+                ))}
               </div>
 
               {/* Conteúdo das tabs */}
@@ -333,7 +654,7 @@ const AgroConecta = () => {
                   <div>
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="font-semibold text-slate-800">Meus Fretes</h3>
-                      <button className="p-2 bg-slate-600 rounded-lg hover:bg-slate-700 transition-colors text-white">
+                      <button className="p-2 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-lg hover:from-emerald-600 hover:to-blue-600 transition-colors text-white">
                         <Plus className="w-4 h-4" />
                       </button>
                     </div>
@@ -380,7 +701,7 @@ const AgroConecta = () => {
                       {userMessages.length > 0 ? (
                         userMessages.map((message) => (
                           <div key={message.id} className={`bg-white rounded-lg p-3 cursor-pointer hover:bg-slate-50 transition-colors border border-slate-200 ${
-                            message.unread ? 'border-l-4 border-slate-600' : ''
+                            message.unread ? 'border-l-4 border-emerald-500' : ''
                           }`}>
                             <div className="flex items-center justify-between">
                               <div>
@@ -389,7 +710,7 @@ const AgroConecta = () => {
                                 <p className="text-xs text-slate-400">{message.date}</p>
                               </div>
                               {message.unread && (
-                                <span className="w-2 h-2 bg-slate-600 rounded-full"></span>
+                                <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
                               )}
                             </div>
                           </div>
@@ -411,7 +732,7 @@ const AgroConecta = () => {
                       <h3 className="font-semibold text-slate-800">Meu Perfil</h3>
                       <button 
                         onClick={handleEditProfile}
-                        className="px-3 py-1 bg-slate-600 rounded text-sm hover:bg-slate-700 transition-colors text-white"
+                        className="px-3 py-1 bg-gradient-to-r from-emerald-500 to-blue-500 rounded text-sm hover:from-emerald-600 hover:to-blue-600 transition-colors text-white"
                       >
                         {isEditing ? 'Cancelar' : 'Editar'}
                       </button>
@@ -462,7 +783,7 @@ const AgroConecta = () => {
                       {isEditing && (
                         <button 
                           onClick={handleSaveProfile}
-                          className="w-full px-4 py-2 bg-slate-600 rounded-lg hover:bg-slate-700 transition-colors text-white"
+                          className="w-full px-4 py-2 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-lg hover:from-emerald-600 hover:to-blue-600 transition-colors text-white"
                         >
                           Salvar Alterações
                         </button>
@@ -472,7 +793,7 @@ const AgroConecta = () => {
                 )}
               </div>
             </div>
-          </div>
+          </motion.div>
         )}
 
         {/* Fretes (lado direito) */}
@@ -480,46 +801,114 @@ const AgroConecta = () => {
           <main className="pt-8 pb-16">
             <div className="max-w-7xl mx-auto px-4">
               {!showSecretPanel && (
-                <h1 className="text-5xl md:text-6xl font-bold mb-8 text-slate-800 text-center">
-                  AgroConecta - Sistema de Fretes
-                </h1>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                  className="text-center mb-12"
+                >
+                  <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-slate-800 via-emerald-700 to-blue-600 bg-clip-text text-transparent">
+                    AgroConecta - Sistema de Fretes
+                  </h1>
+                  <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+                    Encontre os melhores fretes para sua carga ou conecte-se com transportadores confiáveis
+                  </p>
+                </motion.div>
               )}
               
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {loadingFreights ? (
-                  Array.from({ length: 6 }).map((_, index) => (
+              {/* Filtros */}
+              <FreightFilters
+                filters={filters}
+                onFiltersChange={handleFilterChange}
+                truckTypes={truckTypes}
+                locations={locations}
+                priceRange={{ min: 0, max: 10000 }}
+                onPriceRangeChange={() => {}}
+              />
+
+              {/* Controles de visualização */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-4">
+                  <span className="text-sm text-slate-600">
+                    {freights.length} frete{freights.length !== 1 ? 's' : ''} encontrado{freights.length !== 1 ? 's' : ''}
+                  </span>
+                </div>
+                
+                <div className="flex items-center space-x-2">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setViewMode('grid')}
+                    className={`p-2 rounded-lg transition-colors duration-200 ${
+                      viewMode === 'grid' 
+                        ? 'bg-emerald-500 text-white' 
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                  >
+                    <div className="w-4 h-4 grid grid-cols-2 gap-0.5">
+                      <div className="w-1.5 h-1.5 bg-current rounded-sm"></div>
+                      <div className="w-1.5 h-1.5 bg-current rounded-sm"></div>
+                      <div className="w-1.5 h-1.5 bg-current rounded-sm"></div>
+                      <div className="w-1.5 h-1.5 bg-current rounded-sm"></div>
+                    </div>
+                  </motion.button>
+                  
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setViewMode('list')}
+                    className={`p-2 rounded-lg transition-colors duration-200 ${
+                      viewMode === 'list' 
+                        ? 'bg-emerald-500 text-white' 
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                  >
+                    <div className="w-4 h-4 space-y-1">
+                      <div className="w-full h-1 bg-current rounded-sm"></div>
+                      <div className="w-full h-1 bg-current rounded-sm"></div>
+                      <div className="w-full h-1 bg-current rounded-sm"></div>
+                    </div>
+                  </motion.button>
+                </div>
+              </div>
+              
+              {/* Grid de fretes */}
+              {loadingFreights ? (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {Array.from({ length: 6 }).map((_, index) => (
                     <div key={index} className="bg-slate-100 rounded-2xl p-6 border border-slate-200 animate-pulse">
                       <div className="w-full h-48 bg-slate-200 rounded-xl mb-4"></div>
                       <div className="h-4 bg-slate-200 rounded mb-2"></div>
                       <div className="h-3 bg-slate-200 rounded mb-4"></div>
                       <div className="h-6 bg-slate-200 rounded"></div>
                     </div>
-                  ))
-                ) : freights.length === 0 ? (
-                  <div className="col-span-full text-center py-12">
-                    <Truck className="w-16 h-16 mx-auto text-slate-400 mb-4" />
-                    <p className="text-slate-600 text-lg">Nenhum frete disponível</p>
-                    <p className="text-slate-500">Cadastre-se para ver fretes disponíveis</p>
-                  </div>
-                ) : (
-                  freights.map((freight) => (
-                    <div key={freight.id} className="bg-white rounded-2xl p-6 border border-slate-200 hover:border-slate-400 transition-all duration-300 shadow-card">
-                      <div className="w-full h-48 bg-slate-100 rounded-xl mb-4 flex items-center justify-center">
-                        <Truck className="w-16 h-16 text-slate-600" />
-                      </div>
-                      <h3 className="text-xl font-semibold mb-2 text-slate-800">Frete {freight.id}</h3>
-                      <p className="text-slate-500 mb-2">{freight.origin} → {freight.destination}</p>
-                      <p className="text-slate-500 mb-4">{freight.weight} • Disponível</p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-2xl font-bold text-slate-800">R$ {freight.price.toFixed(2)}</span>
-                        <button className="px-4 py-2 bg-slate-600 hover:bg-slate-700 rounded-lg transition-colors text-white">
-                          Ver Detalhes
-                        </button>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
+                  ))}
+                </div>
+              ) : freights.length === 0 ? (
+                <div className="text-center py-16">
+                  <Truck className="w-20 h-20 mx-auto text-slate-400 mb-6" />
+                  <p className="text-slate-600 text-xl mb-2">Nenhum frete disponível</p>
+                  <p className="text-slate-500">Tente ajustar os filtros ou cadastre-se para ver fretes disponíveis</p>
+                </div>
+              ) : (
+                <div className={`grid gap-6 ${
+                  viewMode === 'grid' 
+                    ? 'md:grid-cols-2 lg:grid-cols-3' 
+                    : 'grid-cols-1'
+                }`}>
+                  {freights.map((freight) => (
+                    <FreightCard
+                      key={freight.id}
+                      freight={freight}
+                      onContact={handleFreightContact}
+                      onFavorite={handleFreightFavorite}
+                      onView={handleFreightView}
+                      onApply={handleFreightApply}
+                      userType={user?.userType || 'anunciante'}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </main>
         </div>
