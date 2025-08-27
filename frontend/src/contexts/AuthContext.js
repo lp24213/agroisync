@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const AuthContext = createContext();
@@ -21,41 +20,78 @@ export const AuthProvider = ({ children }) => {
   const [tempToken, setTempToken] = useState(null);
   const [userId, setUserId] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [adminToken, setAdminToken] = useState(localStorage.getItem('adminToken'));
 
-  const navigate = useNavigate();
+  // Remover useNavigate do contexto - será usado nos componentes
 
   // Configurar axios com interceptor para token
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    } else if (adminToken) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${adminToken}`;
     } else {
       delete axios.defaults.headers.common['Authorization'];
     }
-  }, [token]);
+  }, [token, adminToken]);
 
   // Verificar token ao inicializar
   useEffect(() => {
-    const verifyToken = async () => {
+    const checkToken = async () => {
+      const token = localStorage.getItem('token');
+      const adminToken = localStorage.getItem('adminToken');
+      
       if (token) {
         try {
-          const response = await axios.get('/api/auth/profile');
-          if (response.data.success) {
-            setUser(response.data.data.user);
-            setIsAdmin(response.data.data.user.isAdmin);
+          const response = await axios.get('/api/auth/verify', {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          
+          if (response.data.valid) {
+            setUser(response.data.user);
+            setToken(token);
+            setIsAdmin(response.data.user.isAdmin); // Assuming isAdmin is part of the user object
           } else {
-            // Token inválido, limpar
-            logout();
+            localStorage.removeItem('token');
+            setUser(null);
+            setToken(null);
           }
         } catch (error) {
           console.error('Erro ao verificar token:', error);
-          logout();
+          localStorage.removeItem('token');
+          setUser(null);
+          setToken(null);
+        }
+      } else if (adminToken) {
+        try {
+          const response = await axios.get('/api/admin/verify', {
+            headers: { Authorization: `Bearer ${adminToken}` }
+          });
+          
+          if (response.data.valid) {
+            setUser(response.data.admin);
+            setAdminToken(adminToken);
+            setIsAdmin(true);
+          } else {
+            localStorage.removeItem('adminToken');
+            setUser(null);
+            setAdminToken(null);
+            setIsAdmin(false);
+          }
+        } catch (error) {
+          console.error('Erro ao verificar admin token:', error);
+          localStorage.removeItem('adminToken');
+          setUser(null);
+          setAdminToken(null);
+          setIsAdmin(false);
         }
       }
+      
       setLoading(false);
     };
 
-    verifyToken();
-  }, [token]);
+    checkToken();
+  }, []);
 
   // Função de login
   const login = async (email, password) => {
@@ -105,6 +141,53 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Erro ao fazer login';
+      setError(errorMessage);
+      return {
+        success: false,
+        message: errorMessage
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Função de login admin
+  const loginAdmin = async (email, password) => {
+    try {
+      setError(null);
+      setLoading(true);
+
+      // Verificar credenciais de admin
+      if (email === 'luispaulodeoliveira@agrotm.com.br' && password === 'Th@ys15221008') {
+        const adminData = {
+          id: 'admin-001',
+          email: 'luispaulodeoliveira@agrotm.com.br',
+          name: 'Luis Paulo de Oliveira',
+          role: 'super-admin',
+          permissions: ['users', 'announcements', 'freights', 'reports', 'system'],
+          isAdmin: true
+        };
+
+        const adminToken = `admin_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
+        setUser(adminData);
+        setAdminToken(adminToken);
+        setIsAdmin(true);
+        localStorage.setItem('adminToken', adminToken);
+        
+        return {
+          success: true,
+          message: 'Login administrativo realizado com sucesso'
+        };
+      } else {
+        setError('Credenciais administrativas inválidas');
+        return {
+          success: false,
+          message: 'Credenciais administrativas inválidas'
+        };
+      }
+    } catch (error) {
+      const errorMessage = 'Erro ao fazer login administrativo';
       setError(errorMessage);
       return {
         success: false,
@@ -374,7 +457,17 @@ export const AuthProvider = ({ children }) => {
     setUserId(null);
     localStorage.removeItem('token');
     delete axios.defaults.headers.common['Authorization'];
-    navigate('/');
+    // Redirecionamento será feito no componente
+  };
+
+  // Função de logout admin
+  const logoutAdmin = () => {
+    setUser(null);
+    setAdminToken(null);
+    setIsAdmin(false);
+    localStorage.removeItem('adminToken');
+    delete axios.defaults.headers.common['Authorization'];
+    // Redirecionamento será feito no componente
   };
 
   // Função de atualização de perfil
@@ -417,7 +510,7 @@ export const AuthProvider = ({ children }) => {
 
   // Função para verificar se usuário está autenticado
   const isAuthenticated = () => {
-    return !!user && !!token;
+    return !!user && (!!token || !!adminToken);
   };
 
   // Função para verificar se usuário tem plano ativo
@@ -435,9 +528,15 @@ export const AuthProvider = ({ children }) => {
     return hasActivePlan();
   };
 
+  // Função para verificar se é admin
+  const checkIsAdmin = () => {
+    return isAdmin && (!!adminToken || (user && user.isAdmin));
+  };
+
   const value = {
     user,
     token,
+    adminToken,
     loading,
     error,
     requires2FA,
@@ -445,6 +544,7 @@ export const AuthProvider = ({ children }) => {
     userId,
     isAdmin,
     login,
+    loginAdmin,
     verify2FA,
     sendOTP,
     register,
@@ -453,12 +553,14 @@ export const AuthProvider = ({ children }) => {
     verifyEmail,
     resendVerification,
     logout,
+    logoutAdmin,
     updateProfile,
     clearError,
     isAuthenticated,
     hasActivePlan,
     canAccessPrivateData,
-    canUseMessaging
+    canUseMessaging,
+    checkIsAdmin
   };
 
   return (

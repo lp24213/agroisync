@@ -10,7 +10,7 @@ import RouteGuard from './components/RouteGuard';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Cadastro from './pages/Cadastro';
-import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/dashboard';
 import Loja from './pages/Loja';
 import Parcerias from './pages/Parcerias';
 import Contato from './pages/Contato';
@@ -49,6 +49,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import OtpVerification from './pages/OtpVerification';
 import VerifyEmail from './pages/VerifyEmail';
+import CadastroProduto from './pages/CadastroProduto';
 
 // Componentes
 import Navbar from './components/Navbar';
@@ -92,6 +93,7 @@ function App() {
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/otp-verification" element={<OtpVerification />} />
                   <Route path="/verify-email" element={<VerifyEmail />} />
+                  <Route path="/cadastro-produto" element={<CadastroProduto />} />
 
                   {/* Rotas admin - requerem autenticação e permissão de admin */}
                   <Route 

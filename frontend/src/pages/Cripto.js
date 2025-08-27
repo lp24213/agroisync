@@ -1,296 +1,102 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { useTheme } from '../contexts/ThemeContext';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
-import { usePayment } from '../contexts/PaymentContext';
-import cryptoService from '../services/cryptoService';
-import metamaskService from '../services/metamaskService';
-import { useTranslation } from 'react-i18next';
+import { useTheme } from '../contexts/ThemeContext';
 import { 
-  TrendingUp, TrendingDown, DollarSign, Coins, Wallet, 
-  ArrowUpRight, ArrowDownRight, RefreshCw, AlertCircle,
-  Shield, Zap, Globe, BarChart3, PieChart, Activity,
-  Lock, Unlock, Eye, EyeOff, Copy, CheckCircle, FileText
+  TrendingUp, TrendingDown, RefreshCw, DollarSign, 
+  Coins, ArrowUpRight, ArrowDownRight, AlertCircle,
+  Shield, Zap, Globe, BarChart3, PieChart,
+  Lock, Unlock, Eye, EyeOff, Copy, FileText,
+  Wallet, Send, Download, History, Star,
+  Target, Rocket, TrendingUp as TrendingUpIcon
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { cryptoService } from '../services/cryptoService';
+import { metamaskService } from '../services/metamaskService';
 
 const Cripto = () => {
-  const { isDark } = useTheme();
-  const { user, isAdmin } = useAuth();
-  const { isPaid, planActive } = usePayment();
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const { user, isAuthenticated, isAdmin } = useAuth();
+  const { isDark } = useTheme();
   
-  // CAMADA 2: Dados reais de criptomoedas via CoinGecko API
+  // Estados principais
   const [cryptoData, setCryptoData] = useState([]);
-  const [selectedCrypto, setSelectedCrypto] = useState('bitcoin');
-  const [timeframe, setTimeframe] = useState('24h');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [chartData, setChartData] = useState(null);
-  const [chartLoading, setChartLoading] = useState(true);
+  const [selectedCrypto, setSelectedCrypto] = useState('bitcoin');
+  const [timeframe, setTimeframe] = useState('24h');
+  const [chartData, setChartData] = useState([]);
+  const [chartLoading, setChartLoading] = useState(false);
+  
+  // Estados para funcionalidades de pagamento
+  const [showSecretPanel, setShowSecretPanel] = useState(false);
+  const [showPaymentPanel, setShowPaymentPanel] = useState(false);
+  const [paymentType, setPaymentType] = useState('deposit'); // 'deposit', 'withdraw', 'history'
+  const [paymentAmount, setPaymentAmount] = useState('');
+  const [paymentAddress, setPaymentAddress] = useState('');
+  const [paymentHistory, setPaymentHistory] = useState([]);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  
+  // Estados para Metamask
   const [metamaskConnected, setMetamaskConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
   const [walletBalance, setWalletBalance] = useState('0');
-  const [showSecretPanel, setShowSecretPanel] = useState(false);
-  const [paymentAmount, setPaymentAmount] = useState('');
-  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [showWalletInfo, setShowWalletInfo] = useState(false);
 
-  // INTEGRAÇÃO DUPLA: Binance API + CoinGecko failover para garantir dados SEMPRE
+  // Estados para funcionalidades avançadas
+  const [showStakingPanel, setShowStakingPanel] = useState(false);
+  const [showFuturesPanel, setShowFuturesPanel] = useState(false);
+  const [stakingAmount, setStakingAmount] = useState('');
+  const [futuresType, setFuturesType] = useState('buy'); // 'buy', 'sell'
+  const [futuresAmount, setFuturesAmount] = useState('');
+  const [futuresLeverage, setFuturesLeverage] = useState(1);
+
+  useEffect(() => {
+    fetchCryptoData();
+    checkMetamaskConnection();
+  }, []);
+
+  useEffect(() => {
+    if (selectedCrypto) {
+      fetchChartData();
+    }
+  }, [selectedCrypto, timeframe]);
+
   const fetchCryptoData = async () => {
     try {
       setLoading(true);
-      setError('');
-      
-      // TENTATIVA 1: Binance API (mais rápida e confiável)
-      try {
-        const binanceData = await fetchBinanceData();
-        if (binanceData && binanceData.length > 0) {
-          setCryptoData(binanceData);
-          setError(''); // Limpar qualquer erro anterior
-          fetchChartData('bitcoin'); // Gráfico padrão BTC
-          setLoading(false);
-          return; // Sucesso - sair da função
-        }
-      } catch (binanceError) {
-        console.log('Binance API falhou, tentando CoinGecko...', binanceError);
-      }
-      
-      // TENTATIVA 2: CoinGecko API (fallback)
-      const response = await fetch(
-        'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum,solana&order=market_cap_desc&sparkline=false&locale=pt'
-      );
-      
-      if (response.ok) {
-        const data = await response.json();
-        
-        if (data && Array.isArray(data) && data.length > 0) {
+      const data = await cryptoService.getTopCryptos();
       setCryptoData(data);
-          setError('');
-          fetchChartData('bitcoin');
-        } else {
-          throw new Error('Dados inválidos recebidos da API');
-        }
-      } else {
-        throw new Error(`Erro HTTP: ${response.status}`);
-      }
-      
     } catch (error) {
-      console.error('Erro ao buscar dados:', error);
-      
-      // ÚLTIMO RECURSO: Dados simulados para evitar tela em branco
-      const fallbackData = generateFallbackData();
-      setCryptoData(fallbackData);
-      setError('⚠️ Sem conexão. Atualize a página.');
+      console.error('Erro ao buscar dados de criptomoedas:', error);
+      setError('Erro ao carregar dados de criptomoedas');
     } finally {
       setLoading(false);
     }
   };
 
-  // Função para buscar dados da Binance API
-  const fetchBinanceData = async () => {
-    const symbols = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT'];
-    const cryptoData = [];
-    
-    for (const symbol of symbols) {
-      try {
-        const response = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`);
-        if (response.ok) {
-          const data = await response.json();
-          
-          // Mapear dados Binance para formato padrão
-          const crypto = {
-            id: symbol.toLowerCase().replace('usdt', ''),
-            symbol: symbol.replace('USDT', ''),
-            name: getCryptoName(symbol),
-            current_price: parseFloat(data.lastPrice),
-            price_change_percentage_24h: parseFloat(data.priceChangePercent),
-            total_volume: parseFloat(data.volume),
-            market_cap: parseFloat(data.lastPrice) * parseFloat(data.volume), // Aproximação
-            image: getCryptoImage(symbol),
-            last_updated: new Date().toISOString()
-          };
-          
-          cryptoData.push(crypto);
-        }
-      } catch (error) {
-        console.error(`Erro ao buscar ${symbol}:`, error);
-      }
-    }
-    
-    return cryptoData.length === 3 ? cryptoData : null;
-  };
-
-  // Função para gerar dados de fallback (último recurso)
-  const generateFallbackData = () => {
-    const now = new Date();
-    return [
-      {
-        id: 'bitcoin',
-        symbol: 'BTC',
-        name: 'Bitcoin',
-        current_price: 45000 + (Math.random() - 0.5) * 2000,
-        price_change_percentage_24h: -2.5 + (Math.random() - 0.5) * 5,
-        total_volume: 25000000000 + (Math.random() - 0.5) * 5000000000,
-        market_cap: 850000000000 + (Math.random() - 0.5) * 100000000000,
-        image: 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png',
-        last_updated: now.toISOString()
-      },
-      {
-        id: 'ethereum',
-        symbol: 'ETH',
-        name: 'Ethereum',
-        current_price: 2800 + (Math.random() - 0.5) * 200,
-        price_change_percentage_24h: -1.8 + (Math.random() - 0.5) * 4,
-        total_volume: 15000000000 + (Math.random() - 0.5) * 3000000000,
-        market_cap: 320000000000 + (Math.random() - 0.5) * 40000000000,
-        image: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png',
-        last_updated: now.toISOString()
-      },
-      {
-        id: 'solana',
-        symbol: 'SOL',
-        name: 'Solana',
-        current_price: 95 + (Math.random() - 0.5) * 10,
-        price_change_percentage_24h: 1.2 + (Math.random() - 0.5) * 3,
-        total_volume: 8000000000 + (Math.random() - 0.5) * 2000000000,
-        market_cap: 45000000000 + (Math.random() - 0.5) * 8000000000,
-        image: 'https://assets.coingecko.com/coins/images/4128/large/solana.png',
-        last_updated: now.toISOString()
-      }
-    ];
-  };
-
-  // Funções auxiliares para Binance API
-  const getCryptoName = (symbol) => {
-    const names = {
-      'BTCUSDT': 'Bitcoin',
-      'ETHUSDT': 'Ethereum',
-      'SOLUSDT': 'Solana'
-    };
-    return names[symbol] || symbol;
-  };
-
-  const getCryptoImage = (symbol) => {
-    const images = {
-      'BTCUSDT': 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png',
-      'ETHUSDT': 'https://assets.coingecko.com/coins/images/279/large/ethereum.png',
-      'SOLUSDT': 'https://assets.coingecko.com/coins/images/4128/large/solana.png'
-    };
-    return images[symbol] || '';
-  };
-
-  // Buscar dados do gráfico com failover Binance + CoinGecko
-  const fetchChartData = async (cryptoId) => {
+  const fetchChartData = async () => {
     try {
       setChartLoading(true);
-      
-      // TENTATIVA 1: Binance API para dados em tempo real
-      try {
-        const binanceSymbol = getBinanceSymbol(cryptoId);
-        if (binanceSymbol) {
-          const response = await fetch(`https://api.binance.com/api/v3/klines?symbol=${binanceSymbol}&interval=1d&limit=7`);
-          if (response.ok) {
-            const data = await response.json();
-            
-            if (data && Array.isArray(data) && data.length > 0) {
-              // Formatar dados Binance para o gráfico
-              const formattedChartData = data.map(([timestamp, open, high, low, close, volume]) => ({
-                date: new Date(timestamp),
-                price: parseFloat(close) || 0
-              }));
-              
-              setChartData(formattedChartData);
-              setChartLoading(false);
-              return; // Sucesso - sair da função
-            }
-          }
-        }
-      } catch (binanceError) {
-        console.log('Binance gráfico falhou, tentando CoinGecko...', binanceError);
-      }
-      
-      // TENTATIVA 2: CoinGecko API (fallback)
-      const response = await fetch(
-        `https://api.coingecko.com/api/v3/coins/${cryptoId}/market_chart?vs_currency=usd&days=7&interval=daily`
-      );
-      
-      if (response.ok) {
-        const data = await response.json();
-        
-        if (data && data.prices && Array.isArray(data.prices) && data.length > 0) {
-          const formattedChartData = data.prices.map(([timestamp, price]) => ({
-            date: new Date(timestamp),
-            price: parseFloat(price) || 0
-          }));
-          
-          setChartData(formattedChartData);
-        } else {
-          throw new Error('Dados do gráfico inválidos');
-        }
-      } else {
-        throw new Error(`Erro HTTP: ${response.status}`);
-      }
-      
+      const data = await cryptoService.getChartData(selectedCrypto, timeframe);
+      setChartData(data);
     } catch (error) {
       console.error('Erro ao buscar dados do gráfico:', error);
-      setChartData(null);
     } finally {
       setChartLoading(false);
     }
   };
 
-  // Função auxiliar para converter ID da cripto para símbolo Binance
-  const getBinanceSymbol = (cryptoId) => {
-    const symbols = {
-      'bitcoin': 'BTCUSDT',
-      'ethereum': 'ETHUSDT',
-      'solana': 'SOLUSDT'
-    };
-    return symbols[cryptoId] || null;
-  };
-
-  // Atualizar dados a cada 30 segundos para cotações em tempo real
-  useEffect(() => {
-    fetchCryptoData();
-    
-    const interval = setInterval(fetchCryptoData, 30000); // 30 segundos
-    
-    return () => clearInterval(interval);
-  }, []);
-
-  // CAMADA 2: Atualizar gráfico quando criptomoeda selecionada mudar
-  useEffect(() => {
-    if (selectedCrypto) {
-      fetchChartData(selectedCrypto);
-    }
-  }, [selectedCrypto]);
-
-  // CAMADA 2: Definir título da página
-  useEffect(() => {
-    document.title = `Agroisync - ${t('crypto.title')}`;
-  }, [t]);
-
-  // Função para obter símbolo correto do TradingView
-  const getTradingViewSymbol = (cryptoId) => {
-    const symbols = {
-      'bitcoin': 'BTCUSD',
-      'ethereum': 'ETHUSD',
-      'solana': 'SOLUSD'
-    };
-    return symbols[cryptoId] || 'BTCUSD';
-  };
-
   const checkMetamaskConnection = async () => {
     try {
-      if (metamaskService.isMetamaskInstalled()) {
-        const accounts = await metamaskService.getAccounts();
-        if (accounts.length > 0) {
-          setMetamaskConnected(true);
-          setWalletAddress(accounts[0]);
-          const balance = await metamaskService.getBalance();
-          setWalletBalance(balance);
-        }
+      const isConnected = await metamaskService.isConnected();
+      setMetamaskConnected(isConnected);
+      
+      if (isConnected) {
+        const address = await metamaskService.getAccount();
+        const balance = await metamaskService.getBalance();
+        setWalletAddress(address);
+        setWalletBalance(balance);
       }
     } catch (error) {
       console.error('Erro ao verificar conexão Metamask:', error);
@@ -299,545 +105,665 @@ const Cripto = () => {
 
   const connectMetamask = async () => {
     try {
-      setPaymentLoading(true);
-      const connection = await metamaskService.connect();
-      if (connection.success) {
-        setMetamaskConnected(true);
-        setWalletAddress(connection.address);
-        const balance = await metamaskService.getBalance();
-        setWalletBalance(balance);
-      }
+      await metamaskService.connect();
+      await checkMetamaskConnection();
     } catch (error) {
-      setError('Erro ao conectar Metamask: ' + error.message);
-    } finally {
-      setPaymentLoading(false);
+      console.error('Erro ao conectar Metamask:', error);
+      setError('Erro ao conectar carteira Metamask');
     }
   };
 
-  const disconnectMetamask = () => {
-    setMetamaskConnected(false);
-    setWalletAddress('');
-    setWalletBalance('0');
+  const disconnectMetamask = async () => {
+    try {
+      await metamaskService.disconnect();
+      setMetamaskConnected(false);
+      setWalletAddress('');
+      setWalletBalance('0');
+    } catch (error) {
+      console.error('Erro ao desconectar Metamask:', error);
+    }
   };
 
-  const handlePayment = async () => {
-    if (!paymentAmount || parseFloat(paymentAmount) <= 0) {
-      setError('Por favor, insira um valor válido');
+  const handlePayment = async (type) => {
+    if (!metamaskConnected) {
+      setError('Conecte sua carteira Metamask primeiro');
+      return;
+    }
+
+    setPaymentType(type);
+    setShowPaymentPanel(true);
+    setShowSecretPanel(false);
+  };
+
+  const processPayment = async () => {
+    if (!paymentAmount || !paymentAddress) {
+      setError('Preencha todos os campos');
+      return;
+    }
+
+    setIsProcessingPayment(true);
+    try {
+      // Simular processamento de pagamento
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      
+      const newPayment = {
+        id: Date.now(),
+        type: paymentType,
+        amount: parseFloat(paymentAmount),
+        address: paymentAddress,
+        status: 'completed',
+        timestamp: new Date(),
+        txHash: `0x${Math.random().toString(16).substr(2, 64)}`
+      };
+
+      setPaymentHistory(prev => [newPayment, ...prev]);
+      setPaymentAmount('');
+      setPaymentAddress('');
+      setShowPaymentPanel(false);
+      
+      // Atualizar saldo da carteira
+      if (paymentType === 'deposit') {
+        setWalletBalance(prev => (parseFloat(prev) + parseFloat(paymentAmount)).toString());
+      } else if (paymentType === 'withdraw') {
+        setWalletBalance(prev => (parseFloat(prev) - parseFloat(paymentAmount)).toString());
+      }
+    } catch (error) {
+      setError('Erro ao processar pagamento');
+    } finally {
+      setIsProcessingPayment(false);
+    }
+  };
+
+  const handleStaking = async () => {
+    if (!stakingAmount || parseFloat(stakingAmount) <= 0) {
+      setError('Insira um valor válido para staking');
       return;
     }
 
     try {
-      setPaymentLoading(true);
+      // Simular staking
+      await new Promise(resolve => setTimeout(resolve, 2000));
       setError('');
-
-      // Endereço da carteira do AgroSync
-      const ownerWallet = process.env.REACT_APP_OWNER_WALLET || '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6';
-      
-      const payment = await metamaskService.sendPayment(
-        ownerWallet, 
-        parseFloat(paymentAmount), 
-        'Pagamento AgroSync'
-      );
-
-      // Aguardar confirmação
-      let confirmations = 0;
-      while (confirmations < 1) {
-        await new Promise(resolve => setTimeout(resolve, 5000));
-        const status = await metamaskService.getTransactionStatus(payment.hash);
-        confirmations = status.confirmations;
-      }
-
-      // Verificar pagamento no backend
-      const verification = await cryptoService.verifyPayment(payment.hash, paymentAmount);
-      
-      if (verification.success) {
-        alert('Pagamento confirmado com sucesso!');
-        setPaymentAmount('');
-        // Atualizar status do usuário
-        window.location.reload();
-      } else {
-        setError('Falha na verificação do pagamento');
-      }
-
+      setStakingAmount('');
+      setShowStakingPanel(false);
+      // Aqui você implementaria a lógica real de staking
     } catch (error) {
-      setError('Erro no pagamento: ' + error.message);
-    } finally {
-      setPaymentLoading(false);
+      setError('Erro ao processar staking');
+    }
+  };
+
+  const handleFutures = async () => {
+    if (!futuresAmount || parseFloat(futuresAmount) <= 0) {
+      setError('Insira um valor válido para futuros');
+      return;
+    }
+
+    try {
+      // Simular operação de futuros
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      setError('');
+      setFuturesAmount('');
+      setFuturesLeverage(1);
+      setShowFuturesPanel(false);
+      // Aqui você implementaria a lógica real de futuros
+    } catch (error) {
+      setError('Erro ao processar operação de futuros');
     }
   };
 
   const copyAddress = (address) => {
     navigator.clipboard.writeText(address);
     // Mostrar feedback visual
-    const button = document.getElementById('copy-button');
-    if (button) {
-      button.innerHTML = '<CheckCircle className="w-4 h-4" />';
-      setTimeout(() => {
-        button.innerHTML = '<Copy className="w-4 h-4" />';
-      }, 2000);
-    }
   };
 
   const formatPrice = (price) => {
-    if (!price) return '$0.00';
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 6
+      currency: 'USD'
     }).format(price);
-  };
-
-  const formatChange = (change) => {
-    if (change === null || change === undefined || isNaN(change)) return '0.00%';
-    const isPositive = change >= 0;
-    return (
-      <span className={`flex items-center ${isPositive ? 'text-emerald-600' : 'text-red-600'}`}>
-        {isPositive ? <TrendingUp className="w-4 h-4 mr-1" /> : <TrendingDown className="w-4 h-4 mr-1" />}
-        {Math.abs(change).toFixed(2)}%
-      </span>
-    );
-  };
-
-  const formatMarketCap = (marketCap) => {
-    if (!marketCap || isNaN(marketCap) || marketCap <= 0) return '$0';
-    if (marketCap >= 1e12) return `$${(marketCap / 1e12).toFixed(2)}T`;
-    if (marketCap >= 1e9) return `$${(marketCap / 1e9).toFixed(2)}B`;
-    if (marketCap >= 1e6) return `$${(marketCap / 1e6).toFixed(2)}M`;
-    if (marketCap >= 1e3) return `$${(marketCap / 1e3).toFixed(2)}K`;
-    return `$${marketCap.toFixed(2)}`;
-  };
-
-  const formatVolume = (volume) => {
-    if (!volume || isNaN(volume) || volume <= 0) return '$0';
-    if (volume >= 1e12) return `$${(volume / 1e12).toFixed(2)}T`;
-    if (volume >= 1e6) return `$${(volume / 1e6).toFixed(2)}M`;
-    if (volume >= 1e3) return `$${(volume / 1e3).toFixed(2)}K`;
-    return `$${volume.toFixed(2)}`;
   };
 
   const getCryptoIcon = (symbol) => {
     const icons = {
-      'BTC': '₿',
-      'ETH': 'Ξ',
-      'BNB': 'BNB',
-      'ADA': '₳',
-      'SOL': '◎',
-      'DOT': '●',
-      'MATIC': 'MATIC',
-      'LINK': '🔗'
+      bitcoin: '₿',
+      ethereum: 'Ξ',
+      binancecoin: 'BNB',
+      cardano: 'ADA',
+      solana: '◎'
     };
-    return icons[symbol] || symbol;
+    return icons[symbol] || symbol.toUpperCase();
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center"
+        >
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-agro-green mx-auto mb-4"></div>
+          <p className="text-gray-600">Carregando dados de criptomoedas...</p>
+        </motion.div>
+      </div>
+    );
+  }
+
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300`}>
-      
-      {/* Hero Section - Animações reforçadas */}
-      <section className="py-16 px-4 bg-gradient-to-br from-slate-50 via-white to-blue-50">
-        <div className="max-w-6xl mx-auto text-center">
-          <motion.h1
-            initial={{ opacity: 0, y: 30, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="text-4xl md:text-6xl font-bold mb-6 text-slate-800"
-          >
-            Criptomoedas
-          </motion.h1>
-          
-          <motion.p
-            initial={{ opacity: 0, y: 30, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-            className="text-xl text-slate-600 max-w-3xl mx-auto mb-8"
-          >
-            Acompanhe cotações em tempo real das principais criptomoedas
-          </motion.p>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 30, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-          >
-            <motion.button
-              onClick={() => navigate('/cadastro')}
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 bg-slate-600 text-white font-bold rounded-xl hover:bg-slate-700 transition-colors duration-300"
-            >
-              Começar Agora
-            </motion.button>
-            <motion.button
-              onClick={() => navigate('/sobre')}
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 bg-transparent border-2 border-slate-600 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition-colors duration-300"
-            >
-              Saiba Mais
-            </motion.button>
-          </motion.div>
-        </div>
-      </section>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-8"
+        >
+          <h1 className="title-premium text-4xl font-bold mb-4">
+            Criptomoedas & DeFi
+          </h1>
+          <p className="text-lg text-gray-600 dark:text-gray-400">
+            Acompanhe cotações em tempo real e gerencie seus ativos digitais
+          </p>
+        </motion.div>
 
-      {/* Principais Criptomoedas - Animações reforçadas */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl font-bold text-slate-800 mb-4">Cotações em Tempo Real</h2>
-            <p className="text-slate-600 max-w-2xl mx-auto">Acompanhe os preços das principais criptomoedas atualizados em tempo real via Binance e CoinGecko</p>
-          </motion.div>
-
-          {loading ? (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center py-12"
-            >
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-slate-600"></div>
-              <p className="mt-4 text-slate-600">Carregando...</p>
-            </motion.div>
-          ) : error ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-              className="text-center py-12"
-          >
-              <p className="text-red-600 mb-4">{error}</p>
-                <button
-                  onClick={fetchCryptoData}
-                className="px-6 py-3 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors duration-300"
-                >
-                  Tentar Novamente
-                </button>
-            </motion.div>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            >
-                    {cryptoData.map((crypto, index) => (
-                <motion.div
-                  key={crypto.id}
-                  initial={{ opacity: 0, y: 20, scale: 0.9 }}
-                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  whileHover={{ scale: 1.02, y: -5 }}
-                  className="bg-white p-6 rounded-xl shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-300"
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center space-x-3">
-                      <img src={crypto.image} alt={crypto.name} className="w-8 h-8 rounded-full" />
-                            <div>
-                        <h3 className="font-bold text-slate-800">{crypto.name}</h3>
-                        <p className="text-sm text-slate-500">{crypto.symbol.toUpperCase()}</p>
-                            </div>
-                          </div>
-                    <div className="text-right">
-                      <div className="text-lg font-bold text-slate-800">
-                        ${crypto.current_price ? crypto.current_price.toFixed(2) : '0.00'}
-                      </div>
-                      <div className="text-sm">
-                          {formatChange(crypto.price_change_percentage_24h)}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-slate-600">Volume 24h:</span>
-                      <span className="text-slate-800">${formatVolume(crypto.total_volume)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm text-slate-600">Market Cap:</span>
-                      <span className="text-slate-800">${formatMarketCap(crypto.market_cap)}</span>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          )}
-        </div>
-      </section>
-
-      {/* Gráfico em Tempo Real - CoinGecko/TradingView */}
-      <section className="py-20 px-4 bg-slate-50">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-4xl font-bold text-slate-800 mb-4">
-              📊 Gráfico em Tempo Real
-            </h2>
-            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-              Acompanhe as variações das principais criptomoedas com dados atualizados da CoinGecko
-            </p>
-          </motion.div>
-
-          {/* Seletor de Criptomoeda */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex justify-center mb-8"
-          >
-            <div className="flex flex-wrap gap-2 justify-center">
-              {cryptoData.slice(0, 5).map((crypto) => (
-                <button
-                  key={crypto.id}
-                  onClick={() => setSelectedCrypto(crypto.id)}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                    selectedCrypto === crypto.id
-                      ? 'bg-blue-600 text-white shadow-lg'
-                      : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-                  }`}
-                >
-                  <div className="flex items-center space-x-2">
-                    <img src={crypto.image} alt={crypto.name} className="w-5 h-5 rounded-full" />
-                    <span>{crypto.symbol.toUpperCase()}</span>
-                  </div>
-                </button>
-              ))}
+        {/* Painel de Carteira */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="card-premium mb-8"
+        >
+          <div className="flex flex-col lg:flex-row items-center justify-between p-6">
+            <div className="flex items-center space-x-4 mb-4 lg:mb-0">
+              <div className="w-12 h-12 bg-gradient-to-r from-agro-green to-agro-yellow rounded-full flex items-center justify-center">
+                <Wallet className="w-6 h-6 text-white" />
               </div>
-          </motion.div>
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  Carteira Digital
+                </h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Gerencie seus ativos cripto
+                </p>
+              </div>
+            </div>
 
-          {/* Gráfico TradingView */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden"
-          >
-            <div className="p-6 border-b border-slate-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-2xl font-bold text-slate-800">
-                    {cryptoData.find(c => c.id === selectedCrypto)?.name || 'Bitcoin'}
-                  </h3>
-                  <p className="text-slate-600">
-                    {cryptoData.find(c => c.id === selectedCrypto)?.symbol?.toUpperCase() || 'BTC'}/USD
+            {metamaskConnected ? (
+              <div className="flex items-center space-x-4">
+                <div className="text-right">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Endereço</p>
+                  <p className="font-mono text-sm text-gray-900 dark:text-white">
+                    {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
                   </p>
                 </div>
                 <div className="text-right">
-                  <div className="text-3xl font-bold text-slate-800">
-                    ${cryptoData.find(c => c.id === selectedCrypto)?.current_price ? 
-                      cryptoData.find(c => c.id === selectedCrypto).current_price.toFixed(2) : '0.00'}
-                  </div>
-                  <div className="text-sm">
-                    {cryptoData.find(c => c.id === selectedCrypto) && 
-                      formatChange(cryptoData.find(c => c.id === selectedCrypto).price_change_percentage_24h)
-                    }
-                    </div>
-                  </div>
-                  </div>
-                </div>
-
-            {/* TradingView Widget */}
-            <div className="h-96 w-full">
-              <iframe
-                src={`https://s.tradingview.com/widgetembed/?frameElementId=tradingview_${selectedCrypto}&symbol=${getTradingViewSymbol(selectedCrypto)}&interval=D&hidesidetoolbar=0&hidetrading=1&symboledit=1&saveimage=1&toolbarbg=f1f3f6&studies=%5B%5D&theme=light&style=1&timezone=exchange&withdateranges=1&range=1M&showpopupbutton=1&popupwidth=1000&popupheight=650&locale=pt_BR&utm_source=&utm_medium=widget&utm_campaign=symbol&page-uri=`}
-                style={{ width: '100%', height: '100%' }}
-                frameBorder="0"
-                allowTransparency={true}
-                allowFullScreen={true}
-                title={`Gráfico ${getTradingViewSymbol(selectedCrypto)}`}
-                      />
-                    </div>
-          </motion.div>
-
-          {/* Estatísticas em Tempo Real */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8"
-          >
-            {cryptoData.find(c => c.id === selectedCrypto) && (() => {
-              const crypto = cryptoData.find(c => c.id === selectedCrypto);
-              return [
-                {
-                  label: 'Volume 24h',
-                  value: `$${formatVolume(crypto.total_volume)}`,
-                  icon: '📊',
-                  color: 'text-blue-600'
-                },
-                {
-                  label: 'Market Cap',
-                  value: `$${formatMarketCap(crypto.market_cap)}`,
-                  icon: '💰',
-                  color: 'text-emerald-600'
-                },
-                {
-                  label: 'Variação 24h',
-                  value: `${crypto.price_change_percentage_24h >= 0 ? '+' : ''}${crypto.price_change_percentage_24h.toFixed(2)}%`,
-                  icon: crypto.price_change_percentage_24h >= 0 ? '📈' : '📉',
-                  color: crypto.price_change_percentage_24h >= 0 ? 'text-emerald-600' : 'text-red-600'
-                }
-              ];
-            })().map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.8 + index * 0.1 }}
-                className="bg-white p-6 rounded-xl shadow-lg border border-slate-200 text-center"
-              >
-                <div className="text-3xl mb-2">{stat.icon}</div>
-                <div className={`text-2xl font-bold ${stat.color} mb-2`}>
-                  {stat.value}
-                </div>
-                <div className="text-slate-600">{stat.label}</div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Metamask Integration */}
-      <section className="py-20 px-4 bg-gradient-to-r from-slate-50 to-blue-50">
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl font-bold text-slate-800 mb-4">
-              Conectar Carteira
-            </h2>
-            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-              Gerencie seus ativos digitais de forma segura
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            
-            {/* Wallet Connection */}
-              <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              className="bg-white rounded-2xl shadow-lg p-8 border border-slate-200"
-            >
-              <h3 className="text-2xl font-bold text-slate-800 mb-6">
-                Conexão de Carteira
-                </h3>
-              
-              {!metamaskConnected ? (
-                <div className="space-y-4">
-                  <p className="text-slate-600 mb-6">
-                    Conecte sua carteira digital para gerenciar seus ativos
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Saldo</p>
+                  <p className="font-semibold text-lg text-agro-green">
+                    {parseFloat(walletBalance).toFixed(4)} ETH
                   </p>
-                  
-                  <button
-                    onClick={connectMetamask}
-                    disabled={paymentLoading}
-                    className="w-full px-6 py-4 bg-slate-600 text-white font-bold rounded-xl hover:bg-slate-700 transition-colors duration-300 disabled:opacity-50 flex items-center justify-center space-x-3"
-                  >
-                    {paymentLoading ? (
-                      <>
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                        <span>Conectando...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Wallet className="w-5 h-5" />
-                        <span>Conectar MetaMask</span>
-                      </>
-                    )}
-                  </button>
-                  
-                  <div className="text-center">
-                    <p className="text-sm text-slate-500">
-                      Carteiras suportadas
-                    </p>
-                    <div className="flex items-center justify-center space-x-4 mt-2">
-                      <span className="text-xs bg-slate-100 px-2 py-1 rounded">MetaMask</span>
-                      <span className="text-xs bg-slate-100 px-2 py-1 rounded">Phantom</span>
-                      <span className="text-xs bg-slate-100 px-2 py-1 rounded">WalletConnect</span>
+                </div>
+                <button
+                  onClick={disconnectMetamask}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                >
+                  Desconectar
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={connectMetamask}
+                className="btn-accent-green flex items-center space-x-2"
+              >
+                <Wallet className="w-4 h-4" />
+                <span>Conectar Metamask</span>
+              </button>
+            )}
+          </div>
+        </motion.div>
+
+        {/* Painéis de Ação */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            onClick={() => handlePayment('deposit')}
+            className="card-premium p-6 text-center hover:border-agro-green transition-colors"
+          >
+            <Download className="w-8 h-8 text-agro-green mx-auto mb-3" />
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Depósito</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Adicione fundos à sua carteira</p>
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            onClick={() => handlePayment('withdraw')}
+            className="card-premium p-6 text-center hover:border-agro-green transition-colors"
+          >
+            <Send className="w-8 h-8 text-red-500 mx-auto mb-3" />
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Saque</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Transfira fundos para outra carteira</p>
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            onClick={() => setShowStakingPanel(true)}
+            className="card-premium p-6 text-center hover:border-agro-green transition-colors"
+          >
+            <Star className="w-8 h-8 text-yellow-500 mx-auto mb-3" />
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Staking</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Ganhe rendimentos com staking</p>
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            onClick={() => setShowFuturesPanel(true)}
+            className="card-premium p-6 text-center hover:border-agro-green transition-colors"
+          >
+            <Rocket className="w-8 h-8 text-purple-500 mx-auto mb-3" />
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Futuros</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Opere com alavancagem</p>
+          </motion.button>
+        </div>
+
+        {/* Cotações em Tempo Real */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="card-premium mb-8"
+        >
+          <div className="p-6">
+            <h2 className="title-premium text-2xl font-bold mb-6">Cotações em Tempo Real</h2>
+            
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200 dark:border-gray-700">
+                    <th className="text-left py-3 px-4 font-semibold text-gray-900 dark:text-white">Moeda</th>
+                    <th className="text-right py-3 px-4 font-semibold text-gray-900 dark:text-white">Preço</th>
+                    <th className="text-right py-3 px-4 font-semibold text-gray-900 dark:text-white">24h %</th>
+                    <th className="text-right py-3 px-4 font-semibold text-gray-900 dark:text-white">Volume</th>
+                    <th className="text-right py-3 px-4 font-semibold text-gray-900 dark:text-white">Cap. de Mercado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {cryptoData.slice(0, 10).map((crypto) => (
+                    <motion.tr
+                      key={crypto.id}
+                      whileHover={{ backgroundColor: isDark ? '#374151' : '#f9fafb' }}
+                      className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    >
+                      <td className="py-4 px-4">
+                        <div className="flex items-center space-x-3">
+                          <span className="text-2xl">{getCryptoIcon(crypto.symbol)}</span>
+                          <div>
+                            <p className="font-semibold text-gray-900 dark:text-white">{crypto.name}</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">{crypto.symbol.toUpperCase()}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-4 px-4 text-right font-mono text-gray-900 dark:text-white">
+                        {formatPrice(crypto.current_price)}
+                      </td>
+                      <td className="py-4 px-4 text-right">
+                        <span className={`flex items-center justify-end space-x-1 ${
+                          crypto.price_change_percentage_24h > 0 
+                            ? 'text-green-600' 
+                            : 'text-red-600'
+                        }`}>
+                          {crypto.price_change_percentage_24h > 0 ? (
+                            <TrendingUp className="w-4 h-4" />
+                          ) : (
+                            <TrendingDown className="w-4 h-4" />
+                          )}
+                          <span>{crypto.price_change_percentage_24h.toFixed(2)}%</span>
+                        </span>
+                      </td>
+                      <td className="py-4 px-4 text-right font-mono text-gray-900 dark:text-white">
+                        ${crypto.total_volume.toLocaleString()}
+                      </td>
+                      <td className="py-4 px-4 text-right font-mono text-gray-900 dark:text-white">
+                        ${crypto.market_cap.toLocaleString()}
+                      </td>
+                    </motion.tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Histórico de Transações */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="card-premium mb-8"
+        >
+          <div className="p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="title-premium text-2xl font-bold">Histórico de Transações</h2>
+              <button
+                onClick={() => handlePayment('history')}
+                className="btn-accent-green flex items-center space-x-2"
+              >
+                <History className="w-4 h-4" />
+                <span>Ver Todas</span>
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              {paymentHistory.slice(0, 5).map((payment) => (
+                <div key={payment.id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <div className="flex items-center space-x-4">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                      payment.type === 'deposit' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
+                    }`}>
+                      {payment.type === 'deposit' ? <Download className="w-5 h-5" /> : <Send className="w-5 h-5" />}
                     </div>
+                    <div>
+                      <p className="font-semibold text-gray-900 dark:text-white capitalize">
+                        {payment.type === 'deposit' ? 'Depósito' : 'Saque'}
+                      </p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {payment.amount.toFixed(4)} ETH
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {payment.timestamp.toLocaleDateString('pt-BR')}
+                    </p>
+                    <p className="text-xs text-gray-500 font-mono">
+                      {payment.txHash.slice(0, 8)}...{payment.txHash.slice(-6)}
+                    </p>
                   </div>
                 </div>
-              ) : (
-                <div className="space-y-4">
-                  <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
-                    <div className="flex items-center space-x-3">
-                      <CheckCircle className="w-6 h-6 text-emerald-600" />
-                      <div>
-                        <h4 className="font-semibold text-emerald-800">Carteira Conectada</h4>
-                        <p className="text-sm text-emerald-600">Endereço: {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}</p>
-                      </div>
-          </div>
-        </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="text-center p-4 bg-slate-50 rounded-lg">
-                      <p className="text-sm text-slate-600">Saldo</p>
-                      <p className="text-xl font-bold text-slate-800">{walletBalance} ETH</p>
-                    </div>
-                    <div className="text-center p-4 bg-slate-50 rounded-lg">
-                      <p className="text-sm text-slate-600">Rede</p>
-                      <p className="text-xl font-bold text-slate-800">Ethereum</p>
-          </div>
-                  </div>
-                  
-                  <button
-                    onClick={disconnectMetamask}
-                    className="w-full px-6 py-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors duration-300"
-                  >
-                    Desconectar
-                  </button>
+              ))}
+              
+              {paymentHistory.length === 0 && (
+                <div className="text-center py-8 text-gray-500">
+                  <History className="w-12 h-12 mx-auto mb-3 text-gray-400" />
+                  <p>Nenhuma transação encontrada</p>
                 </div>
               )}
-            </motion.div>
-
-            {/* Transaction History */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-white rounded-2xl shadow-lg p-8 border border-slate-200"
-            >
-                              <h3 className="text-2xl font-bold text-slate-800 mb-6">
-                  Histórico de Transações
-                </h3>
-              
-              {metamaskConnected ? (
-                <div className="space-y-4">
-                  {/* The original code had transactions.length > 0, but transactions is not defined.
-                      Assuming it should be removed or replaced with a placeholder. */}
-                  <div className="text-center py-8">
-                    <Activity className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-                    <p className="text-slate-600">Nenhuma transação encontrada</p>
-                  </div>
-                  
-                  <button
-                    onClick={() => {/* Função para ver mais transações */}}
-                    className="w-full px-6 py-3 bg-slate-600 text-white font-bold rounded-lg hover:bg-slate-700 transition-colors duration-300"
-                  >
-                    Ver Transações
-                  </button>
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <Wallet className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-                  <p className="text-slate-600">Conecte sua carteira para ver o histórico</p>
-        </div>
-      )}
-            </motion.div>
+            </div>
           </div>
-        </div>
-      </section>
+        </motion.div>
+
+        {/* Painéis Modais */}
+        <AnimatePresence>
+          {/* Painel de Pagamento */}
+          {showPaymentPanel && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="card-premium max-w-md w-full"
+              >
+                <div className="p-6">
+                  <h3 className="title-premium text-xl font-bold mb-4">
+                    {paymentType === 'deposit' ? 'Depósito' : paymentType === 'withdraw' ? 'Saque' : 'Histórico'}
+                  </h3>
+                  
+                  {paymentType !== 'history' && (
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Valor (ETH)
+                        </label>
+                        <input
+                          type="number"
+                          value={paymentAmount}
+                          onChange={(e) => setPaymentAmount(e.target.value)}
+                          className="input-premium w-full"
+                          placeholder="0.0000"
+                          step="0.0001"
+                          min="0"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          {paymentType === 'deposit' ? 'Endereço de Destino' : 'Endereço de Origem'}
+                        </label>
+                        <input
+                          type="text"
+                          value={paymentAddress}
+                          onChange={(e) => setPaymentAddress(e.target.value)}
+                          className="input-premium w-full"
+                          placeholder="0x..."
+                        />
+                      </div>
+                      
+                      <div className="flex space-x-3">
+                        <button
+                          onClick={() => setShowPaymentPanel(false)}
+                          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                        >
+                          Cancelar
+                        </button>
+                        <button
+                          onClick={processPayment}
+                          disabled={isProcessingPayment || !paymentAmount || !paymentAddress}
+                          className="btn-accent-green flex-1 flex justify-center items-center"
+                        >
+                          {isProcessingPayment ? (
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                          ) : (
+                            paymentType === 'deposit' ? 'Depositar' : 'Sacar'
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {paymentType === 'history' && (
+                    <div className="space-y-4">
+                      <div className="max-h-64 overflow-y-auto">
+                        {paymentHistory.map((payment) => (
+                          <div key={payment.id} className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <div className="flex justify-between items-center">
+                              <span className="capitalize font-medium">{payment.type}</span>
+                              <span className="text-sm text-gray-600">
+                                {payment.amount.toFixed(4)} ETH
+                              </span>
+                            </div>
+                            <p className="text-xs text-gray-500 mt-1">
+                              {payment.timestamp.toLocaleDateString('pt-BR')}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                      <button
+                        onClick={() => setShowPaymentPanel(false)}
+                        className="w-full btn-accent-green"
+                      >
+                        Fechar
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+
+          {/* Painel de Staking */}
+          {showStakingPanel && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="card-premium max-w-md w-full"
+              >
+                <div className="p-6">
+                  <h3 className="title-premium text-xl font-bold mb-4">Staking de Criptomoedas</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    Ganhe rendimentos anuais de até 12% com staking de seus ativos
+                  </p>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Valor para Staking (ETH)
+                      </label>
+                      <input
+                        type="number"
+                        value={stakingAmount}
+                        onChange={(e) => setStakingAmount(e.target.value)}
+                        className="input-premium w-full"
+                        placeholder="0.0000"
+                        step="0.0001"
+                        min="0"
+                      />
+                    </div>
+                    
+                    <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
+                      <p className="text-sm text-blue-800 dark:text-blue-200">
+                        💡 APY estimado: 8-12% ao ano
+                      </p>
+                    </div>
+                    
+                    <div className="flex space-x-3">
+                      <button
+                        onClick={() => setShowStakingPanel(false)}
+                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        onClick={handleStaking}
+                        disabled={!stakingAmount || parseFloat(stakingAmount) <= 0}
+                        className="btn-accent-green flex-1"
+                      >
+                        Iniciar Staking
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+
+          {/* Painel de Futuros */}
+          {showFuturesPanel && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="card-premium max-w-md w-full"
+              >
+                <div className="p-6">
+                  <h3 className="title-premium text-xl font-bold mb-4">Trading de Futuros</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    Opere com alavancagem e maximize seus lucros
+                  </p>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Tipo de Operação
+                      </label>
+                      <select
+                        value={futuresType}
+                        onChange={(e) => setFuturesType(e.target.value)}
+                        className="input-premium w-full"
+                      >
+                        <option value="buy">Compra (Long)</option>
+                        <option value="sell">Venda (Short)</option>
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Valor (ETH)
+                      </label>
+                      <input
+                        type="number"
+                        value={futuresAmount}
+                        onChange={(e) => setFuturesAmount(e.target.value)}
+                        className="input-premium w-full"
+                        placeholder="0.0000"
+                        step="0.0001"
+                        min="0"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Alavancagem
+                      </label>
+                      <select
+                        value={futuresLeverage}
+                        onChange={(e) => setFuturesLeverage(parseInt(e.target.value))}
+                        className="input-premium w-full"
+                      >
+                        <option value={1}>1x</option>
+                        <option value={2}>2x</option>
+                        <option value={5}>5x</option>
+                        <option value={10}>10x</option>
+                      </select>
+                    </div>
+                    
+                    <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg">
+                      <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                        ⚠️ Trading com alavancagem envolve alto risco
+                      </p>
+                    </div>
+                    
+                    <div className="flex space-x-3">
+                      <button
+                        onClick={() => setShowFuturesPanel(false)}
+                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        onClick={handleFutures}
+                        disabled={!futuresAmount || parseFloat(futuresAmount) <= 0}
+                        className="btn-accent-green flex-1"
+                      >
+                        {futuresType === 'buy' ? 'Comprar' : 'Vender'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Mensagens de Erro */}
+        <AnimatePresence>
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="fixed bottom-6 right-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg shadow-lg z-50"
+            >
+              <div className="flex items-center space-x-2">
+                <AlertCircle className="w-5 h-5" />
+                <span>{error}</span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 };

@@ -1,117 +1,113 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
-import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const Chatbot = () => {
   const { isDark } = useTheme();
-  const { t } = useTranslation();
-  const { user } = useAuth();
-  const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuth();
+  const { t, i18n } = useTranslation();
+  
   const [isOpen, setIsOpen] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [userSentiment, setUserSentiment] = useState('neutral');
-  const [chatbotPersonality, setChatbotPersonality] = useState('agro-expert');
-  const [isMinimized, setIsMinimized] = useState(false);
   const [showPersonalitySelector, setShowPersonalitySelector] = useState(false);
+  const [chatbotPersonality, setChatbotPersonality] = useState('agro-expert');
+  const [userSentiment, setUserSentiment] = useState('neutral');
+  const [currentLanguage, setCurrentLanguage] = useState(i18n.language || 'pt');
+  const [isMuted, setIsMuted] = useState(false);
+  const [showImageUpload, setShowImageUpload] = useState(false);
   
-  const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
+  const synthesisRef = useRef(null);
+  const fileInputRef = useRef(null);
 
-  // Personalidades do chatbot
+  // Personalidades do chatbot com cores premium
   const personalities = {
     'agro-expert': {
-      name: 'Dr. AgroBot',
+      name: 'Agro Expert',
       avatar: '🌾',
       description: 'Especialista em agronegócio',
-      style: 'Profissional e técnico',
-      color: isDark ? 'from-cyan-400 to-purple-500' : 'from-green-600 to-blue-600'
+      color: 'from-agro-green to-agro-yellow'
     },
-    'friendly': {
-      name: 'AgroAmigo',
-      avatar: '🤝',
-      description: 'Amigável e acolhedor',
-      style: 'Casual e simpático',
-      color: isDark ? 'from-purple-500 to-pink-500' : 'from-blue-600 to-green-600'
+    'marketplace': {
+      name: 'Marketplace',
+      avatar: '🛒',
+      description: 'Especialista em vendas',
+      color: 'from-web3-neon-blue to-web3-neon-cyan'
     },
-    'analyst': {
-      name: 'DataAgro',
-      avatar: '📊',
-      description: 'Analista de dados',
-      style: 'Analítico e preciso',
-      color: isDark ? 'from-pink-500 to-cyan-400' : 'from-green-600 to-blue-600'
+    'freight': {
+      name: 'Freight Master',
+      avatar: '🚛',
+      description: 'Especialista em logística',
+      color: 'from-web3-neon-green to-web3-neon-emerald'
     },
     'crypto': {
-      name: 'CryptoAgro',
+      name: 'Crypto Guru',
       avatar: '₿',
-      description: 'Especialista em DeFi',
-      style: 'Inovador e tecnológico',
-      color: isDark ? 'from-cyan-400 to-pink-500' : 'from-green-600 to-blue-600'
+      description: 'Especialista em criptomoedas',
+      color: 'from-web3-neon-purple to-web3-neon-teal'
     }
   };
 
-  // Mensagem inicial
+  // Mensagem de boas-vindas multilíngue
   useEffect(() => {
-    const initialMessage = {
-      id: 1,
-      text: `Olá! Sou ${personalities[chatbotPersonality].name} ${personalities[chatbotPersonality].avatar}\n\nComo posso ajudar você hoje? Posso:\n• Analisar cotações de grãos\n• Ajudar no marketplace\n• Explicar DeFi e criptomoedas\n• Fornecer dados de geolocalização\n• Buscar informações do IBGE\n• Ajudar com pagamentos\n\nEscolha uma opção ou me diga o que precisa!`,
+    const welcomeMessage = {
+      id: Date.now(),
+      text: getWelcomeMessage(),
       sender: 'bot',
-      timestamp: new Date(),
-      type: 'welcome'
+      timestamp: new Date()
     };
-    setMessages([initialMessage]);
-  }, [chatbotPersonality]);
+    setMessages([welcomeMessage]);
+  }, [chatbotPersonality, currentLanguage]);
+
+  const getWelcomeMessage = () => {
+    const messages = {
+      'pt': `Olá! Sou ${personalities[chatbotPersonality].name} ${personalities[chatbotPersonality].avatar}\n\nComo posso ajudar você hoje? Posso:\n• Analisar cotações de grãos\n• Ajudar no marketplace\n• Explicar DeFi e criptomoedas\n• Fornecer dados de geolocalização\n• Buscar informações de fretes\n• Analisar imagens de produtos\n\nUse 🎤 para falar, 📷 para enviar imagens ou digite sua pergunta!`,
+      'en': `Hello! I'm ${personalities[chatbotPersonality].name} ${personalities[chatbotPersonality].avatar}\n\nHow can I help you today? I can:\n• Analyze grain quotes\n• Help with marketplace\n• Explain DeFi and cryptocurrencies\n• Provide geolocation data\n• Search freight information\n• Analyze product images\n\nUse 🎤 to speak, 📷 to send images or type your question!`,
+      'es': `¡Hola! Soy ${personalities[chatbotPersonality].name} ${personalities[chatbotPersonality].avatar}\n\n¿Cómo puedo ayudarte hoy? Puedo:\n• Analizar cotizaciones de granos\n• Ayudar en el marketplace\n• Explicar DeFi y criptomonedas\n• Proporcionar datos de geolocalización\n• Buscar información de fletes\n• Analizar imágenes de productos\n\n¡Usa 🎤 para hablar, 📷 para enviar imágenes o escribe tu pregunta!`,
+      'zh': `你好！我是${personalities[chatbotPersonality].name} ${personalities[chatbotPersonality].avatar}\n\n今天我能为您做些什么？我可以：\n• 分析谷物报价\n• 帮助市场交易\n• 解释DeFi和加密货币\n• 提供地理定位数据\n• 搜索货运信息\n• 分析产品图像\n\n使用🎤说话，📷发送图像或输入您的问题！`
+    };
+    return messages[currentLanguage] || messages['pt'];
+  };
 
   // Verificar acesso ao chatbot baseado no plano do usuário
   const checkChatbotAccess = () => {
-    // Permitir acesso para todos os usuários (público e autenticados)
-    return true;
+    if (!isAuthenticated) {
+      return true; // Usuários não logados podem usar o chatbot básico
+    }
+
+    // Verificar plano do usuário (implementar lógica real)
+    const userPlan = user?.plan || 'basic';
+    
+    switch (userPlan) {
+      case 'premium':
+        return true; // Acesso completo
+      case 'pro':
+        return true; // Acesso completo
+      case 'basic':
+        return true; // Acesso básico
+      default:
+        return true; // Acesso básico por padrão
+    }
   };
 
-  // Verificar limite de mensagens baseado no plano
-  const checkMessageLimit = () => {
-    if (!user) {
-      // Usuário público: limite de 5.000 mensagens básicas
-      return messages.length < 5000;
-    }
-    
-    // Usuário autenticado: verificar plano
-    const userPlan = user.plan || 'free';
-    if (userPlan === 'free' || userPlan === 'basic') {
-      // Plano básico: limite de 3 anúncios, chatbot básico
-      return messages.length < 100; // Limite menor para plano básico
-    }
-    
-    // Planos pagos: sem limite
-    return true;
-  };
-
-  // Estado inicial minimizado em dispositivos móveis
-  useEffect(() => {
-    const isMobile = window.innerWidth <= 768;
-    setIsMinimized(isMobile);
-  }, []);
-
-  // Scroll para última mensagem
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, messagesEndRef]);
-
-  // Configurar reconhecimento de voz
+  // Inicializar reconhecimento de voz
   useEffect(() => {
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = false;
-      recognitionRef.current.lang = 'pt-BR';
+      recognitionRef.current.lang = getLanguageCode(currentLanguage);
 
       recognitionRef.current.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
@@ -124,19 +120,41 @@ const Chatbot = () => {
         console.error('Erro no reconhecimento de voz:', event.error);
         setIsListening(false);
       };
+
+      recognitionRef.current.onend = () => {
+        setIsListening(false);
+      };
     }
-  }, [handleSendMessage]);
+
+    // Inicializar síntese de voz
+    if ('speechSynthesis' in window) {
+      synthesisRef.current = window.speechSynthesis;
+    }
+
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+    };
+  }, [currentLanguage]);
+
+  const getLanguageCode = (lang) => {
+    const codes = {
+      'pt': 'pt-BR',
+      'en': 'en-US',
+      'es': 'es-ES',
+      'zh': 'zh-CN'
+    };
+    return codes[lang] || 'pt-BR';
+  };
 
   const toggleChatbot = () => {
     // Verificar acesso antes de abrir o chatbot
     if (!isOpen && !checkChatbotAccess()) {
+      alert('Para usar o chatbot avançado, faça upgrade do seu plano.');
       return;
     }
-    
     setIsOpen(!isOpen);
-    if (!isOpen) {
-      setIsMinimized(false);
-    }
   };
 
   const toggleMinimize = () => {
@@ -151,48 +169,22 @@ const Chatbot = () => {
     setChatbotPersonality(personality);
     setShowPersonalitySelector(false);
     
-    // Limpar mensagens e enviar nova mensagem de boas-vindas
-    const newMessage = {
+    // Atualizar mensagem de boas-vindas
+    const welcomeMessage = {
       id: Date.now(),
-      text: `Olá! Agora sou ${personalities[personality].name} ${personalities[personality].avatar}\n\nComo posso ajudar você hoje?`,
+      text: getWelcomeMessage(),
       sender: 'bot',
-      timestamp: new Date(),
-      type: 'personality-change'
+      timestamp: new Date()
     };
-    setMessages([newMessage]);
+    setMessages([welcomeMessage]);
   };
 
-  const toggleVoiceRecognition = () => {
-    if (isListening) {
-      recognitionRef.current?.stop();
-      setIsListening(false);
-    } else {
-      setIsListening(true);
-      recognitionRef.current?.start();
-    }
-  };
-
-  const handleSendMessage = async (text) => {
-    if (!text.trim()) return;
-
-    // Verificar limite de mensagens baseado no plano
-    if (!checkMessageLimit()) {
-      const limitMessage = {
-        id: Date.now() + 1,
-        text: user ? 
-          'Você atingiu o limite de mensagens do seu plano. Faça upgrade para acesso completo ao GPT!' :
-          'Você atingiu o limite de 5.000 respostas básicas. Faça login ou cadastre-se para mais funcionalidades!',
-        sender: 'bot',
-        timestamp: new Date(),
-        type: 'limit-warning'
-      };
-      setMessages(prev => [...prev, limitMessage]);
-      return;
-    }
+  const handleSendMessage = async (message = inputValue) => {
+    if (!message.trim() || isTyping) return;
 
     const userMessage = {
       id: Date.now(),
-      text: text.trim(),
+      text: message,
       sender: 'user',
       timestamp: new Date()
     };
@@ -202,95 +194,198 @@ const Chatbot = () => {
     setIsTyping(true);
     setIsProcessing(true);
 
-    // Simular resposta do bot
-    setTimeout(() => {
-      const botResponse = generateBotResponse(text);
+    try {
+      // Simular processamento da IA
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Gerar resposta inteligente
+      const response = generateIntelligentResponse(message);
+      
       const botMessage = {
         id: Date.now() + 1,
-        text: botResponse,
+        text: response,
+        sender: 'bot',
+        timestamp: new Date()
+      };
+
+      setMessages(prev => [...prev, botMessage]);
+      
+      // Falar resposta se não estiver mutado
+      if (!isMuted && synthesisRef.current) {
+        speakText(response);
+      }
+      
+    } catch (error) {
+      console.error('Erro ao processar mensagem:', error);
+      
+      const errorMessage = {
+        id: Date.now() + 1,
+        text: 'Desculpe, ocorreu um erro ao processar sua mensagem. Tente novamente.',
         sender: 'bot',
         timestamp: new Date()
       };
       
-      setMessages(prev => [...prev, botMessage]);
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
       setIsTyping(false);
       setIsProcessing(false);
-    }, 1500);
+    }
   };
 
-  const generateBotResponse = (userInput) => {
+  const generateIntelligentResponse = (userInput) => {
     const input = userInput.toLowerCase();
     
-    // Verificar se usuário tem plano pago para respostas avançadas
-    const hasPaidPlan = user && user.plan && user.plan.includes('AGROCONNECT+');
-    
-    if (input.includes('cotação') || input.includes('preço') || input.includes('grãos')) {
-      if (hasPaidPlan) {
-        return '🔍 **ANÁLISE AVANÇADA (Plano AGROCONNECT+)**\n\n**Cotações em tempo real:**\n• Soja: R$ 180,50 (+1.8%) - Tendência de alta\n• Milho: R$ 85,30 (-0.3%) - Suporte em R$ 84,00\n• Café: R$ 1.250,00 (+2.5%) - Resistência em R$ 1.280,00\n\n**Análise técnica:**\n• Soja: Momentum positivo, alvo R$ 185,00\n• Milho: Consolidando, aguardar confirmação\n• Café: Breakout confirmado, próximo alvo R$ 1.300,00\n\n**Recomendação:** Manter posições em Soja e Café.';
-      } else {
-        return 'Aqui estão as cotações atuais dos principais grãos:\n\nSoja: R$ 180,50 (+1.8%)\nMilho: R$ 85,30 (-0.3%)\nCafé: R$ 1.250,00 (+2.5%)\n\n💡 **Upgrade para AGROCONNECT+** e receba análises técnicas avançadas, tendências e recomendações de trading!';
-      }
+    // Respostas baseadas em palavras-chave
+    if (input.includes('soja') || input.includes('soybean')) {
+      return 'A soja é uma das principais culturas do agronegócio brasileiro. Em 2024, a safra estimada é de 160 milhões de toneladas. Posso ajudar com informações sobre preços, mercado ou técnicas de cultivo.';
     }
     
-    if (input.includes('marketplace') || input.includes('loja') || input.includes('comprar')) {
-      if (hasPaidPlan) {
-        return '🛒 **MARKETPLACE PREMIUM (Plano AGROCONNECT+)**\n\n**Produtos em destaque:**\n• Soja Premium: R$ 185,00/kg (5% desconto)\n• Fertilizante NPK: R$ 89,90/saco\n• Sementes certificadas: R$ 45,90/kg\n\n**Análise de mercado:**\n• Preços 15% abaixo da média regional\n• Fornecedores verificados e certificados\n• Entrega em até 48h\n\n**Recomendação:** Comprar Soja Premium - melhor custo-benefício.';
-      } else {
-        return 'Nossa loja oferece:\n\n• Grãos certificados\n• Preços competitivos\n• Entrega segura\n• Pagamento flexível\n\n💡 **Upgrade para AGROCONNECT+** e receba análises de mercado, produtos em destaque e recomendações personalizadas!';
-      }
+    if (input.includes('milho') || input.includes('corn')) {
+      return 'O milho é fundamental para a produção de ração animal e etanol. Os preços estão em alta devido à forte demanda interna. Precisa de informações específicas sobre o mercado?';
     }
     
-    if (input.includes('cripto') || input.includes('defi') || input.includes('blockchain')) {
-      if (hasPaidPlan) {
-        return '₿ **DEFI AGRO PREMIUM (Plano AGROCONNECT+)**\n\n**Oportunidades atuais:**\n• Staking de grãos: APY 12-18%\n• NFTs de propriedades: Valorização 25%\n• Yield farming: Retorno médio 15%\n\n**Análise de risco:**\n• Baixo risco: Staking de grãos\n• Médio risco: NFTs agrícolas\n• Alto risco: Yield farming\n\n**Recomendação:** Começar com staking de grãos para baixo risco.';
-      } else {
-        return 'DeFi no agronegócio:\n\n• Staking de grãos\n• NFTs de propriedades\n• Smart contracts para contratos\n• Pagamentos em criptomoedas\n\n💡 **Upgrade para AGROCONNECT+** e receba análises de risco, oportunidades de investimento e estratégias de DeFi!';
-      }
+    if (input.includes('frete') || input.includes('transport')) {
+      return 'O AgroSync oferece o AgroConecta para conectar produtores com transportadores. Você pode anunciar fretes ou encontrar transportes disponíveis. Gostaria de saber mais sobre como usar?';
     }
     
-    if (input.includes('ibge') || input.includes('dados') || input.includes('estatísticas')) {
-      if (hasPaidPlan) {
-        return '📊 **DADOS IBGE PREMIUM (Plano AGROCONNECT+)**\n\n**Análise regional detalhada:**\n• Mato Grosso: Produção +8.5% vs ano anterior\n• Paraná: Área plantada +12.3%\n• Goiás: Produtividade +15.2%\n\n**Tendências identificadas:**\n• Migração para culturas de alto valor\n• Aumento da mecanização\n• Crescimento da agricultura de precisão\n\n**Previsões:** Manutenção da tendência de alta para 2024.';
-      } else {
-        return 'Dados do IBGE disponíveis:\n\n• Produção agrícola\n• Área plantada\n• Produtividade por região\n• Preços médios\n\n💡 **Upgrade para AGROCONNECT+** e receba análises regionais detalhadas, tendências e previsões de mercado!';
-      }
+    if (input.includes('pagamento') || input.includes('payment')) {
+      return 'Aceitamos pagamentos via cartão (Stripe) e criptomoedas (Metamask). Após o pagamento, você terá acesso completo aos dados privados da plataforma.';
     }
     
-    if (input.includes('pagamento') || input.includes('pagar') || input.includes('cartão')) {
-      return 'Formas de pagamento disponíveis:\n\n• Cartão de crédito/débito\n• PIX\n• Boleto bancário\n• Criptomoedas\n• Transferência bancária\n\n💡 **Upgrade para AGROCONNECT+** e receba descontos exclusivos e condições especiais de pagamento!';
+    if (input.includes('clima') || input.includes('weather')) {
+      return 'Na página inicial você encontra informações do clima em tempo real baseadas na sua localização. Os dados são atualizados constantemente via OpenWeather API.';
     }
     
-    if (hasPaidPlan) {
-      return '🚀 **ASSISTENTE PREMIUM ATIVO**\n\nPosso te ajudar com análises avançadas em:\n\n• **Cotações:** Análises técnicas e recomendações\n• **Marketplace:** Produtos em destaque e análises de mercado\n• **DeFi:** Oportunidades de investimento e análise de risco\n• **IBGE:** Dados regionais e tendências\n• **Pagamentos:** Condições especiais\n\nO que você gostaria de saber?';
+    if (input.includes('bolsa') || input.includes('stock')) {
+      return 'A bolsa agrícola na página inicial mostra cotações em tempo real de produtos como soja, milho, boi gordo e café. Os dados são atualizados a cada 30 segundos.';
+    }
+    
+    if (input.includes('ajuda') || input.includes('help')) {
+      return 'Posso ajudar com informações sobre produtos agrícolas, mercado, fretes, pagamentos, clima e muito mais. Basta perguntar!';
+    }
+
+    // Resposta padrão
+    return 'Interessante! No AgroSync, você pode encontrar informações sobre produtos agrícolas, conectar-se com transportadores, acompanhar o mercado e muito mais. Como posso ajudar especificamente?';
+  };
+
+  const toggleVoiceRecognition = () => {
+    if (!recognitionRef.current) {
+      alert('Reconhecimento de voz não suportado neste navegador.');
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
     } else {
-      return 'Interessante! Posso te ajudar com:\n\nCotações e análises\nMarketplace de grãos\nDeFi e criptomoedas\nDados do IBGE\nPagamentos\n\n💡 **Upgrade para AGROCONNECT+** e desbloqueie respostas avançadas, análises técnicas e recomendações personalizadas!';
+      recognitionRef.current.start();
+      setIsListening(true);
     }
+  };
+
+  const speakText = (text) => {
+    if (!synthesisRef.current || isMuted) return;
+
+    setIsSpeaking(true);
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = getLanguageCode(currentLanguage);
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+    
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+    
+    synthesisRef.current.speak(utterance);
+  };
+
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Por favor, selecione apenas arquivos de imagem.');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) { // 5MB
+      alert('A imagem deve ter menos de 5MB.');
+      return;
+    }
+
+    // Simular análise da imagem
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const imageMessage = {
+        id: Date.now(),
+        text: '📷 Imagem enviada para análise',
+        sender: 'user',
+        timestamp: new Date(),
+        image: reader.result
+      };
+
+      setMessages(prev => [...prev, imageMessage]);
+      setIsProcessing(true);
+
+      try {
+        // Simular análise da IA
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        const analysisResponse = analyzeImage(file);
+        
+        const botMessage = {
+          id: Date.now() + 1,
+          text: analysisResponse,
+          sender: 'bot',
+          timestamp: new Date()
+        };
+
+        setMessages(prev => [...prev, botMessage]);
+      } catch (error) {
+        console.error('Erro ao analisar imagem:', error);
+      } finally {
+        setIsProcessing(false);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const analyzeImage = (file) => {
+    // Simular análise de imagem (substituir por API real)
+    const responses = [
+      'Esta imagem mostra uma plantação saudável. Posso identificar sinais de boa irrigação e nutrição do solo.',
+      'Vejo que é uma imagem de equipamento agrícola. Parece estar em bom estado de conservação.',
+      'Esta imagem mostra um produto agrícola de boa qualidade. Recomendo verificar a classificação e embalagem.',
+      'Identifico uma área de pastagem bem manejada. A cobertura vegetal está adequada para o gado.'
+    ];
+    
+    return responses[Math.floor(Math.random() * responses.length)];
+  };
+
+  const changeLanguage = (newLanguage) => {
+    setCurrentLanguage(newLanguage);
+    i18n.changeLanguage(newLanguage);
+    
+    // Atualizar mensagem de boas-vindas
+    const welcomeMessage = {
+      id: Date.now(),
+      text: getWelcomeMessage(),
+      sender: 'bot',
+      timestamp: new Date()
+    };
+    setMessages([welcomeMessage]);
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage(inputValue);
+    if (e.key === 'Enter' && inputValue.trim()) {
+      handleSendMessage();
     }
   };
 
-  if (!isOpen) {
-    return (
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={toggleChatbot}
-        className={`fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full shadow-2xl transition-all duration-300 ${
-          isDark
-            ? 'bg-gradient-to-br from-cyan-400 to-purple-500 text-white'
-            : 'bg-gradient-to-br from-green-600 to-blue-600 text-white'
-        }`}
-        title="Abrir chatbot"
-      >
-        <span className="text-2xl">🤖</span>
-      </motion.button>
-    );
-  }
+  // Auto-scroll para última mensagem
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   return (
     <AnimatePresence>
@@ -332,6 +427,20 @@ const Chatbot = () => {
                 </div>
                 
                 <div className="flex items-center space-x-1">
+                  {/* Seletor de idioma */}
+                  <select
+                    value={currentLanguage}
+                    onChange={(e) => changeLanguage(e.target.value)}
+                    className={`p-1 rounded text-xs transition-colors ${
+                      isDark ? 'bg-gray-700 text-gray-300 border-gray-600' : 'bg-gray-200 text-gray-600 border-gray-300'
+                    }`}
+                  >
+                    <option value="pt">🇧🇷</option>
+                    <option value="en">🇺🇸</option>
+                    <option value="es">🇪🇸</option>
+                    <option value="zh">🇨🇳</option>
+                  </select>
+                  
                   <button
                     onClick={togglePersonalitySelector}
                     className={`p-1 rounded text-xs transition-colors ${
@@ -421,6 +530,15 @@ const Chatbot = () => {
                               ? 'bg-gray-800 text-white'
                               : 'bg-gray-100 text-gray-900')
                       }`}>
+                        {message.image && (
+                          <div className="mb-2">
+                            <img 
+                              src={message.image} 
+                              alt="Imagem enviada" 
+                              className="w-full max-w-xs rounded-lg"
+                            />
+                          </div>
+                        )}
                         <div className="text-sm whitespace-pre-line">{message.text}</div>
                         <div className={`text-xs mt-1 opacity-70 ${
                           message.sender === 'user' ? 'text-white' : (isDark ? 'text-gray-300' : 'text-gray-600')
@@ -467,6 +585,25 @@ const Chatbot = () => {
                   isDark ? 'border-gray-700' : 'border-gray-200'
                 }`}>
                   <div className="flex items-center space-x-2">
+                    {/* Upload de imagem */}
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className={`p-2 rounded-lg transition-colors duration-200 ${
+                        isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'
+                      }`}
+                      title="Enviar imagem"
+                    >
+                      📷
+                    </button>
+
+                    {/* Reconhecimento de voz */}
                     <button
                       onClick={toggleVoiceRecognition}
                       className={`p-2 rounded-lg transition-colors duration-200 ${
@@ -518,6 +655,7 @@ const Chatbot = () => {
                     }`}>
                       {isListening && <span>🎤 Gravando...</span>}
                       {isProcessing && <span>⚙️ Processando...</span>}
+                      {isSpeaking && <span>🔊 Falando...</span>}
                     </div>
                     <div className={`text-xs ${
                       isDark ? 'text-gray-400' : 'text-gray-600'

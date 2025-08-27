@@ -545,7 +545,7 @@ const AgroConecta = () => {
   return (
     <div className="min-h-screen bg-white text-slate-900">
       {/* Header com botão do painel secreto - DESIGN PREMIUM */}
-      <div className="bg-gradient-to-r from-slate-100 to-emerald-50 border-b-2 border-gradient-to-r from-emerald-600 to-blue-500">
+      <div className="bg-gradient-to-r from-slate-100 to-emerald-50 border-b-2 border-emerald-600">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <motion.h1 
