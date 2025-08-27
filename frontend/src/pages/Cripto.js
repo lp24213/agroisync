@@ -11,8 +11,11 @@ import {
   Target, Rocket, TrendingUp as TrendingUpIcon
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { cryptoService } from '../services/cryptoService';
-import { metamaskService } from '../services/metamaskService';
+import cryptoService from '../services/cryptoService';
+import metamaskService from '../services/metamaskService';
+import Web3Wallet from '../components/Web3Wallet';
+import DeFiOperations from '../components/DeFiOperations';
+import MarketAnalysis from '../components/MarketAnalysis';
 
 const Cripto = () => {
   const { t } = useTranslation();
@@ -50,6 +53,9 @@ const Cripto = () => {
   const [futuresType, setFuturesType] = useState('buy'); // 'buy', 'sell'
   const [futuresAmount, setFuturesAmount] = useState('');
   const [futuresLeverage, setFuturesLeverage] = useState(1);
+
+  // Estados para as novas funcionalidades de cripto
+  const [activeCryptoTab, setActiveCryptoTab] = useState('overview');
 
   useEffect(() => {
     fetchCryptoData();
@@ -362,6 +368,89 @@ const Cripto = () => {
             <p className="text-sm text-gray-600 dark:text-gray-400">Opere com alavancagem</p>
           </motion.button>
         </div>
+
+        {/* Nova Seção de Funcionalidades de Cripto */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="card-premium mb-8"
+        >
+          <div className="p-6">
+            <h2 className="title-premium text-2xl font-bold mb-6">Funcionalidades Avançadas de Cripto</h2>
+            
+            {/* Abas de Navegação */}
+            <div className="flex flex-wrap border-b border-gray-200 dark:border-gray-700 mb-6">
+              {[
+                { id: 'overview', label: 'Visão Geral', icon: Coins },
+                { id: 'wallet', label: 'Carteira Web3', icon: Wallet },
+                { id: 'defi', label: 'Operações DeFi', icon: TrendingUp },
+                { id: 'analysis', label: 'Análise de Mercado', icon: BarChart3 }
+              ].map((tab) => {
+                const Icon = tab.icon;
+                const isActive = activeCryptoTab === tab.id;
+                
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveCryptoTab(tab.id)}
+                    className={`flex items-center space-x-2 px-4 py-3 font-medium text-sm border-b-2 transition-colors ${
+                      isActive
+                        ? 'border-agro-green text-agro-green'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span>{tab.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Conteúdo das Abas */}
+            <div className="min-h-[400px]">
+              {activeCryptoTab === 'overview' && (
+                <div className="text-center py-12">
+                  <Coins className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                    Plataforma de Criptomoedas
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400 mb-6">
+                    Explore nossas funcionalidades avançadas de criptomoedas, DeFi e análise de mercado
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                      <Wallet className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+                      <h4 className="font-medium text-gray-900 dark:text-white">Carteira Web3</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Conecte e gerencie sua carteira Metamask</p>
+                    </div>
+                    <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                      <TrendingUp className="w-8 h-8 text-green-600 mx-auto mb-2" />
+                      <h4 className="font-medium text-gray-900 dark:text-white">Operações DeFi</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Compra, venda e staking de criptomoedas</p>
+                    </div>
+                    <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                      <BarChart3 className="w-8 h-8 text-purple-600 mx-auto mb-2" />
+                      <h4 className="font-medium text-gray-900 dark:text-white">Análise de Mercado</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Indicadores técnicos e análise fundamental</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeCryptoTab === 'wallet' && (
+                <Web3Wallet />
+              )}
+
+              {activeCryptoTab === 'defi' && (
+                <DeFiOperations />
+              )}
+
+              {activeCryptoTab === 'analysis' && (
+                <MarketAnalysis />
+              )}
+            </div>
+          </div>
+        </motion.div>
 
         {/* Cotações em Tempo Real */}
         <motion.div
