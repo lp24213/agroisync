@@ -289,17 +289,19 @@ const Home = () => {
         
         // Formatar dados para o formato da aplicação
         const formattedWeather = {
-          temperature: Math.round(data.main.temp),
-          feelsLike: Math.round(data.main.feels_like),
-          humidity: data.main.humidity,
-          windSpeed: Math.round(data.wind.speed * 3.6), // m/s para km/h
-          description: data.weather[0].description,
+          temperature: parseFloat(data.main.temp).toFixed(1),
+          feelsLike: parseFloat(data.main.feels_like).toFixed(1),
+          humidity: Math.round(data.main.humidity),
+          windSpeed: parseFloat((data.wind.speed * 3.6)).toFixed(1), // m/s para km/h
+          description: data.weather[0].description.length > 20 ? 
+            data.weather[0].description.substring(0, 20) + '...' : 
+            data.weather[0].description,
           icon: data.weather[0].icon,
           city: data.name,
           country: data.sys.country,
           lastUpdate: new Date(),
-          pressure: data.main.pressure,
-          visibility: data.visibility / 1000 // metros para km
+          pressure: Math.round(data.main.pressure),
+          visibility: parseFloat((data.visibility / 1000)).toFixed(1) // metros para km
         };
         
         setWeatherData(formattedWeather);
@@ -314,17 +316,17 @@ const Home = () => {
       
       // Fallback: dados simulados baseados na localização
       const fallbackWeather = {
-        temperature: 25 + (Math.random() - 0.5) * 10,
-        feelsLike: 27 + (Math.random() - 0.5) * 8,
-        humidity: 65 + (Math.random() - 0.5) * 20,
-        windSpeed: 12 + (Math.random() - 0.5) * 8,
+        temperature: parseFloat(25 + (Math.random() - 0.5) * 10).toFixed(1),
+        feelsLike: parseFloat(27 + (Math.random() - 0.5) * 8).toFixed(1),
+        humidity: Math.round(65 + (Math.random() - 0.5) * 20),
+        windSpeed: parseFloat(12 + (Math.random() - 0.5) * 8).toFixed(1),
         description: 'céu limpo',
         icon: '01d',
         city: userLocation?.city || 'Sinop',
         country: userLocation?.country || 'BR',
         lastUpdate: new Date(),
-        pressure: 1013 + (Math.random() - 0.5) * 20,
-        visibility: 10 + (Math.random() - 0.5) * 5
+        pressure: Math.round(1013 + (Math.random() - 0.5) * 20),
+        visibility: parseFloat(10 + (Math.random() - 0.5) * 5).toFixed(1)
       };
       
       setWeatherData(fallbackWeather);
@@ -814,40 +816,40 @@ const Home = () => {
               
               {weatherData ? (
                 <div className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="text-lg font-semibold text-slate-800">{weatherData.city}</h4>
-                      <p className="text-slate-600 capitalize">{weatherData.description}</p>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-lg font-semibold text-slate-800 truncate">{weatherData.city}</h4>
+                      <p className="text-slate-600 capitalize text-sm truncate">{weatherData.description}</p>
                     </div>
-                    <div className="text-6xl font-bold text-slate-800">
+                    <div className="text-5xl font-bold text-slate-800 ml-4 flex-shrink-0">
                       {weatherData.temperature}°C
                     </div>
                   </div>
                   
-                  <div className="flex items-center justify-center text-slate-600 mb-4">
+                  <div className="flex items-center justify-center text-slate-600 mb-6">
                     {getWeatherIcon(weatherData.icon)}
                   </div>
                   
-                  <div className="grid grid-cols-3 gap-4 pt-4 border-t border-slate-200">
+                  <div className="grid grid-cols-3 gap-6 pt-4 border-t border-slate-200">
                     <div className="text-center">
                       <div className="flex items-center justify-center mb-2">
                         <Thermometer className="w-5 h-5 text-slate-600" />
                       </div>
-                      <p className="text-sm text-slate-600">{t('common.settings')}</p>
+                      <p className="text-xs text-slate-600 mb-1">Sensação</p>
                       <p className="text-lg font-semibold text-slate-800">{weatherData.feelsLike}°C</p>
                     </div>
                     <div className="text-center">
                       <div className="flex items-center justify-center mb-2">
                         <Droplets className="w-5 h-5 text-slate-600" />
                       </div>
-                      <p className="text-sm text-slate-600">{t('common.humidity')}</p>
+                      <p className="text-xs text-slate-600 mb-1">Umidade</p>
                       <p className="text-lg font-semibold text-slate-800">{weatherData.humidity}%</p>
                     </div>
                     <div className="text-center">
                       <div className="flex items-center justify-center mb-2">
                         <Wind className="w-5 h-5 text-slate-600" />
                       </div>
-                      <p className="text-sm text-slate-600">{t('common.wind')}</p>
+                      <p className="text-xs text-slate-600 mb-1">Vento</p>
                       <p className="text-lg font-semibold text-slate-800">{weatherData.windSpeed} km/h</p>
                     </div>
                   </div>

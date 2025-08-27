@@ -49,25 +49,29 @@ const Cripto = () => {
       
       if (response.ok) {
         const data = await response.json();
-        setCryptoData(data);
         
-        // Buscar dados do gráfico para Bitcoin por padrão
-        if (data.length > 0) {
+        // Verificar se os dados são válidos
+        if (data && Array.isArray(data) && data.length > 0) {
+          setCryptoData(data);
+          setError(''); // Limpar qualquer erro anterior
+          
+          // Buscar dados do gráfico para Bitcoin por padrão
           fetchChartData('bitcoin');
+        } else {
+          throw new Error('Dados inválidos recebidos da API');
         }
       } else {
-        throw new Error('Erro na API CoinGecko');
+        throw new Error(`Erro HTTP: ${response.status}`);
       }
       
     } catch (error) {
       console.error('Erro ao buscar dados:', error);
       
-      // Em caso de erro, tentar novamente em 5 segundos
-      setTimeout(() => {
-        fetchCryptoData();
-      }, 5000);
+      // Definir erro claro para o usuário
+      setError('Não foi possível carregar os dados. Tente novamente.');
       
-      setError('Erro de conexão. Tentando novamente...');
+      // Limpar dados antigos em caso de erro
+      setCryptoData([]);
     } finally {
       setLoading(false);
     }
@@ -86,21 +90,26 @@ const Cripto = () => {
       if (response.ok) {
         const data = await response.json();
         
-        // Formatar dados para o gráfico
-        const formattedChartData = data.prices.map(([timestamp, price]) => ({
-          date: new Date(timestamp),
-          price: price
-        }));
-        
-        setChartData(formattedChartData);
+        // Verificar se os dados são válidos
+        if (data && data.prices && Array.isArray(data.prices) && data.prices.length > 0) {
+          // Formatar dados para o gráfico
+          const formattedChartData = data.prices.map(([timestamp, price]) => ({
+            date: new Date(timestamp),
+            price: parseFloat(price) || 0
+          }));
+          
+          setChartData(formattedChartData);
+        } else {
+          throw new Error('Dados do gráfico inválidos');
+        }
       } else {
-        throw new Error('Erro ao buscar dados do gráfico');
+        throw new Error(`Erro HTTP: ${response.status}`);
       }
       
     } catch (error) {
       console.error('Erro ao buscar dados do gráfico:', error);
       
-      // Em caso de erro, tentar novamente
+      // Em caso de erro, limpar dados do gráfico
       setChartData(null);
     } finally {
       setChartLoading(false);
