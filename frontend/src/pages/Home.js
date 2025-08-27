@@ -505,8 +505,8 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-white text-slate-900">
       
-      {/* Bolsa de Valores - TICKER FINO ABAIXO DO MENU */}
-      <section className="py-2 px-4 bg-gradient-to-r from-slate-50 via-white to-blue-50 border-b border-slate-200">
+      {/* Bolsa de Valores - TICKER PREMIUM ABAIXO DO MENU */}
+      <section className="py-3 px-6 bg-gradient-to-r from-slate-50 via-white to-blue-50 border-b-2 border-gradient-to-r from-agro-green to-tech-blue">
         <div className="max-w-7xl mx-auto">
           {/* Ticker horizontal fino com rolagem suave */}
           <motion.div
@@ -523,8 +523,8 @@ const Home = () => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.05 }}
-                    whileHover={{ scale: 1.02 }}
-                    className="flex items-center space-x-3 bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200 hover:shadow-md transition-all duration-200 min-w-[180px]"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    className="flex items-center space-x-3 bg-white px-4 py-3 rounded-xl shadow-md border border-slate-200 hover:shadow-lg transition-all duration-300 min-w-[180px] card-premium"
                   >
                     <div className="text-sm font-bold text-slate-800">
                       {stock.symbol}
@@ -561,8 +561,8 @@ const Home = () => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: (index + stockData.length) * 0.05 }}
-                    whileHover={{ scale: 1.02 }}
-                    className="flex items-center space-x-3 bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200 hover:shadow-md transition-all duration-200 min-w-[180px]"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    className="flex items-center space-x-3 bg-white px-4 py-2 rounded-lg shadow-md border border-slate-200 hover:shadow-lg transition-all duration-300 min-w-[180px] card-premium"
                   >
                     <div className="text-sm font-bold text-slate-800">
                       {stock.symbol}
@@ -617,27 +617,30 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Hero Section - Animações reforçadas */}
-      <section className="relative pt-20 pb-20 px-4 overflow-hidden">
-        {/* Background */}
+      {/* Hero Section - DESIGN PREMIUM AGROISYNC MAIORAL */}
+      <section className="relative pt-24 pb-24 px-4 overflow-hidden">
+        {/* Background Premium */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-blue-50">
             <div className="absolute inset-0 bg-white opacity-95"></div>
           </div>
+          {/* Elementos decorativos premium */}
+          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-agro-green to-tech-green rounded-full opacity-10 blur-xl"></div>
+          <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-agro-gold to-tech-blue rounded-full opacity-10 blur-xl"></div>
         </div>
         
         <div className="max-w-6xl mx-auto text-center relative z-10">
-          {/* Main Title - Animação reforçada */}
+          {/* Main Title - Premium com gradiente */}
           <motion.h1
             initial={{ opacity: 0, y: 30, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 1, ease: "easeOut" }}
-            className="text-5xl md:text-7xl font-bold mb-6 text-slate-800"
+            className="text-5xl md:text-7xl font-bold mb-6 text-gradient-agro"
           >
             {t('home.hero.title')}
           </motion.h1>
           
-          {/* Subtitle - Animação reforçada */}
+          {/* Subtitle - Premium */}
           <motion.p
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -647,28 +650,28 @@ const Home = () => {
             {t('home.hero.subtitle')}
           </motion.p>
           
-          {/* Description - Animação reforçada */}
+          {/* Description - Premium */}
           <motion.p
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
-            className="text-lg max-w-3xl mx-auto text-slate-500 mb-8"
+            className="text-lg max-w-3xl mx-auto text-slate-500 mb-10"
           >
             {t('home.hero.description')}
           </motion.p>
           
-          {/* CTA Buttons - Animação reforçada */}
+          {/* CTA Buttons - Premium */}
           <motion.div
             initial={{ opacity: 0, y: 30, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 1, delay: 0.6, ease: "easeOut" }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
+            className="flex flex-col sm:flex-row gap-6 justify-center"
           >
             <motion.button
               onClick={() => navigate('/cadastro')}
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 bg-slate-600 text-white font-bold rounded-xl hover:bg-slate-700 transition-colors duration-300"
+              className="btn-premium px-10 py-5 text-lg"
             >
               {t('home.hero.cta.primary')}
             </motion.button>
@@ -676,7 +679,7 @@ const Home = () => {
               onClick={() => navigate('/sobre')}
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 bg-transparent border-2 border-slate-600 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition-colors duration-300"
+              className="btn-premium-secondary px-10 py-5 text-lg"
             >
               {t('home.hero.cta.secondary')}
             </motion.button>
@@ -684,16 +687,16 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 px-4">
+      {/* Features Section - DESIGN PREMIUM */}
+      <section className="py-24 px-4 bg-gradient-to-br from-slate-50 to-white">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-16"
+            className="text-center mb-20"
           >
-            <h2 className="text-4xl font-bold text-slate-800 mb-4">
+            <h2 className="text-4xl font-bold text-gradient-agro mb-6">
               {t('home.features.title')}
             </h2>
             <p className="text-xl text-slate-600 max-w-3xl mx-auto">
