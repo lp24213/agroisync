@@ -8,7 +8,8 @@ import {
   Shield, Zap, Globe, BarChart3, PieChart,
   Lock, Unlock, Eye, EyeOff, Copy, FileText,
   Wallet, Send, Download, History, Star,
-  Target, Rocket, TrendingUp as TrendingUpIcon
+  Target, Rocket, TrendingUp as TrendingUpIcon,
+  Bell
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import cryptoService from '../services/cryptoService';
@@ -17,6 +18,7 @@ import Web3Wallet from '../components/Web3Wallet';
 import DeFiOperations from '../components/DeFiOperations';
 import MarketAnalysis from '../components/MarketAnalysis';
 import CryptoDashboard from '../components/CryptoDashboard';
+import PriceAlerts from '../components/PriceAlerts';
 
 const Cripto = () => {
   const { t } = useTranslation();
@@ -386,7 +388,8 @@ const Cripto = () => {
                 { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
                 { id: 'wallet', label: 'Carteira Web3', icon: Wallet },
                 { id: 'defi', label: 'Operações DeFi', icon: TrendingUp },
-                { id: 'analysis', label: 'Análise de Mercado', icon: BarChart3 }
+                { id: 'analysis', label: 'Análise de Mercado', icon: BarChart3 },
+                { id: 'alerts', label: 'Alertas', icon: Bell }
               ].map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeCryptoTab === tab.id;
@@ -419,7 +422,7 @@ const Cripto = () => {
                   <p className="text-gray-600 dark:text-gray-400 mb-6">
                     Explore nossas funcionalidades avançadas de criptomoedas, DeFi e análise de mercado
                   </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                     <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                       <BarChart3 className="w-8 h-8 text-blue-600 mx-auto mb-2" />
                       <h4 className="font-medium text-gray-900 dark:text-white">Dashboard</h4>
@@ -440,6 +443,11 @@ const Cripto = () => {
                       <h4 className="font-medium text-gray-900 dark:text-white">Análise de Mercado</h4>
                       <p className="text-sm text-gray-600 dark:text-gray-400">Indicadores técnicos e análise fundamental</p>
                     </div>
+                    <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                      <Bell className="w-8 h-8 text-red-600 mx-auto mb-2" />
+                      <h4 className="font-medium text-gray-900 dark:text-white">Alertas de Preço</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Configure notificações para movimentos de preço</p>
+                    </div>
                   </div>
                 </div>
               )}
@@ -458,6 +466,10 @@ const Cripto = () => {
 
               {activeCryptoTab === 'analysis' && (
                 <MarketAnalysis />
+              )}
+
+              {activeCryptoTab === 'alerts' && (
+                <PriceAlerts />
               )}
             </div>
           </div>
