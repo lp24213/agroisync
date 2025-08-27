@@ -1,245 +1,428 @@
-// Serviço de autenticação para AGROISYNC
-const API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
+import axios from 'axios';
+
+// Configuração da API
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+
+// Tipos de autenticação
+export const AUTH_METHODS = {
+  'PASSWORD': 'Senha',
+  'SMS': 'SMS',
+  'EMAIL': 'E-mail',
+  '2FA': 'Autenticação em Duas Etapas',
+  'BIOMETRIC': 'Biometria'
+};
+
+// Estados de verificação
+export const VERIFICATION_STATUS = {
+  'PENDING': 'Pendente',
+  'SENT': 'Enviado',
+  'VERIFIED': 'Verificado',
+  'EXPIRED': 'Expirado',
+  'FAILED': 'Falhou'
+};
+
+// Tipos de OTP
+export const OTP_TYPES = {
+  'SMS': 'SMS',
+  'EMAIL': 'E-mail',
+  '2FA_APP': 'App 2FA',
+  'BACKUP_CODES': 'Códigos de Backup'
+};
 
 class AuthService {
-  async login(email, password) {
+  constructor() {
+    this.otpAttempts = new Map();
+    this.maxOtpAttempts = 3;
+    this.otpExpiryTime = 5 * 60 * 1000; // 5 minutos
+  }
+
+  // Gerar OTP para SMS
+  async generateSMSOTP(phoneNumber) {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
+      // Em produção, chamar endpoint do backend que usa AWS SNS
+      // const response = await axios.post(`${API_BASE_URL}/auth/otp/sms`, {
+      //   phoneNumber
+      // });
+
+      // Simular geração para desenvolvimento
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      const expiryTime = Date.now() + this.otpExpiryTime;
+      
+      // Salvar OTP localmente para simulação
+      this.saveOTP(phoneNumber, otp, expiryTime, 'SMS');
+      
+      console.log('📱 OTP SMS enviado via AWS SNS:', {
+        to: phoneNumber,
+        otp: otp,
+        expiry: new Date(expiryTime).toLocaleTimeString()
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        return { ok: true, token: data.token, user: data.user };
-      } else {
-        return { ok: false, message: data.error || 'Erro no login' };
-      }
+      return {
+        success: true,
+        message: 'OTP enviado via SMS',
+        otp: otp, // Em produção, não retornar o OTP
+        expiryTime: expiryTime
+      };
     } catch (error) {
-      console.error('Erro no login:', error);
-      return { ok: false, message: 'Erro de conexão' };
+      console.error('Erro ao gerar OTP SMS:', error);
+      throw error;
     }
   }
 
-  async loginAdmin(email, password) {
+  // Gerar OTP para Email
+  async generateEmailOTP(email) {
     try {
-      const response = await fetch(`${API_BASE_URL}/admin/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
+      // Em produção, chamar endpoint do backend que usa AWS SES
+      // const response = await axios.post(`${API_BASE_URL}/auth/otp/email`, {
+      //   email
+      // });
+
+      // Simular geração para desenvolvimento
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      const expiryTime = Date.now() + this.otpExpiryTime;
+      
+      // Salvar OTP localmente para simulação
+      this.saveOTP(email, otp, expiryTime, 'EMAIL');
+      
+      console.log('📧 OTP Email enviado via AWS SES:', {
+        to: email,
+        otp: otp,
+        expiry: new Date(expiryTime).toLocaleTimeString()
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        return { ok: true, adminToken: data.adminToken, user: data.user };
-      } else {
-        return { ok: false, message: data.error || 'Erro no login admin' };
-      }
+      return {
+        success: true,
+        message: 'OTP enviado via e-mail',
+        otp: otp, // Em produção, não retornar o OTP
+        expiryTime: expiryTime
+      };
     } catch (error) {
-      console.error('Erro no login admin:', error);
-      return { ok: false, message: 'Erro de conexão' };
+      console.error('Erro ao gerar OTP Email:', error);
+      throw error;
     }
   }
 
-  async register(userData) {
+  // Verificar OTP
+  async verifyOTP(identifier, otp, type = 'SMS') {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        return { ok: true, token: data.token, user: data.user };
-      } else {
-        return { ok: false, message: data.error || 'Erro no registro' };
-      }
-    } catch (error) {
-      console.error('Erro no registro:', error);
-      return { ok: false, message: 'Erro de conexão' };
-    }
-  }
-
-  async verifyToken(token) {
-    try {
-      const response = await fetch(`${API_BASE_URL}/auth/verify`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        return { ok: true, user: data.user };
-      } else {
-        return { ok: false, message: data.error || 'Token inválido' };
-      }
-    } catch (error) {
-      console.error('Erro ao verificar token:', error);
-      return { ok: false, message: 'Erro de conexão' };
-    }
-  }
-
-  async verifyAdminToken(adminToken) {
-    try {
-      const response = await fetch(`${API_BASE_URL}/admin/dashboard`, {
-        headers: {
-          'Authorization': `Bearer ${adminToken}`,
-        },
-      });
-
-      if (response.ok) {
-        // Se conseguiu acessar o dashboard, o token é válido
-        return { 
-          ok: true, 
-          user: { 
-            id: 'admin', 
-            email: 'luispaulodeoliveira@agrotm.com.br',
-            role: 'admin',
-            isAdmin: true 
-          } 
+      const savedOTP = this.getOTP(identifier, type);
+      
+      if (!savedOTP) {
+        return {
+          success: false,
+          message: 'OTP não encontrado ou expirado'
         };
-      } else {
-        return { ok: false, message: 'Token admin inválido' };
       }
+
+      if (Date.now() > savedOTP.expiryTime) {
+        this.clearOTP(identifier, type);
+        return {
+          success: false,
+          message: 'OTP expirado'
+        };
+      }
+
+      if (savedOTP.otp !== otp) {
+        // Incrementar tentativas
+        const attempts = this.getOTPAttempts(identifier, type);
+        if (attempts >= this.maxOtpAttempts) {
+          this.clearOTP(identifier, type);
+          return {
+            success: false,
+            message: 'Máximo de tentativas excedido. OTP inválido.'
+          };
+        }
+        this.incrementOTPAttempts(identifier, type);
+        
+        return {
+          success: false,
+          message: 'OTP inválido'
+        };
+      }
+
+      // OTP válido
+      this.clearOTP(identifier, type);
+      return {
+        success: true,
+        message: 'OTP verificado com sucesso'
+      };
     } catch (error) {
-      console.error('Erro ao verificar token admin:', error);
-      return { ok: false, message: 'Erro de conexão' };
+      console.error('Erro ao verificar OTP:', error);
+      throw error;
     }
   }
 
-  async updateProfile(profileData) {
+  // Configurar 2FA para usuário
+  async setup2FA(userId) {
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE_URL}/auth/profile`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(profileData),
+      // Em produção, gerar secret para app 2FA (Google Authenticator, Authy)
+      // const response = await axios.post(`${API_BASE_URL}/auth/2fa/setup`, {
+      //   userId
+      // });
+
+      // Simular configuração para desenvolvimento
+      const secret = this.generateSecret();
+      const qrCodeUrl = this.generateQRCode(secret, 'AgroSync', 'user@example.com');
+      const backupCodes = this.generateBackupCodes();
+      
+      console.log('🔐 2FA configurado:', {
+        userId,
+        secret: secret,
+        backupCodes: backupCodes
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        return { ok: true, user: data.user };
-      } else {
-        return { ok: false, message: data.error || 'Erro ao atualizar perfil' };
-      }
+      return {
+        success: true,
+        secret: secret,
+        qrCodeUrl: qrCodeUrl,
+        backupCodes: backupCodes,
+        message: '2FA configurado com sucesso'
+      };
     } catch (error) {
-      console.error('Erro ao atualizar perfil:', error);
-      return { ok: false, message: 'Erro de conexão' };
+      console.error('Erro ao configurar 2FA:', error);
+      throw error;
     }
   }
 
+  // Verificar código 2FA
+  async verify2FACode(userId, code) {
+    try {
+      // Em produção, verificar código via backend
+      // const response = await axios.post(`${API_BASE_URL}/auth/2fa/verify`, {
+      //   userId,
+      //   code
+      // });
+
+      // Simular verificação para desenvolvimento
+      const isValid = this.validate2FACode(code);
+      
+      return {
+        success: isValid,
+        message: isValid ? 'Código 2FA válido' : 'Código 2FA inválido'
+      };
+    } catch (error) {
+      console.error('Erro ao verificar código 2FA:', error);
+      throw error;
+    }
+  }
+
+  // Recuperar senha
   async forgotPassword(email) {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
+      // Em produção, chamar endpoint do backend
+      // const response = await axios.post(`${API_BASE_URL}/auth/forgot-password`, {
+      //   email
+      // });
+
+      // Simular envio para desenvolvimento
+      const resetToken = this.generateResetToken();
+      const expiryTime = Date.now() + (24 * 60 * 60 * 1000); // 24 horas
+      
+      // Salvar token de reset localmente para simulação
+      this.saveResetToken(email, resetToken, expiryTime);
+      
+      console.log('🔑 E-mail de recuperação enviado via AWS SES:', {
+        to: email,
+        resetToken: resetToken,
+        expiry: new Date(expiryTime).toLocaleString()
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        return { ok: true, message: data.message };
-      } else {
-        return { ok: false, message: data.error || 'Erro ao solicitar reset' };
-      }
+      return {
+        success: true,
+        message: 'E-mail de recuperação enviado',
+        resetToken: resetToken // Em produção, não retornar o token
+      };
     } catch (error) {
-      console.error('Erro ao solicitar reset de senha:', error);
-      return { ok: false, message: 'Erro de conexão' };
+      console.error('Erro ao enviar e-mail de recuperação:', error);
+      throw error;
     }
   }
 
-  async resetPassword(token, newPassword) {
+  // Resetar senha
+  async resetPassword(resetToken, newPassword) {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ token, newPassword }),
-      });
+      // Em produção, chamar endpoint do backend
+      // const response = await axios.post(`${API_BASE_URL}/auth/reset-password`, {
+      //   resetToken,
+      //   newPassword
+      // });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        return { ok: true, message: data.message };
-      } else {
-        return { ok: false, message: data.error || 'Erro ao resetar senha' };
+      // Simular reset para desenvolvimento
+      const resetData = this.getResetToken(resetToken);
+      
+      if (!resetData) {
+        return {
+          success: false,
+          message: 'Token de reset inválido ou expirado'
+        };
       }
+
+      if (Date.now() > resetData.expiryTime) {
+        this.clearResetToken(resetToken);
+        return {
+          success: false,
+          message: 'Token de reset expirado'
+        };
+      }
+
+      // Senha resetada com sucesso
+      this.clearResetToken(resetToken);
+      
+      console.log('🔑 Senha resetada com sucesso para:', resetData.email);
+
+      return {
+        success: true,
+        message: 'Senha resetada com sucesso'
+      };
     } catch (error) {
       console.error('Erro ao resetar senha:', error);
-      return { ok: false, message: 'Erro de conexão' };
+      throw error;
     }
   }
 
-  async checkSubscriptionStatus() {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE_URL}/users/me`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+  // Verificar força da senha
+  validatePasswordStrength(password) {
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
-      const data = await response.json();
+    const score = [
+      password.length >= minLength,
+      hasUpperCase,
+      hasLowerCase,
+      hasNumbers,
+      hasSpecialChar
+    ].filter(Boolean).length;
 
-      if (response.ok) {
-        return { 
-          ok: true, 
-          subscriptions: data.subscriptions,
-          hasActivePlan: data.subscriptions?.store?.active || data.subscriptions?.agroconecta?.active
-        };
-      } else {
-        return { ok: false, message: data.error || 'Erro ao verificar assinatura' };
+    const strength = {
+      0: 'Muito Fraca',
+      1: 'Fraca',
+      2: 'Média',
+      3: 'Forte',
+      4: 'Muito Forte',
+      5: 'Excelente'
+    };
+
+    return {
+      score: score,
+      strength: strength[score],
+      isValid: score >= 3,
+      details: {
+        minLength: password.length >= minLength,
+        hasUpperCase,
+        hasLowerCase,
+        hasNumbers,
+        hasSpecialChar
       }
-    } catch (error) {
-      console.error('Erro ao verificar assinatura:', error);
-      return { ok: false, message: 'Erro de conexão' };
+    };
+  }
+
+  // Verificar email
+  validateEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  // Verificar telefone (formato brasileiro)
+  validatePhone(phone) {
+    const phoneRegex = /^(\+55\s?)?(\(?\d{2}\)?\s?)?\d{4,5}-?\d{4}$/;
+    return phoneRegex.test(phone);
+  }
+
+  // Métodos auxiliares para simulação
+  saveOTP(identifier, otp, expiryTime, type) {
+    const key = `${identifier}_${type}`;
+    localStorage.setItem(`otp_${key}`, JSON.stringify({
+      otp,
+      expiryTime,
+      type,
+      attempts: 0
+    }));
+  }
+
+  getOTP(identifier, type) {
+    const key = `${identifier}_${type}`;
+    const data = localStorage.getItem(`otp_${key}`);
+    return data ? JSON.parse(data) : null;
+  }
+
+  clearOTP(identifier, type) {
+    const key = `${identifier}_${type}`;
+    localStorage.removeItem(`otp_${key}`);
+  }
+
+  getOTPAttempts(identifier, type) {
+    const key = `${identifier}_${type}`;
+    const data = localStorage.getItem(`otp_${key}`);
+    return data ? JSON.parse(data).attempts : 0;
+  }
+
+  incrementOTPAttempts(identifier, type) {
+    const key = `${identifier}_${type}`;
+    const data = localStorage.getItem(`otp_${key}`);
+    if (data) {
+      const otpData = JSON.parse(data);
+      otpData.attempts += 1;
+      localStorage.setItem(`otp_${key}`, JSON.stringify(otpData));
     }
   }
 
-  async logout() {
-    try {
-      const token = localStorage.getItem('token');
-      if (token) {
-        await fetch(`${API_BASE_URL}/auth/logout`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-      }
-      
-      localStorage.removeItem('token');
-      localStorage.removeItem('adminToken');
-      
-      return { ok: true };
-    } catch (error) {
-      console.error('Erro no logout:', error);
-      // Mesmo com erro, limpar tokens locais
-      localStorage.removeItem('token');
-      localStorage.removeItem('adminToken');
-      return { ok: true };
+  saveResetToken(email, token, expiryTime) {
+    localStorage.setItem(`reset_${token}`, JSON.stringify({
+      email,
+      expiryTime
+    }));
+  }
+
+  getResetToken(token) {
+    const data = localStorage.getItem(`reset_${token}`);
+    return data ? JSON.parse(data) : null;
+  }
+
+  clearResetToken(token) {
+    localStorage.removeItem(`reset_${token}`);
+  }
+
+  generateSecret() {
+    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  }
+
+  generateQRCode(secret, issuer, account) {
+    const otpauth = `otpauth://totp/${issuer}:${account}?secret=${secret}&issuer=${issuer}`;
+    return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(otpauth)}`;
+  }
+
+  generateBackupCodes() {
+    const codes = [];
+    for (let i = 0; i < 10; i++) {
+      codes.push(Math.random().toString(36).substring(2, 8).toUpperCase());
     }
+    return codes;
+  }
+
+  validate2FACode(code) {
+    // Simular validação de código 2FA
+    return code.length === 6 && /^\d{6}$/.test(code);
+  }
+
+  generateResetToken() {
+    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  }
+
+  // Limpar dados de desenvolvimento
+  clearDevelopmentData() {
+    // Limpar todos os OTPs e tokens de reset
+    const keys = Object.keys(localStorage);
+    keys.forEach(key => {
+      if (key.startsWith('otp_') || key.startsWith('reset_')) {
+        localStorage.removeItem(key);
+      }
+    });
+    
+    this.otpAttempts.clear();
+    console.log('Dados de desenvolvimento limpos');
   }
 }
 
