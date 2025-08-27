@@ -11,6 +11,8 @@ import {
 } from 'lucide-react';
 import FreightCard from '../components/FreightCard';
 import FreightFilters from '../components/FreightFilters';
+import freightService, { TRUCK_TYPES, CARGO_TYPES, FREIGHT_STATUS } from '../services/freightService';
+import transactionService from '../services/transactionService';
 
 const AgroConecta = () => {
   const { user, isAdmin, loading } = useAuth();
@@ -75,71 +77,55 @@ const AgroConecta = () => {
 
   const loadUserData = async () => {
     try {
-      // Simular carregamento de dados do usuário
-      const mockUserData = {
-        profile: {
-          name: user?.name || 'Usuário',
-          email: user?.email || 'usuario@email.com',
-          phone: '(11) 99999-9999',
-          vehicle: 'Truck 3/4 - ABC-1234',
-          plan: 'Premium',
-          rating: 4.8,
-          reviews: 127
-        },
-        freights: [
-          {
-            id: 1,
-            origin: 'São Paulo, SP',
-            destination: 'Rio de Janeiro, RJ',
-            weight: '5.000 kg',
-            price: 850.00,
-            date: '2024-01-15',
-            status: 'available',
-            truckType: 'truck_3_4'
-          },
-          {
-            id: 2,
-            origin: 'Campinas, SP',
-            destination: 'Curitiba, PR',
-            weight: '3.500 kg',
-            price: 650.00,
-            date: '2024-01-20',
-            status: 'in_progress',
-            truckType: 'truck_toco'
-          }
-        ],
-        messages: [
-          {
-            id: 1,
-            from: 'João Silva',
-            subject: 'Interesse no frete SP-RJ',
-            date: '2024-01-10',
-            unread: true
-          },
-          {
-            id: 2,
-            from: 'Maria Santos',
-            subject: 'Proposta para frete Campinas',
-            date: '2024-01-08',
-            unread: false
-          }
-        ],
-        history: [
-          {
-            id: 1,
-            description: 'Frete SP-RJ concluído com sucesso'
-          },
-          {
-            id: 2,
-            description: 'Novo frete cadastrado para Campinas'
-          }
-        ]
-      };
+      if (!user?.id) return;
 
-      setUserProfile(mockUserData.profile);
-      setUserFreights(mockUserData.freights);
-      setUserMessages(mockUserData.messages);
-      setUserHistory(mockUserData.history);
+      // Carregar fretes do usuário usando o serviço
+      const userFreightsData = await freightService.getUserFreights(user.id, 'posted');
+      setUserFreights(userFreightsData);
+
+      // Carregar fretes onde o usuário se candidatou
+      const appliedFreights = await freightService.getUserFreights(user.id, 'applied');
+      
+      // Carregar transações do usuário
+      const userTransactions = await transactionService.getUserTransactions(user.id);
+      const freightTransactions = userTransactions.filter(txn => txn.type === 'FREIGHT');
+      
+      // Carregar mensagens das transações
+      const allMessages = [];
+      for (const txn of freightTransactions) {
+        const messages = await transactionService.getTransactionMessages(txn.id);
+        allMessages.push(...messages.map(msg => ({ 
+          ...msg, 
+          transactionId: txn.id,
+          from: txn.buyerId === user.id ? 'Comprador' : 'Anunciante'
+        })));
+      }
+      setUserMessages(allMessages);
+
+      // Carregar histórico (transações completadas)
+      const completedTransactions = freightTransactions.filter(txn => 
+        txn.status === 'COMPLETED'
+      );
+      setUserHistory(completedTransactions.map(txn => ({
+        id: txn.id,
+        origin: txn.shipping?.origin || 'N/A',
+        destination: txn.shipping?.destination || 'N/A',
+        date: txn.updatedAt,
+        status: txn.status,
+        earnings: txn.total
+      })));
+
+      // Perfil do usuário
+      setUserProfile({
+        name: user?.name || 'Usuário',
+        email: user?.email || 'usuario@email.com',
+        phone: '(11) 99999-9999',
+        vehicle: 'Truck 3/4 - ABC-1234',
+        plan: 'Premium',
+        rating: 4.8,
+        reviews: 127
+      });
+
     } catch (error) {
       console.error('Erro ao carregar dados do usuário:', error);
     }
@@ -266,7 +252,15 @@ const AgroConecta = () => {
         }
       ];
 
-      setFreights(mockFreights);
+      // Gerar dados mock se não existirem
+      const existingFreights = JSON.parse(localStorage.getItem('agroisync_freights') || '[]');
+      if (existingFreights.length === 0) {
+        freightService.generateMockData();
+      }
+      
+      // Carregar fretes usando o serviço
+      const freightsData = await freightService.getPublicFreights(filters);
+      setFreights(freightsData);
     } catch (error) {
       console.error('Erro ao carregar fretes:', error);
     } finally {
@@ -274,26 +268,49 @@ const AgroConecta = () => {
     }
   };
 
-  const handleAddFreight = () => {
+  const handleAddFreight = async () => {
     if (newFreight.origin && newFreight.destination && newFreight.price) {
-      const freight = {
-        id: Date.now(),
-        ...newFreight,
-        price: parseFloat(newFreight.price),
-        status: 'available',
-        createdAt: new Date()
-      };
-      setUserFreights([...userFreights, freight]);
-      setNewFreight({ 
-        origin: '', destination: '', weight: '', price: '', 
-        date: '', description: '', truckType: 'truck_3_4',
-        requirements: '', insurance: false, negotiable: true
-      });
+      try {
+        const freightData = {
+          ...newFreight,
+          price: parseFloat(newFreight.price),
+          weight: parseFloat(newFreight.weight) || 0,
+          userId: user?.id || 'user_anonymous',
+          cargoType: 'general'
+        };
+        
+        const createdFreight = await freightService.createFreight(freightData);
+        
+        if (createdFreight) {
+          setUserFreights([...userFreights, createdFreight]);
+          setNewFreight({ 
+            origin: '', destination: '', weight: '', price: '', 
+            date: '', description: '', truckType: 'truck_3_4',
+            requirements: '', insurance: false, negotiable: true
+          });
+          
+          // Recarregar fretes públicos
+          await loadPublicFreights();
+        }
+      } catch (error) {
+        console.error('Erro ao criar frete:', error);
+        alert('Erro ao criar frete. Tente novamente.');
+      }
     }
   };
 
-  const handleDeleteFreight = (freightId) => {
-    setUserFreights(userFreights.filter(f => f.id !== freightId));
+  const handleDeleteFreight = async (freightId) => {
+    try {
+      const result = await freightService.deleteFreight(freightId);
+      if (result?.success) {
+        setUserFreights(userFreights.filter(f => f.id !== freightId));
+        // Recarregar fretes públicos
+        await loadPublicFreights();
+      }
+    } catch (error) {
+      console.error('Erro ao deletar frete:', error);
+      alert('Erro ao deletar frete. Tente novamente.');
+    }
   };
 
   const handleEditProfile = () => {
@@ -308,9 +325,16 @@ const AgroConecta = () => {
     setShowSecretPanel(!showSecretPanel);
   };
 
-  const handleFilterChange = (newFilters) => {
+  const handleFilterChange = async (newFilters) => {
     setFilters(newFilters);
-    // Aqui você implementaria a lógica de filtros reais
+    
+    // Aplicar filtros em tempo real
+    try {
+      const filteredFreights = await freightService.getPublicFreights(newFilters);
+      setFreights(filteredFreights);
+    } catch (error) {
+      console.error('Erro ao aplicar filtros:', error);
+    }
   };
 
   const handleFreightContact = (freight) => {
@@ -328,9 +352,50 @@ const AgroConecta = () => {
     console.log('Visualizando frete:', freight.id);
   };
 
-  const handleFreightApply = (freight) => {
-    // Implementar candidatura para o frete
-    console.log('Candidatando-se ao frete:', freight.id);
+  const handleFreightApply = async (freight) => {
+    if (!user) {
+      alert('Faça login para se candidatar a fretes');
+      navigate('/login');
+      return;
+    }
+
+    try {
+      // Criar transação de intermediação (FREIGHT)
+      const transaction = await transactionService.createTransaction({
+        type: 'FREIGHT',
+        itemId: freight.id,
+        buyerId: user.id,
+        sellerId: freight.userId,
+        status: 'PENDING',
+        items: [{
+          id: freight.id,
+          name: `Frete ${freight.origin} → ${freight.destination}`,
+          price: freight.price,
+          quantity: 1,
+          unit: 'frete'
+        }],
+        total: freight.price,
+        shipping: {
+          origin: freight.origin,
+          destination: freight.destination,
+          weight: freight.weight,
+          truckType: freight.truckType
+        }
+      });
+
+      if (transaction) {
+        // Notificar usuários
+        await transactionService.notifyUsers(transaction);
+        
+        // Redirecionar para painel com mensageria aberta
+        navigate(`/painel?transactionId=${transaction.id}&tab=messages`);
+        
+        alert('Candidatura registrada! Redirecionando para mensageria...');
+      }
+    } catch (error) {
+      console.error('Erro ao se candidatar ao frete:', error);
+      alert('Erro ao se candidatar. Tente novamente.');
+    }
   };
 
   // PÁGINA PÚBLICA - mostrar para todos

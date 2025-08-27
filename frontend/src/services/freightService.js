@@ -1,108 +1,458 @@
 import axios from 'axios';
 
+// Configuração da API
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
 
-// Create axios instance
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+// Tipos de caminhão
+export const TRUCK_TYPES = {
+  'truck_3_4': { label: 'Truck 3/4', icon: '🚛', capacity: '3-4 ton' },
+  'truck_toco': { label: 'Truck Toco', icon: '🚛', capacity: '6-8 ton' },
+  'truck_truck': { label: 'Truck Truck', icon: '🚛', capacity: '8-10 ton' },
+  'truck_carreta': { label: 'Carreta', icon: '🚛', capacity: '25-30 ton' },
+  'truck_pickup': { label: 'Pickup', icon: '🚛', capacity: '1-2 ton' },
+  'truck_van': { label: 'Van', icon: '🚛', capacity: '1-3 ton' }
+};
 
-// Freight service
-export const freightService = {
-  // Get all freights with filters
-  async getFreights(filters = {}) {
-    try {
-      const params = new URLSearchParams();
-      
-      if (filters.originCity) params.append('originCity', filters.originCity);
-      if (filters.originState) params.append('originState', filters.originState);
-      if (filters.destinationCity) params.append('destinationCity', filters.destinationCity);
-      if (filters.destinationState) params.append('destinationState', filters.destinationState);
-      if (filters.truckType) params.append('truckType', filters.truckType);
-      if (filters.minValue) params.append('minValue', filters.minValue);
-      if (filters.maxValue) params.append('maxValue', filters.maxValue);
-      if (filters.status) params.append('status', filters.status);
-      if (filters.search) params.append('search', filters.search);
-      
-      const response = await api.get(`/freights?${params.toString()}`);
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching freights:', error);
-      throw new Error('Erro ao buscar fretes');
-    }
-  },
+// Tipos de carga
+export const CARGO_TYPES = {
+  'grains': { label: 'Grãos', icon: '🌾', category: 'Agricultura' },
+  'vegetables': { label: 'Hortifruti', icon: '🥬', category: 'Agricultura' },
+  'livestock': { label: 'Animais Vivos', icon: '🐄', category: 'Pecuária' },
+  'machinery': { label: 'Maquinários', icon: '🚜', category: 'Equipamentos' },
+  'fertilizers': { label: 'Fertilizantes', icon: '🌱', category: 'Agricultura' },
+  'general': { label: 'Carga Geral', icon: '📦', category: 'Diversos' }
+};
 
-  // Get freight by ID
-  async getFreight(id) {
-    try {
-      const response = await api.get(`/freights/${id}`);
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching freight:', error);
-      throw new Error('Erro ao buscar frete');
-    }
+// Estados do frete
+export const FREIGHT_STATUS = {
+  'available': { 
+    name: 'Disponível', 
+    color: 'bg-green-100 text-green-800',
+    description: 'Frete disponível para contratação'
   },
-
-  // Create new freight
-  async createFreight(freightData) {
-    try {
-      const response = await api.post('/freights', freightData);
-      return response.data;
-    } catch (error) {
-      console.error('Error creating freight:', error);
-      if (error.response?.data?.error) {
-        throw new Error(error.response.data.error);
-      }
-      throw new Error('Erro ao cadastrar frete');
-    }
+  'negotiating': { 
+    name: 'Em Negociação', 
+    color: 'bg-blue-100 text-blue-800',
+    description: 'Freteiro e anunciante negociando'
   },
-
-  // Update freight
-  async updateFreight(id, freightData) {
-    try {
-      const response = await api.put(`/freights/${id}`, freightData);
-      return response.data;
-    } catch (error) {
-      console.error('Error updating freight:', error);
-      if (error.response?.data?.error) {
-        throw new Error(error.response.data.error);
-      }
-      throw new Error('Erro ao atualizar frete');
-    }
+  'agreed': { 
+    name: 'Acordado', 
+    color: 'bg-emerald-100 text-emerald-800',
+    description: 'Termos acordados entre as partes'
   },
-
-  // Delete freight (soft delete)
-  async deleteFreight(id) {
-    try {
-      const response = await api.delete(`/freights/${id}`);
-      return response.data;
-    } catch (error) {
-      console.error('Error deleting freight:', error);
-      if (error.response?.data?.error) {
-        throw new Error(error.response.data.error);
-      }
-      throw new Error('Erro ao remover frete');
-    }
+  'in_transit': { 
+    name: 'Em Trânsito', 
+    color: 'bg-purple-100 text-purple-800',
+    description: 'Carga em transporte'
   },
-
-  // Update freight status
-  async updateFreightStatus(id, status) {
-    try {
-      const response = await api.put(`/freights/${id}/status`, { status });
-      return response.data;
-    } catch (error) {
-      console.error('Error updating freight status:', error);
-      if (error.response?.data?.error) {
-        throw new Error(error.response.data.error);
-      }
-      throw new Error('Erro ao atualizar status do frete');
-    }
+  'completed': { 
+    name: 'Concluído', 
+    color: 'bg-gray-100 text-gray-800',
+    description: 'Frete finalizado com sucesso'
+  },
+  'cancelled': { 
+    name: 'Cancelado', 
+    color: 'bg-red-100 text-red-800',
+    description: 'Frete foi cancelado'
   }
 };
 
-// Export default
-export default freightService;
+class FreightService {
+  // Criar novo frete
+  async createFreight(freightData) {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/freights`, freightData);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao criar frete:', error);
+      // Simular criação para desenvolvimento
+      return this.createMockFreight(freightData);
+    }
+  }
+
+  // Buscar fretes públicos
+  async getPublicFreights(filters = {}) {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/freights/public`, { params: filters });
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao buscar fretes públicos:', error);
+      return this.getMockPublicFreights(filters);
+    }
+  }
+
+  // Buscar fretes do usuário
+  async getUserFreights(userId, type = 'all') {
+    try {
+      const params = type === 'all' ? { userId } : { userId, type };
+      const response = await axios.get(`${API_BASE_URL}/freights/user/${userId}`, { params });
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao buscar fretes do usuário:', error);
+      return this.getMockUserFreights(userId, type);
+    }
+  }
+
+  // Buscar frete por ID
+  async getFreightById(freightId) {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/freights/${freightId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao buscar frete:', error);
+      return this.getMockFreightById(freightId);
+    }
+  }
+
+  // Atualizar frete
+  async updateFreight(freightId, updateData) {
+    try {
+      const response = await axios.patch(`${API_BASE_URL}/freights/${freightId}`, updateData);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao atualizar frete:', error);
+      return this.updateMockFreight(freightId, updateData);
+    }
+  }
+
+  // Deletar frete
+  async deleteFreight(freightId) {
+    try {
+      const response = await axios.delete(`${API_BASE_URL}/freights/${freightId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao deletar frete:', error);
+      return this.deleteMockFreight(freightId);
+    }
+  }
+
+  // Aplicar para frete (criar transação)
+  async applyForFreight(freightId, userId, applicationData) {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/freights/${freightId}/apply`, {
+        userId,
+        ...applicationData
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao aplicar para frete:', error);
+      return this.createMockFreightApplication(freightId, userId, applicationData);
+    }
+  }
+
+  // Buscar aplicações de um frete
+  async getFreightApplications(freightId) {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/freights/${freightId}/applications`);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao buscar aplicações:', error);
+      return this.getMockFreightApplications(freightId);
+    }
+  }
+
+  // Buscar fretes por localização (Baidu Maps)
+  async searchFreightsByLocation(origin, destination, radius = 50) {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/freights/search/location`, {
+        params: { origin, destination, radius }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao buscar por localização:', error);
+      return this.searchMockFreightsByLocation(origin, destination, radius);
+    }
+  }
+
+  // Criar frete mock para desenvolvimento
+  createMockFreight(freightData) {
+    const mockFreight = {
+      id: `FREIGHT_${Date.now()}`,
+      ...freightData,
+      status: 'available',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      applications: [],
+      views: 0,
+      favorites: 0,
+      rating: 0,
+      reviews: []
+    };
+
+    // Salvar no localStorage para simular persistência
+    const existingFreights = JSON.parse(localStorage.getItem('agroisync_freights') || '[]');
+    existingFreights.push(mockFreight);
+    localStorage.setItem('agroisync_freights', JSON.stringify(existingFreights));
+
+    return mockFreight;
+  }
+
+  // Buscar fretes públicos mock
+  getMockPublicFreights(filters = {}) {
+    try {
+      let allFreights = JSON.parse(localStorage.getItem('agroisync_freights') || '[]');
+      
+      // Aplicar filtros
+      if (filters.search) {
+        const searchTerm = filters.search.toLowerCase();
+        allFreights = allFreights.filter(freight => 
+          freight.origin.toLowerCase().includes(searchTerm) ||
+          freight.destination.toLowerCase().includes(searchTerm) ||
+          freight.description.toLowerCase().includes(searchTerm)
+        );
+      }
+
+      if (filters.truckTypes && filters.truckTypes.length > 0) {
+        allFreights = allFreights.filter(freight => 
+          filters.truckTypes.includes(freight.truckType)
+        );
+      }
+
+      if (filters.minPrice) {
+        allFreights = allFreights.filter(freight => 
+          freight.price >= parseFloat(filters.minPrice)
+        );
+      }
+
+      if (filters.maxPrice) {
+        allFreights = allFreights.filter(freight => 
+          freight.price <= parseFloat(filters.maxPrice)
+        );
+      }
+
+      if (filters.minWeight) {
+        allFreights = allFreights.filter(freight => 
+          freight.weight >= parseFloat(filters.minWeight)
+        );
+      }
+
+      if (filters.maxWeight) {
+        allFreights = allFreights.filter(freight => 
+          freight.weight <= parseFloat(filters.maxWeight)
+        );
+      }
+
+      // Ordenar
+      if (filters.sortBy === 'price_low') {
+        allFreights.sort((a, b) => a.price - b.price);
+      } else if (filters.sortBy === 'price_high') {
+        allFreights.sort((a, b) => b.price - a.price);
+      } else if (filters.sortBy === 'date') {
+        allFreights.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      } else {
+        allFreights.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      }
+
+      return allFreights;
+    } catch (error) {
+      console.error('Erro ao buscar fretes mock:', error);
+      return [];
+    }
+  }
+
+  // Buscar fretes do usuário mock
+  getMockUserFreights(userId, type = 'all') {
+    try {
+      const allFreights = JSON.parse(localStorage.getItem('agroisync_freights') || '[]');
+      let userFreights = allFreights.filter(freight => freight.userId === userId);
+
+      if (type === 'posted') {
+        userFreights = userFreights.filter(freight => freight.status === 'available');
+      } else if (type === 'applied') {
+        // Buscar fretes onde o usuário aplicou
+        const applications = JSON.parse(localStorage.getItem('agroisync_freight_applications') || '[]');
+        const appliedFreightIds = applications
+          .filter(app => app.userId === userId)
+          .map(app => app.freightId);
+        userFreights = allFreights.filter(freight => appliedFreightIds.includes(freight.id));
+      }
+
+      return userFreights.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    } catch (error) {
+      console.error('Erro ao buscar fretes do usuário mock:', error);
+      return [];
+    }
+  }
+
+  // Buscar frete por ID mock
+  getMockFreightById(freightId) {
+    try {
+      const allFreights = JSON.parse(localStorage.getItem('agroisync_freights') || '[]');
+      return allFreights.find(freight => freight.id === freightId) || null;
+    } catch (error) {
+      console.error('Erro ao buscar frete por ID mock:', error);
+      return null;
+    }
+  }
+
+  // Atualizar frete mock
+  updateMockFreight(freightId, updateData) {
+    try {
+      const allFreights = JSON.parse(localStorage.getItem('agroisync_freights') || '[]');
+      const freightIndex = allFreights.findIndex(freight => freight.id === freightId);
+      
+      if (freightIndex !== -1) {
+        allFreights[freightIndex] = {
+          ...allFreights[freightIndex],
+          ...updateData,
+          updatedAt: new Date().toISOString()
+        };
+        localStorage.setItem('agroisync_freights', JSON.stringify(allFreights));
+        return allFreights[freightIndex];
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Erro ao atualizar frete mock:', error);
+      return null;
+    }
+  }
+
+  // Deletar frete mock
+  deleteMockFreight(freightId) {
+    try {
+      const allFreights = JSON.parse(localStorage.getItem('agroisync_freights') || '[]');
+      const filteredFreights = allFreights.filter(freight => freight.id !== freightId);
+      localStorage.setItem('agroisync_freights', JSON.stringify(filteredFreights));
+      return { success: true };
+    } catch (error) {
+      console.error('Erro ao deletar frete mock:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  // Criar aplicação mock para frete
+  createMockFreightApplication(freightId, userId, applicationData) {
+    const mockApplication = {
+      id: `APP_${Date.now()}`,
+      freightId,
+      userId,
+      ...applicationData,
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    // Salvar aplicação
+    const existingApplications = JSON.parse(localStorage.getItem('agroisync_freight_applications') || '[]');
+    existingApplications.push(mockApplication);
+    localStorage.setItem('agroisync_freight_applications', JSON.stringify(existingApplications));
+
+    // Atualizar contador de aplicações no frete
+    const allFreights = JSON.parse(localStorage.getItem('agroisync_freights') || '[]');
+    const freightIndex = allFreights.findIndex(freight => freight.id === freightId);
+    if (freightIndex !== -1) {
+      allFreights[freightIndex].applications.push(mockApplication.id);
+      localStorage.setItem('agroisync_freights', JSON.stringify(allFreights));
+    }
+
+    return mockApplication;
+  }
+
+  // Buscar aplicações mock de um frete
+  getMockFreightApplications(freightId) {
+    try {
+      const allApplications = JSON.parse(localStorage.getItem('agroisync_freight_applications') || '[]');
+      return allApplications.filter(app => app.freightId === freightId);
+    } catch (error) {
+      console.error('Erro ao buscar aplicações mock:', error);
+      return [];
+    }
+  }
+
+  // Buscar fretes por localização mock
+  searchMockFreightsByLocation(origin, destination, radius = 50) {
+    try {
+      const allFreights = JSON.parse(localStorage.getItem('agroisync_freights') || '[]');
+      
+      // Simular busca por localização (em produção seria integrado com Baidu Maps)
+      return allFreights.filter(freight => 
+        freight.origin.toLowerCase().includes(origin.toLowerCase()) ||
+        freight.destination.toLowerCase().includes(destination.toLowerCase())
+      );
+    } catch (error) {
+      console.error('Erro ao buscar por localização mock:', error);
+      return [];
+    }
+  }
+
+  // Gerar dados mock iniciais para demonstração
+  generateMockData() {
+    const mockFreights = [
+      {
+        id: 'FREIGHT_1',
+        userId: 'user_1',
+        origin: 'São Paulo, SP',
+        destination: 'Rio de Janeiro, RJ',
+        weight: 5000,
+        price: 850.00,
+        date: '2024-01-20',
+        description: 'Transporte de grãos de soja para porto',
+        truckType: 'truck_toco',
+        cargoType: 'grains',
+        requirements: 'Caminhão com baú fechado, temperatura controlada',
+        insurance: true,
+        negotiable: true,
+        status: 'available',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        applications: [],
+        views: 15,
+        favorites: 3,
+        rating: 4.8,
+        reviews: []
+      },
+      {
+        id: 'FREIGHT_2',
+        userId: 'user_2',
+        origin: 'Goiânia, GO',
+        destination: 'Brasília, DF',
+        weight: 2000,
+        price: 450.00,
+        date: '2024-01-18',
+        description: 'Transporte de hortifruti para CEASA',
+        truckType: 'truck_3_4',
+        cargoType: 'vegetables',
+        requirements: 'Caminhão refrigerado',
+        insurance: false,
+        negotiable: true,
+        status: 'available',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        applications: [],
+        views: 8,
+        favorites: 1,
+        rating: 4.5,
+        reviews: []
+      },
+      {
+        id: 'FREIGHT_3',
+        userId: 'user_3',
+        origin: 'Curitiba, PR',
+        destination: 'Porto Alegre, RS',
+        weight: 15000,
+        price: 1200.00,
+        date: '2024-01-25',
+        description: 'Transporte de maquinários agrícolas',
+        truckType: 'truck_carreta',
+        cargoType: 'machinery',
+        requirements: 'Carreta com rampa hidráulica',
+        insurance: true,
+        negotiable: false,
+        status: 'available',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        applications: [],
+        views: 22,
+        favorites: 5,
+        rating: 4.9,
+        reviews: []
+      }
+    ];
+
+    localStorage.setItem('agroisync_freights', JSON.stringify(mockFreights));
+    return mockFreights;
+  }
+}
+
+export default new FreightService();
