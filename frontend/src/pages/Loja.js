@@ -81,10 +81,10 @@ const Loja = () => {
       
       // Separar por tipo
       const purchaseTransactions = userTransactions.filter(txn => 
-        txn.type === 'purchase_intent' && txn.buyer?.id === user.id
+        txn.type === 'PRODUCT' && txn.buyerId === user.id
       );
       const salesTransactions = userTransactions.filter(txn => 
-        txn.type === 'purchase_intent' && txn.seller?.id === user.id
+        txn.type === 'PRODUCT' && txn.sellerId === user.id
       );
       
       setMyPurchases(purchaseTransactions);
@@ -184,15 +184,22 @@ const Loja = () => {
 
   const handlePurchaseIntent = async (purchaseData) => {
     try {
-      // Criar transação de intermediação
+      if (!isAuthenticated) {
+        alert('Faça login para registrar interesse em produtos');
+        navigate('/login');
+        return;
+      }
+
+      // Criar transação de intermediação (PRODUCT)
       const transaction = await transactionService.createTransaction({
-        type: 'purchase_intent',
-        buyer: purchaseData.buyer,
-        seller: purchaseData.seller,
+        type: 'PRODUCT',
+        itemId: purchaseData.items?.[0]?.id || cart[0]?.id,
+        buyerId: user.id,
+        sellerId: purchaseData.seller?.id || cart[0]?.seller?.id,
+        status: 'PENDING',
         items: purchaseData.items || cart,
         total: purchaseData.total || cart.reduce((sum, item) => sum + item.totalPrice, 0),
-        shipping: purchaseData.shipping,
-        status: 'pending_negotiation'
+        shipping: purchaseData.shipping
       });
 
       if (transaction) {
@@ -202,8 +209,11 @@ const Loja = () => {
         // Fechar carrinho
         setShowCart(false);
         
+        // Redirecionar para painel com mensageria aberta
+        navigate(`/painel?transactionId=${transaction.id}&tab=messages`);
+        
         // Mostrar mensagem de sucesso
-        alert('Intenção de compra registrada! O vendedor será notificado e entrará em contato.');
+        alert('Intenção de compra registrada! Redirecionando para mensageria...');
       }
     } catch (error) {
       console.error('Erro ao processar intenção de compra:', error);
@@ -693,8 +703,6 @@ const Loja = () => {
                       </div>
                       <button 
                         onClick={() => handlePurchaseIntent({
-                          buyer: { id: user?.id || 'guest', name: user?.name || 'Visitante' },
-                          seller: { id: cart[0]?.seller?.id || 'seller', name: cart[0]?.seller?.name || 'Vendedor' },
                           items: cart,
                           total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)
                         })}

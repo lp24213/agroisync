@@ -3,50 +3,40 @@ import axios from 'axios';
 // Configuração da API
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
 
-// Estados das transações
+// Estados das transações (conforme especificação)
 export const TRANSACTION_STATUS = {
-  'pending_negotiation': { 
+  'PENDING': { 
     name: 'Aguardando Negociação', 
     color: 'bg-yellow-100 text-yellow-800',
     description: 'Comprador e vendedor devem negociar diretamente'
   },
-  'negotiating': { 
+  'NEGOTIATING': { 
     name: 'Em Negociação', 
     color: 'bg-blue-100 text-blue-800',
     description: 'Partes estão negociando termos'
   },
-  'agreement_reached': { 
+  'AGREED': { 
     name: 'Acordo Alcançado', 
     color: 'bg-green-100 text-green-800',
     description: 'Termos foram acordados entre as partes'
   },
-  'escrow_pending': { 
-    name: 'Aguardando Escrow', 
-    color: 'bg-purple-100 text-purple-800',
-    description: 'Aguardando pagamento seguro via escrow'
-  },
-  'completed': { 
-    name: 'Concluída', 
-    color: 'bg-emerald-100 text-emerald-800',
-    description: 'Transação foi concluída com sucesso'
-  },
-  'cancelled': { 
+  'CANCELLED': { 
     name: 'Cancelada', 
     color: 'bg-red-100 text-red-800',
     description: 'Transação foi cancelada'
   },
-  'expired': { 
-    name: 'Expirada', 
-    color: 'bg-gray-100 text-gray-800',
-    description: 'Prazo de negociação expirou'
+  'COMPLETED': { 
+    name: 'Concluída', 
+    color: 'bg-emerald-100 text-emerald-800',
+    description: 'Transação foi concluída com sucesso'
   }
 };
 
-// Tipos de transação
+// Tipos de transação (conforme especificação)
 export const TRANSACTION_TYPES = {
-  'purchase_intent': 'Intenção de Compra',
-  'freight_intent': 'Intenção de Frete',
-  'service_request': 'Solicitação de Serviço'
+  'PRODUCT': 'Intenção de Compra de Produto',
+  'FREIGHT': 'Intenção de Frete',
+  'SERVICE': 'Solicitação de Serviço'
 };
 
 class TransactionService {
@@ -148,15 +138,23 @@ class TransactionService {
   createMockTransaction(transactionData) {
     const mockTransaction = {
       id: `TXN_${Date.now()}`,
-      ...transactionData,
-      status: 'pending_negotiation',
+      type: transactionData.type || 'PRODUCT',
+      itemId: transactionData.itemId,
+      buyerId: transactionData.buyerId,
+      sellerId: transactionData.sellerId,
+      status: transactionData.status || 'PENDING',
+      lastMessageAt: null,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      // Dados adicionais para compatibilidade
+      items: transactionData.items || [],
+      total: transactionData.total || 0,
+      shipping: transactionData.shipping || null,
       messages: [],
       history: [
         {
           action: 'created',
-          status: 'pending_negotiation',
+          status: transactionData.status || 'PENDING',
           timestamp: new Date().toISOString(),
           description: 'Transação criada'
         }
@@ -176,7 +174,7 @@ class TransactionService {
     try {
       const allTransactions = JSON.parse(localStorage.getItem('agroisync_transactions') || '[]');
       let userTransactions = allTransactions.filter(txn => 
-        txn.buyer?.id === userId || txn.seller?.id === userId || txn.shipper?.id === userId || txn.carrier?.id === userId
+        txn.buyerId === userId || txn.sellerId === userId
       );
 
       if (type) {
@@ -254,9 +252,9 @@ class TransactionService {
       // Aqui seria implementada a notificação real (email, SMS, push)
       const notifications = [];
 
-      if (transaction.buyer) {
+      if (transaction.buyerId) {
         notifications.push({
-          userId: transaction.buyer.id,
+          userId: transaction.buyerId,
           type: 'transaction_created',
           title: 'Nova Intenção de Compra',
           message: `Sua intenção de compra foi registrada. Aguarde o vendedor entrar em contato.`,
@@ -264,9 +262,9 @@ class TransactionService {
         });
       }
 
-      if (transaction.seller) {
+      if (transaction.sellerId) {
         notifications.push({
-          userId: transaction.seller.id,
+          userId: transaction.sellerId,
           type: 'transaction_created',
           title: 'Nova Intenção de Compra Recebida',
           message: `Você recebeu uma nova intenção de compra. Entre em contato com o comprador.`,
@@ -290,15 +288,15 @@ class TransactionService {
       const allTransactions = JSON.parse(localStorage.getItem('agroisync_transactions') || '[]');
       const now = new Date();
       
+      // Transações PENDING por mais de 30 dias são consideradas expiradas
       const expiredTransactions = allTransactions.filter(txn => 
-        txn.status === 'pending_negotiation' && 
-        txn.expiresAt && 
-        new Date(txn.expiresAt) < now
+        txn.status === 'PENDING' && 
+        new Date(txn.createdAt) < new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
       );
 
       // Atualizar status das transações expiradas
       expiredTransactions.forEach(async (txn) => {
-        await this.updateTransactionStatus(txn.id, 'expired', 'Prazo de negociação expirou');
+        await this.updateTransactionStatus(txn.id, 'CANCELLED', 'Prazo de negociação expirou');
       });
 
       return expiredTransactions;
@@ -318,15 +316,15 @@ class TransactionService {
         const headers = ['ID', 'Tipo', 'Status', 'Comprador', 'Vendedor', 'Valor', 'Data Criação'];
         const csvContent = [
           headers.join(','),
-          ...transactions.map(txn => [
-            txn.id,
-            txn.type,
-            txn.status,
-            txn.buyer?.name || txn.shipper?.name || 'N/A',
-            txn.seller?.name || txn.carrier?.name || 'N/A',
-            txn.total || 0,
-            new Date(txn.createdAt).toLocaleDateString('pt-BR')
-          ].join(','))
+                  ...transactions.map(txn => [
+          txn.id,
+          txn.type,
+          txn.status,
+          txn.buyerId || 'N/A',
+          txn.sellerId || 'N/A',
+          txn.total || 0,
+          new Date(txn.createdAt).toLocaleDateString('pt-BR')
+        ].join(','))
         ].join('\n');
 
         data = csvContent;

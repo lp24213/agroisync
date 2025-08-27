@@ -15,20 +15,16 @@ const TransactionList = ({ transactions, title, emptyMessage, onViewTransaction,
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'pending_negotiation':
+      case 'PENDING':
         return <Clock className="w-4 h-4" />;
-      case 'negotiating':
+      case 'NEGOTIATING':
         return <MessageSquare className="w-4 h-4" />;
-      case 'agreement_reached':
+      case 'AGREED':
         return <CheckCircle className="w-4 h-4" />;
-      case 'escrow_pending':
-        return <Package className="w-4 h-4" />;
-      case 'completed':
-        return <CheckCircle className="w-4 h-4" />;
-      case 'cancelled':
+      case 'CANCELLED':
         return <XCircle className="w-4 h-4" />;
-      case 'expired':
-        return <AlertTriangle className="w-4 h-4" />;
+      case 'COMPLETED':
+        return <CheckCircle className="w-4 h-4" />;
       default:
         return <Clock className="w-4 h-4" />;
     }
@@ -145,24 +141,24 @@ const TransactionList = ({ transactions, title, emptyMessage, onViewTransaction,
               className="border-t border-slate-200"
             >
               <div className="p-4 space-y-4">
-                {/* Informações das partes */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {transaction.buyer && (
-                    <div className="p-3 bg-blue-50 rounded-lg">
-                      <h5 className="font-medium text-blue-800 mb-2">Comprador</h5>
-                      <p className="text-sm text-blue-700">{transaction.buyer.name}</p>
-                      <p className="text-xs text-blue-600">{transaction.buyer.email}</p>
-                    </div>
-                  )}
-                  
-                  {transaction.seller && (
-                    <div className="p-3 bg-green-50 rounded-lg">
-                      <h5 className="font-medium text-green-800 mb-2">Vendedor</h5>
-                      <p className="text-sm text-green-700">{transaction.seller.name}</p>
-                      <p className="text-xs text-green-600">{transaction.seller.email}</p>
-                    </div>
-                  )}
-                </div>
+                                 {/* Informações das partes */}
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                   {transaction.buyerId && (
+                     <div className="p-3 bg-blue-50 rounded-lg">
+                       <h5 className="font-medium text-blue-800 mb-2">Comprador</h5>
+                       <p className="text-sm text-blue-700">ID: {transaction.buyerId}</p>
+                       <p className="text-xs text-blue-600">Usuário do sistema</p>
+                     </div>
+                   )}
+                   
+                   {transaction.sellerId && (
+                     <div className="p-3 bg-green-50 rounded-lg">
+                       <h5 className="font-medium text-green-800 mb-2">Vendedor</h5>
+                       <p className="text-sm text-green-700">ID: {transaction.sellerId}</p>
+                       <p className="text-xs text-green-600">Usuário do sistema</p>
+                     </div>
+                   )}
+                 </div>
 
                 {/* Itens da transação */}
                 {transaction.items && transaction.items.length > 0 && (

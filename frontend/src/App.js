@@ -50,6 +50,7 @@ import ResetPassword from './pages/ResetPassword';
 import OtpVerification from './pages/OtpVerification';
 import VerifyEmail from './pages/VerifyEmail';
 import CadastroProduto from './pages/CadastroProduto';
+import PainelUsuario from './pages/PainelUsuario';
 
 // Componentes
 import Navbar from './components/Navbar';
@@ -118,6 +119,14 @@ function App() {
                   />
 
                   {/* Rotas de painel individual - requerem autenticação */}
+                  <Route 
+                    path="/painel" 
+                    element={
+                      <RouteGuard requireAuth={true}>
+                        <PainelUsuario />
+                      </RouteGuard>
+                    } 
+                  />
                   <Route 
                     path="/panel/loja" 
                     element={
