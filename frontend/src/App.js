@@ -55,6 +55,7 @@ import PainelUsuario from './pages/PainelUsuario';
 // Componentes
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import ChatbotWidget from './components/ChatbotWidget';
 
 function App() {
   return (
@@ -167,6 +168,9 @@ function App() {
                   />
                 </Routes>
                 <Footer />
+                
+                {/* Chatbot Global */}
+                <ChatbotWidget isOpen={true} />
               </div>
             </ChatbotProvider>
           </PaymentProvider>
