@@ -16,6 +16,7 @@ import metamaskService from '../services/metamaskService';
 import Web3Wallet from '../components/Web3Wallet';
 import DeFiOperations from '../components/DeFiOperations';
 import MarketAnalysis from '../components/MarketAnalysis';
+import CryptoDashboard from '../components/CryptoDashboard';
 
 const Cripto = () => {
   const { t } = useTranslation();
@@ -382,6 +383,7 @@ const Cripto = () => {
             <div className="flex flex-wrap border-b border-gray-200 dark:border-gray-700 mb-6">
               {[
                 { id: 'overview', label: 'Visão Geral', icon: Coins },
+                { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
                 { id: 'wallet', label: 'Carteira Web3', icon: Wallet },
                 { id: 'defi', label: 'Operações DeFi', icon: TrendingUp },
                 { id: 'analysis', label: 'Análise de Mercado', icon: BarChart3 }
@@ -417,24 +419,33 @@ const Cripto = () => {
                   <p className="text-gray-600 dark:text-gray-400 mb-6">
                     Explore nossas funcionalidades avançadas de criptomoedas, DeFi e análise de mercado
                   </p>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                      <Wallet className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+                      <BarChart3 className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+                      <h4 className="font-medium text-gray-900 dark:text-white">Dashboard</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Visão geral completa do seu portfólio e mercado</p>
+                    </div>
+                    <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                      <Wallet className="w-8 h-8 text-green-600 mx-auto mb-2" />
                       <h4 className="font-medium text-gray-900 dark:text-white">Carteira Web3</h4>
                       <p className="text-sm text-gray-600 dark:text-gray-400">Conecte e gerencie sua carteira Metamask</p>
                     </div>
                     <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                      <TrendingUp className="w-8 h-8 text-green-600 mx-auto mb-2" />
+                      <TrendingUp className="w-8 h-8 text-purple-600 mx-auto mb-2" />
                       <h4 className="font-medium text-gray-900 dark:text-white">Operações DeFi</h4>
                       <p className="text-sm text-gray-600 dark:text-gray-400">Compra, venda e staking de criptomoedas</p>
                     </div>
                     <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                      <BarChart3 className="w-8 h-8 text-purple-600 mx-auto mb-2" />
+                      <BarChart3 className="w-8 h-8 text-orange-600 mx-auto mb-2" />
                       <h4 className="font-medium text-gray-900 dark:text-white">Análise de Mercado</h4>
                       <p className="text-sm text-gray-600 dark:text-gray-400">Indicadores técnicos e análise fundamental</p>
                     </div>
                   </div>
                 </div>
+              )}
+
+              {activeCryptoTab === 'dashboard' && (
+                <CryptoDashboard />
               )}
 
               {activeCryptoTab === 'wallet' && (
