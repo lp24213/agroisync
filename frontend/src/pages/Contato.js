@@ -102,7 +102,7 @@ const Contato = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className={`text-5xl md:text-7xl font-bold mb-6 ${isDark ? 'text-white' : 'text-slate-800'}`}
+            className={`text-5xl md:text-7xl font-bold mb-6 text-gradient-agro`}
           >
             Entre em Contato
           </motion.h1>
@@ -138,9 +138,9 @@ const Contato = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className={`text-4xl font-bold mb-4 ${isDark ? 'text-white' : 'text-slate-800'}`}>
-              Informações de Contato
-            </h2>
+                         <h2 className={`text-4xl font-bold mb-4 text-gradient-agro`}>
+               Informações de Contato
+             </h2>
             <p className={`text-xl max-w-3xl mx-auto ${isDark ? 'text-gray-300' : 'text-slate-600'}`}>
               Entre em contato conosco através dos canais abaixo
             </p>
@@ -180,9 +180,9 @@ const Contato = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-12"
           >
-            <h2 className={`text-4xl font-bold mb-4 ${isDark ? 'text-white' : 'text-slate-800'}`}>
-              Envie sua Mensagem
-            </h2>
+                         <h2 className={`text-4xl font-bold mb-4 text-gradient-agro`}>
+               Envie sua Mensagem
+             </h2>
             <p className={`text-xl ${isDark ? 'text-gray-300' : 'text-slate-600'}`}>
               Preencha o formulário abaixo e entraremos em contato o mais breve possível
             </p>
@@ -322,9 +322,9 @@ const Contato = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className={`text-4xl font-bold mb-4 ${isDark ? 'text-white' : 'text-slate-800'}`}>
-              Outras Formas de Contato
-            </h2>
+                         <h2 className={`text-4xl font-bold mb-4 text-gradient-agro`}>
+               Outras Formas de Contato
+             </h2>
             <p className={`text-xl max-w-3xl mx-auto ${isDark ? 'text-gray-300' : 'text-slate-600'}`}>
               Além do formulário, você pode nos encontrar em outras plataformas
             </p>

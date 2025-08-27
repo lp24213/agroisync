@@ -122,7 +122,7 @@ const Sobre = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className={`text-5xl md:text-7xl font-bold mb-6 ${isDark ? 'text-white' : 'text-slate-800'}`}
+            className={`text-5xl md:text-7xl font-bold mb-6 text-gradient-agro`}
           >
             {t('about.title')}
           </motion.h1>
@@ -158,7 +158,7 @@ const Sobre = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className={`text-4xl font-bold mb-6 ${isDark ? 'text-white' : 'text-slate-800'}`}>
+            <h2 className={`text-4xl font-bold mb-6 text-gradient-agro`}>
               {t('about.mission.title')}
             </h2>
             <p className={`text-xl max-w-4xl mx-auto leading-relaxed ${isDark ? 'text-gray-300' : 'text-slate-600'}`}>
@@ -182,9 +182,12 @@ const Sobre = () => {
               </p>
               </div>
               <div className="text-center">
-                <div className="w-24 h-24 mx-auto mb-4 rounded-2xl bg-gradient-to-r from-slate-500 to-slate-600 flex items-center justify-center text-white">
+                <motion.div 
+                  whileHover={{ scale: 1.05 }}
+                  className="w-24 h-24 mx-auto mb-4 rounded-2xl bg-gradient-to-r from-agro-green to-tech-green flex items-center justify-center text-white shadow-lg"
+                >
                   <Globe className="w-12 h-12" />
-                </div>
+                </motion.div>
                 <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-slate-500'}`}>
                   {t('about.mission.platform')}
                 </p>
@@ -203,7 +206,7 @@ const Sobre = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className={`text-4xl font-bold mb-4 ${isDark ? 'text-white' : 'text-slate-800'}`}>
+            <h2 className={`text-4xl font-bold mb-4 text-gradient-agro`}>
               {t('about.values.title')}
             </h2>
             <p className={`text-xl max-w-3xl mx-auto ${isDark ? 'text-gray-300' : 'text-slate-600'}`}>
@@ -212,32 +215,7 @@ const Sobre = () => {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              {
-                icon: <Lightbulb className="w-8 h-8" />,
-                title: t('about.values.innovation.title'),
-                description: t('about.values.innovation.description'),
-                color: 'from-slate-500 to-slate-600'
-              },
-              {
-                icon: <Shield className="w-8 h-8" />,
-                title: t('about.values.trust.title'),
-                description: t('about.values.trust.description'),
-                color: 'from-slate-600 to-slate-700'
-              },
-              {
-                icon: <Globe className="w-8 h-8" />,
-                title: t('about.values.global.title'),
-                description: t('about.values.global.description'),
-                color: 'from-slate-700 to-slate-800'
-              },
-              {
-                icon: <Users className="w-8 h-8" />,
-                title: t('about.values.community.title'),
-                description: t('about.values.community.description'),
-                color: 'from-slate-800 to-slate-900'
-              }
-            ].map((value, index) => (
+            {values.map((value, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
@@ -270,7 +248,7 @@ const Sobre = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className={`text-4xl font-bold mb-4 ${isDark ? 'text-white' : 'text-slate-800'}`}>
+            <h2 className={`text-4xl font-bold mb-4 text-gradient-agro`}>
               {t('about.timeline.title')}
             </h2>
             <p className={`text-xl ${isDark ? 'text-gray-300' : 'text-slate-600'}`}>
@@ -416,7 +394,7 @@ const Sobre = () => {
               transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className={`text-4xl font-bold mb-4 ${isDark ? 'text-white' : 'text-slate-800'}`}>
+            <h2 className={`text-4xl font-bold mb-4 text-gradient-agro`}>
               {t('about.stats.title')}
             </h2>
             <p className={`text-xl max-w-3xl mx-auto ${isDark ? 'text-gray-300' : 'text-slate-600'}`}>
@@ -439,9 +417,12 @@ const Sobre = () => {
                 whileHover={{ scale: 1.05 }}
               className="text-center"
             >
-                <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-white shadow-lg flex items-center justify-center text-slate-600">
+                <motion.div 
+                  whileHover={{ scale: 1.05 }}
+                  className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-r from-agro-green to-tech-green flex items-center justify-center text-white shadow-lg"
+                >
                   {stat.icon}
-                </div>
+                </motion.div>
                 <div className="text-3xl font-bold text-slate-800 mb-2">
                   {stat.value}
                 </div>
@@ -479,12 +460,20 @@ const Sobre = () => {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
-            <button className="px-8 py-4 bg-white text-slate-700 font-bold rounded-xl hover:bg-slate-100 transition-colors duration-300">
+            <motion.button 
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              className="btn-premium px-8 py-4 text-lg"
+            >
               {t('about.cta.primary')}
-            </button>
-            <button className="px-8 py-4 bg-transparent border-2 border-white text-white font-bold rounded-xl hover:bg-white hover:text-slate-700 transition-colors duration-300">
+            </motion.button>
+            <motion.button 
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              className="btn-premium-secondary px-8 py-4 text-lg"
+            >
               {t('about.cta.secondary')}
-            </button>
+            </motion.button>
           </motion.div>
         </div>
       </section>

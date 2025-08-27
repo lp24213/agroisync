@@ -198,7 +198,7 @@ const FAQ = () => {
             transition={{ duration: 0.8 }}
             className="mb-8"
           >
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-gradient-agro">
             Perguntas Frequentes
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -243,7 +243,7 @@ const FAQ = () => {
                 <div className="p-3 rounded-xl bg-gradient-to-r from-green-500 to-blue-600 text-white">
                 {category.icon}
                 </div>
-                <h2 className="text-3xl md:text-4xl font-bold">{category.title}</h2>
+                <h2 className="text-3xl md:text-4xl font-bold text-gradient-agro">{category.title}</h2>
               </div>
 
               {/* FAQ Items */}
