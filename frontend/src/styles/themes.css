@@ -329,8 +329,23 @@ p {
   animation: marquee 30s linear infinite;
 }
 
+/* Marquee rápido para ticker da bolsa - 15 segundos */
+@keyframes marquee-fast {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee-fast {
+  animation: marquee-fast 15s linear infinite;
+}
+
 /* Pausar animação no hover para melhor usabilidade */
-.animate-marquee:hover {
+.animate-marquee:hover,
+.animate-marquee-fast:hover {
   animation-play-state: paused;
 }
 

@@ -253,7 +253,7 @@ const Home = () => {
     if (userLocation) {
       fetchAgrolinkData();
       
-      const interval = setInterval(fetchAgrolinkData, 300000); // 5 minutos
+      const interval = setInterval(fetchAgrolinkData, 30000); // 30 segundos
       return () => clearInterval(interval);
     }
   }, [userLocation]);
@@ -503,51 +503,35 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-white text-slate-900">
       
-      {/* Bolsa de Valores Animada - NO TOPO, abaixo do menu */}
-      <section className="py-8 px-4 bg-gradient-to-r from-slate-50 via-white to-blue-50 border-b border-slate-200">
+      {/* Bolsa de Valores - TICKER FINO ABAIXO DO MENU */}
+      <section className="py-2 px-4 bg-gradient-to-r from-slate-50 via-white to-blue-50 border-b border-slate-200">
         <div className="max-w-7xl mx-auto">
+          {/* Ticker horizontal fino com rolagem suave */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-6"
+            transition={{ duration: 0.4 }}
+            className="relative overflow-hidden h-16 flex items-center"
           >
-            <h2 className="text-2xl font-bold text-slate-800 mb-2">📈 {t('home.highlights.realTimeData')}</h2>
-            <p className="text-slate-600">{t('home.highlights.realTimeDataDesc')}</p>
-          </motion.div>
-          
-          {/* Rolagem lateral contínua (marquee) - Reforçada com Framer Motion */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="relative overflow-hidden"
-          >
-            <div className="flex items-center animate-marquee">
-              <div className="flex items-center space-x-4 min-w-max">
+            <div className="flex items-center animate-marquee-fast">
+              <div className="flex items-center space-x-6 min-w-max">
                 {stockData.map((stock, index) => (
                   <motion.div
                     key={stock.symbol}
-                    initial={{ opacity: 0, y: 20, scale: 0.9 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
-                    whileHover={{ scale: 1.05, y: -5 }}
-                    className="flex flex-col items-center space-y-2 bg-white px-5 py-4 rounded-xl shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-300 min-w-[120px]"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                    whileHover={{ scale: 1.02 }}
+                    className="flex items-center space-x-3 bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200 hover:shadow-md transition-all duration-200 min-w-[180px]"
                   >
-                    <div className="text-lg font-bold text-slate-800">
+                    <div className="text-sm font-bold text-slate-800">
                       {stock.symbol}
                     </div>
-                    <div className="text-xl font-bold text-slate-900">
+                    <div className="text-sm font-semibold text-slate-900">
                       R$ {stock.price.toFixed(2)}
                     </div>
-                    <div className="text-sm">
+                    <div className="text-xs">
                       {formatChange(stock.change)}
-                    </div>
-                    <div className="text-xs text-slate-600">
-                      Vol: {stock.volume}
-                    </div>
-                    <div className="text-xs text-slate-500">
-                      {stock.lastUpdate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                     </div>
                     
                     {/* Indicador de tendência - Animado */}
@@ -558,7 +542,7 @@ const Home = () => {
                         opacity: [0.7, 1, 0.7]
                       }}
                       transition={{ 
-                        duration: 2, 
+                        duration: 1.5, 
                         repeat: Infinity, 
                         ease: "easeInOut" 
                       }}
@@ -568,30 +552,24 @@ const Home = () => {
               </div>
               
               {/* Duplicar para efeito marquee contínuo */}
-              <div className="flex items-center space-x-4 min-w-max ml-8">
+              <div className="flex items-center space-x-6 min-w-max ml-12">
                 {stockData.map((stock, index) => (
                   <motion.div
                     key={`${stock.symbol}-duplicate`}
-                    initial={{ opacity: 0, y: 20, scale: 0.9 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ duration: 0.6, delay: (index + stockData.length) * 0.1 }}
-                    whileHover={{ scale: 1.05, y: -5 }}
-                    className="flex flex-col items-center space-y-2 bg-white px-5 py-4 rounded-xl shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-300 min-w-[120px]"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: (index + stockData.length) * 0.05 }}
+                    whileHover={{ scale: 1.02 }}
+                    className="flex items-center space-x-3 bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200 hover:shadow-md transition-all duration-200 min-w-[180px]"
                   >
-                    <div className="text-lg font-bold text-slate-800">
+                    <div className="text-sm font-bold text-slate-800">
                       {stock.symbol}
                     </div>
-                    <div className="text-xl font-bold text-slate-900">
+                    <div className="text-sm font-semibold text-slate-900">
                       R$ {stock.price.toFixed(2)}
                     </div>
-                    <div className="text-sm">
+                    <div className="text-xs">
                       {formatChange(stock.change)}
-                    </div>
-                    <div className="text-xs text-slate-600">
-                      Vol: {stock.volume}
-                    </div>
-                    <div className="text-xs text-slate-500">
-                      {stock.lastUpdate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                     </div>
                     
                     {/* Indicador de tendência - Animado */}
@@ -602,7 +580,7 @@ const Home = () => {
                         opacity: [0.7, 1, 0.7]
                       }}
                       transition={{ 
-                        duration: 2, 
+                        duration: 1.5, 
                         repeat: Infinity, 
                         ease: "easeInOut" 
                       }}
@@ -611,32 +589,28 @@ const Home = () => {
                 ))}
               </div>
             </div>
-          </motion.div>
-          
-          {/* Indicador de atualização - Animado */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-            className="text-center mt-4"
-          >
-            <p className="text-xs text-slate-500">
-              {t('common.lastUpdate')}: {new Date().toLocaleTimeString('pt-BR')} | 
-              <motion.span 
-                className="text-emerald-600 ml-1 inline-block"
-                animate={{ 
+            
+            {/* Indicador de dados em tempo real */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center space-x-2 text-xs text-slate-500"
+            >
+              <motion.div
+                className="w-2 h-2 bg-emerald-500 rounded-full"
+                animate={{
                   scale: [1, 1.2, 1],
-                  rotate: [0, 180, 360]
+                  opacity: [0.7, 1, 0.7]
                 }}
-                transition={{ 
-                  duration: 3, 
-                  repeat: Infinity, 
-                  ease: "easeInOut" 
+                transition={{
+                  duration: 1,
+                  repeat: Infinity,
+                  ease: "easeInOut"
                 }}
-              >
-                ●
-              </motion.span> {t('home.highlights.realTimeData')}
-            </p>
+              ></motion.div>
+              <span>Dados em tempo real</span>
+            </motion.div>
           </motion.div>
         </div>
       </section>
@@ -834,7 +808,7 @@ const Home = () => {
               className="bg-white rounded-2xl shadow-lg p-8 border border-slate-200 hover:shadow-xl transition-shadow duration-300"
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold text-slate-800">{t('home.highlights.realTimeData')}</h3>
+                <h3 className="text-2xl font-bold text-slate-800">🌤️ Clima em Tempo Real</h3>
                 <MapPin className="w-6 h-6 text-slate-600" />
               </div>
               

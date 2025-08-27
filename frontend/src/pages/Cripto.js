@@ -36,24 +36,24 @@ const Cripto = () => {
   const [paymentAmount, setPaymentAmount] = useState('');
   const [paymentLoading, setPaymentLoading] = useState(false);
 
-  // CAMADA 2: Buscar dados reais de criptomoedas
+  // Buscar dados reais de criptomoedas via CoinGecko API
   const fetchCryptoData = async () => {
     try {
       setLoading(true);
       setError('');
       
-      // API CoinGecko - Top 20 criptomoedas por capitalização de mercado
+      // API CoinGecko - Criptomoedas específicas solicitadas
       const response = await fetch(
-        'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&sparkline=false&locale=pt'
+        'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum,solana&order=market_cap_desc&sparkline=false&locale=pt'
       );
       
       if (response.ok) {
         const data = await response.json();
         setCryptoData(data);
         
-        // Buscar dados do gráfico para a primeira criptomoeda
+        // Buscar dados do gráfico para Bitcoin por padrão
         if (data.length > 0) {
-          fetchChartData(data[0].id);
+          fetchChartData('bitcoin');
         }
       } else {
         throw new Error('Erro na API CoinGecko');
@@ -62,68 +62,18 @@ const Cripto = () => {
     } catch (error) {
       console.error('Erro ao buscar dados:', error);
       
-      // Dados mock como fallback caso a API falhe
-      const fallbackData = [
-        {
-          id: 'bitcoin',
-          symbol: 'btc',
-          name: 'Bitcoin',
-          current_price: 43250.25,
-          price_change_percentage_24h: 2.34,
-          market_cap: 845000000000,
-          total_volume: 28500000000,
-          image: 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png'
-        },
-        {
-          id: 'ethereum',
-          symbol: 'eth',
-          name: 'Ethereum',
-          current_price: 2650.80,
-          price_change_percentage_24h: 1.87,
-          market_cap: 318000000000,
-          total_volume: 15800000000,
-          image: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png'
-        },
-        {
-          id: 'binancecoin',
-          symbol: 'bnb',
-          name: 'BNB',
-          current_price: 315.45,
-          price_change_percentage_24h: -0.65,
-          market_cap: 48500000000,
-          total_volume: 890000000,
-          image: 'https://assets.coingecko.com/coins/images/825/large/bnb-icon2_2x.png'
-        },
-        {
-          id: 'solana',
-          symbol: 'sol',
-          name: 'Solana',
-          current_price: 98.75,
-          price_change_percentage_24h: 5.23,
-          market_cap: 42500000000,
-          total_volume: 2100000000,
-          image: 'https://assets.coingecko.com/coins/images/4128/large/solana.png'
-        },
-        {
-          id: 'cardano',
-          symbol: 'ada',
-          name: 'Cardano',
-          current_price: 0.485,
-          price_change_percentage_24h: -1.23,
-          market_cap: 17200000000,
-          total_volume: 450000000,
-          image: 'https://assets.coingecko.com/coins/images/975/large/cardano.png'
-        }
-      ];
+      // Em caso de erro, tentar novamente em 5 segundos
+      setTimeout(() => {
+        fetchCryptoData();
+      }, 5000);
       
-      setCryptoData(fallbackData);
-      setError('Dados carregados em modo offline');
+      setError('Erro de conexão. Tentando novamente...');
     } finally {
       setLoading(false);
     }
   };
 
-  // CAMADA 2: Buscar dados do gráfico para uma criptomoeda específica
+  // Buscar dados do gráfico para uma criptomoeda específica
   const fetchChartData = async (cryptoId) => {
     try {
       setChartLoading(true);
@@ -150,23 +100,18 @@ const Cripto = () => {
     } catch (error) {
       console.error('Erro ao buscar dados do gráfico:', error);
       
-      // Dados mock para o gráfico
-      const mockChartData = Array.from({ length: 7 }, (_, i) => ({
-        date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000),
-        price: 40000 + Math.random() * 10000
-      }));
-      
-      setChartData(mockChartData);
+      // Em caso de erro, tentar novamente
+      setChartData(null);
     } finally {
       setChartLoading(false);
     }
   };
 
-  // CAMADA 2: Atualizar dados a cada 2 minutos
+  // Atualizar dados a cada 1 minuto para cotações em tempo real
   useEffect(() => {
     fetchCryptoData();
     
-    const interval = setInterval(fetchCryptoData, 120000); // 2 minutos
+    const interval = setInterval(fetchCryptoData, 60000); // 1 minuto
     
     return () => clearInterval(interval);
   }, []);
@@ -182,6 +127,16 @@ const Cripto = () => {
   useEffect(() => {
     document.title = `Agroisync - ${t('crypto.title')}`;
   }, [t]);
+
+  // Função para obter símbolo correto do TradingView
+  const getTradingViewSymbol = (cryptoId) => {
+    const symbols = {
+      'bitcoin': 'BTCUSD',
+      'ethereum': 'ETHUSD',
+      'solana': 'SOLUSD'
+    };
+    return symbols[cryptoId] || 'BTCUSD';
+  };
 
   const checkMetamaskConnection = async () => {
     try {
@@ -470,147 +425,138 @@ const Cripto = () => {
         </div>
       </section>
 
-      {/* Main Content */}
-      <section className="py-20 px-4">
+      {/* Gráfico em Tempo Real - CoinGecko/TradingView */}
+      <section className="py-20 px-4 bg-slate-50">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            {/* Crypto List */}
-            <div className="lg:col-span-1">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6 }}
-                className="bg-white rounded-2xl shadow-lg p-6 border border-slate-200"
-              >
-                <h3 className="text-xl font-bold text-slate-800 mb-4">
-                  {t('crypto.realTimeQuotes')}
-                </h3>
-                
-                {loading ? (
-                  <div className="text-center py-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-600 mx-auto mb-4"></div>
-                    <p className="text-slate-600">{t('common.loading')}</p>
-                  </div>
-                ) : error ? (
-                  <div className="text-center py-8">
-                    <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-                    <p className="text-red-600 mb-2">{error}</p>
-                    <button
-                      onClick={fetchCryptoData}
-                      className="px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors duration-200"
-                    >
-                      {t('common.tryAgain')}
-                    </button>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {cryptoData.map((crypto) => (
-                      <motion.div
-                        key={crypto.id}
-                        whileHover={{ scale: 1.02 }}
-                        className={`p-3 rounded-lg cursor-pointer transition-all duration-200 ${
-                          selectedCrypto === crypto.id
-                            ? 'bg-slate-100 border-2 border-slate-300'
-                            : 'bg-slate-50 hover:bg-slate-100'
-                        }`}
-                        onClick={() => setSelectedCrypto(crypto.id)}
-                      >
-                        <div className="flex items-center space-x-3">
-                          <img
-                            src={crypto.image}
-                            alt={crypto.name}
-                            className="w-8 h-8 rounded-full"
-                            onError={(e) => {
-                              e.target.src = getCryptoIcon(crypto.symbol);
-                            }}
-                          />
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between">
-                              <h4 className="font-semibold text-slate-800 truncate">
-                                {crypto.name}
-                              </h4>
-                              <span className="text-sm font-mono text-slate-600">
-                                {crypto.symbol.toUpperCase()}
-                              </span>
-                            </div>
-                            <div className="flex items-center justify-between mt-1">
-                              <span className="text-lg font-bold text-slate-900">
-                                {formatPrice(crypto.current_price)}
-                              </span>
-                              <div className="text-sm">
-                                {formatChange(crypto.price_change_percentage_24h)}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                )}
-              </motion.div>
-            </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-4xl font-bold text-slate-800 mb-4">
+              📊 Gráfico em Tempo Real
+            </h2>
+            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+              Acompanhe as variações das principais criptomoedas com dados atualizados da CoinGecko
+            </p>
+          </motion.div>
 
-            {/* Chart and Details */}
-            <div className="lg:col-span-2">
-              
-              {/* Chart Placeholder */}
-              <div className="h-80 bg-gradient-to-br from-slate-50 to-blue-50 rounded-lg border border-slate-200 flex items-center justify-center">
-                <div className="text-center">
-                  <BarChart3 className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-                  <p className="text-slate-600 font-medium">{t('crypto.chart.title')}</p>
-                  <p className="text-sm text-slate-500 mb-4">{t('crypto.chart.description')}</p>
-                  
-                  {/* Botão para atualizar dados */}
-                  <button
-                    onClick={fetchCryptoData}
-                    disabled={loading}
-                    className="px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors duration-200 disabled:opacity-50"
-                  >
-                    {loading ? t('common.updating') : t('common.refresh')}
-                  </button>
+          {/* Seletor de Criptomoeda */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex justify-center mb-8"
+          >
+            <div className="flex flex-wrap gap-2 justify-center">
+              {cryptoData.slice(0, 5).map((crypto) => (
+                <button
+                  key={crypto.id}
+                  onClick={() => setSelectedCrypto(crypto.id)}
+                  className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                    selectedCrypto === crypto.id
+                      ? 'bg-blue-600 text-white shadow-lg'
+                      : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                  }`}
+                >
+                  <div className="flex items-center space-x-2">
+                    <img src={crypto.image} alt={crypto.name} className="w-5 h-5 rounded-full" />
+                    <span>{crypto.symbol.toUpperCase()}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Gráfico TradingView */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden"
+          >
+            <div className="p-6 border-b border-slate-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-2xl font-bold text-slate-800">
+                    {cryptoData.find(c => c.id === selectedCrypto)?.name || 'Bitcoin'}
+                  </h3>
+                  <p className="text-slate-600">
+                    {cryptoData.find(c => c.id === selectedCrypto)?.symbol?.toUpperCase() || 'BTC'}/USD
+                  </p>
+                </div>
+                <div className="text-right">
+                  <div className="text-3xl font-bold text-slate-800">
+                    ${cryptoData.find(c => c.id === selectedCrypto)?.current_price?.toFixed(2) || '0.00'}
+                  </div>
+                  <div className="text-sm">
+                    {cryptoData.find(c => c.id === selectedCrypto) && 
+                      formatChange(cryptoData.find(c => c.id === selectedCrypto).price_change_percentage_24h)
+                    }
+                  </div>
                 </div>
               </div>
-
-              {/* Crypto Details */}
-              {selectedCrypto && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6 }}
-                  className="mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200"
-                >
-                  <h4 className="text-lg font-semibold text-slate-800 mb-3">{t('crypto.details.title')}</h4>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="text-center">
-                      <p className="text-sm text-slate-600">{t('crypto.details.currentPrice')}</p>
-                      <p className="font-bold text-slate-800">
-                        {formatPrice(cryptoData.find(c => c.id === selectedCrypto)?.current_price)}
-                      </p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-sm text-slate-600">{t('crypto.details.change24h')}</p>
-                      <div className="font-bold">
-                        {formatChange(cryptoData.find(c => c.id === selectedCrypto)?.price_change_percentage_24h)}
-                      </div>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-sm text-slate-600">{t('crypto.details.volume')}</p>
-                      <p className="font-bold text-slate-800">
-                        {formatVolume(cryptoData.find(c => c.id === selectedCrypto)?.total_volume)}
-                      </p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-sm text-slate-600">{t('crypto.details.marketCap')}</p>
-                      <p className="font-bold text-slate-800">
-                        {formatMarketCap(cryptoData.find(c => c.id === selectedCrypto)?.market_cap)}
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
             </div>
-          </div>
+            
+            {/* TradingView Widget */}
+            <div className="h-96 w-full">
+              <iframe
+                src={`https://s.tradingview.com/widgetembed/?frameElementId=tradingview_${selectedCrypto}&symbol=${getTradingViewSymbol(selectedCrypto)}&interval=D&hidesidetoolbar=0&hidetrading=1&symboledit=1&saveimage=1&toolbarbg=f1f3f6&studies=%5B%5D&theme=light&style=1&timezone=exchange&withdateranges=1&range=1M&showpopupbutton=1&popupwidth=1000&popupheight=650&locale=pt_BR&utm_source=&utm_medium=widget&utm_campaign=symbol&page-uri=`}
+                style={{ width: '100%', height: '100%' }}
+                frameBorder="0"
+                allowTransparency={true}
+                allowFullScreen={true}
+                title={`Gráfico ${getTradingViewSymbol(selectedCrypto)}`}
+              />
+            </div>
+          </motion.div>
+
+          {/* Estatísticas em Tempo Real */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8"
+          >
+            {cryptoData.find(c => c.id === selectedCrypto) && (() => {
+              const crypto = cryptoData.find(c => c.id === selectedCrypto);
+              return [
+                {
+                  label: 'Volume 24h',
+                  value: `$${formatVolume(crypto.total_volume)}`,
+                  icon: '📊',
+                  color: 'text-blue-600'
+                },
+                {
+                  label: 'Market Cap',
+                  value: `$${formatMarketCap(crypto.market_cap)}`,
+                  icon: '💰',
+                  color: 'text-emerald-600'
+                },
+                {
+                  label: 'Variação 24h',
+                  value: `${crypto.price_change_percentage_24h >= 0 ? '+' : ''}${crypto.price_change_percentage_24h.toFixed(2)}%`,
+                  icon: crypto.price_change_percentage_24h >= 0 ? '📈' : '📉',
+                  color: crypto.price_change_percentage_24h >= 0 ? 'text-emerald-600' : 'text-red-600'
+                }
+              ];
+            })().map((stat, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.8 + index * 0.1 }}
+                className="bg-white p-6 rounded-xl shadow-lg border border-slate-200 text-center"
+              >
+                <div className="text-3xl mb-2">{stat.icon}</div>
+                <div className={`text-2xl font-bold ${stat.color} mb-2`}>
+                  {stat.value}
+                </div>
+                <div className="text-slate-600">{stat.label}</div>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
@@ -726,8 +672,7 @@ const Cripto = () => {
               {metamaskConnected ? (
                 <div className="space-y-4">
                   {/* The original code had transactions.length > 0, but transactions is not defined.
-                      Assuming it should be removed or replaced with a placeholder.
-                      For now, keeping the structure but noting the potential issue. */}
+                      Assuming it should be removed or replaced with a placeholder. */}
                   <div className="text-center py-8">
                     <Activity className="w-12 h-12 text-slate-400 mx-auto mb-4" />
                     <p className="text-slate-600">{t('crypto.noTransactions')}</p>
