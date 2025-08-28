@@ -8,7 +8,7 @@ import { Eye, EyeOff, Mail, Lock, User, Phone, ArrowLeft, Shield, Key } from 'lu
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, loginAdmin, isAuthenticated } = useAuth();
+  const { login, loginAdmin, isAuthenticated, verify2FA, sendOTP, forgotPassword } = useAuth();
   const { isDark } = useTheme();
   
   const [formData, setFormData] = useState({
@@ -92,20 +92,19 @@ const Login = () => {
     setSuccess('');
 
     try {
-      // Simular envio de reset de senha
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Enviar recuperação de senha via backend
+      const result = await forgotPassword(forgotPasswordEmail);
       
-      if (resetMethod === 'email') {
-        setSuccess('E-mail de recuperação enviado! Verifique sua caixa de entrada.');
+      if (result.success) {
+        setSuccess(result.message);
+        setTimeout(() => {
+          setShowForgotPassword(false);
+          setForgotPasswordEmail('');
+          setResetMethod('email');
+        }, 3000);
       } else {
-        setSuccess('SMS de recuperação enviado! Verifique seu celular.');
+        setError(result.message || 'Erro ao enviar recuperação de senha. Tente novamente.');
       }
-      
-      setTimeout(() => {
-        setShowForgotPassword(false);
-        setForgotPasswordEmail('');
-        setResetMethod('email');
-      }, 3000);
     } catch (error) {
       setError('Erro ao enviar recuperação de senha. Tente novamente.');
     } finally {
@@ -124,15 +123,14 @@ const Login = () => {
     setError('');
 
     try {
-      // Simular verificação 2FA
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Verificação real do código 2FA via backend
+      const result = await verify2FA(twoFACode);
       
-      // Aqui você implementaria a verificação real do código 2FA
-      if (twoFACode === '123456') { // Código de exemplo
+      if (result.success) {
         setSuccess('Verificação 2FA realizada com sucesso!');
         setTimeout(() => navigate('/dashboard'), 1500);
       } else {
-        setError('Código 2FA inválido. Tente novamente.');
+        setError(result.message || 'Código 2FA inválido. Tente novamente.');
       }
     } catch (error) {
       setError('Erro ao verificar código 2FA. Tente novamente.');
@@ -143,9 +141,17 @@ const Login = () => {
 
   const resend2FACode = async () => {
     try {
-      // Simular reenvio do código
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setSuccess('Novo código 2FA enviado!');
+      setError('');
+      setSuccess('');
+      
+      // Reenviar código OTP via backend
+      const result = await sendOTP();
+      
+      if (result.success) {
+        setSuccess('Novo código 2FA enviado para seu dispositivo!');
+      } else {
+        setError(result.message || 'Erro ao reenviar código. Tente novamente.');
+      }
     } catch (error) {
       setError('Erro ao reenviar código. Tente novamente.');
     }

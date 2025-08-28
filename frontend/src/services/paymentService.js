@@ -43,10 +43,9 @@ export const paymentService = {
         'loja-pro': 'anunciante-premium',
         'loja-enterprise': 'anunciante-enterprise'
       },
-      'freight': {
-        'agroconecta-basico': 'freteiro-basic',
-        'agroconecta-pro': 'freteiro-premium',
-        'agroconecta-enterprise': 'freteiro-enterprise'
+      'agroconecta': {
+        'agroconecta-medio': 'freteiro-medium',
+        'agroconecta-pro': 'freteiro-premium'
       }
     };
     

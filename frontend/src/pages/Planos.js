@@ -226,21 +226,22 @@ const Planos = () => {
   // Planos do AgroConecta
   const agroconectaPlans = [
     {
-      id: 'agroconecta-basico',
-      name: 'AgroConecta Básico',
-      price: 'R$ 19,90',
+      id: 'agroconecta-medio',
+      name: 'AgroConecta - Médio',
+      price: 'R$ 99,90',
       period: 'por mês',
-      description: 'Para transportadores iniciantes',
+      description: 'Acesso básico às funções premium',
       features: [
-        'Até 20 fretes ativos',
-        'Suporte básico',
-        'Acesso ao marketplace',
-        'Notificações básicas'
+        'Mensageria completa',
+        'Listar fretes ilimitados',
+        'Contatos após pagamento',
+        'Suporte prioritário',
+        'Notificações avançadas',
+        'Relatórios básicos'
       ],
       limitations: [
-        'Máximo 20 fretes',
-        'Sem destaque',
-        'Suporte por email'
+        'Sem destaque premium',
+        'API limitada'
       ],
       color: 'from-green-600 to-blue-600',
       buttonColor: 'btn-premium',
@@ -248,17 +249,18 @@ const Planos = () => {
     },
     {
       id: 'agroconecta-pro',
-      name: 'AgroConecta Pro',
-      price: 'R$ 49,90',
+      name: 'AgroConecta - Pro',
+      price: 'R$ 249,90',
       period: 'por mês',
-      description: 'Para transportadores profissionais',
+      description: 'Acesso completo com prioridade',
       features: [
-        'Fretes ilimitados',
-        'Destaque nos resultados',
-        'Suporte prioritário',
-        'Notificações avançadas',
-        'Relatórios de performance',
-        'API de integração'
+        'Tudo do plano Médio',
+        'Listar ilimitado',
+        'Prioridade nos resultados',
+        'Relatórios avançados',
+        'API completa',
+        'Suporte VIP',
+        'Destaque premium'
       ],
       limitations: [],
       color: 'from-blue-600 to-purple-600',
@@ -267,49 +269,9 @@ const Planos = () => {
     }
   ];
 
-  // Planos de Criptomoedas
-  const cryptoPlans = [
-    {
-      id: 'crypto-basico',
-      name: 'Crypto Básico',
-      price: 'R$ 39,90',
-      period: 'por mês',
-      description: 'Acesso básico à plataforma crypto',
-      features: [
-        'Carteira Web3 básica',
-        'Preços em tempo real',
-        'Gráficos básicos',
-        'Suporte por email'
-      ],
-      limitations: [
-        'Sem operações DeFi',
-        'Gráficos limitados',
-        'Sem alertas de preço'
-      ],
-      color: 'from-purple-600 to-pink-600',
-      buttonColor: 'btn-premium',
-      popular: false
-    },
-    {
-      id: 'crypto-pro',
-      name: 'Crypto Pro',
-      price: 'R$ 99,90',
-      period: 'por mês',
-      description: 'Plataforma crypto completa',
-      features: [
-        'Tudo do plano básico',
-        'Operações DeFi completas',
-        'Gráficos avançados',
-        'Alertas de preço',
-        'Análise técnica',
-        'Suporte prioritário'
-      ],
-      limitations: [],
-      color: 'from-pink-600 to-red-600',
-      buttonColor: 'btn-premium',
-      popular: true
-    }
-  ];
+  // Planos de Criptomoedas - REMOVIDOS
+  // A funcionalidade crypto permanece disponível na página /cripto
+  // mas não faz parte dos planos pagos
 
   const getCurrentPlans = () => {
     switch (selectedModule) {
@@ -317,8 +279,6 @@ const Planos = () => {
         return lojaPlans;
       case 'agroconecta':
         return agroconectaPlans;
-      case 'crypto':
-        return cryptoPlans;
       default:
         return lojaPlans;
     }
@@ -330,8 +290,6 @@ const Planos = () => {
         return <ShoppingCart className="w-6 h-6" />;
       case 'agroconecta':
         return <Truck className="w-6 h-6" />;
-      case 'crypto':
-        return <Coins className="w-6 h-6" />;
       default:
         return <Package className="w-6 h-6" />;
     }
@@ -343,8 +301,6 @@ const Planos = () => {
         return 'Loja AgroSync';
       case 'agroconecta':
         return 'AgroConecta';
-      case 'crypto':
-        return 'Plataforma Crypto';
       default:
         return 'Loja AgroSync';
     }
@@ -376,8 +332,7 @@ const Planos = () => {
           <div className="flex flex-wrap justify-center gap-4">
             {[
               { id: 'store', name: 'Loja AgroSync', icon: ShoppingCart },
-              { id: 'agroconecta', name: 'AgroConecta', icon: Truck },
-              { id: 'crypto', name: 'Crypto', icon: Coins }
+              { id: 'agroconecta', name: 'AgroConecta', icon: Truck }
             ].map((module) => {
               const Icon = module.icon;
               const isActive = selectedModule === module.id;
