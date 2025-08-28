@@ -446,6 +446,231 @@ async function handleStripeSubscriptionCancellation(subscription) {
   }
 }
 
+// ===== ROTAS METAMASK =====
+
+// Criar fatura para pagamento MetaMask
+router.post('/metamask/create-invoice', async (req, res) => {
+  try {
+    const { planId, planData } = req.body;
+    
+    if (!planId || !planData) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Dados do plano são obrigatórios' 
+      });
+    }
+
+    // Validar dados do plano
+    const validPlans = {
+      'loja-basic': { price: 0.001, name: 'Loja Básico' },
+      'loja-pro': { price: 0.002, name: 'Loja Pro' },
+      'agroconecta-medio': { price: 0.002, name: 'AgroConecta Médio' },
+      'agroconecta-pro': { price: 0.005, name: 'AgroConecta Pro' }
+    };
+
+    const plan = validPlans[planId];
+    if (!plan) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Plano inválido' 
+      });
+    }
+
+    // Gerar ID único para a fatura
+    const invoiceId = `INV_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+    res.json({
+      success: true,
+      invoiceId: invoiceId,
+      plan: plan,
+      amount: plan.price,
+      currency: 'ETH',
+      expiresAt: new Date(Date.now() + 30 * 60 * 1000), // 30 minutos
+      instructions: 'Envie exatamente ' + plan.price + ' ETH para a carteira especificada'
+    });
+
+  } catch (error) {
+    console.error('Erro ao criar fatura MetaMask:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Erro interno do servidor' 
+    });
+  }
+});
+
+// Verificar pagamento MetaMask
+router.post('/metamask/verify', async (req, res) => {
+  try {
+    const { planId, planData, transactionHash, amount, walletAddress } = req.body;
+    
+    if (!planId || !transactionHash || !amount || !walletAddress) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Dados da transação são obrigatórios' 
+      });
+    }
+
+    // Validar dados do plano
+    const validPlans = {
+      'loja-basic': { price: 0.001, name: 'Loja Básico' },
+      'loja-pro': { price: 0.002, name: 'Loja Pro' },
+      'agroconecta-medio': { price: 0.002, name: 'AgroConecta Médio' },
+      'agroconecta-pro': { price: 0.005, name: 'AgroConecta Pro' }
+    };
+
+    const plan = validPlans[planId];
+    if (!plan) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Plano inválido' 
+      });
+    }
+
+    // Verificar se o valor está correto
+    if (parseFloat(amount) < plan.price) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Valor insuficiente para o plano selecionado' 
+      });
+    }
+
+    // Verificar transação na blockchain (simulado)
+    const transactionValid = await verifyBlockchainTransaction(transactionHash, amount, walletAddress);
+    
+    if (!transactionValid) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Transação inválida ou não confirmada' 
+      });
+    }
+
+    // Atualizar usuário como pago
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        isPaid: true,
+        planActive: planId,
+        planType: plan.name,
+        planExpiry: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 dias
+        lastPayment: new Date(),
+        paymentMethod: 'metamask'
+      },
+      { new: true }
+    );
+
+    // Salvar registro de pagamento
+    const payment = new Payment({
+      userId: req.user.id,
+      planId: planId,
+      planName: plan.name,
+      amount: amount,
+      currency: 'ETH',
+      paymentMethod: 'metamask',
+      transactionHash: transactionHash,
+      walletAddress: walletAddress,
+      status: 'completed',
+      metadata: {
+        planData: planData,
+        verificationSource: 'blockchain'
+      }
+    });
+
+    await payment.save();
+
+    res.json({
+      success: true,
+      message: 'Pagamento MetaMask confirmado com sucesso',
+      user: {
+        isPaid: user.isPaid,
+        planActive: user.planActive,
+        planType: user.planType,
+        planExpiry: user.planExpiry
+      }
+    });
+
+  } catch (error) {
+    console.error('Erro ao verificar pagamento MetaMask:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Erro interno do servidor' 
+    });
+  }
+});
+
+// Obter saldo da carteira MetaMask
+router.get('/metamask/balance/:address', async (req, res) => {
+  try {
+    const { address } = req.params;
+    
+    if (!address || !ethers.utils.isAddress(address)) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Endereço de carteira inválido' 
+      });
+    }
+
+    // Em produção, usar provider real
+    // const provider = new ethers.providers.JsonRpcProvider(WEB3_PROVIDER);
+    // const balance = await provider.getBalance(address);
+    
+    // Por enquanto, simular saldo
+    const balance = '0.0'; // Simulado
+
+    res.json({
+      success: true,
+      address: address,
+      balance: balance,
+      currency: 'ETH'
+    });
+
+  } catch (error) {
+    console.error('Erro ao obter saldo MetaMask:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Erro interno do servidor' 
+    });
+  }
+});
+
+// Obter transações da carteira MetaMask
+router.get('/metamask/transactions/:address', async (req, res) => {
+  try {
+    const { address } = req.params;
+    const { limit = 10, offset = 0 } = req.query;
+    
+    if (!address || !ethers.utils.isAddress(address)) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Endereço de carteira inválido' 
+      });
+    }
+
+    // Em produção, usar provider real para buscar transações
+    // Por enquanto, retornar transações vazias
+    const transactions = [];
+
+    res.json({
+      success: true,
+      address: address,
+      transactions: transactions,
+      pagination: {
+        limit: parseInt(limit),
+        offset: parseInt(offset),
+        total: 0
+      }
+    });
+
+  } catch (error) {
+    console.error('Erro ao obter transações MetaMask:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Erro interno do servidor' 
+    });
+  }
+});
+
+// ===== FUNÇÕES AUXILIARES =====
+
 async function verifyBlockchainTransaction(transactionHash, amount, walletAddress) {
   try {
     // Em produção, usar provider real (Infura, Alchemy, etc.)
