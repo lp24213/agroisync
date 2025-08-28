@@ -19,8 +19,17 @@ const API_CONFIG = {
     baseURL: process.env.RECEITA_FEDERAL_API_URL || 'https://api.receita.fazenda.gov.br',
     apiKey: process.env.RECEITA_FEDERAL_API_KEY,
     timeout: 20000
+  },
+  baiduMaps: {
+    baseURL: 'https://api.map.baidu.com',
+    apiKey: process.env.BAIDU_MAPS_API_KEY,
+    timeout: 15000
   }
 };
+
+// Cache simples em memória (em produção, usar Redis)
+const CACHE = new Map();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
 
 // Classe para serviços de API externa
 class ExternalAPIService {
@@ -48,6 +57,55 @@ class ExternalAPIService {
         'Content-Type': 'application/json'
       }
     });
+    
+    this.baiduClient = axios.create({
+      baseURL: API_CONFIG.baiduMaps.baseURL,
+      timeout: API_CONFIG.baiduMaps.timeout
+    });
+  }
+
+  // ===== SISTEMA DE CACHE =====
+  
+  /**
+   * Obter item do cache
+   * @param {string} key - Chave do cache
+   * @returns {Object|null} Item do cache ou null se expirado
+   */
+  getFromCache(key) {
+    const item = CACHE.get(key);
+    if (!item) return null;
+    
+    if (Date.now() > item.expiresAt) {
+      CACHE.delete(key);
+      return null;
+    }
+    
+    return item.data;
+  }
+  
+  /**
+   * Salvar item no cache
+   * @param {string} key - Chave do cache
+   * @param {Object} data - Dados para cache
+   * @param {number} ttl - Tempo de vida em ms (opcional)
+   */
+  setCache(key, data, ttl = CACHE_TTL) {
+    CACHE.set(key, {
+      data,
+      expiresAt: Date.now() + ttl
+    });
+  }
+  
+  /**
+   * Limpar cache expirado
+   */
+  cleanupCache() {
+    const now = Date.now();
+    for (const [key, item] of CACHE.entries()) {
+      if (now > item.expiresAt) {
+        CACHE.delete(key);
+      }
+    }
   }
 
   // ===== SERVIÇOS DE CEP E ENDEREÇO =====
@@ -309,6 +367,202 @@ class ExternalAPIService {
 
   // ===== SERVIÇOS DA RECEITA FEDERAL =====
   
+  // ===== SERVIÇOS DO BAIDU MAPS =====
+  
+  /**
+   * Geocoding: converter endereço em coordenadas
+   * @param {string} address - Endereço para geocodificar
+   * @param {string} city - Cidade (opcional)
+   * @param {string} region - Região/Estado (opcional)
+   * @returns {Object} Coordenadas e informações do endereço
+   */
+  async geocodeAddress(address, city = '', region = '') {
+    try {
+      if (!API_CONFIG.baiduMaps.apiKey) {
+        throw new Error('API key do Baidu Maps não configurada');
+      }
+      
+      const cacheKey = `geocode:${address}:${city}:${region}`;
+      const cached = this.getFromCache(cacheKey);
+      if (cached) return cached;
+      
+      const fullAddress = [address, city, region].filter(Boolean).join(', ');
+      
+      const response = await this.baiduClient.get('/geocoding/v3/', {
+        params: {
+          address: fullAddress,
+          output: 'json',
+          ak: API_CONFIG.baiduMaps.apiKey,
+          city: city || undefined,
+          region: region || undefined
+        }
+      });
+      
+      if (response.data.status !== 0) {
+        throw new Error(`Erro do Baidu Maps: ${response.data.message}`);
+      }
+      
+      const result = response.data.result;
+      const location = result.location;
+      
+      const geocodeResult = {
+        success: true,
+        data: {
+          address: fullAddress,
+          coordinates: {
+            lat: location.lat,
+            lng: location.lng
+          },
+          formattedAddress: result.formatted_address,
+          confidence: result.confidence,
+          level: result.level,
+          precise: result.precise
+        }
+      };
+      
+      this.setCache(cacheKey, geocodeResult, 10 * 60 * 1000); // 10 minutos para geocoding
+      return geocodeResult;
+      
+    } catch (error) {
+      console.error('Erro no geocoding:', error);
+      return {
+        success: false,
+        message: 'Erro ao geocodificar endereço',
+        error: error.message
+      };
+    }
+  }
+  
+  /**
+   * Reverse geocoding: converter coordenadas em endereço
+   * @param {number} lat - Latitude
+   * @param {number} lng - Longitude
+   * @returns {Object} Endereço e informações da localização
+   */
+  async reverseGeocode(lat, lng) {
+    try {
+      if (!API_CONFIG.baiduMaps.apiKey) {
+        throw new Error('API key do Baidu Maps não configurada');
+      }
+      
+      const cacheKey = `reverse_geocode:${lat}:${lng}`;
+      const cached = this.getFromCache(cacheKey);
+      if (cached) return cached;
+      
+      const response = await this.baiduClient.get('/reverse_geocoding/v3/', {
+        params: {
+          location: `${lat},${lng}`,
+          output: 'json',
+          ak: API_CONFIG.baiduMaps.apiKey,
+          coordtype: 'wgs84ll'
+        }
+      });
+      
+      if (response.data.status !== 0) {
+        throw new Error(`Erro do Baidu Maps: ${response.data.message}`);
+      }
+      
+      const result = response.data.result;
+      const addressComponent = result.addressComponent;
+      
+      const reverseGeocodeResult = {
+        success: true,
+        data: {
+          coordinates: { lat, lng },
+          formattedAddress: result.formatted_address,
+          addressComponent: {
+            country: addressComponent.country,
+            province: addressComponent.province,
+            city: addressComponent.city,
+            district: addressComponent.district,
+            street: addressComponent.street,
+            streetNumber: addressComponent.street_number
+          },
+          confidence: result.confidence,
+          level: result.level
+        }
+      };
+      
+      this.setCache(cacheKey, reverseGeocodeResult, 10 * 60 * 1000); // 10 minutos
+      return reverseGeocodeResult;
+      
+    } catch (error) {
+      console.error('Erro no reverse geocoding:', error);
+      return {
+        success: false,
+        message: 'Erro ao fazer reverse geocoding',
+        error: error.message
+      };
+    }
+  }
+  
+  /**
+   * Calcular rota entre dois pontos
+   * @param {Object} origin - Coordenadas de origem {lat, lng}
+   * @param {Object} destination - Coordenadas de destino {lat, lng}
+   * @param {string} mode - Modo de transporte (driving, walking, bicycling, transit)
+   * @returns {Object} Informações da rota
+   */
+  async calculateRoute(origin, destination, mode = 'driving') {
+    try {
+      if (!API_CONFIG.baiduMaps.apiKey) {
+        throw new Error('API key do Baidu Maps não configurada');
+      }
+      
+      const cacheKey = `route:${origin.lat}:${origin.lng}:${destination.lat}:${destination.lng}:${mode}`;
+      const cached = this.getFromCache(cacheKey);
+      if (cached) return cached;
+      
+      const response = await this.baiduClient.get('/routematrix/v2/', {
+        params: {
+          origins: `${origin.lat},${origin.lng}`,
+          destinations: `${destination.lat},${destination.lng}`,
+          ak: API_CONFIG.baiduMaps.apiKey,
+          output: 'json'
+        }
+      });
+      
+      if (response.data.status !== 0) {
+        throw new Error(`Erro do Baidu Maps: ${response.data.message}`);
+      }
+      
+      const result = response.data.result;
+      const routeInfo = result.distance[0][0];
+      const durationInfo = result.duration[0][0];
+      
+      const routeResult = {
+        success: true,
+        data: {
+          origin,
+          destination,
+          mode,
+          distance: {
+            meters: routeInfo,
+            kilometers: (routeInfo / 1000).toFixed(2)
+          },
+          duration: {
+            seconds: durationInfo,
+            minutes: Math.round(durationInfo / 60),
+            hours: (durationInfo / 3600).toFixed(2)
+          }
+        }
+      };
+      
+      this.setCache(cacheKey, routeResult, 5 * 60 * 1000); // 5 minutos para rotas
+      return routeResult;
+      
+    } catch (error) {
+      console.error('Erro ao calcular rota:', error);
+      return {
+        success: false,
+        message: 'Erro ao calcular rota',
+        error: error.message
+      };
+    }
+  }
+
+  // ===== SERVIÇOS DA RECEITA FEDERAL =====
+  
   /**
    * Consultar CNPJ na Receita Federal
    * @param {string} cnpj - CNPJ a ser consultado
@@ -473,5 +727,8 @@ export const {
   obterCoordenadasPorIP,
   consultarCNPJ,
   consultarCPF,
-  validarEndereco
+  validarEndereco,
+  geocodeAddress,
+  reverseGeocode,
+  calculateRoute
 } = externalAPIService;

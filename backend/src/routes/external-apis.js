@@ -152,6 +152,80 @@ router.get('/clima/ip/:ip', async (req, res) => {
   }
 });
 
+// ===== ROTAS DO BAIDU MAPS =====
+
+// GET /api/external/baidu/geocode - Geocoding de endereço
+router.get('/baidu/geocode', async (req, res) => {
+  try {
+    const { address, city, region } = req.query;
+    
+    if (!address) {
+      return res.status(400).json({
+        success: false,
+        message: 'Endereço é obrigatório'
+      });
+    }
+    
+    const result = await externalAPIService.geocodeAddress(address, city, region);
+    res.json(result);
+  } catch (error) {
+    console.error('Erro no geocoding:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// GET /api/external/baidu/reverse-geocode - Reverse geocoding
+router.get('/baidu/reverse-geocode', async (req, res) => {
+  try {
+    const { lat, lng } = req.query;
+    
+    if (!lat || !lng) {
+      return res.status(400).json({
+        success: false,
+        message: 'Latitude e longitude são obrigatórios'
+      });
+    }
+    
+    const result = await externalAPIService.reverseGeocode(parseFloat(lat), parseFloat(lng));
+    res.json(result);
+  } catch (error) {
+    console.error('Erro no reverse geocoding:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
+// GET /api/external/baidu/route - Calcular rota
+router.get('/baidu/route', async (req, res) => {
+  try {
+    const { originLat, originLng, destLat, destLng, mode = 'driving' } = req.query;
+    
+    if (!originLat || !originLng || !destLat || !destLng) {
+      return res.status(400).json({
+        success: false,
+        message: 'Coordenadas de origem e destino são obrigatórias'
+      });
+    }
+    
+    const origin = { lat: parseFloat(originLat), lng: parseFloat(originLng) };
+    const destination = { lat: parseFloat(destLat), lng: parseFloat(destLng) };
+    
+    const result = await externalAPIService.calculateRoute(origin, destination, mode);
+    res.json(result);
+  } catch (error) {
+    console.error('Erro ao calcular rota:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+});
+
 // ===== ROTAS DA RECEITA FEDERAL =====
 
 // GET /api/external/receita/cnpj/:cnpj - Consultar CNPJ
@@ -283,13 +357,18 @@ router.get('/status', async (req, res) => {
           },
           openweather: {
             name: 'OpenWeather',
-            status: API_CONFIG.openweather.apiKey ? 'online' : 'offline',
+            status: process.env.OPENWEATHER_API_KEY ? 'online' : 'offline',
             description: 'Dados meteorológicos'
           },
           receitaFederal: {
             name: 'Receita Federal',
-            status: API_CONFIG.receitaFederal.apiKey ? 'online' : 'offline',
+            status: process.env.RECEITA_FEDERAL_API_KEY ? 'online' : 'offline',
             description: 'Validação de documentos'
+          },
+          baiduMaps: {
+            name: 'Baidu Maps',
+            status: process.env.BAIDU_MAPS_API_KEY ? 'online' : 'offline',
+            description: 'Geocoding e rotas'
           }
         }
       }
