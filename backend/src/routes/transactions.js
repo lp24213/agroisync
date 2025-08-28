@@ -1,6 +1,7 @@
 import express from 'express';
 import { authenticateToken, requireRole } from '../middleware/auth.js';
 import Transaction from '../models/Transaction.js';
+import TransactionMessage from '../models/TransactionMessage.js';
 import Product from '../models/Product.js';
 import Freight from '../models/Freight.js';
 import User from '../models/User.js';
@@ -358,108 +359,168 @@ router.post('/', async (req, res) => {
       const { id } = req.params;
       const userId = req.user.userId;
 
-    const transaction = await Transaction.findById(id);
+      const transaction = await Transaction.findById(id);
 
-    if (!transaction) {
-      return res.status(404).json({
+      if (!transaction) {
+        return res.status(404).json({
+          success: false,
+          message: 'Transação não encontrada'
+        });
+      }
+
+      // Verificar se o usuário tem acesso a esta transação
+      if (transaction.buyerId.toString() !== userId && 
+          transaction.sellerId.toString() !== userId) {
+        return res.status(403).json({
+          success: false,
+          message: 'Acesso negado a esta transação'
+        });
+      }
+
+      // Buscar mensagens da transação
+      const messages = await TransactionMessage.findByTransaction(id, {
+        limit: 100,
+        sort: { createdAt: 1 }
+      });
+
+      // Marcar mensagens como lidas se o usuário for o destinatário
+      const unreadMessages = messages.filter(msg => 
+        msg.to.toString() === userId && msg.status !== 'read'
+      );
+
+      if (unreadMessages.length > 0) {
+        await Promise.all(
+          unreadMessages.map(msg => msg.markAsRead(userId))
+        );
+      }
+
+      res.json({
+        success: true,
+        messages: messages.map(msg => msg.getDisplayData(userId)),
+        transactionId: id
+      });
+
+    } catch (error) {
+      console.error('Erro ao buscar mensagens:', error);
+      res.status(500).json({
         success: false,
-        message: 'Transação não encontrada'
+        message: 'Erro interno do servidor'
       });
     }
-
-    // Verificar se o usuário tem acesso a esta transação
-    if (transaction.buyerId.toString() !== userId && 
-        transaction.sellerId.toString() !== userId) {
-      return res.status(403).json({
-        success: false,
-        message: 'Acesso negado a esta transação'
-      });
-    }
-
-    // Buscar mensagens relacionadas (implementar quando tiver o modelo de mensagens)
-    // Por enquanto, retornar array vazio
-    const messages = [];
-
-    res.json({
-      success: true,
-      messages,
-      transactionId: id
-    });
-
-  } catch (error) {
-    console.error('Erro ao buscar mensagens:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-});
+  });
 
   // POST /:id/messages - Adicionar mensagem à transação
   router.post('/:id/messages', async (req, res) => {
     try {
       const { id } = req.params;
-      const { message, attachments } = req.body;
+      const { message, attachments, type = 'text', metadata } = req.body;
       const userId = req.user.userId;
 
-    const transaction = await Transaction.findById(id);
+      const transaction = await Transaction.findById(id);
 
-    if (!transaction) {
-      return res.status(404).json({
+      if (!transaction) {
+        return res.status(404).json({
+          success: false,
+          message: 'Transação não encontrada'
+        });
+      }
+
+      // Verificar se o usuário tem acesso a esta transação
+      if (transaction.buyerId.toString() !== userId && 
+          transaction.sellerId.toString() !== userId) {
+        return res.status(403).json({
+          success: false,
+          message: 'Acesso negado a esta transação'
+        });
+      }
+
+      // Verificar se a transação não está cancelada ou concluída
+      if (['CANCELLED', 'COMPLETED'].includes(transaction.status)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Não é possível enviar mensagens para transações canceladas ou concluídas'
+        });
+      }
+
+      // Se for a primeira mensagem e o status for PENDING, mudar para NEGOTIATING
+      if (transaction.status === 'PENDING') {
+        transaction.status = 'NEGOTIATING';
+        transaction.updatedBy = userId;
+        await transaction.save();
+      }
+
+      // Determinar destinatário
+      const toUserId = transaction.buyerId.toString() === userId 
+        ? transaction.sellerId 
+        : transaction.buyerId;
+
+      // Criar mensagem
+      const newMessage = new TransactionMessage({
+        transactionId: id,
+        from: userId,
+        to: toUserId,
+        body: message,
+        type: type,
+        attachments: attachments || [],
+        metadata: metadata || {}
+      });
+
+      await newMessage.save();
+
+      // Marcar como entregue
+      await newMessage.markAsDelivered();
+
+      // Populate dados para resposta
+      await newMessage.populate([
+        { path: 'from', select: 'name email phone' },
+        { path: 'to', select: 'name email phone' }
+      ]);
+
+      res.json({
+        success: true,
+        message: 'Mensagem enviada com sucesso',
+        data: newMessage.getDisplayData(userId)
+      });
+
+    } catch (error) {
+      console.error('Erro ao enviar mensagem:', error);
+      res.status(500).json({
         success: false,
-        message: 'Transação não encontrada'
+        message: 'Erro interno do servidor'
       });
     }
+  });
 
-    // Verificar se o usuário tem acesso a esta transação
-    if (transaction.buyerId.toString() !== userId && 
-        transaction.sellerId.toString() !== userId) {
-      return res.status(403).json({
+  // GET /conversations - Buscar conversas ativas do usuário
+  router.get('/conversations', async (req, res) => {
+    try {
+      const userId = req.user.userId;
+      const { limit = 20 } = req.query;
+
+      // Buscar conversas ativas
+      const conversations = await TransactionMessage.findActiveConversations(userId, parseInt(limit));
+
+      res.json({
+        success: true,
+        conversations: conversations.map(conv => ({
+          transactionId: conv._id,
+          transaction: conv.transaction,
+          lastMessage: conv.lastMessage,
+          messageCount: conv.messageCount,
+          unreadCount: conv.unreadCount,
+          fromUser: conv.fromUser,
+          toUser: conv.toUser
+        }))
+      });
+
+    } catch (error) {
+      console.error('Erro ao buscar conversas:', error);
+      res.status(500).json({
         success: false,
-        message: 'Acesso negado a esta transação'
+        message: 'Erro interno do servidor'
       });
     }
-
-    // Verificar se a transação não está cancelada ou concluída
-    if (['CANCELLED', 'COMPLETED'].includes(transaction.status)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Não é possível enviar mensagens para transações canceladas ou concluídas'
-      });
-    }
-
-    // Se for a primeira mensagem e o status for PENDING, mudar para NEGOTIATING
-    if (transaction.status === 'PENDING') {
-      transaction.status = 'NEGOTIATING';
-      transaction.updatedBy = userId;
-      await transaction.save();
-    }
-
-    // Criar mensagem (implementar quando tiver o modelo de mensagens)
-    const newMessage = {
-      transactionId: id,
-      from: userId,
-      to: transaction.buyerId.toString() === userId ? transaction.sellerId : transaction.buyerId,
-      message,
-      attachments: attachments || [],
-      createdAt: new Date()
-    };
-
-    // Por enquanto, retornar sucesso
-    res.json({
-      success: true,
-      message: 'Mensagem enviada com sucesso',
-      data: newMessage
-    });
-
-  } catch (error) {
-    console.error('Erro ao enviar mensagem:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erro interno do servidor'
-    });
-  }
-});
+  });
 
   // GET /stats - Estatísticas das transações
   router.get('/stats', async (req, res) => {

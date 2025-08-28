@@ -25,11 +25,9 @@ const ConversationList = ({ userId, onSelectConversation, selectedTransactionId 
       const userConversations = await messagingService.getUserConversations(userId);
       setConversations(userConversations);
       
-      // Gerar dados mock se não houver conversas
+      // Se não houver conversas, mostrar mensagem
       if (userConversations.length === 0) {
-        const mockData = messagingService.generateMockData();
-        const mockConversations = await messagingService.getUserConversations(userId);
-        setConversations(mockConversations);
+        console.log('Nenhuma conversa encontrada');
       }
     } catch (error) {
       console.error('Erro ao carregar conversas:', error);
@@ -80,8 +78,8 @@ const ConversationList = ({ userId, onSelectConversation, selectedTransactionId 
       (filter === 'archived' && conversation.archived);
     
     const matchesSearch = !searchTerm || 
-      conversation.lastMessage.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      conversation.transactionId.toLowerCase().includes(searchTerm.toLowerCase());
+      (conversation.lastMessage?.body || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (conversation.transactionId || '').toLowerCase().includes(searchTerm.toLowerCase());
     
     return matchesFilter && matchesSearch;
   });
@@ -234,16 +232,16 @@ const ConversationList = ({ userId, onSelectConversation, selectedTransactionId 
                           </div>
                           
                           <p className="text-sm text-gray-600 mb-1">
-                            {getMessagePreview(conversation.lastMessage.content)}
+                            {getMessagePreview(conversation.lastMessage?.body || '')}
                           </p>
                           
                           <div className="flex items-center space-x-2 text-xs text-gray-500">
                             <span className="flex items-center">
                               <Clock className="w-3 h-3 mr-1" />
-                              {formatDate(conversation.lastMessage.timestamp)}
+                              {formatDate(conversation.lastMessage?.createdAt || conversation.lastMessage?.timestamp || '')}
                             </span>
                             <span className="text-emerald-600">
-                              {MESSAGE_TYPES[conversation.lastMessage.type]}
+                              {MESSAGE_TYPES[conversation.lastMessage?.type || 'text']}
                             </span>
                           </div>
                         </div>

@@ -78,7 +78,7 @@ const MessageThread = ({ userId, transactionId, onBack }) => {
 
       // Determinar destinatário (usuário oposto da transação)
       const otherUserId = messages.length > 0 
-        ? (messages[0].fromUserId === userId ? messages[0].toUserId : messages[0].fromUserId)
+        ? (messages[0].from === userId ? messages[0].to : messages[0].fromUserId || messages[0].from)
         : 'user_other'; // Fallback para primeira mensagem
 
       const sentMessage = await messagingService.sendMessage(
@@ -117,7 +117,8 @@ const MessageThread = ({ userId, transactionId, onBack }) => {
 
   const handleReply = (message) => {
     setReplyTo(message);
-    setNewMessage(`@${message.fromUserId}: `);
+    const fromUser = message.from || message.fromUserId;
+    setNewMessage(`@${fromUser}: `);
   };
 
   const handleDeleteMessage = async (messageId) => {
@@ -137,7 +138,7 @@ const MessageThread = ({ userId, transactionId, onBack }) => {
     });
   };
 
-  const isOwnMessage = (message) => message.fromUserId === userId;
+  const isOwnMessage = (message) => message.from === userId || message.fromUserId === userId;
 
   const getMessageStatus = (message) => {
     if (message.read) return 'read';
@@ -204,7 +205,7 @@ const MessageThread = ({ userId, transactionId, onBack }) => {
                   {replyTo && message.id === replyTo.id && (
                     <div className="mb-2 p-2 bg-gray-100 rounded-lg text-xs text-gray-600">
                       <p className="font-medium">Respondendo a:</p>
-                      <p className="truncate">{replyTo.content}</p>
+                      <p className="truncate">{replyTo.body || replyTo.content}</p>
                     </div>
                   )}
 
@@ -242,7 +243,7 @@ const MessageThread = ({ userId, transactionId, onBack }) => {
                       </div>
                     )}
                     
-                    <p className="text-sm">{message.content}</p>
+                    <p className="text-sm">{message.body || message.content}</p>
                   </div>
 
                   {/* Status e tempo */}
@@ -250,7 +251,7 @@ const MessageThread = ({ userId, transactionId, onBack }) => {
                     isOwnMessage(message) ? 'justify-end' : 'justify-start'
                   }`}>
                     <span className="text-xs text-gray-500">
-                      {formatTime(message.timestamp)}
+                      {formatTime(message.createdAt || message.timestamp)}
                     </span>
                     
                     {isOwnMessage(message) && (
@@ -266,7 +267,7 @@ const MessageThread = ({ userId, transactionId, onBack }) => {
                   isOwnMessage(message) ? 'order-1 ml-2' : 'order-2 mr-2'
                 }`}>
                   <span className="text-white text-xs font-medium">
-                    {message.fromUserId.charAt(0).toUpperCase()}
+                    {(message.from || message.fromUserId || 'U').charAt(0).toUpperCase()}
                   </span>
                 </div>
               </motion.div>
@@ -284,7 +285,7 @@ const MessageThread = ({ userId, transactionId, onBack }) => {
             <div className="flex items-center justify-between">
               <div className="flex-1">
                 <p className="text-xs text-emerald-600 font-medium">Respondendo a:</p>
-                <p className="text-sm text-emerald-800 truncate">{replyTo.content}</p>
+                <p className="text-sm text-emerald-800 truncate">{replyTo.body || replyTo.content}</p>
               </div>
               <button
                 onClick={() => setReplyTo(null)}

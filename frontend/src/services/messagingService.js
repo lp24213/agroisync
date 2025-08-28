@@ -87,17 +87,20 @@ class MessagingService {
       }
 
       const messageData = {
-        transactionId,
-        fromUserId: this.userId,
-        toUserId,
-        content,
+        message: content,
         type,
         attachments,
-        timestamp: new Date().toISOString()
+        metadata: {}
       };
 
-      // Em produção, enviar via AWS AppSync mutation
-      // const result = await client.mutate({
+      // Enviar via API REST
+      const response = await axios.post(`${API_BASE_URL}/transactions/${transactionId}/messages`, messageData);
+      
+      if (response.data.success) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message || 'Erro ao enviar mensagem');
+      }
       //   mutation: SEND_MESSAGE,
       //   variables: messageData
       // });
@@ -121,20 +124,14 @@ class MessagingService {
   // Buscar mensagens de uma transação
   async getTransactionMessages(transactionId, limit = 50, offset = 0) {
     try {
-      // Em produção, buscar via AWS AppSync query
-      // const result = await client.query({
-      //   query: GET_TRANSACTION_MESSAGES,
-      //   variables: { transactionId, limit, offset }
-      // });
-
-      // Simular busca para desenvolvimento
-      const allMessages = JSON.parse(localStorage.getItem('agroisync_messages') || '[]');
-      const transactionMessages = allMessages
-        .filter(msg => msg.transactionId === transactionId)
-        .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
-        .slice(offset, offset + limit);
-
-      return transactionMessages;
+      // Buscar via API REST
+      const response = await axios.get(`${API_BASE_URL}/transactions/${transactionId}/messages`);
+      
+      if (response.data.success) {
+        return response.data.messages;
+      } else {
+        throw new Error(response.data.message || 'Erro ao buscar mensagens');
+      }
     } catch (error) {
       console.error('Erro ao buscar mensagens:', error);
       return [];
@@ -144,42 +141,14 @@ class MessagingService {
   // Buscar conversas do usuário
   async getUserConversations(userId) {
     try {
-      // Em produção, buscar via AWS AppSync query
-      // const result = await client.query({
-      //   query: GET_USER_CONVERSATIONS,
-      //   variables: { userId }
-      // });
-
-      // Simular busca para desenvolvimento
-      const allMessages = JSON.parse(localStorage.getItem('agroisync_messages') || '[]');
-      const userMessages = allMessages.filter(msg => 
-        msg.fromUserId === userId || msg.toUserId === userId
-      );
-
-      // Agrupar por transação
-      const conversations = {};
-      userMessages.forEach(msg => {
-        if (!conversations[msg.transactionId]) {
-          conversations[msg.transactionId] = {
-            transactionId: msg.transactionId,
-            lastMessage: msg,
-            unreadCount: 0,
-            participants: [msg.fromUserId, msg.toUserId].filter(id => id !== userId)
-          };
-        }
-        
-        if (msg.toUserId === userId && !msg.read) {
-          conversations[msg.transactionId].unreadCount++;
-        }
-        
-        if (new Date(msg.timestamp) > new Date(conversations[msg.transactionId].lastMessage.timestamp)) {
-          conversations[msg.transactionId].lastMessage = msg;
-        }
-      });
-
-      return Object.values(conversations).sort((a, b) => 
-        new Date(b.lastMessage.timestamp) - new Date(a.lastMessage.timestamp)
-      );
+      // Buscar via API REST
+      const response = await axios.get(`${API_BASE_URL}/transactions/conversations`);
+      
+      if (response.data.success) {
+        return response.data.conversations;
+      } else {
+        throw new Error(response.data.message || 'Erro ao buscar conversas');
+      }
     } catch (error) {
       console.error('Erro ao buscar conversas:', error);
       return [];
