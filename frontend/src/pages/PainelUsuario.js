@@ -57,23 +57,23 @@ const PainelUsuario = () => {
     try {
       setLoading(true);
       
-      if (!user?.id) return;
+      if (!user?._id && !user?.id) return;
 
       // Carregar transações do usuário
-      const transactions = await transactionService.getUserTransactions(user.id);
+      const transactions = await transactionService.getUserTransactions(user._id || user.id);
       setUserTransactions(transactions);
 
       // Carregar mensagens das transações
       const allMessages = [];
       for (const txn of transactions) {
-        const messages = await transactionService.getTransactionMessages(txn.id);
-        allMessages.push(...messages.map(msg => ({ ...msg, transactionId: txn.id })));
+        const messages = await transactionService.getTransactionMessages(txn.id || txn._id);
+        allMessages.push(...messages.map(msg => ({ ...msg, transactionId: txn.id || txn._id })));
       }
       setUserMessages(allMessages);
 
       // Carregar perfil do usuário (mock por enquanto)
       setUserProfile({
-        id: user.id,
+        id: user._id || user.id,
         name: user.name || 'Usuário',
         email: user.email || '',
         phone: user.phone || '',
@@ -126,9 +126,9 @@ const PainelUsuario = () => {
     const filtered = getFilteredTransactions();
     
     if (role === 'buyer') {
-      return filtered.filter(txn => txn.buyerId === user.id);
+      return filtered.filter(txn => txn.buyerId === (user._id || user.id));
     } else if (role === 'seller') {
-      return filtered.filter(txn => txn.sellerId === user.id);
+      return filtered.filter(txn => txn.sellerId === (user._id || user.id));
     }
     
     return filtered;
@@ -144,10 +144,10 @@ const PainelUsuario = () => {
     setActiveTab('messages');
     
     // Determinar o outro usuário da transação
-    const otherUserId = transaction.buyerId === user.id ? transaction.sellerId : transaction.buyerId;
+    const otherUserId = transaction.buyerId === (user._id || user.id) ? transaction.sellerId : transaction.buyerId;
     
     setCurrentChat({
-      transactionId: transaction.id,
+      transactionId: transaction.id || transaction._id,
       otherUserId: otherUserId
     });
     setChatOpen(true);
@@ -715,7 +715,7 @@ const PainelUsuario = () => {
       <ChatInterface
         isOpen={chatOpen}
         transactionId={currentChat?.transactionId}
-        currentUserId={user?.id}
+        currentUserId={user?._id || user?.id}
         otherUserId={currentChat?.otherUserId}
         onClose={() => {
           setChatOpen(false);
