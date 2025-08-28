@@ -7,6 +7,7 @@ import adminRoutes from './admin.js';
 import clientRoutes from './clients.js';
 import productRoutes from './products.js';
 import freightRoutes from './freights.js';
+import transactionRoutes from './transactions.js';
 import externalAPIRoutes from './external-apis.js';
 import messagingRoutes from './messaging.js';
 import messageRoutes from './messages.js';
@@ -42,6 +43,9 @@ router.use('/v1/external', externalAPIRoutes);
 
 // ===== FREIGHT ROUTES =====
 router.use('/v1/freights', freightRoutes);
+
+// ===== TRANSACTION ROUTES =====
+router.use('/v1/transactions', transactionRoutes);
 
 // ===== MESSAGING ROUTES =====
 router.use('/v1/messaging', messagingRoutes);
@@ -129,6 +133,20 @@ router.get('/v1', (req, res) => {
           'POST /:id/inquiry - Send freight inquiry',
           'PUT /:id/inquiry/:inquiryId - Respond to inquiry',
           'GET /user/own - Get user own freights'
+        ]
+      },
+      transactions: {
+        base: '/v1/transactions',
+        routes: [
+          'POST / - Create new transaction (auth required)',
+          'GET / - List user transactions',
+          'GET /:id - Get transaction by ID',
+          'PATCH /:id/status - Update transaction status',
+          'GET /:id/messages - Get transaction messages',
+          'POST /:id/messages - Send message to transaction',
+          'GET /stats - Get transaction statistics',
+          'GET /admin/all - List all transactions (admin only)',
+          'PATCH /admin/:id/status - Update status as admin'
         ]
       },
       messaging: {
