@@ -57,6 +57,7 @@ const Loja = () => {
   const [isValidatingLocation, setIsValidatingLocation] = useState(false);
 
   useEffect(() => {
+    console.log('Loja: useEffect executado, isAuthenticated:', isAuthenticated); // Debug
     loadProducts();
     if (isAuthenticated) {
       loadUserData();
@@ -67,28 +68,35 @@ const Loja = () => {
 
   const initializeServices = async () => {
     try {
+      console.log('Loja: Inicializando serviços...'); // Debug
       await baiduMapsService.initialize();
       await receitaService.initialize();
+      console.log('Loja: Serviços inicializados com sucesso'); // Debug
     } catch (error) {
       console.error('Erro ao inicializar serviços:', error);
     }
   };
 
   useEffect(() => {
+    console.log('Loja: applyFilters executado, products:', products.length); // Debug
     applyFilters();
   }, [products, searchTerm, selectedCategory, priceRange, sortBy]);
 
   const loadProducts = async () => {
+    console.log('Loja: loadProducts iniciado'); // Debug
     setLoading(true);
     try {
       // Usar o serviço de produtos
+      console.log('Loja: Chamando productService.getProducts()'); // Debug
       const productsData = await productService.getProducts();
-      console.log('Produtos carregados:', productsData); // Debug
+      console.log('Loja: Produtos carregados:', productsData); // Debug
       setProducts(productsData);
       setFilteredProducts(productsData);
+      console.log('Loja: Produtos definidos no estado'); // Debug
     } catch (error) {
       console.error('Erro ao carregar produtos:', error);
       // Fallback: produtos mock básicos
+      console.log('Loja: Usando produtos fallback'); // Debug
       const fallbackProducts = [
         {
           id: 1,
@@ -157,8 +165,10 @@ const Loja = () => {
       ];
       setProducts(fallbackProducts);
       setFilteredProducts(fallbackProducts);
+      console.log('Loja: Produtos fallback definidos'); // Debug
     } finally {
       setLoading(false);
+      console.log('Loja: Loading finalizado'); // Debug
     }
   };
 
@@ -406,6 +416,7 @@ const Loja = () => {
   ];
 
   if (loading) {
+    console.log('Loja: Renderizando loading...'); // Debug
     return (
       <div className="min-h-screen flex items-center justify-center">
         <motion.div
@@ -419,6 +430,8 @@ const Loja = () => {
       </div>
     );
   }
+
+  console.log('Loja: Renderizando página principal, products:', products.length, 'filteredProducts:', filteredProducts.length); // Debug
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
@@ -485,16 +498,28 @@ const Loja = () => {
               <div className="space-y-6">
                 {/* Filtros e Busca */}
                 <ProductFilters
-                  searchTerm={searchTerm}
-                  setSearchTerm={setSearchTerm}
-                  selectedCategory={selectedCategory}
-                  setSelectedCategory={setSelectedCategory}
+                  filters={{
+                    search: searchTerm,
+                    categories: selectedCategory ? [selectedCategory] : [],
+                    locations: [],
+                    minPrice: priceRange.min,
+                    maxPrice: priceRange.max,
+                    minRating: 0,
+                    sortBy: sortBy
+                  }}
+                  onFiltersChange={(newFilters) => {
+                    setSearchTerm(newFilters.search || '');
+                    setSelectedCategory(newFilters.categories?.[0] || '');
+                    setPriceRange({
+                      min: newFilters.minPrice || 0,
+                      max: newFilters.maxPrice || 10000
+                    });
+                    setSortBy(newFilters.sortBy || 'relevance');
+                  }}
+                  categories={Object.keys(PRODUCT_CATEGORIES)}
+                  locations={['Mato Grosso', 'Paraná', 'São Paulo', 'Goiás']}
                   priceRange={priceRange}
-                  setPriceRange={setPriceRange}
-                  sortBy={sortBy}
-                  setSortBy={setSortBy}
-                  viewMode={viewMode}
-                  setViewMode={setViewMode}
+                  onPriceRangeChange={setPriceRange}
                 />
 
                 {/* Produtos */}
@@ -653,32 +678,32 @@ const Loja = () => {
                       <p className="text-gray-600 dark:text-gray-400">
                         Você ainda não cadastrou produtos
                       </p>
-                    </div>
+                        </div>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {myProducts.map((product) => (
                         <div key={product.id} className="border border-gray-200 rounded-lg p-4">
                           <div className="flex justify-between items-start mb-2">
                             <h4 className="font-medium text-gray-900 dark:text-white">{product.name}</h4>
-                            <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(product.status)}`}>
-                              {getStatusText(product.status)}
-                            </span>
-                          </div>
+                          <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(product.status)}`}>
+                            {getStatusText(product.status)}
+                          </span>
+                        </div>
                           <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{product.description}</p>
                           <div className="flex justify-between items-center">
                             <span className="font-semibold text-agro-green">{formatCurrency(product.price)}</span>
-                            <div className="flex space-x-2">
+                        <div className="flex space-x-2">
                               <button className="text-blue-600 hover:text-blue-700">
-                                <Edit className="w-4 h-4" />
-                              </button>
+                            <Edit className="w-4 h-4" />
+                          </button>
                               <button className="text-red-600 hover:text-red-700">
-                                <Trash className="w-4 h-4" />
-                              </button>
+                            <Trash className="w-4 h-4" />
+                          </button>
                             </div>
-                          </div>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
+                  </div>
                   )}
                 </div>
 
@@ -694,8 +719,8 @@ const Loja = () => {
                       </p>
                     </div>
                   ) : (
-                    <div className="space-y-4">
-                      {myPurchases.map((purchase) => (
+                  <div className="space-y-4">
+                    {myPurchases.map((purchase) => (
                         <div key={purchase.id} className="border border-gray-200 rounded-lg p-4">
                           <div className="flex justify-between items-start mb-2">
                             <div>
@@ -705,22 +730,22 @@ const Loja = () => {
                               <p className="text-sm text-gray-600 dark:text-gray-400">
                                 Vendedor: {purchase.seller?.name || 'N/A'}
                               </p>
-                            </div>
-                            <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(purchase.status)}`}>
-                              {getStatusText(purchase.status)}
-                            </span>
-                          </div>
+                        </div>
+                          <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(purchase.status)}`}>
+                            {getStatusText(purchase.status)}
+                          </span>
+                        </div>
                           <div className="flex justify-between items-center">
                             <span className="font-semibold text-agro-green">
                               {formatCurrency(purchase.total || 0)}
                             </span>
                             <span className="text-sm text-gray-500">
                               {formatDate(purchase.createdAt)}
-                            </span>
-                          </div>
+                          </span>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
+                  </div>
                   )}
                 </div>
               </div>
@@ -752,10 +777,10 @@ const Loja = () => {
                     {cart.map((item) => (
                       <div key={item.id} className="card-premium p-4">
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-4">
                             <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
                               <Package className="w-8 h-8 text-gray-400" />
-                            </div>
+                          </div>
                             <div>
                               <h4 className="font-medium text-gray-900 dark:text-white">{item.name}</h4>
                               <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -764,7 +789,7 @@ const Loja = () => {
                               <p className="text-sm text-gray-600 dark:text-gray-400">
                                 Quantidade: {item.quantity}
                               </p>
-                            </div>
+                          </div>
                           </div>
                           <div className="flex items-center space-x-4">
                             <span className="font-semibold text-agro-green">

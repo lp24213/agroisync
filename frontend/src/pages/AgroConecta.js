@@ -132,7 +132,7 @@ const AgroConecta = () => {
         name: user.name,
         email: user.email,
         phone: user.phone || 'Não informado',
-        rating: 4.8,
+          rating: 4.8,
         completedFreights: 45,
         totalEarnings: 12500
       });
@@ -197,7 +197,7 @@ const AgroConecta = () => {
         );
         console.log('Rota calculada:', route);
         // Aqui você pode exibir a rota no mapa ou em uma interface
-      } catch (error) {
+    } catch (error) {
         console.error('Erro ao calcular rota:', error);
       }
     }
@@ -344,8 +344,8 @@ const AgroConecta = () => {
     if (newFreight.origin && newFreight.destination && newFreight.price) {
       try {
         const freightData = {
-          ...newFreight,
-          price: parseFloat(newFreight.price),
+        ...newFreight,
+        price: parseFloat(newFreight.price),
           weight: parseFloat(newFreight.weight) || 0,
           userId: user?.id || 'user_anonymous',
           cargoType: 'general'
@@ -355,11 +355,11 @@ const AgroConecta = () => {
         
         if (createdFreight) {
           setUserFreights([...userFreights, createdFreight]);
-          setNewFreight({ 
-            origin: '', destination: '', weight: '', price: '', 
-            date: '', description: '', truckType: 'truck_3_4',
-            requirements: '', insurance: false, negotiable: true
-          });
+      setNewFreight({ 
+        origin: '', destination: '', weight: '', price: '', 
+        date: '', description: '', truckType: 'truck_3_4',
+        requirements: '', insurance: false, negotiable: true
+      });
           
           // Recarregar fretes públicos
           await loadPublicFreights();
@@ -375,7 +375,7 @@ const AgroConecta = () => {
     try {
       const result = await freightService.deleteFreight(freightId);
       if (result?.success) {
-        setUserFreights(userFreights.filter(f => f.id !== freightId));
+    setUserFreights(userFreights.filter(f => f.id !== freightId));
         // Recarregar fretes públicos
         await loadPublicFreights();
       }

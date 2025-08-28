@@ -362,8 +362,8 @@ class CryptoService {
       };
 
       console.log('🔄 Simulando compra:', transaction);
-
-      return {
+    
+    return {
         success: true,
         transaction
       };
@@ -529,7 +529,7 @@ class CryptoService {
         }
       ];
 
-      return {
+    return {
         success: true,
         transactions
       };
