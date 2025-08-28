@@ -104,7 +104,9 @@ const Admin = () => {
           totalUsers: 1247,
           activeUsers: 892,
           totalRevenue: 45678.90,
-          pendingPayments: 12
+          pendingPayments: 12,
+          totalProducts: 89,
+          totalFreights: 156
         },
         recentActivity: [
           {
@@ -214,7 +216,9 @@ const Admin = () => {
           totalUsers: 1247,
           activeUsers: 892,
           totalRevenue: 45678.90,
-          pendingPayments: 12
+          pendingPayments: 12,
+          totalProducts: 89,
+          totalFreights: 156
         },
         recentActivity: [],
         systemStatus: 'operational'
@@ -240,7 +244,7 @@ const Admin = () => {
   };
 
   // Página de Login Admin
-  if (!isLoggedIn) {
+  if (!isAdmin) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center px-4">
         <motion.div
@@ -265,13 +269,13 @@ const Admin = () => {
           <div className="bg-white rounded-2xl shadow-lg p-8 border border-slate-200">
             <h2 className="text-2xl font-bold text-slate-800 mb-6 text-center">Acesso Restrito</h2>
             
-            {error && (
+            {loginError && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg"
               >
-                <p className="text-red-600 text-sm">{error}</p>
+                <p className="text-red-600 text-sm">{loginError}</p>
               </motion.div>
             )}
 
@@ -284,8 +288,8 @@ const Admin = () => {
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
                   <input
                     type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={loginEmail}
+                    onChange={(e) => setLoginEmail(e.target.value)}
                     className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
                     placeholder="admin@agroisync.com"
                     required
@@ -301,9 +305,9 @@ const Admin = () => {
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
                   <input
                     type={showPassword ? 'text' : 'password'}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-12 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                    className="w-full pl-10 pr-12 py-3 border border-slate-300 rounded-lg focus:ring-2 form"
                     placeholder="••••••••"
                     required
                   />
@@ -319,10 +323,10 @@ const Admin = () => {
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loginLoading}
                 className="w-full py-3 bg-slate-600 text-white font-semibold rounded-lg hover:bg-slate-700 transition-colors duration-300 disabled:opacity-50"
               >
-                {loading ? 'Entrando...' : 'Acessar Painel'}
+                {loginLoading ? 'Entrando...' : 'Acessar Painel'}
               </button>
             </form>
 
@@ -366,7 +370,7 @@ const Admin = () => {
             
             <div className="flex items-center space-x-4">
               <span className="text-sm text-slate-600">
-                Logado como: {email}
+                Logado como: {loginEmail}
               </span>
               <button
                 onClick={handleAdminLogout}
@@ -393,7 +397,7 @@ const Admin = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-slate-600 mb-1">Usuários Ativos</p>
-                <p className="text-3xl font-bold text-slate-800">{stats.users.toLocaleString()}</p>
+                <p className="text-3xl font-bold text-slate-800">{adminData?.stats?.totalUsers?.toLocaleString() || '0'}</p>
               </div>
               <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
                 <Users className="w-6 h-6 text-blue-600" />
@@ -405,7 +409,7 @@ const Admin = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-slate-600 mb-1">Produtos</p>
-                <p className="text-3xl font-bold text-slate-800">{stats.products.toLocaleString()}</p>
+                <p className="text-3xl font-bold text-slate-800">{adminData?.stats?.totalProducts?.toLocaleString() || '0'}</p>
               </div>
               <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
                 <Package className="w-6 h-6 text-green-600" />
@@ -417,7 +421,7 @@ const Admin = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-slate-600 mb-1">Fretes</p>
-                <p className="text-3xl font-bold text-slate-800">{stats.freights.toLocaleString()}</p>
+                <p className="text-3xl font-bold text-slate-800">{adminData?.stats?.totalFreights?.toLocaleString() || '0'}</p>
               </div>
               <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center">
                 <Truck className="w-6 h-6 text-orange-600" />
@@ -429,7 +433,7 @@ const Admin = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-slate-600 mb-1">Receita Total</p>
-                <p className="text-3xl font-bold text-slate-800">R$ {stats.revenue.toLocaleString()}</p>
+                <p className="text-3xl font-bold text-slate-800">R$ {adminData?.stats?.totalRevenue?.toLocaleString() || '0'}</p>
               </div>
               <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center">
                 <DollarSign className="w-6 h-6 text-emerald-600" />
@@ -448,8 +452,8 @@ const Admin = () => {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-slate-800">Status do Sistema</h2>
             <div className="flex items-center space-x-2">
-              <div className={`w-3 h-3 rounded-full ${stats.systemStatus === 'Operacional' ? 'bg-green-500' : 'bg-red-500'}`}></div>
-              <span className="text-sm font-medium text-slate-600">{stats.systemStatus}</span>
+              <div className={`w-3 h-3 rounded-full ${adminData?.systemStatus === 'operational' ? 'bg-green-500' : 'bg-red-500'}`}></div>
+              <span className="text-sm font-medium text-slate-600">{adminData?.systemStatus === 'operational' ? 'Operacional' : 'Erro'}</span>
             </div>
           </div>
           
