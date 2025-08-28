@@ -17,6 +17,7 @@ import partnerRoutes from './partners.js';
 import partnershipMessageRoutes from './partnership-messages.js';
 import contactRoutes from './contact.js';
 import userRoutes from './users.js';
+import notificationRoutes from './notifications.js';
 
 const router = express.Router();
 
@@ -70,6 +71,9 @@ router.use('/v1/contact', contactRoutes);
 
 // ===== USER ROUTES =====
 router.use('/v1/users', userRoutes);
+
+// ===== NOTIFICATION ROUTES =====
+router.use('/v1/notifications', notificationRoutes);
 
 // ===== API INFO ENDPOINT =====
 router.get('/v1', (req, res) => {
@@ -218,6 +222,24 @@ router.get('/v1', (req, res) => {
           'PUT /profile - Update user profile',
           'GET /subscriptions - Get user subscriptions',
           'PUT /subscriptions - Update subscription preferences'
+        ]
+      },
+      notifications: {
+        base: '/v1/notifications',
+        routes: [
+          'GET / - List user notifications',
+          'GET /unread/count - Get unread count',
+          'GET /:id - Get notification by ID',
+          'PATCH /:id/read - Mark as read',
+          'PATCH /:id/archive - Archive notification',
+          'PATCH /read-all - Mark all as read',
+          'DELETE /:id - Delete notification',
+          'DELETE /clear-read - Clear read notifications',
+          'GET /stats/overview - Get notification stats',
+          'GET /admin/all - List all notifications (admin)',
+          'POST /admin/send - Send manual notification (admin)',
+          'GET /admin/stats - Get general stats (admin)',
+          'POST /admin/cleanup - Manual cleanup (admin)'
         ]
       }
     },
