@@ -9,7 +9,7 @@ import {
   Lock, Unlock, Eye, EyeOff, Copy, FileText,
   Wallet, Send, Download, History, Star,
   Target, Rocket, TrendingUp as TrendingUpIcon,
-  Bell
+  Bell, LineChart
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import cryptoService from '../services/cryptoService';

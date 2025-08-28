@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   TrendingUp, TrendingDown, Lock, Unlock, 
   DollarSign, Coins, RefreshCw, ArrowRight,
-  CheckCircle, XCircle
+  CheckCircle, XCircle, Activity
 } from 'lucide-react';
 import cryptoService from '../services/cryptoService';
 
