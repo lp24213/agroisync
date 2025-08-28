@@ -97,13 +97,23 @@ const Cadastro = () => {
   };
 
   const nextStep = () => {
+    console.log('nextStep chamado, step atual:', currentStep); // Debug
     if (validateStep(currentStep)) {
+      console.log('Validação passou, avançando para step:', currentStep + 1); // Debug
       setCurrentStep(currentStep + 1);
+      // Limpar erros ao avançar
+      setValidationErrors({});
+    } else {
+      console.log('Validação falhou, erros:', validationErrors); // Debug
     }
   };
 
   const prevStep = () => {
-    setCurrentStep(currentStep - 1);
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+      // Limpar erros ao voltar
+      setValidationErrors({});
+    }
   };
 
   const handleSubmit = async (e) => {

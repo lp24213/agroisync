@@ -21,30 +21,35 @@ const Home = () => {
   // CAMADA 2: Obter localização do usuário via IP
   const getUserLocationByIP = async () => {
     try {
-      const response = await fetch('https://ipapi.co/json/');
-      if (response.ok) {
-        const data = await response.json();
-        setUserLocation({
-          city: data.city,
-          region: data.region,
-          country: data.country,
-          lat: data.latitude,
-          lon: data.longitude,
-          ip: data.ip
-        });
-        return data;
-      }
+      // Simular detecção de localização (em produção seria uma API real)
+      // const response = await fetch('https://ipapi.co/json/');
+      
+      // Dados simulados para demonstração
+      const mockLocationData = {
+        city: 'Sinop',
+        region: 'MT',
+        country: 'BR',
+        latitude: -11.8647,
+        longitude: -55.5036,
+        ip: '192.168.1.1'
+      };
+      
+      setUserLocation(mockLocationData);
+      return mockLocationData;
+      
     } catch (error) {
       console.error('Erro ao obter localização por IP:', error);
       // Fallback para localização padrão (Sinop, MT)
-            setUserLocation({
+      const fallbackLocation = {
         city: 'Sinop',
         region: 'MT',
-              country: 'BR',
+        country: 'BR',
         lat: -11.8647,
         lon: -55.5036,
         ip: 'fallback'
-      });
+      };
+      setUserLocation(fallbackLocation);
+      return fallbackLocation;
     }
   };
 
@@ -56,30 +61,89 @@ const Home = () => {
         return;
       }
 
-      // API Agrolink - Dados reais de commodities
-      const response = await fetch(`https://api.agrolink.com.br/v1/commodities?region=${userLocation.region}&country=${userLocation.country}`);
+      // Simular dados da API Agrolink (em produção seria uma API real)
+      // const response = await fetch(`https://api.agrolink.com.br/v1/commodities?region=${userLocation.region}&country=${userLocation.country}`);
       
-      if (response.ok) {
-        const data = await response.json();
-        
-        // Formatar dados da bolsa de valores
-        const formattedStockData = data.stocks?.map(stock => ({
-          symbol: stock.symbol,
-          name: stock.name,
-          price: stock.current_price,
-          change: stock.price_change_percentage,
-          volume: stock.volume,
-          trend: stock.price_change_percentage >= 0 ? 'up' : 'down',
-          lastUpdate: new Date(stock.last_update),
-          sector: stock.sector,
-          marketCap: stock.market_cap
-        })) || [];
+      // Dados simulados para demonstração
+      const mockAgrolinkData = {
+        stocks: [
+          {
+            symbol: 'SOJA3',
+            name: 'Soja Futuro',
+            current_price: 145.67 + (Math.random() - 0.5) * 10,
+            price_change_percentage: 2.34 + (Math.random() - 0.5) * 2,
+            volume: '1.2M',
+            last_update: new Date().toISOString(),
+            sector: 'Agropecuário',
+            market_cap: 'R$ 45.2B'
+          },
+          {
+            symbol: 'MILHO4',
+            name: 'Milho Futuro',
+            current_price: 89.45 + (Math.random() - 0.5) * 8,
+            price_change_percentage: -1.23 + (Math.random() - 0.5) * 1.5,
+            volume: '856K',
+            last_update: new Date().toISOString(),
+            sector: 'Agropecuário',
+            market_cap: 'R$ 28.7B'
+          },
+          {
+            symbol: 'BOI3',
+            name: 'Boi Gordo',
+            current_price: 234.12 + (Math.random() - 0.5) * 15,
+            price_change_percentage: 3.45 + (Math.random() - 0.5) * 2,
+            volume: '2.1M',
+            last_update: new Date().toISOString(),
+            sector: 'Agropecuário',
+            market_cap: 'R$ 67.3B'
+          },
+          {
+            symbol: 'CAFE3',
+            name: 'Café Arábica',
+            current_price: 567.89 + (Math.random() - 0.5) * 25,
+            price_change_percentage: -0.87 + (Math.random() - 0.5) * 1.5,
+            volume: '432K',
+            last_update: new Date().toISOString(),
+            sector: 'Agropecuário',
+            market_cap: 'R$ 12.4B'
+          },
+          {
+            symbol: 'ALGO3',
+            name: 'Algodão',
+            current_price: 78.34 + (Math.random() - 0.5) * 12,
+            price_change_percentage: 1.56 + (Math.random() - 0.5) * 1.5,
+            volume: '678K',
+            last_update: new Date().toISOString(),
+            sector: 'Agropecuário',
+            market_cap: 'R$ 15.8B'
+          },
+          {
+            symbol: 'TRIG3',
+            name: 'Trigo',
+            current_price: 123.45 + (Math.random() - 0.5) * 18,
+            price_change_percentage: 0.78 + (Math.random() - 0.5) * 1.5,
+            volume: '345K',
+            last_update: new Date().toISOString(),
+            sector: 'Agropecuário',
+            market_cap: 'R$ 18.9B'
+          }
+        ]
+      };
+      
+      // Formatar dados da bolsa de valores
+      const formattedStockData = mockAgrolinkData.stocks.map(stock => ({
+        symbol: stock.symbol,
+        name: stock.name,
+        price: stock.current_price,
+        change: stock.price_change_percentage,
+        volume: stock.volume,
+        trend: stock.price_change_percentage >= 0 ? 'up' : 'down',
+        lastUpdate: new Date(stock.last_update),
+        sector: stock.sector,
+        marketCap: stock.market_cap
+      }));
 
-        setStockData(formattedStockData);
-        
-      } else {
-        throw new Error('Erro na API Agrolink');
-      }
+      setStockData(formattedStockData);
       
     } catch (error) {
       console.error('Erro ao buscar dados da Agrolink:', error);
@@ -150,7 +214,7 @@ const Home = () => {
           trend: Math.random() > 0.5 ? 'up' : 'down',
           lastUpdate: new Date(),
           sector: 'Agropecuário',
-          marketCap: 'R$ 8.9B'
+          marketCap: 'R$ 18.9B'
         }
       ];
 

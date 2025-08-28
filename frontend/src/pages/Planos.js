@@ -5,82 +5,219 @@ import { useAuth } from '../contexts/AuthContext';
 import paymentService from '../services/paymentService';
 import metamaskService from '../services/metamaskService';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { 
   Check, Star, ShoppingCart, Truck, Package, Leaf, Wrench, User, 
-  Circle, Settings, BarChart3, Headphones, Zap, Shield, Globe, Coins, Users, Crown
+  Circle, Settings, BarChart3, Headphones, Zap, Shield, Globe, Coins, Users, Crown,
+  CreditCard, Wallet, ArrowRight, CheckCircle, AlertCircle
 } from 'lucide-react';
 
 const Planos = () => {
   const { isDark } = useTheme();
-  const { user, hasActivePlan } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [selectedModule, setSelectedModule] = useState('store');
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('stripe'); // 'stripe' ou 'metamask'
+  const [metamaskConnected, setMetamaskConnected] = useState(false);
+  const [walletAddress, setWalletAddress] = useState('');
 
   useEffect(() => {
     document.title = 'Planos - Agroisync';
+    checkMetamaskConnection();
   }, []);
+
+  const checkMetamaskConnection = async () => {
+    try {
+      if (metamaskService.isMetamaskInstalled()) {
+        const accounts = await metamaskService.getAccounts();
+        if (accounts.length > 0) {
+          setMetamaskConnected(true);
+          setWalletAddress(accounts[0]);
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao verificar conexão Metamask:', error);
+    }
+  };
+
+  const connectMetamask = async () => {
+    try {
+      setLoading(true);
+      const connection = await metamaskService.connect();
+      
+      if (connection.success) {
+        setMetamaskConnected(true);
+        setWalletAddress(connection.address);
+        setPaymentMethod('metamask');
+        setSuccess('Metamask conectado com sucesso!');
+      } else {
+        setError(connection.error || 'Erro ao conectar Metamask');
+      }
+    } catch (error) {
+      setError('Erro ao conectar Metamask: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePlanSelection = (plan) => {
+    setSelectedPlan(plan);
+    setError('');
+    setSuccess('');
+  };
+
+  const handlePayment = async () => {
+    if (!selectedPlan) {
+      setError('Selecione um plano primeiro');
+      return;
+    }
+
+    if (!isAuthenticated) {
+      // Redirecionar para cadastro se não estiver logado
+      navigate('/cadastro', { 
+        state: { 
+          redirectTo: '/planos',
+          selectedPlan: selectedPlan.id,
+          message: 'Complete seu cadastro para continuar com o pagamento'
+        }
+      });
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      let result;
+
+      if (paymentMethod === 'metamask') {
+        if (!metamaskConnected) {
+          await connectMetamask();
+          return;
+        }
+        
+        // Pagamento via Metamask
+        result = await metamaskService.sendTransaction({
+          to: '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6', // Endereço da carteira do AgroSync
+          value: getPlanPriceInWei(selectedPlan),
+          data: '0x' // Dados da transação
+        });
+
+        if (result.success) {
+          setSuccess(`Pagamento realizado com sucesso! Hash: ${result.hash}`);
+          // Redirecionar para dashboard após pagamento
+          setTimeout(() => {
+            navigate('/dashboard');
+          }, 2000);
+        } else {
+          setError(result.error || 'Erro no pagamento via Metamask');
+        }
+      } else {
+        // Pagamento via Stripe
+        result = await paymentService.createPaymentIntent({
+          planId: selectedPlan.id,
+          planName: selectedPlan.name,
+          amount: getPlanPriceInCents(selectedPlan),
+          currency: 'brl',
+          userId: user.id
+        });
+
+        if (result.success) {
+          // Redirecionar para página de pagamento do Stripe
+          window.location.href = result.paymentUrl;
+        } else {
+          setError(result.error || 'Erro ao criar sessão de pagamento');
+        }
+      }
+    } catch (error) {
+      setError('Erro no processamento do pagamento: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getPlanPriceInCents = (plan) => {
+    // Converter preço para centavos para Stripe
+    const price = parseFloat(plan.price.replace('R$', '').replace(',', '.'));
+    return Math.round(price * 100);
+  };
+
+  const getPlanPriceInWei = (plan) => {
+    // Converter preço para Wei para Metamask (1 ETH = ~R$ 15.000)
+    const price = parseFloat(plan.price.replace('R$', '').replace(',', '.'));
+    const ethPrice = price / 15000; // Taxa de conversão aproximada
+    return Math.round(ethPrice * 1e18); // 1 ETH = 1e18 Wei
+  };
+
+  const formatPrice = (price) => {
+    if (typeof price === 'string') return price;
+    return `R$ ${price.toFixed(2).replace('.', ',')}`;
+  };
 
   // Planos da Loja AgroSync
   const lojaPlans = [
     {
       id: 'loja-basico',
-      name: t('plans.lojaBasico.name'),
-      price: t('plans.lojaBasico.price'),
-      period: t('plans.lojaBasico.period'),
-      description: t('plans.lojaBasico.description'),
+      name: 'Loja Básico',
+      price: 'R$ 29,90',
+      period: 'por mês',
+      description: 'Ideal para pequenos produtores e comerciantes',
       features: [
-        t('plans.lojaBasico.features.ads_count'),
-        t('plans.lojaBasico.features.basic_support'),
-        t('plans.lojaBasico.features.marketplace_access'),
-        t('plans.lojaBasico.features.basic_chatbot')
+        'Até 50 anúncios ativos',
+        'Suporte básico por email',
+        'Acesso ao marketplace',
+        'Chatbot básico incluído'
       ],
       limitations: [
-        t('plans.lojaBasico.limitations.ads_count'),
-        t('plans.lojaBasico.limitations.chat_messages'),
-        t('plans.lojaBasico.limitations.no_private_chat')
+        'Máximo 50 anúncios',
+        '100 mensagens/mês',
+        'Sem chat privado'
       ],
-              color: 'from-emerald-600 to-blue-600',
+      color: 'from-emerald-600 to-blue-600',
       buttonColor: 'btn-premium',
       popular: false
     },
     {
       id: 'loja-pro',
-      name: t('plans.lojaPro.name'),
-      price: t('plans.lojaPro.price'),
-      period: t('plans.lojaPro.period'),
-      description: t('plans.lojaPro.description'),
+      name: 'Loja Pro',
+      price: 'R$ 79,90',
+      period: 'por mês',
+      description: 'Perfeito para produtores em crescimento',
       features: [
-        t('plans.lojaPro.features.ads_count'),
-        t('plans.lojaPro.features.private_chat'),
-        t('plans.lojaPro.features.priority_support'),
-        t('plans.lojaPro.features.advanced_chatbot'),
-        t('plans.lojaPro.features.freight_premium'),
-        t('plans.lojaPro.features.store_highlight')
+        'Anúncios ilimitados',
+        'Chat privado incluído',
+        'Suporte prioritário',
+        'Chatbot avançado',
+        'Fretes premium',
+        'Destaque na loja'
       ],
       limitations: [],
-              color: 'from-yellow-500 to-blue-600',
+      color: 'from-yellow-500 to-blue-600',
       buttonColor: 'btn-premium',
       popular: true
     },
     {
       id: 'loja-enterprise',
-      name: t('plans.lojaEnterprise.name'),
-      price: t('plans.lojaEnterprise.price'),
-      period: t('plans.lojaEnterprise.period'),
-      description: t('plans.lojaEnterprise.description'),
+      name: 'Loja Enterprise',
+      price: 'R$ 199,90',
+      period: 'por mês',
+      description: 'Solução completa para grandes empresas',
       features: [
-        t('plans.lojaEnterprise.features.everything_plus'),
-        t('plans.lojaEnterprise.features.analytics_advanced'),
-        t('plans.lojaEnterprise.features.api_custom'),
-        t('plans.lojaEnterprise.features.vip_support'),
-        t('plans.lojaEnterprise.features.white_label'),
-        t('plans.lojaEnterprise.features.dedicated_manager')
+        'Tudo do plano Pro',
+        'Analytics avançados',
+        'API personalizada',
+        'Suporte VIP',
+        'White label',
+        'Gerente dedicado'
       ],
       limitations: [],
-              color: 'from-blue-600 to-emerald-600',
+      color: 'from-blue-600 to-emerald-600',
       buttonColor: 'btn-premium',
       popular: false
     }
@@ -90,606 +227,470 @@ const Planos = () => {
   const agroconectaPlans = [
     {
       id: 'agroconecta-basico',
-      name: t('plans.agroconectaBasico.name'),
-      price: t('plans.agroconectaBasico.price'),
-      period: t('plans.agroconectaBasico.period'),
-      description: t('plans.agroconectaBasico.description'),
+      name: 'AgroConecta Básico',
+      price: 'R$ 19,90',
+      period: 'por mês',
+      description: 'Para transportadores iniciantes',
       features: [
-        t('plans.agroconectaBasico.features.ads_count'),
-        t('plans.agroconectaBasico.features.basic_support'),
-        t('plans.agroconectaBasico.features.marketplace_access'),
-        t('plans.agroconectaBasico.features.basic_chatbot')
+        'Até 20 fretes ativos',
+        'Suporte básico',
+        'Acesso ao marketplace',
+        'Notificações básicas'
       ],
       limitations: [
-        t('plans.agroconectaBasico.limitations.ads_count'),
-        t('plans.agroconectaBasico.limitations.chat_messages'),
-        t('plans.agroconectaBasico.limitations.no_private_chat')
+        'Máximo 20 fretes',
+        'Sem destaque',
+        'Suporte por email'
       ],
-      color: 'from-slate-500 to-slate-600',
-      buttonColor: 'bg-slate-600 hover:bg-slate-700',
+      color: 'from-green-600 to-blue-600',
+      buttonColor: 'btn-premium',
       popular: false
     },
     {
       id: 'agroconecta-pro',
-      name: t('plans.agroconectaPro.name'),
-      price: t('plans.agroconectaPro.price'),
-      period: t('plans.agroconectaPro.period'),
-      description: t('plans.agroconectaPro.description'),
+      name: 'AgroConecta Pro',
+      price: 'R$ 49,90',
+      period: 'por mês',
+      description: 'Para transportadores profissionais',
       features: [
-        t('plans.agroconectaPro.features.ads_count'),
-        t('plans.agroconectaPro.features.private_chat'),
-        t('plans.agroconectaPro.features.priority_support'),
-        t('plans.agroconectaPro.features.advanced_chatbot'),
-        t('plans.agroconectaPro.features.freight_premium'),
-        t('plans.agroconectaPro.features.store_highlight')
+        'Fretes ilimitados',
+        'Destaque nos resultados',
+        'Suporte prioritário',
+        'Notificações avançadas',
+        'Relatórios de performance',
+        'API de integração'
       ],
       limitations: [],
-      color: 'from-slate-600 to-slate-700',
-      buttonColor: 'bg-slate-600 hover:bg-slate-700',
+      color: 'from-blue-600 to-purple-600',
+      buttonColor: 'btn-premium',
       popular: true
-    },
-    {
-      id: 'agroconecta-enterprise',
-      name: t('plans.agroconectaEnterprise.name'),
-      price: t('plans.agroconectaEnterprise.price'),
-      period: t('plans.agroconectaEnterprise.period'),
-      description: t('plans.agroconectaEnterprise.description'),
-      features: [
-        t('plans.agroconectaEnterprise.features.everything_plus'),
-        t('plans.agroconectaEnterprise.features.analytics_advanced'),
-        t('plans.agroconectaEnterprise.features.api_custom'),
-        t('plans.agroconectaEnterprise.features.vip_support'),
-        t('plans.agroconectaEnterprise.features.white_label'),
-        t('plans.agroconectaEnterprise.features.dedicated_manager')
-      ],
-      limitations: [],
-      color: 'from-slate-700 to-slate-800',
-      buttonColor: 'bg-slate-700 hover:bg-slate-800',
-      popular: false
     }
   ];
 
-  const handlePlanSelection = async (module, plan) => {
-    setSelectedModule(module);
-    setSelectedPlan(plan);
-    setLoading(true);
-    setError('');
-
-    try {
-      // Simular integração com gateway de pagamento
-      if (plan.price !== 'R$ 0,00') {
-        // Redirecionar para página de pagamento
-        const paymentData = {
-          planId: plan.id,
-          planName: plan.name,
-          amount: parseFloat(plan.price.replace('R$ ', '').replace(',', '.')),
-          module: module
-        };
-        
-        // Salvar dados do plano selecionado no localStorage
-        localStorage.setItem('selectedPlan', JSON.stringify(paymentData));
-        
-        // Redirecionar para página de pagamento (simulada)
-        window.location.href = '/payment-success';
-      } else {
-        // Plano gratuito - ativar imediatamente
-        await activateFreePlan(plan, module);
-      }
-    } catch (error) {
-      setError('Erro ao processar seleção do plano. Tente novamente.');
-      console.error('Erro na seleção do plano:', error);
-    } finally {
-      setLoading(false);
+  // Planos de Criptomoedas
+  const cryptoPlans = [
+    {
+      id: 'crypto-basico',
+      name: 'Crypto Básico',
+      price: 'R$ 39,90',
+      period: 'por mês',
+      description: 'Acesso básico à plataforma crypto',
+      features: [
+        'Carteira Web3 básica',
+        'Preços em tempo real',
+        'Gráficos básicos',
+        'Suporte por email'
+      ],
+      limitations: [
+        'Sem operações DeFi',
+        'Gráficos limitados',
+        'Sem alertas de preço'
+      ],
+      color: 'from-purple-600 to-pink-600',
+      buttonColor: 'btn-premium',
+      popular: false
+    },
+    {
+      id: 'crypto-pro',
+      name: 'Crypto Pro',
+      price: 'R$ 99,90',
+      period: 'por mês',
+      description: 'Plataforma crypto completa',
+      features: [
+        'Tudo do plano básico',
+        'Operações DeFi completas',
+        'Gráficos avançados',
+        'Alertas de preço',
+        'Análise técnica',
+        'Suporte prioritário'
+      ],
+      limitations: [],
+      color: 'from-pink-600 to-red-600',
+      buttonColor: 'btn-premium',
+      popular: true
     }
-  };
-
-  const activateFreePlan = async (plan, module) => {
-    try {
-      // Simular ativação do plano gratuito
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Atualizar status do usuário
-      if (user) {
-        // Aqui seria feita a chamada para a API para atualizar o plano
-        console.log('Plano gratuito ativado:', plan.name, 'para módulo:', module);
-        
-        // Redirecionar para dashboard ou página de sucesso
-        alert('Plano gratuito ativado com sucesso!');
-        window.location.href = '/';
-      }
-    } catch (error) {
-      setError('Erro ao ativar plano gratuito. Tente novamente.');
-      console.error('Erro na ativação:', error);
-    }
-  };
-
-  const handlePayment = async (module, tier) => {
-    try {
-      setLoading(true);
-      setError('');
-
-      // Salvar plano selecionado no localStorage para uso posterior
-      localStorage.setItem('selectedPlan', JSON.stringify({
-        module,
-        tier,
-        timestamp: Date.now()
-      }));
-
-      if (module === 'crypto') {
-        // Pagamento via cripto
-        await handleCryptoPayment(tier);
-      } else {
-        // Pagamento via Stripe
-        await handleStripePayment(module, tier);
-      }
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleCryptoPayment = async (tier) => {
-    try {
-      // Verificar se Metamask está instalado
-      if (!metamaskService.isMetamaskInstalled()) {
-        throw new Error('Metamask não está instalado. Por favor, instale a extensão Metamask.');
-      }
-
-      // Conectar ao Metamask
-      const connection = await metamaskService.connect();
-      
-      // Obter saldo
-      const balance = await metamaskService.getBalance();
-      
-      // Mapear tier para valor em ETH
-      const planValues = {
-        'loja-basico': 0.01,
-        'loja-pro': 0.02,
-        'loja-enterprise': 0.05,
-        'agroconecta-basico': 0.01,
-        'agroconecta-pro': 0.02,
-        'agroconecta-enterprise': 0.05
-      };
-      
-      const amount = planValues[tier] || 0.01;
-      
-      if (parseFloat(balance) < amount) {
-        throw new Error(`Saldo insuficiente. Você tem ${balance} ETH, mas precisa de ${amount} ETH.`);
-      }
-
-      // Endereço da carteira do AgroSync (deve ser configurado)
-      const ownerWallet = process.env.REACT_APP_OWNER_WALLET || '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6';
-      
-      // Enviar pagamento
-      const payment = await metamaskService.sendPayment(ownerWallet, amount, tier);
-      
-      // Verificar status da transação
-      let status = 'pending';
-      let confirmations = 0;
-      
-      // Aguardar confirmações
-      while (status === 'pending' && confirmations < 1) {
-        await new Promise(resolve => setTimeout(resolve, 5000)); // Aguardar 5 segundos
-        const txStatus = await metamaskService.getTransactionStatus(payment.hash);
-        status = txStatus.status;
-        confirmations = txStatus.confirmations;
-      }
-      
-      if (status === 'confirmed' || confirmations >= 1) {
-        // Verificar pagamento no backend
-        const verification = await paymentService.verifyCryptoPayment(payment.hash, tier);
-        
-        if (verification.success) {
-          // Redirecionar para página de sucesso
-          window.location.href = `/payment-success?plan=${tier}&method=crypto&tx=${payment.hash}`;
-        } else {
-          throw new Error('Falha na verificação do pagamento. Entre em contato com o suporte.');
-        }
-      } else {
-        throw new Error('Transação não foi confirmada. Tente novamente.');
-      }
-      
-    } catch (error) {
-      console.error('Erro no pagamento cripto:', error);
-      throw error;
-    }
-  };
-
-  const handleStripePayment = async (module, tier) => {
-    try {
-      const session = await paymentService.createStripeSession(module, tier);
-      // Redirecionar para Stripe
-      window.location.href = session.url;
-    } catch (error) {
-      console.error('Erro no pagamento Stripe:', error);
-      throw error;
-    }
-  };
+  ];
 
   const getCurrentPlans = () => {
-    return selectedModule === 'store' ? lojaPlans : agroconectaPlans;
+    switch (selectedModule) {
+      case 'store':
+        return lojaPlans;
+      case 'agroconecta':
+        return agroconectaPlans;
+      case 'crypto':
+        return cryptoPlans;
+      default:
+        return lojaPlans;
+    }
   };
 
   const getModuleIcon = (module) => {
     switch (module) {
       case 'store':
         return <ShoppingCart className="w-6 h-6" />;
-      case 'freight':
+      case 'agroconecta':
         return <Truck className="w-6 h-6" />;
+      case 'crypto':
+        return <Coins className="w-6 h-6" />;
       default:
         return <Package className="w-6 h-6" />;
     }
   };
 
-  const getModuleTitle = (module) => {
+  const getModuleName = (module) => {
     switch (module) {
       case 'store':
-        return t('module.store');
-      case 'freight':
-        return t('module.freight');
+        return 'Loja AgroSync';
+      case 'agroconecta':
+        return 'AgroConecta';
+      case 'crypto':
+        return 'Plataforma Crypto';
       default:
-        return t('module.select');
+        return 'Loja AgroSync';
     }
   };
 
-  const getModuleColor = () => {
-    return selectedModule === 'store' ? 'from-slate-500 to-slate-600' : 'from-slate-600 to-slate-700';
-  };
-
   return (
-    <div className="min-h-screen bg-white text-slate-900">
-      
-      {/* Header Section */}
-      <section className="relative pt-40 pb-20 px-4 overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-stone-50">
-            <div className="absolute inset-0 bg-white opacity-95"></div>
-          </div>
-        </div>
-        <div className="max-w-6xl mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-slate-800">
-            {t('header.title')}
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
+        >
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-blue-600 bg-clip-text text-transparent mb-6">
+            Escolha o Plano Ideal para Você
           </h1>
-          <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-            {t('header.description')}
+          <p className="text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
+            Planos flexíveis para todos os tamanhos de negócio. Escolha o que melhor se adapta às suas necessidades.
           </p>
-        </div>
-      </section>
+        </motion.div>
 
-      {/* Module Selection */}
-      <section className="py-12 px-4 bg-white">
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="bg-white rounded-2xl shadow-card p-8 border border-slate-200"
-          >
-            <h2 className="text-2xl font-bold text-center mb-8 text-slate-800">
-              {t('module.choose')}
-            </h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Loja AgroSync */}
-              <button
-                onClick={() => setSelectedModule('store')}
-                className={`p-6 rounded-xl border-2 transition-all duration-300 ${
-                  selectedModule === 'store'
-                    ? 'border-slate-600 bg-slate-50 shadow-elevated'
-                    : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
-                }`}
-              >
-                <div className="text-center">
-                  <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-slate-500 to-slate-600 flex items-center justify-center text-white`}>
-                    <ShoppingCart className="w-8 h-8" />
-                  </div>
-                  <h3 className="text-xl font-bold text-slate-800 mb-2">{t('module.store')}</h3>
-                  <p className="text-slate-600 text-sm">
-                    {t('module.storeDescription')}
-                  </p>
-                  {selectedModule === 'store' && (
-                    <div className="mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-800">
-                      <Check className="w-4 h-4 mr-1" />
-                      {t('module.selected')}
-                    </div>
-                  )}
-                </div>
-              </button>
+        {/* Seleção de Módulo */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <div className="flex flex-wrap justify-center gap-4">
+            {[
+              { id: 'store', name: 'Loja AgroSync', icon: ShoppingCart },
+              { id: 'agroconecta', name: 'AgroConecta', icon: Truck },
+              { id: 'crypto', name: 'Crypto', icon: Coins }
+            ].map((module) => {
+              const Icon = module.icon;
+              const isActive = selectedModule === module.id;
+              
+              return (
+                <button
+                  key={module.id}
+                  onClick={() => setSelectedModule(module.id)}
+                  className={`flex items-center space-x-3 px-6 py-3 rounded-xl font-medium transition-all duration-300 ${
+                    isActive
+                      ? 'bg-gradient-to-r from-emerald-500 to-blue-500 text-white shadow-lg scale-105'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                  <span>{module.name}</span>
+                </button>
+              );
+            })}
+          </div>
+        </motion.div>
 
-              {/* AgroConecta */}
-              <button
-                onClick={() => setSelectedModule('freight')}
-                className={`p-6 rounded-xl border-2 transition-all duration-300 ${
-                  selectedModule === 'freight'
-                    ? 'border-slate-600 bg-slate-50 shadow-elevated'
-                    : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
-                }`}
-              >
-                <div className="text-center">
-                  <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-slate-600 to-slate-700 flex items-center justify-center text-white`}>
-                    <Truck className="w-8 h-8" />
-                  </div>
-                  <h3 className="text-xl font-bold text-slate-800 mb-2">{t('module.freight')}</h3>
-                  <p className="text-slate-600 text-sm">
-                    {t('module.freightDescription')}
-                  </p>
-                  {selectedModule === 'freight' && (
-                    <div className="mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-800">
-                      <Check className="w-4 h-4 mr-1" />
-                      {t('module.selected')}
-                    </div>
-                  )}
-                </div>
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Plans Section */}
-      <section className="py-16 px-4">
-        <div className="max-w-7xl mx-auto">
-          {/* Module Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
-          >
-            <div className={`inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-r ${getModuleColor()} text-white mb-6`}>
-              {getModuleIcon(selectedModule)}
-            </div>
-            <h2 className="text-4xl font-bold text-slate-800 mb-4">
-              {t('plans.title', { module: getModuleTitle(selectedModule) })}
-            </h2>
-            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-              {selectedModule === 'store' 
-                ? t('plans.storeDescription')
-                : t('plans.freightDescription')
-              }
-            </p>
-          </motion.div>
-
-          {/* Plans Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Planos */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mb-12"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {getCurrentPlans().map((plan, index) => (
               <motion.div
                 key={plan.id}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className={`relative bg-white rounded-2xl shadow-card border-2 transition-all duration-300 hover:shadow-elevated ${
-                  plan.popular ? 'border-slate-600 scale-105' : 'border-slate-200'
+                transition={{ delay: index * 0.1 }}
+                className={`relative bg-white dark:bg-slate-800 rounded-2xl shadow-xl border-2 transition-all duration-300 hover:scale-105 ${
+                  selectedPlan?.id === plan.id
+                    ? 'border-emerald-500 shadow-2xl'
+                    : 'border-slate-200 dark:border-slate-700 hover:border-emerald-300'
                 }`}
               >
-                {/* Popular Badge */}
+                {/* Badge Popular */}
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-slate-600 text-white px-6 py-2 rounded-full text-sm font-bold flex items-center">
-                      <Star className="w-4 h-4 mr-2 fill-current" />
-                      {t('plans.popular')}
+                    <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+                      ⭐ Mais Popular
                     </div>
                   </div>
                 )}
 
                 <div className="p-8">
-                  {/* Plan Header */}
-                  <div className="text-center mb-8">
-                    <h3 className="text-2xl font-bold text-slate-800 mb-2">{plan.name}</h3>
+                  {/* Header do Plano */}
+                  <div className="text-center mb-6">
+                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+                      {plan.name}
+                    </h3>
                     <div className="mb-4">
-                      <span className="text-4xl font-bold text-slate-800">{plan.price}</span>
-                      <span className="text-slate-600 ml-2">{plan.period}</span>
+                      <span className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
+                        {plan.price}
+                      </span>
+                      <span className="text-slate-500 dark:text-slate-400 ml-2">
+                        {plan.period}
+                      </span>
                     </div>
-                    <p className="text-slate-600">{plan.description}</p>
+                    <p className="text-slate-600 dark:text-slate-400">
+                      {plan.description}
+                    </p>
                   </div>
 
                   {/* Features */}
                   <div className="mb-8">
-                    <h4 className="font-semibold text-slate-800 mb-4 flex items-center">
-                      <Check className="w-5 h-5 text-slate-600 mr-2" />
-                      {t('plans.included')}
+                    <h4 className="font-semibold text-slate-900 dark:text-white mb-4 flex items-center">
+                      <CheckCircle className="w-5 h-5 text-emerald-500 mr-2" />
+                      O que está incluído:
                     </h4>
                     <ul className="space-y-3">
-                      {plan.features.map((feature, featureIndex) => (
-                        <li key={featureIndex} className="flex items-start">
-                          <Check className="w-5 h-5 text-slate-600 mr-3 mt-0.5 flex-shrink-0" />
-                          <span className="text-slate-700">{feature}</span>
+                      {plan.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-start">
+                          <Check className="w-5 h-5 text-emerald-500 mr-3 mt-0.5 flex-shrink-0" />
+                          <span className="text-slate-700 dark:text-slate-300">{feature}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
 
-                  {/* Limitations */}
+                  {/* Limitações */}
                   {plan.limitations.length > 0 && (
                     <div className="mb-8">
-                      <h4 className="font-semibold text-slate-800 mb-4 flex items-center">
-                        <Package className="w-5 h-5 text-slate-500 mr-2" />
-                        {t('plans.limitations')}
+                      <h4 className="font-semibold text-slate-900 dark:text-white mb-4 flex items-center">
+                        <AlertCircle className="w-5 h-5 text-amber-500 mr-2" />
+                        Limitações:
                       </h4>
-                      <ul className="space-y-3">
-                        {plan.limitations.map((limitation, limitationIndex) => (
-                          <li key={limitationIndex} className="flex items-start">
-                            <div className="w-5 h-5 text-slate-400 mr-3 mt-0.5 flex-shrink-0">•</div>
-                            <span className="text-slate-600">{limitation}</span>
+                      <ul className="space-y-2">
+                        {plan.limitations.map((limitation, idx) => (
+                          <li key={idx} className="flex items-start">
+                            <div className="w-2 h-2 bg-amber-500 rounded-full mr-3 mt-2 flex-shrink-0" />
+                            <span className="text-slate-600 dark:text-slate-400 text-sm">{limitation}</span>
                           </li>
                         ))}
                       </ul>
                     </div>
                   )}
 
-                  {/* CTA Button */}
+                  {/* Botão de Seleção */}
                   <button
-                    onClick={() => handlePayment(selectedModule, plan.id)}
-                    className={`w-full py-4 px-6 rounded-xl text-white font-bold transition-all duration-300 hover:scale-105 ${plan.buttonColor}`}
-                    disabled={loading}
+                    onClick={() => handlePlanSelection(plan)}
+                    className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 ${
+                      selectedPlan?.id === plan.id
+                        ? 'bg-gradient-to-r from-emerald-500 to-blue-500 text-white shadow-lg'
+                        : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                    }`}
                   >
-                    {loading ? t('plans.processing') : plan.price === 'R$ 0,00' ? t('plans.startFree') : t('plans.choosePlan')}
+                    {selectedPlan?.id === plan.id ? '✓ Plano Selecionado' : 'Selecionar Plano'}
                   </button>
-
-                  {/* Additional Info */}
-                  {plan.price !== 'R$ 0,00' && (
-                    <p className="text-center text-sm text-slate-500 mt-4">
-                      {t('plans.cancelAnytime')} • {t('plans.noSetupFee')}
-                    </p>
-                  )}
                 </div>
               </motion.div>
             ))}
           </div>
-        </div>
-      </section>
+        </motion.div>
 
-      {/* Features Comparison */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-7xl mx-auto">
+        {/* Seleção de Método de Pagamento */}
+        {selectedPlan && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
+            className="mb-8"
           >
-            <h2 className="text-4xl font-bold text-slate-800 mb-4">
-              {t('comparison.title')}
-            </h2>
-            <p className="text-xl text-slate-600">
-              {t('comparison.description')}
-            </p>
-          </motion.div>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-xl border border-slate-200 dark:border-slate-700">
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 text-center">
+                Método de Pagamento
+              </h3>
 
-          {/* Comparison Table */}
-          <div className="bg-white rounded-2xl shadow-card overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-slate-50">
-                  <tr>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-800">
-                      {t('comparison.feature')}
-                    </th>
-                    {getCurrentPlans().map((plan) => (
-                      <th key={plan.id} className="px-6 py-4 text-center text-sm font-semibold text-slate-800">
-                        {plan.name}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200">
-                  {/* Anúncios/Fretes */}
-                  <tr>
-                    <td className="px-6 py-4 text-sm text-slate-800 font-medium">
-                      {selectedModule === 'store' ? t('comparison.activeAds') : t('comparison.activeFreights')}
-                    </td>
-                    {getCurrentPlans().map((plan) => (
-                      <td key={plan.id} className="px-6 py-4 text-center text-sm text-slate-600">
-                        {plan.id.includes('basico') 
-                          ? (selectedModule === 'store' ? '3' : '5/mês')
-                          : plan.id.includes('pro')
-                          ? (selectedModule === 'store' ? '50' : '100/mês')
-                          : 'Ilimitado'
-                        }
-                      </td>
-                    ))}
-                  </tr>
+              {/* Opções de Pagamento */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                {/* Stripe */}
+                <button
+                  onClick={() => setPaymentMethod('stripe')}
+                  className={`p-6 rounded-xl border-2 transition-all duration-300 ${
+                    paymentMethod === 'stripe'
+                      ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
+                      : 'border-slate-200 dark:border-slate-700 hover:border-emerald-300'
+                  }`}
+                >
+                  <div className="flex items-center space-x-4">
+                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                      paymentMethod === 'stripe' ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-slate-700'
+                    }`}>
+                      <CreditCard className={`w-6 h-6 ${
+                        paymentMethod === 'stripe' ? 'text-white' : 'text-slate-600 dark:text-slate-400'
+                      }`} />
+                    </div>
+                    <div className="text-left">
+                      <h4 className="font-semibold text-slate-900 dark:text-white">Cartão de Crédito</h4>
+                      <p className="text-sm text-slate-600 dark:text-slate-400">Pagamento seguro via Stripe</p>
+                    </div>
+                  </div>
+                </button>
 
-                  {/* Destaque */}
-                  <tr className="bg-slate-50">
-                    <td className="px-6 py-4 text-sm text-slate-800 font-medium">
-                      {t('comparison.highlight')}
-                    </td>
-                    {getCurrentPlans().map((plan) => (
-                      <td key={plan.id} className="px-6 py-4 text-center text-sm text-slate-600">
-                        {plan.id.includes('basico') ? (
-                          <span className="text-red-500">✗</span>
-                        ) : (
-                          <span className="text-slate-600">✓</span>
-                        )}
-                      </td>
-                    ))}
-                  </tr>
+                {/* Metamask */}
+                <button
+                  onClick={() => setPaymentMethod('metamask')}
+                  className={`p-6 rounded-xl border-2 transition-all duration-300 ${
+                    paymentMethod === 'metamask'
+                      ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
+                      : 'border-slate-200 dark:border-slate-700 hover:border-emerald-300'
+                  }`}
+                >
+                  <div className="flex items-center space-x-4">
+                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                      paymentMethod === 'metamask' ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-slate-700'
+                    }`}>
+                      <Wallet className={`w-6 h-6 ${
+                        paymentMethod === 'metamask' ? 'text-white' : 'text-slate-600 dark:text-slate-400'
+                      }`} />
+                    </div>
+                    <div className="text-left">
+                      <h4 className="font-semibold text-slate-900 dark:text-white">Criptomoedas</h4>
+                      <p className="text-sm text-slate-600 dark:text-slate-400">
+                        {metamaskConnected ? 'Metamask conectado' : 'Conectar Metamask'}
+                      </p>
+                    </div>
+                  </div>
+                </button>
+              </div>
 
-                  {/* Relatórios */}
-                  <tr>
-                    <td className="px-6 py-4 text-sm text-slate-800 font-medium">
-                      {t('comparison.reports')}
-                    </td>
-                    {getCurrentPlans().map((plan) => (
-                      <td key={plan.id} className="px-6 py-4 text-center text-sm text-slate-600">
-                        {plan.id.includes('basico') ? t('comparison.basicReports') : 
-                         plan.id.includes('pro') ? t('comparison.intermediateReports') : t('comparison.advancedReports')}
-                      </td>
-                    ))}
-                  </tr>
+              {/* Status da Carteira */}
+              {paymentMethod === 'metamask' && (
+                <div className="mb-6 p-4 bg-slate-50 dark:bg-slate-700 rounded-lg">
+                  {metamaskConnected ? (
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <CheckCircle className="w-5 h-5 text-emerald-500" />
+                        <span className="text-emerald-700 dark:text-emerald-400 font-medium">
+                          Metamask conectado
+                        </span>
+                      </div>
+                      <span className="text-sm text-slate-600 dark:text-slate-400 font-mono">
+                        {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <AlertCircle className="w-5 h-5 text-amber-500" />
+                        <span className="text-amber-700 dark:text-amber-400 font-medium">
+                          Metamask não conectado
+                        </span>
+                      </div>
+                      <button
+                        onClick={connectMetamask}
+                        disabled={loading}
+                        className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors disabled:opacity-50"
+                      >
+                        {loading ? 'Conectando...' : 'Conectar'}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
 
-                  {/* Suporte */}
-                  <tr className="bg-slate-50">
-                    <td className="px-6 py-4 text-sm text-slate-800 font-medium">
-                      {t('comparison.support')}
-                    </td>
-                    {getCurrentPlans().map((plan) => (
-                      <td key={plan.id} className="px-6 py-4 text-center text-sm text-slate-600">
-                        {plan.id.includes('basico') ? t('comparison.emailSupport') : 
-                         plan.id.includes('pro') ? t('comparison.prioritySupport') : t('comparison.dedicatedSupport')}
-                      </td>
-                    ))}
-                  </tr>
+              {/* Resumo do Plano */}
+              <div className="bg-slate-50 dark:bg-slate-700 rounded-lg p-6 mb-6">
+                <h4 className="font-semibold text-slate-900 dark:text-white mb-4">Resumo do Plano</h4>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-slate-900 dark:text-white">{selectedPlan.name}</p>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">{selectedPlan.period}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-2xl font-bold text-emerald-600">{selectedPlan.price}</p>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">
+                      {paymentMethod === 'metamask' ? 'em ETH' : 'em BRL'}
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-                  {/* Chat/API */}
-                  <tr>
-                    <td className="px-6 py-4 text-sm text-slate-800 font-medium">
-                      {selectedModule === 'store' ? t('comparison.apiIntegration') : t('comparison.directChat')}
-                    </td>
-                    {getCurrentPlans().map((plan) => (
-                      <td key={plan.id} className="px-6 py-4 text-center text-sm text-slate-600">
-                        {plan.id.includes('enterprise') ? (
-                          <span className="text-slate-600">✓</span>
-                        ) : (
-                          <span className="text-red-500">✗</span>
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                </tbody>
-              </table>
+              {/* Botão de Pagamento */}
+              <button
+                onClick={handlePayment}
+                disabled={loading || (paymentMethod === 'metamask' && !metamaskConnected)}
+                className="w-full py-4 px-6 bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-blue-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+              >
+                {loading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Processando...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>
+                      {paymentMethod === 'metamask' ? 'Pagar com Metamask' : 'Pagar com Cartão'}
+                    </span>
+                    <ArrowRight className="w-5 h-5" />
+                  </>
+                )}
+              </button>
+
+              {/* Mensagens de Status */}
+              {error && (
+                <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                  <div className="flex items-center space-x-2">
+                    <AlertCircle className="w-5 h-5 text-red-500" />
+                    <span className="text-red-700 dark:text-red-400">{error}</span>
+                  </div>
+                </div>
+              )}
+
+              {success && (
+                <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                  <div className="flex items-center space-x-2">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-green-700 dark:text-green-400">{success}</span>
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
-        </div>
-      </section>
+          </motion.div>
+        )}
 
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-slate-600 to-slate-700">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-4xl font-bold text-white mb-6"
-          >
-            {t('cta.ready')}
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-xl text-slate-200 mb-8"
-          >
-            {t('cta.joinThousands')}
-          </motion.p>
+        {/* CTA para Cadastro */}
+        {!isAuthenticated && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
+            className="text-center"
           >
-            <button className="px-8 py-4 bg-white text-slate-700 font-bold rounded-xl hover:bg-slate-100 transition-colors duration-300">
-              {t('cta.startNow')}
-            </button>
-            <button className="px-8 py-4 bg-transparent border-2 border-white text-white font-bold rounded-xl hover:bg-white hover:text-slate-700 transition-colors duration-300">
-              {t('cta.talkToExpert')}
-            </button>
+            <div className="bg-gradient-to-r from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 rounded-2xl p-8 border border-slate-200 dark:border-slate-600">
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">
+                Ainda não tem uma conta?
+              </h3>
+              <p className="text-slate-600 dark:text-slate-400 mb-6">
+                Crie sua conta gratuitamente e comece a usar o AgroSync hoje mesmo!
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button
+                  onClick={() => navigate('/cadastro')}
+                  className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-blue-600 transition-all duration-300"
+                >
+                  Criar Conta Gratuita
+                </button>
+                <button
+                  onClick={() => navigate('/login')}
+                  className="px-8 py-3 bg-transparent border-2 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-semibold rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-300"
+                >
+                  Já tenho conta
+                </button>
+              </div>
+            </div>
           </motion.div>
-        </div>
-      </section>
+        )}
+      </div>
     </div>
   );
 };

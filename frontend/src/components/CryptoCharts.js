@@ -5,6 +5,19 @@ import {
   Calendar, Clock, RefreshCw, Download, Settings,
   ZoomIn, ZoomOut, Move, Layers
 } from 'lucide-react';
+import { 
+  LineChart as RechartsLineChart, 
+  Line, 
+  AreaChart, 
+  Area,
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer,
+  BarChart,
+  Bar
+} from 'recharts';
 import cryptoService from '../services/cryptoService';
 
 const CryptoCharts = () => {
@@ -58,10 +71,45 @@ const CryptoCharts = () => {
       setChartData(data);
     } catch (error) {
       console.error('Erro ao carregar dados do gráfico:', error);
+      // Dados mockados para demonstração
+      generateMockData();
     } finally {
       setLoading(false);
     }
   }, [selectedCrypto, timeframe]);
+
+  const generateMockData = () => {
+    const days = timeframes.find(t => t.value === timeframe)?.days || 7;
+    const mockData = [];
+    let basePrice = 45000; // Preço base do Bitcoin
+    
+    for (let i = 0; i < days; i++) {
+      const date = new Date();
+      date.setDate(date.getDate() - (days - i));
+      
+      const volatility = 0.05; // 5% de volatilidade
+      const change = (Math.random() - 0.5) * volatility;
+      basePrice = basePrice * (1 + change);
+      
+      const high = basePrice * (1 + Math.random() * 0.03);
+      const low = basePrice * (1 - Math.random() * 0.03);
+      const open = basePrice * (1 + (Math.random() - 0.5) * 0.02);
+      const close = basePrice;
+      
+      mockData.push({
+        date: date.toISOString().split('T')[0],
+        timestamp: date.getTime(),
+        price: close,
+        open,
+        high,
+        low,
+        close,
+        volume: Math.random() * 1000000 + 500000
+      });
+    }
+    
+    setChartData({ prices: mockData });
+  };
 
   const calculateSMA = (prices, period) => {
     if (prices.length < period) return [];
@@ -105,8 +153,8 @@ const CryptoCharts = () => {
     
     for (let i = period - 1; i < prices.length; i++) {
       const slice = prices.slice(i - period + 1, i + 1);
-      const mean = sma[i - period + 1];
-      const variance = slice.reduce((sum, price) => sum + Math.pow(price - mean, 2), 0) / period;
+      const mean = slice.reduce((a, b) => a + b, 0) / period;
+      const variance = slice.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / period;
       const standardDeviation = Math.sqrt(variance);
       
       upper.push(mean + (standardDeviation * stdDev));
@@ -147,19 +195,24 @@ const CryptoCharts = () => {
   const calculateMACD = (prices, fastPeriod = 12, slowPeriod = 26, signalPeriod = 9) => {
     if (prices.length < slowPeriod) return { macd: [], signal: [], histogram: [] };
     
-    const fastEMA = calculateEMA(prices, fastPeriod);
-    const slowEMA = calculateEMA(prices, slowPeriod);
+    const ema12 = calculateEMA(prices, fastPeriod);
+    const ema26 = calculateEMA(prices, slowPeriod);
     
     const macd = [];
-    for (let i = 0; i < fastEMA.length; i++) {
-      const slowIndex = i + (slowPeriod - fastPeriod);
-      if (slowIndex < slowEMA.length) {
-        macd.push(fastEMA[i] - slowEMA[slowIndex]);
+    for (let i = 0; i < ema26.length; i++) {
+      const fastIndex = prices.length - ema26.length + i;
+      const slowIndex = prices.length - ema26.length + i;
+      
+      if (fastIndex < ema12.length && slowIndex < ema26.length) {
+        macd.push(ema12[fastIndex] - ema26[slowIndex]);
       }
     }
     
     const signal = calculateEMA(macd, signalPeriod);
-    const histogram = macd.slice(signalPeriod - 1).map((value, index) => value - signal[index]);
+    const histogram = macd.map((value, index) => {
+      const signalValue = signal[index] || 0;
+      return value - signalValue;
+    });
     
     return { macd, signal, histogram };
   };
@@ -187,6 +240,185 @@ const CryptoCharts = () => {
     const bollinger = calculateBollingerBands(prices, 20, 2);
     const rsi = calculateRSI(prices, 14);
     const macd = calculateMACD(prices);
+
+    // Preparar dados para Recharts
+    const chartDataFormatted = chartData.prices.map((item, index) => ({
+      date: item.date,
+      price: item.price,
+      open: item.open,
+      high: item.high,
+      low: item.low,
+      close: item.close,
+      volume: item.volume,
+      sma20: sma20[index] || null,
+      ema12: ema12[index] || null,
+      bollingerUpper: bollinger.upper[index] || null,
+      bollingerLower: bollinger.lower[index] || null,
+      rsi: rsi[index] || null,
+      macd: macd.macd[index] || null,
+      signal: macd.signal[index] || null
+    }));
+
+    const renderChartByType = () => {
+      switch (chartType) {
+        case 'line':
+          return (
+            <ResponsiveContainer width="100%" height={400}>
+              <RechartsLineChart data={chartDataFormatted}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis 
+                  dataKey="date" 
+                  stroke="#666"
+                  fontSize={12}
+                  tickFormatter={(value) => new Date(value).toLocaleDateString('pt-BR')}
+                />
+                <YAxis 
+                  stroke="#666"
+                  fontSize={12}
+                  tickFormatter={(value) => `$${value.toLocaleString()}`}
+                />
+                <Tooltip 
+                  content={({ active, payload, label }) => {
+                    if (active && payload && payload.length) {
+                      return (
+                        <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg">
+                          <p className="font-semibold">{new Date(label).toLocaleDateString('pt-BR')}</p>
+                          <p className="text-green-600">Preço: ${payload[0].value?.toLocaleString()}</p>
+                          {technicalIndicators.sma && payload[1]?.value && (
+                            <p className="text-blue-600">SMA 20: ${payload[1].value?.toLocaleString()}</p>
+                          )}
+                          {technicalIndicators.ema && payload[2]?.value && (
+                            <p className="text-purple-600">EMA 12: ${payload[2].value?.toLocaleString()}</p>
+                          )}
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="price" 
+                  stroke="#10b981" 
+                  strokeWidth={2}
+                  dot={false}
+                  name="Preço"
+                />
+                {technicalIndicators.sma && (
+                  <Line 
+                    type="monotone" 
+                    dataKey="sma20" 
+                    stroke="#3b82f6" 
+                    strokeWidth={1.5}
+                    dot={false}
+                    name="SMA 20"
+                  />
+                )}
+                {technicalIndicators.ema && (
+                  <Line 
+                    type="monotone" 
+                    dataKey="ema12" 
+                    stroke="#8b5cf6" 
+                    strokeWidth={1.5}
+                    dot={false}
+                    name="EMA 12"
+                  />
+                )}
+              </RechartsLineChart>
+            </ResponsiveContainer>
+          );
+
+        case 'area':
+          return (
+            <ResponsiveContainer width="100%" height={400}>
+              <AreaChart data={chartDataFormatted}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis 
+                  dataKey="date" 
+                  stroke="#666"
+                  fontSize={12}
+                  tickFormatter={(value) => new Date(value).toLocaleDateString('pt-BR')}
+                />
+                <YAxis 
+                  stroke="#666"
+                  fontSize={12}
+                  tickFormatter={(value) => `$${value.toLocaleString()}`}
+                />
+                <Tooltip 
+                  content={({ active, payload, label }) => {
+                    if (active && payload && payload.length) {
+                      return (
+                        <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg">
+                          <p className="font-semibold">{new Date(label).toLocaleDateString('pt-BR')}</p>
+                          <p className="text-green-600">Preço: ${payload[0].value?.toLocaleString()}</p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="price" 
+                  stroke="#10b981" 
+                  fill="#10b981"
+                  fillOpacity={0.3}
+                  strokeWidth={2}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          );
+
+        case 'candlestick':
+        default:
+          return (
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart data={chartDataFormatted}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis 
+                  dataKey="date" 
+                  stroke="#666"
+                  fontSize={12}
+                  tickFormatter={(value) => new Date(value).toLocaleDateString('pt-BR')}
+                />
+                <YAxis 
+                  stroke="#666"
+                  fontSize={12}
+                  tickFormatter={(value) => `$${value.toLocaleString()}`}
+                />
+                <Tooltip 
+                  content={({ active, payload, label }) => {
+                    if (active && payload && payload.length) {
+                      return (
+                        <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg">
+                          <p className="font-semibold">{new Date(label).toLocaleDateString('pt-BR')}</p>
+                          <p className="text-green-600">Alto: ${payload[0].payload.high?.toLocaleString()}</p>
+                          <p className="text-red-600">Baixo: ${payload[0].payload.low?.toLocaleString()}</p>
+                          <p className="text-blue-600">Abertura: ${payload[0].payload.open?.toLocaleString()}</p>
+                          <p className="text-purple-600">Fechamento: ${payload[0].payload.close?.toLocaleString()}</p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+                <Bar 
+                  dataKey="high" 
+                  fill="#10b981" 
+                  name="Alto"
+                  radius={[2, 2, 0, 0]}
+                />
+                <Bar 
+                  dataKey="low" 
+                  fill="#ef4444" 
+                  name="Baixo"
+                  radius={[2, 2, 0, 0]}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          );
+      }
+    };
 
     return (
       <div className="space-y-6">
@@ -219,80 +451,31 @@ const CryptoCharts = () => {
 
           {/* Área do Gráfico */}
           <div className="h-96 bg-gray-50 dark:bg-gray-700 rounded-lg p-4 relative">
-            {/* Simulação de gráfico - em produção usar biblioteca como Chart.js ou TradingView */}
-            <div className="h-full flex items-end justify-between">
-              {prices.slice(-20).map((price, index) => {
-                const height = (price / Math.max(...prices)) * 100;
-                const color = index > 0 && price > prices[prices.length - 21 + index - 1] ? 'bg-green-500' : 'bg-red-500';
-                
-                return (
-                  <motion.div
-                    key={index}
-                    initial={{ height: 0 }}
-                    animate={{ height: `${height}%` }}
-                    transition={{ delay: index * 0.05 }}
-                    className={`w-3 ${color} rounded-t`}
-                    title={`$${price.toFixed(2)}`}
-                  />
-                );
-              })}
-            </div>
+            {renderChartByType()}
+          </div>
 
-            {/* Indicadores técnicos */}
+          {/* Indicadores técnicos */}
+          <div className="mt-4 flex items-center space-x-4 text-sm">
             {technicalIndicators.sma && sma20.length > 0 && (
-              <div className="absolute top-4 left-4">
-                <div className="flex items-center space-x-2 text-sm">
-                  <div className="w-3 h-0.5 bg-blue-500"></div>
-                  <span className="text-blue-600 dark:text-blue-400">SMA 20</span>
-                </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-0.5 bg-blue-500"></div>
+                <span className="text-blue-600 dark:text-blue-400">SMA 20</span>
               </div>
             )}
 
             {technicalIndicators.ema && ema12.length > 0 && (
-              <div className="absolute top-8 left-4">
-                <div className="flex items-center space-x-2 text-sm">
-                  <div className="w-3 h-0.5 bg-purple-500"></div>
-                  <span className="text-purple-600 dark:text-purple-400">EMA 12</span>
-                </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-0.5 bg-purple-500"></div>
+                <span className="text-purple-600 dark:text-purple-400">EMA 12</span>
               </div>
             )}
 
             {technicalIndicators.bollinger && bollinger.upper.length > 0 && (
-              <div className="absolute top-12 left-4">
-                <div className="flex items-center space-x-2 text-sm">
-                  <div className="w-3 h-0.5 bg-yellow-500"></div>
-                  <span className="text-yellow-600 dark:text-yellow-400">Bollinger</span>
-                </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-0.5 bg-yellow-500"></div>
+                <span className="text-yellow-600 dark:text-yellow-400">Bollinger</span>
               </div>
             )}
-          </div>
-
-          {/* Estatísticas do Gráfico */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-            <div className="text-center">
-              <p className="text-sm text-gray-500 dark:text-gray-400">Preço Atual</p>
-              <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                ${prices[prices.length - 1]?.toFixed(2) || '0.00'}
-              </p>
-            </div>
-            <div className="text-center">
-              <p className="text-sm text-gray-500 dark:text-gray-400">Máximo 24h</p>
-              <p className="text-lg font-semibold text-green-600">
-                ${Math.max(...prices.slice(-24))?.toFixed(2) || '0.00'}
-              </p>
-            </div>
-            <div className="text-center">
-              <p className="text-sm text-gray-500 dark:text-gray-400">Mínimo 24h</p>
-              <p className="text-lg font-semibold text-red-600">
-                ${Math.min(...prices.slice(-24))?.toFixed(2) || '0.00'}
-              </p>
-            </div>
-            <div className="text-center">
-              <p className="text-sm text-gray-500 dark:text-gray-400">Volume</p>
-              <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                ${chartData.volumes?.[chartData.volumes.length - 1]?.volume?.toLocaleString() || '0'}
-              </p>
-            </div>
           </div>
         </div>
 
@@ -446,7 +629,7 @@ const CryptoCharts = () => {
                 const Icon = type.icon;
                 return (
                   <option key={type.value} value={type.value}>
-                    <Icon className="w-4 h-4" /> {type.label}
+                    {type.label}
                   </option>
                 );
               })}

@@ -83,10 +83,80 @@ const Loja = () => {
     try {
       // Usar o serviço de produtos
       const productsData = await productService.getProducts();
+      console.log('Produtos carregados:', productsData); // Debug
       setProducts(productsData);
       setFilteredProducts(productsData);
     } catch (error) {
       console.error('Erro ao carregar produtos:', error);
+      // Fallback: produtos mock básicos
+      const fallbackProducts = [
+        {
+          id: 1,
+          name: 'Soja Premium Tipo 1',
+          category: 'Grãos',
+          price: 180.50,
+          description: 'Soja de alta qualidade, ideal para processamento industrial.',
+          image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&h=300&fit=crop',
+          rating: 4.8,
+          reviews: 156,
+          seller: 'Fazenda Santa Maria',
+          location: 'Mato Grosso, MT',
+          stock: 5000,
+          unit: 'kg',
+          status: 'active',
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: 2,
+          name: 'Milho Especial para Ração',
+          category: 'Grãos',
+          price: 85.30,
+          description: 'Milho de alta qualidade para produção de ração animal.',
+          image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&h=300&fit=crop',
+          rating: 4.6,
+          reviews: 89,
+          seller: 'Cooperativa Agro Norte',
+          location: 'Paraná, PR',
+          stock: 8000,
+          unit: 'kg',
+          status: 'active',
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: 3,
+          name: 'Fertilizante NPK 20-10-10',
+          category: 'Fertilizantes',
+          price: 89.90,
+          description: 'Fertilizante balanceado para todas as culturas.',
+          image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&h=300&fit=crop',
+          rating: 4.5,
+          reviews: 234,
+          seller: 'Agro Fertilizantes LTDA',
+          location: 'São Paulo, SP',
+          stock: 2000,
+          unit: 'kg',
+          status: 'active',
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: 4,
+          name: 'Trator Massey Ferguson 6713',
+          category: 'Maquinários',
+          price: 185000.00,
+          description: 'Trator de 130cv, ideal para grandes propriedades.',
+          image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&h=300&fit=crop',
+          rating: 4.9,
+          reviews: 45,
+          seller: 'Máquinas Agrícolas Center',
+          location: 'Goiás, GO',
+          stock: 1,
+          unit: 'unidade',
+          status: 'active',
+          createdAt: new Date().toISOString()
+        }
+      ];
+      setProducts(fallbackProducts);
+      setFilteredProducts(fallbackProducts);
     } finally {
       setLoading(false);
     }
