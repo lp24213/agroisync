@@ -102,17 +102,17 @@ const AgroConecta = () => {
 
   const loadUserData = async () => {
     try {
-      if (!user?.id) return;
+      if (!user?._id && !user?.id) return;
 
       // Carregar fretes do usuário usando o serviço
-      const userFreightsData = await freightService.getUserFreights(user.id, 'posted');
+      const userFreightsData = await freightService.getUserFreights(user._id || user.id, 'posted');
       setUserFreights(userFreightsData);
 
       // Carregar fretes onde o usuário se candidatou
-      const appliedFreights = await freightService.getUserFreights(user.id, 'applied');
+      const appliedFreights = await freightService.getUserFreights(user._id || user.id, 'applied');
       
       // Carregar transações do usuário
-      const userTransactions = await transactionService.getUserTransactions(user.id);
+      const userTransactions = await transactionService.getUserTransactions(user._id || user.id);
       const freightTransactions = userTransactions.filter(txn => txn.type === 'FREIGHT');
       
       // Carregar mensagens das transações
@@ -122,7 +122,7 @@ const AgroConecta = () => {
         allMessages.push(...messages.map(msg => ({ 
           ...msg, 
           transactionId: txn.id,
-          from: txn.buyerId === user.id ? 'Comprador' : 'Anunciante'
+          from: txn.buyerId === (user._id || user.id) ? 'Comprador' : 'Anunciante'
         })));
       }
       setUserMessages(allMessages);
@@ -347,7 +347,7 @@ const AgroConecta = () => {
         ...newFreight,
         price: parseFloat(newFreight.price),
           weight: parseFloat(newFreight.weight) || 0,
-          userId: user?.id || 'user_anonymous',
+          carrier: (user?._id || user?.id) || 'user_anonymous',
           cargoType: 'general'
         };
         
@@ -435,23 +435,24 @@ const AgroConecta = () => {
       // Criar transação de intermediação (FREIGHT)
       const transaction = await transactionService.createTransaction({
         type: 'FREIGHT',
-        itemId: freight.id,
-        buyerId: user.id,
-        sellerId: freight.userId,
+        itemId: freight._id || freight.id,
+        itemModel: 'Freight',
+        buyerId: user._id || user.id,
+        sellerId: freight.carrier._id || freight.carrier,
         status: 'PENDING',
         items: [{
-          id: freight.id,
-          name: `Frete ${freight.origin} → ${freight.destination}`,
-          price: freight.price,
+          id: freight._id || freight.id,
+          name: `Frete ${freight.publicData?.originCity || freight.origin} → ${freight.publicData?.destinationCity || freight.destination}`,
+          price: freight.publicData?.freightValue || freight.price,
           quantity: 1,
           unit: 'frete'
         }],
-        total: freight.price,
+        total: freight.publicData?.freightValue || freight.price,
         shipping: {
-          origin: freight.origin,
-          destination: freight.destination,
-          weight: freight.weight,
-          truckType: freight.truckType
+          origin: freight.publicData?.originCity || freight.origin,
+          destination: freight.publicData?.destinationCity || freight.destination,
+          weight: freight.publicData?.weight || freight.weight,
+          truckType: freight.publicData?.freightType || freight.truckType
         }
       });
 
