@@ -608,6 +608,103 @@ class CryptoService {
       metamaskAvailable: this.isMetamaskAvailable()
     };
   }
+
+  // Obter top criptomoedas
+  async getTopCryptos() {
+    try {
+      // Simular dados de top criptomoedas
+      const topCryptos = [
+        {
+          id: 'bitcoin',
+          symbol: 'BTC',
+          name: 'Bitcoin',
+          price: 45000 + (Math.random() - 0.5) * 5000,
+          change24h: (Math.random() - 0.5) * 10,
+          marketCap: '850B',
+          volume: '25B',
+          dominance: '48.2%'
+        },
+        {
+          id: 'ethereum',
+          symbol: 'ETH',
+          name: 'Ethereum',
+          price: 2800 + (Math.random() - 0.5) * 300,
+          change24h: (Math.random() - 0.5) * 8,
+          marketCap: '340B',
+          volume: '18B',
+          dominance: '19.1%'
+        },
+        {
+          id: 'binancecoin',
+          symbol: 'BNB',
+          name: 'BNB',
+          price: 320 + (Math.random() - 0.5) * 40,
+          change24h: (Math.random() - 0.5) * 6,
+          marketCap: '52B',
+          volume: '2.1B',
+          dominance: '2.9%'
+        },
+        {
+          id: 'cardano',
+          symbol: 'ADA',
+          name: 'Cardano',
+          price: 0.45 + (Math.random() - 0.5) * 0.1,
+          change24h: (Math.random() - 0.5) * 5,
+          marketCap: '16B',
+          volume: '890M',
+          dominance: '0.9%'
+        },
+        {
+          id: 'solana',
+          symbol: 'SOL',
+          name: 'Solana',
+          price: 95 + (Math.random() - 0.5) * 15,
+          change24h: (Math.random() - 0.5) * 7,
+          marketCap: '42B',
+          volume: '3.2B',
+          dominance: '2.4%'
+        }
+      ];
+
+      return topCryptos;
+    } catch (error) {
+      console.error('Erro ao obter top criptomoedas:', error);
+      throw error;
+    }
+  }
+
+  // Obter dados do gráfico
+  async getChartData(cryptoId, timeframe = '24h') {
+    try {
+      // Simular dados de gráfico baseados no timeframe
+      const dataPoints = timeframe === '24h' ? 24 : timeframe === '7d' ? 168 : 30;
+      const chartData = [];
+      
+      let basePrice = 45000; // Preço base do Bitcoin
+      if (cryptoId === 'ethereum') basePrice = 2800;
+      else if (cryptoId === 'binancecoin') basePrice = 320;
+      else if (cryptoId === 'cardano') basePrice = 0.45;
+      else if (cryptoId === 'solana') basePrice = 95;
+
+      for (let i = 0; i < dataPoints; i++) {
+        const timestamp = Date.now() - (dataPoints - i) * (timeframe === '24h' ? 3600000 : timeframe === '7d' ? 3600000 : 86400000);
+        const volatility = 0.02; // 2% de volatilidade
+        const change = (Math.random() - 0.5) * volatility;
+        basePrice = basePrice * (1 + change);
+        
+        chartData.push({
+          timestamp,
+          price: basePrice,
+          volume: Math.random() * 1000000 + 500000
+        });
+      }
+
+      return chartData;
+    } catch (error) {
+      console.error('Erro ao obter dados do gráfico:', error);
+      throw error;
+    }
+  }
 }
 
 export default new CryptoService();

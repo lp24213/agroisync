@@ -503,10 +503,10 @@ const Loja = () => {
                     <ProductCard
                       key={product.id}
                       product={product}
+                      onContact={() => console.log('Contato:', product.id)}
+                      onFavorite={() => toggleWishlist(product)}
+                      onView={() => console.log('Visualizar:', product.id)}
                       onAddToCart={() => addToCart(product)}
-                      onToggleWishlist={() => toggleWishlist(product)}
-                      isInWishlist={wishlist.some(item => item.id === product.id)}
-                      viewMode={viewMode}
                     />
                   ))}
                 </div>
