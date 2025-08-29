@@ -8,6 +8,24 @@ class MetamaskService {
     this.chainId = null;
   }
 
+  // Obter contas conectadas
+  async getAccounts() {
+    try {
+      if (!this.isMetamaskInstalled()) {
+        return [];
+      }
+
+      const accounts = await window.ethereum.request({
+        method: 'eth_accounts'
+      });
+
+      return accounts;
+    } catch (error) {
+      console.error('Erro ao obter contas:', error);
+      return [];
+    }
+  }
+
   // Verificar se Metamask está instalado
   isMetamaskInstalled() {
     return typeof window !== 'undefined' && window.ethereum;

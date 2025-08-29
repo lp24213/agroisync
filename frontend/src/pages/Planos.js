@@ -98,25 +98,38 @@ const Planos = () => {
 
       if (paymentMethod === 'metamask') {
         if (!metamaskConnected) {
-          await connectMetamask();
+          setError('Conecte sua carteira MetaMask primeiro');
           return;
         }
-        
-        // Pagamento via Metamask
-        result = await metamaskService.sendTransaction({
-          to: '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6', // Endereço da carteira do AgroSync
-          value: getPlanPriceInWei(selectedPlan),
-          data: '0x' // Dados da transação
-        });
 
+        // Pagamento via MetaMask
+        const weiAmount = getPlanPriceInWei(selectedPlan);
+        result = await metamaskService.sendPayment(weiAmount, selectedPlan.id);
+        
         if (result.success) {
-          setSuccess(`Pagamento realizado com sucesso! Hash: ${result.hash}`);
-          // Redirecionar para dashboard após pagamento
-          setTimeout(() => {
-            navigate('/dashboard');
-          }, 2000);
+          // Verificar pagamento no backend
+          const verification = await paymentService.verifyCryptoPayment(result.invoiceId, result.transactionHash);
+          
+          if (verification.success) {
+            // Atualizar status do usuário para isPaid = true
+            await updateUserPaymentStatus(selectedPlan.id, 'metamask', result.transactionHash);
+            setSuccess('Pagamento confirmado! Seu plano está ativo.');
+            
+            // Redirecionar para página de sucesso
+            setTimeout(() => {
+              navigate('/payment-success', { 
+                state: { 
+                  plan: selectedPlan.id, 
+                  method: 'metamask', 
+                  tx: result.transactionHash 
+                }
+              });
+            }, 2000);
+          } else {
+            setError('Erro na verificação do pagamento: ' + verification.error);
+          }
         } else {
-          setError(result.error || 'Erro no pagamento via Metamask');
+          setError(result.error || 'Erro ao processar pagamento via MetaMask');
         }
       } else {
         // Pagamento via Stripe
@@ -139,6 +152,40 @@ const Planos = () => {
       setError('Erro no processamento do pagamento: ' + error.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Função para atualizar status de pagamento do usuário
+  const updateUserPaymentStatus = async (planId, method, transactionHash = null) => {
+    try {
+      const response = await fetch('/api/payments/update-user-status', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          planId,
+          paymentMethod: method,
+          transactionHash,
+          status: 'completed'
+        })
+      });
+
+      if (response.ok) {
+        // Atualizar contexto local
+        if (window.refreshUser) {
+          window.refreshUser();
+        }
+        return true;
+      } else {
+        console.error('Erro ao atualizar status do usuário');
+        return false;
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar status do usuário:', error);
+      return false;
     }
   };
 
@@ -510,7 +557,7 @@ const Planos = () => {
                       }`} />
                     </div>
                     <div className="text-left">
-                      <h4 className="font-semibold text-slate-900 dark:text-white">Criptomoedas</h4>
+                      <h4 className="font-semibold text-slate-900 dark:text-white">Pagamento via MetaMask</h4>
                       <p className="text-sm text-slate-600 dark:text-slate-400">
                         {metamaskConnected ? 'Metamask conectado' : 'Conectar Metamask'}
                       </p>
