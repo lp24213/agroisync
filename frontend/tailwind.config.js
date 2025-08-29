@@ -7,39 +7,63 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // CORES ESPECÍFICAS AGROSYNC
-        'agro-green': {
-          '50': '#f0fdf4',
-          '100': '#dcfce7',
-          '200': '#bbf7d0',
-          '300': '#86efac',
-          '400': '#4ade80',
-          '500': '#22c55e',
-          '600': '#16a34a',
-          '700': '#15803d',
-          '800': '#166534',
-          '900': '#14532d',
-          '950': '#052e16',
+        // NOVAS CORES PREMIUM - Inspiradas em MF Rural, Grão Direto, Atlas e Apple
+        'premium': {
+          'black': '#0a0a0a',        // Preto fosco
+          'charcoal': '#1a1a1a',     // Cinza muito escuro
+          'dark-gray': '#2d2d2d',    // Cinza escuro
+          'gray': '#4a4a4a',         // Cinza médio
+          'light-gray': '#6b6b6b',   // Cinza claro
+          'silver': '#9ca3af',       // Prata sutil
+          'platinum': '#e5e7eb',     // Platina claro
+          'white': '#ffffff',        // Branco puro
         },
-        'agro-yellow': {
-          '50': '#fefce8',
-          '100': '#fef3c7',
-          '200': '#fde68a',
-          '300': '#fcd34d',
-          '400': '#fbbf24',
-          '500': '#f59e0b',
-          '600': '#d97706',
-          '700': '#b45309',
-          '800': '#92400e',
-          '900': '#78350f',
-          '950': '#451a03',
+        'accent': {
+          'gold': '#d4af37',         // Dourado discreto
+          'gold-light': '#f4e4a6',   // Dourado claro
+          'blue': '#3b82f6',         // Azul discreto
+          'blue-light': '#60a5fa',   // Azul claro
+          'emerald': '#10b981',      // Verde esmeralda
+          'emerald-light': '#34d399', // Verde claro
         },
-        'web3-neon-blue': '#00d4ff',
-        'web3-neon-green': '#00ff88',
-        'web3-neon-purple': '#8b5cf6',
-        'web3-neon-cyan': '#06b6d4',
-        'web3-neon-emerald': '#10b981',
-        'web3-neon-teal': '#14b8a6',
+        // CORES AGROSYNC ATUALIZADAS (mais sutis)
+        'agro': {
+          'green': {
+            '50': '#f0fdf4',
+            '100': '#dcfce7',
+            '200': '#bbf7d0',
+            '300': '#86efac',
+            '400': '#4ade80',
+            '500': '#22c55e',
+            '600': '#16a34a',
+            '700': '#15803d',
+            '800': '#166534',
+            '900': '#14532d',
+            '950': '#052e16',
+          },
+          'yellow': {
+            '50': '#fefce8',
+            '100': '#fef3c7',
+            '200': '#fde68a',
+            '300': '#fcd34d',
+            '400': '#fbbf24',
+            '500': '#f59e0b',
+            '600': '#d97706',
+            '700': '#b45309',
+            '800': '#92400e',
+            '900': '#78350f',
+            '950': '#451a03',
+          }
+        },
+        // CORES WEB3 (mais sutis, sem neon exagerado)
+        'web3': {
+          'blue': '#3b82f6',
+          'green': '#10b981',
+          'purple': '#8b5cf6',
+          'cyan': '#06b6d4',
+          'emerald': '#10b981',
+          'teal': '#14b8a6',
+        },
         
         // Tema Claro - Padrão (sempre ativo por padrão)
         'light': {
@@ -178,22 +202,24 @@ module.exports = {
         'system': ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
       },
       animation: {
-        "fade-in": "fadeIn 0.5s ease-out forwards",
-        "slide-up": "slideUp 0.6s ease-out forwards",
-        "float": "float 6s ease-in-out infinite",
-        "pulse-subtle": "pulse-subtle 2s ease-in-out infinite",
-        "shimmer": "shimmer 2s ease-in-out infinite",
-        // NOVAS ANIMAÇÕES PREMIUM
-        "fade-in-up": "fadeInUp 0.8s ease-out forwards",
-        "fade-in-down": "fadeInDown 0.8s ease-out forwards",
-        "fade-in-left": "fadeInLeft 0.8s ease-out forwards",
-        "fade-in-right": "fadeInRight 0.8s ease-out forwards",
-        "scale-in": "scaleIn 0.6s ease-out forwards",
-        "bounce-subtle": "bounceSubtle 2s ease-in-out infinite",
-        "glow-pulse": "glowPulse 3s ease-in-out infinite",
-        "gradient-shift": "gradientShift 4s ease-in-out infinite",
-        "marquee": "marquee 20s linear infinite",
-        "marquee-reverse": "marqueeReverse 20s linear infinite",
+        // ANIMAÇÕES PREMIUM - Inspiradas em Apple/Atlas (fluidas e modernas)
+        "fade-in": "fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards",
+        "slide-up": "slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards",
+        "float": "float 8s ease-in-out infinite",
+        "pulse-subtle": "pulseSubtle 3s ease-in-out infinite",
+        "shimmer": "shimmer 2.5s ease-in-out infinite",
+        "fade-in-up": "fadeInUp 1s cubic-bezier(0.4, 0, 0.2, 1) forwards",
+        "fade-in-down": "fadeInDown 1s cubic-bezier(0.4, 0, 0.2, 1) forwards",
+        "fade-in-left": "fadeInLeft 1s cubic-bezier(0.4, 0, 0.2, 1) forwards",
+        "fade-in-right": "fadeInRight 1s cubic-bezier(0.4, 0, 0.2, 1) forwards",
+        "scale-in": "scaleIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards",
+        "bounce-subtle": "bounceSubtle 3s ease-in-out infinite",
+        "glow-pulse": "glowPulse 4s ease-in-out infinite",
+        "gradient-shift": "gradientShift 6s ease-in-out infinite",
+        "marquee": "marquee 25s linear infinite",
+        "marquee-reverse": "marqueeReverse 25s linear infinite",
+        "slide-smooth": "slideSmooth 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards",
+        "scale-smooth": "scaleSmooth 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards",
       },
       keyframes: {
         "fadeIn": {
@@ -201,53 +227,53 @@ module.exports = {
           "100%": { opacity: 1 }
         },
         "slideUp": {
-          "0%": { opacity: 0, transform: "translateY(20px)" },
+          "0%": { opacity: 0, transform: "translateY(30px)" },
           "100%": { opacity: 1, transform: "translateY(0)" }
         },
         "float": {
           "0%, 100%": { transform: "translateY(0px)" },
-          "50%": { transform: "translateY(-10px)" }
+          "50%": { transform: "translateY(-15px)" }
         },
-        "pulse-subtle": {
+        "pulseSubtle": {
           "0%, 100%": { opacity: 1 },
-          "50%": { opacity: 0.8 }
+          "50%": { opacity: 0.85 }
         },
         "shimmer": {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" }
         },
-        // NOVAS KEYFRAMES PREMIUM
+        // NOVAS KEYFRAMES PREMIUM - Inspiradas em Apple/Atlas
         "fadeInUp": {
-          "0%": { opacity: 0, transform: "translateY(30px)" },
+          "0%": { opacity: 0, transform: "translateY(40px)" },
           "100%": { opacity: 1, transform: "translateY(0)" }
         },
         "fadeInDown": {
-          "0%": { opacity: 0, transform: "translateY(-30px)" },
+          "0%": { opacity: 0, transform: "translateY(-40px)" },
           "100%": { opacity: 1, transform: "translateY(0)" }
         },
         "fadeInLeft": {
-          "0%": { opacity: 0, transform: "translateX(-30px)" },
+          "0%": { opacity: 0, transform: "translateX(-40px)" },
           "100%": { opacity: 1, transform: "translateX(0)" }
         },
         "fadeInRight": {
-          "0%": { opacity: 0, transform: "translateX(30px)" },
+          "0%": { opacity: 0, transform: "translateX(40px)" },
           "100%": { opacity: 1, transform: "translateX(0)" }
         },
         "scaleIn": {
-          "0%": { opacity: 0, transform: "scale(0.9)" },
+          "0%": { opacity: 0, transform: "scale(0.95)" },
           "100%": { opacity: 1, transform: "scale(1)" }
         },
         "bounceSubtle": {
           "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-5px)" }
+          "50%": { transform: "translateY(-8px)" }
         },
         "glowPulse": {
           "0%, 100%": { 
-            boxShadow: "0 0 5px rgba(0, 212, 255, 0.3)",
-            opacity: 0.7
+            boxShadow: "0 0 10px rgba(212, 175, 55, 0.2)",
+            opacity: 0.8
           },
           "50%": { 
-            boxShadow: "0 0 20px rgba(0, 212, 255, 0.6)",
+            boxShadow: "0 0 25px rgba(212, 175, 55, 0.4)",
             opacity: 1
           }
         },
@@ -262,6 +288,14 @@ module.exports = {
         "marqueeReverse": {
           "0%": { transform: "translateX(-100%)" },
           "100%": { transform: "translateX(0%)" }
+        },
+        "slideSmooth": {
+          "0%": { opacity: 0, transform: "translateY(20px)" },
+          "100%": { opacity: 1, transform: "translateY(0)" }
+        },
+        "scaleSmooth": {
+          "0%": { opacity: 0, transform: "scale(0.98)" },
+          "100%": { opacity: 1, transform: "scale(1)" }
         }
       },
       backdropBlur: {
@@ -271,22 +305,22 @@ module.exports = {
         'subtle': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
         'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
         'elevated': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-        // NOVAS SOMBRAS PREMIUM
-        'glow-green': '0 0 20px rgba(16, 185, 129, 0.3)',
-        'glow-yellow': '0 0 20px rgba(245, 158, 11, 0.3)',
-        'glow-blue': '0 0 20px rgba(0, 212, 255, 0.3)',
-        'glow-emerald': '0 0 20px rgba(16, 185, 129, 0.3)',
-        'glow-neon': '0 0 30px rgba(0, 212, 255, 0.4)',
+        // NOVAS SOMBRAS PREMIUM - Inspiradas em Apple/Atlas
         'premium': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+        'premium-soft': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+        'premium-glow': '0 0 30px rgba(212, 175, 55, 0.2)',
+        'premium-accent': '0 0 20px rgba(59, 130, 246, 0.15)',
+        'glass': '0 8px 32px rgba(0, 0, 0, 0.1)',
+        'glass-soft': '0 4px 16px rgba(0, 0, 0, 0.05)',
       },
       backgroundImage: {
-        // NOVOS GRADIENTES PREMIUM
-        'gradient-agro': 'linear-gradient(135deg, #16a34a 0%, #f59e0b 50%, #00d4ff 100%)',
-        'gradient-sustainability': 'linear-gradient(135deg, #16a34a 0%, #14b8a6 100%)',
-        'gradient-wealth': 'linear-gradient(135deg, #f59e0b 0%, #f97316 100%)',
-        'gradient-tech': 'linear-gradient(135deg, #00d4ff 0%, #8b5cf6 100%)',
-        'gradient-earth': 'linear-gradient(135deg, #a18072 0%, #8b5cf6 100%)',
-        'gradient-premium': 'linear-gradient(135deg, #64748b 0%, #475569 50%, #334155 100%)',
+        // NOVOS GRADIENTES PREMIUM - Inspirados em Apple/Atlas
+        'gradient-premium': 'linear-gradient(135deg, #0a0a0a 0%, #2d2d2d 50%, #4a4a4a 100%)',
+        'gradient-elegant': 'linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 100%)',
+        'gradient-accent': 'linear-gradient(135deg, #d4af37 0%, #3b82f6 100%)',
+        'gradient-sustainable': 'linear-gradient(135deg, #10b981 0%, #34d399 100%)',
+        'gradient-modern': 'linear-gradient(135deg, #6b6b6b 0%, #9ca3af 100%)',
+        'gradient-glass': 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
       }
     },
   },
