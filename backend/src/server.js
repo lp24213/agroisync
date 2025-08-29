@@ -31,6 +31,7 @@ import contactRoutes from './routes/contact.js';
 import userRoutes from './routes/users.js';
 import notificationRoutes from './routes/notifications.js';
 import escrowRoutes from './routes/escrow.js';
+import mirrorAPIRoutes from './routes/mirror-apis.js';
 
 // Import database connection
 import { connectDB } from './config/database.js';
@@ -92,6 +93,7 @@ app.use((req, res, next) => {
 // Rotas públicas
 app.use('/api/auth', authRoutes);
 app.use('/api/external', externalAPIRoutes);
+app.use('/api/mirror', mirrorAPIRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/freights', freightRoutes);
 app.use('/api/transactions', transactionRoutes);
@@ -133,7 +135,9 @@ app.get('/api', (req, res) => {
       transactions: '/api/transactions',
       payments: '/api/payments',
       messages: '/api/messages',
-      admin: '/api/admin'
+      admin: '/api/admin',
+      external: '/api/external',
+      mirror: '/api/mirror'
     },
     documentation: '/api/docs'
   });

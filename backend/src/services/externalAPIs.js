@@ -711,6 +711,452 @@ class ExternalAPIService {
       };
     }
   }
+
+  // ===== SERVIÇOS DO BAIDU MAPS =====
+  
+  /**
+   * Buscar coordenadas por endereço (geocoding)
+   * @param {string} address - Endereço para buscar
+   * @returns {Object} Coordenadas e dados do endereço
+   */
+  async buscarCoordenadasBaidu(address) {
+    try {
+      if (!API_CONFIG.baiduMaps.apiKey) {
+        throw new Error('API key do Baidu Maps não configurada');
+      }
+      
+      // Verificar cache primeiro
+      const cacheKey = `baidu_geocoding_${address}`;
+      const cached = this.getFromCache(cacheKey);
+      if (cached) {
+        return {
+          success: true,
+          data: cached,
+          cached: true
+        };
+      }
+      
+      const response = await this.baiduClient.get('/geocoding/v3/', {
+        params: {
+          address: address,
+          output: 'json',
+          ak: API_CONFIG.baiduMaps.apiKey
+        }
+      });
+      
+      if (response.data.status !== 0) {
+        throw new Error(`Erro do Baidu Maps: ${response.data.message}`);
+      }
+      
+      const result = response.data.result;
+      const data = {
+        address: result.formatted_address,
+        coordinates: {
+          lat: result.location.lat,
+          lng: result.location.lng
+        },
+        components: result.address_components,
+        confidence: result.confidence,
+        level: result.level
+      };
+      
+      // Salvar no cache por 10 minutos
+      this.setCache(cacheKey, data, 10 * 60 * 1000);
+      
+      return {
+        success: true,
+        data: data
+      };
+    } catch (error) {
+      console.error('Erro ao buscar coordenadas Baidu:', error);
+      return {
+        success: false,
+        message: 'Erro ao buscar coordenadas',
+        error: error.message
+      };
+    }
+  }
+
+  /**
+   * Buscar endereço por coordenadas (reverse geocoding)
+   * @param {number} lat - Latitude
+   * @param {number} lng - Longitude
+   * @returns {Object} Endereço e dados da localização
+   */
+  async buscarEnderecoBaidu(lat, lng) {
+    try {
+      if (!API_CONFIG.baiduMaps.apiKey) {
+        throw new Error('API key do Baidu Maps não configurada');
+      }
+      
+      // Verificar cache primeiro
+      const cacheKey = `baidu_reverse_${lat}_${lng}`;
+      const cached = this.getFromCache(cacheKey);
+      if (cached) {
+        return {
+          success: true,
+          data: cached,
+          cached: true
+        };
+      }
+      
+      const response = await this.baiduClient.get('/reverse_geocoding/v3/', {
+        params: {
+          location: `${lat},${lng}`,
+          output: 'json',
+          ak: API_CONFIG.baiduMaps.apiKey
+        }
+      });
+      
+      if (response.data.status !== 0) {
+        throw new Error(`Erro do Baidu Maps: ${response.data.message}`);
+      }
+      
+      const result = response.data.result;
+      const data = {
+        address: result.formatted_address,
+        coordinates: {
+          lat: lat,
+          lng: lng
+        },
+        components: result.address_components,
+        confidence: result.confidence
+      };
+      
+      // Salvar no cache por 10 minutos
+      this.setCache(cacheKey, data, 10 * 60 * 1000);
+      
+      return {
+        success: true,
+        data: data
+      };
+    } catch (error) {
+      console.error('Erro ao buscar endereço Baidu:', error);
+      return {
+        success: false,
+        message: 'Erro ao buscar endereço',
+        error: error.message
+      };
+    }
+  }
+
+  /**
+   * Buscar lugares por query (search)
+   * @param {string} query - Query de busca
+   * @returns {Object} Lista de lugares encontrados
+   */
+  async buscarLugaresBaidu(query) {
+    try {
+      if (!API_CONFIG.baiduMaps.apiKey) {
+        throw new Error('API key do Baidu Maps não configurada');
+      }
+      
+      // Verificar cache primeiro
+      const cacheKey = `baidu_search_${query}`;
+      const cached = this.getFromCache(cacheKey);
+      if (cached) {
+        return {
+          success: true,
+          data: cached,
+          cached: true
+        };
+      }
+      
+      const response = await this.baiduClient.get('/place/v2/search', {
+        params: {
+          query: query,
+          output: 'json',
+          ak: API_CONFIG.baiduMaps.apiKey,
+          scope: 2,
+          page_size: 20
+        }
+      });
+      
+      if (response.data.status !== 0) {
+        throw new Error(`Erro do Baidu Maps: ${response.data.message}`);
+      }
+      
+      const result = response.data.results;
+      const data = result.map(place => ({
+        name: place.name,
+        address: place.address,
+        coordinates: {
+          lat: place.location.lat,
+          lng: place.location.lng
+        },
+        type: place.type,
+        uid: place.uid
+      }));
+      
+      // Salvar no cache por 10 minutos
+      this.setCache(cacheKey, data, 10 * 60 * 1000);
+      
+      return {
+        success: true,
+        data: data
+      };
+    } catch (error) {
+      console.error('Erro ao buscar lugares Baidu:', error);
+      return {
+        success: false,
+        message: 'Erro ao buscar lugares',
+        error: error.message
+      };
+    }
+  }
+
+  // ===== SERVIÇOS DA RECEITA FEDERAL =====
+  
+  /**
+   * Validar CNPJ
+   * @param {string} cnpj - CNPJ a ser validado
+   * @returns {Object} Resultado da validação
+   */
+  async validarCNPJ(cnpj) {
+    try {
+      const cleanCNPJ = cnpj.replace(/\D/g, '');
+      
+      if (cleanCNPJ.length !== 14) {
+        throw new Error('CNPJ deve ter 14 dígitos');
+      }
+      
+      // Verificar cache primeiro (24 horas)
+      const cacheKey = `receita_cnpj_${cleanCNPJ}`;
+      const cached = this.getFromCache(cacheKey);
+      if (cached) {
+        return {
+          success: true,
+          data: cached,
+          cached: true
+        };
+      }
+      
+      // Aqui você implementaria a chamada real para a API da Receita Federal
+      // Por enquanto, retornamos dados simulados
+      const data = {
+        cnpj: cleanCNPJ,
+        razaoSocial: 'EMPRESA EXEMPLO LTDA',
+        nomeFantasia: 'EMPRESA EXEMPLO',
+        dataAbertura: '2020-01-01',
+        situacao: 'ATIVA',
+        tipo: 'MATRIZ',
+        porte: 'MEDIO PORTE',
+        naturezaJuridica: '206-2 - LTDA',
+        capitalSocial: 100000.00,
+        endereco: {
+          logradouro: 'Rua Exemplo',
+          numero: '123',
+          complemento: 'Sala 1',
+          bairro: 'Centro',
+          municipio: 'São Paulo',
+          uf: 'SP',
+          cep: '01234-567'
+        },
+        atividadePrincipal: '4751-2/01 - Comércio varejista de informática',
+        atividadesSecundarias: [
+          '6201-5/01 - Desenvolvimento de sistemas'
+        ]
+      };
+      
+      // Salvar no cache por 24 horas
+      this.setCache(cacheKey, data, 24 * 60 * 60 * 1000);
+      
+      return {
+        success: true,
+        data: data
+      };
+    } catch (error) {
+      console.error('Erro ao validar CNPJ:', error);
+      return {
+        success: false,
+        message: 'Erro ao validar CNPJ',
+        error: error.message
+      };
+    }
+  }
+
+  /**
+   * Validar CPF
+   * @param {string} cpf - CPF a ser validado
+   * @returns {Object} Resultado da validação
+   */
+  async validarCPF(cpf) {
+    try {
+      const cleanCPF = cpf.replace(/\D/g, '');
+      
+      if (cleanCPF.length !== 11) {
+        throw new Error('CPF deve ter 11 dígitos');
+      }
+      
+      // Verificar cache primeiro (24 horas)
+      const cacheKey = `receita_cpf_${cleanCPF}`;
+      const cached = this.getFromCache(cacheKey);
+      if (cached) {
+        return {
+          success: true,
+          data: cached,
+          cached: true
+        };
+      }
+      
+      // Aqui você implementaria a chamada real para a API da Receita Federal
+      // Por enquanto, retornamos dados simulados
+      const data = {
+        cpf: cleanCPF,
+        nome: 'PESSOA EXEMPLO',
+        dataNascimento: '1990-01-01',
+        situacao: 'REGULAR',
+        dataInscricao: '2020-01-01',
+        digitoVerificador: '00'
+      };
+      
+      // Salvar no cache por 24 horas
+      this.setCache(cacheKey, data, 24 * 60 * 60 * 1000);
+      
+      return {
+        success: true,
+        data: data
+      };
+    } catch (error) {
+      console.error('Erro ao validar CPF:', error);
+      return {
+        success: false,
+        message: 'Erro ao validar CPF',
+        error: error.message
+      };
+    }
+  }
+
+  /**
+   * Validar IE (Inscrição Estadual)
+   * @param {string} ie - IE a ser validada
+   * @returns {Object} Resultado da validação
+   */
+  async validarIE(ie) {
+    try {
+      const cleanIE = ie.replace(/\D/g, '');
+      
+      if (cleanIE.length < 8 || cleanIE.length > 12) {
+        throw new Error('IE deve ter entre 8 e 12 dígitos');
+      }
+      
+      // Verificar cache primeiro (24 horas)
+      const cacheKey = `receita_ie_${cleanIE}`;
+      const cached = this.getFromCache(cacheKey);
+      if (cached) {
+        return {
+          success: true,
+          data: cached,
+          cached: true
+        };
+      }
+      
+      // Aqui você implementaria a chamada real para a API da Receita Federal
+      // Por enquanto, retornamos dados simulados
+      const data = {
+        ie: cleanIE,
+        uf: 'SP',
+        situacao: 'ATIVA',
+        dataInscricao: '2020-01-01',
+        contribuinte: 'CONTRIBUINTE'
+      };
+      
+      // Salvar no cache por 24 horas
+      this.setCache(cacheKey, data, 24 * 60 * 60 * 1000);
+      
+      return {
+        success: true,
+        data: data
+      };
+    } catch (error) {
+      console.error('Erro ao validar IE:', error);
+      return {
+        success: false,
+        message: 'Erro ao validar IE',
+        error: error.message
+      };
+    }
+  }
+
+  /**
+   * Obter dados completos da empresa
+   * @param {string} cnpj - CNPJ da empresa
+   * @returns {Object} Dados completos da empresa
+   */
+  async obterDadosEmpresa(cnpj) {
+    try {
+      const cleanCNPJ = cnpj.replace(/\D/g, '');
+      
+      if (cleanCNPJ.length !== 14) {
+        throw new Error('CNPJ deve ter 14 dígitos');
+      }
+      
+      // Verificar cache primeiro (24 horas)
+      const cacheKey = `receita_empresa_${cleanCNPJ}`;
+      const cached = this.getFromCache(cacheKey);
+      if (cached) {
+        return {
+          success: true,
+          data: cached,
+          cached: true
+        };
+      }
+      
+      // Aqui você implementaria a chamada real para a API da Receita Federal
+      // Por enquanto, retornamos dados simulados
+      const data = {
+        cnpj: cleanCNPJ,
+        razaoSocial: 'EMPRESA EXEMPLO LTDA',
+        nomeFantasia: 'EMPRESA EXEMPLO',
+        dataAbertura: '2020-01-01',
+        situacao: 'ATIVA',
+        tipo: 'MATRIZ',
+        porte: 'MEDIO PORTE',
+        naturezaJuridica: '206-2 - LTDA',
+        capitalSocial: 100000.00,
+        endereco: {
+          logradouro: 'Rua Exemplo',
+          numero: '123',
+          complemento: 'Sala 1',
+          bairro: 'Centro',
+          municipio: 'São Paulo',
+          uf: 'SP',
+          cep: '01234-567'
+        },
+        atividadePrincipal: '4751-2/01 - Comércio varejista de informática',
+        atividadesSecundarias: [
+          '6201-5/01 - Desenvolvimento de sistemas'
+        ],
+        quadroSocios: [
+          {
+            nome: 'SÓCIO EXEMPLO',
+            qualificacao: 'Sócio-Administrador',
+            participacao: '100%'
+          }
+        ],
+        telefone: '(11) 99999-9999',
+        email: 'contato@empresaexemplo.com.br',
+        site: 'www.empresaexemplo.com.br'
+      };
+      
+      // Salvar no cache por 24 horas
+      this.setCache(cacheKey, data, 24 * 60 * 60 * 1000);
+      
+      return {
+        success: true,
+        data: data
+      };
+    } catch (error) {
+      console.error('Erro ao obter dados da empresa:', error);
+      return {
+        success: false,
+        message: 'Erro ao obter dados da empresa',
+        error: error.message
+      };
+    }
+  }
+
+  // ===== SERVIÇOS DE VALIDAÇÃO =====
 }
 
 // Exportar instância única do serviço
@@ -730,5 +1176,12 @@ export const {
   validarEndereco,
   geocodeAddress,
   reverseGeocode,
-  calculateRoute
+  calculateRoute,
+  buscarCoordenadasBaidu,
+  buscarEnderecoBaidu,
+  buscarLugaresBaidu,
+  validarCNPJ,
+  validarCPF,
+  validarIE,
+  obterDadosEmpresa
 } = externalAPIService;
