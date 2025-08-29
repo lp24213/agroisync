@@ -371,7 +371,7 @@ const CommoditiesPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-premium-platinum">
+    <div className="min-h-screen bg-premium-platinum pt-16">
       {/* Header */}
       <section className="bg-white shadow-premium-soft border-b border-premium-platinum">
         <div className="container-premium py-6">

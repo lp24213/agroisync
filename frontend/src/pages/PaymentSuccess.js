@@ -95,7 +95,7 @@ const PaymentSuccess = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white text-gray-900">
+    <div className="min-h-screen bg-white text-gray-900 pt-16">
       <div className="max-w-4xl mx-auto px-4 py-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -316,7 +316,7 @@ const Messages = () => {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-900 text-white">
+    <div className="min-h-screen bg-neutral-900 text-white pt-16">
       <main className="pt-24 pb-16">
         <div className="max-w-7xl mx-auto px-4">
           {/* Header */}

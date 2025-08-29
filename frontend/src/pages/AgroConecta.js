@@ -697,8 +697,8 @@ const AgroConecta = () => {
   // PÁGINA PÚBLICA - mostrar para todos
   if (!user || isAdmin) {
     return (
-      <div className="min-h-screen bg-white text-slate-900">
-        <main className="pt-24 pb-16">
+      <div className="min-h-screen bg-white text-slate-900 pt-16">
+        <main className="pb-16">
           <div className="max-w-7xl mx-auto px-4">
             {/* Hero Section */}
             <motion.div
@@ -904,7 +904,7 @@ const AgroConecta = () => {
 
   // Usuário logado - mostrar fretes + painel secreto
   return (
-    <div className="min-h-screen bg-white text-slate-900">
+    <div className="min-h-screen bg-white text-slate-900 pt-16">
       {/* Header com botão do painel secreto - DESIGN PREMIUM */}
       <div className="bg-gradient-to-r from-slate-100 to-emerald-50 border-b-2 border-emerald-600">
         <div className="max-w-7xl mx-auto px-4 py-4">

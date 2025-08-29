@@ -61,7 +61,7 @@ const GrainsDashboard = () => {
   if (hasError) {
     return (
       <motion.div 
-        className="min-h-screen bg-black text-white p-6"
+        className="min-h-screen bg-black text-white p-6 pt-16"
         initial="hidden"
         animate="visible"
         variants={containerVariants}
@@ -91,7 +91,7 @@ const GrainsDashboard = () => {
 
   return (
     <motion.div 
-      className="min-h-screen bg-black text-white p-6"
+              className="min-h-screen bg-black text-white p-6 pt-16"
       initial="hidden"
       animate="visible"
       variants={containerVariants}

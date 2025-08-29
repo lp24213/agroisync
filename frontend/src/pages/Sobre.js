@@ -99,7 +99,7 @@ const Sobre = () => {
   ];
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300`}>
+    <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300 pt-16`}>
       
       {/* Hero Section */}
       <section className="relative pt-40 pb-20 px-4 overflow-hidden">

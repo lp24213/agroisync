@@ -141,7 +141,7 @@ const Parcerias = () => {
   };
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300`}>
+    <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300 pt-16`}>
       {/* Hero Section */}
       <motion.section
         initial={{ opacity: 0, y: -20 }}

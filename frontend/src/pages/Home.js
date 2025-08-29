@@ -471,12 +471,12 @@ const Home = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white text-slate-900">
+    <div className="min-h-screen bg-white text-slate-900 pt-16">
       
       {/* Bolsa de Valores - TICKER PREMIUM ABAIXO DO MENU */}
-      <section className="py-3 px-6 header-premium border-b-2 border-agro-green-500 relative overflow-hidden">
+      <section className="py-3 px-6 bg-gradient-premium border-b-2 border-accent-emerald relative overflow-hidden">
         {/* Linha gradiente sutil animada */}
-        <div className="absolute inset-0 bg-gradient-to-r from-agro-green-500/20 via-agro-yellow-500/20 to-web3-neon-blue/20 opacity-30"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-accent-emerald/20 via-accent-gold/20 to-accent-blue/20 opacity-30"></div>
         <div className="max-w-7xl mx-auto relative z-10">
           {/* Ticker horizontal fino com rolagem suave */}
           <motion.div
@@ -494,7 +494,7 @@ const Home = () => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.05 }}
                     whileHover={{ scale: 1.05, y: -2 }}
-                    className="flex items-center space-x-3 card-premium px-4 py-3 min-w-[180px] group relative overflow-hidden hover-lift"
+                    className="flex items-center space-x-3 bg-white shadow-premium-soft px-4 py-3 min-w-[180px] group relative overflow-hidden hover:scale-105 hover:-translate-y-1 transition-all duration-300"
                   >
                     <div className="text-sm font-bold text-slate-800">
                       {stock.symbol}
@@ -521,7 +521,7 @@ const Home = () => {
                     ></motion.div>
                     
                     {/* Efeito de glow sutil */}
-                    <div className={`absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${stock.trend === 'up' ? 'bg-agro-green-500/10' : 'bg-red-500/10'}`}></div>
+                    <div className={`absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${stock.trend === 'up' ? 'bg-accent-emerald/10' : 'bg-red-500/10'}`}></div>
                   </motion.div>
                 ))}
               </div>
@@ -535,7 +535,7 @@ const Home = () => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: (index + stockData.length) * 0.05 }}
                     whileHover={{ scale: 1.05, y: -2 }}
-                    className="flex items-center space-x-3 card-premium px-4 py-2 min-w-[180px] hover-lift"
+                    className="flex items-center space-x-3 bg-white shadow-premium-soft px-4 py-2 min-w-[180px] hover:scale-105 hover:-translate-y-1 transition-all duration-300"
                   >
                     <div className="text-sm font-bold text-slate-800">
                       {stock.symbol}

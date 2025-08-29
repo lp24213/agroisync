@@ -9,7 +9,7 @@ const Cotacao = () => {
   const { t } = useTranslation();
   
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white pt-16">
 
       
       {/* Header Section */}

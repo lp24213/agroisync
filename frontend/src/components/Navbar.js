@@ -80,7 +80,7 @@ const Navbar = () => {
       {/* Navbar Premium */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled 
-          ? 'bg-white/95 backdrop-blur-md shadow-lg border-b-2 border-gradient-to-r from-agro-green to-agro-gold' 
+          ? 'bg-white/95 backdrop-blur-md shadow-premium border-b-2 border-accent-emerald' 
           : 'bg-white/80 backdrop-blur-sm'
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -90,11 +90,11 @@ const Navbar = () => {
             <Link to="/" className="flex items-center space-x-2">
               <motion.div 
                 whileHover={{ scale: 1.05 }}
-                className="w-8 h-8 bg-gradient-to-r from-agro-green to-tech-green rounded-lg flex items-center justify-center shadow-md"
+                className="w-8 h-8 bg-gradient-premium rounded-lg flex items-center justify-center shadow-premium-soft"
               >
                 <Leaf className="w-5 h-5 text-white" />
               </motion.div>
-              <span className="text-xl font-bold text-gradient-agro">AgroSync</span>
+              <span className="text-xl font-bold bg-gradient-to-r from-accent-emerald to-accent-gold bg-clip-text text-transparent">AgroSync</span>
             </Link>
 
             {/* Desktop Navigation */}
@@ -105,8 +105,8 @@ const Navbar = () => {
                   to={item.href}
                   className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
                     isActiveRoute(item.href)
-                      ? 'text-slate-800 bg-slate-100'
-                      : 'text-slate-600 hover:text-slate-800 hover:bg-slate-50'
+                      ? 'text-premium-dark-gray bg-premium-platinum'
+                      : 'text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum'
                   }`}
                 >
                   {item.icon}
@@ -138,7 +138,7 @@ const Navbar = () => {
               <div className="relative">
                 <button
                   onClick={() => setShowLanguageMenu(!showLanguageMenu)}
-                  className="flex items-center space-x-2 px-3 py-2 text-sm text-slate-600 hover:text-slate-800 hover:bg-slate-50 rounded-lg transition-colors duration-200"
+                  className="flex items-center space-x-2 px-3 py-2 text-sm text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum rounded-lg transition-colors duration-200"
                 >
                   <Globe className="w-4 h-4" />
                   <span>{languages.find(lang => lang.code === i18n.language)?.flag}</span>
@@ -151,14 +151,14 @@ const Navbar = () => {
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
-                      className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-card border border-slate-200 py-2 z-50"
+                      className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-premium-soft border border-premium-platinum py-2 z-50"
                     >
                       {languages.map((language) => (
                         <button
                           key={language.code}
                           onClick={() => changeLanguage(language.code)}
-                          className={`w-full text-left px-4 py-2 text-sm hover:bg-slate-50 transition-colors duration-200 ${
-                            i18n.language === language.code ? 'text-slate-800 bg-slate-50' : 'text-slate-600'
+                          className={`w-full text-left px-4 py-2 text-sm hover:bg-premium-platinum transition-colors duration-200 ${
+                            i18n.language === language.code ? 'text-premium-dark-gray bg-premium-platinum' : 'text-premium-gray'
                           }`}
                         >
                           <span className="mr-2">{language.flag}</span>
@@ -173,7 +173,7 @@ const Navbar = () => {
               {/* Theme Toggle */}
               <button
                 onClick={toggleTheme}
-                className="p-2 text-slate-600 hover:text-slate-800 hover:bg-slate-50 rounded-lg transition-colors duration-200"
+                className="p-2 text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum rounded-lg transition-colors duration-200"
               >
                 {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
