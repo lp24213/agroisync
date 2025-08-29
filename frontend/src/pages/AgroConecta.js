@@ -69,7 +69,18 @@ const AgroConecta = () => {
     truckType: 'truck_3_4',
     requirements: '',
     insurance: false,
-    negotiable: true
+    negotiable: true,
+    // Campos para validação
+    carrierType: 'individual', // 'individual' ou 'company'
+    cpf: '',
+    cnpj: '',
+    ie: '',
+    state: '',
+    city: '',
+    cep: '',
+    address: '',
+    phone: '',
+    email: ''
   });
 
   // Estados para integrações de serviços
@@ -81,6 +92,10 @@ const AgroConecta = () => {
   const [isValidatingLocation, setIsValidatingLocation] = useState(false);
   const [originCoordinates, setOriginCoordinates] = useState(null);
   const [destinationCoordinates, setDestinationCoordinates] = useState(null);
+  
+  // Estados para formulário de frete
+  const [showFreightForm, setShowFreightForm] = useState(false);
+  const [freightValidationErrors, setFreightValidationErrors] = useState({});
 
   useEffect(() => {
     if (user && !isAdmin) {
@@ -468,6 +483,214 @@ const AgroConecta = () => {
     } catch (error) {
       console.error('Erro ao se candidatar ao frete:', error);
       alert('Erro ao se candidatar. Tente novamente.');
+    }
+  };
+
+  // Validação de documentos para fretes via Receita Federal
+  const validateFreightDocuments = async () => {
+    setIsValidatingDocument(true);
+    setDocumentValidationResult(null);
+    setFreightValidationErrors(prev => ({ ...prev, cpf: null, cnpj: null, ie: null }));
+
+    try {
+      await receitaService.initialize();
+      
+      let validationResults = {};
+      
+      if (newFreight.carrierType === 'individual') {
+        if (newFreight.cpf) {
+          const cpfResult = await receitaService.validateCPF(newFreight.cpf);
+          validationResults.cpf = cpfResult;
+          
+          if (!cpfResult.valid) {
+            setFreightValidationErrors(prev => ({ ...prev, cpf: 'CPF inválido' }));
+          }
+        }
+      } else {
+        if (newFreight.cnpj) {
+          const cnpjResult = await receitaService.validateCNPJ(newFreight.cnpj);
+          validationResults.cnpj = cnpjResult;
+          
+          if (!cnpjResult.valid) {
+            setFreightValidationErrors(prev => ({ ...prev, cnpj: 'CNPJ inválido' }));
+          }
+        }
+        
+        if (newFreight.ie && newFreight.state) {
+          const ieResult = await receitaService.validateIE(newFreight.ie, newFreight.state);
+          validationResults.ie = ieResult;
+          
+          if (!ieResult.valid) {
+            setFreightValidationErrors(prev => ({ ...prev, ie: 'Inscrição Estadual inválida' }));
+          }
+        }
+      }
+      
+      setDocumentValidationResult(validationResults);
+      
+      // Verificar se todas as validações passaram
+      const allValid = Object.values(validationResults).every(result => result.valid);
+      return allValid;
+      
+    } catch (error) {
+      console.error('Erro na validação de documentos:', error);
+      alert('Erro ao validar documentos. Tente novamente.');
+      return false;
+    } finally {
+      setIsValidatingDocument(false);
+    }
+  };
+
+  // Validação de endereço para fretes via Baidu Maps e IBGE
+  const validateFreightAddress = async () => {
+    setIsValidatingLocation(true);
+    setLocationValidationResult(null);
+    setFreightValidationErrors(prev => ({ ...prev, origin: null, destination: null }));
+
+    try {
+      await baiduMapsService.initialize();
+      
+      let validationResults = {};
+      
+      // Validação de origem
+      if (newFreight.origin) {
+        const originResult = await baiduMapsService.validateBrazilianAddress(newFreight.origin);
+        validationResults.origin = originResult;
+        
+        if (originResult.valid) {
+          setOriginCoordinates(originResult.coordinates);
+        } else {
+          setFreightValidationErrors(prev => ({ ...prev, origin: 'Endereço de origem não encontrado' }));
+        }
+      }
+      
+      // Validação de destino
+      if (newFreight.destination) {
+        const destinationResult = await baiduMapsService.validateBrazilianAddress(newFreight.destination);
+        validationResults.destination = destinationResult;
+        
+        if (destinationResult.valid) {
+          setDestinationCoordinates(destinationResult.coordinates);
+        } else {
+          setFreightValidationErrors(prev => ({ ...prev, destination: 'Endereço de destino não encontrado' }));
+        }
+      }
+      
+      setLocationValidationResult(validationResults);
+      
+      // Verificar se todas as validações passaram
+      const allValid = Object.values(validationResults).every(result => result.valid);
+      return allValid;
+      
+    } catch (error) {
+      console.error('Erro na validação de endereço:', error);
+      alert('Erro ao validar endereço. Tente novamente.');
+      return false;
+    } finally {
+      setIsValidatingLocation(false);
+    }
+  };
+
+  // Função para cadastrar frete
+  const handleFreightSubmit = async (e) => {
+    e.preventDefault();
+    
+    try {
+      // Validar documentos primeiro
+      const documentsValid = await validateFreightDocuments();
+      if (!documentsValid) {
+        alert('Por favor, corrija os erros de validação dos documentos antes de continuar.');
+        return;
+      }
+      
+      // Validar endereços
+      const addressesValid = await validateFreightAddress();
+      if (!addressesValid) {
+        alert('Por favor, corrija os erros de validação dos endereços antes de continuar.');
+        return;
+      }
+      
+      // Criar o frete
+      const freightData = {
+        ...newFreight,
+        originCoordinates,
+        destinationCoordinates,
+        carrier: {
+          id: user._id || user.id,
+          name: user.name,
+          type: newFreight.carrierType,
+          documents: {
+            cpf: newFreight.cpf,
+            cnpj: newFreight.cnpj,
+            ie: newFreight.ie
+          },
+          contact: {
+            phone: newFreight.phone,
+            email: newFreight.email
+          }
+        },
+        status: 'active',
+        createdAt: new Date().toISOString()
+      };
+      
+      const newFreightCreated = await freightService.createFreight(freightData);
+      
+      if (newFreightCreated) {
+        // Atualizar lista de fretes do usuário
+        setUserFreights(prev => [newFreightCreated, ...prev]);
+        
+        // Fechar formulário
+        setShowFreightForm(false);
+        
+        // Limpar dados
+        setNewFreight({
+          origin: '',
+          destination: '',
+          weight: '',
+          price: '',
+          date: '',
+          description: '',
+          truckType: 'truck_3_4',
+          requirements: '',
+          insurance: false,
+          negotiable: true,
+          carrierType: 'individual',
+          cpf: '',
+          cnpj: '',
+          ie: '',
+          state: '',
+          city: '',
+          cep: '',
+          address: '',
+          phone: '',
+          email: ''
+        });
+        setOriginCoordinates(null);
+        setDestinationCoordinates(null);
+        
+        alert('Frete cadastrado com sucesso!');
+      }
+      
+    } catch (error) {
+      console.error('Erro ao cadastrar frete:', error);
+      alert('Erro ao cadastrar frete. Tente novamente.');
+    }
+  };
+
+  // Função para lidar com mudanças no formulário
+  const handleFreightFormChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setNewFreight(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+    
+    // Limpar erros de validação quando o campo é alterado
+    if (freightValidationErrors[name]) {
+      setFreightValidationErrors(prev => ({
+        ...prev,
+        [name]: null
+      }));
     }
   };
 
