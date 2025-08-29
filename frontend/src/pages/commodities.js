@@ -359,33 +359,34 @@ const CommoditiesPage = () => {
   }, [userRegion]);
 
   if (loading) {
-  return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+    return (
+      <div className="min-h-screen bg-premium-platinum flex items-center justify-center">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="w-16 h-16 border-4 border-agro-green border-t-transparent rounded-full"
+          className="w-16 h-16 border-4 border-accent-emerald border-t-transparent rounded-full shadow-premium-soft"
         />
-    </div>
-  );
-}
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-premium-platinum">
       {/* Header */}
-      <section className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 py-6">
+      <section className="bg-white shadow-premium-soft border-b border-premium-platinum">
+        <div className="container-premium py-6">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "cubic-bezier(0.4, 0, 0.2, 1)" }}
             className="flex flex-col lg:flex-row lg:items-center lg:justify-between"
           >
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Commodities AgroSync</h1>
-              <p className="text-gray-600 mt-2">
+              <h1 className="text-3xl font-bold title-premium">Commodities AgroSync</h1>
+              <p className="subtitle-premium mt-2">
                 Dados em tempo real da Agrolink • Região: {getStateName(userRegion)}
               </p>
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-premium-light-gray mt-1">
                 Última atualização: {lastUpdate.toLocaleTimeString('pt-BR')} • Atualiza a cada 5 minutos
               </p>
             </div>
@@ -407,7 +408,7 @@ const CommoditiesPage = () => {
               
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                className="btn-premium-outline flex items-center space-x-2"
               >
                 <Filter className="w-4 h-4" />
                 <span>Filtros</span>
@@ -415,7 +416,7 @@ const CommoditiesPage = () => {
               
               <button
                 onClick={loadCommoditiesData}
-                className="flex items-center space-x-2 px-4 py-2 bg-agro-green text-white rounded-lg hover:bg-agro-green-dark transition-colors"
+                className="btn-premium-accent flex items-center space-x-2"
               >
                 <RefreshCw className="w-4 h-4" />
                 <span>Atualizar</span>
@@ -432,25 +433,26 @@ const CommoditiesPage = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="bg-white border-b shadow-sm"
+            transition={{ duration: 0.4, ease: "cubic-bezier(0.4, 0, 0.2, 1)" }}
+            className="bg-white border-b border-premium-platinum shadow-premium-soft"
           >
-            <div className="max-w-7xl mx-auto px-4 py-4">
+            <div className="container-premium py-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Faixa de Preço</label>
+                  <label className="block text-sm font-medium text-premium-dark-gray mb-2">Faixa de Preço</label>
                   <div className="flex space-x-2">
                     <input
                       type="number"
                       value={priceRange.min}
                       onChange={(e) => setPriceRange(prev => ({ ...prev, min: parseFloat(e.target.value) }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                      className="input-premium"
                       placeholder="Min"
                     />
                     <input
                       type="number"
                       value={priceRange.max}
                       onChange={(e) => setPriceRange(prev => ({ ...prev, max: parseFloat(e.target.value) }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                      className="input-premium"
                       placeholder="Max"
                     />
                   </div>
