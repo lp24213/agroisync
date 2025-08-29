@@ -1,300 +1,94 @@
-const rateLimit = require('express-rate-limit');
-const RedisStore = require('rate-limit-redis');
-const Redis = require('ioredis');
+import rateLimit from 'express-rate-limit';
+import RedisStore from 'rate-limit-redis';
+import Redis from 'ioredis';
 
-// Redis client for rate limiting (optional, falls back to memory if not available)
-let redisClient = null;
-try {
-  if (process.env.REDIS_URL) {
-    redisClient = new Redis(process.env.REDIS_URL);
-  }
-} catch (error) {
-  console.warn('Redis not available, using memory store for rate limiting');
-}
-
-// Base rate limiter configuration
-const baseLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: {
-    success: false,
-    message: 'Muitas requisições. Tente novamente em 15 minutos.'
-  },
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-  store: redisClient
-    ? new RedisStore({
-        sendCommand: (...args) => redisClient.call(...args)
-      })
-    : undefined,
-  keyGenerator: req => {
-    // Use Cloudflare IP if available, otherwise fallback to regular IP
-    return (
-      req.headers['cf-connecting-ip'] ||
-      req.headers['x-forwarded-for'] ||
-      req.ip ||
-      req.connection.remoteAddress ||
-      'unknown'
-    );
-  },
-  handler: (req, res) => {
-    res.status(429).json({
-      success: false,
-      message: 'Muitas requisições. Tente novamente em 15 minutos.',
-      retryAfter: Math.ceil(req.rateLimit.resetTime / 1000)
-    });
-  }
+// Redis client configuration
+const redisClient = new Redis({
+  host: process.env.REDIS_HOST || 'localhost',
+  port: process.env.REDIS_PORT || 6379,
+  password: process.env.REDIS_PASSWORD,
+  retryDelayOnFailover: 100,
+  maxRetriesPerRequest: 3,
 });
 
-// Strict rate limiter for authentication routes
+// Rate limiters
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5, // limit each IP to 5 requests per windowMs
-  message: {
-    success: false,
-    message: 'Muitas tentativas de autenticação. Tente novamente em 15 minutos.'
-  },
+  message: 'Too many authentication attempts, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
-  store: redisClient
-    ? new RedisStore({
-        sendCommand: (...args) => redisClient.call(...args)
-      })
-    : undefined,
-  keyGenerator: req => {
-    return (
-      req.headers['cf-connecting-ip'] ||
-      req.headers['x-forwarded-for'] ||
-      req.ip ||
-      req.connection.remoteAddress ||
-      'unknown'
-    );
-  },
-  handler: (req, res) => {
-    res.status(429).json({
-      success: false,
-      message: 'Muitas tentativas de autenticação. Tente novamente em 15 minutos.',
-      retryAfter: Math.ceil(req.rateLimit.resetTime / 1000)
-    });
-  },
-  skipSuccessfulRequests: false, // Count all requests, including successful ones
-  skipFailedRequests: false // Count all requests, including failed ones
+  store: new RedisStore({
+    sendCommand: (...args) => redisClient.call(...args),
+  }),
 });
 
-// Registration rate limiter
 const registrationLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 3, // limit each IP to 3 registration attempts per hour
-  message: {
-    success: false,
-    message: 'Muitas tentativas de registro. Tente novamente em 1 hora.'
-  },
+  message: 'Too many registration attempts, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
-  store: redisClient
-    ? new RedisStore({
-        sendCommand: (...args) => redisClient.call(...args)
-      })
-    : undefined,
-  keyGenerator: req => {
-    return (
-      req.headers['cf-connecting-ip'] ||
-      req.headers['x-forwarded-for'] ||
-      req.ip ||
-      req.connection.remoteAddress ||
-      'unknown'
-    );
-  },
-  handler: (req, res) => {
-    res.status(429).json({
-      success: false,
-      message: 'Muitas tentativas de registro. Tente novamente em 1 hora.',
-      retryAfter: Math.ceil(req.rateLimit.resetTime / 1000)
-    });
-  }
+  store: new RedisStore({
+    sendCommand: (...args) => redisClient.call(...args),
+  }),
 });
 
-// Password reset rate limiter
-export const passwordResetLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 3, // limit each IP to 3 password reset attempts per hour
-  message: {
-    success: false,
-    message: 'Muitas tentativas de redefinição de senha. Tente novamente em 1 hora.'
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-  store: redisClient
-    ? new RedisStore({
-        sendCommand: (...args) => redisClient.call(...args)
-      })
-    : undefined,
-  keyGenerator: req => {
-    return (
-      req.headers['cf-connecting-ip'] ||
-      req.headers['x-forwarded-for'] ||
-      req.ip ||
-      req.connection.remoteAddress ||
-      'unknown'
-    );
-  },
-  handler: (req, res) => {
-    res.status(429).json({
-      success: false,
-      message: 'Muitas tentativas de redefinição de senha. Tente novamente em 1 hora.',
-      retryAfter: Math.ceil(req.rateLimit.resetTime / 1000)
-    });
-  }
-});
-
-// API rate limiter for general endpoints
-export const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 1000, // limit each IP to 1000 requests per windowMs
-  message: {
-    success: false,
-    message: 'Muitas requisições à API. Tente novamente em 15 minutos.'
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-  store: redisClient
-    ? new RedisStore({
-        sendCommand: (...args) => redisClient.call(...args)
-      })
-    : undefined,
-  keyGenerator: req => {
-    return (
-      req.headers['cf-connecting-ip'] ||
-      req.headers['x-forwarded-for'] ||
-      req.ip ||
-      req.connection.remoteAddress ||
-      'unknown'
-    );
-  },
-  handler: (req, res) => {
-    res.status(429).json({
-      success: false,
-      message: 'Muitas requisições à API. Tente novamente em 15 minutos.',
-      retryAfter: Math.ceil(req.rateLimit.resetTime / 1000)
-    });
-  },
-  skipSuccessfulRequests: true, // Don't count successful requests
-  skipFailedRequests: false // Count failed requests
-});
-
-// Admin rate limiter (more permissive)
 const adminLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 500, // limit each IP to 500 requests per windowMs
-  message: {
-    success: false,
-    message: 'Muitas requisições ao painel admin. Tente novamente em 15 minutos.'
-  },
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many admin requests, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
-  store: redisClient
-    ? new RedisStore({
-        sendCommand: (...args) => redisClient.call(...args)
-      })
-    : undefined,
-  keyGenerator: req => {
-    return (
-      req.headers['cf-connecting-ip'] ||
-      req.headers['x-forwarded-for'] ||
-      req.ip ||
-      req.connection.remoteAddress ||
-      'unknown'
-    );
-  },
-  handler: (req, res) => {
-    res.status(429).json({
-      success: false,
-      message: 'Muitas requisições ao painel admin. Tente novamente em 15 minutos.',
-      retryAfter: Math.ceil(req.rateLimit.resetTime / 1000)
-    });
-  }
+  store: new RedisStore({
+    sendCommand: (...args) => redisClient.call(...args),
+  }),
 });
 
-// File upload rate limiter
 const uploadLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 50, // limit each IP to 50 file uploads per windowMs
-  message: {
-    success: false,
-    message: 'Muitas tentativas de upload. Tente novamente em 15 minutos.'
-  },
+  max: 10, // limit each IP to 10 uploads per windowMs
+  message: 'Too many upload attempts, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
-  store: redisClient
-    ? new RedisStore({
-        sendCommand: (...args) => redisClient.call(...args)
-      })
-    : undefined,
-  keyGenerator: req => {
-    return (
-      req.headers['cf-connecting-ip'] ||
-      req.headers['x-forwarded-for'] ||
-      req.ip ||
-      req.connection.remoteAddress ||
-      'unknown'
-    );
-  },
-  handler: (req, res) => {
-    res.status(429).json({
-      success: false,
-      message: 'Muitas tentativas de upload. Tente novamente em 15 minutos.',
-      retryAfter: Math.ceil(req.rateLimit.resetTime / 1000)
-    });
-  }
+  store: new RedisStore({
+    sendCommand: (...args) => redisClient.call(...args),
+  }),
 });
 
-// Payment rate limiter
 const paymentLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // limit each IP to 10 payment attempts per windowMs
-  message: {
-    success: false,
-    message: 'Muitas tentativas de pagamento. Tente novamente em 15 minutos.'
-  },
+  max: 20, // limit each IP to 20 payment attempts per windowMs
+  message: 'Too many payment attempts, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
-  store: redisClient
-    ? new RedisStore({
-        sendCommand: (...args) => redisClient.call(...args)
-      })
-    : undefined,
-  keyGenerator: req => {
-    return (
-      req.headers['cf-connecting-ip'] ||
-      req.headers['x-forwarded-for'] ||
-      req.ip ||
-      req.connection.remoteAddress ||
-      'unknown'
-    );
-  },
-  handler: (req, res) => {
-    res.status(429).json({
-      success: false,
-      message: 'Muitas tentativas de pagamento. Tente novamente em 15 minutos.',
-      retryAfter: Math.ceil(req.rateLimit.resetTime / 1000)
-    });
-  }
+  store: new RedisStore({
+    sendCommand: (...args) => redisClient.call(...args),
+  }),
 });
 
-// Default rate limiter for all routes
-const rateLimiter = baseLimiter;
+const rateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 1000, // limit each IP to 1000 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+  store: new RedisStore({
+    sendCommand: (...args) => redisClient.call(...args),
+  }),
+});
 
-// Export Redis client for other uses
-// const redisClient = redisClient;
-
-// Cleanup function for graceful shutdown
+// Cleanup function for rate limiters
 const cleanupRateLimiters = () => {
-  if (redisClient) {
+  try {
     redisClient.disconnect();
+    console.log('✅ Rate limiter Redis connection closed');
+  } catch (error) {
+    console.error('❌ Error closing rate limiter Redis connection:', error);
   }
 };
 
-module.exports = {
+export {
   authLimiter,
   registrationLimiter,
   adminLimiter,

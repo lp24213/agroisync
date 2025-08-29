@@ -1,14 +1,14 @@
-const express = require('express');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const User = require('../models/User');
-const Product = require('../models/Product');
-const Freight = require('../models/Freight');
-const Payment = require('../models/Payment');
-const Message = require('../models/Message');
-const Conversation = require('../models/Conversation');
-const AuditLog = require('../models/AuditLog');
-const { requireAdmin, validateAdminAction } = require('../middleware/adminAuth');
+import express from 'express';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import User from '../models/User.js';
+import Product from '../models/Product.js';
+import Freight from '../models/Freight.js';
+import Payment from '../models/Payment.js';
+import Message from '../models/Message.js';
+import Conversation from '../models/Conversation.js';
+import AuditLog from '../models/AuditLog.js';
+import { requireAdmin, validateAdminAction } from '../middleware/adminAuth.js';
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET;

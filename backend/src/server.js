@@ -1,74 +1,84 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
-const compression = require('compression');
-const morgan = require('morgan');
-require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
+import morgan from 'morgan';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 
-// Importar rotas
-const authRoutes = require('./routes/auth');
-const validationRoutes = require('./routes/validation');
-const paymentRoutes = require('./routes/payments');
-const messageRoutes = require('./routes/messages');
-const productRoutes = require('./routes/products');
-const freightRoutes = require('./routes/freights');
-const adminRoutes = require('./routes/admin');
+// Import middleware
+import { authenticateToken } from './middleware/auth.js';
+import { apiLimiter } from './middleware/rateLimiter.js';
 
-// Importar middleware de autenticação
-const { authenticateToken } = require('./middleware/auth');
+// Import routes
+import authRoutes from './routes/auth.js';
+import adminRoutes from './routes/admin.js';
+import clientRoutes from './routes/clients.js';
+import productRoutes from './routes/products.js';
+import freightRoutes from './routes/freights.js';
+import transactionRoutes from './routes/transactions.js';
+import externalAPIRoutes from './routes/external-apis.js';
+import messagingRoutes from './routes/messaging.js';
+import messageRoutes from './routes/messages.js';
+import newsRoutes from './routes/news.js';
+import paymentRoutes from './routes/payments.js';
+import partnerRoutes from './routes/partners.js';
+import partnershipMessageRoutes from './routes/partnership-messages.js';
+import contactRoutes from './routes/contact.js';
+import userRoutes from './routes/users.js';
+import notificationRoutes from './routes/notifications.js';
+import escrowRoutes from './routes/escrow.js';
+
+// Import database connection
+import { connectDB } from './config/database.js';
+
+// Load environment variables
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Configurações de segurança
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'", "https://api.stripe.com", "https://api.openweathermap.org"],
-      frameSrc: ["'self'", "https://js.stripe.com", "https://hooks.stripe.com"],
-      objectSrc: ["'none'"],
-      upgradeInsecureRequests: [],
-    },
-  },
-}));
+// Create HTTP server
+const server = createServer(app);
 
-// Configurações de CORS
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-}));
-
-// Rate limiting global
-const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 1000, // máximo 1000 requisições por IP
-  message: 'Muitas requisições. Tente novamente em 15 minutos.',
-  standardHeaders: true,
-  legacyHeaders: false,
+// Create Socket.IO server
+const io = new Server(server, {
+  cors: {
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    methods: ["GET", "POST"]
+  }
 });
 
-app.use(globalLimiter);
+// Socket.IO connection handling
+io.on('connection', (socket) => {
+  console.log('🔌 Usuário conectado:', socket.id);
+  
+  socket.on('disconnect', () => {
+    console.log('🔌 Usuário desconectado:', socket.id);
+  });
+});
 
-// Middlewares
+// Middleware
+app.use(helmet());
 app.use(compression());
 app.use(morgan('combined'));
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "http://localhost:3000",
+  credentials: true
+}));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Rate limiting global
+app.use(apiLimiter);
 
 // Middleware para capturar IP real
 app.use((req, res, next) => {
   req.realIP = req.headers['x-forwarded-for'] || 
-               req.headers['x-real-ip'] || 
                req.connection.remoteAddress || 
-               req.socket.remoteAddress ||
                req.connection.socket?.remoteAddress;
   next();
 });
@@ -81,14 +91,24 @@ app.use((req, res, next) => {
 
 // Rotas públicas
 app.use('/api/auth', authRoutes);
-app.use('/api/validation', validationRoutes);
+app.use('/api/external', externalAPIRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/freights', freightRoutes);
+app.use('/api/transactions', transactionRoutes);
+app.use('/api/partners', partnerRoutes);
+app.use('/api/partnership-messages', partnershipMessageRoutes);
+app.use('/api/contact', contactRoutes);
+app.use('/api/news', newsRoutes);
 
 // Rotas protegidas
 app.use('/api/payments', authenticateToken, paymentRoutes);
 app.use('/api/messages', authenticateToken, messageRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/freights', freightRoutes);
+app.use('/api/messaging', authenticateToken, messagingRoutes);
 app.use('/api/admin', authenticateToken, adminRoutes);
+app.use('/api/users', authenticateToken, userRoutes);
+app.use('/api/notifications', authenticateToken, notificationRoutes);
+app.use('/api/escrow', authenticateToken, escrowRoutes);
+app.use('/api/clients', authenticateToken, clientRoutes);
 
 // Rota de health check
 app.get('/health', (req, res) => {
@@ -108,11 +128,11 @@ app.get('/api', (req, res) => {
     description: 'API para plataforma de agronegócio',
     endpoints: {
       auth: '/api/auth',
-      validation: '/api/validation',
-      payments: '/api/payments',
-      messages: '/api/messages',
       products: '/api/products',
       freights: '/api/freights',
+      transactions: '/api/transactions',
+      payments: '/api/payments',
+      messages: '/api/messages',
       admin: '/api/admin'
     },
     documentation: '/api/docs'
@@ -181,58 +201,14 @@ app.use('*', (req, res) => {
   });
 });
 
-// Função para conectar ao MongoDB
-async function connectDB() {
-  try {
-    const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/agrosync';
-    
-    await mongoose.connect(mongoURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 45000,
-    });
-
-    console.log('✅ MongoDB conectado com sucesso');
-    
-    // Criar índices para performance
-    await createIndexes();
-    
-  } catch (error) {
-    console.error('❌ Erro ao conectar ao MongoDB:', error);
-    process.exit(1);
-  }
-}
-
-// Função para criar índices
-async function createIndexes() {
-  try {
-    // Índices para User
-    await mongoose.model('User').createIndexes();
-    
-    // Índices para Payment
-    await mongoose.model('Payment').createIndexes();
-    
-    // Índices para Conversation
-    await mongoose.model('Conversation').createIndexes();
-    
-    // Índices para Message
-    await mongoose.model('Message').createIndexes();
-    
-    console.log('✅ Índices criados com sucesso');
-  } catch (error) {
-    console.error('❌ Erro ao criar índices:', error);
-  }
-}
-
-// Função para iniciar o servidor
+// Função para iniciar servidor
 async function startServer() {
   try {
     // Conectar ao banco de dados
     await connectDB();
     
     // Iniciar servidor
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
       console.log(`🚀 Servidor rodando na porta ${PORT}`);
       console.log(`📱 Ambiente: ${process.env.NODE_ENV || 'development'}`);
       console.log(`🌐 URL: http://localhost:${PORT}`);
@@ -253,12 +229,11 @@ async function gracefulShutdown() {
   console.log('\n🔄 Recebido sinal de shutdown, fechando servidor...');
   
   try {
-    // Fechar conexão com MongoDB
-    await mongoose.connection.close();
-    console.log('✅ Conexão com MongoDB fechada');
-    
     // Fechar servidor
-    process.exit(0);
+    server.close(() => {
+      console.log('✅ Servidor HTTP fechado');
+      process.exit(0);
+    });
   } catch (error) {
     console.error('❌ Erro durante shutdown:', error);
     process.exit(1);
@@ -278,4 +253,4 @@ process.on('uncaughtException', (error) => {
 // Iniciar servidor
 startServer();
 
-module.exports = app;
+export default app;

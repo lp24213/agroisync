@@ -1,24 +1,24 @@
-const express = require('express');
-const { apiLimiter } = require('../middleware/rateLimiter');
+import express from 'express';
+import { apiLimiter } from '../middleware/rateLimiter.js';
 
 // Import route modules
-const authRoutes = require('./auth');
-const adminRoutes = require('./admin');
-const clientRoutes = require('./clients');
-const productRoutes = require('./products');
-const freightRoutes = require('./freights');
-const transactionRoutes = require('./transactions');
-const externalAPIRoutes = require('./external-apis');
-const messagingRoutes = require('./messaging');
-const messageRoutes = require('./messages');
-const newsRoutes = require('./news');
-const paymentRoutes = require('./payments');
-const partnerRoutes = require('./partners');
-const partnershipMessageRoutes = require('./partnership-messages');
-const contactRoutes = require('./contact');
-const userRoutes = require('./users');
-const notificationRoutes = require('./notifications');
-const escrowRoutes = require('./escrow');
+import authRoutes from './auth.js';
+import adminRoutes from './admin.js';
+import clientRoutes from './clients.js';
+import productRoutes from './products.js';
+import freightRoutes from './freights.js';
+import transactionRoutes from './transactions.js';
+import externalAPIRoutes from './external-apis.js';
+import messagingRoutes from './messaging.js';
+import messageRoutes from './messages.js';
+import newsRoutes from './news.js';
+import paymentRoutes from './payments.js';
+import partnerRoutes from './partners.js';
+import partnershipMessageRoutes from './partnership-messages.js';
+import contactRoutes from './contact.js';
+import userRoutes from './users.js';
+import notificationRoutes from './notifications.js';
+import escrowRoutes from './escrow.js';
 
 const router = express.Router();
 

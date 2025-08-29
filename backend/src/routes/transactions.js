@@ -645,13 +645,13 @@ router.patch('/admin/:id/status', requireRole('admin'), async (req, res) => {
     // Admin pode mudar para qualquer status
     transaction.status = status;
     transaction.notes.admin = notes || '';
-          transaction.updatedBy = req.user.userId;
+    transaction.updatedBy = req.user.userId;
 
     await transaction.save();
 
     await transaction.populate([
-      { path: 'buyerId', 'name email phone' },
-      { path: 'sellerId', 'name email phone' }
+      { path: 'buyerId', select: 'name email phone' },
+      { path: 'sellerId', select: 'name email phone' }
     ]);
 
     res.json({

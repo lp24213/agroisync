@@ -1,10 +1,10 @@
-const express = require('express');
-const router = express.Router();
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const { ethers } = require('ethers');
-const { authenticateToken } = require('../middleware/auth');
-const User = require('../models/User');
-const Payment = require('../models/Payment');
+import express from 'express';
+import { authenticateToken } from '../middleware/auth.js';
+import { requirePaidAccess } from '../middleware/requirePaidAccess.js';
+import { rateLimiter } from '../middleware/rateLimiter.js';
+import User from '../models/User.js';
+import Payment from '../models/Payment.js';
+import AuditLog from '../models/AuditLog.js';
 
 // Configurações
 const OWNER_WALLET = process.env.OWNER_WALLET || '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6';
@@ -688,4 +688,4 @@ async function verifyBlockchainTransaction(transactionHash, amount, walletAddres
   }
 }
 
-module.exports = router;
+export default router;

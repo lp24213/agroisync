@@ -1,13 +1,13 @@
-const express = require("express");
-const { authenticateToken } = require("../middleware/auth");
-const { requirePaidAccess } = require("../middleware/requirePaidAccess");
-const { rateLimiter } = require("../middleware/rateLimiter");
-const AuditLog = require("../models/AuditLog");
-const Message = require("../models/Message");
-const User = require("../models/User");
-const Product = require("../models/Product");
-const Freight = require("../models/Freight");
-const Payment = require("../models/Payment");
+import express from "express";
+import { authenticateToken } from "../middleware/auth.js";
+import { requirePaidAccess } from "../middleware/requirePaidAccess.js";
+import { rateLimiter } from "../middleware/rateLimiter.js";
+import AuditLog from "../models/AuditLog.js";
+import Message from "../models/Message.js";
+import User from "../models/User.js";
+import Product from "../models/Product.js";
+import Freight from "../models/Freight.js";
+import Payment from "../models/Payment.js";
 
 const router = express.Router();
 
@@ -689,4 +689,4 @@ router.get("/stats", authenticateToken, checkMessagingAccess, async (req, res) =
   }
 });
 
-module.exports = router;
+export default router;
