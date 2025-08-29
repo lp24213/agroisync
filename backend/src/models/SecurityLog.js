@@ -323,4 +323,6 @@ securityLogSchema.statics.getUserLogs = function (userId, limit = 100) {
 };
 
 // Create SecurityLog model
-export const SecurityLog = mongoose.model('SecurityLog', securityLogSchema);
+const SecurityLog = mongoose.model('SecurityLog', securityLogSchema);
+
+export default SecurityLog;

@@ -338,4 +338,6 @@ conversationSchema.statics.getStats = async function(userId = null) {
   };
 };
 
-module.exports = mongoose.model('Conversation', conversationSchema);
+const Conversation = mongoose.model('Conversation', conversationSchema);
+
+export default Conversation;

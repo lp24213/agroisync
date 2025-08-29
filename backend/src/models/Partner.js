@@ -152,4 +152,6 @@ partnerSchema.methods.toggleFeatured = function () {
   return this.save();
 };
 
-export const Partner = mongoose.model('Partner', partnerSchema);
+const Partner = mongoose.model('Partner', partnerSchema);
+
+export default Partner;

@@ -388,4 +388,6 @@ messageSchema.statics.createSystemMessage = function(conversationId, content, me
   });
 };
 
-module.exports = mongoose.model('Message', messageSchema);
+const Message = mongoose.model('Message', messageSchema);
+
+export default Message;

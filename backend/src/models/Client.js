@@ -182,4 +182,6 @@ clientSchema.methods.canBeActivated = function () {
 };
 
 // Create Client model
-export const Client = mongoose.model('Client', clientSchema);
+const Client = mongoose.model('Client', clientSchema);
+
+export default Client;

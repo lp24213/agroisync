@@ -1,6 +1,6 @@
 import express from 'express';
-import { Product } from '../models/Product.js';
-import { User } from '../models/User.js';
+import Product from '../models/Product.js';
+import User from '../models/User.js';
 import { validateProduct } from '../middleware/validation.js';
 import { authLimiter, apiLimiter } from '../middleware/rateLimiter.js';
 import { authenticateToken } from '../middleware/auth.js';

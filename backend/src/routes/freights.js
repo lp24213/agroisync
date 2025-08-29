@@ -1,9 +1,9 @@
 import express from 'express';
-import { Freight } from '../models/Freight.js';
-import { User } from '../models/User.js';
+import Freight from '../models/Freight.js';
+import User from '../models/User.js';
 import { validateFreight } from '../middleware/validation.js';
 import { apiLimiter } from '../middleware/rateLimiter.js';
-import { authenticateToken, requireFreightPlan } from '../middleware/auth.js';
+import { authenticateToken, requireActivePlan } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -233,7 +233,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST /api/freights - Create new freight (requires authentication and active freight plan)
-router.post('/', authenticateToken, requireFreightPlan, validateFreight, async (req, res) => {
+router.post('/', authenticateToken, requireActivePlan, validateFreight, async (req, res) => {
   try {
     const userId = req.user.userId;
 

@@ -313,7 +313,7 @@ const canCreateResource = (resourceType) => {
   };
 };
 
-module.exports = {
+export {
   authenticateToken,
   requireActivePlan,
   requireAdmin,

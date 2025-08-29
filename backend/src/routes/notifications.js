@@ -1,5 +1,5 @@
 import express from 'express';
-import auth from '../middleware/auth.js';
+import { authenticateToken } from '../middleware/auth.js';
 import { apiLimiter } from '../middleware/rateLimiter.js';
 import notificationService from '../services/notificationService.js';
 
@@ -9,7 +9,7 @@ const router = express.Router();
 router.use(apiLimiter);
 
 // Aplicar autenticação em todas as rotas
-router.use(auth);
+router.use(authenticateToken);
 
 // ===== ROTAS DE NOTIFICAÇÕES =====
 

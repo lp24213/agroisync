@@ -1,6 +1,6 @@
 import express from 'express';
-import { ContactMessage } from '../models/ContactMessage.js';
-import { PartnershipMessage } from '../models/PartnershipMessage.js';
+import ContactMessage from '../models/ContactMessage.js';
+import PartnershipMessage from '../models/PartnershipMessage.js';
 import { apiLimiter } from '../middleware/rateLimiter.js';
 import { createSecurityLog } from '../utils/securityLogger.js';
 import { sanitizeInput } from '../utils/sanitizer.js';

@@ -90,4 +90,6 @@ stakingPoolSchema.methods.updateTotalStaked = function (amount) {
 };
 
 // Create StakingPool model
-export const StakingPool = mongoose.model('StakingPool', stakingPoolSchema);
+const StakingPool = mongoose.model('StakingPool', stakingPoolSchema);
+
+export default StakingPool;

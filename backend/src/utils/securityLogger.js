@@ -1,4 +1,4 @@
-import { SecurityLog } from '../models/SecurityLog.js';
+import SecurityLog from '../models/SecurityLog.js';
 import { getClientIP } from './ipUtils.js';
 
 // ===== LOGGER DE SEGURANÇA =====

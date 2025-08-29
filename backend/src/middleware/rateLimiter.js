@@ -78,6 +78,9 @@ const rateLimiter = rateLimit({
   }),
 });
 
+// Alias for API routes
+const apiLimiter = rateLimiter;
+
 // Cleanup function for rate limiters
 const cleanupRateLimiters = () => {
   try {
@@ -95,6 +98,7 @@ export {
   uploadLimiter,
   paymentLimiter,
   rateLimiter,
+  apiLimiter,
   redisClient,
   cleanupRateLimiters
 };

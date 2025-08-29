@@ -366,4 +366,6 @@ partnershipMessageSchema.statics.searchMessages = function (searchTerm, limit = 
 };
 
 // Create PartnershipMessage model
-export const PartnershipMessage = mongoose.model('PartnershipMessage', partnershipMessageSchema);
+const PartnershipMessage = mongoose.model('PartnershipMessage', partnershipMessageSchema);
+
+export default PartnershipMessage;

@@ -435,4 +435,6 @@ class AWSService {
   }
 }
 
-module.exports = new AWSService();
+const awsService = new AWSService();
+
+export default awsService;

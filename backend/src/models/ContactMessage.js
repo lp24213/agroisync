@@ -100,4 +100,6 @@ contactMessageSchema.methods.close = function () {
   return this.save();
 };
 
-export const ContactMessage = mongoose.model('ContactMessage', contactMessageSchema);
+const ContactMessage = mongoose.model('ContactMessage', contactMessageSchema);
+
+export default ContactMessage;

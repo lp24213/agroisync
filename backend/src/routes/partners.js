@@ -1,5 +1,5 @@
 import express from 'express';
-import { Partner } from '../models/Partner.js';
+import Partner from '../models/Partner.js';
 import { authenticateToken, requireAdmin } from '../middleware/auth.js';
 import { apiLimiter } from '../middleware/rateLimiter.js';
 import { createSecurityLog } from '../utils/securityLogger.js';

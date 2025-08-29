@@ -191,4 +191,6 @@ privateMessageSchema.statics.getMessageStats = async function (userId) {
 };
 
 // Create PrivateMessage model
-export const PrivateMessage = mongoose.model('PrivateMessage', privateMessageSchema);
+const PrivateMessage = mongoose.model('PrivateMessage', privateMessageSchema);
+
+export default PrivateMessage;

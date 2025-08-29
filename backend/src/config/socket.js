@@ -1,6 +1,6 @@
 import { Server } from 'socket.io';
 import jwt from 'jsonwebtoken';
-import { User } from '../models/User.js';
+import User from '../models/User.js';
 import { createSecurityLog } from '../utils/securityLogger.js';
 
 export const configureSocket = (server) => {

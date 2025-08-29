@@ -1,11 +1,11 @@
 import express from 'express';
 import { body, validationResult } from 'express-validator';
-import { Client } from '../models/Client.js';
-import { User } from '../models/User.js';
-import { auth } from '../middleware/auth.js';
-import { adminAuth } from '../middleware/adminAuth.js';
+import Client from '../models/Client.js';
+import User from '../models/User.js';
+import { authenticateToken } from '../middleware/auth.js';
+import { requireAdmin } from '../middleware/adminAuth.js';
 import { getClientIP } from '../utils/ipUtils.js';
-import { logSecurityEvent } from '../utils/securityLogger.js';
+import { createSecurityLog } from '../utils/securityLogger.js';
 import { validateReceitaFederal, validateAddressIBGE, validateRequiredDocuments } from '../middleware/documentValidation.js';
 
 const router = express.Router();
@@ -24,7 +24,7 @@ const validateClientData = [
 ];
 
 // GET /api/clients - Listar clientes (admin vê todos, usuário vê apenas os seus)
-router.get('/', auth, async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
   try {
     let query = {};
     
@@ -52,7 +52,7 @@ router.get('/', auth, async (req, res) => {
 });
 
 // GET /api/clients/:id - Obter cliente específico
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', authenticateToken, async (req, res) => {
   try {
     const client = await Client.findById(req.params.id)
       .populate('userId', 'name email');
@@ -86,7 +86,7 @@ router.get('/:id', auth, async (req, res) => {
 });
 
 // POST /api/clients - Criar novo cliente
-router.post('/', auth, validateClientData, validateReceitaFederal, validateAddressIBGE, validateRequiredDocuments, async (req, res) => {
+router.post('/', authenticateToken, validateClientData, validateReceitaFederal, validateAddressIBGE, validateRequiredDocuments, async (req, res) => {
   try {
     // Verificar erros de validação
     const errors = validationResult(req);
@@ -149,7 +149,7 @@ router.post('/', auth, validateClientData, validateReceitaFederal, validateAddre
 });
 
 // PUT /api/clients/:id - Atualizar cliente
-router.put('/:id', auth, validateClientData, validateReceitaFederal, validateAddressIBGE, validateRequiredDocuments, async (req, res) => {
+router.put('/:id', authenticateToken, validateClientData, validateReceitaFederal, validateAddressIBGE, validateRequiredDocuments, async (req, res) => {
   try {
     // Verificar erros de validação
     const errors = validationResult(req);
@@ -230,7 +230,7 @@ router.put('/:id', auth, validateClientData, validateReceitaFederal, validateAdd
 });
 
 // DELETE /api/clients/:id - Deletar cliente
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', authenticateToken, async (req, res) => {
   try {
     const client = await Client.findById(req.params.id);
     if (!client) {

@@ -274,4 +274,6 @@ auditLogSchema.statics.cleanOldLogs = async function(daysToKeep = 365) {
 };
 
 // Create AuditLog model
-export const AuditLog = mongoose.model('AuditLog', auditLogSchema);
+const AuditLog = mongoose.model('AuditLog', auditLogSchema);
+
+export default AuditLog;

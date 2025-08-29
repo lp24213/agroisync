@@ -170,5 +170,7 @@ weatherSchema.statics.findByLocation = function (city, state) {
 };
 
 // Create models
-export const News = mongoose.model('News', newsSchema);
-export const Weather = mongoose.model('Weather', weatherSchema);
+const News = mongoose.model('News', newsSchema);
+const Weather = mongoose.model('Weather', weatherSchema);
+
+export { News, Weather };

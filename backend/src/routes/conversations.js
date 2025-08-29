@@ -1,11 +1,11 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import { Conversation } from '../models/Conversation.js';
-import { Message } from '../models/Message.js';
-import { User } from '../models/User.js';
-import { Product } from '../models/Product.js';
-import { Freight } from '../models/Freight.js';
-import { AuditLog } from '../models/AuditLog.js';
+import Conversation from '../models/Conversation.js';
+import Message from '../models/Message.js';
+import User from '../models/User.js';
+import Product from '../models/Product.js';
+import Freight from '../models/Freight.js';
+import AuditLog from '../models/AuditLog.js';
 import { authenticateToken } from '../middleware/auth.js';
 import { requireProductMessagingAccess, requireFreightMessagingAccess } from '../middleware/requirePaidAccess.js';
 import { apiLimiter } from '../middleware/rateLimiter.js';

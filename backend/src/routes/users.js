@@ -1,6 +1,6 @@
 import express from 'express';
-import { User } from '../models/User.js';
-import { SecurityLog } from '../models/SecurityLog.js';
+import User from '../models/User.js';
+import SecurityLog from '../models/SecurityLog.js';
 import { authenticateToken } from '../middleware/auth.js';
 import { apiLimiter } from '../middleware/rateLimiter.js';
 import { getClientIP } from '../utils/ipUtils.js';

@@ -254,4 +254,6 @@ productSchema.methods.isActive = function() {
          new Date() < this.expiresAt;
 };
 
-module.exports = mongoose.model('Product', productSchema);
+const Product = mongoose.model('Product', productSchema);
+
+export default Product;

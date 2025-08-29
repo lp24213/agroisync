@@ -319,4 +319,6 @@ freightSchema.methods.getEstimatedDistance = function() {
   return 'Interestadual';
 };
 
-module.exports = mongoose.model('Freight', freightSchema);
+const Freight = mongoose.model('Freight', freightSchema);
+
+export default Freight;

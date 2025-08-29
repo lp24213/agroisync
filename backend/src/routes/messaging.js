@@ -1,11 +1,11 @@
 import express from 'express';
-import { PrivateMessage } from '../models/PrivateMessage.js';
-import { ContactMessage } from '../models/ContactMessage.js';
-import { PartnershipMessage } from '../models/PartnershipMessage.js';
-import { User } from '../models/User.js';
+import PrivateMessage from '../models/PrivateMessage.js';
+import ContactMessage from '../models/ContactMessage.js';
+import PartnershipMessage from '../models/PartnershipMessage.js';
+import User from '../models/User.js';
 import { validateMessage } from '../middleware/validation.js';
 import { apiLimiter } from '../middleware/rateLimiter.js';
-import { authenticateToken, requireStorePlan, requireFreightPlan } from '../middleware/auth.js';
+import { authenticateToken, requireActivePlan } from '../middleware/auth.js';
 
 const router = express.Router();
 

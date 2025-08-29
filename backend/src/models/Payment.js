@@ -316,4 +316,6 @@ paymentSchema.statics.findByPeriod = function(startDate, endDate, userId = null)
   return this.find(query).sort({ createdAt: -1 });
 };
 
-module.exports = mongoose.model('Payment', paymentSchema);
+const Payment = mongoose.model('Payment', paymentSchema);
+
+export default Payment;

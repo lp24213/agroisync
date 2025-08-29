@@ -129,4 +129,6 @@ stakingRecordSchema.statics.findActiveByPool = function (poolId) {
 };
 
 // Create StakingRecord model
-export const StakingRecord = mongoose.model('StakingRecord', stakingRecordSchema);
+const StakingRecord = mongoose.model('StakingRecord', stakingRecordSchema);
+
+export default StakingRecord;

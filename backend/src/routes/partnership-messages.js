@@ -1,8 +1,8 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import { PartnershipMessage } from '../models/PartnershipMessage.js';
-import { Partner } from '../models/Partner.js';
-import { User } from '../models/User.js';
+import PartnershipMessage from '../models/PartnershipMessage.js';
+import Partner from '../models/Partner.js';
+import User from '../models/User.js';
 import { authenticateToken, requireAdmin } from '../middleware/auth.js';
 import { apiLimiter } from '../middleware/rateLimiter.js';
 import { createSecurityLog } from '../utils/securityLogger.js';
