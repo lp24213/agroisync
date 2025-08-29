@@ -75,7 +75,7 @@ const ChatInterface = ({
     setMessages(prev => [...prev, message]);
     
     // Marcar como lida se for para o usuário atual
-    if (message.toUserId === currentUserId) {
+    if (message.to === currentUserId) {
       messagingService.markMessageAsRead(message.id);
     }
   };

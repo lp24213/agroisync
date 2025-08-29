@@ -14,6 +14,7 @@ const MessageThread = ({ userId, transactionId, onBack }) => {
   const [showAttachments, setShowAttachments] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [replyTo, setReplyTo] = useState(null);
+  const [hasMessages, setHasMessages] = useState(false);
   
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -23,10 +24,18 @@ const MessageThread = ({ userId, transactionId, onBack }) => {
       loadMessages();
       subscribeToMessages();
     }
+    
+    return () => {
+      // Limpar subscrição ao desmontar
+      if (transactionId) {
+        messagingService.unsubscribeFromTransaction(transactionId);
+      }
+    };
   }, [transactionId]);
 
   useEffect(() => {
     scrollToBottom();
+    setHasMessages(messages.length > 0);
   }, [messages]);
 
   const loadMessages = async () => {
@@ -34,17 +43,25 @@ const MessageThread = ({ userId, transactionId, onBack }) => {
     try {
       const transactionMessages = await messagingService.getTransactionMessages(transactionId);
       setMessages(transactionMessages);
+      setHasMessages(transactionMessages.length > 0);
     } catch (error) {
       console.error('Erro ao carregar mensagens:', error);
+      setMessages([]);
+      setHasMessages(false);
     } finally {
       setLoading(false);
     }
   };
 
   const subscribeToMessages = () => {
-    messagingService.subscribeToTransaction(transactionId, (newMessage) => {
-      setMessages(prev => [...prev, newMessage]);
-    });
+    try {
+      messagingService.subscribeToTransaction(transactionId, (newMessage) => {
+        setMessages(prev => [...prev, newMessage]);
+        setHasMessages(true);
+      });
+    } catch (error) {
+      console.error('Erro ao inscrever-se nas mensagens:', error);
+    }
   };
 
   const scrollToBottom = () => {
@@ -78,7 +95,7 @@ const MessageThread = ({ userId, transactionId, onBack }) => {
 
       // Determinar destinatário (usuário oposto da transação)
       const otherUserId = messages.length > 0 
-        ? (messages[0].from === userId ? messages[0].to : messages[0].fromUserId || messages[0].from)
+        ? (messages[0].from === userId ? messages[0].to : messages[0].from)
         : 'user_other'; // Fallback para primeira mensagem
 
       const sentMessage = await messagingService.sendMessage(
@@ -95,6 +112,7 @@ const MessageThread = ({ userId, transactionId, onBack }) => {
       setReplyTo(null);
     } catch (error) {
       console.error('Erro ao enviar mensagem:', error);
+      alert('Erro ao enviar mensagem. Tente novamente.');
     } finally {
       setSending(false);
     }

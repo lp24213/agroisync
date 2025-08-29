@@ -27,30 +27,35 @@ class MessagingService {
     this.isConnected = false;
     this.reconnectAttempts = 0;
     this.maxReconnectAttempts = 5;
+    this.socket = null;
+    this.transactionSubscriptions = new Map();
   }
 
-  // Conectar ao serviço de mensageria
+  // Conectar ao serviço de mensageria com Socket.IO
   async connect(userId) {
     try {
-      if (this.isConnected) return;
+      if (this.isConnected) return { success: true };
 
-      // Simular conexão com AWS AppSync
-      console.log('Conectando ao AWS AppSync...');
-      
-      // Em produção, aqui seria a conexão real com AppSync
-      // const client = new AWSAppSyncClient({
-      //   url: process.env.REACT_APP_APPSYNC_URL,
-      //   region: process.env.REACT_APP_AWS_REGION,
-      //   auth: {
-      //     type: 'API_KEY',
-      //     apiKey: process.env.REACT_APP_APPSYNC_API_KEY
-      //   }
+      // Em produção, usar Socket.IO real
+      // this.socket = io(process.env.REACT_APP_SOCKET_URL, {
+      //   auth: { userId }
       // });
-
-      this.isConnected = true;
-      this.userId = userId;
-      console.log('Conectado ao serviço de mensageria');
       
+      // Simular conexão Socket.IO para desenvolvimento
+      console.log('Conectando ao Socket.IO...');
+      
+      // Simular eventos de conexão
+      setTimeout(() => {
+        this.isConnected = true;
+        this.userId = userId;
+        console.log('Conectado ao Socket.IO');
+        
+        // Simular evento de conexão
+        if (this.onConnect) {
+          this.onConnect();
+        }
+      }, 1000);
+
       return { success: true };
     } catch (error) {
       console.error('Erro ao conectar:', error);
@@ -68,6 +73,12 @@ class MessagingService {
       this.subscriptions.clear();
       this.messageHandlers.clear();
       
+      // Desconectar Socket.IO
+      if (this.socket) {
+        this.socket.disconnect();
+        this.socket = null;
+      }
+      
       this.isConnected = false;
       this.userId = null;
       
@@ -79,6 +90,87 @@ class MessagingService {
     }
   }
 
+  // Inscrever-se em mensagens de uma transação específica
+  subscribeToTransaction(transactionId, messageHandler) {
+    try {
+      if (!this.isConnected) {
+        throw new Error('Serviço de mensageria não conectado');
+      }
+
+      // Cancelar subscrição anterior se existir
+      if (this.transactionSubscriptions.has(transactionId)) {
+        this.unsubscribeFromTransaction(transactionId);
+      }
+
+      // Em produção, usar Socket.IO real
+      // this.socket.emit('join-transaction', { transactionId });
+      // this.socket.on(`message-${transactionId}`, messageHandler);
+      
+      // Simular subscrição para desenvolvimento
+      const subscription = {
+        transactionId,
+        handler: messageHandler,
+        unsubscribe: () => {
+          // Em produção: this.socket.emit('leave-transaction', { transactionId });
+          this.transactionSubscriptions.delete(transactionId);
+        }
+      };
+
+      this.transactionSubscriptions.set(transactionId, subscription);
+      
+      // Simular recebimento de mensagens em tempo real
+      this.simulateRealTimeMessages(transactionId, messageHandler);
+      
+      console.log(`Inscrito em mensagens da transação: ${transactionId}`);
+      
+      return subscription;
+    } catch (error) {
+      console.error('Erro ao inscrever-se na transação:', error);
+      throw error;
+    }
+  }
+
+  // Cancelar inscrição de uma transação
+  unsubscribeFromTransaction(transactionId) {
+    try {
+      const subscription = this.transactionSubscriptions.get(transactionId);
+      if (subscription) {
+        subscription.unsubscribe();
+        this.transactionSubscriptions.delete(transactionId);
+        console.log(`Inscrição cancelada da transação: ${transactionId}`);
+      }
+    } catch (error) {
+      console.error('Erro ao cancelar inscrição:', error);
+    }
+  }
+
+  // Simular mensagens em tempo real para desenvolvimento
+  simulateRealTimeMessages(transactionId, messageHandler) {
+    // Em produção, isso seria removido e substituído por Socket.IO real
+    const interval = setInterval(() => {
+      // Simular mensagens ocasionais (apenas para demonstração)
+      if (Math.random() < 0.1) { // 10% de chance a cada intervalo
+        const mockMessage = {
+          id: `mock_${Date.now()}`,
+          transactionId,
+          from: 'other_user',
+          to: this.userId,
+          body: 'Mensagem simulada em tempo real',
+          type: 'text',
+          createdAt: new Date().toISOString(),
+          status: 'delivered'
+        };
+        messageHandler(mockMessage);
+      }
+    }, 10000); // Verificar a cada 10 segundos
+
+    // Armazenar o intervalo para limpeza
+    const subscription = this.transactionSubscriptions.get(transactionId);
+    if (subscription) {
+      subscription.cleanupInterval = interval;
+    }
+  }
+
   // Enviar mensagem
   async sendMessage(transactionId, toUserId, content, type = 'text', attachments = null) {
     try {
@@ -87,70 +179,85 @@ class MessagingService {
       }
 
       const messageData = {
-        message: content,
+        transactionId,
+        from: this.userId,
+        to: toUserId,
+        body: content,
         type,
         attachments,
-        metadata: {}
+        createdAt: new Date().toISOString(),
+        status: 'sent'
       };
 
       // Enviar via API REST
-      const response = await axios.post(`${API_BASE_URL}/transactions/${transactionId}/messages`, messageData);
+      const response = await axios.post(`${API_BASE_URL}/messages`, messageData);
       
       if (response.data.success) {
-        return response.data.data;
+        const sentMessage = response.data.data;
+        
+        // Em produção, emitir via Socket.IO
+        // this.socket.emit('send-message', {
+        //   transactionId,
+        //   message: sentMessage
+        // });
+        
+        // Simular envio em tempo real
+        this.simulateMessageDelivery(transactionId, sentMessage);
+        
+        return sentMessage;
       } else {
-        throw new Error(response.data.message || 'Erro ao enviar mensagem');
+        throw new Error(response.data.error || 'Erro ao enviar mensagem');
       }
-      //   mutation: SEND_MESSAGE,
-      //   variables: messageData
-      // });
-
-      // Simular envio para desenvolvimento
-      const mockMessage = this.createMockMessage(messageData);
-      
-      // Salvar no localStorage para simular persistência
-      this.saveMockMessage(mockMessage);
-      
-      // Notificar outros usuários (simulação de tempo real)
-      this.notifyMessageReceived(mockMessage);
-      
-      return mockMessage;
     } catch (error) {
       console.error('Erro ao enviar mensagem:', error);
       throw error;
     }
   }
 
-  // Buscar mensagens de uma transação
-  async getTransactionMessages(transactionId, limit = 50, offset = 0) {
+  // Simular entrega de mensagem em tempo real
+  simulateMessageDelivery(transactionId, message) {
+    // Em produção, isso seria gerenciado pelo Socket.IO
+    setTimeout(() => {
+      // Atualizar status para entregue
+      message.status = 'delivered';
+      
+      // Notificar outros usuários inscritos na transação
+      const subscription = this.transactionSubscriptions.get(transactionId);
+      if (subscription && subscription.handler) {
+        subscription.handler(message);
+      }
+    }, 1000);
+  }
+
+  // Obter mensagens de uma transação
+  async getTransactionMessages(transactionId) {
     try {
-      // Buscar via API REST
-      const response = await axios.get(`${API_BASE_URL}/transactions/${transactionId}/messages`);
+      const response = await axios.get(`${API_BASE_URL}/messages/transaction/${transactionId}`);
       
       if (response.data.success) {
-        return response.data.messages;
+        return response.data.data || [];
       } else {
-        throw new Error(response.data.message || 'Erro ao buscar mensagens');
+        console.warn('Nenhuma mensagem encontrada para a transação:', transactionId);
+        return [];
       }
     } catch (error) {
-      console.error('Erro ao buscar mensagens:', error);
+      console.error('Erro ao carregar mensagens:', error);
       return [];
     }
   }
 
-  // Buscar conversas do usuário
+  // Obter conversas do usuário
   async getUserConversations(userId) {
     try {
-      // Buscar via API REST
-      const response = await axios.get(`${API_BASE_URL}/transactions/conversations`);
+      const response = await axios.get(`${API_BASE_URL}/messages/conversations/${userId}`);
       
       if (response.data.success) {
-        return response.data.conversations;
+        return response.data.data || [];
       } else {
-        throw new Error(response.data.message || 'Erro ao buscar conversas');
+        return [];
       }
     } catch (error) {
-      console.error('Erro ao buscar conversas:', error);
+      console.error('Erro ao carregar conversas:', error);
       return [];
     }
   }
@@ -158,295 +265,64 @@ class MessagingService {
   // Marcar mensagem como lida
   async markMessageAsRead(messageId) {
     try {
-      // Em produção, atualizar via AWS AppSync mutation
-      // const result = await client.mutate({
-      //   mutation: MARK_MESSAGE_READ,
-      //   variables: { messageId }
-      // });
-
-      // Simular atualização para desenvolvimento
-      const allMessages = JSON.parse(localStorage.getItem('agroisync_messages') || '[]');
-      const messageIndex = allMessages.findIndex(msg => msg.id === messageId);
+      const response = await axios.put(`${API_BASE_URL}/messages/${messageId}/read`);
       
-      if (messageIndex !== -1) {
-        allMessages[messageIndex].read = true;
-        allMessages[messageIndex].readAt = new Date().toISOString();
-        localStorage.setItem('agroisync_messages', JSON.stringify(allMessages));
+      if (response.data.success) {
+        // Em produção, emitir via Socket.IO para atualizar em tempo real
+        // this.socket.emit('message-read', { messageId });
+        
+        return response.data.data;
+      } else {
+        throw new Error(response.data.error || 'Erro ao marcar mensagem como lida');
       }
-
-      return { success: true };
     } catch (error) {
       console.error('Erro ao marcar mensagem como lida:', error);
-      return { success: false, error: error.message };
+      throw error;
     }
   }
 
   // Marcar todas as mensagens de uma transação como lidas
   async markTransactionAsRead(transactionId, userId) {
     try {
-      const allMessages = JSON.parse(localStorage.getItem('agroisync_messages') || '[]');
-      let updated = false;
-
-      allMessages.forEach(msg => {
-        if (msg.transactionId === transactionId && msg.toUserId === userId && !msg.read) {
-          msg.read = true;
-          msg.readAt = new Date().toISOString();
-          updated = true;
-        }
+      const response = await axios.put(`${API_BASE_URL}/messages/transaction/${transactionId}/read`, {
+        userId
       });
-
-      if (updated) {
-        localStorage.setItem('agroisync_messages', JSON.stringify(allMessages));
+      
+      if (response.data.success) {
+        // Em produção, emitir via Socket.IO para atualizar em tempo real
+        // this.socket.emit('transaction-read', { transactionId, userId });
+        
+        return response.data.data;
+      } else {
+        throw new Error(response.data.error || 'Erro ao marcar transação como lida');
       }
-
-      return { success: true, updated };
     } catch (error) {
       console.error('Erro ao marcar transação como lida:', error);
-      return { success: false, error: error.message };
-    }
-  }
-
-  // Inscrever para receber mensagens em tempo real
-  async subscribeToTransaction(transactionId, onMessageReceived) {
-    try {
-      if (!this.isConnected) {
-        throw new Error('Serviço de mensageria não conectado');
-      }
-
-      // Em produção, usar AWS AppSync subscriptions
-      // const subscription = client.subscribe({
-      //   query: ON_MESSAGE_RECEIVED,
-      //   variables: { transactionId }
-      // });
-
-      // Simular subscrição para desenvolvimento
-      const subscriptionId = `sub_${transactionId}_${Date.now()}`;
-      
-      // Armazenar handler para notificações
-      this.messageHandlers.set(transactionId, onMessageReceived);
-      
-      // Simular recebimento de mensagens em tempo real
-      const mockSubscription = {
-        id: subscriptionId,
-        transactionId,
-        unsubscribe: () => {
-          this.messageHandlers.delete(transactionId);
-          console.log(`Subscrição cancelada para transação: ${transactionId}`);
-        }
-      };
-
-      this.subscriptions.set(subscriptionId, mockSubscription);
-      
-      console.log(`Inscrito para transação: ${transactionId}`);
-      return mockSubscription;
-    } catch (error) {
-      console.error('Erro ao inscrever para transação:', error);
       throw error;
     }
-    }
+  }
 
-  // Cancelar subscrição
-  async unsubscribeFromTransaction(subscriptionId) {
+  // Obter estatísticas de mensagens
+  async getMessageStats(userId) {
     try {
-      const subscription = this.subscriptions.get(subscriptionId);
-      if (subscription) {
-        subscription.unsubscribe();
-        this.subscriptions.delete(subscriptionId);
-        console.log(`Subscrição cancelada: ${subscriptionId}`);
+      const response = await axios.get(`${API_BASE_URL}/messages/stats/${userId}`);
+      
+      if (response.data.success) {
+        return response.data.data;
+      } else {
+        return {
+          total: 0,
+          unread: 0,
+          conversations: 0
+        };
       }
-      return { success: true };
     } catch (error) {
-      console.error('Erro ao cancelar subscrição:', error);
-      return { success: false, error: error.message };
-    }
-  }
-
-  // Buscar mensagens não lidas
-  async getUnreadMessages(userId) {
-    try {
-      const allMessages = JSON.parse(localStorage.getItem('agroisync_messages') || '[]');
-      return allMessages.filter(msg => 
-        msg.toUserId === userId && !msg.read
-      );
-    } catch (error) {
-      console.error('Erro ao buscar mensagens não lidas:', error);
-      return [];
-    }
-  }
-
-  // Contar mensagens não lidas
-  async getUnreadCount(userId) {
-    try {
-      const unreadMessages = await this.getUnreadMessages(userId);
-      return unreadMessages.length;
-    } catch (error) {
-      console.error('Erro ao contar mensagens não lidas:', error);
-      return 0;
-    }
-  }
-
-  // Buscar mensagens por período
-  async getMessagesByDateRange(transactionId, startDate, endDate) {
-    try {
-      const allMessages = JSON.parse(localStorage.getItem('agroisync_messages') || '[]');
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-
-      return allMessages.filter(msg => 
-        msg.transactionId === transactionId &&
-        new Date(msg.timestamp) >= start &&
-        new Date(msg.timestamp) <= end
-      ).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-    } catch (error) {
-      console.error('Erro ao buscar mensagens por período:', error);
-      return [];
-    }
-  }
-
-  // Buscar mensagens por tipo
-  async getMessagesByType(transactionId, type) {
-    try {
-      const allMessages = JSON.parse(localStorage.getItem('agroisync_messages') || '[]');
-      return allMessages.filter(msg => 
-        msg.transactionId === transactionId && msg.type === type
-      ).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-    } catch (error) {
-      console.error('Erro ao buscar mensagens por tipo:', error);
-      return [];
-    }
-  }
-
-  // Deletar mensagem
-  async deleteMessage(messageId, userId) {
-    try {
-      const allMessages = JSON.parse(localStorage.getItem('agroisync_messages') || '[]');
-      const messageIndex = allMessages.findIndex(msg => msg.id === messageId);
-      
-      if (messageIndex !== -1) {
-        const message = allMessages[messageIndex];
-        
-        // Apenas o remetente pode deletar
-        if (message.fromUserId === userId) {
-          allMessages.splice(messageIndex, 1);
-          localStorage.setItem('agroisync_messages', JSON.stringify(allMessages));
-          return { success: true };
-        } else {
-          return { success: false, error: 'Não autorizado a deletar esta mensagem' };
-        }
-      }
-      
-      return { success: false, error: 'Mensagem não encontrada' };
-    } catch (error) {
-      console.error('Erro ao deletar mensagem:', error);
-      return { success: false, error: error.message };
-    }
-  }
-
-  // Métodos auxiliares para desenvolvimento
-  createMockMessage(messageData) {
-    return {
-      id: `MSG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      ...messageData,
-      read: false,
-      readAt: null,
-      delivered: true,
-      deliveredAt: new Date().toISOString()
-    };
-  }
-
-  saveMockMessage(message) {
-    try {
-      const allMessages = JSON.parse(localStorage.getItem('agroisync_messages') || '[]');
-      allMessages.push(message);
-      localStorage.setItem('agroisync_messages', JSON.stringify(allMessages));
-    } catch (error) {
-      console.error('Erro ao salvar mensagem mock:', error);
-    }
-  }
-
-  notifyMessageReceived(message) {
-    // Simular notificação em tempo real
-    const handler = this.messageHandlers.get(message.transactionId);
-    if (handler && typeof handler === 'function') {
-      // Simular delay de rede
-      setTimeout(() => {
-        handler(message);
-      }, 100);
-    }
-  }
-
-  // Gerar dados mock iniciais para demonstração
-  generateMockData() {
-    const mockMessages = [
-      {
-        id: 'MSG_1',
-        transactionId: 'TXN_1',
-        fromUserId: 'user_1',
-        toUserId: 'user_2',
-        content: 'Olá! Tenho interesse no seu frete. Qual o prazo de entrega?',
-        type: 'text',
-        timestamp: new Date('2024-01-15T10:00:00').toISOString(),
-        read: true,
-        readAt: new Date('2024-01-15T10:05:00').toISOString(),
-        delivered: true,
-        deliveredAt: new Date('2024-01-15T10:00:30').toISOString()
-      },
-      {
-        id: 'MSG_2',
-        transactionId: 'TXN_1',
-        fromUserId: 'user_2',
-        toUserId: 'user_1',
-        content: 'Oi! O prazo é de 2-3 dias úteis. Posso fazer por R$ 800,00.',
-        type: 'text',
-        timestamp: new Date('2024-01-15T10:10:00').toISOString(),
-        read: false,
-        readAt: null,
-        delivered: true,
-        deliveredAt: new Date('2024-01-15T10:10:30').toISOString()
-      },
-      {
-        id: 'MSG_3',
-        transactionId: 'TXN_2',
-        fromUserId: 'user_3',
-        toUserId: 'user_1',
-        content: 'Gostaria de saber mais sobre o frete de grãos.',
-        type: 'text',
-        timestamp: new Date('2024-01-16T14:00:00').toISOString(),
-        read: false,
-        readAt: null,
-        delivered: true,
-        deliveredAt: new Date('2024-01-16T14:00:30').toISOString()
-      }
-    ];
-
-    localStorage.setItem('agroisync_messages', JSON.stringify(mockMessages));
-    return mockMessages;
-  }
-
-  // Reconectar automaticamente
-  async reconnect() {
-    if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      console.error('Máximo de tentativas de reconexão atingido');
-      return { success: false, error: 'Máximo de tentativas de reconexão' };
-    }
-
-    try {
-      this.reconnectAttempts++;
-      console.log(`Tentativa de reconexão ${this.reconnectAttempts}/${this.maxReconnectAttempts}`);
-      
-      // Aguardar antes de tentar reconectar
-      await new Promise(resolve => setTimeout(resolve, 1000 * this.reconnectAttempts));
-      
-      const result = await this.connect(this.userId);
-      if (result.success) {
-        this.reconnectAttempts = 0;
-        console.log('Reconectado com sucesso');
-      }
-      
-      return result;
-    } catch (error) {
-      console.error('Erro na reconexão:', error);
-      return { success: false, error: error.message };
+      console.error('Erro ao carregar estatísticas:', error);
+      return {
+        total: 0,
+        unread: 0,
+        conversations: 0
+      };
     }
   }
 }
