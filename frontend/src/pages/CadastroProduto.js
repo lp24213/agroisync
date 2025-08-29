@@ -4,8 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { 
   Package, Upload, MapPin, DollarSign, Calendar, 
-  FileText, CheckCircle, AlertCircle, X, Plus, Image as ImageIcon
+  FileText, CheckCircle, AlertCircle, X, Plus, Image as ImageIcon,
+  Building2, User, Search, MapPin as MapPinIcon
 } from 'lucide-react';
+import baiduMapsService from '../services/baiduMapsService';
+import receitaService from '../services/receitaService';
+import transactionService from '../services/transactionService';
 
 const CadastroProduto = () => {
   const navigate = useNavigate();
@@ -24,7 +28,17 @@ const CadastroProduto = () => {
     contactPhone: '',
     contactEmail: '',
     deliveryOptions: [],
-    paymentMethods: []
+    paymentMethods: [],
+    // Novos campos para validação
+    sellerType: 'individual', // 'individual' ou 'company'
+    cpf: '',
+    cnpj: '',
+    ie: '',
+    state: '',
+    city: '',
+    cep: '',
+    address: '',
+    coordinates: null
   });
   
   const [loading, setLoading] = useState(false);
@@ -33,6 +47,13 @@ const CadastroProduto = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [imageFiles, setImageFiles] = useState([]);
   const [imagePreview, setImagePreview] = useState([]);
+  
+  // Estados para validações
+  const [isValidatingDocument, setIsValidatingDocument] = useState(false);
+  const [isValidatingAddress, setIsValidatingAddress] = useState(false);
+  const [documentValidationResult, setDocumentValidationResult] = useState(null);
+  const [addressValidationResult, setAddressValidationResult] = useState(null);
+  const [validationErrors, setValidationErrors] = useState({});
 
   const categories = [
     'Sementes', 'Fertilizantes', 'Maquinários', 'Serviços', 
@@ -75,6 +96,164 @@ const CadastroProduto = () => {
       ...prev,
       [name]: value
     }));
+    
+    // Limpar erros de validação quando o campo é alterado
+    if (validationErrors[name]) {
+      setValidationErrors(prev => ({
+        ...prev,
+        [name]: null
+      }));
+    }
+  };
+
+  // Validação de documentos via Receita Federal
+  const validateDocuments = async () => {
+    setIsValidatingDocument(true);
+    setDocumentValidationResult(null);
+    setValidationErrors(prev => ({ ...prev, cpf: null, cnpj: null, ie: null }));
+
+    try {
+      await receitaService.initialize();
+      
+      let validationResults = {};
+      
+      if (formData.sellerType === 'individual') {
+        if (formData.cpf) {
+          const cpfResult = await receitaService.validateCPF(formData.cpf);
+          validationResults.cpf = cpfResult;
+          
+          if (!cpfResult.valid) {
+            setValidationErrors(prev => ({ ...prev, cpf: 'CPF inválido' }));
+          }
+        }
+      } else {
+        if (formData.cnpj) {
+          const cnpjResult = await receitaService.validateCNPJ(formData.cnpj);
+          validationResults.cnpj = cnpjResult;
+          
+          if (!cnpjResult.valid) {
+            setValidationErrors(prev => ({ ...prev, cnpj: 'CNPJ inválido' }));
+          }
+        }
+        
+        if (formData.ie && formData.state) {
+          const ieResult = await receitaService.validateIE(formData.ie, formData.state);
+          validationResults.ie = ieResult;
+          
+          if (!ieResult.valid) {
+            setValidationErrors(prev => ({ ...prev, ie: 'Inscrição Estadual inválida' }));
+          }
+        }
+      }
+      
+      setDocumentValidationResult(validationResults);
+      
+      // Verificar se todas as validações passaram
+      const allValid = Object.values(validationResults).every(result => result.valid);
+      return allValid;
+      
+    } catch (error) {
+      console.error('Erro na validação de documentos:', error);
+      setError('Erro ao validar documentos. Tente novamente.');
+      return false;
+    } finally {
+      setIsValidatingDocument(false);
+    }
+  };
+
+  // Validação de endereço via Baidu Maps e IBGE
+  const validateAddress = async () => {
+    setIsValidatingAddress(true);
+    setAddressValidationResult(null);
+    setValidationErrors(prev => ({ ...prev, cep: null, address: null }));
+
+    try {
+      await baiduMapsService.initialize();
+      
+      let validationResults = {};
+      
+      // Validação de CEP via IBGE
+      if (formData.cep) {
+        const cepResult = await baiduMapsService.validateBrazilianAddress(formData.cep);
+        validationResults.cep = cepResult;
+        
+        if (cepResult.valid) {
+          // Atualizar cidade e estado com dados do IBGE
+          setFormData(prev => ({
+            ...prev,
+            city: cepResult.city || prev.city,
+            state: cepResult.state || prev.state,
+            coordinates: cepResult.coordinates || prev.coordinates
+          }));
+        } else {
+          setValidationErrors(prev => ({ ...prev, cep: 'CEP inválido' }));
+        }
+      }
+      
+      // Validação de endereço completo via Baidu Maps
+      if (formData.address && formData.city && formData.state) {
+        const fullAddress = `${formData.address}, ${formData.city}, ${formData.state}, Brasil`;
+        const addressResult = await baiduMapsService.validateBrazilianAddress(fullAddress);
+        validationResults.address = addressResult;
+        
+        if (addressResult.valid) {
+          setFormData(prev => ({
+            ...prev,
+            coordinates: addressResult.coordinates || prev.coordinates
+          }));
+        } else {
+          setValidationErrors(prev => ({ ...prev, address: 'Endereço não encontrado' }));
+        }
+      }
+      
+      setAddressValidationResult(validationResults);
+      
+      // Verificar se todas as validações passaram
+      const allValid = Object.values(validationResults).every(result => result.valid);
+      return allValid;
+      
+    } catch (error) {
+      console.error('Erro na validação de endereço:', error);
+      setError('Erro ao validar endereço. Tente novamente.');
+      return false;
+    } finally {
+      setIsValidatingAddress(false);
+    }
+  };
+
+  // Validação completa antes de prosseguir
+  const validateStep = async (step) => {
+    if (step === 2) {
+      // Validar documentos antes de prosseguir para preços
+      const documentsValid = await validateDocuments();
+      if (!documentsValid) {
+        setError('Por favor, corrija os erros de validação dos documentos antes de continuar.');
+        return false;
+      }
+    }
+    
+    if (step === 3) {
+      // Validar endereço antes de prosseguir para imagens
+      const addressValid = await validateAddress();
+      if (!addressValid) {
+        setError('Por favor, corrija os erros de validação do endereço antes de continuar.');
+        return false;
+      }
+    }
+    
+    return true;
+  };
+
+  const nextStep = async () => {
+    const isValid = await validateStep(currentStep);
+    if (isValid) {
+      setCurrentStep(currentStep + 1);
+      setError(''); // Limpar erros ao avançar
+    }
+  };
+
+  const prevStep = () => {
+    setCurrentStep(currentStep - 1);
   };
 
   const handleImageUpload = (e) => {
@@ -159,29 +338,6 @@ const CadastroProduto = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const validateStep = (step) => {
-    if (step === 1) {
-      return formData.name && formData.description && formData.category;
-    }
-    if (step === 2) {
-      return formData.price && formData.quantity && formData.unit;
-    }
-    if (step === 3) {
-      return formData.location && imageFiles.length > 0;
-    }
-    return true;
-  };
-
-  const nextStep = () => {
-    if (validateStep(currentStep)) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
-  const prevStep = () => {
-    setCurrentStep(currentStep - 1);
   };
 
   return (
