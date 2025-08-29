@@ -32,6 +32,7 @@ import contactRoutes from './routes/contact.js';
 import userRoutes from './routes/users.js';
 import notificationRoutes from './routes/notifications.js';
 import escrowRoutes from './routes/escrow.js';
+import gamificationRoutes from './routes/gamification.js';
 import mirrorAPIRoutes from './routes/mirror-apis.js';
 import privacyRoutes from './routes/privacy.js';
 
@@ -115,6 +116,7 @@ app.use('/api/admin', authenticateToken, adminRoutes);
 app.use('/api/users', authenticateToken, userRoutes);
 app.use('/api/notifications', authenticateToken, notificationRoutes);
 app.use('/api/escrow', authenticateToken, escrowRoutes);
+app.use('/api/gamification', authenticateToken, gamificationRoutes);
 app.use('/api/clients', authenticateToken, clientRoutes);
 app.use('/api/privacy', privacyRoutes);
 

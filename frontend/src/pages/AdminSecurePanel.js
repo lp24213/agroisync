@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { 
   BarChart3, MessageSquare, Users, Package, Truck, 
-  CreditCard, Search, Shield, LogOut 
+  CreditCard, Search, Shield, LogOut, DollarSign
 } from 'lucide-react';
 
 const AdminSecurePanel = () => {
@@ -79,34 +79,34 @@ const AdminSecurePanel = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-r from-agro-green-600 via-agro-yellow-500 to-web3-neon-blue rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-          </div>
-          <p className="text-slate-600 text-xl">Carregando painel administrativo...</p>
+          <div className="min-h-screen bg-premium-platinum flex items-center justify-center">
+      <div className="text-center">
+        <div className="w-16 h-16 bg-gradient-premium rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-premium">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
         </div>
+        <p className="text-premium-gray text-xl">Carregando painel administrativo...</p>
       </div>
+    </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <Shield className="w-8 h-8 text-red-600" />
-          </div>
-          <p className="text-red-600 text-xl">{error}</p>
+          <div className="min-h-screen bg-premium-platinum flex items-center justify-center">
+      <div className="text-center">
+        <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <Shield className="w-8 h-8 text-red-600" />
         </div>
+        <p className="text-red-600 text-xl">{error}</p>
       </div>
+    </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-premium-platinum">
             {/* Header */}
-      <header className="bg-white border-b border-slate-200 shadow-sm">
+              <header className="bg-white border-b border-premium-platinum shadow-premium-soft">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
@@ -115,7 +115,7 @@ const AdminSecurePanel = () => {
               </h1>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-slate-600">
+              <span className="text-premium-gray">
                 Admin: {user?.email || 'Administrador'}
               </span>
               <button
@@ -131,7 +131,7 @@ const AdminSecurePanel = () => {
       </header>
 
       {/* Navigation Tabs */}
-      <nav className="bg-slate-50 border-b border-slate-200">
+              <nav className="bg-premium-platinum border-b border-premium-platinum">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex space-x-8">
             {[
@@ -150,8 +150,8 @@ const AdminSecurePanel = () => {
                   onClick={() => setActiveTab(tab.id)}
                   className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center space-x-2 ${
                     activeTab === tab.id
-                      ? 'border-agro-green-500 text-agro-green-400'
-                      : 'border-transparent text-gray-300 hover:text-gray-200 hover:border-gray-300'
+                      ? 'border-accent-emerald text-accent-emerald'
+                      : 'border-transparent text-premium-gray hover:text-premium-dark-gray hover:border-premium-gray'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -175,8 +175,8 @@ const AdminSecurePanel = () => {
                     <Users className="w-6 h-6 text-blue-600" />
                   </div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Total de Usuários</p>
-                    <p className="text-2xl font-semibold text-gray-900">{dashboardData.metrics.totalUsers}</p>
+                    <p className="text-sm font-medium text-premium-gray">Total de Usuários</p>
+                    <p className="text-2xl font-semibold text-premium-dark-gray">{dashboardData.metrics.totalUsers}</p>
                   </div>
                 </div>
               </div>
@@ -187,8 +187,8 @@ const AdminSecurePanel = () => {
                     <Package className="w-6 h-6 text-green-600" />
                   </div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Total de Produtos</p>
-                    <p className="text-2xl font-semibold text-gray-900">{dashboardData.metrics.totalProducts}</p>
+                    <p className="text-sm font-medium text-premium-gray">Total de Produtos</p>
+                    <p className="text-2xl font-semibold text-premium-dark-gray">{dashboardData.metrics.totalProducts}</p>
                   </div>
                 </div>
               </div>
@@ -199,8 +199,8 @@ const AdminSecurePanel = () => {
                     <Truck className="w-6 h-6 text-yellow-600" />
                   </div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Total de Fretes</p>
-                    <p className="text-2xl font-semibold text-gray-900">{dashboardData.metrics.totalFreights}</p>
+                    <p className="text-sm font-medium text-premium-gray">Total de Fretes</p>
+                    <p className="text-2xl font-semibold text-premium-dark-gray">{dashboardData.metrics.totalFreights}</p>
                   </div>
                 </div>
               </div>
@@ -211,21 +211,21 @@ const AdminSecurePanel = () => {
                     <DollarSign className="w-6 h-6 text-purple-600" />
                   </div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Receita Total</p>
-                    <p className="text-2xl font-semibold text-gray-900">R$ {dashboardData.metrics.totalRevenue.toLocaleString('pt-BR')}</p>
+                    <p className="text-sm font-medium text-premium-gray">Receita Total</p>
+                    <p className="text-2xl font-semibold text-premium-dark-gray">R$ {dashboardData.metrics.totalRevenue.toLocaleString('pt-BR')}</p>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="card-premium">
-              <div className="px-6 py-4 border-b border-slate-200">
+              <div className="px-6 py-4 border-b border-premium-platinum">
                 <h3 className="text-lg font-medium title-premium">Atividade Recente</h3>
               </div>
               <div className="p-6">
                 <div className="space-y-4">
                   {dashboardData.recentActivity?.map((activity, index) => (
-                    <div key={index} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+                    <div key={index} className="flex items-center justify-between p-4 bg-premium-platinum rounded-lg">
                       <div className="flex items-center space-x-4">
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                           activity.type === 'payment_received' ? 'bg-green-100 text-green-800 border border-green-200' :
@@ -235,10 +235,10 @@ const AdminSecurePanel = () => {
                           {activity.type === 'payment_received' ? 'PAGAMENTO' :
                            activity.type === 'user_registration' ? 'USUÁRIO' : 'PRODUTO'}
                         </span>
-                        <span className="text-slate-700">{activity.description}</span>
-                        <span className="text-slate-500">{activity.user}</span>
+                        <span className="text-premium-dark-gray">{activity.description}</span>
+                        <span className="text-premium-gray">{activity.user}</span>
                       </div>
-                      <div className="text-sm text-slate-500">
+                      <div className="text-sm text-premium-gray">
                         {new Date(activity.timestamp).toLocaleString('pt-BR')}
                       </div>
                     </div>
@@ -259,7 +259,7 @@ const AdminSecurePanel = () => {
               <h3 className="text-xl font-medium title-premium mb-2">
                 Funcionalidade em Desenvolvimento
               </h3>
-              <p className="text-slate-600">
+              <p className="text-premium-gray">
                 A aba "{activeTab}" está sendo implementada e estará disponível em breve.
               </p>
             </div>
