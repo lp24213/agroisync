@@ -2,17 +2,28 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
-import { Mail, ArrowLeft, AlertCircle, CheckCircle } from 'lucide-react';
+import { Mail, ArrowLeft, AlertCircle, CheckCircle, RefreshCw } from 'lucide-react';
+import authService from '../services/authService';
 
 const ForgotPassword = () => {
-  const { forgotPassword, loading, error, clearError } = useAuth();
+  const { loading, error, clearError } = useAuth();
   const [email, setEmail] = useState('');
   const [success, setSuccess] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [countdown, setCountdown] = useState(0);
 
   useEffect(() => {
     document.title = 'Recuperar Senha - AgroSync';
     clearError();
   }, [clearError]);
+
+  useEffect(() => {
+    let timer;
+    if (countdown > 0) {
+      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [countdown]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,10 +34,42 @@ const ForgotPassword = () => {
       return;
     }
 
-    const result = await forgotPassword(email);
+    setIsSubmitting(true);
+    try {
+      const result = await authService.forgotPassword(email);
+      
+      if (result.success) {
+        setSuccess(result.message);
+        setCountdown(60); // 60 segundos de espera antes de permitir novo envio
+      }
+    } catch (error) {
+      // O erro já é tratado pelo authService
+      console.error('Erro no forgot password:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const canResend = countdown === 0;
+
+  const handleResend = async () => {
+    if (!canResend) return;
     
-    if (result.success) {
-      setSuccess(result.message);
+    setSuccess('');
+    clearError();
+    setIsSubmitting(true);
+    
+    try {
+      const result = await authService.forgotPassword(email);
+      
+      if (result.success) {
+        setSuccess(result.message);
+        setCountdown(60);
+      }
+    } catch (error) {
+      console.error('Erro ao reenviar:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -113,18 +156,45 @@ const ForgotPassword = () => {
             {/* Botão de envio */}
             <button
               type="submit"
-              disabled={loading || !email}
+              disabled={loading || !email || isSubmitting}
               className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-slate-600 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
             >
-              {loading ? (
+              {loading || isSubmitting ? (
                 <div className="flex items-center space-x-2">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  <span>Enviando...</span>
+                  <span>{loading ? 'Enviando...' : 'Reenviando...'}</span>
                 </div>
               ) : (
                 'Enviar Link de Recuperação'
               )}
             </button>
+
+            {/* Botão de reenvio */}
+            {success && canResend && (
+              <button
+                type="button"
+                onClick={handleResend}
+                disabled={loading || isSubmitting}
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Reenviar Link de Recuperação
+              </button>
+            )}
+
+            {/* Mensagem de espera */}
+            {success && countdown > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.3 }}
+                className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-center"
+              >
+                <p className="text-sm text-blue-600">
+                  Link de recuperação enviado. Verifique seu email em {countdown} segundos.
+                </p>
+              </motion.div>
+            )}
           </form>
 
           {/* Informações importantes */}

@@ -3,41 +3,51 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { Lock, Eye, EyeOff, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react';
+import authService from '../services/authService';
 
 const ResetPassword = () => {
-  const { resetPassword, loading, error, clearError } = useAuth();
+  const { loading, error, clearError } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   
-  const [formData, setFormData] = useState({
-    password: '',
-    confirmPassword: ''
-  });
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [success, setSuccess] = useState('');
-  const [token, setToken] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [tokenValid, setTokenValid] = useState(false);
+  const [email, setEmail] = useState('');
+
+  const token = searchParams.get('token');
 
   useEffect(() => {
     document.title = 'Redefinir Senha - AgroSync';
     clearError();
-    
-    // Extrair token da URL
-    const tokenFromUrl = searchParams.get('token');
-    if (tokenFromUrl) {
-      setToken(tokenFromUrl);
-    } else {
-      // Se não há token, redirecionar para login
-      navigate('/login');
-    }
-  }, [clearError, searchParams, navigate]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    if (!token) {
+      navigate('/forgot-password');
+      return;
+    }
+
+    // Verificar se o token é válido
+    verifyToken();
+  }, [token, navigate, clearError]);
+
+  const verifyToken = async () => {
+    try {
+      const result = await authService.verifyResetToken(token);
+      if (result.success) {
+        setTokenValid(true);
+        setEmail(result.email);
+      } else {
+        setTokenValid(false);
+        navigate('/forgot-password');
+      }
+    } catch (error) {
+      setTokenValid(false);
+      navigate('/forgot-password');
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -45,30 +55,94 @@ const ResetPassword = () => {
     setSuccess('');
     clearError();
 
-    if (!formData.password || !formData.confirmPassword) {
+    if (!password || !confirmPassword) {
       return;
     }
 
-    if (formData.password !== formData.confirmPassword) {
+    if (password !== confirmPassword) {
       return;
     }
 
-    if (formData.password.length < 6) {
+    if (password.length < 8) {
       return;
     }
 
-    const result = await resetPassword(token, formData.password, formData.confirmPassword);
-    
-    if (result.success) {
-      setSuccess(result.message);
-      setTimeout(() => {
-        navigate('/login');
-      }, 3000);
+    setIsSubmitting(true);
+    try {
+      const result = await authService.resetPassword(token, password, confirmPassword);
+      
+      if (result.success) {
+        setSuccess(result.message);
+        // Redirecionar para login após 3 segundos
+        setTimeout(() => {
+          navigate('/login');
+        }, 3000);
+      }
+    } catch (error) {
+      // O erro já é tratado pelo authService
+      console.error('Erro no reset password:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  if (!token) {
-    return null;
+  const getPasswordStrength = (password) => {
+    if (!password) return { score: 0, strength: '', color: '' };
+    
+    let score = 0;
+    if (password.length >= 8) score++;
+    if (/[a-z]/.test(password)) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/\d/.test(password)) score++;
+    if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score++;
+
+    const strengths = ['Muito Fraca', 'Fraca', 'Média', 'Forte', 'Muito Forte'];
+    const colors = ['text-red-500', 'text-orange-500', 'text-yellow-500', 'text-blue-500', 'text-green-500'];
+    
+    return {
+      score: Math.min(score, 5),
+      strength: strengths[Math.min(score - 1, 4)] || '',
+      color: colors[Math.min(score - 1, 4)] || ''
+    };
+  };
+
+  const passwordStrength = getPasswordStrength(password);
+
+  if (!tokenValid) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center"
+          >
+            <div className="flex justify-center">
+              <motion.div 
+                whileHover={{ scale: 1.05 }}
+                className="w-16 h-16 bg-gradient-to-r from-emerald-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg"
+              >
+                <Lock className="w-8 h-8 text-white" />
+              </motion.div>
+            </div>
+            <h2 className="mt-6 text-3xl font-bold text-gradient-agro">
+              Token Inválido
+            </h2>
+            <p className="mt-2 text-sm text-slate-600">
+              O link de redefinição de senha expirou ou é inválido. Por favor, solicite um novo link.
+            </p>
+            <Link
+              to="/forgot-password"
+              className="mt-4 w-full flex justify-center items-center space-x-2 py-3 px-4 border border-slate-300 rounded-lg shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-colors duration-200"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              <span>Voltar para a Recuperação de Senha</span>
+            </Link>
+          </motion.div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -120,11 +194,11 @@ const ResetPassword = () => {
                   type={showPassword ? 'text' : 'password'}
                   autoComplete="new-password"
                   required
-                  value={formData.password}
-                  onChange={handleChange}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="block w-full pl-10 pr-12 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-colors duration-200"
                   placeholder="••••••••"
-                  minLength={6}
+                  minLength={8}
                 />
                 <button
                   type="button"
@@ -139,8 +213,12 @@ const ResetPassword = () => {
                 </button>
               </div>
               <p className="mt-1 text-xs text-slate-500">
-                Mínimo de 6 caracteres
+                Mínimo de 8 caracteres
               </p>
+              <div className="mt-2 flex items-center">
+                <div className={`h-2 w-2 rounded-full ${passwordStrength.color}`}></div>
+                <span className="ml-2 text-xs text-slate-500">{passwordStrength.strength}</span>
+              </div>
             </div>
 
             {/* Confirmar Senha */}
@@ -158,11 +236,11 @@ const ResetPassword = () => {
                   type={showConfirmPassword ? 'text' : 'password'}
                   autoComplete="new-password"
                   required
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   className="block w-full pl-10 pr-12 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-colors duration-200"
                   placeholder="••••••••"
-                  minLength={6}
+                  minLength={8}
                 />
                 <button
                   type="button"
@@ -179,28 +257,28 @@ const ResetPassword = () => {
             </div>
 
             {/* Validação de senha */}
-            {formData.password && formData.confirmPassword && (
+            {password && confirmPassword && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className={`p-3 rounded-lg border ${
-                  formData.password === formData.confirmPassword && formData.password.length >= 6
+                  password === confirmPassword && password.length >= 8
                     ? 'bg-emerald-50 border-emerald-200'
                     : 'bg-red-50 border-red-200'
                 }`}
               >
                 <div className="flex items-center space-x-2">
-                  {formData.password === formData.confirmPassword && formData.password.length >= 6 ? (
+                  {password === confirmPassword && password.length >= 8 ? (
                     <CheckCircle className="h-4 w-4 text-emerald-500" />
                   ) : (
                     <AlertCircle className="h-4 w-4 text-red-500" />
                   )}
                   <span className={`text-sm ${
-                    formData.password === formData.confirmPassword && formData.password.length >= 6
+                    password === confirmPassword && password.length >= 8
                       ? 'text-emerald-700'
                       : 'text-red-700'
                   }`}>
-                    {formData.password === formData.confirmPassword && formData.password.length >= 6
+                    {password === confirmPassword && password.length >= 8
                       ? 'Senhas coincidem e atendem aos requisitos'
                       : 'Senhas não coincidem ou são muito curtas'
                     }
@@ -235,10 +313,10 @@ const ResetPassword = () => {
             {/* Botão de redefinição */}
             <button
               type="submit"
-              disabled={loading || !formData.password || !formData.confirmPassword || formData.password !== formData.confirmPassword || formData.password.length < 6}
+              disabled={loading || isSubmitting || !password || !confirmPassword || password !== confirmPassword || password.length < 8}
               className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-slate-600 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
             >
-              {loading ? (
+              {loading || isSubmitting ? (
                 <div className="flex items-center space-x-2">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                   <span>Redefinindo...</span>
@@ -253,7 +331,7 @@ const ResetPassword = () => {
           <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                             <h3 className="font-semibold text-blue-700 mb-2">Segurança da Senha</h3>
             <ul className="text-sm text-blue-600 space-y-1">
-              <li>• Use pelo menos 6 caracteres</li>
+              <li>• Use pelo menos 8 caracteres</li>
               <li>• Combine letras, números e símbolos</li>
               <li>• Evite informações pessoais</li>
               <li>• Não reutilize senhas antigas</li>

@@ -2,16 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import { Smartphone, ArrowLeft, AlertCircle, CheckCircle, RefreshCw } from 'lucide-react';
+import { Smartphone, ArrowLeft, AlertCircle, CheckCircle, RefreshCw, Phone } from 'lucide-react';
+import authService from '../services/authService';
 
 const OtpVerification = () => {
-  const { verify2FA, sendOTP, loading, error, clearError, userId } = useAuth();
+  const { loading, error, clearError, userId } = useAuth();
   const navigate = useNavigate();
   
   const [otpCode, setOtpCode] = useState(['', '', '', '', '', '']);
   const [success, setSuccess] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   const [countdown, setCountdown] = useState(0);
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPhoneForm, setShowPhoneForm] = useState(false);
 
   useEffect(() => {
     document.title = 'Verificação 2FA - AgroSync';
@@ -63,25 +67,46 @@ const OtpVerification = () => {
       return;
     }
 
-    const result = await verify2FA(code);
-    
-    if (result.success) {
-      setSuccess(result.message);
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 1500);
+    setIsSubmitting(true);
+    try {
+      const result = await authService.verifyOTP(code, phoneNumber, userId);
+      
+      if (result.success) {
+        setSuccess(result.message);
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 1500);
+      }
+    } catch (error) {
+      // O erro já é tratado pelo authService
+      console.error('Erro na verificação OTP:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleSendOTP = async () => {
+    if (!phoneNumber) {
+      setShowPhoneForm(true);
+      return;
+    }
+
     setOtpSent(false);
     clearError();
+    setIsSubmitting(true);
 
-    const result = await sendOTP();
-    
-    if (result.success) {
-      setOtpSent(true);
-      setCountdown(60); // 60 segundos de espera
+    try {
+      const result = await authService.sendOTP(phoneNumber, userId);
+      
+      if (result.success) {
+        setOtpSent(true);
+        setCountdown(result.expiresIn || 300); // 5 minutos em segundos
+        setShowPhoneForm(false);
+      }
+    } catch (error) {
+      console.error('Erro ao enviar OTP:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -124,11 +149,40 @@ const OtpVerification = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="bg-white rounded-2xl shadow-card border border-slate-200 p-8"
         >
+          {/* Formulário de telefone */}
+          {showPhoneForm && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg"
+            >
+              <h4 className="font-medium text-blue-900 mb-3">Informe seu número de telefone</h4>
+              <div className="flex space-x-3">
+                <div className="flex-1">
+                  <input
+                    type="tel"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    placeholder="(11) 99999-9999"
+                    className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowPhoneForm(false)}
+                  className="px-3 py-2 text-blue-600 hover:text-blue-800"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </motion.div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Código OTP */}
+            {/* Campos OTP */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-4 text-center">
-                Código de Verificação
+                Digite o código de 6 dígitos enviado via SMS
               </label>
               <div className="flex justify-center space-x-2">
                 {otpCode.map((digit, index) => (
@@ -140,13 +194,13 @@ const OtpVerification = () => {
                     value={digit}
                     onChange={(e) => handleOtpChange(index, e.target.value)}
                     onKeyDown={(e) => handleKeyDown(index, e)}
-                    className="w-12 h-12 text-center text-lg font-semibold border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-colors duration-200"
+                    className="w-12 h-12 text-center text-lg font-semibold border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
                     placeholder="•"
                   />
                 ))}
               </div>
               <p className="mt-2 text-xs text-slate-500 text-center">
-                Digite o código de 6 dígitos
+                O código expira em {Math.floor(countdown / 60)}:{(countdown % 60).toString().padStart(2, '0')}
               </p>
             </div>
 
@@ -173,21 +227,34 @@ const OtpVerification = () => {
               </motion.div>
             )}
 
-            {/* Botão de verificação */}
-            <button
-              type="submit"
-              disabled={loading || otpCode.join('').length !== 6}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-slate-600 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-            >
-              {loading ? (
-                <div className="flex items-center space-x-2">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  <span>Verificando...</span>
-                </div>
-              ) : (
-                'Verificar Código'
-              )}
-            </button>
+            {/* Botões */}
+            <div className="space-y-3">
+              <button
+                type="submit"
+                disabled={loading || isSubmitting || otpCode.join('').length !== 6}
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-slate-600 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+              >
+                {loading || isSubmitting ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <span>Verificando...</span>
+                  </div>
+                ) : (
+                  'Verificar Código'
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleSendOTP}
+                disabled={loading || isSubmitting || !canResend}
+                className="w-full flex justify-center py-3 px-4 border border-slate-300 rounded-lg shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+              >
+                <Phone className="h-4 w-4 mr-2" />
+                {otpSent ? 'Reenviar Código' : 'Enviar Código'}
+                {!canResend && ` (${Math.floor(countdown / 60)}:${(countdown % 60).toString().padStart(2, '0')})`}
+              </button>
+            </div>
           </form>
 
           {/* Reenviar OTP */}
