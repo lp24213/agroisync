@@ -7,6 +7,7 @@ import {
   Settings, LogOut, Eye, EyeOff, Lock, Mail,
   TrendingUp, Activity, Shield, Database, Building
 } from 'lucide-react';
+import adminService from '../services/adminService';
 
 const Admin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -56,18 +57,17 @@ const Admin = () => {
         const isAuthorized = authorizedEmails.includes(user.email);
         
         if (isAuthorized) {
-          setIsAdmin(true);
-          // Carregar dados do admin (placeholders por enquanto)
-          setAdminData({
-            stats: {
-              totalUsers: 0,
-              activeUsers: 0,
-              totalRevenue: 0,
-              pendingPayments: 0
-            },
-            recentActivity: [],
-            systemStatus: 'operational'
-          });
+          // Verificar status de admin via API
+          const adminStatus = await adminService.checkAdminStatus(user._id || user.id, user.email);
+          
+          if (adminStatus.isAdmin) {
+            setIsAdmin(true);
+            // Carregar dados reais do admin
+            await loadAdminStats();
+          } else {
+            setIsAdmin(false);
+            setAdminError(adminStatus.error || 'Acesso negado. Apenas administradores autorizados.');
+          }
         } else {
           setIsAdmin(false);
           setAdminError('Acesso negado. Apenas administradores autorizados.');
@@ -95,88 +95,89 @@ const Admin = () => {
     }
   }, [isAdmin, adminLoading, user, navigate]);
 
-  // CAMADA 3: Carregar estatísticas do admin
+  // CAMADA 3: Carregar estatísticas do admin via API real
   const loadAdminStats = async () => {
     try {
-      // Placeholder: dados simulados para demonstração
-      const mockStats = {
-        stats: {
-          totalUsers: 1247,
-          activeUsers: 892,
-          totalRevenue: 45678.90,
-          pendingPayments: 12,
-          totalProducts: 89,
-          totalFreights: 156
-        },
-        recentActivity: [
-          {
-            id: 1,
-            type: 'user_registration',
-            description: 'Novo usuário registrado',
-            timestamp: new Date(Date.now() - 300000), // 5 minutos atrás
-            user: 'usuario@exemplo.com'
-          },
-          {
-            id: 2,
-            type: 'payment_received',
-            description: 'Pagamento recebido',
-            timestamp: new Date(Date.now() - 900000), // 15 minutos atrás
-            user: 'cliente@exemplo.com',
-            amount: 99.90
-          },
-          {
-            id: 3,
-            type: 'support_ticket',
-            description: 'Ticket de suporte aberto',
-            timestamp: new Date(Date.now() - 1800000), // 30 minutos atrás
-            user: 'suporte@exemplo.com'
-          }
-        ],
-        systemStatus: 'operational'
-      };
-
-      setAdminData(mockStats);
+      setAdminLoading(true);
+      setAdminError(null);
+      
+      // Carregar dados reais via adminService
+      const dashboardData = await adminService.loadDashboardData();
+      setAdminData(dashboardData);
+      
+      // Atualizar stats locais
+      if (dashboardData.metrics) {
+        setStats({
+          users: dashboardData.metrics.totalUsers || 0,
+          products: dashboardData.metrics.totalProducts || 0,
+          freights: dashboardData.metrics.totalFreights || 0,
+          revenue: dashboardData.metrics.totalRevenue || 0,
+          systemStatus: dashboardData.systemStatus || 'Operacional'
+        });
+      }
+      
     } catch (error) {
       console.error('Erro ao carregar estatísticas:', error);
       setAdminError('Erro ao carregar dados do painel');
+      
+      // Em caso de erro, definir dados vazios (conforme solicitado no prompt)
+      setAdminData({
+        metrics: {
+          totalUsers: 0,
+          activeUsers: 0,
+          totalRevenue: 0,
+          pendingPayments: 0,
+          totalProducts: 0,
+          totalFreights: 0,
+          totalTransactions: 0
+        },
+        transactions: [],
+        users: [],
+        recentActivity: [],
+        systemStatus: 'operational'
+      });
+    } finally {
+      setAdminLoading(false);
     }
   };
 
   // CAMADA 3: Atualizar status do sistema
   const updateSystemStatus = async (status) => {
     try {
-      // Placeholder: simular atualização de status
-      setAdminData(prev => ({
-        ...prev,
-        systemStatus: status
-      }));
+      setAdminLoading(true);
       
-      // Aqui seria feita a chamada real para a API
+      // Atualizar via API real
+      await adminService.updateSystemStatus(status);
+      
+      // Recarregar dados para atualizar a interface
+      await loadAdminStats();
+      
       console.log(`Status do sistema atualizado para: ${status}`);
     } catch (error) {
       console.error('Erro ao atualizar status:', error);
       setAdminError('Erro ao atualizar status do sistema');
+    } finally {
+      setAdminLoading(false);
     }
   };
 
   // CAMADA 3: Processar pagamento pendente
   const processPayment = async (paymentId) => {
     try {
-      // Placeholder: simular processamento de pagamento
-      console.log(`Processando pagamento: ${paymentId}`);
+      setAdminLoading(true);
       
-      // Aqui seria feita a chamada real para a API de pagamentos
-      setAdminData(prev => ({
-        ...prev,
-        stats: {
-          ...prev.stats,
-          pendingPayments: Math.max(0, prev.stats.pendingPayments - 1)
-        }
-      }));
+      // Processar via API real
+      await adminService.processPayment(paymentId);
       
+      // Recarregar dados para atualizar a interface
+      await loadAdminStats();
+      
+      console.log(`Pagamento processado: ${paymentId}`);
     } catch (error) {
       console.error('Erro ao processar pagamento:', error);
       setAdminError('Erro ao processar pagamento');
+    } finally {
+      setAdminLoading(false);
     }
   };
 
