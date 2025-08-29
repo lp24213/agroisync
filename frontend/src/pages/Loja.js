@@ -20,6 +20,7 @@ import EscrowBadge from '../components/EscrowBadge';
 import DocumentValidator from '../components/DocumentValidator';
 import baiduMapsService from '../services/baiduMapsService';
 import receitaService from '../services/receitaService';
+import StockMarketTicker from '../components/StockMarketTicker';
 
 const Loja = () => {
   const { user, isAuthenticated, isAdmin } = useAuth();
@@ -435,8 +436,11 @@ const Loja = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 pt-16">
+      {/* Cotação da Bolsa */}
+      <StockMarketTicker />
+      
+      {/* Header com Filtros */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}

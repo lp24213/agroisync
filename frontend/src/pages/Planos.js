@@ -9,8 +9,9 @@ import { useNavigate } from 'react-router-dom';
 import { 
   Check, Star, ShoppingCart, Truck, Package, Leaf, Wrench, User, 
   Circle, Settings, BarChart3, Headphones, Zap, Shield, Globe, Coins, Users, Crown,
-  CreditCard, Wallet, ArrowRight, CheckCircle, AlertCircle
+  CreditCard, Wallet, ArrowRight, CheckCircle, AlertCircle, TrendingUp, Award, Lock, Unlock, Building, Rocket
 } from 'lucide-react';
+import StockMarketTicker from '../components/StockMarketTicker';
 
 const Planos = () => {
   const { isDark } = useTheme();
@@ -379,344 +380,345 @@ const Planos = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 pt-16">
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-blue-600 bg-clip-text text-transparent mb-6">
-            Escolha o Plano Ideal para Você
-          </h1>
-          <p className="text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
-            Planos flexíveis para todos os tamanhos de negócio. Escolha o que melhor se adapta às suas necessidades.
-          </p>
-        </motion.div>
+      {/* Cotação da Bolsa */}
+      <StockMarketTicker />
+      
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center mb-12"
+      >
+        <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-blue-600 bg-clip-text text-transparent mb-6">
+          Escolha o Plano Ideal para Você
+        </h1>
+        <p className="text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
+          Planos flexíveis para todos os tamanhos de negócio. Escolha o que melhor se adapta às suas necessidades.
+        </p>
+      </motion.div>
 
-        {/* Seleção de Módulo */}
+      {/* Seleção de Módulo */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-8"
+      >
+        <div className="flex flex-wrap justify-center gap-4">
+          {[
+            { id: 'store', name: 'Loja AgroSync', icon: ShoppingCart },
+            { id: 'agroconecta', name: 'AgroConecta', icon: Truck }
+          ].map((module) => {
+            const Icon = module.icon;
+            const isActive = selectedModule === module.id;
+            
+            return (
+              <button
+                key={module.id}
+                onClick={() => setSelectedModule(module.id)}
+                className={`flex items-center space-x-3 px-6 py-3 rounded-xl font-medium transition-all duration-300 ${
+                  isActive
+                    ? 'bg-gradient-to-r from-emerald-500 to-blue-500 text-white shadow-lg scale-105'
+                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
+                }`}
+              >
+                <Icon className="w-5 h-5" />
+                <span>{module.name}</span>
+              </button>
+            );
+          })}
+        </div>
+      </motion.div>
+
+      {/* Planos */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="mb-12"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {getCurrentPlans().map((plan, index) => (
+            <motion.div
+              key={plan.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className={`relative bg-white dark:bg-slate-800 rounded-2xl shadow-xl border-2 transition-all duration-300 hover:scale-105 ${
+                selectedPlan?.id === plan.id
+                  ? 'border-emerald-500 shadow-2xl'
+                  : 'border-slate-200 dark:border-slate-700 hover:border-emerald-300'
+              }`}
+            >
+              {/* Badge Popular */}
+              {plan.popular && (
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                  <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+                    ⭐ Mais Popular
+                  </div>
+                </div>
+              )}
+
+              <div className="p-8">
+                {/* Header do Plano */}
+                <div className="text-center mb-6">
+                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+                    {plan.name}
+                  </h3>
+                  <div className="mb-4">
+                    <span className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
+                      {plan.price}
+                    </span>
+                    <span className="text-slate-500 dark:text-slate-400 ml-2">
+                      {plan.period}
+                    </span>
+                  </div>
+                  <p className="text-slate-600 dark:text-slate-400">
+                    {plan.description}
+                  </p>
+                </div>
+
+                {/* Features */}
+                <div className="mb-8">
+                  <h4 className="font-semibold text-slate-900 dark:text-white mb-4 flex items-center">
+                    <CheckCircle className="w-5 h-5 text-emerald-500 mr-2" />
+                    O que está incluído:
+                  </h4>
+                  <ul className="space-y-3">
+                    {plan.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-start">
+                        <Check className="w-5 h-5 text-emerald-500 mr-3 mt-0.5 flex-shrink-0" />
+                        <span className="text-slate-700 dark:text-slate-300">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Limitações */}
+                {plan.limitations.length > 0 && (
+                  <div className="mb-8">
+                    <h4 className="font-semibold text-slate-900 dark:text-white mb-4 flex items-center">
+                      <AlertCircle className="w-5 h-5 text-amber-500 mr-2" />
+                      Limitações:
+                    </h4>
+                    <ul className="space-y-2">
+                      {plan.limitations.map((limitation, idx) => (
+                        <li key={idx} className="flex items-start">
+                          <div className="w-2 h-2 bg-amber-500 rounded-full mr-3 mt-2 flex-shrink-0" />
+                          <span className="text-slate-600 dark:text-slate-400 text-sm">{limitation}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Botão de Seleção */}
+                <button
+                  onClick={() => handlePlanSelection(plan)}
+                  className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 ${
+                    selectedPlan?.id === plan.id
+                      ? 'bg-gradient-to-r from-emerald-500 to-blue-500 text-white shadow-lg'
+                      : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                  }`}
+                >
+                  {selectedPlan?.id === plan.id ? '✓ Plano Selecionado' : 'Selecionar Plano'}
+                </button>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Seleção de Método de Pagamento */}
+      {selectedPlan && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <div className="flex flex-wrap justify-center gap-4">
-            {[
-              { id: 'store', name: 'Loja AgroSync', icon: ShoppingCart },
-              { id: 'agroconecta', name: 'AgroConecta', icon: Truck }
-            ].map((module) => {
-              const Icon = module.icon;
-              const isActive = selectedModule === module.id;
-              
-              return (
-                <button
-                  key={module.id}
-                  onClick={() => setSelectedModule(module.id)}
-                  className={`flex items-center space-x-3 px-6 py-3 rounded-xl font-medium transition-all duration-300 ${
-                    isActive
-                      ? 'bg-gradient-to-r from-emerald-500 to-blue-500 text-white shadow-lg scale-105'
-                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
-                  }`}
-                >
-                  <Icon className="w-5 h-5" />
-                  <span>{module.name}</span>
-                </button>
-              );
-            })}
-          </div>
-        </motion.div>
+          <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-xl border border-slate-200 dark:border-slate-700">
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 text-center">
+              Método de Pagamento
+            </h3>
 
-        {/* Planos */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mb-12"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {getCurrentPlans().map((plan, index) => (
-              <motion.div
-                key={plan.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className={`relative bg-white dark:bg-slate-800 rounded-2xl shadow-xl border-2 transition-all duration-300 hover:scale-105 ${
-                  selectedPlan?.id === plan.id
-                    ? 'border-emerald-500 shadow-2xl'
+            {/* Opções de Pagamento */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              {/* Stripe */}
+              <button
+                onClick={() => setPaymentMethod('stripe')}
+                className={`p-6 rounded-xl border-2 transition-all duration-300 ${
+                  paymentMethod === 'stripe'
+                    ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
                     : 'border-slate-200 dark:border-slate-700 hover:border-emerald-300'
                 }`}
               >
-                {/* Badge Popular */}
-                {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
-                      ⭐ Mais Popular
-                    </div>
+                <div className="flex items-center space-x-4">
+                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                    paymentMethod === 'stripe' ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-slate-700'
+                  }`}>
+                    <CreditCard className={`w-6 h-6 ${
+                      paymentMethod === 'stripe' ? 'text-white' : 'text-slate-600 dark:text-slate-400'
+                    }`} />
                   </div>
-                )}
-
-                <div className="p-8">
-                  {/* Header do Plano */}
-                  <div className="text-center mb-6">
-                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-                      {plan.name}
-                    </h3>
-                    <div className="mb-4">
-                      <span className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
-                        {plan.price}
-                      </span>
-                      <span className="text-slate-500 dark:text-slate-400 ml-2">
-                        {plan.period}
-                      </span>
-                    </div>
-                    <p className="text-slate-600 dark:text-slate-400">
-                      {plan.description}
-                    </p>
-                  </div>
-
-                  {/* Features */}
-                  <div className="mb-8">
-                    <h4 className="font-semibold text-slate-900 dark:text-white mb-4 flex items-center">
-                      <CheckCircle className="w-5 h-5 text-emerald-500 mr-2" />
-                      O que está incluído:
-                    </h4>
-                    <ul className="space-y-3">
-                      {plan.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start">
-                          <Check className="w-5 h-5 text-emerald-500 mr-3 mt-0.5 flex-shrink-0" />
-                          <span className="text-slate-700 dark:text-slate-300">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Limitações */}
-                  {plan.limitations.length > 0 && (
-                    <div className="mb-8">
-                      <h4 className="font-semibold text-slate-900 dark:text-white mb-4 flex items-center">
-                        <AlertCircle className="w-5 h-5 text-amber-500 mr-2" />
-                        Limitações:
-                      </h4>
-                      <ul className="space-y-2">
-                        {plan.limitations.map((limitation, idx) => (
-                          <li key={idx} className="flex items-start">
-                            <div className="w-2 h-2 bg-amber-500 rounded-full mr-3 mt-2 flex-shrink-0" />
-                            <span className="text-slate-600 dark:text-slate-400 text-sm">{limitation}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {/* Botão de Seleção */}
-                  <button
-                    onClick={() => handlePlanSelection(plan)}
-                    className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 ${
-                      selectedPlan?.id === plan.id
-                        ? 'bg-gradient-to-r from-emerald-500 to-blue-500 text-white shadow-lg'
-                        : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
-                    }`}
-                  >
-                    {selectedPlan?.id === plan.id ? '✓ Plano Selecionado' : 'Selecionar Plano'}
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Seleção de Método de Pagamento */}
-        {selectedPlan && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-8"
-          >
-            <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-xl border border-slate-200 dark:border-slate-700">
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 text-center">
-                Método de Pagamento
-              </h3>
-
-              {/* Opções de Pagamento */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                {/* Stripe */}
-                <button
-                  onClick={() => setPaymentMethod('stripe')}
-                  className={`p-6 rounded-xl border-2 transition-all duration-300 ${
-                    paymentMethod === 'stripe'
-                      ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
-                      : 'border-slate-200 dark:border-slate-700 hover:border-emerald-300'
-                  }`}
-                >
-                  <div className="flex items-center space-x-4">
-                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                      paymentMethod === 'stripe' ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-slate-700'
-                    }`}>
-                      <CreditCard className={`w-6 h-6 ${
-                        paymentMethod === 'stripe' ? 'text-white' : 'text-slate-600 dark:text-slate-400'
-                      }`} />
-                    </div>
-                    <div className="text-left">
-                      <h4 className="font-semibold text-slate-900 dark:text-white">Cartão de Crédito</h4>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">Pagamento seguro via Stripe</p>
-                    </div>
-                  </div>
-                </button>
-
-                {/* Metamask */}
-                <button
-                  onClick={() => setPaymentMethod('metamask')}
-                  className={`p-6 rounded-xl border-2 transition-all duration-300 ${
-                    paymentMethod === 'metamask'
-                      ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
-                      : 'border-slate-200 dark:border-slate-700 hover:border-emerald-300'
-                  }`}
-                >
-                  <div className="flex items-center space-x-4">
-                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                      paymentMethod === 'metamask' ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-slate-700'
-                    }`}>
-                      <Wallet className={`w-6 h-6 ${
-                        paymentMethod === 'metamask' ? 'text-white' : 'text-slate-600 dark:text-slate-400'
-                      }`} />
-                    </div>
-                    <div className="text-left">
-                      <h4 className="font-semibold text-slate-900 dark:text-white">Pagamento via MetaMask</h4>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">
-                        {metamaskConnected ? 'Metamask conectado' : 'Conectar Metamask'}
-                      </p>
-                    </div>
-                  </div>
-                </button>
-              </div>
-
-              {/* Status da Carteira */}
-              {paymentMethod === 'metamask' && (
-                <div className="mb-6 p-4 bg-slate-50 dark:bg-slate-700 rounded-lg">
-                  {metamaskConnected ? (
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <CheckCircle className="w-5 h-5 text-emerald-500" />
-                        <span className="text-emerald-700 dark:text-emerald-400 font-medium">
-                          Metamask conectado
-                        </span>
-                      </div>
-                      <span className="text-sm text-slate-600 dark:text-slate-400 font-mono">
-                        {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
-                      </span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <AlertCircle className="w-5 h-5 text-amber-500" />
-                        <span className="text-amber-700 dark:text-amber-400 font-medium">
-                          Metamask não conectado
-                        </span>
-                      </div>
-                      <button
-                        onClick={connectMetamask}
-                        disabled={loading}
-                        className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors disabled:opacity-50"
-                      >
-                        {loading ? 'Conectando...' : 'Conectar'}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Resumo do Plano */}
-              <div className="bg-slate-50 dark:bg-slate-700 rounded-lg p-6 mb-6">
-                <h4 className="font-semibold text-slate-900 dark:text-white mb-4">Resumo do Plano</h4>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-slate-900 dark:text-white">{selectedPlan.name}</p>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">{selectedPlan.period}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-2xl font-bold text-emerald-600">{selectedPlan.price}</p>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">
-                      {paymentMethod === 'metamask' ? 'em ETH' : 'em BRL'}
-                    </p>
+                  <div className="text-left">
+                    <h4 className="font-semibold text-slate-900 dark:text-white">Cartão de Crédito</h4>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">Pagamento seguro via Stripe</p>
                   </div>
                 </div>
-              </div>
-
-              {/* Botão de Pagamento */}
-              <button
-                onClick={handlePayment}
-                disabled={loading || (paymentMethod === 'metamask' && !metamaskConnected)}
-                className="w-full py-4 px-6 bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-blue-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
-              >
-                {loading ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Processando...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>
-                      {paymentMethod === 'metamask' ? 'Pagar com Metamask' : 'Pagar com Cartão'}
-                    </span>
-                    <ArrowRight className="w-5 h-5" />
-                  </>
-                )}
               </button>
 
-              {/* Mensagens de Status */}
-              {error && (
-                <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                  <div className="flex items-center space-x-2">
-                    <AlertCircle className="w-5 h-5 text-red-500" />
-                    <span className="text-red-700 dark:text-red-400">{error}</span>
+              {/* Metamask */}
+              <button
+                onClick={() => setPaymentMethod('metamask')}
+                className={`p-6 rounded-xl border-2 transition-all duration-300 ${
+                  paymentMethod === 'metamask'
+                    ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
+                    : 'border-slate-200 dark:border-slate-700 hover:border-emerald-300'
+                }`}
+              >
+                <div className="flex items-center space-x-4">
+                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                    paymentMethod === 'metamask' ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-slate-700'
+                  }`}>
+                    <Wallet className={`w-6 h-6 ${
+                      paymentMethod === 'metamask' ? 'text-white' : 'text-slate-600 dark:text-slate-400'
+                    }`} />
+                  </div>
+                  <div className="text-left">
+                    <h4 className="font-semibold text-slate-900 dark:text-white">Pagamento via MetaMask</h4>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">
+                      {metamaskConnected ? 'Metamask conectado' : 'Conectar Metamask'}
+                    </p>
                   </div>
                 </div>
-              )}
-
-              {success && (
-                <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="w-5 h-5 text-green-500" />
-                    <span className="text-green-700 dark:text-green-400">{success}</span>
-                  </div>
-                </div>
-              )}
+              </button>
             </div>
-          </motion.div>
-        )}
 
-        {/* CTA para Cadastro */}
-        {!isAuthenticated && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center"
-          >
-            <div className="bg-gradient-to-r from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 rounded-2xl p-8 border border-slate-200 dark:border-slate-600">
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">
-                Ainda não tem uma conta?
-              </h3>
-              <p className="text-slate-600 dark:text-slate-400 mb-6">
-                Crie sua conta gratuitamente e comece a usar o AgroSync hoje mesmo!
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button
-                  onClick={() => navigate('/cadastro')}
-                  className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-blue-600 transition-all duration-300"
-                >
-                  Criar Conta Gratuita
-                </button>
-                <button
-                  onClick={() => navigate('/login')}
-                  className="px-8 py-3 bg-transparent border-2 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-semibold rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-300"
-                >
-                  Já tenho conta
-                </button>
+            {/* Status da Carteira */}
+            {paymentMethod === 'metamask' && (
+              <div className="mb-6 p-4 bg-slate-50 dark:bg-slate-700 rounded-lg">
+                {metamaskConnected ? (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <CheckCircle className="w-5 h-5 text-emerald-500" />
+                      <span className="text-emerald-700 dark:text-emerald-400 font-medium">
+                        Metamask conectado
+                      </span>
+                    </div>
+                    <span className="text-sm text-slate-600 dark:text-slate-400 font-mono">
+                      {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <AlertCircle className="w-5 h-5 text-amber-500" />
+                      <span className="text-amber-700 dark:text-amber-400 font-medium">
+                        Metamask não conectado
+                      </span>
+                    </div>
+                    <button
+                      onClick={connectMetamask}
+                      disabled={loading}
+                      className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors disabled:opacity-50"
+                    >
+                      {loading ? 'Conectando...' : 'Conectar'}
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Resumo do Plano */}
+            <div className="bg-slate-50 dark:bg-slate-700 rounded-lg p-6 mb-6">
+              <h4 className="font-semibold text-slate-900 dark:text-white mb-4">Resumo do Plano</h4>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium text-slate-900 dark:text-white">{selectedPlan.name}</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">{selectedPlan.period}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-2xl font-bold text-emerald-600">{selectedPlan.price}</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                    {paymentMethod === 'metamask' ? 'em ETH' : 'em BRL'}
+                  </p>
+                </div>
               </div>
             </div>
-          </motion.div>
-        )}
-      </div>
+
+            {/* Botão de Pagamento */}
+            <button
+              onClick={handlePayment}
+              disabled={loading || (paymentMethod === 'metamask' && !metamaskConnected)}
+              className="w-full py-4 px-6 bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-blue-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+            >
+              {loading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>Processando...</span>
+                </>
+              ) : (
+                <>
+                  <span>
+                    {paymentMethod === 'metamask' ? 'Pagar com Metamask' : 'Pagar com Cartão'}
+                  </span>
+                  <ArrowRight className="w-5 h-5" />
+                </>
+              )}
+            </button>
+
+            {/* Mensagens de Status */}
+            {error && (
+              <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                <div className="flex items-center space-x-2">
+                  <AlertCircle className="w-5 h-5 text-red-500" />
+                  <span className="text-red-700 dark:text-red-400">{error}</span>
+                </div>
+              </div>
+            )}
+
+            {success && (
+              <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                <div className="flex items-center space-x-2">
+                  <CheckCircle className="w-5 h-5 text-green-500" />
+                  <span className="text-green-700 dark:text-green-400">{success}</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </motion.div>
+      )}
+
+      {/* CTA para Cadastro */}
+      {!isAuthenticated && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center"
+        >
+          <div className="bg-gradient-to-r from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 rounded-2xl p-8 border border-slate-200 dark:border-slate-600">
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">
+              Ainda não tem uma conta?
+            </h3>
+            <p className="text-slate-600 dark:text-slate-400 mb-6">
+              Crie sua conta gratuitamente e comece a usar o AgroSync hoje mesmo!
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={() => navigate('/cadastro')}
+                className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-blue-600 transition-all duration-300"
+              >
+                Criar Conta Gratuita
+              </button>
+              <button
+                onClick={() => navigate('/login')}
+                className="px-8 py-3 bg-transparent border-2 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-semibold rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-300"
+              >
+                Já tenho conta
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 };

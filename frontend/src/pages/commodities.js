@@ -7,6 +7,7 @@ import {
   CheckCircle, Info, Star, TrendingUp as TrendingUpIcon,
   MapPin, Target, Activity
 } from 'lucide-react';
+import StockMarketTicker from '../components/StockMarketTicker';
 import { useTranslation } from 'react-i18next';
 import { LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 
@@ -371,7 +372,10 @@ const CommoditiesPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-premium-platinum pt-16">
+    <div className="min-h-screen bg-white text-slate-900 pt-16">
+      {/* Cotação da Bolsa */}
+      <StockMarketTicker />
+      
       {/* Header */}
       <section className="bg-white shadow-premium-soft border-b border-premium-platinum">
         <div className="container-premium py-6">

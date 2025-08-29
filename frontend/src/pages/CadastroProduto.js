@@ -5,11 +5,12 @@ import { useAuth } from '../contexts/AuthContext';
 import { 
   Package, Upload, MapPin, DollarSign, Calendar, 
   FileText, CheckCircle, AlertCircle, X, Plus, Image as ImageIcon,
-  Building2, User, Search, MapPin as MapPinIcon
+  Building2, User, Search, MapPin as MapPinIcon, Truck, Info
 } from 'lucide-react';
 import baiduMapsService from '../services/baiduMapsService';
 import receitaService from '../services/receitaService';
 import transactionService from '../services/transactionService';
+import StockMarketTicker from '../components/StockMarketTicker';
 
 const CadastroProduto = () => {
   const navigate = useNavigate();

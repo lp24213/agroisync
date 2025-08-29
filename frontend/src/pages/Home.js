@@ -8,6 +8,7 @@ import {
   Sun, Cloud, CloudRain, Thermometer, Droplets, Wind
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import StockMarketTicker from '../components/StockMarketTicker';
 
 const Home = () => {
   const { t } = useTranslation();
@@ -472,124 +473,9 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-white text-slate-900 pt-16">
+      {/* Cotação da Bolsa */}
+      <StockMarketTicker />
       
-      {/* Bolsa de Valores - TICKER PREMIUM ABAIXO DO MENU */}
-      <section className="py-3 px-6 bg-gradient-premium border-b-2 border-accent-emerald relative overflow-hidden">
-        {/* Linha gradiente sutil animada */}
-        <div className="absolute inset-0 bg-gradient-to-r from-accent-emerald/20 via-accent-gold/20 to-accent-blue/20 opacity-30"></div>
-        <div className="max-w-7xl mx-auto relative z-10">
-          {/* Ticker horizontal fino com rolagem suave */}
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="relative overflow-hidden h-16 flex items-center"
-          >
-            <div className="flex items-center animate-pulse">
-              <div className="flex items-center space-x-6 min-w-max">
-                {stockData.map((stock, index) => (
-                  <motion.div
-                    key={stock.symbol}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.05 }}
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    className="flex items-center space-x-3 bg-white shadow-premium-soft px-4 py-3 min-w-[180px] group relative overflow-hidden hover:scale-105 hover:-translate-y-1 transition-all duration-300"
-                  >
-                    <div className="text-sm font-bold text-slate-800">
-                      {stock.symbol}
-                    </div>
-                    <div className="text-sm font-semibold text-slate-900">
-                      R$ {stock.price.toFixed(2)}
-                    </div>
-                    <div className="text-xs">
-                      {formatChange(stock.change)}
-                    </div>
-                    
-                    {/* Indicador de tendência - Animado */}
-                    <motion.div 
-                      className={`w-2 h-2 rounded-full ${stock.trend === 'up' ? 'bg-emerald-500' : 'bg-red-500'} shadow-lg`}
-                      animate={{ 
-                        scale: [1, 1.2, 1],
-                        opacity: [0.7, 1, 0.7]
-                      }}
-                      transition={{ 
-                        duration: 1.5, 
-                        repeat: Infinity, 
-                        ease: "easeInOut" 
-                      }}
-                    ></motion.div>
-                    
-                    {/* Efeito de glow sutil */}
-                    <div className={`absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${stock.trend === 'up' ? 'bg-accent-emerald/10' : 'bg-red-500/10'}`}></div>
-                  </motion.div>
-                ))}
-              </div>
-              
-              {/* Duplicar para efeito marquee contínuo */}
-              <div className="flex items-center space-x-6 min-w-max ml-12">
-                {stockData.map((stock, index) => (
-                  <motion.div
-                    key={`${stock.symbol}-duplicate`}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: (index + stockData.length) * 0.05 }}
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    className="flex items-center space-x-3 bg-white shadow-premium-soft px-4 py-2 min-w-[180px] hover:scale-105 hover:-translate-y-1 transition-all duration-300"
-                  >
-                    <div className="text-sm font-bold text-slate-800">
-                      {stock.symbol}
-                    </div>
-                    <div className="text-sm font-semibold text-slate-900">
-                      R$ {stock.price.toFixed(2)}
-                    </div>
-                    <div className="text-xs">
-                      {formatChange(stock.change)}
-                    </div>
-                    
-                    {/* Indicador de tendência - Animado */}
-                    <motion.div 
-                      className={`w-2 h-2 rounded-full ${stock.trend === 'up' ? 'bg-emerald-500' : 'bg-red-500'}`}
-                      animate={{ 
-                        scale: [1, 1.2, 1],
-                        opacity: [0.7, 1, 0.7]
-                      }}
-                      transition={{ 
-                        duration: 1.5, 
-                        repeat: Infinity, 
-                        ease: "easeInOut" 
-                      }}
-                    ></motion.div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-            
-            {/* Indicador de dados em tempo real */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center space-x-2 text-xs text-slate-500"
-            >
-              <motion.div
-                className="w-2 h-2 bg-emerald-500 rounded-full"
-                animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.7, 1, 0.7]
-                }}
-                transition={{
-                  duration: 1,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              ></motion.div>
-              <span>Dados em tempo real</span>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
       {/* Hero Section - DESIGN PREMIUM AGROISYNC MAIORAL */}
       <section className="relative pt-24 pb-24 px-4 overflow-hidden header-premium">
         {/* Background Premium */}

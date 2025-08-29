@@ -269,10 +269,8 @@ const ChatbotWidget = ({ isOpen = false, onToggle, position = 'bottom-right' }) 
     );
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className={`fixed ${position} z-50 m-4`}>
+    <div className={`fixed ${position} z-[9999] m-4`}>
       {/* Widget Principal */}
       <AnimatePresence>
         {!isExpanded && (
@@ -283,6 +281,7 @@ const ChatbotWidget = ({ isOpen = false, onToggle, position = 'bottom-right' }) 
             transition={{ duration: 0.3, ease: "easeOut" }}
             onClick={() => setIsExpanded(true)}
             className="w-16 h-16 bg-accent-emerald text-white rounded-full shadow-premium hover:bg-accent-emerald/80 transition-premium flex items-center justify-center"
+            style={{ zIndex: 9999 }}
           >
             <MessageCircle className="w-8 h-8" />
           </motion.button>
@@ -298,6 +297,7 @@ const ChatbotWidget = ({ isOpen = false, onToggle, position = 'bottom-right' }) 
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             transition={{ duration: 0.4, ease: "easeOut" }}
             className="w-80 h-96 bg-white rounded-2xl shadow-premium border border-premium-platinum flex flex-col"
+            style={{ zIndex: 9999 }}
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-premium-platinum bg-gradient-premium text-white rounded-t-2xl">
