@@ -78,6 +78,13 @@ const CadastroProduto = () => {
       return;
     }
     
+    // Verificar se usuário tem plano ativo
+    if (user && (!user.isPaid || !user.planActive)) {
+      setError('Você precisa de um plano ativo para cadastrar produtos. Acesse a página de planos para ativar sua conta.');
+      setLoading(true);
+      return;
+    }
+    
     document.title = 'Cadastrar Produto - AgroSync';
     
     // Preencher dados de contato do usuário
@@ -371,6 +378,18 @@ const CadastroProduto = () => {
           <p className="mt-2 text-lg text-slate-600">
             Anuncie seus produtos no maior marketplace do agronegócio
           </p>
+          
+          {/* Status do Plano */}
+          {user && user.isPaid && user.planActive && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="mt-4 inline-flex items-center px-4 py-2 bg-green-100 border border-green-300 rounded-full text-green-800 text-sm font-medium"
+            >
+              <CheckCircle className="w-4 h-4 mr-2" />
+              Plano {user.planActive} Ativo
+            </motion.div>
+          )}
         </motion.div>
 
         {/* Progress Steps */}
@@ -408,14 +427,42 @@ const CadastroProduto = () => {
           </div>
         </motion.div>
 
-        {/* Formulário */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="card-premium p-8 shadow-2xl"
-        >
-          <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Verificação de Plano */}
+        {user && (!user.isPaid || !user.planActive) ? (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="card-premium p-8 shadow-2xl text-center"
+          >
+            <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <AlertCircle className="w-10 h-10 text-yellow-600" />
+            </div>
+            <h3 className="text-2xl font-semibold text-slate-900 mb-4">
+              Plano Necessário
+            </h3>
+            <p className="text-slate-600 mb-6">
+              Para cadastrar produtos, você precisa de um plano ativo. 
+              Acesse nossa página de planos para ativar sua conta.
+            </p>
+            <motion.button
+              onClick={() => navigate('/planos')}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+              className="px-8 py-3 bg-gradient-to-r from-agro-green-600 to-web3-neon-blue text-white font-medium rounded-lg hover:from-agro-green-700 hover:to-web3-neon-cyan transition-all duration-200 shadow-lg"
+            >
+              Ver Planos
+            </motion.button>
+          </motion.div>
+        ) : (
+          /* Formulário */
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="card-premium p-8 shadow-2xl"
+          >
+            <form onSubmit={handleSubmit} className="space-y-8">
             {/* Step 1: Informações Básicas */}
             {currentStep === 1 && (
               <motion.div
@@ -894,6 +941,7 @@ const CadastroProduto = () => {
             )}
           </form>
         </motion.div>
+        )}
       </div>
     </div>
   );
