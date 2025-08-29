@@ -12,6 +12,7 @@ import { Server } from 'socket.io';
 // Import middleware
 import { authenticateToken } from './middleware/auth.js';
 import { apiLimiter } from './middleware/rateLimiter.js';
+import { securityMiddleware, createRateLimiters, securityLogging } from './middleware/securityMiddleware.js';
 
 // Import routes
 import authRoutes from './routes/auth.js';
@@ -32,6 +33,7 @@ import userRoutes from './routes/users.js';
 import notificationRoutes from './routes/notifications.js';
 import escrowRoutes from './routes/escrow.js';
 import mirrorAPIRoutes from './routes/mirror-apis.js';
+import privacyRoutes from './routes/privacy.js';
 
 // Import database connection
 import { connectDB } from './config/database.js';
@@ -62,8 +64,11 @@ io.on('connection', (socket) => {
   });
 });
 
-// Middleware
-app.use(helmet());
+// Middleware de segurança avançado
+app.use(securityMiddleware);
+app.use(securityLogging);
+
+// Middleware básico
 app.use(compression());
 app.use(morgan('combined'));
 app.use(cors({
@@ -111,6 +116,7 @@ app.use('/api/users', authenticateToken, userRoutes);
 app.use('/api/notifications', authenticateToken, notificationRoutes);
 app.use('/api/escrow', authenticateToken, escrowRoutes);
 app.use('/api/clients', authenticateToken, clientRoutes);
+app.use('/api/privacy', privacyRoutes);
 
 // Rota de health check
 app.get('/health', (req, res) => {

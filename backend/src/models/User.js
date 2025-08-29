@@ -72,6 +72,21 @@ const userSchema = new mongoose.Schema({
   phoneVerificationToken: { type: String, default: null },
   phoneVerificationExpires: { type: Date, default: null },
 
+  // LGPD e Privacidade
+  gdprConsent: { type: Boolean, default: false },
+  gdprConsentDate: { type: Date, default: null },
+  gdprConsentExpiry: { type: Date, default: null },
+  gdprPreferences: {
+    marketing_emails: { type: Boolean, default: false },
+    push_notifications: { type: Boolean, default: false },
+    sms_notifications: { type: Boolean, default: false },
+    data_sharing: { type: Boolean, default: false },
+    analytics_tracking: { type: Boolean, default: false },
+    third_party_cookies: { type: Boolean, default: false }
+  },
+  dataDeletedAt: { type: Date, default: null },
+  deletionReason: { type: String, default: null },
+
   // Timestamps
   emailVerifiedAt: Date, phoneVerifiedAt: Date, lastLoginAt: Date, cancellationDate: Date, deletedAt: Date
 }, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
@@ -86,6 +101,9 @@ userSchema.index({ userType: 1 });
 userSchema.index({ passwordResetToken: 1 });
 userSchema.index({ emailVerificationToken: 1 });
 userSchema.index({ phoneVerificationToken: 1 });
+userSchema.index({ gdprConsent: 1 });
+userSchema.index({ gdprConsentExpiry: 1 });
+userSchema.index({ dataDeletedAt: 1 });
 
 // Virtuals
 userSchema.virtual('hasActivePlan').get(function() {
