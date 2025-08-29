@@ -61,6 +61,10 @@ const Cripto = () => {
   // Estados para as novas funcionalidades de cripto
   const [activeCryptoTab, setActiveCryptoTab] = useState('overview');
 
+  // IMPORTANTE: Esta página funciona independentemente de planos ou isPaid
+  // As funcionalidades de cripto são gratuitas e não afetam o status de pagamento do usuário
+  // Apenas pagamentos de planos (via Stripe/MetaMask) alteram user.isPaid
+
   useEffect(() => {
     fetchCryptoData();
     checkMetamaskConnection();
