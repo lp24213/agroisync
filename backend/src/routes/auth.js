@@ -1,11 +1,12 @@
-const express = require('express');
+import express from 'express';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { body, validationResult } from 'express-validator';
+import rateLimit from 'express-rate-limit';
+import User from '../models/User.js';
+import awsService from '../services/awsService.js';
+
 const router = express.Router();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { body, validationResult } = require('express-validator');
-const rateLimit = require('express-rate-limit');
-const User = require('../models/User');
-const awsService = require('../services/awsService');
 
 // Rate limiting para autenticação
 const authLimiter = rateLimit({

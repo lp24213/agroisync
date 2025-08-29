@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const freightSchema = new mongoose.Schema({
   // Dados Públicos (visíveis para todos)

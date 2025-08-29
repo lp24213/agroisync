@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { 
-  Package, Truck, MessageSquare, Settings, User, 
+  Package, Truck, MessageSquare, Settings, 
   Plus, Eye, Edit, Trash, DollarSign, 
   BarChart3, Bell, CreditCard, Shield, LogOut
 } from 'lucide-react';
@@ -141,15 +141,6 @@ const Dashboard = () => {
     }
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
-
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-  };
-
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -181,15 +172,6 @@ const Dashboard = () => {
         return 'bg-gray-100 text-gray-800';
     }
   };
-
-  const tabs = [
-    { id: 'overview', name: 'Visão Geral', icon: BarChart3 },
-    { id: 'products', name: 'Meus Produtos', icon: Package },
-    { id: 'freights', name: 'Meus Fretes', icon: Truck },
-    { id: 'messages', name: 'Mensagens', icon: MessageSquare },
-    { id: 'notifications', name: 'Notificações', icon: Bell },
-    { id: 'settings', name: 'Configurações', icon: Settings }
-  ];
 
   if (loading) {
     return (
@@ -228,6 +210,23 @@ const Dashboard = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-8"
         >
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex-1"></div>
+            <div className="flex items-center space-x-4">
+              <span className="text-sm text-gray-600">
+                Olá, {user?.name || 'Usuário'}
+              </span>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => logout()}
+                className="flex items-center space-x-2 px-4 py-2 text-sm bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Sair</span>
+              </motion.button>
+            </div>
+          </div>
           <h1 className="title-premium text-4xl font-bold mb-4">
             Dashboard AgroSync
           </h1>
