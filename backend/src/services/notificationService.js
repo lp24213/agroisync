@@ -682,9 +682,9 @@ class NotificationService {
 // Instância única do serviço
 const notificationService = new NotificationService();
 
-// Agendar limpeza automática de notificações expiradas
+// Limpar cache expirado diariamente
 setInterval(() => {
-  notificationService.cleanupExpiredNotifications();
+  notificationService.clearExpiredCache();
 }, 24 * 60 * 60 * 1000); // Diariamente
 
 export default notificationService;
