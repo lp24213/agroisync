@@ -17,7 +17,7 @@ const freightRoutes = require('./routes/freights');
 const adminRoutes = require('./routes/admin');
 
 // Importar middleware de autenticação
-const auth = require('./middleware/auth');
+const { authenticateToken } = require('./middleware/auth');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -84,11 +84,11 @@ app.use('/api/auth', authRoutes);
 app.use('/api/validation', validationRoutes);
 
 // Rotas protegidas
-app.use('/api/payments', auth, paymentRoutes);
-app.use('/api/messages', auth, messageRoutes);
+app.use('/api/payments', authenticateToken, paymentRoutes);
+app.use('/api/messages', authenticateToken, messageRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/freights', freightRoutes);
-app.use('/api/admin', auth, adminRoutes);
+app.use('/api/admin', authenticateToken, adminRoutes);
 
 // Rota de health check
 app.get('/health', (req, res) => {

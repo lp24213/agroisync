@@ -1,9 +1,9 @@
-import jwt from 'jsonwebtoken';
-import { AuditLog } from '../models/AuditLog.js';
+const jwt = require('jsonwebtoken');
+const AuditLog = require('../models/AuditLog');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-export const requireAdmin = async (req, res, next) => {
+const requireAdmin = async (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
     
@@ -66,7 +66,7 @@ export const requireAdmin = async (req, res, next) => {
   }
 };
 
-export const validateAdminAction = async (req, res, next) => {
+const validateAdminAction = async (req, res, next) => {
   try {
     const { action, reason } = req.body;
     
@@ -95,4 +95,9 @@ export const validateAdminAction = async (req, res, next) => {
     console.error('Erro na validação da ação administrativa:', error);
     res.status(500).json({ error: 'Erro interno do servidor.' });
   }
+};
+
+module.exports = {
+  requireAdmin,
+  validateAdminAction
 };

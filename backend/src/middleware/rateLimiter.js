@@ -1,6 +1,6 @@
-import rateLimit from 'express-rate-limit';
-import RedisStore from 'rate-limit-redis';
-import Redis from 'ioredis';
+const rateLimit = require('express-rate-limit');
+const RedisStore = require('rate-limit-redis');
+const Redis = require('ioredis');
 
 // Redis client for rate limiting (optional, falls back to memory if not available)
 let redisClient = null;
@@ -47,7 +47,7 @@ const baseLimiter = rateLimit({
 });
 
 // Strict rate limiter for authentication routes
-export const authLimiter = rateLimit({
+const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5, // limit each IP to 5 requests per windowMs
   message: {
@@ -82,7 +82,7 @@ export const authLimiter = rateLimit({
 });
 
 // Registration rate limiter
-export const registrationLimiter = rateLimit({
+const registrationLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 3, // limit each IP to 3 registration attempts per hour
   message: {
@@ -183,7 +183,7 @@ export const apiLimiter = rateLimit({
 });
 
 // Admin rate limiter (more permissive)
-export const adminLimiter = rateLimit({
+const adminLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 500, // limit each IP to 500 requests per windowMs
   message: {
@@ -216,7 +216,7 @@ export const adminLimiter = rateLimit({
 });
 
 // File upload rate limiter
-export const uploadLimiter = rateLimit({
+const uploadLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 50, // limit each IP to 50 file uploads per windowMs
   message: {
@@ -249,7 +249,7 @@ export const uploadLimiter = rateLimit({
 });
 
 // Payment rate limiter
-export const paymentLimiter = rateLimit({
+const paymentLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 10, // limit each IP to 10 payment attempts per windowMs
   message: {
@@ -282,14 +282,25 @@ export const paymentLimiter = rateLimit({
 });
 
 // Default rate limiter for all routes
-export const rateLimiter = baseLimiter;
+const rateLimiter = baseLimiter;
 
 // Export Redis client for other uses
-export { redisClient };
+// const redisClient = redisClient;
 
 // Cleanup function for graceful shutdown
-export const cleanupRateLimiters = () => {
+const cleanupRateLimiters = () => {
   if (redisClient) {
     redisClient.disconnect();
   }
+};
+
+module.exports = {
+  authLimiter,
+  registrationLimiter,
+  adminLimiter,
+  uploadLimiter,
+  paymentLimiter,
+  rateLimiter,
+  redisClient,
+  cleanupRateLimiters
 };

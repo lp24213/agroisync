@@ -1,9 +1,9 @@
-import { User } from '../models/User.js';
-import { AuditLog } from '../models/AuditLog.js';
-import { createSecurityLog } from '../utils/securityLogger.js';
+const User = require('../models/User');
+const AuditLog = require('../models/AuditLog');
+const { createSecurityLog } = require('../utils/securityLogger');
 
 // Middleware para verificar se o usuário tem acesso pago ao serviço
-export const requirePaidAccess = (serviceType) => {
+const requirePaidAccess = (serviceType) => {
   return async (req, res, next) => {
     try {
       if (!req.user) {
@@ -192,13 +192,13 @@ export const requirePaidAccess = (serviceType) => {
 };
 
 // Middleware específico para mensageria de produtos
-export const requireProductMessagingAccess = requirePaidAccess('product');
+const requireProductMessagingAccess = requirePaidAccess('product');
 
 // Middleware específico para mensageria de fretes
-export const requireFreightMessagingAccess = requirePaidAccess('freight');
+const requireFreightMessagingAccess = requirePaidAccess('freight');
 
 // Middleware para verificar acesso a serviço específico
-export const requireServiceAccess = (serviceType, serviceId) => {
+const requireServiceAccess = (serviceType, serviceId) => {
   return async (req, res, next) => {
     try {
       // Primeiro verificar acesso pago
@@ -221,4 +221,11 @@ export const requireServiceAccess = (serviceType, serviceId) => {
       });
     }
   };
+};
+
+module.exports = {
+  requirePaidAccess,
+  requireProductMessagingAccess,
+  requireFreightMessagingAccess,
+  requireServiceAccess
 };

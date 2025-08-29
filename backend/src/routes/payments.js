@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { ethers } = require('ethers');
-const auth = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 const User = require('../models/User');
 const Payment = require('../models/Payment');
 
@@ -11,7 +11,7 @@ const OWNER_WALLET = process.env.OWNER_WALLET || '0x742d35Cc6634C0532925a3b8D4C9
 const WEB3_PROVIDER = process.env.WEB3_PROVIDER || 'https://mainnet.infura.io/v3/your-project-id';
 
 // Middleware de autenticação para todas as rotas
-router.use(auth);
+router.use(authenticateToken);
 
 // Verificar status de pagamento do usuário
 router.get('/status', async (req, res) => {
