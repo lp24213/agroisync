@@ -9,6 +9,37 @@ class AdminService {
     this.adminToken = null;
   }
 
+  // Login administrativo
+  async adminLogin(email, password) {
+    try {
+      // Verificar credenciais fixas
+      if (email === 'luispaulodeoliveira@agrotm.com.br' && password === 'Th@ys15221008') {
+        // Gerar token admin simulado (em produção seria via backend)
+        const adminToken = btoa(`admin:${email}:${Date.now()}`);
+        
+        this.isAuthenticated = true;
+        this.adminToken = adminToken;
+        
+        return {
+          success: true,
+          token: adminToken,
+          message: 'Login administrativo realizado com sucesso'
+        };
+      } else {
+        return {
+          success: false,
+          error: 'Credenciais inválidas'
+        };
+      }
+    } catch (error) {
+      console.error('Erro no login administrativo:', error);
+      return {
+        success: false,
+        error: 'Erro de conexão'
+      };
+    }
+  }
+
   // Verificar se o usuário é admin
   async checkAdminStatus(userId, userEmail) {
     try {

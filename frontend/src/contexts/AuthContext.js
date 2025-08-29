@@ -530,6 +530,16 @@ export const AuthProvider = ({ children }) => {
 
   // Função para verificar se é admin
   const checkIsAdmin = () => {
+    // Verificar se existe token de admin no localStorage
+    const storedAdminToken = localStorage.getItem('adminToken');
+    const storedAdminEmail = localStorage.getItem('adminEmail');
+    
+    // Verificar se é o email de admin autorizado
+    if (storedAdminEmail === 'luispaulodeoliveira@agrotm.com.br' && storedAdminToken) {
+      return true;
+    }
+    
+    // Verificar se usuário logado é admin
     return isAdmin && (!!adminToken || (user && user.isAdmin));
   };
 

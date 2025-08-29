@@ -8,7 +8,7 @@ import { Eye, EyeOff, Mail, Lock, User, Phone, ArrowLeft, Shield, Key } from 'lu
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, loginAdmin, isAuthenticated, verify2FA, sendOTP, forgotPassword } = useAuth();
+  const { login, isAuthenticated, verify2FA, sendOTP, forgotPassword } = useAuth();
   const { isDark } = useTheme();
   
   const [formData, setFormData] = useState({
@@ -52,26 +52,25 @@ const Login = () => {
       return;
     }
 
+    // Verificar se é tentativa de login admin
+    if (formData.email === 'luispaulodeoliveira@agrotm.com.br') {
+      setError('Para acessar o painel administrativo, use o link específico de admin.');
+      return;
+    }
+
     setIsLoading(true);
     setError('');
     setSuccess('');
 
     try {
-      // Verificar se é login de admin
-      if (formData.email === 'luispaulodeoliveira@agrotm.com.br') {
-        await loginAdmin(formData.email, formData.password);
-        setSuccess('Login administrativo realizado com sucesso!');
-        setTimeout(() => navigate('/admin/secure-panel'), 1500);
+      // Login normal com verificação 2FA
+      const result = await login(formData.email, formData.password);
+      if (result.requires2FA) {
+        setShow2FA(true);
+        setSuccess('Código 2FA enviado para seu dispositivo.');
       } else {
-        // Login normal com verificação 2FA
-        const result = await login(formData.email, formData.password);
-        if (result.requires2FA) {
-          setShow2FA(true);
-          setSuccess('Código 2FA enviado para seu dispositivo.');
-        } else {
-          setSuccess('Login realizado com sucesso!');
-          setTimeout(() => navigate('/dashboard'), 1500);
-        }
+        setSuccess('Login realizado com sucesso!');
+        setTimeout(() => navigate('/dashboard'), 1500);
       }
     } catch (error) {
       setError(error.response?.data?.message || 'Erro ao fazer login. Tente novamente.');

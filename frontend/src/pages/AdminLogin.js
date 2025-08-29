@@ -1,51 +1,76 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { Eye, EyeOff, Shield, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Eye, EyeOff, Shield, Lock, Mail, ArrowLeft } from 'lucide-react';
+import adminService from '../services/adminService';
 
 const AdminLogin = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [success, setSuccess] = useState('');
   const navigate = useNavigate();
-  const { loginAdmin, loading, error, clearError } = useAuth();
+  const [formData, setFormData] = useState({
+    email: 'luispaulodeoliveira@agrotm.com.br',
+    password: ''
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-  useEffect(() => {
-    document.title = 'Admin Login - AgroSync';
-    clearError();
-  }, [clearError]);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    setError('');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSuccess('');
-    clearError();
-
-    if (!email || !password) {
+    if (!formData.password) {
+      setError('Por favor, insira a senha.');
       return;
     }
 
-    const result = await loginAdmin(email, password);
-    
-    if (result.success) {
-      setSuccess(result.message);
-      setTimeout(() => {
-        navigate('/admin/secure-panel');
-      }, 1500);
+    // Verificar credenciais fixas
+    if (formData.password !== 'Th@ys15221008') {
+      setError('Credenciais inválidas.');
+      return;
+    }
+
+    setIsLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      // Login admin via serviço
+      const result = await adminService.adminLogin(formData.email, formData.password);
+      
+      if (result.success) {
+        setSuccess('Login administrativo realizado com sucesso!');
+        // Salvar token admin
+        localStorage.setItem('adminToken', result.token);
+        localStorage.setItem('adminEmail', formData.email);
+        
+        setTimeout(() => {
+          navigate('/admin/secure-panel');
+        }, 1500);
+      } else {
+        setError(result.error || 'Erro ao fazer login administrativo.');
+      }
+    } catch (error) {
+      setError('Erro de conexão. Tente novamente.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Background elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-agro-green-500 via-agro-yellow-500 to-web3-neon-blue"></div>
-        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-agro-green-600 to-web3-neon-blue rounded-full opacity-10 blur-xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-agro-yellow-500 to-web3-neon-blue rounded-full opacity-10 blur-xl animate-pulse"></div>
-      </div>
+  const handleBackToMain = () => {
+    navigate('/');
+  };
 
-      <div className="max-w-md w-full space-y-8 relative z-10">
+  return (
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -53,60 +78,69 @@ const AdminLogin = () => {
           transition={{ duration: 0.6 }}
           className="text-center"
         >
-          <div className="flex justify-center">
-            <motion.div 
-              whileHover={{ scale: 1.05 }}
-              className="w-20 h-20 bg-gradient-to-r from-agro-green-600 via-agro-yellow-500 to-web3-neon-blue rounded-2xl flex items-center justify-center shadow-2xl"
-            >
-              <Shield className="w-10 h-10 text-white" />
-            </motion.div>
-          </div>
-          <h2 className="mt-6 text-4xl font-bold title-premium">
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            className="mx-auto h-20 w-20 bg-gradient-to-r from-red-600 to-red-800 rounded-full flex items-center justify-center mb-6 shadow-2xl"
+          >
+            <Shield className="h-10 w-10 text-white" />
+          </motion.div>
+          
+          <h2 className="text-3xl font-bold text-white mb-2">
             Painel Administrativo
           </h2>
-          <p className="mt-2 text-lg text-slate-300">
-            Acesso exclusivo para administradores
+          
+          <p className="text-slate-300 text-sm">
+            Acesso restrito a administradores autorizados
           </p>
         </motion.div>
 
-        {/* Formulário */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-8 shadow-2xl"
+        {/* Formulário de Login Admin */}
+        <motion.form
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3, delay: 0.2 }}
+          onSubmit={handleSubmit}
+          className="mt-8 space-y-6"
         >
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Email */}
+          <div className="space-y-4">
+            {/* Email (fixo) */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-slate-200 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-2">
                 Email Administrativo
               </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-agro-green-500 focus:border-transparent transition-all duration-200"
-                placeholder="luispaulodeoliveira@agrotm.com.br"
-                required
-              />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Mail className="h-5 w-5 text-slate-400" />
+                </div>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  disabled
+                  className="block w-full pl-10 pr-3 py-3 border border-slate-600 rounded-lg bg-slate-800 text-slate-300 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                />
+              </div>
             </div>
 
             {/* Senha */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-slate-200 mb-2">
-                Senha
+              <label htmlFor="password" className="block text-sm font-medium text-slate-300 mb-2">
+                Senha Administrativa
               </label>
               <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-slate-400" />
+                </div>
                 <input
                   id="password"
+                  name="password"
                   type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 pr-12 bg-white/20 border border-white/30 rounded-lg text-white placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-agro-green-500 focus:border-transparent transition-all duration-200"
-                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={handleInputChange}
                   required
+                  className="block w-full pl-10 pr-12 py-3 border border-slate-600 rounded-lg bg-slate-800 text-slate-300 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  placeholder="Digite a senha administrativa"
                 />
                 <button
                   type="button"
@@ -114,60 +148,69 @@ const AdminLogin = () => {
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
                 >
                   {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-slate-400 hover:text-slate-200 transition-colors" />
+                    <EyeOff className="h-5 w-5 text-slate-400 hover:text-slate-300" />
                   ) : (
-                    <Eye className="h-5 w-5 text-slate-400 hover:text-slate-200 transition-colors" />
+                    <Eye className="h-5 w-5 text-slate-400 hover:text-slate-300" />
                   )}
                 </button>
               </div>
             </div>
-
-            {/* Mensagens de erro/sucesso */}
-            {error && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="flex items-center space-x-2 p-3 bg-red-500/20 border border-red-500/50 rounded-lg"
-              >
-                <AlertTriangle className="h-5 w-5 text-red-400" />
-                <span className="text-sm text-red-200">{error}</span>
-              </motion.div>
-            )}
-
-            {success && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="flex items-center space-x-2 p-3 bg-emerald-500/20 border border-emerald-500/50 rounded-lg"
-              >
-                <CheckCircle className="h-5 w-5 text-emerald-400" />
-                <span className="text-sm text-emerald-200">{success}</span>
-              </motion.div>
-            )}
-
-            {/* Botão de login */}
-            <button
-              type="submit"
-              disabled={loading || !email || !password}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-lg text-sm font-medium text-white bg-gradient-to-r from-agro-green-600 via-agro-yellow-500 to-web3-neon-blue hover:from-agro-green-700 hover:via-agro-yellow-600 hover:to-web3-neon-cyan focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-agro-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105"
-            >
-              {loading ? (
-                <div className="flex items-center space-x-2">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  <span>Acessando...</span>
-                </div>
-              ) : (
-                'Acessar Painel Admin'
-              )}
-            </button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-xs text-slate-400">
-              Acesso restrito apenas para administradores autorizados
-            </p>
           </div>
-        </motion.div>
+
+          {/* Mensagens de erro/sucesso */}
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-lg text-sm"
+            >
+              {error}
+            </motion.div>
+          )}
+
+          {success && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded-lg text-sm"
+            >
+              {success}
+            </motion.div>
+          )}
+
+          {/* Botão de Login */}
+          <motion.button
+            type="submit"
+            disabled={isLoading}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg"
+          >
+            {isLoading ? (
+              <div className="flex items-center">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                Autenticando...
+              </div>
+            ) : (
+              <>
+                <Shield className="h-5 w-5 mr-2" />
+                Acessar Painel Admin
+              </>
+            )}
+          </motion.button>
+
+          {/* Botão Voltar */}
+          <motion.button
+            type="button"
+            onClick={handleBackToMain}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full flex justify-center py-2 px-4 border border-slate-600 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:border-slate-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-all duration-200"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Voltar ao Site Principal
+          </motion.button>
+        </motion.form>
 
         {/* Footer */}
         <motion.div
@@ -176,12 +219,12 @@ const AdminLogin = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-center"
         >
-          <button
-            onClick={() => navigate('/')}
-            className="text-agro-green-400 hover:text-agro-green-300 text-sm transition-colors duration-200 hover:underline"
-          >
-            ← Voltar ao site principal
-          </button>
+          <p className="text-xs text-slate-500">
+            Sistema de Administração AgroSync v2.0
+          </p>
+          <p className="text-xs text-slate-500 mt-1">
+            Acesso restrito e monitorado
+          </p>
         </motion.div>
       </div>
     </div>
