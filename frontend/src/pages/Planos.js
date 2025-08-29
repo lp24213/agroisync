@@ -77,7 +77,7 @@ const Planos = () => {
       return;
     }
 
-    if (!isAuthenticated) {
+    if (!isAuthenticated()) {
       // Redirecionar para cadastro se não estiver logado
       navigate('/cadastro', { 
         state: { 
@@ -99,6 +99,7 @@ const Planos = () => {
       if (paymentMethod === 'metamask') {
         if (!metamaskConnected) {
           setError('Conecte sua carteira MetaMask primeiro');
+          setLoading(false);
           return;
         }
 
@@ -149,7 +150,8 @@ const Planos = () => {
         }
       }
     } catch (error) {
-      setError('Erro no processamento do pagamento: ' + error.message);
+      console.error('Erro no processamento do pagamento:', error);
+      setError('Erro no processamento do pagamento. Tente novamente ou entre em contato com o suporte.');
     } finally {
       setLoading(false);
     }
@@ -212,7 +214,7 @@ const Planos = () => {
     {
       id: 'loja-basico',
       name: 'Loja Básico',
-      price: 'R$ 29,90',
+      price: 'R$ 49,99',
       period: 'por mês',
       description: 'Ideal para pequenos produtores e comerciantes',
       features: [
@@ -233,7 +235,7 @@ const Planos = () => {
     {
       id: 'loja-pro',
       name: 'Loja Pro',
-      price: 'R$ 79,90',
+      price: 'R$ 99,90',
       period: 'por mês',
       description: 'Perfeito para produtores em crescimento',
       features: [
@@ -252,7 +254,7 @@ const Planos = () => {
     {
       id: 'loja-enterprise',
       name: 'Loja Enterprise',
-      price: 'R$ 199,90',
+      price: 'R$ 249,90',
       period: 'por mês',
       description: 'Solução completa para grandes empresas',
       features: [
@@ -273,11 +275,33 @@ const Planos = () => {
   // Planos do AgroConecta
   const agroconectaPlans = [
     {
+      id: 'agroconecta-basico',
+      name: 'AgroConecta - Básico',
+      price: 'R$ 49,99',
+      period: 'por mês',
+      description: 'Acesso básico às funções premium',
+      features: [
+        'Mensageria básica',
+        'Listar até 20 fretes',
+        'Contatos limitados',
+        'Suporte por email',
+        'Notificações básicas'
+      ],
+      limitations: [
+        'Máximo 20 fretes',
+        'Sem destaque premium',
+        'API limitada'
+      ],
+      color: 'from-green-600 to-blue-600',
+      buttonColor: 'btn-premium',
+      popular: false
+    },
+    {
       id: 'agroconecta-medio',
       name: 'AgroConecta - Médio',
       price: 'R$ 99,90',
       period: 'por mês',
-      description: 'Acesso básico às funções premium',
+      description: 'Acesso intermediário às funções premium',
       features: [
         'Mensageria completa',
         'Listar fretes ilimitados',
@@ -290,9 +314,9 @@ const Planos = () => {
         'Sem destaque premium',
         'API limitada'
       ],
-      color: 'from-green-600 to-blue-600',
+      color: 'from-yellow-500 to-blue-600',
       buttonColor: 'btn-premium',
-      popular: false
+      popular: true
     },
     {
       id: 'agroconecta-pro',
