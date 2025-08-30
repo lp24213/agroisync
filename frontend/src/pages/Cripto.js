@@ -9,7 +9,7 @@ import {
   Lock, Unlock, Eye, EyeOff, Copy, FileText,
   Wallet, Send, Download, History, Star,
   Target, Rocket, TrendingUp as TrendingUpIcon,
-  Bell, LineChart
+  Bell, LineChart, Bitcoin
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import cryptoService from '../services/cryptoService';
@@ -20,6 +20,7 @@ import MarketAnalysis from '../components/MarketAnalysis';
 import CryptoDashboard from '../components/CryptoDashboard';
 import PriceAlerts from '../components/PriceAlerts';
 import CryptoCharts from '../components/CryptoCharts';
+import StockMarketTicker from '../components/StockMarketTicker';
 
 const Cripto = () => {
   const { t } = useTranslation();
@@ -298,9 +299,12 @@ const Cripto = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 pt-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
+    <div className="min-h-screen bg-white text-slate-900 pt-16">
+      {/* Cotação da Bolsa */}
+      <StockMarketTicker />
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header Principal */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}

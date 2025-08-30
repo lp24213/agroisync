@@ -5,8 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { 
   Users, Target, Award, Clock, Globe, 
   TrendingUp, Shield, Lightbulb, CheckCircle,
-  ArrowRight, Star, MapPin, Phone, Mail, Package, Truck, DollarSign, Zap
+  ArrowRight, Star, MapPin, Phone, Mail, Package, Truck, DollarSign, Zap, Heart
 } from 'lucide-react';
+import StockMarketTicker from '../components/StockMarketTicker';
 // Componente removido - já renderizado pelo Layout global
 
 const Sobre = () => {
@@ -100,6 +101,8 @@ const Sobre = () => {
 
   return (
     <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300 pt-16`}>
+      {/* Cotação da Bolsa */}
+      <StockMarketTicker />
       
       {/* Hero Section */}
       <section className="relative pt-40 pb-20 px-4 overflow-hidden">
