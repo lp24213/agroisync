@@ -37,21 +37,21 @@ const StockMarketTicker = () => {
   };
 
   return (
-    <section className="py-2 px-4 bg-gradient-premium border-b-2 border-accent-emerald relative overflow-hidden">
+    <section className="py-1 px-3 bg-gradient-premium border-b-2 border-accent-emerald relative overflow-hidden">
       {/* Gradiente de fundo sutil */}
       <div className="absolute inset-0 bg-gradient-to-r from-accent-emerald/20 via-accent-gold/20 to-accent-blue/20 opacity-30"></div>
       
       {/* Conteúdo */}
       <div className="relative z-10 container-premium">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center space-x-3">
+        <div className="flex items-center justify-between mb-1">
+          <div className="flex items-center space-x-2">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
               className="flex items-center space-x-2"
             >
-              <TrendingUp className="w-4 h-4 text-accent-emerald" />
+              <TrendingUp className="w-3 h-3 text-accent-emerald" />
               <span className="text-white font-semibold text-xs">Bolsa de Valores</span>
             </motion.div>
             
@@ -80,7 +80,7 @@ const StockMarketTicker = () => {
         {/* Ticker de commodities com animação de rolagem */}
         <div className="relative overflow-hidden">
           <motion.div
-            className="flex space-x-3"
+            className="flex space-x-2"
             animate={{ x: [0, -1000] }}
             transition={{
               duration: 30,
@@ -99,7 +99,7 @@ const StockMarketTicker = () => {
                   ease: "easeOut",
                   delay: index * 0.1
                 }}
-                className="bg-white shadow-premium-soft px-2 py-1.5 min-w-[110px] group relative overflow-hidden hover:scale-105 transition-all duration-300 flex-shrink-0"
+                className="bg-white shadow-premium-soft px-2 py-1 min-w-[100px] group relative overflow-hidden hover:scale-105 transition-all duration-300 flex-shrink-0"
               >
                 {/* Efeito de brilho */}
                 <div className="absolute inset-0 bg-accent-emerald/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -132,7 +132,7 @@ const StockMarketTicker = () => {
                   ease: "easeOut",
                   delay: (index + commodities.length) * 0.1
                 }}
-                className="bg-white shadow-premium-soft px-2 py-1.5 min-w-[110px] group relative overflow-hidden hover:scale-105 transition-all duration-300 flex-shrink-0"
+                className="bg-white shadow-premium-soft px-2 py-1 min-w-[100px] group relative overflow-hidden hover:scale-105 transition-all duration-300 flex-shrink-0"
               >
                 {/* Efeito de brilho */}
                 <div className="absolute inset-0 bg-accent-emerald/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
