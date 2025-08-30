@@ -80,7 +80,7 @@ const StockMarketTicker = () => {
         {/* Ticker de commodities com animação de rolagem */}
         <div className="relative overflow-hidden">
           <motion.div
-            className="flex space-x-4"
+            className="flex space-x-3"
             animate={{ x: [0, -1000] }}
             transition={{
               duration: 30,
@@ -99,19 +99,19 @@ const StockMarketTicker = () => {
                   ease: "easeOut",
                   delay: index * 0.1
                 }}
-                className="bg-white shadow-premium-soft px-3 py-2 min-w-[140px] group relative overflow-hidden hover:scale-105 transition-all duration-300 flex-shrink-0"
+                className="bg-white shadow-premium-soft px-2 py-1.5 min-w-[110px] group relative overflow-hidden hover:scale-105 transition-all duration-300 flex-shrink-0"
               >
                 {/* Efeito de brilho */}
                 <div className="absolute inset-0 bg-accent-emerald/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 
                 <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-semibold text-premium-dark-gray text-sm">{commodity.name}</span>
+                  <div className="flex items-center justify-between mb-0.5">
+                    <span className="font-semibold text-premium-dark-gray text-xs">{commodity.name}</span>
                     {getTrendIcon(commodity.trend)}
                   </div>
                   
                   <div className="space-y-0.5">
-                    <div className="text-sm font-bold text-premium-dark-gray">{commodity.price}</div>
+                    <div className="text-xs font-bold text-premium-dark-gray">{commodity.price}</div>
                     <div className={`text-xs font-medium ${getTrendColor(commodity.trend)}`}>
                       {commodity.change}
                     </div>
@@ -132,19 +132,19 @@ const StockMarketTicker = () => {
                   ease: "easeOut",
                   delay: (index + commodities.length) * 0.1
                 }}
-                className="bg-white shadow-premium-soft px-3 py-2 min-w-[140px] group relative overflow-hidden hover:scale-105 transition-all duration-300 flex-shrink-0"
+                className="bg-white shadow-premium-soft px-2 py-1.5 min-w-[110px] group relative overflow-hidden hover:scale-105 transition-all duration-300 flex-shrink-0"
               >
                 {/* Efeito de brilho */}
                 <div className="absolute inset-0 bg-accent-emerald/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 
                 <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-semibold text-premium-dark-gray text-sm">{commodity.name}</span>
+                  <div className="flex items-center justify-between mb-0.5">
+                    <span className="font-semibold text-premium-dark-gray text-xs">{commodity.name}</span>
                     {getTrendIcon(commodity.trend)}
                   </div>
                   
                   <div className="space-y-0.5">
-                    <div className="text-sm font-bold text-premium-dark-gray">{commodity.price}</div>
+                    <div className="text-xs font-bold text-premium-dark-gray">{commodity.price}</div>
                     <div className={`text-xs font-medium ${getTrendColor(commodity.trend)}`}>
                       {commodity.change}
                     </div>

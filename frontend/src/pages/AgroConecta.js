@@ -699,6 +699,9 @@ const AgroConecta = () => {
   if (!user || isAdmin) {
     return (
       <div className="min-h-screen bg-white text-slate-900 pt-16">
+        {/* Cotação da Bolsa */}
+        <StockMarketTicker />
+        
         <main className="pb-16">
           <div className="max-w-7xl mx-auto px-4">
             {/* Hero Section */}
