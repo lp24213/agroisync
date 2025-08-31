@@ -214,53 +214,36 @@ const ChatbotWidget = ({ isOpen = false, onToggle, position = 'bottom-right' }) 
     return (
       <motion.div
         key={message.id}
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, ease: "easeOut" }}
-        className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}
+        className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}
       >
-                  <div className={`max-w-xs lg:max-w-md ${isUser ? 'order-2' : 'order-1'}`}>
-            <div className={`px-4 py-3 rounded-lg ${
-              isUser 
-                ? 'bg-accent-emerald text-white' 
-                : 'bg-white text-premium-dark-gray border border-premium-platinum'
-          }`}>
-            {message.type === 'image' && (
-              <div className="mb-2">
-                <img 
-                  src={message.content} 
-                  alt={message.fileName || 'Imagem'} 
-                  className="max-w-full rounded"
-                />
-                {message.fileName && (
-                  <p className="text-xs mt-1 opacity-75">{message.fileName}</p>
-                )}
-              </div>
-            )}
-            
-            <div className="whitespace-pre-wrap">{message.content}</div>
-            
-            {message.suggestions && message.suggestions.length > 0 && (
-              <div className="mt-3 space-y-2">
-                {message.suggestions.map((suggestion, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleSuggestionClick(suggestion)}
-                    className={`block w-full text-left px-3 py-2 rounded text-sm transition-premium ${
-                      isUser 
-                        ? 'bg-white bg-opacity-20 hover:bg-opacity-30' 
-                        : 'bg-premium-platinum hover:bg-premium-light-gray'
-                    }`}
-                  >
-                    {suggestion}
-                  </button>
-                ))}
-              </div>
-            )}
+        <div className={`max-w-[80%] rounded-lg p-3 ${
+          isUser 
+            ? 'bg-emerald-500 text-white' 
+            : 'bg-slate-700/50 text-slate-200 border border-slate-600/30'
+        }`}>
+          <div className="text-sm">
+            {message.content}
           </div>
           
-          <div className={`text-xs text-premium-gray mt-1 ${
-            isUser ? 'text-right' : 'text-left'
+          {message.suggestions && (
+            <div className="mt-2 space-y-1">
+              {message.suggestions.map((suggestion, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleSuggestionClick(suggestion)}
+                  className="block w-full text-left text-xs px-2 py-1 rounded transition-colors bg-slate-600/30 hover:bg-slate-600/50 text-slate-300"
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          )}
+          
+          <div className={`text-xs mt-1 ${
+            isUser ? 'text-emerald-100' : 'text-slate-400'
           }`}>
             {formatTime(message.timestamp)}
           </div>
@@ -269,8 +252,11 @@ const ChatbotWidget = ({ isOpen = false, onToggle, position = 'bottom-right' }) 
     );
   };
 
+  // Remover a condição que impede o chatbot de aparecer
+  // if (!isOpen) return null;
+
   return (
-    <div className={`fixed ${position} z-[9999] m-4`}>
+    <div className={`fixed bottom-4 right-4 z-[9999]`}>
       {/* Widget Principal */}
       <AnimatePresence>
         {!isExpanded && (
@@ -280,10 +266,10 @@ const ChatbotWidget = ({ isOpen = false, onToggle, position = 'bottom-right' }) 
             exit={{ scale: 0 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
             onClick={() => setIsExpanded(true)}
-            className="w-16 h-16 bg-accent-emerald text-white rounded-full shadow-premium hover:bg-accent-emerald/80 transition-premium flex items-center justify-center"
+            className="w-14 h-14 bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center justify-center border border-slate-600/30 backdrop-blur-sm"
             style={{ zIndex: 9999 }}
           >
-            <MessageCircle className="w-8 h-8" />
+            <MessageCircle className="w-6 h-6" />
           </motion.button>
         )}
       </AnimatePresence>
@@ -296,34 +282,34 @@ const ChatbotWidget = ({ isOpen = false, onToggle, position = 'bottom-right' }) 
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             transition={{ duration: 0.4, ease: "easeOut" }}
-            className="w-80 h-96 bg-white rounded-2xl shadow-premium border border-premium-platinum flex flex-col"
+            className="w-80 h-96 bg-slate-900/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-700/50 flex flex-col"
             style={{ zIndex: 9999 }}
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-premium-platinum bg-gradient-premium text-white rounded-t-2xl">
+            <div className="flex items-center justify-between p-4 border-b border-slate-700/50 bg-slate-800/50 text-white rounded-t-2xl">
               <div className="flex items-center space-x-2">
-                <MessageCircle className="w-5 h-5" />
-                <span className="font-semibold">Assistente AgroSync</span>
+                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                <span className="font-semibold text-sm">Assistente IA</span>
               </div>
               
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setShowSettings(!showSettings)}
-                  className="p-1 hover:bg-white hover:bg-opacity-20 rounded transition-premium"
+                  className="p-1 hover:bg-slate-700/50 rounded transition-colors"
                 >
                   <Settings className="w-4 h-4" />
                 </button>
                 
                 <button
                   onClick={() => setShowHelp(!showHelp)}
-                  className="p-1 hover:bg-white hover:bg-opacity-20 rounded transition-premium"
+                  className="p-1 hover:bg-slate-700/50 rounded transition-colors"
                 >
                   <HelpCircle className="w-4 h-4" />
                 </button>
                 
                 <button
                   onClick={() => setIsExpanded(false)}
-                  className="p-1 hover:bg-white hover:bg-opacity-20 rounded transition-premium"
+                  className="p-1 hover:bg-slate-700/50 rounded transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -354,11 +340,11 @@ const ChatbotWidget = ({ isOpen = false, onToggle, position = 'bottom-right' }) 
                           transition={{ duration: 0.2, ease: "easeOut" }}
                           className="flex justify-start"
                         >
-                          <div className="bg-premium-platinum px-4 py-3 rounded-lg">
+                          <div className="bg-slate-700/50 px-4 py-3 rounded-lg">
                             <div className="flex space-x-1">
-                              <div className="w-2 h-2 bg-premium-gray rounded-full animate-bounce"></div>
-                              <div className="w-2 h-2 bg-premium-gray rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                              <div className="w-2 h-2 bg-premium-gray rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                              <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
+                              <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                              <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                             </div>
                           </div>
                         </motion.div>
@@ -368,7 +354,7 @@ const ChatbotWidget = ({ isOpen = false, onToggle, position = 'bottom-right' }) 
                     </div>
 
                     {/* Input */}
-                    <div className="p-4 border-t border-premium-platinum">
+                    <div className="p-4 border-t border-slate-700/50">
                       <div className="flex items-end space-x-2">
                         <div className="flex-1">
                           <textarea
@@ -378,7 +364,7 @@ const ChatbotWidget = ({ isOpen = false, onToggle, position = 'bottom-right' }) 
                             onKeyPress={handleKeyPress}
                             placeholder="Digite sua mensagem..."
                             rows={1}
-                            className="w-full px-3 py-2 border border-premium-platinum rounded-lg resize-none focus:ring-2 focus:ring-accent-emerald focus:border-accent-emerald"
+                            className="w-full px-3 py-2 bg-slate-800/50 border border-slate-600/50 rounded-lg resize-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-white placeholder-slate-400"
                             style={{ minHeight: '40px', maxHeight: '120px' }}
                           />
                         </div>
@@ -386,30 +372,18 @@ const ChatbotWidget = ({ isOpen = false, onToggle, position = 'bottom-right' }) 
                         <div className="flex items-center space-x-1">
                           <button
                             onClick={() => fileInputRef.current?.click()}
-                            className="p-2 text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum rounded transition-premium"
+                            className="p-2 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded transition-colors"
                             title="Enviar imagem"
                           >
                             <Image className="w-4 h-4" />
                           </button>
                           
                           <button
-                            onClick={handleAudioRecording}
-                            className={`p-2 rounded transition-colors ${
-                              isRecording 
-                                ? 'text-red-600 bg-red-100' 
-                                : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
-                            }`}
-                            title="Gravar áudio"
-                          >
-                            <Mic className="w-4 h-4" />
-                          </button>
-                          
-                          <button
                             onClick={handleVoiceInput}
-                            className={`p-2 rounded transition-premium ${
+                            className={`p-2 rounded transition-colors ${
                               isListening 
-                                ? 'text-accent-blue bg-accent-blue/20' 
-                                : 'text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum'
+                                ? 'text-emerald-400 bg-emerald-400/20' 
+                                : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
                             }`}
                             title="Reconhecimento de voz"
                           >
@@ -419,7 +393,7 @@ const ChatbotWidget = ({ isOpen = false, onToggle, position = 'bottom-right' }) 
                           <button
                             onClick={handleSendMessage}
                             disabled={!inputMessage.trim() || isTyping}
-                            className="p-2 bg-accent-emerald text-white rounded hover:bg-accent-emerald/80 disabled:opacity-50 disabled:cursor-not-allowed transition-premium"
+                            className="p-2 bg-emerald-500 text-white rounded hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             title="Enviar mensagem"
                           >
                             <Send className="w-4 h-4" />
