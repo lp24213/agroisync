@@ -1,9 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  MessageCircle, Mic, MicOff, Send, Image, 
-  Volume2, VolumeX, X, HelpCircle, FileText,
-  Settings, Globe, RefreshCw, Paperclip
+  MessageCircle, 
+  X, 
+  Send, 
+  Mic, 
+  MicOff, 
+  Image, 
+  Settings, 
+  HelpCircle,
+  Sparkles,
+  Zap,
+  Brain,
+  Globe,
+  Shield,
+  Star,
+  Crown,
+  Bot,
+  Cpu,
+  Network,
+  Satellite,
+  Rocket,
+  RefreshCw
 } from 'lucide-react';
 import chatbotService, { 
   SUPPORTED_LANGUAGES, 
@@ -21,7 +39,10 @@ const ChatbotWidget = ({ isOpen = false, onToggle, position = 'bottom-right' }) 
   const [showSettings, setShowSettings] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [isProcessingImage, setIsProcessingImage] = useState(false);
-  
+  const [aiLevel, setAiLevel] = useState('gpt-4'); // gpt-3.5, gpt-4, gpt-4-turbo
+  const [isHolographic, setIsHolographic] = useState(true);
+  const [isQuantum, setIsQuantum] = useState(false);
+
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const inputRef = useRef(null);
@@ -326,7 +347,7 @@ const ChatbotWidget = ({ isOpen = false, onToggle, position = 'bottom-right' }) 
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
                     className="flex-1 flex flex-col"
                   >
                     {/* Mensagens */}
@@ -337,14 +358,17 @@ const ChatbotWidget = ({ isOpen = false, onToggle, position = 'bottom-right' }) 
                         <motion.div
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
-                          transition={{ duration: 0.2, ease: "easeOut" }}
+                          transition={{ duration: 0.3, ease: "easeOut" }}
                           className="flex justify-start"
                         >
-                          <div className="bg-slate-700/50 px-4 py-3 rounded-lg">
-                            <div className="flex space-x-1">
-                              <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
-                              <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                              <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                          <div className="bg-gradient-to-r from-slate-800/80 to-slate-900/80 px-4 py-3 rounded-2xl border border-slate-700/50 backdrop-blur-xl">
+                            <div className="flex items-center space-x-2">
+                              <div className="flex space-x-1">
+                                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce"></div>
+                                <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                                <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                              </div>
+                              <span className="text-xs text-slate-400">Processando...</span>
                             </div>
                           </div>
                         </motion.div>
@@ -353,9 +377,9 @@ const ChatbotWidget = ({ isOpen = false, onToggle, position = 'bottom-right' }) 
                       <div ref={messagesEndRef} />
                     </div>
 
-                    {/* Input */}
-                    <div className="p-4 border-t border-slate-700/50">
-                      <div className="flex items-end space-x-2">
+                    {/* Input Futurista */}
+                    <div className="p-4 border-t border-slate-700/50 bg-gradient-to-r from-slate-800/50 to-slate-900/50">
+                      <div className="flex items-end space-x-3">
                         <div className="flex-1">
                           <textarea
                             ref={inputRef}
@@ -364,108 +388,189 @@ const ChatbotWidget = ({ isOpen = false, onToggle, position = 'bottom-right' }) 
                             onKeyPress={handleKeyPress}
                             placeholder="Digite sua mensagem..."
                             rows={1}
-                            className="w-full px-3 py-2 bg-slate-800/50 border border-slate-600/50 rounded-lg resize-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-white placeholder-slate-400"
-                            style={{ minHeight: '40px', maxHeight: '120px' }}
+                            className="w-full px-4 py-3 bg-slate-800/60 border border-slate-600/50 rounded-2xl resize-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-white placeholder-slate-400 backdrop-blur-xl transition-all duration-300"
+                            style={{ minHeight: '48px', maxHeight: '120px' }}
                           />
                         </div>
                         
-                        <div className="flex items-center space-x-1">
+                        <div className="flex items-center space-x-2">
                           <button
                             onClick={() => fileInputRef.current?.click()}
-                            className="p-2 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded transition-colors"
+                            className="p-3 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-xl transition-all duration-300 hover:scale-110"
                             title="Enviar imagem"
                           >
-                            <Image className="w-4 h-4" />
+                            <Image className="w-5 h-5" />
                           </button>
                           
                           <button
                             onClick={handleVoiceInput}
-                            className={`p-2 rounded transition-colors ${
+                            className={`p-3 rounded-xl transition-all duration-300 hover:scale-110 ${
                               isListening 
-                                ? 'text-emerald-400 bg-emerald-400/20' 
+                                ? 'text-emerald-400 bg-emerald-400/20 border border-emerald-400/30' 
                                 : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
                             }`}
                             title="Reconhecimento de voz"
                           >
-                            {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                            {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
                           </button>
                           
                           <button
                             onClick={handleSendMessage}
                             disabled={!inputMessage.trim() || isTyping}
-                            className="p-2 bg-emerald-500 text-white rounded hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            className="p-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl hover:from-emerald-600 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:scale-110 shadow-lg shadow-emerald-500/25"
                             title="Enviar mensagem"
                           >
-                            <Send className="w-4 h-4" />
+                            <Send className="w-5 h-5" />
                           </button>
+                        </div>
+                      </div>
+                      
+                      {/* Status do AI */}
+                      <div className="flex items-center justify-between mt-2 text-xs text-slate-500">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
+                          <span>AI Ativo</span>
+                          <Brain className="w-3 h-3" />
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <Satellite className="w-3 h-3" />
+                          <span>Conectado</span>
                         </div>
                       </div>
                     </div>
                   </motion.div>
                 )}
 
-                {/* Configurações */}
+                {/* Configurações Futuristas */}
                 {showSettings && (
                   <motion.div
                     key="settings"
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
-                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
                     className="flex-1 p-4"
                   >
-                    <h3 className="font-semibold text-premium-dark-gray mb-4">Configurações</h3>
+                    <h3 className="text-lg font-bold text-white mb-4 flex items-center space-x-2">
+                      <Settings className="w-5 h-5 text-emerald-400" />
+                      <span>Configurações Avançadas</span>
+                    </h3>
                     
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-premium-gray mb-2">
-                          Idioma
-                        </label>
-                        <select
-                          value={currentLanguage}
-                          onChange={(e) => handleLanguageChange(e.target.value)}
-                          className="w-full px-3 py-2 border border-premium-platinum rounded-lg focus:ring-2 focus:ring-accent-emerald focus:border-accent-emerald"
+                        <label className="block text-sm font-medium text-slate-300 mb-2">Modelo de IA</label>
+                        <select 
+                          value={aiLevel} 
+                          onChange={(e) => setAiLevel(e.target.value)}
+                          className="w-full px-3 py-2 bg-slate-800/60 border border-slate-600/50 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-white backdrop-blur-xl"
                         >
-                          {Object.entries(SUPPORTED_LANGUAGES).map(([code, name]) => (
-                            <option key={code} value={code}>{name}</option>
-                          ))}
+                          <option value="gpt-3.5">GPT-3.5 (Básico)</option>
+                          <option value="gpt-4">GPT-4 (Avançado)</option>
+                          <option value="gpt-4-turbo">GPT-4 Turbo (Premium)</option>
                         </select>
                       </div>
                       
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <Sparkles className="w-4 h-4 text-emerald-400" />
+                          <span className="text-sm text-slate-300">Efeito Holográfico</span>
+                        </div>
+                        <button
+                          onClick={() => setIsHolographic(!isHolographic)}
+                          className={`w-12 h-6 rounded-full transition-all duration-300 ${
+                            isHolographic ? 'bg-emerald-500' : 'bg-slate-600'
+                          }`}
+                        >
+                          <div className={`w-4 h-4 bg-white rounded-full transition-all duration-300 ${
+                            isHolographic ? 'translate-x-6' : 'translate-x-1'
+                          }`}></div>
+                        </button>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <Zap className="w-4 h-4 text-blue-400" />
+                          <span className="text-sm text-slate-300">Modo Quantum</span>
+                        </div>
+                        <button
+                          onClick={() => setIsQuantum(!isQuantum)}
+                          className={`w-12 h-6 rounded-full transition-all duration-300 ${
+                            isQuantum ? 'bg-blue-500' : 'bg-slate-600'
+                          }`}
+                        >
+                          <div className={`w-4 h-4 bg-white rounded-full transition-all duration-300 ${
+                            isQuantum ? 'translate-x-6' : 'translate-x-1'
+                          }`}></div>
+                        </button>
+                      </div>
+                      
                       <button
-                        onClick={handleClearHistory}
-                        className="w-full px-4 py-2 bg-premium-gray text-white rounded-lg hover:bg-premium-dark-gray transition-premium flex items-center justify-center space-x-2"
+                        onClick={() => setMessages([messages[0]])}
+                        className="w-full px-4 py-2 bg-slate-700/50 hover:bg-slate-600/50 text-slate-300 rounded-xl transition-all duration-300 hover:scale-105"
                       >
-                        <RefreshCw className="w-4 h-4" />
-                        <span>Limpar Histórico</span>
+                        Limpar Histórico
                       </button>
                     </div>
                   </motion.div>
                 )}
 
-                {/* Ajuda */}
+                {/* Ajuda Futurista */}
                 {showHelp && (
                   <motion.div
                     key="help"
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
-                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
                     className="flex-1 p-4"
                   >
-                    <h3 className="font-semibold text-premium-dark-gray mb-4">Categorias de Ajuda</h3>
+                    <h3 className="text-lg font-bold text-white mb-4 flex items-center space-x-2">
+                      <HelpCircle className="w-5 h-5 text-emerald-400" />
+                      <span>Centro de Ajuda</span>
+                    </h3>
                     
-                    <div className="space-y-3">
-                      {Object.entries(HELP_CATEGORIES).map(([key, category]) => (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-3">
                         <button
-                          key={key}
-                          onClick={() => handleHelpCategory(key)}
-                          className="w-full p-3 text-left bg-premium-platinum hover:bg-premium-light-gray rounded-lg transition-premium flex items-center space-x-3"
+                          onClick={() => handleSuggestionClick('Como cadastrar um produto?')}
+                          className="p-3 bg-slate-800/50 hover:bg-slate-700/50 rounded-xl transition-all duration-300 hover:scale-105 border border-slate-700/30"
                         >
-                          <span className="text-lg">{category.icon}</span>
-                          <span className="text-lg">{category.name}</span>
+                          <div className="text-center">
+                            <Globe className="w-6 h-6 text-emerald-400 mx-auto mb-2" />
+                            <span className="text-xs text-slate-300">Cadastro</span>
+                          </div>
                         </button>
-                      ))}
+                        
+                        <button
+                          onClick={() => handleSuggestionClick('Como funciona o frete?')}
+                          className="p-3 bg-slate-800/50 hover:bg-slate-700/50 rounded-xl transition-all duration-300 hover:scale-105 border border-slate-700/30"
+                        >
+                          <div className="text-center">
+                            <Rocket className="w-6 h-6 text-blue-400 mx-auto mb-2" />
+                            <span className="text-xs text-slate-300">Fretes</span>
+                          </div>
+                        </button>
+                        
+                        <button
+                          onClick={() => handleSuggestionClick('Como ver cotações?')}
+                          className="p-3 bg-slate-800/50 hover:bg-slate-700/50 rounded-xl transition-all duration-300 hover:scale-105 border border-slate-700/30"
+                        >
+                          <div className="text-center">
+                            <Star className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
+                            <span className="text-xs text-slate-300">Cotações</span>
+                          </div>
+                        </button>
+                        
+                        <button
+                          onClick={() => handleSuggestionClick('Como fazer pagamento?')}
+                          className="p-3 bg-slate-800/50 hover:bg-slate-700/50 rounded-xl transition-all duration-300 hover:scale-105 border border-slate-700/30"
+                        >
+                          <div className="text-center">
+                            <Shield className="w-6 h-6 text-purple-400 mx-auto mb-2" />
+                            <span className="text-xs text-slate-300">Pagamentos</span>
+                          </div>
+                        </button>
+                      </div>
                     </div>
                   </motion.div>
                 )}

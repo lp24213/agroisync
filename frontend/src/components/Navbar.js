@@ -1,343 +1,294 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from '../contexts/ThemeContext';
+import { motion } from 'framer-motion';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { usePayment } from '../contexts/PaymentContext';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../contexts/LanguageContext';
 import { 
-  Menu, X, Sun, Moon, User, LogOut, Settings, 
-  ShoppingCart, Truck, Coins, BarChart3, Globe,
-  ChevronDown, Bell, Search, Package, MessageSquare, Leaf, CheckCircle, DollarSign, Shield
+  Menu, 
+  X, 
+  User, 
+  LogOut, 
+  Settings, 
+  Globe,
+  ChevronDown
 } from 'lucide-react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import NotificationManager from './NotificationManager';
-import MessagingCenter from './MessagingCenter';
 
 const Navbar = () => {
-  const { isDark, toggleTheme } = useTheme();
-  const { user, isAdmin, logout } = useAuth();
-  const { isPaid, planActive } = usePayment();
-  const { t, i18n } = useTranslation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth();
+  const { currentLanguage, changeLanguage, t, availableLanguages } = useLanguage();
   const location = useLocation();
-  const navigate = useNavigate();
-  
-  const [isOpen, setIsOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [showUserMenu, setShowUserMenu] = useState(false);
-  const [showLanguageMenu, setShowLanguageMenu] = useState(false);
-  const [showMessagingCenter, setShowMessagingCenter] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate('/');
-      setShowUserMenu(false);
-    } catch (error) {
-      console.error('Erro ao fazer logout:', error);
-    }
+  const languageNames = {
+    pt: 'Português',
+    en: 'English',
+    es: 'Español',
+    zh: '中文'
   };
 
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
-    setShowLanguageMenu(false);
+  const isActive = (path) => location.pathname === path;
+
+  const handleLogout = () => {
+    logout();
+    setIsMenuOpen(false);
   };
 
-  const languages = [
-    { code: 'pt', name: 'Português', flag: '🇧🇷' },
-    { code: 'en', name: 'English', flag: '🇺🇸' },
-    { code: 'es', name: 'Español', flag: '🇪🇸' },
-    { code: 'zh', name: '中文', flag: '🇨🇳' }
-  ];
+  const toggleLanguageMenu = () => {
+    setIsLanguageMenuOpen(!isLanguageMenuOpen);
+  };
 
-  const navigation = [
-    { name: 'Home', href: '/', icon: <Leaf className="w-4 h-4" /> },
-    { name: 'Loja', href: '/loja', icon: <Package className="w-4 h-4" /> },
-    { name: 'AgroConecta', href: '/agroconecta', icon: <Truck className="w-4 h-4" /> },
-    { name: 'Planos', href: '/planos', icon: <DollarSign className="w-4 h-4" /> },
-    { name: 'Cripto', href: '/cripto', icon: <Coins className="w-4 h-4" /> },
-    { name: 'Sobre', href: '/sobre', icon: <Globe className="w-4 h-4" /> },
-    { name: 'Contato', href: '/contato', icon: <MessageSquare className="w-4 h-4" /> }
-  ];
-
-  const isActiveRoute = (href) => {
-    if (href === '/') {
-      return location.pathname === '/';
-    }
-    return location.pathname.startsWith(href);
+  const selectLanguage = (lang) => {
+    changeLanguage(lang);
+    setIsLanguageMenuOpen(false);
   };
 
   return (
-    <>
-      {/* Navbar Premium */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled 
-          ? 'bg-white/95 backdrop-blur-md shadow-premium border-b-2 border-accent-emerald' 
-          : 'bg-white/80 backdrop-blur-sm'
-      }`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-premium border-b-2 border-accent-emerald">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <Link to="/" className="flex items-center space-x-2">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="bg-gradient-premium rounded-lg flex items-center justify-center shadow-premium-soft w-10 h-10"
+            >
+              <span className="text-xl font-bold bg-gradient-to-r from-accent-emerald to-accent-gold bg-clip-text text-transparent">
+                A
+              </span>
+            </motion.div>
+            <span className="text-xl font-bold text-premium-dark-gray">AgroSync</span>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            <Link
+              to="/"
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                isActive('/') 
+                  ? 'text-premium-dark-gray bg-premium-platinum' 
+                  : 'text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum'
+              }`}
+            >
+              {t('home')}
+            </Link>
             
-            {/* Logo Premium */}
-            <Link to="/" className="flex items-center space-x-2">
-              <motion.div 
-                whileHover={{ scale: 1.05 }}
-                className="w-8 h-8 bg-gradient-premium rounded-lg flex items-center justify-center shadow-premium-soft"
-              >
-                <Leaf className="w-5 h-5 text-white" />
-              </motion.div>
-              <span className="text-xl font-bold bg-gradient-to-r from-accent-emerald to-accent-gold bg-clip-text text-transparent">AgroSync</span>
+            <Link
+              to="/sobre"
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                isActive('/sobre') 
+                  ? 'text-premium-dark-gray bg-premium-platinum' 
+                  : 'text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum'
+              }`}
+            >
+              {t('about')}
+            </Link>
+            
+            <Link
+              to="/contato"
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                isActive('/contato') 
+                  ? 'text-premium-dark-gray bg-premium-platinum' 
+                  : 'text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum'
+              }`}
+            >
+              {t('contact')}
+            </Link>
+            
+            <Link
+              to="/planos"
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                isActive('/planos') 
+                  ? 'text-premium-dark-gray bg-premium-platinum' 
+                  : 'text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum'
+              }`}
+            >
+              {t('plans')}
             </Link>
 
-            {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center space-x-8">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
-                    isActiveRoute(item.href)
-                      ? 'text-premium-dark-gray bg-premium-platinum'
-                      : 'text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum'
-                  }`}
-                >
-                  {item.icon}
-                  <span>{item.name}</span>
-                </Link>
-              ))}
+            {/* Language Selector */}
+            <div className="relative">
+              <button
+                onClick={toggleLanguageMenu}
+                className="flex items-center space-x-1 px-3 py-2 text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum rounded-lg transition-all duration-300"
+              >
+                <Globe className="w-4 h-4" />
+                <span className="text-sm font-medium">{languageNames[currentLanguage]}</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+              
+              {isLanguageMenuOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-premium-soft border border-premium-platinum py-2 z-50">
+                  {availableLanguages.map((lang) => (
+                    <button
+                      key={lang}
+                      onClick={() => selectLanguage(lang)}
+                      className={`w-full text-left px-4 py-2 text-sm transition-all duration-300 ${
+                        currentLanguage === lang 
+                          ? 'text-premium-dark-gray bg-premium-platinum' 
+                          : 'text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum'
+                      }`}
+                    >
+                      {languageNames[lang]}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Right Side Actions */}
-            <div className="flex items-center space-x-4">
-              
-              {/* Messaging Center */}
-              {user && (
-                <button
-                  onClick={() => setShowMessagingCenter(true)}
-                  className="relative p-2 text-gray-600 hover:text-gray-800 transition-colors"
-                  title="Mensageria"
+            {/* User Menu */}
+            {isAuthenticated ? (
+              <div className="flex items-center space-x-4">
+                <Link
+                  to="/dashboard"
+                  className="px-4 py-2 bg-accent-emerald text-white rounded-lg hover:bg-accent-emerald/80 transition-all duration-300 font-medium"
                 >
-                  <MessageSquare className="w-6 h-6" />
-                </button>
-              )}
-              
-              {/* Notification Manager */}
-              {user && (
-                <NotificationManager userId={user.id} />
-              )}
-              
-              {/* Language Selector */}
-              <div className="relative">
-                <button
-                  onClick={() => setShowLanguageMenu(!showLanguageMenu)}
-                  className="flex items-center space-x-2 px-3 py-2 text-sm text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum rounded-lg transition-colors duration-200"
-                >
-                  <Globe className="w-4 h-4" />
-                  <span>{languages.find(lang => lang.code === i18n.language)?.flag}</span>
-                  <ChevronDown className="w-4 h-4" />
-                </button>
-
-                <AnimatePresence>
-                  {showLanguageMenu && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-premium-soft border border-premium-platinum py-2 z-50"
-                    >
-                      {languages.map((language) => (
-                        <button
-                          key={language.code}
-                          onClick={() => changeLanguage(language.code)}
-                          className={`w-full text-left px-4 py-2 text-sm hover:bg-premium-platinum transition-colors duration-200 ${
-                            i18n.language === language.code ? 'text-premium-dark-gray bg-premium-platinum' : 'text-premium-gray'
-                          }`}
-                        >
-                          <span className="mr-2">{language.flag}</span>
-                          {language.name}
-                        </button>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              {/* Theme Toggle */}
-              <button
-                onClick={toggleTheme}
-                className="p-2 text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum rounded-lg transition-colors duration-200"
-              >
-                {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
-
-              {/* User Menu */}
-              {user ? (
+                  {t('dashboard')}
+                </Link>
+                
                 <div className="relative">
                   <button
-                    onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center space-x-3 px-3 py-2 text-sm text-slate-600 hover:text-slate-800 hover:bg-slate-50 rounded-lg transition-colors duration-200"
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    className="flex items-center space-x-2 p-2 text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum rounded-lg transition-all duration-300"
                   >
-                    <div className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
-                      <User className="w-4 h-4 text-slate-600" />
-                    </div>
-                    <span className="hidden sm:block">{user.name || user.email}</span>
-                    <ChevronDown className="w-4 h-4" />
+                    <User className="w-5 h-5" />
+                    <span className="text-sm font-medium">{user?.name || 'Usuário'}</span>
                   </button>
-
-                  <AnimatePresence>
-                    {showUserMenu && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-elevated border border-slate-200 py-2 z-50"
+                  
+                  {isMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-premium-soft border border-premium-platinum py-2 z-50">
+                      <Link
+                        to="/painel-usuario"
+                        className="flex items-center space-x-2 px-4 py-2 text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum transition-all duration-300"
+                        onClick={() => setIsMenuOpen(false)}
                       >
-                        <div className="px-4 py-2 border-b border-slate-100">
-                          <p className="text-sm font-medium text-slate-800">{user.name || user.email}</p>
-                          <p className="text-xs text-slate-600">{user.email}</p>
-                          {isPaid && (
-                            <div className="flex items-center mt-2">
-                              <CheckCircle className="w-4 h-4 text-emerald-600 mr-2" />
-                              <span className="text-xs text-emerald-600 font-medium">Plano Ativo</span>
-                            </div>
-                          )}
-                        </div>
-                        
-                        <div className="py-2">
-                          <Link to="/dashboard" className="flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors duration-200">
-                            <BarChart3 className="w-4 h-4 mr-3" />
-                            Dashboard
-                          </Link>
-                          
-                          {isPaid && (
-                            <Link to="/mensageria" className="flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors duration-200">
-                              <MessageSquare className="w-4 h-4 mr-3" />
-                              Mensageria
-                            </Link>
-                          )}
-                          
-                          {isAdmin && (
-                            <Link to="/admin" className="flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors duration-200">
-                              <Shield className="w-4 h-4 mr-3" />
-                              Admin
-                            </Link>
-                          )}
-                          
-                          <Link to="/ajuda" className="flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors duration-200">
-                            <MessageSquare className="w-4 h-4 mr-3" />
-                            Ajuda
-                          </Link>
-                        </div>
-                        
-                        <div className="border-t border-slate-100 pt-2">
-                          <button
-                            onClick={handleLogout}
-                            className="flex items-center w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors duration-200"
-                          >
-                            <LogOut className="w-4 h-4 mr-3" />
-                            Sair
-                          </button>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                        <Settings className="w-4 h-4" />
+                        <span className="text-sm">{t('dashboard')}</span>
+                      </Link>
+                      
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center space-x-2 w-full px-4 py-2 text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum transition-all duration-300"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        <span className="text-sm">Sair</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
-              ) : (
-                <div className="flex items-center space-x-3">
-                  <Link
-                    to="/login"
-                    className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-50 rounded-lg transition-colors duration-200"
-                  >
-                    Entrar
-                  </Link>
-                  <Link
-                    to="/cadastro"
-                    className="px-4 py-2 text-sm font-medium text-white bg-slate-600 hover:bg-slate-700 rounded-lg transition-colors duration-200"
-                  >
-                    Cadastrar
-                  </Link>
-                </div>
-              )}
+              </div>
+            ) : (
+              <div className="flex items-center space-x-4">
+                <Link
+                  to="/login"
+                  className="px-4 py-2 text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum rounded-lg transition-all duration-300 font-medium"
+                >
+                  {t('login')}
+                </Link>
+                
+                <Link
+                  to="/cadastro"
+                  className="px-4 py-2 bg-accent-emerald text-white rounded-lg hover:bg-accent-emerald/80 transition-all duration-300 font-medium"
+                >
+                  {t('register')}
+                </Link>
+              </div>
+            )}
+          </div>
 
-              {/* Mobile Menu Button */}
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="lg:hidden p-2 text-slate-600 hover:text-slate-800 hover:bg-slate-50 rounded-lg transition-colors duration-200"
-              >
-                {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
-            </div>
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="p-2 text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum rounded-lg transition-all duration-300"
+            >
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
           </div>
         </div>
+      </div>
 
-        {/* Mobile Navigation */}
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden border-t border-slate-200 bg-white"
+      {/* Mobile Navigation */}
+      {isMenuOpen && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          className="md:hidden bg-white border-t border-premium-platinum"
+        >
+          <div className="px-4 py-2 space-y-1">
+            <Link
+              to="/"
+              className="block px-3 py-2 text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum rounded-lg transition-all duration-300"
+              onClick={() => setIsMenuOpen(false)}
             >
-              <div className="px-4 py-4 space-y-2">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    className={`flex items-center space-x-3 px-3 py-3 rounded-lg text-sm font-medium transition-colors duration-200 ${
-                      isActiveRoute(item.href)
-                        ? 'text-slate-800 bg-slate-100'
-                        : 'text-slate-600 hover:text-slate-800 hover:bg-slate-50'
-                    }`}
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {item.icon}
-                    <span>{item.name}</span>
-                  </Link>
-                ))}
-                
-                {!user && (
-                  <div className="pt-4 border-t border-slate-200 space-y-2">
-                    <Link
-                      to="/login"
-                      className="block px-3 py-3 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-50 rounded-lg transition-colors duration-200"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Entrar
-                    </Link>
-                    <Link
-                      to="/cadastro"
-                      className="block px-3 py-3 text-sm font-medium text-white bg-slate-600 hover:bg-slate-700 rounded-lg transition-colors duration-200 text-center"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Cadastrar
-                    </Link>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </nav>
+              {t('home')}
+            </Link>
+            
+            <Link
+              to="/sobre"
+              className="block px-3 py-2 text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum rounded-lg transition-all duration-300"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              {t('about')}
+            </Link>
+            
+            <Link
+              to="/contato"
+              className="block px-3 py-2 text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum rounded-lg transition-all duration-300"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              {t('contact')}
+            </Link>
+            
+            <Link
+              to="/planos"
+              className="block px-3 py-2 text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum rounded-lg transition-all duration-300"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              {t('plans')}
+            </Link>
 
-      {/* Messaging Center */}
-      {user && (
-        <MessagingCenter
-          userId={user.id}
-          isOpen={showMessagingCenter}
-          onClose={() => setShowMessagingCenter(false)}
-        />
+            {isAuthenticated ? (
+              <>
+                <Link
+                  to="/dashboard"
+                  className="block px-3 py-2 text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum rounded-lg transition-all duration-300"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {t('dashboard')}
+                </Link>
+                
+                <button
+                  onClick={handleLogout}
+                  className="block w-full text-left px-3 py-2 text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum rounded-lg transition-all duration-300"
+                >
+                  Sair
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="block px-3 py-2 text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum rounded-lg transition-all duration-300"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {t('login')}
+                </Link>
+                
+                <Link
+                  to="/cadastro"
+                  className="block px-3 py-2 text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum rounded-lg transition-all duration-300"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {t('register')}
+                </Link>
+              </>
+            )}
+          </div>
+        </motion.div>
       )}
-    </>
+    </nav>
   );
 };
 
