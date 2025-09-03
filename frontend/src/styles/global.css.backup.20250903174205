@@ -3,16 +3,6 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-/* ===== VARIÁVEIS CSS GLOBAIS - TEMA ESCURO AGRONEGÓCIO ===== */
-:root {
-  --agro-bg: #0b0b0d;
-  --agro-text: #E8F1F7;
-  --agro-emerald: #00B894;
-  --agro-sky: #3EA8FF;
-  --agro-amber: #f5a524;
-  --agro-card: rgba(255,255,255,0.04);
-}
-
 /* ===== RESET E BASE ===== */
 * {
   box-sizing: border-box;
@@ -25,77 +15,8 @@ html {
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
-  background: var(--agro-bg);
-  color: var(--agro-text);
-}
-
-/* ===== COMPONENTES GLOBAIS PREMIUM ===== */
-@layer components {
-  /* Cards com tema escuro */
-  .card {
-    background: var(--agro-card);
-    border-radius: 1rem;
-    padding: 1rem;
-    border: 1px solid rgba(255,255,255,0.1);
-  }
-  
-  /* Botões primários */
-  .btn-primary {
-    background: linear-gradient(90deg, var(--agro-emerald), var(--agro-sky));
-    color: #071019;
-    border-radius: 1rem;
-    padding: 0.75rem 1.5rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(0, 184, 148, 0.3);
-  }
-  
-  /* Botões secundários */
-  .btn-secondary {
-    background: rgba(255,255,255,0.1);
-    color: var(--agro-text);
-    border-radius: 1rem;
-    padding: 0.75rem 1.5rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(255,255,255,0.2);
-    cursor: pointer;
-  }
-  
-  .btn-secondary:hover {
-    background: rgba(255,255,255,0.15);
-    transform: translateY(-2px);
-  }
-  
-  /* Inputs com tema escuro */
-  .input-dark {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: var(--agro-text);
-    border-radius: 0.5rem;
-    padding: 0.75rem 1rem;
-    transition: all 0.3s ease;
-  }
-  
-  .input-dark:focus {
-    outline: none;
-    border-color: var(--agro-emerald);
-    box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.1);
-  }
-  
-  /* Esconder ticker de grãos globalmente se ainda presente abaixo do menu */
-  .grains-ticker, .grain-ticker, .cotacoes-grains {
-    display: none !important;
-    animation: none !important;
-    height: 0 !important;
-    overflow: hidden !important;
-  }
+  color: #1e293b;
+  background-color: #ffffff;
 }
 
 /* ===== ANIMAÇÕES GLOBAIS PREMIUM ===== */
@@ -118,10 +39,11 @@ body {
   }
   
   /* Glow effects */
-  .glow-green { box-shadow: 0 0 20px rgba(0, 184, 148, 0.3); }
-  .glow-yellow { box-shadow: 0 0 20px rgba(245, 165, 36, 0.3); }
-  .glow-blue { box-shadow: 0 0 20px rgba(62, 168, 255, 0.3); }
-  .glow-emerald { box-shadow: 0 0 20px rgba(0, 184, 148, 0.3); }
+  .glow-green { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+  .glow-yellow { box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); }
+  .glow-blue { box-shadow: 0 0 20px rgba(0, 212, 255, 0.3); }
+  .glow-emerald { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+  .glow-neon { box-shadow: 0 0 30px rgba(0, 212, 255, 0.4); }
   
   /* Gradientes animados */
   .gradient-animated {
@@ -131,43 +53,51 @@ body {
   
   /* Bordas animadas */
   .border-gradient {
-    background: linear-gradient(135deg, var(--agro-emerald), var(--agro-amber), var(--agro-sky));
+    background: linear-gradient(135deg, #16a34a, #f59e0b, #00d4ff);
     padding: 2px;
     border-radius: inherit;
   }
   
   .border-gradient > * {
-    background: var(--agro-bg);
+    background: white;
     border-radius: inherit;
   }
 }
 
-/* ===== ANIMAÇÕES KEYFRAMES ===== */
-@keyframes gradientShift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-/* ===== RESPONSIVIDADE ===== */
-@media (max-width: 768px) {
-  .card {
-    padding: 0.75rem;
+/* ===== COMPONENTES GLOBAIS PREMIUM ===== */
+@layer components {
+  /* Botões premium */
+  .btn-premium {
+    @apply px-6 py-3 font-semibold rounded-xl transition-all duration-300 relative overflow-hidden;
+    @apply bg-gradient-to-r from-slate-600 to-slate-700 text-white;
+    @apply hover:from-slate-700 hover:to-slate-800;
+    @apply shadow-lg hover:shadow-xl;
   }
   
-  .btn-primary, .btn-secondary {
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
+  .btn-premium:hover {
+    transform: translateY(-2px);
   }
-}
-
-/* ===== ACESSIBILIDADE ===== */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+  
+  .btn-premium::before {
+    content: '';
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+    @apply bg-gradient-to-r from-agro-green-500/20 via-agro-yellow-500/20 to-web3-neon-blue/20;
   }
-}
+  
+  .btn-premium:hover::before {
+    @apply opacity-100;
+  }
+  
+  /* Botões de acento */
+  .btn-accent-green {
+    @apply px-6 py-3 font-semibold rounded-xl transition-all duration-300 relative overflow-hidden;
+    @apply bg-gradient-to-r from-agro-green-600 to-agro-green-700 text-white;
+    @apply hover:from-agro-green-700 hover:to-agro-green-800;
+    @apply shadow-lg hover:shadow-xl;
+  }
+  
+  .btn-accent-yellow {
+    @apply px-6 py-3 font-semibold rounded-xl transition-all duration-300 relative overflow-hidden;
     @apply bg-gradient-to-r from-agro-yellow-600 to-agro-yellow-700 text-white;
     @apply hover:from-agro-yellow-700 hover:to-agro-yellow-800;
     @apply shadow-lg hover:shadow-xl;

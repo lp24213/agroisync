@@ -32,22 +32,22 @@ const StockMarketTicker = () => {
   const getTrendIcon = (trend) => {
     switch (trend) {
       case 'up':
-        return <TrendingUp className="w-3 h-3 text-emerald-400" />;
+        return <TrendingUp className="w-3 h-3 text-agro-accent-emerald" />;
       case 'down':
         return <TrendingDown className="w-3 h-3 text-red-400" />;
       default:
-        return <Minus className="w-3 h-3 text-amber-400" />;
+        return <Minus className="w-3 h-3 text-agro-accent-amber" />;
     }
   };
 
   const getTrendColor = (trend) => {
     switch (trend) {
       case 'up':
-        return 'text-emerald-400';
+        return 'text-agro-accent-emerald';
       case 'down':
         return 'text-red-400';
       default:
-        return 'text-amber-400';
+        return 'text-agro-accent-amber';
     }
   };
 
@@ -57,10 +57,10 @@ const StockMarketTicker = () => {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.3, delay: index * 0.1 }}
-      className="flex items-center space-x-1 px-2 py-1 bg-black/20 rounded-md border border-white/10 min-w-[110px]"
+      className="flex items-center space-x-2 px-3 py-1 bg-agro-bg-secondary/30 rounded-lg border border-agro-border-secondary"
     >
-      <span className="text-xs font-medium text-white/90">{item.name}</span>
-      <span className="text-xs font-bold text-white">{item.value}</span>
+      <span className="text-xs font-medium text-agro-text-primary">{item.name}</span>
+      <span className="text-xs font-bold text-agro-text-primary">{item.value}</span>
       <div className="flex items-center space-x-1">
         {getTrendIcon(item.trend)}
         <span className={`text-xs font-medium ${getTrendColor(item.trend)}`}>
@@ -71,14 +71,14 @@ const StockMarketTicker = () => {
   );
 
   return (
-    <div className="h-14 bg-black/80 border-b border-white/10 backdrop-blur-sm">
+    <div className="h-16 bg-agro-bg-secondary/90 border-b border-agro-border-secondary backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-4 h-full">
         <div className="flex items-center justify-between h-full">
           {/* Índices */}
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center space-x-1">
-              <TrendingUp className="w-3 h-3 text-emerald-400" />
-              <span className="text-xs font-semibold text-white/70">B3</span>
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <TrendingUp className="w-4 h-4 text-agro-accent-emerald" />
+              <span className="text-xs font-semibold text-agro-text-secondary">ÍNDICES</span>
             </div>
             <div className="flex items-center space-x-2">
               {marketData.indices.map((item, index) => renderMarketItem(item, index))}
@@ -86,10 +86,10 @@ const StockMarketTicker = () => {
           </div>
 
           {/* Moedas */}
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center space-x-1">
-              <DollarSign className="w-3 h-3 text-sky-400" />
-              <span className="text-xs font-semibold text-white/70">FX</span>
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <DollarSign className="w-4 h-4 text-agro-accent-sky" />
+              <span className="text-xs font-semibold text-agro-text-secondary">MOEDAS</span>
             </div>
             <div className="flex items-center space-x-2">
               {marketData.currencies.map((item, index) => renderMarketItem(item, index))}
@@ -97,10 +97,10 @@ const StockMarketTicker = () => {
           </div>
 
           {/* Cripto */}
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center space-x-1">
-              <Bitcoin className="w-3 h-3 text-amber-400" />
-              <span className="text-xs font-semibold text-white/70">CRYPTO</span>
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <Bitcoin className="w-4 h-4 text-agro-accent-amber" />
+              <span className="text-xs font-semibold text-agro-text-secondary">CRIPTO</span>
             </div>
             <div className="flex items-center space-x-2">
               {marketData.crypto.map((item, index) => renderMarketItem(item, index))}
@@ -109,11 +109,12 @@ const StockMarketTicker = () => {
 
           {/* Live Indicator */}
           <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-            <span className="text-xs text-white/60 font-mono">
+            <div className="w-2 h-2 bg-agro-accent-emerald rounded-full animate-pulse"></div>
+            <span className="text-xs text-agro-text-tertiary font-mono">
               {currentTime.toLocaleTimeString('pt-BR', { 
                 hour: '2-digit', 
-                minute: '2-digit'
+                minute: '2-digit',
+                second: '2-digit'
               })}
             </span>
           </div>

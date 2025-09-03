@@ -71,7 +71,7 @@ const Login = () => {
       } else {
         setSuccess('Login realizado com sucesso!');
         // Verificar se é admin e redirecionar adequadamente
-        if (result.user?.isAdmin || result.user?.role === 'admin') {
+        if (result.user?.role === 'admin') {
           setTimeout(() => navigate('/admin/dashboard'), 1500);
         } else {
           setTimeout(() => navigate('/dashboard'), 1500);
@@ -133,7 +133,7 @@ const Login = () => {
       if (result.success) {
         setSuccess('Verificação 2FA realizada com sucesso!');
         // Verificar se é admin e redirecionar adequadamente
-        if (result.user?.isAdmin || result.user?.role === 'admin') {
+        if (result.user?.role === 'admin') {
           setTimeout(() => navigate('/admin/dashboard'), 1500);
         } else {
           setTimeout(() => navigate('/dashboard'), 1500);
