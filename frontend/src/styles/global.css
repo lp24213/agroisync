@@ -166,8 +166,12 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-  }
+    }
 }
+
+@layer components {
+  .btn-accent-yellow {
+    @apply px-6 py-3 font-semibold rounded-xl transition-all duration-300 relative overflow-hidden;
     @apply bg-gradient-to-r from-agro-yellow-600 to-agro-yellow-700 text-white;
     @apply hover:from-agro-yellow-700 hover:to-agro-yellow-800;
     @apply shadow-lg hover:shadow-xl;
