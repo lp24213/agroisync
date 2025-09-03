@@ -98,6 +98,57 @@
   .btn-accent-green {
     @apply bg-gradient-to-r from-emerald-500 via-emerald-600 to-emerald-700 text-white font-bold rounded-xl hover:from-emerald-600 hover:via-emerald-700 hover:to-emerald-800 transition-all duration-300 shadow-lg hover:shadow-xl relative overflow-hidden;
   }
+
+  /* TEMA AGRONEGÓCIO PREMIUM - CLASSES UTILITÁRIAS */
+  
+  /* Cards com tema agro */
+  .card {
+    @apply bg-agro-bg-card rounded-2xl shadow-xl border border-agro-border-primary backdrop-blur-sm;
+  }
+  
+  /* Botões primários */
+  .btn-primary {
+    @apply bg-gradient-to-r from-agro-accent-emerald to-agro-accent-emerald-dark text-white font-semibold rounded-2xl px-6 py-3 hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-agro-accent-emerald focus:ring-offset-2 focus:ring-offset-agro-bg-primary;
+  }
+  
+  /* Botões secundários */
+  .btn-secondary {
+    @apply bg-agro-bg-secondary text-agro-text-primary border border-agro-border-primary font-semibold rounded-2xl px-6 py-3 hover:bg-agro-bg-card transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-agro-accent-sky focus:ring-offset-2 focus:ring-offset-agro-bg-primary;
+  }
+  
+  /* Botões de acento */
+  .btn-accent-sky {
+    @apply bg-gradient-to-r from-agro-accent-sky to-agro-accent-sky-light text-white font-semibold rounded-2xl px-6 py-3 hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-agro-accent-sky focus:ring-offset-2 focus:ring-offset-agro-bg-primary;
+  }
+  
+  .btn-accent-amber {
+    @apply bg-gradient-to-r from-agro-accent-amber to-agro-accent-amber-light text-white font-semibold rounded-2xl px-6 py-3 hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-agro-accent-amber focus:ring-offset-2 focus:ring-offset-agro-bg-primary;
+  }
+  
+  /* Efeito glass */
+  .glass {
+    @apply bg-agro-bg-glass backdrop-blur-md border border-agro-border-primary;
+  }
+  
+  /* Gradientes de texto */
+  .text-gradient-agro {
+    @apply bg-gradient-to-r from-agro-accent-emerald via-agro-accent-sky to-agro-accent-amber bg-clip-text text-transparent;
+  }
+  
+  /* Sombras premium */
+  .shadow-agro {
+    @apply shadow-xl shadow-agro-accent-emerald/10;
+  }
+  
+  /* Animações suaves */
+  .transition-agro {
+    @apply transition-all duration-300 ease-in-out;
+  }
+  
+  /* Estados de hover */
+  .hover-agro {
+    @apply hover:shadow-agro hover:scale-105 transition-agro;
+  }
   
   /* Badge Accent Green */
   .badge-accent-green {

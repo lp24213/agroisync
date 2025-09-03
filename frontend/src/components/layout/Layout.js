@@ -29,8 +29,8 @@ const Layout = ({ children }) => {
       <PagePreloader isLoading={isLoading} />
 
       <div className="min-h-screen relative overflow-hidden pt-16">
-        {/* Fundo animado de estrelas (apenas no tema escuro) */}
-        {isDark && <AnimatedBackground />}
+        {/* Fundo animado de estrelas (removido das páginas internas) */}
+        {/* {isDark && <AnimatedBackground />} */}
 
         {/* Gradiente sutil sobre o fundo */}
         <div className={`absolute inset-0 pointer-events-none z-0 ${
