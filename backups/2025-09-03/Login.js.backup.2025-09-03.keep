@@ -54,7 +54,7 @@ const Login = () => {
     }
 
     // Verificar se é tentativa de login admin
-    if (formData.email === 'admin@email.com') {
+    if (formData.email === 'luispaulodeoliveira@agrotm.com.br') {
       setError('Para acessar o painel administrativo, use o link específico de admin.');
       return;
     }

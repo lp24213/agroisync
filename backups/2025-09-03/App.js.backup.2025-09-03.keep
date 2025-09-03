@@ -5,7 +5,6 @@ import { PaymentProvider } from './contexts/PaymentContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { ChatbotProvider } from './contexts/ChatbotContext';
 import { LanguageProvider } from './contexts/LanguageContext';
-import { FeatureFlagsProvider } from './contexts/FeatureFlagsContext';
 import RouteGuard from './components/RouteGuard';
 
 // Páginas principais
@@ -63,15 +62,14 @@ import ChatbotWidget from './components/ChatbotWidget';
 function App() {
   return (
     <Router>
-      <FeatureFlagsProvider>
-        <LanguageProvider>
-          <ThemeProvider>
-            <AuthProvider>
-              <PaymentProvider>
-                <ChatbotProvider>
-                  <div className="App">
-                    <Navbar />
-                    <Routes>
+      <LanguageProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <PaymentProvider>
+              <ChatbotProvider>
+                <div className="App">
+                  <Navbar />
+                  <Routes>
                     {/* Rotas públicas */}
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
@@ -143,7 +141,6 @@ function App() {
           </AuthProvider>
         </ThemeProvider>
       </LanguageProvider>
-    </FeatureFlagsProvider>
     </Router>
   );
 }

@@ -8,11 +8,15 @@ import {
   Sun, Cloud, CloudRain, Thermometer, Droplets, Wind
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import StockMarketTicker from '../components/StockMarketTicker';
+import { useFeatureFlags } from '../contexts/FeatureFlagsContext';
+import HomeGrains from '../components/HomeGrains';
+import HomeNews from '../components/HomeNews';
+import HomeWeather from '../components/HomeWeather';
 
 const Home = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { isEnabled } = useFeatureFlags();
   
   // CAMADA 2: Dados reais da bolsa de valores via API Agrolink
   const [stockData, setStockData] = useState([]);
@@ -472,9 +476,16 @@ const Home = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 pt-16">
+    <div className="min-h-screen bg-neutral-950 text-neutral-100 pt-16">
       {/* Cotação da Bolsa */}
-      <StockMarketTicker />
+      {/* Seção de Grãos, Notícias e Clima */}
+      {isEnabled('FEATURE_HOME_GRAINS') && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <HomeGrains />
+          <HomeNews />
+          <HomeWeather />
+        </div>
+      )}
       
       {/* Hero Section - DESIGN PREMIUM AGROISYNC MAIORAL */}
       <section className="relative pt-24 pb-24 px-4 overflow-hidden header-premium">
