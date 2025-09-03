@@ -25,6 +25,7 @@ import Cookies from './pages/Cookies';
 import Ajuda from './pages/Ajuda';
 import Planos from './pages/Planos';
 import PaymentSuccess from './pages/PaymentSuccess';
+import PaymentCancel from './pages/PaymentCancel';
 
 // Páginas de mensageria
 import Messages from './pages/Messages';
@@ -88,6 +89,7 @@ function App() {
                     <Route path="/ajuda" element={<Ajuda />} />
                     <Route path="/planos" element={<Planos />} />
                     <Route path="/payment-success" element={<PaymentSuccess />} />
+                    <Route path="/payment-cancel" element={<PaymentCancel />} />
                     <Route path="/agroconecta" element={<AgroConecta />} />
                     <Route path="/cripto" element={<Cripto />} />
                     <Route path="/cotacao" element={<Cotacao />} />
