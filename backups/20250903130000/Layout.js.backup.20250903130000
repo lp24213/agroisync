@@ -2,21 +2,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Navbar from './Navbar';
 import Footer from './Footer';
-import StockMarketTicker from './StockMarketTicker';
-import { useFeatureFlags } from '../contexts/FeatureFlagsContext';
 
 const Layout = ({ children }) => {
-  const { isEnabled } = useFeatureFlags();
-
   return (
     <div className="min-h-screen bg-agro-bg-primary text-agro-text-primary">
-      {/* StockMarketTicker acima do menu */}
-      {isEnabled('FEATURE_TICKER') && (
-        <div className="fixed top-0 left-0 right-0 z-40">
-          <StockMarketTicker />
-        </div>
-      )}
-      
       {/* Navbar */}
       <Navbar />
       
@@ -25,7 +14,7 @@ const Layout = ({ children }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
-        className={isEnabled('FEATURE_TICKER') ? 'pt-32' : 'pt-16'}
+        className="pt-16"
       >
         {children}
       </motion.main>

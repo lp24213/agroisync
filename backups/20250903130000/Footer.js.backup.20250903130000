@@ -22,10 +22,10 @@ const Footer = () => {
               transition={{ duration: 0.6 }}
             >
               <div className="flex items-center space-x-2 mb-4">
-                <div className="flex items-center justify-center shadow-lg w-10 h-10">
-                  <img src="/logo-agroisync.svg" alt="AGROISYNC" className="w-8 h-8" />
+                <div className="bg-gradient-to-r from-agro-accent-emerald to-agro-accent-sky rounded-lg flex items-center justify-center shadow-lg w-10 h-10">
+                  <Leaf className="h-6 w-6 text-agro-text-primary" />
                 </div>
-                <span className="text-xl font-bold text-agro-text-primary">AGROISYNC</span>
+                <span className="text-xl font-bold text-agro-text-primary">AgroSync</span>
               </div>
               <p className="text-agro-text-secondary mb-6 max-w-md">
                 Conectando o agronegócio brasileiro através de tecnologia inovadora e soluções sustentáveis.
@@ -150,7 +150,7 @@ const Footer = () => {
             </div>
             <div className="flex items-center space-x-3">
               <Phone className="h-5 w-5 text-agro-accent-emerald" />
-              <span className="text-agro-text-secondary">(66) 99236-2830</span>
+              <span className="text-agro-text-secondary">+55 (66) 99999-9999</span>
             </div>
             <div className="flex items-center space-x-3">
               <Mail className="h-5 w-5 text-agro-accent-emerald" />
@@ -167,7 +167,7 @@ const Footer = () => {
           className="mt-8 pt-6 border-t border-agro-border-primary text-center"
         >
           <p className="text-agro-text-tertiary text-sm">
-            © {currentYear} AGROISYNC. Todos os direitos reservados. 
+            © {currentYear} AgroSync. Todos os direitos reservados. 
             <span className="inline-flex items-center ml-2">
               Feito com <Heart className="h-4 w-4 text-red-500 mx-1" /> no Brasil
             </span>

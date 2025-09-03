@@ -35,7 +35,6 @@ import Mensageria from './pages/Mensageria';
 // Páginas admin
 import AdminLogin from './pages/AdminLogin';
 import AdminSecurePanel from './pages/AdminSecurePanel';
-import AdminLanding from './pages/AdminLanding';
 
 // Páginas especiais
 import Admin from './pages/Admin';
@@ -114,7 +113,7 @@ function App() {
                     <Route path="/painel-usuario" element={<RouteGuard requireAuth={true}><PainelUsuario /></RouteGuard>} />
 
                     {/* Rotas admin */}
-                    <Route path="/admin" element={<AdminLanding />} />
+                    <Route path="/admin" element={<AdminLogin />} />
                     <Route path="/admin-login" element={<AdminLogin />} />
                     <Route path="/admin-dashboard" element={<RouteGuard requireAuth={true} requireAdmin={true}><Admin /></RouteGuard>} />
                     <Route path="/admin-panel" element={<RouteGuard requireAuth={true} requireAdmin={true}><AdminSecurePanel /></RouteGuard>} />

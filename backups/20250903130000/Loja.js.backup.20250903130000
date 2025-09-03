@@ -90,11 +90,8 @@ const Loja = () => {
       console.log('Loja: Chamando productService.getProducts()'); // Debug
       const productsData = await productService.getProducts();
       console.log('Loja: Produtos carregados:', productsData); // Debug
-      
-      // Safe-guard: garantir que productsData seja um array
-      const safeProductsData = Array.isArray(productsData) ? productsData : [];
-      setProducts(safeProductsData);
-      setFilteredProducts(safeProductsData);
+      setProducts(productsData);
+      setFilteredProducts(productsData);
       console.log('Loja: Produtos definidos no estado'); // Debug
     } catch (error) {
       console.error('Erro ao carregar produtos:', error);
@@ -255,75 +252,28 @@ const Loja = () => {
   };
 
   const addToCart = (product) => {
-    try {
-      if (!product || !product.id) {
-        console.error('Produto inválido para adicionar ao carrinho:', product);
-        return;
-      }
-      
-      const existingItem = cart.find(item => item.id === product.id);
-      if (existingItem) {
-        setCart(cart.map(item =>
-          item.id === product.id
-            ? { ...item, quantity: (item.quantity || 0) + 1 }
-            : item
-        ));
-      } else {
-        setCart([...cart, { ...product, quantity: 1 }]);
-      }
-    } catch (error) {
-      console.error('Erro ao adicionar ao carrinho:', error);
+    const existingItem = cart.find(item => item.id === product.id);
+    if (existingItem) {
+      setCart(cart.map(item =>
+        item.id === product.id
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      ));
+    } else {
+      setCart([...cart, { ...product, quantity: 1 }]);
     }
   };
 
   const removeFromCart = (productId) => {
-    try {
-      if (!productId) {
-        console.error('ID do produto inválido para remover do carrinho');
-        return;
-      }
-      setCart(cart.filter(item => item.id !== productId));
-    } catch (error) {
-      console.error('Erro ao remover do carrinho:', error);
-    }
-  };
-
-  const updateCartQuantity = (productId, quantity) => {
-    try {
-      if (!productId || quantity < 0) {
-        console.error('Parâmetros inválidos para atualizar quantidade');
-        return;
-      }
-      
-      if (quantity === 0) {
-        removeFromCart(productId);
-      } else {
-        setCart(cart.map(item =>
-          item.id === productId
-            ? { ...item, quantity }
-            : item
-        ));
-      }
-    } catch (error) {
-      console.error('Erro ao atualizar quantidade do carrinho:', error);
-    }
+    setCart(cart.filter(item => item.id !== productId));
   };
 
   const toggleWishlist = (product) => {
-    try {
-      if (!product || !product.id) {
-        console.error('Produto inválido para favoritar:', product);
-        return;
-      }
-      
-      const isInWishlist = wishlist.find(item => item.id === product.id);
-      if (isInWishlist) {
-        setWishlist(wishlist.filter(item => item.id !== product.id));
-      } else {
-        setWishlist([...wishlist, product]);
-      }
-    } catch (error) {
-      console.error('Erro ao favoritar produto:', error);
+    const isInWishlist = wishlist.find(item => item.id === product.id);
+    if (isInWishlist) {
+      setWishlist(wishlist.filter(item => item.id !== product.id));
+    } else {
+      setWishlist([...wishlist, product]);
     }
   };
 
@@ -574,25 +524,25 @@ const Loja = () => {
 
                 {/* Produtos */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {Array.isArray(filteredProducts) && filteredProducts.map((product) => (
+                  {filteredProducts.map((product) => (
                     <ProductCard
-                      key={product?.id || Math.random()}
+                      key={product.id}
                       product={product}
-                      onContact={() => console.log('Contato:', product?.id)}
+                      onContact={() => console.log('Contato:', product.id)}
                       onFavorite={() => toggleWishlist(product)}
-                      onView={() => console.log('Visualizar:', product?.id)}
+                      onView={() => console.log('Visualizar:', product.id)}
                       onAddToCart={() => addToCart(product)}
                     />
                   ))}
                 </div>
 
-                {(!Array.isArray(filteredProducts) || filteredProducts.length === 0) && (
+                {filteredProducts.length === 0 && (
                   <div className="text-center py-12">
-                    <Package className="w-16 h-16 text-agro-text-tertiary mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-agro-text-primary mb-2">
+                    <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
                       Nenhum produto encontrado
                     </h3>
-                    <p className="text-agro-text-secondary">
+                    <p className="text-gray-600 dark:text-gray-400">
                       Tente ajustar os filtros ou fazer uma nova busca
                     </p>
                   </div>

@@ -10,7 +10,8 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useFeatureFlags } from '../contexts/FeatureFlagsContext';
 import HomeGrains from '../components/HomeGrains';
-import HomeWeatherIP from '../components/HomeWeatherIP';
+import HomeNews from '../components/HomeNews';
+import HomeWeather from '../components/HomeWeather';
 
 const Home = () => {
   const { t } = useTranslation();
@@ -476,18 +477,13 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-agro-bg-primary text-agro-text-primary pt-16">
-      {/* Clima por IP no Topo */}
-      {isEnabled('FEATURE_HOME_WEATHER_IP') && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-          <HomeWeatherIP />
-        </div>
-      )}
-
       {/* Cotação da Bolsa */}
-      {/* Seção de Grãos */}
+      {/* Seção de Grãos, Notícias e Clima */}
       {isEnabled('FEATURE_HOME_GRAINS') && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <HomeGrains />
+          <HomeNews />
+          <HomeWeather />
         </div>
       )}
       

@@ -53,15 +53,17 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="flex items-center justify-center shadow-lg w-10 h-10"
-            >
-              <img src="/logo-agroisync.svg" alt="AGROISYNC" className="w-8 h-8" />
-            </motion.div>
-            <span className="text-xl font-bold text-agro-text-primary">AGROISYNC</span>
-          </Link>
+                      <Link to="/" className="flex items-center space-x-2">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className="bg-gradient-to-r from-agro-accent-emerald to-agro-accent-sky rounded-lg flex items-center justify-center shadow-lg w-10 h-10"
+              >
+                <span className="text-xl font-bold text-agro-text-primary">
+                  A
+                </span>
+              </motion.div>
+              <span className="text-xl font-bold text-agro-text-primary">AgroSync</span>
+            </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">

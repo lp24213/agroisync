@@ -174,7 +174,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-agro-bg-primary text-agro-text-primary pt-16">
               {/* Header */}
         <div className="bg-agro-bg-card shadow-xl border-b border-agro-border-primary">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
@@ -204,24 +204,24 @@ const Dashboard = () => {
             { id: 'messages', label: 'Mensagens', icon: MessageSquare },
             { id: 'notifications', label: 'Notificações', icon: Bell },
             { id: 'settings', label: 'Configurações', icon: Settings }
-          ].map((tab) => {
-            const Icon = tab.icon;
-            return (
+              ].map((tab) => {
+                const Icon = tab.icon;
+                return (
               <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 ${
-                  activeTab === tab.id
+                      activeTab === tab.id
                     ? 'bg-agro-green text-white shadow-md'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                }`}
-              >
-                <Icon className="w-4 h-4" />
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
                 <span className="hidden sm:inline">{tab.label}</span>
               </button>
-            );
-          })}
-        </div>
+                );
+              })}
+            </div>
 
         {/* Conteúdo das Tabs */}
         <AnimatePresence mode="wait">
@@ -247,11 +247,11 @@ const Dashboard = () => {
                   ].map((stat) => {
                     const Icon = stat.icon;
                     return (
-                      <motion.div
+              <motion.div
                         key={stat.label}
                         whileHover={{ scale: 1.02 }}
-                        className="card-premium p-6"
-                      >
+                  className="card-premium p-6"
+                >
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="text-sm font-medium text-gray-600">{stat.label}</p>
@@ -261,7 +261,7 @@ const Dashboard = () => {
                             <Icon className={`w-6 h-6 text-${stat.color}-600`} />
                           </div>
                         </div>
-                      </motion.div>
+                    </motion.div>
                     );
                   })}
                 </div>
@@ -321,7 +321,7 @@ const Dashboard = () => {
                     <span>Adicionar Produto</span>
                   </Link>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {products.map((product) => (
                     <motion.div
@@ -356,20 +356,20 @@ const Dashboard = () => {
                           <span className="text-sm text-gray-600">Favoritos:</span>
                           <span className="text-sm font-medium">{product.favorites}</span>
                         </div>
-                      </div>
-                      
-                      <div className="flex space-x-2">
+                        </div>
+
+                        <div className="flex space-x-2">
                         <button className="flex-1 btn-secondary flex items-center justify-center space-x-1">
                           <Eye className="w-4 h-4" />
                           <span>Ver</span>
-                        </button>
+                          </button>
                         <button className="flex-1 btn-secondary flex items-center justify-center space-x-1">
                           <Edit className="w-4 h-4" />
                           <span>Editar</span>
-                        </button>
+                          </button>
                         <button className="btn-danger flex items-center justify-center">
-                          <Trash className="w-4 h-4" />
-                        </button>
+                            <Trash className="w-4 h-4" />
+                          </button>
                       </div>
                     </motion.div>
                   ))}
@@ -390,7 +390,7 @@ const Dashboard = () => {
                     <span>Adicionar Frete</span>
                   </Link>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {freights.map((freight) => (
                     <motion.div
@@ -426,7 +426,7 @@ const Dashboard = () => {
                           <span className="text-sm font-medium">{freight.applications}</span>
                         </div>
                       </div>
-                      
+
                       <div className="flex space-x-2">
                         <button className="flex-1 btn-secondary flex items-center justify-center space-x-1">
                           <Eye className="w-4 h-4" />
@@ -449,8 +449,8 @@ const Dashboard = () => {
             {/* Mensagens */}
             {activeTab === 'messages' && (
               <div className="space-y-6">
-                <h2 className="title-premium text-2xl font-bold">Mensagens</h2>
-                
+                  <h2 className="title-premium text-2xl font-bold">Mensagens</h2>
+
                 <div className="space-y-4">
                   {messages.map((message) => (
                     <motion.div
@@ -474,7 +474,7 @@ const Dashboard = () => {
                           <p className="text-sm text-gray-500 mt-1">{message.preview}</p>
                         </div>
                         <div className="text-right">
-                          <span className="text-xs text-gray-500">{formatDate(message.timestamp)}</span>
+                        <span className="text-xs text-gray-500">{formatDate(message.timestamp)}</span>
                           <div className="mt-2 space-x-2">
                             <button className="btn-secondary text-xs px-3 py-1">Responder</button>
                             <button className="btn-danger text-xs px-3 py-1">Excluir</button>
