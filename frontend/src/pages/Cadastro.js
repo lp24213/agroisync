@@ -157,18 +157,18 @@ const Cadastro = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 pt-16">
+    <div className="min-h-screen bg-agro-bg-primary text-agro-text-primary pt-16">
       {/* Cotação da Bolsa */}
       <StockMarketTicker />
       
       {/* Container Principal */}
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden pt-16">
+      <div className="min-h-screen bg-agro-bg-primary py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden pt-16">
         {/* Background elements */}
         <div className="absolute inset-0">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-agro-green-500 via-agro-yellow-500 to-web3-neon-blue opacity-60"></div>
-          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-agro-green-600 to-web3-neon-blue rounded-full opacity-10 blur-xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-agro-yellow-500 to-web3-neon-blue rounded-full opacity-10 blur-xl animate-pulse"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-br from-agro-green-500/5 via-agro-yellow-500/5 to-web3-neon-blue/5 rounded-full blur-3xl"></div>
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-agro-accent-emerald via-agro-accent-amber to-agro-accent-sky opacity-60"></div>
+          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-agro-accent-emerald to-agro-accent-sky rounded-full opacity-10 blur-xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-agro-accent-amber to-agro-accent-sky rounded-full opacity-10 blur-xl animate-pulse"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-br from-agro-accent-emerald/5 via-agro-accent-amber/5 to-agro-accent-sky/5 rounded-full blur-3xl"></div>
         </div>
 
         <div className="max-w-4xl mx-auto relative z-10">
@@ -182,15 +182,15 @@ const Cadastro = () => {
             <div className="flex justify-center">
               <motion.div 
                 whileHover={{ scale: 1.05 }}
-                className="w-20 h-20 bg-gradient-to-r from-agro-green-600 via-agro-yellow-500 to-web3-neon-blue rounded-2xl flex items-center justify-center shadow-2xl"
+                className="w-20 h-20 bg-gradient-to-r from-agro-accent-emerald via-agro-accent-amber to-agro-accent-sky rounded-2xl flex items-center justify-center shadow-2xl"
               >
-                <Leaf className="w-10 h-10 text-white" />
+                <Leaf className="w-10 h-10 text-agro-text-primary" />
               </motion.div>
             </div>
-            <h2 className="mt-6 text-4xl font-bold title-premium">
+            <h2 className="mt-6 text-4xl font-bold text-agro-text-primary">
               Criar Conta
             </h2>
-            <p className="mt-2 text-lg text-slate-600">
+            <p className="mt-2 text-lg text-agro-text-secondary">
               Junte-se à plataforma AgroSync e conecte-se ao agronegócio
             </p>
           </motion.div>
@@ -207,21 +207,21 @@ const Cadastro = () => {
                 <div key={step} className="flex items-center">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
                     currentStep >= step 
-                      ? 'bg-gradient-to-r from-agro-green-600 to-web3-neon-blue text-white shadow-lg' 
-                      : 'bg-slate-200 text-slate-600'
+                      ? 'bg-gradient-to-r from-agro-accent-emerald to-agro-accent-sky text-agro-text-primary shadow-lg' 
+                      : 'bg-agro-bg-card text-agro-text-tertiary'
                   }`}>
                     {step}
                   </div>
                   {step < 3 && (
                     <div className={`w-16 h-1 mx-2 transition-all duration-300 ${
-                      currentStep > step ? 'bg-gradient-to-r from-agro-green-500 to-web3-neon-blue' : 'bg-slate-200'
+                      currentStep > step ? 'bg-gradient-to-r from-agro-accent-emerald to-agro-accent-sky' : 'bg-agro-bg-card'
                     }`} />
                   )}
                 </div>
               ))}
             </div>
             <div className="text-center mt-4">
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-agro-text-tertiary">
                 Passo {currentStep} de 3
               </p>
             </div>
@@ -232,7 +232,7 @@ const Cadastro = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="card-premium p-8 shadow-2xl"
+            className="card p-8 shadow-2xl"
           >
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Step 1: Informações Básicas */}

@@ -1,168 +1,177 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useTheme } from '../contexts/ThemeContext';
-import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { 
-  MapPin, Phone, Mail, Globe, Facebook, Twitter, Instagram, 
-  Linkedin, Youtube, ArrowUp, Heart
+  MapPin, Phone, Mail, Globe, 
+  Facebook, Twitter, Instagram, Linkedin,
+  Leaf, Shield, Heart
 } from 'lucide-react';
 
 const Footer = () => {
-  const { isDark } = useTheme();
-  const { t } = useTranslation();
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className={`relative ${isDark ? 'bg-black text-white' : 'bg-slate-900 text-white'}`}>
-      {/* Background Pattern Premium */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0 bg-gradient-to-br from-agro-green via-agro-gold to-tech-blue"></div>
-      </div>
-      
-      {/* Linha superior premium */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-agro-green via-agro-gold to-tech-green"></div>
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <footer className="bg-agro-bg-secondary text-agro-text-primary border-t border-agro-border-primary">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Company Info */}
+          {/* Logo e Descrição */}
           <div className="lg:col-span-2">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="mb-6"
             >
-              <div className="flex items-center space-x-3 mb-4">
-                <motion.div 
-                  whileHover={{ scale: 1.05 }}
-                  className="w-12 h-12 rounded-xl bg-gradient-to-r from-agro-green to-tech-green flex items-center justify-center shadow-md"
-                >
-                  <span className="text-white font-bold text-xl">A</span>
-                </motion.div>
-                <div>
-                  <h3 className="text-2xl font-bold text-gradient-agro">Agroisync</h3>
-                  <p className="text-slate-400 text-sm">{t('footer.tagline')}</p>
+              <div className="flex items-center space-x-2 mb-4">
+                <div className="bg-gradient-to-r from-agro-accent-emerald to-agro-accent-sky rounded-lg flex items-center justify-center shadow-lg w-10 h-10">
+                  <Leaf className="h-6 w-6 text-agro-text-primary" />
                 </div>
+                <span className="text-xl font-bold text-agro-text-primary">AgroSync</span>
               </div>
-              <p className="text-slate-300 text-sm leading-relaxed max-w-md">
-                {t('footer.description')}
+              <p className="text-agro-text-secondary mb-6 max-w-md">
+                Conectando o agronegócio brasileiro através de tecnologia inovadora e soluções sustentáveis.
               </p>
-            </motion.div>
-
-            {/* Social Media */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="flex space-x-4"
-            >
-              <a href="#" className="p-2 bg-slate-800 rounded-lg hover:bg-slate-600 transition-colors duration-300">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="#" className="p-2 bg-slate-800 rounded-lg hover:bg-slate-600 transition-colors duration-300">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href="#" className="p-2 bg-slate-800 rounded-lg hover:bg-slate-600 transition-colors duration-300">
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a href="#" className="p-2 bg-slate-800 rounded-lg hover:bg-slate-600 transition-colors duration-300">
-                <Linkedin className="w-5 h-5" />
-              </a>
-              <a href="#" className="p-2 bg-slate-800 rounded-lg hover:bg-slate-600 transition-colors duration-300">
-                <Youtube className="w-5 h-5" />
-              </a>
+              <div className="flex space-x-4">
+                <motion.a
+                  href="#"
+                  whileHover={{ scale: 1.1 }}
+                  className="p-2 bg-agro-bg-card rounded-lg text-agro-text-tertiary hover:text-agro-accent-emerald transition-all duration-300"
+                >
+                  <Facebook className="h-5 w-5" />
+                </motion.a>
+                <motion.a
+                  href="#"
+                  whileHover={{ scale: 1.1 }}
+                  className="p-2 bg-agro-bg-card rounded-lg text-agro-text-tertiary hover:text-agro-accent-emerald transition-all duration-300"
+                >
+                  <Twitter className="h-5 w-5" />
+                </motion.a>
+                <motion.a
+                  href="#"
+                  whileHover={{ scale: 1.1 }}
+                  className="p-2 bg-agro-bg-card rounded-lg text-agro-text-tertiary hover:text-agro-accent-emerald transition-all duration-300"
+                >
+                  <Instagram className="h-5 w-5" />
+                </motion.a>
+                <motion.a
+                  href="#"
+                  whileHover={{ scale: 1.1 }}
+                  className="p-2 bg-agro-bg-card rounded-lg text-agro-text-tertiary hover:text-agro-accent-emerald transition-all duration-300"
+                >
+                  <Linkedin className="h-5 w-5" />
+                </motion.a>
+              </div>
             </motion.div>
           </div>
 
-          {/* Quick Links */}
+          {/* Links Rápidos */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
           >
-            <h4 className="text-lg font-semibold mb-4 text-white">{t('footer.quickLinks')}</h4>
+            <h3 className="text-lg font-semibold text-agro-text-primary mb-4">Links Rápidos</h3>
             <ul className="space-y-2">
               <li>
-                <a href="/" className="text-slate-300 hover:text-slate-400 transition-colors duration-200">
-                  {t('nav.home')}
-                </a>
+                <Link to="/" className="text-agro-text-tertiary hover:text-agro-accent-emerald transition-colors duration-300">
+                  Home
+                </Link>
               </li>
               <li>
-                <a href="/sobre" className="text-slate-300 hover:text-slate-400 transition-colors duration-200">
-                  {t('nav.about')}
-                </a>
+                <Link to="/sobre" className="text-agro-text-tertiary hover:text-agro-accent-emerald transition-colors duration-300">
+                  Sobre Nós
+                </Link>
               </li>
               <li>
-                <a href="/loja" className="text-slate-300 hover:text-slate-400 transition-colors duration-200">
-                  {t('nav.store')}
-                </a>
+                <Link to="/loja" className="text-agro-text-tertiary hover:text-agro-accent-emerald transition-colors duration-300">
+                  Loja
+                </Link>
               </li>
               <li>
-                <a href="/agroconecta" className="text-slate-300 hover:text-slate-400 transition-colors duration-200">
-                  {t('nav.agroconecta')}
-                </a>
+                <Link to="/agroconecta" className="text-agro-text-tertiary hover:text-agro-accent-emerald transition-colors duration-300">
+                  AgroConecta
+                </Link>
               </li>
               <li>
-                <a href="/cripto" className="text-slate-300 hover:text-slate-400 transition-colors duration-200">
-                  {t('nav.crypto')}
-                </a>
+                <Link to="/planos" className="text-agro-text-tertiary hover:text-agro-accent-emerald transition-colors duration-300">
+                  Planos
+                </Link>
               </li>
             </ul>
           </motion.div>
 
-          {/* Contact Info */}
+          {/* Suporte */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <h4 className="text-lg font-semibold mb-4 text-white">{t('footer.contact')}</h4>
+            <h3 className="text-lg font-semibold text-agro-text-primary mb-4">Suporte</h3>
             <ul className="space-y-2">
-              <li className="flex items-center space-x-2">
-                <MapPin className="w-4 h-4 text-slate-400" />
-                <span className="text-slate-300">Sinop - MT, Brasil</span>
+              <li>
+                <Link to="/contato" className="text-agro-text-tertiary hover:text-agro-accent-emerald transition-colors duration-300">
+                  Contato
+                </Link>
               </li>
-              <li className="flex items-center space-x-2">
-                <Phone className="w-4 h-4 text-slate-400" />
-                <span className="text-slate-300">(66) 99236-2830</span>
+              <li>
+                <Link to="/faq" className="text-agro-text-tertiary hover:text-agro-accent-emerald transition-colors duration-300">
+                  FAQ
+                </Link>
               </li>
-              <li className="flex items-center space-x-2">
-                <Mail className="w-4 h-4 text-slate-400" />
-                <span className="text-slate-300">contato@agroisync.com</span>
+              <li>
+                <Link to="/ajuda" className="text-agro-text-tertiary hover:text-agro-accent-emerald transition-colors duration-300">
+                  Central de Ajuda
+                </Link>
+              </li>
+              <li>
+                <Link to="/termos" className="text-agro-text-tertiary hover:text-agro-accent-emerald transition-colors duration-300">
+                  Termos de Uso
+                </Link>
+              </li>
+              <li>
+                <Link to="/privacidade" className="text-agro-text-tertiary hover:text-agro-accent-emerald transition-colors duration-300">
+                  Privacidade
+                </Link>
               </li>
             </ul>
           </motion.div>
         </div>
 
-        {/* Bottom Section */}
+        {/* Informações de Contato */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="border-t border-slate-700 mt-12 pt-8"
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="mt-12 pt-8 border-t border-agro-border-primary"
         >
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="text-center md:text-left mb-4 md:mb-0">
-              <p className="text-slate-400 text-sm">
-                © {currentYear} Agroisync. {t('footer.rights')}
-              </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="flex items-center space-x-3">
+              <MapPin className="h-5 w-5 text-agro-accent-emerald" />
+              <span className="text-agro-text-secondary">Sinop, MT - Brasil</span>
             </div>
-            
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={scrollToTop}
-                className="p-2 bg-slate-800 rounded-lg hover:bg-slate-600 transition-colors duration-300"
-                aria-label="Voltar ao topo"
-              >
-                <ArrowUp className="w-5 h-5" />
-              </button>
+            <div className="flex items-center space-x-3">
+              <Phone className="h-5 w-5 text-agro-accent-emerald" />
+              <span className="text-agro-text-secondary">+55 (66) 99999-9999</span>
+            </div>
+            <div className="flex items-center space-x-3">
+              <Mail className="h-5 w-5 text-agro-accent-emerald" />
+              <span className="text-agro-text-secondary">contato@agroisync.com</span>
             </div>
           </div>
+        </motion.div>
+
+        {/* Copyright */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mt-8 pt-6 border-t border-agro-border-primary text-center"
+        >
+          <p className="text-agro-text-tertiary text-sm">
+            © {currentYear} AgroSync. Todos os direitos reservados. 
+            <span className="inline-flex items-center ml-2">
+              Feito com <Heart className="h-4 w-4 text-red-500 mx-1" /> no Brasil
+            </span>
+          </p>
         </motion.div>
       </div>
     </footer>

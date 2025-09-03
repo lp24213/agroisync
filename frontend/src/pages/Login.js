@@ -158,7 +158,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 pt-16">
+    <div className="min-h-screen bg-agro-bg-primary text-agro-text-primary flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 pt-16">
       <StockMarketTicker />
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
@@ -170,16 +170,16 @@ const Login = () => {
         >
           <motion.div
             whileHover={{ scale: 1.05 }}
-            className="mx-auto h-16 w-16 bg-gradient-to-r from-agro-green to-agro-yellow rounded-full flex items-center justify-center mb-6"
+            className="mx-auto h-16 w-16 bg-gradient-to-r from-agro-accent-emerald to-agro-accent-amber rounded-full flex items-center justify-center mb-6"
           >
-            <User className="h-8 w-8 text-white" />
+            <User className="h-8 w-8 text-agro-text-primary" />
           </motion.div>
           
-          <h2 className="title-premium text-3xl font-bold">
+          <h2 className="text-3xl font-bold text-agro-text-primary">
             {showForgotPassword ? 'Recuperar Senha' : show2FA ? 'Verificação 2FA' : 'Entrar na Conta'}
           </h2>
           
-          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+          <p className="mt-2 text-sm text-agro-text-tertiary">
             {showForgotPassword 
               ? 'Escolha como recuperar sua senha'
               : show2FA 
@@ -199,15 +199,15 @@ const Login = () => {
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.3 }}
               onSubmit={handleSubmit}
-              className="card-premium space-y-6"
+              className="card space-y-6"
             >
               {/* Campo E-mail */}
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label htmlFor="email" className="block text-sm font-medium text-agro-text-secondary mb-2">
                   E-mail
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-agro-text-tertiary" />
                   <input
                     id="email"
                     name="email"
@@ -216,7 +216,7 @@ const Login = () => {
                     required
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="input-premium pl-10"
+                    className="form-field pl-10"
                     placeholder="seu@email.com"
                   />
                 </div>

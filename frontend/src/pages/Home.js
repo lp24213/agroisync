@@ -476,7 +476,7 @@ const Home = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 pt-16">
+    <div className="min-h-screen bg-agro-bg-primary text-agro-text-primary pt-16">
       {/* Cotação da Bolsa */}
       {/* Seção de Grãos, Notícias e Clima */}
       {isEnabled('FEATURE_HOME_GRAINS') && (
@@ -491,15 +491,15 @@ const Home = () => {
       <section className="relative pt-24 pb-24 px-4 overflow-hidden header-premium">
         {/* Background Premium */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-slate-100">
-            <div className="absolute inset-0 bg-white opacity-95"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-agro-bg-secondary via-agro-bg-card to-agro-bg-primary">
+            <div className="absolute inset-0 bg-agro-bg-primary opacity-95"></div>
           </div>
           {/* Linha gradiente sutil no topo */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-agro-green-500 via-agro-yellow-500 to-web3-neon-blue opacity-60"></div>
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-agro-accent-emerald via-agro-accent-amber to-agro-accent-sky opacity-60"></div>
           {/* Elementos decorativos premium */}
-          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-agro-green-600 to-web3-neon-blue rounded-full opacity-10 blur-xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-agro-yellow-500 to-web3-neon-blue rounded-full opacity-10 blur-xl animate-pulse"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-br from-agro-green-500/5 via-agro-yellow-500/5 to-web3-neon-blue/5 rounded-full blur-3xl"></div>
+          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-agro-accent-emerald to-agro-accent-sky rounded-full opacity-10 blur-xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-agro-accent-amber to-agro-accent-sky rounded-full opacity-10 blur-xl animate-pulse"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-br from-agro-accent-emerald/5 via-agro-accent-amber/5 to-agro-accent-sky/5 rounded-full blur-3xl"></div>
         </div>
         
         <div className="max-w-6xl mx-auto text-center relative z-10">
@@ -518,7 +518,7 @@ const Home = () => {
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-            className="text-xl md:text-2xl text-slate-600 max-w-4xl mx-auto mb-8"
+            className="text-xl md:text-2xl text-agro-text-secondary max-w-4xl mx-auto mb-8"
           >
             {t('home.hero.subtitle')}
           </motion.p>
@@ -528,7 +528,7 @@ const Home = () => {
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
-            className="text-lg max-w-3xl mx-auto text-slate-500 mb-10"
+            className="text-lg max-w-3xl mx-auto text-agro-text-tertiary mb-10"
           >
             {t('home.hero.description')}
           </motion.p>
@@ -544,20 +544,20 @@ const Home = () => {
               onClick={() => navigate('/cadastro')}
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
-              className="btn-accent-green px-10 py-5 text-lg relative overflow-hidden group"
+              className="btn-primary px-10 py-5 text-lg relative overflow-hidden group"
             >
               {/* Efeito de glow no hover */}
-              <div className="absolute inset-0 bg-gradient-to-r from-agro-green-400 via-agro-yellow-400 to-web3-neon-blue opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-agro-accent-emerald-light via-agro-accent-amber-light to-agro-accent-sky-light opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <span className="relative z-10">{t('home.hero.cta.primary')}</span>
             </motion.button>
             <motion.button
               onClick={() => navigate('/sobre')}
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
-              className="bg-transparent border-2 border-emerald-500 text-emerald-600 font-bold rounded-xl hover:bg-emerald-500 hover:text-white transition-all duration-300 px-10 py-5 text-lg relative overflow-hidden group"
+              className="btn-secondary px-10 py-5 text-lg relative overflow-hidden group"
             >
               {/* Efeito de glow no hover */}
-              <div className="absolute inset-0 bg-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+              <div className="absolute inset-0 bg-agro-accent-emerald/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
               <span className="relative z-10">{t('home.hero.cta.secondary')}</span>
             </motion.button>
           </motion.div>
