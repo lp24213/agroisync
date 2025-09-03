@@ -60,68 +60,45 @@ const PainelUsuario = () => {
       
       if (!user?._id && !user?.id) return;
 
-      // Carregar transações do usuário com tratamento de erro
-      try {
-        const transactions = await transactionService.getUserTransactions(user._id || user.id);
-        setUserTransactions(Array.isArray(transactions) ? transactions : []);
-      } catch (error) {
-        console.error('Erro ao carregar transações:', error);
-        setUserTransactions([]);
-      }
+      // Carregar transações do usuário
+      const transactions = await transactionService.getUserTransactions(user._id || user.id);
+      setUserTransactions(transactions);
 
-      // Carregar mensagens das transações com tratamento de erro
-      try {
-        const allMessages = [];
-        const transactions = userTransactions.length > 0 ? userTransactions : [];
-        
-        for (const txn of transactions) {
-          try {
-            const messages = await transactionService.getTransactionMessages(txn.id || txn._id);
-            if (Array.isArray(messages)) {
-              allMessages.push(...messages.map(msg => ({ ...msg, transactionId: txn.id || txn._id })));
-            }
-          } catch (error) {
-            console.error(`Erro ao carregar mensagens da transação ${txn.id}:`, error);
-          }
-        }
-        setUserMessages(allMessages);
-      } catch (error) {
-        console.error('Erro ao carregar mensagens:', error);
-        setUserMessages([]);
+      // Carregar mensagens das transações
+      const allMessages = [];
+      for (const txn of transactions) {
+        const messages = await transactionService.getTransactionMessages(txn.id || txn._id);
+        allMessages.push(...messages.map(msg => ({ ...msg, transactionId: txn.id || txn._id })));
       }
+      setUserMessages(allMessages);
 
-      // Carregar perfil do usuário com dados seguros
+      // Carregar perfil do usuário (mock por enquanto)
       setUserProfile({
         id: user._id || user.id,
         name: user.name || 'Usuário',
         email: user.email || '',
         phone: user.phone || '',
-        cpfCnpjVerified: user.cpfCnpjVerified || false,
+        cpfCnpjVerified: false,
         address: {
-          cep: user.address?.cep || '',
-          city: user.address?.city || '',
-          state: user.address?.state || '',
-          lat: user.address?.lat || null,
-          lng: user.address?.lng || null
+          cep: '',
+          city: '',
+          state: '',
+          lat: null,
+          lng: null
         }
       });
 
-      // Inicializar serviço de notificações com tratamento de erro
-      try {
-        await notificationService.initialize(user.id);
-        
-        // Carregar notificações reais
-        const notifications = await notificationService.getUserNotifications();
-        setUserNotifications(Array.isArray(notifications) ? notifications : []);
-        
-        // Registrar handler para notificações no app
-        notificationService.registerInAppHandler((notification) => {
-          setUserNotifications(prev => [notification, ...prev]);
-        });
-      } catch (error) {
-        console.error('Erro ao carregar notificações:', error);
-        setUserNotifications([]);
-      }
+      // Inicializar serviço de notificações
+      await notificationService.initialize(user.id);
+      
+      // Carregar notificações reais
+      const notifications = await notificationService.getUserNotifications();
+      setUserNotifications(notifications);
+      
+      // Registrar handler para notificações no app
+      notificationService.registerInAppHandler((notification) => {
+        setUserNotifications(prev => [notification, ...prev]);
+      });
 
     } catch (error) {
       console.error('Erro ao carregar dados do usuário:', error);

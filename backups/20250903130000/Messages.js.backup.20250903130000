@@ -55,7 +55,7 @@ const Messages = () => {
         userProfile?.userCategory
       );
       
-      if (result.ok && Array.isArray(result.data)) {
+      if (result.ok) {
         setConversations(result.data);
       } else {
         // Se a API falhar, usar dados mock para desenvolvimento
@@ -65,7 +65,7 @@ const Messages = () => {
           userProfile?.userType,
           userProfile?.userCategory
         );
-        setConversations(Array.isArray(mockData) ? mockData : []);
+        setConversations(mockData);
       }
     } catch (error) {
       console.error('Erro ao carregar conversas:', error);
@@ -75,7 +75,7 @@ const Messages = () => {
         userProfile?.userType,
         userProfile?.userCategory
       );
-      setConversations(Array.isArray(mockData) ? mockData : []);
+      setConversations(mockData);
     } finally {
       setLoading(false);
     }
@@ -84,22 +84,14 @@ const Messages = () => {
   const loadMessages = async (conversationId) => {
     setError('');
     try {
-      if (!conversationId) {
-        setMessages([]);
-        return;
-      }
-
       const result = await messagingService.getMessages(
         conversationId,
         userProfile?.userType,
         userProfile?.userCategory
       );
       
-      if (result.ok && Array.isArray(result.data)) {
+      if (result.ok) {
         setMessages(result.data);
-        
-        // Marcar mensagens como lidas
-        await messagingService.markConversationAsRead(conversationId);
       } else {
         // Se a API falhar, usar dados mock
         console.warn('API não disponível, usando mensagens mock:', result.message);
@@ -247,29 +239,6 @@ const Messages = () => {
     }
   };
 
-  const getUnreadCount = (tab) => {
-    if (!Array.isArray(conversations)) return 0;
-    
-    const filteredConversations = conversations.filter(conv => {
-      if (tab === 'all') return true;
-      return conv.type === tab;
-    });
-    
-    return filteredConversations.reduce((total, conv) => {
-      return total + (conv.unreadCount || 0);
-    }, 0);
-  };
-
-  const renderUnreadBadge = (count) => {
-    if (!count || count === 0) return null;
-    
-    return (
-      <span className="ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center">
-        {count > 99 ? '99+' : count}
-      </span>
-    );
-  };
-
   const renderFreeProductWarning = () => {
     if (userProfile?.userCategory !== 'comprador') return null;
     
@@ -413,15 +382,14 @@ const Messages = () => {
                       key={tab}
                       onClick={() => setActiveTab(tab)}
                       className={`px-3 py-2 rounded-lg text-sm transition-all duration-300 ${
-                        activeTab === tab
-                          ? 'bg-gradient-to-r from-emerald-600 to-blue-600 text-white shadow-md'
-                          : 'bg-neutral-700 text-neutral-300 hover:bg-gradient-to-r hover:from-emerald-600 hover:to-blue-600 hover:text-white hover:shadow-md'
+                                                 activeTab === tab
+                           ? 'bg-gradient-to-r from-emerald-600 to-blue-600 text-white shadow-md'
+                           : 'bg-neutral-700 text-neutral-300 hover:bg-gradient-to-r hover:from-emerald-600 hover:to-blue-600 hover:text-white hover:shadow-md'
                       }`}
                     >
                       <div className="flex items-center space-x-2">
                         {getTabIcon(tab)}
                         <span>{getTabLabel(tab)}</span>
-                        {renderUnreadBadge(getUnreadCount(tab))}
                       </div>
                     </button>
                   ))}
