@@ -32,28 +32,36 @@ const Footer = () => {
               </p>
               <div className="flex space-x-4">
                 <motion.a
-                  href="#"
+                  href="https://facebook.com/agroisync"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   whileHover={{ scale: 1.1 }}
                   className="p-2 bg-agro-bg-card rounded-lg text-agro-text-tertiary hover:text-agro-accent-emerald transition-all duration-300"
                 >
                   <Facebook className="h-5 w-5" />
                 </motion.a>
                 <motion.a
-                  href="#"
+                  href="https://twitter.com/agroisync"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   whileHover={{ scale: 1.1 }}
                   className="p-2 bg-agro-bg-card rounded-lg text-agro-text-tertiary hover:text-agro-accent-emerald transition-all duration-300"
                 >
                   <Twitter className="h-5 w-5" />
                 </motion.a>
                 <motion.a
-                  href="#"
+                  href="https://instagram.com/agroisync"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   whileHover={{ scale: 1.1 }}
                   className="p-2 bg-agro-bg-card rounded-lg text-agro-text-tertiary hover:text-agro-accent-emerald transition-all duration-300"
                 >
                   <Instagram className="h-5 w-5" />
                 </motion.a>
                 <motion.a
-                  href="#"
+                  href="https://linkedin.com/company/agroisync"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   whileHover={{ scale: 1.1 }}
                   className="p-2 bg-agro-bg-card rounded-lg text-agro-text-tertiary hover:text-agro-accent-emerald transition-all duration-300"
                 >
