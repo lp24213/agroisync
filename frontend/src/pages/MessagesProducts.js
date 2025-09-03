@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import messagingService from '../services/messagingService';
 import { ShoppingCart, AlertTriangle, Lock, MessageSquare } from 'lucide-react';
+import StockMarketTicker from '../components/StockMarketTicker';
 
 const MessagesProducts = () => {
   const [conversations, setConversations] = useState([]);
@@ -150,6 +151,7 @@ const MessagesProducts = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 pt-16">
+      <StockMarketTicker />
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">

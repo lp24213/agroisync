@@ -74,7 +74,10 @@ const CadastroProduto = () => {
   ];
 
   useEffect(() => {
-    if (!isAuthenticated()) {
+    // Verificar se o usuário está autenticado
+    const isUserAuthenticated = isAuthenticated();
+    
+    if (!isUserAuthenticated) {
       navigate('/login');
       return;
     }

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import messagingService from '../services/messagingService';
 import { Lock } from 'lucide-react';
+import StockMarketTicker from '../components/StockMarketTicker';
 
 const MessagesFreights = () => {
   const [conversations, setConversations] = useState([]);

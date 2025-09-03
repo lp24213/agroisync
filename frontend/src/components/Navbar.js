@@ -43,6 +43,9 @@ const Navbar = () => {
     setIsLanguageMenuOpen(false);
   };
 
+  // Verificar se o usuário está autenticado
+  const isUserAuthenticated = isAuthenticated();
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-premium border-b-2 border-accent-emerald">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -137,7 +140,7 @@ const Navbar = () => {
             </div>
 
             {/* User Menu */}
-            {isAuthenticated ? (
+            {isUserAuthenticated ? (
               <div className="flex items-center space-x-4">
                 <Link
                   to="/dashboard"
@@ -249,7 +252,7 @@ const Navbar = () => {
               {t('plans')}
             </Link>
 
-            {isAuthenticated ? (
+            {isUserAuthenticated ? (
               <>
                 <Link
                   to="/dashboard"

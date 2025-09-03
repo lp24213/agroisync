@@ -17,7 +17,7 @@ const RouteGuard = ({ children, requireAuth = false, requireAdmin = false }) => 
           animate={{ opacity: 1, scale: 1 }}
           className="text-center"
         >
-          <div className="w-16 h-16 bg-gradient-to-r from-agro-green-600 via-agro-yellow-500 to-web3-neon-blue rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+          <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
           </div>
           <p className="text-slate-600">Verificando permissões...</p>
@@ -68,8 +68,8 @@ const RouteGuard = ({ children, requireAuth = false, requireAdmin = false }) => 
             </button>
             
             <button
-              onClick={() => window.location.href = '/admin/login'}
-              className="w-full px-4 py-2 bg-gradient-to-r from-agro-green-600 to-web3-neon-blue text-white rounded-lg hover:from-agro-green-700 hover:to-web3-neon-cyan transition-all duration-200"
+              onClick={() => window.location.href = '/admin-login'}
+              className="w-full px-4 py-2 bg-gradient-to-r from-emerald-500 to-blue-500 text-white rounded-lg hover:from-emerald-600 hover:to-blue-600 transition-all duration-200"
             >
               Acessar como Admin
             </button>
@@ -83,7 +83,7 @@ const RouteGuard = ({ children, requireAuth = false, requireAdmin = false }) => 
   if (location.pathname.startsWith('/admin') && !checkIsAdmin()) {
     return (
       <Navigate 
-        to="/admin/login" 
+        to="/admin-login" 
         state={{ from: location }} 
         replace 
       />
@@ -94,7 +94,7 @@ const RouteGuard = ({ children, requireAuth = false, requireAdmin = false }) => 
   if (checkIsAdmin() && !location.pathname.startsWith('/admin') && requireAuth) {
     return (
       <Navigate 
-        to="/admin/secure-panel" 
+        to="/admin-panel" 
         replace 
       />
     );

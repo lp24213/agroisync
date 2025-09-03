@@ -7,6 +7,7 @@ import {
   MessageCircle, Send, Search, AlertTriangle, Info, 
   Lock, CreditCard, ShoppingCart, Truck, Building
 } from 'lucide-react';
+import StockMarketTicker from '../components/StockMarketTicker';
 
 const Messages = () => {
   const [conversations, setConversations] = useState([]);
@@ -317,6 +318,7 @@ const Messages = () => {
 
   return (
     <div className="min-h-screen bg-neutral-900 text-white pt-16">
+      <StockMarketTicker />
       <main className="pt-24 pb-16">
         <div className="max-w-7xl mx-auto px-4">
           {/* Header */}

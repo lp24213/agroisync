@@ -78,7 +78,10 @@ const Planos = () => {
       return;
     }
 
-    if (!isAuthenticated()) {
+    // Verificar se o usuário está autenticado
+    const isUserAuthenticated = isAuthenticated();
+    
+    if (!isUserAuthenticated) {
       // Redirecionar para cadastro se não estiver logado
       navigate('/cadastro', { 
         state: { 

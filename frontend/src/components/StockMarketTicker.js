@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, Zap } from 'lucide-react';
 
 const StockMarketTicker = () => {
   const [commodities, setCommodities] = useState([
@@ -14,76 +14,102 @@ const StockMarketTicker = () => {
     { name: 'Cana', price: 'R$ 0,85', change: '+1,1%', trend: 'up', region: 'SP' }
   ]);
 
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
   const getTrendIcon = (trend) => {
     switch (trend) {
       case 'up':
-        return <TrendingUp className="w-2 h-2 text-emerald-400" />;
+        return <TrendingUp className="w-3 h-3 text-emerald-400" />;
       case 'down':
-        return <TrendingDown className="w-2 h-2 text-red-400" />;
+        return <TrendingDown className="w-3 h-3 text-red-400" />;
       default:
-        return <Minus className="w-2 h-2 text-gray-400" />;
+        return <Minus className="w-3 h-3 text-yellow-400" />;
     }
   };
 
   const getTrendColor = (trend) => {
     switch (trend) {
       case 'up':
-        return 'text-emerald-400';
+        return 'text-emerald-400 bg-emerald-400/10';
       case 'down':
-        return 'text-red-400';
+        return 'text-red-400 bg-red-400/10';
       default:
-        return 'text-gray-400';
+        return 'text-yellow-400 bg-yellow-400/10';
+    }
+  };
+
+  const getTrendBgColor = (trend) => {
+    switch (trend) {
+      case 'up':
+        return 'border-emerald-500/20 bg-emerald-500/5';
+      case 'down':
+        return 'border-red-500/20 bg-red-500/5';
+      default:
+        return 'border-yellow-500/20 bg-yellow-500/5';
     }
   };
 
   return (
-    <section className="py-1 px-3 bg-gradient-to-r from-slate-900 to-black border-b border-slate-800 relative overflow-hidden">
+    <section className="py-2 px-4 bg-gradient-to-r from-slate-900 via-black to-slate-900 border-b border-slate-800/50 relative overflow-hidden">
       {/* Gradiente futurista */}
-      <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/3 via-blue-500/3 to-purple-500/3"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-blue-500/5 to-purple-500/5"></div>
       
       {/* Conteúdo */}
       <div className="relative z-10 max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-0.5">
-          <div className="flex items-center space-x-2">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center space-x-3">
             <motion.div
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3 }}
-              className="flex items-center space-x-1.5"
+              className="flex items-center space-x-2"
             >
-              <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
-              <span className="text-slate-300 font-medium text-xs">Commodities</span>
+              <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+              <span className="text-slate-300 font-semibold text-sm">Commodities</span>
             </motion.div>
             
-            <span className="text-slate-600 text-xs">|</span>
+            <span className="text-slate-600 text-sm">|</span>
             
-            <motion.span
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3, delay: 0.1 }}
-              className="text-slate-500 text-xs"
+              className="flex items-center space-x-1"
             >
-              Live
-            </motion.span>
+              <Zap className="w-3 h-3 text-blue-400 animate-pulse" />
+              <span className="text-slate-400 text-xs font-medium">Live</span>
+            </motion.div>
           </div>
           
           <motion.div
             initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3 }}
-            className="text-slate-600 text-xs"
+            className="text-slate-400 text-xs font-mono"
           >
-            {new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+            {currentTime.toLocaleTimeString('pt-BR', { 
+              hour: '2-digit', 
+              minute: '2-digit',
+              second: '2-digit'
+            })}
           </motion.div>
         </div>
         
-        {/* Ticker ultra compacto */}
+        {/* Ticker compacto e moderno */}
         <div className="relative overflow-hidden">
           <motion.div
-            className="flex space-x-2"
-            animate={{ x: [0, -600] }}
+            className="flex space-x-3"
+            animate={{ x: [0, -800] }}
             transition={{
-              duration: 20,
+              duration: 30,
               repeat: Infinity,
               ease: "linear"
             }}
@@ -92,57 +118,63 @@ const StockMarketTicker = () => {
             {commodities.map((commodity, index) => (
               <motion.div
                 key={`${commodity.name}-1`}
-                initial={{ opacity: 0, y: 3 }}
+                initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ 
-                  duration: 0.2, 
-                  delay: index * 0.03
+                  duration: 0.3, 
+                  delay: index * 0.05
                 }}
-                className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/20 px-2 py-1 min-w-[70px] group relative overflow-hidden hover:bg-slate-800/60 transition-all duration-200 flex-shrink-0 rounded-md"
+                className={`backdrop-blur-sm border px-3 py-2 min-w-[120px] group relative overflow-hidden hover:scale-105 transition-all duration-300 flex-shrink-0 rounded-lg ${getTrendBgColor(commodity.trend)}`}
               >
                 <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-0.5">
-                    <span className="font-medium text-slate-200 text-xs">{commodity.name}</span>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-bold text-slate-200 text-sm">{commodity.name}</span>
                     {getTrendIcon(commodity.trend)}
                   </div>
                   
-                  <div className="space-y-0.5">
-                    <div className="text-xs font-bold text-white">{commodity.price}</div>
-                    <div className={`text-xs font-medium ${getTrendColor(commodity.trend)}`}>
+                  <div className="space-y-1">
+                    <div className="text-sm font-bold text-white">{commodity.price}</div>
+                    <div className={`text-xs font-semibold px-2 py-0.5 rounded-full inline-block ${getTrendColor(commodity.trend)}`}>
                       {commodity.change}
                     </div>
-                    <div className="text-xs text-slate-500">{commodity.region}</div>
+                    <div className="text-xs text-slate-500 font-medium">{commodity.region}</div>
                   </div>
                 </div>
+                
+                {/* Efeito de brilho */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </motion.div>
             ))}
             
-            {/* Segunda linha (duplicada) */}
+            {/* Segunda linha (duplicada para continuidade) */}
             {commodities.map((commodity, index) => (
               <motion.div
                 key={`${commodity.name}-2`}
-                initial={{ opacity: 0, y: 3 }}
+                initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ 
-                  duration: 0.2, 
-                  delay: (index + commodities.length) * 0.03
+                  duration: 0.3, 
+                  delay: (index + commodities.length) * 0.05
                 }}
-                className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/20 px-2 py-1 min-w-[70px] group relative overflow-hidden hover:bg-slate-800/60 transition-all duration-200 flex-shrink-0 rounded-md"
+                className={`backdrop-blur-sm border px-3 py-2 min-w-[120px] group relative overflow-hidden hover:scale-105 transition-all duration-300 flex-shrink-0 rounded-lg ${getTrendBgColor(commodity.trend)}`}
               >
                 <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-0.5">
-                    <span className="font-medium text-slate-200 text-xs">{commodity.name}</span>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-bold text-slate-200 text-sm">{commodity.name}</span>
                     {getTrendIcon(commodity.trend)}
                   </div>
                   
-                  <div className="space-y-0.5">
-                    <div className="text-xs font-bold text-white">{commodity.price}</div>
-                    <div className={`text-xs font-medium ${getTrendColor(commodity.trend)}`}>
+                  <div className="space-y-1">
+                    <div className="text-sm font-bold text-white">{commodity.price}</div>
+                    <div className={`text-xs font-semibold px-2 py-0.5 rounded-full inline-block ${getTrendColor(commodity.trend)}`}>
                       {commodity.change}
                     </div>
-                    <div className="text-xs text-slate-500">{commodity.region}</div>
+                    <div className="text-xs text-slate-500 font-medium">{commodity.region}</div>
                   </div>
                 </div>
+                
+                {/* Efeito de brilho */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </motion.div>
             ))}
           </motion.div>

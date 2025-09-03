@@ -13,6 +13,7 @@ import transactionService, { TRANSACTION_STATUS, TRANSACTION_TYPES } from '../se
 import ChatInterface from '../components/ChatInterface';
 import messagingService from '../services/messagingService';
 import notificationService, { NOTIFICATION_TYPES, NOTIFICATION_STATUS } from '../services/notificationService';
+import StockMarketTicker from '../components/StockMarketTicker';
 
 const PainelUsuario = () => {
   const { user, isAuthenticated } = useAuth();
@@ -251,6 +252,7 @@ const PainelUsuario = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 pt-16">
+      <StockMarketTicker />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div

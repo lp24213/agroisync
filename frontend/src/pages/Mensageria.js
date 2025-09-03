@@ -10,6 +10,7 @@ import {
   CheckCircle, AlertCircle, Lock, Unlock, Package, Truck, File
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import StockMarketTicker from '../components/StockMarketTicker';
 
 const Mensageria = () => {
   const { user, isAdmin } = useAuth();
@@ -306,6 +307,7 @@ const Mensageria = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 pt-16">
+      <StockMarketTicker />
       {/* Header */}
       <section className="pt-32 pb-8 px-4">
         <div className="max-w-7xl mx-auto">

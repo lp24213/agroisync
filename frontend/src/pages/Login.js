@@ -4,6 +4,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { Eye, EyeOff, Mail, Lock, User, Phone, ArrowLeft, Shield, Key } from 'lucide-react';
+import StockMarketTicker from '../components/StockMarketTicker';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -158,6 +159,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 pt-16">
+      <StockMarketTicker />
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <motion.div

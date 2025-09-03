@@ -7,6 +7,7 @@ import {
   BarChart3, Bell, CreditCard, Shield, LogOut
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import StockMarketTicker from '../components/StockMarketTicker';
 
 const Dashboard = () => {
   const { user, logout, isAuthenticated } = useAuth();
@@ -201,7 +202,8 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 py-8 pt-16">
+      <StockMarketTicker />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div

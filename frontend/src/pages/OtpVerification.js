@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { Smartphone, ArrowLeft, AlertCircle, CheckCircle, RefreshCw, Phone } from 'lucide-react';
 import authService from '../services/authService';
+import StockMarketTicker from '../components/StockMarketTicker';
 
 const OtpVerification = () => {
   const { loading, error, clearError, userId } = useAuth();
@@ -118,6 +119,7 @@ const OtpVerification = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 pt-16">
+      <StockMarketTicker />
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <motion.div

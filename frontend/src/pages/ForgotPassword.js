@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import { Mail, ArrowLeft, AlertCircle, CheckCircle, RefreshCw } from 'lucide-react';
 import authService from '../services/authService';
+import StockMarketTicker from '../components/StockMarketTicker';
 
 const ForgotPassword = () => {
   const { loading, error, clearError } = useAuth();
@@ -75,6 +76,7 @@ const ForgotPassword = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 pt-16">
+      <StockMarketTicker />
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <motion.div

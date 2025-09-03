@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { CheckCircle, ArrowRight, Home, User, CreditCard, Coins } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
+import StockMarketTicker from '../components/StockMarketTicker';
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -96,6 +97,7 @@ const PaymentSuccess = () => {
 
   return (
     <div className="min-h-screen bg-white text-gray-900 pt-16">
+      <StockMarketTicker />
       <div className="max-w-4xl mx-auto px-4 py-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

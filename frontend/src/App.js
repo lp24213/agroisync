@@ -101,18 +101,34 @@ function App() {
                     <Route path="/cadastro-produto" element={<CadastroProduto />} />
 
                     {/* Rotas protegidas */}
-                    <Route path="/dashboard" element={<RouteGuard><Dashboard /></RouteGuard>} />
-                    <Route path="/loja" element={<RouteGuard><Loja /></RouteGuard>} />
-                    <Route path="/mensageria" element={<RouteGuard><Mensageria /></RouteGuard>} />
-                    <Route path="/messages" element={<RouteGuard><Messages /></RouteGuard>} />
-                    <Route path="/messages-products" element={<RouteGuard><MessagesProducts /></RouteGuard>} />
-                    <Route path="/messages-freights" element={<RouteGuard><MessagesFreights /></RouteGuard>} />
-                    <Route path="/painel-usuario" element={<RouteGuard><PainelUsuario /></RouteGuard>} />
+                    <Route path="/dashboard" element={<RouteGuard requireAuth={true}><Dashboard /></RouteGuard>} />
+                    <Route path="/loja" element={<RouteGuard requireAuth={true}><Loja /></RouteGuard>} />
+                    <Route path="/mensageria" element={<RouteGuard requireAuth={true}><Mensageria /></RouteGuard>} />
+                    <Route path="/messages" element={<RouteGuard requireAuth={true}><Messages /></RouteGuard>} />
+                    <Route path="/messages-products" element={<RouteGuard requireAuth={true}><MessagesProducts /></RouteGuard>} />
+                    <Route path="/messages-freights" element={<RouteGuard requireAuth={true}><MessagesFreights /></RouteGuard>} />
+                    <Route path="/painel-usuario" element={<RouteGuard requireAuth={true}><PainelUsuario /></RouteGuard>} />
 
                     {/* Rotas admin */}
                     <Route path="/admin-login" element={<AdminLogin />} />
-                    <Route path="/admin" element={<RouteGuard><Admin /></RouteGuard>} />
-                    <Route path="/admin-panel" element={<RouteGuard><AdminSecurePanel /></RouteGuard>} />
+                    <Route path="/admin" element={<RouteGuard requireAuth={true} requireAdmin={true}><Admin /></RouteGuard>} />
+                    <Route path="/admin-panel" element={<RouteGuard requireAuth={true} requireAdmin={true}><AdminSecurePanel /></RouteGuard>} />
+                    
+                    {/* Rota 404 - Página não encontrada */}
+                    <Route path="*" element={
+                      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center pt-16">
+                        <div className="text-center">
+                          <h1 className="text-6xl font-bold text-slate-900 mb-4">404</h1>
+                          <p className="text-xl text-slate-600 mb-8">Página não encontrada</p>
+                          <a 
+                            href="/" 
+                            className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all duration-300"
+                          >
+                            Voltar ao Início
+                          </a>
+                        </div>
+                      </div>
+                    } />
                   </Routes>
                   
                   {/* Chatbot Global */}

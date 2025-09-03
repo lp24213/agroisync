@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Shield, Lock, Mail, ArrowLeft } from 'lucide-react';
 import adminService from '../services/adminService';
+import StockMarketTicker from '../components/StockMarketTicker';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -70,6 +71,7 @@ const AdminLogin = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <StockMarketTicker />
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <motion.div

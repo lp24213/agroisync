@@ -38,56 +38,62 @@ export const AuthProvider = ({ children }) => {
   // Verificar token ao inicializar
   useEffect(() => {
     const checkToken = async () => {
-      const token = localStorage.getItem('token');
-      const adminToken = localStorage.getItem('adminToken');
-      
-      if (token) {
-        try {
-          const response = await axios.get('/api/auth/verify', {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          
-          if (response.data.valid) {
-            setUser(response.data.user);
-            setToken(token);
-            setIsAdmin(response.data.user.isAdmin); // Assuming isAdmin is part of the user object
-          } else {
+      try {
+        const token = localStorage.getItem('token');
+        const adminToken = localStorage.getItem('adminToken');
+        
+        if (token) {
+          try {
+            const response = await axios.get('/api/auth/verify', {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            
+            if (response.data.valid) {
+              setUser(response.data.user);
+              setToken(token);
+              setIsAdmin(response.data.user.isAdmin);
+            } else {
+              localStorage.removeItem('token');
+              setUser(null);
+              setToken(null);
+              setIsAdmin(false);
+            }
+          } catch (error) {
+            console.error('Erro ao verificar token:', error);
             localStorage.removeItem('token');
             setUser(null);
             setToken(null);
+            setIsAdmin(false);
           }
-        } catch (error) {
-          console.error('Erro ao verificar token:', error);
-          localStorage.removeItem('token');
-          setUser(null);
-          setToken(null);
-        }
-      } else if (adminToken) {
-        try {
-          const response = await axios.get('/api/admin/verify', {
-            headers: { Authorization: `Bearer ${adminToken}` }
-          });
-          
-          if (response.data.valid) {
-            setUser(response.data.admin);
-            setAdminToken(adminToken);
-            setIsAdmin(true);
-          } else {
+        } else if (adminToken) {
+          try {
+            const response = await axios.get('/api/admin/verify', {
+              headers: { Authorization: `Bearer ${adminToken}` }
+            });
+            
+            if (response.data.valid) {
+              setUser(response.data.admin);
+              setAdminToken(adminToken);
+              setIsAdmin(true);
+            } else {
+              localStorage.removeItem('adminToken');
+              setUser(null);
+              setAdminToken(null);
+              setIsAdmin(false);
+            }
+          } catch (error) {
+            console.error('Erro ao verificar admin token:', error);
             localStorage.removeItem('adminToken');
             setUser(null);
             setAdminToken(null);
             setIsAdmin(false);
           }
-        } catch (error) {
-          console.error('Erro ao verificar admin token:', error);
-          localStorage.removeItem('adminToken');
-          setUser(null);
-          setAdminToken(null);
-          setIsAdmin(false);
         }
+      } catch (error) {
+        console.error('Erro geral ao verificar tokens:', error);
+      } finally {
+        setLoading(false);
       }
-      
-      setLoading(false);
     };
 
     checkToken();
@@ -510,37 +516,62 @@ export const AuthProvider = ({ children }) => {
 
   // Função para verificar se usuário está autenticado
   const isAuthenticated = () => {
-    return !!user && (!!token || !!adminToken);
+    try {
+      return !!user && (!!token || !!adminToken);
+    } catch (error) {
+      console.error('Erro ao verificar autenticação:', error);
+      return false;
+    }
   };
 
   // Função para verificar se usuário tem plano ativo
   const hasActivePlan = () => {
-    return user && user.isPaid && user.planActive;
+    try {
+      return user && user.isPaid && user.planActive;
+    } catch (error) {
+      console.error('Erro ao verificar plano ativo:', error);
+      return false;
+    }
   };
 
   // Função para verificar se usuário pode acessar dados privados
   const canAccessPrivateData = () => {
-    return hasActivePlan();
+    try {
+      return hasActivePlan();
+    } catch (error) {
+      console.error('Erro ao verificar acesso a dados privados:', error);
+      return false;
+    }
   };
 
   // Função para verificar se usuário pode usar mensageria
   const canUseMessaging = () => {
-    return hasActivePlan();
+    try {
+      return hasActivePlan();
+    } catch (error) {
+      console.error('Erro ao verificar acesso à mensageria:', error);
+      return false;
+    }
   };
 
   // Função para verificar se é admin
   const checkIsAdmin = () => {
-    // Verificar se existe token de admin no localStorage
-    const storedAdminToken = localStorage.getItem('adminToken');
-    const storedAdminEmail = localStorage.getItem('adminEmail');
-    
-    // Verificar se é o email de admin autorizado
-    if (storedAdminEmail === 'luispaulodeoliveira@agrotm.com.br' && storedAdminToken) {
-      return true;
+    try {
+      // Verificar se existe token de admin no localStorage
+      const storedAdminToken = localStorage.getItem('adminToken');
+      const storedAdminEmail = localStorage.getItem('adminEmail');
+      
+      // Verificar se é o email de admin autorizado
+      if (storedAdminEmail === 'luispaulodeoliveira@agrotm.com.br' && storedAdminToken) {
+        return true;
+      }
+      
+      // Verificar se usuário logado é admin
+      return isAdmin && (!!adminToken || (user && user.isAdmin));
+    } catch (error) {
+      console.error('Erro ao verificar se é admin:', error);
+      return false;
     }
-    
-    // Verificar se usuário logado é admin
-    return isAdmin && (!!adminToken || (user && user.isAdmin));
   };
 
   const value = {

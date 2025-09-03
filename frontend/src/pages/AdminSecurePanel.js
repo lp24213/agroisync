@@ -5,6 +5,7 @@ import {
   BarChart3, MessageSquare, Users, Package, Truck, 
   CreditCard, Search, Shield, LogOut, DollarSign
 } from 'lucide-react';
+import StockMarketTicker from '../components/StockMarketTicker';
 
 const AdminSecurePanel = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -105,6 +106,7 @@ const AdminSecurePanel = () => {
 
   return (
     <div className="min-h-screen bg-premium-platinum">
+      <StockMarketTicker />
             {/* Header */}
               <header className="bg-white border-b border-premium-platinum shadow-premium-soft">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
