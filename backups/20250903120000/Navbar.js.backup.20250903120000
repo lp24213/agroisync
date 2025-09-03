@@ -13,6 +13,7 @@ import {
   Globe,
   ChevronDown
 } from 'lucide-react';
+import TickerB3 from './TickerB3';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -50,6 +51,15 @@ const Navbar = () => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-agro-bg-primary/95 backdrop-blur-md shadow-xl border-b border-agro-border-primary">
+      {/* Ticker B3 */}
+      {isEnabled('FEATURE_TICKER_B3') && (
+        <div className="bg-agro-bg-secondary/90 border-b border-agro-border-secondary">
+          <div className="max-w-7xl mx-auto px-4">
+            <TickerB3 />
+          </div>
+        </div>
+      )}
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}

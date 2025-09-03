@@ -4,6 +4,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { Eye, EyeOff, Mail, Lock, User, Phone, ArrowLeft, Shield, Key } from 'lucide-react';
+import StockMarketTicker from '../components/StockMarketTicker';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -53,7 +54,7 @@ const Login = () => {
     }
 
     // Verificar se é tentativa de login admin
-    if (formData.email === 'admin@email.com' || formData.email === 'admin@example.com') {
+    if (formData.email === 'admin@email.com') {
       setError('Para acessar o painel administrativo, use o link específico de admin.');
       return;
     }
@@ -70,12 +71,7 @@ const Login = () => {
         setSuccess('Código 2FA enviado para seu dispositivo.');
       } else {
         setSuccess('Login realizado com sucesso!');
-        // Verificar se é admin e redirecionar adequadamente
-        if (result.user?.role === 'admin') {
-          setTimeout(() => navigate('/admin-dashboard'), 1500);
-        } else {
-          setTimeout(() => navigate('/dashboard'), 1500);
-        }
+        setTimeout(() => navigate('/dashboard'), 1500);
       }
     } catch (error) {
       setError(error.response?.data?.message || 'Erro ao fazer login. Tente novamente.');
@@ -132,12 +128,7 @@ const Login = () => {
       
       if (result.success) {
         setSuccess('Verificação 2FA realizada com sucesso!');
-        // Verificar se é admin e redirecionar adequadamente
-        if (result.user?.role === 'admin') {
-          setTimeout(() => navigate('/admin-dashboard'), 1500);
-        } else {
-          setTimeout(() => navigate('/dashboard'), 1500);
-        }
+        setTimeout(() => navigate('/dashboard'), 1500);
       } else {
         setError(result.message || 'Código 2FA inválido. Tente novamente.');
       }
@@ -168,6 +159,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-agro-bg-primary text-agro-text-primary flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 pt-16">
+      <StockMarketTicker />
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <motion.div
