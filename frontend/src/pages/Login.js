@@ -290,7 +290,7 @@ const Login = () => {
               <div className="text-center">
                 <button
                   type="button"
-                  onClick={() => navigate('/admin/login')}
+                  onClick={() => navigate('/admin-login')}
                   className="text-sm text-gray-500 hover:text-agro-green transition-colors duration-200"
                 >
                   Acesso administrativo

@@ -77,6 +77,28 @@ const Navbar = () => {
             </Link>
             
             <Link
+              to="/loja"
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                isActive('/loja') 
+                  ? 'text-premium-dark-gray bg-premium-platinum' 
+                  : 'text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum'
+              }`}
+            >
+              Loja
+            </Link>
+            
+            <Link
+              to="/agroconecta"
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                isActive('/agroconecta') 
+                  ? 'text-premium-dark-gray bg-premium-platinum' 
+                  : 'text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum'
+              }`}
+            >
+              AgroConecta
+            </Link>
+            
+            <Link
               to="/sobre"
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
                 isActive('/sobre') 
@@ -226,6 +248,22 @@ const Navbar = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               {t('home')}
+            </Link>
+            
+            <Link
+              to="/loja"
+              className="block px-3 py-2 text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum rounded-lg transition-all duration-300"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Loja
+            </Link>
+            
+            <Link
+              to="/agroconecta"
+              className="block px-3 py-2 text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum rounded-lg transition-all duration-300"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              AgroConecta
             </Link>
             
             <Link
