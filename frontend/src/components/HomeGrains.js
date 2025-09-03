@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, Minus, Wheat, Corn, Sprout } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, Wheat, Circle, Sprout } from 'lucide-react';
 import { useFeatureFlags } from '../contexts/FeatureFlagsContext';
 
 const HomeGrains = () => {
@@ -27,7 +27,7 @@ const HomeGrains = () => {
       change: -0.85,
       changePercent: -0.94,
       unit: 'R$/sc',
-      icon: Corn
+      icon: Circle
     },
     {
       name: 'Trigo',
