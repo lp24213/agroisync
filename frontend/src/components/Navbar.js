@@ -53,29 +53,29 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
+          <Link to="/" className="flex items-center space-x-3">
             <motion.div
               whileHover={{ scale: 1.05 }}
-              className="flex items-center justify-center shadow-lg w-10 h-10"
+              className="flex items-center justify-center shadow-lg w-12 h-12 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-xl"
             >
               <img 
                 src="/logo-agroisync.svg" 
                 alt="AGROISYNC" 
-                width="140" 
-                height="36" 
+                width="32" 
+                height="32" 
                 className="w-8 h-8"
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.style.display = 'none';
                   // Fallback para texto se SVG não carregar
                   const fallbackText = document.createElement('span');
-                  fallbackText.textContent = 'AGROISYNC';
+                  fallbackText.textContent = 'A';
                   fallbackText.className = 'text-lg font-bold text-white';
                   e.target.parentNode.appendChild(fallbackText);
                 }}
               />
             </motion.div>
-            <span className="text-xl font-bold text-white">AGROISYNC</span>
+            <span className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">AGROISYNC</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -111,6 +111,17 @@ const Navbar = () => {
               }`}
             >
               AgroConecta
+            </Link>
+            
+            <Link
+              to="/cripto"
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                isActive('/cripto') 
+                  ? 'text-white bg-white/10' 
+                  : 'text-gray-300 hover:text-white hover:bg-white/10'
+              }`}
+            >
+              Cripto
             </Link>
             
             <Link
@@ -273,13 +284,21 @@ const Navbar = () => {
               Loja
             </Link>
             
-            <Link
-              to="/agroconecta"
-              className="block px-3 py-2 text-neutral-300 hover:text-neutral-100 hover:bg-neutral-800/30 rounded-lg transition-all duration-300"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              AgroConecta
-            </Link>
+                         <Link
+               to="/agroconecta"
+               className="block px-3 py-2 text-neutral-300 hover:text-neutral-100 hover:bg-neutral-800/30 rounded-lg transition-all duration-300"
+               onClick={() => setIsMenuOpen(false)}
+             >
+               AgroConecta
+             </Link>
+             
+             <Link
+               to="/cripto"
+               className="block px-3 py-2 text-neutral-300 hover:text-neutral-100 hover:bg-neutral-800/30 rounded-lg transition-all duration-300"
+               onClick={() => setIsMenuOpen(false)}
+             >
+               Cripto
+             </Link>
             
             <Link
               to="/sobre"

@@ -71,7 +71,7 @@ const StockMarketTicker = () => {
   );
 
   return (
-    <div className="h-16 bg-black/80 border-b border-white/10 backdrop-blur-sm" style={{ maxHeight: '72px' }}>
+    <div className="h-16 bg-black/80 border-b border-white/10 backdrop-blur-sm overflow-hidden" style={{ maxHeight: '72px' }}>
       <div className="max-w-7xl mx-auto px-4 h-full">
         <div className="flex items-center justify-between h-full">
           {/* Índices */}
@@ -80,9 +80,13 @@ const StockMarketTicker = () => {
               <TrendingUp className="w-3 h-3 text-emerald-400" />
               <span className="text-xs font-semibold text-white/70">B3</span>
             </div>
-            <div className="flex items-center space-x-2">
+            <motion.div 
+              className="flex items-center space-x-2"
+              animate={{ x: [0, -20, 0] }}
+              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+            >
               {marketData.indices.map((item, index) => renderMarketItem(item, index))}
-            </div>
+            </motion.div>
           </div>
 
           {/* Moedas */}
@@ -91,9 +95,13 @@ const StockMarketTicker = () => {
               <DollarSign className="w-3 h-3 text-sky-400" />
               <span className="text-xs font-semibold text-white/70">FX</span>
             </div>
-            <div className="flex items-center space-x-2">
+            <motion.div 
+              className="flex items-center space-x-2"
+              animate={{ x: [0, 20, 0] }}
+              transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+            >
               {marketData.currencies.map((item, index) => renderMarketItem(item, index))}
-            </div>
+            </motion.div>
           </div>
 
           {/* Cripto */}
@@ -102,18 +110,27 @@ const StockMarketTicker = () => {
               <Bitcoin className="w-3 h-3 text-amber-400" />
               <span className="text-xs font-semibold text-white/70">CRYPTO</span>
             </div>
-            <div className="flex items-center space-x-2">
+            <motion.div 
+              className="flex items-center space-x-2"
+              animate={{ x: [0, -15, 0] }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            >
               {marketData.crypto.map((item, index) => renderMarketItem(item, index))}
-            </div>
+            </motion.div>
           </div>
 
           {/* Live Indicator */}
           <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+            <motion.div 
+              className="w-2 h-2 bg-emerald-400 rounded-full"
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
             <span className="text-xs text-white/60 font-mono">
               {currentTime.toLocaleTimeString('pt-BR', { 
                 hour: '2-digit', 
-                minute: '2-digit'
+                minute: '2-digit',
+                second: '2-digit'
               })}
             </span>
           </div>

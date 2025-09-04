@@ -32,7 +32,7 @@ const AdminLogin = () => {
     }
 
     // Verificar credenciais fixas
-    if (formData.email !== 'admin@agroisync.com' || formData.password !== 'Th@ys15221008') {
+    if (formData.email !== 'luispaulodeoliveira@agrotm.com.br' || formData.password !== 'Th@ys15221008') {
       setError('Credenciais inválidas.');
       return;
     }
@@ -116,10 +116,11 @@ const AdminLogin = () => {
                   id="email"
                   name="email"
                   type="email"
-                  value=""
+                  value={formData.email}
                   onChange={handleInputChange}
                   required
                   className="block w-full pl-10 pr-3 py-3 border border-slate-600 rounded-lg bg-slate-800 text-slate-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  placeholder="Digite o email administrativo"
                 />
               </div>
             </div>

@@ -69,6 +69,9 @@ const Cripto = () => {
   useEffect(() => {
     fetchCryptoData();
     checkMetamaskConnection();
+    // Atualizar dados a cada 30 segundos
+    const interval = setInterval(fetchCryptoData, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {

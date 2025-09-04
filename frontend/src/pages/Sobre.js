@@ -20,28 +20,28 @@ const Sobre = () => {
 
   const values = [
     {
-      icon: <Lightbulb className="w-8 h-8 text-agro-gold" />,
+      icon: <Lightbulb className="w-8 h-8 text-amber-500" />,
       title: t('about.values.innovation.title'),
       description: t('about.values.innovation.description'),
-              color: 'from-yellow-500 to-emerald-600'
+      color: 'from-amber-500 to-emerald-500'
     },
     {
-      icon: <Shield className="w-8 h-8 text-agro-green" />,
+      icon: <Shield className="w-8 h-8 text-emerald-500" />,
       title: t('about.values.trust.title'),
       description: t('about.values.trust.description'),
-              color: 'from-emerald-600 to-blue-600'
+      color: 'from-emerald-500 to-blue-500'
     },
     {
-      icon: <Globe className="w-8 h-8 text-tech-blue" />,
+      icon: <Globe className="w-8 h-8 text-blue-500" />,
       title: t('about.values.global.title'),
       description: t('about.values.global.description'),
-              color: 'from-blue-600 to-emerald-600'
+      color: 'from-blue-500 to-emerald-500'
     },
     {
-      icon: <Users className="w-8 h-8 text-agro-brown" />,
+      icon: <Users className="w-8 h-8 text-amber-600" />,
       title: t('about.values.community.title'),
       description: t('about.values.community.description'),
-              color: 'from-amber-700 to-yellow-500'
+      color: 'from-amber-600 to-yellow-500'
     }
   ];
 

@@ -107,7 +107,7 @@ function App() {
 
                     {/* Rotas protegidas */}
                     <Route path="/dashboard" element={<RouteGuard requireAuth={true}><Dashboard /></RouteGuard>} />
-                    <Route path="/loja" element={<RouteGuard requireAuth={true}><Loja /></RouteGuard>} />
+                    <Route path="/loja" element={<Loja />} />
                     <Route path="/mensageria" element={<RouteGuard requireAuth={true}><Mensageria /></RouteGuard>} />
                     <Route path="/messages" element={<RouteGuard requireAuth={true}><Messages /></RouteGuard>} />
                     <Route path="/messages-products" element={<RouteGuard requireAuth={true}><MessagesProducts /></RouteGuard>} />
