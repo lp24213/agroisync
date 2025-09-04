@@ -3,47 +3,42 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { motion } from 'framer-motion';
 import { 
-  Users, Package, Truck, DollarSign, BarChart3, 
+  Users, Package, Truck, DollarSign, 
   Settings, LogOut, Eye, EyeOff, Lock, Mail,
-  TrendingUp, Activity, Shield, Database, Building
+  Activity, Shield, Database, Building
 } from 'lucide-react';
 import adminService from '../services/adminService';
 import StockMarketTicker from '../components/StockMarketTicker';
 
 const Admin = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [stats, setStats] = useState({
-    users: 0,
-    products: 0,
-    freights: 0,
-    revenue: 0,
-    systemStatus: 'Operacional'
-  });
   
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   // CAMADA 3: Sistema de Admin Exclusivo
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminData, setAdminData] = useState(null);
   const [adminLoading, setAdminLoading] = useState(true);
   const [adminError, setAdminError] = useState(null);
+  // const [stats, setStats] = useState({
+  //   users: 0,
+  //   products: 0,
+  //   freights: 0,
+  //   revenue: 0,
+  //   systemStatus: 'Operacional'
+  // });
 
   // CAMADA 3: Lista de emails autorizados como admin
-  const authorizedEmails = [
+  const authorizedEmails = React.useMemo(() => [
     'luispaulodeoliveira@agrotm.com.br'
-  ];
+  ], []);
 
   // CAMADA 3: Verificar se o usuário é admin
   useEffect(() => {
     const checkAdminStatus = async () => {
       try {
-        setAdminLoading(true);
+        // setAdminLoading(true);
         
         // Verificar se o usuário está logado
         if (!user) {
@@ -65,23 +60,20 @@ const Admin = () => {
             await loadAdminStats();
           } else {
             setIsAdmin(false);
-            setAdminError(adminStatus.error || 'Acesso negado. Apenas administradores autorizados.');
           }
         } else {
           setIsAdmin(false);
-          setAdminError('Acesso negado. Apenas administradores autorizados.');
         }
         
         setAdminLoading(false);
       } catch (error) {
         console.error('Erro ao verificar status de admin:', error);
-        setAdminError('Erro ao verificar permissões de administrador');
         setAdminLoading(false);
       }
     };
 
     checkAdminStatus();
-  }, [user]);
+  }, [user, authorizedEmails]);
 
   // CAMADA 3: Não redirecionar - permitir acesso público à landing page
   // useEffect(() => {
@@ -105,15 +97,15 @@ const Admin = () => {
       setAdminData(dashboardData);
       
       // Atualizar stats locais
-      if (dashboardData.metrics) {
-        setStats({
-          users: dashboardData.metrics.totalUsers || 0,
-          products: dashboardData.metrics.totalProducts || 0,
-          freights: dashboardData.metrics.totalFreights || 0,
-          revenue: dashboardData.metrics.totalRevenue || 0,
-          systemStatus: dashboardData.systemStatus || 'Operacional'
-        });
-      }
+      // if (dashboardData.metrics) {
+      //   setStats({
+      //     users: dashboardData.metrics.totalUsers || 0,
+      //     products: dashboardData.metrics.totalProducts || 0,
+      //     freights: dashboardData.metrics.totalFreights || 0,
+      //     revenue: dashboardData.metrics.totalRevenue || 0,
+      //     systemStatus: dashboardData.systemStatus || 'Operacional'
+      //   });
+      // }
       
     } catch (error) {
       console.error('Erro ao carregar estatísticas:', error);
@@ -141,44 +133,44 @@ const Admin = () => {
   };
 
   // CAMADA 3: Atualizar status do sistema
-  const updateSystemStatus = async (status) => {
-    try {
-      setAdminLoading(true);
-      
-      // Atualizar via API real
-      await adminService.updateSystemStatus(status);
-      
-      // Recarregar dados para atualizar a interface
-      await loadAdminStats();
-      
-      console.log(`Status do sistema atualizado para: ${status}`);
-    } catch (error) {
-      console.error('Erro ao atualizar status:', error);
-      setAdminError('Erro ao atualizar status do sistema');
-    } finally {
-      setAdminLoading(false);
-    }
-  };
+  // const updateSystemStatus = async (status) => {
+  //   try {
+  //     setAdminLoading(true);
+  //     
+  //     // Atualizar via API real
+  //     await adminService.updateSystemStatus(status);
+  //     
+  //     // Recarregar dados para atualizar a interface
+  //     await loadAdminStats();
+  //     
+  //     console.log(`Status do sistema atualizado para: ${status}`);
+  //   } catch (error) {
+  //     console.error('Erro ao atualizar status:', error);
+  //     setAdminError('Erro ao atualizar status do sistema');
+  //   } finally {
+  //     setAdminLoading(false);
+  //   }
+  // };
 
   // CAMADA 3: Processar pagamento pendente
-  const processPayment = async (paymentId) => {
-    try {
-      setAdminLoading(true);
-      
-      // Processar via API real
-      await adminService.processPayment(paymentId);
-      
-      // Recarregar dados para atualizar a interface
-      await loadAdminStats();
-      
-      console.log(`Pagamento processado: ${paymentId}`);
-    } catch (error) {
-      console.error('Erro ao processar pagamento:', error);
-      setAdminError('Erro ao processar pagamento');
-    } finally {
-      setAdminLoading(false);
-    }
-  };
+  // const processPayment = async (paymentId) => {
+  //   try {
+  //     setAdminLoading(true);
+  //     
+  //     // Processar via API real
+  //     await adminService.processPayment(paymentId);
+  //     
+  //     // Recarregar dados para atualizar a interface
+  //     await loadAdminStats();
+  //     
+  //     console.log(`Pagamento processado: ${paymentId}`);
+  //   } catch (error) {
+  //     console.error('Erro ao processar pagamento:', error);
+  //     setAdminError('Erro ao processar pagamento');
+  //   } finally {
+  //     setAdminLoading(false);
+  //   }
+  // };
 
   // CAMADA 3: Sistema de login admin exclusivo
   const [loginEmail, setLoginEmail] = useState('');
@@ -395,6 +387,39 @@ const Admin = () => {
   }
 
   // Painel Administrativo
+  // Loading state
+  if (adminLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 pt-16 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-600 mx-auto mb-4"></div>
+          <p className="text-slate-600">Carregando painel administrativo...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (adminError) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 pt-16 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-600 mb-4">
+            <Building className="w-12 h-12 mx-auto" />
+          </div>
+          <h2 className="text-xl font-bold text-slate-800 mb-2">Erro no Painel</h2>
+          <p className="text-slate-600 mb-4">{adminError}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors"
+          >
+            Tentar Novamente
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 pt-16">
       {/* Header */}

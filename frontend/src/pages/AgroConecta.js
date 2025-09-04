@@ -1,24 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Truck, MapPin, Calendar, DollarSign, Clock, 
-  Search, Filter, Star, Eye, Heart, MessageSquare,
-  Plus, Edit, BarChart3, Users, Package, Shield,
-  CheckCircle, Phone, Mail, Navigation, Route,
-  Car, Bus, Truck as TruckIcon, Ship, Plane,
-  TrendingUp, TrendingDown, Zap, Target, Users2
+  Truck, MapPin, Clock, 
+  Search, Star, Eye, Heart, MessageSquare,
+  Plus, BarChart3, Users, Package,
+  CheckCircle
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const AgroConecta = () => {
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [activeTab, setActiveTab] = useState('freights');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [location, setLocation] = useState('');
   const [priceRange, setPriceRange] = useState({ min: 0, max: 50000 });
   const [sortBy, setSortBy] = useState('relevance');
-  const [loading, setLoading] = useState(false);
 
   // Mock data para demonstração
   const freights = [

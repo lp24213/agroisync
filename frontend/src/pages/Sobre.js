@@ -100,7 +100,7 @@ const Sobre = () => {
   ];
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300 pt-16`}>
+    <div className="min-h-screen bg-white text-gray-900 pt-16">
       {/* Cotação da Bolsa */}
       <StockMarketTicker />
       
@@ -108,15 +108,9 @@ const Sobre = () => {
       <section className="relative pt-40 pb-20 px-4 overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
-          {isDark ? (
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900">
-              <div className="absolute inset-0 bg-gray-800 opacity-20"></div>
-            </div>
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-blue-50">
-              <div className="absolute inset-0 bg-white opacity-95"></div>
-            </div>
-          )}
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-blue-50">
+            <div className="absolute inset-0 bg-white opacity-95"></div>
+          </div>
         </div>
         
         <div className="relative max-w-7xl mx-auto text-center">
