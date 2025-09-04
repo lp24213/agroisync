@@ -83,16 +83,16 @@ const Admin = () => {
     checkAdminStatus();
   }, [user]);
 
-  // CAMADA 3: Redirecionar usuários não autorizados
-  useEffect(() => {
-    if (!adminLoading && !isAdmin && user) {
-      // Usuário logado mas não é admin - redirecionar para dashboard
-      navigate('/dashboard');
-    } else if (!adminLoading && !isAdmin && !user) {
-      // Usuário não logado - redirecionar para login comum
-      navigate('/login');
-    }
-  }, [isAdmin, adminLoading, user, navigate]);
+  // CAMADA 3: Não redirecionar - permitir acesso público à landing page
+  // useEffect(() => {
+  //   if (!adminLoading && !isAdmin && user) {
+  //     // Usuário logado mas não é admin - redirecionar para dashboard
+  //     navigate('/dashboard');
+  //   } else if (!adminLoading && !isAdmin && !user) {
+  //     // Usuário não logado - redirecionar para login comum
+  //     navigate('/login');
+  //   }
+  // }, [isAdmin, adminLoading, user, navigate]);
 
   // CAMADA 3: Carregar estatísticas do admin via API real
   const loadAdminStats = async () => {
@@ -348,6 +348,48 @@ const Admin = () => {
             </button>
           </div>
         </motion.div>
+      </div>
+    );
+  }
+
+  // Landing page pública para usuários não autenticados
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-white text-gray-900">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center"
+          >
+            <h1 className="text-4xl font-bold text-gray-900 mb-6">
+              Painel Administrativo AGROISYNC
+            </h1>
+            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+              Acesso exclusivo para administradores autorizados. 
+              Faça login para acessar o painel de controle completo da plataforma.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => navigate('/login')}
+                className="px-8 py-3 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition-colors duration-300"
+              >
+                Fazer Login
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => navigate('/')}
+                className="px-8 py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-colors duration-300"
+              >
+                Voltar ao Início
+              </motion.button>
+            </div>
+          </motion.div>
+        </main>
       </div>
     );
   }

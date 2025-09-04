@@ -30,7 +30,7 @@ const Loja = () => {
   const navigate = useNavigate();
   
   // Guard para evitar piscar
-  const [mounted, setMounted] = useState(false);
+  const [mounted, setMounted] = useState(true);
   
   const [activeTab, setActiveTab] = useState('marketplace');
   const [products, setProducts] = useState([]);
@@ -63,34 +63,23 @@ const Loja = () => {
   const [isValidatingDocument, setIsValidatingDocument] = useState(false);
   const [isValidatingLocation, setIsValidatingLocation] = useState(false);
 
-  // Todos os useEffect devem vir antes de qualquer return
+  // Carregar dados iniciais
   useEffect(() => {
-    setMounted(true);
-    return () => setMounted(false);
-  }, []);
-
-  useEffect(() => {
-    if (!mounted) return;
-    console.log('Loja: useEffect executado, isAuthenticated:', isAuthenticated); // Debug
     loadProducts();
     if (isAuthenticated) {
       loadUserData();
     }
-    // Inicializar serviços
     initializeServices();
-  }, [mounted, isAuthenticated]);
+  }, [isAuthenticated]);
 
   useEffect(() => {
-    if (!mounted || !products || !Array.isArray(products)) return;
-    console.log('Loja: applyFilters executado, products:', products.length); // Debug
-    applyFilters();
-  }, [mounted, products, searchTerm, selectedCategory, priceRange, sortBy]);
+    if (products && Array.isArray(products)) {
+      applyFilters();
+    }
+  }, [products, searchTerm, selectedCategory, priceRange, sortBy]);
 
-  // Se não estiver montado, não renderizar nada
-  if (!mounted) return null;
-
-  // Guard para products - evitar render com dados inválidos
-  if (!products || !Array.isArray(products)) {
+  // Loading state
+  if (loading) {
     return (
       <div className="min-h-screen bg-white text-gray-900 p-8">
         <div className="max-w-7xl mx-auto">

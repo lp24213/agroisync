@@ -207,7 +207,7 @@ const AgroConecta = () => {
   ];
 
     return (
-    <div className="min-h-screen bg-white text-gray-900 pt-20">
+    <div className="min-h-screen bg-white text-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="text-center mb-12">
@@ -278,7 +278,7 @@ const AgroConecta = () => {
               className={`flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
                 activeTab === 'drivers'
                   ? 'bg-emerald-500 text-black'
-                  : 'text-white/60 hover:text-white hover:bg-white/10'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
               }`}
             >
               <Truck className="w-5 h-5 inline mr-2" />
@@ -289,7 +289,7 @@ const AgroConecta = () => {
               className={`flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
                 activeTab === 'my-freights'
                   ? 'bg-emerald-500 text-black'
-                  : 'text-white/60 hover:text-white hover:bg-white/10'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
               }`}
             >
               <BarChart3 className="w-5 h-5 inline mr-2" />
@@ -313,13 +313,13 @@ const AgroConecta = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
                   {/* Search */}
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/50" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input
                       type="text"
                       placeholder="Buscar fretes..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white placeholder-white/50 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
+                      className="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
                     />
                 </div>
 
@@ -327,7 +327,7 @@ const AgroConecta = () => {
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="px-4 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
+                    className="px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
                   >
                     {categories.map((category) => (
                       <option key={category} value={category}>{category}</option>
@@ -338,7 +338,7 @@ const AgroConecta = () => {
                   <select
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                    className="px-4 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
+                    className="px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
                   >
                     {locations.map((loc) => (
                       <option key={loc} value={loc}>{loc}</option>
@@ -352,15 +352,15 @@ const AgroConecta = () => {
                       placeholder="Min"
                       value={priceRange.min}
                       onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })}
-                      className="w-full px-3 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white placeholder-white/50 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
+                      className="w-full px-3 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
                     />
-                    <span className="text-white/50">-</span>
+                    <span className="text-gray-400">-</span>
                     <input
                       type="number"
                       placeholder="Max"
                       value={priceRange.max}
                       onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
-                      className="w-full px-3 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white placeholder-white/50 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
+                      className="w-full px-3 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
                     />
               </div>
               
@@ -368,7 +368,7 @@ const AgroConecta = () => {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="px-4 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
+                    className="px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
                   >
                     <option value="relevance">Relevância</option>
                     <option value="price">Menor Preço</option>
@@ -392,14 +392,14 @@ const AgroConecta = () => {
                     {/* Header */}
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
-                        <h3 className="text-xl font-bold text-white mb-2">{freight.title}</h3>
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">{freight.title}</h3>
                         <div className="flex items-center space-x-4 text-sm">
-                          <div className="flex items-center space-x-1 text-white/60">
+                          <div className="flex items-center space-x-1 text-gray-600">
                             <MapPin className="w-4 h-4" />
                             <span>{freight.origin}</span>
                       </div>
-                          <div className="text-white/40">→</div>
-                          <div className="flex items-center space-x-1 text-white/60">
+                          <div className="text-gray-400">→</div>
+                          <div className="flex items-center space-x-1 text-gray-600">
                             <MapPin className="w-4 h-4" />
                             <span>{freight.destination}</span>
                       </div>
@@ -407,38 +407,38 @@ const AgroConecta = () => {
                 </div>
                       <div className="text-right">
                         <div className="text-2xl font-bold text-gradient-emerald">{freight.price}</div>
-                        <div className="text-sm text-white/60">{freight.deadline}</div>
+                        <div className="text-sm text-gray-600">{freight.deadline}</div>
           </div>
       </div>
 
                     {/* Details */}
                     <div className="grid grid-cols-2 gap-4 mb-4">
                       <div className="text-center">
-                        <div className="text-lg font-bold text-white">{freight.distance}</div>
-                        <div className="text-xs text-white/60">Distância</div>
+                        <div className="text-lg font-bold text-gray-900">{freight.distance}</div>
+                        <div className="text-xs text-gray-600">Distância</div>
               </div>
                       <div className="text-center">
-                        <div className="text-lg font-bold text-white">{freight.weight}</div>
-                        <div className="text-xs text-white/60">Peso</div>
+                        <div className="text-lg font-bold text-gray-900">{freight.weight}</div>
+                        <div className="text-xs text-gray-600">Peso</div>
             </div>
                       <div className="text-center">
-                        <div className="text-lg font-bold text-white">{freight.volume}</div>
-                        <div className="text-xs text-white/60">Volume</div>
+                        <div className="text-lg font-bold text-gray-900">{freight.volume}</div>
+                        <div className="text-xs text-gray-600">Volume</div>
           </div>
                       <div className="text-center">
-                        <div className="text-lg font-bold text-white">{freight.vehicle}</div>
-                        <div className="text-xs text-white/60">Veículo</div>
+                        <div className="text-lg font-bold text-gray-900">{freight.vehicle}</div>
+                        <div className="text-xs text-gray-600">Veículo</div>
         </div>
       </div>
 
                     {/* Description */}
-                    <p className="text-white/70 text-sm mb-4">
+                    <p className="text-gray-700 text-sm mb-4">
                       {freight.description}
                     </p>
 
                     {/* Requirements */}
                     <div className="mb-4">
-                      <h4 className="text-white font-semibold text-sm mb-2">Requisitos:</h4>
+                      <h4 className="text-gray-900 font-semibold text-sm mb-2">Requisitos:</h4>
                       <div className="flex flex-wrap gap-2">
                         {freight.requirements.map((req) => (
                           <span
@@ -452,22 +452,22 @@ const AgroConecta = () => {
               </div>
 
                     {/* Advertiser */}
-                    <div className="flex items-center justify-between mb-4 p-3 bg-black/30 rounded-lg">
+                    <div className="flex items-center justify-between mb-4 p-3 bg-gray-100 rounded-lg">
                       <div className="flex items-center space-x-2">
                   <div>
                           <div className="flex items-center space-x-1">
-                            <span className="text-white font-semibold">{freight.advertiser.name}</span>
+                            <span className="text-gray-900 font-semibold">{freight.advertiser.name}</span>
                             {freight.advertiser.verified && (
                               <CheckCircle className="w-4 h-4 text-emerald-400" />
                             )}
                         </div>
                           <div className="flex items-center space-x-1 text-sm">
                             <Star className="w-4 h-4 text-amber-400 fill-current" />
-                            <span className="text-white/60">{freight.advertiser.rating}</span>
+                            <span className="text-gray-600">{freight.advertiser.rating}</span>
                         </div>
                       </div>
                     </div>
-                      <div className="text-sm text-white/60">
+                      <div className="text-sm text-gray-600">
                         {freight.createdAt}
                       </div>
                     </div>
@@ -485,14 +485,14 @@ const AgroConecta = () => {
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="p-2 bg-black/50 border border-emerald-500/20 rounded-lg text-emerald-400 hover:bg-emerald-500/10 transition-colors duration-300"
+                        className="p-2 bg-gray-200 border border-emerald-500/20 rounded-lg text-emerald-400 hover:bg-emerald-500/10 transition-colors duration-300"
                       >
                         <Eye className="w-4 h-4" />
                       </motion.button>
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="p-2 bg-black/50 border border-emerald-500/20 rounded-lg text-emerald-400 hover:bg-emerald-500/10 transition-colors duration-300"
+                        className="p-2 bg-gray-200 border border-emerald-500/20 rounded-lg text-emerald-400 hover:bg-emerald-500/10 transition-colors duration-300"
                       >
                         <Heart className="w-4 h-4" />
                       </motion.button>
@@ -516,13 +516,13 @@ const AgroConecta = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                   {/* Search */}
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/50" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-900/50" />
                           <input 
                             type="text" 
                       placeholder="Buscar motoristas..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white placeholder-white/50 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
+                      className="w-full pl-10 pr-4 py-3 bg-gray-200 border border-emerald-500/20 rounded-xl text-gray-900 placeholder-white/50 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
                     />
                       </div>
                       
@@ -530,7 +530,7 @@ const AgroConecta = () => {
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="px-4 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
+                    className="px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
                   >
                     {vehicleTypes.map((type) => (
                       <option key={type} value={type}>{type}</option>
@@ -541,7 +541,7 @@ const AgroConecta = () => {
                   <select
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                    className="px-4 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
+                    className="px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
                   >
                     {locations.map((loc) => (
                       <option key={loc} value={loc}>{loc}</option>
@@ -555,15 +555,15 @@ const AgroConecta = () => {
                       placeholder="Min"
                       value={priceRange.min}
                       onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })}
-                      className="w-full px-3 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white placeholder-white/50 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
+                      className="w-full px-3 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
                     />
-                    <span className="text-white/50">-</span>
+                    <span className="text-gray-400">-</span>
                     <input
                       type="number"
                       placeholder="Max"
                       value={priceRange.max}
                       onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
-                      className="w-full px-3 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white placeholder-white/50 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
+                      className="w-full px-3 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
                     />
                       </div>
                       
@@ -571,7 +571,7 @@ const AgroConecta = () => {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="px-4 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
+                    className="px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
                   >
                     <option value="relevance">Relevância</option>
                     <option value="rating">Melhor Avaliação</option>
@@ -596,30 +596,30 @@ const AgroConecta = () => {
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
-                          <h3 className="text-xl font-bold text-white">{driver.name}</h3>
+                          <h3 className="text-xl font-bold text-gray-900">{driver.name}</h3>
                           {driver.verified && (
                             <CheckCircle className="w-5 h-5 text-emerald-400" />
                           )}
                         </div>
-                        <div className="flex items-center space-x-2 text-white/60 text-sm">
+                        <div className="flex items-center space-x-2 text-gray-600 text-sm">
                           <Truck className="w-4 h-4" />
                           <span>{driver.vehicle} - {driver.capacity}</span>
                         </div>
                       </div>
                       <div className="flex items-center space-x-1">
                         <Star className="w-4 h-4 text-amber-400 fill-current" />
-                        <span className="text-white font-semibold">{driver.rating}</span>
-                        <span className="text-white/60 text-sm">({driver.reviews})</span>
+                        <span className="text-gray-900 font-semibold">{driver.rating}</span>
+                        <span className="text-gray-600 text-sm">({driver.reviews})</span>
                       </div>
                     </div>
 
                     {/* Location and Activity */}
                     <div className="flex items-center space-x-4 mb-4 text-sm">
-                      <div className="flex items-center space-x-1 text-white/60">
+                      <div className="flex items-center space-x-1 text-gray-600">
                         <MapPin className="w-4 h-4" />
                         <span>{driver.location}</span>
                           </div>
-                      <div className="flex items-center space-x-1 text-white/60">
+                      <div className="flex items-center space-x-1 text-gray-600">
                         <Clock className="w-4 h-4" />
                         <span>{driver.lastActive}</span>
                       </div>
@@ -630,13 +630,13 @@ const AgroConecta = () => {
                     </div>
 
                     {/* Description */}
-                    <p className="text-white/70 text-sm mb-4">
+                    <p className="text-gray-700 text-sm mb-4">
                       {driver.description}
                     </p>
 
                     {/* Specialties */}
                     <div className="mb-4">
-                      <h4 className="text-white font-semibold text-sm mb-2">Especialidades:</h4>
+                      <h4 className="text-gray-900 font-semibold text-sm mb-2">Especialidades:</h4>
                       <div className="flex flex-wrap gap-2">
                         {driver.specialties.map((specialty) => (
                           <span
@@ -653,25 +653,25 @@ const AgroConecta = () => {
                     <div className="grid grid-cols-2 gap-4 mb-4">
                       <div className="text-center">
                         <div className="text-lg font-bold text-gradient-emerald">{driver.stats.completedFreights}</div>
-                        <div className="text-xs text-white/60">Fretes</div>
+                        <div className="text-xs text-gray-600">Fretes</div>
                     </div>
                       <div className="text-center">
                         <div className="text-lg font-bold text-gradient-emerald">{driver.stats.totalDistance}</div>
-                        <div className="text-xs text-white/60">Distância</div>
+                        <div className="text-xs text-gray-600">Distância</div>
                   </div>
                       <div className="text-center">
                         <div className="text-lg font-bold text-gradient-emerald">{driver.stats.satisfaction}</div>
-                        <div className="text-xs text-white/60">Satisfação</div>
+                        <div className="text-xs text-gray-600">Satisfação</div>
               </div>
                       <div className="text-center">
                         <div className="text-lg font-bold text-gradient-emerald">{driver.stats.responseTime}</div>
-                        <div className="text-xs text-white/60">Resposta</div>
+                        <div className="text-xs text-gray-600">Resposta</div>
             </div>
                     </div>
 
                     {/* Documents */}
                     <div className="mb-4">
-                      <h4 className="text-white font-semibold text-sm mb-2">Documentação:</h4>
+                      <h4 className="text-gray-900 font-semibold text-sm mb-2">Documentação:</h4>
                       <div className="flex flex-wrap gap-2">
                         {driver.documents.map((doc) => (
                           <span
@@ -697,14 +697,14 @@ const AgroConecta = () => {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                        className="p-2 bg-black/50 border border-emerald-500/20 rounded-lg text-emerald-400 hover:bg-emerald-500/10 transition-colors duration-300"
+                        className="p-2 bg-gray-200 border border-emerald-500/20 rounded-lg text-emerald-400 hover:bg-emerald-500/10 transition-colors duration-300"
                       >
                         <Eye className="w-4 h-4" />
                       </motion.button>
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="p-2 bg-black/50 border border-emerald-500/20 rounded-lg text-emerald-400 hover:bg-emerald-500/10 transition-colors duration-300"
+                        className="p-2 bg-gray-200 border border-emerald-500/20 rounded-lg text-emerald-400 hover:bg-emerald-500/10 transition-colors duration-300"
                       >
                         <Heart className="w-4 h-4" />
                   </motion.button>
@@ -728,7 +728,7 @@ const AgroConecta = () => {
                   <h3 className="text-2xl font-bold text-gradient-agro mb-4">
                     Acesse sua Conta
                   </h3>
-                  <p className="text-white/60 mb-6 max-w-2xl mx-auto">
+                  <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
                     Faça login para visualizar e gerenciar seus fretes, acompanhar propostas 
                     e manter histórico completo das suas operações logísticas.
                   </p>
@@ -756,8 +756,8 @@ const AgroConecta = () => {
                   <h3 className="text-2xl font-bold text-gradient-agro mb-6">
                     Meus Fretes
                   </h3>
-                  <div className="text-center text-white/60">
-                    <Package className="w-16 h-16 mx-auto mb-4 text-white/20" />
+                  <div className="text-center text-gray-600">
+                    <Package className="w-16 h-16 mx-auto mb-4 text-gray-900/20" />
                     <p>Nenhum frete encontrado. Publique seu primeiro frete para começar!</p>
                   </div>
                 </div>
@@ -776,7 +776,7 @@ const AgroConecta = () => {
           <h3 className="text-2xl font-bold text-gradient-agro mb-4">
             Comece a Usar o AgroConecta
           </h3>
-          <p className="text-white/60 mb-6 max-w-2xl mx-auto">
+          <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
             Publique seus fretes ou encontre motoristas qualificados. 
             Processo simples, seguro e com suporte completo.
           </p>

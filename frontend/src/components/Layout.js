@@ -22,7 +22,7 @@ const Layout = ({ children }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
-        className={process.env.NEXT_PUBLIC_FEATURE_TICKER !== 'false' ? 'pt-28' : 'pt-16'}
+        className={process.env.NEXT_PUBLIC_FEATURE_TICKER !== 'false' ? 'pt-24' : 'pt-12'}
       >
         {children}
       </motion.main>

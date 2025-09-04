@@ -51,19 +51,19 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-xl border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-12">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3">
             <motion.div
               whileHover={{ scale: 1.05 }}
-              className="flex items-center justify-center shadow-lg w-12 h-12 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-xl"
+              className="flex items-center justify-center shadow-lg w-8 h-8 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-lg"
             >
               <img 
                 src="/logo-agroisync.svg" 
                 alt="AGROISYNC" 
-                width="32" 
-                height="32" 
-                className="w-8 h-8"
+                width="24" 
+                height="24" 
+                className="w-6 h-6"
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.style.display = 'none';
@@ -75,7 +75,7 @@ const Navbar = () => {
                 }}
               />
             </motion.div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">AGROISYNC</span>
+            <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">AGROISYNC</span>
           </Link>
 
           {/* Desktop Navigation */}

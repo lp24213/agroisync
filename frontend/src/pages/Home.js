@@ -475,7 +475,7 @@ const Home = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 pt-16">
+    <div className="min-h-screen bg-white text-gray-900">
       {/* Clima por IP no Topo */}
       {isEnabled('FEATURE_HOME_WEATHER_IP') && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
