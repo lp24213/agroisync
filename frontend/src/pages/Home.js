@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { 
   DollarSign, Package, Truck, 
-  Users, Shield, TrendingUp, TrendingDown,
+  Users, Shield,
   MapPin, MessageSquare, Leaf,
   Sun, Cloud, CloudRain, Thermometer, Droplets, Wind
 } from 'lucide-react';
@@ -135,94 +135,94 @@ const Home = () => {
       };
       
       // Formatar dados da bolsa de valores
-      const formattedStockData = mockAgrolinkData.stocks.map(stock => ({
-        symbol: stock.symbol,
-        name: stock.name,
-        price: stock.current_price,
-        change: stock.price_change_percentage,
-        volume: stock.volume,
-        trend: stock.price_change_percentage >= 0 ? 'up' : 'down',
-        lastUpdate: new Date(stock.last_update),
-        sector: stock.sector,
-        marketCap: stock.market_cap
-      }));
+      // const formattedStockData = mockAgrolinkData.stocks.map(stock => ({
+      //   symbol: stock.symbol,
+      //   name: stock.name,
+      //   price: stock.current_price,
+      //   change: stock.price_change_percentage,
+      //   volume: stock.volume,
+      //   trend: stock.price_change_percentage >= 0 ? 'up' : 'down',
+      //   lastUpdate: new Date(stock.last_update),
+      //   sector: stock.sector,
+      //   marketCap: stock.market_cap
+      // }));
 
-      setStockData(formattedStockData);
+      // setStockData(formattedStockData);
       
     } catch (error) {
       console.error('Erro ao buscar dados da Agrolink:', error);
       
       // Fallback: dados simulados baseados na localização
-      const fallbackStockData = [
-        {
-          symbol: 'SOJA3',
-          name: 'Soja Futuro',
-          price: 145.67 + (Math.random() - 0.5) * 10,
-          change: 2.34 + (Math.random() - 0.5) * 2,
-          volume: '1.2M',
-          trend: Math.random() > 0.5 ? 'up' : 'down',
-          lastUpdate: new Date(),
-          sector: 'Agropecuário',
-          marketCap: 'R$ 45.2B'
-        },
-        {
-          symbol: 'MILHO4',
-          name: 'Milho Futuro',
-          price: 89.45 + (Math.random() - 0.5) * 8,
-          change: -1.23 + (Math.random() - 0.5) * 1.5,
-          volume: '856K',
-          trend: Math.random() > 0.5 ? 'up' : 'down',
-          lastUpdate: new Date(),
-          sector: 'Agropecuário',
-          marketCap: 'R$ 28.7B'
-        },
-        {
-          symbol: 'BOI3',
-          name: 'Boi Gordo',
-          price: 234.12 + (Math.random() - 0.5) * 15,
-          change: 3.45 + (Math.random() - 0.5) * 2,
-          volume: '2.1M',
-          trend: Math.random() > 0.5 ? 'up' : 'down',
-          lastUpdate: new Date(),
-          sector: 'Agropecuário',
-          marketCap: 'R$ 67.3B'
-        },
-        {
-          symbol: 'CAFE3',
-          name: 'Café Arábica',
-          price: 567.89 + (Math.random() - 0.5) * 25,
-          change: -0.87 + (Math.random() - 0.5) * 1.5,
-          volume: '432K',
-          trend: Math.random() > 0.5 ? 'up' : 'down',
-          lastUpdate: new Date(),
-          sector: 'Agropecuário',
-          marketCap: 'R$ 12.4B'
-        },
-        {
-          symbol: 'ALGO3',
-          name: 'Algodão',
-          price: 78.34 + (Math.random() - 0.5) * 12,
-          change: 1.56 + (Math.random() - 0.5) * 1.5,
-          volume: '678K',
-          trend: Math.random() > 0.5 ? 'up' : 'down',
-          lastUpdate: new Date(),
-          sector: 'Agropecuário',
-          marketCap: 'R$ 15.8B'
-        },
-        {
-          symbol: 'TRIG3',
-          name: 'Trigo',
-          price: 123.45 + (Math.random() - 0.5) * 18,
-          change: 0.78 + (Math.random() - 0.5) * 1.5,
-          volume: '345K',
-          trend: Math.random() > 0.5 ? 'up' : 'down',
-          lastUpdate: new Date(),
-          sector: 'Agropecuário',
-          marketCap: 'R$ 18.9B'
-        }
-      ];
+      // const fallbackStockData = [
+      //   {
+      //     symbol: 'SOJA3',
+      //     name: 'Soja Futuro',
+      //     price: 145.67 + (Math.random() - 0.5) * 10,
+      //     change: 2.34 + (Math.random() - 0.5) * 2,
+      //     volume: '1.2M',
+      //     trend: Math.random() > 0.5 ? 'up' : 'down',
+      //     lastUpdate: new Date(),
+      //     sector: 'Agropecuário',
+      //     marketCap: 'R$ 45.2B'
+      //   },
+      //   {
+      //     symbol: 'MILHO4',
+      //     name: 'Milho Futuro',
+      //     price: 89.45 + (Math.random() - 0.5) * 8,
+      //     change: -1.23 + (Math.random() - 0.5) * 1.5,
+      //     volume: '856K',
+      //     trend: Math.random() > 0.5 ? 'up' : 'down',
+      //     lastUpdate: new Date(),
+      //     sector: 'Agropecuário',
+      //     marketCap: 'R$ 28.7B'
+      //   },
+      //   {
+      //     symbol: 'BOI3',
+      //     name: 'Boi Gordo',
+      //     price: 234.12 + (Math.random() - 0.5) * 15,
+      //     change: 3.45 + (Math.random() - 0.5) * 2,
+      //     volume: '2.1M',
+      //     trend: Math.random() > 0.5 ? 'up' : 'down',
+      //     lastUpdate: new Date(),
+      //     sector: 'Agropecuário',
+      //     marketCap: 'R$ 67.3B'
+      //   },
+      //   {
+      //     symbol: 'CAFE3',
+      //     name: 'Café Arábica',
+      //     price: 567.89 + (Math.random() - 0.5) * 25,
+      //     change: -0.87 + (Math.random() - 0.5) * 1.5,
+      //     volume: '432K',
+      //     trend: Math.random() > 0.5 ? 'up' : 'down',
+      //     lastUpdate: new Date(),
+      //     sector: 'Agropecuário',
+      //     marketCap: 'R$ 12.4B'
+      //   },
+      //   {
+      //     symbol: 'ALGO3',
+      //     name: 'Algodão',
+      //     price: 78.34 + (Math.random() - 0.5) * 12,
+      //     change: 1.56 + (Math.random() - 0.5) * 1.5,
+      //     volume: '678K',
+      //     trend: Math.random() > 0.5 ? 'up' : 'down',
+      //     lastUpdate: new Date(),
+      //     sector: 'Agropecuário',
+      //     marketCap: 'R$ 15.8B'
+      //   },
+      //   {
+      //     symbol: 'TRIG3',
+      //     name: 'Trigo',
+      //     price: 123.45 + (Math.random() - 0.5) * 18,
+      //     change: 0.78 + (Math.random() - 0.5) * 1.5,
+      //     volume: '345K',
+      //     trend: Math.random() > 0.5 ? 'up' : 'down',
+      //     lastUpdate: new Date(),
+      //     sector: 'Agropecuário',
+      //     marketCap: 'R$ 18.9B'
+      //   }
+      // ];
 
-      setStockData(fallbackStockData);
+      // setStockData(fallbackStockData);
     }
   }, [userLocation]);
 
@@ -593,7 +593,7 @@ const Home = () => {
                 whileHover={{ y: -10, scale: 1.02 }}
                 className="text-center group card p-6 hover-agro"
               >
-                <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-r ${feature.color} flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300 shadow-lg group-hover:shadow-xl`}>
+                <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-r ${feature.color} flex items-center justify-center text-gray-900 group-hover:scale-110 transition-transform duration-300 shadow-lg group-hover:shadow-xl`}>
                   {feature.icon}
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
@@ -791,17 +791,17 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="section-premium bg-gradient-to-r from-slate-600 via-slate-700 to-slate-800 relative overflow-hidden">
+      <section className="section-premium bg-gradient-to-r from-gray-50 via-white to-gray-50 relative overflow-hidden">
         {/* Background elements */}
-        <div className="absolute inset-0 bg-gradient-to-br from-agro-green-600/20 via-agro-yellow-500/20 to-web3-neon-blue/20"></div>
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-agro-green-500 via-agro-yellow-500 to-web3-neon-blue"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/20 via-yellow-50/20 to-blue-50/20"></div>
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 via-yellow-500 to-blue-500"></div>
         
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-4xl font-bold text-white mb-6"
+            className="text-4xl font-bold text-gray-900 mb-6"
           >
             {t('home.cta.title')}
           </motion.h2>
@@ -833,7 +833,7 @@ const Home = () => {
               onClick={() => navigate('/contato')}
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 bg-transparent border-2 border-white text-white font-bold rounded-xl hover:bg-white hover:text-slate-700 transition-all duration-300"
+              className="px-8 py-4 bg-transparent border-2 border-gray-900 text-gray-900 font-bold rounded-xl hover:bg-gray-900 hover:text-white transition-all duration-300"
             >
               {t('home.cta.secondary')}
             </motion.button>
@@ -863,7 +863,7 @@ const Home = () => {
                 onClick={() => navigate('/ajuda')}
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 bg-gradient-to-r from-slate-600 via-slate-700 to-slate-800 text-white font-medium rounded-lg hover:from-slate-700 hover:via-slate-800 hover:to-slate-900 transition-all duration-300 shadow-md hover:shadow-lg relative overflow-hidden group"
+                className="px-6 py-3 bg-gradient-to-r from-emerald-500 via-yellow-500 to-blue-500 text-white font-medium rounded-lg hover:from-emerald-600 hover:via-yellow-600 hover:to-blue-600 transition-all duration-300 shadow-md hover:shadow-lg relative overflow-hidden group"
               >
                 {/* Efeito de glow no hover */}
                 <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 via-yellow-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
@@ -873,7 +873,7 @@ const Home = () => {
                 onClick={() => navigate('/contato')}
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 bg-transparent border border-gradient-to-r from-emerald-500 via-yellow-500 to-blue-500 text-slate-600 font-medium rounded-lg hover:bg-gradient-to-r hover:from-emerald-50 hover:via-yellow-50 hover:to-blue-50 hover:border-emerald-600 transition-all duration-300 relative overflow-hidden group"
+                className="px-6 py-3 bg-transparent border border-gray-300 text-gray-600 font-medium rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 relative overflow-hidden group"
               >
                 {/* Efeito de glow no hover */}
                 <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-yellow-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
