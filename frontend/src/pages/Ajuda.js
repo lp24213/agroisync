@@ -389,7 +389,7 @@ const Ajuda = () => {
             transition={{ duration: 0.8 }}
             className="mb-8"
           >
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-gradient-agro">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-gray-900">
               Central de Suporte
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -460,7 +460,7 @@ const Ajuda = () => {
                   <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-green-500 to-blue-600 text-white mb-4">
                     {getActiveSection().icon}
                   </div>
-                  <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gradient-agro">
+                  <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
                     {getActiveSection().title}
                   </h2>
                   <p className="text-xl text-gray-600 max-w-2xl mx-auto">

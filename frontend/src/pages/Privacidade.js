@@ -14,7 +14,7 @@ const Privacidade = () => {
             <div className="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
               <Shield className="w-8 h-8 text-emerald-400" />
             </div>
-            <h1 className="text-4xl font-bold text-gradient-agro mb-4">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
               Política de Privacidade
             </h1>
             <p className="text-gray-600 text-lg">

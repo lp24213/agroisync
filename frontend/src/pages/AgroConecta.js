@@ -211,7 +211,7 @@ const AgroConecta = () => {
           <motion.h1 
             initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-            className="text-5xl font-bold text-gradient-agro mb-6"
+            className="text-5xl font-bold text-gray-900 mb-6"
             >
                 AgroConecta
           </motion.h1>
@@ -722,7 +722,7 @@ const AgroConecta = () => {
             >
               {!isAuthenticated ? (
                 <div className="card p-12 text-center">
-                  <h3 className="text-2xl font-bold text-gradient-agro mb-4">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
                     Acesse sua Conta
                   </h3>
                   <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
@@ -750,7 +750,7 @@ const AgroConecta = () => {
               </div>
               ) : (
                 <div className="card p-8">
-                  <h3 className="text-2xl font-bold text-gradient-agro mb-6">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-6">
                     Meus Fretes
                   </h3>
                   <div className="text-center text-gray-600">

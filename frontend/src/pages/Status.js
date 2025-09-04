@@ -231,7 +231,7 @@ const Status = () => {
             transition={{ duration: 0.8 }}
             className="mb-8"
           >
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 text-gradient-agro">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 text-gray-900">
               Status dos Serviços
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">

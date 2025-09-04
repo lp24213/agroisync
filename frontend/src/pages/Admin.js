@@ -254,7 +254,7 @@ const Admin = () => {
             >
               <Building className="w-10 h-10 text-white" />
             </motion.div>
-            <h1 className="text-3xl font-bold text-gradient-agro mb-2">Painel Administrativo</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Painel Administrativo</h1>
             <p className="text-slate-600">Agroisync - Sistema de Gestão</p>
           </div>
 

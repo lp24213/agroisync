@@ -3,9 +3,9 @@ import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import { 
-  Users, Target, Award, Clock, Globe, 
-  TrendingUp, Shield, Lightbulb, CheckCircle,
-  ArrowRight, Star, MapPin, Phone, Mail, Package, Truck, DollarSign, Zap, Heart
+  Users, Target, Award, Globe, 
+  TrendingUp, Shield, Lightbulb,
+  Star, Package, Truck, DollarSign, Zap
 } from 'lucide-react';
 import StockMarketTicker from '../components/StockMarketTicker';
 // Componente removido - já renderizado pelo Layout global
@@ -45,59 +45,59 @@ const Sobre = () => {
     }
   ];
 
-  const timeline = [
-    {
-      year: '2020',
-      title: t('about.timeline.2020.title'),
-      description: t('about.timeline.2020.description'),
-      icon: <Target className="w-6 h-6" />
-    },
-    {
-      year: '2021',
-      title: t('about.timeline.2021.title'),
-      description: t('about.timeline.2021.description'),
-      icon: <TrendingUp className="w-6 h-6" />
-    },
-    {
-      year: '2022',
-      title: t('about.timeline.2022.title'),
-      description: t('about.timeline.2022.description'),
-      icon: <Globe className="w-6 h-6" />
-    },
-    {
-      year: '2023',
-      title: t('about.timeline.2023.title'),
-      description: t('about.timeline.2023.description'),
-      icon: <Lightbulb className="w-6 h-6" />
-    },
-    {
-      year: '2024',
-      title: t('about.timeline.2024.title'),
-      description: t('about.timeline.2024.description'),
-      icon: <Award className="w-6 h-6" />
-    }
-  ];
+  // const timeline = [
+  //   {
+  //     year: '2020',
+  //     title: t('about.timeline.2020.title'),
+  //     description: t('about.timeline.2020.description'),
+  //     icon: <Target className="w-6 h-6" />
+  //   },
+  //   {
+  //     year: '2021',
+  //     title: t('about.timeline.2021.title'),
+  //     description: t('about.timeline.2021.description'),
+  //     icon: <TrendingUp className="w-6 h-6" />
+  //   },
+  //   {
+  //     year: '2022',
+  //     title: t('about.timeline.2022.title'),
+  //     description: t('about.timeline.2022.description'),
+  //     icon: <Globe className="w-6 h-6" />
+  //   },
+  //   {
+  //     year: '2023',
+  //     title: t('about.timeline.2023.title'),
+  //     description: t('about.timeline.2023.description'),
+  //     icon: <Lightbulb className="w-6 h-6" />
+  //   },
+  //   {
+  //     year: '2024',
+  //     title: t('about.timeline.2024.title'),
+  //     description: t('about.timeline.2024.description'),
+  //     icon: <Award className="w-6 h-6" />
+  //   }
+  // ];
 
-  const team = [
-    {
-      name: 'Luis Paulo Oliveira',
-      role: t('about.team.ceo.role'),
-      description: t('about.team.ceo.description'),
-      avatar: 'L'
-    },
-    {
-      name: 'Equipe de Desenvolvimento',
-      role: t('about.team.developers.role'),
-      description: t('about.team.developers.description'),
-      avatar: 'D'
-    },
-    {
-      name: 'Consultores Agrícolas',
-      role: t('about.team.consultants.role'),
-      description: t('about.team.consultants.description'),
-      avatar: 'C'
-    }
-  ];
+  // const team = [
+  //   {
+  //     name: 'Luis Paulo Oliveira',
+  //     role: t('about.team.ceo.role'),
+  //     description: t('about.team.ceo.description'),
+  //     avatar: 'L'
+  //   },
+  //   {
+  //     name: 'Equipe de Desenvolvimento',
+  //     role: t('about.team.developers.role'),
+  //     description: t('about.team.developers.description'),
+  //     avatar: 'D'
+  //   },
+  //   {
+  //     name: 'Consultores Agrícolas',
+  //     role: t('about.team.consultants.role'),
+  //     description: t('about.team.consultants.description'),
+  //     avatar: 'C'
+  //   }
+  // ];
 
   return (
     <div className="min-h-screen bg-white text-gray-900 pt-16">

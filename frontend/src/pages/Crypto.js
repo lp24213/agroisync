@@ -167,7 +167,7 @@ const CryptoPage = () => {
             transition={{ duration: 0.8 }}
             className="text-center mb-12"
           >
-            <h1 className="text-5xl md:text-6xl font-bold text-gradient-agro mb-6">
+            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
               Criptomoedas
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
