@@ -91,11 +91,11 @@ const Loja = () => {
   // Guard para products - evitar render com dados inválidos
   if (!products || !Array.isArray(products)) {
     return (
-      <div className="min-h-screen bg-white text-gray-900 p-8">
+      <div className="min-h-screen bg-black text-white p-8">
         <div className="max-w-7xl mx-auto">
-          <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200 text-center">
-            <h2 className="text-2xl font-bold mb-4 text-gray-900">Carregando produtos...</h2>
-            <p className="text-gray-600">Aguarde enquanto carregamos os produtos disponíveis.</p>
+          <div className="card p-8 text-center">
+            <h2 className="text-2xl font-bold mb-4">Carregando produtos...</h2>
+            <p className="text-gray-400">Aguarde enquanto carregamos os produtos disponíveis.</p>
           </div>
         </div>
       </div>
@@ -503,14 +503,14 @@ const Loja = () => {
   if (loading) {
     console.log('Loja: Renderizando loading...'); // Debug
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-agro-bg-primary flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="text-center"
         >
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Carregando marketplace...</p>
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-agro-accent-emerald mx-auto mb-4"></div>
+          <p className="text-agro-text-secondary">Carregando marketplace...</p>
         </motion.div>
       </div>
     );
@@ -524,7 +524,7 @@ const Loja = () => {
   console.log('Loja: Renderizando página principal, products:', products.length, 'filteredProducts:', filteredProducts.length); // Debug
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 py-8 pt-16">
+    <div className="min-h-screen bg-agro-bg-primary text-agro-text-primary py-8 pt-16">
       {/* Header com Filtros */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
@@ -532,10 +532,10 @@ const Loja = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="text-4xl font-bold text-agro-text-primary mb-4">
             Marketplace AgroSync
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-agro-text-secondary">
             Compre e venda produtos agrícolas com segurança e confiança
           </p>
         </motion.div>
@@ -546,7 +546,7 @@ const Loja = () => {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <div className="border-b border-gray-200">
+          <div className="border-b border-agro-border-primary">
             <div className="flex space-x-8">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
@@ -556,14 +556,14 @@ const Loja = () => {
                     onClick={() => handleTabChange(tab.id)}
                     className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
                       activeTab === tab.id
-                        ? 'border-emerald-600 text-emerald-600'
-                        : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
+                        ? 'border-agro-accent-emerald text-agro-accent-emerald'
+                        : 'border-transparent text-agro-text-tertiary hover:text-agro-text-primary hover:border-agro-border-primary'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
                     <span>{tab.name}</span>
                     {tab.count > 0 && (
-                      <span className="bg-emerald-600 text-white text-xs rounded-full px-2 py-1">
+                      <span className="bg-agro-accent-emerald text-agro-text-primary text-xs rounded-full px-2 py-1">
                         {tab.count}
                       </span>
                     )}
@@ -628,10 +628,10 @@ const Loja = () => {
                   ) : (
                     <div className="col-span-full text-center py-12">
                       <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">
+                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
                         Nenhum produto encontrado
                       </h3>
-                      <p className="text-gray-600">
+                      <p className="text-gray-600 dark:text-gray-400">
                         Tente ajustar os filtros ou fazer uma nova busca
                       </p>
                     </div>

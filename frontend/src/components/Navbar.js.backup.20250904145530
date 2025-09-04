@@ -49,7 +49,7 @@ const Navbar = () => {
   const isUserAuthenticated = isAuthenticated();
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-xl border-b border-gray-200">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-md shadow-xl border-b border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -70,12 +70,12 @@ const Navbar = () => {
                   // Fallback para texto se SVG não carregar
                   const fallbackText = document.createElement('span');
                   fallbackText.textContent = 'A';
-                  fallbackText.className = 'text-lg font-bold text-emerald-600';
+                  fallbackText.className = 'text-lg font-bold text-white';
                   e.target.parentNode.appendChild(fallbackText);
                 }}
               />
             </motion.div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">AGROISYNC</span>
+            <span className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">AGROISYNC</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -84,8 +84,8 @@ const Navbar = () => {
               to="/"
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
                 isActive('/') 
-                  ? 'text-emerald-600 bg-emerald-50' 
-                  : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
+                  ? 'text-white bg-white/10' 
+                  : 'text-gray-300 hover:text-white hover:bg-white/10'
               }`}
             >
               {t('home')}
@@ -95,8 +95,8 @@ const Navbar = () => {
               to="/loja"
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
                 isActive('/loja') 
-                  ? 'text-emerald-600 bg-emerald-50' 
-                  : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
+                  ? 'text-white bg-white/10' 
+                  : 'text-gray-300 hover:text-white hover:bg-white/10'
               }`}
             >
               Loja
@@ -106,8 +106,8 @@ const Navbar = () => {
               to="/agroconecta"
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
                 isActive('/agroconecta') 
-                  ? 'text-emerald-600 bg-emerald-50' 
-                  : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
+                  ? 'text-white bg-white/10' 
+                  : 'text-gray-300 hover:text-white hover:bg-white/10'
               }`}
             >
               AgroConecta
@@ -117,8 +117,8 @@ const Navbar = () => {
               to="/cripto"
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
                 isActive('/cripto') 
-                  ? 'text-emerald-600 bg-emerald-50' 
-                  : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
+                  ? 'text-white bg-white/10' 
+                  : 'text-gray-300 hover:text-white hover:bg-white/10'
               }`}
             >
               Cripto
@@ -161,7 +161,7 @@ const Navbar = () => {
             <div className="relative">
                               <button
                   onClick={toggleLanguageMenu}
-                  className="flex items-center space-x-1 px-3 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-300"
+                  className="flex items-center space-x-1 px-3 py-2 text-agro-text-tertiary hover:text-agro-text-primary hover:bg-agro-bg-card/30 rounded-lg transition-all duration-300"
                 >
                   <Globe className="w-4 h-4" />
                   <span className="text-sm font-medium">{languageNames[currentLanguage]}</span>
@@ -169,15 +169,15 @@ const Navbar = () => {
                 </button>
                 
                 {isLanguageMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
+                  <div className="absolute right-0 mt-2 w-48 bg-agro-bg-card rounded-lg shadow-xl border border-agro-border-primary py-2 z-50">
                     {availableLanguages.map((lang) => (
                       <button
                         key={lang}
                         onClick={() => selectLanguage(lang)}
                         className={`w-full text-left px-4 py-2 text-sm transition-all duration-300 ${
                           currentLanguage === lang 
-                            ? 'text-emerald-600 bg-emerald-50' 
-                            : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
+                            ? 'text-agro-text-primary bg-agro-bg-secondary' 
+                            : 'text-agro-text-tertiary hover:text-agro-text-primary hover:bg-agro-bg-secondary/30'
                         }`}
                       >
                         {languageNames[lang]}
@@ -200,17 +200,17 @@ const Navbar = () => {
                 <div className="relative">
                   <button
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    className="flex items-center space-x-2 p-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-300"
+                    className="flex items-center space-x-2 p-2 text-neutral-300 hover:text-neutral-100 hover:bg-neutral-800/30 rounded-lg transition-all duration-300"
                   >
                     <User className="w-5 h-5" />
                     <span className="text-sm font-medium">{user?.name || 'Usuário'}</span>
                   </button>
                   
                   {isMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
+                    <div className="absolute right-0 mt-2 w-48 bg-neutral-900 rounded-lg shadow-xl border border-white/10 py-2 z-50">
                       <Link
                         to="/painel-usuario"
-                        className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-all duration-300"
+                        className="flex items-center space-x-2 px-4 py-2 text-neutral-300 hover:text-neutral-100 hover:bg-neutral-800/30 transition-all duration-300"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         <Settings className="w-4 h-4" />
@@ -219,7 +219,7 @@ const Navbar = () => {
                       
                       <button
                         onClick={handleLogout}
-                        className="flex items-center space-x-2 w-full px-4 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-all duration-300"
+                        className="flex items-center space-x-2 w-full px-4 py-2 text-neutral-300 hover:text-neutral-100 hover:bg-neutral-800/30 transition-all duration-300"
                       >
                         <LogOut className="w-4 h-4" />
                         <span className="text-sm">Sair</span>
@@ -251,7 +251,7 @@ const Navbar = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-300"
+              className="p-2 text-neutral-300 hover:text-neutral-100 hover:bg-neutral-800/30 rounded-lg transition-all duration-300"
             >
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -265,12 +265,12 @@ const Navbar = () => {
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
           exit={{ opacity: 0, height: 0 }}
-          className="md:hidden bg-white border-t border-gray-200"
+          className="md:hidden bg-neutral-900 border-t border-white/10"
         >
           <div className="px-4 py-2 space-y-1">
             <Link
               to="/"
-              className="block px-3 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-300"
+              className="block px-3 py-2 text-neutral-300 hover:text-neutral-100 hover:bg-neutral-800/30 rounded-lg transition-all duration-300"
               onClick={() => setIsMenuOpen(false)}
             >
               {t('home')}
@@ -278,7 +278,7 @@ const Navbar = () => {
             
             <Link
               to="/loja"
-              className="block px-3 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-300"
+              className="block px-3 py-2 text-neutral-300 hover:text-neutral-100 hover:bg-neutral-800/30 rounded-lg transition-all duration-300"
               onClick={() => setIsMenuOpen(false)}
             >
               Loja
@@ -286,7 +286,7 @@ const Navbar = () => {
             
                          <Link
                to="/agroconecta"
-               className="block px-3 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-300"
+               className="block px-3 py-2 text-neutral-300 hover:text-neutral-100 hover:bg-neutral-800/30 rounded-lg transition-all duration-300"
                onClick={() => setIsMenuOpen(false)}
              >
                AgroConecta
@@ -294,7 +294,7 @@ const Navbar = () => {
              
              <Link
                to="/cripto"
-               className="block px-3 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-300"
+               className="block px-3 py-2 text-neutral-300 hover:text-neutral-100 hover:bg-neutral-800/30 rounded-lg transition-all duration-300"
                onClick={() => setIsMenuOpen(false)}
              >
                Cripto
@@ -302,7 +302,7 @@ const Navbar = () => {
             
             <Link
               to="/sobre"
-              className="block px-3 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-300"
+              className="block px-3 py-2 text-neutral-300 hover:text-neutral-100 hover:bg-neutral-800/30 rounded-lg transition-all duration-300"
               onClick={() => setIsMenuOpen(false)}
             >
               {t('about')}
@@ -310,7 +310,7 @@ const Navbar = () => {
             
             <Link
               to="/contato"
-              className="block px-3 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-300"
+              className="block px-3 py-2 text-neutral-300 hover:text-neutral-100 hover:bg-neutral-800/30 rounded-lg transition-all duration-300"
               onClick={() => setIsMenuOpen(false)}
             >
               {t('contact')}
@@ -318,7 +318,7 @@ const Navbar = () => {
             
             <Link
               to="/planos"
-              className="block px-3 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-300"
+              className="block px-3 py-2 text-neutral-300 hover:text-neutral-100 hover:bg-neutral-800/30 rounded-lg transition-all duration-300"
               onClick={() => setIsMenuOpen(false)}
             >
               {t('plans')}
@@ -328,7 +328,7 @@ const Navbar = () => {
               <>
                 <Link
                   to="/dashboard"
-                  className="block px-3 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-300"
+                  className="block px-3 py-2 text-neutral-300 hover:text-neutral-100 hover:bg-neutral-800/30 rounded-lg transition-all duration-300"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {t('dashboard')}
@@ -345,7 +345,7 @@ const Navbar = () => {
               <>
                 <Link
                   to="/login"
-                  className="block px-3 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-300"
+                  className="block px-3 py-2 text-neutral-300 hover:text-neutral-100 hover:bg-neutral-800/30 rounded-lg transition-all duration-300"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {t('login')}
@@ -353,7 +353,7 @@ const Navbar = () => {
                 
                 <Link
                   to="/cadastro"
-                  className="block px-3 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-300"
+                  className="block px-3 py-2 text-neutral-300 hover:text-neutral-100 hover:bg-neutral-800/30 rounded-lg transition-all duration-300"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {t('register')}
