@@ -3,13 +3,12 @@ import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import paymentService from '../services/paymentService';
-import metamaskService from '../services/metamaskService';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { 
   Check, Star, ShoppingCart, Truck, Package, Leaf, Wrench, User, 
   Circle, Settings, BarChart3, Headphones, Zap, Shield, Globe, Coins, Users, Crown,
-  CreditCard, Wallet, ArrowRight, CheckCircle, AlertCircle, TrendingUp, Award, Lock, Unlock, Building, Rocket
+  CreditCard, ArrowRight, CheckCircle, AlertCircle, TrendingUp, Award, Lock, Unlock, Building, Rocket
 } from 'lucide-react';
 import StockMarketTicker from '../components/StockMarketTicker';
 
@@ -23,48 +22,10 @@ const Planos = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('stripe'); // 'stripe' ou 'metamask'
-  const [metamaskConnected, setMetamaskConnected] = useState(false);
-  const [walletAddress, setWalletAddress] = useState('');
 
   useEffect(() => {
     document.title = 'Planos - Agroisync';
-    checkMetamaskConnection();
   }, []);
-
-  const checkMetamaskConnection = async () => {
-    try {
-      if (metamaskService.isMetamaskInstalled()) {
-        const accounts = await metamaskService.getAccounts();
-        if (accounts.length > 0) {
-          setMetamaskConnected(true);
-          setWalletAddress(accounts[0]);
-        }
-      }
-    } catch (error) {
-      console.error('Erro ao verificar conexão Metamask:', error);
-    }
-  };
-
-  const connectMetamask = async () => {
-    try {
-      setLoading(true);
-      const connection = await metamaskService.connect();
-      
-      if (connection.success) {
-        setMetamaskConnected(true);
-        setWalletAddress(connection.address);
-        setPaymentMethod('metamask');
-        setSuccess('Metamask conectado com sucesso!');
-      } else {
-        setError(connection.error || 'Erro ao conectar Metamask');
-      }
-    } catch (error) {
-      setError('Erro ao conectar Metamask: ' + error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handlePlanSelection = (plan) => {
     setSelectedPlan(plan);
@@ -98,60 +59,20 @@ const Planos = () => {
     setSuccess('');
 
     try {
-      let result;
+      // Pagamento via Stripe
+      const result = await paymentService.createPaymentIntent({
+        planId: selectedPlan.id,
+        planName: selectedPlan.name,
+        amount: getPlanPriceInCents(selectedPlan),
+        currency: 'brl',
+        userId: user.id
+      });
 
-      if (paymentMethod === 'metamask') {
-        if (!metamaskConnected) {
-          setError('Conecte sua carteira MetaMask primeiro');
-          setLoading(false);
-          return;
-        }
-
-        // Pagamento via MetaMask
-        const weiAmount = getPlanPriceInWei(selectedPlan);
-        result = await metamaskService.sendPayment(weiAmount, selectedPlan.id);
-        
-        if (result.success) {
-          // Verificar pagamento no backend
-          const verification = await paymentService.verifyCryptoPayment(result.invoiceId, result.transactionHash);
-          
-          if (verification.success) {
-            // Atualizar status do usuário para isPaid = true
-            await updateUserPaymentStatus(selectedPlan.id, 'metamask', result.transactionHash);
-            setSuccess('Pagamento confirmado! Seu plano está ativo.');
-            
-            // Redirecionar para página de sucesso
-            setTimeout(() => {
-              navigate('/payment-success', { 
-                state: { 
-                  plan: selectedPlan.id, 
-                  method: 'metamask', 
-                  tx: result.transactionHash 
-                }
-              });
-            }, 2000);
-          } else {
-            setError('Erro na verificação do pagamento: ' + verification.error);
-          }
-        } else {
-          setError(result.error || 'Erro ao processar pagamento via MetaMask');
-        }
+      if (result.success) {
+        // Redirecionar para página de pagamento do Stripe
+        window.location.href = result.paymentUrl;
       } else {
-        // Pagamento via Stripe
-        result = await paymentService.createPaymentIntent({
-          planId: selectedPlan.id,
-          planName: selectedPlan.name,
-          amount: getPlanPriceInCents(selectedPlan),
-          currency: 'brl',
-          userId: user.id
-        });
-
-        if (result.success) {
-          // Redirecionar para página de pagamento do Stripe
-          window.location.href = result.paymentUrl;
-        } else {
-          setError(result.error || 'Erro ao criar sessão de pagamento');
-        }
+        setError(result.error || 'Erro ao criar sessão de pagamento');
       }
     } catch (error) {
       console.error('Erro no processamento do pagamento:', error);
