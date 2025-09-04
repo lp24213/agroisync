@@ -415,27 +415,159 @@ const CryptoPage = () => {
 
               <motion.div
                 whileHover={{ y: -5, scale: 1.02 }}
-                className="card p-6 text-center hover-agro"
+                className="card p-6 hover-agro"
               >
-                <BarChart3 className="w-12 h-12 text-emerald-400 mx-auto mb-4" />
-                <h4 className="text-lg font-semibold text-white mb-2">Análise Técnica</h4>
-                <p className="text-white/60 text-sm mb-4">Indicadores técnicos e análise de tendências</p>
+                <div className="flex items-center justify-center mb-4">
+                  {/* Gráfico SVG Animado */}
+                  <svg width="120" height="80" viewBox="0 0 120 80" className="overflow-visible">
+                    <defs>
+                      <linearGradient id="cryptoGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style={{stopColor: '#10b981', stopOpacity: 1}} />
+                        <stop offset="50%" style={{stopColor: '#3b82f6', stopOpacity: 1}} />
+                        <stop offset="100%" style={{stopColor: '#8b5cf6', stopOpacity: 1}} />
+                      </linearGradient>
+                    </defs>
+                    
+                    {/* Linha de preço animada */}
+                    <motion.path
+                      d="M10,60 Q30,20 50,40 T90,30 L110,25"
+                      fill="none"
+                      stroke="url(#cryptoGradient)"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      initial={{ pathLength: 0, opacity: 0 }}
+                      animate={{ pathLength: 1, opacity: 1 }}
+                      transition={{ duration: 2, ease: "easeInOut", repeat: Infinity, repeatDelay: 1 }}
+                    />
+                    
+                    {/* Pontos de dados animados */}
+                    {[
+                      { x: 10, y: 60, delay: 0 },
+                      { x: 30, y: 20, delay: 0.3 },
+                      { x: 50, y: 40, delay: 0.6 },
+                      { x: 70, y: 30, delay: 0.9 },
+                      { x: 90, y: 30, delay: 1.2 },
+                      { x: 110, y: 25, delay: 1.5 }
+                    ].map((point, index) => (
+                      <motion.circle
+                        key={index}
+                        cx={point.x}
+                        cy={point.y}
+                        r="4"
+                        fill="url(#cryptoGradient)"
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ 
+                          duration: 0.5, 
+                          delay: point.delay,
+                          repeat: Infinity,
+                          repeatDelay: 2
+                        }}
+                      />
+                    ))}
+                    
+                    {/* Área de preenchimento animada */}
+                    <motion.path
+                      d="M10,60 Q30,20 50,40 T90,30 L110,25 L110,80 L10,80 Z"
+                      fill="url(#cryptoGradient)"
+                      fillOpacity="0.1"
+                      initial={{ pathLength: 0, opacity: 0 }}
+                      animate={{ pathLength: 1, opacity: 1 }}
+                      transition={{ duration: 2.5, ease: "easeInOut", repeat: Infinity, repeatDelay: 1 }}
+                    />
+                  </svg>
+                </div>
+                <h4 className="text-lg font-semibold text-white mb-2 text-center">Gráfico Animado</h4>
+                <p className="text-white/60 text-sm mb-4 text-center">Visualização em tempo real dos preços</p>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="btn-secondary w-full"
                 >
-                  Analisar
+                  Ver Detalhes
                 </motion.button>
               </motion.div>
 
               <motion.div
                 whileHover={{ y: -5, scale: 1.02 }}
-                className="card p-6 text-center hover-agro"
+                className="card p-6 hover-agro"
               >
-                <Target className="w-12 h-12 text-emerald-400 mx-auto mb-4" />
-                <h4 className="text-lg font-semibold text-white mb-2">Alertas de Preço</h4>
-                <p className="text-white/60 text-sm mb-4">Configure alertas para movimentos de preço</p>
+                <div className="flex items-center justify-center mb-4">
+                  {/* Gráfico Circular Animado */}
+                  <svg width="100" height="100" viewBox="0 0 100 100" className="transform -rotate-90">
+                    <defs>
+                      <linearGradient id="circularGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style={{stopColor: '#10b981', stopOpacity: 1}} />
+                        <stop offset="50%" style={{stopColor: '#3b82f6', stopOpacity: 1}} />
+                        <stop offset="100%" style={{stopColor: '#8b5cf6', stopOpacity: 1}} />
+                      </linearGradient>
+                    </defs>
+                    
+                    {/* Círculo de fundo */}
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="35"
+                      fill="none"
+                      stroke="#374151"
+                      strokeWidth="8"
+                      opacity="0.3"
+                    />
+                    
+                    {/* Círculo animado principal */}
+                    <motion.circle
+                      cx="50"
+                      cy="50"
+                      r="35"
+                      fill="none"
+                      stroke="url(#circularGradient)"
+                      strokeWidth="8"
+                      strokeLinecap="round"
+                      strokeDasharray="220"
+                      initial={{ strokeDashoffset: 220 }}
+                      animate={{ strokeDashoffset: [220, 50, 220] }}
+                      transition={{ 
+                        duration: 3, 
+                        ease: "easeInOut", 
+                        repeat: Infinity,
+                        repeatDelay: 0.5
+                      }}
+                    />
+                    
+                    {/* Círculo interno pulsante */}
+                    <motion.circle
+                      cx="50"
+                      cy="50"
+                      r="20"
+                      fill="url(#circularGradient)"
+                      fillOpacity="0.2"
+                      initial={{ scale: 0.8 }}
+                      animate={{ scale: [0.8, 1.2, 0.8] }}
+                      transition={{ 
+                        duration: 2, 
+                        ease: "easeInOut", 
+                        repeat: Infinity 
+                      }}
+                    />
+                    
+                    {/* Ponto central */}
+                    <motion.circle
+                      cx="50"
+                      cy="50"
+                      r="4"
+                      fill="#10b981"
+                      initial={{ opacity: 0.5 }}
+                      animate={{ opacity: [0.5, 1, 0.5] }}
+                      transition={{ 
+                        duration: 1.5, 
+                        ease: "easeInOut", 
+                        repeat: Infinity 
+                      }}
+                    />
+                  </svg>
+                </div>
+                <h4 className="text-lg font-semibold text-white mb-2 text-center">Portfolio Tracker</h4>
+                <p className="text-white/60 text-sm mb-4 text-center">Acompanhe seus investimentos em tempo real</p>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}

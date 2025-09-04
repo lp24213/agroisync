@@ -81,9 +81,10 @@ const Loja = () => {
   }, [mounted, isAuthenticated]);
 
   useEffect(() => {
+    if (!mounted || !products || !Array.isArray(products)) return;
     console.log('Loja: applyFilters executado, products:', products.length); // Debug
     applyFilters();
-  }, [products, searchTerm, selectedCategory, priceRange, sortBy]);
+  }, [mounted, products, searchTerm, selectedCategory, priceRange, sortBy]);
 
   // Se não estiver montado, não renderizar nada
   if (!mounted) return null;
@@ -500,6 +501,11 @@ const Loja = () => {
     { id: 'wishlist', name: 'Favoritos', icon: Heart, count: wishlist.length }
   ];
 
+  // Guard para evitar piscar - deve vir primeiro
+  if (!mounted) {
+    return null;
+  }
+
   if (loading) {
     console.log('Loja: Renderizando loading...'); // Debug
     return (
@@ -514,11 +520,6 @@ const Loja = () => {
         </motion.div>
       </div>
     );
-  }
-
-  // Guard para evitar piscar
-  if (!mounted) {
-    return null;
   }
 
   console.log('Loja: Renderizando página principal, products:', products.length, 'filteredProducts:', filteredProducts.length); // Debug

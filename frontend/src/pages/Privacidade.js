@@ -1,12 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Shield, Lock, Eye, Database, CheckCircle, AlertCircle } from 'lucide-react';
-import Layout from '../components/Layout';
 
 const Privacidade = () => {
   return (
-    <Layout>
-      <div className="min-h-screen bg-white text-gray-900 pt-20">
+    <div className="min-h-screen bg-white text-gray-900">
         <div className="max-w-4xl mx-auto px-4 py-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -258,8 +256,7 @@ const Privacidade = () => {
             </section>
           </motion.div>
         </div>
-    </div>
-    </Layout>
+      </div>
   );
 };
 

@@ -168,10 +168,6 @@ const Footer = () => {
         >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="flex items-center space-x-3">
-              <MapPin className="h-5 w-5 text-emerald-400" />
-              <span className="text-gray-600">Sinop - MT, Brasil</span>
-            </div>
-            <div className="flex items-center space-x-3">
               <Phone className="h-5 w-5 text-emerald-600" />
               <a href="tel:+5566992362830" className="text-gray-600 hover:text-emerald-600 transition-colors duration-300">
                 (66) 99236-2830
@@ -180,6 +176,10 @@ const Footer = () => {
             <div className="flex items-center space-x-3">
               <Mail className="h-5 w-5 text-emerald-600" />
               <span className="text-gray-600">contato@agroisync.com</span>
+            </div>
+            <div className="flex items-center space-x-3">
+              <MapPin className="h-5 w-5 text-emerald-600" />
+              <span className="text-gray-600">Sinop - MT</span>
             </div>
           </div>
         </motion.div>

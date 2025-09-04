@@ -41,6 +41,7 @@ import AdminSecurePanel from './pages/AdminSecurePanel';
 import Admin from './pages/Admin';
 import AgroConecta from './pages/AgroConecta';
 import Cripto from './pages/Cripto';
+import Crypto from './pages/Crypto';
 
 import Cotacao from './pages/Cotacao';
 import Status from './pages/Status';
@@ -57,8 +58,6 @@ import CadastroProduto from './pages/CadastroProduto';
 import PainelUsuario from './pages/PainelUsuario';
 
 // Componentes
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
 import ChatbotWidget from './components/ChatbotWidget';
 import Layout from './components/Layout';
 
@@ -92,6 +91,7 @@ function App() {
                     <Route path="/payment-cancel" element={<PaymentCancel />} />
                     <Route path="/agroconecta" element={<AgroConecta />} />
                     <Route path="/cripto" element={<Cripto />} />
+                    <Route path="/crypto" element={<Crypto />} />
                     <Route path="/cotacao" element={<Cotacao />} />
                     <Route path="/status" element={<Status />} />
                     <Route path="/commodities" element={<Commodities />} />

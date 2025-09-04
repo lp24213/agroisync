@@ -431,7 +431,8 @@ const Messages = () => {
                 <div className="space-y-2 max-h-96 overflow-y-auto">
                   {conversations
                     .filter(conv => 
-                      conv.title.toLowerCase().includes(searchTerm.toLowerCase())
+                      conv.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+                      conv.participants && conv.participants.includes(user.id)
                     )
                     .map((conversation) => (
                       <div
