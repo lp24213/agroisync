@@ -1,0 +1,2406 @@
+{
+  "summary": {
+    "totalFiles": 161,
+    "totalLines": 55112,
+    "totalSize": "1.93 MB",
+    "components": 0,
+    "pages": 0,
+    "services": 0,
+    "contexts": 0,
+    "averageLinesPerFile": 342,
+    "averageSizePerFile": "12.28 KB"
+  },
+  "issues": [
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (509 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (677 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "inline_functions",
+      "message": "Muitas funções inline podem causar re-renders",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (598 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (729 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (507 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (551 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (654 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "inline_functions",
+      "message": "Muitas funções inline podem causar re-renders",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "inline_functions",
+      "message": "Muitas funções inline podem causar re-renders",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "inline_functions",
+      "message": "Muitas funções inline podem causar re-renders",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (529 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "inline_functions",
+      "message": "Muitas funções inline podem causar re-renders",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "inline_functions",
+      "message": "Muitas funções inline podem causar re-renders",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (613 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (515 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (808 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (596 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (808 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (955 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (774 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "inline_functions",
+      "message": "Muitas funções inline podem causar re-renders",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (940 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (587 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (553 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "inline_functions",
+      "message": "Muitas funções inline podem causar re-renders",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (891 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (514 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (519 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "inline_functions",
+      "message": "Muitas funções inline podem causar re-renders",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (1089 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "inline_functions",
+      "message": "Muitas funções inline podem causar re-renders",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (620 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (576 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (755 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "inline_functions",
+      "message": "Muitas funções inline podem causar re-renders",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (651 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (799 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (536 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (574 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (711 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (525 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "useEffect_no_deps",
+      "message": "useEffect sem array de dependências",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (600 linhas) - considere dividir",
+      "severity": "warning"
+    },
+    {
+      "type": "large_file",
+      "message": "Arquivo muito grande (752 linhas) - considere dividir",
+      "severity": "warning"
+    }
+  ],
+  "recommendations": [
+    "Considere usar useMemo e useCallback para otimizar re-renders",
+    "Considere usar useReducer para gerenciar estado complexo",
+    "Considere dividir arquivos grandes em componentes menores",
+    "Implemente lazy loading para páginas não críticas",
+    "Use React.memo para componentes que não mudam frequentemente",
+    "Considere implementar code splitting com React.lazy"
+  ],
+  "fileAnalyses": [
+    {
+      "file": "src\\App.js",
+      "lines": 157,
+      "size": "7.82 KB",
+      "imports": 52,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\AdminCard.js",
+      "lines": 495,
+      "size": "18.2 KB",
+      "imports": 2,
+      "components": 18,
+      "hooks": 3,
+      "effects": 0,
+      "stateVariables": 3,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\AgroNews.js",
+      "lines": 256,
+      "size": "9.55 KB",
+      "imports": 5,
+      "components": 3,
+      "hooks": 11,
+      "effects": 2,
+      "stateVariables": 5,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\AnimatedBackground.js",
+      "lines": 198,
+      "size": "5.75 KB",
+      "imports": 3,
+      "components": 4,
+      "hooks": 6,
+      "effects": 2,
+      "stateVariables": 0,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\AnimatedComponents.js",
+      "lines": 447,
+      "size": "12.41 KB",
+      "imports": 2,
+      "components": 16,
+      "hooks": 25,
+      "effects": 4,
+      "stateVariables": 4,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\auth\\AuthForm.js",
+      "lines": 509,
+      "size": "18.41 KB",
+      "imports": 3,
+      "components": 8,
+      "hooks": 8,
+      "effects": 1,
+      "stateVariables": 5,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\BuyersPanel.js",
+      "lines": 287,
+      "size": "10.89 KB",
+      "imports": 2,
+      "components": 1,
+      "hooks": 6,
+      "effects": 0,
+      "stateVariables": 6,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\CartWidget.js",
+      "lines": 315,
+      "size": "11.86 KB",
+      "imports": 3,
+      "components": 12,
+      "hooks": 5,
+      "effects": 2,
+      "stateVariables": 3,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\Chatbot.js",
+      "lines": 677,
+      "size": "27.2 KB",
+      "imports": 5,
+      "components": 15,
+      "hooks": 31,
+      "effects": 4,
+      "stateVariables": 15,
+      "issues": 2
+    },
+    {
+      "file": "src\\components\\ChatbotWidget.js",
+      "lines": 598,
+      "size": "23.98 KB",
+      "imports": 2,
+      "components": 7,
+      "hooks": 22,
+      "effects": 3,
+      "stateVariables": 15,
+      "issues": 3
+    },
+    {
+      "file": "src\\components\\ChatInterface.js",
+      "lines": 427,
+      "size": "14.36 KB",
+      "imports": 3,
+      "components": 7,
+      "hooks": 16,
+      "effects": 3,
+      "stateVariables": 9,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\ConversationList.js",
+      "lines": 287,
+      "size": "11.18 KB",
+      "imports": 3,
+      "components": 5,
+      "hooks": 8,
+      "effects": 2,
+      "stateVariables": 6,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\crypto\\CryptoChart.js",
+      "lines": 266,
+      "size": "8.96 KB",
+      "imports": 2,
+      "components": 8,
+      "hooks": 10,
+      "effects": 3,
+      "stateVariables": 4,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\crypto\\CryptoTicker.js",
+      "lines": 182,
+      "size": "7.04 KB",
+      "imports": 2,
+      "components": 4,
+      "hooks": 6,
+      "effects": 2,
+      "stateVariables": 4,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\CryptoCard.js",
+      "lines": 343,
+      "size": "13.3 KB",
+      "imports": 2,
+      "components": 15,
+      "hooks": 4,
+      "effects": 0,
+      "stateVariables": 4,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\CryptoChart.js",
+      "lines": 156,
+      "size": "6.05 KB",
+      "imports": 3,
+      "components": 5,
+      "hooks": 5,
+      "effects": 2,
+      "stateVariables": 3,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\CryptoCharts.js",
+      "lines": 729,
+      "size": "28.21 KB",
+      "imports": 3,
+      "components": 14,
+      "hooks": 11,
+      "effects": 2,
+      "stateVariables": 7,
+      "issues": 2
+    },
+    {
+      "file": "src\\components\\CryptoDashboard.js",
+      "lines": 477,
+      "size": "18.13 KB",
+      "imports": 3,
+      "components": 12,
+      "hooks": 11,
+      "effects": 2,
+      "stateVariables": 7,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\DeFiOperations.js",
+      "lines": 507,
+      "size": "20.25 KB",
+      "imports": 3,
+      "components": 7,
+      "hooks": 18,
+      "effects": 3,
+      "stateVariables": 11,
+      "issues": 2
+    },
+    {
+      "file": "src\\components\\DocumentValidator.js",
+      "lines": 551,
+      "size": "18.9 KB",
+      "imports": 2,
+      "components": 9,
+      "hooks": 9,
+      "effects": 3,
+      "stateVariables": 6,
+      "issues": 2
+    },
+    {
+      "file": "src\\components\\EscrowBadge.js",
+      "lines": 91,
+      "size": "2.98 KB",
+      "imports": 4,
+      "components": 4,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\Footer.js",
+      "lines": 207,
+      "size": "8.38 KB",
+      "imports": 3,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\FormFeedback.js",
+      "lines": 156,
+      "size": "5.8 KB",
+      "imports": 3,
+      "components": 3,
+      "hooks": 3,
+      "effects": 1,
+      "stateVariables": 0,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\FreightCard.js",
+      "lines": 300,
+      "size": "11.64 KB",
+      "imports": 2,
+      "components": 12,
+      "hooks": 3,
+      "effects": 0,
+      "stateVariables": 3,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\FreightFilters.js",
+      "lines": 347,
+      "size": "14.49 KB",
+      "imports": 2,
+      "components": 7,
+      "hooks": 3,
+      "effects": 0,
+      "stateVariables": 3,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\GlobalTicker.js",
+      "lines": 268,
+      "size": "9.38 KB",
+      "imports": 4,
+      "components": 5,
+      "hooks": 8,
+      "effects": 2,
+      "stateVariables": 6,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\GlobalWeatherWidget.js",
+      "lines": 299,
+      "size": "9.5 KB",
+      "imports": 3,
+      "components": 2,
+      "hooks": 10,
+      "effects": 2,
+      "stateVariables": 8,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\grains\\ExportData.js",
+      "lines": 287,
+      "size": "9.3 KB",
+      "imports": 1,
+      "components": 1,
+      "hooks": 6,
+      "effects": 2,
+      "stateVariables": 4,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\grains\\FuturesMarket.js",
+      "lines": 169,
+      "size": "6.38 KB",
+      "imports": 1,
+      "components": 1,
+      "hooks": 6,
+      "effects": 2,
+      "stateVariables": 4,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\grains\\GrainsChart.js",
+      "lines": 313,
+      "size": "10.68 KB",
+      "imports": 2,
+      "components": 7,
+      "hooks": 6,
+      "effects": 2,
+      "stateVariables": 4,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\grains\\GrainsDashboard.js",
+      "lines": 216,
+      "size": "7.45 KB",
+      "imports": 10,
+      "components": 1,
+      "hooks": 11,
+      "effects": 2,
+      "stateVariables": 2,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\grains\\GrainsPriceCard.js",
+      "lines": 188,
+      "size": "6.05 KB",
+      "imports": 2,
+      "components": 4,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\HomeGrains.js",
+      "lines": 188,
+      "size": "6.38 KB",
+      "imports": 4,
+      "components": 3,
+      "hooks": 8,
+      "effects": 2,
+      "stateVariables": 4,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\HomeNews.js",
+      "lines": 204,
+      "size": "7.14 KB",
+      "imports": 4,
+      "components": 3,
+      "hooks": 7,
+      "effects": 2,
+      "stateVariables": 3,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\HomeWeather.js",
+      "lines": 208,
+      "size": "7.11 KB",
+      "imports": 4,
+      "components": 3,
+      "hooks": 8,
+      "effects": 2,
+      "stateVariables": 4,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\HomeWeatherIP.js",
+      "lines": 213,
+      "size": "6.75 KB",
+      "imports": 3,
+      "components": 2,
+      "hooks": 12,
+      "effects": 2,
+      "stateVariables": 5,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\icons\\CryptoIcons.js",
+      "lines": 65,
+      "size": "4.23 KB",
+      "imports": 1,
+      "components": 8,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\icons\\StoreIcons.js",
+      "lines": 281,
+      "size": "14.83 KB",
+      "imports": 1,
+      "components": 27,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\illustrations\\CyberDefense.js",
+      "lines": 356,
+      "size": "9.44 KB",
+      "imports": 1,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\illustrations\\InteractiveDashboard.js",
+      "lines": 329,
+      "size": "9.6 KB",
+      "imports": 1,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\illustrations\\NFTMinting.js",
+      "lines": 192,
+      "size": "4.81 KB",
+      "imports": 1,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\illustrations\\PremiumFarmer.js",
+      "lines": 270,
+      "size": "6.4 KB",
+      "imports": 1,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\illustrations\\SmartFarming.js",
+      "lines": 325,
+      "size": "8.18 KB",
+      "imports": 1,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\illustrations\\StakingFarming.js",
+      "lines": 401,
+      "size": "11.21 KB",
+      "imports": 1,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\layout\\Layout.js",
+      "lines": 104,
+      "size": "3.45 KB",
+      "imports": 11,
+      "components": 1,
+      "hooks": 6,
+      "effects": 2,
+      "stateVariables": 2,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\Layout.js",
+      "lines": 37,
+      "size": "1017 Bytes",
+      "imports": 5,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\LoadingSkeleton.js",
+      "lines": 143,
+      "size": "4.24 KB",
+      "imports": 2,
+      "components": 6,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\MarketAnalysis.js",
+      "lines": 654,
+      "size": "25.38 KB",
+      "imports": 2,
+      "components": 15,
+      "hooks": 14,
+      "effects": 2,
+      "stateVariables": 8,
+      "issues": 2
+    },
+    {
+      "file": "src\\components\\MarketplaceContent.js",
+      "lines": 230,
+      "size": "8.76 KB",
+      "imports": 3,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\MessageThread.js",
+      "lines": 418,
+      "size": "15.35 KB",
+      "imports": 3,
+      "components": 9,
+      "hooks": 15,
+      "effects": 3,
+      "stateVariables": 9,
+      "issues": 2
+    },
+    {
+      "file": "src\\components\\MessagingCenter.js",
+      "lines": 136,
+      "size": "4.66 KB",
+      "imports": 6,
+      "components": 4,
+      "hooks": 5,
+      "effects": 2,
+      "stateVariables": 3,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\Navbar.js",
+      "lines": 371,
+      "size": "14.44 KB",
+      "imports": 6,
+      "components": 5,
+      "hooks": 12,
+      "effects": 1,
+      "stateVariables": 3,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\news\\NewsWidget.js",
+      "lines": 320,
+      "size": "11.05 KB",
+      "imports": 4,
+      "components": 3,
+      "hooks": 9,
+      "effects": 2,
+      "stateVariables": 5,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\NewsWidget.js",
+      "lines": 268,
+      "size": "9.13 KB",
+      "imports": 4,
+      "components": 3,
+      "hooks": 9,
+      "effects": 2,
+      "stateVariables": 5,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\NotificationCenter.js",
+      "lines": 455,
+      "size": "18.38 KB",
+      "imports": 2,
+      "components": 7,
+      "hooks": 13,
+      "effects": 3,
+      "stateVariables": 8,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\NotificationManager.js",
+      "lines": 229,
+      "size": "7.59 KB",
+      "imports": 6,
+      "components": 9,
+      "hooks": 11,
+      "effects": 3,
+      "stateVariables": 6,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\NotificationToast.js",
+      "lines": 145,
+      "size": "4.8 KB",
+      "imports": 3,
+      "components": 5,
+      "hooks": 5,
+      "effects": 2,
+      "stateVariables": 3,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\PagePreloader.js",
+      "lines": 113,
+      "size": "3.58 KB",
+      "imports": 3,
+      "components": 1,
+      "hooks": 2,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\PageTransition.js",
+      "lines": 44,
+      "size": "755 Bytes",
+      "imports": 2,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\PasswordRecovery.js",
+      "lines": 529,
+      "size": "17.44 KB",
+      "imports": 3,
+      "components": 10,
+      "hooks": 12,
+      "effects": 0,
+      "stateVariables": 12,
+      "issues": 2
+    },
+    {
+      "file": "src\\components\\PriceAlerts.js",
+      "lines": 459,
+      "size": "18.26 KB",
+      "imports": 3,
+      "components": 17,
+      "hooks": 11,
+      "effects": 3,
+      "stateVariables": 6,
+      "issues": 2
+    },
+    {
+      "file": "src\\components\\ProductCard.js",
+      "lines": 234,
+      "size": "9.1 KB",
+      "imports": 2,
+      "components": 6,
+      "hooks": 3,
+      "effects": 0,
+      "stateVariables": 3,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\ProductFilters.js",
+      "lines": 290,
+      "size": "11.67 KB",
+      "imports": 2,
+      "components": 7,
+      "hooks": 3,
+      "effects": 0,
+      "stateVariables": 3,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\ProtectedRoute.js",
+      "lines": 41,
+      "size": "1.28 KB",
+      "imports": 3,
+      "components": 1,
+      "hooks": 2,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\RouteGuard.js",
+      "lines": 108,
+      "size": "3.68 KB",
+      "imports": 5,
+      "components": 1,
+      "hooks": 4,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\SellersPanel.js",
+      "lines": 364,
+      "size": "14.17 KB",
+      "imports": 2,
+      "components": 1,
+      "hooks": 6,
+      "effects": 0,
+      "stateVariables": 6,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\StarfieldBackground.js",
+      "lines": 160,
+      "size": "5.07 KB",
+      "imports": 3,
+      "components": 3,
+      "hooks": 7,
+      "effects": 2,
+      "stateVariables": 0,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\StockMarketTicker.js",
+      "lines": 192,
+      "size": "6.8 KB",
+      "imports": 3,
+      "components": 4,
+      "hooks": 5,
+      "effects": 2,
+      "stateVariables": 3,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\ThemeDemo.js",
+      "lines": 176,
+      "size": "6.37 KB",
+      "imports": 3,
+      "components": 1,
+      "hooks": 2,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\TickerB3.js",
+      "lines": 127,
+      "size": "4.86 KB",
+      "imports": 4,
+      "components": 3,
+      "hooks": 7,
+      "effects": 2,
+      "stateVariables": 3,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\TransactionList.js",
+      "lines": 258,
+      "size": "10.76 KB",
+      "imports": 4,
+      "components": 5,
+      "hooks": 2,
+      "effects": 0,
+      "stateVariables": 2,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\TwoFactorSetup.js",
+      "lines": 458,
+      "size": "16.05 KB",
+      "imports": 3,
+      "components": 9,
+      "hooks": 12,
+      "effects": 2,
+      "stateVariables": 10,
+      "issues": 2
+    },
+    {
+      "file": "src\\components\\UserPanel.js",
+      "lines": 357,
+      "size": "15.47 KB",
+      "imports": 3,
+      "components": 5,
+      "hooks": 2,
+      "effects": 0,
+      "stateVariables": 2,
+      "issues": 0
+    },
+    {
+      "file": "src\\components\\UserReputationProfile.js",
+      "lines": 307,
+      "size": "11.57 KB",
+      "imports": 2,
+      "components": 4,
+      "hooks": 9,
+      "effects": 2,
+      "stateVariables": 7,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\WalletIntegration.js",
+      "lines": 466,
+      "size": "17.02 KB",
+      "imports": 5,
+      "components": 6,
+      "hooks": 7,
+      "effects": 2,
+      "stateVariables": 5,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\weather\\WeatherWidget.js",
+      "lines": 330,
+      "size": "10.72 KB",
+      "imports": 4,
+      "components": 4,
+      "hooks": 9,
+      "effects": 2,
+      "stateVariables": 5,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\WeatherWidget.js",
+      "lines": 251,
+      "size": "8.12 KB",
+      "imports": 4,
+      "components": 4,
+      "hooks": 9,
+      "effects": 2,
+      "stateVariables": 5,
+      "issues": 1
+    },
+    {
+      "file": "src\\components\\Web3Wallet.js",
+      "lines": 371,
+      "size": "12.96 KB",
+      "imports": 3,
+      "components": 11,
+      "hooks": 10,
+      "effects": 2,
+      "stateVariables": 6,
+      "issues": 1
+    },
+    {
+      "file": "src\\config\\app.config.js",
+      "lines": 79,
+      "size": "1.69 KB",
+      "imports": 0,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\config\\cognito.js",
+      "lines": 35,
+      "size": "1.33 KB",
+      "imports": 0,
+      "components": 0,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\config\\config.js",
+      "lines": 53,
+      "size": "1.01 KB",
+      "imports": 1,
+      "components": 0,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\config\\environment.js",
+      "lines": 59,
+      "size": "2.11 KB",
+      "imports": 0,
+      "components": 0,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\contexts\\AuthContext.js",
+      "lines": 613,
+      "size": "15.9 KB",
+      "imports": 2,
+      "components": 10,
+      "hooks": 18,
+      "effects": 3,
+      "stateVariables": 10,
+      "issues": 2
+    },
+    {
+      "file": "src\\contexts\\ChatbotContext.js",
+      "lines": 348,
+      "size": "10.94 KB",
+      "imports": 2,
+      "components": 10,
+      "hooks": 25,
+      "effects": 4,
+      "stateVariables": 9,
+      "issues": 1
+    },
+    {
+      "file": "src\\contexts\\FeatureFlagsContext.js",
+      "lines": 61,
+      "size": "1.88 KB",
+      "imports": 1,
+      "components": 6,
+      "hooks": 7,
+      "effects": 1,
+      "stateVariables": 2,
+      "issues": 0
+    },
+    {
+      "file": "src\\contexts\\LanguageContext.js",
+      "lines": 232,
+      "size": "5.59 KB",
+      "imports": 1,
+      "components": 4,
+      "hooks": 8,
+      "effects": 2,
+      "stateVariables": 2,
+      "issues": 1
+    },
+    {
+      "file": "src\\contexts\\PaymentContext.js",
+      "lines": 323,
+      "size": "9.16 KB",
+      "imports": 3,
+      "components": 3,
+      "hooks": 15,
+      "effects": 2,
+      "stateVariables": 7,
+      "issues": 1
+    },
+    {
+      "file": "src\\contexts\\ThemeContext.js",
+      "lines": 94,
+      "size": "2.63 KB",
+      "imports": 1,
+      "components": 4,
+      "hooks": 9,
+      "effects": 3,
+      "stateVariables": 2,
+      "issues": 1
+    },
+    {
+      "file": "src\\i18n\\index.js",
+      "lines": 38,
+      "size": "845 Bytes",
+      "imports": 6,
+      "components": 0,
+      "hooks": 1,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\index.js",
+      "lines": 13,
+      "size": "383 Bytes",
+      "imports": 3,
+      "components": 0,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\pages\\Admin.js",
+      "lines": 515,
+      "size": "20.14 KB",
+      "imports": 6,
+      "components": 2,
+      "hooks": 23,
+      "effects": 3,
+      "stateVariables": 16,
+      "issues": 2
+    },
+    {
+      "file": "src\\pages\\AdminLogin.js",
+      "lines": 236,
+      "size": "8.62 KB",
+      "imports": 5,
+      "components": 3,
+      "hooks": 9,
+      "effects": 1,
+      "stateVariables": 6,
+      "issues": 0
+    },
+    {
+      "file": "src\\pages\\AdminSecurePanel.js",
+      "lines": 276,
+      "size": "11.23 KB",
+      "imports": 4,
+      "components": 2,
+      "hooks": 11,
+      "effects": 2,
+      "stateVariables": 5,
+      "issues": 1
+    },
+    {
+      "file": "src\\pages\\AgroConecta.js",
+      "lines": 808,
+      "size": "34.95 KB",
+      "imports": 3,
+      "components": 1,
+      "hooks": 11,
+      "effects": 1,
+      "stateVariables": 8,
+      "issues": 1
+    },
+    {
+      "file": "src\\pages\\Ajuda.js",
+      "lines": 596,
+      "size": "21.09 KB",
+      "imports": 4,
+      "components": 3,
+      "hooks": 6,
+      "effects": 0,
+      "stateVariables": 2,
+      "issues": 1
+    },
+    {
+      "file": "src\\pages\\Cadastro.js",
+      "lines": 808,
+      "size": "37.03 KB",
+      "imports": 6,
+      "components": 6,
+      "hooks": 13,
+      "effects": 2,
+      "stateVariables": 7,
+      "issues": 2
+    },
+    {
+      "file": "src\\pages\\CadastroProduto.js",
+      "lines": 955,
+      "size": "38.86 KB",
+      "imports": 8,
+      "components": 8,
+      "hooks": 19,
+      "effects": 2,
+      "stateVariables": 13,
+      "issues": 2
+    },
+    {
+      "file": "src\\pages\\commodities.js",
+      "lines": 774,
+      "size": "33.65 KB",
+      "imports": 5,
+      "components": 16,
+      "hooks": 21,
+      "effects": 5,
+      "stateVariables": 13,
+      "issues": 2
+    },
+    {
+      "file": "src\\pages\\Contato.js",
+      "lines": 403,
+      "size": "16.29 KB",
+      "imports": 6,
+      "components": 2,
+      "hooks": 8,
+      "effects": 0,
+      "stateVariables": 4,
+      "issues": 0
+    },
+    {
+      "file": "src\\pages\\Cookies.js",
+      "lines": 309,
+      "size": "12.93 KB",
+      "imports": 5,
+      "components": 1,
+      "hooks": 4,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\pages\\Cotacao.js",
+      "lines": 116,
+      "size": "5.38 KB",
+      "imports": 5,
+      "components": 1,
+      "hooks": 4,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\pages\\Cripto.js",
+      "lines": 940,
+      "size": "39.4 KB",
+      "imports": 14,
+      "components": 4,
+      "hooks": 35,
+      "effects": 3,
+      "stateVariables": 26,
+      "issues": 3
+    },
+    {
+      "file": "src\\pages\\Crypto.js",
+      "lines": 456,
+      "size": "19.08 KB",
+      "imports": 2,
+      "components": 6,
+      "hooks": 8,
+      "effects": 2,
+      "stateVariables": 6,
+      "issues": 1
+    },
+    {
+      "file": "src\\pages\\dashboard.js",
+      "lines": 587,
+      "size": "24.5 KB",
+      "imports": 5,
+      "components": 3,
+      "hooks": 14,
+      "effects": 2,
+      "stateVariables": 8,
+      "issues": 2
+    },
+    {
+      "file": "src\\pages\\FAQ.js",
+      "lines": 371,
+      "size": "18.3 KB",
+      "imports": 4,
+      "components": 2,
+      "hooks": 7,
+      "effects": 0,
+      "stateVariables": 3,
+      "issues": 0
+    },
+    {
+      "file": "src\\pages\\ForgotPassword.js",
+      "lines": 251,
+      "size": "9.45 KB",
+      "imports": 7,
+      "components": 1,
+      "hooks": 10,
+      "effects": 3,
+      "stateVariables": 5,
+      "issues": 1
+    },
+    {
+      "file": "src\\pages\\global.js",
+      "lines": 553,
+      "size": "23.6 KB",
+      "imports": 3,
+      "components": 6,
+      "hooks": 16,
+      "effects": 2,
+      "stateVariables": 10,
+      "issues": 2
+    },
+    {
+      "file": "src\\pages\\grains-dashboard.js",
+      "lines": 7,
+      "size": "182 Bytes",
+      "imports": 2,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\pages\\Home.js",
+      "lines": 891,
+      "size": "38.35 KB",
+      "imports": 7,
+      "components": 3,
+      "hooks": 25,
+      "effects": 8,
+      "stateVariables": 6,
+      "issues": 3
+    },
+    {
+      "file": "src\\pages\\ibge-data.js",
+      "lines": 13,
+      "size": "363 Bytes",
+      "imports": 1,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\pages\\LGPD.js",
+      "lines": 514,
+      "size": "22.02 KB",
+      "imports": 5,
+      "components": 1,
+      "hooks": 4,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 1
+    },
+    {
+      "file": "src\\pages\\Login.js",
+      "lines": 519,
+      "size": "19.4 KB",
+      "imports": 6,
+      "components": 2,
+      "hooks": 23,
+      "effects": 2,
+      "stateVariables": 13,
+      "issues": 2
+    },
+    {
+      "file": "src\\pages\\Loja.js",
+      "lines": 1089,
+      "size": "43.73 KB",
+      "imports": 18,
+      "components": 11,
+      "hooks": 36,
+      "effects": 6,
+      "stateVariables": 26,
+      "issues": 3
+    },
+    {
+      "file": "src\\pages\\Mensageria.js",
+      "lines": 620,
+      "size": "25.22 KB",
+      "imports": 7,
+      "components": 4,
+      "hooks": 24,
+      "effects": 4,
+      "stateVariables": 9,
+      "issues": 3
+    },
+    {
+      "file": "src\\pages\\Messages.js",
+      "lines": 576,
+      "size": "22.27 KB",
+      "imports": 6,
+      "components": 7,
+      "hooks": 19,
+      "effects": 3,
+      "stateVariables": 10,
+      "issues": 2
+    },
+    {
+      "file": "src\\pages\\MessagesFreights.js",
+      "lines": 346,
+      "size": "13.65 KB",
+      "imports": 6,
+      "components": 2,
+      "hooks": 16,
+      "effects": 3,
+      "stateVariables": 9,
+      "issues": 1
+    },
+    {
+      "file": "src\\pages\\MessagesProducts.js",
+      "lines": 327,
+      "size": "12.59 KB",
+      "imports": 6,
+      "components": 2,
+      "hooks": 16,
+      "effects": 3,
+      "stateVariables": 9,
+      "issues": 1
+    },
+    {
+      "file": "src\\pages\\OtpVerification.js",
+      "lines": 323,
+      "size": "12.21 KB",
+      "imports": 7,
+      "components": 3,
+      "hooks": 15,
+      "effects": 3,
+      "stateVariables": 8,
+      "issues": 1
+    },
+    {
+      "file": "src\\pages\\PainelUsuario.js",
+      "lines": 755,
+      "size": "33.82 KB",
+      "imports": 10,
+      "components": 5,
+      "hooks": 19,
+      "effects": 2,
+      "stateVariables": 11,
+      "issues": 2
+    },
+    {
+      "file": "src\\pages\\Parcerias.js",
+      "lines": 359,
+      "size": "13.07 KB",
+      "imports": 4,
+      "components": 2,
+      "hooks": 5,
+      "effects": 0,
+      "stateVariables": 1,
+      "issues": 0
+    },
+    {
+      "file": "src\\pages\\PaymentCancel.js",
+      "lines": 163,
+      "size": "5.61 KB",
+      "imports": 6,
+      "components": 5,
+      "hooks": 12,
+      "effects": 2,
+      "stateVariables": 2,
+      "issues": 1
+    },
+    {
+      "file": "src\\pages\\PaymentSuccess.js",
+      "lines": 296,
+      "size": "11.22 KB",
+      "imports": 8,
+      "components": 4,
+      "hooks": 15,
+      "effects": 2,
+      "stateVariables": 5,
+      "issues": 1
+    },
+    {
+      "file": "src\\pages\\Planos.js",
+      "lines": 651,
+      "size": "24.79 KB",
+      "imports": 8,
+      "components": 8,
+      "hooks": 16,
+      "effects": 2,
+      "stateVariables": 6,
+      "issues": 3
+    },
+    {
+      "file": "src\\pages\\Privacidade.js",
+      "lines": 267,
+      "size": "13.11 KB",
+      "imports": 4,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\pages\\receita.js",
+      "lines": 13,
+      "size": "381 Bytes",
+      "imports": 1,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\pages\\ResetPassword.js",
+      "lines": 372,
+      "size": "14.79 KB",
+      "imports": 7,
+      "components": 2,
+      "hooks": 17,
+      "effects": 2,
+      "stateVariables": 9,
+      "issues": 1
+    },
+    {
+      "file": "src\\pages\\Sobre.js",
+      "lines": 488,
+      "size": "18.38 KB",
+      "imports": 5,
+      "components": 1,
+      "hooks": 6,
+      "effects": 2,
+      "stateVariables": 0,
+      "issues": 1
+    },
+    {
+      "file": "src\\pages\\Status.js",
+      "lines": 409,
+      "size": "15.13 KB",
+      "imports": 4,
+      "components": 5,
+      "hooks": 9,
+      "effects": 2,
+      "stateVariables": 3,
+      "issues": 1
+    },
+    {
+      "file": "src\\pages\\Termos.js",
+      "lines": 165,
+      "size": "7.86 KB",
+      "imports": 4,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\pages\\VerifyEmail.js",
+      "lines": 258,
+      "size": "10.12 KB",
+      "imports": 6,
+      "components": 1,
+      "hooks": 14,
+      "effects": 3,
+      "stateVariables": 5,
+      "issues": 1
+    },
+    {
+      "file": "src\\services\\adminService.js",
+      "lines": 321,
+      "size": "8.61 KB",
+      "imports": 1,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\services\\advancedSecurityService.js",
+      "lines": 799,
+      "size": "23.24 KB",
+      "imports": 0,
+      "components": 1,
+      "hooks": 7,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 1
+    },
+    {
+      "file": "src\\services\\agriculturalQuotesService.js",
+      "lines": 468,
+      "size": "11.76 KB",
+      "imports": 1,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\services\\agrolinkAPI.js",
+      "lines": 368,
+      "size": "11.18 KB",
+      "imports": 1,
+      "components": 5,
+      "hooks": 17,
+      "effects": 3,
+      "stateVariables": 6,
+      "issues": 1
+    },
+    {
+      "file": "src\\services\\api.js",
+      "lines": 475,
+      "size": "12.42 KB",
+      "imports": 1,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\services\\authService.js",
+      "lines": 196,
+      "size": "6.02 KB",
+      "imports": 1,
+      "components": 0,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\services\\baiduMapsService.js",
+      "lines": 536,
+      "size": "15.74 KB",
+      "imports": 1,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 1
+    },
+    {
+      "file": "src\\services\\cartService.js",
+      "lines": 319,
+      "size": "9.44 KB",
+      "imports": 1,
+      "components": 2,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\services\\chatbotService.js",
+      "lines": 574,
+      "size": "19.45 KB",
+      "imports": 1,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 1
+    },
+    {
+      "file": "src\\services\\cognitoAuthService.js",
+      "lines": 304,
+      "size": "9.69 KB",
+      "imports": 3,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\services\\contactService.js",
+      "lines": 74,
+      "size": "2.17 KB",
+      "imports": 1,
+      "components": 0,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\services\\cryptoService.js",
+      "lines": 711,
+      "size": "19.17 KB",
+      "imports": 1,
+      "components": 2,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 1
+    },
+    {
+      "file": "src\\services\\escrowService.js",
+      "lines": 525,
+      "size": "17.24 KB",
+      "imports": 1,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 1
+    },
+    {
+      "file": "src\\services\\freightService.js",
+      "lines": 459,
+      "size": "15.25 KB",
+      "imports": 1,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\services\\gamificationService.js",
+      "lines": 390,
+      "size": "9.39 KB",
+      "imports": 1,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\services\\geolocationService.js",
+      "lines": 268,
+      "size": "7.48 KB",
+      "imports": 0,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\services\\geoService.js",
+      "lines": 161,
+      "size": "4.65 KB",
+      "imports": 1,
+      "components": 1,
+      "hooks": 12,
+      "effects": 2,
+      "stateVariables": 5,
+      "issues": 1
+    },
+    {
+      "file": "src\\services\\messagingService.js",
+      "lines": 331,
+      "size": "10.02 KB",
+      "imports": 1,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\services\\metamaskService.js",
+      "lines": 281,
+      "size": "6.92 KB",
+      "imports": 1,
+      "components": 2,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\services\\newsService.js",
+      "lines": 425,
+      "size": "14.54 KB",
+      "imports": 0,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\services\\notificationService.js",
+      "lines": 600,
+      "size": "18.08 KB",
+      "imports": 1,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 1
+    },
+    {
+      "file": "src\\services\\paymentService.js",
+      "lines": 157,
+      "size": "5.55 KB",
+      "imports": 1,
+      "components": 0,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\services\\phantomService.js",
+      "lines": 157,
+      "size": "3.92 KB",
+      "imports": 0,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\services\\productService.js",
+      "lines": 466,
+      "size": "13.79 KB",
+      "imports": 1,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\services\\receitaService.js",
+      "lines": 752,
+      "size": "20.91 KB",
+      "imports": 1,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 1
+    },
+    {
+      "file": "src\\services\\securityService.js",
+      "lines": 455,
+      "size": "12.44 KB",
+      "imports": 0,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\services\\stockService.js",
+      "lines": 364,
+      "size": "10.17 KB",
+      "imports": 1,
+      "components": 5,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\services\\stripeService.js",
+      "lines": 269,
+      "size": "6.61 KB",
+      "imports": 1,
+      "components": 2,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\services\\transactionService.js",
+      "lines": 357,
+      "size": "11.67 KB",
+      "imports": 1,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\services\\weatherService.js",
+      "lines": 247,
+      "size": "7.22 KB",
+      "imports": 1,
+      "components": 1,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    },
+    {
+      "file": "src\\types\\index.js",
+      "lines": 98,
+      "size": "2.34 KB",
+      "imports": 0,
+      "components": 0,
+      "hooks": 0,
+      "effects": 0,
+      "stateVariables": 0,
+      "issues": 0
+    }
+  ]
+}

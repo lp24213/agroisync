@@ -109,7 +109,9 @@ function checkInternalLink(url, baseDir) {
     '/messages': 'src/pages/Messages.js',
     '/messages-products': 'src/pages/MessagesProducts.js',
     '/messages-freights': 'src/pages/MessagesFreights.js',
-    '/admin-panel': 'src/pages/AdminSecurePanel.js'
+    '/admin-panel': 'src/pages/AdminSecurePanel.js',
+    '/panel/loja': 'src/pages/Loja.js',
+    '/maintenance': 'src/pages/Status.js'
   };
   
   const targetFile = routeMap[cleanUrl];
