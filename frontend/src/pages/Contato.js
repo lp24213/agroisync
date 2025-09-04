@@ -113,7 +113,7 @@ const Contato = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className={`text-5xl md:text-7xl font-bold mb-6 text-gradient-agro`}
+            className="text-5xl md:text-7xl font-bold mb-6 text-gray-900"
           >
             Entre em Contato
           </motion.h1>
@@ -123,7 +123,7 @@ const Contato = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className={`text-xl md:text-2xl max-w-4xl mx-auto mb-8 ${isDark ? 'text-gray-300' : 'text-slate-600'}`}
+            className="text-xl md:text-2xl max-w-4xl mx-auto mb-8 text-gray-600"
           >
             Estamos aqui para ajudar você a aproveitar ao máximo a plataforma Agroisync
           </motion.p>
@@ -133,7 +133,7 @@ const Contato = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className={`text-lg max-w-3xl mx-auto ${isDark ? 'text-gray-400' : 'text-slate-500'}`}
+            className="text-lg max-w-3xl mx-auto text-gray-500"
           >
             Nossa equipe está pronta para responder suas dúvidas e auxiliar em qualquer questão relacionada ao agronegócio
           </motion.p>
@@ -149,7 +149,7 @@ const Contato = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-                         <h2 className={`text-4xl font-bold mb-4 text-gradient-agro`}>
+                         <h2 className="text-4xl font-bold mb-4 text-gray-900">
                Informações de Contato
              </h2>
             <p className={`text-xl max-w-3xl mx-auto ${isDark ? 'text-gray-300' : 'text-slate-600'}`}>
@@ -191,7 +191,7 @@ const Contato = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-12"
           >
-                         <h2 className={`text-4xl font-bold mb-4 text-gradient-agro`}>
+                         <h2 className="text-4xl font-bold mb-4 text-gray-900">
                Envie sua Mensagem
              </h2>
             <p className={`text-xl ${isDark ? 'text-gray-300' : 'text-slate-600'}`}>
@@ -333,7 +333,7 @@ const Contato = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-                         <h2 className={`text-4xl font-bold mb-4 text-gradient-agro`}>
+                         <h2 className="text-4xl font-bold mb-4 text-gray-900">
                Outras Formas de Contato
              </h2>
             <p className={`text-xl max-w-3xl mx-auto ${isDark ? 'text-gray-300' : 'text-slate-600'}`}>

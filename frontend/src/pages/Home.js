@@ -18,7 +18,7 @@ const Home = () => {
   const { isEnabled } = useFeatureFlags();
   
   // CAMADA 2: Dados reais da bolsa de valores via API Agrolink
-  const [stockData, setStockData] = useState([]);
+  // const [stockData, setStockData] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
   const [weatherData, setWeatherData] = useState(null);
 
@@ -241,17 +241,17 @@ const Home = () => {
   }, [userLocation, fetchAgrolinkData]);
 
   // CAMADA 2: Função para formatar mudança de preço com cores
-  const formatChange = (change) => {
-    const isPositive = change >= 0;
-    const color = isPositive ? 'text-emerald-600' : 'text-red-600';
-    const Icon = isPositive ? TrendingUp : TrendingDown;
-    
-    return (
-      <span className={`${color} font-semibold flex items-center gap-1`}>
-        <Icon className="w-4 h-4" /> {Math.abs(change).toFixed(2)}%
-      </span>
-    );
-  };
+  // const formatChange = (change) => {
+  //   const isPositive = change >= 0;
+  //   const color = isPositive ? 'text-emerald-600' : 'text-red-600';
+  //   const Icon = isPositive ? TrendingUp : TrendingDown;
+  //   
+  //   return (
+  //     <span className={`${color} font-semibold flex items-center gap-1`}>
+  //       <Icon className="w-4 h-4" /> {Math.abs(change).toFixed(2)}%
+  //     </span>
+  //   );
+  // };
 
   // CAMADA 2: Dados reais de clima via OpenWeather API
   // CAMADA 2: Buscar dados reais de clima
@@ -512,7 +512,7 @@ const Home = () => {
             initial={{ opacity: 0, y: 30, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 1, ease: "easeOut" }}
-            className="text-5xl md:text-7xl font-bold mb-6 text-gradient-agro"
+            className="text-5xl md:text-7xl font-bold mb-6 text-gray-900"
           >
             {t('home.hero.title')}
           </motion.h1>
@@ -575,7 +575,7 @@ const Home = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-20"
           >
-            <h2 className="text-4xl font-bold text-gradient-agro mb-6">
+            <h2 className="text-4xl font-bold text-gray-900 mb-6">
               {t('home.features.title')}
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -619,7 +619,7 @@ const Home = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-12"
           >
-            <h2 className="text-4xl font-bold text-gradient-agro mb-4">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
               Estatísticas da Plataforma
             </h2>
             <p className="text-xl text-gray-600">

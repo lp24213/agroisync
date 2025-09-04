@@ -119,7 +119,7 @@ const Sobre = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className={`text-5xl md:text-7xl font-bold mb-6 text-gradient-agro`}
+            className="text-5xl md:text-7xl font-bold mb-6 text-gray-900"
           >
             {t('about.title')}
           </motion.h1>
@@ -129,7 +129,7 @@ const Sobre = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className={`text-xl md:text-2xl max-w-4xl mx-auto mb-8 ${isDark ? 'text-gray-300' : 'text-slate-600'}`}
+            className="text-xl md:text-2xl max-w-4xl mx-auto mb-8 text-gray-600"
           >
             {t('about.subtitle')}
           </motion.p>
@@ -139,7 +139,7 @@ const Sobre = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className={`text-lg max-w-3xl mx-auto ${isDark ? 'text-gray-400' : 'text-slate-500'}`}
+            className="text-lg max-w-3xl mx-auto text-gray-500"
           >
             {t('about.mission.description')}
           </motion.p>
@@ -155,7 +155,7 @@ const Sobre = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className={`text-4xl font-bold mb-6 text-gradient-agro`}>
+            <h2 className="text-4xl font-bold mb-6 text-gray-900">
               {t('about.mission.title')}
             </h2>
             <p className={`text-xl max-w-4xl mx-auto leading-relaxed ${isDark ? 'text-gray-300' : 'text-slate-600'}`}>
@@ -203,7 +203,7 @@ const Sobre = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className={`text-4xl font-bold mb-4 text-gradient-agro`}>
+            <h2 className="text-4xl font-bold mb-4 text-gray-900">
               {t('about.values.title')}
             </h2>
             <p className={`text-xl max-w-3xl mx-auto ${isDark ? 'text-gray-300' : 'text-slate-600'}`}>
@@ -245,7 +245,7 @@ const Sobre = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className={`text-4xl font-bold mb-4 text-gradient-agro`}>
+            <h2 className="text-4xl font-bold mb-4 text-gray-900">
               {t('about.timeline.title')}
             </h2>
             <p className={`text-xl ${isDark ? 'text-gray-300' : 'text-slate-600'}`}>
@@ -391,7 +391,7 @@ const Sobre = () => {
               transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className={`text-4xl font-bold mb-4 text-gradient-agro`}>
+            <h2 className="text-4xl font-bold mb-4 text-gray-900">
               {t('about.stats.title')}
             </h2>
             <p className={`text-xl max-w-3xl mx-auto ${isDark ? 'text-gray-300' : 'text-slate-600'}`}>

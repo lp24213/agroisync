@@ -1,11 +1,8 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { useTheme } from '../contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import GrainsDashboard from '../components/grains/GrainsDashboard';
 
 const Cotacao = () => {
-  const { isDark } = useTheme();
   const { t } = useTranslation();
   
   return (
