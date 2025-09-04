@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   CheckCircle, XCircle, Clock, AlertTriangle, 
-  FileText, Building2, User, MapPin, RefreshCw
+  FileText, RefreshCw
 } from 'lucide-react';
 import receitaService, { 
   DOCUMENT_TYPES, 
@@ -34,14 +34,7 @@ const DocumentValidator = ({
   }, []);
 
   // Validação automática se habilitada
-  useEffect(() => {
-    if (autoValidate && documents.cpf && documents.cpf.length === 11) {
-      handleValidateCPF();
-    }
-    if (autoValidate && documents.cnpj && documents.cnpj.length === 14) {
-      handleValidateCNPJ();
-    }
-  }, [documents.cpf, documents.cnpj, autoValidate]);
+  // useEffect será movido para após as funções
 
   // Atualizar documentos
   const handleDocumentChange = (field, value) => {
@@ -78,7 +71,7 @@ const DocumentValidator = ({
   };
 
   // Validar CPF
-  const handleValidateCPF = async () => {
+  const handleValidateCPF = useCallback(async () => {
     if (!documents.cpf || documents.cpf.replace(/\D/g, '').length !== 11) {
       return;
     }
@@ -115,10 +108,10 @@ const DocumentValidator = ({
       setIsValidating(false);
       setShowResults(true);
     }
-  };
+  }, [documents.cpf, onValidationComplete]);
 
   // Validar CNPJ
-  const handleValidateCNPJ = async () => {
+  const handleValidateCNPJ = useCallback(async () => {
     if (!documents.cnpj || documents.cnpj.replace(/\D/g, '').length !== 14) {
       return;
     }
@@ -155,7 +148,17 @@ const DocumentValidator = ({
       setIsValidating(false);
       setShowResults(true);
     }
-  };
+  }, [documents.cnpj, onValidationComplete]);
+
+  // Validação automática se habilitada
+  useEffect(() => {
+    if (autoValidate && documents.cpf && documents.cpf.length === 11) {
+      handleValidateCPF();
+    }
+    if (autoValidate && documents.cnpj && documents.cnpj.length === 14) {
+      handleValidateCNPJ();
+    }
+  }, [documents.cpf, documents.cnpj, autoValidate, handleValidateCPF, handleValidateCNPJ]);
 
   // Validar IE
   const handleValidateIE = async () => {

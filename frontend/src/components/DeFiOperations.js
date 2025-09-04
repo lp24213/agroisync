@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  TrendingUp, TrendingDown, Lock, Unlock, 
-  DollarSign, Coins, RefreshCw, ArrowRight,
+  TrendingUp, TrendingDown, Lock, 
+  DollarSign, Coins, RefreshCw,
   CheckCircle, XCircle, Activity
 } from 'lucide-react';
 import cryptoService from '../services/cryptoService';
@@ -19,31 +19,14 @@ const DeFiOperations = () => {
   const [portfolio, setPortfolio] = useState([]);
   const [transactionHistory, setTransactionHistory] = useState([]);
 
-  const popularCryptos = [
+  const popularCryptos = useMemo(() => [
     { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin', icon: '₿' },
     { id: 'ethereum', symbol: 'ETH', name: 'Ethereum', icon: 'Ξ' },
     { id: 'binancecoin', symbol: 'BNB', name: 'BNB', icon: '🟡' },
     { id: 'cardano', symbol: 'ADA', name: 'Cardano', icon: '₳' },
     { id: 'solana', symbol: 'SOL', name: 'Solana', icon: '◎' },
     { id: 'polkadot', symbol: 'DOT', name: 'Polkadot', icon: '●' }
-  ];
-
-  useEffect(() => {
-    loadCryptoPrices();
-    loadPortfolio();
-    loadTransactionHistory();
-    
-    // Atualizar preços a cada 30 segundos
-    const interval = setInterval(loadCryptoPrices, 30000);
-    
-    return () => clearInterval(interval);
-  }, [loadCryptoPrices, loadPortfolio, loadTransactionHistory]);
-
-  useEffect(() => {
-    if (selectedCrypto && cryptoPrices[selectedCrypto]) {
-      setPrice(cryptoPrices[selectedCrypto].usd.toString());
-    }
-  }, [selectedCrypto, cryptoPrices]);
+  ], []);
 
   const loadCryptoPrices = useCallback(async () => {
     try {
@@ -53,7 +36,7 @@ const DeFiOperations = () => {
     } catch (error) {
       console.error('Erro ao carregar preços:', error);
     }
-  }, []);
+  }, [popularCryptos]);
 
   const loadPortfolio = useCallback(async () => {
     try {
@@ -72,6 +55,23 @@ const DeFiOperations = () => {
       console.error('Erro ao carregar histórico:', error);
     }
   }, []);
+
+  useEffect(() => {
+    loadCryptoPrices();
+    loadPortfolio();
+    loadTransactionHistory();
+    
+    // Atualizar preços a cada 30 segundos
+    const interval = setInterval(loadCryptoPrices, 30000);
+    
+    return () => clearInterval(interval);
+  }, [loadCryptoPrices, loadPortfolio, loadTransactionHistory]);
+
+  useEffect(() => {
+    if (selectedCrypto && cryptoPrices[selectedCrypto]) {
+      setPrice(cryptoPrices[selectedCrypto].usd.toString());
+    }
+  }, [selectedCrypto, cryptoPrices]);
 
   const handleOperation = async () => {
     if (!selectedCrypto || !amount || !price) {

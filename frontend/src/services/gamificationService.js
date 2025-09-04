@@ -381,7 +381,6 @@ const gamificationService = new GamificationService();
 
 export default gamificationService;
 export {
-  BADGE_CATEGORIES,
   BADGE_RARITY,
   BADGE_RARITY_COLORS,
   BADGE_RARITY_NAMES,

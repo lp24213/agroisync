@@ -68,71 +68,71 @@ const Home = () => {
       // Simular dados da API Agrolink (em produção seria uma API real)
       // const response = await fetch(`https://api.agrolink.com.br/v1/commodities?region=${userLocation.region}&country=${userLocation.country}`);
       
-      // Dados simulados para demonstração
-      const mockAgrolinkData = {
-        stocks: [
-          {
-            symbol: 'SOJA3',
-            name: 'Soja Futuro',
-            current_price: 145.67 + (Math.random() - 0.5) * 10,
-            price_change_percentage: 2.34 + (Math.random() - 0.5) * 2,
-            volume: '1.2M',
-            last_update: new Date().toISOString(),
-            sector: 'Agropecuário',
-            market_cap: 'R$ 45.2B'
-          },
-          {
-            symbol: 'MILHO4',
-            name: 'Milho Futuro',
-            current_price: 89.45 + (Math.random() - 0.5) * 8,
-            price_change_percentage: -1.23 + (Math.random() - 0.5) * 1.5,
-            volume: '856K',
-            last_update: new Date().toISOString(),
-            sector: 'Agropecuário',
-            market_cap: 'R$ 28.7B'
-          },
-          {
-            symbol: 'BOI3',
-            name: 'Boi Gordo',
-            current_price: 234.12 + (Math.random() - 0.5) * 15,
-            price_change_percentage: 3.45 + (Math.random() - 0.5) * 2,
-            volume: '2.1M',
-            last_update: new Date().toISOString(),
-            sector: 'Agropecuário',
-            market_cap: 'R$ 67.3B'
-          },
-          {
-            symbol: 'CAFE3',
-            name: 'Café Arábica',
-            current_price: 567.89 + (Math.random() - 0.5) * 25,
-            price_change_percentage: -0.87 + (Math.random() - 0.5) * 1.5,
-            volume: '432K',
-            last_update: new Date().toISOString(),
-            sector: 'Agropecuário',
-            market_cap: 'R$ 12.4B'
-          },
-          {
-            symbol: 'ALGO3',
-            name: 'Algodão',
-            current_price: 78.34 + (Math.random() - 0.5) * 12,
-            price_change_percentage: 1.56 + (Math.random() - 0.5) * 1.5,
-            volume: '678K',
-            last_update: new Date().toISOString(),
-            sector: 'Agropecuário',
-            market_cap: 'R$ 15.8B'
-          },
-          {
-            symbol: 'TRIG3',
-            name: 'Trigo',
-            current_price: 123.45 + (Math.random() - 0.5) * 18,
-            price_change_percentage: 0.78 + (Math.random() - 0.5) * 1.5,
-            volume: '345K',
-            last_update: new Date().toISOString(),
-            sector: 'Agropecuário',
-            market_cap: 'R$ 18.9B'
-          }
-        ]
-      };
+      // Dados simulados para demonstração (comentado - não utilizado atualmente)
+      // const mockAgrolinkData = {
+      //   stocks: [
+      //     {
+      //       symbol: 'SOJA3',
+      //       name: 'Soja Futuro',
+      //       current_price: 145.67 + (Math.random() - 0.5) * 10,
+      //       price_change_percentage: 2.34 + (Math.random() - 0.5) * 2,
+      //       volume: '1.2M',
+      //       last_update: new Date().toISOString(),
+      //       sector: 'Agropecuário',
+      //       market_cap: 'R$ 45.2B'
+      //     },
+      //     {
+      //       symbol: 'MILHO4',
+      //       name: 'Milho Futuro',
+      //       current_price: 89.45 + (Math.random() - 0.5) * 8,
+      //       price_change_percentage: -1.23 + (Math.random() - 0.5) * 1.5,
+      //       volume: '856K',
+      //       last_update: new Date().toISOString(),
+      //       sector: 'Agropecuário',
+      //       market_cap: 'R$ 28.7B'
+      //     },
+      //     {
+      //       symbol: 'BOI3',
+      //       name: 'Boi Gordo',
+      //       current_price: 234.12 + (Math.random() - 0.5) * 15,
+      //       price_change_percentage: 3.45 + (Math.random() - 0.5) * 2,
+      //       volume: '2.1M',
+      //       last_update: new Date().toISOString(),
+      //       sector: 'Agropecuário',
+      //       market_cap: 'R$ 67.3B'
+      //     },
+      //     {
+      //       symbol: 'CAFE3',
+      //       name: 'Café Arábica',
+      //       current_price: 567.89 + (Math.random() - 0.5) * 25,
+      //       price_change_percentage: -0.87 + (Math.random() - 0.5) * 1.5,
+      //       volume: '432K',
+      //       last_update: new Date().toISOString(),
+      //       sector: 'Agropecuário',
+      //       market_cap: 'R$ 12.4B'
+      //     },
+      //     {
+      //       symbol: 'ALGO3',
+      //       name: 'Algodão',
+      //       current_price: 78.34 + (Math.random() - 0.5) * 12,
+      //       price_change_percentage: 1.56 + (Math.random() - 0.5) * 1.5,
+      //       volume: '678K',
+      //       last_update: new Date().toISOString(),
+      //       sector: 'Agropecuário',
+      //       market_cap: 'R$ 15.8B'
+      //     },
+      //     {
+      //       symbol: 'TRIG3',
+      //       name: 'Trigo',
+      //       current_price: 123.45 + (Math.random() - 0.5) * 18,
+      //       price_change_percentage: 0.78 + (Math.random() - 0.5) * 1.5,
+      //       volume: '345K',
+      //       last_update: new Date().toISOString(),
+      //       sector: 'Agropecuário',
+      //       market_cap: 'R$ 18.9B'
+      //     }
+      //   ]
+      // };
       
       // Formatar dados da bolsa de valores
       // const formattedStockData = mockAgrolinkData.stocks.map(stock => ({

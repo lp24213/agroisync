@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   TrendingUp, TrendingDown, Coins, Wallet, BarChart3,
-  RefreshCw, Star, Zap, Shield, Globe, Activity
+  RefreshCw, Star, Zap, Activity
 } from 'lucide-react';
 import cryptoService from '../services/cryptoService';
 
@@ -12,7 +12,7 @@ const CryptoDashboard = () => {
   const [marketData, setMarketData] = useState({});
   const [portfolio, setPortfolio] = useState({});
   const [recentTransactions, setRecentTransactions] = useState([]);
-  const [watchlist, setWatchlist] = useState([]);
+  // const [watchlist, setWatchlist] = useState([]);
 
   const tabs = [
     { id: 'overview', label: 'Visão Geral', icon: Coins },
@@ -21,12 +21,6 @@ const CryptoDashboard = () => {
     { id: 'watchlist', label: 'Favoritos', icon: Star },
     { id: 'activity', label: 'Atividade', icon: Activity }
   ];
-
-  useEffect(() => {
-    loadDashboardData();
-    const interval = setInterval(loadDashboardData, 30000); // Atualizar a cada 30s
-    return () => clearInterval(interval);
-  }, []);
 
   const loadDashboardData = useCallback(async () => {
     setLoading(true);
@@ -47,6 +41,12 @@ const CryptoDashboard = () => {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    loadDashboardData();
+    const interval = setInterval(loadDashboardData, 30000); // Atualizar a cada 30s
+    return () => clearInterval(interval);
+  }, [loadDashboardData]);
 
   const getPriceChangeColor = (change) => {
     if (!change) return 'text-gray-500';

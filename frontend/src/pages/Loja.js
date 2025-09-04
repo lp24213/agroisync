@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { 
-  Store, Truck, CheckCircle, ArrowRight, UserPlus, 
+  Store, CheckCircle, UserPlus, 
   Building2, Search, Star, ShoppingCart, Leaf, User,
   Eye, Heart, Phone, Mail, Calendar, Package,
   Plus, Edit, Trash, Filter, Grid, List,
@@ -12,15 +12,15 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import ProductFilters from '../components/ProductFilters';
-import CartWidget from '../components/CartWidget';
-import BuyersPanel from '../components/BuyersPanel';
-import SellersPanel from '../components/SellersPanel';
-import UserPanel from '../components/UserPanel';
-import MarketplaceContent from '../components/MarketplaceContent';
-import productService, { PRODUCT_CATEGORIES, PRODUCT_STATUS } from '../services/productService';
-import cartService from '../services/cartService';
+// import CartWidget from '../components/CartWidget';
+// import BuyersPanel from '../components/BuyersPanel';
+// import SellersPanel from '../components/SellersPanel';
+// import UserPanel from '../components/UserPanel';
+// import MarketplaceContent from '../components/MarketplaceContent';
+import productService, { PRODUCT_CATEGORIES } from '../services/productService';
+// import cartService from '../services/cartService';
 import transactionService, { TRANSACTION_STATUS, TRANSACTION_TYPES } from '../services/transactionService';
-import EscrowBadge from '../components/EscrowBadge';
+// import EscrowBadge from '../components/EscrowBadge';
 import DocumentValidator from '../components/DocumentValidator';
 import baiduMapsService from '../services/baiduMapsService';
 import receitaService from '../services/receitaService';

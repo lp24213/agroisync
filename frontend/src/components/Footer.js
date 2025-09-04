@@ -2,9 +2,9 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { 
-  MapPin, Phone, Mail, Globe, 
+  MapPin, Phone, Mail, 
   Facebook, Twitter, Instagram, Linkedin,
-  Leaf, Shield, Heart
+  Heart
 } from 'lucide-react';
 
 const Footer = () => {
