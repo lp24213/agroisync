@@ -213,12 +213,12 @@ const Admin = () => {
       setIsAdmin(true);
       setAdminData({
         stats: {
-          totalUsers: 1247,
-          activeUsers: 892,
-          totalRevenue: 45678.90,
-          pendingPayments: 12,
-          totalProducts: 89,
-          totalFreights: 156
+          totalUsers: 0,
+          activeUsers: 0,
+          totalRevenue: 0,
+          pendingPayments: 0,
+          totalProducts: 0,
+          totalFreights: 0
         },
         recentActivity: [],
         systemStatus: 'operational'

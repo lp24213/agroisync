@@ -116,11 +116,10 @@ const AdminLogin = () => {
                   id="email"
                   name="email"
                   type="email"
-                  value={formData.email}
+                  value=""
                   onChange={handleInputChange}
                   required
                   className="block w-full pl-10 pr-3 py-3 border border-slate-600 rounded-lg bg-slate-800 text-slate-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                  placeholder="Digite o email administrativo"
                 />
               </div>
             </div>
