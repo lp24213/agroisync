@@ -28,7 +28,7 @@ const BuyersPanel = () => {
       specialties: ['Soja', 'Milho', 'Trigo'],
       description: 'Cooperativa com mais de 30 anos de experiência no agronegócio',
       contact: {
-        phone: '(41) 99999-9999',
+        phone: '(66) 99236-2830',
         email: 'contato@agronorte.com.br'
       }
     },
@@ -45,7 +45,7 @@ const BuyersPanel = () => {
       specialties: ['Algodão', 'Milho', 'Gado'],
       description: 'Produtor familiar com foco em sustentabilidade',
       contact: {
-        phone: '(66) 88888-8888',
+        phone: '(66) 99236-2830',
         email: 'contato@santamaria.com.br'
       }
     },
@@ -62,7 +62,7 @@ const BuyersPanel = () => {
       specialties: ['Fertilizantes', 'Defensivos', 'Sementes'],
       description: 'Distribuidor autorizado das principais marcas do mercado',
       contact: {
-        phone: '(11) 77777-7777',
+        phone: '(66) 99236-2830',
         email: 'vendas@agrofert.com.br'
       }
     }

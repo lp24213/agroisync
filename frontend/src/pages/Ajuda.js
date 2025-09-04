@@ -557,7 +557,7 @@ const Ajuda = () => {
               >
                 <Mail className="w-12 h-12 mx-auto mb-4 text-green-600" />
                 <h3 className="text-xl font-bold mb-2">Email</h3>
-                <p className="text-gray-600 mb-4">suporte@agroisync.com</p>
+                <p className="text-gray-600 mb-4">contato@agroisync.com</p>
                 <p className="text-sm text-gray-500">Resposta em até 24h</p>
             </motion.div>
 

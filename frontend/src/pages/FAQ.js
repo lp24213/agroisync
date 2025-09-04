@@ -34,7 +34,7 @@ const FAQ = () => {
         },
         {
           question: 'Como entrar em contato com suporte?',
-          answer: 'Oferecemos múltiplos canais de suporte: chatbot IA 24/7, email (suporte@agroisync.com), telefone ((66) 99236-2830) e sistema de tickets. Nossa equipe responde em até 24 horas e está disponível de segunda a sexta, das 8h às 18h.'
+          answer: 'Oferecemos múltiplos canais de suporte: chatbot IA 24/7, email (contato@agroisync.com), telefone ((66) 99236-2830) e sistema de tickets. Nossa equipe responde em até 24 horas e está disponível de segunda a sexta, das 8h às 18h.'
         }
       ]
     },
@@ -344,7 +344,7 @@ const FAQ = () => {
               >
                 <Mail className="w-12 h-12 mx-auto mb-4 text-blue-600" />
                 <h3 className="text-xl font-bold mb-2">Email</h3>
-                <p className="text-gray-600 mb-4">suporte@agroisync.com</p>
+                <p className="text-gray-600 mb-4">contato@agroisync.com</p>
                 <p className="text-sm text-gray-500">Resposta em até 24h</p>
             </motion.div>
 

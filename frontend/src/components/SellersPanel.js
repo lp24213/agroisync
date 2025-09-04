@@ -29,7 +29,7 @@ const SellersPanel = () => {
       specialties: ['Soja', 'Milho', 'Algodão'],
       description: 'Produtor com mais de 20 anos de experiência, certificado pela RTRS',
       contact: {
-        phone: '(66) 99999-9999',
+        phone: '(66) 99236-2830',
         email: 'contato@fazendamodelo.com.br'
       },
       stats: {
@@ -52,7 +52,7 @@ const SellersPanel = () => {
       specialties: ['Trigo', 'Milho', 'Feijão'],
       description: 'Cooperativa com mais de 50 anos, líder no mercado paranaense',
       contact: {
-        phone: '(41) 88888-8888',
+        phone: '(66) 99236-2830',
         email: 'vendas@coopcentral.com.br'
       },
       stats: {
@@ -75,7 +75,7 @@ const SellersPanel = () => {
       specialties: ['Processados', 'Fertilizantes', 'Defensivos'],
       description: 'Indústria processadora com certificação ISO 9001',
       contact: {
-        phone: '(11) 77777-7777',
+        phone: '(66) 99236-2830',
         email: 'comercial@agrosilva.com.br'
       },
       stats: {
