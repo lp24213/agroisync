@@ -9,36 +9,28 @@
 
 /* Custom CSS Variables */
 :root {
-  /* AGROSYNC GLOBAL VARIABLES - CORRIGIDO */
-  --agro-bg: #0f1720;
-  --agro-text: #E7EEF6;
-  --agro-emerald: #00B894;
-  --agro-sky: #3EA8FF;
-  --agro-amber: #f5a524;
-  --agro-card: rgba(255,255,255,0.03);
-  
-  /* Mantendo compatibilidade com variáveis existentes */
-  --agro-bg-primary: #0f1720;
+  /* AGROSYNC GLOBAL VARIABLES */
+  --agro-bg-primary: #0a0a0a;
   --agro-bg-secondary: #1a1a1a;
   --agro-bg-card: #262626;
   --agro-bg-glass: rgba(26, 26, 26, 0.8);
   
-  --agro-text-primary: #E7EEF6;
+  --agro-text-primary: #ffffff;
   --agro-text-secondary: #e5e7eb;
   --agro-text-tertiary: #9ca3af;
   --agro-text-muted: #6b7280;
   
-  --agro-accent-emerald: #00B894;
+  --agro-accent-emerald: #10b981;
   --agro-accent-emerald-light: #34d399;
   --agro-accent-emerald-dark: #059669;
-  --agro-accent-sky: #3EA8FF;
+  --agro-accent-sky: #0ea5e9;
   --agro-accent-sky-light: #38bdf8;
-  --agro-accent-amber: #f5a524;
+  --agro-accent-amber: #f59e0b;
   --agro-accent-amber-light: #fbbf24;
   
   --agro-border-primary: rgba(255, 255, 255, 0.1);
   --agro-border-secondary: rgba(255, 255, 255, 0.05);
-  --agro-border-accent: rgba(0, 184, 148, 0.2);
+  --agro-border-accent: rgba(16, 185, 129, 0.2);
   
   --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   --shadow-elevated: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
@@ -50,39 +42,6 @@
 .dark {
   --shadow-card: var(--shadow-card-dark);
   --shadow-elevated: var(--shadow-elevated-dark);
-}
-
-/* APLICAÇÃO GLOBAL DO TEMA AGROISYNC */
-body {
-  background: var(--agro-bg);
-  color: var(--agro-text);
-  font-family: 'Inter', sans-serif;
-}
-
-/* Remoção de neons indiscriminados - só em micro-accent */
-.btn-primary {
-  background: linear-gradient(90deg, var(--agro-emerald), var(--agro-sky));
-  color: #071019;
-  border-radius: 1rem;
-  border: none;
-  box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3);
-  transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-  box-shadow: 0 6px 20px rgba(0, 184, 148, 0.4);
-  transform: translateY(-2px);
-}
-
-/* Aplicação global do tema em todos os elementos */
-* {
-  box-sizing: border-box;
-}
-
-/* Garantir que o fundo seja aplicado em todas as páginas */
-#root, .App {
-  background: var(--agro-bg);
-  min-height: 100vh;
 }
 
 /* Custom Components */

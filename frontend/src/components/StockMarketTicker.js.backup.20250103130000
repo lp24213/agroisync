@@ -71,7 +71,7 @@ const StockMarketTicker = () => {
   );
 
   return (
-    <div className="h-16 bg-black/80 border-b border-white/10 backdrop-blur-sm" style={{ maxHeight: '72px' }}>
+    <div className="h-14 bg-black/80 border-b border-white/10 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-4 h-full">
         <div className="flex items-center justify-between h-full">
           {/* Índices */}

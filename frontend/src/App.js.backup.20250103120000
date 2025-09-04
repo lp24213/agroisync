@@ -115,10 +115,8 @@ function App() {
                     <Route path="/painel-usuario" element={<RouteGuard requireAuth={true}><PainelUsuario /></RouteGuard>} />
 
                     {/* Rotas admin */}
-                    <Route path="/admin" element={<Admin />} />
-                    <Route path="/admin/login" element={<AdminLogin />} />
+                    <Route path="/admin" element={<AdminLogin />} />
                     <Route path="/admin-login" element={<AdminLogin />} />
-                    <Route path="/admin/dashboard" element={<RouteGuard requireAuth={true} requireAdmin={true}><Admin /></RouteGuard>} />
                     <Route path="/admin-dashboard" element={<RouteGuard requireAuth={true} requireAdmin={true}><Admin /></RouteGuard>} />
                     <Route path="/admin-panel" element={<RouteGuard requireAuth={true} requireAdmin={true}><AdminSecurePanel /></RouteGuard>} />
                     

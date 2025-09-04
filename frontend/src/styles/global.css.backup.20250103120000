@@ -5,12 +5,12 @@
 
 /* ===== VARIÁVEIS CSS GLOBAIS - TEMA ESCURO AGRONEGÓCIO ===== */
 :root {
-  --agro-bg: #0f1720;
-  --agro-text: #E7EEF6;
+  --agro-bg: #0b0b0d;
+  --agro-text: #E8F1F7;
   --agro-emerald: #00B894;
   --agro-sky: #3EA8FF;
   --agro-amber: #f5a524;
-  --agro-card: rgba(255,255,255,0.03);
+  --agro-card: rgba(255,255,255,0.04);
 }
 
 /* ===== RESET E BASE ===== */

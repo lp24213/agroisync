@@ -65,8 +65,7 @@ const CartWidget = ({ isOpen, onClose, onCheckout }) => {
   const handlePurchaseIntent = () => {
     if (cart.length === 0) return;
     
-    // Transformar em modelo de intermediação - "Solicitar Cotação"
-    const quotationData = {
+    const purchaseData = {
       buyer: {
         id: 'buyer_id', // Será obtido do contexto de autenticação
         name: 'Comprador',
@@ -79,13 +78,11 @@ const CartWidget = ({ isOpen, onClose, onCheckout }) => {
       shipping: {
         ...shippingInfo,
         cost: calculateShipping()
-      },
-      type: 'quotation', // Indicar que é uma cotação
-      status: 'pending' // Status inicial da cotação
+      }
     };
 
     if (onCheckout) {
-      onCheckout(quotationData);
+      onCheckout(purchaseData);
     }
   };
 
@@ -131,10 +128,10 @@ const CartWidget = ({ isOpen, onClose, onCheckout }) => {
             <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-xl flex items-center justify-center text-white">
               <ShoppingCart className="w-5 h-5" />
             </div>
-            <div>
-              <h2 className="text-xl font-bold text-slate-800">Pedido de Cotação</h2>
-              <p className="text-sm text-slate-600">{getItemCount()} item(s) para cotação</p>
-            </div>
+                         <div>
+               <h2 className="text-xl font-bold text-slate-800">Carrinho de Interesse</h2>
+               <p className="text-sm text-slate-600">{getItemCount()} item(s) para negociação</p>
+             </div>
           </div>
           
           <button
@@ -150,8 +147,8 @@ const CartWidget = ({ isOpen, onClose, onCheckout }) => {
           {cart.length === 0 ? (
             <div className="text-center py-12">
               <Package className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-slate-600 mb-2">Nenhum produto selecionado</h3>
-              <p className="text-slate-500">Adicione produtos para solicitar cotação</p>
+              <h3 className="text-lg font-medium text-slate-600 mb-2">Carrinho vazio</h3>
+              <p className="text-slate-500">Adicione produtos para começar suas compras</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -294,15 +291,15 @@ const CartWidget = ({ isOpen, onClose, onCheckout }) => {
                 <span>Limpar</span>
               </button>
               
-              <button
-                onClick={handlePurchaseIntent}
-                disabled={!shippingInfo.destination}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-medium rounded-lg hover:from-emerald-600 hover:to-blue-600 transition-all duration-300 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <MessageSquare className="w-4 h-4" />
-                <span>Solicitar Cotação</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+                             <button
+                 onClick={handlePurchaseIntent}
+                 disabled={!shippingInfo.destination}
+                 className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-medium rounded-lg hover:from-emerald-600 hover:to-blue-600 transition-all duration-300 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+               >
+                 <MessageSquare className="w-4 h-4" />
+                 <span>Registrar Intenção</span>
+                 <ArrowRight className="w-4 h-4" />
+               </button>
             </div>
           </div>
         )}

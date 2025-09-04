@@ -83,7 +83,7 @@ const RouteGuard = ({ children, requireAuth = false, requireAdmin = false }) => 
   if (location.pathname.startsWith('/admin') && !checkIsAdmin()) {
     return (
       <Navigate 
-        to="/admin/login" 
+        to="/admin-login" 
         state={{ from: location }} 
         replace 
       />
@@ -94,7 +94,7 @@ const RouteGuard = ({ children, requireAuth = false, requireAdmin = false }) => 
   if (checkIsAdmin() && !location.pathname.startsWith('/admin') && requireAuth) {
     return (
       <Navigate 
-        to="/admin/dashboard" 
+        to="/admin-panel" 
         replace 
       />
     );

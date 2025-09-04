@@ -23,22 +23,7 @@ const Footer = () => {
             >
               <div className="flex items-center space-x-2 mb-4">
                 <div className="flex items-center justify-center shadow-lg w-10 h-10">
-                  <img 
-                    src="/logo-agroisync.svg" 
-                    alt="AGROISYNC" 
-                    width="140" 
-                    height="36" 
-                    className="w-8 h-8"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.style.display = 'none';
-                      // Fallback para texto se SVG não carregar
-                      const fallbackText = document.createElement('span');
-                      fallbackText.textContent = 'AGROISYNC';
-                      fallbackText.className = 'text-lg font-bold text-white';
-                      e.target.parentNode.appendChild(fallbackText);
-                    }}
-                  />
+                  <img src="/logo-agroisync.svg" alt="AGROISYNC" className="w-8 h-8" />
                 </div>
                 <span className="text-xl font-bold text-white">AGROISYNC</span>
               </div>

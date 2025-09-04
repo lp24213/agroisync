@@ -59,44 +59,18 @@ const Loja = () => {
   const [isValidatingDocument, setIsValidatingDocument] = useState(false);
   const [isValidatingLocation, setIsValidatingLocation] = useState(false);
 
-  // Todos os useEffect devem vir antes de qualquer return
   useEffect(() => {
-    setMounted(true);
-    return () => setMounted(false);
-  }, []);
-
-  useEffect(() => {
-    if (!mounted) return;
     console.log('Loja: useEffect executado, isAuthenticated:', isAuthenticated); // Debug
+    setMounted(true);
     loadProducts();
     if (isAuthenticated) {
       loadUserData();
     }
     // Inicializar serviços
     initializeServices();
-  }, [mounted, isAuthenticated]);
-
-  useEffect(() => {
-    console.log('Loja: applyFilters executado, products:', products.length); // Debug
-    applyFilters();
-  }, [products, searchTerm, selectedCategory, priceRange, sortBy]);
-
-  // Se não estiver montado, não renderizar nada
-  if (!mounted) return null;
-
-  // Guard para products - evitar render com dados inválidos
-  if (!products || !Array.isArray(products)) {
-    return (
-      <div className="min-h-screen bg-black text-white p-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="card p-8 text-center">
-            <h2 className="text-2xl font-bold mb-4">Carregando produtos...</h2>
-            <p className="text-gray-400">Aguarde enquanto carregamos os produtos disponíveis.</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+    
+    return () => setMounted(false);
+  }, [isAuthenticated]);
 
   const initializeServices = async () => {
     try {
@@ -108,6 +82,11 @@ const Loja = () => {
       console.error('Erro ao inicializar serviços:', error);
     }
   };
+
+  useEffect(() => {
+    console.log('Loja: applyFilters executado, products:', products.length); // Debug
+    applyFilters();
+  }, [products, searchTerm, selectedCategory, priceRange, sortBy]);
 
   const loadProducts = async () => {
     console.log('Loja: loadProducts iniciado'); // Debug
@@ -284,11 +263,10 @@ const Loja = () => {
   const addToCart = (product) => {
     try {
       if (!product || !product.id) {
-        console.error('Produto inválido para solicitar cotação:', product);
+        console.error('Produto inválido para adicionar ao carrinho:', product);
         return;
       }
       
-      // Transformar em modelo de intermediação - "Solicitar Cotação"
       const existingItem = cart.find(item => item.id === product.id);
       if (existingItem) {
         setCart(cart.map(item =>
@@ -299,11 +277,8 @@ const Loja = () => {
       } else {
         setCart([...cart, { ...product, quantity: 1 }]);
       }
-      
-      // Mostrar feedback de intermediação
-      alert('Produto adicionado ao pedido de cotação! O vendedor será notificado.');
     } catch (error) {
-      console.error('Erro ao solicitar cotação:', error);
+      console.error('Erro ao adicionar ao carrinho:', error);
     }
   };
 
