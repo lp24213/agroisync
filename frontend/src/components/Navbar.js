@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useFeatureFlags } from '../contexts/FeatureFlagsContext';
+// import { useFeatureFlags } from '../contexts/FeatureFlagsContext';
 import { 
   Menu, 
   X, 
@@ -19,7 +19,7 @@ const Navbar = () => {
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const { currentLanguage, changeLanguage, t, availableLanguages } = useLanguage();
-  const { isEnabled } = useFeatureFlags();
+  // const { isEnabled } = useFeatureFlags();
   const location = useLocation();
 
   const languageNames = {

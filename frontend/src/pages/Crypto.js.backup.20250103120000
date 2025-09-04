@@ -140,12 +140,12 @@ const CryptoPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white text-gray-900 pt-16">
+      <div className="min-h-screen bg-black text-white pt-16">
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="card p-8 text-center">
             <div className="animate-spin rounded-full border-2 border-emerald-500 border-t-transparent w-12 h-12 mx-auto mb-4"></div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Carregando dados de criptomoedas...</h3>
-            <p className="text-gray-600">Aguarde enquanto carregamos os dados em tempo real.</p>
+            <h3 className="text-xl font-bold text-white mb-2">Carregando dados de criptomoedas...</h3>
+            <p className="text-white/60">Aguarde enquanto carregamos os dados em tempo real.</p>
           </div>
         </div>
       </div>
@@ -153,11 +153,11 @@ const CryptoPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 pt-16">
+    <div className="min-h-screen bg-black text-white pt-16">
       {/* Header Section */}
       <section className="relative py-16 px-4 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/20 via-white to-sky-50/20">
-          <div className="absolute inset-0 bg-white opacity-95"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/20 via-black to-sky-900/20">
+          <div className="absolute inset-0 bg-black opacity-95"></div>
         </div>
         
         <div className="max-w-7xl mx-auto relative z-10">
@@ -170,7 +170,7 @@ const CryptoPage = () => {
             <h1 className="text-5xl md:text-6xl font-bold text-gradient-agro mb-6">
               Criptomoedas
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+            <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
               Acompanhe os preços em tempo real das principais criptomoedas do mercado
             </p>
             
@@ -178,19 +178,19 @@ const CryptoPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
               <div className="card p-6 text-center">
                 <div className="text-3xl font-bold text-gradient-emerald mb-2">$2.1T</div>
-                <div className="text-gray-600">Market Cap Total</div>
+                <div className="text-white/60">Market Cap Total</div>
               </div>
               <div className="card p-6 text-center">
                 <div className="text-3xl font-bold text-gradient-emerald mb-2">$85.2B</div>
-                <div className="text-gray-600">Volume 24h</div>
+                <div className="text-white/60">Volume 24h</div>
               </div>
               <div className="card p-6 text-center">
                 <div className="text-3xl font-bold text-gradient-emerald mb-2">2,295</div>
-                <div className="text-gray-600">Criptomoedas</div>
+                <div className="text-white/60">Criptomoedas</div>
               </div>
               <div className="card p-6 text-center">
                 <div className="text-3xl font-bold text-gradient-emerald mb-2">51.2%</div>
-                <div className="text-gray-600">Dominância BTC</div>
+                <div className="text-white/60">Dominância BTC</div>
               </div>
             </div>
           </motion.div>
@@ -204,7 +204,7 @@ const CryptoPage = () => {
           {/* Filters and Controls */}
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
             <div className="flex items-center space-x-4">
-              <h2 className="text-2xl font-bold text-gray-900">Top Criptomoedas</h2>
+              <h2 className="text-2xl font-bold text-white">Top Criptomoedas</h2>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

@@ -207,7 +207,7 @@ const AgroConecta = () => {
   ];
 
     return (
-    <div className="min-h-screen bg-white text-gray-900 pt-20">
+    <div className="min-h-screen bg-black text-white pt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="text-center mb-12">
@@ -222,7 +222,7 @@ const AgroConecta = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-xl text-gray-600 max-w-3xl mx-auto"
+            className="text-xl text-white/60 max-w-3xl mx-auto"
           >
             Conecte-se com os melhores motoristas e encontre as melhores cargas do agronegócio. 
             Transporte seguro, rápido e confiável para suas necessidades logísticas.
@@ -238,19 +238,19 @@ const AgroConecta = () => {
         >
           <div className="card p-6 text-center">
             <div className="text-3xl font-bold text-gradient-emerald mb-2">2.8K</div>
-            <div className="text-gray-600">Fretes Ativos</div>
+            <div className="text-white/60">Fretes Ativos</div>
                   </div>
           <div className="card p-6 text-center">
             <div className="text-3xl font-bold text-gradient-emerald mb-2">1.5K</div>
-            <div className="text-gray-600">Motoristas</div>
+            <div className="text-white/60">Motoristas</div>
                   </div>
           <div className="card p-6 text-center">
             <div className="text-3xl font-bold text-gradient-emerald mb-2">R$ 15M</div>
-            <div className="text-gray-600">Volume Mensal</div>
+            <div className="text-white/60">Volume Mensal</div>
                   </div>
           <div className="card p-6 text-center">
             <div className="text-3xl font-bold text-gradient-emerald mb-2">99.1%</div>
-            <div className="text-gray-600">Taxa de Entrega</div>
+            <div className="text-white/60">Taxa de Entrega</div>
               </div>
             </motion.div>
             
@@ -267,7 +267,7 @@ const AgroConecta = () => {
               className={`flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
                 activeTab === 'freights'
                   ? 'bg-emerald-500 text-black'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  : 'text-white/60 hover:text-white hover:bg-white/10'
               }`}
             >
               <Package className="w-5 h-5 inline mr-2" />
