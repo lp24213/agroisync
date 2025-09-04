@@ -6,7 +6,7 @@ import StockMarketTicker from './StockMarketTicker';
 
 const Layout = ({ children }) => {
   return (
-    <div className="min-h-screen" style={{ background: 'var(--agro-bg)', color: 'var(--agro-text)' }}>
+    <div className="min-h-screen bg-black text-white">
       {/* StockMarketTicker acima do menu - controlado por NEXT_PUBLIC_FEATURE_TICKER */}
       {process.env.NEXT_PUBLIC_FEATURE_TICKER !== 'false' && (
         <div className="fixed top-0 left-0 right-0 z-40">

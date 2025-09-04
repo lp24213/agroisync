@@ -57,7 +57,7 @@ const StockMarketTicker = () => {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.3, delay: index * 0.1 }}
-      className="flex items-center space-x-1 px-2 py-1 bg-black/20 rounded-md border border-white/10 min-w-[110px]"
+      className="flex items-center space-x-1 px-2 py-1 bg-emerald-500/10 rounded-md border border-emerald-500/20 min-w-[110px]"
     >
       <span className="text-xs font-medium text-white/90">{item.name}</span>
       <span className="text-xs font-bold text-white">{item.value}</span>
@@ -71,7 +71,7 @@ const StockMarketTicker = () => {
   );
 
   return (
-    <div className="h-16 bg-black/80 border-b border-white/10 backdrop-blur-sm overflow-hidden" style={{ maxHeight: '72px' }}>
+    <div className="h-16 bg-black/90 border-b border-emerald-500/20 backdrop-blur-sm overflow-hidden" style={{ maxHeight: '72px' }}>
       <div className="max-w-7xl mx-auto px-4 h-full">
         <div className="flex items-center justify-between h-full">
           {/* Índices */}

@@ -1,55 +1,52 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
-@import './premium.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Custom CSS Variables */
+/* AGROISYNC GLOBAL VARIABLES - DESIGN MODERNO INSPIRADO EM TESLA/SOLANA */
 :root {
-  /* AGROSYNC GLOBAL VARIABLES - CORRIGIDO */
-  --agro-bg: #0f1720;
-  --agro-text: #E7EEF6;
-  --agro-emerald: #00B894;
-  --agro-sky: #3EA8FF;
-  --agro-amber: #f5a524;
-  --agro-card: rgba(255,255,255,0.03);
+  /* Cores principais - Design moderno e profissional */
+  --agro-bg: #000000;
+  --agro-bg-secondary: #0a0a0a;
+  --agro-bg-card: #111111;
+  --agro-bg-glass: rgba(17, 17, 17, 0.8);
   
-  /* Mantendo compatibilidade com variáveis existentes */
-  --agro-bg-primary: #0f1720;
-  --agro-bg-secondary: #1a1a1a;
-  --agro-bg-card: #262626;
-  --agro-bg-glass: rgba(26, 26, 26, 0.8);
-  
-  --agro-text-primary: #E7EEF6;
+  /* Texto - Branco puro para máximo contraste */
+  --agro-text: #ffffff;
+  --agro-text-primary: #ffffff;
   --agro-text-secondary: #e5e7eb;
   --agro-text-tertiary: #9ca3af;
   --agro-text-muted: #6b7280;
   
-  --agro-accent-emerald: #00B894;
-  --agro-accent-emerald-light: #34d399;
-  --agro-accent-emerald-dark: #059669;
-  --agro-accent-sky: #3EA8FF;
-  --agro-accent-sky-light: #38bdf8;
-  --agro-accent-amber: #f5a524;
-  --agro-accent-amber-light: #fbbf24;
+  /* Acentos modernos - Verde esmeralda vibrante */
+  --agro-emerald: #00ff88;
+  --agro-emerald-light: #00ffaa;
+  --agro-emerald-dark: #00cc6a;
+  --agro-accent-emerald: #00ff88;
+  --agro-accent-emerald-light: #00ffaa;
+  --agro-accent-emerald-dark: #00cc6a;
   
+  /* Azul ciano moderno */
+  --agro-sky: #00d4ff;
+  --agro-accent-sky: #00d4ff;
+  --agro-accent-sky-light: #33ddff;
+  
+  /* Dourado vibrante */
+  --agro-amber: #ffd700;
+  --agro-accent-amber: #ffd700;
+  --agro-accent-amber-light: #ffe033;
+  
+  /* Bordas sutis */
   --agro-border-primary: rgba(255, 255, 255, 0.1);
   --agro-border-secondary: rgba(255, 255, 255, 0.05);
-  --agro-border-accent: rgba(0, 184, 148, 0.2);
+  --agro-border-accent: rgba(0, 255, 136, 0.3);
   
-  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  --shadow-elevated: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-card-dark: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
-  --shadow-elevated-dark: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
-}
-
-/* Dark mode overrides */
-.dark {
-  --shadow-card: var(--shadow-card-dark);
-  --shadow-elevated: var(--shadow-elevated-dark);
+  /* Sombras modernas */
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.3);
+  --shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 20px rgba(0, 255, 136, 0.3);
 }
 
 /* APLICAÇÃO GLOBAL DO TEMA AGROISYNC */
@@ -57,26 +54,9 @@ body {
   background: var(--agro-bg);
   color: var(--agro-text);
   font-family: 'Inter', sans-serif;
-}
-
-/* Remoção de neons indiscriminados - só em micro-accent */
-.btn-primary {
-  background: linear-gradient(90deg, var(--agro-emerald), var(--agro-sky));
-  color: #071019;
-  border-radius: 1rem;
-  border: none;
-  box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3);
-  transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-  box-shadow: 0 6px 20px rgba(0, 184, 148, 0.4);
-  transform: translateY(-2px);
-}
-
-/* Aplicação global do tema em todos os elementos */
-* {
-  box-sizing: border-box;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Garantir que o fundo seja aplicado em todas as páginas */
@@ -87,383 +67,176 @@ body {
 
 /* Custom Components */
 @layer components {
-  .shadow-card {
-    box-shadow: var(--shadow-card);
-  }
-  
-  .shadow-elevated {
-    box-shadow: var(--shadow-elevated);
-  }
-
-  /* NOVAS CLASSES PREMIUM AGROSYNC */
-  
-  /* Header Premium */
-  .header-premium {
-    @apply relative overflow-hidden;
-  }
-  
-  /* Section Premium */
-  .section-premium {
-    @apply py-20 px-4 relative overflow-hidden;
-  }
-  
-  .section-premium-compact {
-    @apply py-16 px-4 relative overflow-hidden;
-  }
-  
-  /* Card Premium */
-  .card-premium {
-    @apply bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg border border-slate-200/50 hover:shadow-xl transition-all duration-300 relative overflow-hidden;
-  }
-  
-  /* Hover Lift Effect */
-  .hover-lift {
-    @apply transition-all duration-300 hover:shadow-2xl hover:-translate-y-2;
-  }
-  
-  /* Title Premium */
-  .title-premium {
-    @apply bg-gradient-to-r from-slate-800 via-emerald-700 to-yellow-600 bg-clip-text text-transparent;
-  }
-  
-  .title-premium-small {
-    @apply bg-gradient-to-r from-slate-700 via-emerald-600 to-yellow-500 bg-clip-text text-transparent;
-  }
-  
-  /* Text Gradient Premium */
-  .text-gradient-premium {
-    @apply bg-gradient-to-r from-slate-700 via-emerald-600 to-yellow-500 bg-clip-text text-transparent;
-  }
-  
-  /* Button Accent Green */
-  .btn-accent-green {
-    @apply bg-gradient-to-r from-emerald-500 via-emerald-600 to-emerald-700 text-white font-bold rounded-xl hover:from-emerald-600 hover:via-emerald-700 hover:to-emerald-800 transition-all duration-300 shadow-lg hover:shadow-xl relative overflow-hidden;
-  }
-
-  /* TEMA AGRONEGÓCIO PREMIUM - CLASSES UTILITÁRIAS */
-  
-  /* Cards com tema agro */
-  .card {
-    @apply bg-agro-bg-card rounded-2xl shadow-xl border border-agro-border-primary backdrop-blur-sm;
-  }
-  
-  /* Botões primários */
+  /* Botões modernos inspirados em Tesla/Solana */
   .btn-primary {
-    @apply bg-gradient-to-r from-agro-accent-emerald to-agro-accent-emerald-dark text-white font-semibold rounded-2xl px-6 py-3 hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-agro-accent-emerald focus:ring-offset-2 focus:ring-offset-agro-bg-primary;
+    @apply px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 text-black font-bold rounded-xl hover:from-emerald-400 hover:to-emerald-500 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105;
+    box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
   }
   
-  /* Botões secundários */
+  .btn-primary:hover {
+    box-shadow: 0 6px 25px rgba(0, 255, 136, 0.5);
+  }
+  
   .btn-secondary {
-    @apply bg-agro-bg-secondary text-agro-text-primary border border-agro-border-primary font-semibold rounded-2xl px-6 py-3 hover:bg-agro-bg-card transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-agro-accent-sky focus:ring-offset-2 focus:ring-offset-agro-bg-primary;
+    @apply px-8 py-4 bg-transparent border-2 border-emerald-500 text-emerald-500 font-bold rounded-xl hover:bg-emerald-500 hover:text-black transition-all duration-300;
   }
   
-  /* Botões de acento */
-  .btn-accent-sky {
-    @apply bg-gradient-to-r from-agro-accent-sky to-agro-accent-sky-light text-white font-semibold rounded-2xl px-6 py-3 hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-agro-accent-sky focus:ring-offset-2 focus:ring-offset-agro-bg-primary;
+  /* Cards modernos com glass effect */
+  .card {
+    @apply bg-agro-bg-card backdrop-blur-sm border border-agro-border-primary rounded-2xl shadow-card p-6;
   }
   
-  .btn-accent-amber {
-    @apply bg-gradient-to-r from-agro-accent-amber to-agro-accent-amber-light text-white font-semibold rounded-2xl px-6 py-3 hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-agro-accent-amber focus:ring-offset-2 focus:ring-offset-agro-bg-primary;
+  .card-hover {
+    @apply bg-agro-bg-card backdrop-blur-sm border border-agro-border-primary rounded-2xl shadow-card p-6 hover:shadow-elevated hover:border-agro-border-accent transition-all duration-300 transform hover:scale-105;
   }
   
-  /* Efeito glass */
+  /* Efeito glass moderno */
   .glass {
-    @apply bg-agro-bg-glass backdrop-blur-md border border-agro-border-primary;
+    @apply bg-agro-bg-glass backdrop-blur-md border border-agro-border-primary rounded-2xl;
   }
   
-  /* Gradientes de texto */
+  /* Gradientes de texto modernos */
   .text-gradient-agro {
-    @apply bg-gradient-to-r from-agro-accent-emerald via-agro-accent-sky to-agro-accent-amber bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-emerald-400 via-sky-400 to-amber-400 bg-clip-text text-transparent;
   }
   
-  /* Sombras premium */
-  .shadow-agro {
-    @apply shadow-xl shadow-agro-accent-emerald/10;
+  .text-gradient-emerald {
+    @apply bg-gradient-to-r from-emerald-400 to-emerald-600 bg-clip-text text-transparent;
   }
   
   /* Animações suaves */
   .transition-agro {
-    @apply transition-all duration-300 ease-in-out;
+    @apply transition-all duration-300 ease-out;
   }
   
-  /* Estados de hover */
+  /* Estados de hover modernos */
   .hover-agro {
-    @apply hover:shadow-agro hover:scale-105 transition-agro;
+    @apply hover:shadow-glow hover:scale-105 transition-agro;
   }
   
-  /* Badge Accent Green */
-  .badge-accent-green {
-    @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 border border-emerald-200;
-  }
-  
-  /* Icon Premium */
-  .icon-premium {
-    @apply transition-all duration-300 group-hover:scale-110;
-  }
-
-  /* AGROSYNC GLOBAL UTILITIES */
-  
-  /* Card Global */
-  .card {
-    @apply bg-agro-bg-card backdrop-blur-sm border border-agro-border-primary rounded-2xl shadow-xl;
-  }
-  
-  /* Glass Effect */
-  .glass {
-    @apply bg-agro-bg-glass backdrop-blur-md border border-agro-border-secondary;
-  }
-  
-  /* Button Primary */
-  .btn-primary {
-    @apply px-6 py-3 bg-agro-accent-emerald text-agro-text-primary font-semibold rounded-xl hover:bg-agro-accent-emerald-dark transition-all duration-300 shadow-lg hover:shadow-xl;
-  }
-  
-  /* Button Secondary */
-  .btn-secondary {
-    @apply px-6 py-3 bg-transparent border border-agro-border-primary text-agro-text-secondary font-medium rounded-xl hover:bg-agro-bg-card transition-all duration-300;
-  }
-  
-  /* Form Field */
-  .form-field {
-    @apply w-full px-4 py-3 bg-agro-bg-card border border-agro-border-primary rounded-xl text-agro-text-primary placeholder-agro-text-tertiary focus:border-agro-accent-emerald focus:ring-2 focus:ring-agro-accent-emerald/20 transition-all duration-300;
-  }
-  
-  /* Input Premium */
+  /* Inputs modernos */
   .input-premium {
-    @apply w-full px-4 py-3 bg-white/95 backdrop-blur-sm border border-slate-200/50 rounded-xl text-slate-800 placeholder-slate-500 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300;
+    @apply w-full px-6 py-4 bg-agro-bg-card border border-agro-border-primary rounded-xl text-agro-text-primary placeholder-agro-text-tertiary focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300;
   }
-
-  .btn-danger {
-    @apply px-6 py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors duration-200;
+  
+  /* Badges modernos */
+  .badge-emerald {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-emerald-500/20 text-emerald-400 border border-emerald-500/30;
   }
-
-  /* Card Styles */
-  .card {
-    @apply bg-white rounded-2xl shadow-card border border-slate-200 p-6;
+  
+  .badge-sky {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-sky-500/20 text-sky-400 border border-sky-500/30;
   }
-
-  .card-hover {
-    @apply bg-white rounded-2xl shadow-card border border-slate-200 p-6 hover:shadow-elevated transition-shadow duration-300;
+  
+  .badge-amber {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-500/20 text-amber-400 border border-amber-500/30;
   }
-
-  /* Input Styles */
-  .input-primary {
-    @apply w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-colors duration-200;
-  }
-
-  .input-error {
-    @apply w-full px-4 py-3 border border-red-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors duration-200;
-  }
-
-  /* Badge Styles */
-  .badge {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
-  }
-
-  .badge-primary {
-    @apply bg-slate-100 text-slate-800;
-  }
-
-  .badge-success {
-    @apply bg-emerald-100 text-emerald-800;
-  }
-
-  .badge-warning {
-    @apply bg-amber-100 text-amber-800;
-  }
-
-  .badge-danger {
-    @apply bg-red-100 text-red-800;
-  }
-
-  /* Table Styles */
-  .table-container {
-    @apply bg-white rounded-2xl shadow-card overflow-hidden border border-slate-200;
-  }
-
-  .table-header {
-    @apply bg-slate-50 px-6 py-4 text-left text-sm font-semibold text-slate-800;
-  }
-
-  .table-cell {
-    @apply px-6 py-4 text-sm text-slate-600;
-  }
-
-  .table-row {
-    @apply hover:bg-slate-50 transition-colors duration-200;
-  }
-
-  /* Form Styles */
-  .form-group {
-    @apply mb-6;
-  }
-
-  .form-label {
-    @apply block text-sm font-medium text-slate-700 mb-2;
-  }
-
-  .form-error {
-    @apply mt-2 text-sm text-red-600;
-  }
-
-  .form-help {
-    @apply mt-2 text-sm text-slate-500;
-  }
-
-  /* Navigation Styles */
+  
+  /* Navegação moderna */
   .nav-link {
-    @apply flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200;
+    @apply px-4 py-2 text-agro-text-secondary hover:text-agro-text-primary transition-all duration-300 relative;
   }
-
-  .nav-link-active {
-    @apply text-slate-800 bg-slate-100;
+  
+  .nav-link::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-emerald-500 transition-all duration-300;
   }
-
-  .nav-link-inactive {
-    @apply text-slate-600 hover:text-slate-800 hover:bg-slate-50;
+  
+  .nav-link:hover::after {
+    @apply w-full;
   }
-
-  /* Modal Styles */
-  .modal-overlay {
-    @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
-  }
-
-  .modal-content {
-    @apply bg-white rounded-2xl shadow-elevated max-w-md w-full mx-4 p-6;
-  }
-
-  /* Loading States */
+  
+  /* Loading states modernos */
   .loading-spinner {
-    @apply animate-spin rounded-full border-b-2 border-slate-600;
+    @apply animate-spin rounded-full border-2 border-emerald-500 border-t-transparent;
   }
-
-  .loading-text {
-    @apply text-slate-600 text-center py-8;
-  }
-
-  /* Status Indicators */
-  .status-indicator {
-    @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium;
-  }
-
+  
+  /* Status indicators */
   .status-online {
-    @apply bg-emerald-100 text-emerald-800;
+    @apply bg-emerald-500/20 text-emerald-400 border border-emerald-500/30;
   }
-
+  
   .status-offline {
-    @apply bg-slate-100 text-slate-800;
+    @apply bg-red-500/20 text-red-400 border border-red-500/30;
   }
-
+  
   .status-pending {
-    @apply bg-amber-100 text-amber-800;
-  }
-
-  .status-error {
-    @apply bg-red-100 text-red-800;
+    @apply bg-amber-500/20 text-amber-400 border border-amber-500/30;
   }
 }
 
-/* Utility Classes */
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+/* Animações personalizadas */
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
   }
-
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
+  50% {
+    box-shadow: 0 0 30px rgba(0, 255, 136, 0.6);
   }
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
   }
-  to {
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
     opacity: 1;
-    transform: translateY(0);
+  }
+  50% {
+    opacity: 0.7;
   }
 }
 
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
 }
 
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-out;
-}
-
-.animate-slide-in {
-  animation: slideIn 0.3s ease-out;
-}
-
-.animate-scale-in {
-  animation: scaleIn 0.3s ease-out;
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
 }
 
 /* Responsive Design */
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+  .btn-primary, .btn-secondary {
+    @apply px-6 py-3 text-sm;
+  }
+  
   .card {
     @apply p-4;
   }
-  
-  .modal-content {
-    @apply mx-2 p-4;
-  }
 }
 
-/* Print Styles */
-@media print {
-  .no-print {
-    display: none !important;
-  }
-  
-  .print-only {
-    display: block !important;
-  }
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+  width: 8px;
 }
 
-/* Focus Styles for Accessibility */
+::-webkit-scrollbar-track {
+  background: var(--agro-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--agro-emerald);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--agro-emerald-light);
+}
+
+/* Focus styles para acessibilidade */
 *:focus {
-  outline: 2px solid #475569;
+  outline: 2px solid var(--agro-emerald);
   outline-offset: 2px;
 }
 

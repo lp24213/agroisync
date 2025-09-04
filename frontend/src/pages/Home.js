@@ -475,7 +475,7 @@ const Home = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-agro-bg-primary text-agro-text-primary pt-16">
+    <div className="min-h-screen bg-black text-white pt-16">
       {/* Clima por IP no Topo */}
       {isEnabled('FEATURE_HOME_WEATHER_IP') && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
@@ -492,18 +492,18 @@ const Home = () => {
       )}
       
       {/* Hero Section - DESIGN PREMIUM AGROISYNC MAIORAL */}
-      <section className="relative pt-24 pb-24 px-4 overflow-hidden header-premium">
+      <section className="relative pt-24 pb-24 px-4 overflow-hidden">
         {/* Background Premium */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-agro-bg-secondary via-agro-bg-card to-agro-bg-primary">
-            <div className="absolute inset-0 bg-agro-bg-primary opacity-95"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/20 via-black to-sky-900/20">
+            <div className="absolute inset-0 bg-black opacity-95"></div>
           </div>
           {/* Linha gradiente sutil no topo */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-agro-accent-emerald via-agro-accent-amber to-agro-accent-sky opacity-60"></div>
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-amber-500 to-sky-500 opacity-60"></div>
           {/* Elementos decorativos premium */}
-          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-agro-accent-emerald to-agro-accent-sky rounded-full opacity-10 blur-xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-agro-accent-amber to-agro-accent-sky rounded-full opacity-10 blur-xl animate-pulse"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-br from-agro-accent-emerald/5 via-agro-accent-amber/5 to-agro-accent-sky/5 rounded-full blur-3xl"></div>
+          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-emerald-500 to-sky-500 rounded-full opacity-10 blur-xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-amber-500 to-emerald-500 rounded-full opacity-10 blur-xl animate-pulse"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-br from-emerald-500/5 via-amber-500/5 to-sky-500/5 rounded-full blur-3xl"></div>
         </div>
         
         <div className="max-w-6xl mx-auto text-center relative z-10">
@@ -512,7 +512,7 @@ const Home = () => {
             initial={{ opacity: 0, y: 30, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 1, ease: "easeOut" }}
-            className="text-5xl md:text-7xl font-bold mb-6 title-premium"
+            className="text-5xl md:text-7xl font-bold mb-6 text-gradient-agro"
           >
             {t('home.hero.title')}
           </motion.h1>
@@ -522,7 +522,7 @@ const Home = () => {
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-            className="text-xl md:text-2xl text-agro-text-secondary max-w-4xl mx-auto mb-8"
+            className="text-xl md:text-2xl text-white/80 max-w-4xl mx-auto mb-8"
           >
             {t('home.hero.subtitle')}
           </motion.p>
@@ -532,7 +532,7 @@ const Home = () => {
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
-            className="text-lg max-w-3xl mx-auto text-agro-text-tertiary mb-10"
+            className="text-lg max-w-3xl mx-auto text-white/60 mb-10"
           >
             {t('home.hero.description')}
           </motion.p>
@@ -550,8 +550,6 @@ const Home = () => {
               whileTap={{ scale: 0.95 }}
               className="btn-primary px-10 py-5 text-lg relative overflow-hidden group"
             >
-              {/* Efeito de glow no hover */}
-              <div className="absolute inset-0 bg-gradient-to-r from-agro-accent-emerald-light via-agro-accent-amber-light to-agro-accent-sky-light opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <span className="relative z-10">{t('home.hero.cta.primary')}</span>
             </motion.button>
             <motion.button
@@ -560,8 +558,6 @@ const Home = () => {
               whileTap={{ scale: 0.95 }}
               className="btn-secondary px-10 py-5 text-lg relative overflow-hidden group"
             >
-              {/* Efeito de glow no hover */}
-              <div className="absolute inset-0 bg-agro-accent-emerald/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
               <span className="relative z-10">{t('home.hero.cta.secondary')}</span>
             </motion.button>
           </motion.div>
@@ -569,9 +565,9 @@ const Home = () => {
       </section>
 
       {/* Features Section - DESIGN PREMIUM */}
-      <section className="section-premium header-premium relative overflow-hidden">
+      <section className="py-20 px-4 relative overflow-hidden">
         {/* Linha gradiente sutil */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-agro-green-500 via-agro-yellow-500 to-web3-neon-blue opacity-40"></div>
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-amber-500 to-sky-500 opacity-40"></div>
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -579,10 +575,10 @@ const Home = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-20"
           >
-            <h2 className="text-4xl font-bold title-premium mb-6">
+            <h2 className="text-4xl font-bold text-gradient-agro mb-6">
               {t('home.features.title')}
             </h2>
-            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+            <p className="text-xl text-white/60 max-w-3xl mx-auto">
               {t('home.features.subtitle')}
             </p>
           </motion.div>
@@ -595,15 +591,15 @@ const Home = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 whileHover={{ y: -10, scale: 1.02 }}
-                className="text-center group card-premium p-6 hover-lift"
+                className="text-center group card p-6 hover-agro"
               >
                 <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-r ${feature.color} flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300 shadow-lg group-hover:shadow-xl`}>
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-bold text-slate-800 mb-3">
+                <h3 className="text-xl font-bold text-white mb-3">
                   {feature.title}
                 </h3>
-                <p className="text-slate-600">
+                <p className="text-white/60">
                   {feature.description}
                 </p>
               </motion.div>
@@ -613,9 +609,9 @@ const Home = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="section-premium-compact bg-gradient-to-r from-slate-50 to-slate-100 relative overflow-hidden">
+      <section className="py-16 px-4 bg-gradient-to-r from-emerald-900/20 via-black to-sky-900/20 relative overflow-hidden">
         {/* Linha gradiente sutil */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-agro-green-500 via-agro-yellow-500 to-web3-neon-blue opacity-40"></div>
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-amber-500 to-sky-500 opacity-40"></div>
         <div className="max-w-6xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -623,10 +619,10 @@ const Home = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-12"
           >
-            <h2 className="text-4xl font-bold title-premium mb-4">
+            <h2 className="text-4xl font-bold text-gradient-agro mb-4">
               Estatísticas da Plataforma
             </h2>
-            <p className="text-xl text-slate-600">
+            <p className="text-xl text-white/60">
               Números que demonstram o crescimento e sucesso do Agroisync
             </p>
           </motion.div>
@@ -639,15 +635,15 @@ const Home = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 whileHover={{ scale: 1.05, y: -5 }}
-                className="text-center card-premium p-6 hover-lift"
+                className="text-center card p-6 hover-agro"
               >
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-slate-100 to-slate-200 shadow-lg flex items-center justify-center text-slate-600 group-hover:scale-110 transition-transform duration-300 icon-premium">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-emerald-500/20 to-sky-500/20 shadow-lg flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform duration-300">
                   {stat.icon}
                 </div>
-                <div className="text-3xl font-bold text-gradient-premium mb-2">
+                <div className="text-3xl font-bold text-gradient-emerald mb-2">
                   {stat.value}
                 </div>
-                <div className="text-slate-600">
+                <div className="text-white/60">
                   {stat.label}
                 </div>
               </motion.div>

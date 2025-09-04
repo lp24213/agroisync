@@ -36,9 +36,7 @@ const Admin = () => {
 
   // CAMADA 3: Lista de emails autorizados como admin
   const authorizedEmails = [
-    'admin@email.com',
-    'admin@agroisync.com',
-    'suporte@agroisync.com'
+    'luispaulodeoliveira@agrotm.com.br'
   ];
 
   // CAMADA 3: Verificar se o usuário é admin
@@ -294,7 +292,7 @@ const Admin = () => {
                     value={loginEmail}
                     onChange={(e) => setLoginEmail(e.target.value)}
                     className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
-                    placeholder="admin@agroisync.com"
+                    placeholder="luispaulodeoliveira@agrotm.com.br"
                     required
                   />
                 </div>
