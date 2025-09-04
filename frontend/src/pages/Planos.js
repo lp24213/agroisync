@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { 
   Check, Star, ShoppingCart, Truck, Package, Leaf, Wrench, User, 
   Circle, Settings, BarChart3, Headphones, Zap, Shield, Globe, Coins, Users, Crown,
-  CreditCard, ArrowRight, CheckCircle, AlertCircle, TrendingUp, Award, Lock, Unlock, Building, Rocket
+  CreditCard, ArrowRight, CheckCircle, AlertCircle, TrendingUp, Award, Lock, Unlock, Building, Rocket, Wallet
 } from 'lucide-react';
 import StockMarketTicker from '../components/StockMarketTicker';
 
@@ -22,10 +22,33 @@ const Planos = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('stripe');
+  const [metamaskConnected, setMetamaskConnected] = useState(false);
+  const [walletAddress, setWalletAddress] = useState('');
 
   useEffect(() => {
     document.title = 'Planos - Agroisync';
   }, []);
+
+  const connectMetamask = async () => {
+    setLoading(true);
+    try {
+      if (typeof window.ethereum !== 'undefined') {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        if (accounts.length > 0) {
+          setWalletAddress(accounts[0]);
+          setMetamaskConnected(true);
+          setPaymentMethod('metamask');
+        }
+      } else {
+        setError('MetaMask não está instalado');
+      }
+    } catch (error) {
+      setError('Erro ao conectar MetaMask');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handlePlanSelection = (plan) => {
     setSelectedPlan(plan);

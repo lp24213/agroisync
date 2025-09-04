@@ -57,9 +57,9 @@ const Privacidade = () => {
                     <li>• CPF/CNPJ</li>
                     <li>• Endereço</li>
                     <li>• Informações de pagamento</li>
-                  </ul>
-                </div>
-
+                          </ul>
+                        </div>
+                        
                 <div className="p-4 bg-sky-500/10 rounded-lg border border-sky-500/20">
                   <h3 className="font-bold text-sky-400 mb-2 flex items-center">
                     <Eye className="w-5 h-5 mr-2" />
@@ -72,8 +72,8 @@ const Privacidade = () => {
                     <li>• Preferências de busca</li>
                     <li>• Interações com chatbot</li>
                   </ul>
-                </div>
-              </div>
+                        </div>
+                      </div>
             </section>
 
             <section>
@@ -141,18 +141,18 @@ const Privacidade = () => {
                   <Lock className="w-8 h-8 text-emerald-400 mx-auto mb-2" />
                   <h3 className="font-bold text-emerald-400 mb-1">Criptografia</h3>
                   <p className="text-white/70 text-sm">Dados criptografados em trânsito e repouso</p>
-                </div>
+            </div>
                 <div className="p-4 bg-sky-500/10 rounded-lg border border-sky-500/20 text-center">
                   <Shield className="w-8 h-8 text-sky-400 mx-auto mb-2" />
                   <h3 className="font-bold text-sky-400 mb-1">Firewall</h3>
                   <p className="text-white/70 text-sm">Proteção contra ataques e intrusões</p>
-                </div>
+            </div>
                 <div className="p-4 bg-amber-500/10 rounded-lg border border-amber-500/20 text-center">
                   <CheckCircle className="w-8 h-8 text-amber-400 mx-auto mb-2" />
                   <h3 className="font-bold text-amber-400 mb-1">Backup</h3>
                   <p className="text-white/70 text-sm">Backup seguro e redundante</p>
-                </div>
               </div>
+            </div>
             </section>
 
             <section>
@@ -174,7 +174,7 @@ const Privacidade = () => {
                     <CheckCircle className="w-5 h-5 text-emerald-400 mr-3 mt-0.5 flex-shrink-0" />
                     Solicitar exclusão de dados
                   </li>
-                </ul>
+                  </ul>
                 <ul className="space-y-2 text-white/80">
                   <li className="flex items-start">
                     <CheckCircle className="w-5 h-5 text-emerald-400 mr-3 mt-0.5 flex-shrink-0" />
@@ -188,8 +188,8 @@ const Privacidade = () => {
                     <CheckCircle className="w-5 h-5 text-emerald-400 mr-3 mt-0.5 flex-shrink-0" />
                     Oposição ao tratamento
                   </li>
-                </ul>
-              </div>
+                  </ul>
+                </div>
             </section>
 
             <section>
@@ -254,11 +254,11 @@ const Privacidade = () => {
                 <p className="text-emerald-400 font-medium">Telefone: (66) 99236-2830</p>
                 <p className="text-emerald-400 font-medium">Endereço: Sinop - MT, Brasil</p>
                 <p className="text-emerald-400 font-medium">DPO: dpo@agroisync.com</p>
-              </div>
+            </div>
             </section>
           </motion.div>
         </div>
-      </div>
+    </div>
     </Layout>
   );
 };

@@ -152,11 +152,11 @@ const Termos = () => {
                 <p className="text-emerald-400 font-medium">Email: contato@agroisync.com</p>
                 <p className="text-emerald-400 font-medium">Telefone: (66) 99236-2830</p>
                 <p className="text-emerald-400 font-medium">Endereço: Sinop - MT, Brasil</p>
-              </div>
+            </div>
             </section>
           </motion.div>
         </div>
-      </div>
+    </div>
     </Layout>
   );
 };

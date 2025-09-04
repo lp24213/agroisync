@@ -22,8 +22,8 @@ const AgroConecta = () => {
 
   // Mock data para demonstração
   const freights = [
-    {
-      id: 1,
+        {
+          id: 1,
       title: 'Transporte de Soja - MT para SP',
       origin: 'Sinop, MT',
       destination: 'Santos, SP',
@@ -37,7 +37,7 @@ const AgroConecta = () => {
       advertiser: {
         name: 'Cooperativa Agro Norte',
         rating: 4.8,
-        verified: true,
+          verified: true,
         phone: '(66) 99236-2830',
         email: 'contato@agronorte.com.br'
       },
@@ -45,9 +45,9 @@ const AgroConecta = () => {
       requirements: ['Documentação completa', 'Seguro de carga', 'Rastreamento GPS'],
       status: 'active',
       createdAt: '2 horas atrás'
-    },
-    {
-      id: 2,
+        },
+        {
+          id: 2,
       title: 'Fertilizantes - PR para GO',
       origin: 'Londrina, PR',
       destination: 'Goiânia, GO',
@@ -61,7 +61,7 @@ const AgroConecta = () => {
       advertiser: {
         name: 'Agro Fertilizantes LTDA',
         rating: 4.9,
-        verified: true,
+          verified: true,
         phone: '(66) 99236-2830',
         email: 'vendas@agrofert.com.br'
       },
@@ -69,9 +69,9 @@ const AgroConecta = () => {
       requirements: ['Certificado de transporte', 'Cobertura contra umidade'],
       status: 'active',
       createdAt: '1 hora atrás'
-    },
-    {
-      id: 3,
+        },
+        {
+          id: 3,
       title: 'Milho - RS para SC',
       origin: 'Passo Fundo, RS',
       destination: 'Blumenau, SC',
@@ -102,7 +102,7 @@ const AgroConecta = () => {
       name: 'João Silva',
       rating: 4.9,
       reviews: 156,
-      verified: true,
+          verified: true,
       experience: '8 anos',
       vehicle: 'Carreta 3/4',
       capacity: '25 toneladas',
@@ -128,7 +128,7 @@ const AgroConecta = () => {
       name: 'Maria Santos',
       rating: 4.8,
       reviews: 89,
-      verified: true,
+          verified: true,
       experience: '5 anos',
       vehicle: 'Truck',
       capacity: '15 toneladas',
@@ -162,7 +162,7 @@ const AgroConecta = () => {
       lastActive: '30 min atrás',
       specialties: ['Grãos', 'Fertilizantes', 'Máquinas'],
       description: 'Motorista experiente com foco em segurança e pontualidade',
-      contact: {
+          contact: {
         phone: '(66) 99236-2830',
         email: 'carlos.oliveira@email.com'
       },
@@ -206,17 +206,17 @@ const AgroConecta = () => {
     'Truck 3/4'
   ];
 
-  return (
+    return (
     <div className="min-h-screen bg-black text-white pt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="text-center mb-12">
           <motion.h1 
             initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
+              animate={{ opacity: 1, y: 0 }}
             className="text-5xl font-bold text-gradient-agro mb-6"
-          >
-            AgroConecta
+            >
+                AgroConecta
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -227,10 +227,10 @@ const AgroConecta = () => {
             Conecte-se com os melhores motoristas e encontre as melhores cargas do agronegócio. 
             Transporte seguro, rápido e confiável para suas necessidades logísticas.
           </motion.p>
-        </div>
-
+                  </div>
+                
         {/* Quick Stats */}
-        <motion.div 
+                <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
@@ -239,25 +239,25 @@ const AgroConecta = () => {
           <div className="card p-6 text-center">
             <div className="text-3xl font-bold text-gradient-emerald mb-2">2.8K</div>
             <div className="text-white/60">Fretes Ativos</div>
-          </div>
+                  </div>
           <div className="card p-6 text-center">
             <div className="text-3xl font-bold text-gradient-emerald mb-2">1.5K</div>
             <div className="text-white/60">Motoristas</div>
-          </div>
+                  </div>
           <div className="card p-6 text-center">
             <div className="text-3xl font-bold text-gradient-emerald mb-2">R$ 15M</div>
             <div className="text-white/60">Volume Mensal</div>
-          </div>
+                  </div>
           <div className="card p-6 text-center">
             <div className="text-3xl font-bold text-gradient-emerald mb-2">99.1%</div>
             <div className="text-white/60">Taxa de Entrega</div>
-          </div>
-        </motion.div>
-
+              </div>
+            </motion.div>
+            
         {/* Tabs */}
-        <motion.div 
+            <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+              animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
           className="card p-2 mb-8"
         >
@@ -296,12 +296,12 @@ const AgroConecta = () => {
               Meus Fretes
             </button>
           </div>
-        </motion.div>
-
+              </motion.div>
+              
         {/* Content */}
         <AnimatePresence mode="wait">
           {activeTab === 'freights' && (
-            <motion.div
+              <motion.div
               key="freights"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -321,7 +321,7 @@ const AgroConecta = () => {
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="w-full pl-10 pr-4 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white placeholder-white/50 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
                     />
-                  </div>
+                </div>
 
                   {/* Category */}
                   <select
@@ -362,8 +362,8 @@ const AgroConecta = () => {
                       onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
                       className="w-full px-3 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white placeholder-white/50 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
                     />
-                  </div>
-
+              </div>
+              
                   {/* Sort */}
                   <select
                     value={sortBy}
@@ -376,17 +376,17 @@ const AgroConecta = () => {
                     <option value="deadline">Prazo Menor</option>
                   </select>
                 </div>
-              </div>
+                </div>
 
               {/* Freights Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {freights.map((freight, index) => (
-                  <motion.div
-                    key={freight.id}
+                    <motion.div
+                      key={freight.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.1 }}
-                    whileHover={{ y: -5, scale: 1.02 }}
+                      whileHover={{ y: -5, scale: 1.02 }}
                     className="card p-6 hover-agro"
                   >
                     {/* Header */}
@@ -397,39 +397,39 @@ const AgroConecta = () => {
                           <div className="flex items-center space-x-1 text-white/60">
                             <MapPin className="w-4 h-4" />
                             <span>{freight.origin}</span>
-                          </div>
+                      </div>
                           <div className="text-white/40">→</div>
                           <div className="flex items-center space-x-1 text-white/60">
                             <MapPin className="w-4 h-4" />
                             <span>{freight.destination}</span>
-                          </div>
-                        </div>
                       </div>
+                </div>
+                </div>
                       <div className="text-right">
                         <div className="text-2xl font-bold text-gradient-emerald">{freight.price}</div>
                         <div className="text-sm text-white/60">{freight.deadline}</div>
-                      </div>
-                    </div>
+          </div>
+      </div>
 
                     {/* Details */}
                     <div className="grid grid-cols-2 gap-4 mb-4">
                       <div className="text-center">
                         <div className="text-lg font-bold text-white">{freight.distance}</div>
                         <div className="text-xs text-white/60">Distância</div>
-                      </div>
+              </div>
                       <div className="text-center">
                         <div className="text-lg font-bold text-white">{freight.weight}</div>
                         <div className="text-xs text-white/60">Peso</div>
-                      </div>
+            </div>
                       <div className="text-center">
                         <div className="text-lg font-bold text-white">{freight.volume}</div>
                         <div className="text-xs text-white/60">Volume</div>
-                      </div>
+          </div>
                       <div className="text-center">
                         <div className="text-lg font-bold text-white">{freight.vehicle}</div>
                         <div className="text-xs text-white/60">Veículo</div>
-                      </div>
-                    </div>
+        </div>
+      </div>
 
                     {/* Description */}
                     <p className="text-white/70 text-sm mb-4">
@@ -449,24 +449,24 @@ const AgroConecta = () => {
                           </span>
                         ))}
                       </div>
-                    </div>
+              </div>
 
                     {/* Advertiser */}
                     <div className="flex items-center justify-between mb-4 p-3 bg-black/30 rounded-lg">
                       <div className="flex items-center space-x-2">
-                        <div>
+                  <div>
                           <div className="flex items-center space-x-1">
                             <span className="text-white font-semibold">{freight.advertiser.name}</span>
                             {freight.advertiser.verified && (
                               <CheckCircle className="w-4 h-4 text-emerald-400" />
                             )}
-                          </div>
+                        </div>
                           <div className="flex items-center space-x-1 text-sm">
                             <Star className="w-4 h-4 text-amber-400 fill-current" />
                             <span className="text-white/60">{freight.advertiser.rating}</span>
-                          </div>
                         </div>
                       </div>
+                    </div>
                       <div className="text-sm text-white/60">
                         {freight.createdAt}
                       </div>
@@ -496,10 +496,10 @@ const AgroConecta = () => {
                       >
                         <Heart className="w-4 h-4" />
                       </motion.button>
-                    </div>
+                              </div>
                   </motion.div>
                 ))}
-              </div>
+                            </div>
             </motion.div>
           )}
 
@@ -517,15 +517,15 @@ const AgroConecta = () => {
                   {/* Search */}
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/50" />
-                    <input
-                      type="text"
+                          <input 
+                            type="text" 
                       placeholder="Buscar motoristas..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="w-full pl-10 pr-4 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white placeholder-white/50 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
                     />
-                  </div>
-
+                      </div>
+                      
                   {/* Vehicle Type */}
                   <select
                     value={selectedCategory}
@@ -550,7 +550,7 @@ const AgroConecta = () => {
 
                   {/* Capacity */}
                   <div className="flex items-center space-x-2">
-                    <input
+                          <input 
                       type="number"
                       placeholder="Min"
                       value={priceRange.min}
@@ -565,8 +565,8 @@ const AgroConecta = () => {
                       onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
                       className="w-full px-3 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white placeholder-white/50 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
                     />
-                  </div>
-
+                      </div>
+                      
                   {/* Sort */}
                   <select
                     value={sortBy}
@@ -578,9 +578,9 @@ const AgroConecta = () => {
                     <option value="experience">Mais Experiência</option>
                     <option value="recent">Mais Recentes</option>
                   </select>
-                </div>
-              </div>
-
+                      </div>
+                      </div>
+                      
               {/* Drivers Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {drivers.map((driver, index) => (
@@ -618,7 +618,7 @@ const AgroConecta = () => {
                       <div className="flex items-center space-x-1 text-white/60">
                         <MapPin className="w-4 h-4" />
                         <span>{driver.location}</span>
-                      </div>
+                          </div>
                       <div className="flex items-center space-x-1 text-white/60">
                         <Clock className="w-4 h-4" />
                         <span>{driver.lastActive}</span>
@@ -646,27 +646,27 @@ const AgroConecta = () => {
                             {specialty}
                           </span>
                         ))}
+                          </div>
                       </div>
-                    </div>
 
                     {/* Performance Stats */}
                     <div className="grid grid-cols-2 gap-4 mb-4">
                       <div className="text-center">
                         <div className="text-lg font-bold text-gradient-emerald">{driver.stats.completedFreights}</div>
                         <div className="text-xs text-white/60">Fretes</div>
-                      </div>
+                    </div>
                       <div className="text-center">
                         <div className="text-lg font-bold text-gradient-emerald">{driver.stats.totalDistance}</div>
                         <div className="text-xs text-white/60">Distância</div>
-                      </div>
+                  </div>
                       <div className="text-center">
                         <div className="text-lg font-bold text-gradient-emerald">{driver.stats.satisfaction}</div>
                         <div className="text-xs text-white/60">Satisfação</div>
-                      </div>
+              </div>
                       <div className="text-center">
                         <div className="text-lg font-bold text-gradient-emerald">{driver.stats.responseTime}</div>
                         <div className="text-xs text-white/60">Resposta</div>
-                      </div>
+            </div>
                     </div>
 
                     {/* Documents */}
@@ -679,24 +679,24 @@ const AgroConecta = () => {
                             className="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full border border-blue-500/30"
                           >
                             {doc}
-                          </span>
+                  </span>
                         ))}
                       </div>
-                    </div>
-
+                </div>
+                
                     {/* Actions */}
-                    <div className="flex items-center space-x-2">
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
+                <div className="flex items-center space-x-2">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                         className="flex-1 bg-emerald-500 text-black font-semibold py-2 px-4 rounded-lg hover:bg-emerald-400 transition-colors duration-300"
                       >
                         <MessageSquare className="w-4 h-4 inline mr-2" />
                         Contatar
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                         className="p-2 bg-black/50 border border-emerald-500/20 rounded-lg text-emerald-400 hover:bg-emerald-500/10 transition-colors duration-300"
                       >
                         <Eye className="w-4 h-4" />
@@ -707,16 +707,16 @@ const AgroConecta = () => {
                         className="p-2 bg-black/50 border border-emerald-500/20 rounded-lg text-emerald-400 hover:bg-emerald-500/10 transition-colors duration-300"
                       >
                         <Heart className="w-4 h-4" />
-                      </motion.button>
-                    </div>
+                  </motion.button>
+                </div>
                   </motion.div>
-                ))}
-              </div>
+                  ))}
+                </div>
             </motion.div>
           )}
 
           {activeTab === 'my-freights' && (
-            <motion.div
+          <motion.div
               key="my-freights"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -749,8 +749,8 @@ const AgroConecta = () => {
                       <Plus className="w-5 h-5 inline mr-2" />
                       Criar Conta
                     </motion.button>
-                  </div>
                 </div>
+              </div>
               ) : (
                 <div className="card p-8">
                   <h3 className="text-2xl font-bold text-gradient-agro mb-6">
@@ -762,12 +762,12 @@ const AgroConecta = () => {
                   </div>
                 </div>
               )}
-            </motion.div>
-          )}
-        </AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
         {/* CTA Section */}
-        <motion.div 
+          <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
@@ -797,8 +797,8 @@ const AgroConecta = () => {
               <Truck className="w-5 h-5 inline mr-2" />
               Cadastrar como Motorista
             </motion.button>
-          </div>
-        </motion.div>
+              </div>
+            </motion.div>
       </div>
     </div>
   );
