@@ -97,7 +97,7 @@ const Loja = () => {
   }, []);
 
   useEffect(() => {
-    if (products && Array.isArray(products)) {
+    if (products && Array.isArray(products) && products.length > 0) {
       applyFilters();
     }
   }, [products, searchTerm, selectedCategory, priceRange, sortBy, applyFilters]);

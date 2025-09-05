@@ -3,7 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CheckCircle, ArrowRight, Home, User, CreditCard, Coins, AlertCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../contexts/LanguageContext';
 import StockMarketTicker from '../components/StockMarketTicker';
 import { paymentService } from '../services/paymentService';
 
@@ -11,7 +11,7 @@ const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user, refreshUser } = useAuth();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [planDetails, setPlanDetails] = useState(null);
   const [paymentStatus, setPaymentStatus] = useState('pending');

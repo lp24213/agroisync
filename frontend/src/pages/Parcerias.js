@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../contexts/LanguageContext';
 import { 
   Building2, Globe, Award, Handshake, Users, 
   TrendingUp, Shield, Zap, Leaf, Truck, Sprout,
@@ -10,7 +10,7 @@ import {
 
 const Parcerias = () => {
   const { isDark } = useTheme();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
 
   // Função para renderizar os ícones dos parceiros
   const getIconComponent = (iconName) => {

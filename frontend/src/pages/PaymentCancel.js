@@ -3,13 +3,13 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { XCircle, ArrowLeft, Home, CreditCard, RefreshCw } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const PaymentCancel = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

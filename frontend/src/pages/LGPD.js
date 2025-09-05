@@ -1,12 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../contexts/LanguageContext';
 import { Shield, Lock, Scale, UserCheck, AlertTriangle, CheckCircle, FileText } from 'lucide-react';
 
 const LGPD = () => {
   const { isDark } = useTheme();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
 
   const lgpdPrinciples = [
     {
