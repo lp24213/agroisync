@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
 // import { useFeatureFlags } from '../contexts/FeatureFlagsContext';
 import { 
   Menu, 
@@ -11,7 +12,9 @@ import {
   LogOut, 
   Settings, 
   Globe,
-  ChevronDown
+  ChevronDown,
+  Sun,
+  Moon
 } from 'lucide-react';
 
 const Navbar = () => {
@@ -19,6 +22,7 @@ const Navbar = () => {
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const { currentLanguage, changeLanguage, t, availableLanguages } = useLanguage();
+  const { isDark, toggleTheme } = useTheme();
   // const { isEnabled } = useFeatureFlags();
   const location = useLocation();
 
@@ -158,6 +162,15 @@ const Navbar = () => {
             </Link>
 
             {/* Language Selector */}
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="flex items-center justify-center w-10 h-10 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-300"
+              title={isDark ? 'Modo Claro' : 'Modo Escuro'}
+            >
+              {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
+
             <div className="relative">
                               <button
                   onClick={toggleLanguageMenu}
@@ -323,6 +336,18 @@ const Navbar = () => {
             >
               {t('plans')}
             </Link>
+
+            {/* Theme Toggle Mobile */}
+            <button
+              onClick={() => {
+                toggleTheme();
+                setIsMenuOpen(false);
+              }}
+              className="flex items-center space-x-2 w-full px-3 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-300"
+            >
+              {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              <span className="text-sm">{isDark ? 'Modo Claro' : 'Modo Escuro'}</span>
+            </button>
 
             {isUserAuthenticated ? (
               <>
