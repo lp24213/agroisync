@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { 
@@ -12,6 +12,7 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import ProductFilters from '../components/ProductFilters';
+import StockMarketTicker from '../components/StockMarketTicker';
 // import CartWidget from '../components/CartWidget';
 // import BuyersPanel from '../components/BuyersPanel';
 // import SellersPanel from '../components/SellersPanel';
@@ -515,6 +516,9 @@ const Loja = () => {
 
   return (
     <div className="min-h-screen bg-white text-gray-900 py-8 pt-16">
+      {/* Ticker B3/IBOV/Crypto */}
+      <StockMarketTicker />
+      
       {/* Header com Filtros */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
