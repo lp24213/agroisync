@@ -7,12 +7,10 @@ import StockMarketTicker from './StockMarketTicker';
 const Layout = ({ children }) => {
   return (
     <div className="min-h-screen bg-white text-gray-900">
-      {/* StockMarketTicker acima do menu - controlado por NEXT_PUBLIC_FEATURE_TICKER */}
-      {process.env.NEXT_PUBLIC_FEATURE_TICKER !== 'false' && (
-        <div className="fixed top-0 left-0 right-0 z-40">
-          <StockMarketTicker />
-        </div>
-      )}
+      {/* StockMarketTicker SEMPRE ATIVO EM TODAS AS PÁGINAS */}
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <StockMarketTicker />
+      </div>
       
       {/* Navbar */}
       <Navbar />
@@ -22,7 +20,7 @@ const Layout = ({ children }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
-        className={process.env.NEXT_PUBLIC_FEATURE_TICKER !== 'false' ? 'pt-24' : 'pt-12'}
+        className="pt-24"
       >
         {children}
       </motion.main>

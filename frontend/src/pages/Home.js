@@ -609,7 +609,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Agro Images Gallery Section */}
+      {/* Galeria de Imagens - Separada e Organizada */}
       <section className="py-20 px-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
         <div className="max-w-7xl mx-auto relative z-10">
           <AgroImages />

@@ -7,7 +7,6 @@ import {
   CheckCircle, Info, Star, TrendingUp as TrendingUpIcon,
   MapPin, Target, Activity
 } from 'lucide-react';
-import StockMarketTicker from '../components/StockMarketTicker';
 import { useTranslation } from 'react-i18next';
 import { LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 
