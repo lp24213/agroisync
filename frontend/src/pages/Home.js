@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { useFeatureFlags } from '../contexts/FeatureFlagsContext';
 import HomeGrains from '../components/HomeGrains';
 import HomeWeatherIP from '../components/HomeWeatherIP';
+import AgroImages from '../components/AgroImages';
 
 const Home = () => {
   const { t } = useTranslation();
@@ -605,6 +606,13 @@ const Home = () => {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Agro Images Gallery Section */}
+      <section className="py-20 px-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto relative z-10">
+          <AgroImages />
         </div>
       </section>
 

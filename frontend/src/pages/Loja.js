@@ -13,18 +13,19 @@ import { Link, useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import ProductFilters from '../components/ProductFilters';
 import StockMarketTicker from '../components/StockMarketTicker';
-// import CartWidget from '../components/CartWidget';
-// import BuyersPanel from '../components/BuyersPanel';
-// import SellersPanel from '../components/SellersPanel';
-// import UserPanel from '../components/UserPanel';
-// import MarketplaceContent from '../components/MarketplaceContent';
+import CartWidget from '../components/CartWidget';
+import BuyersPanel from '../components/BuyersPanel';
+import SellersPanel from '../components/SellersPanel';
+import UserPanel from '../components/UserPanel';
+import MarketplaceContent from '../components/MarketplaceContent';
 import productService, { PRODUCT_CATEGORIES } from '../services/productService';
-// import cartService from '../services/cartService';
+import cartService from '../services/cartService';
 import transactionService, { TRANSACTION_STATUS, TRANSACTION_TYPES } from '../services/transactionService';
-// import EscrowBadge from '../components/EscrowBadge';
+import EscrowBadge from '../components/EscrowBadge';
 import DocumentValidator from '../components/DocumentValidator';
 import baiduMapsService from '../services/baiduMapsService';
 import receitaService from '../services/receitaService';
+import AgroImages from '../components/AgroImages';
 
 const Loja = () => {
   const { user, isAuthenticated, isAdmin } = useAuth();
@@ -488,7 +489,8 @@ const Loja = () => {
     { id: 'marketplace', name: 'Marketplace', icon: Store },
     { id: 'user-panel', name: 'Meu Painel', icon: User },
     { id: 'cart', name: 'Carrinho', icon: ShoppingCart, count: cart.length },
-    { id: 'wishlist', name: 'Favoritos', icon: Heart, count: wishlist.length }
+    { id: 'wishlist', name: 'Favoritos', icon: Heart, count: wishlist.length },
+    { id: 'images', name: 'Galeria', icon: Globe }
   ];
 
   // Guard para evitar piscar - deve vir primeiro
@@ -965,6 +967,13 @@ const Loja = () => {
                     ))}
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* Galeria de Imagens */}
+            {activeTab === 'images' && (
+              <div className="space-y-6">
+                <AgroImages />
               </div>
             )}
 

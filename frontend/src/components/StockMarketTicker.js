@@ -53,11 +53,11 @@ const StockMarketTicker = () => {
 
   const renderMarketItem = (item, index) => (
     <motion.div
-      key={index}
+      key={`${item.name}-${index}`}
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.3, delay: index * 0.1 }}
-      className="flex items-center space-x-1 px-2 py-1 bg-emerald-50 rounded-md border border-emerald-200 min-w-[110px]"
+      className="flex items-center space-x-1 px-2 py-1 bg-emerald-50 rounded-md border border-emerald-200 min-w-[110px] whitespace-nowrap"
     >
       <span className="text-xs font-medium text-gray-600">{item.name}</span>
       <span className="text-xs font-bold text-gray-900">{item.value}</span>
@@ -97,8 +97,8 @@ const StockMarketTicker = () => {
               <span className="text-xs font-semibold text-gray-600">B3</span>
             </div>
             <motion.div 
-              className="flex items-center space-x-2"
-              animate={{ x: [0, -20, 0] }}
+              className="flex items-center space-x-2 overflow-hidden"
+              animate={{ x: [0, -100, 0] }}
               transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
             >
               {marketData.indices.map((item, index) => renderMarketItem(item, index))}
@@ -122,8 +122,8 @@ const StockMarketTicker = () => {
               <span className="text-xs font-semibold text-gray-600">FX</span>
             </div>
             <motion.div 
-              className="flex items-center space-x-2"
-              animate={{ x: [0, 20, 0] }}
+              className="flex items-center space-x-2 overflow-hidden"
+              animate={{ x: [0, -80, 0] }}
               transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
             >
               {marketData.currencies.map((item, index) => renderMarketItem(item, index))}
@@ -147,8 +147,8 @@ const StockMarketTicker = () => {
               <span className="text-xs font-semibold text-gray-600">CRYPTO</span>
             </div>
             <motion.div 
-              className="flex items-center space-x-2"
-              animate={{ x: [0, -15, 0] }}
+              className="flex items-center space-x-2 overflow-hidden"
+              animate={{ x: [0, -60, 0] }}
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
             >
               {marketData.crypto.map((item, index) => renderMarketItem(item, index))}
