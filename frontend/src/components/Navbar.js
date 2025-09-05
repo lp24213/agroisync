@@ -106,7 +106,7 @@ const Navbar = () => {
             >
               🛒 {t('nav.store')}
             </Link>
-
+            
             {/* Dropdown para Serviços */}
             <div className="relative group">
               <button className="flex items-center space-x-1 px-4 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all duration-300">
@@ -122,10 +122,10 @@ const Navbar = () => {
                 </Link>
                 <Link to="/cotacao" className="block px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
                   📊 Cotação
-                </Link>
+            </Link>
                 <Link to="/commodities" className="block px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
                   🌾 {t('nav.commodities')}
-                </Link>
+            </Link>
                 {/* Mensageria removida - é privada e individual */}
               </div>
             </div>
@@ -138,14 +138,14 @@ const Navbar = () => {
               </button>
               <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-200 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                 <Link to="/sobre" className="block px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
-                  {t('about')}
-                </Link>
+              {t('about')}
+            </Link>
                 <Link to="/contato" className="block px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
-                  {t('contact')}
-                </Link>
+              {t('contact')}
+            </Link>
                 <Link to="/planos" className="block px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
-                  {t('plans')}
-                </Link>
+              {t('plans')}
+            </Link>
                 <Link to="/faq" className="block px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
                   ❓ FAQ
                 </Link>

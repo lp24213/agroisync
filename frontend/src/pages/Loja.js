@@ -15,7 +15,6 @@ import transactionService from '../services/transactionService';
 import DocumentValidator from '../components/DocumentValidator';
 import baiduMapsService from '../services/baiduMapsService';
 import receitaService from '../services/receitaService';
-import AgroImages from '../components/AgroImages';
 
 const Loja = () => {
   const { user, isAuthenticated } = useAuth();
@@ -427,9 +426,9 @@ const Loja = () => {
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-transparent to-blue-500/10"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
             className="text-center mb-12"
           >
             <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full mb-6">
@@ -437,11 +436,11 @@ const Loja = () => {
             </div>
             <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-emerald-600 via-blue-600 to-emerald-600 bg-clip-text text-transparent mb-6">
               {t('store.title')}
-            </h1>
+          </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               {t('store.subtitle')}
-            </p>
-          </motion.div>
+          </p>
+        </motion.div>
         </div>
       </div>
 
@@ -889,7 +888,6 @@ const Loja = () => {
             {/* Galeria de Imagens */}
             {activeTab === 'images' && (
               <div className="space-y-6">
-                <AgroImages />
               </div>
             )}
 

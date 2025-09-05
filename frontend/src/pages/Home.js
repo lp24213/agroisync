@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../contexts/LanguageContext';
 import { 
   DollarSign, Package, Truck, 
   Users, Shield,
@@ -13,7 +13,7 @@ import HomeGrains from '../components/HomeGrains';
 import HomeWeatherIP from '../components/HomeWeatherIP';
 
 const Home = () => {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const { isEnabled } = useFeatureFlags();
   

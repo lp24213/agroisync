@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../contexts/LanguageContext';
 import { 
   MapPin, Thermometer, Droplets, Wind, 
   Sun, Cloud, CloudRain, CloudLightning 
 } from 'lucide-react';
 
 const HomeWeatherIP = () => {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const [weatherData, setWeatherData] = useState(null);
   const [location, setLocation] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
