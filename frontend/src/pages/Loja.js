@@ -4,12 +4,18 @@ import { useAuth } from '../contexts/AuthContext';
 import { 
   Store, ShoppingCart, Package,
   Plus, Edit, Trash, MessageSquare, BarChart3,
-  Map, FileText, Shield, Globe
+  Map, FileText, Shield, Globe, User, Heart, TrendingUp
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import ProductFilters from '../components/ProductFilters';
 import productService, { PRODUCT_CATEGORIES } from '../services/productService';
+import cartService from '../services/cartService';
+import transactionService, { TRANSACTION_STATUS, TRANSACTION_TYPES } from '../services/transactionService';
+import EscrowBadge from '../components/EscrowBadge';
+import DocumentValidator from '../components/DocumentValidator';
+import baiduMapsService from '../services/baiduMapsService';
+import receitaService from '../services/receitaService';
 import AgroImages from '../components/AgroImages';
 
 const Loja = () => {
@@ -24,6 +30,30 @@ const Loja = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [priceRange, setPriceRange] = useState({ min: 0, max: 10000 });
   const [sortBy, setSortBy] = useState('relevance');
+  
+  // Estados para painéis de usuário
+  const [myProducts, setMyProducts] = useState([]);
+  const [myPurchases, setMyPurchases] = useState([]);
+  const [myStock, setMyStock] = useState([]);
+  const [myMessages, setMyMessages] = useState([]);
+  const [showUserPanel, setShowUserPanel] = useState(false);
+
+  // Estados para funcionalidades de e-commerce
+  const [cart, setCart] = useState([]);
+  const [wishlist, setWishlist] = useState([]);
+  const [showCart, setShowCart] = useState(false);
+  const [showWishlist, setShowWishlist] = useState(false);
+
+  // Estados para integrações de serviços
+  const [showDocumentValidator, setShowDocumentValidator] = useState(false);
+  const [showLocationValidator, setShowLocationValidator] = useState(false);
+  const [documentValidationResult, setDocumentValidationResult] = useState(null);
+  const [locationValidationResult, setLocationValidationResult] = useState(null);
+  const [isValidatingDocument, setIsValidatingDocument] = useState(false);
+  const [isValidatingLocation, setIsValidatingLocation] = useState(false);
+  
+  // Guard para evitar piscar
+  const [mounted, setMounted] = useState(true);
 
   // Carregar dados iniciais
   useEffect(() => {
