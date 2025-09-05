@@ -516,47 +516,60 @@ const Loja = () => {
   console.log('Loja: Renderizando página principal, products:', products.length, 'filteredProducts:', filteredProducts.length); // Debug
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 py-8 pt-16">
-      
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 text-gray-900 py-8 pt-16">
+      {/* Hero Section Moderno */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-transparent to-blue-500/10"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-12"
+          >
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full mb-6">
+              <Store className="w-10 h-10 text-white" />
+            </div>
+            <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-emerald-600 via-blue-600 to-emerald-600 bg-clip-text text-transparent mb-6">
+              Marketplace AgroSync
+            </h1>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              A plataforma mais moderna para comprar e vender produtos agrícolas com segurança, confiança e tecnologia de ponta
+            </p>
+          </motion.div>
+        </div>
+      </div>
+
       {/* Header com Filtros */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
-        >
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Marketplace AgroSync
-          </h1>
-          <p className="text-lg text-gray-600">
-            Compre e venda produtos agrícolas com segurança e confiança
-          </p>
-        </motion.div>
 
-        {/* Navegação por Abas */}
+        {/* Navegação por Abas Moderna */}
         <motion.nav
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="mb-12"
         >
-          <div className="border-b border-gray-200">
-            <div className="flex space-x-8">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-2 shadow-lg border border-gray-200/50">
+            <div className="flex flex-wrap gap-2">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
                 return (
                   <button
                     key={tab.id}
                     onClick={() => handleTabChange(tab.id)}
-                    className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                    className={`flex items-center space-x-3 py-3 px-6 rounded-xl font-medium text-sm transition-all duration-300 ${
                       activeTab === tab.id
-                        ? 'border-emerald-600 text-emerald-600'
-                        : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
+                        ? 'bg-gradient-to-r from-emerald-500 to-blue-500 text-white shadow-lg transform scale-105'
+                        : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 hover:shadow-md'
                     }`}
                   >
-                    <Icon className="w-4 h-4" />
+                    <Icon className="w-5 h-5" />
                     <span>{tab.name}</span>
                     {tab.count > 0 && (
-                      <span className="bg-emerald-600 text-white text-xs rounded-full px-2 py-1">
+                      <span className={`text-xs rounded-full px-2 py-1 ${
+                        activeTab === tab.id 
+                          ? 'bg-white/20 text-white' 
+                          : 'bg-emerald-100 text-emerald-600'
+                      }`}>
                         {tab.count}
                       </span>
                     )}
