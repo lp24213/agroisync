@@ -23,11 +23,11 @@ const HomeWeatherIP = () => {
       if (response.ok) {
         const data = await response.json();
         setLocation({
-          city: data.city || 'Sinop',
-          region: data.region || 'MT',
+          city: data.city || 'Localização não detectada',
+          region: data.region || 'Estado não detectado',
           country: data.country || 'BR',
-          lat: data.latitude || -11.8647,
-          lon: data.longitude || -55.5036
+          lat: data.latitude || -23.5505,
+          lon: data.longitude || -46.6333
         });
         return data;
       }
@@ -35,13 +35,13 @@ const HomeWeatherIP = () => {
       console.log('IP detection failed, using fallback');
     }
 
-    // Fallback para Sinop, MT
+    // Fallback para São Paulo, SP
     const fallbackLocation = {
-      city: 'Sinop',
-      region: 'MT',
+      city: 'São Paulo',
+      region: 'SP',
       country: 'BR',
-      lat: -11.8647,
-      lon: -55.5036
+      lat: -23.5505,
+      lon: -46.6333
     };
     setLocation(fallbackLocation);
     return fallbackLocation;
