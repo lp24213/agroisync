@@ -126,9 +126,7 @@ const Navbar = () => {
                 <Link to="/commodities" className="block px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
                   🌾 Commodities
                 </Link>
-                <Link to="/mensageria" className="block px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
-                  💬 Mensageria
-                </Link>
+                {/* Mensageria removida - é privada e individual */}
               </div>
             </div>
 

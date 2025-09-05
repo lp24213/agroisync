@@ -1,37 +1,20 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { 
-  Store, CheckCircle, UserPlus, 
-  Building2, Search, Star, ShoppingCart, Leaf, User,
-  Eye, Heart, Phone, Mail, Calendar, Package,
-  Plus, Edit, Trash, Filter, Grid, List,
-  TrendingUp, DollarSign, MapPin, Clock, Tag, MessageSquare, BarChart3,
+  Store, ShoppingCart, Package,
+  Plus, Edit, Trash, MessageSquare, BarChart3,
   Map, FileText, Shield, Globe
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import ProductFilters from '../components/ProductFilters';
-import CartWidget from '../components/CartWidget';
-import BuyersPanel from '../components/BuyersPanel';
-import SellersPanel from '../components/SellersPanel';
-import UserPanel from '../components/UserPanel';
-import MarketplaceContent from '../components/MarketplaceContent';
 import productService, { PRODUCT_CATEGORIES } from '../services/productService';
-import cartService from '../services/cartService';
-import transactionService, { TRANSACTION_STATUS, TRANSACTION_TYPES } from '../services/transactionService';
-import EscrowBadge from '../components/EscrowBadge';
-import DocumentValidator from '../components/DocumentValidator';
-import baiduMapsService from '../services/baiduMapsService';
-import receitaService from '../services/receitaService';
 import AgroImages from '../components/AgroImages';
 
 const Loja = () => {
-  const { user, isAuthenticated, isAdmin } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  
-  // Guard para evitar piscar
-  const [mounted, setMounted] = useState(true);
   
   const [activeTab, setActiveTab] = useState('marketplace');
   const [products, setProducts] = useState([]);
@@ -41,37 +24,11 @@ const Loja = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [priceRange, setPriceRange] = useState({ min: 0, max: 10000 });
   const [sortBy, setSortBy] = useState('relevance');
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' ou 'list'
-  
-  // Estados para painéis de usuário
-  const [myProducts, setMyProducts] = useState([]);
-  const [myPurchases, setMyPurchases] = useState([]);
-  const [myStock, setMyStock] = useState([]);
-  const [myMessages, setMyMessages] = useState([]);
-  const [showUserPanel, setShowUserPanel] = useState(false);
-
-  // Estados para funcionalidades de e-commerce
-  const [cart, setCart] = useState([]);
-  const [wishlist, setWishlist] = useState([]);
-  const [showCart, setShowCart] = useState(false);
-  const [showWishlist, setShowWishlist] = useState(false);
-
-  // Estados para integrações de serviços
-  const [showDocumentValidator, setShowDocumentValidator] = useState(false);
-  const [showLocationValidator, setShowLocationValidator] = useState(false);
-  const [documentValidationResult, setDocumentValidationResult] = useState(null);
-  const [locationValidationResult, setLocationValidationResult] = useState(null);
-  const [isValidatingDocument, setIsValidatingDocument] = useState(false);
-  const [isValidatingLocation, setIsValidatingLocation] = useState(false);
 
   // Carregar dados iniciais
   useEffect(() => {
     loadProducts();
-    if (isAuthenticated) {
-      loadUserData();
-    }
-    initializeServices();
-  }, [isAuthenticated]);
+  }, []);
 
   useEffect(() => {
     if (products && Array.isArray(products)) {
@@ -93,16 +50,7 @@ const Loja = () => {
     );
   }
 
-  const initializeServices = async () => {
-    try {
-      console.log('Loja: Inicializando serviços...'); // Debug
-      await baiduMapsService.initialize();
-      await receitaService.initialize();
-      console.log('Loja: Serviços inicializados com sucesso'); // Debug
-    } catch (error) {
-      console.error('Erro ao inicializar serviços:', error);
-    }
-  };
+  // Serviços removidos - não utilizados
 
   const loadProducts = async () => {
     console.log('Loja: loadProducts iniciado'); // Debug
@@ -197,40 +145,7 @@ const Loja = () => {
     }
   };
 
-  const loadUserData = async () => {
-    try {
-      if (!user?.id) return;
-      
-      // Carregar produtos do usuário
-      const userProducts = await productService.getUserProducts(user.id);
-      setMyProducts(userProducts);
-      
-      // Carregar transações do usuário
-      const userTransactions = await transactionService.getUserTransactions(user.id);
-      
-      // Separar por tipo
-      const purchaseTransactions = userTransactions.filter(txn => 
-        txn.type === 'PRODUCT' && txn.buyerId === user.id
-      );
-      const salesTransactions = userTransactions.filter(txn => 
-        txn.type === 'PRODUCT' && txn.sellerId === user.id
-      );
-      
-      setMyPurchases(purchaseTransactions);
-      setMyStock(salesTransactions);
-      
-      // Carregar mensagens das transações
-      const allMessages = [];
-      for (const txn of userTransactions) {
-        const messages = await transactionService.getTransactionMessages(txn.id);
-        allMessages.push(...messages);
-      }
-      setMyMessages(allMessages);
-      
-    } catch (error) {
-      console.error('Erro ao carregar dados do usuário:', error);
-    }
-  };
+  // loadUserData removido - não utilizado
 
   const applyFilters = () => {
     let filtered = [...products];
@@ -314,26 +229,7 @@ const Loja = () => {
     }
   };
 
-  const updateCartQuantity = (productId, quantity) => {
-    try {
-      if (!productId || quantity < 0) {
-        console.error('Parâmetros inválidos para atualizar quantidade');
-        return;
-      }
-      
-      if (quantity === 0) {
-        removeFromCart(productId);
-      } else {
-        setCart(cart.map(item =>
-          item.id === productId
-            ? { ...item, quantity }
-            : item
-        ));
-      }
-    } catch (error) {
-      console.error('Erro ao atualizar quantidade do carrinho:', error);
-    }
-  };
+  // updateCartQuantity removido - não utilizado
 
   const toggleWishlist = (product) => {
     try {
