@@ -6,7 +6,7 @@ import {
   MapPin, Phone, Mail, Clock, Send, CheckCircle,
   MessageSquare, Building, Globe, ArrowRight
 } from 'lucide-react';
-import StockMarketTicker from '../components/StockMarketTicker';
+// StockMarketTicker removido - já está no Layout
 import contactService from '../services/contactService';
 
 const Contato = () => {
@@ -89,8 +89,7 @@ const Contato = () => {
 
   return (
     <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} transition-colors duration-300 pt-16`}>
-      {/* Cotação da Bolsa */}
-      <StockMarketTicker />
+      {/* Cotação da Bolsa - Removida (já está no Layout) */}
       
       {/* Hero Section */}
       <section className="relative pt-40 pb-20 px-4 overflow-hidden">

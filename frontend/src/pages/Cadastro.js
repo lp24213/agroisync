@@ -158,8 +158,7 @@ const Cadastro = () => {
 
   return (
     <div className="min-h-screen bg-white text-gray-900 pt-16">
-      {/* Cotação da Bolsa */}
-      <StockMarketTicker />
+      {/* Cotação da Bolsa - Removida (já está no Layout) */}
       
       {/* Container Principal */}
       <div className="min-h-screen bg-white py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden pt-16">

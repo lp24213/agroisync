@@ -7,7 +7,7 @@ import {
   TrendingUp, Shield, Lightbulb,
   Star, Package, Truck, DollarSign, Zap
 } from 'lucide-react';
-import StockMarketTicker from '../components/StockMarketTicker';
+// StockMarketTicker removido - já está no Layout
 // Componente removido - já renderizado pelo Layout global
 
 const Sobre = () => {
@@ -101,8 +101,7 @@ const Sobre = () => {
 
   return (
     <div className="min-h-screen bg-white text-gray-900 pt-16">
-      {/* Cotação da Bolsa */}
-      <StockMarketTicker />
+      {/* Cotação da Bolsa - Removida (já está no Layout) */}
       
       {/* Hero Section */}
       <section className="relative pt-40 pb-20 px-4 overflow-hidden">
