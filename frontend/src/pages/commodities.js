@@ -372,9 +372,6 @@ const CommoditiesPage = () => {
 
   return (
     <div className="min-h-screen bg-white text-slate-900 pt-16">
-      {/* Cotação da Bolsa */}
-      <StockMarketTicker />
-      
       {/* Header */}
       <section className="bg-white shadow-premium-soft border-b border-premium-platinum">
         <div className="container-premium py-6">
