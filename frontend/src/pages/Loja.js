@@ -38,12 +38,10 @@ const Loja = () => {
 
   // Estados para sistema de intermediação (como MF Rural)
   const [interestList, setInterestList] = useState([]);
-  const [showInterestPanel, setShowInterestPanel] = useState(false);
 
   // Estados para integrações de serviços
   const [showDocumentValidator, setShowDocumentValidator] = useState(false);
   const [showLocationValidator, setShowLocationValidator] = useState(false);
-  const [isValidatingDocument, setIsValidatingDocument] = useState(false);
   const [isValidatingLocation, setIsValidatingLocation] = useState(false);
   
   // Guard para evitar piscar
@@ -298,7 +296,6 @@ const Loja = () => {
         await transactionService.notifyUsers(transaction);
         
         // Fechar painel de interesse
-        setShowInterestPanel(false);
         
         // Redirecionar para painel com mensageria aberta
         navigate(`/painel?transactionId=${transaction.id}&tab=messages`);
@@ -314,7 +311,6 @@ const Loja = () => {
 
   // Funções de validação de documentos
   const handleDocumentValidation = async (documents) => {
-    setIsValidatingDocument(true);
     try {
       await receitaService.validateDocuments(documents);
       setShowDocumentValidator(false);
@@ -323,7 +319,6 @@ const Loja = () => {
       console.error('Erro na validação de documentos:', error);
       alert('Erro ao validar documentos. Tente novamente.');
     } finally {
-      setIsValidatingDocument(false);
     }
   };
 
@@ -777,7 +772,7 @@ const Loja = () => {
             )}
 
             {/* Interesses */}
-            {activeTab === 'interest' && !showInterestPanel && (
+            {activeTab === 'interest' && (
               <div className="space-y-6">
                 <h2 className="title-premium text-2xl font-bold">Lista de Interesses</h2>
                 
@@ -950,7 +945,7 @@ const Loja = () => {
                 </div>
                 <DocumentValidator 
                   onValidationComplete={handleDocumentValidation}
-                  isValidating={isValidatingDocument}
+                  isValidating={false}
                 />
               </div>
             </motion.div>

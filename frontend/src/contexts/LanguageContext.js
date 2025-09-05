@@ -57,50 +57,48 @@ const translations = {
     processing: 'Processando...',
     
     // Home
-    home: {
-      hero: {
-        title: 'AgroSync - O Futuro do Agronegócio',
-        subtitle: 'Plataforma Completa para o Agronegócio',
-        description: 'Conecte-se com produtores, compradores e fornecedores em uma plataforma segura e moderna.',
-        cta: {
-          primary: 'Começar Agora',
-          secondary: 'Saiba Mais'
-        }
-      },
-      features: {
-        title: 'Recursos Principais',
-        subtitle: 'Tudo que você precisa para o agronegócio',
-        marketplace: {
-          title: 'Marketplace Inteligente',
-          description: 'Compre e venda produtos agrícolas com segurança'
-        },
-        freight: {
-          title: 'Sistema de Fretes',
-          description: 'Gerencie logística de forma eficiente'
-        },
-        crypto: {
-          title: 'Pagamentos Crypto',
-          description: 'Aceite pagamentos em criptomoedas'
-        },
-        quotes: {
-          title: 'Cotações em Tempo Real',
-          description: 'Acompanhe preços de commodities'
-        }
-      },
-      stats: {
-        users: 'Usuários Ativos',
-        products: 'Produtos Cadastrados',
-        freights: 'Fretes Realizados',
-        uptime: 'Uptime'
-      },
-      highlights: {
-        marketIntelligence: 'Inteligência de Mercado'
-      },
+    homeHero: {
+      title: 'AgroSync - O Futuro do Agronegócio',
+      subtitle: 'Plataforma Completa para o Agronegócio',
+      description: 'Conecte-se com produtores, compradores e fornecedores em uma plataforma segura e moderna.',
       cta: {
-        title: 'Pronto para Transformar seu Agronegócio?',
-        subtitle: 'Junte-se a milhares de produtores que já confiam no AgroSync',
-        secondary: 'Falar com Especialista'
+        primary: 'Começar Agora',
+        secondary: 'Saiba Mais'
       }
+    },
+    homeFeatures: {
+      title: 'Recursos Principais',
+      subtitle: 'Tudo que você precisa para o agronegócio',
+      marketplace: {
+        title: 'Marketplace Inteligente',
+        description: 'Compre e venda produtos agrícolas com segurança'
+      },
+      freight: {
+        title: 'Sistema de Fretes',
+        description: 'Gerencie logística de forma eficiente'
+      },
+      crypto: {
+        title: 'Pagamentos Crypto',
+        description: 'Aceite pagamentos em criptomoedas'
+      },
+      quotes: {
+        title: 'Cotações em Tempo Real',
+        description: 'Acompanhe preços de commodities'
+      }
+    },
+    homeStats: {
+      users: 'Usuários Ativos',
+      products: 'Produtos Cadastrados',
+      freights: 'Fretes Realizados',
+      uptime: 'Uptime'
+    },
+    homeHighlights: {
+      marketIntelligence: 'Inteligência de Mercado'
+    },
+    homeCta: {
+      title: 'Pronto para Transformar seu Agronegócio?',
+      subtitle: 'Junte-se a milhares de produtores que já confiam no AgroSync',
+      secondary: 'Falar com Especialista'
     },
     
     // Loja/Marketplace
@@ -201,50 +199,48 @@ const translations = {
     processing: 'Processing...',
     
     // Home
-    home: {
-      hero: {
-        title: 'AgroSync - The Future of Agribusiness',
-        subtitle: 'Complete Platform for Agribusiness',
-        description: 'Connect with producers, buyers and suppliers on a secure and modern platform.',
-        cta: {
-          primary: 'Get Started',
-          secondary: 'Learn More'
-        }
-      },
-      features: {
-        title: 'Main Features',
-        subtitle: 'Everything you need for agribusiness',
-        marketplace: {
-          title: 'Smart Marketplace',
-          description: 'Buy and sell agricultural products safely'
-        },
-        freight: {
-          title: 'Freight System',
-          description: 'Manage logistics efficiently'
-        },
-        crypto: {
-          title: 'Crypto Payments',
-          description: 'Accept cryptocurrency payments'
-        },
-        quotes: {
-          title: 'Real-time Quotes',
-          description: 'Track commodity prices'
-        }
-      },
-      stats: {
-        users: 'Active Users',
-        products: 'Registered Products',
-        freights: 'Completed Freights',
-        uptime: 'Uptime'
-      },
-      highlights: {
-        marketIntelligence: 'Market Intelligence'
-      },
+    homeHero: {
+      title: 'AgroSync - The Future of Agribusiness',
+      subtitle: 'Complete Platform for Agribusiness',
+      description: 'Connect with producers, buyers and suppliers on a secure and modern platform.',
       cta: {
-        title: 'Ready to Transform Your Agribusiness?',
-        subtitle: 'Join thousands of producers who already trust AgroSync',
-        secondary: 'Talk to Specialist'
+        primary: 'Get Started',
+        secondary: 'Learn More'
       }
+    },
+    homeFeatures: {
+      title: 'Main Features',
+      subtitle: 'Everything you need for agribusiness',
+      marketplace: {
+        title: 'Smart Marketplace',
+        description: 'Buy and sell agricultural products safely'
+      },
+      freight: {
+        title: 'Freight System',
+        description: 'Manage logistics efficiently'
+      },
+      crypto: {
+        title: 'Crypto Payments',
+        description: 'Accept cryptocurrency payments'
+      },
+      quotes: {
+        title: 'Real-time Quotes',
+        description: 'Track commodity prices'
+      }
+    },
+    homeStats: {
+      users: 'Active Users',
+      products: 'Registered Products',
+      freights: 'Completed Freights',
+      uptime: 'Uptime'
+    },
+    homeHighlights: {
+      marketIntelligence: 'Market Intelligence'
+    },
+    homeCta: {
+      title: 'Ready to Transform Your Agribusiness?',
+      subtitle: 'Join thousands of producers who already trust AgroSync',
+      secondary: 'Talk to Specialist'
     },
     
     // Store/Marketplace
@@ -345,50 +341,48 @@ const translations = {
     processing: 'Procesando...',
     
     // Home
-    home: {
-      hero: {
-        title: 'AgroSync - El Futuro del Agronegocio',
-        subtitle: 'Plataforma Completa para el Agronegocio',
-        description: 'Conéctate con productores, compradores y proveedores en una plataforma segura y moderna.',
-        cta: {
-          primary: 'Comenzar Ahora',
-          secondary: 'Saber Más'
-        }
-      },
-      features: {
-        title: 'Características Principales',
-        subtitle: 'Todo lo que necesitas para el agronegocio',
-        marketplace: {
-          title: 'Marketplace Inteligente',
-          description: 'Compra y vende productos agrícolas con seguridad'
-        },
-        freight: {
-          title: 'Sistema de Fletes',
-          description: 'Gestiona la logística de manera eficiente'
-        },
-        crypto: {
-          title: 'Pagos Crypto',
-          description: 'Acepta pagos en criptomonedas'
-        },
-        quotes: {
-          title: 'Cotizaciones en Tiempo Real',
-          description: 'Sigue los precios de commodities'
-        }
-      },
-      stats: {
-        users: 'Usuarios Activos',
-        products: 'Productos Registrados',
-        freights: 'Fletes Completados',
-        uptime: 'Tiempo Activo'
-      },
-      highlights: {
-        marketIntelligence: 'Inteligencia de Mercado'
-      },
+    homeHero: {
+      title: 'AgroSync - El Futuro del Agronegocio',
+      subtitle: 'Plataforma Completa para el Agronegocio',
+      description: 'Conéctate con productores, compradores y proveedores en una plataforma segura y moderna.',
       cta: {
-        title: '¿Listo para Transformar tu Agronegocio?',
-        subtitle: 'Únete a miles de productores que ya confían en AgroSync',
-        secondary: 'Hablar con Especialista'
+        primary: 'Comenzar Ahora',
+        secondary: 'Saber Más'
       }
+    },
+    homeFeatures: {
+      title: 'Características Principales',
+      subtitle: 'Todo lo que necesitas para el agronegocio',
+      marketplace: {
+        title: 'Marketplace Inteligente',
+        description: 'Compra y vende productos agrícolas con seguridad'
+      },
+      freight: {
+        title: 'Sistema de Fletes',
+        description: 'Gestiona la logística de manera eficiente'
+      },
+      crypto: {
+        title: 'Pagos Crypto',
+        description: 'Acepta pagos en criptomonedas'
+      },
+      quotes: {
+        title: 'Cotizaciones en Tiempo Real',
+        description: 'Sigue los precios de commodities'
+      }
+    },
+    homeStats: {
+      users: 'Usuarios Activos',
+      products: 'Productos Registrados',
+      freights: 'Fletes Completados',
+      uptime: 'Tiempo Activo'
+    },
+    homeHighlights: {
+      marketIntelligence: 'Inteligencia de Mercado'
+    },
+    homeCta: {
+      title: '¿Listo para Transformar tu Agronegocio?',
+      subtitle: 'Únete a miles de productores que ya confían en AgroSync',
+      secondary: 'Hablar con Especialista'
     },
     
     // Store/Marketplace
@@ -489,50 +483,48 @@ const translations = {
     processing: '处理中...',
     
     // Home
-    home: {
-      hero: {
-        title: 'AgroSync - 农业综合企业的未来',
-        subtitle: '农业综合企业完整平台',
-        description: '在安全现代的平台上与生产者、买家和供应商建立联系。',
-        cta: {
-          primary: '立即开始',
-          secondary: '了解更多'
-        }
-      },
-      features: {
-        title: '主要功能',
-        subtitle: '农业综合企业所需的一切',
-        marketplace: {
-          title: '智能市场',
-          description: '安全地买卖农产品'
-        },
-        freight: {
-          title: '货运系统',
-          description: '高效管理物流'
-        },
-        crypto: {
-          title: '加密货币支付',
-          description: '接受加密货币支付'
-        },
-        quotes: {
-          title: '实时报价',
-          description: '跟踪商品价格'
-        }
-      },
-      stats: {
-        users: '活跃用户',
-        products: '注册产品',
-        freights: '完成货运',
-        uptime: '运行时间'
-      },
-      highlights: {
-        marketIntelligence: '市场情报'
-      },
+    homeHero: {
+      title: 'AgroSync - 农业综合企业的未来',
+      subtitle: '农业综合企业完整平台',
+      description: '在安全现代的平台上与生产者、买家和供应商建立联系。',
       cta: {
-        title: '准备好改变您的农业综合企业了吗？',
-        subtitle: '加入数千名已经信任 AgroSync 的生产者',
-        secondary: '与专家交谈'
+        primary: '立即开始',
+        secondary: '了解更多'
       }
+    },
+    homeFeatures: {
+      title: '主要功能',
+      subtitle: '农业综合企业所需的一切',
+      marketplace: {
+        title: '智能市场',
+        description: '安全地买卖农产品'
+      },
+      freight: {
+        title: '货运系统',
+        description: '高效管理物流'
+      },
+      crypto: {
+        title: '加密货币支付',
+        description: '接受加密货币支付'
+      },
+      quotes: {
+        title: '实时报价',
+        description: '跟踪商品价格'
+      }
+    },
+    homeStats: {
+      users: '活跃用户',
+      products: '注册产品',
+      freights: '完成货运',
+      uptime: '运行时间'
+    },
+    homeHighlights: {
+      marketIntelligence: '市场情报'
+    },
+    homeCta: {
+      title: '准备好改变您的农业综合企业了吗？',
+      subtitle: '加入数千名已经信任 AgroSync 的生产者',
+      secondary: '与专家交谈'
     },
     
     // Store/Marketplace

@@ -11,7 +11,6 @@ import { useNavigate } from 'react-router-dom';
 import { useFeatureFlags } from '../contexts/FeatureFlagsContext';
 import HomeGrains from '../components/HomeGrains';
 import HomeWeatherIP from '../components/HomeWeatherIP';
-import AgroImages from '../components/AgroImages';
 
 const Home = () => {
   const { t } = useTranslation();
@@ -406,7 +405,7 @@ const Home = () => {
 
   // useEffect para carregar notícias e definir título da página
   useEffect(() => {
-    document.title = `Agroisync - ${t('home.hero.title')}`;
+    document.title = `Agroisync - ${t('homeHero.title')}`;
     fetchNewsData();
   }, [t, fetchNewsData]);
 
@@ -444,35 +443,35 @@ const Home = () => {
   const features = [
     {
       icon: <Package className="w-8 h-8" />,
-      title: t('home.features.marketplace.title'),
-      description: t('home.features.marketplace.description'),
+      title: t('homeFeatures.marketplace.title'),
+      description: t('homeFeatures.marketplace.description'),
       color: 'from-slate-500 to-slate-600'
     },
     {
       icon: <Truck className="w-8 h-8" />,
-      title: t('home.features.freight.title'),
-      description: t('home.features.freight.description'),
+      title: t('homeFeatures.freight.title'),
+      description: t('homeFeatures.freight.description'),
       color: 'from-slate-600 to-slate-700'
     },
     {
       icon: <DollarSign className="w-8 h-8" />,
-      title: t('home.features.crypto.title'),
-      description: t('home.features.crypto.description'),
+      title: t('homeFeatures.crypto.title'),
+      description: t('homeFeatures.crypto.description'),
       color: 'from-slate-700 to-slate-800'
     },
     {
       icon: <Shield className="w-8 h-8" />,
-      title: t('home.features.quotes.title'),
-      description: t('home.features.quotes.description'),
+      title: t('homeFeatures.quotes.title'),
+      description: t('homeFeatures.quotes.description'),
       color: 'from-slate-800 to-slate-900'
     }
   ];
 
   const stats = [
-    { label: t('home.stats.users'), value: '15.2K', icon: <Users className="w-6 h-6" /> },
-    { label: t('home.stats.products'), value: '8.7K', icon: <Package className="w-6 h-6" /> },
-    { label: t('home.stats.freights'), value: '3.4K', icon: <Truck className="w-6 h-6" /> },
-    { label: t('home.stats.uptime'), value: '99.9%', icon: <DollarSign className="w-6 h-6" /> }
+    { label: t('homeStats.users'), value: '15.2K', icon: <Users className="w-6 h-6" /> },
+    { label: t('homeStats.products'), value: '8.7K', icon: <Package className="w-6 h-6" /> },
+    { label: t('homeStats.freights'), value: '3.4K', icon: <Truck className="w-6 h-6" /> },
+    { label: t('homeStats.uptime'), value: '99.9%', icon: <DollarSign className="w-6 h-6" /> }
   ];
 
   return (
@@ -517,7 +516,7 @@ const Home = () => {
             transition={{ duration: 1, ease: "easeOut" }}
             className="text-6xl md:text-8xl font-bold mb-8 bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent"
           >
-            {t('home.hero.title')}
+            {t('homeHero.title')}
           </motion.h1>
           
           {/* Subtitle - Ultra Premium */}
@@ -527,7 +526,7 @@ const Home = () => {
             transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
             className="text-2xl md:text-3xl text-white/90 max-w-5xl mx-auto mb-8 font-light"
           >
-            {t('home.hero.subtitle')}
+            {t('homeHero.subtitle')}
           </motion.p>
           
           {/* Description - Ultra Premium */}
@@ -537,7 +536,7 @@ const Home = () => {
             transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
             className="text-xl max-w-4xl mx-auto text-white/70 mb-12 leading-relaxed"
           >
-            {t('home.hero.description')}
+            {t('homeHero.description')}
           </motion.p>
           
           {/* CTA Buttons - Premium */}
@@ -556,7 +555,7 @@ const Home = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-cyan-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <span className="relative z-10 flex items-center space-x-2">
                 <span>🚀</span>
-                <span>{t('home.hero.cta.primary')}</span>
+                <span>{t('homeHero.cta.primary')}</span>
               </span>
             </motion.button>
             <motion.button
@@ -568,7 +567,7 @@ const Home = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-slate-600 to-slate-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <span className="relative z-10 flex items-center space-x-2">
                 <span>ℹ️</span>
-                <span>{t('home.hero.cta.secondary')}</span>
+                <span>{t('homeHero.cta.secondary')}</span>
               </span>
             </motion.button>
           </motion.div>
@@ -587,10 +586,10 @@ const Home = () => {
             className="text-center mb-24"
           >
             <h2 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-emerald-600 via-cyan-600 to-blue-600 bg-clip-text text-transparent mb-8">
-              {t('home.features.title')}
+              {t('homeFeatures.title')}
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              {t('home.features.subtitle')}
+              {t('homeFeatures.subtitle')}
             </p>
           </motion.div>
 
@@ -619,12 +618,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Galeria de Imagens - Separada e Organizada */}
-      <section className="py-20 px-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto relative z-10">
-          <AgroImages />
-        </div>
-      </section>
 
       {/* Stats Section */}
       <section className="py-16 px-4 bg-gradient-to-r from-emerald-50/20 via-white to-sky-50/20 relative overflow-hidden">
@@ -752,7 +745,7 @@ const Home = () => {
               className="card-premium p-8 hover-lift"
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold title-premium-small">{t('home.highlights.marketIntelligence')}</h3>
+                <h3 className="text-2xl font-bold title-premium-small">{t('homeHighlights.marketIntelligence')}</h3>
                 <MessageSquare className="w-6 h-6 text-slate-600" />
               </div>
               
@@ -821,7 +814,7 @@ const Home = () => {
             transition={{ duration: 0.6 }}
             className="text-4xl font-bold text-gray-900 mb-6"
           >
-            {t('home.cta.title')}
+            {t('homeCta.title')}
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -829,7 +822,7 @@ const Home = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-xl text-slate-200 mb-8"
           >
-            {t('home.cta.subtitle')}
+            {t('homeCta.subtitle')}
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -845,7 +838,7 @@ const Home = () => {
             >
               {/* Efeito de glow no hover */}
               <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 via-yellow-400 to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <span className="relative z-10">{t('home.hero.cta.primary')}</span>
+              <span className="relative z-10">{t('homeHero.cta.primary')}</span>
             </motion.button>
             <motion.button
               onClick={() => navigate('/contato')}
@@ -853,7 +846,7 @@ const Home = () => {
               whileTap={{ scale: 0.95 }}
               className="px-8 py-4 bg-transparent border-2 border-gray-900 text-gray-900 font-bold rounded-xl hover:bg-gray-900 hover:text-white transition-all duration-300"
             >
-              {t('home.cta.secondary')}
+              {t('homeCta.secondary')}
             </motion.button>
           </motion.div>
         </div>
@@ -871,10 +864,10 @@ const Home = () => {
             className="bg-gradient-to-r from-slate-50 to-slate-100 rounded-2xl p-8 border border-slate-200 hover:shadow-xl transition-all duration-300 relative overflow-hidden group"
           >
             <h3 className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-yellow-600 bg-clip-text text-transparent mb-4">
-              {t('home.cta.title')}
+              {t('homeCta.title')}
             </h3>
             <p className="text-slate-600 mb-6">
-              {t('home.cta.subtitle')}
+              {t('homeCta.subtitle')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <motion.button
