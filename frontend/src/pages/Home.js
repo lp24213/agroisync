@@ -492,19 +492,21 @@ const Home = () => {
         </div>
       )}
       
-      {/* Hero Section - DESIGN PREMIUM AGROISYNC MAIORAL */}
-      <section className="relative pt-24 pb-24 px-4 overflow-hidden">
-        {/* Background Premium */}
+      {/* Hero Section - DESIGN ULTRA PREMIUM MODERNIZADO */}
+      <section className="relative pt-24 pb-32 px-4 overflow-hidden">
+        {/* Background Ultra Premium */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/20 via-white to-sky-50/20">
-            <div className="absolute inset-0 bg-white opacity-95"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-emerald-900 to-slate-900">
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-transparent to-blue-500/10"></div>
           </div>
-          {/* Linha gradiente sutil no topo */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-amber-500 to-sky-500 opacity-60"></div>
-          {/* Elementos decorativos premium */}
-          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-emerald-500 to-sky-500 rounded-full opacity-10 blur-xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-amber-500 to-emerald-500 rounded-full opacity-10 blur-xl animate-pulse"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-br from-emerald-500/5 via-amber-500/5 to-sky-500/5 rounded-full blur-3xl"></div>
+          {/* Linha gradiente premium no topo */}
+          <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-400"></div>
+          {/* Elementos decorativos ultra premium */}
+          <div className="absolute top-20 left-10 w-40 h-40 bg-gradient-to-br from-emerald-400 to-cyan-400 rounded-full opacity-20 blur-2xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-10 w-48 h-48 bg-gradient-to-br from-cyan-400 to-blue-400 rounded-full opacity-20 blur-2xl animate-pulse"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-gradient-to-br from-emerald-400/10 via-cyan-400/10 to-blue-400/10 rounded-full blur-3xl"></div>
+          {/* Grid pattern sutil */}
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="1"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
         </div>
         
         <div className="max-w-6xl mx-auto text-center relative z-10">
@@ -513,27 +515,27 @@ const Home = () => {
             initial={{ opacity: 0, y: 30, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 1, ease: "easeOut" }}
-            className="text-5xl md:text-7xl font-bold mb-6 text-gray-900"
+            className="text-6xl md:text-8xl font-bold mb-8 bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent"
           >
             {t('home.hero.title')}
           </motion.h1>
           
-          {/* Subtitle - Premium */}
+          {/* Subtitle - Ultra Premium */}
           <motion.p
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-            className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto mb-8"
+            className="text-2xl md:text-3xl text-white/90 max-w-5xl mx-auto mb-8 font-light"
           >
             {t('home.hero.subtitle')}
           </motion.p>
           
-          {/* Description - Premium */}
+          {/* Description - Ultra Premium */}
           <motion.p
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
-            className="text-lg max-w-3xl mx-auto text-gray-500 mb-10"
+            className="text-xl max-w-4xl mx-auto text-white/70 mb-12 leading-relaxed"
           >
             {t('home.hero.description')}
           </motion.p>
@@ -543,40 +545,48 @@ const Home = () => {
             initial={{ opacity: 0, y: 30, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 1, delay: 0.6, ease: "easeOut" }}
-            className="flex flex-col sm:flex-row gap-6 justify-center"
+            className="flex flex-col sm:flex-row gap-8 justify-center"
           >
             <motion.button
               onClick={() => navigate('/cadastro')}
-              whileHover={{ scale: 1.05, y: -2 }}
+              whileHover={{ scale: 1.05, y: -3 }}
               whileTap={{ scale: 0.95 }}
-              className="btn-primary px-10 py-5 text-lg relative overflow-hidden group"
+              className="px-12 py-6 text-xl font-semibold text-white bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-2xl shadow-2xl hover:shadow-emerald-500/25 transition-all duration-300 relative overflow-hidden group"
             >
-              <span className="relative z-10">{t('home.hero.cta.primary')}</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-cyan-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <span className="relative z-10 flex items-center space-x-2">
+                <span>🚀</span>
+                <span>{t('home.hero.cta.primary')}</span>
+              </span>
             </motion.button>
             <motion.button
               onClick={() => navigate('/sobre')}
-              whileHover={{ scale: 1.05, y: -2 }}
+              whileHover={{ scale: 1.05, y: -3 }}
               whileTap={{ scale: 0.95 }}
-              className="btn-secondary px-10 py-5 text-lg relative overflow-hidden group"
+              className="px-12 py-6 text-xl font-semibold text-white bg-gradient-to-r from-slate-700 to-slate-800 rounded-2xl shadow-2xl hover:shadow-slate-500/25 transition-all duration-300 relative overflow-hidden group border border-white/20"
             >
-              <span className="relative z-10">{t('home.hero.cta.secondary')}</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-slate-600 to-slate-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <span className="relative z-10 flex items-center space-x-2">
+                <span>ℹ️</span>
+                <span>{t('home.hero.cta.secondary')}</span>
+              </span>
             </motion.button>
           </motion.div>
         </div>
       </section>
 
-      {/* Features Section - DESIGN PREMIUM */}
-      <section className="py-20 px-4 relative overflow-hidden">
-        {/* Linha gradiente sutil */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-amber-500 to-sky-500 opacity-40"></div>
+      {/* Features Section - DESIGN ULTRA PREMIUM */}
+      <section className="py-24 px-4 relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-emerald-50">
+        {/* Linha gradiente premium */}
+        <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-400"></div>
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-20"
+            className="text-center mb-24"
           >
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">
+            <h2 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-emerald-600 via-cyan-600 to-blue-600 bg-clip-text text-transparent mb-8">
               {t('home.features.title')}
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">

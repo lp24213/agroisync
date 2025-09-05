@@ -82,90 +82,108 @@ const Navbar = () => {
             <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">AGROISYNC</span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          {/* Desktop Navigation Moderna */}
+          <div className="hidden lg:flex items-center space-x-2">
+            {/* Páginas Principais */}
             <Link
               to="/"
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
                 isActive('/') 
-                  ? 'text-emerald-600 bg-emerald-50' 
+                  ? 'text-white bg-gradient-to-r from-emerald-500 to-blue-500 shadow-lg' 
                   : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
               }`}
             >
-              {t('home')}
+              🏠 {t('home')}
             </Link>
             
             <Link
               to="/loja"
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
                 isActive('/loja') 
-                  ? 'text-emerald-600 bg-emerald-50' 
+                  ? 'text-white bg-gradient-to-r from-emerald-500 to-blue-500 shadow-lg' 
                   : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
               }`}
             >
-              Loja
-            </Link>
-            
-            <Link
-              to="/agroconecta"
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                isActive('/agroconecta') 
-                  ? 'text-emerald-600 bg-emerald-50' 
-                  : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-              }`}
-            >
-              AgroConecta
-            </Link>
-            
-            <Link
-              to="/cripto"
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                isActive('/cripto') 
-                  ? 'text-emerald-600 bg-emerald-50' 
-                  : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-              }`}
-            >
-              Cripto
-            </Link>
-            
-            <Link
-              to="/sobre"
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                isActive('/sobre') 
-                  ? 'text-agro-text-primary bg-agro-bg-card' 
-                  : 'text-agro-text-tertiary hover:text-agro-text-primary hover:bg-agro-bg-card/30'
-              }`}
-            >
-              {t('about')}
-            </Link>
-            
-            <Link
-              to="/contato"
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                isActive('/contato') 
-                  ? 'text-agro-text-primary bg-agro-bg-card' 
-                  : 'text-agro-text-tertiary hover:text-agro-text-primary hover:bg-agro-bg-card/30'
-              }`}
-            >
-              {t('contact')}
-            </Link>
-            
-            <Link
-              to="/planos"
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                isActive('/planos') 
-                  ? 'text-agro-text-primary bg-agro-bg-card' 
-                  : 'text-agro-text-tertiary hover:text-agro-text-primary hover:bg-agro-bg-card/30'
-              }`}
-            >
-              {t('plans')}
+              🛒 Loja
             </Link>
 
+            {/* Dropdown para Serviços */}
+            <div className="relative group">
+              <button className="flex items-center space-x-1 px-4 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all duration-300">
+                <span className="text-sm font-medium">⚡ Serviços</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+              <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-200 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                <Link to="/agroconecta" className="block px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
+                  🌐 AgroConecta
+                </Link>
+                <Link to="/cripto" className="block px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
+                  ₿ Cripto
+                </Link>
+                <Link to="/cotacao" className="block px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
+                  📊 Cotação
+                </Link>
+                <Link to="/commodities" className="block px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
+                  🌾 Commodities
+                </Link>
+                <Link to="/mensageria" className="block px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
+                  💬 Mensageria
+                </Link>
+              </div>
+            </div>
+
+            {/* Dropdown para Informações */}
+            <div className="relative group">
+              <button className="flex items-center space-x-1 px-4 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all duration-300">
+                <span className="text-sm font-medium">ℹ️ Info</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+              <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-200 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                <Link to="/sobre" className="block px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
+                  {t('about')}
+                </Link>
+                <Link to="/contato" className="block px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
+                  {t('contact')}
+                </Link>
+                <Link to="/planos" className="block px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
+                  {t('plans')}
+                </Link>
+                <Link to="/faq" className="block px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
+                  ❓ FAQ
+                </Link>
+                <Link to="/ajuda" className="block px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
+                  🆘 Ajuda
+                </Link>
+              </div>
+            </div>
+
             {/* Language Selector */}
+            <div className="relative group">
+              <button className="flex items-center space-x-1 px-4 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all duration-300">
+                <Globe className="w-4 h-4" />
+                <span className="text-sm font-medium">{currentLanguage.toUpperCase()}</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+              <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-200 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                <button onClick={() => changeLanguage('pt')} className="block w-full text-left px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
+                  🇧🇷 Português
+                </button>
+                <button onClick={() => changeLanguage('en')} className="block w-full text-left px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
+                  🇺🇸 English
+                </button>
+                <button onClick={() => changeLanguage('es')} className="block w-full text-left px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
+                  🇪🇸 Español
+                </button>
+                <button onClick={() => changeLanguage('zh')} className="block w-full text-left px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
+                  🇨🇳 中文
+                </button>
+              </div>
+            </div>
+
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="flex items-center justify-center w-10 h-10 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-300"
+              className="flex items-center justify-center w-10 h-10 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all duration-300"
               title={isDark ? 'Modo Claro' : 'Modo Escuro'}
             >
               {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
