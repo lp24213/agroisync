@@ -1,9 +1,9 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../contexts/LanguageContext';
 import GrainsDashboard from '../components/grains/GrainsDashboard';
 
 const Cotacao = () => {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   
   return (
     <div className="min-h-screen bg-white text-gray-900 pt-16">

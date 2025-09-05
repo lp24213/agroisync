@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../contexts/LanguageContext';
 import { 
   BookOpen, FileText, MessageCircle, 
   Phone, Mail, Clock, Users, Shield, Zap,
@@ -12,7 +12,7 @@ import {
 
 const Ajuda = () => {
   const { isDark } = useTheme();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('primeiros-passos');
 
   const helpSections = [

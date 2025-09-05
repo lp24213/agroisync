@@ -7,11 +7,11 @@ import {
   CheckCircle, Info, Star, TrendingUp as TrendingUpIcon,
   MapPin, Target, Activity
 } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../contexts/LanguageContext';
 import { LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 
 const CommoditiesPage = () => {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const [selectedCommodity, setSelectedCommodity] = useState('soja');
   const [timeframe, setTimeframe] = useState('1d');
   const [loading, setLoading] = useState(true);

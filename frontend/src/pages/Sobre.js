@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../contexts/LanguageContext';
 import { 
   Users, Target, Award, Globe, 
   TrendingUp, Shield, Lightbulb,
@@ -12,7 +12,7 @@ import {
 
 const Sobre = () => {
   const { isDark } = useTheme();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
 
   useEffect(() => {
     document.title = `Agroisync - ${t('about.title')}`;

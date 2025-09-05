@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../contexts/LanguageContext';
 import { 
   ChevronDown, Search, HelpCircle, MessageCircle, 
   FileText, Phone, Mail, Globe, Clock,
@@ -10,7 +10,7 @@ import {
 
 const FAQ = () => {
   const { isDark } = useTheme();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const [openItems, setOpenItems] = useState(new Set());
   const [searchTerm, setSearchTerm] = useState('');
 

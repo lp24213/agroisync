@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../contexts/LanguageContext';
 import { 
   MapPin, Phone, Mail, Clock, Send, CheckCircle,
   MessageSquare, Building, Globe, ArrowRight
@@ -11,7 +11,7 @@ import contactService from '../services/contactService';
 
 const Contato = () => {
   const { isDark } = useTheme();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     nome: '',
     email: '',
