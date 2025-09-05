@@ -1,18 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { 
   Store, ShoppingCart, Package,
   Plus, Edit, Trash, MessageSquare, BarChart3,
-  Map, FileText, Shield, Globe, User, Heart, TrendingUp
+  Map, FileText, Globe, User, Heart, TrendingUp
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import ProductFilters from '../components/ProductFilters';
 import productService, { PRODUCT_CATEGORIES } from '../services/productService';
-import cartService from '../services/cartService';
-import transactionService, { TRANSACTION_STATUS, TRANSACTION_TYPES } from '../services/transactionService';
-import EscrowBadge from '../components/EscrowBadge';
+import transactionService from '../services/transactionService';
 import DocumentValidator from '../components/DocumentValidator';
 import baiduMapsService from '../services/baiduMapsService';
 import receitaService from '../services/receitaService';
@@ -32,28 +30,67 @@ const Loja = () => {
   const [sortBy, setSortBy] = useState('relevance');
   
   // Estados para painéis de usuário
-  const [myProducts, setMyProducts] = useState([]);
-  const [myPurchases, setMyPurchases] = useState([]);
-  const [myStock, setMyStock] = useState([]);
-  const [myMessages, setMyMessages] = useState([]);
-  const [showUserPanel, setShowUserPanel] = useState(false);
+  const [myProducts] = useState([]);
+  const [myPurchases] = useState([]);
+  const [myMessages] = useState([]);
 
-  // Estados para funcionalidades de e-commerce
-  const [cart, setCart] = useState([]);
-  const [wishlist, setWishlist] = useState([]);
-  const [showCart, setShowCart] = useState(false);
-  const [showWishlist, setShowWishlist] = useState(false);
+  // Estados para sistema de intermediação (como MF Rural)
+  const [interestList, setInterestList] = useState([]);
+  const [showInterestPanel, setShowInterestPanel] = useState(false);
 
   // Estados para integrações de serviços
   const [showDocumentValidator, setShowDocumentValidator] = useState(false);
   const [showLocationValidator, setShowLocationValidator] = useState(false);
-  const [documentValidationResult, setDocumentValidationResult] = useState(null);
-  const [locationValidationResult, setLocationValidationResult] = useState(null);
   const [isValidatingDocument, setIsValidatingDocument] = useState(false);
   const [isValidatingLocation, setIsValidatingLocation] = useState(false);
   
   // Guard para evitar piscar
-  const [mounted, setMounted] = useState(true);
+  const [mounted] = useState(true);
+
+  // Função de filtros
+  const applyFilters = useCallback(() => {
+    let filtered = [...products];
+
+    // Filtro por busca
+    if (searchTerm) {
+      filtered = filtered.filter(product =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.seller.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Filtro por categoria
+    if (selectedCategory) {
+      filtered = filtered.filter(product => product.category === selectedCategory);
+    }
+
+    // Filtro por preço
+    filtered = filtered.filter(product =>
+      product.price >= priceRange.min && product.price <= priceRange.max
+    );
+
+    // Ordenação
+    switch (sortBy) {
+      case 'price_low':
+        filtered.sort((a, b) => a.price - b.price);
+        break;
+      case 'price_high':
+        filtered.sort((a, b) => b.price - a.price);
+        break;
+      case 'rating':
+        filtered.sort((a, b) => b.rating - a.rating);
+        break;
+      case 'newest':
+        filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        break;
+      default:
+        // Relevância (padrão)
+        break;
+    }
+
+    setFilteredProducts(filtered);
+  }, [products, searchTerm, selectedCategory, priceRange, sortBy]);
 
   // Carregar dados iniciais
   useEffect(() => {
@@ -64,7 +101,7 @@ const Loja = () => {
     if (products && Array.isArray(products)) {
       applyFilters();
     }
-  }, [products, searchTerm, selectedCategory, priceRange, sortBy]);
+  }, [products, searchTerm, selectedCategory, priceRange, sortBy, applyFilters]);
 
   // Loading state
   if (loading) {
@@ -177,121 +214,67 @@ const Loja = () => {
 
   // loadUserData removido - não utilizado
 
-  const applyFilters = () => {
-    let filtered = [...products];
-
-    // Filtro por busca
-    if (searchTerm) {
-      filtered = filtered.filter(product =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.seller.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    // Filtro por categoria
-    if (selectedCategory) {
-      filtered = filtered.filter(product => product.category === selectedCategory);
-    }
-
-    // Filtro por preço
-    filtered = filtered.filter(product =>
-      product.price >= priceRange.min && product.price <= priceRange.max
-    );
-
-    // Ordenação
-    switch (sortBy) {
-      case 'price_low':
-        filtered.sort((a, b) => a.price - b.price);
-        break;
-      case 'price_high':
-        filtered.sort((a, b) => b.price - a.price);
-        break;
-      case 'rating':
-        filtered.sort((a, b) => b.rating - a.rating);
-        break;
-      case 'newest':
-        filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        break;
-      default:
-        // Relevância (padrão)
-        break;
-    }
-
-    setFilteredProducts(filtered);
-  };
-
-  const addToCart = (product) => {
+  const addToInterest = (product) => {
     try {
       if (!product || !product.id) {
-        console.error('Produto inválido para solicitar cotação:', product);
+        console.error('Produto inválido para demonstrar interesse:', product);
         return;
       }
       
-      // Transformar em modelo de intermediação - "Solicitar Cotação"
-      const existingItem = cart.find(item => item.id === product.id);
-      if (existingItem) {
-        setCart(cart.map(item =>
-          item.id === product.id
-            ? { ...item, quantity: (item.quantity || 0) + 1 }
-            : item
-        ));
-      } else {
-        setCart([...cart, { ...product, quantity: 1 }]);
+      // Sistema de intermediação - "Demonstrar Interesse"
+      const existingInterest = interestList.find(item => item.id === product.id);
+      if (existingInterest) {
+        alert('Você já demonstrou interesse neste produto.');
+        return;
       }
       
-      // Mostrar feedback de intermediação
-      alert('Produto adicionado ao pedido de cotação! O vendedor será notificado.');
+      setInterestList([...interestList, { ...product, interestDate: new Date() }]);
+      alert('Interesse registrado! Você será contatado pelo vendedor através da nossa plataforma de intermediação.');
     } catch (error) {
-      console.error('Erro ao solicitar cotação:', error);
+      console.error('Erro ao registrar interesse:', error);
     }
   };
 
-  const removeFromCart = (productId) => {
+  const removeFromInterest = (productId) => {
     try {
       if (!productId) {
-        console.error('ID do produto inválido para remover do carrinho');
+        console.error('ID do produto inválido para remover interesse');
         return;
       }
-      setCart(cart.filter(item => item.id !== productId));
+      setInterestList(interestList.filter(item => item.id !== productId));
     } catch (error) {
-      console.error('Erro ao remover do carrinho:', error);
+      console.error('Erro ao remover interesse:', error);
     }
   };
 
   // updateCartQuantity removido - não utilizado
 
-  const toggleWishlist = (product) => {
+  const toggleInterest = (product) => {
     try {
       if (!product || !product.id) {
-        console.error('Produto inválido para favoritar:', product);
+        console.error('Produto inválido para demonstrar interesse:', product);
         return;
       }
       
-      const isInWishlist = wishlist.find(item => item.id === product.id);
-      if (isInWishlist) {
-        setWishlist(wishlist.filter(item => item.id !== product.id));
+      const hasInterest = interestList.find(item => item.id === product.id);
+      if (hasInterest) {
+        removeFromInterest(product.id);
       } else {
-        setWishlist([...wishlist, product]);
+        addToInterest(product);
       }
     } catch (error) {
-      console.error('Erro ao favoritar produto:', error);
+      console.error('Erro ao demonstrar interesse:', error);
     }
   };
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
-    if (tab === 'user-panel') {
-      setShowUserPanel(true);
-    } else {
-      setShowUserPanel(false);
-    }
   };
 
-  const handlePurchaseIntent = async (purchaseData) => {
+  const handleInterestSubmission = async (interestData) => {
     try {
       if (!isAuthenticated) {
-        alert('Faça login para registrar interesse em produtos');
+        alert('Faça login para demonstrar interesse em produtos');
         navigate('/login');
         return;
       }
@@ -299,31 +282,31 @@ const Loja = () => {
       // Criar transação de intermediação (PRODUCT)
       const transaction = await transactionService.createTransaction({
         type: 'PRODUCT',
-        itemId: purchaseData.items?.[0]?.id || cart[0]?.id,
+        itemId: interestData.items?.[0]?.id || interestList[0]?.id,
         buyerId: user.id,
-        sellerId: purchaseData.seller?.id || cart[0]?.seller?.id,
+        sellerId: interestData.seller?.id || interestList[0]?.seller?.id,
         status: 'PENDING',
-        items: purchaseData.items || cart,
-        total: purchaseData.total || cart.reduce((sum, item) => sum + item.totalPrice, 0),
-        shipping: purchaseData.shipping
+        items: interestData.items || interestList,
+        total: interestData.total || interestList.reduce((sum, item) => sum + (item.price || 0), 0),
+        shipping: interestData.shipping
       });
 
       if (transaction) {
         // Notificar usuários
         await transactionService.notifyUsers(transaction);
         
-        // Fechar carrinho
-        setShowCart(false);
+        // Fechar painel de interesse
+        setShowInterestPanel(false);
         
         // Redirecionar para painel com mensageria aberta
         navigate(`/painel?transactionId=${transaction.id}&tab=messages`);
         
         // Mostrar mensagem de sucesso
-        alert('Intenção de compra registrada! Redirecionando para mensageria...');
+        alert('Interesse registrado com sucesso! Você será contatado pelo vendedor através da nossa plataforma de intermediação.');
       }
     } catch (error) {
-      console.error('Erro ao processar intenção de compra:', error);
-      alert('Erro ao registrar intenção de compra. Tente novamente.');
+      console.error('Erro ao processar interesse:', error);
+      alert('Erro ao registrar interesse em produtos. Tente novamente.');
     }
   };
 
@@ -331,9 +314,9 @@ const Loja = () => {
   const handleDocumentValidation = async (documents) => {
     setIsValidatingDocument(true);
     try {
-      const results = await receitaService.validateDocuments(documents);
-      setDocumentValidationResult(results);
+      await receitaService.validateDocuments(documents);
       setShowDocumentValidator(false);
+      alert('Documentos validados com sucesso!');
     } catch (error) {
       console.error('Erro na validação de documentos:', error);
       alert('Erro ao validar documentos. Tente novamente.');
@@ -346,9 +329,9 @@ const Loja = () => {
   const handleLocationValidation = async (address) => {
     setIsValidatingLocation(true);
     try {
-      const result = await baiduMapsService.validateBrazilianAddress(address);
-      setLocationValidationResult(result);
+      await baiduMapsService.validateBrazilianAddress(address);
       setShowLocationValidator(false);
+      alert('Localização validada com sucesso!');
     } catch (error) {
       console.error('Erro na validação de localização:', error);
       alert('Erro ao validar endereço. Tente novamente.');
@@ -413,8 +396,8 @@ const Loja = () => {
   const tabs = [
     { id: 'marketplace', name: 'Marketplace', icon: Store },
     { id: 'user-panel', name: 'Meu Painel', icon: User },
-    { id: 'cart', name: 'Carrinho', icon: ShoppingCart, count: cart.length },
-    { id: 'wishlist', name: 'Favoritos', icon: Heart, count: wishlist.length },
+    { id: 'interest', name: 'Interesses', icon: ShoppingCart, count: interestList.length },
+    { id: 'wishlist', name: 'Favoritos', icon: Heart, count: interestList.length },
     { id: 'images', name: 'Galeria', icon: Globe }
   ];
 
@@ -552,9 +535,9 @@ const Loja = () => {
                         key={product?.id || Math.random()}
                         product={product}
                         onContact={() => console.log('Contato:', product?.id)}
-                        onFavorite={() => toggleWishlist(product)}
+                        onFavorite={() => toggleInterest(product)}
                         onView={() => console.log('Visualizar:', product?.id)}
-                        onAddToCart={() => addToCart(product)}
+                        onAddToCart={() => addToInterest(product)}
                       />
                     ))
                   ) : (
@@ -791,14 +774,14 @@ const Loja = () => {
               </div>
             )}
 
-            {/* Carrinho */}
-            {activeTab === 'cart' && (
+            {/* Interesses */}
+            {activeTab === 'interest' && !showInterestPanel && (
               <div className="space-y-6">
-                <h2 className="title-premium text-2xl font-bold">Carrinho de Interesse</h2>
+                <h2 className="title-premium text-2xl font-bold">Lista de Interesses</h2>
                 
-                {Array.isArray(cart) && cart.length > 0 ? (
+                {Array.isArray(interestList) && interestList.length > 0 ? (
                   <div className="space-y-4">
-                    {cart.map((item) => (
+                    {interestList.map((item) => (
                       <div key={item?.id || Math.random()} className="card-premium p-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-4">
@@ -820,7 +803,7 @@ const Loja = () => {
                               {formatCurrency((item?.price || 0) * (item?.quantity || 1))}
                             </span>
                             <button
-                              onClick={() => removeFromCart(item?.id)}
+                              onClick={() => removeFromInterest(item?.id)}
                               className="text-red-600 hover:text-red-700 transition-colors"
                             >
                               <Trash className="w-4 h-4" />
@@ -834,17 +817,17 @@ const Loja = () => {
                       <div className="flex justify-between items-center mb-4">
                         <span className="text-lg font-semibold">Total:</span>
                         <span className="text-2xl font-bold text-agro-green">
-                          {formatCurrency(cart.reduce((sum, item) => sum + ((item?.price || 0) * (item?.quantity || 1)), 0))}
+                          {formatCurrency(interestList.reduce((sum, item) => sum + (item?.price || 0), 0))}
                         </span>
                       </div>
                       <button 
-                        onClick={() => handlePurchaseIntent({
-                          items: cart,
-                          total: cart.reduce((sum, item) => sum + ((item?.price || 0) * (item?.quantity || 1)), 0)
+                        onClick={() => handleInterestSubmission({
+                          items: interestList,
+                          total: interestList.reduce((sum, item) => sum + (item?.price || 0), 0)
                         })}
                         className="btn-accent-green w-full"
                       >
-                        Registrar Intenção de Compra
+                        Registrar Interesses
                       </button>
                     </div>
                   </div>
@@ -852,10 +835,10 @@ const Loja = () => {
                   <div className="text-center py-12">
                     <ShoppingCart className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                      Carrinho vazio
+                      Nenhum interesse registrado
                     </h3>
                     <p className="text-gray-600 dark:text-gray-400 mb-4">
-                      Adicione produtos ao carrinho para registrar seu interesse
+                      Demonstre interesse em produtos para iniciar negociações
                     </p>
                     <button
                       onClick={() => handleTabChange('marketplace')}
@@ -871,16 +854,16 @@ const Loja = () => {
             {/* Favoritos */}
             {activeTab === 'wishlist' && (
               <div className="space-y-6">
-                <h2 className="title-premium text-2xl font-bold">Meus Favoritos</h2>
+                <h2 className="title-premium text-2xl font-bold">Produtos de Interesse</h2>
                 
-                {wishlist.length === 0 ? (
+                {interestList.length === 0 ? (
                   <div className="text-center py-12">
                     <Heart className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                      Nenhum favorito adicionado
+                      Nenhum interesse registrado
                     </h3>
                     <p className="text-gray-600 dark:text-gray-400 mb-4">
-                      Adicione produtos aos favoritos para acompanhá-los
+                      Demonstre interesse em produtos para iniciar negociações
                     </p>
                     <button
                       onClick={() => handleTabChange('marketplace')}
@@ -891,12 +874,12 @@ const Loja = () => {
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {wishlist.map((product) => (
+                    {interestList.map((product) => (
                       <ProductCard
                         key={product.id}
                         product={product}
-                        onAddToCart={() => addToCart(product)}
-                        onToggleWishlist={() => toggleWishlist(product)}
+                        onAddToCart={() => addToInterest(product)}
+                        onToggleWishlist={() => toggleInterest(product)}
                         isInWishlist={true}
                         viewMode="grid"
                       />
@@ -963,7 +946,10 @@ const Loja = () => {
                     <span className="text-2xl">&times;</span>
                   </button>
                 </div>
-                <DocumentValidator onValidationComplete={handleDocumentValidation} />
+                <DocumentValidator 
+                  onValidationComplete={handleDocumentValidation}
+                  isValidating={isValidatingDocument}
+                />
               </div>
             </motion.div>
           </motion.div>
