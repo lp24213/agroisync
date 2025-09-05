@@ -57,10 +57,10 @@ const StockMarketTicker = () => {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.3, delay: index * 0.1 }}
-      className="flex items-center space-x-1 px-2 py-1 bg-emerald-50 rounded-md border border-emerald-200 min-w-[110px] whitespace-nowrap"
+      className="flex items-center space-x-1 px-2 py-1 bg-emerald-50 dark:bg-emerald-900/30 rounded-md border border-emerald-200 dark:border-emerald-800 min-w-[110px] whitespace-nowrap"
     >
-      <span className="text-xs font-medium text-gray-600">{item.name}</span>
-      <span className="text-xs font-bold text-gray-900">{item.value}</span>
+      <span className="text-xs font-medium text-gray-600 dark:text-gray-300">{item.name}</span>
+      <span className="text-xs font-bold text-gray-900 dark:text-gray-100">{item.value}</span>
       <div className="flex items-center space-x-1">
         {getTrendIcon(item.trend)}
         <span className={`text-xs font-medium ${getTrendColor(item.trend)}`}>
@@ -72,7 +72,7 @@ const StockMarketTicker = () => {
 
   return (
     <motion.div 
-      className="h-16 bg-white/95 border-b border-emerald-200 backdrop-blur-sm overflow-hidden" 
+      className="h-16 bg-white/95 dark:bg-slate-900/95 border-b border-emerald-200 dark:border-emerald-800 backdrop-blur-sm overflow-hidden" 
       style={{ maxHeight: '72px' }}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
@@ -94,7 +94,7 @@ const StockMarketTicker = () => {
               >
                 <TrendingUp className="w-3 h-3 text-emerald-400" />
               </motion.div>
-              <span className="text-xs font-semibold text-gray-600">B3</span>
+              <span className="text-xs font-semibold text-gray-600 dark:text-gray-300">B3</span>
             </div>
             <motion.div 
               className="flex items-center space-x-2 overflow-hidden"
@@ -119,7 +119,7 @@ const StockMarketTicker = () => {
               >
                 <DollarSign className="w-3 h-3 text-sky-400" />
               </motion.div>
-              <span className="text-xs font-semibold text-gray-600">FX</span>
+              <span className="text-xs font-semibold text-gray-600 dark:text-gray-300">FX</span>
             </div>
             <motion.div 
               className="flex items-center space-x-2 overflow-hidden"
@@ -144,7 +144,7 @@ const StockMarketTicker = () => {
               >
                 <Bitcoin className="w-3 h-3 text-amber-400" />
               </motion.div>
-              <span className="text-xs font-semibold text-gray-600">CRYPTO</span>
+              <span className="text-xs font-semibold text-gray-600 dark:text-gray-300">CRYPTO</span>
             </div>
             <motion.div 
               className="flex items-center space-x-2 overflow-hidden"
@@ -174,7 +174,7 @@ const StockMarketTicker = () => {
                 ease: "easeInOut"
               }}
             />
-            <span className="text-xs text-gray-500 font-mono">
+            <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">
               {currentTime.toLocaleTimeString('pt-BR', { 
                 hour: '2-digit', 
                 minute: '2-digit',

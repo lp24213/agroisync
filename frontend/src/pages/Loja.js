@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import { 
   Store, ShoppingCart, Package,
   Plus, Edit, Trash, MessageSquare, BarChart3,
@@ -18,6 +19,7 @@ import AgroImages from '../components/AgroImages';
 
 const Loja = () => {
   const { user, isAuthenticated } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   
   const [activeTab, setActiveTab] = useState('marketplace');
@@ -439,10 +441,10 @@ const Loja = () => {
               <Store className="w-10 h-10 text-white" />
             </div>
             <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-emerald-600 via-blue-600 to-emerald-600 bg-clip-text text-transparent mb-6">
-              Marketplace AgroSync
+              {t('store.title')}
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              A plataforma mais moderna para comprar e vender produtos agrícolas com segurança, confiança e tecnologia de ponta
+              {t('store.subtitle')}
             </p>
           </motion.div>
         </div>

@@ -104,7 +104,7 @@ const Navbar = () => {
                   : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
               }`}
             >
-              🛒 Loja
+              🛒 {t('nav.store')}
             </Link>
 
             {/* Dropdown para Serviços */}
@@ -115,16 +115,16 @@ const Navbar = () => {
               </button>
               <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-200 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                 <Link to="/agroconecta" className="block px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
-                  🌐 AgroConecta
+                  🌐 {t('nav.agroconecta')}
                 </Link>
                 <Link to="/cripto" className="block px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
-                  ₿ Cripto
+                  ₿ {t('nav.crypto')}
                 </Link>
                 <Link to="/cotacao" className="block px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
                   📊 Cotação
                 </Link>
                 <Link to="/commodities" className="block px-4 py-3 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors">
-                  🌾 Commodities
+                  🌾 {t('nav.commodities')}
                 </Link>
                 {/* Mensageria removida - é privada e individual */}
               </div>
@@ -251,7 +251,7 @@ const Navbar = () => {
                         className="flex items-center space-x-2 w-full px-4 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-all duration-300"
                       >
                         <LogOut className="w-4 h-4" />
-                        <span className="text-sm">Sair</span>
+                        <span className="text-sm">{t('nav.logout')}</span>
                       </button>
                     </div>
                   )}
@@ -310,7 +310,7 @@ const Navbar = () => {
               className="block px-3 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-300"
               onClick={() => setIsMenuOpen(false)}
             >
-              Loja
+              {t('nav.store')}
             </Link>
             
                          <Link
@@ -318,7 +318,7 @@ const Navbar = () => {
                className="block px-3 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-300"
                onClick={() => setIsMenuOpen(false)}
              >
-               AgroConecta
+               {t('nav.agroconecta')}
              </Link>
              
              <Link
@@ -326,7 +326,7 @@ const Navbar = () => {
                className="block px-3 py-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-300"
                onClick={() => setIsMenuOpen(false)}
              >
-               Cripto
+               {t('nav.crypto')}
              </Link>
             
             <Link
