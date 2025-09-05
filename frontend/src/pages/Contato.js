@@ -313,6 +313,7 @@ const Contato = () => {
                     ) : (
                       <>
                         <Send className="w-5 h-5" />
+                        <ArrowRight className="w-4 h-4" />
                         <span>Enviar Mensagem</span>
                       </>
                     )}
