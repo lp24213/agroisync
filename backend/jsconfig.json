@@ -5,7 +5,7 @@
       "@/*": ["./src/*"]
     },
     "target": "es2017",
-    "lib": [],
+    "lib": ["es2017"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
@@ -22,12 +22,6 @@
     "noImplicitThis": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "exactOptionalPropertyTypes": false,
-    "noImplicitOverride": false,
-    "noPropertyAccessFromIndexSignature": false,
-    "noUncheckedIndexedAccess": false,
-    "allowUnusedLabels": true,
-    "allowUnreachableCode": true,
     "checkJs": false,
     "declaration": false,
     "declarationMap": false,
@@ -35,20 +29,16 @@
     "importHelpers": false,
     "inlineSourceMap": false,
     "inlineSources": false,
-    "mapRoot": "",
-    "newLine": "lf",
     "noEmitHelpers": false,
     "noEmitOnError": false,
-    "outDir": "",
-    "outFile": "",
     "preserveConstEnums": false,
     "removeComments": false,
     "sourceMap": false,
-    "sourceRoot": "",
     "stripInternal": false,
     "suppressExcessPropertyErrors": false,
     "suppressImplicitAnyIndexErrors": false,
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    "types": []
   },
   "include": [
     "src/**/*.js"
@@ -62,6 +52,7 @@
   ],
   "typeAcquisition": {
     "enable": false,
-    "disableFilenameBasedTypeAcquisition": true
+    "disableFilenameBasedTypeAcquisition": true,
+    "exclude": ["*"]
   }
 }
