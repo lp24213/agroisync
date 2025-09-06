@@ -867,7 +867,7 @@ router.post('/logout', authenticateRefreshToken, async (req, res) => {
 
     // Limpar cookie
     res.clearCookie('refreshToken');
-
+    
     res.json({
       success: true,
       message: 'Logout realizado com sucesso'

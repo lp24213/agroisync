@@ -18,10 +18,15 @@ import baiduMapsService from '../services/baiduMapsService';
 import receitaService from '../services/receitaService';
 
 const Loja = () => {
-  const { user, isAuthenticated } = useAuth();
+  // Temporariamente comentado para debug
+  // const { user, isAuthenticated } = useAuth();
   const { t } = useLanguage();
   const { isDark } = useTheme();
   const navigate = useNavigate();
+  
+  // Valores mock para debug
+  const user = null;
+  const isAuthenticated = () => false;
   
   const [activeTab, setActiveTab] = useState('marketplace');
   const [products, setProducts] = useState([]);
