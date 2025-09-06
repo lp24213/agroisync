@@ -1,303 +1,267 @@
 import axios from 'axios';
 
-// Configuração da API
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
-
-// Estados da mensagem
-export const MESSAGE_STATUS = {
-  'sent': { name: 'Enviada', color: 'bg-blue-100 text-blue-800' },
-  'delivered': { name: 'Entregue', color: 'bg-green-100 text-green-800' },
-  'read': { name: 'Lida', color: 'bg-emerald-100 text-emerald-800' },
-  'failed': { name: 'Falhou', color: 'bg-red-100 text-red-800' }
-};
-
-// Tipos de mensagem
-export const MESSAGE_TYPES = {
-  'text': 'Texto',
-  'image': 'Imagem',
-  'file': 'Arquivo',
-  'location': 'Localização',
-  'system': 'Sistema'
-};
 
 class MessagingService {
   constructor() {
-    this.subscriptions = new Map();
+    this.baseURL = `${API_BASE_URL}/messaging`;
+    this.websocket = null;
     this.messageHandlers = new Map();
-    this.isConnected = false;
-    this.reconnectAttempts = 0;
-    this.maxReconnectAttempts = 5;
-    this.socket = null;
-    this.transactionSubscriptions = new Map();
   }
 
-  // Conectar ao serviço de mensageria com Socket.IO
-  async connect(userId) {
-    try {
-      if (this.isConnected) return { success: true };
+  // Configurar token de autenticação
+  setAuthToken(token) {
+    this.authToken = token;
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  }
 
-      // Em produção, usar Socket.IO real
-      // this.socket = io(process.env.REACT_APP_SOCKET_URL, {
-      //   auth: { userId }
-      // });
-      
-      // Simular conexão Socket.IO para desenvolvimento
-      console.log('Conectando ao Socket.IO...');
-      
-      // Simular eventos de conexão
+  // Conectar WebSocket para mensagens em tempo real
+  connectWebSocket(userId) {
+    if (this.websocket) {
+      this.websocket.close();
+    }
+
+    const wsUrl = `${process.env.REACT_APP_WS_URL || 'ws://localhost:3001'}/messaging/${userId}`;
+    this.websocket = new WebSocket(wsUrl);
+
+    this.websocket.onopen = () => {
+      console.log('WebSocket conectado para mensageria');
+    };
+
+    this.websocket.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        this.handleWebSocketMessage(data);
+      } catch (error) {
+        console.error('Erro ao processar mensagem WebSocket:', error);
+      }
+    };
+
+    this.websocket.onclose = () => {
+      console.log('WebSocket desconectado');
+      // Tentar reconectar após 5 segundos
       setTimeout(() => {
-        this.isConnected = true;
-        this.userId = userId;
-        console.log('Conectado ao Socket.IO');
-        
-        // Simular evento de conexão
-        if (this.onConnect) {
-          this.onConnect();
+        if (this.websocket?.readyState === WebSocket.CLOSED) {
+          this.connectWebSocket(userId);
         }
-      }, 1000);
+      }, 5000);
+    };
 
-      return { success: true };
-    } catch (error) {
-      console.error('Erro ao conectar:', error);
-      return { success: false, error: error.message };
+    this.websocket.onerror = (error) => {
+      console.error('Erro no WebSocket:', error);
+    };
+  }
+
+  // Desconectar WebSocket
+  disconnectWebSocket() {
+    if (this.websocket) {
+      this.websocket.close();
+      this.websocket = null;
     }
   }
 
-  // Desconectar do serviço
-  async disconnect() {
-    try {
-      // Cancelar todas as subscrições
-      this.subscriptions.forEach((subscription, key) => {
-        subscription.unsubscribe();
+  // Registrar handler para mensagens WebSocket
+  onMessage(type, handler) {
+    if (!this.messageHandlers.has(type)) {
+      this.messageHandlers.set(type, []);
+    }
+    this.messageHandlers.get(type).push(handler);
+  }
+
+  // Remover handler
+  offMessage(type, handler) {
+    if (this.messageHandlers.has(type)) {
+      const handlers = this.messageHandlers.get(type);
+      const index = handlers.indexOf(handler);
+      if (index > -1) {
+        handlers.splice(index, 1);
+      }
+    }
+  }
+
+  // Processar mensagens WebSocket
+  handleWebSocketMessage(data) {
+    const { type, payload } = data;
+    
+    if (this.messageHandlers.has(type)) {
+      this.messageHandlers.get(type).forEach(handler => {
+        try {
+          handler(payload);
+        } catch (error) {
+          console.error('Erro no handler de mensagem:', error);
+        }
       });
-      this.subscriptions.clear();
-      this.messageHandlers.clear();
-      
-      // Desconectar Socket.IO
-      if (this.socket) {
-        this.socket.disconnect();
-        this.socket = null;
-      }
-      
-      this.isConnected = false;
-      this.userId = null;
-      
-      console.log('Desconectado do serviço de mensageria');
-      return { success: true };
-    } catch (error) {
-      console.error('Erro ao desconectar:', error);
-      return { success: false, error: error.message };
     }
   }
 
-  // Inscrever-se em mensagens de uma transação específica
-  subscribeToTransaction(transactionId, messageHandler) {
+  // Enviar mensagem via WebSocket
+  sendWebSocketMessage(type, payload) {
+    if (this.websocket && this.websocket.readyState === WebSocket.OPEN) {
+      this.websocket.send(JSON.stringify({ type, payload }));
+    }
+  }
+
+  // ===== API REST METHODS =====
+
+  // Obter lista de conversas
+  async getConversations(userId) {
     try {
-      if (!this.isConnected) {
-        throw new Error('Serviço de mensageria não conectado');
-      }
-
-      // Cancelar subscrição anterior se existir
-      if (this.transactionSubscriptions.has(transactionId)) {
-        this.unsubscribeFromTransaction(transactionId);
-      }
-
-      // Em produção, usar Socket.IO real
-      // this.socket.emit('join-transaction', { transactionId });
-      // this.socket.on(`message-${transactionId}`, messageHandler);
-      
-      // Simular subscrição para desenvolvimento
-      const subscription = {
-        transactionId,
-        handler: messageHandler,
-        unsubscribe: () => {
-          // Em produção: this.socket.emit('leave-transaction', { transactionId });
-          this.transactionSubscriptions.delete(transactionId);
-        }
-      };
-
-      this.transactionSubscriptions.set(transactionId, subscription);
-      
-      // Simular recebimento de mensagens em tempo real
-      this.simulateRealTimeMessages(transactionId, messageHandler);
-      
-      console.log(`Inscrito em mensagens da transação: ${transactionId}`);
-      
-      return subscription;
+      const response = await axios.get(`${this.baseURL}/conversations/${userId}`);
+      return response.data;
     } catch (error) {
-      console.error('Erro ao inscrever-se na transação:', error);
+      console.error('Erro ao obter conversas:', error);
       throw error;
     }
   }
 
-  // Cancelar inscrição de uma transação
-  unsubscribeFromTransaction(transactionId) {
+  // Obter mensagens de uma conversa
+  async getMessages(chatId, page = 1, limit = 50) {
     try {
-      const subscription = this.transactionSubscriptions.get(transactionId);
-      if (subscription) {
-        subscription.unsubscribe();
-        this.transactionSubscriptions.delete(transactionId);
-        console.log(`Inscrição cancelada da transação: ${transactionId}`);
-      }
+      const response = await axios.get(`${this.baseURL}/messages/${chatId}`, {
+        params: { page, limit }
+      });
+      return response.data;
     } catch (error) {
-      console.error('Erro ao cancelar inscrição:', error);
-    }
-  }
-
-  // Simular mensagens em tempo real para desenvolvimento
-  simulateRealTimeMessages(transactionId, messageHandler) {
-    // Em produção, isso seria removido e substituído por Socket.IO real
-    const interval = setInterval(() => {
-      // Simular mensagens ocasionais (apenas para demonstração)
-      if (Math.random() < 0.1) { // 10% de chance a cada intervalo
-        const mockMessage = {
-          id: `mock_${Date.now()}`,
-          transactionId,
-          from: 'other_user',
-          to: this.userId,
-          body: 'Mensagem simulada em tempo real',
-          type: 'text',
-          createdAt: new Date().toISOString(),
-          status: 'delivered'
-        };
-        messageHandler(mockMessage);
-      }
-    }, 10000); // Verificar a cada 10 segundos
-
-    // Armazenar o intervalo para limpeza
-    const subscription = this.transactionSubscriptions.get(transactionId);
-    if (subscription) {
-      subscription.cleanupInterval = interval;
+      console.error('Erro ao obter mensagens:', error);
+      throw error;
     }
   }
 
   // Enviar mensagem
-  async sendMessage(transactionId, toUserId, content, type = 'text', attachments = null) {
+  async sendMessage(messageData) {
     try {
-      if (!this.isConnected) {
-        throw new Error('Serviço de mensageria não conectado');
-      }
-
-      const messageData = {
-        transactionId,
-        from: this.userId,
-        to: toUserId,
-        body: content,
-        type,
-        attachments,
-        createdAt: new Date().toISOString(),
-        status: 'sent'
-      };
-
-      // Enviar via API REST
-      const response = await axios.post(`${API_BASE_URL}/messages`, messageData);
-      
-      if (response.data.success) {
-        const sentMessage = response.data.data;
-        
-        // Em produção, emitir via Socket.IO
-        // this.socket.emit('send-message', {
-        //   transactionId,
-        //   message: sentMessage
-        // });
-        
-        // Simular envio em tempo real
-        this.simulateMessageDelivery(transactionId, sentMessage);
-        
-        return sentMessage;
-      } else {
-        throw new Error(response.data.error || 'Erro ao enviar mensagem');
-      }
+      const response = await axios.post(`${this.baseURL}/messages`, messageData);
+      return response.data;
     } catch (error) {
       console.error('Erro ao enviar mensagem:', error);
       throw error;
     }
   }
 
-  // Simular entrega de mensagem em tempo real
-  simulateMessageDelivery(transactionId, message) {
-    // Em produção, isso seria gerenciado pelo Socket.IO
-    setTimeout(() => {
-      // Atualizar status para entregue
-      message.status = 'delivered';
-      
-      // Notificar outros usuários inscritos na transação
-      const subscription = this.transactionSubscriptions.get(transactionId);
-      if (subscription && subscription.handler) {
-        subscription.handler(message);
-      }
-    }, 1000);
-  }
-
-  // Obter mensagens de uma transação
-  async getTransactionMessages(transactionId) {
+  // Marcar mensagens como lidas
+  async markAsRead(chatId, messageIds) {
     try {
-      const response = await axios.get(`${API_BASE_URL}/messages/transaction/${transactionId}`);
-      
-      if (response.data.success) {
-        return response.data.data || [];
-      } else {
-        console.warn('Nenhuma mensagem encontrada para a transação:', transactionId);
-        return [];
-      }
+      const response = await axios.put(`${this.baseURL}/messages/read`, {
+        chatId,
+        messageIds
+      });
+      return response.data;
     } catch (error) {
-      console.error('Erro ao carregar mensagens:', error);
-      return [];
-    }
-  }
-
-  // Obter conversas do usuário
-  async getUserConversations(userId) {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/messages/conversations/${userId}`);
-      
-      if (response.data.success) {
-        return response.data.data || [];
-      } else {
-        return [];
-      }
-    } catch (error) {
-      console.error('Erro ao carregar conversas:', error);
-      return [];
-    }
-  }
-
-  // Marcar mensagem como lida
-  async markMessageAsRead(messageId) {
-    try {
-      const response = await axios.put(`${API_BASE_URL}/messages/${messageId}/read`);
-      
-      if (response.data.success) {
-        // Em produção, emitir via Socket.IO para atualizar em tempo real
-        // this.socket.emit('message-read', { messageId });
-        
-        return response.data.data;
-      } else {
-        throw new Error(response.data.error || 'Erro ao marcar mensagem como lida');
-      }
-    } catch (error) {
-      console.error('Erro ao marcar mensagem como lida:', error);
+      console.error('Erro ao marcar mensagens como lidas:', error);
       throw error;
     }
   }
 
-  // Marcar todas as mensagens de uma transação como lidas
-  async markTransactionAsRead(transactionId, userId) {
+  // Criar nova conversa
+  async createConversation(participants, context = 'general', contextId = null) {
     try {
-      const response = await axios.put(`${API_BASE_URL}/messages/transaction/${transactionId}/read`, {
-        userId
+      const response = await axios.post(`${this.baseURL}/conversations`, {
+        participants,
+        context,
+        contextId
       });
-      
-      if (response.data.success) {
-        // Em produção, emitir via Socket.IO para atualizar em tempo real
-        // this.socket.emit('transaction-read', { transactionId, userId });
-        
-        return response.data.data;
-      } else {
-        throw new Error(response.data.error || 'Erro ao marcar transação como lida');
-      }
+      return response.data;
     } catch (error) {
-      console.error('Erro ao marcar transação como lida:', error);
+      console.error('Erro ao criar conversa:', error);
+      throw error;
+    }
+  }
+
+  // Obter conversa por ID
+  async getConversation(chatId) {
+    try {
+      const response = await axios.get(`${this.baseURL}/conversations/${chatId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao obter conversa:', error);
+      throw error;
+    }
+  }
+
+  // Arquivar conversa
+  async archiveConversation(chatId) {
+    try {
+      const response = await axios.put(`${this.baseURL}/conversations/${chatId}/archive`);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao arquivar conversa:', error);
+      throw error;
+    }
+  }
+
+  // Desarquivar conversa
+  async unarchiveConversation(chatId) {
+    try {
+      const response = await axios.put(`${this.baseURL}/conversations/${chatId}/unarchive`);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao desarquivar conversa:', error);
+      throw error;
+    }
+  }
+
+  // Fixar/desfixar conversa
+  async togglePinConversation(chatId) {
+    try {
+      const response = await axios.put(`${this.baseURL}/conversations/${chatId}/pin`);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao fixar/desfixar conversa:', error);
+      throw error;
+    }
+  }
+
+  // Deletar conversa
+  async deleteConversation(chatId) {
+    try {
+      const response = await axios.delete(`${this.baseURL}/conversations/${chatId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao deletar conversa:', error);
+      throw error;
+    }
+  }
+
+  // Deletar mensagem
+  async deleteMessage(messageId) {
+    try {
+      const response = await axios.delete(`${this.baseURL}/messages/${messageId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao deletar mensagem:', error);
+      throw error;
+    }
+  }
+
+  // Editar mensagem
+  async editMessage(messageId, content) {
+    try {
+      const response = await axios.put(`${this.baseURL}/messages/${messageId}`, {
+        content
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao editar mensagem:', error);
+      throw error;
+    }
+  }
+
+  // Enviar arquivo/imagem
+  async sendFile(chatId, file, type = 'image') {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('chatId', chatId);
+      formData.append('type', type);
+
+      const response = await axios.post(`${this.baseURL}/messages/file`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao enviar arquivo:', error);
       throw error;
     }
   }
@@ -305,26 +269,90 @@ class MessagingService {
   // Obter estatísticas de mensagens
   async getMessageStats(userId) {
     try {
-      const response = await axios.get(`${API_BASE_URL}/messages/stats/${userId}`);
-      
-      if (response.data.success) {
-        return response.data.data;
-      } else {
-        return {
-          total: 0,
-          unread: 0,
-          conversations: 0
-        };
-      }
+      const response = await axios.get(`${this.baseURL}/stats/${userId}`);
+      return response.data;
     } catch (error) {
-      console.error('Erro ao carregar estatísticas:', error);
-      return {
-        total: 0,
-        unread: 0,
-        conversations: 0
-      };
+      console.error('Erro ao obter estatísticas:', error);
+      throw error;
+    }
+  }
+
+  // Buscar mensagens
+  async searchMessages(query, userId, filters = {}) {
+    try {
+      const response = await axios.get(`${this.baseURL}/search`, {
+        params: {
+          query,
+          userId,
+          ...filters
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao buscar mensagens:', error);
+      throw error;
+    }
+  }
+
+  // Obter conversas por contexto
+  async getConversationsByContext(context, contextId) {
+    try {
+      const response = await axios.get(`${this.baseURL}/conversations/context/${context}/${contextId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao obter conversas por contexto:', error);
+      throw error;
+    }
+  }
+
+  // ===== UTILITY METHODS =====
+
+  // Verificar se usuário está online
+  async checkUserOnline(userId) {
+    try {
+      const response = await axios.get(`${this.baseURL}/online/${userId}`);
+      return response.data.isOnline;
+    } catch (error) {
+      console.error('Erro ao verificar status online:', error);
+      return false;
+    }
+  }
+
+  // Obter usuários online
+  async getOnlineUsers() {
+    try {
+      const response = await axios.get(`${this.baseURL}/online`);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao obter usuários online:', error);
+      return [];
+    }
+  }
+
+  // Configurar notificações
+  async updateNotificationSettings(userId, settings) {
+    try {
+      const response = await axios.put(`${this.baseURL}/notifications/${userId}`, settings);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao atualizar configurações de notificação:', error);
+      throw error;
+    }
+  }
+
+  // Obter configurações de notificação
+  async getNotificationSettings(userId) {
+    try {
+      const response = await axios.get(`${this.baseURL}/notifications/${userId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao obter configurações de notificação:', error);
+      return {};
     }
   }
 }
 
-export default new MessagingService();
+// Instância única do serviço
+const messagingService = new MessagingService();
+
+export default messagingService;

@@ -59,6 +59,15 @@ import OtpVerification from './pages/OtpVerification';
 import VerifyEmail from './pages/VerifyEmail';
 import CadastroProduto from './pages/CadastroProduto';
 import PainelUsuario from './pages/PainelUsuario';
+import NotFound from './pages/NotFound';
+
+// Painéis individuais
+import BuyerPanel from './pages/panels/BuyerPanel';
+import SellerPanel from './pages/panels/SellerPanel';
+import DriverPanel from './pages/panels/DriverPanel';
+
+// Componentes de mensageria
+import MessagingCenter from './components/messaging/MessagingCenter';
 
 // Componentes
 import ChatbotWidget from './components/ChatbotWidget';
@@ -92,6 +101,8 @@ function App() {
                     <Route path="/planos" element={<Planos />} />
                     <Route path="/payment-success" element={<PaymentSuccess />} />
                     <Route path="/payment-cancel" element={<PaymentCancel />} />
+                    <Route path="/order/:id/success" element={<PaymentSuccess />} />
+                    <Route path="/order/:id/cancel" element={<PaymentCancel />} />
                     <Route path="/agroconecta" element={<AgroConecta />} />
                     <Route path="/cripto" element={<Cripto />} />
                     <Route path="/crypto" element={<Crypto />} />
@@ -114,11 +125,32 @@ function App() {
                     <Route path="/dashboard/seller" element={<ProtectedRoute requiredRole="seller"><Dashboard /></ProtectedRoute>} />
                     <Route path="/dashboard/driver" element={<ProtectedRoute requiredRole="driver"><Dashboard /></ProtectedRoute>} />
                     <Route path="/dashboard/transport" element={<ProtectedRoute requiredRole="transport"><Dashboard /></ProtectedRoute>} />
+                    
+                    {/* Painéis individuais específicos */}
+                    <Route path="/dashboard/store" element={<ProtectedRoute requiredRole={["seller", "buyer"]}><Dashboard /></ProtectedRoute>} />
+                    <Route path="/dashboard/freight" element={<ProtectedRoute requiredRole={["driver", "transport"]}><Dashboard /></ProtectedRoute>} />
+                    
+                    {/* Painéis individuais ocultos */}
+                    <Route path="/dashboard/buyer-panel" element={<ProtectedRoute requiredRole="buyer"><BuyerPanel /></ProtectedRoute>} />
+                    <Route path="/dashboard/seller-panel" element={<ProtectedRoute requiredRole="seller"><SellerPanel /></ProtectedRoute>} />
+                    <Route path="/dashboard/driver-panel" element={<ProtectedRoute requiredRole="driver"><DriverPanel /></ProtectedRoute>} />
+                    
+                    {/* Rotas da loja */}
                     <Route path="/loja" element={<Loja />} />
+                    <Route path="/store" element={<Loja />} />
+                    <Route path="/store/:id" element={<Loja />} />
+                    
+                    {/* Rotas de fretes */}
+                    <Route path="/freight" element={<AgroConecta />} />
+                    <Route path="/freight/:id" element={<AgroConecta />} />
                     <Route path="/mensageria" element={<ProtectedRoute requiredPlan={true}><Mensageria /></ProtectedRoute>} />
                     <Route path="/messages" element={<ProtectedRoute requiredPlan={true}><Messages /></ProtectedRoute>} />
                     <Route path="/messages-products" element={<ProtectedRoute requiredPlan={true}><MessagesProducts /></ProtectedRoute>} />
                     <Route path="/messages-freights" element={<ProtectedRoute requiredPlan={true}><MessagesFreights /></ProtectedRoute>} />
+                    
+                    {/* Centro de Mensagens */}
+                    <Route path="/messaging" element={<ProtectedRoute requiredPlan={true}><MessagingCenter /></ProtectedRoute>} />
+                    <Route path="/chat" element={<ProtectedRoute requiredPlan={true}><MessagingCenter /></ProtectedRoute>} />
                     <Route path="/painel-usuario" element={<ProtectedRoute><PainelUsuario /></ProtectedRoute>} />
 
                     {/* Rotas admin */}
@@ -128,26 +160,14 @@ function App() {
                     <Route path="/admin/dashboard" element={<ProtectedRoute requiredRole="admin"><Admin /></ProtectedRoute>} />
                     <Route path="/admin-dashboard" element={<ProtectedRoute requiredRole="admin"><Admin /></ProtectedRoute>} />
                     <Route path="/admin-panel" element={<ProtectedRoute requiredRole="admin"><AdminSecurePanel /></ProtectedRoute>} />
+                    <Route path="/admin/anon" element={<ProtectedRoute requiredRole="admin"><AdminSecurePanel /></ProtectedRoute>} />
                     
                     {/* Rotas especiais */}
                     <Route path="/login-redirect" element={<LoginRedirect />} />
                     <Route path="/unauthorized" element={<Unauthorized />} />
                     
                     {/* Rota 404 - Página não encontrada */}
-                    <Route path="*" element={
-                      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center pt-16">
-                        <div className="text-center">
-                          <h1 className="text-6xl font-bold text-slate-900 mb-4">404</h1>
-                          <p className="text-xl text-slate-600 mb-8">Página não encontrada</p>
-                          <a 
-                            href="/" 
-                            className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all duration-300"
-                          >
-                            Voltar ao Início
-                          </a>
-                        </div>
-                      </div>
-                    } />
+                    <Route path="*" element={<NotFound />} />
                                         </Routes>
                       
                       {/* Chatbot Global */}

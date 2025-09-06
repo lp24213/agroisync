@@ -436,8 +436,6 @@
       }
     },
     "timeline": {
-      "title": "Nuestro Viaje",
-      "subtitle": "Marcos importantes en la historia de Agroisync",
       "2020": {
         "title": "Fundación",
         "description": "Nacimiento de la plataforma y desarrollo inicial"
@@ -457,7 +455,9 @@
       "2024": {
         "title": "Liderazgo",
         "description": "Consolidación como referencia en el sector"
-      }
+      },
+      "title": "Nuestro Viaje",
+      "subtitle": "Marcos importantes en la historia de Agroisync"
     },
     "team": {
       "title": "Nuestro Equipo",
@@ -483,63 +483,51 @@
     }
   },
   "contact": {
-    "title": "Ponte en Contacto",
-    "subtitle": "Estamos Aquí para Ayudar tu Agronegocio",
-    "info": {
-      "title": "Información de Contacto",
-      "subtitle": "Múltiples canales para atención personalizada",
-      "address": {
-        "title": "Dirección",
-        "content": "Sinop - MT, Brasil"
-      },
-      "phone": {
-        "title": "Teléfono",
-        "content": "(66) 99236-2830"
-      },
-      "email": {
-        "title": "Correo Electrónico",
-        "content": "contato@agroisync.com"
-      },
-      "hours": {
-        "title": "Horario de Funcionamiento",
-        "content": "Lunes a Viernes: 8h a 18h"
-      }
-    },
-    "form": {
-      "title": "Formulario de Contacto",
-      "name": "Nombre Completo",
-      "namePlaceholder": "Escribe tu nombre completo",
-      "email": "Correo Electrónico",
-      "emailPlaceholder": "Escribe tu correo electrónico",
-      "phone": "Teléfono",
-      "phonePlaceholder": "Escribe tu teléfono",
-      "subject": "Asunto",
-      "subjectPlaceholder": "Escribe el asunto",
-      "message": "Mensaje",
-      "messagePlaceholder": "Escribe tu mensaje",
-      "send": "Enviar Mensaje",
-      "sending": "Enviando...",
-      "success": {
-        "title": "¡Mensaje Enviado!",
-        "message": "Gracias por contactarnos. Te responderemos pronto.",
-        "cta": "Enviar Nuevo Mensaje"
-      }
-    },
-    "map": {
-      "title": "Nuestra Ubicación",
-      "office": {
-        "title": "Oficina Principal",
-        "name": "Agroisync",
-        "address": "Sinop - Mato Grosso",
-        "city": "Brasil"
-      }
-    },
-    "cta": {
-      "title": "¿Vamos a Conversar?",
-      "subtitle": "Ponte en contacto y descubre cómo podemos transformar tu agronegocio",
-      "primary": "Hablar Con Nosotros",
-      "secondary": "Ver Planes"
-    }
+    "success": "¡Mensaje Enviado!",
+    "successDescription": "Tu mensaje ha sido enviado exitosamente. Te contactaremos pronto.",
+    "sendAnother": "Enviar Otro Mensaje",
+    "name": "Nombre",
+    "namePlaceholder": "Tu nombre completo",
+    "email": "Email",
+    "emailPlaceholder": "tu@email.com",
+    "phone": "Teléfono",
+    "phonePlaceholder": "(11) 99999-9999",
+    "type": "Tipo de Contacto",
+    "typeGeneral": "General",
+    "typeSupport": "Soporte",
+    "typeSales": "Ventas",
+    "typePartnership": "Asociación",
+    "priority": "Prioridad",
+    "priorityLow": "Baja",
+    "priorityNormal": "Normal",
+    "priorityHigh": "Alta",
+    "priorityUrgent": "Urgente",
+    "subject": "Asunto",
+    "subjectPlaceholder": "Resumen de tu mensaje",
+    "message": "Mensaje",
+    "messagePlaceholder": "Describe tu mensaje en detalle...",
+    "attachments": "Adjuntos",
+    "uploadFiles": "Haz clic para adjuntar archivos",
+    "uploadLimit": "Máximo 10MB por archivo",
+    "sending": "Enviando...",
+    "send": "Enviar Mensaje",
+    "manager": "Gestor de Contactos",
+    "managerSubtitle": "Gestiona mensajes de contacto y respuestas",
+    "totalMessages": "Total de Mensajes",
+    "unreadMessages": "No Leídas",
+    "repliedMessages": "Respondidas",
+    "avgResponseTime": "Tiempo Promedio de Respuesta",
+    "messages": "Mensajes de Contacto",
+    "all": "Todas",
+    "unread": "No Leídas",
+    "replied": "Respondidas",
+    "search": "Buscar mensajes...",
+    "from": "De",
+    "viewDetails": "Ver Detalles",
+    "markAsRead": "Marcar como Leída",
+    "archive": "Archivar",
+    "delete": "Eliminar",
+    "loading": "Cargando mensajes..."
   },
   "marketplace": {
     "title": "Mercado Agroisync",
@@ -820,11 +808,7 @@
         "description": "Equipo técnico listo para ayudar"
       }
     },
-    "products": {
-      "title": "Productos Destacados",
-      "description": "Los mejores productos seleccionados para ti",
-      "buy": "Comprar Ahora"
-    },
+    "products": "productos",
     "categories": {
       "all": "Todos",
       "grains": "Granos",
@@ -858,7 +842,6 @@
     "subscribe": "Suscribir Plan",
     "showing": "Mostrando",
     "of": "de",
-    "products": "productos",
     "featured": "DESTACADO",
     "unit": "por",
     "stock": "Stock",
@@ -1107,5 +1090,205 @@
     "message": {
       "productView": "Su producto \"Soja Premium\" recibió una nueva visualización"
     }
+  },
+  "chat": {
+    "loading": "Cargando conversación...",
+    "loadingChats": "Cargando conversaciones...",
+    "online": "En línea",
+    "offline": "Desconectado",
+    "typeMessage": "Escribe un mensaje...",
+    "search": "Buscar conversaciones...",
+    "all": "Todas",
+    "unread": "No leídas",
+    "pinned": "Fijadas",
+    "noConversations": "Ninguna conversación",
+    "noConversationsDesc": "Tus conversaciones aparecerán aquí",
+    "order": "Pedido",
+    "freight": "Flete",
+    "general": "General"
+  },
+  "messaging": {
+    "welcome": "Bienvenido al Centro de Mensajes",
+    "description": "Selecciona una conversación para comenzar a chatear o inicia una nueva conversación.",
+    "newConversation": "Nueva Conversación"
+  },
+  "buyerPanel": {
+    "title": "Panel del Comprador",
+    "welcome": "Bienvenido",
+    "orders": "Pedidos",
+    "favorites": "Favoritos",
+    "messages": "Mensajes",
+    "notifications": "Notificaciones",
+    "settings": "Configuración",
+    "myOrders": "Mis Pedidos",
+    "newOrder": "Nuevo Pedido",
+    "seller": "Vendedor",
+    "contactSeller": "Contactar Vendedor",
+    "viewDetails": "Ver Detalles",
+    "favoriteProducts": "Productos Favoritos",
+    "buyNow": "Comprar Ahora",
+    "noMessages": "Ningún mensaje",
+    "noMessagesDesc": "Tus conversaciones con vendedores aparecerán aquí",
+    "goToStore": "Ir a la Tienda",
+    "accountSettings": "Configuración de Cuenta",
+    "email": "Email",
+    "name": "Nombre",
+    "logout": "Cerrar Sesión",
+    "loading": "Cargando panel..."
+  },
+  "sellerPanel": {
+    "title": "Panel del Vendedor",
+    "welcome": "Bienvenido",
+    "products": "Productos",
+    "orders": "Pedidos",
+    "analytics": "Analíticas",
+    "messages": "Mensajes",
+    "notifications": "Notificaciones",
+    "settings": "Configuración",
+    "myProducts": "Mis Productos",
+    "addProduct": "Agregar Producto",
+    "units": "unidades",
+    "views": "visualizaciones",
+    "receivedOrders": "Pedidos Recibidos",
+    "buyer": "Comprador",
+    "contactBuyer": "Contactar Comprador",
+    "confirm": "Confirmar",
+    "totalRevenue": "Ingresos Totales",
+    "totalOrders": "Total de Pedidos",
+    "totalProducts": "Productos Activos",
+    "conversionRate": "Tasa de Conversión",
+    "monthlyGrowth": "Crecimiento Mensual",
+    "growthDescription": "Crecimiento comparado con el mes anterior",
+    "noMessages": "Ningún mensaje",
+    "noMessagesDesc": "Tus conversaciones con compradores aparecerán aquí",
+    "goToStore": "Ver Tienda",
+    "accountSettings": "Configuración de Cuenta",
+    "email": "Email",
+    "name": "Nombre",
+    "logout": "Cerrar Sesión",
+    "loading": "Cargando panel..."
+  },
+  "driverPanel": {
+    "title": "Panel del Conductor",
+    "welcome": "Bienvenido",
+    "availableFreights": "Fletes Disponibles",
+    "myFreights": "Mis Fletes",
+    "earnings": "Ganancias",
+    "messages": "Mensajes",
+    "notifications": "Notificaciones",
+    "settings": "Configuración",
+    "origin": "Origen",
+    "destination": "Destino",
+    "accept": "Aceptar",
+    "progress": "Progreso",
+    "totalEarnings": "Ganancias Totales",
+    "thisMonth": "Este Mes",
+    "completedFreights": "Fletes Completados",
+    "averageRating": "Calificación Promedio",
+    "earningsChart": "Gráfico de Ganancias",
+    "chartDescription": "Gráfico de ganancias de los últimos 6 meses",
+    "noMessages": "Ningún mensaje",
+    "noMessagesDesc": "Tus conversaciones con clientes aparecerán aquí",
+    "goToFreight": "Ver Fletes",
+    "accountSettings": "Configuración de Cuenta",
+    "email": "Email",
+    "name": "Nombre",
+    "logout": "Cerrar Sesión",
+    "loading": "Cargando panel...",
+    "updateStatus": "Actualizar"
+  },
+  "orderStatus": {
+    "pending": "Pendiente",
+    "confirmed": "Confirmado",
+    "delivered": "Entregado",
+    "cancelled": "Cancelado"
+  },
+  "productStatus": {
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "draft": "Borrador"
+  },
+  "freightStatus": {
+    "available": "Disponible",
+    "in_transit": "En Tránsito",
+    "delivered": "Entregado",
+    "cancelled": "Cancelado"
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "description": "La página que buscas no existe o ha sido movida. Verifica la dirección o usa los enlaces de abajo para navegar.",
+    "goHome": "Volver al Inicio",
+    "goBack": "Volver",
+    "usefulLinks": "Enlaces Útiles",
+    "store": "Tienda",
+    "freight": "Fletes",
+    "contact": "Contacto",
+    "help": "Ayuda"
+  },
+  "checkout": {
+    "title": "Finalizar Compra",
+    "subtitle": "Completa tu pago de forma segura",
+    "orderSummary": "Resumen del Pedido",
+    "product": "Producto",
+    "quantity": "Cantidad",
+    "subtotal": "Subtotal",
+    "fees": "Tarifas",
+    "shipping": "Envío",
+    "total": "Total",
+    "securePayment": "Pago Seguro",
+    "secureDescription": "Tus datos están protegidos con cifrado SSL y procesados por Stripe.",
+    "cancel": "Cancelar",
+    "continue": "Continuar",
+    "paymentMethod": "Método de Pago",
+    "cardNumber": "Número de Tarjeta",
+    "expiryDate": "Fecha de Vencimiento",
+    "cvv": "CVV",
+    "cardholderName": "Nombre del Titular",
+    "back": "Volver",
+    "payNow": "Pagar Ahora",
+    "processing": "Procesando Pago",
+    "processingDescription": "Espera mientras procesamos tu pago...",
+    "success": "¡Pago Exitoso!",
+    "successDescription": "Tu pago ha sido procesado exitosamente.",
+    "transactionId": "ID de Transacción",
+    "error": "Error de Pago",
+    "errorDescription": "Ocurrió un error al procesar tu pago.",
+    "tryAgain": "Intentar de Nuevo"
+  },
+  "escrow": {
+    "title": "Gestor de Escrow",
+    "subtitle": "Gestiona transacciones de garantía y libera pagos",
+    "totalTransactions": "Total de Transacciones",
+    "pendingAmount": "Monto Pendiente",
+    "completedAmount": "Monto Procesado",
+    "totalFees": "Tarifas Totales",
+    "transactions": "Transacciones Escrow",
+    "all": "Todas",
+    "pending": "Pendientes",
+    "completed": "Completadas",
+    "buyer": "Comprador",
+    "seller": "Vendedor",
+    "documents": "documentos",
+    "viewDetails": "Ver Detalles",
+    "release": "Liberar",
+    "cancel": "Cancelar",
+    "loading": "Cargando transacciones escrow..."
+  },
+  "escrowStatus": {
+    "pending": "Pendiente",
+    "completed": "Completada",
+    "cancelled": "Cancelada"
+  },
+  "contactPriority": {
+    "low": "Baja",
+    "normal": "Normal",
+    "high": "Alta",
+    "urgent": "Urgente"
+  },
+  "contactType": {
+    "general": "General",
+    "support": "Soporte",
+    "sales": "Ventas",
+    "partnership": "Asociación"
   }
 }

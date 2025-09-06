@@ -7,11 +7,11 @@
 :root {
   /* Tema Dark Obrigatório - Fundo Preto */
   --agro-bg: #000000;
-  --agro-bg-secondary: #1a1a1a;
-  --agro-bg-card: #262626;
+  --agro-bg-secondary: #0f172a;
+  --agro-bg-card: #1e293b;
   --agro-text: #ffffff;
-  --agro-text-secondary: #e5e7eb;
-  --agro-text-tertiary: #9ca3af;
+  --agro-text-secondary: #e2e8f0;
+  --agro-text-tertiary: #94a3b8;
   
   /* Paleta Agronegócio Neon */
   --agro-emerald: #00ffbf;
@@ -38,6 +38,36 @@
   --light-border: rgba(30, 41, 59, 0.08);
 }
 
+/* ===== TEMA DARK OBRIGATÓRIO ===== */
+[data-theme='dark'] {
+  --bg-primary: var(--agro-bg);
+  --bg-secondary: var(--agro-bg-secondary);
+  --bg-card: var(--agro-bg-card);
+  --text-primary: var(--agro-text);
+  --text-secondary: var(--agro-text-secondary);
+  --text-tertiary: var(--agro-text-tertiary);
+  --border-primary: var(--agro-border);
+  --accent-primary: var(--agro-emerald);
+  --accent-secondary: var(--agro-sky);
+  --accent-tertiary: var(--agro-amber);
+  --accent-quaternary: var(--agro-purple);
+}
+
+/* ===== TEMA LIGHT ===== */
+[data-theme='light'] {
+  --bg-primary: var(--light-bg);
+  --bg-secondary: var(--light-bg-secondary);
+  --bg-card: var(--light-bg-card);
+  --text-primary: var(--light-text);
+  --text-secondary: var(--light-text-secondary);
+  --text-tertiary: var(--light-text-tertiary);
+  --border-primary: var(--light-border);
+  --accent-primary: var(--agro-emerald-dark);
+  --accent-secondary: var(--agro-sky);
+  --accent-tertiary: var(--agro-amber);
+  --accent-quaternary: var(--agro-purple);
+}
+
 /* ===== RESET E BASE ===== */
 * {
   box-sizing: border-box;
@@ -50,23 +80,36 @@ html {
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
-  background: var(--agro-bg);
-  color: var(--agro-text);
+  background: var(--bg-primary);
+  color: var(--text-primary);
   min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Tema Dark Obrigatório por padrão */
 html {
-  background: var(--agro-bg);
+  background: var(--bg-primary);
+}
+
+/* ===== TEMA DARK OBRIGATÓRIO - APLICADO POR PADRÃO ===== */
+body {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* ===== TEMA LIGHT - APLICADO QUANDO ATIVADO ===== */
+[data-theme='light'] body {
+  background: #ffffff !important;
+  color: #111111 !important;
 }
 
 /* Suporte para tema light quando ativado */
 html.light {
-  --agro-bg: var(--light-bg);
-  --agro-bg-secondary: var(--light-bg-secondary);
-  --agro-bg-card: var(--light-bg-card);
-  --agro-text: var(--light-text);
-  --agro-text-secondary: var(--light-text-secondary);
+  --bg-primary: var(--light-bg);
+  --bg-secondary: var(--light-bg-secondary);
+  --bg-card: var(--light-bg-card);
+  --text-primary: var(--light-text);
+  --text-secondary: var(--light-text-secondary);
   --agro-text-tertiary: var(--light-text-tertiary);
   --agro-border: var(--light-border);
 }

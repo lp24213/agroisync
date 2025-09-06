@@ -13,30 +13,44 @@ export const useTheme = () => {
 export const ThemeProvider = ({ children }) => {
   // TEMA DARK OBRIGATÓRIO POR PADRÃO
   const [isDark, setIsDark] = useState(true);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
     // Verificar preferência salva no localStorage
-    const savedTheme = localStorage.getItem('theme');
+    const savedTheme = localStorage.getItem('agroisync-theme');
     if (savedTheme) {
       // Se o usuário já escolheu light, respeitar a escolha
       setIsDark(savedTheme === 'dark');
     } else {
       // PADRÃO: SEMPRE DARK (tema obrigatório)
       setIsDark(true);
+      localStorage.setItem('agroisync-theme', 'dark');
     }
+    setIsInitialized(true);
   }, []);
 
   useEffect(() => {
+    if (!isInitialized) return;
+
     // Aplicar tema ao documento
+    const html = document.documentElement;
+    const body = document.body;
+    
     if (isDark) {
-      document.documentElement.classList.add('dark');
+      html.classList.add('dark');
+      html.setAttribute('data-theme', 'dark');
+      body.style.backgroundColor = '#000000';
+      body.style.color = '#FFFFFF';
     } else {
-      document.documentElement.classList.remove('dark');
+      html.classList.remove('dark');
+      html.setAttribute('data-theme', 'light');
+      body.style.backgroundColor = '#FFFFFF';
+      body.style.color = '#111111';
     }
     
     // Salvar preferência no localStorage
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-  }, [isDark]);
+    localStorage.setItem('agroisync-theme', isDark ? 'dark' : 'light');
+  }, [isDark, isInitialized]);
 
   const toggleTheme = () => {
     setIsDark(!isDark);
@@ -70,19 +84,31 @@ export const ThemeProvider = ({ children }) => {
     // Cores do tema escuro OBRIGATÓRIO - Paleta Agronegócio
     darkColors: {
       bgPrimary: 'bg-black',
-      bgSecondary: 'bg-gray-900',
-      bgCard: 'bg-gray-800',
-      bgCardHover: 'hover:bg-gray-700',
+      bgSecondary: 'bg-slate-900',
+      bgCard: 'bg-slate-800',
+      bgCardHover: 'hover:bg-slate-700',
       textPrimary: 'text-white',
-      textSecondary: 'text-gray-200',
-      textTertiary: 'text-gray-400',
-      borderPrimary: 'border-gray-700',
-      borderSecondary: 'border-gray-600',
-      accentPrimary: 'bg-emerald-500',
-      accentSecondary: 'bg-sky-500',
+      textSecondary: 'text-slate-200',
+      textTertiary: 'text-slate-400',
+      borderPrimary: 'border-slate-700',
+      borderSecondary: 'border-slate-600',
+      // Paleta Agronegócio: neon azul, verde, dourado, roxo
+      accentPrimary: 'bg-emerald-500',      // Verde neon
+      accentSecondary: 'bg-blue-500',       // Azul neon
+      accentTertiary: 'bg-amber-500',       // Dourado
+      accentQuaternary: 'bg-purple-500',    // Roxo
       accentHover: 'hover:bg-emerald-600',
       shadowCard: 'shadow-card-dark',
       shadowElevated: 'shadow-elevated-dark'
+    },
+    // Cores CSS customizadas para agronegócio
+    agroColors: {
+      neonGreen: '#00ffbf',
+      neonBlue: '#00aaff', 
+      gold: '#ffd966',
+      purple: '#8b5cf6',
+      darkBg: '#000000',
+      lightText: '#FFFFFF'
     }
   };
 

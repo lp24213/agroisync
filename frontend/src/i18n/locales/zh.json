@@ -436,8 +436,6 @@
       }
     },
     "timeline": {
-      "title": "我们的旅程",
-      "subtitle": "Agroisync历史上的重要里程碑",
       "2020": {
         "title": "成立",
         "description": "平台诞生和初步发展"
@@ -457,7 +455,9 @@
       "2024": {
         "title": "领导地位",
         "description": "巩固作为行业参考的地位"
-      }
+      },
+      "title": "我们的旅程",
+      "subtitle": "Agroisync历史上的重要里程碑"
     },
     "team": {
       "title": "我们的团队",
@@ -483,63 +483,51 @@
     }
   },
   "contact": {
-    "title": "联系我们",
-    "subtitle": "我们在这里帮助您的农业综合企业",
-    "info": {
-      "title": "联系信息",
-      "subtitle": "个性化服务的多个渠道",
-      "address": {
-        "title": "地址",
-        "content": "锡诺普 - 马托格罗索，巴西"
-      },
-      "phone": {
-        "title": "电话",
-        "content": "(66) 99236-2830"
-      },
-      "email": {
-        "title": "电子邮件",
-        "content": "contato@agroisync.com"
-      },
-      "hours": {
-        "title": "营业时间",
-        "content": "周一至周五：上午8点至下午6点"
-      }
-    },
-    "form": {
-      "title": "联系表单",
-      "name": "全名",
-      "namePlaceholder": "输入您的全名",
-      "email": "电子邮件",
-      "emailPlaceholder": "输入您的电子邮件",
-      "phone": "电话",
-      "phonePlaceholder": "输入您的电话",
-      "subject": "主题",
-      "subjectPlaceholder": "输入主题",
-      "message": "消息",
-      "messagePlaceholder": "输入您的消息",
-      "send": "发送消息",
-      "sending": "发送中...",
-      "success": {
-        "title": "消息已发送！",
-        "message": "感谢您的联系。我们会尽快回复您。",
-        "cta": "发送新消息"
-      }
-    },
-    "map": {
-      "title": "我们的位置",
-      "office": {
-        "title": "主办公室",
-        "name": "Agroisync",
-        "address": "锡诺普 - 马托格罗索",
-        "city": "巴西"
-      }
-    },
-    "cta": {
-      "title": "让我们谈谈？",
-      "subtitle": "联系我们，了解我们如何改变您的农业综合企业",
-      "primary": "与我们交谈",
-      "secondary": "查看计划"
-    }
+    "success": "消息已发送！",
+    "successDescription": "您的消息已成功发送。我们将很快与您联系。",
+    "sendAnother": "发送另一条消息",
+    "name": "姓名",
+    "namePlaceholder": "您的全名",
+    "email": "邮箱",
+    "emailPlaceholder": "your@email.com",
+    "phone": "电话",
+    "phonePlaceholder": "(11) 99999-9999",
+    "type": "联系类型",
+    "typeGeneral": "一般",
+    "typeSupport": "支持",
+    "typeSales": "销售",
+    "typePartnership": "合作",
+    "priority": "优先级",
+    "priorityLow": "低",
+    "priorityNormal": "正常",
+    "priorityHigh": "高",
+    "priorityUrgent": "紧急",
+    "subject": "主题",
+    "subjectPlaceholder": "您的消息摘要",
+    "message": "消息",
+    "messagePlaceholder": "详细描述您的消息...",
+    "attachments": "附件",
+    "uploadFiles": "点击上传文件",
+    "uploadLimit": "每个文件最大10MB",
+    "sending": "发送中...",
+    "send": "发送消息",
+    "manager": "联系管理器",
+    "managerSubtitle": "管理联系消息和回复",
+    "totalMessages": "总消息数",
+    "unreadMessages": "未读",
+    "repliedMessages": "已回复",
+    "avgResponseTime": "平均响应时间",
+    "messages": "联系消息",
+    "all": "全部",
+    "unread": "未读",
+    "replied": "已回复",
+    "search": "搜索消息...",
+    "from": "来自",
+    "viewDetails": "查看详情",
+    "markAsRead": "标记为已读",
+    "archive": "归档",
+    "delete": "删除",
+    "loading": "加载消息中..."
   },
   "marketplace": {
     "title": "Agroisync市场",
@@ -820,11 +808,7 @@
         "description": "技术团队随时准备帮助"
       }
     },
-    "products": {
-      "title": "精选产品",
-      "description": "为您精选的最佳产品",
-      "buy": "立即购买"
-    },
+    "products": "产品",
     "categories": {
       "all": "全部",
       "grains": "谷物",
@@ -858,7 +842,6 @@
     "subscribe": "订阅计划",
     "showing": "显示",
     "of": "共",
-    "products": "产品",
     "featured": "特色",
     "unit": "每",
     "stock": "库存",
@@ -1107,5 +1090,205 @@
     "message": {
       "productView": "您的产品\"优质大豆\"收到了新的查看"
     }
+  },
+  "chat": {
+    "loading": "加载对话中...",
+    "loadingChats": "加载对话列表...",
+    "online": "在线",
+    "offline": "离线",
+    "typeMessage": "输入消息...",
+    "search": "搜索对话...",
+    "all": "全部",
+    "unread": "未读",
+    "pinned": "置顶",
+    "noConversations": "暂无对话",
+    "noConversationsDesc": "您的对话将在此显示",
+    "order": "订单",
+    "freight": "货运",
+    "general": "一般"
+  },
+  "messaging": {
+    "welcome": "欢迎来到消息中心",
+    "description": "选择一个对话开始聊天或开始新的对话。",
+    "newConversation": "新对话"
+  },
+  "buyerPanel": {
+    "title": "买家面板",
+    "welcome": "欢迎",
+    "orders": "订单",
+    "favorites": "收藏",
+    "messages": "消息",
+    "notifications": "通知",
+    "settings": "设置",
+    "myOrders": "我的订单",
+    "newOrder": "新订单",
+    "seller": "卖家",
+    "contactSeller": "联系卖家",
+    "viewDetails": "查看详情",
+    "favoriteProducts": "收藏商品",
+    "buyNow": "立即购买",
+    "noMessages": "暂无消息",
+    "noMessagesDesc": "您与卖家的对话将在此显示",
+    "goToStore": "前往商店",
+    "accountSettings": "账户设置",
+    "email": "邮箱",
+    "name": "姓名",
+    "logout": "退出登录",
+    "loading": "加载面板中..."
+  },
+  "sellerPanel": {
+    "title": "卖家面板",
+    "welcome": "欢迎",
+    "products": "商品",
+    "orders": "订单",
+    "analytics": "分析",
+    "messages": "消息",
+    "notifications": "通知",
+    "settings": "设置",
+    "myProducts": "我的商品",
+    "addProduct": "添加商品",
+    "units": "单位",
+    "views": "浏览量",
+    "receivedOrders": "收到的订单",
+    "buyer": "买家",
+    "contactBuyer": "联系买家",
+    "confirm": "确认",
+    "totalRevenue": "总收入",
+    "totalOrders": "总订单数",
+    "totalProducts": "活跃商品",
+    "conversionRate": "转化率",
+    "monthlyGrowth": "月增长",
+    "growthDescription": "与上月相比的增长",
+    "noMessages": "暂无消息",
+    "noMessagesDesc": "您与买家的对话将在此显示",
+    "goToStore": "查看商店",
+    "accountSettings": "账户设置",
+    "email": "邮箱",
+    "name": "姓名",
+    "logout": "退出登录",
+    "loading": "加载面板中..."
+  },
+  "driverPanel": {
+    "title": "司机面板",
+    "welcome": "欢迎",
+    "availableFreights": "可用货运",
+    "myFreights": "我的货运",
+    "earnings": "收入",
+    "messages": "消息",
+    "notifications": "通知",
+    "settings": "设置",
+    "origin": "起点",
+    "destination": "终点",
+    "accept": "接受",
+    "progress": "进度",
+    "totalEarnings": "总收入",
+    "thisMonth": "本月",
+    "completedFreights": "已完成货运",
+    "averageRating": "平均评分",
+    "earningsChart": "收入图表",
+    "chartDescription": "过去6个月的收入图表",
+    "noMessages": "暂无消息",
+    "noMessagesDesc": "您与客户的对话将在此显示",
+    "goToFreight": "查看货运",
+    "accountSettings": "账户设置",
+    "email": "邮箱",
+    "name": "姓名",
+    "logout": "退出登录",
+    "loading": "加载面板中...",
+    "updateStatus": "更新"
+  },
+  "orderStatus": {
+    "pending": "待处理",
+    "confirmed": "已确认",
+    "delivered": "已交付",
+    "cancelled": "已取消"
+  },
+  "productStatus": {
+    "active": "活跃",
+    "inactive": "非活跃",
+    "draft": "草稿"
+  },
+  "freightStatus": {
+    "available": "可用",
+    "in_transit": "运输中",
+    "delivered": "已交付",
+    "cancelled": "已取消"
+  },
+  "notFound": {
+    "title": "页面未找到",
+    "description": "您查找的页面不存在或已被移动。请检查地址或使用下面的链接导航。",
+    "goHome": "返回首页",
+    "goBack": "返回",
+    "usefulLinks": "有用链接",
+    "store": "商店",
+    "freight": "货运",
+    "contact": "联系",
+    "help": "帮助"
+  },
+  "checkout": {
+    "title": "结账",
+    "subtitle": "安全完成您的付款",
+    "orderSummary": "订单摘要",
+    "product": "商品",
+    "quantity": "数量",
+    "subtotal": "小计",
+    "fees": "费用",
+    "shipping": "运费",
+    "total": "总计",
+    "securePayment": "安全付款",
+    "secureDescription": "您的数据受SSL加密保护并由Stripe处理。",
+    "cancel": "取消",
+    "continue": "继续",
+    "paymentMethod": "付款方式",
+    "cardNumber": "卡号",
+    "expiryDate": "有效期",
+    "cvv": "CVV",
+    "cardholderName": "持卡人姓名",
+    "back": "返回",
+    "payNow": "立即付款",
+    "processing": "处理付款中",
+    "processingDescription": "请稍候，我们正在处理您的付款...",
+    "success": "付款成功！",
+    "successDescription": "您的付款已成功处理。",
+    "transactionId": "交易ID",
+    "error": "付款错误",
+    "errorDescription": "处理您的付款时发生错误。",
+    "tryAgain": "重试"
+  },
+  "escrow": {
+    "title": "托管管理器",
+    "subtitle": "管理托管交易并释放付款",
+    "totalTransactions": "总交易数",
+    "pendingAmount": "待处理金额",
+    "completedAmount": "已处理金额",
+    "totalFees": "总费用",
+    "transactions": "托管交易",
+    "all": "全部",
+    "pending": "待处理",
+    "completed": "已完成",
+    "buyer": "买家",
+    "seller": "卖家",
+    "documents": "文档",
+    "viewDetails": "查看详情",
+    "release": "释放",
+    "cancel": "取消",
+    "loading": "加载托管交易中..."
+  },
+  "escrowStatus": {
+    "pending": "待处理",
+    "completed": "已完成",
+    "cancelled": "已取消"
+  },
+  "contactPriority": {
+    "low": "低",
+    "normal": "正常",
+    "high": "高",
+    "urgent": "紧急"
+  },
+  "contactType": {
+    "general": "一般",
+    "support": "支持",
+    "sales": "销售",
+    "partnership": "合作"
   }
 }

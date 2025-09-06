@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { 
   BarChart3, MessageSquare, Users, Package, Truck, 
-  CreditCard, Search, Shield, LogOut, DollarSign
+  CreditCard, Search, Shield, LogOut, DollarSign,
+  Eye, Settings, FileText, Mail, TrendingUp,
+  Activity, AlertTriangle, CheckCircle, Clock
 } from 'lucide-react';
 import StockMarketTicker from '../components/StockMarketTicker';
+import EscrowManager from '../components/payments/EscrowManager';
+import ContactManager from '../components/contact/ContactManager';
+import MessagingCenter from '../components/messaging/MessagingCenter';
 
 const AdminSecurePanel = () => {
+  const { t } = useTranslation('admin');
   const [activeTab, setActiveTab] = useState('dashboard');
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -30,33 +37,47 @@ const AdminSecurePanel = () => {
         metrics: {
           totalUsers: 1247,
           activeUsers: 892,
-          totalRevenue: 45678.90,
+          totalRevenue: 2450000,
           pendingPayments: 23,
           totalProducts: 3456,
           totalFreights: 1234,
-          totalTransactions: 5678
+          totalTransactions: 5678,
+          totalMessages: 8945,
+          pendingEscrow: 125000,
+          systemHealth: 98.5,
+          uptime: '99.9%'
         },
         recentActivity: [
           {
             id: 1,
             type: 'user_registration',
-            description: 'Novo usuário cadastrado: João Silva',
+            description: t('activity.userRegistration', 'Novo usuário cadastrado: João Silva'),
             timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-            user: 'joao.silva@email.com'
+            user: 'joao.silva@email.com',
+            status: 'success'
           },
           {
             id: 2,
             type: 'product_created',
-            description: 'Produto criado: Soja Premium',
+            description: t('activity.productCreated', 'Produto criado: Soja Premium'),
             timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
-            user: 'maria.santos@email.com'
+            user: 'maria.santos@email.com',
+            status: 'success'
           },
           {
             id: 3,
             type: 'payment_received',
-            description: 'Pagamento recebido: R$ 99,90',
+            description: t('activity.paymentReceived', 'Pagamento recebido: R$ 99,90'),
             timestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
-            user: 'pedro.oliveira@email.com'
+            user: 'pedro.oliveira@email.com',
+            status: 'success'
+          },
+          {
+            id: 4,
+            type: 'system_alert',
+            description: t('activity.systemAlert', 'Alerta do sistema: Alto uso de CPU'),
+            timestamp: new Date(Date.now() - 1000 * 60 * 90).toISOString(),
+            status: 'warning'
           }
         ],
         systemStatus: 'operational',
@@ -67,7 +88,7 @@ const AdminSecurePanel = () => {
       setError('');
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
-      setError('Erro ao carregar dados do dashboard');
+      setError(t('error.loadingData', 'Erro ao carregar dados do dashboard'));
     } finally {
       setLoading(false);
     }
@@ -78,54 +99,88 @@ const AdminSecurePanel = () => {
     navigate('/admin/login');
   };
 
+  const getActivityIcon = (type) => {
+    switch (type) {
+      case 'user_registration':
+        return <Users className="w-4 h-4 text-green-500" />;
+      case 'product_created':
+        return <Package className="w-4 h-4 text-blue-500" />;
+      case 'payment_received':
+        return <DollarSign className="w-4 h-4 text-emerald-500" />;
+      case 'system_alert':
+        return <AlertTriangle className="w-4 h-4 text-yellow-500" />;
+      default:
+        return <Activity className="w-4 h-4 text-slate-500" />;
+    }
+  };
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case 'success':
+        return <CheckCircle className="w-4 h-4 text-green-500" />;
+      case 'warning':
+        return <AlertTriangle className="w-4 h-4 text-yellow-500" />;
+      case 'error':
+        return <AlertTriangle className="w-4 h-4 text-red-500" />;
+      default:
+        return <Clock className="w-4 h-4 text-slate-500" />;
+    }
+  };
+
   if (loading) {
     return (
-          <div className="min-h-screen bg-premium-platinum flex items-center justify-center">
-      <div className="text-center">
-        <div className="w-16 h-16 bg-gradient-premium rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-premium">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-agro-emerald rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+          </div>
+          <p className="text-gray-600 dark:text-gray-300 text-xl">{t('loading', 'Carregando painel administrativo...')}</p>
         </div>
-        <p className="text-premium-gray text-xl">Carregando painel administrativo...</p>
       </div>
-    </div>
     );
   }
 
   if (error) {
     return (
-          <div className="min-h-screen bg-premium-platinum flex items-center justify-center">
-      <div className="text-center">
-        <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <Shield className="w-8 h-8 text-red-600" />
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Shield className="w-8 h-8 text-red-600" />
+          </div>
+          <p className="text-red-600 text-xl">{error}</p>
         </div>
-        <p className="text-red-600 text-xl">{error}</p>
       </div>
-    </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-premium-platinum">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       <StockMarketTicker />
-            {/* Header */}
-              <header className="bg-white border-b border-premium-platinum shadow-premium-soft">
+      {/* Header */}
+      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <h1 className="text-xl font-semibold title-premium">
-                Painel Administrativo AGROISYNC
+              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
+                {t('title', 'Painel Administrativo AGROISYNC')}
               </h1>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-premium-gray">
-                Admin: {user?.email || 'Administrador'}
+              <div className="flex items-center gap-2">
+                <Shield className="w-5 h-5 text-agro-emerald" />
+                <span className="text-sm text-gray-600 dark:text-gray-400">
+                  {t('secureAccess', 'Acesso Seguro')}
+                </span>
+              </div>
+              <span className="text-gray-600 dark:text-gray-300">
+                {t('admin', 'Admin')}: {user?.email || 'Administrador'}
               </span>
               <button
                 onClick={handleLogout}
                 className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center"
               >
                 <LogOut className="w-4 h-4 mr-2" />
-                Sair
+                {t('logout', 'Sair')}
               </button>
             </div>
           </div>
@@ -133,17 +188,19 @@ const AdminSecurePanel = () => {
       </header>
 
       {/* Navigation Tabs */}
-              <nav className="bg-premium-platinum border-b border-premium-platinum">
+      <nav className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex space-x-8">
             {[
-              { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
-              { id: 'conversations', label: 'Conversas', icon: MessageSquare },
-              { id: 'users', label: 'Usuários', icon: Users },
-              { id: 'products', label: 'Produtos', icon: Package },
-              { id: 'freights', label: 'Fretes', icon: Truck },
-              { id: 'payments', label: 'Pagamentos', icon: CreditCard },
-              { id: 'audit', label: 'Auditoria', icon: Search }
+              { id: 'dashboard', label: t('dashboard', 'Dashboard'), icon: BarChart3 },
+              { id: 'users', label: t('users', 'Usuários'), icon: Users },
+              { id: 'products', label: t('products', 'Produtos'), icon: Package },
+              { id: 'freights', label: t('freights', 'Fretes'), icon: Truck },
+              { id: 'payments', label: t('payments', 'Pagamentos'), icon: CreditCard },
+              { id: 'escrow', label: t('escrow', 'Escrow'), icon: DollarSign },
+              { id: 'messages', label: t('messages', 'Mensagens'), icon: MessageSquare },
+              { id: 'contacts', label: t('contacts', 'Contatos'), icon: Mail },
+              { id: 'audit', label: t('audit', 'Auditoria'), icon: Search }
             ].map((tab) => {
               const Icon = tab.icon;
               return (
@@ -152,8 +209,8 @@ const AdminSecurePanel = () => {
                   onClick={() => setActiveTab(tab.id)}
                   className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center space-x-2 ${
                     activeTab === tab.id
-                      ? 'border-accent-emerald text-accent-emerald'
-                      : 'border-transparent text-premium-gray hover:text-premium-dark-gray hover:border-premium-gray'
+                      ? 'border-agro-emerald text-agro-emerald'
+                      : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -171,77 +228,78 @@ const AdminSecurePanel = () => {
         {activeTab === 'dashboard' && dashboardData && (
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="card-premium p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
                 <div className="flex items-center">
                   <div className="p-2 bg-blue-100 rounded-lg">
                     <Users className="w-6 h-6 text-blue-600" />
                   </div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-premium-gray">Total de Usuários</p>
-                    <p className="text-2xl font-semibold text-premium-dark-gray">{dashboardData.metrics.totalUsers}</p>
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{t('totalUsers', 'Total de Usuários')}</p>
+                    <p className="text-2xl font-semibold text-gray-900 dark:text-white">{dashboardData.metrics.totalUsers}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="card-premium p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
                 <div className="flex items-center">
                   <div className="p-2 bg-green-100 rounded-lg">
                     <Package className="w-6 h-6 text-green-600" />
                   </div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-premium-gray">Total de Produtos</p>
-                    <p className="text-2xl font-semibold text-premium-dark-gray">{dashboardData.metrics.totalProducts}</p>
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{t('totalProducts', 'Total de Produtos')}</p>
+                    <p className="text-2xl font-semibold text-gray-900 dark:text-white">{dashboardData.metrics.totalProducts}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="card-premium p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
                 <div className="flex items-center">
                   <div className="p-2 bg-yellow-100 rounded-lg">
                     <Truck className="w-6 h-6 text-yellow-600" />
                   </div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-premium-gray">Total de Fretes</p>
-                    <p className="text-2xl font-semibold text-premium-dark-gray">{dashboardData.metrics.totalFreights}</p>
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{t('totalFreights', 'Total de Fretes')}</p>
+                    <p className="text-2xl font-semibold text-gray-900 dark:text-white">{dashboardData.metrics.totalFreights}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="card-premium p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
                 <div className="flex items-center">
                   <div className="p-2 bg-purple-100 rounded-lg">
                     <DollarSign className="w-6 h-6 text-purple-600" />
                   </div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-premium-gray">Receita Total</p>
-                    <p className="text-2xl font-semibold text-premium-dark-gray">R$ {dashboardData.metrics.totalRevenue.toLocaleString('pt-BR')}</p>
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{t('totalRevenue', 'Receita Total')}</p>
+                    <p className="text-2xl font-semibold text-gray-900 dark:text-white">
+                      {new Intl.NumberFormat('pt-BR', { 
+                        style: 'currency', 
+                        currency: 'BRL' 
+                      }).format(dashboardData.metrics.totalRevenue)}
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="card-premium">
-              <div className="px-6 py-4 border-b border-premium-platinum">
-                <h3 className="text-lg font-medium title-premium">Atividade Recente</h3>
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">{t('recentActivity', 'Atividade Recente')}</h3>
               </div>
               <div className="p-6">
                 <div className="space-y-4">
                   {dashboardData.recentActivity?.map((activity, index) => (
-                    <div key={index} className="flex items-center justify-between p-4 bg-premium-platinum rounded-lg">
+                    <div key={index} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                       <div className="flex items-center space-x-4">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          activity.type === 'payment_received' ? 'bg-green-100 text-green-800 border border-green-200' :
-                          activity.type === 'user_registration' ? 'bg-blue-100 text-blue-800 border border-blue-200' :
-                          'bg-yellow-100 text-yellow-800 border border-yellow-200'
-                        }`}>
-                          {activity.type === 'payment_received' ? 'PAGAMENTO' :
-                           activity.type === 'user_registration' ? 'USUÁRIO' : 'PRODUTO'}
-                        </span>
-                        <span className="text-premium-dark-gray">{activity.description}</span>
-                        <span className="text-premium-gray">{activity.user}</span>
+                        {getActivityIcon(activity.type)}
+                        <span className="text-gray-900 dark:text-white">{activity.description}</span>
+                        {activity.user && <span className="text-gray-600 dark:text-gray-400">{activity.user}</span>}
                       </div>
-                      <div className="text-sm text-premium-gray">
-                        {new Date(activity.timestamp).toLocaleString('pt-BR')}
+                      <div className="flex items-center space-x-2">
+                        {getStatusIcon(activity.status)}
+                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                          {new Date(activity.timestamp).toLocaleString('pt-BR')}
+                        </span>
                       </div>
                     </div>
                   ))}
@@ -251,18 +309,27 @@ const AdminSecurePanel = () => {
           </div>
         )}
 
+        {/* Escrow Manager Tab */}
+        {activeTab === 'escrow' && <EscrowManager />}
+
+        {/* Contact Manager Tab */}
+        {activeTab === 'contacts' && <ContactManager />}
+
+        {/* Messaging Center Tab */}
+        {activeTab === 'messages' && <MessagingCenter />}
+
         {/* Other Tabs - Placeholder */}
-        {activeTab !== 'dashboard' && (
-          <div className="card-premium p-8">
+        {!['dashboard', 'escrow', 'contacts', 'messages'].includes(activeTab) && (
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-8 shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="text-center">
               <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-yellow-100 flex items-center justify-center">
-               <Shield className="w-8 h-8 text-yellow-600" />
-             </div>
-              <h3 className="text-xl font-medium title-premium mb-2">
-                Funcionalidade em Desenvolvimento
+                <Shield className="w-8 h-8 text-yellow-600" />
+              </div>
+              <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-2">
+                {t('featureInDevelopment', 'Funcionalidade em Desenvolvimento')}
               </h3>
-              <p className="text-premium-gray">
-                A aba "{activeTab}" está sendo implementada e estará disponível em breve.
+              <p className="text-gray-600 dark:text-gray-400">
+                {t('featureDescription', 'A aba "{{tab}}" está sendo implementada e estará disponível em breve.', { tab: activeTab })}
               </p>
             </div>
           </div>
