@@ -1,32 +1,31 @@
-import { createRouter } from 'next-connect'
-import { connectDB } from '../../../lib/mongodb'
-import { verifyToken } from '../../../utils/auth'
-import Redis from 'ioredis'
-import { promisify } from 'util'
+import { createRouter } from 'next-connect';
+import { connectDB } from '../../../lib/mongodb';
+import { verifyToken } from '../../../utils/auth';
+import Redis from 'ioredis';
 
-const router = createRouter()
+const router = createRouter();
 
 // Health check endpoint
 router.get(async (req, res) => {
   try {
-    const startTime = Date.now()
+    const startTime = Date.now();
     
     // Check database connection
-    const dbStatus = await checkDatabaseHealth()
+    const dbStatus = await checkDatabaseHealth();
     
     // Check Redis connection
-    const redisStatus = await checkRedisHealth()
+    const redisStatus = await checkRedisHealth();
     
     // Check external services
-    const externalServices = await checkExternalServices()
+    const externalServices = await checkExternalServices();
     
     // Check system resources
-    const systemResources = await checkSystemResources()
+    const systemResources = await checkSystemResources();
     
     // Check application metrics
-    const appMetrics = await checkApplicationMetrics()
+    const appMetrics = await checkApplicationMetrics();
     
-    const responseTime = Date.now() - startTime
+    const responseTime = Date.now() - startTime;
     
     // Determine overall health
     const overallHealth = determineOverallHealth({
@@ -35,7 +34,7 @@ router.get(async (req, res) => {
       externalServices,
       systemResources,
       appMetrics
-    })
+    });
     
     res.status(overallHealth === 'healthy' ? 200 : 503).json({
       status: overallHealth,
@@ -51,10 +50,10 @@ router.get(async (req, res) => {
       uptime: process.uptime(),
       version: process.env.npm_package_version || '1.0.0',
       environment: process.env.NODE_ENV || 'development'
-    })
+    });
     
   } catch (error) {
-    console.error('Health check error:', error)
+    console.error('Health check error:', error);
     res.status(503).json({
       status: 'unhealthy',
       timestamp: new Date().toISOString(),
@@ -66,25 +65,25 @@ router.get(async (req, res) => {
         system: { status: 'unknown', error: error.message },
         application: { status: 'unknown', error: error.message }
       }
-    })
+    });
   }
-})
+});
 
 // Detailed health check (admin only)
 router.get('/detailed', async (req, res) => {
   try {
     // Verify admin authentication
-    const token = req.headers.authorization?.replace('Bearer ', '')
+    const token = req.headers.authorization?.replace('Bearer ', '');
     if (!token) {
-      return res.status(401).json({ error: 'Token de acesso necessário' })
+      return res.status(401).json({ error: 'Token de acesso necessário' });
     }
     
-    const decoded = verifyToken(token)
+    const decoded = verifyToken(token);
     if (!decoded || decoded.role !== 'admin') {
-      return res.status(403).json({ error: 'Acesso negado' })
+      return res.status(403).json({ error: 'Acesso negado' });
     }
     
-    const startTime = Date.now()
+    const startTime = Date.now();
     
     // Comprehensive health checks
     const [
@@ -105,9 +104,9 @@ router.get('/detailed', async (req, res) => {
       getPerformanceMetrics(),
       getSecurityMetrics(),
       getBusinessMetrics()
-    ])
+    ]);
     
-    const responseTime = Date.now() - startTime
+    const responseTime = Date.now() - startTime;
     
     res.status(200).json({
       status: 'healthy',
@@ -123,139 +122,139 @@ router.get('/detailed', async (req, res) => {
         security: securityMetrics,
         business: businessMetrics
       }
-    })
+    });
     
   } catch (error) {
-    console.error('Detailed health check error:', error)
+    console.error('Detailed health check error:', error);
     res.status(500).json({
       status: 'error',
       timestamp: new Date().toISOString(),
       error: error.message
-    })
+    });
   }
-})
+});
 
 // Performance metrics endpoint
 router.get('/performance', async (req, res) => {
   try {
-    const metrics = await getPerformanceMetrics()
+    const metrics = await getPerformanceMetrics();
     
     res.status(200).json({
       success: true,
       metrics,
       timestamp: new Date().toISOString()
-    })
+    });
     
   } catch (error) {
-    console.error('Performance metrics error:', error)
+    console.error('Performance metrics error:', error);
     res.status(500).json({
       success: false,
       error: error.message
-    })
+    });
   }
-})
+});
 
 // Cache management endpoint
 router.post('/cache', async (req, res) => {
   try {
     // Verify admin authentication
-    const token = req.headers.authorization?.replace('Bearer ', '')
+    const token = req.headers.authorization?.replace('Bearer ', '');
     if (!token) {
-      return res.status(401).json({ error: 'Token de acesso necessário' })
+      return res.status(401).json({ error: 'Token de acesso necessário' });
     }
     
-    const decoded = verifyToken(token)
+    const decoded = verifyToken(token);
     if (!decoded || decoded.role !== 'admin') {
-      return res.status(403).json({ error: 'Acesso negado' })
+      return res.status(403).json({ error: 'Acesso negado' });
     }
     
-    const { action, keys, pattern } = req.body
+    const { action, keys, pattern } = req.body;
     
-    const redis = new Redis(process.env.REDIS_URL)
+    const redis = new Redis(process.env.REDIS_URL);
     
-    let result
+    let result;
     
     switch (action) {
       case 'clear':
         if (keys && Array.isArray(keys)) {
-          result = await redis.del(...keys)
+          result = await redis.del(...keys);
         } else if (pattern) {
-          const keysToDelete = await redis.keys(pattern)
+          const keysToDelete = await redis.keys(pattern);
           if (keysToDelete.length > 0) {
-            result = await redis.del(...keysToDelete)
+            result = await redis.del(...keysToDelete);
           }
         } else {
-          result = await redis.flushdb()
+          result = await redis.flushdb();
         }
-        break
+        break;
         
       case 'info':
-        result = await redis.info()
-        break
+        result = await redis.info();
+        break;
         
       case 'memory':
-        result = await redis.memory('usage')
-        break
+        result = await redis.memory('usage');
+        break;
         
       default:
-        return res.status(400).json({ error: 'Ação inválida' })
+        return res.status(400).json({ error: 'Ação inválida' });
     }
     
-    await redis.quit()
+    await redis.quit();
     
     res.status(200).json({
       success: true,
       result,
       action
-    })
+    });
     
   } catch (error) {
-    console.error('Cache management error:', error)
+    console.error('Cache management error:', error);
     res.status(500).json({
       success: false,
       error: error.message
-    })
+    });
   }
-})
+});
 
 // Helper functions
 async function checkDatabaseHealth() {
   try {
-    await connectDB()
-    const { User } = await import('../../../models/User')
-    await User.findOne().limit(1)
+    await connectDB();
+    const { User } = await import('../../../models/User');
+    await User.findOne().limit(1);
     
     return {
       status: 'healthy',
       responseTime: '< 100ms',
       connection: 'active'
-    }
+    };
   } catch (error) {
     return {
       status: 'unhealthy',
       error: error.message,
       connection: 'failed'
-    }
+    };
   }
 }
 
 async function checkRedisHealth() {
   try {
-    const redis = new Redis(process.env.REDIS_URL)
-    await redis.ping()
-    await redis.quit()
+    const redis = new Redis(process.env.REDIS_URL);
+    await redis.ping();
+    await redis.quit();
     
     return {
       status: 'healthy',
       responseTime: '< 50ms',
       connection: 'active'
-    }
+    };
   } catch (error) {
     return {
       status: 'unhealthy',
       error: error.message,
       connection: 'failed'
-    }
+    };
   }
 }
 
@@ -264,25 +263,25 @@ async function checkExternalServices() {
     stripe: await checkStripeHealth(),
     email: await checkEmailHealth(),
     storage: await checkStorageHealth()
-  }
+  };
   
-  return services
+  return services;
 }
 
 async function checkStripeHealth() {
   try {
-    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
-    await stripe.balance.retrieve()
+    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    await stripe.balance.retrieve();
     
     return {
       status: 'healthy',
       responseTime: '< 200ms'
-    }
+    };
   } catch (error) {
     return {
       status: 'unhealthy',
       error: error.message
-    }
+    };
   }
 }
 
@@ -292,12 +291,12 @@ async function checkEmailHealth() {
     return {
       status: 'healthy',
       responseTime: '< 100ms'
-    }
+    };
   } catch (error) {
     return {
       status: 'unhealthy',
       error: error.message
-    }
+    };
   }
 }
 
@@ -307,18 +306,18 @@ async function checkStorageHealth() {
     return {
       status: 'healthy',
       responseTime: '< 150ms'
-    }
+    };
   } catch (error) {
     return {
       status: 'unhealthy',
       error: error.message
-    }
+    };
   }
 }
 
 async function checkSystemResources() {
-  const memUsage = process.memoryUsage()
-  const cpuUsage = process.cpuUsage()
+  const memUsage = process.memoryUsage();
+  const cpuUsage = process.cpuUsage();
   
   return {
     memory: {
@@ -334,7 +333,7 @@ async function checkSystemResources() {
     uptime: process.uptime(),
     nodeVersion: process.version,
     platform: process.platform
-  }
+  };
 }
 
 async function checkApplicationMetrics() {
@@ -343,35 +342,35 @@ async function checkApplicationMetrics() {
     requestCount: 0, // Would need to track this
     errorRate: 0, // Would need to track this
     responseTime: 0 // Would need to track this
-  }
+  };
 }
 
 function determineOverallHealth(services) {
   const unhealthyServices = Object.values(services).filter(service => 
     service.status === 'unhealthy' || 
     (typeof service === 'object' && Object.values(service).some(s => s.status === 'unhealthy'))
-  )
+  );
   
   if (unhealthyServices.length === 0) {
-    return 'healthy'
+    return 'healthy';
   } else if (unhealthyServices.length <= 2) {
-    return 'degraded'
+    return 'degraded';
   } else {
-    return 'unhealthy'
+    return 'unhealthy';
   }
 }
 
 async function getDetailedDatabaseHealth() {
   try {
-    await connectDB()
-    const { User, Order, Payment, KYC } = await import('../../../models')
+    await connectDB();
+    const { User, Order, Payment, KYC } = await import('../../../models');
     
     const [userCount, orderCount, paymentCount, kycCount] = await Promise.all([
       User.countDocuments(),
       Order.countDocuments(),
       Payment.countDocuments(),
       KYC.countDocuments()
-    ])
+    ]);
     
     return {
       status: 'healthy',
@@ -383,33 +382,33 @@ async function getDetailedDatabaseHealth() {
       },
       connection: 'active',
       responseTime: '< 100ms'
-    }
+    };
   } catch (error) {
     return {
       status: 'unhealthy',
       error: error.message
-    }
+    };
   }
 }
 
 async function getDetailedRedisHealth() {
   try {
-    const redis = new Redis(process.env.REDIS_URL)
-    const info = await redis.info()
-    const memory = await redis.memory('usage')
-    await redis.quit()
+    const redis = new Redis(process.env.REDIS_URL);
+    const info = await redis.info();
+    const memory = await redis.memory('usage');
+    await redis.quit();
     
     return {
       status: 'healthy',
       memory: memory,
       info: info,
       responseTime: '< 50ms'
-    }
+    };
   } catch (error) {
     return {
       status: 'unhealthy',
       error: error.message
-    }
+    };
   }
 }
 
@@ -418,7 +417,7 @@ async function getDetailedExternalHealth() {
     stripe: await checkStripeHealth(),
     email: await checkEmailHealth(),
     storage: await checkStorageHealth()
-  }
+  };
 }
 
 async function getDetailedSystemHealth() {
@@ -427,7 +426,7 @@ async function getDetailedSystemHealth() {
     loadAverage: process.platform === 'linux' ? require('os').loadavg() : [0, 0, 0],
     freeMemory: require('os').freemem(),
     totalMemory: require('os').totalmem()
-  }
+  };
 }
 
 async function getDetailedApplicationHealth() {
@@ -437,7 +436,7 @@ async function getDetailedApplicationHealth() {
     environment: process.env.NODE_ENV || 'development',
     pid: process.pid,
     arch: process.arch
-  }
+  };
 }
 
 async function getPerformanceMetrics() {
@@ -459,7 +458,7 @@ async function getPerformanceMetrics() {
       hitRate: 0.85,
       missRate: 0.15
     }
-  }
+  };
 }
 
 async function getSecurityMetrics() {
@@ -477,7 +476,7 @@ async function getSecurityMetrics() {
       encryptedData: 10000,
       unencryptedData: 0
     }
-  }
+  };
 }
 
 async function getBusinessMetrics() {
@@ -497,12 +496,12 @@ async function getBusinessMetrics() {
       monthly: 10000,
       daily: 333
     }
-  }
+  };
 }
 
 export default router.handler({
   onError: (err, req, res) => {
-    console.error('Health Handler Error:', err)
-    res.status(500).json({ error: 'Erro interno do servidor' })
+    console.error('Health Handler Error:', err);
+    res.status(500).json({ error: 'Erro interno do servidor' });
   }
-})
+});
