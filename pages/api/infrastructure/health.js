@@ -217,7 +217,7 @@ router.post('/cache', async (req, res) => {
 async function checkDatabaseHealth() {
   try {
     await connectDB();
-    const { User } = await import('../../../models/User');
+    const User = (await import('../../../models/User')).default;
     await User.findOne().limit(1);
 
     return {

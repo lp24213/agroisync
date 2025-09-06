@@ -21,7 +21,7 @@ router.get(async (req, res) => {
     // Connect to database
     await connectDB();
     const { KYC } = await import('../../../models/KYC');
-    const { User } = await import('../../../models/User');
+    const User = (await import('../../../models/User')).default;
 
     // Get user KYC documents
     const kycDocuments = await KYC.find({ userId: decoded.userId })
@@ -82,7 +82,7 @@ router.put(async (req, res) => {
     // Connect to database
     await connectDB();
     const { KYC } = await import('../../../models/KYC');
-    const { User } = await import('../../../models/User');
+    const User = (await import('../../../models/User')).default;
 
     // Update document status
     const updatedDocument = await KYC.findByIdAndUpdate(
@@ -188,8 +188,8 @@ function calculateProgress(documents, role) {
 
 async function sendKYCNotification(userId, status, reason) {
   try {
-    const { User } = await import('../../../models/User');
-    const { Notification } = await import('../../../models/Notification');
+    const User = (await import('../../../models/User')).default;
+    const Notification = (await import('../../../models/Notification')).default;
 
     const user = await User.findById(userId);
     if (!user) return;
