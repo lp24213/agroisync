@@ -5,18 +5,50 @@
       "@/*": ["./src/*"]
     },
     "target": "es2017",
-    "lib": ["es2017"],
+    "lib": [],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
-    "forceConsistentCasingInFileNames": true,
+    "forceConsistentCasingInFileNames": false,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "commonjs",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "incremental": true
+    "isolatedModules": false,
+    "incremental": false,
+    "noImplicitAny": false,
+    "noImplicitReturns": false,
+    "noImplicitThis": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "exactOptionalPropertyTypes": false,
+    "noImplicitOverride": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "noUncheckedIndexedAccess": false,
+    "allowUnusedLabels": true,
+    "allowUnreachableCode": true,
+    "checkJs": false,
+    "declaration": false,
+    "declarationMap": false,
+    "emitDeclarationOnly": false,
+    "importHelpers": false,
+    "inlineSourceMap": false,
+    "inlineSources": false,
+    "mapRoot": "",
+    "newLine": "lf",
+    "noEmitHelpers": false,
+    "noEmitOnError": false,
+    "outDir": "",
+    "outFile": "",
+    "preserveConstEnums": false,
+    "removeComments": false,
+    "sourceMap": false,
+    "sourceRoot": "",
+    "stripInternal": false,
+    "suppressExcessPropertyErrors": false,
+    "suppressImplicitAnyIndexErrors": false,
+    "useDefineForClassFields": false
   },
   "include": [
     "src/**/*.js"
@@ -24,6 +56,12 @@
   "exclude": [
     "node_modules",
     "dist",
-    "build"
-  ]
+    "build",
+    "**/*.d.ts",
+    "**/*.ts"
+  ],
+  "typeAcquisition": {
+    "enable": false,
+    "disableFilenameBasedTypeAcquisition": true
+  }
 }
