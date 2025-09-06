@@ -194,20 +194,6 @@
           }
         }
       }
-    },
-    "contact": {
-      "phone": {
-        "title": "Telefone",
-        "number": "(66) 99236-2830"
-      },
-      "email": {
-        "title": "Email",
-        "address": "contato@agroisync.com"
-      },
-      "chat": {
-        "title": "Chat",
-        "description": "Suporte em tempo real"
-      }
     }
   },
   "help": {
@@ -303,23 +289,6 @@
             "description": "Resolução de problemas comuns"
           }
         }
-      }
-    },
-    "contact": {
-      "phone": {
-        "title": "Telefone",
-        "number": "(66) 99236-2830",
-        "schedule": "Segunda a Sexta, 8h às 18h"
-      },
-      "email": {
-        "title": "Email",
-        "address": "suporte@agroisync.com",
-        "response": "Resposta em até 24h"
-      },
-      "chat": {
-        "title": "Chat",
-        "description": "Suporte em tempo real",
-        "availability": "Disponível 24/7"
       }
     }
   },
@@ -503,65 +472,6 @@
       "secondary": "Ver Planos"
     }
   },
-  "contact": {
-    "title": "Entre em Contato",
-    "subtitle": "Estamos Aqui para Ajudar o Seu Agronegócio",
-    "info": {
-      "title": "Informações de Contato",
-      "subtitle": "Múltiplos canais para atendimento personalizado",
-      "address": {
-        "title": "Endereço",
-        "content": "Sinop - MT, Brasil"
-      },
-      "phone": {
-        "title": "Telefone",
-        "content": "(66) 99236-2830"
-      },
-      "email": {
-        "title": "E-mail",
-        "content": "contato@agroisync.com"
-      },
-      "hours": {
-        "title": "Horário de Funcionamento",
-        "content": "Segunda a Sexta: 8h às 18h"
-      }
-    },
-    "form": {
-      "title": "Formulário de Contato",
-      "name": "Nome Completo",
-      "namePlaceholder": "Digite seu nome completo",
-      "email": "E-mail",
-      "emailPlaceholder": "Digite seu e-mail",
-      "phone": "Telefone",
-      "phonePlaceholder": "Digite seu telefone",
-      "subject": "Assunto",
-      "subjectPlaceholder": "Digite o assunto",
-      "message": "Mensagem",
-      "messagePlaceholder": "Digite sua mensagem",
-      "send": "Enviar Mensagem",
-      "sending": "Enviando...",
-      "success": {
-        "title": "Mensagem Enviada!",
-        "message": "Obrigado pelo contato. Retornaremos em breve.",
-        "cta": "Enviar Nova Mensagem"
-      }
-    },
-    "map": {
-      "title": "Nossa Localização",
-      "office": {
-        "title": "Escritório Principal",
-        "name": "Agroisync",
-        "address": "Sinop - Mato Grosso",
-        "city": "Brasil"
-      }
-    },
-    "cta": {
-      "title": "Vamos Conversar?",
-      "subtitle": "Entre em contato e descubra como podemos transformar seu agronegócio",
-      "primary": "Falar Conosco",
-      "secondary": "Ver Planos"
-    }
-  },
   "marketplace": {
     "title": "Marketplace Agroisync",
     "subtitle": "Conecte-se diretamente com produtores e fornecedores",
@@ -691,56 +601,6 @@
     "madeIn": "Feito no Brasil",
     "version": "Versão"
   },
-  "admin": {
-    "dashboard": "Dashboard",
-    "users": "Usuários",
-    "payments": "Pagamentos",
-    "products": "Produtos",
-    "freights": "Fretes",
-    "settings": "Configurações",
-    "totalUsers": "Total de Usuários",
-    "totalPayments": "Total de Pagamentos",
-    "activeProducts": "Produtos Ativos",
-    "availableFreights": "Fretes Disponíveis",
-    "usersByPlan": "Usuários por Plano",
-    "freePlan": "Gratuito",
-    "agroconnectPlus": "AGROCONNECT+",
-    "paymentStatus": "Status dos Pagamentos",
-    "completed": "Completado",
-    "pending": "Pendente",
-    "manageUsers": "Gerenciar Usuários",
-    "newUser": "Novo Usuário",
-    "name": "Nome",
-    "email": "Email",
-    "plan": "Plano",
-    "status": "Status",
-    "date": "Data",
-    "actions": "Ações",
-    "paymentHistory": "Histórico de Pagamentos",
-    "export": "Exportar",
-    "id": "ID",
-    "user": "Usuário",
-    "value": "Valor",
-    "registeredProducts": "Produtos Cadastrados",
-    "newProduct": "Novo Produto",
-    "category": "Categoria",
-    "view": "Ver",
-    "edit": "Editar",
-    "agroConnectFreights": "Fretes AgroConecta",
-    "newFreight": "Novo Frete",
-    "freight": "Frete",
-    "origin": "Origem",
-    "destination": "Destino",
-    "weight": "Peso",
-    "details": "Detalhes",
-    "systemSettings": "Configurações do Sistema",
-    "generalSettings": "Configurações Gerais",
-    "platformName": "Nome da Plataforma",
-    "contactEmail": "Email de Contato",
-    "saveSettings": "Salvar Configurações",
-    "loadingDashboard": "Carregando painel administrativo...",
-    "logout": "Sair"
-  },
   "agroconecta": {
     "products": {
       "all": "Todos os Produtos",
@@ -772,11 +632,6 @@
     },
     "search": {
       "placeholder": "Buscar fretes, transportadoras..."
-    },
-    "price": {
-      "label": "Preço",
-      "min": "Min",
-      "max": "Max"
     },
     "register": {
       "freight": "Cadastrar Frete",
@@ -1242,17 +1097,6 @@
     "in_transit": "Em Trânsito",
     "delivered": "Entregue",
     "cancelled": "Cancelado"
-  },
-  "notFound": {
-    "title": "Página não encontrada",
-    "description": "A página que você está procurando não existe ou foi movida. Verifique o endereço ou use os links abaixo para navegar.",
-    "goHome": "Voltar ao Início",
-    "goBack": "Voltar",
-    "usefulLinks": "Links Úteis",
-    "store": "Loja",
-    "freight": "Fretes",
-    "contact": "Contato",
-    "help": "Ajuda"
   },
   "checkout": {
     "title": "Finalizar Compra",

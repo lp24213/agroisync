@@ -2,8 +2,8 @@ import rateLimit from 'express-rate-limit';
 import RedisStore from 'rate-limit-redis';
 import Redis from 'ioredis';
 
-// Redis client configuration
-const redisClient = new Redis({
+// Configuração do Redis para rate limiting
+const redis = new Redis({
   host: process.env.REDIS_HOST || 'localhost',
   port: process.env.REDIS_PORT || 6379,
   password: process.env.REDIS_PASSWORD,
@@ -11,94 +11,135 @@ const redisClient = new Redis({
   maxRetriesPerRequest: 3,
 });
 
-// Rate limiters
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // limit each IP to 5 requests per windowMs
-  message: 'Too many authentication attempts, please try again later.',
+// Rate limiter geral
+export const generalLimiter = rateLimit({
+  store: new RedisStore({
+    sendCommand: (...args) => redis.call(...args),
+  }),
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // máximo 100 requests por IP por janela
+  message: {
+    success: false,
+    message: 'Muitas tentativas. Tente novamente em 15 minutos.',
+    retryAfter: 15 * 60
+  },
   standardHeaders: true,
   legacyHeaders: false,
-  store: new RedisStore({
-    sendCommand: (...args) => redisClient.call(...args),
-  }),
-});
-
-const registrationLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 3, // limit each IP to 3 registration attempts per hour
-  message: 'Too many registration attempts, please try again later.',
-  standardHeaders: true,
-  legacyHeaders: false,
-  store: new RedisStore({
-    sendCommand: (...args) => redisClient.call(...args),
-  }),
-});
-
-const adminLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many admin requests, please try again later.',
-  standardHeaders: true,
-  legacyHeaders: false,
-  store: new RedisStore({
-    sendCommand: (...args) => redisClient.call(...args),
-  }),
-});
-
-const uploadLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // limit each IP to 10 uploads per windowMs
-  message: 'Too many upload attempts, please try again later.',
-  standardHeaders: true,
-  legacyHeaders: false,
-  store: new RedisStore({
-    sendCommand: (...args) => redisClient.call(...args),
-  }),
-});
-
-const paymentLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 20, // limit each IP to 20 payment attempts per windowMs
-  message: 'Too many payment attempts, please try again later.',
-  standardHeaders: true,
-  legacyHeaders: false,
-  store: new RedisStore({
-    sendCommand: (...args) => redisClient.call(...args),
-  }),
-});
-
-const rateLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 1000, // limit each IP to 1000 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.',
-  standardHeaders: true,
-  legacyHeaders: false,
-  store: new RedisStore({
-    sendCommand: (...args) => redisClient.call(...args),
-  }),
-});
-
-// Alias for API routes
-const apiLimiter = rateLimiter;
-
-// Cleanup function for rate limiters
-const cleanupRateLimiters = () => {
-  try {
-    redisClient.disconnect();
-    console.log('✅ Rate limiter Redis connection closed');
-  } catch (error) {
-    console.error('❌ Error closing rate limiter Redis connection:', error);
+  skip: (req) => {
+    // Pular rate limiting para IPs confiáveis (admin, etc.)
+    const trustedIPs = process.env.TRUSTED_IPS?.split(',') || [];
+    return trustedIPs.includes(req.ip);
   }
-};
+});
 
-export {
+// Rate limiter para autenticação
+export const authLimiter = rateLimit({
+  store: new RedisStore({
+    sendCommand: (...args) => redis.call(...args),
+  }),
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 5, // máximo 5 tentativas de login por IP por janela
+  message: {
+    success: false,
+    message: 'Muitas tentativas de login. Tente novamente em 15 minutos.',
+    retryAfter: 15 * 60
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true, // Não contar requests bem-sucedidos
+  keyGenerator: (req) => {
+    // Usar email + IP para rate limiting de auth
+    const email = req.body?.email || req.body?.username || 'unknown';
+    return `auth:${req.ip}:${email}`;
+  }
+});
+
+// Rate limiter para admin
+export const adminLimiter = rateLimit({
+  store: new RedisStore({
+    sendCommand: (...args) => redis.call(...args),
+  }),
+  windowMs: 5 * 60 * 1000, // 5 minutos
+  max: 10, // máximo 10 requests admin por IP por janela
+  message: {
+    success: false,
+    message: 'Muitas tentativas de acesso admin. Tente novamente em 5 minutos.',
+    retryAfter: 5 * 60
+  },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
+// Rate limiter para API pública
+export const apiLimiter = rateLimit({
+  store: new RedisStore({
+    sendCommand: (...args) => redis.call(...args),
+  }),
+  windowMs: 1 * 60 * 1000, // 1 minuto
+  max: 60, // máximo 60 requests por IP por minuto
+  message: {
+    success: false,
+    message: 'Muitas requisições. Tente novamente em 1 minuto.',
+    retryAfter: 60
+  },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
+// Rate limiter para uploads
+export const uploadLimiter = rateLimit({
+  store: new RedisStore({
+    sendCommand: (...args) => redis.call(...args),
+  }),
+  windowMs: 60 * 60 * 1000, // 1 hora
+  max: 10, // máximo 10 uploads por IP por hora
+  message: {
+    success: false,
+    message: 'Muitos uploads. Tente novamente em 1 hora.',
+    retryAfter: 60 * 60
+  },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
+// Rate limiter para mensagens
+export const messageLimiter = rateLimit({
+  store: new RedisStore({
+    sendCommand: (...args) => redis.call(...args),
+  }),
+  windowMs: 1 * 60 * 1000, // 1 minuto
+  max: 30, // máximo 30 mensagens por IP por minuto
+  message: {
+    success: false,
+    message: 'Muitas mensagens. Tente novamente em 1 minuto.',
+    retryAfter: 60
+  },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
+// Rate limiter para contato
+export const contactLimiter = rateLimit({
+  store: new RedisStore({
+    sendCommand: (...args) => redis.call(...args),
+  }),
+  windowMs: 60 * 60 * 1000, // 1 hora
+  max: 5, // máximo 5 mensagens de contato por IP por hora
+  message: {
+    success: false,
+    message: 'Muitas mensagens de contato. Tente novamente em 1 hora.',
+    retryAfter: 60 * 60
+  },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
+export default {
+  generalLimiter,
   authLimiter,
-  registrationLimiter,
   adminLimiter,
-  uploadLimiter,
-  paymentLimiter,
-  rateLimiter,
   apiLimiter,
-  redisClient,
-  cleanupRateLimiters
+  uploadLimiter,
+  messageLimiter,
+  contactLimiter
 };

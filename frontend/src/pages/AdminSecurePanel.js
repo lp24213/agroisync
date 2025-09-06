@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { 
   BarChart3, MessageSquare, Users, Package, Truck, 
   CreditCard, Search, Shield, LogOut, DollarSign,
-  Eye, Settings, FileText, Mail, TrendingUp,
-  Activity, AlertTriangle, CheckCircle, Clock
+  Mail, Activity, AlertTriangle, CheckCircle, Clock
 } from 'lucide-react';
 import StockMarketTicker from '../components/StockMarketTicker';
 import EscrowManager from '../components/payments/EscrowManager';
@@ -20,17 +19,9 @@ const AdminSecurePanel = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { user, logout, logoutAdmin } = useAuth();
+  const { user, logoutAdmin } = useAuth();
 
-  useEffect(() => {
-    if (!user?.isAdmin) {
-      navigate('/admin/login');
-      return;
-    }
-    loadDashboardData();
-  }, [user, navigate]);
-
-  const loadDashboardData = async () => {
+  const loadDashboardData = useCallback(async () => {
     try {
       // Simular dados reais do dashboard (em produção viriam da API)
       const mockData = {
@@ -92,7 +83,15 @@ const AdminSecurePanel = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
+
+  useEffect(() => {
+    if (!user?.isAdmin) {
+      navigate('/admin/login');
+      return;
+    }
+    loadDashboardData();
+  }, [user, navigate, loadDashboardData]);
 
   const handleLogout = () => {
     logoutAdmin();

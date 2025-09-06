@@ -6,7 +6,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { ChatbotProvider } from './contexts/ChatbotContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { FeatureFlagsProvider } from './contexts/FeatureFlagsContext';
-import RouteGuard from './components/RouteGuard';
+// import RouteGuard from './components/RouteGuard'; // Removido temporariamente - será usado em futuras implementações
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginRedirect from './components/LoginRedirect';
 import Unauthorized from './pages/Unauthorized';

@@ -1,273 +1,285 @@
-import rateLimit from 'express-rate-limit';
-import { createSecurityLog } from '../utils/securityLogger.js';
+import helmet from 'helmet';
+import cors from 'cors';
+import { body, validationResult } from 'express-validator';
+import AuditLog from '../models/AuditLog.js';
 
-// ===== PROTEÇÃO DDoS =====
-
-// Rate limiting específico para APIs sensíveis
-export const apiRateLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100, // máximo 100 requests por IP
-  message: {
-    success: false,
-    message: 'Muitas requisições para esta API. Tente novamente em alguns minutos.'
+// Configuração de segurança com Helmet
+export const securityHeaders = helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:", "https:"],
+      scriptSrc: ["'self'"],
+      connectSrc: ["'self'", "https://api.stripe.com"],
+      frameSrc: ["'self'", "https://js.stripe.com"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
   },
-  standardHeaders: true,
-  legacyHeaders: false,
-  handler: async (req, res) => {
-    await createSecurityLog('rate_limit_exceeded', 'high', 'API rate limit exceeded', req);
-    res.status(429).json({
-      success: false,
-      message: 'Muitas requisições para esta API. Tente novamente em alguns minutos.'
-    });
+  crossOriginEmbedderPolicy: false,
+  hsts: {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true
   }
 });
 
-// Rate limiting para autenticação
-export const authRateLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 5, // máximo 5 tentativas de login por IP
-  message: {
-    success: false,
-    message: 'Muitas tentativas de login. Tente novamente em alguns minutos.'
+// Configuração CORS
+export const corsOptions = {
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'https://agroisync.com',
+      'https://www.agroisync.com',
+      'https://staging.agroisync.com',
+      process.env.FRONTEND_URL
+    ].filter(Boolean);
+
+    // Permitir requests sem origin (mobile apps, Postman, etc.)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Não permitido pelo CORS'));
+    }
   },
-  standardHeaders: true,
-  legacyHeaders: false,
-  handler: async (req, res) => {
-    await createSecurityLog('auth_rate_limit_exceeded', 'high', 'Auth rate limit exceeded', req);
-    res.status(429).json({
-      success: false,
-      message: 'Muitas tentativas de login. Tente novamente em alguns minutos.'
-    });
-  }
-});
-
-// Rate limiting para pagamentos
-export const paymentRateLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hora
-  max: 10, // máximo 10 tentativas de pagamento por IP
-  message: {
-    success: false,
-    message: 'Muitas tentativas de pagamento. Tente novamente em algumas horas.'
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-  handler: async (req, res) => {
-    await createSecurityLog('payment_rate_limit_exceeded', 'high', 'Payment rate limit exceeded', req);
-    res.status(429).json({
-      success: false,
-      message: 'Muitas tentativas de pagamento. Tente novamente em algumas horas.'
-    });
-  }
-});
-
-// ===== PROTEÇÃO WAF =====
-
-// Middleware para detectar ataques comuns
-export const wafProtection = (req, res, next) => {
-  try {
-    const { url, method, headers, body } = req;
-    
-    // Detectar SQL Injection
-    const sqlInjectionPatterns = [
-      /(\b(union|select|insert|update|delete|drop|create|alter)\b)/i,
-      /(\b(or|and)\s+\d+\s*=\s*\d+)/i,
-      /(\b(union|select|insert|update|delete|drop|create|alter)\s+.*\b(union|select|insert|update|delete|drop|create|alter)\b)/i
-    ];
-    
-    // Detectar XSS
-    const xssPatterns = [
-      /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
-      /javascript:/gi,
-      /on\w+\s*=/gi,
-      /<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi
-    ];
-    
-    // Detectar NoSQL Injection
-    const nosqlPatterns = [
-      /\$where/i,
-      /\$ne/i,
-      /\$gt/i,
-      /\$lt/i,
-      /\$regex/i,
-      /\$exists/i
-    ];
-    
-    // Verificar URL
-    const urlString = url + JSON.stringify(body || {});
-    
-    // Verificar SQL Injection
-    for (const pattern of sqlInjectionPatterns) {
-      if (pattern.test(urlString)) {
-        await createSecurityLog('security_threat', 'critical', 'SQL Injection attempt detected', req);
-        return res.status(403).json({
-          success: false,
-          message: 'Acesso negado por segurança'
-        });
-      }
-    }
-    
-    // Verificar XSS
-    for (const pattern of xssPatterns) {
-      if (pattern.test(urlString)) {
-        await createSecurityLog('security_threat', 'critical', 'XSS attempt detected', req);
-        return res.status(403).json({
-          success: false,
-          message: 'Acesso negado por segurança'
-        });
-      }
-    }
-    
-    // Verificar NoSQL Injection
-    for (const pattern of nosqlPatterns) {
-      if (pattern.test(urlString)) {
-        await createSecurityLog('security_threat', 'critical', 'NoSQL Injection attempt detected', req);
-        return res.status(403).json({
-          success: false,
-          message: 'Acesso negado por segurança'
-        });
-      }
-    }
-    
-    // Verificar headers suspeitos
-    const suspiciousHeaders = [
-      'x-forwarded-for',
-      'x-real-ip',
-      'x-forwarded-proto',
-      'x-forwarded-host'
-    ];
-    
-    for (const header of suspiciousHeaders) {
-      if (headers[header] && !isValidIP(headers[header])) {
-        await createSecurityLog('security_threat', 'high', 'Suspicious header detected', req);
-        return res.status(403).json({
-          success: false,
-          message: 'Acesso negado por segurança'
-        });
-      }
-    }
-    
-    next();
-  } catch (error) {
-    console.error('Error in WAF protection:', error);
-    next();
-  }
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
 };
 
-// ===== VALIDAÇÃO DE IP =====
+// Middleware de validação de entrada
+export const validateInput = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      message: 'Dados de entrada inválidos',
+      errors: errors.array()
+    });
+  }
+  next();
+};
 
-function isValidIP(ip) {
-  const ipv4Regex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-  const ipv6Regex = /^(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/;
+// Validações comuns
+export const commonValidations = {
+  email: body('email')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Email inválido'),
   
-  return ipv4Regex.test(ip) || ipv6Regex.test(ip);
-}
+  password: body('password')
+    .isLength({ min: 8 })
+    .withMessage('Senha deve ter pelo menos 8 caracteres')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/)
+    .withMessage('Senha deve conter pelo menos: 1 letra minúscula, 1 maiúscula, 1 número e 1 caractere especial'),
+  
+  name: body('name')
+    .trim()
+    .isLength({ min: 2, max: 100 })
+    .withMessage('Nome deve ter entre 2 e 100 caracteres')
+    .matches(/^[a-zA-ZÀ-ÿ\s]+$/)
+    .withMessage('Nome deve conter apenas letras e espaços'),
+  
+  phone: body('phone')
+    .optional()
+    .matches(/^\(\d{2}\)\s\d{4,5}-\d{4}$/)
+    .withMessage('Telefone deve estar no formato (XX) XXXXX-XXXX'),
+  
+  cpf: body('cpf')
+    .optional()
+    .matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)
+    .withMessage('CPF deve estar no formato XXX.XXX.XXX-XX'),
+  
+  cnpj: body('cnpj')
+    .optional()
+    .matches(/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/)
+    .withMessage('CNPJ deve estar no formato XX.XXX.XXX/XXXX-XX')
+};
 
-// ===== MIDDLEWARE DE LOGS DE SEGURANÇA =====
+// Middleware de sanitização
+export const sanitizeInput = (req, res, next) => {
+  // Sanitizar strings removendo caracteres perigosos
+  const sanitizeString = (str) => {
+    if (typeof str !== 'string') return str;
+    return str
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+      .replace(/javascript:/gi, '')
+      .replace(/on\w+\s*=/gi, '')
+      .trim();
+  };
 
-// Middleware para logar todas as requisições
-export const securityLogging = async (req, res, next) => {
-  try {
-    const startTime = Date.now();
-    
-    // Log da requisição
-    await createSecurityLog('request_log', 'low', 'HTTP request received', req, null, {
-      method: req.method,
-      url: req.url,
-      userAgent: req.headers['user-agent'],
-      ip: req.ip || req.connection.remoteAddress,
-      timestamp: new Date()
+  // Sanitizar body
+  if (req.body) {
+    for (const key in req.body) {
+      if (typeof req.body[key] === 'string') {
+        req.body[key] = sanitizeString(req.body[key]);
+      }
+    }
+  }
+
+  // Sanitizar query params
+  if (req.query) {
+    for (const key in req.query) {
+      if (typeof req.query[key] === 'string') {
+        req.query[key] = sanitizeString(req.query[key]);
+      }
+    }
+  }
+
+  next();
+};
+
+// Middleware de detecção de ataques
+export const detectAttacks = async (req, res, next) => {
+  const suspiciousPatterns = [
+    /union\s+select/i,
+    /drop\s+table/i,
+    /delete\s+from/i,
+    /insert\s+into/i,
+    /update\s+set/i,
+    /script\s*>/i,
+    /javascript:/i,
+    /<iframe/i,
+    /<object/i,
+    /<embed/i,
+    /eval\s*\(/i,
+    /expression\s*\(/i
+  ];
+
+  const checkString = (str) => {
+    if (typeof str !== 'string') return false;
+    return suspiciousPatterns.some(pattern => pattern.test(str));
+  };
+
+  let isSuspicious = false;
+  let riskLevel = 'LOW';
+
+  // Verificar body
+  if (req.body) {
+    for (const key in req.body) {
+      if (checkString(req.body[key])) {
+        isSuspicious = true;
+        riskLevel = 'HIGH';
+        break;
+      }
+    }
+  }
+
+  // Verificar query params
+  if (req.query && !isSuspicious) {
+    for (const key in req.query) {
+      if (checkString(req.query[key])) {
+        isSuspicious = true;
+        riskLevel = 'MEDIUM';
+        break;
+      }
+    }
+  }
+
+  // Verificar headers suspeitos
+  const suspiciousHeaders = [
+    'x-forwarded-for',
+    'x-real-ip',
+    'x-cluster-client-ip'
+  ];
+
+  for (const header of suspiciousHeaders) {
+    if (req.headers[header] && checkString(req.headers[header])) {
+      isSuspicious = true;
+      riskLevel = 'HIGH';
+      break;
+    }
+  }
+
+  // Log de atividade suspeita
+  if (isSuspicious) {
+    await AuditLog.logAction({
+      userId: req.user?.id || 'anonymous',
+      userEmail: req.user?.email || req.ip,
+      action: 'SUSPICIOUS_ACTIVITY',
+      resource: req.originalUrl,
+      details: `Suspicious pattern detected in ${req.method} request`,
+      ip: req.ip,
+      userAgent: req.get('User-Agent'),
+      isSuspicious: true,
+      riskLevel: riskLevel
     });
-    
-    // Interceptar resposta para logar tempo de resposta
-    const originalSend = res.send;
-    res.send = function(data) {
-      const responseTime = Date.now() - startTime;
-      
-      // Log da resposta
-      createSecurityLog('response_log', 'low', 'HTTP response sent', req, null, {
-        method: req.method,
-        url: req.url,
-        statusCode: res.statusCode,
-        responseTime,
-        timestamp: new Date()
+
+    // Bloquear requests de alto risco
+    if (riskLevel === 'HIGH') {
+      return res.status(403).json({
+        success: false,
+        message: 'Atividade suspeita detectada. Acesso negado.'
       });
-      
-      originalSend.call(this, data);
-    };
-    
+    }
+  }
+
+  next();
+};
+
+// Middleware de validação de Stripe webhook
+export const validateStripeWebhook = (req, res, next) => {
+  const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+  const sig = req.headers['stripe-signature'];
+  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  if (!sig || !endpointSecret) {
+    return res.status(400).json({
+      success: false,
+      message: 'Webhook signature missing'
+    });
+  }
+
+  try {
+    const event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    req.stripeEvent = event;
     next();
-  } catch (error) {
-    console.error('Error in security logging:', error);
-    next();
+  } catch (err) {
+    console.error('Webhook signature verification failed:', err.message);
+    return res.status(400).json({
+      success: false,
+      message: 'Invalid webhook signature'
+    });
   }
 };
 
-// ===== MIDDLEWARE DE VALIDAÇÃO DE CONTEÚDO =====
-
-// Middleware para validar tamanho de uploads
-export const contentValidation = (maxSize = 10 * 1024 * 1024) => {
-  return (req, res, next) => {
-    const contentLength = parseInt(req.headers['content-length'] || '0');
-    
-    if (contentLength > maxSize) {
-      createSecurityLog('security_threat', 'high', 'Large content upload attempt', req);
-      return res.status(413).json({
-        success: false,
-        message: 'Conteúdo muito grande'
-      });
+// Middleware de compressão de resposta
+export const compressionOptions = {
+  level: 6,
+  threshold: 1024,
+  filter: (req, res) => {
+    if (req.headers['x-no-compression']) {
+      return false;
     }
-    
+    return true;
+  }
+};
+
+// Middleware de timeout
+export const requestTimeout = (timeout = 30000) => {
+  return (req, res, next) => {
+    req.setTimeout(timeout, () => {
+      res.status(408).json({
+        success: false,
+        message: 'Request timeout'
+      });
+    });
     next();
   };
 };
 
-// ===== MIDDLEWARE DE PROTEÇÃO CONTRA ATAQUES DE FORÇA BRUTA =====
-
-// Cache para tentativas de login
-const loginAttempts = new Map();
-
-export const bruteForceProtection = (req, res, next) => {
-  const ip = req.ip || req.connection.remoteAddress;
-  const now = Date.now();
-  const windowMs = 15 * 60 * 1000; // 15 minutos
-  
-  if (!loginAttempts.has(ip)) {
-    loginAttempts.set(ip, { count: 0, firstAttempt: now });
-  }
-  
-  const attempts = loginAttempts.get(ip);
-  
-  // Reset se passou da janela de tempo
-  if (now - attempts.firstAttempt > windowMs) {
-    attempts.count = 0;
-    attempts.firstAttempt = now;
-  }
-  
-  // Verificar se excedeu o limite
-  if (attempts.count >= 10) {
-    createSecurityLog('security_threat', 'high', 'Brute force attack detected', req);
-    return res.status(429).json({
-      success: false,
-      message: 'Muitas tentativas de login. Tente novamente em alguns minutos.'
-    });
-  }
-  
-  // Incrementar contador para requisições de login
-  if (req.path === '/api/auth/login' && req.method === 'POST') {
-    attempts.count++;
-  }
-  
-  next();
+export default {
+  securityHeaders,
+  corsOptions,
+  validateInput,
+  commonValidations,
+  sanitizeInput,
+  detectAttacks,
+  validateStripeWebhook,
+  compressionOptions,
+  requestTimeout
 };
-
-// Limpar cache periodicamente
-setInterval(() => {
-  const now = Date.now();
-  const windowMs = 15 * 60 * 1000;
-  
-  for (const [ip, attempts] of loginAttempts.entries()) {
-    if (now - attempts.firstAttempt > windowMs) {
-      loginAttempts.delete(ip);
-    }
-  }
-}, 5 * 60 * 1000); // A cada 5 minutos
