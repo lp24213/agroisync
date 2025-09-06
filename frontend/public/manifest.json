@@ -109,8 +109,8 @@
       "short_name": "Fretes",
       "description": "Acessar sistema de fretes AgroConecta",
       "url": "/freight",
-      "icons": [
-        {
+  "icons": [
+    {
           "src": "/icons/shortcut-freight.png",
           "sizes": "96x96"
         }

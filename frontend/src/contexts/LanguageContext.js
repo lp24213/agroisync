@@ -24,6 +24,12 @@ const translations = {
     plans: 'Planos',
     help: 'Ajuda',
     
+    // Store
+    store: {
+      title: 'Loja Agroisync',
+      subtitle: 'Marketplace Completo de Produtos Agrícolas'
+    },
+    
     // Chatbot
     chatbot: {
       welcome: 'Olá! Sou o AgroSync AI, seu assistente inteligente. Como posso ajudar você hoje?',

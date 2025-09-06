@@ -5,7 +5,7 @@ import { CheckCircle, ArrowRight, Home, User, CreditCard, Coins, AlertCircle } f
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import StockMarketTicker from '../components/StockMarketTicker';
-import { paymentService } from '../services/paymentService';
+import paymentService from '../services/paymentService';
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();

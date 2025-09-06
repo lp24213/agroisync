@@ -12,46 +12,46 @@ const NotFound = () => {
   return (
     <div className={`min-h-screen flex items-center justify-center ${colors.bgPrimary} ${colors.textPrimary}`}>
       <div className="max-w-4xl mx-auto px-4 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
           {/* 404 Animation */}
-          <motion.div
+        <motion.div
             initial={{ scale: 0.8 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="mb-8"
+          className="mb-8"
           >
             <div className="text-9xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-blue-500">
               404
-            </div>
-          </motion.div>
+          </div>
+        </motion.div>
 
           {/* Error Message */}
-          <motion.h1
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+        <motion.h1 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.4 }}
             className="text-4xl font-bold mb-4"
-          >
+        >
             {t('notFound.title')}
-          </motion.h1>
+        </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.6 }}
             className="text-xl mb-8 text-gray-600 dark:text-gray-300"
-          >
+        >
             {t('notFound.description')}
-          </motion.p>
+        </motion.p>
 
           {/* Useful Links */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.8 }}
             className="mb-8"
           >
@@ -81,13 +81,13 @@ const NotFound = () => {
               >
                 {t('notFound.help')}
               </Link>
-            </div>
-          </motion.div>
+          </div>
+        </motion.div>
 
           {/* Action Buttons */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 1.0 }}
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
@@ -103,10 +103,10 @@ const NotFound = () => {
             >
               {t('notFound.goBack')}
             </button>
-          </motion.div>
+        </motion.div>
 
           {/* Additional Help */}
-          <motion.div
+          <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 1.2 }}
@@ -114,7 +114,7 @@ const NotFound = () => {
           >
             <p>{t('notFound.refreshSuggestion')}</p>
           </motion.div>
-        </motion.div>
+      </motion.div>
       </div>
     </div>
   );

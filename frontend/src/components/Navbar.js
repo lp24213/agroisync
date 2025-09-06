@@ -4,7 +4,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
-// import { useFeatureFlags } from '../contexts/FeatureFlagsContext';
 import { 
   Menu, 
   X, 
@@ -14,7 +13,9 @@ import {
   Globe,
   ChevronDown,
   Sun,
-  Moon
+  Moon,
+  Zap,
+  Sparkles
 } from 'lucide-react';
 
 const Navbar = () => {
@@ -38,37 +39,43 @@ const Navbar = () => {
   const isUserAuthenticated = isAuthenticated();
 
   return (
-    <nav className={`fixed top-16 left-0 right-0 z-40 backdrop-blur-md shadow-xl border-b transition-colors duration-300 ${
+    <nav className={`fixed top-16 left-0 right-0 z-40 backdrop-blur-xl shadow-2xl border-b transition-all duration-500 ${
       isDark 
-        ? 'bg-black/95 border-gray-800' 
-        : 'bg-white/95 border-gray-200'
+        ? 'bg-gradient-to-r from-black/95 via-gray-900/95 to-black/95 border-cyan-500/30 shadow-cyan-500/20' 
+        : 'bg-gradient-to-r from-white/95 via-emerald-50/95 to-white/95 border-emerald-200/50 shadow-emerald-500/10'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-12">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3">
+          {/* Logo Futurista */}
+          <Link to="/" className="flex items-center space-x-3 group">
             <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="flex items-center justify-center shadow-lg w-8 h-8 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-lg"
+              whileHover={{ 
+                scale: 1.1, 
+                rotate: 360,
+                boxShadow: isDark ? '0 0 30px rgba(0, 255, 255, 0.5)' : '0 0 30px rgba(16, 185, 129, 0.5)'
+              }}
+              transition={{ duration: 0.6 }}
+              className={`relative flex items-center justify-center w-10 h-10 rounded-xl overflow-hidden ${
+                isDark 
+                  ? 'bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-600 shadow-lg shadow-cyan-500/30' 
+                  : 'bg-gradient-to-br from-emerald-500 via-blue-500 to-teal-600 shadow-lg shadow-emerald-500/30'
+              }`}
             >
-              <img 
-                src="/logo-agroisync.svg" 
-                alt="AGROISYNC" 
-                width="24" 
-                height="24" 
-                className="w-6 h-6"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.style.display = 'none';
-                  // Fallback para texto se SVG não carregar
-                  const fallbackText = document.createElement('span');
-                  fallbackText.textContent = 'A';
-                  fallbackText.className = 'text-lg font-bold text-emerald-600';
-                  e.target.parentNode.appendChild(fallbackText);
-                }}
-              />
+              <Sparkles className={`w-6 h-6 ${
+                isDark ? 'text-white' : 'text-white'
+              }`} />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
             </motion.div>
-            <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">AGROISYNC</span>
+            <motion.span 
+              whileHover={{ scale: 1.02 }}
+              className={`text-xl font-black tracking-tight ${
+                isDark 
+                  ? 'bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent'
+                  : 'bg-gradient-to-r from-emerald-600 via-blue-600 to-teal-600 bg-clip-text text-transparent'
+              }`}
+            >
+              AGROISYNC
+            </motion.span>
           </Link>
 
           {/* Desktop Navigation Moderna */}
@@ -87,18 +94,25 @@ const Navbar = () => {
               🏠 {t('home')}
             </Link>
             
-            <Link
-              to="/loja"
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
-                isActive('/loja') 
-                  ? 'text-white bg-gradient-to-r from-emerald-500 to-blue-500 shadow-lg' 
-                  : isDark 
-                    ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                  : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-              }`}
-            >
-              🛒 {t('nav.store')}
-            </Link>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link
+                to="/store"
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-500 border ${
+                  isActive('/store') || isActive('/loja')
+                    ? (isDark 
+                        ? 'text-white bg-gradient-to-r from-cyan-500 to-blue-500 shadow-lg shadow-cyan-500/30 border-cyan-400' 
+                        : 'text-white bg-gradient-to-r from-emerald-500 to-blue-500 shadow-lg shadow-emerald-500/30 border-emerald-400')
+                    : isDark 
+                      ? 'text-cyan-300 hover:text-white hover:bg-gradient-to-r hover:from-cyan-900/30 hover:to-blue-900/30 border-cyan-500/30 hover:border-cyan-400 hover:shadow-lg hover:shadow-cyan-500/25'
+                      : 'text-emerald-700 hover:text-white hover:bg-gradient-to-r hover:from-emerald-500 hover:to-blue-500 border-emerald-200 hover:border-emerald-400 hover:shadow-lg hover:shadow-emerald-500/25'
+                }`}
+              >
+                <div className="flex items-center space-x-2">
+                  <span className="text-lg">🛒</span>
+                  <span>{t('nav.store')}</span>
+                </div>
+              </Link>
+            </motion.div>
             
             {/* Dropdown para Serviços */}
             <div className="relative group">
@@ -200,65 +214,116 @@ const Navbar = () => {
               </div>
             </div>
 
-            {/* Language Selector */}
+            {/* Seletor de Idioma Único e Futurista */}
             <div className="relative group">
-              <button className={`flex items-center space-x-1 px-4 py-2 rounded-xl transition-all duration-300 ${
-                isDark 
-                  ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                  : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-              }`}>
-                <Globe className="w-4 h-4" />
-                <span className="text-sm font-medium">{currentLanguage.toUpperCase()}</span>
+              <motion.button 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-500 border ${
+                  isDark 
+                    ? 'bg-gradient-to-r from-cyan-900/30 to-blue-900/30 border-cyan-500/30 text-cyan-300 hover:border-cyan-400 hover:shadow-lg hover:shadow-cyan-500/25'
+                    : 'bg-gradient-to-r from-emerald-50 to-blue-50 border-emerald-200 text-emerald-700 hover:border-emerald-400 hover:shadow-lg hover:shadow-emerald-500/25'
+                }`}
+              >
+                <Globe className={`w-4 h-4 ${
+                  isDark ? 'text-cyan-400' : 'text-emerald-600'
+                }`} />
+                <span className="text-sm font-semibold">
+                  {currentLanguage === 'pt' && '🇧🇷 PT'}
+                  {currentLanguage === 'en' && '🇺🇸 EN'}
+                  {currentLanguage === 'es' && '🇪🇸 ES'}
+                  {currentLanguage === 'zh' && '🇨🇳 ZH'}
+                </span>
                 <ChevronDown className="w-4 h-4" />
-              </button>
-              <div className={`absolute top-full right-0 mt-2 w-48 rounded-xl shadow-xl border py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 ${
-                isDark 
-                  ? 'bg-gray-800 border-gray-700'
-                  : 'bg-white border-gray-200'
-              }`}>
-                <button onClick={() => changeLanguage('pt')} className={`block w-full text-left px-4 py-3 transition-colors ${
+              </motion.button>
+              
+              <motion.div 
+                initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                className={`absolute top-full right-0 mt-3 w-56 rounded-2xl shadow-2xl border backdrop-blur-xl py-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-500 z-50 ${
                   isDark 
-                    ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                    : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-                }`}>
-                  🇧🇷 Português
-                </button>
-                <button onClick={() => changeLanguage('en')} className={`block w-full text-left px-4 py-3 transition-colors ${
-                  isDark 
-                    ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                    : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-                }`}>
-                  🇺🇸 English
-                </button>
-                <button onClick={() => changeLanguage('es')} className={`block w-full text-left px-4 py-3 transition-colors ${
-                  isDark 
-                    ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                    : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-                }`}>
-                  🇪🇸 Español
-                </button>
-                <button onClick={() => changeLanguage('zh')} className={`block w-full text-left px-4 py-3 transition-colors ${
-                  isDark 
-                    ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                    : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-                }`}>
-                  🇨🇳 中文
-                </button>
-              </div>
+                    ? 'bg-gray-900/95 border-cyan-500/30 shadow-cyan-500/20'
+                    : 'bg-white/95 border-emerald-200/50 shadow-emerald-500/20'
+                }`}
+              >
+                <motion.button 
+                  whileHover={{ x: 5, backgroundColor: isDark ? 'rgba(6, 182, 212, 0.1)' : 'rgba(16, 185, 129, 0.1)' }}
+                  onClick={() => changeLanguage('pt')} 
+                  className={`flex items-center space-x-3 w-full px-4 py-3 transition-all duration-300 ${
+                    currentLanguage === 'pt' 
+                      ? (isDark ? 'bg-cyan-500/20 text-cyan-300' : 'bg-emerald-500/20 text-emerald-700')
+                      : (isDark ? 'text-gray-300 hover:text-cyan-300' : 'text-gray-600 hover:text-emerald-600')
+                  }`}
+                >
+                  <span className="text-lg">🇧🇷</span>
+                  <span className="font-medium">Português</span>
+                  {currentLanguage === 'pt' && <Zap className="w-4 h-4 ml-auto" />}
+                </motion.button>
+                
+                <motion.button 
+                  whileHover={{ x: 5, backgroundColor: isDark ? 'rgba(6, 182, 212, 0.1)' : 'rgba(16, 185, 129, 0.1)' }}
+                  onClick={() => changeLanguage('en')} 
+                  className={`flex items-center space-x-3 w-full px-4 py-3 transition-all duration-300 ${
+                    currentLanguage === 'en' 
+                      ? (isDark ? 'bg-cyan-500/20 text-cyan-300' : 'bg-emerald-500/20 text-emerald-700')
+                      : (isDark ? 'text-gray-300 hover:text-cyan-300' : 'text-gray-600 hover:text-emerald-600')
+                  }`}
+                >
+                  <span className="text-lg">🇺🇸</span>
+                  <span className="font-medium">English</span>
+                  {currentLanguage === 'en' && <Zap className="w-4 h-4 ml-auto" />}
+                </motion.button>
+                
+                <motion.button 
+                  whileHover={{ x: 5, backgroundColor: isDark ? 'rgba(6, 182, 212, 0.1)' : 'rgba(16, 185, 129, 0.1)' }}
+                  onClick={() => changeLanguage('es')} 
+                  className={`flex items-center space-x-3 w-full px-4 py-3 transition-all duration-300 ${
+                    currentLanguage === 'es' 
+                      ? (isDark ? 'bg-cyan-500/20 text-cyan-300' : 'bg-emerald-500/20 text-emerald-700')
+                      : (isDark ? 'text-gray-300 hover:text-cyan-300' : 'text-gray-600 hover:text-emerald-600')
+                  }`}
+                >
+                  <span className="text-lg">🇪🇸</span>
+                  <span className="font-medium">Español</span>
+                  {currentLanguage === 'es' && <Zap className="w-4 h-4 ml-auto" />}
+                </motion.button>
+                
+                <motion.button 
+                  whileHover={{ x: 5, backgroundColor: isDark ? 'rgba(6, 182, 212, 0.1)' : 'rgba(16, 185, 129, 0.1)' }}
+                  onClick={() => changeLanguage('zh')} 
+                  className={`flex items-center space-x-3 w-full px-4 py-3 transition-all duration-300 ${
+                    currentLanguage === 'zh' 
+                      ? (isDark ? 'bg-cyan-500/20 text-cyan-300' : 'bg-emerald-500/20 text-emerald-700')
+                      : (isDark ? 'text-gray-300 hover:text-cyan-300' : 'text-gray-600 hover:text-emerald-600')
+                  }`}
+                >
+                  <span className="text-lg">🇨🇳</span>
+                  <span className="font-medium">中文</span>
+                  {currentLanguage === 'zh' && <Zap className="w-4 h-4 ml-auto" />}
+                </motion.button>
+              </motion.div>
             </div>
 
-            {/* Theme Toggle */}
-            <button
+            {/* Toggle de Tema Futurista */}
+            <motion.button
+              whileHover={{ 
+                scale: 1.1, 
+                rotate: isDark ? 180 : -180,
+                boxShadow: isDark ? '0 0 20px rgba(255, 193, 7, 0.5)' : '0 0 20px rgba(99, 102, 241, 0.5)'
+              }}
+              whileTap={{ scale: 0.9 }}
               onClick={toggleTheme}
-              className={`flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-300 ${
+              className={`flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-500 border ${
                 isDark 
-                  ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                  : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
+                  ? 'bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border-yellow-500/30 text-yellow-400 hover:border-yellow-400'
+                  : 'bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border-indigo-500/30 text-indigo-600 hover:border-indigo-400'
               }`}
               title={isDark ? 'Modo Claro' : 'Modo Escuro'}
             >
-              {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </button>
+              {isDark ? 
+                <Sun className="w-5 h-5 drop-shadow-lg" /> : 
+                <Moon className="w-5 h-5 drop-shadow-lg" />
+              }
+            </motion.button>
 
 
             {/* User Menu */}
@@ -379,7 +444,7 @@ const Navbar = () => {
             </Link>
             
             <Link
-              to="/loja"
+              to="/store"
               className={`block px-3 py-2 rounded-lg transition-all duration-300 ${
                 isDark 
                   ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'

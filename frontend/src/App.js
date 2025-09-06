@@ -60,7 +60,6 @@ import OtpVerification from './pages/OtpVerification';
 import VerifyEmail from './pages/VerifyEmail';
 import CadastroProduto from './pages/CadastroProduto';
 import PainelUsuario from './pages/PainelUsuario';
-import NotFound from './pages/NotFound';
 
 // Painéis individuais
 import BuyerPanel from './pages/panels/BuyerPanel';

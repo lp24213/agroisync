@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { 
   Store, ShoppingCart, Package,
   Plus, Edit, Trash, MessageSquare, BarChart3,
@@ -19,6 +20,7 @@ import receitaService from '../services/receitaService';
 const Loja = () => {
   const { user, isAuthenticated } = useAuth();
   const { t } = useLanguage();
+  const { isDark } = useTheme();
   const navigate = useNavigate();
   
   const [activeTab, setActiveTab] = useState('marketplace');
@@ -406,26 +408,23 @@ const Loja = () => {
   console.log('Loja: Renderizando página principal, products:', products.length, 'filteredProducts:', filteredProducts.length); // Debug
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 text-gray-900 py-8 pt-16">
-      {/* Hero Section Moderno */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-transparent to-blue-500/10"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-12"
-          >
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full mb-6">
-              <Store className="w-10 h-10 text-white" />
-            </div>
-            <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-emerald-600 via-blue-600 to-emerald-600 bg-clip-text text-transparent mb-6">
-              {t('store.title')}
+    <div className={`min-h-screen py-8 pt-16 ${
+      isDark 
+        ? 'bg-gray-900 text-white' 
+        : 'bg-white text-gray-900'
+    }`}>
+      {/* Hero Section Simples */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-500 rounded-full mb-6">
+            <Store className="w-10 h-10 text-white" />
+          </div>
+          <h1 className="text-5xl md:text-6xl font-bold text-blue-600 mb-6">
+            {t('store.title')}
           </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              {t('store.subtitle')}
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            {t('store.subtitle')}
           </p>
-        </motion.div>
         </div>
       </div>
 
