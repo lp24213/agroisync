@@ -1082,5 +1082,30 @@
     "detectionStep3Desc": "Data updated every 5 minutes for always accurate information",
     "grainsTitle": "Monitored Grains",
     "unit": "Unit"
+  },
+  "ui": {
+    "placeholder": {
+      "address": "Enter complete address",
+      "search": "Search...",
+      "email": "Enter your email",
+      "name": "Enter your name",
+      "phone": "Enter your phone"
+    },
+    "button": {
+      "changePersonality": "Change personality",
+      "expand": "Expand",
+      "minimize": "Minimize",
+      "close": "Close",
+      "sendImage": "Send image",
+      "sendMessage": "Send message"
+    },
+    "label": {
+      "imageSent": "Image sent",
+      "previousNews": "Previous news",
+      "nextNews": "Next news"
+    },
+    "message": {
+      "productView": "Your product \"Premium Soy\" received a new view"
+    }
   }
 }

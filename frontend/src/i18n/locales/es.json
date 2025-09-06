@@ -1082,5 +1082,30 @@
     "detectionStep3Desc": "Datos actualizados cada 5 minutos para información siempre precisa",
     "grainsTitle": "Granos Monitoreados",
     "unit": "Unidad"
+  },
+  "ui": {
+    "placeholder": {
+      "address": "Ingrese la dirección completa",
+      "search": "Buscar...",
+      "email": "Ingrese su email",
+      "name": "Ingrese su nombre",
+      "phone": "Ingrese su teléfono"
+    },
+    "button": {
+      "changePersonality": "Cambiar personalidad",
+      "expand": "Expandir",
+      "minimize": "Minimizar",
+      "close": "Cerrar",
+      "sendImage": "Enviar imagen",
+      "sendMessage": "Enviar mensaje"
+    },
+    "label": {
+      "imageSent": "Imagen enviada",
+      "previousNews": "Noticia anterior",
+      "nextNews": "Próxima noticia"
+    },
+    "message": {
+      "productView": "Su producto \"Soja Premium\" recibió una nueva visualización"
+    }
   }
 }

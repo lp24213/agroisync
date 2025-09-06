@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import metamaskService from '../services/metamaskService';
+import { processPaymentSuccess, processPaymentCancel } from '../api/webhooks';
 
 const PaymentContext = createContext();
 
@@ -297,6 +298,44 @@ export const PaymentProvider = ({ children }) => {
     }
   };
 
+  // Função para processar webhook de pagamento bem-sucedido
+  const handlePaymentSuccess = async (paymentData) => {
+    try {
+      setLoading(true);
+      
+      // Processar webhook
+      await processPaymentSuccess(paymentData);
+      
+      // Atualizar status local
+      setIsPaid(true);
+      setPlanActive(paymentData.planId);
+      
+      return { success: true, message: 'Pagamento processado com sucesso' };
+    } catch (error) {
+      console.error('Erro ao processar pagamento:', error);
+      return { success: false, error: 'Erro ao processar pagamento' };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Função para processar webhook de pagamento cancelado
+  const handlePaymentCancel = async (paymentData) => {
+    try {
+      setLoading(true);
+      
+      // Processar webhook
+      await processPaymentCancel(paymentData);
+      
+      return { success: true, message: 'Pagamento cancelado processado' };
+    } catch (error) {
+      console.error('Erro ao processar cancelamento:', error);
+      return { success: false, error: 'Erro ao processar cancelamento' };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const value = {
     isPaid,
     planActive,
@@ -311,7 +350,9 @@ export const PaymentProvider = ({ children }) => {
     verifyPayment,
     cancelSubscription,
     getPaymentHistory,
-    checkPaymentStatus
+    checkPaymentStatus,
+    handlePaymentSuccess,
+    handlePaymentCancel
   };
 
   return (

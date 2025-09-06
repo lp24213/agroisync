@@ -11,17 +11,18 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }) => {
-  const [isDark, setIsDark] = useState(false);
+  // TEMA DARK OBRIGATÓRIO POR PADRÃO
+  const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
     // Verificar preferência salva no localStorage
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
+      // Se o usuário já escolheu light, respeitar a escolha
       setIsDark(savedTheme === 'dark');
     } else {
-      // Verificar preferência do sistema
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setIsDark(prefersDark);
+      // PADRÃO: SEMPRE DARK (tema obrigatório)
+      setIsDark(true);
     }
   }, []);
 
@@ -66,20 +67,20 @@ export const ThemeProvider = ({ children }) => {
       shadowCard: 'shadow-card',
       shadowElevated: 'shadow-elevated'
     },
-    // Cores do tema escuro (opcional)
+    // Cores do tema escuro OBRIGATÓRIO - Paleta Agronegócio
     darkColors: {
-      bgPrimary: 'bg-slate-900',
-      bgSecondary: 'bg-slate-800',
-      bgCard: 'bg-slate-800',
-      bgCardHover: 'hover:bg-slate-700',
-      textPrimary: 'text-slate-100',
-      textSecondary: 'text-slate-300',
-      textTertiary: 'text-slate-400',
-      borderPrimary: 'border-slate-700',
-      borderSecondary: 'border-slate-600',
-      accentPrimary: 'bg-slate-600',
-      accentSecondary: 'bg-slate-700',
-      accentHover: 'hover:bg-slate-500',
+      bgPrimary: 'bg-black',
+      bgSecondary: 'bg-gray-900',
+      bgCard: 'bg-gray-800',
+      bgCardHover: 'hover:bg-gray-700',
+      textPrimary: 'text-white',
+      textSecondary: 'text-gray-200',
+      textTertiary: 'text-gray-400',
+      borderPrimary: 'border-gray-700',
+      borderSecondary: 'border-gray-600',
+      accentPrimary: 'bg-emerald-500',
+      accentSecondary: 'bg-sky-500',
+      accentHover: 'hover:bg-emerald-600',
       shadowCard: 'shadow-card-dark',
       shadowElevated: 'shadow-elevated-dark'
     }

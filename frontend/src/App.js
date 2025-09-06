@@ -7,6 +7,9 @@ import { ChatbotProvider } from './contexts/ChatbotContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { FeatureFlagsProvider } from './contexts/FeatureFlagsContext';
 import RouteGuard from './components/RouteGuard';
+import ProtectedRoute from './components/ProtectedRoute';
+import LoginRedirect from './components/LoginRedirect';
+import Unauthorized from './pages/Unauthorized';
 
 // Páginas principais
 import Home from './pages/Home';
@@ -106,21 +109,29 @@ function App() {
                     <Route path="/cadastro-produto" element={<CadastroProduto />} />
 
                     {/* Rotas protegidas */}
-                    <Route path="/dashboard" element={<RouteGuard requireAuth={true}><Dashboard /></RouteGuard>} />
+                    <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                    <Route path="/dashboard/buyer" element={<ProtectedRoute requiredRole="buyer"><Dashboard /></ProtectedRoute>} />
+                    <Route path="/dashboard/seller" element={<ProtectedRoute requiredRole="seller"><Dashboard /></ProtectedRoute>} />
+                    <Route path="/dashboard/driver" element={<ProtectedRoute requiredRole="driver"><Dashboard /></ProtectedRoute>} />
+                    <Route path="/dashboard/transport" element={<ProtectedRoute requiredRole="transport"><Dashboard /></ProtectedRoute>} />
                     <Route path="/loja" element={<Loja />} />
-                    <Route path="/mensageria" element={<RouteGuard requireAuth={true}><Mensageria /></RouteGuard>} />
-                    <Route path="/messages" element={<RouteGuard requireAuth={true}><Messages /></RouteGuard>} />
-                    <Route path="/messages-products" element={<RouteGuard requireAuth={true}><MessagesProducts /></RouteGuard>} />
-                    <Route path="/messages-freights" element={<RouteGuard requireAuth={true}><MessagesFreights /></RouteGuard>} />
-                    <Route path="/painel-usuario" element={<RouteGuard requireAuth={true}><PainelUsuario /></RouteGuard>} />
+                    <Route path="/mensageria" element={<ProtectedRoute requiredPlan={true}><Mensageria /></ProtectedRoute>} />
+                    <Route path="/messages" element={<ProtectedRoute requiredPlan={true}><Messages /></ProtectedRoute>} />
+                    <Route path="/messages-products" element={<ProtectedRoute requiredPlan={true}><MessagesProducts /></ProtectedRoute>} />
+                    <Route path="/messages-freights" element={<ProtectedRoute requiredPlan={true}><MessagesFreights /></ProtectedRoute>} />
+                    <Route path="/painel-usuario" element={<ProtectedRoute><PainelUsuario /></ProtectedRoute>} />
 
                     {/* Rotas admin */}
                     <Route path="/admin" element={<Admin />} />
                     <Route path="/admin/login" element={<AdminLogin />} />
                     <Route path="/admin-login" element={<AdminLogin />} />
-                    <Route path="/admin/dashboard" element={<RouteGuard requireAuth={true} requireAdmin={true}><Admin /></RouteGuard>} />
-                    <Route path="/admin-dashboard" element={<RouteGuard requireAuth={true} requireAdmin={true}><Admin /></RouteGuard>} />
-                    <Route path="/admin-panel" element={<RouteGuard requireAuth={true} requireAdmin={true}><AdminSecurePanel /></RouteGuard>} />
+                    <Route path="/admin/dashboard" element={<ProtectedRoute requiredRole="admin"><Admin /></ProtectedRoute>} />
+                    <Route path="/admin-dashboard" element={<ProtectedRoute requiredRole="admin"><Admin /></ProtectedRoute>} />
+                    <Route path="/admin-panel" element={<ProtectedRoute requiredRole="admin"><AdminSecurePanel /></ProtectedRoute>} />
+                    
+                    {/* Rotas especiais */}
+                    <Route path="/login-redirect" element={<LoginRedirect />} />
+                    <Route path="/unauthorized" element={<Unauthorized />} />
                     
                     {/* Rota 404 - Página não encontrada */}
                     <Route path="*" element={

@@ -2,12 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const Chatbot = () => {
   const { isDark } = useTheme();
   const { user, isAuthenticated } = useAuth();
-  const { t, i18n } = useTranslation();
+  const { t, currentLanguage } = useLanguage();
   
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -20,7 +20,7 @@ const Chatbot = () => {
   const [showPersonalitySelector, setShowPersonalitySelector] = useState(false);
   const [chatbotPersonality, setChatbotPersonality] = useState('agro-expert');
   const [userSentiment, setUserSentiment] = useState('neutral');
-  const [currentLanguage, setCurrentLanguage] = useState(i18n.language || 'pt');
+  const [chatbotLanguage, setChatbotLanguage] = useState(currentLanguage || 'pt');
   const [isMuted, setIsMuted] = useState(false);
   const [showImageUpload, setShowImageUpload] = useState(false);
   
@@ -364,7 +364,7 @@ const Chatbot = () => {
 
   const changeLanguage = (newLanguage) => {
     setCurrentLanguage(newLanguage);
-    i18n.changeLanguage(newLanguage);
+    // i18n.changeLanguage(newLanguage);
     
     // Atualizar mensagem de boas-vindas
     const welcomeMessage = {
@@ -446,7 +446,7 @@ const Chatbot = () => {
                     className={`p-1 rounded text-xs transition-colors ${
                       isDark ? 'text-gray-400 hover:text-cyan-400' : 'text-gray-500 hover:text-green-600'
                     }`}
-                    title="Mudar personalidade"
+                    title={t('ui.button.changePersonality')}
                   >
                     🔄
                   </button>
@@ -455,7 +455,7 @@ const Chatbot = () => {
                     className={`p-1 rounded text-xs transition-colors ${
                       isDark ? 'text-gray-400 hover:text-cyan-400' : 'text-gray-500 hover:text-green-600'
                     }`}
-                    title={isMinimized ? "Expandir" : "Minimizar"}
+                    title={isMinimized ? t('ui.button.expand') : t('ui.button.minimize')}
                   >
                     {isMinimized ? '⬆️' : '⬇️'}
                   </button>
@@ -464,7 +464,7 @@ const Chatbot = () => {
                     className={`p-1 rounded text-xs transition-colors ${
                       isDark ? 'text-gray-400 hover:text-red-400' : 'text-gray-500 hover:text-red-600'
                     }`}
-                    title="Fechar"
+                    title={t('ui.button.close')}
                   >
                     ✕
                   </button>
@@ -534,7 +534,7 @@ const Chatbot = () => {
                           <div className="mb-2">
                             <img 
                               src={message.image} 
-                              alt="Imagem enviada" 
+                              alt={t('ui.label.imageSent')} 
                               className="w-full max-w-xs rounded-lg"
                             />
                           </div>
@@ -598,7 +598,7 @@ const Chatbot = () => {
                       className={`p-2 rounded-lg transition-colors duration-200 ${
                         isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-200'
                       }`}
-                      title="Enviar imagem"
+                      title={t('ui.button.sendImage')}
                     >
                       📷
                     </button>
@@ -642,7 +642,7 @@ const Chatbot = () => {
                               ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
                               : 'bg-gray-200 text-gray-500 cursor-not-allowed')
                       }`}
-                      title="Enviar mensagem"
+                      title={t('ui.button.sendMessage')}
                     >
                       📤
                     </button>

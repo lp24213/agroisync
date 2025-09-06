@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useState, useRef, useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from './LanguageContext';
 
 const ChatbotContext = createContext();
 
 export const useChatbot = () => useContext(ChatbotContext);
 
 export const ChatbotProvider = ({ children }) => {
-  const { i18n } = useTranslation();
+  const { currentLanguage } = useLanguage();
   
   // Estados principais
   const [isOpen, setIsOpen] = useState(false);
@@ -15,7 +15,7 @@ export const ChatbotProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [language, setLanguage] = useState(i18n.language || 'pt');
+  const [language, setLanguage] = useState(currentLanguage || 'pt');
   const [isMuted, setIsMuted] = useState(false);
   
   // Refs
@@ -295,7 +295,6 @@ export const ChatbotProvider = ({ children }) => {
 
   const changeLanguage = (newLanguage) => {
     setLanguage(newLanguage);
-    i18n.changeLanguage(newLanguage);
     
     // Atualizar mensagem de boas-vindas
     const welcomeMessage = {

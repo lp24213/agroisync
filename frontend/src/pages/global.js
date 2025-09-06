@@ -7,10 +7,10 @@ import {
   Coins, Bot, Database, Server, Wifi, AlertTriangle,
   CheckCircle, Eye, Download, RefreshCw, Filter
 } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const GlobalPage = () => {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [globalStats, setGlobalStats] = useState({});
   const [userActivity, setUserActivity] = useState([]);

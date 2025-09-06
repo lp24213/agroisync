@@ -10,7 +10,7 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import ProductFilters from '../components/ProductFilters';
-import productService, { PRODUCT_CATEGORIES } from '../services/productService';
+import { PRODUCT_CATEGORIES } from '../services/productService';
 import transactionService from '../services/transactionService';
 import DocumentValidator from '../components/DocumentValidator';
 import baiduMapsService from '../services/baiduMapsService';
@@ -46,50 +46,7 @@ const Loja = () => {
   // Guard para evitar piscar
   const [mounted] = useState(true);
 
-  // Função de filtros
-  const applyFilters = useCallback(() => {
-    let filtered = [...products];
-
-    // Filtro por busca
-    if (searchTerm) {
-      filtered = filtered.filter(product =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.seller.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    // Filtro por categoria
-    if (selectedCategory) {
-      filtered = filtered.filter(product => product.category === selectedCategory);
-    }
-
-    // Filtro por preço
-    filtered = filtered.filter(product =>
-      product.price >= priceRange.min && product.price <= priceRange.max
-    );
-
-    // Ordenação
-    switch (sortBy) {
-      case 'price_low':
-        filtered.sort((a, b) => a.price - b.price);
-        break;
-      case 'price_high':
-        filtered.sort((a, b) => b.price - a.price);
-        break;
-      case 'rating':
-        filtered.sort((a, b) => b.rating - a.rating);
-        break;
-      case 'newest':
-        filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        break;
-      default:
-        // Relevância (padrão)
-        break;
-    }
-
-    setFilteredProducts(filtered);
-  }, [products, searchTerm, selectedCategory, priceRange, sortBy]);
+  // Função de filtros movida para dentro do useEffect para evitar loops infinitos
 
   // Carregar dados iniciais
   useEffect(() => {
@@ -98,9 +55,49 @@ const Loja = () => {
 
   useEffect(() => {
     if (products && Array.isArray(products) && products.length > 0) {
-      applyFilters();
+      let filtered = [...products];
+
+      // Filtro por busca
+      if (searchTerm) {
+        filtered = filtered.filter(product =>
+          product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          product.seller.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
+
+      // Filtro por categoria
+      if (selectedCategory) {
+        filtered = filtered.filter(product => product.category === selectedCategory);
+      }
+
+      // Filtro por preço
+      filtered = filtered.filter(product =>
+        product.price >= priceRange.min && product.price <= priceRange.max
+      );
+
+      // Ordenação
+      switch (sortBy) {
+        case 'price_low':
+          filtered.sort((a, b) => a.price - b.price);
+          break;
+        case 'price_high':
+          filtered.sort((a, b) => b.price - a.price);
+          break;
+        case 'newest':
+          filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          break;
+        case 'rating':
+          filtered.sort((a, b) => b.rating - a.rating);
+          break;
+        default:
+          // Relevância (padrão)
+          break;
+      }
+
+      setFilteredProducts(filtered);
     }
-  }, [products, searchTerm, selectedCategory, priceRange, sortBy, applyFilters]);
+  }, [products, searchTerm, selectedCategory, priceRange, sortBy]);
 
   // Loading state
   if (loading) {
@@ -122,20 +119,8 @@ const Loja = () => {
     console.log('Loja: loadProducts iniciado'); // Debug
     setLoading(true);
     try {
-      // Usar o serviço de produtos
-      console.log('Loja: Chamando productService.getProducts()'); // Debug
-      const productsData = await productService.getProducts();
-      console.log('Loja: Produtos carregados:', productsData); // Debug
-      
-      // Safe-guard: garantir que productsData seja um array
-      const safeProductsData = Array.isArray(productsData) ? productsData : [];
-      setProducts(safeProductsData);
-      setFilteredProducts(safeProductsData);
-      console.log('Loja: Produtos definidos no estado'); // Debug
-    } catch (error) {
-      console.error('Erro ao carregar produtos:', error);
-      // Fallback: produtos mock básicos
-      console.log('Loja: Usando produtos fallback'); // Debug
+      // Usar produtos mock diretamente para evitar problemas com API
+      console.log('Loja: Usando produtos mock'); // Debug
       const fallbackProducts = [
         {
           id: 1,
@@ -204,7 +189,7 @@ const Loja = () => {
       ];
       setProducts(fallbackProducts);
       setFilteredProducts(fallbackProducts);
-      console.log('Loja: Produtos fallback definidos'); // Debug
+      console.log('Loja: Produtos mock definidos'); // Debug
     } finally {
       setLoading(false);
       console.log('Loja: Loading finalizado'); // Debug
@@ -984,7 +969,7 @@ const Loja = () => {
                     </label>
                     <input
                       type="text"
-                      placeholder="Digite o endereço completo"
+                      placeholder={t('ui.placeholder.address')}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-agro-green focus:border-transparent"
                     />
                   </div>

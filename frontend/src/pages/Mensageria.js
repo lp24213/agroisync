@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { usePayment } from '../contexts/PaymentContext';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../contexts/LanguageContext';
 import { 
   MessageSquare, Send, Search, Filter, MoreVertical,
   User, Phone, Mail, MapPin, Calendar, Clock,
@@ -15,7 +15,7 @@ import StockMarketTicker from '../components/StockMarketTicker';
 const Mensageria = () => {
   const { user, isAdmin } = useAuth();
   const { isPaid, planActive } = usePayment();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   
   const [conversations, setConversations] = useState([]);

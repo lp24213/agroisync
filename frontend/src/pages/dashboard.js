@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { 
   Package, Truck, MessageSquare, Settings, 
@@ -10,6 +11,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import StockMarketTicker from '../components/StockMarketTicker';
 
 const Dashboard = () => {
+  const { t } = useTranslation();
   const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   
@@ -124,7 +126,7 @@ const Dashboard = () => {
         {
           id: 1,
           type: 'product',
-          message: 'Seu produto "Soja Premium" recebeu uma nova visualização',
+          message: t('ui.message.productView'),
           timestamp: new Date(Date.now() - 30 * 60 * 1000),
           read: false
         },
@@ -172,6 +174,9 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-agro-bg-primary text-agro-text-primary pt-16">
+      {/* Ticker B3/IBOV/Crypto */}
+      <StockMarketTicker />
+      
               {/* Header */}
         <div className="bg-agro-bg-card shadow-xl border-b border-agro-border-primary">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -798,6 +798,7 @@
   },
   "store": {
     "title": "Loja Agroisync",
+    "subtitle": "Marketplace Completo de Produtos Agrícolas",
     "description": "Marketplace Completo de Produtos Agrícolas",
     "cta": {
       "primary": "Explorar Produtos",
@@ -1093,5 +1094,30 @@
     "detectionStep3Desc": "Dados atualizados a cada 5 minutos para informações sempre precisas",
     "grainsTitle": "Grãos Monitorados",
     "unit": "Unidade"
+  },
+  "ui": {
+    "placeholder": {
+      "address": "Digite o endereço completo",
+      "search": "Buscar...",
+      "email": "Digite seu email",
+      "name": "Digite seu nome",
+      "phone": "Digite seu telefone"
+    },
+    "button": {
+      "changePersonality": "Mudar personalidade",
+      "expand": "Expandir",
+      "minimize": "Minimizar",
+      "close": "Fechar",
+      "sendImage": "Enviar imagem",
+      "sendMessage": "Enviar mensagem"
+    },
+    "label": {
+      "imageSent": "Imagem enviada",
+      "previousNews": "Notícia anterior",
+      "nextNews": "Próxima notícia"
+    },
+    "message": {
+      "productView": "Seu produto \"Soja Premium\" recebeu uma nova visualização"
+    }
   }
 }

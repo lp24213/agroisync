@@ -31,7 +31,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      const from = location.state?.from?.pathname || '/dashboard';
+      const from = location.state?.from?.pathname || '/login-redirect';
       navigate(from, { replace: true });
     }
   }, [isAuthenticated, navigate, location]);
@@ -74,7 +74,7 @@ const Login = () => {
         if (result.user?.isAdmin || result.user?.role === 'admin') {
           setTimeout(() => navigate('/admin/dashboard'), 1500);
         } else {
-          setTimeout(() => navigate('/dashboard'), 1500);
+          setTimeout(() => navigate('/login-redirect'), 1500);
         }
       }
     } catch (error) {
@@ -136,7 +136,7 @@ const Login = () => {
         if (result.user?.isAdmin || result.user?.role === 'admin') {
           setTimeout(() => navigate('/admin/dashboard'), 1500);
         } else {
-          setTimeout(() => navigate('/dashboard'), 1500);
+          setTimeout(() => navigate('/login-redirect'), 1500);
         }
       } else {
         setError(result.message || 'Código 2FA inválido. Tente novamente.');

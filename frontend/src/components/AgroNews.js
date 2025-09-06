@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../contexts/LanguageContext';
 import { Newspaper, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const AgroNews = () => {
   const { isDark } = useTheme();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -133,7 +133,7 @@ const AgroNews = () => {
               <button
                 onClick={prevNews}
                 className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors duration-200"
-                aria-label="Notícia anterior"
+                aria-label={t('ui.label.previousNews')}
               >
                 <ChevronLeft className="w-6 h-6" />
               </button>
@@ -143,7 +143,7 @@ const AgroNews = () => {
               <button
                 onClick={nextNews}
                 className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors duration-200"
-                aria-label="Próxima notícia"
+                aria-label={t('ui.label.nextNews')}
               >
                 <ChevronRight className="w-6 h-6" />
               </button>

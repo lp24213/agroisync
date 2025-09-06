@@ -11,7 +11,7 @@ import {
   Target, Rocket, TrendingUp as TrendingUpIcon,
   Bell, LineChart, Bitcoin
 } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../contexts/LanguageContext';
 import cryptoService from '../services/cryptoService';
 import metamaskService from '../services/metamaskService';
 import Web3Wallet from '../components/Web3Wallet';
@@ -23,7 +23,7 @@ import CryptoCharts from '../components/CryptoCharts';
 import StockMarketTicker from '../components/StockMarketTicker';
 
 const Cripto = () => {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const { user, isAuthenticated, isAdmin } = useAuth();
   const { isDark } = useTheme();
   

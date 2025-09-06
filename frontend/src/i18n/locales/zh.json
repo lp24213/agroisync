@@ -1082,5 +1082,30 @@
     "detectionStep3Desc": "数据每5分钟更新一次，确保信息始终准确",
     "grainsTitle": "监控谷物",
     "unit": "单位"
+  },
+  "ui": {
+    "placeholder": {
+      "address": "输入完整地址",
+      "search": "搜索...",
+      "email": "输入您的邮箱",
+      "name": "输入您的姓名",
+      "phone": "输入您的电话"
+    },
+    "button": {
+      "changePersonality": "改变个性",
+      "expand": "展开",
+      "minimize": "最小化",
+      "close": "关闭",
+      "sendImage": "发送图片",
+      "sendMessage": "发送消息"
+    },
+    "label": {
+      "imageSent": "图片已发送",
+      "previousNews": "上一条新闻",
+      "nextNews": "下一条新闻"
+    },
+    "message": {
+      "productView": "您的产品\"优质大豆\"收到了新的查看"
+    }
   }
 }

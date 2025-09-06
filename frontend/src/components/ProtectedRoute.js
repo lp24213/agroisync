@@ -1,39 +1,34 @@
 import React from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Navigate } from 'react-router-dom';
 
-const ProtectedRoute = ({ children, requireAdmin = false, requirePlan = false }) => {
-  const { user, loading, isAdmin } = useAuth();
+const ProtectedRoute = ({ children, requiredRole = null, requiredPlan = false }) => {
+  const { user, isAuthenticated, hasActivePlan, checkIsAdmin } = useAuth();
+  const location = useLocation();
 
-  // Mostrar loading enquanto verifica autenticação
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 pt-16">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Verificando autenticação...</p>
-        </div>
-      </div>
-    );
+  // Se não estiver autenticado, redirecionar para login
+  if (!isAuthenticated()) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Se não estiver logado, redirecionar para login
-  if (!user) {
-    return <Navigate to="/login" replace />;
+  // Se precisar de plano ativo e não tiver
+  if (requiredPlan && !hasActivePlan()) {
+    return <Navigate to="/plans" state={{ from: location }} replace />;
   }
 
-  // Se requer admin e usuário não é admin, redirecionar para login
-  if (requireAdmin && !isAdmin) {
-    return <Navigate to="/login" replace />;
+  // Se precisar de role específico
+  if (requiredRole) {
+    // Verificar se é admin
+    if (requiredRole === 'admin' && !checkIsAdmin()) {
+      return <Navigate to="/unauthorized" replace />;
+    }
+    
+    // Verificar outros roles (buyer, seller, driver)
+    if (user && user.role && user.role !== requiredRole) {
+      return <Navigate to="/unauthorized" replace />;
+    }
   }
 
-  // Se requer plano ativo (implementar lógica quando necessário)
-  if (requirePlan) {
-    // Por enquanto, permitir acesso para usuários logados
-    // Implementar verificação de plano quando necessário
-  }
-
-  // Usuário autenticado e autorizado
   return children;
 };
 
