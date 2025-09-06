@@ -6,19 +6,19 @@ export default function handler(req, res) {
     cultivos: 230,
     relatorios: 89,
     ultimaAtualizacao: new Date().toISOString(),
-    environment: 'AWS Amplify Static'
-  }
-  
+    environment: 'AWS Amplify Static',
+  };
+
   const response = {
     success: true,
     dados,
-    message: 'Dados carregados com sucesso'
-  }
-  
+    message: 'Dados carregados com sucesso',
+  };
+
   // Como é estático, simulamos a resposta
   if (typeof res !== 'undefined') {
-    res.status(200).json(response)
+    res.status(200).json(response);
   }
-  
-  return response
+
+  return response;
 }

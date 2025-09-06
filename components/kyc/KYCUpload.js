@@ -1,139 +1,145 @@
-import React, { useState, useCallback } from 'react'
-import { useTranslation } from 'react-i18next'
-import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  Upload, 
-  FileText, 
-  CheckCircle, 
-  XCircle, 
+import React, { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Upload,
+  FileText,
+  CheckCircle,
+  XCircle,
   AlertCircle,
   Eye,
-  Download,
-  Trash2
-} from 'lucide-react'
-import { useDropzone } from 'react-dropzone'
-import { toast } from 'react-hot-toast'
+  Trash2,
+} from 'lucide-react';
+import { useDropzone } from 'react-dropzone';
+import { toast } from 'react-hot-toast';
 
-const KYCUpload = ({ 
-  documentType, 
-  onUpload, 
-  onRemove, 
+const KYCUpload = ({
+  documentType,
+  onUpload,
+  onRemove,
   existingDocument,
-  disabled = false 
+  disabled = false,
 }) => {
-  const { t } = useTranslation()
-  const [uploading, setUploading] = useState(false)
-  const [preview, setPreview] = useState(null)
+  const { t } = useTranslation();
+  const [uploading, setUploading] = useState(false);
+  const [preview, setPreview] = useState(null);
 
-  const onDrop = useCallback(async (acceptedFiles) => {
-    if (acceptedFiles.length === 0) return
+  const onDrop = useCallback(
+    async acceptedFiles => {
+      if (acceptedFiles.length === 0) return;
 
-    const file = acceptedFiles[0]
-    setUploading(true)
+      const file = acceptedFiles[0];
+      setUploading(true);
 
-    try {
-      // Create preview for images
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader()
-        reader.onload = (e) => setPreview(e.target.result)
-        reader.readAsDataURL(file)
+      try {
+        // Create preview for images
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = e => setPreview(e.target.result);
+          reader.readAsDataURL(file);
+        }
+
+        // Upload file
+        const formData = new FormData();
+        formData.append('document', file);
+        formData.append('documentType', documentType);
+
+        const response = await fetch('/api/kyc/upload', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+          body: formData,
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          toast.success(
+            t('kyc.uploadSuccess', 'Documento enviado com sucesso!')
+          );
+          onUpload(result);
+        } else {
+          throw new Error(result.error || 'Erro no upload');
+        }
+      } catch (error) {
+        console.error('Upload error:', error);
+        toast.error(
+          error.message || t('kyc.uploadError', 'Erro ao enviar documento')
+        );
+      } finally {
+        setUploading(false);
       }
-
-      // Upload file
-      const formData = new FormData()
-      formData.append('document', file)
-      formData.append('documentType', documentType)
-
-      const response = await fetch('/api/kyc/upload', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: formData
-      })
-
-      const result = await response.json()
-
-      if (result.success) {
-        toast.success(t('kyc.uploadSuccess', 'Documento enviado com sucesso!'))
-        onUpload(result)
-      } else {
-        throw new Error(result.error || 'Erro no upload')
-      }
-    } catch (error) {
-      console.error('Upload error:', error)
-      toast.error(error.message || t('kyc.uploadError', 'Erro ao enviar documento'))
-    } finally {
-      setUploading(false)
-    }
-  }, [documentType, onUpload, t])
+    },
+    [documentType, onUpload, t]
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
       'image/*': ['.jpeg', '.jpg', '.png'],
-      'application/pdf': ['.pdf']
+      'application/pdf': ['.pdf'],
     },
     maxSize: 10 * 1024 * 1024, // 10MB
-    disabled: disabled || uploading
-  })
+    disabled: disabled || uploading,
+  });
 
   const handleRemove = async () => {
-    if (!existingDocument) return
+    if (!existingDocument) return;
 
     try {
-      await onRemove(existingDocument._id)
-      setPreview(null)
-      toast.success(t('kyc.removeSuccess', 'Documento removido com sucesso!'))
+      await onRemove(existingDocument._id);
+      setPreview(null);
+      toast.success(t('kyc.removeSuccess', 'Documento removido com sucesso!'));
     } catch (error) {
-      console.error('Remove error:', error)
-      toast.error(t('kyc.removeError', 'Erro ao remover documento'))
+      console.error('Remove error:', error);
+      toast.error(t('kyc.removeError', 'Erro ao remover documento'));
     }
-  }
+  };
 
-  const getDocumentIcon = (mimeType) => {
+  const getDocumentIcon = mimeType => {
     if (mimeType?.startsWith('image/')) {
-      return <FileText className="w-8 h-8 text-blue-500" />
+      return <FileText className="w-8 h-8 text-blue-500" />;
     }
-    return <FileText className="w-8 h-8 text-red-500" />
-  }
+    return <FileText className="w-8 h-8 text-red-500" />;
+  };
 
-  const getStatusIcon = (status) => {
+  const getStatusIcon = status => {
     switch (status) {
       case 'approved':
-        return <CheckCircle className="w-5 h-5 text-green-500" />
+        return <CheckCircle className="w-5 h-5 text-green-500" />;
       case 'rejected':
-        return <XCircle className="w-5 h-5 text-red-500" />
+        return <XCircle className="w-5 h-5 text-red-500" />;
       case 'pending_review':
-        return <AlertCircle className="w-5 h-5 text-yellow-500" />
+        return <AlertCircle className="w-5 h-5 text-yellow-500" />;
       default:
-        return null
+        return null;
     }
-  }
+  };
 
-  const getStatusColor = (status) => {
+  const getStatusColor = status => {
     switch (status) {
       case 'approved':
-        return 'border-green-200 bg-green-50'
+        return 'border-green-200 bg-green-50';
       case 'rejected':
-        return 'border-red-200 bg-red-50'
+        return 'border-red-200 bg-red-50';
       case 'pending_review':
-        return 'border-yellow-200 bg-yellow-50'
+        return 'border-yellow-200 bg-yellow-50';
       default:
-        return 'border-gray-200 bg-gray-50'
+        return 'border-gray-200 bg-gray-50';
     }
-  }
+  };
 
-  const getDocumentTypeName = (type) => {
+  const getDocumentTypeName = type => {
     const names = {
       id: t('kyc.documentTypes.id', 'Documento de Identidade'),
       address: t('kyc.documentTypes.address', 'Comprovante de Endereço'),
       license: t('kyc.documentTypes.license', 'Carteira de Habilitação'),
       vehicle: t('kyc.documentTypes.vehicle', 'Documento do Veículo'),
-      business: t('kyc.documentTypes.business', 'Documento da Empresa')
-    }
-    return names[type] || type
-  }
+      business: t('kyc.documentTypes.business', 'Documento da Empresa'),
+    };
+    return names[type] || type;
+  };
 
   if (existingDocument) {
     return (
@@ -155,25 +161,33 @@ const KYCUpload = ({
               <div className="flex items-center space-x-2 mt-1">
                 {getStatusIcon(existingDocument.status)}
                 <span className="text-sm font-medium">
-                  {t(`kyc.status.${existingDocument.status}`, existingDocument.status)}
+                  {t(
+                    `kyc.status.${existingDocument.status}`,
+                    existingDocument.status
+                  )}
                 </span>
               </div>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-2">
             {existingDocument.status === 'approved' && (
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => window.open(`/api/kyc/document/${existingDocument._id}`, '_blank')}
+                onClick={() =>
+                  window.open(
+                    `/api/kyc/document/${existingDocument._id}`,
+                    '_blank'
+                  )
+                }
                 className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors"
                 title={t('kyc.viewDocument', 'Visualizar documento')}
               >
                 <Eye className="w-4 h-4" />
               </motion.button>
             )}
-            
+
             {!disabled && (
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -191,7 +205,8 @@ const KYCUpload = ({
         {existingDocument.reason && (
           <div className="mt-3 p-3 bg-gray-100 rounded-lg">
             <p className="text-sm text-gray-700">
-              <strong>{t('kyc.reason', 'Motivo')}:</strong> {existingDocument.reason}
+              <strong>{t('kyc.reason', 'Motivo')}:</strong>{' '}
+              {existingDocument.reason}
             </p>
           </div>
         )}
@@ -199,13 +214,17 @@ const KYCUpload = ({
         {existingDocument.validation && (
           <div className="mt-3 grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="text-gray-600">{t('kyc.validationScore', 'Pontuação de Validação')}:</span>
+              <span className="text-gray-600">
+                {t('kyc.validationScore', 'Pontuação de Validação')}:
+              </span>
               <span className="ml-2 font-medium">
                 {Math.round(existingDocument.validation.score * 100)}%
               </span>
             </div>
             <div>
-              <span className="text-gray-600">{t('kyc.ocrConfidence', 'Confiança OCR')}:</span>
+              <span className="text-gray-600">
+                {t('kyc.ocrConfidence', 'Confiança OCR')}:
+              </span>
               <span className="ml-2 font-medium">
                 {Math.round(existingDocument.ocrConfidence * 100)}%
               </span>
@@ -213,7 +232,7 @@ const KYCUpload = ({
           </div>
         )}
       </motion.div>
-    )
+    );
   }
 
   return (
@@ -227,15 +246,16 @@ const KYCUpload = ({
         className={`
           relative border-2 border-dashed rounded-lg p-8 text-center cursor-pointer
           transition-all duration-200
-          ${isDragActive 
-            ? 'border-blue-400 bg-blue-50' 
-            : 'border-gray-300 hover:border-gray-400'
+          ${
+            isDragActive
+              ? 'border-blue-400 bg-blue-50'
+              : 'border-gray-300 hover:border-gray-400'
           }
           ${disabled || uploading ? 'opacity-50 cursor-not-allowed' : ''}
         `}
       >
         <input {...getInputProps()} />
-        
+
         <AnimatePresence>
           {uploading ? (
             <motion.div
@@ -261,13 +281,18 @@ const KYCUpload = ({
                 {getDocumentTypeName(documentType)}
               </h3>
               <p className="text-gray-600 mb-4">
-                {isDragActive 
+                {isDragActive
                   ? t('kyc.dropFile', 'Solte o arquivo aqui...')
-                  : t('kyc.dragDrop', 'Arraste e solte o arquivo aqui, ou clique para selecionar')
-                }
+                  : t(
+                      'kyc.dragDrop',
+                      'Arraste e solte o arquivo aqui, ou clique para selecionar'
+                    )}
               </p>
               <p className="text-sm text-gray-500">
-                {t('kyc.supportedFormats', 'Formatos suportados: JPG, PNG, PDF (máx. 10MB)')}
+                {t(
+                  'kyc.supportedFormats',
+                  'Formatos suportados: JPG, PNG, PDF (máx. 10MB)'
+                )}
               </p>
             </motion.div>
           )}
@@ -288,7 +313,7 @@ const KYCUpload = ({
         </motion.div>
       )}
     </motion.div>
-  )
-}
+  );
+};
 
-export default KYCUpload
+export default KYCUpload;

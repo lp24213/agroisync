@@ -6,13 +6,13 @@ export default function handler(req, res) {
     timestamp: new Date().toISOString(),
     version: '2.0.0',
     status: 'success',
-    environment: 'AWS Amplify Static'
-  }
-  
+    environment: 'AWS Amplify Static',
+  };
+
   // Como é estático, simulamos a resposta
   if (typeof res !== 'undefined') {
-    res.status(200).json(data)
+    res.status(200).json(data);
   }
-  
-  return data
+
+  return data;
 }

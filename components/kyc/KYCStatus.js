@@ -1,107 +1,118 @@
-import React, { useState, useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
-import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  CheckCircle, 
-  XCircle, 
-  Clock, 
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { motion } from 'framer-motion';
+import {
+  CheckCircle,
+  XCircle,
+  Clock,
   AlertCircle,
   FileText,
   Shield,
   TrendingUp,
-  Users
-} from 'lucide-react'
+} from 'lucide-react';
 
-const KYCStatus = ({ userId, role }) => {
-  const { t } = useTranslation()
-  const [kycData, setKycData] = useState(null)
-  const [loading, setLoading] = useState(true)
+const KYCStatus = ({ userId }) => {
+  const { t } = useTranslation();
+  const [kycData, setKycData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchKYCStatus()
-  }, [userId])
+    fetchKYCStatus();
+  }, [userId]);
 
   const fetchKYCStatus = async () => {
     try {
       const response = await fetch('/api/kyc/status', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      })
-      
-      const data = await response.json()
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      const data = await response.json();
       if (data.success) {
-        setKycData(data)
+        setKycData(data);
       }
     } catch (error) {
-      console.error('Error fetching KYC status:', error)
+      console.error('Error fetching KYC status:', error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  const getStatusIcon = (status) => {
+  const getStatusIcon = status => {
     switch (status) {
       case 'approved':
-        return <CheckCircle className="w-6 h-6 text-green-500" />
+        return <CheckCircle className="w-6 h-6 text-green-500" />;
       case 'rejected':
-        return <XCircle className="w-6 h-6 text-red-500" />
+        return <XCircle className="w-6 h-6 text-red-500" />;
       case 'pending_review':
-        return <Clock className="w-6 h-6 text-yellow-500" />
+        return <Clock className="w-6 h-6 text-yellow-500" />;
       case 'incomplete':
-        return <AlertCircle className="w-6 h-6 text-gray-500" />
+        return <AlertCircle className="w-6 h-6 text-gray-500" />;
       default:
-        return <AlertCircle className="w-6 h-6 text-gray-500" />
+        return <AlertCircle className="w-6 h-6 text-gray-500" />;
     }
-  }
+  };
 
-  const getStatusColor = (status) => {
+  const getStatusColor = status => {
     switch (status) {
       case 'approved':
-        return 'bg-green-100 text-green-800 border-green-200'
+        return 'bg-green-100 text-green-800 border-green-200';
       case 'rejected':
-        return 'bg-red-100 text-red-800 border-red-200'
+        return 'bg-red-100 text-red-800 border-red-200';
       case 'pending_review':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200'
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
       case 'incomplete':
-        return 'bg-gray-100 text-gray-800 border-gray-200'
+        return 'bg-gray-100 text-gray-800 border-gray-200';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200'
+        return 'bg-gray-100 text-gray-800 border-gray-200';
     }
-  }
+  };
 
-  const getStatusMessage = (status) => {
+  const getStatusMessage = status => {
     switch (status) {
       case 'approved':
-        return t('kyc.statusMessages.approved', 'Seus documentos foram aprovados! Você pode usar todas as funcionalidades da plataforma.')
+        return t(
+          'kyc.statusMessages.approved',
+          'Seus documentos foram aprovados! Você pode usar todas as funcionalidades da plataforma.'
+        );
       case 'rejected':
-        return t('kyc.statusMessages.rejected', 'Seus documentos foram rejeitados. Por favor, envie novos documentos.')
+        return t(
+          'kyc.statusMessages.rejected',
+          'Seus documentos foram rejeitados. Por favor, envie novos documentos.'
+        );
       case 'pending_review':
-        return t('kyc.statusMessages.pending', 'Seus documentos estão sendo analisados. Aguarde a aprovação.')
+        return t(
+          'kyc.statusMessages.pending',
+          'Seus documentos estão sendo analisados. Aguarde a aprovação.'
+        );
       case 'incomplete':
-        return t('kyc.statusMessages.incomplete', 'Você precisa enviar todos os documentos obrigatórios.')
+        return t(
+          'kyc.statusMessages.incomplete',
+          'Você precisa enviar todos os documentos obrigatórios.'
+        );
       default:
-        return t('kyc.statusMessages.unknown', 'Status desconhecido.')
+        return t('kyc.statusMessages.unknown', 'Status desconhecido.');
     }
-  }
+  };
 
-  const getDocumentTypeName = (type) => {
+  const getDocumentTypeName = type => {
     const names = {
       id: t('kyc.documentTypes.id', 'Documento de Identidade'),
       address: t('kyc.documentTypes.address', 'Comprovante de Endereço'),
       license: t('kyc.documentTypes.license', 'Carteira de Habilitação'),
       vehicle: t('kyc.documentTypes.vehicle', 'Documento do Veículo'),
-      business: t('kyc.documentTypes.business', 'Documento da Empresa')
-    }
-    return names[type] || type
-  }
+      business: t('kyc.documentTypes.business', 'Documento da Empresa'),
+    };
+    return names[type] || type;
+  };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
         <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
       </div>
-    )
+    );
   }
 
   if (!kycData) {
@@ -112,7 +123,7 @@ const KYCStatus = ({ userId, role }) => {
           {t('kyc.errorLoading', 'Erro ao carregar status do KYC')}
         </p>
       </div>
-    )
+    );
   }
 
   return (
@@ -148,19 +159,20 @@ const KYCStatus = ({ userId, role }) => {
             {t('kyc.progress', 'Progresso')}
           </h4>
           <span className="text-sm text-gray-600">
-            {kycData.progress.completed}/{kycData.progress.total} {t('kyc.documents', 'documentos')}
+            {kycData.progress.completed}/{kycData.progress.total}{' '}
+            {t('kyc.documents', 'documentos')}
           </span>
         </div>
-        
+
         <div className="w-full bg-gray-200 rounded-full h-3">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${kycData.progress.percentage}%` }}
-            transition={{ duration: 1, ease: "easeOut" }}
+            transition={{ duration: 1, ease: 'easeOut' }}
             className="bg-gradient-to-r from-blue-500 to-green-500 h-3 rounded-full"
           />
         </div>
-        
+
         <p className="text-sm text-gray-600 mt-2">
           {kycData.progress.percentage}% {t('kyc.complete', 'completo')}
         </p>
@@ -176,12 +188,14 @@ const KYCStatus = ({ userId, role }) => {
         <h4 className="font-medium text-gray-900 mb-4">
           {t('kyc.requirements', 'Documentos Obrigatórios')}
         </h4>
-        
+
         <div className="space-y-3">
           {kycData.requirements.map((requirement, index) => {
-            const document = kycData.documents.find(doc => doc.documentType === requirement.type)
-            const isCompleted = document && document.status === 'approved'
-            
+            const document = kycData.documents.find(
+              doc => doc.documentType === requirement.type
+            );
+            const isCompleted = document && document.status === 'approved';
+
             return (
               <motion.div
                 key={requirement.type}
@@ -189,7 +203,9 @@ const KYCStatus = ({ userId, role }) => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 + index * 0.1 }}
                 className={`flex items-center space-x-3 p-3 rounded-lg ${
-                  isCompleted ? 'bg-green-50 border border-green-200' : 'bg-gray-50 border border-gray-200'
+                  isCompleted
+                    ? 'bg-green-50 border border-green-200'
+                    : 'bg-gray-50 border border-gray-200'
                 }`}
               >
                 {isCompleted ? (
@@ -198,26 +214,35 @@ const KYCStatus = ({ userId, role }) => {
                   <Clock className="w-5 h-5 text-gray-400" />
                 )}
                 <div className="flex-1">
-                  <p className={`font-medium ${isCompleted ? 'text-green-900' : 'text-gray-900'}`}>
+                  <p
+                    className={`font-medium ${
+                      isCompleted ? 'text-green-900' : 'text-gray-900'
+                    }`}
+                  >
                     {requirement.name}
                   </p>
                   {document && (
                     <p className="text-sm text-gray-600">
-                      {t('kyc.uploadedOn', 'Enviado em')}: {new Date(document.uploadedAt).toLocaleDateString()}
+                      {t('kyc.uploadedOn', 'Enviado em')}:{' '}
+                      {new Date(document.uploadedAt).toLocaleDateString()}
                     </p>
                   )}
                 </div>
                 {document && (
-                  <span className={`px-2 py-1 text-xs rounded-full ${
-                    document.status === 'approved' ? 'bg-green-100 text-green-800' :
-                    document.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                    'bg-yellow-100 text-yellow-800'
-                  }`}>
+                  <span
+                    className={`px-2 py-1 text-xs rounded-full ${
+                      document.status === 'approved'
+                        ? 'bg-green-100 text-green-800'
+                        : document.status === 'rejected'
+                          ? 'bg-red-100 text-red-800'
+                          : 'bg-yellow-100 text-yellow-800'
+                    }`}
+                  >
                     {t(`kyc.status.${document.status}`, document.status)}
                   </span>
                 )}
               </motion.div>
-            )
+            );
           })}
         </div>
       </motion.div>
@@ -238,17 +263,20 @@ const KYCStatus = ({ userId, role }) => {
             {t('kyc.approvedDocuments', 'Documentos Aprovados')}
           </p>
         </div>
-        
+
         <div className="bg-white p-4 rounded-lg shadow-sm border text-center">
           <Clock className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
           <p className="text-2xl font-bold text-gray-900">
-            {kycData.documents.filter(doc => doc.status === 'pending_review').length}
+            {
+              kycData.documents.filter(doc => doc.status === 'pending_review')
+                .length
+            }
           </p>
           <p className="text-sm text-gray-600">
             {t('kyc.pendingDocuments', 'Documentos Pendentes')}
           </p>
         </div>
-        
+
         <div className="bg-white p-4 rounded-lg shadow-sm border text-center">
           <TrendingUp className="w-8 h-8 text-green-500 mx-auto mb-2" />
           <p className="text-2xl font-bold text-gray-900">
@@ -271,7 +299,7 @@ const KYCStatus = ({ userId, role }) => {
           <h4 className="font-medium text-gray-900 mb-4">
             {t('kyc.recentDocuments', 'Documentos Recentes')}
           </h4>
-          
+
           <div className="space-y-3">
             {kycData.documents.slice(0, 3).map((document, index) => (
               <motion.div
@@ -297,7 +325,7 @@ const KYCStatus = ({ userId, role }) => {
         </motion.div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default KYCStatus
+export default KYCStatus;
