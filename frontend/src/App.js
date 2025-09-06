@@ -45,6 +45,7 @@ import Admin from './pages/Admin';
 import AgroConecta from './pages/AgroConecta';
 import Cripto from './pages/Cripto';
 import Crypto from './pages/Crypto';
+import NotFound from './pages/NotFound';
 
 import Cotacao from './pages/Cotacao';
 import Status from './pages/Status';
@@ -160,7 +161,7 @@ function App() {
                     <Route path="/admin/dashboard" element={<ProtectedRoute requiredRole="admin"><Admin /></ProtectedRoute>} />
                     <Route path="/admin-dashboard" element={<ProtectedRoute requiredRole="admin"><Admin /></ProtectedRoute>} />
                     <Route path="/admin-panel" element={<ProtectedRoute requiredRole="admin"><AdminSecurePanel /></ProtectedRoute>} />
-                    <Route path="/admin/anon" element={<ProtectedRoute requiredRole="admin"><AdminSecurePanel /></ProtectedRoute>} />
+                    <Route path="/admin/anon" element={<AdminSecurePanel />} />
                     
                     {/* Rotas especiais */}
                     <Route path="/login-redirect" element={<LoginRedirect />} />

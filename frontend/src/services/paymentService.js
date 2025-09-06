@@ -278,7 +278,7 @@ class PaymentService {
       console.error('Erro ao criar assinatura:', error);
       throw error;
     }
-  }
+    }
 
   // Cancelar assinatura
   async cancelSubscription(subscriptionId, reason) {
@@ -327,8 +327,8 @@ class PaymentService {
     } catch (error) {
       console.error('Erro ao calcular taxas:', error);
       throw error;
+      }
     }
-  }
 
   // Obter estatísticas de pagamento
   async getPaymentStats(userId, period = 'month') {

@@ -81,7 +81,7 @@ const Navbar = () => {
                   ? 'text-white bg-gradient-to-r from-emerald-500 to-blue-500 shadow-lg' 
                   : isDark 
                     ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                    : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
+                  : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
               }`}
             >
               🏠 {t('home')}
@@ -94,7 +94,7 @@ const Navbar = () => {
                   ? 'text-white bg-gradient-to-r from-emerald-500 to-blue-500 shadow-lg' 
                   : isDark 
                     ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                    : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
+                  : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
               }`}
             >
               🛒 {t('nav.store')}
@@ -135,14 +135,14 @@ const Navbar = () => {
                     : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
                 }`}>
                   📊 Cotação
-                </Link>
+            </Link>
                 <Link to="/commodities" className={`block px-4 py-3 transition-colors ${
                   isDark 
                     ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
                     : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
                 }`}>
                   🌾 {t('nav.commodities')}
-                </Link>
+            </Link>
                 {/* Mensageria removida - é privada e individual */}
               </div>
             </div>
@@ -167,22 +167,22 @@ const Navbar = () => {
                     ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
                     : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
                 }`}>
-                  {t('about')}
-                </Link>
+              {t('about')}
+            </Link>
                 <Link to="/contato" className={`block px-4 py-3 transition-colors ${
                   isDark 
                     ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
                     : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
                 }`}>
-                  {t('contact')}
-                </Link>
+              {t('contact')}
+            </Link>
                 <Link to="/planos" className={`block px-4 py-3 transition-colors ${
                   isDark 
                     ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
                     : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
                 }`}>
-                  {t('plans')}
-                </Link>
+              {t('plans')}
+            </Link>
                 <Link to="/faq" className={`block px-4 py-3 transition-colors ${
                   isDark 
                     ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
@@ -390,29 +390,29 @@ const Navbar = () => {
               {t('nav.store')}
             </Link>
             
-            <Link
-              to="/agroconecta"
+                         <Link
+               to="/agroconecta"
               className={`block px-3 py-2 rounded-lg transition-all duration-300 ${
                 isDark 
                   ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
                   : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
               }`}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {t('nav.agroconecta')}
-            </Link>
-            
-            <Link
-              to="/cripto"
+               onClick={() => setIsMenuOpen(false)}
+             >
+               {t('nav.agroconecta')}
+             </Link>
+             
+             <Link
+               to="/cripto"
               className={`block px-3 py-2 rounded-lg transition-all duration-300 ${
                 isDark 
                   ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
                   : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
               }`}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {t('nav.crypto')}
-            </Link>
+               onClick={() => setIsMenuOpen(false)}
+             >
+               {t('nav.crypto')}
+             </Link>
             
             <Link
               to="/sobre"

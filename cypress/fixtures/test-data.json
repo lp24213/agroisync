@@ -1,0 +1,261 @@
+{
+  "users": {
+    "buyer": {
+      "email": "buyer@test.com",
+      "password": "password123",
+      "name": "João Comprador",
+      "role": "buyer",
+      "cpf": "11144477735",
+      "phone": "+5511999999999"
+    },
+    "seller": {
+      "email": "seller@test.com", 
+      "password": "password123",
+      "name": "Maria Vendedora",
+      "role": "seller",
+      "cpf": "12345678909",
+      "phone": "+5511888888888"
+    },
+    "driver": {
+      "email": "driver@test.com",
+      "password": "password123", 
+      "name": "Pedro Motorista",
+      "role": "driver",
+      "cpf": "98765432100",
+      "phone": "+5511777777777",
+      "vehicle": "Scania R450",
+      "plate": "ABC-1234"
+    },
+    "admin": {
+      "email": "admin@agroisync.com",
+      "password": "admin123",
+      "name": "Admin Sistema",
+      "role": "admin"
+    }
+  },
+  "products": [
+    {
+      "name": "Soybeans",
+      "type": "grains",
+      "price": 150.00,
+      "unit": "ton",
+      "description": "High quality soybeans from certified farms"
+    },
+    {
+      "name": "Corn", 
+      "type": "grains",
+      "price": 120.00,
+      "unit": "ton",
+      "description": "Premium corn for animal feed"
+    },
+    {
+      "name": "Wheat",
+      "type": "grains", 
+      "price": 180.00,
+      "unit": "ton",
+      "description": "Wheat for flour production"
+    },
+    {
+      "name": "Coffee",
+      "type": "beverages",
+      "price": 200.00,
+      "unit": "ton",
+      "description": "Arabica coffee beans"
+    },
+    {
+      "name": "Sugar",
+      "type": "sweeteners",
+      "price": 100.00,
+      "unit": "ton",
+      "description": "Refined white sugar"
+    }
+  ],
+  "orders": [
+    {
+      "product": "Soybeans",
+      "quantity": 1000,
+      "destination": "São Paulo",
+      "status": "pending",
+      "deliveryDate": "2024-12-31",
+      "notes": "High quality soybeans needed for export"
+    },
+    {
+      "product": "Corn",
+      "quantity": 500,
+      "destination": "Rio de Janeiro",
+      "status": "confirmed",
+      "deliveryDate": "2024-12-25",
+      "notes": "Urgent delivery required"
+    },
+    {
+      "product": "Wheat",
+      "quantity": 2000,
+      "destination": "Belo Horizonte",
+      "status": "in_transit",
+      "deliveryDate": "2024-12-20",
+      "notes": "Standard delivery"
+    }
+  ],
+  "kyc": {
+    "documents": {
+      "id": "id-document.jpg",
+      "address": "address-proof.pdf",
+      "license": "driver-license.pdf",
+      "vehicle": "vehicle-registration.pdf"
+    },
+    "personalInfo": {
+      "fullName": "João Silva",
+      "cpf": "12345678901",
+      "phone": "+5511999999999",
+      "address": "Rua das Flores, 123, São Paulo, SP"
+    }
+  },
+  "payments": [
+    {
+      "amount": 150000,
+      "currency": "BRL",
+      "method": "card",
+      "status": "succeeded",
+      "orderId": "order123"
+    },
+    {
+      "amount": 60000,
+      "currency": "BRL", 
+      "method": "crypto",
+      "status": "pending",
+      "orderId": "order456"
+    }
+  ],
+  "locations": [
+    {
+      "name": "São Paulo",
+      "coordinates": [-23.5505, -46.6333],
+      "address": "São Paulo, SP, Brazil"
+    },
+    {
+      "name": "Rio de Janeiro",
+      "coordinates": [-22.9068, -43.1729],
+      "address": "Rio de Janeiro, RJ, Brazil"
+    },
+    {
+      "name": "Belo Horizonte",
+      "coordinates": [-19.9167, -43.9345],
+      "address": "Belo Horizonte, MG, Brazil"
+    },
+    {
+      "name": "Brasília",
+      "coordinates": [-15.7801, -47.9292],
+      "address": "Brasília, DF, Brazil"
+    }
+  ],
+  "ai": {
+    "prompts": [
+      "What is the current price of soybeans?",
+      "Analyze this crop image",
+      "Predict market trends for next month",
+      "Recommend best delivery routes"
+    ],
+    "responses": [
+      "The current price of soybeans is R$ 150.00 per ton",
+      "This crop appears to be in good condition",
+      "Market trends suggest a 5% increase in prices",
+      "The best route would be via BR-050"
+    ]
+  },
+  "blockchain": {
+    "networks": ["ethereum", "solana", "polygon"],
+    "currencies": ["ETH", "SOL", "MATIC", "USDC", "USDT"],
+    "transactions": [
+      {
+        "hash": "0x1234567890abcdef",
+        "amount": "1.5",
+        "currency": "ETH",
+        "status": "confirmed"
+      }
+    ]
+  },
+  "notifications": [
+    {
+      "type": "order_confirmation",
+      "title": "Order Confirmed",
+      "message": "Your order has been confirmed and payment received"
+    },
+    {
+      "type": "delivery_update",
+      "title": "Delivery Update",
+      "message": "Your order is on the way and will arrive in 2 hours"
+    },
+    {
+      "type": "payment_received",
+      "title": "Payment Received",
+      "message": "Payment of R$ 150,000.00 has been received"
+    }
+  ],
+  "gamification": {
+    "levels": [
+      { "name": "Novato", "points": 0, "badge": "newbie" },
+      { "name": "Experiente", "points": 1000, "badge": "experienced" },
+      { "name": "Expert", "points": 5000, "badge": "expert" },
+      { "name": "Mestre", "points": 10000, "badge": "master" }
+    ],
+    "badges": [
+      { "name": "Primeira Compra", "description": "Complete your first order" },
+      { "name": "Cliente Fiel", "description": "Make 10 successful orders" },
+      { "name": "Vendedor Estrela", "description": "Receive 5-star rating" },
+      { "name": "Motorista Confiável", "description": "Complete 50 deliveries" }
+    ],
+    "rewards": [
+      { "type": "points", "amount": 100, "action": "complete_order" },
+      { "type": "discount", "amount": 5, "action": "rate_service" },
+      { "type": "badge", "name": "Quality Trader", "action": "high_rating" }
+    ]
+  },
+  "analytics": {
+    "events": [
+      { "name": "page_view", "category": "navigation" },
+      { "name": "order_created", "category": "transaction" },
+      { "name": "payment_completed", "category": "transaction" },
+      { "name": "chat_message", "category": "communication" }
+    ],
+    "metrics": {
+      "page_views": 10000,
+      "orders_created": 500,
+      "payments_completed": 450,
+      "active_users": 1000
+    }
+  },
+  "security": {
+    "testPayloads": [
+      "<script>alert('XSS')</script>",
+      "'; DROP TABLE users; --",
+      "' OR '1'='1",
+      "admin'--"
+    ],
+    "rateLimits": {
+      "login": 5,
+      "api": 100,
+      "upload": 10
+    }
+  },
+  "performance": {
+    "thresholds": {
+      "page_load": 2000,
+      "api_response": 1000,
+      "file_upload": 10000,
+      "ai_processing": 3000
+    }
+  },
+  "accessibility": {
+    "settings": [
+      "high-contrast",
+      "large-text",
+      "reduced-motion",
+      "screen-reader"
+    ],
+    "languages": ["pt", "en", "es", "zh"]
+  },
+  "mobile": {
+    "devices": ["iphone-x", "iphone-12", "samsung-galaxy-s10", "ipad"],
+    "gestures": ["swipe", "pinch", "tap", "long-press"]
+  }
+}

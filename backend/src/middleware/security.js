@@ -177,17 +177,17 @@ export const detectAttacks = async (req, res, next) => {
         riskLevel = 'MEDIUM';
         break;
       }
+      }
     }
-  }
-
-  // Verificar headers suspeitos
-  const suspiciousHeaders = [
-    'x-forwarded-for',
-    'x-real-ip',
+    
+    // Verificar headers suspeitos
+    const suspiciousHeaders = [
+      'x-forwarded-for',
+      'x-real-ip',
     'x-cluster-client-ip'
-  ];
-
-  for (const header of suspiciousHeaders) {
+    ];
+    
+    for (const header of suspiciousHeaders) {
     if (req.headers[header] && checkString(req.headers[header])) {
       isSuspicious = true;
       riskLevel = 'HIGH';
@@ -211,14 +211,14 @@ export const detectAttacks = async (req, res, next) => {
 
     // Bloquear requests de alto risco
     if (riskLevel === 'HIGH') {
-      return res.status(403).json({
-        success: false,
+        return res.status(403).json({
+          success: false,
         message: 'Atividade suspeita detectada. Acesso negado.'
-      });
+        });
+      }
     }
-  }
-
-  next();
+    
+    next();
 };
 
 // Middleware de validação de Stripe webhook
@@ -267,7 +267,7 @@ export const requestTimeout = (timeout = 30000) => {
         success: false,
         message: 'Request timeout'
       });
-    });
+      });
     next();
   };
 };

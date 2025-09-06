@@ -5,6 +5,13 @@ import { body, validationResult } from 'express-validator';
 import rateLimit from 'express-rate-limit';
 import User from '../models/User.js';
 import awsService from '../services/awsService.js';
+import { 
+  createTokenPair, 
+  refreshAccessToken, 
+  revokeRefreshToken, 
+  revokeAllUserTokens,
+  authenticateRefreshToken 
+} from '../services/tokenService.js';
 
 const router = express.Router();
 
@@ -223,23 +230,30 @@ router.post('/login', [
       });
     }
 
-    // Login sem 2FA
-    const token = jwt.sign(
-      { userId: user._id, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
-    );
+    // Login sem 2FA - usar sistema de refresh tokens
+    const tokens = await createTokenPair(user);
 
     // Atualizar último login
     user.lastLoginAt = new Date();
     await user.save();
+
+    // Configurar cookies seguros
+    const cookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 dias
+    };
+
+    res.cookie('refreshToken', tokens.refreshToken, cookieOptions);
 
     res.json({
       success: true,
       message: 'Login realizado com sucesso',
       data: {
         user: user.getPublicData(),
-        token,
+        accessToken: tokens.accessToken,
+        expiresIn: tokens.expiresIn,
         requires2FA: false
       }
     });
@@ -817,18 +831,74 @@ router.put('/profile', [
   }
 });
 
-// POST /auth/logout - Logout (opcional, para invalidar tokens)
-router.post('/logout', async (req, res) => {
+// POST /auth/refresh - Renovar token de acesso
+router.post('/refresh', authenticateRefreshToken, async (req, res) => {
   try {
-    // Em uma implementação mais robusta, você pode invalidar o token
-    // Por exemplo, adicionando-o a uma blacklist no Redis
-    
+    const { refreshToken } = req;
+    const userAgent = req.get('User-Agent');
+    const ipAddress = req.ip || req.connection.remoteAddress;
+
+    const newTokens = await refreshAccessToken(refreshToken, userAgent, ipAddress);
+
+    res.json({
+      success: true,
+      message: 'Token renovado com sucesso',
+      data: {
+        accessToken: newTokens.accessToken,
+        expiresIn: newTokens.expiresIn
+      }
+    });
+  } catch (error) {
+    console.error('Erro ao renovar token:', error);
+    res.status(401).json({
+      success: false,
+      message: error.message || 'Erro ao renovar token'
+    });
+  }
+});
+
+// POST /auth/logout - Logout com revogação de tokens
+router.post('/logout', authenticateRefreshToken, async (req, res) => {
+  try {
+    const { refreshToken } = req;
+
+    // Revogar o refresh token atual
+    await revokeRefreshToken(refreshToken);
+
+    // Limpar cookie
+    res.clearCookie('refreshToken');
+
     res.json({
       success: true,
       message: 'Logout realizado com sucesso'
     });
   } catch (error) {
     console.error('Erro no logout:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// POST /auth/logout-all - Logout de todos os dispositivos
+router.post('/logout-all', authenticateRefreshToken, async (req, res) => {
+  try {
+    const { tokenInfo } = req;
+
+    // Revogar todos os tokens do usuário
+    await revokeAllUserTokens(tokenInfo.userId);
+
+    // Limpar cookie
+    res.clearCookie('refreshToken');
+
+    res.json({
+      success: true,
+      message: 'Logout de todos os dispositivos realizado com sucesso'
+    });
+  } catch (error) {
+    console.error('Erro no logout de todos os dispositivos:', error);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor',

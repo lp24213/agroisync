@@ -117,6 +117,126 @@ html.light {
 /* ===== COMPONENTES GLOBAIS PREMIUM ===== */
 @layer components {
   /* Cards com tema escuro */
+  .card-dark {
+    background: rgba(30, 41, 59, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 255, 191, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+  
+  .card-dark:hover {
+    background: rgba(51, 65, 85, 0.9);
+    border-color: rgba(0, 255, 191, 0.2);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+  }
+  
+  /* Efeitos neon */
+  .neon-glow {
+    box-shadow: 0 0 20px rgba(0, 255, 191, 0.3);
+  }
+  
+  .neon-glow-blue {
+    box-shadow: 0 0 20px rgba(0, 170, 255, 0.3);
+  }
+  
+  .neon-glow-gold {
+    box-shadow: 0 0 20px rgba(255, 217, 102, 0.3);
+  }
+  
+  .neon-glow-purple {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+  }
+  
+  /* Texto neon */
+  .text-neon-green {
+    color: #00ffbf;
+    text-shadow: 0 0 10px rgba(0, 255, 191, 0.5);
+  }
+  
+  .text-neon-blue {
+    color: #00aaff;
+    text-shadow: 0 0 10px rgba(0, 170, 255, 0.5);
+  }
+  
+  .text-neon-gold {
+    color: #ffd966;
+    text-shadow: 0 0 10px rgba(255, 217, 102, 0.5);
+  }
+  
+  .text-neon-purple {
+    color: #8b5cf6;
+    text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+  }
+  
+  /* Botões neon */
+  .btn-neon {
+    background: linear-gradient(45deg, #00ffbf, #00aaff);
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-neon:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 255, 191, 0.4);
+  }
+  
+  .btn-neon:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+  
+  .btn-neon:hover:before {
+    left: 100%;
+  }
+  
+  /* Animações neon */
+  @keyframes neon-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  
+  .neon-pulse {
+    animation: neon-pulse 2s infinite;
+  }
+  
+  @keyframes neon-flicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+    25%, 75% { opacity: 0.9; }
+  }
+  
+  .neon-flicker {
+    animation: neon-flicker 3s infinite;
+  }
+  
+  /* Gradientes agronegócio */
+  .gradient-agro-primary {
+    background: linear-gradient(135deg, #00ffbf, #00aaff);
+  }
+  
+  .gradient-agro-secondary {
+    background: linear-gradient(135deg, #ffd966, #8b5cf6);
+  }
+  
+  .gradient-agro-text {
+    background: linear-gradient(135deg, #00ffbf, #00aaff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
   .card {
     background: var(--agro-bg-card);
     border-radius: 1rem;

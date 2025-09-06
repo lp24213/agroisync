@@ -179,6 +179,143 @@ const emailTemplates = {
         </div>
       </div>
     `
+  },
+
+  orderConfirmed: {
+    subject: 'Pedido Confirmado - AgroSync',
+    html: (userName, orderDetails) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #00ffbf, #00aaff); padding: 20px; text-align: center;">
+          <h1 style="color: white; margin: 0;">AgroSync</h1>
+          <p style="color: white; margin: 5px 0 0 0;">Pedido Confirmado</p>
+        </div>
+        <div style="padding: 30px; background: #f8f9fa;">
+          <h2 style="color: #333; margin-bottom: 20px;">Pedido Confirmado!</h2>
+          <p style="color: #666; line-height: 1.6;">
+            Olá ${userName}, seu pedido foi confirmado com sucesso!
+          </p>
+          <div style="background: white; padding: 20px; border-radius: 5px; margin: 20px 0;">
+            <h3 style="color: #333; margin-top: 0;">Detalhes do Pedido</h3>
+            <p><strong>ID do Pedido:</strong> ${orderDetails.orderId}</p>
+            <p><strong>Produto:</strong> ${orderDetails.productName}</p>
+            <p><strong>Quantidade:</strong> ${orderDetails.quantity}</p>
+            <p><strong>Valor Total:</strong> R$ ${orderDetails.totalAmount.toFixed(2)}</p>
+            <p><strong>Status:</strong> <span style="color: #00ffbf; font-weight: bold;">Confirmado</span></p>
+            <p><strong>Data:</strong> ${new Date().toLocaleString('pt-BR')}</p>
+          </div>
+          <p style="color: #666;">
+            Você receberá atualizações sobre o status da entrega por email.
+          </p>
+        </div>
+        <div style="background: #333; color: white; padding: 20px; text-align: center; font-size: 12px;">
+          <p>AgroSync - Acompanhe seu pedido em tempo real</p>
+        </div>
+      </div>
+    `
+  },
+
+  deliveryCompleted: {
+    subject: 'Entrega Finalizada - AgroSync',
+    html: (userName, deliveryDetails) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #00ffbf, #00aaff); padding: 20px; text-align: center;">
+          <h1 style="color: white; margin: 0;">AgroSync</h1>
+          <p style="color: white; margin: 5px 0 0 0;">Entrega Finalizada</p>
+        </div>
+        <div style="padding: 30px; background: #f8f9fa;">
+          <h2 style="color: #333; margin-bottom: 20px;">Entrega Finalizada!</h2>
+          <p style="color: #666; line-height: 1.6;">
+            Olá ${userName}, sua entrega foi finalizada com sucesso!
+          </p>
+          <div style="background: white; padding: 20px; border-radius: 5px; margin: 20px 0;">
+            <h3 style="color: #333; margin-top: 0;">Detalhes da Entrega</h3>
+            <p><strong>ID do Pedido:</strong> ${deliveryDetails.orderId}</p>
+            <p><strong>Produto:</strong> ${deliveryDetails.productName}</p>
+            <p><strong>Data de Entrega:</strong> ${new Date().toLocaleString('pt-BR')}</p>
+            <p><strong>Status:</strong> <span style="color: #00ffbf; font-weight: bold;">Entregue</span></p>
+            <p><strong>Valor Liberado:</strong> R$ ${deliveryDetails.amount.toFixed(2)}</p>
+          </div>
+          <p style="color: #666;">
+            O pagamento foi liberado para o vendedor. Obrigado por usar o AgroSync!
+          </p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${process.env.FRONTEND_URL}/order/${deliveryDetails.orderId}" 
+               style="background: #00ffbf; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+              Ver Detalhes
+            </a>
+          </div>
+        </div>
+        <div style="background: #333; color: white; padding: 20px; text-align: center; font-size: 12px;">
+          <p>AgroSync - Obrigado pela confiança!</p>
+        </div>
+      </div>
+    `
+  },
+
+  escrowRelease: {
+    subject: 'Pagamento Liberado - AgroSync Escrow',
+    html: (sellerName, escrowDetails) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #00ffbf, #00aaff); padding: 20px; text-align: center;">
+          <h1 style="color: white; margin: 0;">AgroSync</h1>
+          <p style="color: white; margin: 5px 0 0 0;">Pagamento Liberado</p>
+        </div>
+        <div style="padding: 30px; background: #f8f9fa;">
+          <h2 style="color: #333; margin-bottom: 20px;">Pagamento Liberado!</h2>
+          <p style="color: #666; line-height: 1.6;">
+            Olá ${sellerName}, seu pagamento foi liberado com sucesso!
+          </p>
+          <div style="background: white; padding: 20px; border-radius: 5px; margin: 20px 0;">
+            <h3 style="color: #333; margin-top: 0;">Detalhes do Pagamento</h3>
+            <p><strong>ID da Transação:</strong> ${escrowDetails.transactionId}</p>
+            <p><strong>Produto:</strong> ${escrowDetails.productName}</p>
+            <p><strong>Valor:</strong> R$ ${escrowDetails.amount.toFixed(2)}</p>
+            <p><strong>Taxa AgroSync:</strong> R$ ${escrowDetails.fee.toFixed(2)}</p>
+            <p><strong>Valor Líquido:</strong> R$ ${escrowDetails.netAmount.toFixed(2)}</p>
+            <p><strong>Data:</strong> ${new Date().toLocaleString('pt-BR')}</p>
+          </div>
+          <p style="color: #666;">
+            O valor será transferido para sua conta em até 2 dias úteis.
+          </p>
+        </div>
+        <div style="background: #333; color: white; padding: 20px; text-align: center; font-size: 12px;">
+          <p>AgroSync - Sistema de Escrow Seguro</p>
+        </div>
+      </div>
+    `
+  },
+
+  freightDelivered: {
+    subject: 'Frete Entregue - AgroConecta',
+    html: (driverName, freightDetails) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #00ffbf, #00aaff); padding: 20px; text-align: center;">
+          <h1 style="color: white; margin: 0;">AgroConecta</h1>
+          <p style="color: white; margin: 5px 0 0 0;">Frete Entregue</p>
+        </div>
+        <div style="padding: 30px; background: #f8f9fa;">
+          <h2 style="color: #333; margin-bottom: 20px;">Frete Entregue!</h2>
+          <p style="color: #666; line-height: 1.6;">
+            Olá ${driverName}, seu frete foi entregue com sucesso!
+          </p>
+          <div style="background: white; padding: 20px; border-radius: 5px; margin: 20px 0;">
+            <h3 style="color: #333; margin-top: 0;">Detalhes do Frete</h3>
+            <p><strong>ID do Frete:</strong> ${freightDetails.freightId}</p>
+            <p><strong>Origem:</strong> ${freightDetails.origin}</p>
+            <p><strong>Destino:</strong> ${freightDetails.destination}</p>
+            <p><strong>Valor:</strong> R$ ${freightDetails.value}</p>
+            <p><strong>Data de Entrega:</strong> ${new Date().toLocaleString('pt-BR')}</p>
+            <p><strong>Status:</strong> <span style="color: #00ffbf; font-weight: bold;">Entregue</span></p>
+          </div>
+          <p style="color: #666;">
+            O pagamento será processado em até 24 horas. Obrigado por usar o AgroConecta!
+          </p>
+        </div>
+        <div style="background: #333; color: white; padding: 20px; text-align: center; font-size: 12px;">
+          <p>AgroConecta - Conectando o Agronegócio</p>
+        </div>
+      </div>
+    `
   }
 };
 
@@ -257,6 +394,22 @@ export class EmailService {
 
   static async sendPasswordResetEmail(userEmail, userName, resetLink) {
     return this.sendEmail(userEmail, 'passwordReset', { userName, resetLink });
+  }
+
+  static async sendOrderConfirmedEmail(userEmail, userName, orderDetails) {
+    return this.sendEmail(userEmail, 'orderConfirmed', { userName, orderDetails });
+  }
+
+  static async sendDeliveryCompletedEmail(userEmail, userName, deliveryDetails) {
+    return this.sendEmail(userEmail, 'deliveryCompleted', { userName, deliveryDetails });
+  }
+
+  static async sendEscrowReleaseEmail(sellerEmail, sellerName, escrowDetails) {
+    return this.sendEmail(sellerEmail, 'escrowRelease', { sellerName, escrowDetails });
+  }
+
+  static async sendFreightDeliveredEmail(driverEmail, driverName, freightDetails) {
+    return this.sendEmail(driverEmail, 'freightDelivered', { driverName, freightDetails });
   }
 
   // Método para enviar email de confirmação de contato

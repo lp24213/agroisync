@@ -237,9 +237,9 @@ class ContactService {
 
     if (data.phone && !this.isValidPhone(data.phone)) {
       errors.phone = 'Telefone inválido';
-    }
-
-    return {
+      }
+      
+      return {
       isValid: Object.keys(errors).length === 0,
       errors
     };

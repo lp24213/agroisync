@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from '../contexts/AuthContext';
 import { 
   BarChart3, MessageSquare, Users, Package, Truck, 
   CreditCard, Search, Shield, LogOut, DollarSign,
@@ -19,7 +18,6 @@ const AdminSecurePanel = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { user, logoutAdmin } = useAuth();
 
   const loadDashboardData = useCallback(async () => {
     try {
@@ -86,16 +84,12 @@ const AdminSecurePanel = () => {
   }, [t]);
 
   useEffect(() => {
-    if (!user?.isAdmin) {
-      navigate('/admin/login');
-      return;
-    }
+    // Admin anônimo - sem verificação de autenticação
     loadDashboardData();
-  }, [user, navigate, loadDashboardData]);
+  }, [loadDashboardData]);
 
   const handleLogout = () => {
-    logoutAdmin();
-    navigate('/admin/login');
+    navigate('/');
   };
 
   const getActivityIcon = (type) => {
@@ -172,7 +166,7 @@ const AdminSecurePanel = () => {
                 </span>
               </div>
               <span className="text-gray-600 dark:text-gray-300">
-                {t('admin', 'Admin')}: {user?.email || 'Administrador'}
+                {t('admin', 'Admin')}: {t('anonymous', 'Anônimo')}
               </span>
               <button
                 onClick={handleLogout}

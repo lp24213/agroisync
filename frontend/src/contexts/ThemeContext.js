@@ -81,12 +81,12 @@ export const ThemeProvider = ({ children }) => {
       shadowCard: 'shadow-card',
       shadowElevated: 'shadow-elevated'
     },
-    // Cores do tema escuro OBRIGATÓRIO - Paleta Agronegócio
+    // Cores do tema escuro OBRIGATÓRIO - Paleta Agronegócio Neon
     darkColors: {
       bgPrimary: 'bg-black',
       bgSecondary: 'bg-slate-900',
-      bgCard: 'bg-slate-800',
-      bgCardHover: 'hover:bg-slate-700',
+      bgCard: 'bg-slate-800/90',
+      bgCardHover: 'hover:bg-slate-700/90',
       textPrimary: 'text-white',
       textSecondary: 'text-slate-200',
       textTertiary: 'text-slate-400',
@@ -99,7 +99,16 @@ export const ThemeProvider = ({ children }) => {
       accentQuaternary: 'bg-purple-500',    // Roxo
       accentHover: 'hover:bg-emerald-600',
       shadowCard: 'shadow-card-dark',
-      shadowElevated: 'shadow-elevated-dark'
+      shadowElevated: 'shadow-elevated-dark',
+      // Cores neon específicas
+      neonGreen: 'text-emerald-400',
+      neonBlue: 'text-blue-400',
+      neonGold: 'text-amber-400',
+      neonPurple: 'text-purple-400',
+      // Gradientes neon
+      gradientPrimary: 'bg-gradient-to-r from-emerald-500 to-blue-500',
+      gradientSecondary: 'bg-gradient-to-r from-amber-500 to-purple-500',
+      gradientText: 'bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent'
     },
     // Cores CSS customizadas para agronegócio
     agroColors: {
