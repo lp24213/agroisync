@@ -1,0 +1,18 @@
+{
+  "typescript.validate.enable": false,
+  "typescript.suggest.enabled": false,
+  "typescript.format.enable": false,
+  "typescript.preferences.includePackageJsonAutoImports": "off",
+  "typescript.suggest.autoImports": false,
+  "typescript.updateImportsOnFileMove.enabled": "never",
+  "javascript.validate.enable": true,
+  "javascript.suggest.enabled": true,
+  "javascript.format.enable": true,
+  "files.associations": {
+    "*.js": "javascript",
+    "*.jsx": "javascriptreact"
+  },
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact"
+  }
+}
