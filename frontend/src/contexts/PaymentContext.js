@@ -1,7 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useAuth } from './AuthContext';
-import metamaskService from '../services/metamaskService';
-import { processPaymentSuccess, processPaymentCancel } from '../api/webhooks';
+import { loadStripe } from '@stripe/stripe-js';
 
 const PaymentContext = createContext();
 
@@ -14,345 +12,214 @@ export const usePayment = () => {
 };
 
 export const PaymentProvider = ({ children }) => {
-  const { user } = useAuth();
-  const [isPaid, setIsPaid] = useState(false);
-  const [planActive, setPlanActive] = useState(null);
+  const [stripe, setStripe] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [metamaskConnected, setMetamaskConnected] = useState(false);
-  const [walletAddress, setWalletAddress] = useState('');
-  const [walletBalance, setWalletBalance] = useState('0');
+  const [error, setError] = useState(null);
+  const [paymentMethods, setPaymentMethods] = useState([]);
+  const [subscription, setSubscription] = useState(null);
 
+  // Inicializar Stripe
   useEffect(() => {
-    if (user) {
-      checkPaymentStatus();
-      checkMetamaskConnection();
-    } else {
-      setIsPaid(false);
-      setPlanActive(null);
-      setLoading(false);
-    }
-  }, [user]);
-
-  const checkPaymentStatus = async () => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem('token');
-      
-      if (!token) {
-        setIsPaid(false);
-        setPlanActive(null);
-        return;
+    const initializeStripe = async () => {
+      try {
+        const stripeInstance = await loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
+        setStripe(stripeInstance);
+      } catch (error) {
+        console.error('Erro ao inicializar Stripe:', error);
+        setError('Erro ao inicializar sistema de pagamentos');
+      } finally {
+        setLoading(false);
       }
+    };
 
-      const response = await fetch('/api/payments/status', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+    initializeStripe();
+  }, []);
 
-      if (response.ok) {
-        const data = await response.json();
-        setIsPaid(data.isPaid);
-        setPlanActive(data.planActive);
-      } else {
-        setIsPaid(false);
-        setPlanActive(null);
-      }
-    } catch (error) {
-      console.error('Erro ao verificar status de pagamento:', error);
-      setIsPaid(false);
-      setPlanActive(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const checkMetamaskConnection = async () => {
+  // Criar payment intent
+  const createPaymentIntent = async (amount, currency = 'brl', metadata = {}) => {
     try {
-      if (metamaskService.isMetamaskInstalled()) {
-        const accounts = await metamaskService.getAccounts();
-        if (accounts.length > 0) {
-          setMetamaskConnected(true);
-          setWalletAddress(accounts[0]);
-          const balance = await metamaskService.getBalance();
-          setWalletBalance(balance);
-        }
-      }
-    } catch (error) {
-      console.error('Erro ao verificar conexão Metamask:', error);
-    }
-  };
-
-  const connectMetamask = async () => {
-    try {
-      setLoading(true);
-      const connection = await metamaskService.connect();
-      
-      if (connection.success) {
-        setMetamaskConnected(true);
-        setWalletAddress(connection.address);
-        const balance = await metamaskService.getBalance();
-        setWalletBalance(balance);
-        return { success: true };
-      } else {
-        return { success: false, error: connection.error };
-      }
-    } catch (error) {
-      return { success: false, error: error.message };
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const disconnectMetamask = () => {
-    setMetamaskConnected(false);
-    setWalletAddress('');
-    setWalletBalance('0');
-  };
-
-  const processStripePayment = async (planId, planData) => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem('token');
-      
-      const response = await fetch('/api/payments/stripe/create-session', {
+      const response = await fetch('/api/payments/stripe/create-payment-intent', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({
-          planId,
-          planData,
-          returnUrl: window.location.origin + '/payment-success',
-          cancelUrl: window.location.origin + '/planos'
+          amount: Math.round(amount * 100), // Stripe usa centavos
+          currency,
+          metadata
         })
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        // Redirecionar para Stripe Checkout
-        window.location.href = data.url;
-        return { success: true };
-      } else {
-        const error = await response.json();
-        return { success: false, error: error.message };
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Erro ao criar payment intent');
       }
+
+      return data;
     } catch (error) {
-      return { success: false, error: 'Erro de conexão' };
-    } finally {
-      setLoading(false);
+      console.error('Erro ao criar payment intent:', error);
+      throw error;
     }
   };
 
-  const processCryptoPayment = async (planId, planData, amount) => {
-    try {
-      setLoading(true);
-      
-      if (!metamaskConnected) {
-        return { success: false, error: 'Metamask não conectado' };
-      }
+  // Processar pagamento com Stripe
+  const processStripePayment = async (paymentIntent) => {
+    if (!stripe) {
+      throw new Error('Stripe não inicializado');
+    }
 
-      // Endereço da carteira do AgroSync
-      const ownerWallet = process.env.REACT_APP_OWNER_WALLET || '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6';
-      
-      // Enviar pagamento
-      const payment = await metamaskService.sendPayment(
-        ownerWallet, 
-        amount, 
-        `Pagamento AgroSync - ${planData.name}`
+    try {
+      const { error, paymentIntent: confirmedPayment } = await stripe.confirmCardPayment(
+        paymentIntent.client_secret
       );
 
-      // Aguardar confirmação
-      let confirmations = 0;
-      let attempts = 0;
-      const maxAttempts = 12; // 1 minuto máximo
-
-      while (confirmations < 1 && attempts < maxAttempts) {
-        await new Promise(resolve => setTimeout(resolve, 5000)); // Aguardar 5 segundos
-        const status = await metamaskService.getTransactionStatus(payment.hash);
-        confirmations = status.confirmations;
-        attempts++;
+      if (error) {
+        throw new Error(error.message);
       }
 
-      if (confirmations >= 1) {
-        // Verificar pagamento no backend
-        const token = localStorage.getItem('token');
-        const verification = await fetch('/api/payments/crypto/verify', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            transactionHash: payment.hash,
-            planId,
-            amount,
-            fromAddress: walletAddress,
-            toAddress: ownerWallet
-          })
-        });
-
-        if (verification.ok) {
-          const result = await verification.json();
-          if (result.success) {
-            // Atualizar status de pagamento
-            await checkPaymentStatus();
-            return { success: true, hash: payment.hash };
-          } else {
-            return { success: false, error: 'Falha na verificação do pagamento' };
-          }
-        } else {
-          return { success: false, error: 'Falha na verificação do pagamento' };
-        }
-      } else {
-        return { success: false, error: 'Transação não foi confirmada no tempo limite' };
-      }
-
+      return confirmedPayment;
     } catch (error) {
-      return { success: false, error: error.message };
-    } finally {
-      setLoading(false);
+      console.error('Erro ao processar pagamento Stripe:', error);
+      throw error;
     }
   };
 
-  const verifyPayment = async (paymentId) => {
+  // Processar pagamento com MetaMask
+  const processMetaMaskPayment = async (amount, tokenAddress, recipientAddress) => {
     try {
-      setLoading(true);
-      const token = localStorage.getItem('token');
-      
-      const response = await fetch(`/api/payments/verify/${paymentId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      if (!window.ethereum) {
+        throw new Error('MetaMask não encontrado');
+      }
+
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      const account = accounts[0];
+
+      const transactionParameters = {
+        to: recipientAddress,
+        from: account,
+        value: '0x' + (amount * Math.pow(10, 18)).toString(16), // ETH em wei
+        gas: '0x5208', // 21000 gas
+      };
+
+      const txHash = await window.ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [transactionParameters],
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          // Atualizar status de pagamento
-          await checkPaymentStatus();
-          return { success: true };
-        } else {
-          return { success: false, error: data.error };
-        }
-      } else {
-        return { success: false, error: 'Falha na verificação' };
-      }
+      return txHash;
     } catch (error) {
-      return { success: false, error: 'Erro de conexão' };
-    } finally {
-      setLoading(false);
+      console.error('Erro ao processar pagamento MetaMask:', error);
+      throw error;
     }
   };
 
-  const cancelSubscription = async () => {
+  // Obter planos de assinatura
+  const getSubscriptionPlans = async () => {
     try {
-      setLoading(true);
-      const token = localStorage.getItem('token');
+      const response = await fetch('/api/payments/plans');
+      const data = await response.json();
       
-      const response = await fetch('/api/payments/cancel', {
+      if (!response.ok) {
+        throw new Error(data.message || 'Erro ao obter planos');
+      }
+
+      return data.plans;
+    } catch (error) {
+      console.error('Erro ao obter planos:', error);
+      throw error;
+    }
+  };
+
+  // Criar assinatura
+  const createSubscription = async (planId, paymentMethodId) => {
+    try {
+      const response = await fetch('/api/payments/subscriptions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          planId,
+          paymentMethodId
+        })
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          // Atualizar status de pagamento
-          await checkPaymentStatus();
-          return { success: true };
-        } else {
-          return { success: false, error: data.error };
-        }
-      } else {
-        return { success: false, error: 'Falha ao cancelar assinatura' };
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Erro ao criar assinatura');
       }
+
+      setSubscription(data.subscription);
+      return data;
     } catch (error) {
-      return { success: false, error: 'Erro de conexão' };
-    } finally {
-      setLoading(false);
+      console.error('Erro ao criar assinatura:', error);
+      throw error;
     }
   };
 
+  // Cancelar assinatura
+  const cancelSubscription = async (subscriptionId) => {
+    try {
+      const response = await fetch(`/api/payments/subscriptions/${subscriptionId}/cancel`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Erro ao cancelar assinatura');
+      }
+
+      setSubscription(null);
+      return data;
+    } catch (error) {
+      console.error('Erro ao cancelar assinatura:', error);
+      throw error;
+    }
+  };
+
+  // Obter histórico de pagamentos
   const getPaymentHistory = async () => {
     try {
-      const token = localStorage.getItem('token');
-      
       const response = await fetch('/api/payments/history', {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        return { success: true, history: data.history };
-      } else {
-        return { success: false, error: 'Falha ao buscar histórico' };
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Erro ao obter histórico');
       }
-    } catch (error) {
-      return { success: false, error: 'Erro de conexão' };
-    }
-  };
 
-  // Função para processar webhook de pagamento bem-sucedido
-  const handlePaymentSuccess = async (paymentData) => {
-    try {
-      setLoading(true);
-      
-      // Processar webhook
-      await processPaymentSuccess(paymentData);
-      
-      // Atualizar status local
-      setIsPaid(true);
-      setPlanActive(paymentData.planId);
-      
-      return { success: true, message: 'Pagamento processado com sucesso' };
+      return data.payments;
     } catch (error) {
-      console.error('Erro ao processar pagamento:', error);
-      return { success: false, error: 'Erro ao processar pagamento' };
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Função para processar webhook de pagamento cancelado
-  const handlePaymentCancel = async (paymentData) => {
-    try {
-      setLoading(true);
-      
-      // Processar webhook
-      await processPaymentCancel(paymentData);
-      
-      return { success: true, message: 'Pagamento cancelado processado' };
-    } catch (error) {
-      console.error('Erro ao processar cancelamento:', error);
-      return { success: false, error: 'Erro ao processar cancelamento' };
-    } finally {
-      setLoading(false);
+      console.error('Erro ao obter histórico:', error);
+      throw error;
     }
   };
 
   const value = {
-    isPaid,
-    planActive,
+    stripe,
     loading,
-    metamaskConnected,
-    walletAddress,
-    walletBalance,
-    connectMetamask,
-    disconnectMetamask,
+    error,
+    paymentMethods,
+    subscription,
+    createPaymentIntent,
     processStripePayment,
-    processCryptoPayment,
-    verifyPayment,
+    processMetaMaskPayment,
+    getSubscriptionPlans,
+    createSubscription,
     cancelSubscription,
-    getPaymentHistory,
-    checkPaymentStatus,
-    handlePaymentSuccess,
-    handlePaymentCancel
+    getPaymentHistory
   };
 
   return (

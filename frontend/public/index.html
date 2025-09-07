@@ -2,120 +2,127 @@
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.svg" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    
-    <!-- Script para evitar flash de tema -->
-    <script>
-      (function() {
-        try {
-          const savedTheme = localStorage.getItem('agroisync-theme') || 'dark';
-          const isDark = savedTheme === 'dark';
-          document.documentElement.classList.add(isDark ? 'dark' : 'light');
-          document.documentElement.setAttribute('data-theme', savedTheme);
-        } catch (e) {
-          // Fallback para tema escuro se houver erro
-          document.documentElement.classList.add('dark');
-          document.documentElement.setAttribute('data-theme', 'dark');
-        }
-      })();
-    </script>
-    
-    <!-- Cloudflare Security Headers -->
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
-    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
-    
-    <!-- CSP - Content Security Policy -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://ipapi.co https://nominatim.openstreetmap.org https://servicodados.ibge.gov.br https://api.agrolink.com.br; frame-ancestors 'none';">
-    
-    <!-- Cloudflare Bot Management -->
-    <meta name="cf-bot-management" content="enabled">
-    
-    <!-- Rate Limiting -->
-    <meta name="cf-rate-limit" content="100,60">
-    
-    <meta name="description" content="AGROSYNC - Plataforma líder em inteligência agrícola, integrando dados em tempo real do IBGE, Receita Federal e APIs globais para análise avançada de commodities." />
-    <meta name="keywords" content="agronegócio, cotações, grãos, IBGE, receita federal, API agrícola, marketplace, geolocalização, commodities, soja, milho, trigo" />
-    <meta name="author" content="AGROSYNC Team" />
+    <meta name="description" content="AgroSync - A plataforma de agronegócio mais futurista do mundo. Conecte-se ao futuro do agronegócio com tecnologia blockchain, IA e marketplace inteligente." />
+    <meta name="keywords" content="agronegócio, marketplace, fretes, cripto, blockchain, IA, agricultura, produtos agrícolas" />
+    <meta name="author" content="AgroSync Team" />
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://agroisync.com/" />
-    <meta property="og:title" content="AGROSYNC - Inteligência Agrícola" />
-    <meta property="og:description" content="Plataforma líder em inteligência agrícola com dados em tempo real do IBGE, Receita Federal e APIs globais." />
-    <meta property="og:image" content="%PUBLIC_URL%/agrosync-logo.svg" />
-    
+    <meta property="og:url" content="https://agrosync.com/" />
+    <meta property="og:title" content="AgroSync - Futuro do Agronegócio" />
+    <meta property="og:description" content="A plataforma de agronegócio mais futurista do mundo. Conecte-se ao futuro do agronegócio com tecnologia blockchain, IA e marketplace inteligente." />
+    <meta property="og:image" content="%PUBLIC_URL%/og-image.png" />
+
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://agroisync.com/" />
-    <meta property="twitter:title" content="AGROSYNC - Inteligência Agrícola" />
-    <meta property="twitter:description" content="Plataforma líder em inteligência agrícola com dados em tempo real do IBGE, Receita Federal e APIs globais." />
-    <meta property="twitter:image" content="%PUBLIC_URL%/agrosync-logo.svg" />
-    
-    <!-- Preconnect to external domains -->
+    <meta property="twitter:url" content="https://agrosync.com/" />
+    <meta property="twitter:title" content="AgroSync - Futuro do Agronegócio" />
+    <meta property="twitter:description" content="A plataforma de agronegócio mais futurista do mundo. Conecte-se ao futuro do agronegócio com tecnologia blockchain, IA e marketplace inteligente." />
+    <meta property="twitter:image" content="%PUBLIC_URL%/og-image.png" />
+
+    <!-- Preconnect para performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://www.cloudflare.com">
-    <link rel="preconnect" href="https://ipapi.co">
     
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Fontes do Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Manifest -->
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     
-    <title>AGROSYNC - Inteligência Agrícola</title>
+    <!-- PWA -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AgroSync">
+    
+    <!-- Segurança -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    
+    <title>AgroSync - Futuro do Agronegócio</title>
+    
+    <!-- Estilos críticos inline -->
+    <style>
+      /* Loading screen */
+      .loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #0F0F23 0%, #1A1A2E 50%, #16213E 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      }
+      
+      .loading-logo {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(45deg, #00D4FF, #8B5CF6, #00FF88);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      
+      .loading-logo::before {
+        content: "⚡";
+        font-size: 40px;
+        color: white;
+      }
+      
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+      }
+      
+      .loading-text {
+        position: absolute;
+        bottom: 30%;
+        color: white;
+        font-family: 'Inter', sans-serif;
+        font-size: 24px;
+        font-weight: 600;
+        text-align: center;
+      }
+      
+      /* Hide loading screen when app loads */
+      .app-loaded .loading-screen {
+        display: none;
+      }
+    </style>
   </head>
   <body>
-    <noscript>Você precisa habilitar JavaScript para executar este aplicativo.</noscript>
+    <noscript>
+      <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+        <h1>JavaScript Necessário</h1>
+        <p>O AgroSync requer JavaScript para funcionar. Por favor, habilite JavaScript em seu navegador.</p>
+      </div>
+    </noscript>
+    
+    <!-- Loading screen -->
+    <div class="loading-screen">
+      <div class="loading-logo"></div>
+      <div class="loading-text">AgroSync</div>
+    </div>
+    
     <div id="root"></div>
     
-    <!-- Cloudflare Security Scripts -->
+    <!-- Script para remover loading screen -->
     <script>
-      // Rate Limiting Client-Side
-      let requestCount = 0;
-      const maxRequests = 100;
-      const timeWindow = 60000; // 1 minuto
-      
-      function checkRateLimit() {
-        if (requestCount >= maxRequests) {
-          throw new Error('Rate limit exceeded');
-        }
-        requestCount++;
-        setTimeout(() => requestCount--, timeWindow);
-      }
-      
-      // Bot Detection
-      function detectBot() {
-        const userAgent = navigator.userAgent;
-        const botPatterns = [
-          /bot/i, /crawler/i, /spider/i, /scraper/i,
-          /curl/i, /wget/i, /python/i, /java/i
-        ];
-        
-        return botPatterns.some(pattern => pattern.test(userAgent));
-      }
-      
-      // Security Headers Check
-      if (detectBot()) {
-        console.warn('Bot detected - applying additional security measures');
-      }
-      
-      // DDoS Protection
-      window.addEventListener('load', () => {
-        // Monitor de atividade suspeita
-        let suspiciousActivity = 0;
-        
-        document.addEventListener('click', () => {
-          suspiciousActivity++;
-          if (suspiciousActivity > 1000) {
-            console.warn('Suspicious activity detected');
-          }
-        });
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          document.body.classList.add('app-loaded');
+        }, 1000);
       });
     </script>
   </body>

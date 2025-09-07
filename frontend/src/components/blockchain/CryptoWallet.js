@@ -40,13 +40,24 @@ const CryptoWallet = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [network, setNetwork] = useState('solana'); // 'solana' ou 'polygon'
 
-  // Criptomoedas suportadas
+  // Criptomoedas suportadas para INTERMEDIAÇÃO
   const supportedCryptos = [
-    { id: 'sol', name: 'Solana', symbol: 'SOL', icon: '🟣', network: 'solana' },
-    { id: 'matic', name: 'Polygon', symbol: 'MATIC', icon: '🟣', network: 'polygon' },
-    { id: 'usdc', name: 'USD Coin', symbol: 'USDC', icon: '🔵', network: 'both' },
-    { id: 'usdt', name: 'Tether', symbol: 'USDT', icon: '🟡', network: 'both' }
+    { id: 'sol', name: 'Solana', symbol: 'SOL', icon: '🟣', network: 'solana', commissionRate: 0.05 },
+    { id: 'matic', name: 'Polygon', symbol: 'MATIC', icon: '🟣', network: 'polygon', commissionRate: 0.05 },
+    { id: 'usdc', name: 'USD Coin', symbol: 'USDC', icon: '🔵', network: 'both', commissionRate: 0.05 },
+    { id: 'usdt', name: 'Tether', symbol: 'USDT', icon: '🟡', network: 'both', commissionRate: 0.05 },
+    { id: 'btc', name: 'Bitcoin', symbol: 'BTC', icon: '🟠', network: 'bitcoin', commissionRate: 0.05 },
+    { id: 'eth', name: 'Ethereum', symbol: 'ETH', icon: '🔷', network: 'ethereum', commissionRate: 0.05 }
   ];
+
+  // Carteira principal do AgroSync para recebimento de comissões
+  const agroSyncWallet = {
+    address: 'AgroSyncWallet_MAIN_2024',
+    privateKey: 'ENCRYPTED_MASTER_KEY',
+    balance: 0,
+    totalCommissions: 0,
+    monthlyEarnings: 0
+  };
 
   // Carregar carteira
   const loadWallet = useCallback(async () => {

@@ -1,12 +1,11 @@
 const logger = require('../utils/logger');
 
-// Error handler middleware
 const errorHandler = (err, req, res, next) => {
   let error = { ...err };
   error.message = err.message;
 
-  // Log error
-  logger.error({
+  // Log do erro
+  logger.error('Erro capturado:', {
     message: err.message,
     stack: err.stack,
     url: req.originalUrl,
@@ -15,82 +14,127 @@ const errorHandler = (err, req, res, next) => {
     userAgent: req.get('User-Agent')
   });
 
-  // Mongoose bad ObjectId
-  if (err.name === 'CastError') {
-    const message = 'Resource not found';
-    error = { message, statusCode: 404 };
-  }
-
-  // Mongoose duplicate key
-  if (err.code === 11000) {
-    const message = 'Duplicate field value entered';
-    error = { message, statusCode: 400 };
-  }
-
-  // Mongoose validation error
+  // Erro de validação do Mongoose
   if (err.name === 'ValidationError') {
-    const message = Object.values(err.errors)
-      .map(val => val.message)
-      .join(', ');
-    error = { message, statusCode: 400 };
+    const message = Object.values(err.errors).map(val => val.message).join(', ');
+    error = {
+      message,
+      statusCode: 400
+    };
   }
 
-  // JWT errors
+  // Erro de cast do Mongoose (ID inválido)
+  if (err.name === 'CastError') {
+    const message = 'Recurso não encontrado';
+    error = {
+      message,
+      statusCode: 404
+    };
+  }
+
+  // Erro de duplicação do Mongoose
+  if (err.code === 11000) {
+    const field = Object.keys(err.keyValue)[0];
+    const message = `${field} já existe`;
+    error = {
+      message,
+      statusCode: 400
+    };
+  }
+
+  // Erro JWT
   if (err.name === 'JsonWebTokenError') {
-    const message = 'Invalid token';
-    error = { message, statusCode: 401 };
+    const message = 'Token inválido';
+    error = {
+      message,
+      statusCode: 401
+    };
   }
 
+  // Erro JWT expirado
   if (err.name === 'TokenExpiredError') {
-    const message = 'Token expired';
-    error = { message, statusCode: 401 };
+    const message = 'Token expirado';
+    error = {
+      message,
+      statusCode: 401
+    };
   }
 
-  // Sequelize errors
-  if (err.name === 'SequelizeValidationError') {
-    const message = err.errors.map(e => e.message).join(', ');
-    error = { message, statusCode: 400 };
+  // Erro de limite de taxa
+  if (err.statusCode === 429) {
+    const message = 'Muitas tentativas. Tente novamente mais tarde.';
+    error = {
+      message,
+      statusCode: 429
+    };
   }
 
-  if (err.name === 'SequelizeUniqueConstraintError') {
-    const message = 'Duplicate entry';
-    error = { message, statusCode: 400 };
-  }
-
-  if (err.name === 'SequelizeConnectionError') {
-    const message = 'Database connection error';
-    error = { message, statusCode: 503 };
-  }
-
-  // Multer errors
+  // Erro de upload de arquivo
   if (err.code === 'LIMIT_FILE_SIZE') {
-    const message = 'File too large';
-    error = { message, statusCode: 400 };
+    const message = 'Arquivo muito grande';
+    error = {
+      message,
+      statusCode: 400
+    };
   }
 
+  // Erro de tipo de arquivo
   if (err.code === 'LIMIT_UNEXPECTED_FILE') {
-    const message = 'Unexpected file field';
-    error = { message, statusCode: 400 };
+    const message = 'Tipo de arquivo não permitido';
+    error = {
+      message,
+      statusCode: 400
+    };
   }
 
-  // Rate limit errors
-  if (err.status === 429) {
-    const message = 'Too many requests';
-    error = { message, statusCode: 429 };
+  // Erro de conexão com banco de dados
+  if (err.name === 'MongoNetworkError') {
+    const message = 'Erro de conexão com o banco de dados';
+    error = {
+      message,
+      statusCode: 503
+    };
   }
 
-  // Default error
-  const statusCode = error.statusCode || err.statusCode || 500;
-  const message = error.message || 'Server Error';
+  // Erro de timeout
+  if (err.name === 'MongoTimeoutError') {
+    const message = 'Timeout na operação do banco de dados';
+    error = {
+      message,
+      statusCode: 504
+    };
+  }
 
-  // Don't leak error details in production
-  const response = {
+  // Erro de Stripe
+  if (err.type && err.type.startsWith('Stripe')) {
+    const message = 'Erro no processamento do pagamento';
+    error = {
+      message,
+      statusCode: 400
+    };
+  }
+
+  // Erro de Web3/Ethereum
+  if (err.code && err.code.startsWith('UNPREDICTABLE_GAS_LIMIT')) {
+    const message = 'Erro na transação blockchain';
+    error = {
+      message,
+      statusCode: 400
+    };
+  }
+
+  // Status code padrão
+  const statusCode = error.statusCode || 500;
+
+  // Resposta de erro
+  res.status(statusCode).json({
     success: false,
-    error: message,
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
-  };
-
-  res.status(statusCode).json(response);
+    message: error.message || 'Erro interno do servidor',
+    ...(process.env.NODE_ENV === 'development' && {
+      stack: err.stack,
+      error: err
+    })
+  });
 };
 
 module.exports = errorHandler;

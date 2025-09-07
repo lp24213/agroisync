@@ -9,9 +9,116 @@ import AuditLog from '../models/AuditLog.js';
 // Configurações
 const OWNER_WALLET = process.env.OWNER_WALLET || '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6';
 const WEB3_PROVIDER = process.env.WEB3_PROVIDER || 'https://mainnet.infura.io/v3/your-project-id';
+const COMMISSION_RATE = 0.05; // 5% de comissão para intermediação
+const MIN_COMMISSION = 0.01; // Comissão mínima
 
 // Middleware de autenticação para todas as rotas
 router.use(authenticateToken);
+
+// Sistema de comissões automáticas para intermediação
+router.post('/commission/calculate', async (req, res) => {
+  try {
+    const { transactionAmount, transactionType } = req.body;
+    
+    if (!transactionAmount || transactionAmount <= 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'Valor da transação inválido'
+      });
+    }
+
+    // Calcular comissão baseada no tipo de transação
+    let commissionRate = COMMISSION_RATE;
+    
+    switch (transactionType) {
+      case 'product_sale':
+        commissionRate = 0.05; // 5% para vendas de produtos
+        break;
+      case 'freight_service':
+        commissionRate = 0.03; // 3% para serviços de frete
+        break;
+      case 'premium_plan':
+        commissionRate = 0.10; // 10% para planos premium
+        break;
+      default:
+        commissionRate = COMMISSION_RATE;
+    }
+
+    const commission = Math.max(transactionAmount * commissionRate, MIN_COMMISSION);
+    const netAmount = transactionAmount - commission;
+
+    res.json({
+      success: true,
+      transactionAmount,
+      commissionRate: commissionRate * 100,
+      commission,
+      netAmount,
+      ownerWallet: OWNER_WALLET
+    });
+
+  } catch (error) {
+    console.error('Erro ao calcular comissão:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Erro interno do servidor'
+    });
+  }
+});
+
+// Processar pagamento de comissão para carteira do proprietário
+router.post('/commission/process', async (req, res) => {
+  try {
+    const { transactionId, amount, paymentMethod, userWallet } = req.body;
+    
+    if (!transactionId || !amount || !paymentMethod) {
+      return res.status(400).json({
+        success: false,
+        error: 'Dados de comissão inválidos'
+      });
+    }
+
+    // Registrar comissão no banco de dados
+    const commission = new Payment({
+      userId: req.user.id,
+      transactionId,
+      amount,
+      paymentMethod,
+      type: 'commission',
+      status: 'pending',
+      recipientWallet: OWNER_WALLET,
+      senderWallet: userWallet,
+      description: 'Comissão de intermediação AgroSync'
+    });
+
+    await commission.save();
+
+    // Log de auditoria
+    await AuditLog.create({
+      userId: req.user.id,
+      action: 'commission_created',
+      details: {
+        transactionId,
+        amount,
+        paymentMethod,
+        commissionId: commission._id
+      }
+    });
+
+    res.json({
+      success: true,
+      commissionId: commission._id,
+      message: 'Comissão processada com sucesso',
+      ownerWallet: OWNER_WALLET
+    });
+
+  } catch (error) {
+    console.error('Erro ao processar comissão:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Erro interno do servidor'
+    });
+  }
+});
 
 // Verificar status de pagamento do usuário
 router.get('/status', async (req, res) => {

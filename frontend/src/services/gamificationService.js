@@ -380,8 +380,3 @@ class GamificationService {
 const gamificationService = new GamificationService();
 
 export default gamificationService;
-export {
-  BADGE_RARITY_COLORS,
-  BADGE_RARITY_NAMES,
-  POINT_ACTIONS
-};

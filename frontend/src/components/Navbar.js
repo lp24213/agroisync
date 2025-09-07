@@ -1,592 +1,300 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { useLanguage } from '../contexts/LanguageContext';
-import { useTheme } from '../contexts/ThemeContext';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Menu, 
   X, 
+  Sun, 
+  Moon, 
+  Globe, 
   User, 
-  LogOut, 
-  Settings, 
-  Globe,
-  ChevronDown,
-  Sun,
-  Moon,
-  Zap,
-  Sparkles
+  LogOut,
+  Settings,
+  Bell,
+  ChevronDown
 } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
+import useStore from '../store/useStore';
 
 const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, isAuthenticated, logout } = useAuth();
-  const { currentLanguage, changeLanguage, t } = useLanguage();
-  const { isDark, toggleTheme } = useTheme();
-  // const { isEnabled } = useFeatureFlags();
+  const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+  
   const location = useLocation();
+  const { user, isAuthenticated, logout } = useAuth();
+  const { currentLanguage, supportedLanguages, changeLanguage, getCurrentLanguageInfo } = useLanguage();
+  const { theme, setTheme, notifications, unreadCount } = useStore();
 
+  const navItems = [
+    { path: '/', label: 'navigation.home', icon: '🏠' },
+    { path: '/marketplace', label: 'navigation.marketplace', icon: '🤝' },
+    { path: '/agroconecta', label: 'navigation.agroconecta', icon: '🚛' },
+    { path: '/crypto', label: 'navigation.crypto', icon: '₿' },
+  ];
 
-  const isActive = (path) => location.pathname === path;
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
 
-  const handleLogout = () => {
-    logout();
-    setIsMenuOpen(false);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleLogout = async () => {
+    await logout();
+    setShowUserMenu(false);
   };
 
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
 
-  // Verificar se o usuário está autenticado
-  const isUserAuthenticated = isAuthenticated();
+  const currentLangInfo = getCurrentLanguageInfo();
 
   return (
-    <nav className={`fixed top-16 left-0 right-0 z-40 backdrop-blur-xl shadow-2xl border-b transition-all duration-500 ${
-      isDark 
-        ? 'bg-gradient-to-r from-black/95 via-gray-900/95 to-black/95 border-cyan-500/30 shadow-cyan-500/20' 
-        : 'bg-gradient-to-r from-white/95 via-emerald-50/95 to-white/95 border-emerald-200/50 shadow-emerald-500/10'
-    }`}>
+    <motion.nav
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled 
+          ? 'bg-black/80 backdrop-blur-xl border-b border-white/10' 
+          : 'bg-transparent'
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-12">
-          {/* Logo Futurista */}
-          <Link to="/" className="flex items-center space-x-3 group">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link to="/" className="flex items-center space-x-2">
             <motion.div
-              whileHover={{ 
-                scale: 1.1, 
-                rotate: 360,
-                boxShadow: isDark ? '0 0 30px rgba(0, 255, 255, 0.5)' : '0 0 30px rgba(16, 185, 129, 0.5)'
-              }}
-              transition={{ duration: 0.6 }}
-              className={`relative flex items-center justify-center w-10 h-10 rounded-xl overflow-hidden ${
-                isDark 
-                  ? 'bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-600 shadow-lg shadow-cyan-500/30' 
-                  : 'bg-gradient-to-br from-emerald-500 via-blue-500 to-teal-600 shadow-lg shadow-emerald-500/30'
-              }`}
+              whileHover={{ scale: 1.05 }}
+              className="w-10 h-10 bg-gradient-to-r from-neon-blue to-neon-purple rounded-xl flex items-center justify-center"
             >
-              <Sparkles className={`w-6 h-6 ${
-                isDark ? 'text-white' : 'text-white'
-              }`} />
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+              <span className="text-white font-bold text-lg">A</span>
             </motion.div>
-            <motion.span 
-              whileHover={{ scale: 1.02 }}
-              className={`text-xl font-black tracking-tight ${
-                isDark 
-                  ? 'bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent'
-                  : 'bg-gradient-to-r from-emerald-600 via-blue-600 to-teal-600 bg-clip-text text-transparent'
-              }`}
-            >
-              AGROISYNC
-            </motion.span>
+            <span className="text-white font-bold text-xl hidden sm:block">
+              AgroSync
+            </span>
           </Link>
 
-          {/* Desktop Navigation Moderna */}
-          <div className="hidden lg:flex items-center space-x-2">
-            {/* Páginas Principais */}
-            <Link
-              to="/"
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
-                isActive('/') 
-                  ? 'text-white bg-gradient-to-r from-emerald-500 to-blue-500 shadow-lg' 
-                  : isDark 
-                    ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                  : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-              }`}
-            >
-              🏠 {t('home')}
-            </Link>
-            
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            {navItems.map((item) => (
               <Link
-                to="/store"
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-500 border ${
-                  isActive('/store') || isActive('/loja')
-                    ? (isDark 
-                        ? 'text-white bg-gradient-to-r from-cyan-500 to-blue-500 shadow-lg shadow-cyan-500/30 border-cyan-400' 
-                        : 'text-white bg-gradient-to-r from-emerald-500 to-blue-500 shadow-lg shadow-emerald-500/30 border-emerald-400')
-                    : isDark 
-                      ? 'text-cyan-300 hover:text-white hover:bg-gradient-to-r hover:from-cyan-900/30 hover:to-blue-900/30 border-cyan-500/30 hover:border-cyan-400 hover:shadow-lg hover:shadow-cyan-500/25'
-                      : 'text-emerald-700 hover:text-white hover:bg-gradient-to-r hover:from-emerald-500 hover:to-blue-500 border-emerald-200 hover:border-emerald-400 hover:shadow-lg hover:shadow-emerald-500/25'
+                key={item.path}
+                to={item.path}
+                className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 ${
+                  location.pathname === item.path
+                    ? 'text-neon-blue bg-white/10'
+                    : 'text-gray-300 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <div className="flex items-center space-x-2">
-                  <span className="text-lg">🛒</span>
-                  <span>{t('nav.store')}</span>
-                </div>
-              </Link>
-            </motion.div>
-            
-            {/* Dropdown para Serviços */}
-            <div className="relative group">
-              <button className={`flex items-center space-x-1 px-4 py-2 rounded-xl transition-all duration-300 ${
-                isDark 
-                  ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                  : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-              }`}>
-                <span className="text-sm font-medium">⚡ Serviços</span>
-                <ChevronDown className="w-4 h-4" />
-              </button>
-              <div className={`absolute top-full left-0 mt-2 w-64 rounded-xl shadow-xl border py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 ${
-                isDark 
-                  ? 'bg-gray-800 border-gray-700'
-                  : 'bg-white border-gray-200'
-              }`}>
-                <Link to="/agroconecta" className={`block px-4 py-3 transition-colors ${
-                  isDark 
-                    ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                    : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-                }`}>
-                  🌐 {t('nav.agroconecta')}
-                </Link>
-                <Link to="/cripto" className={`block px-4 py-3 transition-colors ${
-                  isDark 
-                    ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                    : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-                }`}>
-                  ₿ {t('nav.crypto')}
-                </Link>
-                <Link to="/cotacao" className={`block px-4 py-3 transition-colors ${
-                  isDark 
-                    ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                    : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-                }`}>
-                  📊 Cotação
-            </Link>
-                <Link to="/commodities" className={`block px-4 py-3 transition-colors ${
-                  isDark 
-                    ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                    : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-                }`}>
-                  🌾 {t('nav.commodities')}
-            </Link>
-                {/* Mensageria removida - é privada e individual */}
-              </div>
-            </div>
-
-            {/* Dropdown para Informações */}
-            <div className="relative group">
-              <button className={`flex items-center space-x-1 px-4 py-2 rounded-xl transition-all duration-300 ${
-                isDark 
-                  ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                  : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-              }`}>
-                <span className="text-sm font-medium">ℹ️ Info</span>
-                <ChevronDown className="w-4 h-4" />
-              </button>
-              <div className={`absolute top-full left-0 mt-2 w-56 rounded-xl shadow-xl border py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 ${
-                isDark 
-                  ? 'bg-gray-800 border-gray-700'
-                  : 'bg-white border-gray-200'
-              }`}>
-                <Link to="/sobre" className={`block px-4 py-3 transition-colors ${
-                  isDark 
-                    ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                    : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-                }`}>
-              {t('about')}
-            </Link>
-                <Link to="/contato" className={`block px-4 py-3 transition-colors ${
-                  isDark 
-                    ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                    : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-                }`}>
-              {t('contact')}
-            </Link>
-                <Link to="/planos" className={`block px-4 py-3 transition-colors ${
-                  isDark 
-                    ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                    : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-                }`}>
-              {t('plans')}
-            </Link>
-                <Link to="/faq" className={`block px-4 py-3 transition-colors ${
-                  isDark 
-                    ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                    : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-                }`}>
-                  ❓ FAQ
-                </Link>
-                <Link to="/ajuda" className={`block px-4 py-3 transition-colors ${
-                  isDark 
-                    ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                    : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-                }`}>
-                  🆘 Ajuda
-                </Link>
-              </div>
-            </div>
-
-            {/* Seletor de Idioma Único e Futurista */}
-            <div className="relative group">
-              <motion.button 
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-500 border ${
-                  isDark 
-                    ? 'bg-gradient-to-r from-cyan-900/30 to-blue-900/30 border-cyan-500/30 text-cyan-300 hover:border-cyan-400 hover:shadow-lg hover:shadow-cyan-500/25'
-                    : 'bg-gradient-to-r from-emerald-50 to-blue-50 border-emerald-200 text-emerald-700 hover:border-emerald-400 hover:shadow-lg hover:shadow-emerald-500/25'
-                }`}
-              >
-                <Globe className={`w-4 h-4 ${
-                  isDark ? 'text-cyan-400' : 'text-emerald-600'
-                }`} />
-                <span className="text-sm font-semibold">
-                  {currentLanguage === 'pt' && '🇧🇷 PT'}
-                  {currentLanguage === 'en' && '🇺🇸 EN'}
-                  {currentLanguage === 'es' && '🇪🇸 ES'}
-                  {currentLanguage === 'zh' && '🇨🇳 ZH'}
+                <span>{item.icon}</span>
+                <span className="text-sm font-medium">
+                  {item.label.split('.').reduce((obj, key) => obj?.[key], {
+                    navigation: {
+                      home: 'Início',
+                      marketplace: 'Intermediação',
+                      agroconecta: 'AgroConecta',
+                      crypto: 'Cripto'
+                    }
+                  })}
                 </span>
-                <ChevronDown className="w-4 h-4" />
-              </motion.button>
-              
-              <motion.div 
-                initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                className={`absolute top-full right-0 mt-3 w-56 rounded-2xl shadow-2xl border backdrop-blur-xl py-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-500 z-50 ${
-                  isDark 
-                    ? 'bg-gray-900/95 border-cyan-500/30 shadow-cyan-500/20'
-                    : 'bg-white/95 border-emerald-200/50 shadow-emerald-500/20'
-                }`}
-              >
-                <motion.button 
-                  whileHover={{ x: 5, backgroundColor: isDark ? 'rgba(6, 182, 212, 0.1)' : 'rgba(16, 185, 129, 0.1)' }}
-                  onClick={() => changeLanguage('pt')} 
-                  className={`flex items-center space-x-3 w-full px-4 py-3 transition-all duration-300 ${
-                    currentLanguage === 'pt' 
-                      ? (isDark ? 'bg-cyan-500/20 text-cyan-300' : 'bg-emerald-500/20 text-emerald-700')
-                      : (isDark ? 'text-gray-300 hover:text-cyan-300' : 'text-gray-600 hover:text-emerald-600')
-                  }`}
-                >
-                  <span className="text-lg">🇧🇷</span>
-                  <span className="font-medium">Português</span>
-                  {currentLanguage === 'pt' && <Zap className="w-4 h-4 ml-auto" />}
-                </motion.button>
-                
-                <motion.button 
-                  whileHover={{ x: 5, backgroundColor: isDark ? 'rgba(6, 182, 212, 0.1)' : 'rgba(16, 185, 129, 0.1)' }}
-                  onClick={() => changeLanguage('en')} 
-                  className={`flex items-center space-x-3 w-full px-4 py-3 transition-all duration-300 ${
-                    currentLanguage === 'en' 
-                      ? (isDark ? 'bg-cyan-500/20 text-cyan-300' : 'bg-emerald-500/20 text-emerald-700')
-                      : (isDark ? 'text-gray-300 hover:text-cyan-300' : 'text-gray-600 hover:text-emerald-600')
-                  }`}
-                >
-                  <span className="text-lg">🇺🇸</span>
-                  <span className="font-medium">English</span>
-                  {currentLanguage === 'en' && <Zap className="w-4 h-4 ml-auto" />}
-                </motion.button>
-                
-                <motion.button 
-                  whileHover={{ x: 5, backgroundColor: isDark ? 'rgba(6, 182, 212, 0.1)' : 'rgba(16, 185, 129, 0.1)' }}
-                  onClick={() => changeLanguage('es')} 
-                  className={`flex items-center space-x-3 w-full px-4 py-3 transition-all duration-300 ${
-                    currentLanguage === 'es' 
-                      ? (isDark ? 'bg-cyan-500/20 text-cyan-300' : 'bg-emerald-500/20 text-emerald-700')
-                      : (isDark ? 'text-gray-300 hover:text-cyan-300' : 'text-gray-600 hover:text-emerald-600')
-                  }`}
-                >
-                  <span className="text-lg">🇪🇸</span>
-                  <span className="font-medium">Español</span>
-                  {currentLanguage === 'es' && <Zap className="w-4 h-4 ml-auto" />}
-                </motion.button>
-                
-                <motion.button 
-                  whileHover={{ x: 5, backgroundColor: isDark ? 'rgba(6, 182, 212, 0.1)' : 'rgba(16, 185, 129, 0.1)' }}
-                  onClick={() => changeLanguage('zh')} 
-                  className={`flex items-center space-x-3 w-full px-4 py-3 transition-all duration-300 ${
-                    currentLanguage === 'zh' 
-                      ? (isDark ? 'bg-cyan-500/20 text-cyan-300' : 'bg-emerald-500/20 text-emerald-700')
-                      : (isDark ? 'text-gray-300 hover:text-cyan-300' : 'text-gray-600 hover:text-emerald-600')
-                  }`}
-                >
-                  <span className="text-lg">🇨🇳</span>
-                  <span className="font-medium">中文</span>
-                  {currentLanguage === 'zh' && <Zap className="w-4 h-4 ml-auto" />}
-                </motion.button>
-              </motion.div>
-            </div>
+              </Link>
+            ))}
+          </div>
 
-            {/* Toggle de Tema Futurista */}
+          {/* Right Side Actions */}
+          <div className="flex items-center space-x-4">
+            {/* Theme Toggle */}
             <motion.button
-              whileHover={{ 
-                scale: 1.1, 
-                rotate: isDark ? 180 : -180,
-                boxShadow: isDark ? '0 0 20px rgba(255, 193, 7, 0.5)' : '0 0 20px rgba(99, 102, 241, 0.5)'
-              }}
+              whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={toggleTheme}
-              className={`flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-500 border ${
-                isDark 
-                  ? 'bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border-yellow-500/30 text-yellow-400 hover:border-yellow-400'
-                  : 'bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border-indigo-500/30 text-indigo-600 hover:border-indigo-400'
-              }`}
-              title={isDark ? 'Modo Claro' : 'Modo Escuro'}
+              className="p-2 rounded-lg glass-effect text-gray-300 hover:text-white transition-colors"
             >
-              {isDark ? 
-                <Sun className="w-5 h-5 drop-shadow-lg" /> : 
-                <Moon className="w-5 h-5 drop-shadow-lg" />
-              }
+              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </motion.button>
 
+            {/* Language Selector */}
+            <div className="relative">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setShowLanguageMenu(!showLanguageMenu)}
+                className="flex items-center space-x-1 p-2 rounded-lg glass-effect text-gray-300 hover:text-white transition-colors"
+              >
+                <Globe className="w-5 h-5" />
+                <span className="text-sm hidden sm:block">{currentLangInfo?.flag}</span>
+                <ChevronDown className="w-4 h-4" />
+              </motion.button>
+
+              <AnimatePresence>
+                {showLanguageMenu && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute right-0 mt-2 w-48 card-futuristic p-2"
+                  >
+                    {supportedLanguages.map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => {
+                          changeLanguage(lang.code);
+                          setShowLanguageMenu(false);
+                        }}
+                        className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
+                          currentLanguage === lang.code
+                            ? 'bg-neon-blue/20 text-neon-blue'
+                            : 'text-gray-300 hover:text-white hover:bg-white/10'
+                        }`}
+                      >
+                        <span>{lang.flag}</span>
+                        <span className="text-sm">{lang.name}</span>
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Notifications */}
+            {isAuthenticated && (
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="relative p-2 rounded-lg glass-effect text-gray-300 hover:text-white transition-colors"
+              >
+                <Bell className="w-5 h-5" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-neon-pink text-white text-xs rounded-full flex items-center justify-center">
+                    {unreadCount}
+                  </span>
+                )}
+              </motion.button>
+            )}
 
             {/* User Menu */}
-            {isUserAuthenticated ? (
-              <div className="flex items-center space-x-4">
-                <Link
-                  to="/dashboard"
-                  className="btn-primary"
+            {isAuthenticated ? (
+              <div className="relative">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="flex items-center space-x-2 p-2 rounded-lg glass-effect text-gray-300 hover:text-white transition-colors"
                 >
-                  {t('dashboard')}
-                </Link>
-                
-                <div className="relative">
-                  <button
-                    onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    className={`flex items-center space-x-2 p-2 rounded-lg transition-all duration-300 ${
-                      isDark 
-                        ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                        : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-                    }`}
-                  >
-                    <User className="w-5 h-5" />
-                    <span className="text-sm font-medium">{user?.name || 'Usuário'}</span>
-                  </button>
-                  
-                  {isMenuOpen && (
-                    <div className={`absolute right-0 mt-2 w-48 rounded-lg shadow-xl border py-2 z-50 ${
-                      isDark 
-                        ? 'bg-gray-800 border-gray-700'
-                        : 'bg-white border-gray-200'
-                    }`}>
+                  <User className="w-5 h-5" />
+                  <span className="text-sm hidden sm:block">{user?.username}</span>
+                  <ChevronDown className="w-4 h-4" />
+                </motion.button>
+
+                <AnimatePresence>
+                  {showUserMenu && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute right-0 mt-2 w-48 card-futuristic p-2"
+                    >
                       <Link
-                        to="/painel-usuario"
-                        className={`flex items-center space-x-2 px-4 py-2 transition-all duration-300 ${
-                          isDark 
-                            ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                            : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-                        }`}
-                        onClick={() => setIsMenuOpen(false)}
+                        to="/dashboard"
+                        onClick={() => setShowUserMenu(false)}
+                        className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+                      >
+                        <User className="w-4 h-4" />
+                        <span className="text-sm">Dashboard</span>
+                      </Link>
+                      <Link
+                        to="/settings"
+                        onClick={() => setShowUserMenu(false)}
+                        className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
                       >
                         <Settings className="w-4 h-4" />
-                        <span className="text-sm">{t('dashboard')}</span>
+                        <span className="text-sm">Configurações</span>
                       </Link>
-                      
                       <button
                         onClick={handleLogout}
-                        className={`flex items-center space-x-2 w-full px-4 py-2 transition-all duration-300 ${
-                          isDark 
-                            ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                            : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-                        }`}
+                        className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
                       >
                         <LogOut className="w-4 h-4" />
-                        <span className="text-sm">{t('nav.logout')}</span>
+                        <span className="text-sm">Sair</span>
                       </button>
-                    </div>
+                    </motion.div>
                   )}
-                </div>
+                </AnimatePresence>
               </div>
             ) : (
-              <div className="flex items-center space-x-4">
-                                        <Link
-                          to="/login"
-                          className="btn-secondary"
-                        >
-                          {t('login')}
-                        </Link>
-                        
-                        <Link
-                          to="/cadastro"
-                          className="btn-primary"
-                        >
-                          {t('register')}
-                        </Link>
-              </div>
-            )}
-          </div>
-
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className={`p-2 rounded-lg transition-all duration-300 ${
-                isDark 
-                  ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                  : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-              }`}
-            >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Navigation */}
-      {isMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
-          className={`md:hidden border-t ${
-            isDark 
-              ? 'bg-gray-900 border-gray-700'
-              : 'bg-white border-gray-200'
-          }`}
-        >
-          <div className="px-4 py-2 space-y-1">
-            <Link
-              to="/"
-              className={`block px-3 py-2 rounded-lg transition-all duration-300 ${
-                isDark 
-                  ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                  : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-              }`}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {t('home')}
-            </Link>
-            
-            <Link
-              to="/store"
-              className={`block px-3 py-2 rounded-lg transition-all duration-300 ${
-                isDark 
-                  ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                  : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-              }`}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {t('nav.store')}
-            </Link>
-            
-                         <Link
-               to="/agroconecta"
-              className={`block px-3 py-2 rounded-lg transition-all duration-300 ${
-                isDark 
-                  ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                  : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-              }`}
-               onClick={() => setIsMenuOpen(false)}
-             >
-               {t('nav.agroconecta')}
-             </Link>
-             
-             <Link
-               to="/cripto"
-              className={`block px-3 py-2 rounded-lg transition-all duration-300 ${
-                isDark 
-                  ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                  : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-              }`}
-               onClick={() => setIsMenuOpen(false)}
-             >
-               {t('nav.crypto')}
-             </Link>
-            
-            <Link
-              to="/sobre"
-              className={`block px-3 py-2 rounded-lg transition-all duration-300 ${
-                isDark 
-                  ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                  : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-              }`}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {t('about')}
-            </Link>
-            
-            <Link
-              to="/contato"
-              className={`block px-3 py-2 rounded-lg transition-all duration-300 ${
-                isDark 
-                  ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                  : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-              }`}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {t('contact')}
-            </Link>
-            
-            <Link
-              to="/planos"
-              className={`block px-3 py-2 rounded-lg transition-all duration-300 ${
-                isDark 
-                  ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                  : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-              }`}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {t('plans')}
-            </Link>
-
-            {/* Theme Toggle Mobile */}
-            <button
-              onClick={() => {
-                toggleTheme();
-                setIsMenuOpen(false);
-              }}
-              className={`flex items-center space-x-2 w-full px-3 py-2 rounded-lg transition-all duration-300 ${
-                isDark 
-                  ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                  : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-              }`}
-            >
-              {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-              <span className="text-sm">{isDark ? 'Modo Claro' : 'Modo Escuro'}</span>
-            </button>
-
-            {isUserAuthenticated ? (
-              <>
-                <Link
-                  to="/dashboard"
-                  className={`block px-3 py-2 rounded-lg transition-all duration-300 ${
-                    isDark 
-                      ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                      : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t('dashboard')}
-                </Link>
-                
-                <button
-                  onClick={handleLogout}
-                  className={`block w-full text-left px-3 py-2 rounded-lg transition-all duration-300 ${
-                    isDark 
-                      ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                      : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-                  }`}
-                >
-                  Sair
-                </button>
-              </>
-            ) : (
-              <>
+              <div className="flex items-center space-x-2">
                 <Link
                   to="/login"
-                  className={`block px-3 py-2 rounded-lg transition-all duration-300 ${
-                    isDark 
-                      ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                      : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
+                  className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
                 >
-                  {t('login')}
+                  Entrar
                 </Link>
-                
                 <Link
-                  to="/cadastro"
-                  className={`block px-3 py-2 rounded-lg transition-all duration-300 ${
-                    isDark 
-                      ? 'text-gray-300 hover:text-emerald-400 hover:bg-emerald-900/20'
-                      : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
+                  to="/register"
+                  className="btn-primary px-4 py-2 text-sm"
                 >
-                  {t('register')}
+                  Cadastrar
                 </Link>
-              </>
+              </div>
             )}
+
+            {/* Mobile Menu Button */}
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => setIsOpen(!isOpen)}
+              className="md:hidden p-2 rounded-lg glass-effect text-gray-300 hover:text-white transition-colors"
+            >
+              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </motion.button>
           </div>
-        </motion.div>
-      )}
-    </nav>
+        </div>
+
+        {/* Mobile Navigation */}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="md:hidden border-t border-white/10 mt-4 pt-4"
+            >
+              <div className="space-y-2">
+                {navItems.map((item) => (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setIsOpen(false)}
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 ${
+                      location.pathname === item.path
+                        ? 'text-neon-blue bg-white/10'
+                        : 'text-gray-300 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    <span>{item.icon}</span>
+                    <span className="font-medium">
+                      {item.label.split('.').reduce((obj, key) => obj?.[key], {
+                        navigation: {
+                          home: 'Início',
+                          marketplace: 'Intermediação',
+                          agroconecta: 'AgroConecta',
+                          crypto: 'Cripto'
+                        }
+                      })}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.nav>
   );
 };
 

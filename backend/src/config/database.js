@@ -1,112 +1,44 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
+const logger = require('../utils/logger');
 
-// MongoDB connection configuration
 const connectDB = async () => {
   try {
-    const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/agroisync';
-
-    await mongoose.connect(mongoURI, {
+    const conn = await mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      maxPoolSize: 10,
-      serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 45000
+      maxPoolSize: 10, // Manter até 10 conexões
+      serverSelectionTimeoutMS: 5000, // Manter tentando enviar operações por 5 segundos
+      socketTimeoutMS: 45000, // Fechar sockets após 45 segundos de inatividade
+      bufferMaxEntries: 0, // Desabilitar mongoose buffering
+      bufferCommands: false, // Desabilitar mongoose buffering
     });
 
-    console.log('✅ MongoDB connected successfully');
+    logger.info(`MongoDB conectado: ${conn.connection.host}`);
 
-    // Handle connection events
-    mongoose.connection.on('error', err => {
-      console.error('❌ MongoDB connection error:', err);
+    // Eventos de conexão
+    mongoose.connection.on('connected', () => {
+      logger.info('Mongoose conectado ao MongoDB');
+    });
+
+    mongoose.connection.on('error', (err) => {
+      logger.error('Erro na conexão MongoDB:', err);
     });
 
     mongoose.connection.on('disconnected', () => {
-      console.log('⚠️ MongoDB disconnected');
+      logger.warn('Mongoose desconectado do MongoDB');
     });
 
-    mongoose.connection.on('reconnected', () => {
-      console.log('🔄 MongoDB reconnected');
+    // Fechar conexão quando a aplicação for encerrada
+    process.on('SIGINT', async () => {
+      await mongoose.connection.close();
+      logger.info('Conexão MongoDB fechada devido ao encerramento da aplicação');
+      process.exit(0);
     });
 
-    // Create indexes for performance
-    await createIndexes();
-
-    return true;
   } catch (error) {
-    console.error('❌ MongoDB connection failed:', error);
-    return false;
+    logger.error('Erro ao conectar ao MongoDB:', error);
+    process.exit(1);
   }
 };
 
-// Function to create indexes
-const createIndexes = async () => {
-  try {
-    // Indexes for User
-    if (mongoose.models.User) {
-      await mongoose.model('User').createIndexes();
-    }
-    
-    // Indexes for Payment
-    if (mongoose.models.Payment) {
-      await mongoose.model('Payment').createIndexes();
-    }
-    
-    // Indexes for Conversation
-    if (mongoose.models.Conversation) {
-      await mongoose.model('Conversation').createIndexes();
-    }
-    
-    // Indexes for Message
-    if (mongoose.models.Message) {
-      await mongoose.model('Message').createIndexes();
-    }
-
-    // Indexes for Product
-    if (mongoose.models.Product) {
-      await mongoose.model('Product').createIndexes();
-    }
-
-    // Indexes for Freight
-    if (mongoose.models.Freight) {
-      await mongoose.model('Freight').createIndexes();
-    }
-
-    // Indexes for Transaction
-    if (mongoose.models.Transaction) {
-      await mongoose.model('Transaction').createIndexes();
-    }
-    
-    console.log('✅ Database indexes created successfully');
-  } catch (error) {
-    console.error('❌ Error creating database indexes:', error);
-  }
-};
-
-// Close MongoDB connection
-const closeDB = async () => {
-  try {
-    await mongoose.connection.close();
-    console.log('🔌 MongoDB connection closed');
-  } catch (error) {
-    console.error('❌ Error closing MongoDB connection:', error);
-  }
-};
-
-// Test MongoDB connection
-const testDB = async () => {
-  try {
-    const isConnected = await connectDB();
-    if (isConnected) {
-      console.log('✅ MongoDB connection test successful');
-      return true;
-    } else {
-      console.log('❌ MongoDB connection test failed');
-      return false;
-    }
-  } catch (error) {
-    console.error('❌ MongoDB connection test error:', error);
-    return false;
-  }
-};
-
-export { connectDB, closeDB, testDB };
+module.exports = connectDB;

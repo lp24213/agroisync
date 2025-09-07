@@ -15,6 +15,36 @@ class PaymentService {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   }
 
+  // Sistema de comissões para intermediação
+  async calculateCommission(transactionAmount, transactionType) {
+    try {
+      const response = await axios.post(`${this.baseURL}/commission/calculate`, {
+        transactionAmount,
+        transactionType
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao calcular comissão:', error);
+      return { success: false, error: 'Erro ao calcular comissão' };
+    }
+  }
+
+  // Processar comissão para carteira do proprietário
+  async processCommission(transactionId, amount, paymentMethod, userWallet) {
+    try {
+      const response = await axios.post(`${this.baseURL}/commission/process`, {
+        transactionId,
+        amount,
+        paymentMethod,
+        userWallet
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao processar comissão:', error);
+      return { success: false, error: 'Erro ao processar comissão' };
+    }
+  }
+
   // Inicializar Stripe
   async initializeStripe(publishableKey) {
     if (typeof window !== 'undefined' && window.Stripe) {

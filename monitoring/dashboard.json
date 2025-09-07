@@ -1,0 +1,202 @@
+{
+  "dashboard": {
+    "title": "AgroSync - Dashboard de Monitoramento Profissional",
+    "description": "Monitoramento completo da plataforma AgroSync em tempo real",
+    "panels": [
+      {
+        "title": "Status Geral da Aplicação",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "up{job=\"agrosync-api\"}",
+            "legendFormat": "API Status"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {
+                  "color": "red",
+                  "value": 0
+                },
+                {
+                  "color": "green",
+                  "value": 1
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "title": "Taxa de Requisições por Minuto",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total[1m])",
+            "legendFormat": "{{method}} {{endpoint}}"
+          }
+        ]
+      },
+      {
+        "title": "Tempo de Resposta da API",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))",
+            "legendFormat": "95th percentile"
+          },
+          {
+            "expr": "histogram_quantile(0.50, rate(http_request_duration_seconds_bucket[5m]))",
+            "legendFormat": "50th percentile"
+          }
+        ]
+      },
+      {
+        "title": "Taxa de Erro",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{status=~\"5..\"}[5m])",
+            "legendFormat": "5xx Errors"
+          },
+          {
+            "expr": "rate(http_requests_total{status=~\"4..\"}[5m])",
+            "legendFormat": "4xx Errors"
+          }
+        ]
+      },
+      {
+        "title": "Usuários Ativos",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "agrosync_active_users",
+            "legendFormat": "Usuários Ativos"
+          }
+        ]
+      },
+      {
+        "title": "Transações por Hora",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(agrosync_transactions_total[1h])",
+            "legendFormat": "Transações/hora"
+          }
+        ]
+      },
+      {
+        "title": "Uso de CPU",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+            "legendFormat": "CPU Usage %"
+          }
+        ]
+      },
+      {
+        "title": "Uso de Memória",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100",
+            "legendFormat": "Memory Usage %"
+          }
+        ]
+      },
+      {
+        "title": "Espaço em Disco",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "100 - ((node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes)",
+            "legendFormat": "Disk Usage %"
+          }
+        ]
+      },
+      {
+        "title": "Conexões de Banco de Dados",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "mongodb_connections_current",
+            "legendFormat": "Conexões Ativas"
+          }
+        ]
+      },
+      {
+        "title": "Cache Hit Rate (Redis)",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "redis_keyspace_hits_total / (redis_keyspace_hits_total + redis_keyspace_misses_total) * 100",
+            "legendFormat": "Cache Hit Rate %"
+          }
+        ]
+      },
+      {
+        "title": "Pagamentos Stripe",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(stripe_payments_total[1h])",
+            "legendFormat": "Pagamentos/hora"
+          }
+        ]
+      },
+      {
+        "title": "Produtos Publicados",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "agrosync_products_total",
+            "legendFormat": "Total de Produtos"
+          }
+        ]
+      },
+      {
+        "title": "Fretes Ativos",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "agrosync_freights_active",
+            "legendFormat": "Fretes Ativos"
+          }
+        ]
+      },
+      {
+        "title": "Mensagens por Minuto",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(agrosync_messages_total[1m])",
+            "legendFormat": "Mensagens/min"
+          }
+        ]
+      },
+      {
+        "title": "Chatbot Interações",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(agrosync_chatbot_interactions_total[1h])",
+            "legendFormat": "Interações/hora"
+          }
+        ]
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refresh": "30s",
+    "tags": ["agrosync", "production", "monitoring"],
+    "version": 1
+  }
+}

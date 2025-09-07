@@ -1,895 +1,398 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useLanguage } from '../contexts/LanguageContext';
 import { 
-  DollarSign, Package, Truck, 
-  Users, Shield,
-  MapPin, MessageSquare, Leaf,
-  Sun, Cloud, CloudRain, Thermometer, Droplets, Wind
+  ArrowRight, 
+  Play, 
+  Star, 
+  Users, 
+  Package, 
+  Truck,
+  Zap,
+  BarChart3,
+  MessageCircle,
+  CreditCard
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { useFeatureFlags } from '../contexts/FeatureFlagsContext';
-import HomeGrains from '../components/HomeGrains';
-import HomeWeatherIP from '../components/HomeWeatherIP';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const Home = () => {
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const [stats, setStats] = useState({
+    users: 0,
+    products: 0,
+    freights: 0,
+    uptime: 0
+  });
+
   const { t } = useLanguage();
-  const navigate = useNavigate();
-  const { isEnabled } = useFeatureFlags();
-  
-  // CAMADA 2: Dados reais da bolsa de valores via API Agrolink
-  // const [stockData, setStockData] = useState([]);
-  const [userLocation, setUserLocation] = useState(null);
-  const [weatherData, setWeatherData] = useState(null);
-
-  // CAMADA 2: Obter localização do usuário via IP
-  const getUserLocationByIP = async () => {
-    try {
-      // Simular detecção de localização (em produção seria uma API real)
-      // const response = await fetch('https://ipapi.co/json/');
-      
-      // Dados simulados para demonstração
-      const mockLocationData = {
-        city: 'Sinop',
-        region: 'MT',
-        country: 'BR',
-        latitude: -11.8647,
-        longitude: -55.5036,
-        ip: '192.168.1.1'
-      };
-      
-      setUserLocation(mockLocationData);
-      return mockLocationData;
-      
-    } catch (error) {
-      console.error('Erro ao obter localização por IP:', error);
-      // Fallback para localização padrão (Sinop, MT)
-      const fallbackLocation = {
-        city: 'Sinop',
-        region: 'MT',
-        country: 'BR',
-        lat: -11.8647,
-        lon: -55.5036,
-        ip: 'fallback'
-      };
-      setUserLocation(fallbackLocation);
-      return fallbackLocation;
-    }
-  };
-
-  // CAMADA 2: Buscar dados da API Agrolink
-  const fetchAgrolinkData = useCallback(async () => {
-    try {
-      if (!userLocation) {
-        await getUserLocationByIP();
-        return;
-      }
-
-      // Simular dados da API Agrolink (em produção seria uma API real)
-      // const response = await fetch(`https://api.agrolink.com.br/v1/commodities?region=${userLocation.region}&country=${userLocation.country}`);
-      
-      // Dados simulados para demonstração (comentado - não utilizado atualmente)
-      // const mockAgrolinkData = {
-      //   stocks: [
-      //     {
-      //       symbol: 'SOJA3',
-      //       name: 'Soja Futuro',
-      //       current_price: 145.67 + (Math.random() - 0.5) * 10,
-      //       price_change_percentage: 2.34 + (Math.random() - 0.5) * 2,
-      //       volume: '1.2M',
-      //       last_update: new Date().toISOString(),
-      //       sector: 'Agropecuário',
-      //       market_cap: 'R$ 45.2B'
-      //     },
-      //     {
-      //       symbol: 'MILHO4',
-      //       name: 'Milho Futuro',
-      //       current_price: 89.45 + (Math.random() - 0.5) * 8,
-      //       price_change_percentage: -1.23 + (Math.random() - 0.5) * 1.5,
-      //       volume: '856K',
-      //       last_update: new Date().toISOString(),
-      //       sector: 'Agropecuário',
-      //       market_cap: 'R$ 28.7B'
-      //     },
-      //     {
-      //       symbol: 'BOI3',
-      //       name: 'Boi Gordo',
-      //       current_price: 234.12 + (Math.random() - 0.5) * 15,
-      //       price_change_percentage: 3.45 + (Math.random() - 0.5) * 2,
-      //       volume: '2.1M',
-      //       last_update: new Date().toISOString(),
-      //       sector: 'Agropecuário',
-      //       market_cap: 'R$ 67.3B'
-      //     },
-      //     {
-      //       symbol: 'CAFE3',
-      //       name: 'Café Arábica',
-      //       current_price: 567.89 + (Math.random() - 0.5) * 25,
-      //       price_change_percentage: -0.87 + (Math.random() - 0.5) * 1.5,
-      //       volume: '432K',
-      //       last_update: new Date().toISOString(),
-      //       sector: 'Agropecuário',
-      //       market_cap: 'R$ 12.4B'
-      //     },
-      //     {
-      //       symbol: 'ALGO3',
-      //       name: 'Algodão',
-      //       current_price: 78.34 + (Math.random() - 0.5) * 12,
-      //       price_change_percentage: 1.56 + (Math.random() - 0.5) * 1.5,
-      //       volume: '678K',
-      //       last_update: new Date().toISOString(),
-      //       sector: 'Agropecuário',
-      //       market_cap: 'R$ 15.8B'
-      //     },
-      //     {
-      //       symbol: 'TRIG3',
-      //       name: 'Trigo',
-      //       current_price: 123.45 + (Math.random() - 0.5) * 18,
-      //       price_change_percentage: 0.78 + (Math.random() - 0.5) * 1.5,
-      //       volume: '345K',
-      //       last_update: new Date().toISOString(),
-      //       sector: 'Agropecuário',
-      //       market_cap: 'R$ 18.9B'
-      //     }
-      //   ]
-      // };
-      
-      // Formatar dados da bolsa de valores
-      // const formattedStockData = mockAgrolinkData.stocks.map(stock => ({
-      //   symbol: stock.symbol,
-      //   name: stock.name,
-      //   price: stock.current_price,
-      //   change: stock.price_change_percentage,
-      //   volume: stock.volume,
-      //   trend: stock.price_change_percentage >= 0 ? 'up' : 'down',
-      //   lastUpdate: new Date(stock.last_update),
-      //   sector: stock.sector,
-      //   marketCap: stock.market_cap
-      // }));
-
-      // setStockData(formattedStockData);
-      
-    } catch (error) {
-      console.error('Erro ao buscar dados da Agrolink:', error);
-      
-      // Fallback: dados simulados baseados na localização
-      // const fallbackStockData = [
-      //   {
-      //     symbol: 'SOJA3',
-      //     name: 'Soja Futuro',
-      //     price: 145.67 + (Math.random() - 0.5) * 10,
-      //     change: 2.34 + (Math.random() - 0.5) * 2,
-      //     volume: '1.2M',
-      //     trend: Math.random() > 0.5 ? 'up' : 'down',
-      //     lastUpdate: new Date(),
-      //     sector: 'Agropecuário',
-      //     marketCap: 'R$ 45.2B'
-      //   },
-      //   {
-      //     symbol: 'MILHO4',
-      //     name: 'Milho Futuro',
-      //     price: 89.45 + (Math.random() - 0.5) * 8,
-      //     change: -1.23 + (Math.random() - 0.5) * 1.5,
-      //     volume: '856K',
-      //     trend: Math.random() > 0.5 ? 'up' : 'down',
-      //     lastUpdate: new Date(),
-      //     sector: 'Agropecuário',
-      //     marketCap: 'R$ 28.7B'
-      //   },
-      //   {
-      //     symbol: 'BOI3',
-      //     name: 'Boi Gordo',
-      //     price: 234.12 + (Math.random() - 0.5) * 15,
-      //     change: 3.45 + (Math.random() - 0.5) * 2,
-      //     volume: '2.1M',
-      //     trend: Math.random() > 0.5 ? 'up' : 'down',
-      //     lastUpdate: new Date(),
-      //     sector: 'Agropecuário',
-      //     marketCap: 'R$ 67.3B'
-      //   },
-      //   {
-      //     symbol: 'CAFE3',
-      //     name: 'Café Arábica',
-      //     price: 567.89 + (Math.random() - 0.5) * 25,
-      //     change: -0.87 + (Math.random() - 0.5) * 1.5,
-      //     volume: '432K',
-      //     trend: Math.random() > 0.5 ? 'up' : 'down',
-      //     lastUpdate: new Date(),
-      //     sector: 'Agropecuário',
-      //     marketCap: 'R$ 12.4B'
-      //   },
-      //   {
-      //     symbol: 'ALGO3',
-      //     name: 'Algodão',
-      //     price: 78.34 + (Math.random() - 0.5) * 12,
-      //     change: 1.56 + (Math.random() - 0.5) * 1.5,
-      //     volume: '678K',
-      //     trend: Math.random() > 0.5 ? 'up' : 'down',
-      //     lastUpdate: new Date(),
-      //     sector: 'Agropecuário',
-      //     marketCap: 'R$ 15.8B'
-      //   },
-      //   {
-      //     symbol: 'TRIG3',
-      //     name: 'Trigo',
-      //     price: 123.45 + (Math.random() - 0.5) * 18,
-      //     change: 0.78 + (Math.random() - 0.5) * 1.5,
-      //     volume: '345K',
-      //     trend: Math.random() > 0.5 ? 'up' : 'down',
-      //     lastUpdate: new Date(),
-      //     sector: 'Agropecuário',
-      //     marketCap: 'R$ 18.9B'
-      //   }
-      // ];
-
-      // setStockData(fallbackStockData);
-    }
-  }, [userLocation]);
-
-  // CAMADA 2: Atualizar dados a cada 5 minutos
-  useEffect(() => {
-    getUserLocationByIP();
-  }, []);
 
   useEffect(() => {
-    if (userLocation) {
-      fetchAgrolinkData();
-      
-      const interval = setInterval(fetchAgrolinkData, 30000); // 30 segundos
-      return () => clearInterval(interval);
-    }
-  }, [userLocation, fetchAgrolinkData]);
-
-  // CAMADA 2: Função para formatar mudança de preço com cores
-  // const formatChange = (change) => {
-  //   const isPositive = change >= 0;
-  //   const color = isPositive ? 'text-emerald-600' : 'text-red-600';
-  //   const Icon = isPositive ? TrendingUp : TrendingDown;
-  //   
-  //   return (
-  //     <span className={`${color} font-semibold flex items-center gap-1`}>
-  //       <Icon className="w-4 h-4" /> {Math.abs(change).toFixed(2)}%
-  //     </span>
-  //   );
-  // };
-
-  // CAMADA 2: Dados reais de clima via OpenWeather API
-  // CAMADA 2: Buscar dados reais de clima
-  const fetchWeatherData = useCallback(async (lat, lon) => {
-    try {
-      // API OpenWeather - Dados reais de clima
-      const apiKey = process.env.REACT_APP_OPENWEATHER_API_KEY || 'demo_key';
-      const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=pt_br`
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        
-        // Formatar dados para o formato da aplicação
-        const formattedWeather = {
-          temperature: parseFloat(data.main.temp).toFixed(1),
-          feelsLike: parseFloat(data.main.feels_like).toFixed(1),
-          humidity: Math.round(data.main.humidity),
-          windSpeed: parseFloat((data.wind.speed * 3.6)).toFixed(1), // m/s para km/h
-          description: data.weather[0].description.length > 20 ? 
-            data.weather[0].description.substring(0, 20) + '...' : 
-            data.weather[0].description,
-          icon: data.weather[0].icon,
-          city: data.name,
-          country: data.sys.country,
-          lastUpdate: new Date(),
-          pressure: Math.round(data.main.pressure),
-          visibility: parseFloat((data.visibility / 1000)).toFixed(1) // metros para km
-        };
-        
-        setWeatherData(formattedWeather);
-        
-      } else {
-        throw new Error('Erro na API OpenWeather');
-      }
-      
-    } catch (error) {
-      console.error('Erro ao buscar dados de clima:', error);
-      
-      // Fallback: dados simulados baseados na localização
-      const fallbackWeather = {
-        temperature: parseFloat(25 + (Math.random() - 0.5) * 10).toFixed(1),
-        feelsLike: parseFloat(27 + (Math.random() - 0.5) * 8).toFixed(1),
-        humidity: Math.round(65 + (Math.random() - 0.5) * 20),
-        windSpeed: parseFloat(12 + (Math.random() - 0.5) * 8).toFixed(1),
-        description: 'céu limpo',
-        icon: '01d',
-        city: userLocation?.city || 'Sinop',
-        country: userLocation?.country || 'BR',
-        lastUpdate: new Date(),
-        pressure: Math.round(1013 + (Math.random() - 0.5) * 20),
-        visibility: parseFloat(10 + (Math.random() - 0.5) * 1).toFixed(1) // metros para km
-      };
-      
-      setWeatherData(fallbackWeather);
-    }
-  }, [userLocation]);
-
-  // CAMADA 2: Obter localização do usuário e buscar clima
-  const getUserLocation = useCallback(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          fetchWeatherData(latitude, longitude);
-        },
-        (error) => {
-          console.error('Erro ao obter localização:', error);
-          // Usar coordenadas da localização por IP
-          if (userLocation?.lat && userLocation?.lon) {
-            fetchWeatherData(userLocation.lat, userLocation.lon);
-          } else {
-            // Usar coordenadas padrão (Sinop, MT)
-            fetchWeatherData(-11.8647, -55.5036);
-          }
-        }
-      );
-    } else {
-      // Fallback para navegadores sem geolocalização
-      if (userLocation?.lat && userLocation?.lon) {
-        fetchWeatherData(userLocation.lat, userLocation.lon);
-      } else {
-        fetchWeatherData(-11.8647, -55.5036);
-      }
-    }
-  }, [userLocation, fetchWeatherData]);
-
-  // CAMADA 2: Atualizar clima quando localização mudar
-  useEffect(() => {
-    if (userLocation?.lat && userLocation?.lon) {
-      getUserLocation();
-    }
-  }, [userLocation, getUserLocation]);
-
-  const [newsData, setNewsData] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchNewsData = useCallback(async () => {
-    try {
-      // Simular notícias reais do agronegócio
-      const mockNewsData = [
-        {
-          id: 1,
-          title: 'Safra de soja 2024/25 deve atingir recorde histórico de 160 milhões de toneladas',
-          excerpt: 'Estimativas da Conab apontam para crescimento de 3,2% em relação à safra anterior',
-          category: 'Soja',
-          source: 'Globo Rural',
-          date: '2024-01-15',
-          url: '#',
-          image: '/api/placeholder/300/200'
-        },
-        {
-          id: 2,
-          title: 'Tecnologia de irrigação inteligente aumenta produtividade em até 30%',
-          excerpt: 'Sistemas automatizados reduzem desperdício de água e otimizam recursos hídricos',
-          category: 'Tecnologia',
-          source: 'Canal Rural',
-          date: '2024-01-14',
-          url: '#',
-          image: '/api/placeholder/300/200'
-        },
-        {
-          id: 3,
-          title: 'Exportações de carne bovina crescem 15% em 2023, China lidera importações',
-          excerpt: 'Setor registra recorde histórico com embarques de 2,2 milhões de toneladas',
-          category: 'Pecuária',
-          source: 'Notícias Agrícolas',
-          date: '2024-01-13',
-          url: '#',
-          image: '/api/placeholder/300/200'
-        },
-        {
-          id: 4,
-          title: 'Preços do milho sobem 8% em janeiro devido à forte demanda interna',
-          excerpt: 'Indústria de ração e produção de etanol impulsionam consumo do grão',
-          category: 'Milho',
-          source: 'Globo Rural',
-          date: '2024-01-12',
-          url: '#',
-          image: '/api/placeholder/300/200'
-        }
-      ];
-      setNewsData(mockNewsData);
-    } catch (error) {
-      console.error('Erro ao buscar notícias:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  // useEffect para carregar notícias e definir título da página
-  useEffect(() => {
-    document.title = `Agroisync - ${t('homeHero.title')}`;
-    fetchNewsData();
-  }, [t, fetchNewsData]);
-
-  // useEffect para atualizar clima quando localização mudar
-  useEffect(() => {
-    if (userLocation?.lat && userLocation?.lon) {
-      fetchWeatherData(userLocation.lat, userLocation.lon);
-    }
-  }, [userLocation, fetchWeatherData]);
-
-  const getWeatherIcon = (iconCode) => {
-    const iconMap = {
-      '01d': <Sun className="w-8 h-8" />,
-      '01n': <Sun className="w-8 h-8" />,
-      '02d': <Cloud className="w-8 h-8" />,
-      '02n': <Cloud className="w-8 h-8" />,
-      '03d': <Cloud className="w-8 h-8" />,
-      '03n': <Cloud className="w-8 h-8" />,
-      '04d': <Cloud className="w-8 h-8" />,
-      '04n': <Cloud className="w-8 h-8" />,
-      '09d': <CloudRain className="w-8 h-8" />,
-      '09n': <CloudRain className="w-8 h-8" />,
-      '10d': <CloudRain className="w-8 h-8" />,
-      '10n': <CloudRain className="w-8 h-8" />,
-      '11d': <CloudRain className="w-8 h-8" />,
-      '11n': <CloudRain className="w-8 h-8" />,
-      '13d': <Cloud className="w-8 h-8" />,
-      '13n': <Cloud className="w-8 h-8" />,
-      '50d': <Cloud className="w-8 h-8" />,
-      '50n': <Cloud className="w-8 h-8" />
+    const targetStats = {
+      users: 12500,
+      products: 8500,
+      freights: 3200,
+      uptime: 99.9
     };
-    return iconMap[iconCode] || <Sun className="w-8 h-8" />;
-  };
+
+    const duration = 2000;
+    const steps = 60;
+    const stepDuration = duration / steps;
+
+    let currentStep = 0;
+    const timer = setInterval(() => {
+      currentStep++;
+      const progress = currentStep / steps;
+      
+      setStats({
+        users: Math.floor(targetStats.users * progress),
+        products: Math.floor(targetStats.products * progress),
+        freights: Math.floor(targetStats.freights * progress),
+        uptime: Number((targetStats.uptime * progress).toFixed(1))
+      });
+
+      if (currentStep >= steps) {
+        clearInterval(timer);
+        setStats(targetStats);
+      }
+    }, stepDuration);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const testimonials = [
+      {
+        name: "João Silva",
+        role: "Produtor Rural",
+        content: "O AgroSync revolucionou minha forma de vender produtos. Aumentei 300% nas vendas!",
+        rating: 5
+      },
+      {
+        name: "Maria Santos",
+        role: "Compradora",
+        content: "Encontro sempre os melhores preços e produtos de qualidade. Interface incrível!",
+        rating: 5
+      },
+      {
+        name: "Carlos Oliveira",
+        role: "Transportador",
+        content: "O AgroConecta me conectou com clientes de todo o Brasil. Sistema perfeito!",
+        rating: 5
+      }
+    ];
+
+    const interval = setInterval(() => {
+      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const features = [
     {
-      icon: <Package className="w-8 h-8" />,
-      title: t('homeFeatures.marketplace.title'),
-      description: t('homeFeatures.marketplace.description'),
-      color: 'from-slate-500 to-slate-600'
+      icon: Package,
+      title: t('home.features.products.title'),
+      description: t('home.features.products.description'),
+      color: "neon-blue",
+      link: "/marketplace"
     },
     {
-      icon: <Truck className="w-8 h-8" />,
-      title: t('homeFeatures.freight.title'),
-      description: t('homeFeatures.freight.description'),
-      color: 'from-slate-600 to-slate-700'
+      icon: Truck,
+      title: t('home.features.freights.title'),
+      description: t('home.features.freights.description'),
+      color: "neon-green",
+      link: "/agroconecta"
     },
     {
-      icon: <DollarSign className="w-8 h-8" />,
-      title: t('homeFeatures.crypto.title'),
-      description: t('homeFeatures.crypto.description'),
-      color: 'from-slate-700 to-slate-800'
+      icon: CreditCard,
+      title: t('home.features.crypto.title'),
+      description: t('home.features.crypto.description'),
+      color: "neon-purple",
+      link: "/crypto"
     },
     {
-      icon: <Shield className="w-8 h-8" />,
-      title: t('homeFeatures.quotes.title'),
-      description: t('homeFeatures.quotes.description'),
-      color: 'from-slate-800 to-slate-900'
+      icon: MessageCircle,
+      title: t('home.features.messaging.title'),
+      description: t('home.features.messaging.description'),
+      color: "neon-gold",
+      link: "/messaging"
     }
   ];
 
-  const stats = [
-    { label: t('homeStats.users'), value: '15.2K', icon: <Users className="w-6 h-6" /> },
-    { label: t('homeStats.products'), value: '8.7K', icon: <Package className="w-6 h-6" /> },
-    { label: t('homeStats.freights'), value: '3.4K', icon: <Truck className="w-6 h-6" /> },
-    { label: t('homeStats.uptime'), value: '99.9%', icon: <DollarSign className="w-6 h-6" /> }
+  const testimonials = [
+    {
+      name: "João Silva",
+      role: "Produtor Rural",
+      content: "O AgroSync revolucionou minha forma de vender produtos. Aumentei 300% nas vendas!",
+      rating: 5
+    },
+    {
+      name: "Maria Santos",
+      role: "Compradora",
+      content: "Encontro sempre os melhores preços e produtos de qualidade. Interface incrível!",
+      rating: 5
+    },
+    {
+      name: "Carlos Oliveira",
+      role: "Transportador",
+      content: "O AgroConecta me conectou com clientes de todo o Brasil. Sistema perfeito!",
+      rating: 5
+    }
   ];
 
   return (
-    <div className="min-h-screen bg-white text-gray-900">
-      {/* Clima por IP no Topo */}
-      {isEnabled('FEATURE_HOME_WEATHER_IP') && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-          <HomeWeatherIP />
-        </div>
-      )}
-
-      {/* Cotação da Bolsa */}
-      {/* Seção de Grãos */}
-      {isEnabled('FEATURE_HOME_GRAINS') && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-          <HomeGrains />
-        </div>
-      )}
-      
-      {/* Hero Section - DESIGN ULTRA PREMIUM MODERNIZADO */}
-      <section className="relative pt-24 pb-32 px-4 overflow-hidden">
-        {/* Background Ultra Premium */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-emerald-900 to-slate-900">
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-transparent to-blue-500/10"></div>
+    <div className="min-h-screen">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-dark-primary via-dark-secondary to-dark-tertiary">
+          <div className="absolute inset-0 cyber-grid opacity-20"></div>
+          <div className="absolute top-0 left-0 w-full h-full">
+            {[...Array(100)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-1 h-1 bg-neon-blue rounded-full opacity-30"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                }}
+                animate={{
+                  y: [0, -30, 0],
+                  opacity: [0.3, 0.8, 0.3],
+                }}
+                transition={{
+                  duration: 4 + Math.random() * 2,
+                  repeat: Infinity,
+                  delay: Math.random() * 2,
+                }}
+              />
+            ))}
           </div>
-          {/* Linha gradiente premium no topo */}
-          <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-400"></div>
-          {/* Elementos decorativos ultra premium */}
-          <div className="absolute top-20 left-10 w-40 h-40 bg-gradient-to-br from-emerald-400 to-cyan-400 rounded-full opacity-20 blur-2xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-10 w-48 h-48 bg-gradient-to-br from-cyan-400 to-blue-400 rounded-full opacity-20 blur-2xl animate-pulse"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-gradient-to-br from-emerald-400/10 via-cyan-400/10 to-blue-400/10 rounded-full blur-3xl"></div>
-          {/* Grid pattern sutil */}
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.05\'%3E%3Ccircle cx=\'30\' cy=\'30\' r=\'1\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
         </div>
-        
-        <div className="max-w-6xl mx-auto text-center relative z-10">
-          {/* Main Title - Premium com gradiente */}
-          <motion.h1
-            initial={{ opacity: 0, y: 30, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="text-6xl md:text-8xl font-bold mb-8 bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent"
-          >
-            {t('homeHero.title')}
-          </motion.h1>
-          
-          {/* Subtitle - Ultra Premium */}
-          <motion.p
-            initial={{ opacity: 0, y: 30, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-            className="text-2xl md:text-3xl text-white/90 max-w-5xl mx-auto mb-8 font-light"
-          >
-            {t('homeHero.subtitle')}
-          </motion.p>
-          
-          {/* Description - Ultra Premium */}
-          <motion.p
-            initial={{ opacity: 0, y: 30, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
-            className="text-xl max-w-4xl mx-auto text-white/70 mb-12 leading-relaxed"
-          >
-            {t('homeHero.description')}
-          </motion.p>
-          
-          {/* CTA Buttons - Premium */}
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 30, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 1, delay: 0.6, ease: "easeOut" }}
-            className="flex flex-col sm:flex-row gap-8 justify-center"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            className="space-y-8"
           >
-            <motion.button
-              onClick={() => navigate('/cadastro')}
-              whileHover={{ scale: 1.05, y: -3 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-12 py-6 text-xl font-semibold text-white bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-2xl shadow-2xl hover:shadow-emerald-500/25 transition-all duration-300 relative overflow-hidden group"
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+              className="flex justify-center"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-cyan-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <span className="relative z-10 flex items-center space-x-2">
-                <span>🚀</span>
-                <span>{t('homeHero.cta.primary')}</span>
-              </span>
-            </motion.button>
-            <motion.button
-              onClick={() => navigate('/sobre')}
-              whileHover={{ scale: 1.05, y: -3 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-12 py-6 text-xl font-semibold text-white bg-gradient-to-r from-slate-700 to-slate-800 rounded-2xl shadow-2xl hover:shadow-slate-500/25 transition-all duration-300 relative overflow-hidden group border border-white/20"
+              <div className="relative">
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                  className="w-24 h-24 bg-gradient-to-r from-neon-blue via-neon-purple to-neon-green rounded-full flex items-center justify-center"
+                >
+                  <Zap className="w-12 h-12 text-white" />
+                </motion.div>
+                <div className="absolute inset-0 border-2 border-transparent border-t-neon-blue rounded-full animate-spin"></div>
+              </div>
+            </motion.div>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+              className="text-5xl md:text-7xl font-bold"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-slate-600 to-slate-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <span className="relative z-10 flex items-center space-x-2">
-                <span>ℹ️</span>
-                <span>{t('homeHero.cta.secondary')}</span>
-              </span>
-            </motion.button>
+              <span className="text-gradient">{t('home.title')}</span>
+            </motion.h1>
+
+            <motion.h2
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+              className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto"
+            >
+              {t('home.subtitle')}
+            </motion.h2>
+
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.8 }}
+              className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed"
+            >
+              {t('home.description')}
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1, duration: 0.8 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            >
+              <Link
+                to="/register"
+                className="group px-8 py-4 bg-gradient-to-r from-neon-blue to-neon-purple text-white font-semibold rounded-xl hover:from-neon-purple hover:to-neon-blue transition-all duration-300 transform hover:scale-105 hover:shadow-neon flex items-center space-x-2"
+              >
+                <span>{t('home.getStarted')}</span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              
+              <button className="group px-8 py-4 glass-effect text-white font-semibold rounded-xl hover:bg-white/20 transition-all duration-300 transform hover:scale-105 flex items-center space-x-2">
+                <Play className="w-5 h-5" />
+                <span>{t('home.watchDemo')}</span>
+              </button>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.2, duration: 0.8 }}
+              className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16"
+            >
+              {[
+                { label: "Usuários Ativos", value: stats.users, icon: Users, color: "neon-blue" },
+                { label: "Produtos", value: stats.products, icon: Package, color: "neon-green" },
+                { label: "Fretes", value: stats.freights, icon: Truck, color: "neon-purple" },
+                { label: "Uptime", value: `${stats.uptime}%`, icon: BarChart3, color: "neon-gold" }
+              ].map((stat, index) => (
+                <motion.div
+                  key={stat.label}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 1.4 + index * 0.1, duration: 0.5 }}
+                  className="text-center"
+                >
+                  <div className={`w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-${stat.color} to-${stat.color}/50 rounded-xl flex items-center justify-center`}>
+                    <stat.icon className="w-8 h-8 text-white" />
+                  </div>
+                  <div className="text-3xl font-bold text-white mb-2">{stat.value.toLocaleString()}</div>
+                  <div className="text-gray-400 text-sm">{stat.label}</div>
+                </motion.div>
+              ))}
+            </motion.div>
           </motion.div>
         </div>
       </section>
 
-      {/* Features Section - DESIGN ULTRA PREMIUM */}
-      <section className="py-24 px-4 relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-emerald-50">
-        {/* Linha gradiente premium */}
-        <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-400"></div>
-        <div className="max-w-7xl mx-auto relative z-10">
+      <section className="py-20 relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-24"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
           >
-            <h2 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-emerald-600 via-cyan-600 to-blue-600 bg-clip-text text-transparent mb-8">
-              {t('homeFeatures.title')}
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              {t('home.features.title')}
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              {t('homeFeatures.subtitle')}
+            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+              {t('home.features.subtitle')}
             </p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
               <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
+                key={feature.title}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1, duration: 0.5 }}
                 whileHover={{ y: -10, scale: 1.02 }}
-                className="text-center group card p-6 hover-agro"
+                className="group"
               >
-                <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-r ${feature.color} flex items-center justify-center text-gray-900 group-hover:scale-110 transition-transform duration-300 shadow-lg group-hover:shadow-xl`}>
-                  {feature.icon}
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600">
-                  {feature.description}
-                </p>
+                <Link to={feature.link}>
+                  <div className="card-futuristic h-full text-center space-y-4 hover:shadow-neon transition-all duration-300">
+                    <div className={`w-16 h-16 mx-auto bg-gradient-to-r from-${feature.color} to-${feature.color}/50 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+                      <feature.icon className="w-8 h-8 text-white" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-white">{feature.title}</h3>
+                    <p className="text-gray-400 text-sm leading-relaxed">{feature.description}</p>
+                    <div className="flex items-center justify-center text-neon-blue group-hover:text-neon-purple transition-colors">
+                      <span className="text-sm font-medium">Saiba mais</span>
+                      <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </Link>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-
-      {/* Stats Section */}
-      <section className="py-16 px-4 bg-gradient-to-r from-emerald-50/20 via-white to-sky-50/20 relative overflow-hidden">
-        {/* Linha gradiente sutil */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-amber-500 to-sky-500 opacity-40"></div>
-        <div className="max-w-6xl mx-auto relative z-10">
+      <section className="py-20 relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Estatísticas da Plataforma
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              {t('home.testimonials.title')}
             </h2>
-            <p className="text-xl text-gray-600">
-              Números que demonstram o crescimento e sucesso do Agroisync
+            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+              {t('home.testimonials.subtitle')}
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ scale: 1.05, y: -5 }}
-                className="text-center card p-6 hover-agro"
-              >
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-emerald-500/20 to-sky-500/20 shadow-lg flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform duration-300">
-                  {stat.icon}
-                </div>
-                <div className="text-3xl font-bold text-gradient-emerald mb-2">
-                  {stat.value}
-                </div>
-                <div className="text-gray-600">
-                  {stat.label}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Weather & News Section */}
-      <section className="section-premium header-premium relative overflow-hidden">
-        {/* Linha gradiente sutil */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-agro-green-500 via-agro-yellow-500 to-web3-neon-blue opacity-40"></div>
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Weather Widget */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              className="card-premium p-8 hover-lift"
-            >
-                                <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-2xl font-bold title-premium-small flex items-center gap-2">
-                      <Sun className="w-6 h-6 text-agro-yellow-500" />
-                      Clima em Tempo Real
-                    </h3>
-                    <MapPin className="w-6 h-6 text-slate-600" />
-                  </div>
-              
-              {weatherData ? (
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-lg font-semibold text-slate-800 truncate">{weatherData.city}</h4>
-                      <p className="text-slate-600 capitalize text-sm truncate">{weatherData.description}</p>
-                    </div>
-                    <div className="text-5xl font-bold text-gradient-premium ml-4 flex-shrink-0">
-                      {weatherData.temperature}°C
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center justify-center text-slate-600 mb-6 group">
-                    <motion.div
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      {getWeatherIcon(weatherData.icon)}
-                    </motion.div>
-                  </div>
-                  
-                  <div className="grid grid-cols-3 gap-6 pt-4 border-t border-slate-200">
-                    <div className="text-center group">
-                      <div className="flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-200">
-                        <Thermometer className="w-5 h-5 text-slate-600" />
-                      </div>
-                      <p className="text-xs text-slate-600 mb-1">Sensação</p>
-                      <p className="text-lg font-semibold text-gradient-premium">{weatherData.feelsLike}°C</p>
-                    </div>
-                    <div className="text-center group">
-                      <div className="flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-200">
-                        <Droplets className="w-5 h-5 text-slate-600" />
-                      </div>
-                      <p className="text-xs text-slate-600 mb-1">Umidade</p>
-                      <p className="text-lg font-semibold text-gradient-premium">{weatherData.humidity}%</p>
-                    </div>
-                    <div className="text-center group">
-                      <div className="flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-200">
-                        <Wind className="w-5 h-5 text-slate-600" />
-                      </div>
-                      <p className="text-xs text-slate-600 mb-1">Vento</p>
-                      <p className="text-lg font-semibold text-gradient-premium">{weatherData.windSpeed} km/h</p>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-600 mx-auto mb-4"></div>
-                  <p className="text-slate-600">{t('common.loading')}</p>
-                </div>
-              )}
-            </motion.div>
-
-            {/* News Widget */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              className="card-premium p-8 hover-lift"
-            >
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold title-premium-small">{t('homeHighlights.marketIntelligence')}</h3>
-                <MessageSquare className="w-6 h-6 text-slate-600" />
-              </div>
-              
-              {loading ? (
-                <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-600 mx-auto mb-4"></div>
-                  <p className="text-slate-600">{t('common.loading')}</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {newsData.slice(0, 3).map((news, index) => (
-                    <motion.div
-                      key={news.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: index * 0.1 }}
-                      className="border-b border-slate-200 pb-4 last:border-b-0 hover:bg-slate-50 p-2 rounded-lg transition-colors duration-200"
-                    >
-                      <div className="flex items-start space-x-3">
-                        <div className="w-16 h-16 bg-gradient-to-r from-slate-100 to-slate-200 rounded-lg flex-shrink-0 flex items-center justify-center hover:scale-105 transition-transform duration-200">
-                          <Leaf className="w-6 h-6 text-slate-600" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-sm font-semibold text-slate-800 mb-1 overflow-hidden text-ellipsis whitespace-nowrap hover:text-emerald-700 transition-colors duration-200 cursor-pointer">
-                            {news.title}
-                          </h4>
-                          <p className="text-xs text-slate-600 mb-2 line-clamp-2">
-                            {news.excerpt}
-                          </p>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                    <span className="badge-accent-green">
-                      {news.category}
-                    </span>
-                    <span className="text-slate-600">{news.source}</span>
-                    <span className="text-slate-500">{news.date}</span>
-                  </div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                  
-                  <motion.button 
-                    whileHover={{ scale: 1.02, y: -1 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full mt-4 px-4 py-2 bg-gradient-to-r from-slate-100 to-slate-200 text-slate-700 rounded-lg hover:from-slate-200 hover:to-slate-300 transition-all duration-200 font-medium"
-                  >
-                    {t('common.view')} {t('common.all')} {t('common.news')}
-                  </motion.button>
-                </div>
-              )}
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="section-premium bg-gradient-to-r from-gray-50 via-white to-gray-50 relative overflow-hidden">
-        {/* Background elements */}
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/20 via-yellow-50/20 to-blue-50/20"></div>
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 via-yellow-500 to-blue-500"></div>
-        
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-4xl font-bold text-gray-900 mb-6"
-          >
-            {t('homeCta.title')}
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-xl text-slate-200 mb-8"
-          >
-            {t('homeCta.subtitle')}
-          </motion.p>
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
+            key={currentTestimonial}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ duration: 0.5 }}
+            className="max-w-4xl mx-auto"
           >
-            <motion.button
-              onClick={() => navigate('/cadastro')}
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 bg-gradient-to-r from-emerald-500 via-yellow-500 to-blue-500 text-white font-bold rounded-xl hover:from-emerald-600 hover:via-yellow-600 hover:to-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl relative overflow-hidden group"
-            >
-              {/* Efeito de glow no hover */}
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 via-yellow-400 to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <span className="relative z-10">{t('homeHero.cta.primary')}</span>
-            </motion.button>
-            <motion.button
-              onClick={() => navigate('/contato')}
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 bg-transparent border-2 border-gray-900 text-gray-900 font-bold rounded-xl hover:bg-gray-900 hover:text-white transition-all duration-300"
-            >
-              {t('homeCta.secondary')}
-            </motion.button>
+            <div className="card-futuristic text-center space-y-6">
+              <div className="flex justify-center space-x-1">
+                {[...Array(testimonials[currentTestimonial].rating)].map((_, i) => (
+                  <Star key={i} className="w-6 h-6 text-neon-gold fill-current" />
+                ))}
+              </div>
+              <blockquote className="text-xl text-gray-300 italic leading-relaxed">
+                "{testimonials[currentTestimonial].content}"
+              </blockquote>
+              <div>
+                <div className="text-white font-semibold text-lg">
+                  {testimonials[currentTestimonial].name}
+                </div>
+                <div className="text-neon-blue text-sm">
+                  {testimonials[currentTestimonial].role}
+                </div>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Footer CTA */}
-      <section className="py-16 px-4 bg-gradient-to-br from-slate-50 to-white relative overflow-hidden">
-        {/* Linha gradiente sutil */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-yellow-500 to-blue-500 opacity-40"></div>
-        <div className="max-w-4xl mx-auto text-center relative z-10">
+      <section className="py-20 relative">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="bg-gradient-to-r from-slate-50 to-slate-100 rounded-2xl p-8 border border-slate-200 hover:shadow-xl transition-all duration-300 relative overflow-hidden group"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="space-y-8"
           >
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-yellow-600 bg-clip-text text-transparent mb-4">
-              {t('homeCta.title')}
-            </h3>
-            <p className="text-slate-600 mb-6">
-              {t('homeCta.subtitle')}
+            <h2 className="text-4xl md:text-5xl font-bold text-white">
+              {t('home.cta.title')}
+            </h2>
+            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+              {t('home.cta.subtitle')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.button
-                onClick={() => navigate('/ajuda')}
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 bg-gradient-to-r from-emerald-500 via-yellow-500 to-blue-500 text-white font-medium rounded-lg hover:from-emerald-600 hover:via-yellow-600 hover:to-blue-600 transition-all duration-300 shadow-md hover:shadow-lg relative overflow-hidden group"
+              <Link
+                to="/register"
+                className="px-8 py-4 bg-gradient-to-r from-neon-blue to-neon-purple text-white font-semibold rounded-xl hover:from-neon-purple hover:to-neon-blue transition-all duration-300 transform hover:scale-105 hover:shadow-neon"
               >
-                {/* Efeito de glow no hover */}
-                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 via-yellow-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
-                <span className="relative z-10">{t('nav.help')}</span>
-              </motion.button>
-              <motion.button
-                onClick={() => navigate('/contato')}
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 bg-transparent border border-gray-300 text-gray-600 font-medium rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 relative overflow-hidden group"
+                {t('home.cta.startFree')}
+              </Link>
+              <Link
+                to="/contact"
+                className="px-8 py-4 glass-effect text-white font-semibold rounded-xl hover:bg-white/20 transition-all duration-300 transform hover:scale-105"
               >
-                {/* Efeito de glow no hover */}
-                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-yellow-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
-                <span className="relative z-10">{t('nav.contact')}</span>
-              </motion.button>
+                {t('home.cta.talkExpert')}
+              </Link>
             </div>
           </motion.div>
         </div>

@@ -1,191 +1,30 @@
 {
-  "name": "AgroSync - Hub Completo do Agronegócio",
   "short_name": "AgroSync",
-  "description": "Marketplace de produtos agrícolas, sistema de fretes AgroConecta, análise de criptomoedas e notícias do agronegócio",
-  "start_url": "/",
+  "name": "AgroSync - Futuro do Agronegócio",
+  "description": "A plataforma de agronegócio mais futurista do mundo",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#00ffbf",
+  "theme_color": "#00D4FF",
+  "background_color": "#0F0F23",
   "orientation": "portrait-primary",
-  "scope": "/",
+  "categories": ["business", "productivity", "utilities"],
   "lang": "pt-BR",
-  "dir": "ltr",
-  "categories": ["business", "productivity", "shopping"],
-  "icons": [
-    {
-      "src": "/icons/icon-72x72.png",
-      "sizes": "72x72",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-96x96.png",
-      "sizes": "96x96",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-128x128.png",
-      "sizes": "128x128",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-144x144.png",
-      "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-152x152.png",
-      "sizes": "152x152",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-384x384.png",
-      "sizes": "384x384",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable any"
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "/screenshots/desktop-home.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Página inicial do AgroSync"
-    },
-    {
-      "src": "/screenshots/mobile-home.png",
-      "sizes": "375x667",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Página inicial mobile"
-    },
-    {
-      "src": "/screenshots/desktop-store.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Loja de produtos agrícolas"
-    },
-    {
-      "src": "/screenshots/mobile-store.png",
-      "sizes": "375x667",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Loja mobile"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Loja",
-      "short_name": "Loja",
-      "description": "Acessar marketplace de produtos agrícolas",
-      "url": "/store",
-      "icons": [
-        {
-          "src": "/icons/shortcut-store.png",
-          "sizes": "96x96"
-        }
-      ]
-    },
-    {
-      "name": "Fretes",
-      "short_name": "Fretes",
-      "description": "Acessar sistema de fretes AgroConecta",
-      "url": "/freight",
-  "icons": [
-    {
-          "src": "/icons/shortcut-freight.png",
-          "sizes": "96x96"
-        }
-      ]
-    },
-    {
-      "name": "Cripto",
-      "short_name": "Cripto",
-      "description": "Análise de criptomoedas",
-      "url": "/crypto",
-      "icons": [
-        {
-          "src": "/icons/shortcut-crypto.png",
-          "sizes": "96x96"
-        }
-      ]
-    },
-    {
-      "name": "Dashboard",
-      "short_name": "Dashboard",
-      "description": "Acessar painel do usuário",
-      "url": "/dashboard",
-      "icons": [
-        {
-          "src": "/icons/shortcut-dashboard.png",
-          "sizes": "96x96"
-        }
-      ]
-    }
-  ],
-  "related_applications": [
-    {
-      "platform": "webapp",
-      "url": "https://agroisync.com/manifest.json"
-    }
-  ],
-  "prefer_related_applications": false,
-  "edge_side_panel": {
-    "preferred_width": 400
-  },
-  "launch_handler": {
-    "client_mode": "navigate-existing"
-  },
-  "handle_links": "preferred",
-  "capture_links": "new-client",
-  "protocol_handlers": [
-    {
-      "protocol": "web+agroisync",
-      "url": "/protocol?action=%s"
-    }
-  ],
-  "file_handlers": [
-    {
-      "action": "/upload",
-      "accept": {
-        "image/*": [".jpg", ".jpeg", ".png", ".gif", ".webp"],
-        "application/pdf": [".pdf"],
-        "text/csv": [".csv"]
-      }
-    }
-  ],
-  "share_target": {
-    "action": "/share",
-    "method": "POST",
-    "enctype": "multipart/form-data",
-    "params": {
-      "title": "title",
-      "text": "text",
-      "url": "url",
-      "files": [
-        {
-          "name": "files",
-          "accept": ["image/*", "application/pdf", "text/csv"]
-        }
-      ]
-    }
-  }
+  "dir": "ltr"
 }

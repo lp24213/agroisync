@@ -11,114 +11,117 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }) => {
-  // TEMA DARK OBRIGATÓRIO POR PADRÃO
-  const [isDark, setIsDark] = useState(true);
-  const [isInitialized, setIsInitialized] = useState(false);
+  const [isDark, setIsDark] = useState(true); // Sempre dark mode por padrão
+  const [accentColor, setAccentColor] = useState('neon-blue');
+  const [animationsEnabled, setAnimationsEnabled] = useState(true);
 
+  // Carregar tema do localStorage
   useEffect(() => {
-    // Verificar preferência salva no localStorage
-    const savedTheme = localStorage.getItem('agroisync-theme');
+    const savedTheme = localStorage.getItem('agrosync-theme');
+    const savedAccent = localStorage.getItem('agrosync-accent');
+    const savedAnimations = localStorage.getItem('agrosync-animations');
+
     if (savedTheme) {
-      // Se o usuário já escolheu light, respeitar a escolha
       setIsDark(savedTheme === 'dark');
-    } else {
-      // PADRÃO: SEMPRE DARK (tema obrigatório)
-      setIsDark(true);
-      localStorage.setItem('agroisync-theme', 'dark');
     }
-    setIsInitialized(true);
+    if (savedAccent) {
+      setAccentColor(savedAccent);
+    }
+    if (savedAnimations) {
+      setAnimationsEnabled(savedAnimations === 'true');
+    }
   }, []);
 
+  // Aplicar tema ao documento
   useEffect(() => {
-    if (!isInitialized) return;
-
-    // Aplicar tema ao documento
-    const html = document.documentElement;
-    const body = document.body;
+    const root = document.documentElement;
     
     if (isDark) {
-      html.classList.add('dark');
-      html.setAttribute('data-theme', 'dark');
-      body.style.backgroundColor = '#000000';
-      body.style.color = '#FFFFFF';
+      root.classList.add('dark');
+      root.classList.remove('light');
     } else {
-      html.classList.remove('dark');
-      html.setAttribute('data-theme', 'light');
-      body.style.backgroundColor = '#FFFFFF';
-      body.style.color = '#111111';
+      root.classList.add('light');
+      root.classList.remove('dark');
     }
+
+    // Aplicar cor de destaque
+    root.style.setProperty('--accent-color', `var(--${accentColor})`);
     
-    // Salvar preferência no localStorage
-    localStorage.setItem('agroisync-theme', isDark ? 'dark' : 'light');
-  }, [isDark, isInitialized]);
+    // Aplicar animações
+    if (animationsEnabled) {
+      root.classList.add('animations-enabled');
+    } else {
+      root.classList.remove('animations-enabled');
+    }
+  }, [isDark, accentColor, animationsEnabled]);
 
   const toggleTheme = () => {
-    setIsDark(!isDark);
+    const newTheme = !isDark;
+    setIsDark(newTheme);
+    localStorage.setItem('agrosync-theme', newTheme ? 'dark' : 'light');
   };
 
-  const setTheme = (theme) => {
-    setIsDark(theme === 'dark');
+  const setAccent = (color) => {
+    setAccentColor(color);
+    localStorage.setItem('agrosync-accent', color);
+  };
+
+  const toggleAnimations = () => {
+    const newAnimations = !animationsEnabled;
+    setAnimationsEnabled(newAnimations);
+    localStorage.setItem('agrosync-animations', newAnimations.toString());
+  };
+
+  const getAccentClasses = () => {
+    const accentMap = {
+      'neon-blue': {
+        primary: 'from-neon-blue to-cyan-500',
+        secondary: 'bg-neon-blue',
+        text: 'text-neon-blue',
+        border: 'border-neon-blue',
+        shadow: 'shadow-neon'
+      },
+      'neon-green': {
+        primary: 'from-neon-green to-emerald-500',
+        secondary: 'bg-neon-green',
+        text: 'text-neon-green',
+        border: 'border-neon-green',
+        shadow: 'shadow-neon-green'
+      },
+      'neon-purple': {
+        primary: 'from-neon-purple to-violet-500',
+        secondary: 'bg-neon-purple',
+        text: 'text-neon-purple',
+        border: 'border-neon-purple',
+        shadow: 'shadow-neon-purple'
+      },
+      'neon-gold': {
+        primary: 'from-neon-gold to-yellow-500',
+        secondary: 'bg-neon-gold',
+        text: 'text-neon-gold',
+        border: 'border-neon-gold',
+        shadow: 'shadow-neon-gold'
+      },
+      'neon-pink': {
+        primary: 'from-neon-pink to-rose-500',
+        secondary: 'bg-neon-pink',
+        text: 'text-neon-pink',
+        border: 'border-neon-pink',
+        shadow: 'shadow-neon-pink'
+      }
+    };
+
+    return accentMap[accentColor] || accentMap['neon-blue'];
   };
 
   const value = {
     isDark,
+    accentColor,
+    animationsEnabled,
     toggleTheme,
-    setTheme,
-    // Cores do tema claro (padrão)
-    lightColors: {
-      bgPrimary: 'bg-white',
-      bgSecondary: 'bg-slate-50',
-      bgCard: 'bg-white',
-      bgCardHover: 'hover:bg-slate-50',
-      textPrimary: 'text-slate-800',
-      textSecondary: 'text-slate-600',
-      textTertiary: 'text-slate-500',
-      borderPrimary: 'border-slate-200',
-      borderSecondary: 'border-slate-300',
-      accentPrimary: 'bg-slate-600',
-      accentSecondary: 'bg-slate-700',
-      accentHover: 'hover:bg-slate-700',
-      shadowCard: 'shadow-card',
-      shadowElevated: 'shadow-elevated'
-    },
-    // Cores do tema escuro OBRIGATÓRIO - Paleta Agronegócio Neon
-    darkColors: {
-      bgPrimary: 'bg-black',
-      bgSecondary: 'bg-slate-900',
-      bgCard: 'bg-slate-800/90',
-      bgCardHover: 'hover:bg-slate-700/90',
-      textPrimary: 'text-white',
-      textSecondary: 'text-slate-200',
-      textTertiary: 'text-slate-400',
-      borderPrimary: 'border-slate-700',
-      borderSecondary: 'border-slate-600',
-      // Paleta Agronegócio: neon azul, verde, dourado, roxo
-      accentPrimary: 'bg-emerald-500',      // Verde neon
-      accentSecondary: 'bg-blue-500',       // Azul neon
-      accentTertiary: 'bg-amber-500',       // Dourado
-      accentQuaternary: 'bg-purple-500',    // Roxo
-      accentHover: 'hover:bg-emerald-600',
-      shadowCard: 'shadow-card-dark',
-      shadowElevated: 'shadow-elevated-dark',
-      // Cores neon específicas
-      neonGreen: 'text-emerald-400',
-      neonBlue: 'text-blue-400',
-      neonGold: 'text-amber-400',
-      neonPurple: 'text-purple-400',
-      // Gradientes neon
-      gradientPrimary: 'bg-gradient-to-r from-emerald-500 to-blue-500',
-      gradientSecondary: 'bg-gradient-to-r from-amber-500 to-purple-500',
-      gradientText: 'bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent'
-    },
-    // Cores CSS customizadas para agronegócio
-    agroColors: {
-      neonGreen: '#00ffbf',
-      neonBlue: '#00aaff', 
-      gold: '#ffd966',
-      purple: '#8b5cf6',
-      darkBg: '#000000',
-      lightText: '#FFFFFF'
-    }
+    setAccent,
+    toggleAnimations,
+    getAccentClasses
   };
 
   return (
