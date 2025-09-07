@@ -254,7 +254,7 @@ export const validateCard = (cardNumber) => {
   return sum % 10 === 0;
 };
 
-export default {
+const stripeService = {
   initializeStripe,
   createCheckoutSession,
   processPayment,
@@ -266,3 +266,5 @@ export default {
   validateCard,
   PLANS
 };
+
+export default stripeService;

@@ -168,7 +168,7 @@ class WeatherService {
   // Formatar dados da previsão
   formatForecast(data) {
     const dailyForecasts = [];
-    const today = new Date();
+    // const today = new Date();
     
     // Agrupar previsões por dia
     const dailyData = {};
@@ -333,4 +333,5 @@ class WeatherService {
   }
 }
 
-export default new WeatherService();
+const weatherService = new WeatherService();
+export default weatherService;

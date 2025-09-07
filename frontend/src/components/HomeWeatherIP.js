@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { useLanguage } from '../contexts/LanguageContext';
+// import { useLanguage } from '../contexts/LanguageContext';
 import { 
   MapPin, Thermometer, Droplets, Wind, 
   Sun, Cloud, CloudRain, CloudLightning 
 } from 'lucide-react';
 
 const HomeWeatherIP = () => {
-  const { t } = useLanguage();
+  // const { t } = useLanguage(); // eslint-disable-line no-unused-vars
   const [weatherData, setWeatherData] = useState(null);
   const [location, setLocation] = useState(null);
   const [isLoading, setIsLoading] = useState(true);

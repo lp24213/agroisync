@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, // useEffect } from 'react';
 
 const FeatureFlagsContext = createContext();
 
@@ -12,10 +12,10 @@ export const useFeatureFlags = () => {
 
 export const FeatureFlagsProvider = ({ children }) => {
   const [flags, setFlags] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [// loading, // setLoading] = useState(true);
 
   // Feature flags padrão
-  const defaultFlags = {
+  const // defaultFlags = {
     // Funcionalidades principais
     'FEATURE_MARKETPLACE': true,
     'FEATURE_AGROCONECTA': true,
@@ -64,7 +64,7 @@ export const FeatureFlagsProvider = ({ children }) => {
   };
 
   // Carregar feature flags
-  useEffect(() => {
+  // useEffect(() => {
     const loadFeatureFlags = async () => {
       try {
         // Em produção, carregar flags do servidor
@@ -72,19 +72,19 @@ export const FeatureFlagsProvider = ({ children }) => {
           const response = await fetch('/api/feature-flags');
           if (response.ok) {
             const serverFlags = await response.json();
-            setFlags({ ...defaultFlags, ...serverFlags });
+            setFlags({ ...// defaultFlags, ...serverFlags });
           } else {
-            setFlags(defaultFlags);
+            setFlags(// defaultFlags);
           }
         } else {
           // Em desenvolvimento, usar flags padrão
-          setFlags(defaultFlags);
+          setFlags(// defaultFlags);
         }
       } catch (error) {
         console.error('Erro ao carregar feature flags:', error);
-        setFlags(defaultFlags);
+        setFlags(// defaultFlags);
       } finally {
-        setLoading(false);
+        // setLoading(false);
       }
     };
 
@@ -166,7 +166,7 @@ export const FeatureFlagsProvider = ({ children }) => {
 
   const value = {
     flags,
-    loading,
+    // loading,
     isEnabled,
     areEnabled,
     isAnyEnabled,

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -7,7 +7,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 const Chatbot = () => {
   const { isDark } = useTheme();
   const { user, isAuthenticated } = useAuth();
-  const { t, currentLanguage } = useLanguage();
+  const { t, currentLanguage, changeLanguage: changeLanguageContext } = useLanguage();
   
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -19,10 +19,10 @@ const Chatbot = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPersonalitySelector, setShowPersonalitySelector] = useState(false);
   const [chatbotPersonality, setChatbotPersonality] = useState('agro-expert');
-  const [userSentiment, setUserSentiment] = useState('neutral');
-  const [chatbotLanguage, setChatbotLanguage] = useState(currentLanguage || 'pt');
-  const [isMuted, setIsMuted] = useState(false);
-  const [showImageUpload, setShowImageUpload] = useState(false);
+  const [userSentiment] = useState('neutral');
+  // const [chatbotLanguage] = useState(currentLanguage || 'pt');
+  const [isMuted] = useState(false);
+  // const [showImageUpload] = useState(false);
   
   const inputRef = useRef(null);
   const messagesEndRef = useRef(null);
@@ -31,7 +31,7 @@ const Chatbot = () => {
   const fileInputRef = useRef(null);
 
   // Personalidades do chatbot com cores premium
-  const personalities = {
+  const personalities = useMemo(() => ({
     'agro-expert': {
       name: 'Agro Expert',
       avatar: '🌾',
@@ -56,7 +56,35 @@ const Chatbot = () => {
       description: 'Especialista em criptomoedas',
       color: 'from-web3-neon-purple to-web3-neon-teal'
     }
-  };
+  }), []);
+
+  // Função para mensagem de boas-vindas multilíngue
+  const getWelcomeMessage = useCallback(() => {
+    const messages = {
+      'pt': `Olá! Sou ${personalities[chatbotPersonality].name} ${personalities[chatbotPersonality].avatar}\n\nComo posso ajudar você hoje? Posso:\n• Analisar cotações de grãos\n• Ajudar no marketplace\n• Explicar DeFi e criptomoedas\n• Fornecer dados de geolocalização\n• Buscar informações de fretes\n• Analisar imagens de produtos\n\nUse 🎤 para falar, 📷 para enviar imagens ou digite sua pergunta!`,
+      'en': `Hello! I'm ${personalities[chatbotPersonality].name} ${personalities[chatbotPersonality].avatar}\n\nHow can I help you today? I can:\n• Analyze grain quotes\n• Help with marketplace\n• Explain DeFi and cryptocurrencies\n• Provide geolocation data\n• Search freight information\n• Analyze product images\n\nUse 🎤 to speak, 📷 to send images or type your question!`,
+      'es': `¡Hola! Soy ${personalities[chatbotPersonality].name} ${personalities[chatbotPersonality].avatar}\n\n¿Cómo puedo ayudarte hoy? Puedo:\n• Analizar cotizaciones de granos\n• Ayudar en el marketplace\n• Explicar DeFi y criptomonedas\n• Proporcionar datos de geolocalización\n• Buscar información de fletes\n• Analizar imágenes de productos\n\n¡Usa 🎤 para hablar, 📷 para enviar imágenes o escribe tu pregunta!`,
+      'zh': `你好！我是${personalities[chatbotPersonality].name} ${personalities[chatbotPersonality].avatar}\n\n今天我能为您做些什么？我可以：\n• 分析谷物报价\n• 帮助市场交易\n• 解释DeFi和加密货币\n• 提供地理定位数据\n• 搜索货运信息\n• 分析产品图像\n\n使用🎤说话，📷发送图像或输入您的问题！`
+    };
+    return messages[currentLanguage] || messages['pt'];
+  }, [chatbotPersonality, currentLanguage, personalities]);
+
+  // Função para falar texto
+  const speakText = useCallback((text) => {
+    if (!synthesisRef.current || isMuted) return;
+
+    setIsSpeaking(true);
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = getLanguageCode(currentLanguage);
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+    
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+    
+    synthesisRef.current.speak(utterance);
+  }, [isMuted, currentLanguage]);
 
   // Mensagem de boas-vindas multilíngue
   useEffect(() => {
@@ -67,17 +95,61 @@ const Chatbot = () => {
       timestamp: new Date()
     };
     setMessages([welcomeMessage]);
-  }, [chatbotPersonality, currentLanguage]);
+  }, [chatbotPersonality, currentLanguage, getWelcomeMessage]);
 
-  const getWelcomeMessage = () => {
-    const messages = {
-      'pt': `Olá! Sou ${personalities[chatbotPersonality].name} ${personalities[chatbotPersonality].avatar}\n\nComo posso ajudar você hoje? Posso:\n• Analisar cotações de grãos\n• Ajudar no marketplace\n• Explicar DeFi e criptomoedas\n• Fornecer dados de geolocalização\n• Buscar informações de fretes\n• Analisar imagens de produtos\n\nUse 🎤 para falar, 📷 para enviar imagens ou digite sua pergunta!`,
-      'en': `Hello! I'm ${personalities[chatbotPersonality].name} ${personalities[chatbotPersonality].avatar}\n\nHow can I help you today? I can:\n• Analyze grain quotes\n• Help with marketplace\n• Explain DeFi and cryptocurrencies\n• Provide geolocation data\n• Search freight information\n• Analyze product images\n\nUse 🎤 to speak, 📷 to send images or type your question!`,
-      'es': `¡Hola! Soy ${personalities[chatbotPersonality].name} ${personalities[chatbotPersonality].avatar}\n\n¿Cómo puedo ayudarte hoy? Puedo:\n• Analizar cotizaciones de granos\n• Ayudar en el marketplace\n• Explicar DeFi y criptomonedas\n• Proporcionar datos de geolocalización\n• Buscar información de fletes\n• Analizar imágenes de productos\n\n¡Usa 🎤 para hablar, 📷 para enviar imágenes o escribe tu pregunta!`,
-      'zh': `你好！我是${personalities[chatbotPersonality].name} ${personalities[chatbotPersonality].avatar}\n\n今天我能为您做些什么？我可以：\n• 分析谷物报价\n• 帮助市场交易\n• 解释DeFi和加密货币\n• 提供地理定位数据\n• 搜索货运信息\n• 分析产品图像\n\n使用🎤说话，📷发送图像或输入您的问题！`
+  // Função para enviar mensagem
+  const handleSendMessage = useCallback(async (message = inputValue) => {
+    if (!message.trim() || isTyping) return;
+
+    const userMessage = {
+      id: Date.now(),
+      text: message,
+      sender: 'user',
+      timestamp: new Date()
     };
-    return messages[currentLanguage] || messages['pt'];
-  };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInputValue('');
+    setIsTyping(true);
+    setIsProcessing(true);
+
+    try {
+      // Simular processamento da IA
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Gerar resposta inteligente
+      const response = generateIntelligentResponse(message);
+      
+      const botMessage = {
+        id: Date.now() + 1,
+        text: response,
+        sender: 'bot',
+        timestamp: new Date()
+      };
+
+      setMessages(prev => [...prev, botMessage]);
+      
+      // Falar resposta se não estiver mutado
+      if (!isMuted && synthesisRef.current) {
+        speakText(response);
+      }
+      
+    } catch (error) {
+      console.error('Erro ao processar mensagem:', error);
+      
+      const errorMessage = {
+        id: Date.now() + 1,
+        text: 'Desculpe, ocorreu um erro ao processar sua mensagem. Tente novamente.',
+        sender: 'bot',
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsTyping(false);
+      setIsProcessing(false);
+    }
+  }, [inputValue, isTyping, isMuted, setMessages, setInputValue, setIsTyping, setIsProcessing, speakText]);
 
   // Verificar acesso ao chatbot baseado no plano do usuário
   const checkChatbotAccess = () => {
@@ -136,7 +208,7 @@ const Chatbot = () => {
         recognitionRef.current.stop();
       }
     };
-  }, [currentLanguage]);
+  }, [currentLanguage, handleSendMessage]);
 
   const getLanguageCode = (lang) => {
     const codes = {
@@ -179,58 +251,6 @@ const Chatbot = () => {
     setMessages([welcomeMessage]);
   };
 
-  const handleSendMessage = async (message = inputValue) => {
-    if (!message.trim() || isTyping) return;
-
-    const userMessage = {
-      id: Date.now(),
-      text: message,
-      sender: 'user',
-      timestamp: new Date()
-    };
-
-    setMessages(prev => [...prev, userMessage]);
-    setInputValue('');
-    setIsTyping(true);
-    setIsProcessing(true);
-
-    try {
-      // Simular processamento da IA
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Gerar resposta inteligente
-      const response = generateIntelligentResponse(message);
-      
-      const botMessage = {
-        id: Date.now() + 1,
-        text: response,
-        sender: 'bot',
-        timestamp: new Date()
-      };
-
-      setMessages(prev => [...prev, botMessage]);
-      
-      // Falar resposta se não estiver mutado
-      if (!isMuted && synthesisRef.current) {
-        speakText(response);
-      }
-      
-    } catch (error) {
-      console.error('Erro ao processar mensagem:', error);
-      
-      const errorMessage = {
-        id: Date.now() + 1,
-        text: 'Desculpe, ocorreu um erro ao processar sua mensagem. Tente novamente.',
-        sender: 'bot',
-        timestamp: new Date()
-      };
-      
-      setMessages(prev => [...prev, errorMessage]);
-    } finally {
-      setIsTyping(false);
-      setIsProcessing(false);
-    }
-  };
 
   const generateIntelligentResponse = (userInput) => {
     const input = userInput.toLowerCase();
@@ -283,21 +303,6 @@ const Chatbot = () => {
     }
   };
 
-  const speakText = (text) => {
-    if (!synthesisRef.current || isMuted) return;
-
-    setIsSpeaking(true);
-    
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = getLanguageCode(currentLanguage);
-    utterance.rate = 0.9;
-    utterance.pitch = 1;
-    
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
-    
-    synthesisRef.current.speak(utterance);
-  };
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -363,7 +368,7 @@ const Chatbot = () => {
   };
 
   const changeLanguage = (newLanguage) => {
-    setCurrentLanguage(newLanguage);
+    changeLanguageContext(newLanguage);
     // i18n.changeLanguage(newLanguage);
     
     // Atualizar mensagem de boas-vindas

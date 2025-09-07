@@ -1,32 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, // useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
-import { 
-  ArrowRightLeft, 
-  ArrowRight, 
-  ArrowLeft,
-  Clock,
-  Loader2,
-  AlertCircle,
-  CheckCircle,
-  ExternalLink,
-  RefreshCw
-} from 'lucide-react';
+import { motion } from 'framer-';
+import { ArrowRightLeft, Loader2 } from 'lucide-react';
 
 const CrossChainManager = ({ userId }) => {
-  const { t } = useTranslation();
+  const {  } = useTranslation();
   const [bridges, setBridges] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [// loading, // setLoading] = useState(true);
   const [error, setError] = useState('');
   const [totalVolume, setTotalVolume] = useState(0);
   const [activeBridges, setActiveBridges] = useState(0);
 
-  useEffect(() => {
-    fetchBridgeData();
+  // useEffect(() => {
+    // fetchBridgeData();
   }, [userId]);
 
-  const fetchBridgeData = async () => {
-    setLoading(true);
+  const // fetchBridgeData = async () => {
+    // setLoading(true);
     try {
       const response = await fetch(`/api/blockchain/cross-chain?userId=${userId}`);
       const data = await response.json();
@@ -39,13 +29,13 @@ const CrossChainManager = ({ userId }) => {
         setError(data.message);
       }
     } catch (err) {
-      setError(t('crossChain.error', 'Erro ao carregar dados de cross-chain'));
+      setError(// t('crossChain.error', 'Erro ao carregar dados de cross-chain'));
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
-  const initiateBridge = async (bridgeData) => {
+  const // initiateBridge = async (bridgeData) => {
     try {
       const response = await fetch('/api/blockchain/cross-chain', {
         method: 'POST',
@@ -64,36 +54,36 @@ const CrossChainManager = ({ userId }) => {
         setError(data.message);
       }
     } catch (err) {
-      setError(t('crossChain.bridgeError', 'Erro ao iniciar bridge'));
+      setError(// t('crossChain.bridgeError', 'Erro ao iniciar bridge'));
     }
   };
 
   const getStatusIcon = (status) => {
     switch (status) {
       case 'completed':
-        return <CheckCircle className="w-5 h-5 text-green-600" />;
+        return <// CheckCircle className="w-5 h-5 text-green-600" />;
       case 'pending':
-        return <Clock className="w-5 h-5 text-yellow-600" />;
+        return <// Clock className="w-5 h-5 text-yellow-600" />;
       case 'failed':
-        return <AlertCircle className="w-5 h-5 text-red-600" />;
+        return <// AlertCircle className="w-5 h-5 text-red-600" />;
       default:
-        return <Clock className="w-5 h-5 text-gray-600" />;
+        return <// Clock className="w-5 h-5 text-gray-600" />;
     }
   };
 
-  if (loading) {
+  if (// loading) {
     return (
       <div className="flex items-center justify-center h-64">
         <Loader2 className="w-8 h-8 animate-spin text-agro-emerald" />
         <span className="ml-3 text-gray-600 dark:text-gray-300">
-          {t('crossChain.loading', 'Carregando dados de cross-chain...')}
+          {// t('crossChain.// loading', 'Carregando dados de cross-chain...')}
         </span>
       </div>
     );
   }
 
   return (
-    <motion.div
+    <// motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
@@ -101,20 +91,20 @@ const CrossChainManager = ({ userId }) => {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
           <ArrowRightLeft className="w-6 h-6 mr-2 text-agro-emerald" />
-          {t('crossChain.title', 'Cross-Chain Manager')}
+          {// t('crossChain.title', 'Cross-Chain Manager')}
         </h2>
         
         <button
-          onClick={fetchBridgeData}
+          onClick={// fetchBridgeData}
           className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
         >
-          <RefreshCw className="w-5 h-5" />
+          <// RefreshCw className="w-5 h-5" />
         </button>
       </div>
       
       {error && (
         <div className="text-red-500 mb-4 flex items-center">
-          <AlertCircle className="w-5 h-5 mr-2" />
+          <// AlertCircle className="w-5 h-5 mr-2" />
           {error}
         </div>
       )}
@@ -125,7 +115,7 @@ const CrossChainManager = ({ userId }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {t('crossChain.totalVolume', 'Volume Total')}
+                {// t('crossChain.totalVolume', 'Volume Total')}
               </p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 ${totalVolume.toFixed(2)}
@@ -139,13 +129,13 @@ const CrossChainManager = ({ userId }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {t('crossChain.activeBridges', 'Bridges Ativos')}
+                {// t('crossChain.activeBridges', 'Bridges Ativos')}
               </p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 {activeBridges}
               </p>
             </div>
-            <Clock className="w-8 h-8 text-gray-400" />
+            <// Clock className="w-8 h-8 text-gray-400" />
           </div>
         </div>
         
@@ -153,7 +143,7 @@ const CrossChainManager = ({ userId }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {t('crossChain.totalBridges', 'Total de Bridges')}
+                {// t('crossChain.totalBridges', 'Total de Bridges')}
               </p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 {bridges.length}
@@ -169,7 +159,7 @@ const CrossChainManager = ({ userId }) => {
         <div className="text-center py-8">
           <ArrowRightLeft className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <p className="text-gray-600 dark:text-gray-400 mb-4">
-            {t('crossChain.noBridges', 'Nenhum bridge encontrado')}
+            {// t('crossChain.noBridges', 'Nenhum bridge encontrado')}
           </p>
         </div>
       ) : (
@@ -197,7 +187,7 @@ const CrossChainManager = ({ userId }) => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-4">
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {t('crossChain.amount', 'Valor')}:
+                    {// t('crossChain.amount', 'Valor')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
                     {bridge.amount} {bridge.currency}
@@ -206,7 +196,7 @@ const CrossChainManager = ({ userId }) => {
                 
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {t('crossChain.fee', 'Taxa')}:
+                    {// t('crossChain.fee', 'Taxa')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
                     {bridge.fee}%
@@ -215,7 +205,7 @@ const CrossChainManager = ({ userId }) => {
                 
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {t('crossChain.estimatedTime', 'Tempo Estimado')}:
+                    {// t('crossChain.estimatedTime', 'Tempo Estimado')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
                     {bridge.estimatedTime}
@@ -224,7 +214,7 @@ const CrossChainManager = ({ userId }) => {
                 
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {t('crossChain.date', 'Data')}:
+                    {// t('crossChain.date', 'Data')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
                     {bridge.date}
@@ -234,18 +224,18 @@ const CrossChainManager = ({ userId }) => {
               
               <div className="flex items-center justify-between">
                 <div className="text-sm text-gray-500 dark:text-gray-400">
-                  {t('crossChain.transactionHash', 'Hash da Transação')}: {bridge.txHash}
+                  {// t('crossChain.transactionHash', '// Hash da Transação')}: {bridge.txHash}
                 </div>
                 
                 <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                  <ExternalLink className="w-4 h-4" />
+                  <// ExternalLink className="w-4 h-4" />
                 </button>
               </div>
             </div>
           ))}
         </div>
       )}
-    </motion.div>
+    </// motion.div>
   );
 };
 

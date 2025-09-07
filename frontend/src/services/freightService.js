@@ -455,4 +455,5 @@ class FreightService {
   }
 }
 
-export default new FreightService();
+const freightService = new FreightService();
+export default freightService;

@@ -1,33 +1,33 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, // useEffect, useRef } from 'react';
 import cryptoService from '../../services/cryptoService';
 
 const CryptoChart = () => {
   const [cryptoData, setCryptoData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [// loading, // setLoading] = useState(true);
   const [selectedCrypto, setSelectedCrypto] = useState(null);
   const canvasRef = useRef(null);
   const animationRef = useRef(null);
 
-  useEffect(() => {
-    loadCryptoData();
-    const interval = setInterval(loadCryptoData, 30000); // Atualizar a cada 30 segundos
+  // useEffect(() => {
+    // loadCryptoData();
+    const interval = setInterval(// loadCryptoData, 30000); // Atualizar a cada 30 segundos
     return () => clearInterval(interval);
-  }, [loadCryptoData]);
+  }, [// loadCryptoData]);
 
-  useEffect(() => {
+  // useEffect(() => {
     if (cryptoData.length > 0 && canvasRef.current) {
-      startAnimation();
+      // startAnimation();
     }
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [cryptoData, startAnimation]);
+  }, [cryptoData, // startAnimation]);
 
-  const loadCryptoData = async () => {
+  const // loadCryptoData = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
       const data = await cryptoService.getTopCryptos(8);
       setCryptoData(data);
       if (data.length > 0 && !selectedCrypto) {
@@ -36,11 +36,11 @@ const CryptoChart = () => {
     } catch (error) {
       console.error('Erro ao carregar dados de criptomoedas:', error);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
-  const startAnimation = () => {
+  const // startAnimation = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const width = canvas.width;
@@ -145,11 +145,11 @@ const CryptoChart = () => {
     );
   };
 
-  if (loading) {
+  if (// loading) {
     return (
       <div className="w-full h-96 bg-gray-900 rounded-lg flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-purple-500 border-// t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-400">Carregando dados de criptomoedas...</p>
         </div>
       </div>

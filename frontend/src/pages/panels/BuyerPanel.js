@@ -1,32 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, // useEffect } from 'react';
+import { motion } from 'framer-';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
-import { 
-  ShoppingCart, Package, Heart, Star, 
-  MessageSquare, Bell, Settings, LogOut,
-  Plus, Search, Filter, TrendingUp,
-  DollarSign, Truck, MapPin, Calendar
-} from 'lucide-react';
+import { ShoppingCart, MessageSquare, Bell, LogOut } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const BuyerPanel = () => {
-  const { t } = useTranslation();
-  const { user, logout } = useAuth();
+  const {  } = useTranslation();
+  const { logout } = // useAuth();
   const navigate = useNavigate();
   
-  const [activeTab, setActiveTab] = useState('orders');
-  const [loading, setLoading] = useState(false);
+  const [// activeTab, // setActiveTab] = useState('orders');
+  const [// loading, // setLoading] = useState(false);
   const [orders, setOrders] = useState([]);
   const [favorites, setFavorites] = useState([]);
-  const [notifications, setNotifications] = useState([]);
+  const [// notifications, setNotifications] = useState([]);
 
-  useEffect(() => {
+  // useEffect(() => {
     loadBuyerData();
   }, []);
 
   const loadBuyerData = async () => {
-    setLoading(true);
+    // setLoading(true);
     try {
       // Simular carregamento de dados
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -75,7 +70,7 @@ const BuyerPanel = () => {
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
@@ -85,31 +80,31 @@ const BuyerPanel = () => {
   };
 
   const tabs = [
-    { id: 'orders', label: t('buyerPanel.orders', 'Pedidos'), icon: Package },
-    { id: 'favorites', label: t('buyerPanel.favorites', 'Favoritos'), icon: Heart },
-    { id: 'messages', label: t('buyerPanel.messages', 'Mensagens'), icon: MessageSquare },
-    { id: 'notifications', label: t('buyerPanel.notifications', 'Notificações'), icon: Bell },
-    { id: 'settings', label: t('buyerPanel.settings', 'Configurações'), icon: Settings }
+    { id: 'orders', label: // t('buyerPanel.orders', 'Pedidos'), icon: // Package },
+    { id: 'favorites', label: // t('buyerPanel.favorites', 'Favoritos'), icon: // Heart },
+    { id: '// messages', label: // t('buyerPanel.// messages', 'Mensagens'), icon: MessageSquare },
+    { id: '// notifications', label: // t('buyerPanel.// notifications', 'Notificações'), icon: Bell },
+    { id: 'settings', label: // t('buyerPanel.settings', 'Configurações'), icon: // Settings }
   ];
 
   const renderOrders = () => (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-          {t('buyerPanel.myOrders', 'Meus Pedidos')}
+          {// t('buyerPanel.myOrders', 'Meus Pedidos')}
         </h3>
         <Link
           to="/store"
           className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2"
         >
-          <Plus className="w-4 h-4" />
-          {t('buyerPanel.newOrder', 'Novo Pedido')}
+          <// Plus className="w-4 h-4" />
+          {// t('buyerPanel.newOrder', 'Novo Pedido')}
         </Link>
       </div>
 
       <div className="grid gap-4">
         {orders.map((order) => (
-          <motion.div
+          <// motion.div
             key={order.id}
             className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700"
             initial={{ opacity: 0, y: 20 }}
@@ -127,43 +122,43 @@ const BuyerPanel = () => {
                       ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
                       : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                   }`}>
-                    {t(`orderStatus.${order.status}`, order.status)}
+                    {// t(`orderStatus.${order.status}`, order.status)}
                   </span>
                 </div>
                 <p className="text-slate-600 dark:text-slate-400 text-sm mb-2">
-                  {t('buyerPanel.seller', 'Vendedor')}: {order.seller}
+                  {// t('buyerPanel.seller', 'Vendedor')}: {order.seller}
                 </p>
                 <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
                   <div className="flex items-center gap-1">
-                    <DollarSign className="w-4 h-4" />
+                    <// DollarSign className="w-4 h-4" />
                     {new Intl.NumberFormat('pt-BR', { 
                       style: 'currency', 
                       currency: 'BRL' 
                     }).format(order.amount)}
                   </div>
                   <div className="flex items-center gap-1">
-                    <Calendar className="w-4 h-4" />
+                    <// Calendar className="w-4 h-4" />
                     {new Date(order.date).toLocaleDateString('pt-BR')}
                   </div>
                 </div>
               </div>
               <div className="flex gap-2">
                 <Link
-                  to={`/messages?order=${order.id}`}
+                  to={`/// messages?order=${order.id}`}
                   className="p-2 text-slate-500 hover:text-emerald-600 transition-colors"
-                  title={t('buyerPanel.contactSeller', 'Contatar Vendedor')}
+                  title={// t('buyerPanel.contactSeller', 'Contatar Vendedor')}
                 >
                   <MessageSquare className="w-5 h-5" />
                 </Link>
                 <button
                   className="p-2 text-slate-500 hover:text-emerald-600 transition-colors"
-                  title={t('buyerPanel.viewDetails', 'Ver Detalhes')}
+                  title={// t('buyerPanel.viewDetails', 'Ver Detalhes')}
                 >
-                  <TrendingUp className="w-5 h-5" />
+                  <// TrendingUp className="w-5 h-5" />
                 </button>
               </div>
             </div>
-          </motion.div>
+          </// motion.div>
         ))}
       </div>
     </div>
@@ -172,12 +167,12 @@ const BuyerPanel = () => {
   const renderFavorites = () => (
     <div className="space-y-4">
       <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-        {t('buyerPanel.favoriteProducts', 'Produtos Favoritos')}
+        {// t('buyerPanel.favoriteProducts', 'Produtos Favoritos')}
       </h3>
       
       <div className="grid gap-4">
         {favorites.map((favorite) => (
-          <motion.div
+          <// motion.div
             key={favorite.id}
             className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700"
             initial={{ opacity: 0, y: 20 }}
@@ -190,11 +185,11 @@ const BuyerPanel = () => {
                   {favorite.product}
                 </h4>
                 <p className="text-slate-600 dark:text-slate-400 text-sm mb-2">
-                  {t('buyerPanel.seller', 'Vendedor')}: {favorite.seller}
+                  {// t('buyerPanel.seller', 'Vendedor')}: {favorite.seller}
                 </p>
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-1">
-                    <DollarSign className="w-4 h-4 text-emerald-600" />
+                    <// DollarSign className="w-4 h-4 text-emerald-600" />
                     <span className="font-semibold text-emerald-600">
                       {new Intl.NumberFormat('pt-BR', { 
                         style: 'currency', 
@@ -203,7 +198,7 @@ const BuyerPanel = () => {
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 text-yellow-500" />
+                    <// Star className="w-4 h-4 text-yellow-500" />
                     <span className="text-sm text-slate-600 dark:text-slate-400">
                       {favorite.rating}
                     </span>
@@ -212,44 +207,44 @@ const BuyerPanel = () => {
               </div>
               <div className="flex gap-2">
                 <button className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
-                  {t('buyerPanel.buyNow', 'Comprar Agora')}
+                  {// t('buyerPanel.buyNow', 'Comprar Agora')}
                 </button>
                 <button className="p-2 text-red-500 hover:text-red-600 transition-colors">
-                  <Heart className="w-5 h-5 fill-current" />
+                  <// Heart className="w-5 h-5 fill-current" />
                 </button>
               </div>
             </div>
-          </motion.div>
+          </// motion.div>
         ))}
       </div>
     </div>
   );
 
   const renderContent = () => {
-    switch (activeTab) {
+    switch (// activeTab) {
       case 'orders':
         return renderOrders();
       case 'favorites':
         return renderFavorites();
-      case 'messages':
+      case '// messages':
         return (
           <div className="text-center py-12">
             <MessageSquare className="w-16 h-16 text-slate-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-slate-600 dark:text-slate-400 mb-2">
-              {t('buyerPanel.noMessages', 'Nenhuma mensagem')}
+              {// t('buyerPanel.noMessages', 'Nenhuma mensagem')}
             </h3>
             <p className="text-slate-500 dark:text-slate-500">
-              {t('buyerPanel.noMessagesDesc', 'Suas conversas com vendedores aparecerão aqui')}
+              {// t('buyerPanel.noMessagesDesc', 'Suas conversas com vendedores aparecerão aqui')}
             </p>
           </div>
         );
-      case 'notifications':
+      case '// notifications':
         return (
           <div className="space-y-4">
             <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-              {t('buyerPanel.notifications', 'Notificações')}
+              {// t('buyerPanel.// notifications', 'Notificações')}
             </h3>
-            {notifications.map((notification) => (
+            {// notifications.map((notification) => (
               <div key={notification.id} className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
                 <p className="text-slate-800 dark:text-slate-200">{notification.message}</p>
                 <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
@@ -263,22 +258,22 @@ const BuyerPanel = () => {
         return (
           <div className="space-y-6">
             <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-              {t('buyerPanel.settings', 'Configurações')}
+              {// t('buyerPanel.settings', 'Configurações')}
             </h3>
             
             <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
               <h4 className="font-semibold text-slate-800 dark:text-slate-200 mb-4">
-                {t('buyerPanel.accountSettings', 'Configurações da Conta')}
+                {// t('buyerPanel.accountSettings', 'Configurações da Conta')}
               </h4>
               
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                    {t('buyerPanel.email', 'Email')}
+                    {// t('buyerPanel.email', 'Email')}
                   </label>
                   <input
                     type="email"
-                    value={user?.email || ''}
+                    value={// user?.email || ''}
                     className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
                     readOnly
                   />
@@ -286,23 +281,23 @@ const BuyerPanel = () => {
                 
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                    {t('buyerPanel.name', 'Nome')}
+                    {// t('buyerPanel.name', 'Nome')}
                   </label>
                   <input
                     type="text"
-                    value={user?.name || ''}
+                    value={// user?.name || ''}
                     className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
                   />
                 </div>
               </div>
               
-              <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
+              <div className="mt-6 pt-6 border-// t border-slate-200 dark:border-slate-700">
                 <button
                   onClick={handleLogout}
                   className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
                 >
                   <LogOut className="w-4 h-4" />
-                  {t('buyerPanel.logout', 'Sair')}
+                  {// t('buyerPanel.logout', 'Sair')}
                 </button>
               </div>
             </div>
@@ -313,13 +308,13 @@ const BuyerPanel = () => {
     }
   };
 
-  if (loading) {
+  if (// loading) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
           <p className="text-slate-600 dark:text-slate-400">
-            {t('buyerPanel.loading', 'Carregando painel...')}
+            {// t('buyerPanel.// loading', 'Carregando painel...')}
           </p>
         </div>
       </div>
@@ -334,10 +329,10 @@ const BuyerPanel = () => {
           <div className="flex justify-between items-center py-6">
             <div>
               <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-                {t('buyerPanel.title', 'Painel do Comprador')}
+                {// t('buyerPanel.title', 'Painel do Comprador')}
               </h1>
               <p className="text-slate-600 dark:text-slate-400">
-                {t('buyerPanel.welcome', 'Bem-vindo')}, {user?.name || user?.email}
+                {// t('buyerPanel.welcome', 'Bem-vindo')}, {// user?.name || // user?.email}
               </p>
             </div>
             <div className="flex items-center gap-4">
@@ -345,8 +340,8 @@ const BuyerPanel = () => {
                 to="/store"
                 className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2"
               >
-                <ShoppingCart className="w-4 h-4" />
-                {t('buyerPanel.goToStore', 'Ir para Loja')}
+                <// ShoppingCart className="w-4 h-4" />
+                {// t('buyerPanel.goToStore', 'Ir para Loja')}
               </Link>
             </div>
           </div>
@@ -363,9 +358,9 @@ const BuyerPanel = () => {
                 return (
                   <button
                     key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
+                    onClick={() => // setActiveTab(tab.id)}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
-                      activeTab === tab.id
+                      // activeTab === tab.id
                         ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200'
                         : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
                     }`}
@@ -380,17 +375,17 @@ const BuyerPanel = () => {
 
           {/* Content */}
           <div className="flex-1">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab}
+            <// AnimatePresence mode="wait">
+              <// motion.div
+                key={// activeTab}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
                 {renderContent()}
-              </motion.div>
-            </AnimatePresence>
+              </// motion.div>
+            </// AnimatePresence>
           </div>
         </div>
       </div>

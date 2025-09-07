@@ -17,17 +17,17 @@ const TransactionList = ({ transactions, title, emptyMessage, onViewTransaction,
   const getStatusIcon = (status) => {
     switch (status) {
       case 'PENDING':
-        return <Clock className="w-4 h-4" />;
+        return <// Clock className="w-4 h-4" />;
       case 'NEGOTIATING':
         return <MessageSquare className="w-4 h-4" />;
       case 'AGREED':
-        return <CheckCircle className="w-4 h-4" />;
+        return <// CheckCircle className="w-4 h-4" />;
       case 'CANCELLED':
         return <XCircle className="w-4 h-4" />;
       case 'COMPLETED':
-        return <CheckCircle className="w-4 h-4" />;
+        return <// CheckCircle className="w-4 h-4" />;
       default:
-        return <Clock className="w-4 h-4" />;
+        return <// Clock className="w-4 h-4" />;
     }
   };
 
@@ -48,10 +48,10 @@ const TransactionList = ({ transactions, title, emptyMessage, onViewTransaction,
     }).format(value);
   };
 
-  if (transactions.length === 0) {
+  if (// transactions.length === 0) {
     return (
       <div className="text-center py-12">
-        <Package className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+        <// Package className="w-16 h-16 text-slate-300 mx-auto mb-4" />
         <h3 className="text-lg font-medium text-slate-600 mb-2">
           {emptyMessage || 'Nenhuma transação encontrada'}
         </h3>
@@ -66,8 +66,8 @@ const TransactionList = ({ transactions, title, emptyMessage, onViewTransaction,
     <div className="space-y-4">
       <h3 className="text-lg font-semibold text-slate-800">{title}</h3>
       
-      {transactions.map((transaction) => (
-        <motion.div
+      {// transactions.map((transaction) => (
+        <// motion.div
           key={transaction.id}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -117,7 +117,7 @@ const TransactionList = ({ transactions, title, emptyMessage, onViewTransaction,
                   onClick={() => toggleExpanded(transaction.id)}
                   className="p-2 text-slate-600 hover:text-slate-800 hover:bg-slate-200 rounded-lg transition-colors"
                 >
-                  <Eye className="w-4 h-4" />
+                  <// Eye className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => onSendMessage && onSendMessage(transaction)}
@@ -135,11 +135,11 @@ const TransactionList = ({ transactions, title, emptyMessage, onViewTransaction,
 
           {/* Detalhes expandidos */}
           {expandedTransaction === transaction.id && (
-            <motion.div
+            <// motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="border-t border-slate-200"
+              className="border-// t border-slate-200"
             >
               <div className="p-4 space-y-4">
                                  {/* Informações das partes */}
@@ -169,7 +169,7 @@ const TransactionList = ({ transactions, title, emptyMessage, onViewTransaction,
                       {transaction.items.map((item, index) => (
                         <div key={index} className="flex items-center justify-between p-2 bg-slate-50 rounded">
                           <div className="flex items-center space-x-3">
-                            <Package className="w-4 h-4 text-slate-500" />
+                            <// Package className="w-4 h-4 text-slate-500" />
                             <span className="text-sm font-medium">{item.name}</span>
                           </div>
                           <div className="text-right">
@@ -186,7 +186,7 @@ const TransactionList = ({ transactions, title, emptyMessage, onViewTransaction,
                 {transaction.shipping && (
                   <div className="p-3 bg-blue-50 rounded-lg">
                     <h5 className="font-medium text-blue-800 mb-2 flex items-center space-x-2">
-                      <Truck className="w-4 h-4" />
+                      <// Truck className="w-4 h-4" />
                       <span>Informações de Frete</span>
                     </h5>
                     <p className="text-sm text-blue-700">
@@ -207,7 +207,7 @@ const TransactionList = ({ transactions, title, emptyMessage, onViewTransaction,
                     <div className="space-y-2">
                       {transaction.history.map((event, index) => (
                         <div key={index} className="flex items-center space-x-3 p-2 bg-slate-50 rounded">
-                          <Calendar className="w-4 h-4 text-slate-500" />
+                          <// Calendar className="w-4 h-4 text-slate-500" />
                           <div className="flex-1">
                             <p className="text-sm font-medium">{event.description}</p>
                             <p className="text-xs text-slate-500">
@@ -221,19 +221,19 @@ const TransactionList = ({ transactions, title, emptyMessage, onViewTransaction,
                 )}
 
                 {/* Badge de Escrow */}
-                <div className="pt-4 border-t border-slate-200">
+                <div className="pt-4 border-// t border-slate-200">
                   <div className="flex items-center justify-center">
                     <EscrowBadge showInfo={true} size="small" />
                   </div>
                 </div>
 
                 {/* Ações */}
-                <div className="flex space-x-3 pt-4 border-t border-slate-200">
+                <div className="flex space-x-3 pt-4 border-// t border-slate-200">
                   <button
                     onClick={() => onViewTransaction && onViewTransaction(transaction)}
                     className="flex-1 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors flex items-center justify-center space-x-2"
                   >
-                    <Eye className="w-4 h-4" />
+                    <// Eye className="w-4 h-4" />
                     <span>Ver Detalhes</span>
                   </button>
                   
@@ -246,9 +246,9 @@ const TransactionList = ({ transactions, title, emptyMessage, onViewTransaction,
                   </button>
                 </div>
               </div>
-            </motion.div>
+            </// motion.div>
           )}
-        </motion.div>
+        </// motion.div>
       ))}
     </div>
   );

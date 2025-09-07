@@ -1,10 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Trophy, Star, Award, TrendingUp, Users, 
-  ShoppingCart, Truck, MessageCircle, Eye, 
-  Zap, Crown, Shield, Target, Gift
-} from 'lucide-react';
+import React, { useState, // useEffect } from 'react';
+import { motion } from 'framer-';
+import { Trophy, Crown, Target, Gift } from 'lucide-react';
 import gamificationService, { 
   BADGE_RARITY_COLORS, 
   BADGE_RARITY_NAMES 
@@ -14,17 +10,17 @@ const UserReputationProfile = ({ userId, className = '' }) => {
   const [profile, setProfile] = useState(null);
   const [stats, setStats] = useState(null);
   const [badges, setBadges] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [// loading, // setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showBadges, setShowBadges] = useState(false);
 
-  useEffect(() => {
+  // useEffect(() => {
     loadUserData();
   }, [userId]);
 
   const loadUserData = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
       setError(null);
 
       // Carregar dados em paralelo
@@ -42,7 +38,7 @@ const UserReputationProfile = ({ userId, className = '' }) => {
       console.error('Erro ao carregar dados de reputação:', error);
       setError('Erro ao carregar dados de reputação');
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
@@ -56,24 +52,24 @@ const UserReputationProfile = ({ userId, className = '' }) => {
 
   const getLevelIcon = (level) => {
     if (level >= 50) return <Crown className="w-5 h-5" />;
-    if (level >= 30) return <Shield className="w-5 h-5" />;
-    if (level >= 20) return <Star className="w-5 h-5" />;
-    if (level >= 10) return <Award className="w-5 h-5" />;
+    if (level >= 30) return <// Shield className="w-5 h-5" />;
+    if (level >= 20) return <// Star className="w-5 h-5" />;
+    if (level >= 10) return <// Award className="w-5 h-5" />;
     return <Target className="w-5 h-5" />;
   };
 
-  const getBadgeIcon = (badge) => {
+  const // getBadgeIcon = (badge) => {
     const iconMap = {
       'FIRST_TRANSACTION': <Target className="w-4 h-4" />,
-      'ACTIVE_SELLER': <ShoppingCart className="w-4 h-4" />,
-      'TRANSPORTER': <Truck className="w-4 h-4" />,
-      'TRUSTED_USER': <Star className="w-4 h-4" />,
+      'ACTIVE_SELLER': <// ShoppingCart className="w-4 h-4" />,
+      'TRANSPORTER': <// Truck className="w-4 h-4" />,
+      'TRUSTED_USER': <// Star className="w-4 h-4" />,
       'TOP_SELLER': <Crown className="w-4 h-4" />
     };
-    return iconMap[badge.id] || <Award className="w-4 h-4" />;
+    return iconMap[badge.id] || <// Award className="w-4 h-4" />;
   };
 
-  if (loading) {
+  if (// loading) {
     return (
       <div className={`bg-white rounded-lg shadow-premium p-6 ${className}`}>
         <div className="animate-pulse">
@@ -134,7 +130,7 @@ const UserReputationProfile = ({ userId, className = '' }) => {
           onClick={() => setShowBadges(!showBadges)}
           className="p-2 text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum rounded-lg transition-premium"
         >
-          <Award className="w-5 h-5" />
+          <// Award className="w-5 h-5" />
         </button>
       </div>
 
@@ -156,7 +152,7 @@ const UserReputationProfile = ({ userId, className = '' }) => {
         
         {/* Barra de Progresso */}
         <div className="w-full bg-premium-platinum rounded-full h-3">
-          <motion.div
+          <// motion.div
             className="bg-gradient-to-r from-accent-emerald to-accent-blue h-3 rounded-full"
             initial={{ width: 0 }}
             animate={{ width: `${progressToNextLevel.percentage}%` }}
@@ -173,7 +169,7 @@ const UserReputationProfile = ({ userId, className = '' }) => {
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div className="bg-premium-platinum rounded-lg p-4">
           <div className="flex items-center space-x-2 mb-2">
-            <ShoppingCart className="w-4 h-4 text-accent-emerald" />
+            <// ShoppingCart className="w-4 h-4 text-accent-emerald" />
             <span className="text-sm font-medium text-premium-dark-gray">Produtos</span>
           </div>
           <div className="text-2xl font-bold text-premium-dark-gray">
@@ -186,7 +182,7 @@ const UserReputationProfile = ({ userId, className = '' }) => {
 
         <div className="bg-premium-platinum rounded-lg p-4">
           <div className="flex items-center space-x-2 mb-2">
-            <Truck className="w-4 h-4 text-accent-blue" />
+            <// Truck className="w-4 h-4 text-accent-blue" />
             <span className="text-sm font-medium text-premium-dark-gray">Fretes</span>
           </div>
           <div className="text-2xl font-bold text-premium-dark-gray">
@@ -199,7 +195,7 @@ const UserReputationProfile = ({ userId, className = '' }) => {
 
         <div className="bg-premium-platinum rounded-lg p-4">
           <div className="flex items-center space-x-2 mb-2">
-            <MessageCircle className="w-4 h-4 text-accent-gold" />
+            <// MessageCircle className="w-4 h-4 text-accent-gold" />
             <span className="text-sm font-medium text-premium-dark-gray">Contatos</span>
           </div>
           <div className="text-2xl font-bold text-premium-dark-gray">
@@ -212,7 +208,7 @@ const UserReputationProfile = ({ userId, className = '' }) => {
 
         <div className="bg-premium-platinum rounded-lg p-4">
           <div className="flex items-center space-x-2 mb-2">
-            <Star className="w-4 h-4 text-yellow-500" />
+            <// Star className="w-4 h-4 text-yellow-500" />
             <span className="text-sm font-medium text-premium-dark-gray">Avaliação</span>
           </div>
           <div className="text-2xl font-bold text-premium-dark-gray">
@@ -225,24 +221,24 @@ const UserReputationProfile = ({ userId, className = '' }) => {
       </div>
 
       {/* Badges */}
-      <AnimatePresence>
+      <// AnimatePresence>
         {showBadges && (
-          <motion.div
+          <// motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="border-t border-premium-platinum pt-6"
+            className="border-// t border-premium-platinum pt-6"
           >
             <h4 className="font-semibold text-premium-dark-gray mb-4 flex items-center space-x-2">
-              <Award className="w-5 h-5 text-accent-gold" />
+              <// Award className="w-5 h-5 text-accent-gold" />
               <span>Conquistas ({badges.length})</span>
             </h4>
             
             {badges.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {badges.map((badge) => (
-                  <motion.div
+                  <// motion.div
                     key={badge.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -260,7 +256,7 @@ const UserReputationProfile = ({ userId, className = '' }) => {
                         {BADGE_RARITY_NAMES[badge.rarity]}
                       </div>
                     </div>
-                  </motion.div>
+                  </// motion.div>
                 ))}
               </div>
             ) : (
@@ -270,15 +266,15 @@ const UserReputationProfile = ({ userId, className = '' }) => {
                 <p className="text-xs">Continue usando a plataforma para ganhar badges!</p>
               </div>
             )}
-          </motion.div>
+          </// motion.div>
         )}
-      </AnimatePresence>
+      </// AnimatePresence>
 
       {/* Ranking */}
       {stats?.ranking && (
-        <div className="mt-6 pt-6 border-t border-premium-platinum">
+        <div className="mt-6 pt-6 border-// t border-premium-platinum">
           <h4 className="font-semibold text-premium-dark-gray mb-3 flex items-center space-x-2">
-            <TrendingUp className="w-5 h-5 text-accent-emerald" />
+            <// TrendingUp className="w-5 h-5 text-accent-emerald" />
             <span>Ranking</span>
           </h4>
           

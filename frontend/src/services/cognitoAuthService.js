@@ -300,4 +300,5 @@ class CognitoAuthService {
   }
 }
 
-export default new CognitoAuthService();
+const cognitoAuthService = new CognitoAuthService();
+export default cognitoAuthService;

@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { 
   Package, Plus, TrendingUp, DollarSign, 
-  MessageSquare, Bell, Settings, LogOut,
-  Eye, Edit, Trash, BarChart3,
-  Users, ShoppingCart, Calendar, MapPin
+  Bell, LogOut,
+  Eye, Edit, BarChart3,
+  ShoppingCart
 } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import logger from '../../services/logger';
 
 const SellerPanel = () => {
-  const { t } = useTranslation();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   
@@ -35,69 +34,68 @@ const SellerPanel = () => {
       // Dados mockados
       setProducts([
         {
-          id: 'PROD-001',
+          id: 1,
           name: 'Soja Premium',
-          price: 1200,
-          stock: 500,
+          price: 150.00,
+          stock: 1000,
           status: 'active',
-          views: 1250,
-          orders: 45,
-          rating: 4.8,
-          image: '/images/soja.jpg'
+          image: '/images/soja.jpg',
+          category: 'Grãos',
+          description: 'Soja de alta qualidade para exportação'
         },
         {
-          id: 'PROD-002',
-          name: 'Milho Orgânico',
-          price: 850,
-          stock: 300,
+          id: 2,
+          name: 'Milho Híbrido',
+          price: 85.00,
+          stock: 500,
           status: 'active',
-          views: 890,
-          orders: 23,
-          rating: 4.6,
-          image: '/images/milho.jpg'
+          image: '/images/milho.jpg',
+          category: 'Grãos',
+          description: 'Milho híbrido para alimentação animal'
         }
       ]);
 
       setOrders([
         {
-          id: 'ORD-001',
+          id: 1,
+          customer: 'Fazenda São João',
           product: 'Soja Premium',
-          buyer: 'João Silva',
-          amount: 15000,
+          quantity: 100,
+          total: 15000.00,
           status: 'pending',
-          date: '2024-01-15',
-          quantity: 12.5
+          date: '2024-01-15'
         },
         {
-          id: 'ORD-002',
-          product: 'Milho Orgânico',
-          buyer: 'Maria Santos',
-          amount: 8500,
-          status: 'confirmed',
-          date: '2024-01-14',
-          quantity: 10
+          id: 2,
+          customer: 'Cooperativa Rural',
+          product: 'Milho Híbrido',
+          quantity: 200,
+          total: 17000.00,
+          status: 'completed',
+          date: '2024-01-14'
         }
       ]);
 
       setAnalytics({
-        totalRevenue: 125000,
-        totalOrders: 68,
-        totalProducts: 12,
-        conversionRate: 3.6,
-        monthlyGrowth: 15.2
+        totalSales: 32000.00,
+        totalOrders: 2,
+        totalProducts: 2,
+        monthlyGrowth: 15.5
       });
 
       setNotifications([
         {
-          id: 'NOT-001',
-          type: 'new_order',
-          message: 'Novo pedido recebido: ORD-001',
-          date: '2024-01-15T10:30:00Z',
-          read: false
+          id: 1,
+          title: 'Novo pedido recebido',
+          message: 'Fazenda São João fez um pedido de Soja Premium',
+          type: 'order',
+          read: false,
+          date: '2024-01-15T10:30:00Z'
         }
       ]);
+
     } catch (error) {
-      console.error('Erro ao carregar dados:', error);
+      logger.error('Erro ao carregar dados do vendedor', error);
     } finally {
       setLoading(false);
     }
@@ -109,424 +107,330 @@ const SellerPanel = () => {
   };
 
   const tabs = [
-    { id: 'products', label: t('sellerPanel.products', 'Produtos'), icon: Package },
-    { id: 'orders', label: t('sellerPanel.orders', 'Pedidos'), icon: ShoppingCart },
-    { id: 'analytics', label: t('sellerPanel.analytics', 'Analytics'), icon: BarChart3 },
-    { id: 'messages', label: t('sellerPanel.messages', 'Mensagens'), icon: MessageSquare },
-    { id: 'notifications', label: t('sellerPanel.notifications', 'Notificações'), icon: Bell },
-    { id: 'settings', label: t('sellerPanel.settings', 'Configurações'), icon: Settings }
+    { id: 'products', label: 'Produtos', icon: Package },
+    { id: 'orders', label: 'Pedidos', icon: ShoppingCart },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+    { id: 'notifications', label: 'Notificações', icon: Bell }
   ];
-
-  const renderProducts = () => (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-          {t('sellerPanel.myProducts', 'Meus Produtos')}
-        </h3>
-        <Link
-          to="/cadastro-produto"
-          className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2"
-        >
-          <Plus className="w-4 h-4" />
-          {t('sellerPanel.addProduct', 'Adicionar Produto')}
-        </Link>
-      </div>
-
-      <div className="grid gap-4">
-        {products.map((product) => (
-          <motion.div
-            key={product.id}
-            className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className="flex gap-4">
-              <div className="w-20 h-20 bg-slate-200 dark:bg-slate-700 rounded-lg flex items-center justify-center">
-                <Package className="w-8 h-8 text-slate-400" />
-              </div>
-              
-              <div className="flex-1">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="font-semibold text-slate-800 dark:text-slate-200 mb-1">
-                      {product.name}
-                    </h4>
-                    <div className="flex items-center gap-4 text-sm text-slate-600 dark:text-slate-400 mb-2">
-                      <div className="flex items-center gap-1">
-                        <DollarSign className="w-4 h-4" />
-                        {new Intl.NumberFormat('pt-BR', { 
-                          style: 'currency', 
-                          currency: 'BRL' 
-                        }).format(product.price)}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Package className="w-4 h-4" />
-                        {product.stock} {t('sellerPanel.units', 'unidades')}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Eye className="w-4 h-4" />
-                        {product.views} {t('sellerPanel.views', 'visualizações')}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        product.status === 'active' 
-                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                          : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
-                      }`}>
-                        {t(`productStatus.${product.status}`, product.status)}
-                      </span>
-                      <span className="text-sm text-slate-600 dark:text-slate-400">
-                        {product.orders} {t('sellerPanel.orders', 'pedidos')}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <div className="flex gap-2">
-                    <button className="p-2 text-slate-500 hover:text-emerald-600 transition-colors">
-                      <Eye className="w-5 h-5" />
-                    </button>
-                    <button className="p-2 text-slate-500 hover:text-blue-600 transition-colors">
-                      <Edit className="w-5 h-5" />
-                    </button>
-                    <button className="p-2 text-slate-500 hover:text-red-600 transition-colors">
-                      <Trash className="w-5 h-5" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </div>
-  );
-
-  const renderOrders = () => (
-    <div className="space-y-4">
-      <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-        {t('sellerPanel.receivedOrders', 'Pedidos Recebidos')}
-      </h3>
-      
-      <div className="grid gap-4">
-        {orders.map((order) => (
-          <motion.div
-            key={order.id}
-            className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className="flex justify-between items-start">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <h4 className="font-semibold text-slate-800 dark:text-slate-200">
-                    {order.product}
-                  </h4>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    order.status === 'pending' 
-                      ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-                      : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                  }`}>
-                    {t(`orderStatus.${order.status}`, order.status)}
-                  </span>
-                </div>
-                <p className="text-slate-600 dark:text-slate-400 text-sm mb-2">
-                  {t('sellerPanel.buyer', 'Comprador')}: {order.buyer}
-                </p>
-                <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
-                  <div className="flex items-center gap-1">
-                    <DollarSign className="w-4 h-4" />
-                    {new Intl.NumberFormat('pt-BR', { 
-                      style: 'currency', 
-                      currency: 'BRL' 
-                    }).format(order.amount)}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Package className="w-4 h-4" />
-                    {order.quantity} {t('sellerPanel.tons', 'toneladas')}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Calendar className="w-4 h-4" />
-                    {new Date(order.date).toLocaleDateString('pt-BR')}
-                  </div>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <Link
-                  to={`/messages?order=${order.id}`}
-                  className="p-2 text-slate-500 hover:text-emerald-600 transition-colors"
-                  title={t('sellerPanel.contactBuyer', 'Contatar Comprador')}
-                >
-                  <MessageSquare className="w-5 h-5" />
-                </Link>
-                <button
-                  className="px-3 py-1 bg-emerald-600 text-white rounded text-sm hover:bg-emerald-700 transition-colors"
-                >
-                  {t('sellerPanel.confirm', 'Confirmar')}
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </div>
-  );
-
-  const renderAnalytics = () => (
-    <div className="space-y-6">
-      <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-        {t('sellerPanel.analytics', 'Analytics')}
-      </h3>
-      
-      {/* Cards de métricas */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
-                {t('sellerPanel.totalRevenue', 'Receita Total')}
-              </p>
-              <p className="text-2xl font-bold text-slate-900 dark:text-white">
-                {new Intl.NumberFormat('pt-BR', { 
-                  style: 'currency', 
-                  currency: 'BRL' 
-                }).format(analytics.totalRevenue)}
-              </p>
-            </div>
-            <DollarSign className="w-8 h-8 text-emerald-600" />
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
-                {t('sellerPanel.totalOrders', 'Total de Pedidos')}
-              </p>
-              <p className="text-2xl font-bold text-slate-900 dark:text-white">
-                {analytics.totalOrders}
-              </p>
-            </div>
-            <ShoppingCart className="w-8 h-8 text-blue-600" />
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
-                {t('sellerPanel.totalProducts', 'Produtos Ativos')}
-              </p>
-              <p className="text-2xl font-bold text-slate-900 dark:text-white">
-                {analytics.totalProducts}
-              </p>
-            </div>
-            <Package className="w-8 h-8 text-purple-600" />
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
-                {t('sellerPanel.conversionRate', 'Taxa de Conversão')}
-              </p>
-              <p className="text-2xl font-bold text-slate-900 dark:text-white">
-                {analytics.conversionRate}%
-              </p>
-            </div>
-            <TrendingUp className="w-8 h-8 text-orange-600" />
-          </div>
-        </div>
-      </div>
-
-      {/* Gráfico de crescimento */}
-      <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-        <h4 className="font-semibold text-slate-800 dark:text-slate-200 mb-4">
-          {t('sellerPanel.monthlyGrowth', 'Crescimento Mensal')}
-        </h4>
-        <div className="text-center py-8">
-          <TrendingUp className="w-16 h-16 text-emerald-600 mx-auto mb-4" />
-          <p className="text-3xl font-bold text-emerald-600">
-            +{analytics.monthlyGrowth}%
-          </p>
-          <p className="text-slate-600 dark:text-slate-400">
-            {t('sellerPanel.growthDescription', 'Crescimento em relação ao mês anterior')}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'products':
-        return renderProducts();
-      case 'orders':
-        return renderOrders();
-      case 'analytics':
-        return renderAnalytics();
-      case 'messages':
-        return (
-          <div className="text-center py-12">
-            <MessageSquare className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-slate-600 dark:text-slate-400 mb-2">
-              {t('sellerPanel.noMessages', 'Nenhuma mensagem')}
-            </h3>
-            <p className="text-slate-500 dark:text-slate-500">
-              {t('sellerPanel.noMessagesDesc', 'Suas conversas com compradores aparecerão aqui')}
-            </p>
-          </div>
-        );
-      case 'notifications':
-        return (
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-              {t('sellerPanel.notifications', 'Notificações')}
-            </h3>
-            {notifications.map((notification) => (
-              <div key={notification.id} className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
-                <p className="text-slate-800 dark:text-slate-200">{notification.message}</p>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                  {new Date(notification.date).toLocaleString('pt-BR')}
-                </p>
-              </div>
-            ))}
-          </div>
-        );
-      case 'settings':
-        return (
-          <div className="space-y-6">
-            <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-              {t('sellerPanel.settings', 'Configurações')}
-            </h3>
-            
-            <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-              <h4 className="font-semibold text-slate-800 dark:text-slate-200 mb-4">
-                {t('sellerPanel.accountSettings', 'Configurações da Conta')}
-              </h4>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                    {t('sellerPanel.email', 'Email')}
-                  </label>
-                  <input
-                    type="email"
-                    value={user?.email || ''}
-                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
-                    readOnly
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                    {t('sellerPanel.name', 'Nome')}
-                  </label>
-                  <input
-                    type="text"
-                    value={user?.name || ''}
-                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
-                  />
-                </div>
-              </div>
-              
-              <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
-                <button
-                  onClick={handleLogout}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
-                >
-                  <LogOut className="w-4 h-4" />
-                  {t('sellerPanel.logout', 'Sair')}
-                </button>
-              </div>
-            </div>
-          </div>
-        );
-      default:
-        return null;
-    }
-  };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-          <p className="text-slate-600 dark:text-slate-400">
-            {t('sellerPanel.loading', 'Carregando painel...')}
-          </p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Carregando dados...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
+      <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-                {t('sellerPanel.title', 'Painel do Vendedor')}
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <h1 className="text-xl font-semibold text-gray-900">
+                Painel do Vendedor
               </h1>
-              <p className="text-slate-600 dark:text-slate-400">
-                {t('sellerPanel.welcome', 'Bem-vindo')}, {user?.name || user?.email}
-              </p>
+              </div>
+              
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <Bell className="h-6 w-6 text-gray-400" />
+                {notifications.filter(n => !n.read).length > 0 && (
+                  <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
+                    {notifications.filter(n => !n.read).length}
+                      </span>
+                )}
+                  </div>
+                  
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-700">{user?.name}</span>
+                <button
+                  onClick={handleLogout}
+                  className="p-2 text-gray-400 hover:text-gray-600"
+                >
+                  <LogOut className="h-5 w-5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center gap-4">
-              <Link
-                to="/store"
-                className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2"
-              >
-                <Package className="w-4 h-4" />
-                {t('sellerPanel.goToStore', 'Ver Loja')}
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
+      </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex gap-8">
-          {/* Sidebar */}
-          <div className="w-64 flex-shrink-0">
-            <nav className="space-y-2">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-lg shadow p-6"
+          >
+            <div className="flex items-center">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <DollarSign className="h-6 w-6 text-blue-600" />
+                </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Vendas Totais</p>
+                <p className="text-2xl font-semibold text-gray-900">
+                  R$ {analytics.totalSales?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+          </p>
+        </div>
+      </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-white rounded-lg shadow p-6"
+          >
+            <div className="flex items-center">
+              <div className="p-2 bg-green-100 rounded-lg">
+                <ShoppingCart className="h-6 w-6 text-green-600" />
+          </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Pedidos</p>
+                <p className="text-2xl font-semibold text-gray-900">{analytics.totalOrders}</p>
+                </div>
+              </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-white rounded-lg shadow p-6"
+          >
+            <div className="flex items-center">
+              <div className="p-2 bg-purple-100 rounded-lg">
+                <Package className="h-6 w-6 text-purple-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Produtos</p>
+                <p className="text-2xl font-semibold text-gray-900">{analytics.totalProducts}</p>
+            </div>
+          </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-white rounded-lg shadow p-6"
+          >
+            <div className="flex items-center">
+              <div className="p-2 bg-orange-100 rounded-lg">
+                <TrendingUp className="h-6 w-6 text-orange-600" />
+            </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Crescimento</p>
+                <p className="text-2xl font-semibold text-gray-900">+{analytics.monthlyGrowth}%</p>
+          </div>
+        </div>
+          </motion.div>
+      </div>
+
+        {/* Tabs */}
+        <div className="bg-white rounded-lg shadow">
+          <div className="border-b border-gray-200">
+            <nav className="-mb-px flex space-x-8 px-6">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
                 return (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                    className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center space-x-2 ${
                       activeTab === tab.id
-                        ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200'
-                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                        ? 'border-blue-500 text-blue-600'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     }`}
                   >
-                    <Icon className="w-5 h-5" />
-                    {tab.label}
+                    <Icon className="h-5 w-5" />
+                    <span>{tab.label}</span>
                   </button>
                 );
               })}
             </nav>
           </div>
 
-          {/* Content */}
-          <div className="flex-1">
+          <div className="p-6">
             <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab}
+              {activeTab === 'products' && (
+                <motion.div
+                  key="products"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="space-y-4"
+                >
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-medium text-gray-900">Meus Produtos</h3>
+                    <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center space-x-2">
+                      <Plus className="h-4 w-4" />
+                      <span>Adicionar Produto</span>
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {products.map((product) => (
+                      <div key={product.id} className="bg-gray-50 rounded-lg p-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <h4 className="font-medium text-gray-900">{product.name}</h4>
+                          <span className={`px-2 py-1 text-xs rounded-full ${
+                            product.status === 'active' 
+                              ? 'bg-green-100 text-green-800' 
+                              : 'bg-red-100 text-red-800'
+                          }`}>
+                            {product.status === 'active' ? 'Ativo' : 'Inativo'}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600 mb-2">{product.description}</p>
+                        <p className="text-lg font-semibold text-gray-900 mb-2">
+                          R$ {product.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        </p>
+                        <p className="text-sm text-gray-500 mb-4">Estoque: {product.stock} unidades</p>
+                        <div className="flex space-x-2">
+                          <button className="flex-1 bg-blue-600 text-white py-2 px-3 rounded text-sm hover:bg-blue-700 flex items-center justify-center space-x-1">
+                            <Eye className="h-4 w-4" />
+                            <span>Ver</span>
+                          </button>
+                          <button className="flex-1 bg-gray-600 text-white py-2 px-3 rounded text-sm hover:bg-gray-700 flex items-center justify-center space-x-1">
+                            <Edit className="h-4 w-4" />
+                            <span>Editar</span>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {activeTab === 'orders' && (
+                <motion.div
+                  key="orders"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="space-y-4"
+                >
+                  <h3 className="text-lg font-medium text-gray-900">Pedidos</h3>
+                  
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Cliente
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Produto
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Quantidade
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Total
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Status
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Data
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {orders.map((order) => (
+                          <tr key={order.id}>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                              {order.customer}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {order.product}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {order.quantity}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              R$ {order.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className={`px-2 py-1 text-xs rounded-full ${
+                                order.status === 'completed' 
+                                  ? 'bg-green-100 text-green-800' 
+                                  : 'bg-yellow-100 text-yellow-800'
+                              }`}>
+                                {order.status === 'completed' ? 'Concluído' : 'Pendente'}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {new Date(order.date).toLocaleDateString('pt-BR')}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </motion.div>
+              )}
+
+              {activeTab === 'analytics' && (
+                <motion.div
+                  key="analytics"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="space-y-4"
+                >
+                  <h3 className="text-lg font-medium text-gray-900">Analytics</h3>
+                  <div className="text-center py-12">
+                    <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-500">Gráficos e análises detalhadas em breve</p>
+                  </div>
+                </motion.div>
+              )}
+
+              {activeTab === 'notifications' && (
+                <motion.div
+                  key="notifications"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                {renderContent()}
-              </motion.div>
+                  className="space-y-4"
+                >
+                  <h3 className="text-lg font-medium text-gray-900">Notificações</h3>
+                  
+                  <div className="space-y-3">
+                    {notifications.map((notification) => (
+                      <div
+                        key={notification.id}
+                        className={`p-4 rounded-lg border ${
+                          notification.read 
+                            ? 'bg-gray-50 border-gray-200' 
+                            : 'bg-blue-50 border-blue-200'
+                        }`}
+                      >
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h4 className="font-medium text-gray-900">{notification.title}</h4>
+                            <p className="text-sm text-gray-600 mt-1">{notification.message}</p>
+                            <p className="text-xs text-gray-500 mt-2">
+                              {new Date(notification.date).toLocaleString('pt-BR')}
+                            </p>
+                          </div>
+                          {!notification.read && (
+                            <div className="h-2 w-2 bg-blue-600 rounded-full"></div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
             </AnimatePresence>
           </div>
         </div>

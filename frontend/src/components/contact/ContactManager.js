@@ -1,31 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, // useEffect } from 'react';
+import { motion } from 'framer-';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
-import { 
-  Mail, Phone, User, MessageSquare, 
-  Eye, Reply, Archive, Trash, 
-  Filter, Search, Download, Star,
-  Clock, CheckCircle, AlertCircle, FileText
-} from 'lucide-react';
+import { Mail, MessageSquare } from 'lucide-react';
 import contactService from '../../services/contactService';
 
 const ContactManager = () => {
-  const { t } = useTranslation();
-  const { user } = useAuth();
-  const [messages, setMessages] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const {  } = useTranslation();
+  const {  } = // useAuth();
+  const [// messages, setMessages] = useState([]);
+  const [// loading, // setLoading] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [filter, setFilter] = useState('all'); // 'all', 'unread', 'replied', 'archived'
   const [searchTerm, setSearchTerm] = useState('');
   const [stats, setStats] = useState({});
 
-  useEffect(() => {
+  // useEffect(() => {
     loadContactData();
   }, []);
 
   const loadContactData = async () => {
-    setLoading(true);
+    // setLoading(true);
     try {
       // Simular carregamento de dados
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -101,7 +96,7 @@ const ContactManager = () => {
     } catch (error) {
       console.error('Erro ao carregar dados de contato:', error);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
@@ -144,7 +139,7 @@ const ContactManager = () => {
     }
   };
 
-  const filteredMessages = messages.filter(message => {
+  const filteredMessages = // messages.filter(message => {
     const matchesFilter = 
       filter === 'all' ||
       (filter === 'unread' && message.status === 'unread') ||
@@ -160,7 +155,7 @@ const ContactManager = () => {
     return matchesFilter && matchesSearch;
   });
 
-  const getPriorityColor = (priority) => {
+  const // getPriorityColor = (priority) => {
     switch (priority) {
       case 'urgent':
         return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
@@ -178,26 +173,26 @@ const ContactManager = () => {
   const getStatusIcon = (status) => {
     switch (status) {
       case 'unread':
-        return <AlertCircle className="w-4 h-4 text-red-500" />;
+        return <// AlertCircle className="w-4 h-4 text-red-500" />;
       case 'read':
-        return <CheckCircle className="w-4 h-4 text-green-500" />;
+        return <// CheckCircle className="w-4 h-4 text-green-500" />;
       case 'replied':
-        return <Reply className="w-4 h-4 text-blue-500" />;
+        return <// Reply className="w-4 h-4 text-blue-500" />;
       case 'archived':
-        return <Archive className="w-4 h-4 text-slate-500" />;
+        return <// Archive className="w-4 h-4 text-slate-500" />;
       default:
-        return <Clock className="w-4 h-4 text-slate-400" />;
+        return <// Clock className="w-4 h-4 text-slate-400" />;
     }
   };
 
-  const getTypeIcon = (type) => {
+  const // getTypeIcon = (type) => {
     switch (type) {
       case 'support':
-        return <AlertCircle className="w-4 h-4" />;
+        return <// AlertCircle className="w-4 h-4" />;
       case 'sales':
-        return <Star className="w-4 h-4" />;
+        return <// Star className="w-4 h-4" />;
       case 'partnership':
-        return <User className="w-4 h-4" />;
+        return <// User className="w-4 h-4" />;
       default:
         return <MessageSquare className="w-4 h-4" />;
     }
@@ -209,13 +204,13 @@ const ContactManager = () => {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-slate-600 dark:text-slate-400">
-              {t('contact.totalMessages', 'Total de Mensagens')}
+              {// t('contact.totalMessages', 'Total de Mensagens')}
             </p>
             <p className="text-2xl font-bold text-slate-900 dark:text-white">
               {stats.total}
             </p>
           </div>
-          <Mail className="w-8 h-8 text-emerald-600" />
+          <// Mail className="w-8 h-8 text-emerald-600" />
         </div>
       </div>
 
@@ -223,13 +218,13 @@ const ContactManager = () => {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-slate-600 dark:text-slate-400">
-              {t('contact.unreadMessages', 'Não Lidas')}
+              {// t('contact.unreadMessages', 'Não Lidas')}
             </p>
             <p className="text-2xl font-bold text-slate-900 dark:text-white">
               {stats.unread}
             </p>
           </div>
-          <AlertCircle className="w-8 h-8 text-red-600" />
+          <// AlertCircle className="w-8 h-8 text-red-600" />
         </div>
       </div>
 
@@ -237,13 +232,13 @@ const ContactManager = () => {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-slate-600 dark:text-slate-400">
-              {t('contact.repliedMessages', 'Respondidas')}
+              {// t('contact.repliedMessages', 'Respondidas')}
             </p>
             <p className="text-2xl font-bold text-slate-900 dark:text-white">
               {stats.replied}
             </p>
           </div>
-          <Reply className="w-8 h-8 text-green-600" />
+          <// Reply className="w-8 h-8 text-green-600" />
         </div>
       </div>
 
@@ -251,13 +246,13 @@ const ContactManager = () => {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-slate-600 dark:text-slate-400">
-              {t('contact.avgResponseTime', 'Tempo Médio de Resposta')}
+              {// t('contact.avgResponseTime', 'Tempo Médio de Resposta')}
             </p>
             <p className="text-2xl font-bold text-slate-900 dark:text-white">
               {stats.avgResponseTime}h
             </p>
           </div>
-          <Clock className="w-8 h-8 text-blue-600" />
+          <// Clock className="w-8 h-8 text-blue-600" />
         </div>
       </div>
     </div>
@@ -267,7 +262,7 @@ const ContactManager = () => {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-          {t('contact.messages', 'Mensagens de Contato')}
+          {// t('contact.// messages', 'Mensagens de Contato')}
         </h3>
         
         <div className="flex gap-2">
@@ -279,7 +274,7 @@ const ContactManager = () => {
                 : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
             }`}
           >
-            {t('contact.all', 'Todas')}
+            {// t('contact.all', 'Todas')}
           </button>
           <button
             onClick={() => setFilter('unread')}
@@ -289,7 +284,7 @@ const ContactManager = () => {
                 : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
             }`}
           >
-            {t('contact.unread', 'Não Lidas')}
+            {// t('contact.unread', 'Não Lidas')}
           </button>
           <button
             onClick={() => setFilter('replied')}
@@ -299,17 +294,17 @@ const ContactManager = () => {
                 : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
             }`}
           >
-            {t('contact.replied', 'Respondidas')}
+            {// t('contact.replied', 'Respondidas')}
           </button>
         </div>
       </div>
 
-      {/* Search */}
+      {/* // Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+        <// Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
         <input
           type="text"
-          placeholder={t('contact.search', 'Buscar mensagens...')}
+          placeholder={// t('contact.search', 'Buscar mensagens...')}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full pl-10 pr-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
@@ -318,7 +313,7 @@ const ContactManager = () => {
 
       <div className="space-y-4">
         {filteredMessages.map((message) => (
-          <motion.div
+          <// motion.div
             key={message.id}
             className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700"
             initial={{ opacity: 0, y: 20 }}
@@ -331,8 +326,8 @@ const ContactManager = () => {
                   <h4 className="font-semibold text-slate-800 dark:text-slate-200">
                     {message.subject}
                   </h4>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(message.priority)}`}>
-                    {t(`contactPriority.${message.priority}`, message.priority)}
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${// getPriorityColor(message.priority)}`}>
+                    {// t(`contactPriority.${message.priority}`, message.priority)}
                   </span>
                   {getStatusIcon(message.status)}
                 </div>
@@ -340,7 +335,7 @@ const ContactManager = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>
                     <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">
-                      {t('contact.from', 'De')}:
+                      {// t('contact.from', 'De')}:
                     </p>
                     <p className="font-medium text-slate-800 dark:text-slate-200">
                       {message.name} ({message.email})
@@ -348,12 +343,12 @@ const ContactManager = () => {
                   </div>
                   <div>
                     <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">
-                      {t('contact.type', 'Tipo')}:
+                      {// t('contact.type', 'Tipo')}:
                     </p>
                     <div className="flex items-center gap-2">
-                      {getTypeIcon(message.type)}
+                      {// getTypeIcon(message.type)}
                       <span className="text-slate-800 dark:text-slate-200">
-                        {t(`contactType.${message.type}`, message.type)}
+                        {// t(`contactType.${message.type}`, message.type)}
                       </span>
                     </div>
                   </div>
@@ -365,13 +360,13 @@ const ContactManager = () => {
 
                 <div className="flex items-center gap-6 text-sm text-slate-500 dark:text-slate-400">
                   <div className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
+                    <// Clock className="w-4 h-4" />
                     {new Date(message.createdAt).toLocaleString('pt-BR')}
                   </div>
                   {message.attachments.length > 0 && (
                     <div className="flex items-center gap-1">
-                      <FileText className="w-4 h-4" />
-                      {message.attachments.length} {t('contact.attachments', 'anexos')}
+                      <// FileText className="w-4 h-4" />
+                      {message.attachments.length} {// t('contact.attachments', 'anexos')}
                     </div>
                   )}
                 </div>
@@ -381,51 +376,51 @@ const ContactManager = () => {
                 <button
                   onClick={() => setSelectedMessage(message)}
                   className="p-2 text-slate-500 hover:text-emerald-600 transition-colors"
-                  title={t('contact.viewDetails', 'Ver Detalhes')}
+                  title={// t('contact.viewDetails', 'Ver Detalhes')}
                 >
-                  <Eye className="w-5 h-5" />
+                  <// Eye className="w-5 h-5" />
                 </button>
                 
                 {message.status === 'unread' && (
                   <button
                     onClick={() => handleMarkAsRead(message.id)}
                     className="p-2 text-slate-500 hover:text-green-600 transition-colors"
-                    title={t('contact.markAsRead', 'Marcar como Lida')}
+                    title={// t('contact.markAsRead', 'Marcar como Lida')}
                   >
-                    <CheckCircle className="w-5 h-5" />
+                    <// CheckCircle className="w-5 h-5" />
                   </button>
                 )}
                 
                 <button
                   onClick={() => handleArchive(message.id)}
                   className="p-2 text-slate-500 hover:text-blue-600 transition-colors"
-                  title={t('contact.archive', 'Arquivar')}
+                  title={// t('contact.archive', 'Arquivar')}
                 >
-                  <Archive className="w-5 h-5" />
+                  <// Archive className="w-5 h-5" />
                 </button>
                 
                 <button
                   onClick={() => handleDelete(message.id)}
                   className="p-2 text-slate-500 hover:text-red-600 transition-colors"
-                  title={t('contact.delete', 'Deletar')}
+                  title={// t('contact.delete', 'Deletar')}
                 >
-                  <Trash className="w-5 h-5" />
+                  <// Trash className="w-5 h-5" />
                 </button>
               </div>
             </div>
-          </motion.div>
+          </// motion.div>
         ))}
       </div>
     </div>
   );
 
-  if (loading) {
+  if (// loading) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
           <p className="text-slate-600 dark:text-slate-400">
-            {t('contact.loading', 'Carregando mensagens...')}
+            {// t('contact.// loading', 'Carregando mensagens...')}
           </p>
         </div>
       </div>
@@ -436,10 +431,10 @@ const ContactManager = () => {
     <div className="max-w-7xl mx-auto p-6">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-200 mb-2">
-          {t('contact.manager', 'Gerenciador de Contatos')}
+          {// t('contact.manager', 'Gerenciador de Contatos')}
         </h1>
         <p className="text-slate-600 dark:text-slate-400">
-          {t('contact.managerSubtitle', 'Gerencie mensagens de contato e respostas')}
+          {// t('contact.managerSubtitle', 'Gerencie mensagens de contato e respostas')}
         </p>
       </div>
 

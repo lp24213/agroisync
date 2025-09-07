@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, AlertCircle, User, Mail, FileText } from 'lucide-react';
 import validationService from '../services/validationService';
+import logger from '../services/logger';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -79,7 +80,7 @@ const Register = () => {
       alert('Cadastro realizado com sucesso!');
       
     } catch (error) {
-      console.error('Erro no cadastro:', error);
+      logger.error('Erro no cadastro', error, { formData: { ...formData, password: '[REDACTED]' } });
       setErrors({ submit: 'Erro ao realizar cadastro. Tente novamente.' });
     } finally {
       setIsSubmitting(false);

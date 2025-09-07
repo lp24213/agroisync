@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Shield, Smartphone, Mail, QrCode, Key, 
-  CheckCircle, XCircle, RefreshCw, Download, Copy
+  CheckCircle, RefreshCw, Download, Copy
 } from 'lucide-react';
-import authService, { OTP_TYPES } from '../services/authService';
+import authService from '../services/authService';
 
 const TwoFactorSetup = ({ userId, onComplete, onCancel }) => {
   const [step, setStep] = useState('setup'); // setup, verify, backup, complete
@@ -17,13 +17,7 @@ const TwoFactorSetup = ({ userId, onComplete, onCancel }) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  useEffect(() => {
-    if (step === 'setup') {
-      initialize2FA();
-    }
-  }, [step]);
-
-  const initialize2FA = async () => {
+  const initialize2FA = useCallback(async () => {
     setLoading(true);
     try {
       const result = await authService.setup2FA(userId);
@@ -37,7 +31,13 @@ const TwoFactorSetup = ({ userId, onComplete, onCancel }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId]);
+
+  useEffect(() => {
+    if (step === 'setup') {
+      initialize2FA();
+    }
+  }, [step, initialize2FA]);
 
   const handleMethodChange = (newMethod) => {
     setMethod(newMethod);
@@ -51,7 +51,7 @@ const TwoFactorSetup = ({ userId, onComplete, onCancel }) => {
       return;
     }
 
-    setLoading(true);
+    // setLoading(true);
     setError('');
 
     try {
@@ -76,7 +76,7 @@ const TwoFactorSetup = ({ userId, onComplete, onCancel }) => {
     } catch (error) {
       setError('Erro ao verificar código');
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 

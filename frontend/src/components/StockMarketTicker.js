@@ -21,7 +21,7 @@ const StockMarketTicker = () => {
 
   const [currentTime, setCurrentTime] = useState(new Date());
 
-  useEffect(() => {
+  // useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
@@ -32,11 +32,11 @@ const StockMarketTicker = () => {
   const getTrendIcon = (trend) => {
     switch (trend) {
       case 'up':
-        return <TrendingUp className="w-3 h-3 text-emerald-400" />;
+        return <// TrendingUp className="w-3 h-3 text-emerald-400" />;
       case 'down':
-        return <TrendingDown className="w-3 h-3 text-red-400" />;
+        return <// TrendingDown className="w-3 h-3 text-red-400" />;
       default:
-        return <Minus className="w-3 h-3 text-amber-400" />;
+        return <// Minus className="w-3 h-3 text-amber-400" />;
     }
   };
 
@@ -52,7 +52,7 @@ const StockMarketTicker = () => {
   };
 
   const renderMarketItem = (item, index) => (
-    <motion.div
+    <// motion.div
       key={`${item.name}-${index}`}
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
@@ -67,11 +67,11 @@ const StockMarketTicker = () => {
           {item.change}
         </span>
       </div>
-    </motion.div>
+    </// motion.div>
   );
 
   return (
-    <motion.div 
+    <// motion.div 
       className="h-16 bg-white/95 dark:bg-slate-900/95 border-b border-emerald-200 dark:border-emerald-800 backdrop-blur-sm overflow-hidden" 
       style={{ maxHeight: '72px' }}
       initial={{ y: -100 }}
@@ -81,88 +81,88 @@ const StockMarketTicker = () => {
       <div className="max-w-7xl mx-auto px-4 h-full">
         <div className="flex items-center justify-between h-full">
           {/* Índices */}
-          <motion.div 
+          <// motion.div 
             className="flex items-center space-x-3"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
           >
             <div className="flex items-center space-x-1">
-              <motion.div
+              <// motion.div
                 animate={{ rotate: [0, 360] }}
                 transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
               >
-                <TrendingUp className="w-3 h-3 text-emerald-400" />
-              </motion.div>
+                <// TrendingUp className="w-3 h-3 text-emerald-400" />
+              </// motion.div>
               <span className="text-xs font-semibold text-gray-600 dark:text-gray-300">B3</span>
             </div>
-            <motion.div 
+            <// motion.div 
               className="flex items-center space-x-2 overflow-hidden"
               animate={{ x: [0, -100, 0] }}
               transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
             >
               {marketData.indices.map((item, index) => renderMarketItem(item, index))}
-            </motion.div>
-          </motion.div>
+            </// motion.div>
+          </// motion.div>
 
           {/* Moedas */}
-          <motion.div 
+          <// motion.div 
             className="flex items-center space-x-3"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
           >
             <div className="flex items-center space-x-1">
-              <motion.div
+              <// motion.div
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
-                <DollarSign className="w-3 h-3 text-sky-400" />
-              </motion.div>
+                <// DollarSign className="w-3 h-3 text-sky-400" />
+              </// motion.div>
               <span className="text-xs font-semibold text-gray-600 dark:text-gray-300">FX</span>
             </div>
-            <motion.div 
+            <// motion.div 
               className="flex items-center space-x-2 overflow-hidden"
               animate={{ x: [0, -80, 0] }}
               transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
             >
               {marketData.currencies.map((item, index) => renderMarketItem(item, index))}
-            </motion.div>
-          </motion.div>
+            </// motion.div>
+          </// motion.div>
 
           {/* Cripto */}
-          <motion.div 
+          <// motion.div 
             className="flex items-center space-x-3"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.6 }}
           >
             <div className="flex items-center space-x-1">
-              <motion.div
+              <// motion.div
                 animate={{ rotate: [0, -360] }}
                 transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
               >
                 <Bitcoin className="w-3 h-3 text-amber-400" />
-              </motion.div>
+              </// motion.div>
               <span className="text-xs font-semibold text-gray-600 dark:text-gray-300">CRYPTO</span>
             </div>
-            <motion.div 
+            <// motion.div 
               className="flex items-center space-x-2 overflow-hidden"
               animate={{ x: [0, -60, 0] }}
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
             >
               {marketData.crypto.map((item, index) => renderMarketItem(item, index))}
-            </motion.div>
-          </motion.div>
+            </// motion.div>
+          </// motion.div>
 
           {/* Live Indicator */}
-          <motion.div 
+          <// motion.div 
             className="flex items-center space-x-2"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.8 }}
           >
-            <motion.div 
+            <// motion.div 
               className="w-2 h-2 bg-emerald-400 rounded-full"
               animate={{ 
                 scale: [1, 1.5, 1],
@@ -181,10 +181,10 @@ const StockMarketTicker = () => {
                 second: '2-digit'
               })}
             </span>
-          </motion.div>
+          </// motion.div>
         </div>
       </div>
-    </motion.div>
+    </// motion.div>
   );
 };
 

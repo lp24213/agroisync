@@ -1,20 +1,16 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
-import { 
-  Send, Mail, Phone, User, MessageSquare, 
-  Paperclip, CheckCircle, AlertCircle, Loader,
-  FileText, Star, AlertTriangle
-} from 'lucide-react';
+import { Send, MessageSquare, Paperclip, Loader } from 'lucide-react';
 import contactService from '../../services/contactService';
 
 const ContactForm = ({ onSuccess, onError }) => {
-  const { t } = useTranslation();
-  const { user } = useAuth();
+  const {  } = useTranslation();
+  const {  } = // useAuth();
   const [formData, setFormData] = useState({
-    name: user?.name || '',
-    email: user?.email || '',
+    name: // user?.name || '',
+    email: // user?.email || '',
     phone: '',
     subject: '',
     message: '',
@@ -22,7 +18,7 @@ const ContactForm = ({ onSuccess, onError }) => {
     priority: 'normal'
   });
   const [attachments, setAttachments] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [// loading, // setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(false);
 
@@ -70,7 +66,7 @@ const ContactForm = ({ onSuccess, onError }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    // setLoading(true);
     setErrors({});
 
     try {
@@ -78,7 +74,7 @@ const ContactForm = ({ onSuccess, onError }) => {
       const validation = contactService.validateContactData(formData);
       if (!validation.isValid) {
         setErrors(validation.errors);
-        setLoading(false);
+        // setLoading(false);
         return;
       }
 
@@ -104,8 +100,8 @@ const ContactForm = ({ onSuccess, onError }) => {
       
       // Reset form
       setFormData({
-        name: user?.name || '',
-        email: user?.email || '',
+        name: // user?.name || '',
+        email: // user?.email || '',
         phone: '',
         subject: '',
         message: '',
@@ -119,11 +115,11 @@ const ContactForm = ({ onSuccess, onError }) => {
       setErrors({ submit: error.message || 'Erro ao enviar mensagem' });
       onError && onError(error);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
-  const getPriorityColor = (priority) => {
+  const // getPriorityColor = (priority) => {
     switch (priority) {
       case 'urgent':
         return 'text-red-600 bg-red-100 dark:bg-red-900 dark:text-red-200';
@@ -138,14 +134,14 @@ const ContactForm = ({ onSuccess, onError }) => {
     }
   };
 
-  const getTypeIcon = (type) => {
+  const // getTypeIcon = (type) => {
     switch (type) {
       case 'support':
-        return <AlertTriangle className="w-4 h-4" />;
+        return <// AlertTriangle className="w-4 h-4" />;
       case 'sales':
-        return <Star className="w-4 h-4" />;
+        return <// Star className="w-4 h-4" />;
       case 'partnership':
-        return <User className="w-4 h-4" />;
+        return <// User className="w-4 h-4" />;
       default:
         return <MessageSquare className="w-4 h-4" />;
     }
@@ -153,33 +149,33 @@ const ContactForm = ({ onSuccess, onError }) => {
 
   if (success) {
     return (
-      <motion.div
+      <// motion.div
         className="text-center py-12"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.3 }}
       >
         <div className="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-6">
-          <CheckCircle className="w-8 h-8 text-green-600 dark:text-green-400" />
+          <// CheckCircle className="w-8 h-8 text-green-600 dark:text-green-400" />
         </div>
         <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2">
-          {t('contact.success', 'Mensagem Enviada!')}
+          {// t('contact.success', 'Mensagem Enviada!')}
         </h3>
         <p className="text-slate-600 dark:text-slate-400 mb-6">
-          {t('contact.successDescription', 'Sua mensagem foi enviada com sucesso. Entraremos em contato em breve.')}
+          {// t('contact.successDescription', 'Sua mensagem foi enviada com sucesso. Entraremos em contato em breve.')}
         </p>
         <button
           onClick={() => setSuccess(false)}
           className="px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
         >
-          {t('contact.sendAnother', 'Enviar Outra Mensagem')}
+          {// t('contact.sendAnother', 'Enviar Outra Mensagem')}
         </button>
-      </motion.div>
+      </// motion.div>
     );
   }
 
   return (
-    <motion.form
+    <// motion.form
       onSubmit={handleSubmit}
       className="space-y-6"
       initial={{ opacity: 0, y: 20 }}
@@ -190,10 +186,10 @@ const ContactForm = ({ onSuccess, onError }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-            {t('contact.name', 'Nome')} *
+            {// t('contact.name', 'Nome')} *
           </label>
           <div className="relative">
-            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+            <// User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
             <input
               type="text"
               name="name"
@@ -204,7 +200,7 @@ const ContactForm = ({ onSuccess, onError }) => {
                   ? 'border-red-300 dark:border-red-600' 
                   : 'border-slate-300 dark:border-slate-600'
               }`}
-              placeholder={t('contact.namePlaceholder', 'Seu nome completo')}
+              placeholder={// t('contact.namePlaceholder', 'Seu nome completo')}
             />
           </div>
           {errors.name && (
@@ -214,10 +210,10 @@ const ContactForm = ({ onSuccess, onError }) => {
 
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-            {t('contact.email', 'Email')} *
+            {// t('contact.email', 'Email')} *
           </label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+            <// Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
             <input
               type="email"
               name="email"
@@ -228,7 +224,7 @@ const ContactForm = ({ onSuccess, onError }) => {
                   ? 'border-red-300 dark:border-red-600' 
                   : 'border-slate-300 dark:border-slate-600'
               }`}
-              placeholder={t('contact.emailPlaceholder', 'seu@email.com')}
+              placeholder={// t('contact.emailPlaceholder', 'seu@email.com')}
             />
           </div>
           {errors.email && (
@@ -239,10 +235,10 @@ const ContactForm = ({ onSuccess, onError }) => {
 
       <div>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-          {t('contact.phone', 'Telefone')}
+          {// t('contact.phone', 'Telefone')}
         </label>
         <div className="relative">
-          <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+          <// Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
           <input
             type="tel"
             name="phone"
@@ -253,7 +249,7 @@ const ContactForm = ({ onSuccess, onError }) => {
                 ? 'border-red-300 dark:border-red-600' 
                 : 'border-slate-300 dark:border-slate-600'
             }`}
-            placeholder={t('contact.phonePlaceholder', '(11) 99999-9999')}
+            placeholder={// t('contact.phonePlaceholder', '(11) 99999-9999')}
           />
         </div>
         {errors.phone && (
@@ -265,7 +261,7 @@ const ContactForm = ({ onSuccess, onError }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-            {t('contact.type', 'Tipo de Contato')}
+            {// t('contact.type', 'Tipo de Contato')}
           </label>
           <select
             name="type"
@@ -273,16 +269,16 @@ const ContactForm = ({ onSuccess, onError }) => {
             onChange={handleInputChange}
             className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
           >
-            <option value="general">{t('contact.typeGeneral', 'Geral')}</option>
-            <option value="support">{t('contact.typeSupport', 'Suporte')}</option>
-            <option value="sales">{t('contact.typeSales', 'Vendas')}</option>
-            <option value="partnership">{t('contact.typePartnership', 'Parceria')}</option>
+            <option value="general">{// t('contact.typeGeneral', 'Geral')}</option>
+            <option value="support">{// t('contact.typeSupport', 'Suporte')}</option>
+            <option value="sales">{// t('contact.typeSales', 'Vendas')}</option>
+            <option value="partnership">{// t('contact.typePartnership', 'Parceria')}</option>
           </select>
         </div>
 
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-            {t('contact.priority', 'Prioridade')}
+            {// t('contact.priority', 'Prioridade')}
           </label>
           <select
             name="priority"
@@ -290,10 +286,10 @@ const ContactForm = ({ onSuccess, onError }) => {
             onChange={handleInputChange}
             className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
           >
-            <option value="low">{t('contact.priorityLow', 'Baixa')}</option>
-            <option value="normal">{t('contact.priorityNormal', 'Normal')}</option>
-            <option value="high">{t('contact.priorityHigh', 'Alta')}</option>
-            <option value="urgent">{t('contact.priorityUrgent', 'Urgente')}</option>
+            <option value="low">{// t('contact.priorityLow', 'Baixa')}</option>
+            <option value="normal">{// t('contact.priorityNormal', 'Normal')}</option>
+            <option value="high">{// t('contact.priorityHigh', 'Alta')}</option>
+            <option value="urgent">{// t('contact.priorityUrgent', 'Urgente')}</option>
           </select>
         </div>
       </div>
@@ -301,7 +297,7 @@ const ContactForm = ({ onSuccess, onError }) => {
       {/* Assunto */}
       <div>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-          {t('contact.subject', 'Assunto')} *
+          {// t('contact.subject', 'Assunto')} *
         </label>
         <input
           type="text"
@@ -313,7 +309,7 @@ const ContactForm = ({ onSuccess, onError }) => {
               ? 'border-red-300 dark:border-red-600' 
               : 'border-slate-300 dark:border-slate-600'
           }`}
-          placeholder={t('contact.subjectPlaceholder', 'Resumo da sua mensagem')}
+          placeholder={// t('contact.subjectPlaceholder', 'Resumo da sua mensagem')}
         />
         {errors.subject && (
           <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.subject}</p>
@@ -323,7 +319,7 @@ const ContactForm = ({ onSuccess, onError }) => {
       {/* Mensagem */}
       <div>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-          {t('contact.message', 'Mensagem')} *
+          {// t('contact.message', 'Mensagem')} *
         </label>
         <textarea
           name="message"
@@ -335,7 +331,7 @@ const ContactForm = ({ onSuccess, onError }) => {
               ? 'border-red-300 dark:border-red-600' 
               : 'border-slate-300 dark:border-slate-600'
           }`}
-          placeholder={t('contact.messagePlaceholder', 'Descreva sua mensagem em detalhes...')}
+          placeholder={// t('contact.messagePlaceholder', 'Descreva sua mensagem em detalhes...')}
         />
         {errors.message && (
           <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.message}</p>
@@ -345,7 +341,7 @@ const ContactForm = ({ onSuccess, onError }) => {
       {/* Anexos */}
       <div>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-          {t('contact.attachments', 'Anexos')}
+          {// t('contact.attachments', 'Anexos')}
         </label>
         <div className="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg p-6 text-center">
           <input
@@ -362,10 +358,10 @@ const ContactForm = ({ onSuccess, onError }) => {
           >
             <Paperclip className="w-8 h-8 text-slate-400" />
             <span className="text-slate-600 dark:text-slate-400">
-              {t('contact.uploadFiles', 'Clique para anexar arquivos')}
+              {// t('contact.uploadFiles', 'Clique para anexar arquivos')}
             </span>
             <span className="text-sm text-slate-500 dark:text-slate-500">
-              {t('contact.uploadLimit', 'Máximo 10MB por arquivo')}
+              {// t('contact.uploadLimit', 'Máximo 10MB por arquivo')}
             </span>
           </label>
         </div>
@@ -375,7 +371,7 @@ const ContactForm = ({ onSuccess, onError }) => {
             {attachments.map((file, index) => (
               <div key={index} className="flex items-center justify-between bg-slate-50 dark:bg-slate-700 rounded-lg p-3">
                 <div className="flex items-center gap-3">
-                  <FileText className="w-5 h-5 text-slate-400" />
+                  <// FileText className="w-5 h-5 text-slate-400" />
                   <span className="text-sm text-slate-700 dark:text-slate-300">
                     {file.name}
                   </span>
@@ -400,7 +396,7 @@ const ContactForm = ({ onSuccess, onError }) => {
       {errors.submit && (
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
           <div className="flex items-center gap-2">
-            <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
+            <// AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
             <p className="text-red-600 dark:text-red-400">{errors.submit}</p>
           </div>
         </div>
@@ -409,20 +405,20 @@ const ContactForm = ({ onSuccess, onError }) => {
       {/* Botão de envio */}
       <button
         type="submit"
-        disabled={loading}
+        disabled={// loading}
         className="w-full px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
       >
-        {loading ? (
+        {// loading ? (
           <Loader className="w-5 h-5 animate-spin" />
         ) : (
           <Send className="w-5 h-5" />
         )}
-        {loading 
-          ? t('contact.sending', 'Enviando...') 
-          : t('contact.send', 'Enviar Mensagem')
+        {// loading 
+          ? // t('contact.sending', 'Enviando...') 
+          : // t('contact.send', 'Enviar Mensagem')
         }
       </button>
-    </motion.form>
+    </// motion.form>
   );
 };
 

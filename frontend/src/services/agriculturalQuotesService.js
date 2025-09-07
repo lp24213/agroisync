@@ -556,4 +556,5 @@ class AgriculturalQuotesService {
 }
 
 // Exportar instância singleton
-export default new AgriculturalQuotesService();
+const agriculturalQuotesService = new AgriculturalQuotesService();
+export default agriculturalQuotesService;

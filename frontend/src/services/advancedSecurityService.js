@@ -758,8 +758,8 @@ export const advancedSecurityUtils = {
     const validators = {
       text: /^[a-zA-Z0-9\s\-_.,!?()]+$/,
       email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-      phone: /^[\+]?[0-9\s\-\(\)]+$/,
-      url: /^https?:\/\/[^\s\/$.?#].[^\s]*$/i
+      phone: /^[+]?[0-9\s\-()]+$/,
+      url: /^https?:\/\/[^\s/$.?#].[^\s]*$/i
     };
     
     const validator = validators[type] || validators.text;

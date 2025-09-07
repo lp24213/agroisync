@@ -1,7 +1,7 @@
-import axios from 'axios';
+// import axios from 'axios';
 
 // Configuração da API
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+// const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
 
 // Tipos de notificação
 export const NOTIFICATION_TYPES = {
@@ -596,4 +596,5 @@ class NotificationService {
   }
 }
 
-export default new NotificationService();
+const notificationService = new NotificationService();
+export default notificationService;

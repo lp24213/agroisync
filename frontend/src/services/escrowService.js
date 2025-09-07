@@ -1,7 +1,7 @@
-import axios from 'axios';
+// import axios from 'axios';
 
 // Configuração da API
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+// const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
 
 // Status das transações de escrow
 export const ESCROW_STATUS = {
@@ -521,4 +521,5 @@ class EscrowService {
   }
 }
 
-export default new EscrowService();
+const escrowService = new EscrowService();
+export default escrowService;

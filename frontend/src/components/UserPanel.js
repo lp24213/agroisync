@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   User, Package, ShoppingCart, MessageSquare, BarChart3,
-  Plus, Edit, Trash, Eye, Heart, Star, Calendar,
-  DollarSign, TrendingUp, CheckCircle, Clock, MapPin
+  Plus, Edit, Trash, TrendingUp
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 const UserPanel = ({ user, myProducts, myPurchases, myStock, myMessages }) => {
   const [activeTab, setActiveTab] = useState('overview');

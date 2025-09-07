@@ -11,7 +11,7 @@ import {
   Bot,
   User
 } from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext';
+// import { useLanguage } from '../contexts/LanguageContext';
 import useStore from '../store/useStore';
 
 const ChatbotWidget = () => {
@@ -22,7 +22,7 @@ const ChatbotWidget = () => {
   const [mode, setMode] = useState('text');
   const messagesEndRef = useRef(null);
   
-  const { t } = useLanguage();
+  // const { } = useLanguage();
   const { chatbotOpen, toggleChatbot, chatHistory, addChatMessage } = useStore();
 
   const scrollToBottom = () => {

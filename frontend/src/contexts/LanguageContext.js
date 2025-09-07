@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
 import i18n from '../i18n';
 import useStore from '../store/useStore';
 
@@ -17,21 +17,14 @@ export const LanguageProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { language, setLanguage } = useStore();
 
-  const supportedLanguages = [
+  const supportedLanguages = useMemo(() => [
     { code: 'pt', name: 'Português', flag: '🇧🇷' },
     { code: 'en', name: 'English', flag: '🇺🇸' },
     { code: 'es', name: 'Español', flag: '🇪🇸' },
     { code: 'zh', name: '中文', flag: '🇨🇳' }
-  ];
+  ], []);
 
-  useEffect(() => {
-    // Sincronizar com o store
-    if (language && language !== currentLanguage) {
-      changeLanguage(language);
-    }
-  }, [language]);
-
-  const changeLanguage = async (langCode) => {
+  const changeLanguage = useCallback(async (langCode) => {
     if (!supportedLanguages.find(lang => lang.code === langCode)) {
       console.error(`Unsupported language: ${langCode}`);
       return;
@@ -54,7 +47,14 @@ export const LanguageProvider = ({ children }) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [setLanguage, supportedLanguages]);
+
+  useEffect(() => {
+    // Sincronizar com o store
+    if (language && language !== currentLanguage) {
+      changeLanguage(language);
+    }
+  }, [language, currentLanguage, changeLanguage]);
 
   const t = (key, options = {}) => {
     return i18n.t(key, options);

@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { useTheme } from '../../contexts/ThemeContext';
-import { useAuth } from '../../contexts/AuthContext';
-import { usePayment } from '../../contexts/PaymentContext';
+// import { useTheme } from '../../contexts/ThemeContext';
+// import { useAuth } from '../../contexts/AuthContext';
+// import { usePayment } from '../../contexts/PaymentContext';
 import { useAgrolinkGrains } from '../../services/agrolinkAPI';
 import GrainsPriceCard from './GrainsPriceCard';
 import GrainsChart from './GrainsChart';
@@ -18,12 +18,12 @@ const GrainsDashboard = () => {
     userLocation
   } = useAgrolinkGrains();
 
-  const [lastUpdate, setLastUpdate] = useState(new Date());
+  // const [lastUpdate, setLastUpdate] = useState(new Date());
 
   // Atualizar timestamp da última atualização
   useEffect(() => {
     if (grainsData.length > 0) {
-      setLastUpdate(new Date());
+      // setLastUpdate(new Date());
     }
   }, [grainsData]);
 
@@ -31,7 +31,7 @@ const GrainsDashboard = () => {
 
   const handleRefresh = useCallback(() => {
     refreshData();
-    setLastUpdate(new Date());
+    // setLastUpdate(new Date());
   }, [refreshData]);
 
   const isLoading = grainsLoading;

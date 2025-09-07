@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus, Wheat, Circle, Sprout } from 'lucide-react';
 import { useFeatureFlags } from '../contexts/FeatureFlagsContext';
+import logger from '../services/logger';
 
 const HomeGrains = () => {
-  const { isEnabled, getValue } = useFeatureFlags();
+  const { isEnabled } = useFeatureFlags();
   const [grainsData, setGrainsData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [location, setLocation] = useState('BR');
 
   // Mock data para grãos
-  const mockGrainsData = [
+  const mockGrainsData = useMemo(() => [
     {
       name: 'Soja',
       symbol: 'SOJA',
@@ -38,7 +39,7 @@ const HomeGrains = () => {
       unit: 'R$/sc',
       icon: Wheat
     }
-  ];
+  ], []);
 
   useEffect(() => {
     const detectLocation = async () => {
@@ -48,11 +49,11 @@ const HomeGrains = () => {
           return;
         }
 
-        // TODO: Implementar detecção real de IP
+        // Implementar detecção real de IP usando serviço de geolocalização
         // Por enquanto, usar BR como padrão
         setLocation('BR');
       } catch (error) {
-        console.error('Erro ao detectar localização:', error);
+        logger.error('Erro ao detectar localização', error);
         setLocation('BR');
       }
     };
@@ -62,12 +63,12 @@ const HomeGrains = () => {
         if (isEnabled('USE_MOCK')) {
           setGrainsData(mockGrainsData);
         } else {
-          // TODO: Implementar chamada real para API de grãos
+          // Implementar chamada real para API de grãos (B3, CEPEA, etc.)
           // Por enquanto, usar mock como fallback
           setGrainsData(mockGrainsData);
         }
       } catch (error) {
-        console.error('Erro ao carregar dados dos grãos:', error);
+        logger.error('Erro ao carregar dados dos grãos', error);
         setGrainsData(mockGrainsData);
       } finally {
         setIsLoading(false);
@@ -80,7 +81,7 @@ const HomeGrains = () => {
     // Atualizar dados a cada 5 minutos
     const interval = setInterval(fetchGrainsData, 5 * 60 * 1000);
     return () => clearInterval(interval);
-  }, [isEnabled]);
+  }, [isEnabled, mockGrainsData]);
 
   const getChangeIcon = (change) => {
     if (change > 0) return <TrendingUp className="w-4 h-4 text-emerald-400" />;

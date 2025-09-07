@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, X } from 'lucide-react';
+import { Bell } from 'lucide-react';
 import notificationService from '../services/notificationService';
 import NotificationCenter from './NotificationCenter';
 import NotificationToast from './NotificationToast';
+import logger from '../services/logger';
 
 const NotificationManager = ({ userId }) => {
-  const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [showNotificationCenter, setShowNotificationCenter] = useState(false);
   const [toastNotifications, setToastNotifications] = useState([]);
@@ -14,54 +14,7 @@ const NotificationManager = ({ userId }) => {
   
   const notificationRef = useRef(null);
 
-  useEffect(() => {
-    if (userId && !isInitialized) {
-      initializeNotifications();
-    }
-  }, [userId, isInitialized]);
-
-  const initializeNotifications = async () => {
-    try {
-      // Inicializar serviço de notificações
-      await notificationService.initialize(userId);
-      
-      // Carregar notificações existentes
-      const userNotifications = await notificationService.getUserNotifications(userId);
-      setNotifications(userNotifications);
-      setUnreadCount(notificationService.getUnreadCount(userId));
-      
-      // Registrar handler para notificações em tempo real
-      notificationService.registerInAppHandler('notificationManager', handleNewNotification);
-      
-      // Gerar dados mock se não houver notificações
-      if (userNotifications.length === 0) {
-        const mockData = notificationService.generateMockData();
-        setNotifications(mockData);
-        setUnreadCount(mockData.filter(n => n.status !== 'READ').length);
-      }
-      
-      setIsInitialized(true);
-    } catch (error) {
-      console.error('Erro ao inicializar notificações:', error);
-    }
-  };
-
-  const handleNewNotification = (notification) => {
-    // Adicionar à lista de notificações
-    setNotifications(prev => [notification, ...prev]);
-    
-    // Incrementar contador de não lidas
-    if (notification.status !== 'READ') {
-      setUnreadCount(prev => prev + 1);
-    }
-    
-    // Mostrar toast se as preferências permitirem
-    if (shouldShowToast(notification)) {
-      showToastNotification(notification);
-    }
-  };
-
-  const shouldShowToast = (notification) => {
+  const shouldShowToast = useCallback((notification) => {
     // Verificar preferências do usuário
     const preferences = notificationService.userPreferences;
     if (!preferences) return true;
@@ -92,9 +45,13 @@ const NotificationManager = ({ userId }) => {
     }
     
     return true;
-  };
+  }, []);
 
-  const showToastNotification = (notification) => {
+  const removeToastNotification = useCallback((toastId) => {
+    setToastNotifications(prev => prev.filter(t => t.id !== toastId));
+  }, []);
+
+  const showToastNotification = useCallback((notification) => {
     const toastId = `toast_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const toastNotification = {
       ...notification,
@@ -107,11 +64,49 @@ const NotificationManager = ({ userId }) => {
     setTimeout(() => {
       removeToastNotification(toastId);
     }, 6000);
-  };
+  }, [removeToastNotification]);
 
-  const removeToastNotification = (toastId) => {
-    setToastNotifications(prev => prev.filter(t => t.id !== toastId));
-  };
+  const handleNewNotification = useCallback((notification) => {
+    // Incrementar contador de não lidas
+    if (notification.status !== 'READ') {
+      setUnreadCount(prev => prev + 1);
+    }
+    
+    // Mostrar toast se as preferências permitirem
+    if (shouldShowToast(notification)) {
+      showToastNotification(notification);
+    }
+  }, [shouldShowToast, showToastNotification]);
+
+  const initializeNotifications = useCallback(async () => {
+    try {
+      // Inicializar serviço de notificações
+      await notificationService.initialize(userId);
+      
+      // Carregar notificações existentes
+      const userNotifications = await notificationService.getUserNotifications(userId);
+      setUnreadCount(notificationService.getUnreadCount(userId));
+      
+      // Registrar handler para notificações em tempo real
+      notificationService.registerInAppHandler('notificationManager', handleNewNotification);
+      
+      // Gerar dados mock se não houver notificações
+      if (userNotifications.length === 0) {
+        const mockData = notificationService.generateMockData();
+        setUnreadCount(mockData.filter(n => n.status !== 'READ').length);
+      }
+      
+      setIsInitialized(true);
+    } catch (error) {
+      logger.error('Erro ao inicializar notificações', error, { userId });
+    }
+  }, [userId, handleNewNotification]);
+
+  useEffect(() => {
+    if (userId && !isInitialized) {
+      initializeNotifications();
+    }
+  }, [userId, isInitialized, initializeNotifications]);
 
   const handleToastAction = (notification) => {
     // Abrir centro de notificações
@@ -126,16 +121,9 @@ const NotificationManager = ({ userId }) => {
   const handleMarkAsRead = async (notificationId) => {
     try {
       await notificationService.markAsRead(notificationId);
-      setNotifications(prev => 
-        prev.map(n => 
-          n.id === notificationId 
-            ? { ...n, status: 'READ', readAt: new Date().toISOString() }
-            : n
-        )
-      );
       setUnreadCount(prev => Math.max(0, prev - 1));
     } catch (error) {
-      console.error('Erro ao marcar como lida:', error);
+      logger.error('Erro ao marcar como lida', error, { notificationId });
     }
   };
 
@@ -144,7 +132,6 @@ const NotificationManager = ({ userId }) => {
   };
 
   const handleNotificationUpdate = (updatedNotifications, newUnreadCount) => {
-    setNotifications(updatedNotifications);
     setUnreadCount(newUnreadCount);
   };
 

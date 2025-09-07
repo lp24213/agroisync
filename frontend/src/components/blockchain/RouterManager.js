@@ -1,33 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, // useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
-import { 
-  Router, 
-  Zap, 
-  DollarSign, 
-  Clock,
-  Loader2,
-  AlertCircle,
-  CheckCircle,
-  Plus,
-  Minus,
-  ExternalLink
-} from 'lucide-react';
+import { motion } from 'framer-';
+import { Router, Loader2 } from 'lucide-react';
 
 const RouterManager = ({ userId }) => {
-  const { t } = useTranslation();
+  const {  } = useTranslation();
   const [routers, setRouters] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [// loading, // setLoading] = useState(true);
   const [error, setError] = useState('');
   const [totalValue, setTotalValue] = useState(0);
   const [activeRouters, setActiveRouters] = useState(0);
 
-  useEffect(() => {
-    fetchRouterData();
+  // useEffect(() => {
+    // fetchRouterData();
   }, [userId]);
 
-  const fetchRouterData = async () => {
-    setLoading(true);
+  const // fetchRouterData = async () => {
+    // setLoading(true);
     try {
       const response = await fetch(`/api/blockchain/routers?userId=${userId}`);
       const data = await response.json();
@@ -40,38 +29,38 @@ const RouterManager = ({ userId }) => {
         setError(data.message);
       }
     } catch (err) {
-      setError(t('router.error', 'Erro ao carregar dados de routers'));
+      setError(// t('router.error', 'Erro ao carregar dados de routers'));
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
   const getStatusIcon = (status) => {
     switch (status) {
       case 'active':
-        return <CheckCircle className="w-5 h-5 text-green-600" />;
+        return <// CheckCircle className="w-5 h-5 text-green-600" />;
       case 'pending':
-        return <Clock className="w-5 h-5 text-yellow-600" />;
+        return <// Clock className="w-5 h-5 text-yellow-600" />;
       case 'completed':
-        return <CheckCircle className="w-5 h-5 text-blue-600" />;
+        return <// CheckCircle className="w-5 h-5 text-blue-600" />;
       default:
-        return <Clock className="w-5 h-5 text-gray-600" />;
+        return <// Clock className="w-5 h-5 text-gray-600" />;
     }
   };
 
-  if (loading) {
+  if (// loading) {
     return (
       <div className="flex items-center justify-center h-64">
         <Loader2 className="w-8 h-8 animate-spin text-agro-emerald" />
         <span className="ml-3 text-gray-600 dark:text-gray-300">
-          {t('router.loading', 'Carregando dados de routers...')}
+          {// t('router.// loading', 'Carregando dados de routers...')}
         </span>
       </div>
     );
   }
 
   return (
-    <motion.div
+    <// motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
@@ -79,13 +68,13 @@ const RouterManager = ({ userId }) => {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
           <Router className="w-6 h-6 mr-2 text-agro-emerald" />
-          {t('router.title', 'Router Manager')}
+          {// t('router.title', 'Router Manager')}
         </h2>
       </div>
       
       {error && (
         <div className="text-red-500 mb-4 flex items-center">
-          <AlertCircle className="w-5 h-5 mr-2" />
+          <// AlertCircle className="w-5 h-5 mr-2" />
           {error}
         </div>
       )}
@@ -96,13 +85,13 @@ const RouterManager = ({ userId }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {t('router.totalValue', 'Valor Total')}
+                {// t('router.totalValue', 'Valor Total')}
               </p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 ${totalValue.toFixed(2)}
               </p>
             </div>
-            <DollarSign className="w-8 h-8 text-gray-400" />
+            <// DollarSign className="w-8 h-8 text-gray-400" />
           </div>
         </div>
         
@@ -110,7 +99,7 @@ const RouterManager = ({ userId }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {t('router.activeRouters', 'Routers Ativos')}
+                {// t('router.activeRouters', 'Routers Ativos')}
               </p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 {activeRouters}
@@ -124,7 +113,7 @@ const RouterManager = ({ userId }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {t('router.totalRouters', 'Total de Routers')}
+                {// t('router.totalRouters', 'Total de Routers')}
               </p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 {routers.length}
@@ -140,7 +129,7 @@ const RouterManager = ({ userId }) => {
         <div className="text-center py-8">
           <Router className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <p className="text-gray-600 dark:text-gray-400 mb-4">
-            {t('router.noRouters', 'Nenhum router encontrado')}
+            {// t('router.noRouters', 'Nenhum router encontrado')}
           </p>
         </div>
       ) : (
@@ -168,7 +157,7 @@ const RouterManager = ({ userId }) => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-4">
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {t('router.value', 'Valor')}:
+                    {// t('router.value', 'Valor')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
                     ${router.value.toFixed(2)}
@@ -177,16 +166,16 @@ const RouterManager = ({ userId }) => {
                 
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {t('router.transactions', 'Transações')}:
+                    {// t('router.// transactions', 'Transações')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
-                    {router.transactions}
+                    {router.// transactions}
                   </p>
                 </div>
                 
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {t('router.fee', 'Taxa')}:
+                    {// t('router.fee', 'Taxa')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
                     {router.fee}%
@@ -195,7 +184,7 @@ const RouterManager = ({ userId }) => {
                 
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {t('router.speed', 'Velocidade')}:
+                    {// t('router.speed', 'Velocidade')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
                     {router.speed}
@@ -205,15 +194,15 @@ const RouterManager = ({ userId }) => {
               
               <div className="flex items-center justify-between">
                 <div className="text-sm text-gray-500 dark:text-gray-400">
-                  {t('router.lastActivity', 'Última Atividade')}: {router.lastActivity}
+                  {// t('router.lastActivity', 'Última Atividade')}: {router.lastActivity}
                 </div>
                 
                 <div className="flex space-x-2">
                   <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                    <Zap className="w-4 h-4" />
+                    <// Zap className="w-4 h-4" />
                   </button>
                   <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                    <ExternalLink className="w-4 h-4" />
+                    <// ExternalLink className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -221,7 +210,7 @@ const RouterManager = ({ userId }) => {
           ))}
         </div>
       )}
-    </motion.div>
+    </// motion.div>
   );
 };
 

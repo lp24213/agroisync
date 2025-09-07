@@ -1,33 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, // useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  DollarSign, 
-  PieChart,
-  ArrowUpRight,
-  ArrowDownLeft,
-  Loader2,
-  AlertCircle,
-  CheckCircle,
-  Clock
-} from 'lucide-react';
+import { motion } from 'framer-';
+import { TrendingUp, ArrowUpRight, ArrowDownLeft, Loader2 } from 'lucide-react';
 
 const DeFiManager = ({ userId }) => {
-  const { t } = useTranslation();
+  const {  } = useTranslation();
   const [positions, setPositions] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [// loading, // setLoading] = useState(true);
   const [error, setError] = useState('');
   const [totalValue, setTotalValue] = useState(0);
   const [dailyChange, setDailyChange] = useState(0);
 
-  useEffect(() => {
-    fetchDeFiData();
+  // useEffect(() => {
+    // fetchDeFiData();
   }, [userId]);
 
-  const fetchDeFiData = async () => {
-    setLoading(true);
+  const // fetchDeFiData = async () => {
+    // setLoading(true);
     try {
       const response = await fetch(`/api/blockchain/defi?userId=${userId}`);
       const data = await response.json();
@@ -40,9 +29,9 @@ const DeFiManager = ({ userId }) => {
         setError(data.message);
       }
     } catch (err) {
-      setError(t('defi.error', 'Erro ao carregar dados DeFi'));
+      setError(// t('defi.error', 'Erro ao carregar dados DeFi'));
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
@@ -52,7 +41,7 @@ const DeFiManager = ({ userId }) => {
     } else if (change < 0) {
       return <ArrowDownLeft className="w-5 h-5 text-red-600" />;
     }
-    return <Clock className="w-5 h-5 text-gray-600" />;
+    return <// Clock className="w-5 h-5 text-gray-600" />;
   };
 
   const getChangeColor = (change) => {
@@ -64,33 +53,33 @@ const DeFiManager = ({ userId }) => {
     return 'text-gray-600';
   };
 
-  if (loading) {
+  if (// loading) {
     return (
       <div className="flex items-center justify-center h-64">
         <Loader2 className="w-8 h-8 animate-spin text-agro-emerald" />
         <span className="ml-3 text-gray-600 dark:text-gray-300">
-          {t('defi.loading', 'Carregando dados DeFi...')}
+          {// t('defi.// loading', 'Carregando dados DeFi...')}
         </span>
       </div>
     );
   }
 
   return (
-    <motion.div
+    <// motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
     >
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
-          <PieChart className="w-6 h-6 mr-2 text-agro-emerald" />
-          {t('defi.title', 'DeFi Dashboard')}
+          <// PieChart className="w-6 h-6 mr-2 text-agro-emerald" />
+          {// t('defi.title', 'DeFi Dashboard')}
         </h2>
       </div>
       
       {error && (
         <div className="text-red-500 mb-4 flex items-center">
-          <AlertCircle className="w-5 h-5 mr-2" />
+          <// AlertCircle className="w-5 h-5 mr-2" />
           {error}
         </div>
       )}
@@ -101,13 +90,13 @@ const DeFiManager = ({ userId }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {t('defi.totalValue', 'Valor Total')}
+                {// t('defi.totalValue', 'Valor Total')}
               </p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 ${totalValue.toFixed(2)}
               </p>
             </div>
-            <DollarSign className="w-8 h-8 text-gray-400" />
+            <// DollarSign className="w-8 h-8 text-gray-400" />
           </div>
         </div>
         
@@ -115,7 +104,7 @@ const DeFiManager = ({ userId }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {t('defi.dailyChange', 'Mudança Diária')}
+                {// t('defi.dailyChange', 'Mudança Diária')}
               </p>
               <p className={`text-2xl font-bold ${getChangeColor(dailyChange)}`}>
                 {dailyChange > 0 ? '+' : ''}{dailyChange.toFixed(2)}%
@@ -129,13 +118,13 @@ const DeFiManager = ({ userId }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {t('defi.positions', 'Posições')}
+                {// t('defi.positions', 'Posições')}
               </p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 {positions.length}
               </p>
             </div>
-            <PieChart className="w-8 h-8 text-gray-400" />
+            <// PieChart className="w-8 h-8 text-gray-400" />
           </div>
         </div>
       </div>
@@ -143,9 +132,9 @@ const DeFiManager = ({ userId }) => {
       {/* Posições */}
       {positions.length === 0 ? (
         <div className="text-center py-8">
-          <PieChart className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <// PieChart className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <p className="text-gray-600 dark:text-gray-400 mb-4">
-            {t('defi.noPositions', 'Nenhuma posição DeFi encontrada')}
+            {// t('defi.noPositions', 'Nenhuma posição DeFi encontrada')}
           </p>
         </div>
       ) : (
@@ -175,7 +164,7 @@ const DeFiManager = ({ userId }) => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {t('defi.apy', 'APY')}:
+                    {// t('defi.apy', 'APY')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
                     {position.apy}%
@@ -184,7 +173,7 @@ const DeFiManager = ({ userId }) => {
                 
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {t('defi.tvl', 'TVL')}:
+                    {// t('defi.tvl', 'TVL')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
                     ${position.tvl.toFixed(2)}
@@ -193,7 +182,7 @@ const DeFiManager = ({ userId }) => {
                 
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {t('defi.risk', 'Risco')}:
+                    {// t('defi.risk', 'Risco')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
                     {position.risk}
@@ -202,7 +191,7 @@ const DeFiManager = ({ userId }) => {
                 
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {t('defi.status', 'Status')}:
+                    {// t('defi.status', 'Status')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
                     {position.status}
@@ -213,7 +202,7 @@ const DeFiManager = ({ userId }) => {
           ))}
         </div>
       )}
-    </motion.div>
+    </// motion.div>
   );
 };
 

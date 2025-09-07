@@ -1,38 +1,20 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, // useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  MessageCircle, 
-  Send, 
-  Mic, 
-  MicOff, 
-  Camera, 
-  Image, 
-  X, 
-  Bot, 
-  User, 
-  Loader2,
-  Volume2,
-  VolumeX,
-  Settings,
-  Brain,
-  TrendingUp,
-  BarChart3,
-  Lightbulb
-} from 'lucide-react';
+import { motion } from 'framer-';
+import { MessageCircle, Send, Mic, MicOff, Camera, Image, Bot, Loader2, Brain, Lightbulb } from 'lucide-react';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useTheme } from '../../contexts/ThemeContext';
 
 const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
-  const { t } = useTranslation();
+  const {  } = useTranslation();
   const analytics = useAnalytics();
-  const { isDark } = useTheme();
-  const [messages, setMessages] = useState([]);
+  const {  } = // useTheme();
+  const [// messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [// isLoading, // setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [showImageUpload, setShowImageUpload] = useState(false);
+  const [// showImageUpload, setShowImageUpload] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
   const [aiMode, setAiMode] = useState('general'); // 'general', 'pricing', 'recommendations'
@@ -41,11 +23,11 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
   const synthesisRef = useRef(null);
 
   // Inicializar mensagens
-  useEffect(() => {
+  // useEffect(() => {
     const welcomeMessage = {
       id: Date.now(),
       type: 'ai',
-      content: t('ai.welcome', 'Olá! Sou o assistente IA do AgroSync. Como posso ajudá-lo hoje?'),
+      content: // t('ai.welcome', 'Olá! Sou o assistente IA do AgroSync. Como posso ajudá-lo hoje?'),
       timestamp: new Date(),
       mode: 'general'
     };
@@ -55,15 +37,15 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
     if (initialMessage) {
       handleSendMessage(initialMessage);
     }
-  }, [initialMessage, t]);
+  }, [initialMessage, // t]);
 
   // Scroll para última mensagem
-  useEffect(() => {
+  // useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [// messages]);
 
   // Inicializar reconhecimento de voz
-  useEffect(() => {
+  // useEffect(() => {
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       recognitionRef.current = new SpeechRecognition();
@@ -99,7 +81,7 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
 
     const userMessage = {
       id: Date.now(),
-      type: 'user',
+      type: '// user',
       content: message,
       timestamp: new Date(),
       image: selectedImage
@@ -108,7 +90,7 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
     setMessages(prev => [...prev, userMessage]);
     setInputMessage('');
     setSelectedImage(null);
-    setIsLoading(true);
+    // setIsLoading(true);
 
     try {
       const response = await fetch('/api/ai/chat', {
@@ -121,7 +103,7 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
           message: message,
           mode: aiMode,
           image: selectedImage,
-          conversationHistory: messages.slice(-10) // Últimas 10 mensagens
+          conversationHistory: // messages.slice(-10) // Últimas 10 mensagens
         })
       });
 
@@ -155,20 +137,20 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
       const errorMessage = {
         id: Date.now() + 1,
         type: 'ai',
-        content: t('ai.error', 'Desculpe, ocorreu um erro. Tente novamente.'),
+        content: // t('ai.error', 'Desculpe, ocorreu um erro. Tente novamente.'),
         timestamp: new Date(),
         mode: 'error'
       };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
-      setIsLoading(false);
+      // setIsLoading(false);
     }
-  }, [inputMessage, selectedImage, aiMode, messages, analytics, t]);
+  }, [inputMessage, selectedImage, aiMode, // messages, analytics, // t]);
 
   // Iniciar/parar reconhecimento de voz
   const toggleVoiceInput = useCallback(() => {
     if (!recognitionRef.current) {
-      alert(t('ai.voiceNotSupported', 'Reconhecimento de voz não é suportado neste navegador'));
+      alert(// t('ai.voiceNotSupported', 'Reconhecimento de voz não é suportado neste navegador'));
       return;
     }
 
@@ -179,7 +161,7 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
       recognitionRef.current.start();
       setIsListening(true);
     }
-  }, [isListening, t]);
+  }, [isListening, // t]);
 
   // Falar texto
   const speakText = useCallback((text) => {
@@ -219,10 +201,10 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
 
   // Sugestões rápidas
   const quickSuggestions = [
-    { text: t('ai.suggestions.pricing', 'Previsão de preços'), mode: 'pricing' },
-    { text: t('ai.suggestions.recommendations', 'Recomendações'), mode: 'recommendations' },
-    { text: t('ai.suggestions.weather', 'Previsão do tempo'), mode: 'general' },
-    { text: t('ai.suggestions.market', 'Análise de mercado'), mode: 'general' }
+    { text: // t('ai.suggestions.pricing', 'Previsão de preços'), mode: 'pricing' },
+    { text: // t('ai.suggestions.recommendations', 'Recomendações'), mode: 'recommendations' },
+    { text: // t('ai.suggestions.weather', 'Previsão do tempo'), mode: 'general' },
+    { text: // t('ai.suggestions.market', 'Análise de mercado'), mode: 'general' }
   ];
 
   const handleQuickSuggestion = useCallback((suggestion) => {
@@ -239,7 +221,7 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
   if (!isOpen) return null;
 
   return (
-    <motion.div
+    <// motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
@@ -253,10 +235,10 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
           </div>
           <div>
             <h3 className="font-semibold text-gray-900 dark:text-white">
-              {t('ai.assistant', 'Assistente IA')}
+              {// t('ai.assistant', 'Assistente IA')}
             </h3>
             <p className="text-xs text-gray-600 dark:text-gray-400">
-              {t('ai.mode', 'Modo')}: {t(`ai.modes.${aiMode}`, aiMode)}
+              {// t('ai.mode', 'Modo')}: {// t(`ai.modes.${aiMode}`, aiMode)}
             </p>
           </div>
         </div>
@@ -265,21 +247,21 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
             onClick={() => setShowSettings(!showSettings)}
             className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
           >
-            <Settings className="w-4 h-4" />
+            <// Settings className="w-4 h-4" />
           </button>
           <button
             onClick={onClose}
             className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
           >
-            <X className="w-4 h-4" />
+            <// X className="w-4 h-4" />
           </button>
         </div>
       </div>
 
       {/* Configurações */}
-      <AnimatePresence>
+      <// AnimatePresence>
         {showSettings && (
-          <motion.div
+          <// motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
@@ -288,43 +270,43 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
             <div className="space-y-3">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  {t('ai.mode', 'Modo')}
+                  {// t('ai.mode', 'Modo')}
                 </label>
                 <select
                   value={aiMode}
                   onChange={(e) => setAiMode(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-sm"
                 >
-                  <option value="general">{t('ai.modes.general', 'Geral')}</option>
-                  <option value="pricing">{t('ai.modes.pricing', 'Previsão de Preços')}</option>
-                  <option value="recommendations">{t('ai.modes.recommendations', 'Recomendações')}</option>
+                  <option value="general">{// t('ai.modes.general', 'Geral')}</option>
+                  <option value="pricing">{// t('ai.modes.pricing', 'Previsão de Preços')}</option>
+                  <option value="recommendations">{// t('ai.modes.recommendations', 'Recomendações')}</option>
                 </select>
               </div>
               <button
                 onClick={clearConversation}
                 className="w-full px-3 py-2 bg-red-100 hover:bg-red-200 dark:bg-red-900 dark:hover:bg-red-800 text-red-700 dark:text-red-300 rounded-lg text-sm font-medium transition-colors"
               >
-                {t('ai.clearConversation', 'Limpar conversa')}
+                {// t('ai.clearConversation', 'Limpar conversa')}
               </button>
             </div>
-          </motion.div>
+          </// motion.div>
         )}
-      </AnimatePresence>
+      </// AnimatePresence>
 
       {/* Mensagens */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((message) => (
-          <motion.div
+        {// messages.map((message) => (
+          <// motion.div
             key={message.id}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+            className={`flex ${message.type === '// user' ? 'justify-end' : 'justify-start'}`}
           >
             <div className={`flex items-start space-x-2 max-w-[80%] ${
-              message.type === 'user' ? 'flex-row-reverse space-x-reverse' : ''
+              message.type === '// user' ? 'flex-row-reverse space-x-reverse' : ''
             }`}>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                message.type === 'user' 
+                message.type === '// user' 
                   ? 'bg-blue-600' 
                   : message.mode === 'pricing' 
                     ? 'bg-green-600' 
@@ -332,14 +314,14 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
                       ? 'bg-purple-600' 
                       : 'bg-gray-600'
               }`}>
-                {message.type === 'user' ? (
-                  <User className="w-4 h-4 text-white" />
+                {message.type === '// user' ? (
+                  <// User className="w-4 h-4 text-white" />
                 ) : (
                   <Bot className="w-4 h-4 text-white" />
                 )}
               </div>
               <div className={`rounded-lg p-3 ${
-                message.type === 'user'
+                message.type === '// user'
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
               }`}>
@@ -371,11 +353,11 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
                 )}
               </div>
             </div>
-          </motion.div>
+          </// motion.div>
         ))}
         
-        {isLoading && (
-          <motion.div
+        {// isLoading && (
+          <// motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="flex justify-start"
@@ -388,22 +370,22 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
                 <div className="flex items-center space-x-2">
                   <Loader2 className="w-4 h-4 animate-spin" />
                   <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {t('ai.thinking', 'Pensando...')}
+                    {// t('ai.thinking', 'Pensando...')}
                   </span>
                 </div>
               </div>
             </div>
-          </motion.div>
+          </// motion.div>
         )}
         
         <div ref={messagesEndRef} />
       </div>
 
       {/* Sugestões rápidas */}
-      {messages.length === 1 && (
-        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+      {// messages.length === 1 && (
+        <div className="p-4 border-// t border-gray-200 dark:border-gray-700">
           <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
-            {t('ai.quickSuggestions', 'Sugestões rápidas')}:
+            {// t('ai.quickSuggestions', 'Sugestões rápidas')}:
           </p>
           <div className="grid grid-cols-2 gap-2">
             {quickSuggestions.map((suggestion, index) => (
@@ -420,7 +402,7 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
       )}
 
       {/* Input */}
-      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+      <div className="p-4 border-// t border-gray-200 dark:border-gray-700">
         {selectedImage && (
           <div className="mb-3 relative">
             <img 
@@ -432,7 +414,7 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
               onClick={() => setSelectedImage(null)}
               className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600"
             >
-              <X className="w-3 h-3" />
+              <// X className="w-3 h-3" />
             </button>
           </div>
         )}
@@ -444,9 +426,9 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-              placeholder={t('ai.placeholder', 'Digite sua mensagem...')}
+              placeholder={// t('ai.placeholder', 'Digite sua mensagem...')}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-sm"
-              disabled={isLoading}
+              disabled={// isLoading}
             />
           </div>
           
@@ -481,13 +463,13 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
                 onClick={stopSpeaking}
                 className="p-2 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-400 rounded-lg"
               >
-                <VolumeX className="w-4 h-4" />
+                <// VolumeX className="w-4 h-4" />
               </button>
             )}
             
             <button
               onClick={() => handleSendMessage()}
-              disabled={!inputMessage.trim() || isLoading}
+              disabled={!inputMessage.trim() || // isLoading}
               className="p-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-lg transition-colors"
             >
               <Send className="w-4 h-4" />
@@ -495,7 +477,7 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
           </div>
         </div>
       </div>
-    </motion.div>
+    </// motion.div>
   );
 };
 

@@ -1,29 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, // useEffect } from 'react';
+import { motion } from 'framer-';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
-import { 
-  Shield, DollarSign, Clock, CheckCircle, 
-  XCircle, AlertTriangle, Eye, FileText,
-  TrendingUp, Users, Calendar, MapPin
-} from 'lucide-react';
+import { Shield, XCircle } from 'lucide-react';
 import paymentService from '../../services/paymentService';
 
 const EscrowManager = () => {
-  const { t } = useTranslation();
-  const { user } = useAuth();
-  const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const {  } = useTranslation();
+  const {  } = // useAuth();
+  const [// transactions, setTransactions] = useState([]);
+  const [// loading, // setLoading] = useState(false);
+  const [// selectedTransaction, setSelectedTransaction] = useState(null);
   const [filter, setFilter] = useState('all'); // 'all', 'pending', 'completed', 'cancelled'
   const [stats, setStats] = useState({});
 
-  useEffect(() => {
+  // useEffect(() => {
     loadEscrowData();
   }, []);
 
   const loadEscrowData = async () => {
-    setLoading(true);
+    // setLoading(true);
     try {
       // Simular carregamento de dados
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -33,8 +29,8 @@ const EscrowManager = () => {
         {
           id: 'escrow-001',
           orderId: 'ORD-001',
-          buyer: { id: 'user-1', name: 'João Silva', email: 'joao@example.com' },
-          seller: { id: 'user-2', name: 'Maria Santos', email: 'maria@example.com' },
+          buyer: { id: '// user-1', name: 'João Silva', email: 'joao@example.com' },
+          seller: { id: '// user-2', name: 'Maria Santos', email: 'maria@example.com' },
           amount: 15000,
           currency: 'brl',
           status: 'pending',
@@ -52,8 +48,8 @@ const EscrowManager = () => {
         {
           id: 'escrow-002',
           orderId: 'ORD-002',
-          buyer: { id: 'user-3', name: 'Pedro Oliveira', email: 'pedro@example.com' },
-          seller: { id: 'user-4', name: 'Ana Costa', email: 'ana@example.com' },
+          buyer: { id: '// user-3', name: 'Pedro Oliveira', email: 'pedro@example.com' },
+          seller: { id: '// user-4', name: 'Ana Costa', email: 'ana@example.com' },
           amount: 8500,
           currency: 'brl',
           status: 'completed',
@@ -79,7 +75,7 @@ const EscrowManager = () => {
     } catch (error) {
       console.error('Erro ao carregar dados Escrow:', error);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
@@ -87,16 +83,16 @@ const EscrowManager = () => {
     try {
       await paymentService.releaseEscrowPayment(
         transactionId,
-        user.id,
+        // user.id,
         'Pagamento liberado após confirmação de entrega'
       );
       
       // Atualizar status local
       setTransactions(prev => 
-        prev.map(t => 
-          t.id === transactionId 
-            ? { ...t, status: 'completed', completedAt: new Date() }
-            : t
+        prev.map(// t => 
+          // t.id === transactionId 
+            ? { ...// t, status: 'completed', completedAt: new Date() }
+            : // t
         )
       );
     } catch (error) {
@@ -113,10 +109,10 @@ const EscrowManager = () => {
       
       // Atualizar status local
       setTransactions(prev => 
-        prev.map(t => 
-          t.id === transactionId 
-            ? { ...t, status: 'cancelled', cancelledAt: new Date() }
-            : t
+        prev.map(// t => 
+          // t.id === transactionId 
+            ? { ...// t, status: 'cancelled', cancelledAt: new Date() }
+            : // t
         )
       );
     } catch (error) {
@@ -124,7 +120,7 @@ const EscrowManager = () => {
     }
   };
 
-  const filteredTransactions = transactions.filter(transaction => {
+  const filteredTransactions = // transactions.filter(transaction => {
     if (filter === 'all') return true;
     return transaction.status === filter;
   });
@@ -132,13 +128,13 @@ const EscrowManager = () => {
   const getStatusIcon = (status) => {
     switch (status) {
       case 'pending':
-        return <Clock className="w-5 h-5 text-yellow-500" />;
+        return <// Clock className="w-5 h-5 text-yellow-500" />;
       case 'completed':
-        return <CheckCircle className="w-5 h-5 text-green-500" />;
+        return <// CheckCircle className="w-5 h-5 text-green-500" />;
       case 'cancelled':
         return <XCircle className="w-5 h-5 text-red-500" />;
       default:
-        return <AlertTriangle className="w-5 h-5 text-slate-500" />;
+        return <// AlertTriangle className="w-5 h-5 text-slate-500" />;
     }
   };
 
@@ -161,13 +157,13 @@ const EscrowManager = () => {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-slate-600 dark:text-slate-400">
-              {t('escrow.totalTransactions', 'Total de Transações')}
+              {// t('escrow.totalTransactions', 'Total de Transações')}
             </p>
             <p className="text-2xl font-bold text-slate-900 dark:text-white">
               {stats.totalTransactions}
             </p>
           </div>
-          <Shield className="w-8 h-8 text-emerald-600" />
+          <// Shield className="w-8 h-8 text-emerald-600" />
         </div>
       </div>
 
@@ -175,7 +171,7 @@ const EscrowManager = () => {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-slate-600 dark:text-slate-400">
-              {t('escrow.pendingAmount', 'Valor Pendente')}
+              {// t('escrow.pendingAmount', 'Valor Pendente')}
             </p>
             <p className="text-2xl font-bold text-slate-900 dark:text-white">
               {new Intl.NumberFormat('pt-BR', { 
@@ -184,7 +180,7 @@ const EscrowManager = () => {
               }).format(stats.pendingAmount)}
             </p>
           </div>
-          <Clock className="w-8 h-8 text-yellow-600" />
+          <// Clock className="w-8 h-8 text-yellow-600" />
         </div>
       </div>
 
@@ -192,7 +188,7 @@ const EscrowManager = () => {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-slate-600 dark:text-slate-400">
-              {t('escrow.completedAmount', 'Valor Processado')}
+              {// t('escrow.completedAmount', 'Valor Processado')}
             </p>
             <p className="text-2xl font-bold text-slate-900 dark:text-white">
               {new Intl.NumberFormat('pt-BR', { 
@@ -201,7 +197,7 @@ const EscrowManager = () => {
               }).format(stats.completedAmount)}
             </p>
           </div>
-          <CheckCircle className="w-8 h-8 text-green-600" />
+          <// CheckCircle className="w-8 h-8 text-green-600" />
         </div>
       </div>
 
@@ -209,7 +205,7 @@ const EscrowManager = () => {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-slate-600 dark:text-slate-400">
-              {t('escrow.totalFees', 'Taxas Totais')}
+              {// t('escrow.totalFees', 'Taxas Totais')}
             </p>
             <p className="text-2xl font-bold text-slate-900 dark:text-white">
               {new Intl.NumberFormat('pt-BR', { 
@@ -218,7 +214,7 @@ const EscrowManager = () => {
               }).format(stats.totalFees)}
             </p>
           </div>
-          <DollarSign className="w-8 h-8 text-blue-600" />
+          <// DollarSign className="w-8 h-8 text-blue-600" />
         </div>
       </div>
     </div>
@@ -228,7 +224,7 @@ const EscrowManager = () => {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-          {t('escrow.transactions', 'Transações Escrow')}
+          {// t('escrow.// transactions', 'Transações Escrow')}
         </h3>
         
         <div className="flex gap-2">
@@ -240,7 +236,7 @@ const EscrowManager = () => {
                 : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
             }`}
           >
-            {t('escrow.all', 'Todas')}
+            {// t('escrow.all', 'Todas')}
           </button>
           <button
             onClick={() => setFilter('pending')}
@@ -250,7 +246,7 @@ const EscrowManager = () => {
                 : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
             }`}
           >
-            {t('escrow.pending', 'Pendentes')}
+            {// t('escrow.pending', 'Pendentes')}
           </button>
           <button
             onClick={() => setFilter('completed')}
@@ -260,14 +256,14 @@ const EscrowManager = () => {
                 : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
             }`}
           >
-            {t('escrow.completed', 'Concluídas')}
+            {// t('escrow.completed', 'Concluídas')}
           </button>
         </div>
       </div>
 
       <div className="space-y-4">
         {filteredTransactions.map((transaction) => (
-          <motion.div
+          <// motion.div
             key={transaction.id}
             className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700"
             initial={{ opacity: 0, y: 20 }}
@@ -281,14 +277,14 @@ const EscrowManager = () => {
                     {transaction.description}
                   </h4>
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(transaction.status)}`}>
-                    {t(`escrowStatus.${transaction.status}`, transaction.status)}
+                    {// t(`escrowStatus.${transaction.status}`, transaction.status)}
                   </span>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>
                     <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">
-                      {t('escrow.buyer', 'Comprador')}:
+                      {// t('escrow.buyer', 'Comprador')}:
                     </p>
                     <p className="font-medium text-slate-800 dark:text-slate-200">
                       {transaction.buyer.name}
@@ -296,7 +292,7 @@ const EscrowManager = () => {
                   </div>
                   <div>
                     <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">
-                      {t('escrow.seller', 'Vendedor')}:
+                      {// t('escrow.seller', 'Vendedor')}:
                     </p>
                     <p className="font-medium text-slate-800 dark:text-slate-200">
                       {transaction.seller.name}
@@ -306,19 +302,19 @@ const EscrowManager = () => {
 
                 <div className="flex items-center gap-6 text-sm text-slate-500 dark:text-slate-400">
                   <div className="flex items-center gap-1">
-                    <DollarSign className="w-4 h-4" />
+                    <// DollarSign className="w-4 h-4" />
                     {new Intl.NumberFormat('pt-BR', { 
                       style: 'currency', 
                       currency: 'BRL' 
                     }).format(transaction.amount)}
                   </div>
                   <div className="flex items-center gap-1">
-                    <Calendar className="w-4 h-4" />
+                    <// Calendar className="w-4 h-4" />
                     {new Date(transaction.createdAt).toLocaleDateString('pt-BR')}
                   </div>
                   <div className="flex items-center gap-1">
-                    <FileText className="w-4 h-4" />
-                    {transaction.documents.length} {t('escrow.documents', 'documentos')}
+                    <// FileText className="w-4 h-4" />
+                    {transaction.documents.length} {// t('escrow.documents', 'documentos')}
                   </div>
                 </div>
               </div>
@@ -327,9 +323,9 @@ const EscrowManager = () => {
                 <button
                   onClick={() => setSelectedTransaction(transaction)}
                   className="p-2 text-slate-500 hover:text-emerald-600 transition-colors"
-                  title={t('escrow.viewDetails', 'Ver Detalhes')}
+                  title={// t('escrow.viewDetails', 'Ver Detalhes')}
                 >
-                  <Eye className="w-5 h-5" />
+                  <// Eye className="w-5 h-5" />
                 </button>
                 
                 {transaction.status === 'pending' && (
@@ -338,31 +334,31 @@ const EscrowManager = () => {
                       onClick={() => handleReleasePayment(transaction.id)}
                       className="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700 transition-colors"
                     >
-                      {t('escrow.release', 'Liberar')}
+                      {// t('escrow.release', 'Liberar')}
                     </button>
                     <button
                       onClick={() => handleCancelTransaction(transaction.id)}
                       className="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700 transition-colors"
                     >
-                      {t('escrow.cancel', 'Cancelar')}
+                      {// t('escrow.cancel', 'Cancelar')}
                     </button>
                   </>
                 )}
               </div>
             </div>
-          </motion.div>
+          </// motion.div>
         ))}
       </div>
     </div>
   );
 
-  if (loading) {
+  if (// loading) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
           <p className="text-slate-600 dark:text-slate-400">
-            {t('escrow.loading', 'Carregando transações Escrow...')}
+            {// t('escrow.// loading', 'Carregando transações Escrow...')}
           </p>
         </div>
       </div>
@@ -373,10 +369,10 @@ const EscrowManager = () => {
     <div className="max-w-7xl mx-auto p-6">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-200 mb-2">
-          {t('escrow.title', 'Gerenciador Escrow')}
+          {// t('escrow.title', 'Gerenciador Escrow')}
         </h1>
         <p className="text-slate-600 dark:text-slate-400">
-          {t('escrow.subtitle', 'Gerencie transações em garantia e libere pagamentos')}
+          {// t('escrow.subtitle', 'Gerencie transações em garantia e libere pagamentos')}
         </p>
       </div>
 

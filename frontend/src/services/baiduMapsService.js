@@ -1,23 +1,23 @@
-import axios from 'axios';
+// import axios from 'axios';
 
 // Configuração da API
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+// const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
 
 // Configurações do Baidu Maps
-const BAIDU_CONFIG = {
-  // Em produção, usar chaves reais via backend
-  // apiKey: process.env.REACT_APP_BAIDU_MAPS_API_KEY,
-  baseUrl: 'https://api.map.baidu.com',
-  geocodingUrl: 'https://api.map.baidu.com/geocoding/v3',
-  reverseGeocodingUrl: 'https://api.map.baidu.com/reverse_geocoding/v3',
-  placeSearchUrl: 'https://api.map.baidu.com/place/v2/search',
-  routeUrl: 'https://api.map.baidu.com/direction/v2',
-  // Coordenadas padrão do Brasil (São Paulo)
-  defaultLocation: {
-    lat: -23.5505,
-    lng: -46.6333
-  }
-};
+// const BAIDU_CONFIG = {
+//   // Em produção, usar chaves reais via backend
+//   // apiKey: process.env.REACT_APP_BAIDU_MAPS_API_KEY,
+//   baseUrl: 'https://api.map.baidu.com',
+//   geocodingUrl: 'https://api.map.baidu.com/geocoding/v3',
+//   reverseGeocodingUrl: 'https://api.map.baidu.com/reverse_geocoding/v3',
+//   placeSearchUrl: 'https://api.map.baidu.com/place/v2/search',
+//   routeUrl: 'https://api.map.baidu.com/direction/v2',
+//   // Coordenadas padrão do Brasil (São Paulo)
+//   defaultLocation: {
+//     lat: -23.5505,
+//     lng: -46.6333
+//   }
+// };
 
 // Tipos de busca de localização
 export const LOCATION_TYPES = {
@@ -532,4 +532,5 @@ class BaiduMapsService {
   }
 }
 
-export default new BaiduMapsService();
+const baiduMapsService = new BaiduMapsService();
+export default baiduMapsService;

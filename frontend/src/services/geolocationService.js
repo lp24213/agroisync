@@ -210,7 +210,7 @@ class GeolocationService {
   getAgriculturalRegion() {
     if (!this.userLocation) return null;
 
-    const { country, region, city } = this.userLocation;
+    const { country, region } = this.userLocation;
 
     if (country === 'Brasil') {
       // Mapeamento das principais regiões agrícolas do Brasil
@@ -264,4 +264,5 @@ class GeolocationService {
 }
 
 // Exportar instância singleton
-export default new GeolocationService();
+const geolocationService = new GeolocationService();
+export default geolocationService;

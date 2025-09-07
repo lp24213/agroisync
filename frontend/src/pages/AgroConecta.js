@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Truck, MapPin, Clock, Shield, Users, TrendingUp } from 'lucide-react';
+import { Truck } from 'lucide-react';
 
 const AgroConecta = () => {
   return (

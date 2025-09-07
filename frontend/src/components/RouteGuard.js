@@ -2,7 +2,7 @@ import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Navigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Shield, Lock, User } from 'lucide-react';
+import { Shield } from 'lucide-react';
 
 const RouteGuard = ({ children, requireAuth = false, requireAdmin = false }) => {
   const { isAuthenticated, checkIsAdmin, loading } = useAuth();

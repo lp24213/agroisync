@@ -1,7 +1,7 @@
-import axios from 'axios';
+// import axios from 'axios';
 
 // Configuração da API
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+// const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
 
 // Idiomas suportados
 export const SUPPORTED_LANGUAGES = {
@@ -287,7 +287,7 @@ class ChatbotService {
   // Processar gravação de áudio
   async processAudioRecording() {
     try {
-      const audioBlob = new Blob(this.audioChunks, { type: 'audio/wav' });
+      // const audioBlob = new Blob(this.audioChunks, { type: 'audio/wav' });
       
       // Em produção, enviar para API de transcrição (Whisper, etc.)
       // const formData = new FormData();
@@ -570,4 +570,5 @@ class ChatbotService {
   }
 }
 
-export default new ChatbotService();
+const chatbotService = new ChatbotService();
+export default chatbotService;

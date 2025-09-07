@@ -1,35 +1,31 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Wallet, Link, Unlink, Copy, ExternalLink, 
-  RefreshCw, Shield,
-  CheckCircle, XCircle, AlertTriangle
-} from 'lucide-react';
+import React, { useState, // useEffect, useCallback } from 'react';
+import { motion } from 'framer-';
+import { Wallet, Link, Unlink, XCircle } from 'lucide-react';
 import cryptoService from '../services/cryptoService';
 
 const Web3Wallet = () => {
   const [connectionStatus, setConnectionStatus] = useState({});
   const [walletBalance, setWalletBalance] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [// loading, // setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  useEffect(() => {
+  // useEffect(() => {
     // Verificar status inicial
     updateConnectionStatus();
     
     // Inscrever para atualizações
-    const unsubscribe = cryptoService.subscribe(handleStatusUpdate);
+    const unsubscribe = cryptoService.subscribe(// handleStatusUpdate);
     
     return () => unsubscribe();
-  }, [handleStatusUpdate]);
+  }, [// handleStatusUpdate]);
 
   const updateConnectionStatus = () => {
     const status = cryptoService.getConnectionStatus();
     setConnectionStatus(status);
   };
 
-  const handleStatusUpdate = useCallback((status) => {
+  const // handleStatusUpdate = useCallback((status) => {
     setConnectionStatus(status);
     if (status.isConnected) {
       loadWalletBalance();
@@ -39,7 +35,7 @@ const Web3Wallet = () => {
   }, []);
 
   const handleConnectWallet = async () => {
-    setLoading(true);
+    // setLoading(true);
     setError('');
     setSuccess('');
 
@@ -52,7 +48,7 @@ const Web3Wallet = () => {
     } catch (error) {
       setError(error.message);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
@@ -125,7 +121,7 @@ const Web3Wallet = () => {
   };
 
   const renderNotConnected = () => (
-    <motion.div
+    <// motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="text-center space-y-6"
@@ -146,7 +142,7 @@ const Web3Wallet = () => {
       {!connectionStatus.metamaskAvailable && (
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
           <div className="flex items-center space-x-2">
-            <AlertTriangle className="w-5 h-5 text-yellow-600" />
+            <// AlertTriangle className="w-5 h-5 text-yellow-600" />
             <span className="text-yellow-800 font-medium">
               Metamask não encontrado
             </span>
@@ -161,23 +157,23 @@ const Web3Wallet = () => {
             className="inline-flex items-center space-x-1 text-yellow-800 hover:text-yellow-900 text-sm mt-2"
           >
             <span>Baixar Metamask</span>
-            <ExternalLink className="w-4 h-4" />
+            <// ExternalLink className="w-4 h-4" />
           </a>
         </div>
       )}
 
       <button
         onClick={handleConnectWallet}
-        disabled={loading || !connectionStatus.metamaskAvailable}
+        disabled={// loading || !connectionStatus.metamaskAvailable}
         className="px-8 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2 mx-auto"
       >
-        {loading ? (
-          <RefreshCw className="w-5 h-5 animate-spin" />
+        {// loading ? (
+          <// RefreshCw className="w-5 h-5 animate-spin" />
         ) : (
           <Link className="w-5 h-5" />
         )}
         <span>
-          {loading ? 'Conectando...' : 'Conectar Carteira'}
+          {// loading ? 'Conectando...' : 'Conectar Carteira'}
         </span>
       </button>
 
@@ -190,11 +186,11 @@ const Web3Wallet = () => {
           <li>• Histórico de transações</li>
         </ul>
       </div>
-    </motion.div>
+    </// motion.div>
   );
 
   const renderConnected = () => (
-    <motion.div
+    <// motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="space-y-6"
@@ -251,14 +247,14 @@ const Web3Wallet = () => {
                 className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
                 title="Copiar endereço"
               >
-                <Copy className="w-4 h-4" />
+                <// Copy className="w-4 h-4" />
               </button>
               <button
                 onClick={() => openExplorer(connectionStatus.currentAccount)}
                 className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
                 title="Ver no explorador"
               >
-                <ExternalLink className="w-4 h-4" />
+                <// ExternalLink className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -293,7 +289,7 @@ const Web3Wallet = () => {
             onClick={loadWalletBalance}
             className="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:border-emerald-300 hover:bg-emerald-50 transition-colors"
           >
-            <RefreshCw className="w-5 h-5 text-emerald-600" />
+            <// RefreshCw className="w-5 h-5 text-emerald-600" />
             <div className="text-left">
               <div className="font-medium text-gray-900">Atualizar Saldo</div>
               <div className="text-sm text-gray-500">Sincronizar com a blockchain</div>
@@ -304,7 +300,7 @@ const Web3Wallet = () => {
             onClick={() => window.open('https://metamask.io/', '_blank')}
             className="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors"
           >
-            <Shield className="w-5 h-5 text-blue-600" />
+            <// Shield className="w-5 h-5 text-blue-600" />
             <div className="text-left">
               <div className="font-medium text-gray-900">Gerenciar Carteira</div>
               <div className="text-sm text-gray-500">Abrir Metamask</div>
@@ -316,22 +312,22 @@ const Web3Wallet = () => {
       {/* Status de Segurança */}
       <div className="bg-green-50 border border-green-200 rounded-lg p-4">
         <div className="flex items-center space-x-2">
-          <CheckCircle className="w-5 h-5 text-green-600" />
+          <// CheckCircle className="w-5 h-5 text-green-600" />
           <span className="font-medium text-green-900">Carteira Segura</span>
         </div>
         <p className="text-green-700 text-sm mt-1">
           Sua carteira está conectada e segura. As chaves privadas permanecem em seu dispositivo.
         </p>
       </div>
-    </motion.div>
+    </// motion.div>
   );
 
   return (
     <div className="max-w-2xl mx-auto">
       {/* Mensagens de Status */}
-      <AnimatePresence>
+      <// AnimatePresence>
         {error && (
-          <motion.div
+          <// motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -342,24 +338,24 @@ const Web3Wallet = () => {
               <span className="text-red-800 font-medium">Erro</span>
             </div>
             <p className="text-red-700 text-sm mt-1">{error}</p>
-          </motion.div>
+          </// motion.div>
         )}
 
         {success && (
-          <motion.div
+          <// motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4"
           >
             <div className="flex items-center space-x-2">
-              <CheckCircle className="w-5 h-5 text-green-600" />
+              <// CheckCircle className="w-5 h-5 text-green-600" />
               <span className="text-green-800 font-medium">Sucesso</span>
             </div>
             <p className="text-green-700 text-sm mt-1">{success}</p>
-          </motion.div>
+          </// motion.div>
         )}
-      </AnimatePresence>
+      </// AnimatePresence>
 
       {/* Conteúdo Principal */}
       {connectionStatus.isConnected ? renderConnected() : renderNotConnected()}

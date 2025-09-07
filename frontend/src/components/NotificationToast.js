@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Bell, X, Check, AlertTriangle, Info, 
-  DollarSign, MessageSquare, Truck, Package
+  Bell, X, AlertTriangle, 
+  DollarSign, MessageSquare
 } from 'lucide-react';
-import notificationService, { NOTIFICATION_TYPES } from '../services/notificationService';
 
 const NotificationToast = ({ notification, onClose, onAction }) => {
   const [isVisible, setIsVisible] = useState(true);

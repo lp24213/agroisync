@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Bell, X, Check, Trash, Settings, 
-  Mail, MessageSquare, AlertTriangle, DollarSign,
-  Clock, Eye, EyeOff, Volume2, VolumeX
+  MessageSquare, AlertTriangle, DollarSign,
+  Clock, Eye
 } from 'lucide-react';
 import notificationService, { 
   NOTIFICATION_TYPES, 
@@ -22,13 +22,26 @@ const NotificationCenter = ({ userId, isOpen, onClose }) => {
   
   const notificationRef = useRef(null);
 
+  const loadNotifications = useCallback(async () => {
+    setLoading(true);
+    try {
+      const userNotifications = await notificationService.getUserNotifications(userId);
+      setNotifications(userNotifications);
+      setUnreadCount(notificationService.getUnreadCount(userId));
+    } catch (error) {
+      console.error('Erro ao carregar notificações:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [userId]);
+
   useEffect(() => {
     if (isOpen && userId) {
       loadNotifications();
       loadPreferences();
       setupNotificationHandler();
     }
-  }, [isOpen, userId]);
+  }, [isOpen, userId, loadNotifications]);
 
   useEffect(() => {
     // Fechar ao clicar fora
@@ -46,19 +59,6 @@ const NotificationCenter = ({ userId, isOpen, onClose }) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen, onClose]);
-
-  const loadNotifications = async () => {
-    setLoading(true);
-    try {
-      const userNotifications = await notificationService.getUserNotifications(userId);
-      setNotifications(userNotifications);
-      setUnreadCount(notificationService.getUnreadCount(userId));
-    } catch (error) {
-      console.error('Erro ao carregar notificações:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const loadPreferences = async () => {
     try {
