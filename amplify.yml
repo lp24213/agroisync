@@ -24,8 +24,9 @@ frontend:
         - export GENERATE_SOURCEMAP=false
         - export DISABLE_ESLINT_PLUGIN=true
         - export ESLINT_NO_DEV_ERRORS=true
-        - echo "📦 Executando build de produção..."
-        - npm run build:production
+        - export SKIP_PREFLIGHT_CHECK=true
+        - echo "📦 Executando build direto com react-scripts..."
+        - npx react-scripts build
         - echo "✅ Build do frontend concluído com sucesso!"
         - echo "📊 Verificando tamanho do build..."
         - du -sh build/
