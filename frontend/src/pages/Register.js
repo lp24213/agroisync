@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, CheckCircle, AlertCircle, User, Mail, Phone, MapPin, Building, FileText } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle, User, Mail, FileText } from 'lucide-react';
 import validationService from '../services/validationService';
 
 const Register = () => {
@@ -27,7 +27,6 @@ const Register = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isValidating, setIsValidating] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -216,13 +215,13 @@ const Register = () => {
                 />
                 <span className="text-sm text-gray-700 dark:text-gray-300">
                   Eu aceito os{' '}
-                  <a href="#" className="text-primary-600 hover:text-primary-700 dark:text-primary-400">
+                  <button type="button" className="text-primary-600 hover:text-primary-700 dark:text-primary-400 underline">
                     Termos de Uso
-                  </a>{' '}
+                  </button>{' '}
                   e a{' '}
-                  <a href="#" className="text-primary-600 hover:text-primary-700 dark:text-primary-400">
+                  <button type="button" className="text-primary-600 hover:text-primary-700 dark:text-primary-400 underline">
                     Política de Privacidade
-                  </a>{' '}
+                  </button>{' '}
                   do AgroSync *
                 </span>
               </label>
