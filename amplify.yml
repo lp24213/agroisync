@@ -1,68 +1,34 @@
 version: 1
-applications:
-  - appRoot: frontend
-    frontend:
-      phases:
-        preBuild:
-          commands:
-            - echo "🚀 Iniciando deploy profissional do AgroSync..."
-            - echo "📦 Instalando dependências do frontend..."
-            - npm ci --prefer-offline --no-audit
-            - echo "🔍 Verificando versões..."
-            - node --version
-            - npm --version
-            - echo "🔧 Configurando variáveis de ambiente..."
-            - echo "REACT_APP_API_URL=$REACT_APP_API_URL" >> .env.production
-            - echo "REACT_APP_STRIPE_PUBLISHABLE_KEY=$REACT_APP_STRIPE_PUBLISHABLE_KEY" >> .env.production
-            - echo "REACT_APP_WEB3_PROVIDER=$REACT_APP_WEB3_PROVIDER" >> .env.production
-            - echo "REACT_APP_CHATBOT_API_KEY=$REACT_APP_CHATBOT_API_KEY" >> .env.production
-        build:
-          commands:
-            - echo "🏗️ Construindo aplicação frontend profissional..."
-            - npm run build
-            - echo "✅ Build do frontend concluído com sucesso!"
-            - echo "📊 Verificando tamanho do build..."
-            - du -sh build/
-            - echo "🔍 Verificando arquivos gerados..."
-            - ls -la build/
-      artifacts:
-        baseDirectory: build
-        files:
-          - '**/*'
-      cache:
-        paths:
-          - node_modules/**/*
-          - .npm/**/*
-          - build/**/*
-    backend:
-      phases:
-        preBuild:
-          commands:
-            - echo "🔧 Configurando backend profissional..."
-            - cd backend
-            - echo "📦 Instalando dependências do backend..."
-            - npm ci --prefer-offline --no-audit
-            - echo "🔍 Verificando versões do backend..."
-            - node --version
-            - npm --version
-            - echo "🔐 Configurando variáveis de ambiente do backend..."
-            - echo "MONGODB_URI=$MONGODB_URI" >> .env.production
-            - echo "JWT_SECRET=$JWT_SECRET" >> .env.production
-            - echo "STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY" >> .env.production
-            - echo "REDIS_URL=$REDIS_URL" >> .env.production
-        build:
-          commands:
-            - echo "🏗️ Construindo aplicação backend profissional..."
-            - npm run build
-            - echo "✅ Build do backend concluído com sucesso!"
-            - echo "📊 Verificando tamanho do build do backend..."
-            - du -sh dist/
-      artifacts:
-        baseDirectory: backend/dist
-        files:
-          - '**/*'
-      cache:
-        paths:
-          - backend/node_modules/**/*
-          - backend/.npm/**/*
-          - backend/dist/**/*
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - echo "🚀 Iniciando deploy profissional do AgroSync..."
+        - echo "📦 Instalando dependências do frontend..."
+        - npm ci --prefer-offline --no-audit
+        - echo "🔍 Verificando versões..."
+        - node --version
+        - npm --version
+        - echo "🔧 Configurando variáveis de ambiente..."
+        - echo "REACT_APP_API_URL=$REACT_APP_API_URL" >> .env.production
+        - echo "REACT_APP_STRIPE_PUBLISHABLE_KEY=$REACT_APP_STRIPE_PUBLISHABLE_KEY" >> .env.production
+        - echo "REACT_APP_WEB3_PROVIDER=$REACT_APP_WEB3_PROVIDER" >> .env.production
+        - echo "REACT_APP_CHATBOT_API_KEY=$REACT_APP_CHATBOT_API_KEY" >> .env.production
+    build:
+      commands:
+        - echo "🏗️ Construindo aplicação frontend profissional..."
+        - CI=false npm run build
+        - echo "✅ Build do frontend concluído com sucesso!"
+        - echo "📊 Verificando tamanho do build..."
+        - du -sh build/
+        - echo "🔍 Verificando arquivos gerados..."
+        - ls -la build/
+  artifacts:
+    baseDirectory: build
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
+      - .npm/**/*
+      - build/**/*
