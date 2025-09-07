@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Truck } from 'lucide-react';
 
 const AgroConecta = () => {
   return (

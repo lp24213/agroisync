@@ -4,8 +4,16 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import Layout from './components/Layout';
 import ChatbotWidget from './components/ChatbotWidget';
+import StockTicker from './components/StockTicker';
+import GrainQuotes from './components/GrainQuotes';
+import WeatherWidget from './components/WeatherWidget';
+import NewsFeed from './components/NewsFeed';
+
+// Importar estilos futuristas
+import './styles/futuristic-theme.css';
 
 // Pages
 import Home from './pages/Home';
@@ -49,11 +57,26 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <LanguageProvider>
-          <Router>
-            <div className="App">
-              <Layout>
+      <ThemeProvider>
+        <AuthProvider>
+          <LanguageProvider>
+            <Router>
+              <div className="App">
+                {/* Ticker de Ações */}
+                <StockTicker />
+                
+                {/* Barra de Informações */}
+                <div className="bg-secondary border-b border-light py-2">
+                  <div className="container-futuristic">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
+                      <GrainQuotes />
+                      <WeatherWidget />
+                      <NewsFeed />
+                    </div>
+                  </div>
+                </div>
+                
+                <Layout>
                 <Routes>
                   {/* Public Routes */}
                   <Route path="/" element={<Home />} />
@@ -91,40 +114,42 @@ function App() {
                   <Route path="/unauthorized" element={<Unauthorized />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
-              </Layout>
-              
-              {/* Global Chatbot Widget */}
-              <ChatbotWidget />
-              
-              {/* Toast Notifications */}
-              <Toaster
-                position="top-right"
-                toastOptions={{
-                  duration: 4000,
-                  style: {
-                    background: 'rgba(26, 26, 26, 0.9)',
-                    color: '#fff',
-                    border: '1px solid rgba(0, 212, 255, 0.3)',
-                    backdropFilter: 'blur(10px)',
-                  },
-                  success: {
-                    iconTheme: {
-                      primary: '#00ff88',
-                      secondary: '#000',
+                </Layout>
+                
+                {/* Global Chatbot Widget */}
+                <ChatbotWidget />
+                
+                {/* Toast Notifications */}
+                <Toaster
+                  position="top-right"
+                  toastOptions={{
+                    duration: 4000,
+                    style: {
+                      background: 'var(--bg-glass)',
+                      color: 'var(--text-primary)',
+                      border: '1px solid var(--border-light)',
+                      backdropFilter: 'var(--blur-glass)',
+                      borderRadius: 'var(--border-radius)',
                     },
-                  },
-                  error: {
-                    iconTheme: {
-                      primary: '#ff0080',
-                      secondary: '#000',
+                    success: {
+                      iconTheme: {
+                        primary: 'var(--success)',
+                        secondary: 'var(--text-inverse)',
+                      },
                     },
-                  },
-                }}
-              />
-            </div>
-          </Router>
-        </LanguageProvider>
-      </AuthProvider>
+                    error: {
+                      iconTheme: {
+                        primary: 'var(--danger)',
+                        secondary: 'var(--text-inverse)',
+                      },
+                    },
+                  }}
+                />
+              </div>
+            </Router>
+          </LanguageProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

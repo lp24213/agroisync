@@ -1,300 +1,213 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Menu, 
-  X, 
-  Sun, 
-  Moon, 
-  Globe, 
-  User, 
-  LogOut,
-  Settings,
-  Bell,
-  ChevronDown
-} from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { useLanguage } from '../contexts/LanguageContext';
-import useStore from '../store/useStore';
+import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, ChevronDown } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
+import { useTheme } from '../contexts/ThemeContext';
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [showUserMenu, setShowUserMenu] = useState(false);
-  const [showLanguageMenu, setShowLanguageMenu] = useState(false);
-  
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
   const location = useLocation();
-  const { user, isAuthenticated, logout } = useAuth();
-  const { currentLanguage, supportedLanguages, changeLanguage, getCurrentLanguageInfo } = useLanguage();
-  const { theme, setTheme, notifications, unreadCount } = useStore();
+  useTheme();
 
-  const navItems = [
-    { path: '/', label: 'navigation.home', icon: '🏠' },
-    { path: '/marketplace', label: 'navigation.marketplace', icon: '🤝' },
-    { path: '/agroconecta', label: 'navigation.agroconecta', icon: '🚛' },
-    { path: '/crypto', label: 'navigation.crypto', icon: '₿' },
+  const navigation = [
+    { name: 'Home', href: '/' },
+    { name: 'Sobre', href: '/sobre' },
+    { name: 'Contato', href: '/contato' },
+    { name: 'Planos', href: '/planos' },
+    { 
+      name: 'Serviços', 
+      href: '#',
+      submenu: [
+        { name: 'Loja/Intermediação', href: '/loja' },
+        { name: 'AgroConecta', href: '/agroconecta' },
+        { name: 'Marketplace', href: '/marketplace' }
+      ]
+    }
   ];
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const handleLogout = async () => {
-    await logout();
-    setShowUserMenu(false);
+  const isActive = (href) => {
+    if (href === '/') {
+      return location.pathname === '/';
+    }
+    return location.pathname.startsWith(href);
   };
-
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
-
-  const currentLangInfo = getCurrentLanguageInfo();
 
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled 
-          ? 'bg-black/80 backdrop-blur-xl border-b border-white/10' 
-          : 'bg-transparent'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <nav className="nav-futuristic">
+      <div className="container-futuristic">
+        <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="w-10 h-10 bg-gradient-to-r from-neon-blue to-neon-purple rounded-xl flex items-center justify-center"
-            >
-              <span className="text-white font-bold text-lg">A</span>
-            </motion.div>
-            <span className="text-white font-bold text-xl hidden sm:block">
-              AgroSync
-            </span>
-          </Link>
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Link to="/" className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-primary-gradient rounded-xl flex items-center justify-center">
+                <span className="text-white font-bold text-xl">A</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xl font-bold text-gradient">AgroSync</span>
+                <span className="text-xs text-muted">Futurista</span>
+              </div>
+            </Link>
+          </motion.div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 ${
-                  location.pathname === item.path
-                    ? 'text-neon-blue bg-white/10'
-                    : 'text-gray-300 hover:text-white hover:bg-white/5'
-                }`}
+          <div className="hidden md:flex items-center gap-8">
+            {navigation.map((item, index) => (
+              <motion.div
+                key={item.name}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="relative"
               >
-                <span>{item.icon}</span>
-                <span className="text-sm font-medium">
-                  {item.label.split('.').reduce((obj, key) => obj?.[key], {
-                    navigation: {
-                      home: 'Início',
-                      marketplace: 'Intermediação',
-                      agroconecta: 'AgroConecta',
-                      crypto: 'Cripto'
-                    }
-                  })}
-                </span>
-              </Link>
+                {item.submenu ? (
+                  <div
+                    className="relative"
+                    onMouseEnter={() => setIsServicesOpen(true)}
+                    onMouseLeave={() => setIsServicesOpen(false)}
+                  >
+                    <button className="flex items-center gap-1 text-primary hover:text-primary-dark transition-colors font-medium">
+                      {item.name}
+                      <ChevronDown size={16} />
+                    </button>
+                    
+                    <AnimatePresence>
+                      {isServicesOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          className="absolute top-full left-0 mt-2 w-48 glass-card p-2 z-50"
+                        >
+                          {item.submenu.map((subItem) => (
+                            <Link
+                              key={subItem.name}
+                              to={subItem.href}
+                              className="block px-4 py-2 text-sm text-primary hover:bg-primary hover:text-white rounded-lg transition-colors"
+                            >
+                              {subItem.name}
+                            </Link>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                ) : (
+                  <Link
+                    to={item.href}
+                    className={`font-medium transition-colors ${
+                      isActive(item.href)
+                        ? 'text-primary'
+                        : 'text-secondary hover:text-primary'
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                )}
+              </motion.div>
             ))}
           </div>
 
-          {/* Right Side Actions */}
-          <div className="flex items-center space-x-4">
-            {/* Theme Toggle */}
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={toggleTheme}
-              className="p-2 rounded-lg glass-effect text-gray-300 hover:text-white transition-colors"
-            >
-              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </motion.button>
-
-            {/* Language Selector */}
-            <div className="relative">
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => setShowLanguageMenu(!showLanguageMenu)}
-                className="flex items-center space-x-1 p-2 rounded-lg glass-effect text-gray-300 hover:text-white transition-colors"
+          {/* Right Side */}
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            
+            <div className="hidden md:flex items-center gap-3">
+              <Link
+                to="/login"
+                className="text-primary hover:text-primary-dark font-medium transition-colors"
               >
-                <Globe className="w-5 h-5" />
-                <span className="text-sm hidden sm:block">{currentLangInfo?.flag}</span>
-                <ChevronDown className="w-4 h-4" />
-              </motion.button>
-
-              <AnimatePresence>
-                {showLanguageMenu && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="absolute right-0 mt-2 w-48 card-futuristic p-2"
-                  >
-                    {supportedLanguages.map((lang) => (
-                      <button
-                        key={lang.code}
-                        onClick={() => {
-                          changeLanguage(lang.code);
-                          setShowLanguageMenu(false);
-                        }}
-                        className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
-                          currentLanguage === lang.code
-                            ? 'bg-neon-blue/20 text-neon-blue'
-                            : 'text-gray-300 hover:text-white hover:bg-white/10'
-                        }`}
-                      >
-                        <span>{lang.flag}</span>
-                        <span className="text-sm">{lang.name}</span>
-                      </button>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                Login
+              </Link>
+              <Link
+                to="/cadastro"
+                className="btn-futuristic"
+              >
+                Cadastrar
+              </Link>
             </div>
 
-            {/* Notifications */}
-            {isAuthenticated && (
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="relative p-2 rounded-lg glass-effect text-gray-300 hover:text-white transition-colors"
-              >
-                <Bell className="w-5 h-5" />
-                {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-neon-pink text-white text-xs rounded-full flex items-center justify-center">
-                    {unreadCount}
-                  </span>
-                )}
-              </motion.button>
-            )}
-
-            {/* User Menu */}
-            {isAuthenticated ? (
-              <div className="relative">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center space-x-2 p-2 rounded-lg glass-effect text-gray-300 hover:text-white transition-colors"
-                >
-                  <User className="w-5 h-5" />
-                  <span className="text-sm hidden sm:block">{user?.username}</span>
-                  <ChevronDown className="w-4 h-4" />
-                </motion.button>
-
-                <AnimatePresence>
-                  {showUserMenu && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="absolute right-0 mt-2 w-48 card-futuristic p-2"
-                    >
-                      <Link
-                        to="/dashboard"
-                        onClick={() => setShowUserMenu(false)}
-                        className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
-                      >
-                        <User className="w-4 h-4" />
-                        <span className="text-sm">Dashboard</span>
-                      </Link>
-                      <Link
-                        to="/settings"
-                        onClick={() => setShowUserMenu(false)}
-                        className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
-                      >
-                        <Settings className="w-4 h-4" />
-                        <span className="text-sm">Configurações</span>
-                      </Link>
-                      <button
-                        onClick={handleLogout}
-                        className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        <span className="text-sm">Sair</span>
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            ) : (
-              <div className="flex items-center space-x-2">
-                <Link
-                  to="/login"
-                  className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
-                >
-                  Entrar
-                </Link>
-                <Link
-                  to="/register"
-                  className="btn-primary px-4 py-2 text-sm"
-                >
-                  Cadastrar
-                </Link>
-              </div>
-            )}
-
             {/* Mobile Menu Button */}
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden p-2 rounded-lg glass-effect text-gray-300 hover:text-white transition-colors"
+            <button
+              className="md:hidden p-2 text-primary hover:text-primary-dark transition-colors"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </motion.button>
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Menu */}
         <AnimatePresence>
-          {isOpen && (
+          {isMenuOpen && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="md:hidden border-t border-white/10 mt-4 pt-4"
+              className="md:hidden glass-card mt-4 p-4"
             >
-              <div className="space-y-2">
-                {navItems.map((item) => (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    onClick={() => setIsOpen(false)}
-                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 ${
-                      location.pathname === item.path
-                        ? 'text-neon-blue bg-white/10'
-                        : 'text-gray-300 hover:text-white hover:bg-white/5'
-                    }`}
-                  >
-                    <span>{item.icon}</span>
-                    <span className="font-medium">
-                      {item.label.split('.').reduce((obj, key) => obj?.[key], {
-                        navigation: {
-                          home: 'Início',
-                          marketplace: 'Intermediação',
-                          agroconecta: 'AgroConecta',
-                          crypto: 'Cripto'
-                        }
-                      })}
-                    </span>
-                  </Link>
+              <div className="flex flex-col gap-4">
+                {navigation.map((item) => (
+                  <div key={item.name}>
+                    {item.submenu ? (
+                      <div>
+                        <div className="font-medium text-primary mb-2">{item.name}</div>
+                        <div className="ml-4 flex flex-col gap-2">
+                          {item.submenu.map((subItem) => (
+                            <Link
+                              key={subItem.name}
+                              to={subItem.href}
+                              className="text-sm text-secondary hover:text-primary transition-colors"
+                              onClick={() => setIsMenuOpen(false)}
+                            >
+                              {subItem.name}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <Link
+                        to={item.href}
+                        className={`block font-medium transition-colors ${
+                          isActive(item.href)
+                            ? 'text-primary'
+                            : 'text-secondary hover:text-primary'
+                        }`}
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {item.name}
+                      </Link>
+                    )}
+                  </div>
                 ))}
+                
+                <div className="flex flex-col gap-3 pt-4 border-t border-light">
+                  <Link
+                    to="/login"
+                    className="text-primary hover:text-primary-dark font-medium transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/cadastro"
+                    className="btn-futuristic text-center"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Cadastrar
+                  </Link>
+                </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
-    </motion.nav>
+    </nav>
   );
 };
 
