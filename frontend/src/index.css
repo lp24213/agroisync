@@ -100,15 +100,15 @@ body {
     @apply bg-white/60 backdrop-blur-xl border border-gray-200/50;
   }
   
-  .dark .glass-effect {
-    @apply bg-white/10 backdrop-blur-xl border border-white/20;
-  }
-  
   .glass-effect:hover {
     @apply bg-white/80 border-gray-300/50 transition-all duration-300;
   }
   
-  .dark .glass-effect:hover {
+  .glass-effect-dark {
+    @apply bg-white/10 backdrop-blur-xl border border-white/20;
+  }
+  
+  .glass-effect-dark:hover {
     @apply bg-white/20 border-white/30 transition-all duration-300;
   }
   
@@ -125,7 +125,7 @@ body {
   }
   
   .dark .btn-secondary {
-    @apply glass-effect text-white font-semibold px-6 py-3 rounded-xl hover:bg-white/20 transition-all duration-300 transform hover:scale-105;
+    @apply glass-effect-dark text-white font-semibold px-6 py-3 rounded-xl hover:bg-white/20 transition-all duration-300 transform hover:scale-105;
   }
   
   .btn-ghost {
@@ -251,4 +251,5 @@ body {
   .no-print {
     display: none !important;
   }
+}
 }
