@@ -4,6 +4,8 @@ frontend:
     preBuild:
       commands:
         - echo "🚀 Iniciando deploy profissional do AgroSync..."
+        - echo "📁 Navegando para o diretório frontend..."
+        - cd frontend
         - echo "📦 Instalando dependências do frontend..."
         - npm ci --prefer-offline --no-audit
         - echo "🔍 Verificando versões..."
@@ -24,11 +26,11 @@ frontend:
         - echo "🔍 Verificando arquivos gerados..."
         - ls -la build/
   artifacts:
-    baseDirectory: build
+    baseDirectory: frontend/build
     files:
       - '**/*'
   cache:
     paths:
-      - node_modules/**/*
-      - .npm/**/*
-      - build/**/*
+      - frontend/node_modules/**/*
+      - frontend/.npm/**/*
+      - frontend/build/**/*
