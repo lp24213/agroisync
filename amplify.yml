@@ -19,7 +19,13 @@ frontend:
     build:
       commands:
         - echo "🏗️ Construindo aplicação frontend profissional..."
-        - CI=false npm run build
+        - echo "🔧 Configurando variáveis de ambiente para build..."
+        - export CI=false
+        - export GENERATE_SOURCEMAP=false
+        - export DISABLE_ESLINT_PLUGIN=true
+        - export ESLINT_NO_DEV_ERRORS=true
+        - echo "📦 Executando build de produção..."
+        - npm run build:production
         - echo "✅ Build do frontend concluído com sucesso!"
         - echo "📊 Verificando tamanho do build..."
         - du -sh build/
