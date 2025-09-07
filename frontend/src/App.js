@@ -35,6 +35,7 @@ import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentCancel from './pages/PaymentCancel';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import Store from './pages/Store';
 import FAQ from './pages/FAQ';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
@@ -82,6 +83,7 @@ function App() {
                   <Route path="/" element={<Home />} />
                   <Route path="/marketplace" element={<Marketplace />} />
                   <Route path="/agroconecta" element={<AgroConecta />} />
+                  <Route path="/loja" element={<Store />} />
                   <Route path="/intermediation" element={<IntermediationSystem />} />
                   <Route path="/crypto" element={<Crypto />} />
                   <Route path="/plans" element={<Plans />} />
