@@ -11,7 +11,7 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }) => {
-  const [isDark, setIsDark] = useState(true); // Sempre dark mode por padrão
+  const [isDark, setIsDark] = useState(false); // Tema claro por padrão
   const [accentColor, setAccentColor] = useState('neon-blue');
   const [animationsEnabled, setAnimationsEnabled] = useState(true);
 

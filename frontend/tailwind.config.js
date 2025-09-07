@@ -4,14 +4,47 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
     "./public/index.html"
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
+        // Light theme base colors (refinado como Apple/Tesla)
+        'light-primary': '#ffffff',
+        'light-secondary': '#f8fafc',
+        'light-tertiary': '#f1f5f9',
+        'light-quaternary': '#e2e8f0',
+        
         // Dark theme base colors
         'dark-primary': '#0a0a0a',
         'dark-secondary': '#1a1a1a',
         'dark-tertiary': '#2a2a2a',
         'dark-quaternary': '#3a3a3a',
+        
+        // Refined accent colors
+        'primary': {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a',
+        },
+        'secondary': {
+          50: '#f0fdf4',
+          100: '#dcfce7',
+          200: '#bbf7d0',
+          300: '#86efac',
+          400: '#4ade80',
+          500: '#22c55e',
+          600: '#16a34a',
+          700: '#15803d',
+          800: '#166534',
+          900: '#14532d',
+        },
         
         // Neon accent colors
         'neon-blue': '#00d4ff',

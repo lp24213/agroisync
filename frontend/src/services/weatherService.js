@@ -2,9 +2,13 @@ import axios from 'axios';
 
 class WeatherService {
   constructor() {
-    this.apiKey = process.env.REACT_APP_OPENWEATHER_API_KEY || 'your_openweather_api_key';
+    this.apiKey = process.env.REACT_APP_OPENWEATHER_API_KEY;
     this.baseUrl = 'https://api.openweathermap.org/data/2.5';
     this.ipApiUrl = 'https://ipapi.co/json';
+    this.isLoading = false;
+    this.error = null;
+    this.cache = new Map();
+    this.cacheTimeout = 10 * 60 * 1000; // 10 minutos
   }
 
   // Detectar localização por IP
@@ -30,6 +34,49 @@ class WeatherService {
         longitude: -46.6333,
         timezone: 'America/Sao_Paulo'
       };
+    }
+  }
+
+  // Método principal para obter clima com fallback
+  async getWeatherData(lat, lon) {
+    const cacheKey = `${lat},${lon}`;
+    const cached = this.cache.get(cacheKey);
+    
+    if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
+      return cached.data;
+    }
+
+    try {
+      this.isLoading = true;
+      this.error = null;
+
+      let weatherData;
+      
+      if (this.apiKey) {
+        try {
+          weatherData = await this.getCurrentWeather(lat, lon);
+        } catch (apiError) {
+          console.warn('Erro na API do OpenWeather, usando dados mockados:', apiError);
+          weatherData = this.getMockWeatherData(lat, lon);
+        }
+      } else {
+        console.warn('API Key do OpenWeather não configurada, usando dados mockados');
+        weatherData = this.getMockWeatherData(lat, lon);
+      }
+
+      // Cache dos dados
+      this.cache.set(cacheKey, {
+        data: weatherData,
+        timestamp: Date.now()
+      });
+
+      return weatherData;
+    } catch (error) {
+      console.error('Erro ao obter dados do clima:', error);
+      this.error = error.message;
+      return this.getMockWeatherData(lat, lon);
+    } finally {
+      this.isLoading = false;
     }
   }
 
@@ -240,6 +287,49 @@ class WeatherService {
       console.error('Erro ao buscar cidade:', error);
       return [];
     }
+  }
+
+  // Gerar dados mockados de clima
+  getMockWeatherData(lat, lon) {
+    // Simular variações baseadas na localização
+    const baseTemp = this.getBaseTemperatureByLocation(lat, lon);
+    const variation = (Math.random() - 0.5) * 10; // ±5°C
+    const temperature = Math.round(baseTemp + variation);
+    
+    const conditions = [
+      { description: 'Céu limpo', icon: '01d', humidity: 30, windSpeed: 10 },
+      { description: 'Poucas nuvens', icon: '02d', humidity: 45, windSpeed: 15 },
+      { description: 'Nuvens dispersas', icon: '03d', humidity: 60, windSpeed: 12 },
+      { description: 'Nuvens quebradas', icon: '04d', humidity: 70, windSpeed: 18 },
+      { description: 'Chuva leve', icon: '10d', humidity: 85, windSpeed: 20 },
+      { description: 'Tempestade', icon: '11d', humidity: 90, windSpeed: 25 }
+    ];
+    
+    const condition = conditions[Math.floor(Math.random() * conditions.length)];
+    
+    return {
+      temperature: temperature,
+      description: condition.description,
+      icon: condition.icon,
+      iconUrl: `https://openweathermap.org/img/wn/${condition.icon}.png`,
+      humidity: condition.humidity + Math.floor((Math.random() - 0.5) * 10),
+      windSpeed: condition.windSpeed + Math.floor((Math.random() - 0.5) * 5),
+      windDirection: Math.floor(Math.random() * 360),
+      pressure: 1013 + Math.floor((Math.random() - 0.5) * 20),
+      visibility: 10 + Math.floor(Math.random() * 5),
+      uvIndex: Math.floor(Math.random() * 11),
+      feelsLike: temperature + Math.floor((Math.random() - 0.5) * 3),
+      source: 'Mock Data'
+    };
+  }
+
+  // Obter temperatura base por localização
+  getBaseTemperatureByLocation(lat, lon) {
+    // Regiões do Brasil com temperaturas médias
+    if (lat < -20) return 28; // Norte/Nordeste
+    if (lat < -15) return 25; // Centro-Oeste
+    if (lat < -10) return 22; // Sudeste
+    return 18; // Sul
   }
 }
 

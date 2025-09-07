@@ -7,6 +7,8 @@ class AgriculturalQuotesService {
     this.updateInterval = null;
     this.isLoading = false;
     this.error = null;
+    this.apiBaseUrl = process.env.REACT_APP_AGROLINK_API_URL || 'https://api.agrolink.com.br';
+    this.apiKey = process.env.REACT_APP_AGROLINK_API_KEY;
     
     // Configuração de commodities
     this.commodities = {
@@ -108,10 +110,16 @@ class AgriculturalQuotesService {
         throw new Error('Localização não disponível');
       }
 
-      // Simular dados de cotações (em produção, integrar com APIs reais)
-      const mockQuotes = await this.getMockQuotes(location);
+      // Tentar buscar dados reais da API do AgroLink
+      let quotes;
+      try {
+        quotes = await this.fetchAgroLinkQuotes(location);
+      } catch (apiError) {
+        console.warn('Erro na API do AgroLink, usando dados mockados:', apiError);
+        quotes = await this.getMockQuotes(location);
+      }
       
-      this.quotes = mockQuotes;
+      this.quotes = quotes;
       this.lastUpdate = new Date();
       
       return this.quotes;
@@ -127,6 +135,90 @@ class AgriculturalQuotesService {
     } finally {
       this.isLoading = false;
     }
+  }
+
+  // Buscar cotações da API do AgroLink
+  async fetchAgroLinkQuotes(location) {
+    if (!this.apiKey) {
+      throw new Error('API Key do AgroLink não configurada');
+    }
+
+    const { region, country } = location;
+    
+    // Mapear região para código do AgroLink
+    const regionCode = this.mapRegionToAgroLinkCode(region, country);
+    
+    const response = await fetch(`${this.apiBaseUrl}/api/v1/quotes`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${this.apiKey}`,
+        'Content-Type': 'application/json',
+        'X-Region': regionCode
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erro na API do AgroLink: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return this.processAgroLinkData(data);
+  }
+
+  // Mapear região para código do AgroLink
+  mapRegionToAgroLinkCode(region, country) {
+    const regionMap = {
+      'Mato Grosso': 'MT',
+      'Paraná': 'PR',
+      'Rio Grande do Sul': 'RS',
+      'Goiás': 'GO',
+      'Mato Grosso do Sul': 'MS',
+      'Minas Gerais': 'MG',
+      'São Paulo': 'SP',
+      'Bahia': 'BA',
+      'Maranhão': 'MA',
+      'Piauí': 'PI',
+      'Tocantins': 'TO'
+    };
+
+    return regionMap[region] || 'BR';
+  }
+
+  // Processar dados da API do AgroLink
+  processAgroLinkData(data) {
+    const quotes = {};
+    
+    // Mapear dados da API para nosso formato
+    const commodityMap = {
+      'SOJA': 'soy',
+      'MILHO': 'corn',
+      'CAFE': 'coffee',
+      'ALGODAO': 'cotton',
+      'TRIGO': 'wheat',
+      'ACUCAR': 'sugar',
+      'BOI': 'cattle',
+      'SUINO': 'hog'
+    };
+
+    if (data.quotes && Array.isArray(data.quotes)) {
+      data.quotes.forEach(quote => {
+        const commodityKey = commodityMap[quote.commodity];
+        if (commodityKey && this.commodities[commodityKey]) {
+          quotes[commodityKey] = {
+            ...this.commodities[commodityKey],
+            currentPrice: parseFloat(quote.price),
+            previousPrice: parseFloat(quote.previousPrice || quote.price),
+            variation: parseFloat(quote.variation || 0),
+            variationPercent: parseFloat(quote.variationPercent || 0),
+            market: quote.market || 'Brasil',
+            lastUpdate: new Date(quote.lastUpdate || Date.now()),
+            source: 'AgroLink'
+          };
+        }
+      });
+    }
+
+    return quotes;
   }
 
   // Obter cotações mockadas baseadas na localização
