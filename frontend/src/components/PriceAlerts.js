@@ -9,17 +9,17 @@ import cryptoService from '../services/cryptoService';
 const PriceAlerts = () => {
   const [alerts, setAlerts] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [// loading, // setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [cryptoPrices, setCryptoPrices] = useState({});
   const [formData, setFormData] = useState({
     cryptoId: '',
-    condition: 'above', // 'above' or 'below'
+    condition: 'above',
     price: '',
     description: '',
     enabled: true
   });
 
-  const // popularCryptos = [
+  const popularCryptos = [
     { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin', icon: '₿' },
     { id: 'ethereum', symbol: 'ETH', name: 'Ethereum', icon: 'Ξ' },
     { id: 'binancecoin', symbol: 'BNB', name: 'BNB', icon: '🟡' },
@@ -28,26 +28,26 @@ const PriceAlerts = () => {
     { id: 'polkadot', symbol: 'DOT', name: 'Polkadot', icon: '●' }
   ];
 
-  // useEffect(() => {
+  useEffect(() => {
     loadAlerts();
-    // loadCryptoPrices();
-    const interval = setInterval(// loadCryptoPrices, 30000); // Atualizar a cada 30s
+    loadCryptoPrices();
+    const interval = setInterval(loadCryptoPrices, 30000);
     return () => clearInterval(interval);
   }, []);
 
-  // useEffect(() => {
-    // checkAlerts();
+  useEffect(() => {
+    checkAlerts();
   }, [cryptoPrices, alerts]);
 
   const loadAlerts = () => {
-    // Em produção, buscar do backend
+Em produção, buscar do backend
     const savedAlerts = JSON.parse(localStorage.getItem('cryptoPriceAlerts') || '[]');
     setAlerts(savedAlerts);
   };
 
-  const // loadCryptoPrices = useCallback(async () => {
+  const loadCryptoPrices = useCallback(async () => {
     try {
-      const symbols = // popularCryptos.map(crypto => crypto.id);
+      const symbols = popularCryptos.map(crypto => crypto.id);
       const result = await cryptoService.getCryptoPrices(symbols);
       setCryptoPrices(result.prices || {});
     } catch (error) {
@@ -55,7 +55,7 @@ const PriceAlerts = () => {
     }
   }, []);
 
-  const // checkAlerts = () => {
+  const checkAlerts = () => {
     alerts.forEach(alert => {
       if (!alert.enabled || !cryptoPrices[alert.cryptoId]) return;
 
@@ -76,14 +76,14 @@ const PriceAlerts = () => {
   };
 
   const triggerAlert = (alert, currentPrice) => {
-    // Marcar alerta como acionado
+Marcar alerta como acionado
     const updatedAlerts = alerts.map(a => 
       a.id === alert.id ? { ...a, triggered: true, triggeredAt: Date.now() } : a
     );
     setAlerts(updatedAlerts);
     localStorage.setItem('cryptoPriceAlerts', JSON.stringify(updatedAlerts));
 
-    // Mostrar notificação
+Mostrar notificação
     if ('Notification' in window && Notification.permission === 'granted') {
       new Notification('Alerta de Preço', {
         body: `${alert.cryptoId.toUpperCase()} atingiu ${alert.condition === 'above' ? 'acima' : 'abaixo'} de $${alert.price}`,
@@ -91,7 +91,7 @@ const PriceAlerts = () => {
       });
     }
 
-    // Em produção, enviar notificação via email/SMS
+Em produção, enviar notificação via email/SMS
     console.log(`ALERTA: ${alert.cryptoId} atingiu ${alert.condition === 'above' ? 'acima' : 'abaixo'} de $${alert.price}`);
   };
 
@@ -111,7 +111,7 @@ const PriceAlerts = () => {
     setAlerts(updatedAlerts);
     localStorage.setItem('cryptoPriceAlerts', JSON.stringify(updatedAlerts));
 
-    // Resetar formulário
+Resetar formulário
     setFormData({
       cryptoId: '',
       condition: 'above',
@@ -148,12 +148,12 @@ const PriceAlerts = () => {
   };
 
   const getCryptoIcon = (cryptoId) => {
-    const crypto = // popularCryptos.find(c => c.id === cryptoId);
+    const crypto = popularCryptos.find(c => c.id === cryptoId);
     return crypto ? crypto.icon : cryptoId.toUpperCase().charAt(0);
   };
 
   const getCryptoName = (cryptoId) => {
-    const crypto = // popularCryptos.find(c => c.id === cryptoId);
+    const crypto = popularCryptos.find(c => c.id === cryptoId);
     return crypto ? crypto.name : cryptoId;
   };
 
@@ -172,7 +172,7 @@ const PriceAlerts = () => {
 
   const getPriceChangeIcon = (change) => {
     if (!change) return null;
-    return change > 0 ? <// TrendingUp className="w-4 h-4" /> : <// TrendingDown className="w-4 h-4" />;
+    return change > 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />;
   };
 
   const formatCurrency = (value) => {
@@ -220,16 +220,16 @@ const PriceAlerts = () => {
             onClick={() => setShowForm(true)}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
           >
-            <// Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4" />
             <span>Novo Alerta</span>
           </button>
         </div>
       </div>
 
       {/* Formulário de Novo Alerta */}
-      <// AnimatePresence>
+      <AnimatePresence>
         {showForm && (
-          <// motion.div
+          <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
@@ -260,7 +260,7 @@ const PriceAlerts = () => {
                     required
                   >
                     <option value="">Selecione uma cripto</option>
-                    {// popularCryptos.map((crypto) => (
+                    {popularCryptos.map((crypto) => (
                       <option key={crypto.id} value={crypto.id}>
                         {crypto.name} ({crypto.symbol})
                       </option>
@@ -343,9 +343,9 @@ const PriceAlerts = () => {
                 </button>
               </div>
             </form>
-          </// motion.div>
+          </motion.div>
         )}
-      </// AnimatePresence>
+      </AnimatePresence>
 
       {/* Lista de Alertas */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm">
@@ -368,7 +368,7 @@ const PriceAlerts = () => {
         ) : (
           <div className="divide-y divide-gray-200 dark:divide-gray-700">
             {alerts.map((alert) => (
-              <// motion.div
+              <motion.div
                 key={alert.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -426,7 +426,7 @@ const PriceAlerts = () => {
                       }`}
                       title={alert.enabled ? 'Desativar' : 'Ativar'}
                     >
-                      {alert.enabled ? <// CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
+                      {alert.enabled ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
                     </button>
                     
                     <button
@@ -442,11 +442,11 @@ const PriceAlerts = () => {
                       className="p-2 text-red-600 hover:bg-red-100 dark:hover:bg-red-900 rounded-lg transition-colors"
                       title="Excluir"
                     >
-                      <// Trash className="w-4 h-4" />
+                      <Trash className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
-              </// motion.div>
+              </motion.div>
             ))}
           </div>
         )}

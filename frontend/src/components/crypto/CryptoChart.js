@@ -1,33 +1,33 @@
-import React, { useState, // useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import cryptoService from '../../services/cryptoService';
 
 const CryptoChart = () => {
   const [cryptoData, setCryptoData] = useState([]);
-  const [// loading, // setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [selectedCrypto, setSelectedCrypto] = useState(null);
   const canvasRef = useRef(null);
   const animationRef = useRef(null);
 
-  // useEffect(() => {
-    // loadCryptoData();
-    const interval = setInterval(// loadCryptoData, 30000); // Atualizar a cada 30 segundos
+  useEffect(() => {
+    loadCryptoData();
+    const interval = setInterval(loadCryptoData, 30000);
     return () => clearInterval(interval);
-  }, [// loadCryptoData]);
+  }, [loadCryptoData]);
 
-  // useEffect(() => {
+  useEffect(() => {
     if (cryptoData.length > 0 && canvasRef.current) {
-      // startAnimation();
+      startAnimation();
     }
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [cryptoData, // startAnimation]);
+  }, [cryptoData, startAnimation]);
 
-  const // loadCryptoData = async () => {
+  const loadCryptoData = async () => {
     try {
-      // setLoading(true);
+      setLoading(true);
       const data = await cryptoService.getTopCryptos(8);
       setCryptoData(data);
       if (data.length > 0 && !selectedCrypto) {
@@ -36,11 +36,11 @@ const CryptoChart = () => {
     } catch (error) {
       console.error('Erro ao carregar dados de criptomoedas:', error);
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
 
-  const // startAnimation = () => {
+  const startAnimation = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const width = canvas.width;
@@ -50,11 +50,11 @@ const CryptoChart = () => {
     const animate = () => {
       time += 0.02;
       
-      // Limpar canvas
+Limpar canvas
       ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
       ctx.fillRect(0, 0, width, height);
 
-      // Desenhar fundo gradiente
+Desenhar fundo gradiente
       const gradient = ctx.createLinearGradient(0, 0, width, height);
       gradient.addColorStop(0, 'rgba(147, 51, 234, 0.1)');
       gradient.addColorStop(0.5, 'rgba(236, 72, 153, 0.1)');
@@ -62,14 +62,14 @@ const CryptoChart = () => {
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, width, height);
 
-      // Desenhar linhas de preço animadas
+Desenhar linhas de preço animadas
       cryptoData.forEach((crypto, index) => {
         const x = (index / (cryptoData.length - 1)) * width;
         const baseY = height * 0.5;
         const amplitude = height * 0.3;
         const frequency = 2 + index * 0.5;
         
-        // Linha de preço
+Linha de preço
         ctx.strokeStyle = `hsl(${200 + index * 30}, 70%, 60%)`;
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -85,13 +85,13 @@ const CryptoChart = () => {
         }
         ctx.stroke();
 
-        // Pontos de dados
+Pontos de dados
         ctx.fillStyle = `hsl(${200 + index * 30}, 70%, 60%)`;
         ctx.beginPath();
         ctx.arc(x, baseY + Math.sin((x / width) * frequency * Math.PI + time + index) * amplitude * 0.5, 4, 0, Math.PI * 2);
         ctx.fill();
 
-        // Efeito de brilho
+Efeito de brilho
         ctx.shadowColor = `hsl(${200 + index * 30}, 70%, 60%)`;
         ctx.shadowBlur = 10;
         ctx.beginPath();
@@ -100,11 +100,11 @@ const CryptoChart = () => {
         ctx.shadowBlur = 0;
       });
 
-      // Desenhar grade de fundo
+Desenhar grade de fundo
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
       ctx.lineWidth = 1;
       
-      // Linhas horizontais
+Linhas horizontais
       for (let i = 0; i <= 4; i++) {
         const y = (height / 4) * i;
         ctx.beginPath();
@@ -113,7 +113,7 @@ const CryptoChart = () => {
         ctx.stroke();
       }
 
-      // Linhas verticais
+Linhas verticais
       for (let i = 0; i <= 4; i++) {
         const x = (width / 4) * i;
         ctx.beginPath();
@@ -145,11 +145,11 @@ const CryptoChart = () => {
     );
   };
 
-  if (// loading) {
+  if (loading) {
     return (
       <div className="w-full h-96 bg-gray-900 rounded-lg flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-purple-500 border-// t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-400">Carregando dados de criptomoedas...</p>
         </div>
       </div>

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
-  TrendingUp, TrendingDown, BarChart3, LineChart,
-  Calendar, Clock, RefreshCw, Download, Settings,
-  ZoomIn, ZoomOut, Move, Layers
+  TrendingUp, BarChart3, LineChart,
+  RefreshCw, Settings,
+  ZoomIn, ZoomOut, Move
 } from 'lucide-react';
 import { 
   LineChart as RechartsLineChart, 
