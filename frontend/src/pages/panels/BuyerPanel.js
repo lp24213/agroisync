@@ -23,54 +23,75 @@ const BuyerPanel = () => {
   const loadBuyerData = async () => {
     setLoading(true);
     try {
-Simular carregamento de dados
+      // Simular carregamento de dados
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-Dados mockados
+      // Dados mockados
       setOrders([
         {
           id: 'ORD-001',
-          product: 'Soja Premium',
-          seller: 'Fazenda São José',
-          amount: 15000,
-          status: 'pending',
+          product: 'Sementes de Soja Premium',
+          quantity: 100,
+          price: 2500.00,
+          status: 'delivered',
           date: '2024-01-15',
-          delivery: '2024-01-20'
+          supplier: 'Fazenda São José'
         },
         {
           id: 'ORD-002',
-          product: 'Milho Orgânico',
-          seller: 'Agro Verde Ltda',
-          amount: 8500,
-          status: 'delivered',
-          date: '2024-01-10',
-          delivery: '2024-01-12'
+          product: 'Fertilizante NPK 20-10-10',
+          quantity: 50,
+          price: 1800.00,
+          status: 'shipping',
+          date: '2024-01-20',
+          supplier: 'AgroTech Solutions'
+        },
+        {
+          id: 'ORD-003',
+          product: 'Defensivo Agrícola',
+          quantity: 25,
+          price: 1200.00,
+          status: 'processing',
+          date: '2024-01-25',
+          supplier: 'CropProtect'
         }
       ]);
 
       setFavorites([
         {
           id: 'FAV-001',
-          product: 'Trigo Premium',
-          seller: 'Cereal Brasil',
-          price: 1200,
-          rating: 4.8
+          product: 'Trator John Deere 6110J',
+          price: 180000.00,
+          supplier: 'Máquinas Agrícolas SP'
+        },
+        {
+          id: 'FAV-002',
+          product: 'Sementes de Milho Híbrido',
+          price: 45.00,
+          supplier: 'Sementes Premium'
         }
       ]);
 
       setNotifications([
         {
           id: 'NOT-001',
-          type: 'order_update',
-          message: 'Seu pedido ORD-001 foi confirmado',
-          date: '2024-01-15T10:30:00Z',
+          title: 'Pedido entregue',
+          message: 'Seu pedido ORD-001 foi entregue com sucesso.',
+          date: '2024-01-15',
           read: false
+        },
+        {
+          id: 'NOT-002',
+          title: 'Produto em promoção',
+          message: 'Fertilizante NPK está com 20% de desconto.',
+          date: '2024-01-20',
+          read: true
         }
       ]);
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
     } finally {
-setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -104,61 +125,30 @@ setLoading(false);
 
       <div className="grid gap-4">
         {orders.map((order) => (
-          <motion.div
-            key={order.id}
-            className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className="flex justify-between items-start">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <h4 className="font-semibold text-slate-800 dark:text-slate-200">
-                    {order.product}
-                  </h4>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    order.status === 'pending' 
-                      ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-                      : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                  }`}>
-                    {t(`orderStatus.${order.status}`, order.status)}
-                  </span>
-                </div>
-                <p className="text-slate-600 dark:text-slate-400 text-sm mb-2">
-                  {t('buyerPanel.seller', 'Vendedor')}: {order.seller}
-                </p>
-                <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
-                  <div className="flex items-center gap-1">
-                    <DollarSign className="w-4 h-4" />
-                    {new Intl.NumberFormat('pt-BR', { 
-                      style: 'currency', 
-                      currency: 'BRL' 
-                    }).format(order.amount)}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Calendar className="w-4 h-4" />
-                    {new Date(order.date).toLocaleDateString('pt-BR')}
-                  </div>
-                </div>
+          <div key={order.id} className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
+            <div className="flex justify-between items-start mb-3">
+              <div>
+                <h4 className="font-semibold text-slate-900 dark:text-slate-100">{order.product}</h4>
+                <p className="text-sm text-slate-600 dark:text-slate-400">Fornecedor: {order.supplier}</p>
               </div>
-              <div className="flex gap-2">
-                <Link
-                  to={`/messages?order=${order.id}`}
-                  className="p-2 text-slate-500 hover:text-emerald-600 transition-colors"
-                  title={t('buyerPanel.contactSeller', 'Contatar Vendedor')}
-                >
-                  <MessageSquare className="w-5 h-5" />
-                </Link>
-                <button
-                  className="p-2 text-slate-500 hover:text-emerald-600 transition-colors"
-                  title={t('buyerPanel.viewDetails', 'Ver Detalhes')}
-                >
-                  <TrendingUp className="w-5 h-5" />
-                </button>
-              </div>
+              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                order.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                order.status === 'shipping' ? 'bg-blue-100 text-blue-800' :
+                'bg-yellow-100 text-yellow-800'
+              }`}>
+                {order.status === 'delivered' ? 'Entregue' :
+                 order.status === 'shipping' ? 'Enviado' : 'Processando'}
+              </span>
             </div>
-          </motion.div>
+            
+            <div className="flex justify-between items-center text-sm text-slate-600 dark:text-slate-400">
+              <span>Quantidade: {order.quantity}</span>
+              <span>Data: {order.date}</span>
+              <span className="font-semibold text-slate-900 dark:text-slate-100">
+                R$ {order.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </span>
+            </div>
+          </div>
         ))}
       </div>
     </div>
@@ -167,227 +157,173 @@ setLoading(false);
   const renderFavorites = () => (
     <div className="space-y-4">
       <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-        {t('buyerPanel.favoriteProducts', 'Produtos Favoritos')}
+        {t('buyerPanel.favorites', 'Favoritos')}
       </h3>
       
       <div className="grid gap-4">
         {favorites.map((favorite) => (
-          <motion.div
-            key={favorite.id}
-            className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
+          <div key={favorite.id} className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
             <div className="flex justify-between items-start">
-              <div className="flex-1">
-                <h4 className="font-semibold text-slate-800 dark:text-slate-200 mb-2">
-                  {favorite.product}
-                </h4>
-                <p className="text-slate-600 dark:text-slate-400 text-sm mb-2">
-                  {t('buyerPanel.seller', 'Vendedor')}: {favorite.seller}
-                </p>
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-1">
-                    <DollarSign className="w-4 h-4 text-emerald-600" />
-                    <span className="font-semibold text-emerald-600">
-                      {new Intl.NumberFormat('pt-BR', { 
-                        style: 'currency', 
-                        currency: 'BRL' 
-                      }).format(favorite.price)}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 text-yellow-500" />
-                    <span className="text-sm text-slate-600 dark:text-slate-400">
-                      {favorite.rating}
-                    </span>
-                  </div>
-                </div>
+              <div>
+                <h4 className="font-semibold text-slate-900 dark:text-slate-100">{favorite.product}</h4>
+                <p className="text-sm text-slate-600 dark:text-slate-400">{favorite.supplier}</p>
               </div>
-              <div className="flex gap-2">
-                <button className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
-                  {t('buyerPanel.buyNow', 'Comprar Agora')}
-                </button>
-                <button className="p-2 text-red-500 hover:text-red-600 transition-colors">
-                  <Heart className="w-5 h-5 fill-current" />
+              <div className="text-right">
+                <p className="font-semibold text-slate-900 dark:text-slate-100">
+                  R$ {favorite.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                </p>
+                <button className="text-sm text-emerald-600 hover:text-emerald-700 mt-1">
+                  Ver Produto
                 </button>
               </div>
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
     </div>
   );
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'orders':
-        return renderOrders();
-      case 'favorites':
-        return renderFavorites();
-      case 'messages':
-        return (
-          <div className="text-center py-12">
-            <MessageSquare className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-slate-600 dark:text-slate-400 mb-2">
-              {t('buyerPanel.noMessages', 'Nenhuma mensagem')}
-            </h3>
-            <p className="text-slate-500 dark:text-slate-500">
-              {t('buyerPanel.noMessagesDesc', 'Suas conversas com vendedores aparecerão aqui')}
-            </p>
-          </div>
-        );
-      case 'notifications':
-        return (
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-              {t('buyerPanel.notifications', 'Notificações')}
-            </h3>
-            {notifications.map((notification) => (
-              <div key={notification.id} className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
-                <p className="text-slate-800 dark:text-slate-200">{notification.message}</p>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                  {new Date(notification.date).toLocaleString('pt-BR')}
+  const renderMessages = () => (
+    <div className="space-y-4">
+      <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
+        {t('buyerPanel.messages', 'Mensagens')}
+      </h3>
+      
+      <div className="text-center py-8">
+        <MessageSquare className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+        <p className="text-slate-600 dark:text-slate-400">
+          {t('buyerPanel.noMessages', 'Nenhuma mensagem ainda.')}
+        </p>
+      </div>
+    </div>
+  );
+
+  const renderNotifications = () => (
+    <div className="space-y-4">
+      <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
+        {t('buyerPanel.notifications', 'Notificações')}
+      </h3>
+      
+      <div className="space-y-3">
+        {notifications.map((notification) => (
+          <div key={notification.id} className={`p-4 rounded-lg border ${
+            notification.read 
+              ? 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700' 
+              : 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
+          }`}>
+            <div className="flex justify-between items-start">
+              <div>
+                <h4 className="font-semibold text-slate-900 dark:text-slate-100">
+                  {notification.title}
+                </h4>
+                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                  {notification.message}
                 </p>
               </div>
-            ))}
-          </div>
-        );
-      case 'settings':
-        return (
-          <div className="space-y-6">
-            <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-              {t('buyerPanel.settings', 'Configurações')}
-            </h3>
-            
-            <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-              <h4 className="font-semibold text-slate-800 dark:text-slate-200 mb-4">
-                {t('buyerPanel.accountSettings', 'Configurações da Conta')}
-              </h4>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                    {t('buyerPanel.email', 'Email')}
-                  </label>
-                  <input
-                    type="email"
-                    value={user?.email || ''}
-                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
-                    readOnly
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                    {t('buyerPanel.name', 'Nome')}
-                  </label>
-                  <input
-                    type="text"
-                    value={user?.name || ''}
-                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
-                  />
-                </div>
-              </div>
-              
-              <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
-                <button
-                  onClick={handleLogout}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
-                >
-                  <LogOut className="w-4 h-4" />
-                  {t('buyerPanel.logout', 'Sair')}
-                </button>
-              </div>
+              <span className="text-xs text-slate-500 dark:text-slate-400">
+                {notification.date}
+              </span>
             </div>
           </div>
-        );
-      default:
-        return null;
-    }
-  };
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderSettings = () => (
+    <div className="space-y-4">
+      <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
+        {t('buyerPanel.settings', 'Configurações')}
+      </h3>
+      
+      <div className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              {t('buyerPanel.notifications', 'Notificações')}
+            </label>
+            <div className="space-y-2">
+              <label className="flex items-center">
+                <input type="checkbox" defaultChecked className="mr-2" />
+                <span className="text-sm text-slate-600 dark:text-slate-400">
+                  {t('buyerPanel.emailNotifications', 'Notificações por email')}
+                </span>
+              </label>
+              <label className="flex items-center">
+                <input type="checkbox" defaultChecked className="mr-2" />
+                <span className="text-sm text-slate-600 dark:text-slate-400">
+                  {t('buyerPanel.smsNotifications', 'Notificações por SMS')}
+                </span>
+              </label>
+            </div>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              {t('buyerPanel.privacy', 'Privacidade')}
+            </label>
+            <div className="space-y-2">
+              <label className="flex items-center">
+                <input type="checkbox" defaultChecked className="mr-2" />
+                <span className="text-sm text-slate-600 dark:text-slate-400">
+                  {t('buyerPanel.profilePublic', 'Perfil público')}
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-          <p className="text-slate-600 dark:text-slate-400">
-            {t('buyerPanel.loading', 'Carregando painel...')}
-          </p>
-        </div>
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-700"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      {/* Header */}
-      <div className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-                {t('buyerPanel.title', 'Painel do Comprador')}
-              </h1>
-              <p className="text-slate-600 dark:text-slate-400">
-                {t('buyerPanel.welcome', 'Bem-vindo')}, {user?.name || user?.email}
-              </p>
-            </div>
-            <div className="flex items-center gap-4">
-              <Link
-                to="/store"
-                className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2"
-              >
-                <ShoppingCart className="w-4 h-4" />
-                {t('buyerPanel.goToStore', 'Ir para Loja')}
-              </Link>
-            </div>
-          </div>
-        </div>
+    <div className="card-futuristic p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="heading-3 text-gray-900 flex items-center">
+          <ShoppingCart className="w-5 h-5 mr-2 text-gray-700" />
+          Painel do Comprador
+        </h2>
+        <button
+          onClick={handleLogout}
+          className="p-2 text-gray-400 hover:text-gray-600"
+        >
+          <LogOut className="w-4 h-4" />
+        </button>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex gap-8">
-          {/* Sidebar */}
-          <div className="w-64 flex-shrink-0">
-            <nav className="space-y-2">
-              {tabs.map((tab) => {
-                const Icon = tab.icon;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
-activeTab === tab.id
-                        ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200'
-                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-                    }`}
-                  >
-                    <Icon className="w-5 h-5" />
-                    {tab.label}
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
+      {/* Tabs */}
+      <div className="flex space-x-1 mb-6 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              activeTab === tab.id
+                ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 shadow-sm'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+            }`}
+          >
+            <tab.icon className="w-4 h-4" />
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
-          {/* Content */}
-          <div className="flex-1">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                {renderContent()}
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </div>
+      {/* Content */}
+      <div className="min-h-[400px]">
+        {activeTab === 'orders' && renderOrders()}
+        {activeTab === 'favorites' && renderFavorites()}
+        {activeTab === 'messages' && renderMessages()}
+        {activeTab === 'notifications' && renderNotifications()}
+        {activeTab === 'settings' && renderSettings()}
       </div>
     </div>
   );

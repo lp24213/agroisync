@@ -14,7 +14,7 @@ const StripeCheckout = ({
   const { t } = useTranslation();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState('details'); 'details', 'payment', 'processing', 'success', 'error'
+  const [step, setStep] = useState('details');
   const [paymentIntent, setPaymentIntent] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [error, setError] = useState(null);
@@ -38,12 +38,12 @@ const StripeCheckout = ({
   };
 
   const handlePayment = async () => {
-setLoading(true);
-    setError(null);
+    setLoading(true);
     setStep('processing');
+    setError(null);
 
     try {
-Criar PaymentIntent
+      // Criar PaymentIntent
       const intentData = await paymentService.createPaymentIntent({
         amount: orderData.amount,
         currency: 'brl',
@@ -55,10 +55,10 @@ Criar PaymentIntent
 
       setPaymentIntent(intentData);
 
-Simular processamento de pagamento
+      // Simular processamento de pagamento
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-Simular sucesso
+      // Simular sucesso
       setStep('success');
       onSuccess({
         paymentIntentId: intentData.id,
@@ -68,323 +68,160 @@ Simular sucesso
 
     } catch (error) {
       console.error('Erro no pagamento:', error);
-      setError(error.message || 'Erro ao processar pagamento');
+      setError(error.message);
       setStep('error');
       onError(error);
     } finally {
-setLoading(false);
+      setLoading(false);
     }
   };
 
-  const handleCancel = () => {
-    onCancel();
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(amount / 100);
   };
 
   const renderDetails = () => (
-    <motion.div
-      className="space-y-6"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-    >
-      {/* Resumo do Pedido */}
-      <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-4">
-          {t('checkout.orderSummary', 'Resumo do Pedido')}
+    <div className="space-y-6">
+      <div className="text-center">
+        <CreditCard className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          {t('payment.details', 'Detalhes do Pagamento')}
+        </h2>
+        <p className="text-gray-600">
+          {t('payment.review', 'Revise os detalhes antes de prosseguir')}
+        </p>
+      </div>
+
+      <div className="bg-gray-50 rounded-lg p-4">
+        <h3 className="font-semibold text-gray-900 mb-3">
+          {t('payment.orderSummary', 'Resumo do Pedido')}
         </h3>
-        
-        <div className="space-y-3">
+        <div className="space-y-2">
           <div className="flex justify-between">
-            <span className="text-slate-600 dark:text-slate-400">
-              {t('checkout.product', 'Produto')}:
-            </span>
-            <span className="font-medium text-slate-800 dark:text-slate-200">
-              {orderData.productName}
-            </span>
+            <span className="text-gray-600">{orderData.description}</span>
+            <span className="font-medium">{formatCurrency(orderData.amount)}</span>
           </div>
-          
-          <div className="flex justify-between">
-            <span className="text-slate-600 dark:text-slate-400">
-              {t('checkout.quantity', 'Quantidade')}:
-            </span>
-            <span className="font-medium text-slate-800 dark:text-slate-200">
-              {orderData.quantity} {orderData.unit}
-            </span>
-          </div>
-          
-          <div className="flex justify-between">
-            <span className="text-slate-600 dark:text-slate-400">
-              {t('checkout.subtotal', 'Subtotal')}:
-            </span>
-            <span className="font-medium text-slate-800 dark:text-slate-200">
-              {new Intl.NumberFormat('pt-BR', { 
-                style: 'currency', 
-                currency: 'BRL' 
-              }).format(orderData.subtotal)}
-            </span>
-          </div>
-          
           {fees && (
             <>
               <div className="flex justify-between">
-                <span className="text-slate-600 dark:text-slate-400">
-                  {t('checkout.fees', 'Taxas')}:
-                </span>
-                <span className="font-medium text-slate-800 dark:text-slate-200">
-                  {new Intl.NumberFormat('pt-BR', { 
-                    style: 'currency', 
-                    currency: 'BRL' 
-                  }).format(fees.total)}
-                </span>
+                <span className="text-gray-600">{t('payment.processingFee', 'Taxa de Processamento')}</span>
+                <span className="font-medium">{formatCurrency(fees.processingFee)}</span>
               </div>
-              
               <div className="flex justify-between">
-                <span className="text-slate-600 dark:text-slate-400">
-                  {t('checkout.shipping', 'Frete')}:
-                </span>
-                <span className="font-medium text-slate-800 dark:text-slate-200">
-                  {new Intl.NumberFormat('pt-BR', { 
-                    style: 'currency', 
-                    currency: 'BRL' 
-                  }).format(orderData.shipping || 0)}
-                </span>
+                <span className="text-gray-600">{t('payment.platformFee', 'Taxa da Plataforma')}</span>
+                <span className="font-medium">{formatCurrency(fees.platformFee)}</span>
               </div>
             </>
           )}
-          
-          <div className="border-t border-slate-200 dark:border-slate-700 pt-3">
-            <div className="flex justify-between">
-              <span className="text-lg font-semibold text-slate-800 dark:text-slate-200">
-                {t('checkout.total', 'Total')}:
-              </span>
-              <span className="text-lg font-bold text-emerald-600">
-                {new Intl.NumberFormat('pt-BR', { 
-                  style: 'currency', 
-                  currency: 'BRL' 
-                }).format(orderData.amount)}
-              </span>
-            </div>
+          <div className="border-t pt-2 flex justify-between font-bold text-lg">
+            <span>{t('payment.total', 'Total')}</span>
+            <span>{formatCurrency(orderData.amount + (fees ? fees.total : 0))}</span>
           </div>
         </div>
       </div>
 
-      {/* Informações de Segurança */}
-      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-        <div className="flex items-start gap-3">
-          <Shield className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5" />
-          <div>
-            <h4 className="font-medium text-blue-800 dark:text-blue-200 mb-1">
-              {t('checkout.securePayment', 'Pagamento Seguro')}
-            </h4>
-            <p className="text-sm text-blue-600 dark:text-blue-400">
-              {t('checkout.secureDescription', 'Seus dados são protegidos com criptografia SSL e processados pelo Stripe.')}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Botões */}
-      <div className="flex gap-4">
+      <div className="flex gap-3">
         <button
-          onClick={handleCancel}
-          className="flex-1 px-6 py-3 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+          onClick={onCancel}
+          className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
         >
-          {t('checkout.cancel', 'Cancelar')}
-        </button>
-        <button
-          onClick={() => setStep('payment')}
-          className="flex-1 px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2"
-        >
-          <CreditCard className="w-5 h-5" />
-          {t('checkout.continue', 'Continuar')}
-        </button>
-      </div>
-    </motion.div>
-  );
-
-  const renderPayment = () => (
-    <motion.div
-      className="space-y-6"
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.3 }}
-    >
-      {/* Formulário de Pagamento */}
-      <div className="bg-white dark:bg-slate-800 rounded-lg p-6 border border-slate-200 dark:border-slate-700">
-        <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-4">
-          {t('checkout.paymentMethod', 'Método de Pagamento')}
-        </h3>
-        
-        {/* Simulação de formulário Stripe */}
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-              {t('checkout.cardNumber', 'Número do Cartão')}
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="1234 5678 9012 3456"
-                className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
-              />
-              <CreditCard className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                {t('checkout.expiryDate', 'Validade')}
-              </label>
-              <input
-                type="text"
-                placeholder="MM/AA"
-                className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                {t('checkout.cvv', 'CVV')}
-              </label>
-              <input
-                type="text"
-                placeholder="123"
-                className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
-              />
-            </div>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-              {t('checkout.cardholderName', 'Nome no Cartão')}
-            </label>
-            <input
-              type="text"
-              placeholder={user?.name || t('checkout.cardholderName', 'Nome no Cartão')}
-              className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Botões */}
-      <div className="flex gap-4">
-        <button
-          onClick={() => setStep('details')}
-          className="flex-1 px-6 py-3 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors flex items-center justify-center gap-2"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          {t('checkout.back', 'Voltar')}
+          {t('common.cancel', 'Cancelar')}
         </button>
         <button
           onClick={handlePayment}
-          disabled={loading}
-          className="flex-1 px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+          className="flex-1 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
         >
-          {loading ? (
-            <Loader className="w-5 h-5 animate-spin" />
-          ) : (
-            <Lock className="w-5 h-5" />
-          )}
-          {t('checkout.payNow', 'Pagar Agora')}
+          {t('payment.payNow', 'Pagar Agora')}
         </button>
       </div>
-    </motion.div>
+    </div>
   );
 
   const renderProcessing = () => (
-    <motion.div
-      className="text-center py-12"
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.3 }}
-    >
-      <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-emerald-600 mx-auto mb-6"></div>
-      <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2">
-        {t('checkout.processing', 'Processando Pagamento')}
-      </h3>
-      <p className="text-slate-600 dark:text-slate-400">
-        {t('checkout.processingDescription', 'Aguarde enquanto processamos seu pagamento...')}
-      </p>
-    </motion.div>
+    <div className="text-center space-y-6">
+      <Loader className="w-12 h-12 text-gray-600 mx-auto animate-spin" />
+      <div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          {t('payment.processing', 'Processando Pagamento')}
+        </h2>
+        <p className="text-gray-600">
+          {t('payment.pleaseWait', 'Por favor, aguarde...')}
+        </p>
+      </div>
+    </div>
   );
 
   const renderSuccess = () => (
-    <motion.div
-      className="text-center py-12"
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.3 }}
-    >
-      <div className="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-6">
-        <CheckCircle className="w-8 h-8 text-green-600 dark:text-green-400" />
+    <div className="text-center space-y-6">
+      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+        <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+        </svg>
       </div>
-      <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2">
-        {t('checkout.success', 'Pagamento Realizado!')}
-      </h3>
-      <p className="text-slate-600 dark:text-slate-400 mb-6">
-        {t('checkout.successDescription', 'Seu pagamento foi processado com sucesso.')}
-      </p>
-      <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 mb-6">
-        <p className="text-sm text-slate-600 dark:text-slate-400">
-          {t('checkout.transactionId', 'ID da Transação')}: {paymentIntent?.id}
+      <div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          {t('payment.success', 'Pagamento Realizado!')}
+        </h2>
+        <p className="text-gray-600">
+          {t('payment.successMessage', 'Seu pagamento foi processado com sucesso.')}
         </p>
       </div>
-    </motion.div>
+      <div className="bg-gray-50 rounded-lg p-4">
+        <div className="text-sm text-gray-600 space-y-1">
+          <p><strong>{t('payment.transactionId', 'ID da Transação')}:</strong> {paymentIntent?.id}</p>
+          <p><strong>{t('payment.amount', 'Valor')}:</strong> {formatCurrency(orderData.amount)}</p>
+        </div>
+      </div>
+    </div>
   );
 
   const renderError = () => (
-    <motion.div
-      className="text-center py-12"
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.3 }}
-    >
-      <div className="w-16 h-16 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center mx-auto mb-6">
-        <AlertCircle className="w-8 h-8 text-red-600 dark:text-red-400" />
+    <div className="text-center space-y-6">
+      <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+        <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
       </div>
-      <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2">
-        {t('checkout.error', 'Erro no Pagamento')}
-      </h3>
-      <p className="text-slate-600 dark:text-slate-400 mb-6">
-        {error || t('checkout.errorDescription', 'Ocorreu um erro ao processar seu pagamento.')}
-      </p>
-      <div className="flex gap-4 justify-center">
+      <div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          {t('payment.error', 'Erro no Pagamento')}
+        </h2>
+        <p className="text-gray-600 mb-4">
+          {error || t('payment.errorMessage', 'Ocorreu um erro ao processar seu pagamento.')}
+        </p>
+      </div>
+      <div className="flex gap-3">
         <button
-          onClick={() => setStep('payment')}
-          className="px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+          onClick={onCancel}
+          className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
         >
-          {t('checkout.tryAgain', 'Tentar Novamente')}
+          {t('common.cancel', 'Cancelar')}
         </button>
         <button
-          onClick={handleCancel}
-          className="px-6 py-3 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+          onClick={() => setStep('details')}
+          className="flex-1 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
         >
-          {t('checkout.cancel', 'Cancelar')}
+          {t('payment.tryAgain', 'Tentar Novamente')}
         </button>
       </div>
-    </motion.div>
+    </div>
   );
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-2">
-          {t('checkout.title', 'Finalizar Compra')}
-        </h2>
-        <p className="text-slate-600 dark:text-slate-400">
-          {t('checkout.subtitle', 'Complete seu pagamento de forma segura')}
-        </p>
-      </div>
-
-      <AnimatePresence mode="wait">
-        {step === 'details' && renderDetails()}
-        {step === 'payment' && renderPayment()}
-        {step === 'processing' && renderProcessing()}
-        {step === 'success' && renderSuccess()}
-        {step === 'error' && renderError()}
-      </AnimatePresence>
-    </div>
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4"
+    >
+      {step === 'details' && renderDetails()}
+      {step === 'processing' && renderProcessing()}
+      {step === 'success' && renderSuccess()}
+      {step === 'error' && renderError()}
+    </motion.div>
   );
 };
 
