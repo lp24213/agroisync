@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
-import { motion } from 'framer-motion'
+// import { motion } from 'framer-motion'
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -8,8 +8,7 @@ import {
   DollarSign, 
   BarChart3,
   LineChart,
-  PieChart,
-  Activity
+  PieChart
 } from 'lucide-react'
 
 const CryptoChart = ({ symbol = 'BTC', timeframe = '1h' }) => {
@@ -44,41 +43,59 @@ const CryptoChart = ({ symbol = 'BTC', timeframe = '1h' }) => {
     }
   }, [symbol, timeframe])
 
-  useEffect(() => {
-    loadCryptoData()
-    const interval = setInterval(loadCryptoData, 30000) // Atualizar a cada 30 segundos
-    return () => clearInterval(interval)
-  }, [loadCryptoData])
-
-  useEffect(() => {
-    if (cryptoData.length > 0 && canvasRef.current) {
-      startAnimation()
-    }
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current)
+  const drawLineChart = useCallback((ctx, chartWidth, chartHeight, padding, minPrice, priceRange) => {
+    ctx.beginPath()
+    
+    cryptoData.forEach((point, index) => {
+      const x = padding + (index / (cryptoData.length - 1)) * chartWidth
+      const y = padding + chartHeight - ((point.price - minPrice) / priceRange) * chartHeight
+      
+      if (index === 0) {
+        ctx.moveTo(x, y)
+      } else {
+        ctx.lineTo(x, y)
       }
-    }
-  }, [cryptoData, chartType])
+    })
+    
+    ctx.stroke()
+  }, [cryptoData])
 
-  const startAnimation = () => {
-    const canvas = canvasRef.current
-    if (!canvas) return
+  const drawBarChart = useCallback((ctx, chartWidth, chartHeight, padding, minPrice, priceRange) => {
+    const barWidth = chartWidth / cryptoData.length * 0.8
+    
+    cryptoData.forEach((point, index) => {
+      const x = padding + (index / cryptoData.length) * chartWidth + (chartWidth / cryptoData.length - barWidth) / 2
+      const y = padding + chartHeight - ((point.price - minPrice) / priceRange) * chartHeight
+      const barHeight = ((point.price - minPrice) / priceRange) * chartHeight
+      
+      ctx.fillRect(x, y, barWidth, barHeight)
+    })
+  }, [cryptoData])
 
-    const ctx = canvas.getContext('2d')
-    const width = canvas.width
-    const height = canvas.height
+  const drawAreaChart = useCallback((ctx, chartWidth, chartHeight, padding, minPrice, priceRange) => {
+    ctx.beginPath()
+    
+    cryptoData.forEach((point, index) => {
+      const x = padding + (index / (cryptoData.length - 1)) * chartWidth
+      const y = padding + chartHeight - ((point.price - minPrice) / priceRange) * chartHeight
+      
+      if (index === 0) {
+        ctx.moveTo(x, y)
+      } else {
+        ctx.lineTo(x, y)
+      }
+    })
+    
+    // Fechar a área
+    ctx.lineTo(padding + chartWidth, padding + chartHeight)
+    ctx.lineTo(padding, padding + chartHeight)
+    ctx.closePath()
+    
+    ctx.fill()
+    ctx.stroke()
+  }, [cryptoData])
 
-    const animate = () => {
-      ctx.clearRect(0, 0, width, height)
-      drawChart(ctx, width, height)
-      animationRef.current = requestAnimationFrame(animate)
-    }
-
-    animate()
-  }
-
-  const drawChart = (ctx, width, height) => {
+  const drawChart = useCallback((ctx, width, height) => {
     if (cryptoData.length === 0) return
 
     const padding = 40
@@ -103,59 +120,41 @@ const CryptoChart = ({ symbol = 'BTC', timeframe = '1h' }) => {
     } else if (chartType === 'area') {
       drawAreaChart(ctx, chartWidth, chartHeight, padding, minPrice, priceRange)
     }
-  }
+  }, [cryptoData, chartType, change, drawLineChart, drawBarChart, drawAreaChart])
 
-  const drawLineChart = (ctx, chartWidth, chartHeight, padding, minPrice, priceRange) => {
-    ctx.beginPath()
-    
-    cryptoData.forEach((point, index) => {
-      const x = padding + (index / (cryptoData.length - 1)) * chartWidth
-      const y = padding + chartHeight - ((point.price - minPrice) / priceRange) * chartHeight
-      
-      if (index === 0) {
-        ctx.moveTo(x, y)
-      } else {
-        ctx.lineTo(x, y)
+  const startAnimation = useCallback(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    const ctx = canvas.getContext('2d')
+    const width = canvas.width
+    const height = canvas.height
+
+    const animate = () => {
+      ctx.clearRect(0, 0, width, height)
+      drawChart(ctx, width, height)
+      animationRef.current = requestAnimationFrame(animate)
+    }
+
+    animate()
+  }, [drawChart])
+
+  useEffect(() => {
+    loadCryptoData()
+    const interval = setInterval(loadCryptoData, 30000) // Atualizar a cada 30 segundos
+    return () => clearInterval(interval)
+  }, [loadCryptoData])
+
+  useEffect(() => {
+    if (cryptoData.length > 0 && canvasRef.current) {
+      startAnimation()
+    }
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
       }
-    })
-    
-    ctx.stroke()
-  }
-
-  const drawBarChart = (ctx, chartWidth, chartHeight, padding, minPrice, priceRange) => {
-    const barWidth = chartWidth / cryptoData.length * 0.8
-    
-    cryptoData.forEach((point, index) => {
-      const x = padding + (index / cryptoData.length) * chartWidth + (chartWidth / cryptoData.length - barWidth) / 2
-      const y = padding + chartHeight - ((point.price - minPrice) / priceRange) * chartHeight
-      const barHeight = ((point.price - minPrice) / priceRange) * chartHeight
-      
-      ctx.fillRect(x, y, barWidth, barHeight)
-    })
-  }
-
-  const drawAreaChart = (ctx, chartWidth, chartHeight, padding, minPrice, priceRange) => {
-    ctx.beginPath()
-    
-    cryptoData.forEach((point, index) => {
-      const x = padding + (index / (cryptoData.length - 1)) * chartWidth
-      const y = padding + chartHeight - ((point.price - minPrice) / priceRange) * chartHeight
-      
-      if (index === 0) {
-        ctx.moveTo(x, y)
-      } else {
-        ctx.lineTo(x, y)
-      }
-    })
-    
-    // Fechar a área
-    ctx.lineTo(padding + chartWidth, padding + chartHeight)
-    ctx.lineTo(padding, padding + chartHeight)
-    ctx.closePath()
-    
-    ctx.fill()
-    ctx.stroke()
-  }
+    }
+  }, [startAnimation, cryptoData.length])
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('pt-BR', {

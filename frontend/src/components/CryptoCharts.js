@@ -1,19 +1,14 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import { motion } from 'framer-motion'
 import {
   TrendingUp,
-  TrendingDown,
   BarChart3,
   LineChart,
-  Calendar,
-  Clock,
   RefreshCw,
-  Download,
   Settings,
   ZoomIn,
   ZoomOut,
-  Move,
-  Layers
+  Move
 } from 'lucide-react'
 import {
   LineChart as RechartsLineChart,
@@ -53,13 +48,13 @@ const CryptoCharts = () => {
     { id: 'polkadot', symbol: 'DOT', name: 'Polkadot', icon: '●' }
   ]
 
-  const timeframes = [
+  const timeframes = useMemo(() => [
     { value: '1d', label: '24h', days: 1 },
     { value: '7d', label: '7d', days: 7 },
     { value: '30d', label: '30d', days: 30 },
     { value: '90d', label: '90d', days: 90 },
     { value: '1y', label: '1a', days: 365 }
-  ]
+  ], [])
 
   const chartTypes = [
     { value: 'candlestick', label: 'Candlestick', icon: BarChart3 },
@@ -67,28 +62,7 @@ const CryptoCharts = () => {
     { value: 'area', label: 'Área', icon: TrendingUp }
   ]
 
-  useEffect(() => {
-    loadChartData()
-  }, [selectedCrypto, timeframe])
-
-  const loadChartData = useCallback(async () => {
-    setLoading(true)
-    try {
-      const selectedTimeframe = timeframes.find(t => t.value === timeframe)
-      const days = selectedTimeframe ? selectedTimeframe.days : 7
-
-      const data = await cryptoService.getHistoricalData(selectedCrypto, days, 'usd')
-      setChartData(data)
-    } catch (error) {
-      console.error('Erro ao carregar dados do gráfico:', error)
-      // Dados mockados para demonstração
-      generateMockData()
-    } finally {
-      setLoading(false)
-    }
-  }, [selectedCrypto, timeframe])
-
-  const generateMockData = () => {
+  const generateMockData = useCallback(() => {
     const days = timeframes.find(t => t.value === timeframe)?.days || 7
     const mockData = []
     let basePrice = 45000; // Preço base do Bitcoin
@@ -119,7 +93,28 @@ const CryptoCharts = () => {
     }
 
     setChartData({ prices: mockData })
-  }
+  }, [timeframes, timeframe])
+
+  const loadChartData = useCallback(async () => {
+    setLoading(true)
+    try {
+      const selectedTimeframe = timeframes.find(t => t.value === timeframe)
+      const days = selectedTimeframe ? selectedTimeframe.days : 7
+
+      const data = await cryptoService.getHistoricalData(selectedCrypto, days, 'usd')
+      setChartData(data)
+    } catch (error) {
+      console.error('Erro ao carregar dados do gráfico:', error)
+      // Dados mockados para demonstração
+      generateMockData()
+    } finally {
+      setLoading(false)
+    }
+  }, [selectedCrypto, timeframe, generateMockData, timeframes])
+
+  useEffect(() => {
+    loadChartData()
+  }, [loadChartData])
 
   const calculateSMA = (prices, period) => {
     if (prices.length < period) return []
@@ -242,7 +237,7 @@ const CryptoCharts = () => {
     }
 
     const prices = chartData.prices.map(p => p.price)
-    const timestamps = chartData.prices.map(p => p.timestamp)
+    // const timestamps = chartData.prices.map(p => p.timestamp)
 
     // Calcular indicadores técnicos
     const sma20 = calculateSMA(prices, 20)
@@ -527,10 +522,10 @@ const CryptoCharts = () => {
     return crypto ? crypto.name : cryptoId
   }
 
-  const getCryptoIcon = cryptoId => {
-    const crypto = popularCryptos.find(c => c.id === cryptoId)
-    return crypto ? crypto.icon : cryptoId.toUpperCase().charAt(0)
-  }
+  // const getCryptoIcon = cryptoId => {
+  //   const crypto = popularCryptos.find(c => c.id === cryptoId)
+  //   return crypto ? crypto.icon : cryptoId.toUpperCase().charAt(0)
+  // }
 
   return (
     <div className='space-y-6'>
@@ -585,14 +580,11 @@ const CryptoCharts = () => {
               onChange={e => setChartType(e.target.value)}
               className='w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white'
             >
-              {chartTypes.map(type => {
-                const Icon = type.icon
-                return (
-                  <option key={type.value} value={type.value}>
-                    {type.label}
-                  </option>
-                )
-              })}
+              {chartTypes.map(type => (
+                <option key={type.value} value={type.value}>
+                  {type.label}
+                </option>
+              ))}
             </select>
           </div>
 

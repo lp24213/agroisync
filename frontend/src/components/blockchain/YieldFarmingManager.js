@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { 
@@ -8,11 +8,9 @@ import {
   Clock, 
   AlertCircle, 
   DollarSign, 
-  Zap, 
   ExternalLink,
   Coins,
   BarChart3,
-  Target,
   Shield
 } from 'lucide-react'
 
@@ -24,11 +22,7 @@ const YieldFarmingManager = ({ userId }) => {
   const [totalValue, setTotalValue] = useState(0)
   const [totalRewards, setTotalRewards] = useState(0)
 
-  useEffect(() => {
-    fetchFarmingData()
-  }, [userId])
-
-  const fetchFarmingData = async () => {
+  const fetchFarmingData = useCallback(async () => {
     setLoading(true)
     try {
       const response = await fetch(`/api/blockchain/yield-farming?userId=${userId}`)
@@ -46,7 +40,11 @@ const YieldFarmingManager = ({ userId }) => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [userId, t])
+
+  useEffect(() => {
+    fetchFarmingData()
+  }, [fetchFarmingData])
 
   const getStatusIcon = (status) => {
     switch (status) {

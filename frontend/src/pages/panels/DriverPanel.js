@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
+// import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { Truck, MessageSquare, Bell, LogOut, XCircle, Navigation, DollarSign, Package } from 'lucide-react'
+import { Truck, MessageSquare, Bell, LogOut, Navigation, DollarSign, Package } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 
 const DriverPanel = () => {
-  const { t } = useTranslation()
+  // const { t } = useTranslation()
   const { logout } = useAuth()
   const navigate = useNavigate()
 

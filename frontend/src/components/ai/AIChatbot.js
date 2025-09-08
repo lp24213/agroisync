@@ -1,26 +1,116 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
-import { MessageCircle, Send, Mic, MicOff, Camera, Image, Bot, Loader2, Brain, Lightbulb, Settings, X } from 'lucide-react'
+import { Send, Mic, MicOff, Camera, Bot, Loader2, Settings, X } from 'lucide-react'
 import { useAnalytics } from '../../hooks/useAnalytics'
-import { useTheme } from '../../contexts/ThemeContext'
+// import { useTheme } from '../../contexts/ThemeContext'
 
 const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
   const { t } = useTranslation()
   const analytics = useAnalytics()
-  const { theme } = useTheme()
+  // const { theme } = useTheme()
   const [messages, setMessages] = useState([])
   const [inputMessage, setInputMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isListening, setIsListening] = useState(false)
-  const [isSpeaking, setIsSpeaking] = useState(false)
-  const [showImageUpload, setShowImageUpload] = useState(false)
+  // const [isSpeaking, setIsSpeaking] = useState(false)
+  // const [showImageUpload, setShowImageUpload] = useState(false)
   const [selectedImage, setSelectedImage] = useState(null)
   const [showSettings, setShowSettings] = useState(false)
   const [aiMode, setAiMode] = useState('general') // 'general', 'pricing', 'recommendations'
   const messagesEndRef = useRef(null)
   const recognitionRef = useRef(null)
   const synthesisRef = useRef(null)
+
+  // Falar texto
+  // const speakText = useCallback((text) => {
+  //   if (!synthesisRef.current) return
+
+  //   const utterance = new SpeechSynthesisUtterance(text)
+  //   utterance.lang = 'pt-BR'
+  //   utterance.rate = 0.9
+  //   utterance.pitch = 1
+
+  //   utterance.onstart = () => {/* setIsSpeaking(true) */}
+  //   utterance.onend = () => {/* setIsSpeaking(false) */}
+
+  //   synthesisRef.current.speak(utterance)
+  // }, [])
+
+  // Enviar mensagem
+  const handleSendMessage = useCallback(async (message = inputMessage) => {
+    if (!message.trim()) return
+
+    const userMessage = {
+      id: Date.now(),
+      type: 'user',
+      content: message,
+      timestamp: new Date(),
+      image: selectedImage
+    }
+
+    setMessages(prev => [...prev, userMessage])
+    setInputMessage('')
+    setSelectedImage(null)
+    setIsLoading(true)
+
+    try {
+      const response = await fetch('/api/ai/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message,
+          image: selectedImage,
+          mode: aiMode,
+          conversationHistory: messages.slice(-10) // Últimas 10 mensagens para contexto
+        })
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        const aiMessage = {
+          id: Date.now() + 1,
+          type: 'ai',
+          content: data.response,
+          timestamp: new Date(),
+          mode: aiMode
+        }
+
+        setMessages(prev => [...prev, aiMessage])
+
+        // Falar resposta se habilitado
+        // if (speakResponses) {
+        //   speakText(data.response)
+        // }
+
+        // Analytics
+        if (analytics) {
+          analytics.track('AI Message Sent', {
+            mode: aiMode,
+            hasImage: !!selectedImage,
+            messageLength: message.length
+          })
+        }
+      } else {
+        throw new Error(data.message || 'Erro ao processar mensagem')
+      }
+    } catch (error) {
+      console.error('Erro ao enviar mensagem:', error)
+      const errorMessage = {
+        id: Date.now() + 1,
+        type: 'ai',
+        content: t('ai.error', 'Desculpe, ocorreu um erro. Tente novamente.'),
+        timestamp: new Date(),
+        mode: 'error'
+      }
+      setMessages(prev => [...prev, errorMessage])
+    } finally {
+      setIsLoading(false)
+    }
+  }, [inputMessage, selectedImage, aiMode, messages, analytics, t])
 
   // Inicializar mensagens
   useEffect(() => {
@@ -37,7 +127,7 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
     if (initialMessage) {
       handleSendMessage(initialMessage)
     }
-  }, [initialMessage, t])
+  }, [initialMessage, t, handleSendMessage])
 
   // Scroll para última mensagem
   useEffect(() => {
@@ -75,77 +165,6 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
     }
   }, [])
 
-  // Enviar mensagem
-  const handleSendMessage = useCallback(async (message = inputMessage) => {
-    if (!message.trim()) return
-
-    const userMessage = {
-      id: Date.now(),
-      type: 'user',
-      content: message,
-      timestamp: new Date(),
-      image: selectedImage
-    }
-
-    setMessages(prev => [...prev, userMessage])
-    setInputMessage('')
-    setSelectedImage(null)
-    setIsLoading(true)
-
-    try {
-      const response = await fetch('/api/ai/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        },
-        body: JSON.stringify({
-          message: message,
-          mode: aiMode,
-          image: selectedImage,
-          conversationHistory: messages.slice(-10) // Últimas 10 mensagens
-        })
-      })
-
-      const data = await response.json()
-
-      const aiMessage = {
-        id: Date.now() + 1,
-        type: 'ai',
-        content: data.response,
-        timestamp: new Date(),
-        mode: aiMode,
-        suggestions: data.suggestions || [],
-        data: data.data || null
-      }
-
-      setMessages(prev => [...prev, aiMessage])
-
-      // Falar resposta se habilitado
-      if (data.speak && synthesisRef.current) {
-        speakText(data.response)
-      }
-
-      analytics.trackEvent('ai_chat_message', {
-        mode: aiMode,
-        has_image: !!selectedImage,
-        response_length: data.response.length
-      })
-
-    } catch (error) {
-      console.error('Error sending message:', error)
-      const errorMessage = {
-        id: Date.now() + 1,
-        type: 'ai',
-        content: t('ai.error', 'Desculpe, ocorreu um erro. Tente novamente.'),
-        timestamp: new Date(),
-        mode: 'error'
-      }
-      setMessages(prev => [...prev, errorMessage])
-    } finally {
-      setIsLoading(false)
-    }
-  }, [inputMessage, selectedImage, aiMode, messages, analytics, t])
 
   // Iniciar/parar reconhecimento de voz
   const toggleVoiceInput = useCallback(() => {
@@ -162,28 +181,13 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
     }
   }, [isListening, t])
 
-  // Falar texto
-  const speakText = useCallback((text) => {
-    if (!synthesisRef.current) return
-
-    const utterance = new SpeechSynthesisUtterance(text)
-    utterance.lang = 'pt-BR'
-    utterance.rate = 0.9
-    utterance.pitch = 1
-
-    utterance.onstart = () => setIsSpeaking(true)
-    utterance.onend = () => setIsSpeaking(false)
-
-    synthesisRef.current.speak(utterance)
-  }, [])
-
   // Parar fala
-  const stopSpeaking = useCallback(() => {
-    if (synthesisRef.current) {
-      synthesisRef.current.cancel()
-      setIsSpeaking(false)
-    }
-  }, [])
+  // const stopSpeaking = useCallback(() => {
+  //   if (synthesisRef.current) {
+  //     synthesisRef.current.cancel()
+  //     // setIsSpeaking(false)
+  //   }
+  // }, [])
 
   // Upload de imagem
   const handleImageUpload = useCallback((event) => {
@@ -192,7 +196,7 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
       const reader = new FileReader()
       reader.onload = (e) => {
         setSelectedImage(e.target.result)
-        setShowImageUpload(false)
+        // setShowImageUpload(false)
       }
       reader.readAsDataURL(file)
     }

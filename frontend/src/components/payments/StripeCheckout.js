@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+// import { motion } from 'framer-motion'
 import { 
   CreditCard, 
   Lock, 
-  CheckCircle, 
   AlertCircle, 
   Loader2, 
-  DollarSign, 
-  Shield, 
-  Clock,
-  User,
-  Package,
-  Truck,
-  Calendar
+  Shield
 } from 'lucide-react'
 
 const StripeCheckout = ({ orderData, onPaymentSuccess, onPaymentError }) => {
