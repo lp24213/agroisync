@@ -18,10 +18,6 @@ const StripeCheckout = ({
   const [error, setError] = useState(null);
   const [fees, setFees] = useState(null);
 
-  useEffect(() => {
-    calculateFees();
-  }, [orderData, calculateFees]);
-
   const calculateFees = useCallback(async () => {
     try {
       const feesData = await paymentService.calculateFees(
@@ -34,6 +30,10 @@ const StripeCheckout = ({
       console.error('Erro ao calcular taxas:', error);
     }
   }, [orderData.amount]);
+
+  useEffect(() => {
+    calculateFees();
+  }, [calculateFees]);
 
   const handlePayment = async () => {
     setStep('processing');

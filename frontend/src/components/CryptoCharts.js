@@ -80,7 +80,7 @@ const CryptoCharts = () => {
     } finally {
       setLoading(false);
     }
-  }, [selectedCrypto, timeframe, generateMockData]);
+  }, [generateMockData]);
 
   useEffect(() => {
     loadChartData();

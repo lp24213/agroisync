@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { Send, Mic, MicOff, Image, Bot, Loader2, Brain, Lightbulb, DollarSign, Settings, X } from 'lucide-react';
+import { Send, Mic, MicOff, Bot, Loader2, Brain, Lightbulb, Settings, X } from 'lucide-react';
 
 const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
   const { t } = useTranslation();
@@ -9,8 +9,7 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+  // Speech synthesis and image upload functionality available for future use
   const [showSettings, setShowSettings] = useState(false);
   const [aiMode, setAiMode] = useState('general');
   const messagesEndRef = useRef(null);
