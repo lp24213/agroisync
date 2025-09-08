@@ -3,5 +3,5 @@ export default function handler(req, res) {
     message: '✅ Online',
     timestamp: new Date().toISOString(),
     version: '1.0.0'
-  })
+  });
 }

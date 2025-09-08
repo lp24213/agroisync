@@ -1,559 +1,366 @@
-import React, { useState, // useEffect } from 'react';
-import { motion } from 'framer-';
-import { useTranslation } from 'react-i18next';
-import { useAuth } from '../../contexts/AuthContext';
-import { Truck, MessageSquare, Bell, LogOut, XCircle, Navigation } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
+import { Truck, MessageSquare, Bell, LogOut, XCircle, Navigation, DollarSign, Package } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../contexts/AuthContext'
 
 const DriverPanel = () => {
-  const {  } = useTranslation();
-  const { logout } = // useAuth();
-  const navigate = useNavigate();
-  
-  const [// activeTab, // setActiveTab] = useState('freights');
-  const [// loading, // setLoading] = useState(false);
-  const [availableFreights, setAvailableFreights] = useState([]);
-  const [myFreights, setMyFreights] = useState([]);
-  const [earnings, setEarnings] = useState({});
-  const [// notifications, setNotifications] = useState([]);
+  const { t } = useTranslation()
+  const { logout } = useAuth()
+  const navigate = useNavigate()
 
-  // useEffect(() => {
-    loadDriverData();
-  }, []);
+  const [activeTab, setActiveTab] = useState('freights')
+  const [loading, setLoading] = useState(false)
+  const [freights, setFreights] = useState([])
+  const [messages, setMessages] = useState([])
+  const [notifications, setNotifications] = useState([])
+  const [stats, setStats] = useState({})
+  const [currentLocation, setCurrentLocation] = useState(null)
+
+  useEffect(() => {
+    loadDriverData()
+    getCurrentLocation()
+  }, [])
 
   const loadDriverData = async () => {
-    // setLoading(true);
+    setLoading(true)
     try {
-      // Simular carregamento de dados
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Dados mockados
-      setAvailableFreights([
-        {
-          id: 'FREIGHT-001',
-          origin: 'São Paulo, SP',
-          destination: 'Rio de Janeiro, RJ',
-          distance: 430,
-          weight: 25,
-          price: 3500,
-          pickupDate: '2024-01-20',
-          deliveryDate: '2024-01-22',
-          cargo: 'Soja',
-          status: 'available'
-        },
-        {
-          id: 'FREIGHT-002',
-          origin: 'Campinas, SP',
-          destination: 'Belo Horizonte, MG',
-          distance: 580,
-          weight: 30,
-          price: 4200,
-          pickupDate: '2024-01-21',
-          deliveryDate: '2024-01-23',
-          cargo: 'Milho',
-          status: 'available'
-        }
-      ]);
+      const response = await fetch('/api/driver/dashboard')
+      const data = await response.json()
 
-      setMyFreights([
-        {
-          id: 'MY-FREIGHT-001',
-          origin: 'Ribeirão Preto, SP',
-          destination: 'Santos, SP',
-          distance: 320,
-          weight: 20,
-          price: 2800,
-          pickupDate: '2024-01-18',
-          deliveryDate: '2024-01-19',
-          cargo: 'Café',
-          status: 'in_transit',
-          progress: 75
-        }
-      ]);
-
-      setEarnings({
-        totalEarnings: 45000,
-        thisMonth: 8500,
-        completedFreights: 12,
-        averageRating: 4.7
-      });
-
-      setNotifications([
-        {
-          id: 'NOT-001',
-          type: 'new_freight',
-          message: 'Novo frete disponível: São Paulo → Rio de Janeiro',
-          date: '2024-01-15T10:30:00Z',
-          read: false
-        }
-      ]);
+      if (data.success) {
+        setFreights(data.freights)
+        setMessages(data.messages)
+        setNotifications(data.notifications)
+        setStats(data.stats)
+      }
     } catch (error) {
-      console.error('Erro ao carregar dados:', error);
+      console.error('Erro ao carregar dados do motorista:', error)
     } finally {
-      // setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
-  const handleAcceptFreight = (freightId) => {
-    // Lógica para aceitar frete
-    console.log('Aceitar frete:', freightId);
-  };
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setCurrentLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          })
+        },
+        (error) => {
+          console.error('Erro ao obter localização:', error)
+        }
+      )
+    }
+  }
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
+  const handleLogout = async () => {
+    try {
+      await logout()
+      navigate('/login')
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error)
+    }
+  }
 
-  const tabs = [
-    { id: 'freights', label: // t('driverPanel.availableFreights', 'Fretes Disponíveis'), icon: // Truck },
-    { id: 'myFreights', label: // t('driverPanel.myFreights', 'Meus Fretes'), icon: // Package },
-    { id: 'earnings', label: // t('driverPanel.earnings', 'Ganhos'), icon: // DollarSign },
-    { id: '// messages', label: // t('driverPanel.// messages', 'Mensagens'), icon: MessageSquare },
-    { id: '// notifications', label: // t('driverPanel.// notifications', 'Notificações'), icon: Bell },
-    { id: 'settings', label: // t('driverPanel.settings', 'Configurações'), icon: // Settings }
-  ];
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(value)
+  }
 
-  const renderAvailableFreights = () => (
-    <div className="space-y-4">
-      <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-        {// t('driverPanel.availableFreights', 'Fretes Disponíveis')}
-      </h3>
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    })
+  }
 
-      <div className="grid gap-4">
-        {availableFreights.map((freight) => (
-          <// motion.div
-            key={freight.id}
-            className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className="flex justify-between items-start">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-3">
-                  <h4 className="font-semibold text-slate-800 dark:text-slate-200">
-                    {freight.cargo}
-                  </h4>
-                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                    {// t('freightStatus.available', 'Disponível')}
-                  </span>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                    <// MapPin className="w-4 h-4" />
-                    <div>
-                      <p className="text-sm font-medium">{freight.origin}</p>
-                      <p className="text-xs">{// t('driverPanel.origin', 'Origem')}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                    <Navigation className="w-4 h-4" />
-                    <div>
-                      <p className="text-sm font-medium">{freight.destination}</p>
-                      <p className="text-xs">{// t('driverPanel.destination', 'Destino')}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-6 text-sm text-slate-500 dark:text-slate-400">
-                  <div className="flex items-center gap-1">
-                    <// Truck className="w-4 h-4" />
-                    {freight.distance} km
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <// Package className="w-4 h-4" />
-                    {freight.weight} ton
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <// Calendar className="w-4 h-4" />
-                    {new Date(freight.pickupDate).toLocaleDateString('pt-BR')}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="text-right">
-                <div className="text-2xl font-bold text-emerald-600 mb-2">
-                  {new Intl.NumberFormat('pt-BR', { 
-                    style: 'currency', 
-                    currency: 'BRL' 
-                  }).format(freight.price)}
-                </div>
-                <button
-                  onClick={() => handleAcceptFreight(freight.id)}
-                  className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
-                >
-                  {// t('driverPanel.accept', 'Aceitar')}
-                </button>
-              </div>
-            </div>
-          </// motion.div>
-        ))}
-      </div>
-    </div>
-  );
-
-  const renderMyFreights = () => (
-    <div className="space-y-4">
-      <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-        {// t('driverPanel.myFreights', 'Meus Fretes')}
-      </h3>
-      
-      <div className="grid gap-4">
-        {myFreights.map((freight) => (
-          <// motion.div
-            key={freight.id}
-            className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className="flex justify-between items-start">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-3">
-                  <h4 className="font-semibold text-slate-800 dark:text-slate-200">
-                    {freight.cargo}
-                  </h4>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    freight.status === 'in_transit' 
-                      ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                      : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                  }`}>
-                    {// t(`freightStatus.${freight.status}`, freight.status)}
-                  </span>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                    <// MapPin className="w-4 h-4" />
-                    <div>
-                      <p className="text-sm font-medium">{freight.origin}</p>
-                      <p className="text-xs">{// t('driverPanel.origin', 'Origem')}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                    <Navigation className="w-4 h-4" />
-                    <div>
-                      <p className="text-sm font-medium">{freight.destination}</p>
-                      <p className="text-xs">{// t('driverPanel.destination', 'Destino')}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Barra de progresso */}
-                {freight.status === 'in_transit' && (
-                  <div className="mb-4">
-                    <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400 mb-1">
-                      <span>{// t('driverPanel.progress', 'Progresso')}</span>
-                      <span>{freight.progress}%</span>
-                    </div>
-                    <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                      <div 
-                        className="bg-emerald-600 h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${freight.progress}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex items-center gap-6 text-sm text-slate-500 dark:text-slate-400">
-                  <div className="flex items-center gap-1">
-                    <// Truck className="w-4 h-4" />
-                    {freight.distance} km
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <// Package className="w-4 h-4" />
-                    {freight.weight} ton
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <// Calendar className="w-4 h-4" />
-                    {new Date(freight.pickupDate).toLocaleDateString('pt-BR')}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="text-right">
-                <div className="text-2xl font-bold text-emerald-600 mb-2">
-                  {new Intl.NumberFormat('pt-BR', { 
-                    style: 'currency', 
-                    currency: 'BRL' 
-                  }).format(freight.price)}
-                </div>
-                <div className="flex gap-2">
-                  <button className="p-2 text-slate-500 hover:text-emerald-600 transition-colors">
-                    <// Eye className="w-5 h-5" />
-                  </button>
-                  <button className="px-3 py-1 bg-emerald-600 text-white rounded text-sm hover:bg-emerald-700 transition-colors">
-                    {// t('driverPanel.updateStatus', 'Atualizar')}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </// motion.div>
-        ))}
-      </div>
-    </div>
-  );
-
-  const renderEarnings = () => (
-    <div className="space-y-6">
-      <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-        {// t('driverPanel.earnings', 'Ganhos')}
-      </h3>
-      
-      {/* Cards de métricas */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
-                {// t('driverPanel.totalEarnings', 'Ganhos Totais')}
-              </p>
-              <p className="text-2xl font-bold text-slate-900 dark:text-white">
-                {new Intl.NumberFormat('pt-BR', { 
-                  style: 'currency', 
-                  currency: 'BRL' 
-                }).format(earnings.totalEarnings)}
-              </p>
-            </div>
-            <// DollarSign className="w-8 h-8 text-emerald-600" />
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
-                {// t('driverPanel.thisMonth', 'Este Mês')}
-              </p>
-              <p className="text-2xl font-bold text-slate-900 dark:text-white">
-                {new Intl.NumberFormat('pt-BR', { 
-                  style: 'currency', 
-                  currency: 'BRL' 
-                }).format(earnings.thisMonth)}
-              </p>
-            </div>
-            <// TrendingUp className="w-8 h-8 text-blue-600" />
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
-                {// t('driverPanel.completedFreights', 'Fretes Concluídos')}
-              </p>
-              <p className="text-2xl font-bold text-slate-900 dark:text-white">
-                {earnings.completedFreights}
-              </p>
-            </div>
-            <// CheckCircle className="w-8 h-8 text-green-600" />
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
-                {// t('driverPanel.averageRating', 'Avaliação Média')}
-              </p>
-              <p className="text-2xl font-bold text-slate-900 dark:text-white">
-                {earnings.averageRating}
-              </p>
-            </div>
-            <// Users className="w-8 h-8 text-yellow-600" />
-          </div>
-        </div>
-      </div>
-
-      {/* Gráfico de ganhos */}
-      <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-        <h4 className="font-semibold text-slate-800 dark:text-slate-200 mb-4">
-          {// t('driverPanel.earningsChart', 'Gráfico de Ganhos')}
-        </h4>
-        <div className="text-center py-8">
-          <// TrendingUp className="w-16 h-16 text-emerald-600 mx-auto mb-4" />
-          <p className="text-slate-600 dark:text-slate-400">
-            {// t('driverPanel.chartDescription', 'Gráfico de ganhos dos últimos 6 meses')}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderContent = () => {
-    switch (// activeTab) {
-      case 'freights':
-        return renderAvailableFreights();
-      case 'myFreights':
-        return renderMyFreights();
-      case 'earnings':
-        return renderEarnings();
-      case '// messages':
-        return (
-          <div className="text-center py-12">
-            <MessageSquare className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-slate-600 dark:text-slate-400 mb-2">
-              {// t('driverPanel.noMessages', 'Nenhuma mensagem')}
-            </h3>
-            <p className="text-slate-500 dark:text-slate-500">
-              {// t('driverPanel.noMessagesDesc', 'Suas conversas com clientes aparecerão aqui')}
-            </p>
-          </div>
-        );
-      case '// notifications':
-        return (
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-              {// t('driverPanel.// notifications', 'Notificações')}
-            </h3>
-            {// notifications.map((notification) => (
-              <div key={notification.id} className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
-                <p className="text-slate-800 dark:text-slate-200">{notification.message}</p>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                  {new Date(notification.date).toLocaleString('pt-BR')}
-                </p>
-              </div>
-            ))}
-          </div>
-        );
-      case 'settings':
-        return (
-          <div className="space-y-6">
-            <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-              {// t('driverPanel.settings', 'Configurações')}
-            </h3>
-            
-            <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-              <h4 className="font-semibold text-slate-800 dark:text-slate-200 mb-4">
-                {// t('driverPanel.accountSettings', 'Configurações da Conta')}
-              </h4>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                    {// t('driverPanel.email', 'Email')}
-                  </label>
-                  <input
-                    type="email"
-                    value={// user?.email || ''}
-                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
-                    readOnly
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                    {// t('driverPanel.name', 'Nome')}
-                  </label>
-                  <input
-                    type="text"
-                    value={// user?.name || ''}
-                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
-                  />
-                </div>
-              </div>
-              
-              <div className="mt-6 pt-6 border-// t border-slate-200 dark:border-slate-700">
-                <button
-                  onClick={handleLogout}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
-                >
-                  <LogOut className="w-4 h-4" />
-                  {// t('driverPanel.logout', 'Sair')}
-                </button>
-              </div>
-            </div>
-          </div>
-        );
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'available':
+        return 'text-green-600 dark:text-green-400'
+      case 'on_route':
+        return 'text-blue-600 dark:text-blue-400'
+      case 'delivered':
+        return 'text-purple-600 dark:text-purple-400'
+      case 'cancelled':
+        return 'text-red-600 dark:text-red-400'
       default:
-        return null;
+        return 'text-gray-600 dark:text-gray-400'
     }
-  };
+  }
 
-  if (// loading) {
+  if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-          <p className="text-slate-600 dark:text-slate-400">
-            {// t('driverPanel.// loading', 'Carregando painel...')}
-          </p>
-        </div>
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-agro-emerald"></div>
       </div>
-    );
+    )
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      {/* Header */}
-      <div className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
+          <Truck className="w-5 h-5 mr-2 text-agro-emerald" />
+          Painel do Motorista
+        </h2>
+        <button
+          onClick={handleLogout}
+          className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+        >
+          <LogOut className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Status da localização */}
+      {currentLocation && (
+        <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+          <div className="flex items-center space-x-3">
+            <Navigation className="w-5 h-5 text-blue-500" />
             <div>
-              <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-                {// t('driverPanel.title', 'Painel do Motorista')}
-              </h1>
-              <p className="text-slate-600 dark:text-slate-400">
-                {// t('driverPanel.welcome', 'Bem-vindo')}, {// user?.name || // user?.email}
+              <p className="text-sm font-medium text-blue-800 dark:text-blue-200">
+                Localização Atual
+              </p>
+              <p className="text-sm text-blue-600 dark:text-blue-300">
+                {currentLocation.lat.toFixed(6)}, {currentLocation.lng.toFixed(6)}
               </p>
             </div>
-            <div className="flex items-center gap-4">
-              <Link
-                to="/freight"
-                className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2"
-              >
-                <// Truck className="w-4 h-4" />
-                {// t('driverPanel.goToFreight', 'Ver Fretes')}
-              </Link>
+          </div>
+        </div>
+      )}
+
+      {/* Estatísticas */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Fretes</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {stats.totalFreights || 0}
+              </p>
             </div>
+            <Truck className="w-8 h-8 text-gray-400" />
+          </div>
+        </div>
+
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Mensagens</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {stats.unreadMessages || 0}
+              </p>
+            </div>
+            <MessageSquare className="w-8 h-8 text-gray-400" />
+          </div>
+        </div>
+
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Notificações</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {stats.unreadNotifications || 0}
+              </p>
+            </div>
+            <Bell className="w-8 h-8 text-gray-400" />
+          </div>
+        </div>
+
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Receita</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {formatCurrency(stats.totalEarnings || 0)}
+              </p>
+            </div>
+            <DollarSign className="w-8 h-8 text-gray-400" />
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex gap-8">
-          {/* Sidebar */}
-          <div className="w-64 flex-shrink-0">
-            <nav className="space-y-2">
-              {tabs.map((tab) => {
-                const Icon = tab.icon;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => // setActiveTab(tab.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
-                      // activeTab === tab.id
-                        ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200'
-                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-                    }`}
-                  >
-                    <Icon className="w-5 h-5" />
-                    {tab.label}
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
+      {/* Tabs */}
+      <div className="border-b border-gray-200 dark:border-gray-700 mb-6">
+        <nav className="flex space-x-8">
+          {[
+            { id: 'freights', name: 'Fretes', icon: Truck },
+            { id: 'messages', name: 'Mensagens', icon: MessageSquare },
+            { id: 'notifications', name: 'Notificações', icon: Bell }
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center space-x-2 ${
+                activeTab === tab.id
+                  ? 'border-agro-emerald text-agro-emerald'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+              }`}
+            >
+              <tab.icon className="w-4 h-4" />
+              <span>{tab.name}</span>
+            </button>
+          ))}
+        </nav>
+      </div>
 
-          {/* Content */}
-          <div className="flex-1">
-            <// AnimatePresence mode="wait">
-              <// motion.div
-                key={// activeTab}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                {renderContent()}
-              </// motion.div>
-            </// AnimatePresence>
-          </div>
+      {/* Conteúdo das tabs */}
+      {activeTab === 'freights' && (
+        <div className="space-y-4">
+          {freights.map((freight) => (
+            <motion.div
+              key={freight.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-gray-300 dark:bg-gray-600 rounded-lg flex items-center justify-center">
+                    <Package className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 dark:text-white">
+                      {freight.product?.name || 'Produto'}
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {freight.origin} → {freight.destination}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <div className="text-right">
+                    <p className="font-semibold text-gray-900 dark:text-white">
+                      {formatCurrency(freight.price)}
+                    </p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {formatDate(freight.createdAt)}
+                    </p>
+                  </div>
+                  <div className={`flex items-center space-x-1 ${getStatusColor(freight.status)}`}>
+                    <span className="text-sm font-medium">
+                      {freight.status}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      )}
+
+      {activeTab === 'messages' && (
+        <div className="space-y-4">
+          {messages.map((message) => (
+            <motion.div
+              key={message.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div className="w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {message.sender?.name?.charAt(0) || 'S'}
+                    </span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 dark:text-white">
+                      {message.sender?.name || 'Remetente'}
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {message.subject}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {formatDate(message.createdAt)}
+                  </p>
+                  {!message.read && (
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-1"></div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      )}
+
+      {activeTab === 'notifications' && (
+        <div className="space-y-4">
+          {notifications.map((notification) => (
+            <motion.div
+              key={notification.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div className="p-2 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
+                    <Bell className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 dark:text-white">
+                      {notification.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {notification.message}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {formatDate(notification.createdAt)}
+                  </p>
+                  {!notification.read && (
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-1"></div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      )}
+
+      {/* Ações rápidas */}
+      <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+        <h3 className="font-semibold text-gray-900 dark:text-white mb-3">
+          Ações Rápidas
+        </h3>
+        <div className="flex flex-wrap gap-3">
+          <Link
+            to="/freights"
+            className="px-4 py-2 bg-agro-emerald text-white rounded-lg text-sm font-medium hover:bg-emerald-600 transition-colors"
+          >
+            Ver Fretes
+          </Link>
+          <Link
+            to="/messages"
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+          >
+            Mensagens
+          </Link>
+          <Link
+            to="/profile"
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+          >
+            Perfil
+          </Link>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default DriverPanel;
+export default DriverPanel

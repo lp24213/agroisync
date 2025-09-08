@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { 
-  Search, 
-  Grid, 
-  List, 
-  Star, 
+import React, { useState } from 'react'
+import { motion } from 'framer-motion'
+import { usePayment } from '../contexts/PaymentContext'
+import { useAuth } from '../contexts/AuthContext'
+import {
+  Search,
+  Grid,
+  List,
+  Star,
   Heart,
   Truck,
   Package,
@@ -14,21 +16,27 @@ import {
   ArrowRight,
   CheckCircle,
   Shield,
-  X
-} from 'lucide-react';
+  X,
+  Lock,
+  CreditCard
+} from 'lucide-react'
 
 const Store = () => {
-  const [viewMode, setViewMode] = useState('grid');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [showIntermediation, setShowIntermediation] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [viewMode, setViewMode] = useState('grid')
+  const [selectedCategory, setSelectedCategory] = useState('all')
+  const [searchTerm, setSearchTerm] = useState('')
+  const [showIntermediation, setShowIntermediation] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState(null)
   const [intermediationData, setIntermediationData] = useState({
     quantity: '',
     message: '',
     contactPhone: '',
     contactEmail: ''
-  });
+  })
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
+
+  const { hasAccessToPrivilegedInfo, processPaymentAndUnlock } = usePayment()
+  const { user } = useAuth()
 
   const categories = [
     { id: 'all', name: 'Todos os Produtos', icon: Package },
@@ -36,14 +44,14 @@ const Store = () => {
     { id: 'machinery', name: 'Maquinário', icon: Truck },
     { id: 'inputs', name: 'Insumos', icon: Package },
     { id: 'services', name: 'Serviços', icon: TrendingUp }
-  ];
+  ]
 
   const products = [
     {
       id: 1,
       name: 'Soja Premium - Safra 2024',
       category: 'grains',
-      price: 185.50,
+      price: 185.5,
       unit: 'R$/sc',
       location: 'Sorriso - MT',
       seller: 'Fazenda São José',
@@ -135,93 +143,139 @@ const Store = () => {
       available: true,
       featured: false
     }
-  ];
+  ]
 
   const filteredProducts = products.filter(product => {
-    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.description.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory
+    const matchesSearch =
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchTerm.toLowerCase())
+    return matchesCategory && matchesSearch
+  })
 
-  const formatPrice = (price) => {
+  const formatPrice = price => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
       minimumFractionDigits: 2
-    }).format(price);
-  };
+    }).format(price)
+  }
 
-  const handleIntermediation = (product) => {
-    setSelectedProduct(product);
-    setShowIntermediation(true);
-  };
+  const handleIntermediation = product => {
+    if (!user) {
+      alert('Você precisa fazer login para solicitar intermediação.')
+      return
+    }
 
-  const handleIntermediationSubmit = () => {
-    // Simular envio da solicitação de intermediação
-    alert('Solicitação de intermediação enviada! O vendedor será notificado e entrará em contato em breve.');
-    setShowIntermediation(false);
-    setIntermediationData({
-      quantity: '',
-      message: '',
-      contactPhone: '',
-      contactEmail: ''
-    });
-  };
+    // Verificar se tem acesso às informações privilegiadas
+    if (!hasAccessToPrivilegedInfo('product')) {
+      setSelectedProduct(product)
+      setShowPaymentModal(true)
+      return
+    }
 
-  const handleContactSeller = (product) => {
+    setSelectedProduct(product)
+    setShowIntermediation(true)
+  }
+
+  const handleIntermediationSubmit = async () => {
+    try {
+      // Simular envio da solicitação de intermediação
+      alert('Solicitação de intermediação enviada! O vendedor será notificado e entrará em contato em breve.')
+      setShowIntermediation(false)
+      setIntermediationData({
+        quantity: '',
+        message: '',
+        contactPhone: '',
+        contactEmail: ''
+      })
+    } catch (error) {
+      console.error('Erro ao enviar solicitação:', error)
+      alert('Erro ao enviar solicitação. Tente novamente.')
+    }
+  }
+
+  const handleContactSeller = product => {
+    if (!user) {
+      alert('Você precisa fazer login para contatar o vendedor.')
+      return
+    }
+
+    // Verificar se tem acesso às informações privilegiadas
+    if (!hasAccessToPrivilegedInfo('product')) {
+      setSelectedProduct(product)
+      setShowPaymentModal(true)
+      return
+    }
+
     // Abrir WhatsApp ou email direto com o vendedor
-    const message = `Olá! Tenho interesse no produto: ${product.name}`;
-    const whatsappUrl = `https://wa.me/5566992362830?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
-  };
+    const message = `Olá! Tenho interesse no produto: ${product.name}`
+    const whatsappUrl = `https://wa.me/5566992362830?text=${encodeURIComponent(message)}`
+    window.open(whatsappUrl, '_blank')
+  }
+
+  const handlePaymentSuccess = async () => {
+    try {
+      // Após pagamento bem-sucedido, liberar acesso
+      await processPaymentAndUnlock({}, 'product')
+      setShowPaymentModal(false)
+
+      // Agora permitir intermediação
+      if (selectedProduct) {
+        setShowIntermediation(true)
+      }
+    } catch (error) {
+      console.error('Erro ao processar pagamento:', error)
+      alert('Erro ao processar pagamento. Tente novamente.')
+    }
+  }
 
   return (
-    <div className="min-h-screen bg-primary">
+    <div className='bg-primary min-h-screen'>
       {/* Hero Section */}
-      <section className="hero-section">
-        <div className="container-futuristic">
+      <section className='hero-section'>
+        <div className='container-futuristic'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center text-white"
+            className='text-center text-white'
           >
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              Intermediação <span className="text-yellow-300">AgroSync</span>
+            <h1 className='mb-6 text-5xl font-bold md:text-6xl'>
+              Intermediação <span className='text-yellow-300'>AgroSync</span>
             </h1>
-            <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Plataforma de intermediação inteligente. Conectamos produtores, 
-              compradores e fornecedores do agronegócio com segurança total e transparência.
+            <p className='mx-auto mb-8 max-w-3xl text-xl leading-relaxed text-white/90'>
+              Plataforma de intermediação inteligente. Conectamos produtores, compradores e fornecedores do agronegócio
+              com segurança total e transparência.
             </p>
           </motion.div>
         </div>
       </section>
 
       {/* Search and Filters */}
-      <section className="py-12 bg-secondary">
-        <div className="container-futuristic">
-          <div className="glass-card p-6">
-            <div className="flex flex-col lg:flex-row gap-6 items-center">
+      <section className='bg-secondary py-12'>
+        <div className='container-futuristic'>
+          <div className='glass-card p-6'>
+            <div className='flex flex-col items-center gap-6 lg:flex-row'>
               {/* Search */}
-              <div className="flex-1 relative">
-                <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" />
+              <div className='relative flex-1'>
+                <Search size={20} className='text-muted absolute left-3 top-1/2 -translate-y-1/2 transform' />
                 <input
-                  type="text"
-                  placeholder="Buscar produtos, serviços ou fornecedores..."
+                  type='text'
+                  placeholder='Buscar produtos, serviços ou fornecedores...'
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="input-futuristic pl-10 w-full"
+                  onChange={e => setSearchTerm(e.target.value)}
+                  className='input-futuristic w-full pl-10'
                 />
               </div>
 
               {/* Category Filter */}
-              <div className="flex gap-2 flex-wrap">
-                {categories.map((category) => (
+              <div className='flex flex-wrap gap-2'>
+                {categories.map(category => (
                   <button
                     key={category.id}
                     onClick={() => setSelectedCategory(category.id)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                    className={`flex items-center gap-2 rounded-lg px-4 py-2 font-medium transition-colors ${
                       selectedCategory === category.id
                         ? 'bg-primary text-white'
                         : 'bg-secondary text-secondary hover:bg-primary hover:text-white'
@@ -234,19 +288,23 @@ const Store = () => {
               </div>
 
               {/* View Mode */}
-              <div className="flex gap-2">
+              <div className='flex gap-2'>
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded-lg transition-colors ${
-                    viewMode === 'grid' ? 'bg-primary text-white' : 'bg-secondary text-secondary hover:bg-primary hover:text-white'
+                  className={`rounded-lg p-2 transition-colors ${
+                    viewMode === 'grid'
+                      ? 'bg-primary text-white'
+                      : 'bg-secondary text-secondary hover:bg-primary hover:text-white'
                   }`}
                 >
                   <Grid size={20} />
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`p-2 rounded-lg transition-colors ${
-                    viewMode === 'list' ? 'bg-primary text-white' : 'bg-secondary text-secondary hover:bg-primary hover:text-white'
+                  className={`rounded-lg p-2 transition-colors ${
+                    viewMode === 'list'
+                      ? 'bg-primary text-white'
+                      : 'bg-secondary text-secondary hover:bg-primary hover:text-white'
                   }`}
                 >
                   <List size={20} />
@@ -258,15 +316,13 @@ const Store = () => {
       </section>
 
       {/* Products Grid */}
-      <section className="py-20 bg-primary">
-        <div className="container-futuristic">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold text-white">
-              Produtos Disponíveis ({filteredProducts.length})
-            </h2>
-            <div className="flex items-center gap-4">
-              <span className="text-white/80">Ordenar por:</span>
-              <select className="input-futuristic">
+      <section className='bg-primary py-20'>
+        <div className='container-futuristic'>
+          <div className='mb-8 flex items-center justify-between'>
+            <h2 className='text-3xl font-bold text-white'>Produtos Disponíveis ({filteredProducts.length})</h2>
+            <div className='flex items-center gap-4'>
+              <span className='text-white/80'>Ordenar por:</span>
+              <select className='input-futuristic'>
                 <option>Relevância</option>
                 <option>Preço: Menor para Maior</option>
                 <option>Preço: Maior para Menor</option>
@@ -277,7 +333,7 @@ const Store = () => {
           </div>
 
           {viewMode === 'grid' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className='grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3'>
               {filteredProducts.map((product, index) => (
                 <motion.div
                   key={product.id}
@@ -285,71 +341,67 @@ const Store = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                   viewport={{ once: true }}
-                  className="product-card group relative"
+                  className='product-card group relative'
                 >
                   {product.featured && (
-                    <div className="absolute top-4 left-4 bg-success text-white px-3 py-1 rounded-full text-sm font-semibold">
+                    <div className='bg-success absolute left-4 top-4 rounded-full px-3 py-1 text-sm font-semibold text-white'>
                       Destaque
                     </div>
                   )}
-                  
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="text-4xl">{product.image}</div>
-                    <button className="p-2 text-muted hover:text-danger transition-colors">
+
+                  <div className='mb-4 flex items-start justify-between'>
+                    <div className='text-4xl'>{product.image}</div>
+                    <button className='text-muted hover:text-danger p-2 transition-colors'>
                       <Heart size={20} />
                     </button>
                   </div>
 
-                  <h3 className="text-xl font-bold text-primary mb-2 group-hover:text-primary-dark transition-colors">
+                  <h3 className='text-primary group-hover:text-primary-dark mb-2 text-xl font-bold transition-colors'>
                     {product.name}
                   </h3>
-                  
-                  <p className="text-secondary mb-4 line-clamp-2">
-                    {product.description}
-                  </p>
 
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="flex items-center gap-1">
-                      <Star size={16} className="text-warning fill-current" />
-                      <span className="text-sm font-medium text-primary">{product.rating}</span>
+                  <p className='text-secondary mb-4 line-clamp-2'>{product.description}</p>
+
+                  <div className='mb-4 flex items-center gap-2'>
+                    <div className='flex items-center gap-1'>
+                      <Star size={16} className='text-warning fill-current' />
+                      <span className='text-primary text-sm font-medium'>{product.rating}</span>
                     </div>
-                    <span className="text-muted text-sm">({product.reviews} avaliações)</span>
+                    <span className='text-muted text-sm'>({product.reviews} avaliações)</span>
                   </div>
 
-                  <div className="flex items-center gap-2 mb-4 text-sm text-muted">
+                  <div className='text-muted mb-4 flex items-center gap-2 text-sm'>
                     <MapPin size={16} />
                     <span>{product.location}</span>
                   </div>
 
-                  <div className="flex items-center gap-2 mb-4 text-sm text-muted">
+                  <div className='text-muted mb-4 flex items-center gap-2 text-sm'>
                     <User size={16} />
                     <span>{product.seller}</span>
                   </div>
 
-                  <div className="flex justify-between items-center mb-6">
+                  <div className='mb-6 flex items-center justify-between'>
                     <div>
-                      <div className="text-2xl font-bold text-primary">
-                        {formatPrice(product.price)}
-                      </div>
-                      <div className="text-sm text-muted">{product.unit}</div>
+                      <div className='text-primary text-2xl font-bold'>{formatPrice(product.price)}</div>
+                      <div className='text-muted text-sm'>{product.unit}</div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-sm text-muted">Disponível:</div>
-                      <div className="font-medium text-primary">{product.quantity.toLocaleString()}</div>
+                    <div className='text-right'>
+                      <div className='text-muted text-sm'>Disponível:</div>
+                      <div className='text-primary font-medium'>{product.quantity.toLocaleString()}</div>
                     </div>
                   </div>
 
-                  <div className="flex gap-3">
-                    <button 
+                  <div className='flex gap-3'>
+                    <button
                       onClick={() => handleContactSeller(product)}
-                      className="flex-1 btn-secondary flex items-center justify-center gap-2"
+                      className='btn-secondary flex flex-1 items-center justify-center gap-2'
                     >
                       <User size={16} />
                       Contatar Vendedor
                     </button>
-                    <button 
+                    <button
                       onClick={() => handleIntermediation(product)}
-                      className="btn-futuristic flex items-center justify-center gap-2"
+                      className='btn-futuristic flex items-center justify-center gap-2'
                     >
                       Solicitar Intermediação
                       <ArrowRight size={16} />
@@ -359,7 +411,7 @@ const Store = () => {
               ))}
             </div>
           ) : (
-            <div className="space-y-6">
+            <div className='space-y-6'>
               {filteredProducts.map((product, index) => (
                 <motion.div
                   key={product.id}
@@ -367,70 +419,66 @@ const Store = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                   viewport={{ once: true }}
-                  className="glass-card p-6"
+                  className='glass-card p-6'
                 >
-                  <div className="flex gap-6">
-                    <div className="text-6xl">{product.image}</div>
-                    
-                    <div className="flex-1">
-                      <div className="flex justify-between items-start mb-4">
+                  <div className='flex gap-6'>
+                    <div className='text-6xl'>{product.image}</div>
+
+                    <div className='flex-1'>
+                      <div className='mb-4 flex items-start justify-between'>
                         <div>
-                          <h3 className="text-2xl font-bold text-primary mb-2">
-                            {product.name}
-                          </h3>
-                          <p className="text-secondary mb-4">
-                            {product.description}
-                          </p>
+                          <h3 className='text-primary mb-2 text-2xl font-bold'>{product.name}</h3>
+                          <p className='text-secondary mb-4'>{product.description}</p>
                         </div>
                         {product.featured && (
-                          <div className="bg-success text-white px-3 py-1 rounded-full text-sm font-semibold">
+                          <div className='bg-success rounded-full px-3 py-1 text-sm font-semibold text-white'>
                             Destaque
                           </div>
                         )}
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                        <div className="flex items-center gap-2 text-muted">
+                      <div className='mb-6 grid grid-cols-1 gap-4 md:grid-cols-4'>
+                        <div className='text-muted flex items-center gap-2'>
                           <MapPin size={16} />
                           <span>{product.location}</span>
                         </div>
-                        <div className="flex items-center gap-2 text-muted">
+                        <div className='text-muted flex items-center gap-2'>
                           <User size={16} />
                           <span>{product.seller}</span>
                         </div>
-                        <div className="flex items-center gap-2 text-muted">
-                          <Star size={16} className="text-warning fill-current" />
-                          <span>{product.rating} ({product.reviews} avaliações)</span>
+                        <div className='text-muted flex items-center gap-2'>
+                          <Star size={16} className='text-warning fill-current' />
+                          <span>
+                            {product.rating} ({product.reviews} avaliações)
+                          </span>
                         </div>
-                        <div className="flex items-center gap-2 text-muted">
+                        <div className='text-muted flex items-center gap-2'>
                           <Package size={16} />
                           <span>{product.quantity.toLocaleString()} disponíveis</span>
                         </div>
                       </div>
 
-                      <div className="flex justify-between items-center">
+                      <div className='flex items-center justify-between'>
                         <div>
-                          <div className="text-3xl font-bold text-primary">
-                            {formatPrice(product.price)}
-                          </div>
-                          <div className="text-sm text-muted">{product.unit}</div>
+                          <div className='text-primary text-3xl font-bold'>{formatPrice(product.price)}</div>
+                          <div className='text-muted text-sm'>{product.unit}</div>
                         </div>
-                        
-                        <div className="flex gap-3">
-                          <button className="btn-secondary flex items-center gap-2">
+
+                        <div className='flex gap-3'>
+                          <button className='btn-secondary flex items-center gap-2'>
                             <Heart size={16} />
                             Favoritar
                           </button>
-                          <button 
+                          <button
                             onClick={() => handleContactSeller(product)}
-                            className="btn-secondary flex items-center gap-2"
+                            className='btn-secondary flex items-center gap-2'
                           >
                             <User size={16} />
                             Contatar Vendedor
                           </button>
-                          <button 
+                          <button
                             onClick={() => handleIntermediation(product)}
-                            className="btn-futuristic flex items-center gap-2"
+                            className='btn-futuristic flex items-center gap-2'
                           >
                             Solicitar Intermediação
                             <ArrowRight size={16} />
@@ -447,40 +495,37 @@ const Store = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-secondary">
-        <div className="container-futuristic">
+      <section className='bg-secondary py-20'>
+        <div className='container-futuristic'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className='mb-16 text-center'
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-              Por que escolher nossa <span className="text-gradient">Intermediação</span>?
+            <h2 className='text-primary mb-6 text-4xl font-bold md:text-5xl'>
+              Por que escolher nossa <span className='text-gradient'>Intermediação</span>?
             </h2>
-            <p className="text-xl text-secondary max-w-3xl mx-auto">
+            <p className='text-secondary mx-auto max-w-3xl text-xl'>
               Conectamos compradores e vendedores com segurança total e transparência
             </p>
           </motion.div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+          <div className='grid grid-cols-1 gap-8 md:grid-cols-3'>
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               viewport={{ once: true }}
-              className="glass-card p-8 text-center"
+              className='glass-card p-8 text-center'
             >
-              <div className="w-16 h-16 bg-primary-gradient rounded-xl mx-auto mb-6 flex items-center justify-center">
-                <CheckCircle size={32} className="text-white" />
+              <div className='bg-primary-gradient mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-xl'>
+                <CheckCircle size={32} className='text-white' />
               </div>
-              <h3 className="text-2xl font-bold text-primary mb-4">
-                Intermediação Segura
-              </h3>
-              <p className="text-secondary">
-                Garantimos a segurança de todas as transações com proteção 
-                completa para compradores e vendedores.
+              <h3 className='text-primary mb-4 text-2xl font-bold'>Intermediação Segura</h3>
+              <p className='text-secondary'>
+                Garantimos a segurança de todas as transações com proteção completa para compradores e vendedores.
               </p>
             </motion.div>
 
@@ -489,17 +534,14 @@ const Store = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
               viewport={{ once: true }}
-              className="glass-card p-8 text-center"
+              className='glass-card p-8 text-center'
             >
-              <div className="w-16 h-16 bg-primary-gradient rounded-xl mx-auto mb-6 flex items-center justify-center">
-                <TrendingUp size={32} className="text-white" />
+              <div className='bg-primary-gradient mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-xl'>
+                <TrendingUp size={32} className='text-white' />
               </div>
-              <h3 className="text-2xl font-bold text-primary mb-4">
-                Preços Competitivos
-              </h3>
-              <p className="text-secondary">
-                Conectamos você aos melhores preços do mercado com 
-                transparência total e sem taxas ocultas.
+              <h3 className='text-primary mb-4 text-2xl font-bold'>Preços Competitivos</h3>
+              <p className='text-secondary'>
+                Conectamos você aos melhores preços do mercado com transparência total e sem taxas ocultas.
               </p>
             </motion.div>
 
@@ -508,17 +550,14 @@ const Store = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
               viewport={{ once: true }}
-              className="glass-card p-8 text-center"
+              className='glass-card p-8 text-center'
             >
-              <div className="w-16 h-16 bg-primary-gradient rounded-xl mx-auto mb-6 flex items-center justify-center">
-                <Truck size={32} className="text-white" />
+              <div className='bg-primary-gradient mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-xl'>
+                <Truck size={32} className='text-white' />
               </div>
-              <h3 className="text-2xl font-bold text-primary mb-4">
-                Logística Integrada
-              </h3>
-              <p className="text-secondary">
-                Soluções completas de transporte e logística para 
-                garantir a entrega segura dos seus produtos.
+              <h3 className='text-primary mb-4 text-2xl font-bold'>Logística Integrada</h3>
+              <p className='text-secondary'>
+                Soluções completas de transporte e logística para garantir a entrega segura dos seus produtos.
               </p>
             </motion.div>
           </div>
@@ -526,25 +565,24 @@ const Store = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-primary-gradient">
-        <div className="container-futuristic text-center">
+      <section className='bg-primary-gradient py-20'>
+        <div className='container-futuristic text-center'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Pronto para <span className="text-yellow-300">Comercializar</span>?
+            <h2 className='mb-6 text-4xl font-bold text-white md:text-5xl'>
+              Pronto para <span className='text-yellow-300'>Comercializar</span>?
             </h2>
-            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Cadastre-se gratuitamente e comece a vender ou comprar 
-              produtos do agronegócio com segurança total
+            <p className='mx-auto mb-8 max-w-2xl text-xl text-white/90'>
+              Cadastre-se gratuitamente e comece a vender ou comprar produtos do agronegócio com segurança total
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className='flex flex-col justify-center gap-4 sm:flex-row'>
               <motion.a
-                href="/cadastro"
-                className="bg-white text-primary px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white/90 transition-colors flex items-center justify-center gap-2"
+                href='/cadastro'
+                className='text-primary flex items-center justify-center gap-2 rounded-xl bg-white px-8 py-4 text-lg font-semibold transition-colors hover:bg-white/90'
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -552,8 +590,8 @@ const Store = () => {
                 <ArrowRight size={20} />
               </motion.a>
               <motion.a
-                href="/contato"
-                className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-primary transition-colors"
+                href='/contato'
+                className='hover:text-primary rounded-xl border-2 border-white px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-white'
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -564,118 +602,212 @@ const Store = () => {
         </div>
       </section>
 
-      {/* Modal de Intermediação */}
-      {showIntermediation && selectedProduct && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      {/* Modal de Pagamento */}
+      {showPaymentModal && selectedProduct && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4'>
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="glass-card p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            className='glass-card max-h-[90vh] w-full max-w-2xl overflow-y-auto p-8'
           >
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold text-primary">
-                Solicitar Intermediação
-              </h3>
+            <div className='mb-6 flex items-center justify-between'>
+              <h3 className='text-primary text-2xl font-bold'>Acesso às Informações Privilegiadas</h3>
               <button
-                onClick={() => setShowIntermediation(false)}
-                className="text-muted hover:text-primary transition-colors"
+                onClick={() => setShowPaymentModal(false)}
+                className='text-muted hover:text-primary transition-colors'
               >
                 <X size={24} />
               </button>
             </div>
 
-            <div className="mb-6 p-4 bg-secondary/20 rounded-lg">
-              <h4 className="font-semibold text-primary mb-2">{selectedProduct.name}</h4>
-              <div className="flex justify-between items-center">
-                <span className="text-2xl font-bold text-primary">
-                  {formatPrice(selectedProduct.price)}
-                </span>
-                <span className="text-secondary">{selectedProduct.unit}</span>
+            <div className='bg-secondary/20 mb-6 rounded-lg p-4'>
+              <h4 className='text-primary mb-2 font-semibold'>{selectedProduct.name}</h4>
+              <div className='flex items-center justify-between'>
+                <span className='text-primary text-2xl font-bold'>{formatPrice(selectedProduct.price)}</span>
+                <span className='text-secondary'>{selectedProduct.unit}</span>
               </div>
-              <p className="text-muted text-sm mt-2">{selectedProduct.description}</p>
+              <p className='text-muted mt-2 text-sm'>{selectedProduct.description}</p>
             </div>
 
-            <form onSubmit={(e) => { e.preventDefault(); handleIntermediationSubmit(); }} className="space-y-6">
+            <div className='space-y-6'>
+              <div className='bg-warning/10 border-warning/20 rounded-lg border p-4'>
+                <div className='mb-2 flex items-center gap-3'>
+                  <Lock size={20} className='text-warning' />
+                  <span className='text-primary font-semibold'>Informações Restritas</span>
+                </div>
+                <p className='text-muted text-sm'>
+                  Para acessar informações de contato do vendedor e solicitar intermediação, você precisa de um plano
+                  ativo. Escolha um dos planos abaixo:
+                </p>
+              </div>
+
+              <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+                <div className='glass-card border-primary/20 border p-4'>
+                  <h5 className='text-primary mb-2 font-semibold'>Plano Básico</h5>
+                  <div className='text-primary mb-2 text-2xl font-bold'>R$ 49,90</div>
+                  <ul className='text-muted mb-4 space-y-1 text-sm'>
+                    <li>• Acesso a contatos de vendedores</li>
+                    <li>• Solicitações de intermediação</li>
+                    <li>• Suporte por email</li>
+                    <li>• 5 intermediações/mês</li>
+                  </ul>
+                  <button
+                    onClick={handlePaymentSuccess}
+                    className='btn-futuristic flex w-full items-center justify-center gap-2'
+                  >
+                    <CreditCard size={16} />
+                    Assinar Plano Básico
+                  </button>
+                </div>
+
+                <div className='glass-card border-success/20 border p-4'>
+                  <h5 className='text-primary mb-2 font-semibold'>Plano Pro</h5>
+                  <div className='text-primary mb-2 text-2xl font-bold'>R$ 99,90</div>
+                  <ul className='text-muted mb-4 space-y-1 text-sm'>
+                    <li>• Tudo do Plano Básico</li>
+                    <li>• Intermediações ilimitadas</li>
+                    <li>• Suporte prioritário</li>
+                    <li>• Relatórios avançados</li>
+                    <li>• API de integração</li>
+                  </ul>
+                  <button
+                    onClick={handlePaymentSuccess}
+                    className='btn-futuristic flex w-full items-center justify-center gap-2'
+                  >
+                    <CreditCard size={16} />
+                    Assinar Plano Pro
+                  </button>
+                </div>
+              </div>
+
+              <div className='bg-primary/10 rounded-lg p-4'>
+                <div className='mb-2 flex items-center gap-3'>
+                  <Shield size={20} className='text-success' />
+                  <span className='text-primary font-semibold'>Garantia de Segurança</span>
+                </div>
+                <p className='text-muted text-sm'>
+                  Pagamento 100% seguro via Stripe. Após o pagamento, você terá acesso imediato às informações
+                  privilegiadas e poderá solicitar intermediações.
+                </p>
+              </div>
+
+              <div className='flex gap-4'>
+                <button type='button' onClick={() => setShowPaymentModal(false)} className='btn-secondary flex-1'>
+                  Cancelar
+                </button>
+                <button
+                  type='button'
+                  onClick={() => window.open('/plans', '_blank')}
+                  className='btn-futuristic flex flex-1 items-center justify-center gap-2'
+                >
+                  <ArrowRight size={16} />
+                  Ver Todos os Planos
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Modal de Intermediação */}
+      {showIntermediation && selectedProduct && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4'>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className='glass-card max-h-[90vh] w-full max-w-2xl overflow-y-auto p-8'
+          >
+            <div className='mb-6 flex items-center justify-between'>
+              <h3 className='text-primary text-2xl font-bold'>Solicitar Intermediação</h3>
+              <button
+                onClick={() => setShowIntermediation(false)}
+                className='text-muted hover:text-primary transition-colors'
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className='bg-secondary/20 mb-6 rounded-lg p-4'>
+              <h4 className='text-primary mb-2 font-semibold'>{selectedProduct.name}</h4>
+              <div className='flex items-center justify-between'>
+                <span className='text-primary text-2xl font-bold'>{formatPrice(selectedProduct.price)}</span>
+                <span className='text-secondary'>{selectedProduct.unit}</span>
+              </div>
+              <p className='text-muted mt-2 text-sm'>{selectedProduct.description}</p>
+            </div>
+
+            <form
+              onSubmit={e => {
+                e.preventDefault()
+                handleIntermediationSubmit()
+              }}
+              className='space-y-6'
+            >
               <div>
-                <label className="block text-primary font-medium mb-2">
-                  Quantidade Desejada *
-                </label>
+                <label className='text-primary mb-2 block font-medium'>Quantidade Desejada *</label>
                 <input
-                  type="number"
+                  type='number'
                   value={intermediationData.quantity}
-                  onChange={(e) => setIntermediationData(prev => ({ ...prev, quantity: e.target.value }))}
+                  onChange={e => setIntermediationData(prev => ({ ...prev, quantity: e.target.value }))}
                   required
-                  className="input-futuristic w-full"
-                  placeholder="Digite a quantidade desejada"
+                  className='input-futuristic w-full'
+                  placeholder='Digite a quantidade desejada'
                 />
-                <p className="text-muted text-sm mt-1">
+                <p className='text-muted mt-1 text-sm'>
                   Disponível: {selectedProduct.quantity.toLocaleString()} {selectedProduct.unit}
                 </p>
               </div>
 
               <div>
-                <label className="block text-primary font-medium mb-2">
-                  Telefone para Contato *
-                </label>
+                <label className='text-primary mb-2 block font-medium'>Telefone para Contato *</label>
                 <input
-                  type="tel"
+                  type='tel'
                   value={intermediationData.contactPhone}
-                  onChange={(e) => setIntermediationData(prev => ({ ...prev, contactPhone: e.target.value }))}
+                  onChange={e => setIntermediationData(prev => ({ ...prev, contactPhone: e.target.value }))}
                   required
-                  className="input-futuristic w-full"
-                  placeholder="(66) 99999-9999"
+                  className='input-futuristic w-full'
+                  placeholder='(66) 99999-9999'
                 />
               </div>
 
               <div>
-                <label className="block text-primary font-medium mb-2">
-                  Email para Contato
-                </label>
+                <label className='text-primary mb-2 block font-medium'>Email para Contato</label>
                 <input
-                  type="email"
+                  type='email'
                   value={intermediationData.contactEmail}
-                  onChange={(e) => setIntermediationData(prev => ({ ...prev, contactEmail: e.target.value }))}
-                  className="input-futuristic w-full"
-                  placeholder="seu@email.com"
+                  onChange={e => setIntermediationData(prev => ({ ...prev, contactEmail: e.target.value }))}
+                  className='input-futuristic w-full'
+                  placeholder='seu@email.com'
                 />
               </div>
 
               <div>
-                <label className="block text-primary font-medium mb-2">
-                  Mensagem Adicional
-                </label>
+                <label className='text-primary mb-2 block font-medium'>Mensagem Adicional</label>
                 <textarea
                   value={intermediationData.message}
-                  onChange={(e) => setIntermediationData(prev => ({ ...prev, message: e.target.value }))}
+                  onChange={e => setIntermediationData(prev => ({ ...prev, message: e.target.value }))}
                   rows={4}
-                  className="input-futuristic w-full resize-none"
-                  placeholder="Informações adicionais sobre sua solicitação..."
+                  className='input-futuristic w-full resize-none'
+                  placeholder='Informações adicionais sobre sua solicitação...'
                 />
               </div>
 
-              <div className="bg-primary/10 p-4 rounded-lg">
-                <div className="flex items-center gap-3 mb-2">
-                  <Shield size={20} className="text-success" />
-                  <span className="font-semibold text-primary">Intermediação Segura</span>
+              <div className='bg-primary/10 rounded-lg p-4'>
+                <div className='mb-2 flex items-center gap-3'>
+                  <Shield size={20} className='text-success' />
+                  <span className='text-primary font-semibold'>Intermediação Segura</span>
                 </div>
-                <p className="text-muted text-sm">
-                  Nossa equipe entrará em contato com o vendedor e facilitará a negociação. 
-                  Garantimos transparência total e segurança na transação.
+                <p className='text-muted text-sm'>
+                  Nossa equipe entrará em contato com o vendedor e facilitará a negociação. Garantimos transparência
+                  total e segurança na transação.
                 </p>
               </div>
 
-              <div className="flex gap-4">
-                <button
-                  type="button"
-                  onClick={() => setShowIntermediation(false)}
-                  className="flex-1 btn-secondary"
-                >
+              <div className='flex gap-4'>
+                <button type='button' onClick={() => setShowIntermediation(false)} className='btn-secondary flex-1'>
                   Cancelar
                 </button>
-                <button
-                  type="submit"
-                  className="flex-1 btn-futuristic flex items-center justify-center gap-2"
-                >
+                <button type='submit' className='btn-futuristic flex flex-1 items-center justify-center gap-2'>
                   <CheckCircle size={20} />
                   Solicitar Intermediação
                 </button>
@@ -685,7 +817,7 @@ const Store = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Store;
+export default Store

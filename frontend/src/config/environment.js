@@ -20,7 +20,9 @@ export const environment = {
 
   // Stripe
   stripe: {
-    publishableKey: process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_live_51QVXlZGYY0MfrP1aPEJhU9TAd2zdJ7ZIOVdhji34IzdgLyFkXHDiWUaved6J7HKQiQpXKk1E9SHrAmiJKmDnETow00omwjh2Bg',
+    publishableKey:
+      process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY ||
+      'pk_live_51QVXlZGYY0MfrP1aPEJhU9TAd2zdJ7ZIOVdhji34IzdgLyFkXHDiWUaved6J7HKQiQpXKk1E9SHrAmiJKmDnETow00omwjh2Bg',
     priceIds: {
       store: {
         basic: process.env.REACT_APP_STRIPE_STORE_BASIC_PRICE_ID || 'price_store_basic',
@@ -53,6 +55,6 @@ export const environment = {
     googleAnalytics: process.env.REACT_APP_GOOGLE_ANALYTICS_ID || '',
     sentry: process.env.REACT_APP_SENTRY_DSN || ''
   }
-};
+}
 
-export default environment;
+export default environment

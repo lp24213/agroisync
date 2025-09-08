@@ -1,16 +1,6 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Send, 
-  CheckCircle,
-  MessageSquare,
-  Clock,
-  User,
-  Building
-} from 'lucide-react';
+import React, { useState } from 'react'
+import { motion } from 'framer-motion'
+import { Mail, Phone, MapPin, Send, CheckCircle, MessageSquare, Clock, User, Building } from 'lucide-react'
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -20,26 +10,26 @@ const Contact = () => {
     company: '',
     subject: '',
     message: ''
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitted, setIsSubmitted] = useState(false)
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  const handleInputChange = e => {
+    const { name, value } = e.target
     setFormData(prev => ({
       ...prev,
       [name]: value
-    }));
-  };
+    }))
+  }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
+  const handleSubmit = async e => {
+    e.preventDefault()
+    setIsSubmitting(true)
+
     // Simular envio do formulário
     setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSubmitted(true);
+      setIsSubmitting(false)
+      setIsSubmitted(true)
       setFormData({
         name: '',
         email: '',
@@ -47,9 +37,9 @@ const Contact = () => {
         company: '',
         subject: '',
         message: ''
-      });
-    }, 2000);
-  };
+      })
+    }, 2000)
+  }
 
   const contactInfo = [
     {
@@ -73,7 +63,7 @@ const Contact = () => {
       link: '#',
       description: 'Nossa sede está localizada no coração do agronegócio brasileiro'
     }
-  ];
+  ]
 
   const subjects = [
     'Suporte Técnico',
@@ -82,34 +72,34 @@ const Contact = () => {
     'Imprensa e Mídia',
     'Trabalhe Conosco',
     'Outros'
-  ];
+  ]
 
   return (
-    <div className="min-h-screen bg-primary">
+    <div className='bg-primary min-h-screen'>
       {/* Hero Section */}
-      <section className="hero-section">
-        <div className="container-futuristic">
+      <section className='hero-section'>
+        <div className='container-futuristic'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center text-white"
+            className='text-center text-white'
           >
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              Entre em <span className="text-yellow-300">Contato</span>
+            <h1 className='mb-6 text-5xl font-bold md:text-6xl'>
+              Entre em <span className='text-yellow-300'>Contato</span>
             </h1>
-            <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Estamos aqui para ajudar! Entre em contato conosco através do formulário 
-              abaixo ou use nossos canais diretos de comunicação.
+            <p className='mx-auto mb-8 max-w-3xl text-xl leading-relaxed text-white/90'>
+              Estamos aqui para ajudar! Entre em contato conosco através do formulário abaixo ou use nossos canais
+              diretos de comunicação.
             </p>
           </motion.div>
         </div>
       </section>
 
       {/* Contact Info */}
-      <section className="py-20 bg-secondary">
-        <div className="container-futuristic">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+      <section className='bg-secondary py-20'>
+        <div className='container-futuristic'>
+          <div className='mb-16 grid grid-cols-1 gap-8 md:grid-cols-3'>
             {contactInfo.map((info, index) => (
               <motion.div
                 key={info.title}
@@ -117,23 +107,21 @@ const Contact = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="glass-card p-8 text-center"
+                className='glass-card p-8 text-center'
               >
-                <div className="w-16 h-16 bg-primary-gradient rounded-xl mx-auto mb-6 flex items-center justify-center">
-                  <info.icon size={32} className="text-white" />
+                <div className='bg-primary-gradient mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-xl'>
+                  <info.icon size={32} className='text-white' />
                 </div>
-                <h3 className="text-xl font-bold text-primary mb-4">{info.title}</h3>
-                <a 
+                <h3 className='text-primary mb-4 text-xl font-bold'>{info.title}</h3>
+                <a
                   href={info.link}
                   target={info.link.startsWith('http') ? '_blank' : '_self'}
                   rel={info.link.startsWith('http') ? 'noopener noreferrer' : ''}
-                  className="text-secondary hover:text-primary transition-colors block mb-3"
+                  className='text-secondary hover:text-primary mb-3 block transition-colors'
                 >
                   {info.value}
                 </a>
-                <p className="text-muted text-sm">
-                  {info.description}
-                </p>
+                <p className='text-muted text-sm'>{info.description}</p>
               </motion.div>
             ))}
           </div>
@@ -141,9 +129,9 @@ const Contact = () => {
       </section>
 
       {/* Contact Form */}
-      <section className="py-20 bg-primary">
-        <div className="container-futuristic">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <section className='bg-primary py-20'>
+        <div className='container-futuristic'>
+          <div className='grid grid-cols-1 gap-12 lg:grid-cols-2'>
             {/* Form */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
@@ -151,122 +139,108 @@ const Contact = () => {
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <div className="glass-card p-8">
-                <h2 className="text-3xl font-bold text-white mb-6">
-                  Envie sua <span className="text-yellow-300">Mensagem</span>
+              <div className='glass-card p-8'>
+                <h2 className='mb-6 text-3xl font-bold text-white'>
+                  Envie sua <span className='text-yellow-300'>Mensagem</span>
                 </h2>
-                
+
                 {isSubmitted ? (
                   <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="text-center py-12"
+                    className='py-12 text-center'
                   >
-                    <div className="w-20 h-20 bg-success-gradient rounded-full mx-auto mb-6 flex items-center justify-center">
-                      <CheckCircle size={40} className="text-white" />
+                    <div className='bg-success-gradient mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full'>
+                      <CheckCircle size={40} className='text-white' />
                     </div>
-                    <h3 className="text-2xl font-bold text-white mb-4">
-                      Mensagem Enviada!
-                    </h3>
-                    <p className="text-white/80 mb-6">
-                      Obrigado pelo seu contato. Responderemos em breve!
-                    </p>
-                    <button
-                      onClick={() => setIsSubmitted(false)}
-                      className="btn-futuristic"
-                    >
+                    <h3 className='mb-4 text-2xl font-bold text-white'>Mensagem Enviada!</h3>
+                    <p className='mb-6 text-white/80'>Obrigado pelo seu contato. Responderemos em breve!</p>
+                    <button onClick={() => setIsSubmitted(false)} className='btn-futuristic'>
                       Enviar Nova Mensagem
                     </button>
                   </motion.div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <form onSubmit={handleSubmit} className='space-y-6'>
+                    <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
                       <div>
-                        <label className="block text-white font-medium mb-2">
-                          Nome Completo *
-                        </label>
-                        <div className="relative">
-                          <User size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" />
+                        <label className='mb-2 block font-medium text-white'>Nome Completo *</label>
+                        <div className='relative'>
+                          <User size={20} className='text-muted absolute left-3 top-1/2 -translate-y-1/2 transform' />
                           <input
-                            type="text"
-                            name="name"
+                            type='text'
+                            name='name'
                             value={formData.name}
                             onChange={handleInputChange}
                             required
-                            className="input-futuristic pl-10"
-                            placeholder="Seu nome completo"
+                            className='input-futuristic pl-10'
+                            placeholder='Seu nome completo'
                           />
                         </div>
                       </div>
-                      
+
                       <div>
-                        <label className="block text-white font-medium mb-2">
-                          Email *
-                        </label>
-                        <div className="relative">
-                          <Mail size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" />
+                        <label className='mb-2 block font-medium text-white'>Email *</label>
+                        <div className='relative'>
+                          <Mail size={20} className='text-muted absolute left-3 top-1/2 -translate-y-1/2 transform' />
                           <input
-                            type="email"
-                            name="email"
+                            type='email'
+                            name='email'
                             value={formData.email}
                             onChange={handleInputChange}
                             required
-                            className="input-futuristic pl-10"
-                            placeholder="seu@email.com"
+                            className='input-futuristic pl-10'
+                            placeholder='seu@email.com'
                           />
                         </div>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
                       <div>
-                        <label className="block text-white font-medium mb-2">
-                          Telefone
-                        </label>
-                        <div className="relative">
-                          <Phone size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" />
+                        <label className='mb-2 block font-medium text-white'>Telefone</label>
+                        <div className='relative'>
+                          <Phone size={20} className='text-muted absolute left-3 top-1/2 -translate-y-1/2 transform' />
                           <input
-                            type="tel"
-                            name="phone"
+                            type='tel'
+                            name='phone'
                             value={formData.phone}
                             onChange={handleInputChange}
-                            className="input-futuristic pl-10"
-                            placeholder="(66) 99999-9999"
+                            className='input-futuristic pl-10'
+                            placeholder='(66) 99999-9999'
                           />
                         </div>
                       </div>
-                      
+
                       <div>
-                        <label className="block text-white font-medium mb-2">
-                          Empresa
-                        </label>
-                        <div className="relative">
-                          <Building size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" />
+                        <label className='mb-2 block font-medium text-white'>Empresa</label>
+                        <div className='relative'>
+                          <Building
+                            size={20}
+                            className='text-muted absolute left-3 top-1/2 -translate-y-1/2 transform'
+                          />
                           <input
-                            type="text"
-                            name="company"
+                            type='text'
+                            name='company'
                             value={formData.company}
                             onChange={handleInputChange}
-                            className="input-futuristic pl-10"
-                            placeholder="Nome da sua empresa"
+                            className='input-futuristic pl-10'
+                            placeholder='Nome da sua empresa'
                           />
                         </div>
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-white font-medium mb-2">
-                        Assunto *
-                      </label>
+                      <label className='mb-2 block font-medium text-white'>Assunto *</label>
                       <select
-                        name="subject"
+                        name='subject'
                         value={formData.subject}
                         onChange={handleInputChange}
                         required
-                        className="input-futuristic"
+                        className='input-futuristic'
                       >
-                        <option value="">Selecione um assunto</option>
-                        {subjects.map((subject) => (
+                        <option value=''>Selecione um assunto</option>
+                        {subjects.map(subject => (
                           <option key={subject} value={subject}>
                             {subject}
                           </option>
@@ -275,33 +249,31 @@ const Contact = () => {
                     </div>
 
                     <div>
-                      <label className="block text-white font-medium mb-2">
-                        Mensagem *
-                      </label>
-                      <div className="relative">
-                        <MessageSquare size={20} className="absolute left-3 top-3 text-muted" />
+                      <label className='mb-2 block font-medium text-white'>Mensagem *</label>
+                      <div className='relative'>
+                        <MessageSquare size={20} className='text-muted absolute left-3 top-3' />
                         <textarea
-                          name="message"
+                          name='message'
                           value={formData.message}
                           onChange={handleInputChange}
                           required
                           rows={6}
-                          className="input-futuristic pl-10 resize-none"
-                          placeholder="Descreva sua mensagem aqui..."
+                          className='input-futuristic resize-none pl-10'
+                          placeholder='Descreva sua mensagem aqui...'
                         />
                       </div>
                     </div>
 
                     <motion.button
-                      type="submit"
+                      type='submit'
                       disabled={isSubmitting}
-                      className="btn-futuristic w-full flex items-center justify-center gap-2"
+                      className='btn-futuristic flex w-full items-center justify-center gap-2'
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
                       {isSubmitting ? (
                         <>
-                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                          <div className='h-5 w-5 animate-spin rounded-full border-b-2 border-white'></div>
                           Enviando...
                         </>
                       ) : (
@@ -322,74 +294,72 @@ const Contact = () => {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="space-y-8"
+              className='space-y-8'
             >
               {/* Business Hours */}
-              <div className="glass-card p-8">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 bg-primary-gradient rounded-lg flex items-center justify-center">
-                    <Clock size={24} className="text-white" />
+              <div className='glass-card p-8'>
+                <div className='mb-6 flex items-center gap-3'>
+                  <div className='bg-primary-gradient flex h-12 w-12 items-center justify-center rounded-lg'>
+                    <Clock size={24} className='text-white' />
                   </div>
-                  <h3 className="text-2xl font-bold text-white">Horário de Funcionamento</h3>
+                  <h3 className='text-2xl font-bold text-white'>Horário de Funcionamento</h3>
                 </div>
-                
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-secondary">Segunda - Sexta</span>
-                    <span className="text-white font-medium">08:00 - 18:00</span>
+
+                <div className='space-y-4'>
+                  <div className='flex items-center justify-between'>
+                    <span className='text-secondary'>Segunda - Sexta</span>
+                    <span className='font-medium text-white'>08:00 - 18:00</span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-secondary">Sábado</span>
-                    <span className="text-white font-medium">09:00 - 14:00</span>
+                  <div className='flex items-center justify-between'>
+                    <span className='text-secondary'>Sábado</span>
+                    <span className='font-medium text-white'>09:00 - 14:00</span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-secondary">Domingo</span>
-                    <span className="text-white font-medium">Fechado</span>
+                  <div className='flex items-center justify-between'>
+                    <span className='text-secondary'>Domingo</span>
+                    <span className='font-medium text-white'>Fechado</span>
                   </div>
                 </div>
-                
-                <div className="mt-6 p-4 bg-primary/10 rounded-lg">
-                  <p className="text-white/80 text-sm">
-                    <strong>Suporte 24/7:</strong> Para emergências técnicas, 
-                    nosso suporte está disponível 24 horas por dia.
+
+                <div className='bg-primary/10 mt-6 rounded-lg p-4'>
+                  <p className='text-sm text-white/80'>
+                    <strong>Suporte 24/7:</strong> Para emergências técnicas, nosso suporte está disponível 24 horas por
+                    dia.
                   </p>
                 </div>
               </div>
 
               {/* Map Placeholder */}
-              <div className="glass-card p-8">
-                <h3 className="text-2xl font-bold text-white mb-6">Nossa Localização</h3>
-                <div className="bg-secondary rounded-lg h-64 flex items-center justify-center">
-                  <div className="text-center">
-                    <MapPin size={48} className="text-primary mx-auto mb-4" />
-                    <p className="text-secondary font-medium">Sinop - MT, Brasil</p>
-                    <p className="text-muted text-sm mt-2">
-                      Mapa interativo será implementado aqui
-                    </p>
+              <div className='glass-card p-8'>
+                <h3 className='mb-6 text-2xl font-bold text-white'>Nossa Localização</h3>
+                <div className='bg-secondary flex h-64 items-center justify-center rounded-lg'>
+                  <div className='text-center'>
+                    <MapPin size={48} className='text-primary mx-auto mb-4' />
+                    <p className='text-secondary font-medium'>Sinop - MT, Brasil</p>
+                    <p className='text-muted mt-2 text-sm'>Mapa interativo será implementado aqui</p>
                   </div>
                 </div>
               </div>
 
               {/* Quick Contact */}
-              <div className="glass-card p-8">
-                <h3 className="text-2xl font-bold text-white mb-6">Contato Rápido</h3>
-                <div className="space-y-4">
+              <div className='glass-card p-8'>
+                <h3 className='mb-6 text-2xl font-bold text-white'>Contato Rápido</h3>
+                <div className='space-y-4'>
                   <a
-                    href="https://wa.me/5566992362830"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-4 bg-success/10 rounded-lg hover:bg-success/20 transition-colors"
+                    href='https://wa.me/5566992362830'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='bg-success/10 hover:bg-success/20 flex items-center gap-3 rounded-lg p-4 transition-colors'
                   >
-                    <Phone size={20} className="text-success" />
-                    <span className="text-white">WhatsApp: (66) 99236-2830</span>
+                    <Phone size={20} className='text-success' />
+                    <span className='text-white'>WhatsApp: (66) 99236-2830</span>
                   </a>
-                  
+
                   <a
-                    href="mailto:contato@agroisync.com"
-                    className="flex items-center gap-3 p-4 bg-primary/10 rounded-lg hover:bg-primary/20 transition-colors"
+                    href='mailto:contato@agroisync.com'
+                    className='bg-primary/10 hover:bg-primary/20 flex items-center gap-3 rounded-lg p-4 transition-colors'
                   >
-                    <Mail size={20} className="text-primary" />
-                    <span className="text-white">contato@agroisync.com</span>
+                    <Mail size={20} className='text-primary' />
+                    <span className='text-white'>contato@agroisync.com</span>
                   </a>
                 </div>
               </div>
@@ -398,7 +368,7 @@ const Contact = () => {
         </div>
       </section>
     </div>
-  );
-};
+  )
+}
 
-export default Contact;
+export default Contact

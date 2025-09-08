@@ -1,96 +1,96 @@
-import React, { useState, // useEffect, useRef, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-';
-import { MessageCircle, Send, Mic, MicOff, Camera, Image, Bot, Loader2, Brain, Lightbulb } from 'lucide-react';
-import { useAnalytics } from '../../hooks/useAnalytics';
-import { useTheme } from '../../contexts/ThemeContext';
+import React, { useState, useEffect, useRef, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
+import { motion, AnimatePresence } from 'framer-motion'
+import { MessageCircle, Send, Mic, MicOff, Camera, Image, Bot, Loader2, Brain, Lightbulb, Settings, X } from 'lucide-react'
+import { useAnalytics } from '../../hooks/useAnalytics'
+import { useTheme } from '../../contexts/ThemeContext'
 
 const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
-  const {  } = useTranslation();
-  const analytics = useAnalytics();
-  const {  } = // useTheme();
-  const [// messages, setMessages] = useState([]);
-  const [inputMessage, setInputMessage] = useState('');
-  const [// isLoading, // setIsLoading] = useState(false);
-  const [isListening, setIsListening] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const [// showImageUpload, setShowImageUpload] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [showSettings, setShowSettings] = useState(false);
-  const [aiMode, setAiMode] = useState('general'); // 'general', 'pricing', 'recommendations'
-  const messagesEndRef = useRef(null);
-  const recognitionRef = useRef(null);
-  const synthesisRef = useRef(null);
+  const { t } = useTranslation()
+  const analytics = useAnalytics()
+  const { theme } = useTheme()
+  const [messages, setMessages] = useState([])
+  const [inputMessage, setInputMessage] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [isListening, setIsListening] = useState(false)
+  const [isSpeaking, setIsSpeaking] = useState(false)
+  const [showImageUpload, setShowImageUpload] = useState(false)
+  const [selectedImage, setSelectedImage] = useState(null)
+  const [showSettings, setShowSettings] = useState(false)
+  const [aiMode, setAiMode] = useState('general') // 'general', 'pricing', 'recommendations'
+  const messagesEndRef = useRef(null)
+  const recognitionRef = useRef(null)
+  const synthesisRef = useRef(null)
 
   // Inicializar mensagens
-  // useEffect(() => {
+  useEffect(() => {
     const welcomeMessage = {
       id: Date.now(),
       type: 'ai',
-      content: // t('ai.welcome', 'Olá! Sou o assistente IA do AgroSync. Como posso ajudá-lo hoje?'),
+      content: t('ai.welcome', 'Olá! Sou o assistente IA do AgroSync. Como posso ajudá-lo hoje?'),
       timestamp: new Date(),
       mode: 'general'
-    };
+    }
 
-    setMessages([welcomeMessage]);
+    setMessages([welcomeMessage])
 
     if (initialMessage) {
-      handleSendMessage(initialMessage);
+      handleSendMessage(initialMessage)
     }
-  }, [initialMessage, // t]);
+  }, [initialMessage, t])
 
   // Scroll para última mensagem
-  // useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [// messages]);
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
 
   // Inicializar reconhecimento de voz
-  // useEffect(() => {
+  useEffect(() => {
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = false;
-      recognitionRef.current.interimResults = false;
-      recognitionRef.current.lang = 'pt-BR';
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+      recognitionRef.current = new SpeechRecognition()
+      recognitionRef.current.continuous = false
+      recognitionRef.current.interimResults = false
+      recognitionRef.current.lang = 'pt-BR'
 
       recognitionRef.current.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        setInputMessage(transcript);
-        setIsListening(false);
-      };
+        const transcript = event.results[0][0].transcript
+        setInputMessage(transcript)
+        setIsListening(false)
+      }
 
       recognitionRef.current.onerror = (event) => {
-        console.error('Speech recognition error:', event.error);
-        setIsListening(false);
-      };
+        console.error('Speech recognition error:', event.error)
+        setIsListening(false)
+      }
 
       recognitionRef.current.onend = () => {
-        setIsListening(false);
-      };
+        setIsListening(false)
+      }
     }
 
     // Inicializar síntese de voz
     if ('speechSynthesis' in window) {
-      synthesisRef.current = window.speechSynthesis;
+      synthesisRef.current = window.speechSynthesis
     }
-  }, []);
+  }, [])
 
   // Enviar mensagem
   const handleSendMessage = useCallback(async (message = inputMessage) => {
-    if (!message.trim()) return;
+    if (!message.trim()) return
 
     const userMessage = {
       id: Date.now(),
-      type: '// user',
+      type: 'user',
       content: message,
       timestamp: new Date(),
       image: selectedImage
-    };
+    }
 
-    setMessages(prev => [...prev, userMessage]);
-    setInputMessage('');
-    setSelectedImage(null);
-    // setIsLoading(true);
+    setMessages(prev => [...prev, userMessage])
+    setInputMessage('')
+    setSelectedImage(null)
+    setIsLoading(true)
 
     try {
       const response = await fetch('/api/ai/chat', {
@@ -103,11 +103,11 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
           message: message,
           mode: aiMode,
           image: selectedImage,
-          conversationHistory: // messages.slice(-10) // Últimas 10 mensagens
+          conversationHistory: messages.slice(-10) // Últimas 10 mensagens
         })
-      });
+      })
 
-      const data = await response.json();
+      const data = await response.json()
 
       const aiMessage = {
         id: Date.now() + 1,
@@ -117,111 +117,110 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
         mode: aiMode,
         suggestions: data.suggestions || [],
         data: data.data || null
-      };
+      }
 
-      setMessages(prev => [...prev, aiMessage]);
+      setMessages(prev => [...prev, aiMessage])
 
       // Falar resposta se habilitado
       if (data.speak && synthesisRef.current) {
-        speakText(data.response);
+        speakText(data.response)
       }
 
       analytics.trackEvent('ai_chat_message', {
         mode: aiMode,
         has_image: !!selectedImage,
         response_length: data.response.length
-      });
+      })
 
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('Error sending message:', error)
       const errorMessage = {
         id: Date.now() + 1,
         type: 'ai',
-        content: // t('ai.error', 'Desculpe, ocorreu um erro. Tente novamente.'),
+        content: t('ai.error', 'Desculpe, ocorreu um erro. Tente novamente.'),
         timestamp: new Date(),
         mode: 'error'
-      };
-      setMessages(prev => [...prev, errorMessage]);
+      }
+      setMessages(prev => [...prev, errorMessage])
     } finally {
-      // setIsLoading(false);
+      setIsLoading(false)
     }
-  }, [inputMessage, selectedImage, aiMode, // messages, analytics, // t]);
+  }, [inputMessage, selectedImage, aiMode, messages, analytics, t])
 
   // Iniciar/parar reconhecimento de voz
   const toggleVoiceInput = useCallback(() => {
     if (!recognitionRef.current) {
-      alert(// t('ai.voiceNotSupported', 'Reconhecimento de voz não é suportado neste navegador'));
-      return;
+      alert(t('ai.voiceNotSupported', 'Reconhecimento de voz não é suportado neste navegador'))
+      return
     }
 
     if (isListening) {
-      recognitionRef.current.stop();
-      setIsListening(false);
+      recognitionRef.current.stop()
     } else {
-      recognitionRef.current.start();
-      setIsListening(true);
+      recognitionRef.current.start()
+      setIsListening(true)
     }
-  }, [isListening, // t]);
+  }, [isListening, t])
 
   // Falar texto
   const speakText = useCallback((text) => {
-    if (!synthesisRef.current) return;
+    if (!synthesisRef.current) return
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'pt-BR';
-    utterance.rate = 0.9;
-    utterance.pitch = 1;
+    const utterance = new SpeechSynthesisUtterance(text)
+    utterance.lang = 'pt-BR'
+    utterance.rate = 0.9
+    utterance.pitch = 1
 
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
+    utterance.onstart = () => setIsSpeaking(true)
+    utterance.onend = () => setIsSpeaking(false)
 
-    synthesisRef.current.speak(utterance);
-  }, []);
+    synthesisRef.current.speak(utterance)
+  }, [])
 
   // Parar fala
   const stopSpeaking = useCallback(() => {
     if (synthesisRef.current) {
-      synthesisRef.current.cancel();
-      setIsSpeaking(false);
+      synthesisRef.current.cancel()
+      setIsSpeaking(false)
     }
-  }, []);
+  }, [])
 
   // Upload de imagem
   const handleImageUpload = useCallback((event) => {
-    const file = event.target.files[0];
+    const file = event.target.files[0]
     if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
+      const reader = new FileReader()
       reader.onload = (e) => {
-        setSelectedImage(e.target.result);
-        setShowImageUpload(false);
-      };
-      reader.readAsDataURL(file);
+        setSelectedImage(e.target.result)
+        setShowImageUpload(false)
+      }
+      reader.readAsDataURL(file)
     }
-  }, []);
+  }, [])
 
   // Sugestões rápidas
   const quickSuggestions = [
-    { text: // t('ai.suggestions.pricing', 'Previsão de preços'), mode: 'pricing' },
-    { text: // t('ai.suggestions.recommendations', 'Recomendações'), mode: 'recommendations' },
-    { text: // t('ai.suggestions.weather', 'Previsão do tempo'), mode: 'general' },
-    { text: // t('ai.suggestions.market', 'Análise de mercado'), mode: 'general' }
-  ];
+    { text: t('ai.suggestions.pricing', 'Previsão de preços'), mode: 'pricing' },
+    { text: t('ai.suggestions.recommendations', 'Recomendações'), mode: 'recommendations' },
+    { text: t('ai.suggestions.weather', 'Previsão do tempo'), mode: 'general' },
+    { text: t('ai.suggestions.market', 'Análise de mercado'), mode: 'general' }
+  ]
 
   const handleQuickSuggestion = useCallback((suggestion) => {
-    setAiMode(suggestion.mode);
-    handleSendMessage(suggestion.text);
-  }, [handleSendMessage]);
+    setAiMode(suggestion.mode)
+    handleSendMessage(suggestion.text)
+  }, [handleSendMessage])
 
   // Limpar conversa
   const clearConversation = useCallback(() => {
-    setMessages([]);
-    analytics.trackEvent('ai_chat_cleared');
-  }, [analytics]);
+    setMessages([])
+    analytics.trackEvent('ai_chat_cleared')
+  }, [analytics])
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
-    <// motion.div
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
@@ -235,10 +234,10 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
           </div>
           <div>
             <h3 className="font-semibold text-gray-900 dark:text-white">
-              {// t('ai.assistant', 'Assistente IA')}
+              {t('ai.assistant', 'Assistente IA')}
             </h3>
             <p className="text-xs text-gray-600 dark:text-gray-400">
-              {// t('ai.mode', 'Modo')}: {// t(`ai.modes.${aiMode}`, aiMode)}
+              {t('ai.mode', 'Modo')}: {t(`ai.modes.${aiMode}`, aiMode)}
             </p>
           </div>
         </div>
@@ -247,21 +246,21 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
             onClick={() => setShowSettings(!showSettings)}
             className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
           >
-            <// Settings className="w-4 h-4" />
+            <Settings className="w-4 h-4" />
           </button>
           <button
             onClick={onClose}
             className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
           >
-            <// X className="w-4 h-4" />
+            <X className="w-4 h-4" />
           </button>
         </div>
       </div>
 
       {/* Configurações */}
-      <// AnimatePresence>
+      <AnimatePresence>
         {showSettings && (
-          <// motion.div
+          <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
@@ -270,129 +269,98 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
             <div className="space-y-3">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  {// t('ai.mode', 'Modo')}
+                  {t('ai.mode', 'Modo')}
                 </label>
                 <select
                   value={aiMode}
                   onChange={(e) => setAiMode(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-sm"
                 >
-                  <option value="general">{// t('ai.modes.general', 'Geral')}</option>
-                  <option value="pricing">{// t('ai.modes.pricing', 'Previsão de Preços')}</option>
-                  <option value="recommendations">{// t('ai.modes.recommendations', 'Recomendações')}</option>
+                  <option value="general">{t('ai.modes.general', 'Geral')}</option>
+                  <option value="pricing">{t('ai.modes.pricing', 'Previsão de Preços')}</option>
+                  <option value="recommendations">{t('ai.modes.recommendations', 'Recomendações')}</option>
                 </select>
               </div>
               <button
                 onClick={clearConversation}
                 className="w-full px-3 py-2 bg-red-100 hover:bg-red-200 dark:bg-red-900 dark:hover:bg-red-800 text-red-700 dark:text-red-300 rounded-lg text-sm font-medium transition-colors"
               >
-                {// t('ai.clearConversation', 'Limpar conversa')}
+                {t('ai.clearConversation', 'Limpar conversa')}
               </button>
             </div>
-          </// motion.div>
+          </motion.div>
         )}
-      </// AnimatePresence>
+      </AnimatePresence>
 
       {/* Mensagens */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {// messages.map((message) => (
-          <// motion.div
+        {messages.map((message) => (
+          <motion.div
             key={message.id}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`flex ${message.type === '// user' ? 'justify-end' : 'justify-start'}`}
+            className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
           >
-            <div className={`flex items-start space-x-2 max-w-[80%] ${
-              message.type === '// user' ? 'flex-row-reverse space-x-reverse' : ''
+            <div className={`max-w-[80%] rounded-lg p-3 ${
+              message.type === 'user' 
+                ? 'bg-blue-500 text-white' 
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
             }`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                message.type === '// user' 
-                  ? 'bg-blue-600' 
-                  : message.mode === 'pricing' 
-                    ? 'bg-green-600' 
-                    : message.mode === 'recommendations' 
-                      ? 'bg-purple-600' 
-                      : 'bg-gray-600'
-              }`}>
-                {message.type === '// user' ? (
-                  <// User className="w-4 h-4 text-white" />
-                ) : (
-                  <Bot className="w-4 h-4 text-white" />
-                )}
-              </div>
-              <div className={`rounded-lg p-3 ${
-                message.type === '// user'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
-              }`}>
-                {message.image && (
-                  <img 
-                    src={message.image} 
-                    alt="Uploaded" 
-                    className="w-32 h-32 object-cover rounded-lg mb-2"
-                  />
-                )}
-                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                {message.suggestions && message.suggestions.length > 0 && (
-                  <div className="mt-2 space-y-1">
-                    {message.suggestions.map((suggestion, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handleSendMessage(suggestion)}
-                        className="block w-full text-left px-2 py-1 text-xs bg-white dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-50 dark:hover:bg-gray-500"
-                      >
-                        {suggestion}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                {message.data && (
-                  <div className="mt-2 p-2 bg-white dark:bg-gray-600 rounded text-xs">
-                    <pre className="whitespace-pre-wrap">{JSON.stringify(message.data, null, 2)}</pre>
-                  </div>
-                )}
-              </div>
+              {message.image && (
+                <img 
+                  src={message.image} 
+                  alt="Uploaded" 
+                  className="w-full h-32 object-cover rounded mb-2"
+                />
+              )}
+              <p className="text-sm">{message.content}</p>
+              {message.suggestions && message.suggestions.length > 0 && (
+                <div className="mt-2 space-y-1">
+                  {message.suggestions.map((suggestion, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSendMessage(suggestion)}
+                      className="block w-full text-left text-xs bg-white bg-opacity-20 hover:bg-opacity-30 rounded px-2 py-1 transition-colors"
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-          </// motion.div>
+          </motion.div>
         ))}
-        
-        {// isLoading && (
-          <// motion.div
+        {isLoading && (
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="flex justify-start"
           >
-            <div className="flex items-start space-x-2">
-              <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center">
-                <Bot className="w-4 h-4 text-white" />
-              </div>
-              <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-3">
-                <div className="flex items-center space-x-2">
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {// t('ai.thinking', 'Pensando...')}
-                  </span>
-                </div>
+            <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-3">
+              <div className="flex items-center space-x-2">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span className="text-sm text-gray-600 dark:text-gray-400">
+                  {t('ai.thinking', 'Pensando...')}
+                </span>
               </div>
             </div>
-          </// motion.div>
+          </motion.div>
         )}
-        
         <div ref={messagesEndRef} />
       </div>
 
       {/* Sugestões rápidas */}
-      {// messages.length === 1 && (
-        <div className="p-4 border-// t border-gray-200 dark:border-gray-700">
+      {messages.length <= 1 && (
+        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
           <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
-            {// t('ai.quickSuggestions', 'Sugestões rápidas')}:
+            {t('ai.quickSuggestions', 'Sugestões rápidas:')}
           </p>
           <div className="grid grid-cols-2 gap-2">
             {quickSuggestions.map((suggestion, index) => (
               <button
                 key={index}
                 onClick={() => handleQuickSuggestion(suggestion)}
-                className="p-2 text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors"
+                className="text-xs bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 rounded px-2 py-1 transition-colors"
               >
                 {suggestion.text}
               </button>
@@ -402,83 +370,73 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
       )}
 
       {/* Input */}
-      <div className="p-4 border-// t border-gray-200 dark:border-gray-700">
+      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
         {selectedImage && (
-          <div className="mb-3 relative">
+          <div className="mb-2 relative">
             <img 
               src={selectedImage} 
               alt="Selected" 
-              className="w-20 h-20 object-cover rounded-lg"
+              className="w-16 h-16 object-cover rounded"
             />
             <button
               onClick={() => setSelectedImage(null)}
-              className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600"
+              className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs hover:bg-red-600"
             >
-              <// X className="w-3 h-3" />
+              ×
             </button>
           </div>
         )}
         
         <div className="flex items-center space-x-2">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="hidden"
+            id="image-upload"
+          />
+          <label
+            htmlFor="image-upload"
+            className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+          >
+            <Camera className="w-4 h-4" />
+          </label>
+          
           <div className="flex-1 relative">
             <input
               type="text"
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-              placeholder={// t('ai.placeholder', 'Digite sua mensagem...')}
+              placeholder={t('ai.typeMessage', 'Digite sua mensagem...')}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-sm"
-              disabled={// isLoading}
+              disabled={isLoading}
             />
           </div>
           
-          <div className="flex items-center space-x-1">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="hidden"
-              id="image-upload"
-            />
-            <label
-              htmlFor="image-upload"
-              className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-            >
-              <Camera className="w-4 h-4" />
-            </label>
-            
-            <button
-              onClick={toggleVoiceInput}
-              className={`p-2 rounded-lg transition-colors ${
-                isListening 
-                  ? 'bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-400' 
-                  : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-              }`}
-            >
-              {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-            </button>
-            
-            {isSpeaking && (
-              <button
-                onClick={stopSpeaking}
-                className="p-2 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-400 rounded-lg"
-              >
-                <// VolumeX className="w-4 h-4" />
-              </button>
-            )}
-            
-            <button
-              onClick={() => handleSendMessage()}
-              disabled={!inputMessage.trim() || // isLoading}
-              className="p-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-lg transition-colors"
-            >
-              <Send className="w-4 h-4" />
-            </button>
-          </div>
+          <button
+            onClick={toggleVoiceInput}
+            className={`p-2 rounded-lg transition-colors ${
+              isListening 
+                ? 'bg-red-500 text-white' 
+                : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+            }`}
+            disabled={isLoading}
+          >
+            {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+          </button>
+          
+          <button
+            onClick={() => handleSendMessage()}
+            disabled={!inputMessage.trim() || isLoading}
+            className="p-2 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+          >
+            <Send className="w-4 h-4" />
+          </button>
         </div>
       </div>
-    </// motion.div>
-  );
-};
+    </motion.div>
+  )
+}
 
-export default AIChatbot;
+export default AIChatbot

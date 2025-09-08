@@ -1,159 +1,208 @@
-import React, { useState, // useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-';
-import { ArrowUpRight, ArrowDownLeft, Loader2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
+import { Activity, Loader2, CheckCircle, Clock, AlertCircle, DollarSign, Zap, ExternalLink } from 'lucide-react'
 
 const BlockchainTransactions = ({ userId }) => {
-  const {  } = useTranslation();
-  const [// transactions, setTransactions] = useState([]);
-  const [// loading, // setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [filter, setFilter] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
+  const { t } = useTranslation()
+  const [transactions, setTransactions] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [totalValue, setTotalValue] = useState(0)
+  const [activeTransactions, setActiveTransactions] = useState(0)
 
-  // useEffect(() => {
-    // fetchTransactions();
-  }, [userId]);
+  useEffect(() => {
+    fetchTransactionData()
+  }, [userId])
 
-  const // fetchTransactions = async () => {
-    // setLoading(true);
+  const fetchTransactionData = async () => {
+    setLoading(true)
     try {
-      const response = await fetch(`/api/blockchain/// transactions?userId=${userId}`);
-      const data = await response.json();
-      
+      const response = await fetch(`/api/blockchain/transactions?userId=${userId}`)
+      const data = await response.json()
+
       if (data.success) {
-        setTransactions(data.// transactions);
+        setTransactions(data.transactions)
+        setTotalValue(data.totalValue)
+        setActiveTransactions(data.activeTransactions)
       } else {
-        setError(data.message);
+        setError(data.message)
       }
     } catch (err) {
-      setError(// t('// transactions.error', 'Erro ao carregar transações'));
+      setError(t('transaction.error', 'Erro ao carregar dados de transações'))
     } finally {
-      // setLoading(false);
+      setLoading(false)
     }
-  };
-
-  const getTransactionIcon = (type) => {
-    switch (type) {
-      case 'send':
-        return <ArrowUpRight className="w-5 h-5 text-red-500" />;
-      case 'receive':
-        return <ArrowDownLeft className="w-5 h-5 text-green-500" />;
-      default:
-        return <// Clock className="w-5 h-5 text-gray-500" />;
-    }
-  };
+  }
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'confirmed':
-        return <// CheckCircle className="w-5 h-5 text-green-600" />;
+      case 'active':
+        return <CheckCircle className="w-5 h-5 text-green-600" />
       case 'pending':
-        return <// Clock className="w-5 h-5 text-yellow-600" />;
-      case 'failed':
-        return <// AlertCircle className="w-5 h-5 text-red-600" />;
+        return <Clock className="w-5 h-5 text-yellow-600" />
+      case 'completed':
+        return <CheckCircle className="w-5 h-5 text-blue-600" />
       default:
-        return <// Clock className="w-5 h-5 text-gray-600" />;
+        return <Clock className="w-5 h-5 text-gray-600" />
     }
-  };
+  }
 
-  const filteredTransactions = // transactions.filter(tx => {
-    const matchesFilter = filter === 'all' || tx.type === filter;
-    const matchesSearch = tx.hash.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         tx.description.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesFilter && matchesSearch;
-  });
-
-  if (// loading) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
         <Loader2 className="w-8 h-8 animate-spin text-agro-emerald" />
         <span className="ml-3 text-gray-600 dark:text-gray-300">
-          {// t('// transactions.// loading', 'Carregando transações...')}
+          {t('transaction.loading', 'Carregando dados de transações...')}
         </span>
       </div>
-    );
+    )
   }
 
   return (
-    <// motion.div
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
     >
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-          {// t('// transactions.title', 'Transações Blockchain')}
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+          <Activity className="w-6 h-6 mr-2 text-agro-emerald" />
+          {t('transaction.title', 'Blockchain Transactions')}
         </h2>
-        
-        <div className="flex space-x-4">
-          <div className="relative">
-            <// Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder={// t('// transactions.search', 'Buscar...')}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-            />
-          </div>
-          
-          <select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-          >
-            <option value="all">{// t('// transactions.all', 'Todas')}</option>
-            <option value="send">{// t('// transactions.send', 'Enviadas')}</option>
-            <option value="receive">{// t('// transactions.receive', 'Recebidas')}</option>
-          </select>
-        </div>
       </div>
-      
+
       {error && (
-        <div className="text-red-500 mb-4">{error}</div>
+        <div className="text-red-500 mb-4 flex items-center">
+          <AlertCircle className="w-5 h-5 mr-2" />
+          {error}
+        </div>
       )}
 
-      {filteredTransactions.length === 0 ? (
-        <p className="text-gray-600 dark:text-gray-400 text-center py-8">
-          {// t('// transactions.noTransactions', 'Nenhuma transação encontrada')}
-        </p>
+      {/* Resumo */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {t('transaction.totalValue', 'Valor Total')}
+              </p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                ${totalValue.toFixed(2)}
+              </p>
+            </div>
+            <DollarSign className="w-8 h-8 text-gray-400" />
+          </div>
+        </div>
+
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {t('transaction.activeTransactions', 'Transações Ativas')}
+              </p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {activeTransactions}
+              </p>
+            </div>
+            <Activity className="w-8 h-8 text-gray-400" />
+          </div>
+        </div>
+
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {t('transaction.totalTransactions', 'Total de Transações')}
+              </p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {transactions.length}
+              </p>
+            </div>
+            <Activity className="w-8 h-8 text-gray-400" />
+          </div>
+        </div>
+      </div>
+
+      {/* Transações */}
+      {transactions.length === 0 ? (
+        <div className="text-center py-8">
+          <Activity className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            {t('transaction.noTransactions', 'Nenhuma transação encontrada')}
+          </p>
+        </div>
       ) : (
         <div className="space-y-4">
-          {filteredTransactions.map((tx) => (
-            <div key={tx.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center space-x-3">
-                  {getTransactionIcon(tx.type)}
-                  <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white">
-                      {tx.description}
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {tx.hash}
-                    </p>
-                  </div>
+          {transactions.map((transaction) => (
+            <div key={transaction.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">
+                    {transaction.name}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {transaction.description}
+                  </p>
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
-                  {getStatusIcon(tx.status)}
+                  {getStatusIcon(transaction.status)}
                   <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {tx.status}
+                    {transaction.status}
                   </span>
                 </div>
               </div>
-              
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-4">
+                <div>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {t('transaction.value', 'Valor')}:
+                  </p>
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    ${transaction.value.toFixed(2)}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {t('transaction.transactions', 'Transações')}:
+                  </p>
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    {transaction.transactions}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {t('transaction.fee', 'Taxa')}:
+                  </p>
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    {transaction.fee}%
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {t('transaction.speed', 'Velocidade')}:
+                  </p>
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    {transaction.speed}
+                  </p>
+                </div>
+              </div>
+
               <div className="flex items-center justify-between">
                 <div className="text-sm text-gray-500 dark:text-gray-400">
-                  {tx.date}
+                  {t('transaction.lastActivity', 'Última Atividade')}: {transaction.lastActivity}
                 </div>
-                
-                <div className="flex items-center space-x-2">
-                  <span className="font-medium text-gray-900 dark:text-white">
-                    {tx.amount} {tx.currency}
-                  </span>
+
+                <div className="flex space-x-2">
                   <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                    <// ExternalLink className="w-4 h-4" />
+                    <Zap className="w-4 h-4" />
+                  </button>
+                  <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    <ExternalLink className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -161,8 +210,8 @@ const BlockchainTransactions = ({ userId }) => {
           ))}
         </div>
       )}
-    </// motion.div>
-  );
-};
+    </motion.div>
+  )
+}
 
-export default BlockchainTransactions;
+export default BlockchainTransactions

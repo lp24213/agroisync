@@ -1,458 +1,358 @@
-import React, { useState, // useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-';
-import { TrendingUp, Share2 } from 'lucide-react';
-import { useAnalytics } from '../../hooks/useAnalytics';
+import React, { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
+import { 
+  TrendingUp, 
+  TrendingDown, 
+  BarChart3, 
+  Filter, 
+  RefreshCw, 
+  AlertCircle, 
+  CheckCircle,
+  Calendar,
+  MapPin,
+  Package,
+  DollarSign,
+  Target,
+  Zap
+} from 'lucide-react'
 
-const PricePrediction = () => {
-  const {  } = useTranslation();
-  const analytics = useAnalytics();
-  const [selectedProduct, setSelectedProduct] = useState('');
-  const [selectedRegion, setSelectedRegion] = useState('');
-  const [// selectedPeriod, setSelectedPeriod] = useState('30');
-  const [predictions, setPredictions] = useState(null);
-  const [historicalData, setHistoricalData] = useState([]);
-  const [// isLoading, // setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [showFilters, setShowFilters] = useState(false);
-  const [confidence, setConfidence] = useState(0);
+const PricePrediction = ({ userId }) => {
+  const [selectedProduct, setSelectedProduct] = useState('')
+  const [selectedRegion, setSelectedRegion] = useState('')
+  const [selectedPeriod, setSelectedPeriod] = useState('30')
+  const [predictions, setPredictions] = useState(null)
+  const [historicalData, setHistoricalData] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [showFilters, setShowFilters] = useState(false)
+  const [confidence, setConfidence] = useState(0)
 
-  // Produtos disponíveis
-  const // // products = [
-    { id: 'soja', name: // t('// // products.soybean', 'Soja'), unit: 'sc' },
-    { id: 'milho', name: // t('// // products.corn', 'Milho'), unit: 'sc' },
-    { id: 'trigo', name: // t('// // products.wheat', 'Trigo'), unit: 'sc' },
-    { id: 'cafe', name: // t('// // products.coffee', 'Café'), unit: 'sc' },
-    { id: 'algodao', name: // t('// // products.cotton', 'Algodão'), unit: 'kg' },
-    { id: 'acucar', name: // t('// // products.sugar', 'Açúcar'), unit: 'kg' }
-  ];
+  const products = [
+    { id: 'soja', name: 'Soja', category: 'Grãos' },
+    { id: 'milho', name: 'Milho', category: 'Grãos' },
+    { id: 'cafe', name: 'Café', category: 'Commodities' },
+    { id: 'acucar', name: 'Açúcar', category: 'Commodities' },
+    { id: 'algodao', name: 'Algodão', category: 'Fibras' },
+    { id: 'boi', name: 'Boi Gordo', category: 'Pecuária' }
+  ]
 
-  // Regiões disponíveis
-  const // regions = [
-    { id: 'sp', name: // t('// regions.saoPaulo', 'São Paulo') },
-    { id: 'pr', name: // t('// regions.parana', 'Paraná') },
-    { id: 'rs', name: // t('// regions.rioGrandeSul', 'Rio Grande do Sul') },
-    { id: 'mg', name: // t('// regions.minasGerais', 'Minas Gerais') },
-    { id: 'mt', name: // t('// regions.matoGrosso', 'Mato Grosso') },
-    { id: 'go', name: // t('// regions.goias', 'Goiás') }
-  ];
+  const regions = [
+    { id: 'sp', name: 'São Paulo' },
+    { id: 'mg', name: 'Minas Gerais' },
+    { id: 'pr', name: 'Paraná' },
+    { id: 'rs', name: 'Rio Grande do Sul' },
+    { id: 'mt', name: 'Mato Grosso' },
+    { id: 'go', name: 'Goiás' }
+  ]
 
-  // Períodos disponíveis
   const periods = [
-    { id: '7', name: // t('periods.7days', '7 dias') },
-    { id: '30', name: // t('periods.30days', '30 dias') },
-    { id: '90', name: // t('periods.90days', '90 dias') },
-    { id: '180', name: // t('periods.180days', '180 dias') },
-    { id: '365', name: // t('periods.1year', '1 ano') }
-  ];
+    { id: '7', name: '7 dias' },
+    { id: '30', name: '30 dias' },
+    { id: '90', name: '90 dias' },
+    { id: '180', name: '180 dias' },
+    { id: '365', name: '1 ano' }
+  ]
 
-  // Carregar previsões
-  const loadPredictions = useCallback(async () => {
-    if (!selectedProduct || !selectedRegion) return;
-
-    // setIsLoading(true);
-    setError('');
-
-    try {
-      const response = await fetch('/api/ai/price-prediction', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        },
-        body: JSON.stringify({
-          product: selectedProduct,
-          region: selectedRegion,
-          period: parseInt(// selectedPeriod)
-        })
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setPredictions(data.predictions);
-        setHistoricalData(data.historicalData);
-        setConfidence(data.confidence);
-        
-        analytics.trackEvent('price_prediction_generated', {
-          product: selectedProduct,
-          region: selectedRegion,
-          period: // selectedPeriod,
-          confidence: data.confidence
-        });
-      } else {
-        setError(data.message || // t('ai.predictionError', 'Erro ao gerar previsão'));
-      }
-    } catch (error) {
-      console.error('Error // loading predictions:', error);
-      setError(// t('ai.networkError', 'Erro de conexão'));
-    } finally {
-      // setIsLoading(false);
-    }
-  }, [selectedProduct, selectedRegion, // selectedPeriod, analytics, // t]);
-
-  // Carregar previsões quando parâmetros mudarem
-  // useEffect(() => {
+  useEffect(() => {
     if (selectedProduct && selectedRegion) {
-      loadPredictions();
+      generatePrediction()
     }
-  }, [selectedProduct, selectedRegion, // selectedPeriod, loadPredictions]);
+  }, [selectedProduct, selectedRegion, selectedPeriod])
 
-  // Exportar dados
-  const exportData = useCallback(() => {
-    if (!predictions) return;
-
-    const data = {
-      product: // // products.find(p => p.id === selectedProduct)?.name,
-      region: // regions.find(r => r.id === selectedRegion)?.name,
-      period: periods.find(p => p.id === // selectedPeriod)?.name,
-      predictions: predictions,
-      historicalData: historicalData,
-      confidence: confidence,
-      generatedAt: new Date().toISOString()
-    };
-
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `price-prediction-${selectedProduct}-${selectedRegion}-${Date.now()}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    analytics.trackEvent('price_prediction_exported', {
-      product: selectedProduct,
-      region: selectedRegion
-    });
-  }, [predictions, historicalData, confidence, selectedProduct, selectedRegion, // // products, // regions, periods, analytics]);
-
-  // Compartilhar previsão
-  const sharePrediction = useCallback(async () => {
-    if (!predictions) return;
-
-    const shareData = {
-      title: // t('ai.shareTitle', 'Previsão de Preços - AgroSync'),
-      text: // t('ai.shareText', 'Confira a previsão de preços para {product} em {region}', {
-        product: // // products.find(p => p.id === selectedProduct)?.name,
-        region: // regions.find(r => r.id === selectedRegion)?.name
-      }),
-      url: window.location.href
-    };
-
-    if (navigator.share) {
-      try {
-        await navigator.share(shareData);
-        analytics.trackEvent('price_prediction_shared', {
-          product: selectedProduct,
-          region: selectedRegion
-        });
-      } catch (error) {
-        console.error('Error sharing:', error);
+  const generatePrediction = async () => {
+    setIsLoading(true)
+    setError('')
+    
+    try {
+      // Simular chamada à API
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      
+      const mockPrediction = {
+        currentPrice: Math.random() * 100 + 50,
+        predictedPrice: Math.random() * 100 + 50,
+        change: (Math.random() - 0.5) * 20,
+        confidence: Math.random() * 30 + 70,
+        factors: [
+          { name: 'Demanda', impact: Math.random() * 20 - 10, weight: 0.3 },
+          { name: 'Oferta', impact: Math.random() * 20 - 10, weight: 0.25 },
+          { name: 'Clima', impact: Math.random() * 20 - 10, weight: 0.2 },
+          { name: 'Câmbio', impact: Math.random() * 20 - 10, weight: 0.15 },
+          { name: 'Política', impact: Math.random() * 20 - 10, weight: 0.1 }
+        ],
+        historicalData: generateHistoricalData(),
+        recommendations: [
+          'Aguardar melhor momento para venda',
+          'Considerar hedge com derivativos',
+          'Monitorar indicadores climáticos'
+        ]
       }
-    } else {
-      // Fallback para copiar link
-      navigator.clipboard.writeText(shareData.url);
-      alert(// t('ai.linkCopied', 'Link copiado para a área de transferência'));
+      
+      setPredictions(mockPrediction)
+      setConfidence(mockPrediction.confidence)
+    } catch (err) {
+      setError('Erro ao gerar previsão')
+    } finally {
+      setIsLoading(false)
     }
-  }, [predictions, selectedProduct, selectedRegion, // // products, // regions, // t, analytics]);
+  }
 
-  // Calcular tendência
-  const // getTrend = (current, previous) => {
-    if (current > previous) return 'up';
-    if (current < previous) return 'down';
-    return 'stable';
-  };
+  const generateHistoricalData = () => {
+    const data = []
+    const days = parseInt(selectedPeriod)
+    const basePrice = Math.random() * 100 + 50
+    
+    for (let i = days; i >= 0; i--) {
+      const date = new Date()
+      date.setDate(date.getDate() - i)
+      
+      data.push({
+        date: date.toISOString().split('T')[0],
+        price: basePrice + (Math.random() - 0.5) * 20,
+        volume: Math.random() * 1000 + 100
+      })
+    }
+    
+    return data
+  }
 
-  // Calcular cor da confiança
-  const getConfidenceColor = (confidence) => {
-    if (confidence >= 80) return 'text-green-600';
-    if (confidence >= 60) return 'text-yellow-600';
-    return 'text-red-600';
-  };
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(price)
+  }
+
+  const formatChange = (change) => {
+    const sign = change >= 0 ? '+' : ''
+    return `${sign}${change.toFixed(2)}%`
+  }
+
+  const getChangeColor = (change) => {
+    return change >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+  }
+
+  const getChangeIcon = (change) => {
+    return change >= 0 ? (
+      <TrendingUp className="w-4 h-4" />
+    ) : (
+      <TrendingDown className="w-4 h-4" />
+    )
+  }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            {// t('ai.pricePrediction', 'Previsão de Preços')}
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400">
-            {// t('ai.pricePredictionSubtitle', 'Análise inteligente de tendências de preços')}
-          </p>
-        </div>
-
-        <div className="flex items-center space-x-3 mt-4 sm:mt-0">
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="p-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-lg transition-colors"
-            title={// t('ai.filters', 'Filtros')}
-          >
-            <// Filter className="w-5 h-5" />
-          </button>
-
-          {predictions && (
-            <>
-              <button
-                onClick={exportData}
-                className="p-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-lg transition-colors"
-                title={// t('ai.export', 'Exportar')}
-              >
-                <// Download className="w-5 h-5" />
-              </button>
-
-              <button
-                onClick={sharePrediction}
-                className="p-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-lg transition-colors"
-                title={// t('ai.share', 'Compartilhar')}
-              >
-                <Share2 className="w-5 h-5" />
-              </button>
-            </>
-          )}
-        </div>
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
+          <Target className="w-5 h-5 mr-2 text-agro-emerald" />
+          Previsão de Preços
+        </h2>
+        <button
+          onClick={() => setShowFilters(!showFilters)}
+          className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+        >
+          <Filter className="w-5 h-5" />
+        </button>
       </div>
 
       {/* Filtros */}
-      <// AnimatePresence>
-        {showFilters && (
-          <// motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  {// t('ai.product', 'Produto')}
-                </label>
-                <select
-                  value={selectedProduct}
-                  onChange={(e) => setSelectedProduct(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                >
-                  <option value="">{// t('ai.selectProduct', 'Selecione um produto')}</option>
-                  {// // products.map((product) => (
-                    <option key={product.id} value={product.id}>
-                      {product.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  {// t('ai.region', 'Região')}
-                </label>
-                <select
-                  value={selectedRegion}
-                  onChange={(e) => setSelectedRegion(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                >
-                  <option value="">{// t('ai.selectRegion', 'Selecione uma região')}</option>
-                  {// regions.map((region) => (
-                    <option key={region.id} value={region.id}>
-                      {region.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  {// t('ai.period', 'Período')}
-                </label>
-                <select
-                  value={// selectedPeriod}
-                  onChange={(e) => setSelectedPeriod(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                >
-                  {periods.map((period) => (
-                    <option key={period.id} value={period.id}>
-                      {period.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+      {showFilters && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          className="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Produto
+              </label>
+              <select
+                value={selectedProduct}
+                onChange={(e) => setSelectedProduct(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+              >
+                <option value="">Selecione um produto</option>
+                {products.map((product) => (
+                  <option key={product.id} value={product.id}>
+                    {product.name} - {product.category}
+                  </option>
+                ))}
+              </select>
             </div>
-          </// motion.div>
-        )}
-      </// AnimatePresence>
 
-      {/* Loading */}
-      {// isLoading && (
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <div className="w-16 h-16 bg-agro-emerald rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Região
+              </label>
+              <select
+                value={selectedRegion}
+                onChange={(e) => setSelectedRegion(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+              >
+                <option value="">Selecione uma região</option>
+                {regions.map((region) => (
+                  <option key={region.id} value={region.id}>
+                    {region.name}
+                  </option>
+                ))}
+              </select>
             </div>
-            <p className="text-gray-600 dark:text-gray-300 text-xl">
-              {// t('ai.generatingPrediction', 'Gerando previsão...')}
-            </p>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Período
+              </label>
+              <select
+                value={selectedPeriod}
+                onChange={(e) => setSelectedPeriod(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+              >
+                {periods.map((period) => (
+                  <option key={period.id} value={period.id}>
+                    {period.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-        </div>
+        </motion.div>
       )}
 
-      {/* Error */}
       {error && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+        <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
           <div className="flex items-center">
-            <// AlertCircle className="w-5 h-5 text-red-600 mr-2" />
-            <span className="text-red-800 dark:text-red-200">{error}</span>
+            <AlertCircle className="w-5 h-5 text-red-500 mr-2" />
+            <span className="text-red-700 dark:text-red-400">{error}</span>
           </div>
         </div>
       )}
 
-      {/* Previsões */}
-      {predictions && !// isLoading && (
+      {isLoading ? (
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-agro-emerald"></div>
+        </div>
+      ) : predictions ? (
         <div className="space-y-6">
           {/* Resumo da previsão */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {// t('ai.predictionSummary', 'Resumo da Previsão')}
-              </h3>
-              <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                  {// t('ai.confidence', 'Confiança')}:
-                </span>
-                <span className={`font-medium ${getConfidenceColor(confidence)}`}>
-                  {confidence}%
-                </span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Preço Atual
+                </h3>
+                <DollarSign className="w-6 h-6 text-gray-400" />
               </div>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {formatPrice(predictions.currentPrice)}
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-                  R$ {predictions.currentPrice?.toFixed(2)}
-                </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  {// t('ai.currentPrice', 'Preço Atual')}
-                </div>
+            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Preço Previsto
+                </h3>
+                <Target className="w-6 h-6 text-gray-400" />
               </div>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {formatPrice(predictions.predictedPrice)}
+              </p>
+            </div>
 
-              <div className="text-center">
-                <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-                  R$ {predictions.predictedPrice?.toFixed(2)}
-                </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  {// t('ai.predictedPrice', 'Preço Previsto')}
-                </div>
-              </div>
-
-              <div className="text-center">
-                <div className={`text-2xl font-bold mb-1 ${
-                  predictions.change > 0 ? 'text-green-600' : 
-                  predictions.change < 0 ? 'text-red-600' : 'text-gray-600'
-                }`}>
-                  {predictions.change > 0 ? '+' : ''}{predictions.change.toFixed(2)}%
-                </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  {// t('ai.expectedChange', 'Mudança Esperada')}
+            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Variação
+                </h3>
+                <div className={`flex items-center ${getChangeColor(predictions.change)}`}>
+                  {getChangeIcon(predictions.change)}
                 </div>
               </div>
+              <p className={`text-2xl font-bold ${getChangeColor(predictions.change)}`}>
+                {formatChange(predictions.change)}
+              </p>
             </div>
           </div>
 
-          {/* Gráfico de tendências */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              {// t('ai.priceTrend', 'Tendência de Preços')}
-            </h3>
-            
-            <div className="h-64 flex items-end justify-between space-x-2">
-              {historicalData.map((data, index) => (
-                <div key={index} className="flex-1 flex flex-col items-center">
+          {/* Confiança da previsão */}
+          <div className="bg-gradient-to-r from-agro-emerald to-emerald-600 rounded-lg p-6 text-white">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Confiança da Previsão</h3>
+              <Zap className="w-6 h-6" />
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="flex-1">
+                <div className="w-full bg-white/20 rounded-full h-2">
                   <div
-                    className="w-full bg-blue-500 rounded-// t"
-                    style={{ height: `${(data.price / Math.max(...historicalData.map(d => d.price))) * 200}px` }}
-                  />
-                  <div className="text-xs text-gray-600 dark:text-gray-400 mt-2 text-center">
-                    {new Date(data.date).toLocaleDateString('pt-BR', { month: 'short', day: 'numeric' })}
+                    className="bg-white h-2 rounded-full transition-all duration-1000"
+                    style={{ width: `${confidence}%` }}
+                  ></div>
+                </div>
+              </div>
+              <span className="text-2xl font-bold">{confidence.toFixed(1)}%</span>
+            </div>
+          </div>
+
+          {/* Fatores de influência */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              Fatores de Influência
+            </h3>
+            <div className="space-y-3">
+              {predictions.factors.map((factor, index) => (
+                <div key={index} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-3 h-3 bg-agro-emerald rounded-full"></div>
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      {factor.name}
+                    </span>
                   </div>
-                  <div className="text-xs font-medium text-gray-900 dark:text-white">
-                    R$ {data.price.toFixed(2)}
+                  <div className="flex items-center space-x-4">
+                    <span className={`text-sm font-medium ${
+                      factor.impact >= 0 ? 'text-green-600' : 'text-red-600'
+                    }`}>
+                      {factor.impact >= 0 ? '+' : ''}{factor.impact.toFixed(1)}%
+                    </span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      Peso: {(factor.weight * 100).toFixed(0)}%
+                    </span>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Análise detalhada */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                {// t('ai.factors', 'Fatores de Influência')}
-              </h3>
-              <div className="space-y-3">
-                {predictions.factors?.map((factor, index) => (
-                  <div key={index} className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
-                      {factor.name}
-                    </span>
-                    <span className={`text-sm font-medium ${
-                      factor.impact > 0 ? 'text-green-600' : 'text-red-600'
-                    }`}>
-                      {factor.impact > 0 ? '+' : ''}{factor.impact}%
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                {// t('ai.recommendations', 'Recomendações')}
-              </h3>
-              <div className="space-y-3">
-                {predictions.recommendations?.map((recommendation, index) => (
-                  <div key={index} className="flex items-start space-x-2">
-                    <// CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
-                      {recommendation}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Aviso de responsabilidade */}
-          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-            <div className="flex items-start">
-              <// AlertCircle className="w-5 h-5 text-yellow-600 mr-2 mt-0.5" />
-              <div>
-                <h4 className="text-sm font-medium text-yellow-800 dark:text-yellow-200 mb-1">
-                  {// t('ai.disclaimer', 'Aviso de Responsabilidade')}
-                </h4>
-                <p className="text-sm text-yellow-700 dark:text-yellow-300">
-                  {// t('ai.disclaimerText', 'As previsões são baseadas em análise de dados históricos e fatores de mercado. Não constituem garantia de preços futuros. Sempre consulte fontes adicionais antes de tomar decisões de investimento.')}
-                </p>
-              </div>
+          {/* Recomendações */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              Recomendações
+            </h3>
+            <div className="space-y-3">
+              {predictions.recommendations.map((recommendation, index) => (
+                <div key={index} className="flex items-start space-x-3 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                  <CheckCircle className="w-5 h-5 text-blue-500 mt-0.5" />
+                  <span className="text-blue-700 dark:text-blue-400">
+                    {recommendation}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
-      )}
-
-      {/* Estado inicial */}
-      {!selectedProduct || !selectedRegion ? (
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8 text-center">
-          <// BarChart3 className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-            {// t('ai.selectFilters', 'Selecione os filtros')}
+      ) : (
+        <div className="text-center py-12">
+          <BarChart3 className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+            Selecione um produto e região
           </h3>
           <p className="text-gray-600 dark:text-gray-400">
-            {// t('ai.selectFiltersDescription', 'Escolha um produto e uma região para gerar a previsão de preços')}
+            Escolha os filtros acima para gerar uma previsão de preços
           </p>
         </div>
-      ) : null}
+      )}
     </div>
-  );
-};
+  )
+}
 
-export default PricePrediction;
+export default PricePrediction

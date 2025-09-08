@@ -1,191 +1,200 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, Minus, Zap, DollarSign, Bitcoin, Euro } from 'lucide-react';
+import React, { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
+import { TrendingUp, TrendingDown, Minus, Clock, DollarSign } from 'lucide-react'
 
 const StockMarketTicker = () => {
-  const [marketData, setMarketData] = useState({
-    indices: [
-      { name: 'IBOV', value: '128.450', change: '+1,2%', trend: 'up' },
-      { name: 'IFIX', value: '2.845', change: '-0,8%', trend: 'down' },
-      { name: 'IDIV', value: '1.234', change: '+0,5%', trend: 'up' }
-    ],
-    currencies: [
-      { name: 'USD/BRL', value: '4,85', change: '-0,3%', trend: 'down' },
-      { name: 'EUR/BRL', value: '5,32', change: '+0,2%', trend: 'up' }
-    ],
-    crypto: [
-      { name: 'BTC', value: 'R$ 245.000', change: '+2,1%', trend: 'up' },
-      { name: 'ETH', value: 'R$ 12.800', change: '-1,5%', trend: 'down' }
-    ]
-  });
+  const [currentTime, setCurrentTime] = useState(new Date())
+  const [stocks, setStocks] = useState([])
 
-  const [currentTime, setCurrentTime] = useState(new Date());
-
-  // useEffect(() => {
+  useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
+      setCurrentTime(new Date())
+    }, 1000)
 
-    return () => clearInterval(timer);
-  }, []);
+    return () => clearInterval(timer)
+  }, [])
 
   const getTrendIcon = (trend) => {
     switch (trend) {
       case 'up':
-        return <// TrendingUp className="w-3 h-3 text-emerald-400" />;
+        return <TrendingUp className="w-4 h-4 text-green-500" />
       case 'down':
-        return <// TrendingDown className="w-3 h-3 text-red-400" />;
+        return <TrendingDown className="w-4 h-4 text-red-500" />
       default:
-        return <// Minus className="w-3 h-3 text-amber-400" />;
+        return <Minus className="w-4 h-4 text-gray-500" />
     }
-  };
+  }
 
   const getTrendColor = (trend) => {
     switch (trend) {
       case 'up':
-        return 'text-emerald-400';
+        return 'text-green-600 dark:text-green-400'
       case 'down':
-        return 'text-red-400';
+        return 'text-red-600 dark:text-red-400'
       default:
-        return 'text-amber-400';
+        return 'text-gray-600 dark:text-gray-400'
     }
-  };
+  }
 
-  const renderMarketItem = (item, index) => (
-    <// motion.div
-      key={`${item.name}-${index}`}
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.3, delay: index * 0.1 }}
-      className="flex items-center space-x-1 px-2 py-1 bg-emerald-50 dark:bg-emerald-900/30 rounded-md border border-emerald-200 dark:border-emerald-800 min-w-[110px] whitespace-nowrap"
-    >
-      <span className="text-xs font-medium text-gray-600 dark:text-gray-300">{item.name}</span>
-      <span className="text-xs font-bold text-gray-900 dark:text-gray-100">{item.value}</span>
-      <div className="flex items-center space-x-1">
-        {getTrendIcon(item.trend)}
-        <span className={`text-xs font-medium ${getTrendColor(item.trend)}`}>
-          {item.change}
-        </span>
-      </div>
-    </// motion.div>
-  );
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(price)
+  }
+
+  const formatChange = (change) => {
+    const sign = change >= 0 ? '+' : ''
+    return `${sign}${change.toFixed(2)}%`
+  }
+
+  const formatTime = (date) => {
+    return date.toLocaleTimeString('pt-BR', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    })
+  }
+
+  // Dados simulados das ações
+  const mockStocks = [
+    {
+      symbol: 'VALE3',
+      name: 'Vale S.A.',
+      price: 65.42,
+      change: 2.34,
+      trend: 'up',
+      volume: '12.5M'
+    },
+    {
+      symbol: 'PETR4',
+      name: 'Petrobras',
+      price: 28.76,
+      change: -1.23,
+      trend: 'down',
+      volume: '8.7M'
+    },
+    {
+      symbol: 'ITUB4',
+      name: 'Itaú Unibanco',
+      price: 32.15,
+      change: 0.87,
+      trend: 'up',
+      volume: '15.2M'
+    },
+    {
+      symbol: 'BBDC4',
+      name: 'Bradesco',
+      price: 24.89,
+      change: -0.45,
+      trend: 'down',
+      volume: '9.8M'
+    },
+    {
+      symbol: 'ABEV3',
+      name: 'Ambev',
+      price: 12.34,
+      change: 0.12,
+      trend: 'up',
+      volume: '6.3M'
+    },
+    {
+      symbol: 'WEGE3',
+      name: 'WEG',
+      price: 45.67,
+      change: 1.56,
+      trend: 'up',
+      volume: '4.1M'
+    },
+    {
+      symbol: 'MGLU3',
+      name: 'Magazine Luiza',
+      price: 3.21,
+      change: -2.34,
+      trend: 'down',
+      volume: '18.9M'
+    },
+    {
+      symbol: 'RENT3',
+      name: 'Localiza',
+      price: 56.78,
+      change: 0.89,
+      trend: 'up',
+      volume: '7.2M'
+    }
+  ]
+
+  useEffect(() => {
+    setStocks(mockStocks)
+  }, [])
 
   return (
-    <// motion.div 
-      className="h-16 bg-white/95 dark:bg-slate-900/95 border-b border-emerald-200 dark:border-emerald-800 backdrop-blur-sm overflow-hidden" 
-      style={{ maxHeight: '72px' }}
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ type: "spring", stiffness: 100, damping: 20 }}
-    >
-      <div className="max-w-7xl mx-auto px-4 h-full">
-        <div className="flex items-center justify-between h-full">
-          {/* Índices */}
-          <// motion.div 
-            className="flex items-center space-x-3"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <div className="flex items-center space-x-1">
-              <// motion.div
-                animate={{ rotate: [0, 360] }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              >
-                <// TrendingUp className="w-3 h-3 text-emerald-400" />
-              </// motion.div>
-              <span className="text-xs font-semibold text-gray-600 dark:text-gray-300">B3</span>
-            </div>
-            <// motion.div 
-              className="flex items-center space-x-2 overflow-hidden"
-              animate={{ x: [0, -100, 0] }}
-              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-            >
-              {marketData.indices.map((item, index) => renderMarketItem(item, index))}
-            </// motion.div>
-          </// motion.div>
-
-          {/* Moedas */}
-          <// motion.div 
-            className="flex items-center space-x-3"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-          >
-            <div className="flex items-center space-x-1">
-              <// motion.div
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                <// DollarSign className="w-3 h-3 text-sky-400" />
-              </// motion.div>
-              <span className="text-xs font-semibold text-gray-600 dark:text-gray-300">FX</span>
-            </div>
-            <// motion.div 
-              className="flex items-center space-x-2 overflow-hidden"
-              animate={{ x: [0, -80, 0] }}
-              transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-            >
-              {marketData.currencies.map((item, index) => renderMarketItem(item, index))}
-            </// motion.div>
-          </// motion.div>
-
-          {/* Cripto */}
-          <// motion.div 
-            className="flex items-center space-x-3"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.6 }}
-          >
-            <div className="flex items-center space-x-1">
-              <// motion.div
-                animate={{ rotate: [0, -360] }}
-                transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-              >
-                <Bitcoin className="w-3 h-3 text-amber-400" />
-              </// motion.div>
-              <span className="text-xs font-semibold text-gray-600 dark:text-gray-300">CRYPTO</span>
-            </div>
-            <// motion.div 
-              className="flex items-center space-x-2 overflow-hidden"
-              animate={{ x: [0, -60, 0] }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            >
-              {marketData.crypto.map((item, index) => renderMarketItem(item, index))}
-            </// motion.div>
-          </// motion.div>
-
-          {/* Live Indicator */}
-          <// motion.div 
-            className="flex items-center space-x-2"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.8 }}
-          >
-            <// motion.div 
-              className="w-2 h-2 bg-emerald-400 rounded-full"
-              animate={{ 
-                scale: [1, 1.5, 1],
-                opacity: [1, 0.5, 1]
-              }}
-              transition={{ 
-                duration: 2, 
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
-            <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">
-              {currentTime.toLocaleTimeString('pt-BR', { 
-                hour: '2-digit', 
-                minute: '2-digit',
-                second: '2-digit'
-              })}
-            </span>
-          </// motion.div>
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
+          <DollarSign className="w-5 h-5 mr-2 text-agro-emerald" />
+          Bolsa de Valores
+        </h2>
+        <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+          <Clock className="w-4 h-4 mr-2" />
+          {formatTime(currentTime)}
         </div>
       </div>
-    </// motion.div>
-  );
-};
 
-export default StockMarketTicker;
+      <div className="space-y-4">
+        {stocks.map((stock, index) => (
+          <motion.div
+            key={stock.symbol}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: index * 0.1 }}
+            className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+          >
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                {getTrendIcon(stock.trend)}
+                <div>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">
+                    {stock.symbol}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {stock.name}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-6">
+              <div className="text-right">
+                <p className="font-semibold text-gray-900 dark:text-white">
+                  {formatPrice(stock.price)}
+                </p>
+                <p className={`text-sm ${getTrendColor(stock.trend)}`}>
+                  {formatChange(stock.change)}
+                </p>
+              </div>
+              
+              <div className="text-right">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Volume
+                </p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  {stock.volume}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+          <span>Última atualização: {formatTime(currentTime)}</span>
+          <span>Dados em tempo real</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default StockMarketTicker

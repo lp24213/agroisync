@@ -1,21 +1,21 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react'
 
-const ChatbotContext = createContext();
+const ChatbotContext = createContext()
 
 export const useChatbot = () => {
-  const context = useContext(ChatbotContext);
+  const context = useContext(ChatbotContext)
   if (!context) {
-    throw new Error('useChatbot deve ser usado dentro de um ChatbotProvider');
+    throw new Error('useChatbot deve ser usado dentro de um ChatbotProvider')
   }
-  return context;
-};
+  return context
+}
 
 export const ChatbotProvider = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([]);
-  const [isTyping, setIsTyping] = useState(false);
-  const [voiceEnabled, setVoiceEnabled] = useState(false);
-  const [imageMode, setImageMode] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
+  const [messages, setMessages] = useState([])
+  const [isTyping, setIsTyping] = useState(false)
+  const [voiceEnabled, setVoiceEnabled] = useState(false)
+  const [imageMode, setImageMode] = useState(false)
   const [currentMode, setCurrentMode] = useState('text'); // text, voice, image
 
   // Mensagens iniciais
@@ -26,13 +26,13 @@ export const ChatbotProvider = ({ children }) => {
       content: 'Olá! Sou o assistente virtual do AgroSync. Como posso ajudá-lo hoje?',
       timestamp: new Date(),
       mode: 'text'
-    };
-    setMessages([welcomeMessage]);
-  }, []);
+    }
+    setMessages([welcomeMessage])
+  }, [])
 
   // Enviar mensagem de texto
-  const sendTextMessage = async (content) => {
-    if (!content.trim()) return;
+  const sendTextMessage = async content => {
+    if (!content.trim()) return
 
     const userMessage = {
       id: Date.now(),
@@ -40,42 +40,44 @@ export const ChatbotProvider = ({ children }) => {
       content: content.trim(),
       timestamp: new Date(),
       mode: 'text'
-    };
+    }
 
-    setMessages(prev => [...prev, userMessage]);
-    setIsTyping(true);
+    setMessages(prev => [...prev, userMessage])
+    setIsTyping(true)
 
     try {
       // Simular resposta da IA
-      const response = await simulateAIResponse(content);
-      
+      const response = await simulateAIResponse(content)
+
       const botMessage = {
         id: Date.now() + 1,
         type: 'bot',
         content: response,
         timestamp: new Date(),
         mode: 'text'
-      };
+      }
 
-      setTimeout(() => {
-        setMessages(prev => [...prev, botMessage]);
-        setIsTyping(false);
-      }, 1000 + Math.random() * 2000); // Simular tempo de processamento
-
+      setTimeout(
+        () => {
+          setMessages(prev => [...prev, botMessage])
+          setIsTyping(false)
+        },
+        1000 + Math.random() * 2000
+      ); // Simular tempo de processamento
     } catch (error) {
-      console.error('Erro ao enviar mensagem:', error);
-      setIsTyping(false);
+      console.error('Erro ao enviar mensagem:', error)
+      setIsTyping(false)
     }
-  };
+  }
 
   // Enviar mensagem de voz
-  const sendVoiceMessage = async (audioBlob) => {
-    setIsTyping(true);
+  const sendVoiceMessage = async audioBlob => {
+    setIsTyping(true)
 
     try {
       // Simular processamento de áudio
-      const transcription = await simulateVoiceTranscription(audioBlob);
-      
+      const transcription = await simulateVoiceTranscription(audioBlob)
+
       const userMessage = {
         id: Date.now(),
         type: 'user',
@@ -83,35 +85,34 @@ export const ChatbotProvider = ({ children }) => {
         timestamp: new Date(),
         mode: 'voice',
         audio: audioBlob
-      };
+      }
 
-      setMessages(prev => [...prev, userMessage]);
+      setMessages(prev => [...prev, userMessage])
 
       // Simular resposta da IA
-      const response = await simulateAIResponse(transcription);
-      
+      const response = await simulateAIResponse(transcription)
+
       const botMessage = {
         id: Date.now() + 1,
         type: 'bot',
         content: response,
         timestamp: new Date(),
         mode: 'voice'
-      };
+      }
 
       setTimeout(() => {
-        setMessages(prev => [...prev, botMessage]);
-        setIsTyping(false);
-      }, 2000);
-
+        setMessages(prev => [...prev, botMessage])
+        setIsTyping(false)
+      }, 2000)
     } catch (error) {
-      console.error('Erro ao processar áudio:', error);
-      setIsTyping(false);
+      console.error('Erro ao processar áudio:', error)
+      setIsTyping(false)
     }
-  };
+  }
 
   // Enviar mensagem com imagem
   const sendImageMessage = async (imageFile, description = '') => {
-    setIsTyping(true);
+    setIsTyping(true)
 
     try {
       const userMessage = {
@@ -121,95 +122,94 @@ export const ChatbotProvider = ({ children }) => {
         timestamp: new Date(),
         mode: 'image',
         image: imageFile
-      };
+      }
 
-      setMessages(prev => [...prev, userMessage]);
+      setMessages(prev => [...prev, userMessage])
 
       // Simular análise de imagem
-      const analysis = await simulateImageAnalysis(imageFile);
-      
+      const analysis = await simulateImageAnalysis(imageFile)
+
       const botMessage = {
         id: Date.now() + 1,
         type: 'bot',
         content: analysis,
         timestamp: new Date(),
         mode: 'image'
-      };
+      }
 
       setTimeout(() => {
-        setMessages(prev => [...prev, botMessage]);
-        setIsTyping(false);
-      }, 3000);
-
+        setMessages(prev => [...prev, botMessage])
+        setIsTyping(false)
+      }, 3000)
     } catch (error) {
-      console.error('Erro ao processar imagem:', error);
-      setIsTyping(false);
+      console.error('Erro ao processar imagem:', error)
+      setIsTyping(false)
     }
-  };
+  }
 
   // Simular resposta da IA
-  const simulateAIResponse = async (userInput) => {
-    const input = userInput.toLowerCase();
-    
+  const simulateAIResponse = async userInput => {
+    const input = userInput.toLowerCase()
+
     // Respostas baseadas em palavras-chave
     if (input.includes('preço') || input.includes('cotação')) {
-      return 'Posso ajudá-lo com informações sobre preços de commodities. Acesse a seção de cotações para ver os preços em tempo real.';
+      return 'Posso ajudá-lo com informações sobre preços de commodities. Acesse a seção de cotações para ver os preços em tempo real.'
     }
-    
+
     if (input.includes('frete') || input.includes('transporte')) {
-      return 'Para fretes, use o AgroConecta. Lá você pode publicar cargas ou encontrar transportadores disponíveis.';
+      return 'Para fretes, use o AgroConecta. Lá você pode publicar cargas ou encontrar transportadores disponíveis.'
     }
-    
+
     if (input.includes('produto') || input.includes('vender') || input.includes('comprar')) {
-      return 'O marketplace é o local ideal para comprar e vender produtos agrícolas. Você pode filtrar por categoria, localização e preço.';
+      return 'O marketplace é o local ideal para comprar e vender produtos agrícolas. Você pode filtrar por categoria, localização e preço.'
     }
-    
+
     if (input.includes('cripto') || input.includes('blockchain') || input.includes('nft')) {
-      return 'O AgroSync oferece pagamentos em criptomoedas, staking e NFTs agrícolas. Acesse a seção Crypto para mais informações.';
+      return 'O AgroSync oferece pagamentos em criptomoedas, staking e NFTs agrícolas. Acesse a seção Crypto para mais informações.'
     }
-    
+
     if (input.includes('conta') || input.includes('perfil') || input.includes('cadastro')) {
-      return 'Para gerenciar sua conta, acesse o dashboard. Lá você pode atualizar suas informações, ver histórico de transações e gerenciar assinaturas.';
+      return 'Para gerenciar sua conta, acesse o dashboard. Lá você pode atualizar suas informações, ver histórico de transações e gerenciar assinaturas.'
     }
-    
+
     if (input.includes('ajuda') || input.includes('suporte')) {
-      return 'Estou aqui para ajudar! Você pode me fazer perguntas sobre qualquer funcionalidade do AgroSync ou acessar a seção de ajuda para mais informações.';
+      return 'Estou aqui para ajudar! Você pode me fazer perguntas sobre qualquer funcionalidade do AgroSync ou acessar a seção de ajuda para mais informações.'
     }
-    
+
     if (input.includes('planos') || input.includes('assinatura') || input.includes('premium')) {
-      return 'O AgroSync oferece planos gratuitos e premium. Os planos premium incluem recursos avançados como mensageria, analytics e suporte prioritário.';
+      return 'O AgroSync oferece planos gratuitos e premium. Os planos premium incluem recursos avançados como mensageria, analytics e suporte prioritário.'
     }
-    
+
     // Resposta padrão
-    return 'Entendi sua pergunta. Posso ajudá-lo com informações sobre produtos, fretes, criptomoedas, preços e muito mais. O que gostaria de saber especificamente?';
-  };
+    return 'Entendi sua pergunta. Posso ajudá-lo com informações sobre produtos, fretes, criptomoedas, preços e muito mais. O que gostaria de saber especificamente?'
+  }
 
   // Simular transcrição de voz
-  const simulateVoiceTranscription = async (audioBlob) => {
+  const simulateVoiceTranscription = async audioBlob => {
     // Em uma implementação real, aqui seria feita a transcrição usando uma API como Google Speech-to-Text
-    return 'Mensagem de voz transcrita (simulação)';
-  };
+    return 'Mensagem de voz transcrita (simulação)'
+  }
 
   // Simular análise de imagem
-  const simulateImageAnalysis = async (imageFile) => {
+  const simulateImageAnalysis = async imageFile => {
     // Em uma implementação real, aqui seria feita a análise usando uma API como Google Vision
-    return 'Analisei sua imagem. Parece ser relacionada ao agronegócio. Como posso ajudá-lo com base nesta imagem?';
-  };
+    return 'Analisei sua imagem. Parece ser relacionada ao agronegócio. Como posso ajudá-lo com base nesta imagem?'
+  }
 
   // Alternar modo do chatbot
-  const toggleMode = (mode) => {
-    setCurrentMode(mode);
+  const toggleMode = mode => {
+    setCurrentMode(mode)
     if (mode === 'voice') {
-      setVoiceEnabled(true);
-      setImageMode(false);
+      setVoiceEnabled(true)
+      setImageMode(false)
     } else if (mode === 'image') {
-      setImageMode(true);
-      setVoiceEnabled(false);
+      setImageMode(true)
+      setVoiceEnabled(false)
     } else {
-      setVoiceEnabled(false);
-      setImageMode(false);
+      setVoiceEnabled(false)
+      setImageMode(false)
     }
-  };
+  }
 
   // Limpar conversa
   const clearConversation = () => {
@@ -219,14 +219,14 @@ export const ChatbotProvider = ({ children }) => {
       content: 'Conversa limpa! Como posso ajudá-lo agora?',
       timestamp: new Date(),
       mode: 'text'
-    };
-    setMessages([welcomeMessage]);
-  };
+    }
+    setMessages([welcomeMessage])
+  }
 
   // Alternar visibilidade do chatbot
   const toggleChatbot = () => {
-    setIsOpen(!isOpen);
-  };
+    setIsOpen(!isOpen)
+  }
 
   const value = {
     isOpen,
@@ -241,11 +241,7 @@ export const ChatbotProvider = ({ children }) => {
     toggleMode,
     clearConversation,
     toggleChatbot
-  };
+  }
 
-  return (
-    <ChatbotContext.Provider value={value}>
-      {children}
-    </ChatbotContext.Provider>
-  );
-};
+  return <ChatbotContext.Provider value={value}>{children}</ChatbotContext.Provider>
+}

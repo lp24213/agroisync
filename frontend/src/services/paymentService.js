@@ -1,18 +1,18 @@
-import axios from 'axios';
+import axios from 'axios'
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api'
 
 class PaymentService {
   constructor() {
-    this.baseURL = `${API_BASE_URL}/payments`;
-    this.stripe = null;
-    this.elements = null;
+    this.baseURL = `${API_BASE_URL}/payments`
+    this.stripe = null
+    this.elements = null
   }
 
   // Configurar token de autenticação
   setAuthToken(token) {
-    this.authToken = token;
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    this.authToken = token
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   }
 
   // Sistema de comissões para intermediação
@@ -21,11 +21,11 @@ class PaymentService {
       const response = await axios.post(`${this.baseURL}/commission/calculate`, {
         transactionAmount,
         transactionType
-      });
-      return response.data;
+      })
+      return response.data
     } catch (error) {
-      console.error('Erro ao calcular comissão:', error);
-      return { success: false, error: 'Erro ao calcular comissão' };
+      console.error('Erro ao calcular comissão:', error)
+      return { success: false, error: 'Erro ao calcular comissão' }
     }
   }
 
@@ -37,21 +37,21 @@ class PaymentService {
         amount,
         paymentMethod,
         userWallet
-      });
-      return response.data;
+      })
+      return response.data
     } catch (error) {
-      console.error('Erro ao processar comissão:', error);
-      return { success: false, error: 'Erro ao processar comissão' };
+      console.error('Erro ao processar comissão:', error)
+      return { success: false, error: 'Erro ao processar comissão' }
     }
   }
 
   // Inicializar Stripe
   async initializeStripe(publishableKey) {
     if (typeof window !== 'undefined' && window.Stripe) {
-      this.stripe = window.Stripe(publishableKey);
-      return this.stripe;
+      this.stripe = window.Stripe(publishableKey)
+      return this.stripe
     }
-    throw new Error('Stripe não está disponível');
+    throw new Error('Stripe não está disponível')
   }
 
   // ===== STRIPE PAYMENT INTENT =====
@@ -71,11 +71,11 @@ class PaymentService {
         automatic_payment_methods: {
           enabled: true
         }
-      });
-      return response.data;
+      })
+      return response.data
     } catch (error) {
-      console.error('Erro ao criar PaymentIntent:', error);
-      throw error;
+      console.error('Erro ao criar PaymentIntent:', error)
+      throw error
     }
   }
 
@@ -85,11 +85,11 @@ class PaymentService {
       const response = await axios.post(`${this.baseURL}/stripe/confirm-payment`, {
         paymentIntentId,
         paymentMethodId
-      });
-      return response.data;
+      })
+      return response.data
     } catch (error) {
-      console.error('Erro ao confirmar pagamento:', error);
-      throw error;
+      console.error('Erro ao confirmar pagamento:', error)
+      throw error
     }
   }
 
@@ -104,11 +104,11 @@ class PaymentService {
         document: userData.document,
         address: userData.address,
         bankAccount: userData.bankAccount
-      });
-      return response.data;
+      })
+      return response.data
     } catch (error) {
-      console.error('Erro ao criar conta Escrow:', error);
-      throw error;
+      console.error('Erro ao criar conta Escrow:', error)
+      throw error
     }
   }
 
@@ -124,11 +124,11 @@ class PaymentService {
         description: transactionData.description,
         escrowFee: transactionData.escrowFee || 0,
         releaseConditions: transactionData.releaseConditions || []
-      });
-      return response.data;
+      })
+      return response.data
     } catch (error) {
-      console.error('Erro ao criar transação Escrow:', error);
-      throw error;
+      console.error('Erro ao criar transação Escrow:', error)
+      throw error
     }
   }
 
@@ -139,11 +139,11 @@ class PaymentService {
         transactionId,
         adminId,
         reason
-      });
-      return response.data;
+      })
+      return response.data
     } catch (error) {
-      console.error('Erro ao liberar pagamento Escrow:', error);
-      throw error;
+      console.error('Erro ao liberar pagamento Escrow:', error)
+      throw error
     }
   }
 
@@ -153,22 +153,22 @@ class PaymentService {
       const response = await axios.post(`${this.baseURL}/escrow/cancel-transaction`, {
         transactionId,
         reason
-      });
-      return response.data;
+      })
+      return response.data
     } catch (error) {
-      console.error('Erro ao cancelar transação Escrow:', error);
-      throw error;
+      console.error('Erro ao cancelar transação Escrow:', error)
+      throw error
     }
   }
 
   // Obter status da transação Escrow
   async getEscrowTransactionStatus(transactionId) {
     try {
-      const response = await axios.get(`${this.baseURL}/escrow/transaction/${transactionId}`);
-      return response.data;
+      const response = await axios.get(`${this.baseURL}/escrow/transaction/${transactionId}`)
+      return response.data
     } catch (error) {
-      console.error('Erro ao obter status da transação:', error);
-      throw error;
+      console.error('Erro ao obter status da transação:', error)
+      throw error
     }
   }
 
@@ -177,22 +177,22 @@ class PaymentService {
   // Processar webhook do Stripe
   async processStripeWebhook(webhookData) {
     try {
-      const response = await axios.post(`${this.baseURL}/webhooks/stripe`, webhookData);
-      return response.data;
+      const response = await axios.post(`${this.baseURL}/webhooks/stripe`, webhookData)
+      return response.data
     } catch (error) {
-      console.error('Erro ao processar webhook Stripe:', error);
-      throw error;
+      console.error('Erro ao processar webhook Stripe:', error)
+      throw error
     }
   }
 
   // Processar webhook do Escrow
   async processEscrowWebhook(webhookData) {
     try {
-      const response = await axios.post(`${this.baseURL}/webhooks/escrow`, webhookData);
-      return response.data;
+      const response = await axios.post(`${this.baseURL}/webhooks/escrow`, webhookData)
+      return response.data
     } catch (error) {
-      console.error('Erro ao processar webhook Escrow:', error);
-      throw error;
+      console.error('Erro ao processar webhook Escrow:', error)
+      throw error
     }
   }
 
@@ -201,11 +201,11 @@ class PaymentService {
   // Obter métodos de pagamento do usuário
   async getPaymentMethods(userId) {
     try {
-      const response = await axios.get(`${this.baseURL}/payment-methods/${userId}`);
-      return response.data;
+      const response = await axios.get(`${this.baseURL}/payment-methods/${userId}`)
+      return response.data
     } catch (error) {
-      console.error('Erro ao obter métodos de pagamento:', error);
-      throw error;
+      console.error('Erro ao obter métodos de pagamento:', error)
+      throw error
     }
   }
 
@@ -215,22 +215,22 @@ class PaymentService {
       const response = await axios.post(`${this.baseURL}/payment-methods`, {
         userId,
         ...paymentMethodData
-      });
-      return response.data;
+      })
+      return response.data
     } catch (error) {
-      console.error('Erro ao adicionar método de pagamento:', error);
-      throw error;
+      console.error('Erro ao adicionar método de pagamento:', error)
+      throw error
     }
   }
 
   // Remover método de pagamento
   async removePaymentMethod(paymentMethodId) {
     try {
-      const response = await axios.delete(`${this.baseURL}/payment-methods/${paymentMethodId}`);
-      return response.data;
+      const response = await axios.delete(`${this.baseURL}/payment-methods/${paymentMethodId}`)
+      return response.data
     } catch (error) {
-      console.error('Erro ao remover método de pagamento:', error);
-      throw error;
+      console.error('Erro ao remover método de pagamento:', error)
+      throw error
     }
   }
 
@@ -241,22 +241,22 @@ class PaymentService {
     try {
       const response = await axios.get(`${this.baseURL}/transactions/${userId}`, {
         params: filters
-      });
-      return response.data;
+      })
+      return response.data
     } catch (error) {
-      console.error('Erro ao obter histórico de transações:', error);
-      throw error;
+      console.error('Erro ao obter histórico de transações:', error)
+      throw error
     }
   }
 
   // Obter detalhes da transação
   async getTransactionDetails(transactionId) {
     try {
-      const response = await axios.get(`${this.baseURL}/transactions/details/${transactionId}`);
-      return response.data;
+      const response = await axios.get(`${this.baseURL}/transactions/details/${transactionId}`)
+      return response.data
     } catch (error) {
-      console.error('Erro ao obter detalhes da transação:', error);
-      throw error;
+      console.error('Erro ao obter detalhes da transação:', error)
+      throw error
     }
   }
 
@@ -269,11 +269,11 @@ class PaymentService {
         transactionId,
         reason,
         amount
-      });
-      return response.data;
+      })
+      return response.data
     } catch (error) {
-      console.error('Erro ao solicitar reembolso:', error);
-      throw error;
+      console.error('Erro ao solicitar reembolso:', error)
+      throw error
     }
   }
 
@@ -284,11 +284,11 @@ class PaymentService {
         refundId,
         adminId,
         action // 'approve', 'reject'
-      });
-      return response.data;
+      })
+      return response.data
     } catch (error) {
-      console.error('Erro ao processar reembolso:', error);
-      throw error;
+      console.error('Erro ao processar reembolso:', error)
+      throw error
     }
   }
 
@@ -302,35 +302,35 @@ class PaymentService {
         planId: subscriptionData.planId,
         paymentMethodId: subscriptionData.paymentMethodId,
         trialPeriod: subscriptionData.trialPeriod
-      });
-      return response.data;
+      })
+      return response.data
     } catch (error) {
-      console.error('Erro ao criar assinatura:', error);
-      throw error;
+      console.error('Erro ao criar assinatura:', error)
+      throw error
     }
-    }
+  }
 
   // Cancelar assinatura
   async cancelSubscription(subscriptionId, reason) {
     try {
       const response = await axios.post(`${this.baseURL}/subscriptions/${subscriptionId}/cancel`, {
         reason
-      });
-      return response.data;
+      })
+      return response.data
     } catch (error) {
-      console.error('Erro ao cancelar assinatura:', error);
-      throw error;
+      console.error('Erro ao cancelar assinatura:', error)
+      throw error
     }
   }
 
   // Atualizar assinatura
   async updateSubscription(subscriptionId, updates) {
     try {
-      const response = await axios.put(`${this.baseURL}/subscriptions/${subscriptionId}`, updates);
-      return response.data;
+      const response = await axios.put(`${this.baseURL}/subscriptions/${subscriptionId}`, updates)
+      return response.data
     } catch (error) {
-      console.error('Erro ao atualizar assinatura:', error);
-      throw error;
+      console.error('Erro ao atualizar assinatura:', error)
+      throw error
     }
   }
 
@@ -339,11 +339,11 @@ class PaymentService {
   // Validar cartão
   async validateCard(cardData) {
     try {
-      const response = await axios.post(`${this.baseURL}/validate-card`, cardData);
-      return response.data;
+      const response = await axios.post(`${this.baseURL}/validate-card`, cardData)
+      return response.data
     } catch (error) {
-      console.error('Erro ao validar cartão:', error);
-      throw error;
+      console.error('Erro ao validar cartão:', error)
+      throw error
     }
   }
 
@@ -352,24 +352,24 @@ class PaymentService {
     try {
       const response = await axios.get(`${this.baseURL}/calculate-fees`, {
         params: { amount, currency, type }
-      });
-      return response.data;
+      })
+      return response.data
     } catch (error) {
-      console.error('Erro ao calcular taxas:', error);
-      throw error;
-      }
+      console.error('Erro ao calcular taxas:', error)
+      throw error
     }
+  }
 
   // Obter estatísticas de pagamento
   async getPaymentStats(userId, period = 'month') {
     try {
       const response = await axios.get(`${this.baseURL}/stats/${userId}`, {
         params: { period }
-      });
-      return response.data;
+      })
+      return response.data
     } catch (error) {
-      console.error('Erro ao obter estatísticas:', error);
-      throw error;
+      console.error('Erro ao obter estatísticas:', error)
+      throw error
     }
   }
 
@@ -396,6 +396,6 @@ class PaymentService {
 }
 
 // Instância única do serviço
-const paymentService = new PaymentService();
+const paymentService = new PaymentService()
 
-export default paymentService;
+export default paymentService

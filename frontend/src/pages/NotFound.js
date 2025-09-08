@@ -1,47 +1,40 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Home, ArrowLeft } from 'lucide-react';
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { Home, ArrowLeft } from 'lucide-react'
 
 const NotFound = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-dark-primary via-dark-secondary to-dark-tertiary flex items-center justify-center p-8">
-      <div className="max-w-2xl mx-auto text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="space-y-8"
-        >
-          <div className="text-8xl font-bold text-gradient">404</div>
-          
+    <div className='flex min-h-screen items-center justify-center bg-gradient-to-br from-dark-primary via-dark-secondary to-dark-tertiary p-8'>
+      <div className='mx-auto max-w-2xl text-center'>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className='space-y-8'>
+          <div className='text-gradient text-8xl font-bold'>404</div>
+
           <div>
-            <h1 className="text-4xl font-bold text-white mb-4">Página não encontrada</h1>
-            <p className="text-gray-400 text-lg leading-relaxed">
+            <h1 className='mb-4 text-4xl font-bold text-white'>Página não encontrada</h1>
+            <p className='text-lg leading-relaxed text-gray-400'>
               A página que você está procurando não existe ou foi movida.
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              to="/"
-              className="btn-primary px-8 py-4 flex items-center justify-center space-x-2"
-            >
-              <Home className="w-5 h-5" />
+          <div className='flex flex-col justify-center gap-4 sm:flex-row'>
+            <Link to='/' className='btn-primary flex items-center justify-center space-x-2 px-8 py-4'>
+              <Home className='h-5 w-5' />
               <span>Voltar ao Início</span>
             </Link>
-            
+
             <button
               onClick={() => window.history.back()}
-              className="btn-secondary px-8 py-4 flex items-center justify-center space-x-2"
+              className='btn-secondary flex items-center justify-center space-x-2 px-8 py-4'
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className='h-5 w-5' />
               <span>Voltar</span>
             </button>
           </div>
         </motion.div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default NotFound;
+export default NotFound

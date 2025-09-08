@@ -1,14 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { 
-  ShoppingCart, X, Plus, Minus, Trash, Package, 
-  Truck, ArrowRight, Download, Upload,
+import React, { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
+import {
+  ShoppingCart,
+  X,
+  Plus,
+  Minus,
+  Trash,
+  Package,
+  Truck,
+  ArrowRight,
+  Download,
+  Upload,
   MessageSquare
-} from 'lucide-react';
-import cartService from '../services/cartService';
+} from 'lucide-react'
+import cartService from '../services/cartService'
 
 const CartWidget = ({ isOpen, onClose, onCheckout }) => {
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState([])
 
   const [shippingInfo, setShippingInfo] = useState({
     destination: '',
@@ -16,55 +24,55 @@ const CartWidget = ({ isOpen, onClose, onCheckout }) => {
     city: '',
     state: '',
     zipCode: ''
-  });
+  })
 
   useEffect(() => {
     if (isOpen) {
-      loadCart();
+      loadCart()
     }
-  }, [isOpen]);
+  }, [isOpen])
 
   const loadCart = () => {
-    const currentCart = cartService.getCart();
-    setCart(currentCart);
-  };
+    const currentCart = cartService.getCart()
+    setCart(currentCart)
+  }
 
   const updateQuantity = (productId, quantity) => {
-    const updatedCart = cartService.updateQuantity(productId, quantity);
-    setCart(updatedCart);
-  };
+    const updatedCart = cartService.updateQuantity(productId, quantity)
+    setCart(updatedCart)
+  }
 
-  const removeItem = (productId) => {
-    const updatedCart = cartService.removeFromCart(productId);
-    setCart(updatedCart);
-  };
+  const removeItem = productId => {
+    const updatedCart = cartService.removeFromCart(productId)
+    setCart(updatedCart)
+  }
 
   const clearCart = () => {
-    const updatedCart = cartService.clearCart();
-    setCart(updatedCart);
-  };
+    const updatedCart = cartService.clearCart()
+    setCart(updatedCart)
+  }
 
   const getTotal = () => {
-    return cart.reduce((total, item) => total + item.totalPrice, 0);
-  };
+    return cart.reduce((total, item) => total + item.totalPrice, 0)
+  }
 
   const getItemCount = () => {
-    return cart.reduce((count, item) => count + item.quantity, 0);
-  };
+    return cart.reduce((count, item) => count + item.quantity, 0)
+  }
 
   const calculateShipping = () => {
-    if (!shippingInfo.destination) return 0;
-    const shipping = cartService.calculateShipping(cart, shippingInfo.destination);
-    return shipping.cost;
-  };
+    if (!shippingInfo.destination) return 0
+    const shipping = cartService.calculateShipping(cart, shippingInfo.destination)
+    return shipping.cost
+  }
 
   const getGrandTotal = () => {
-    return getTotal() + calculateShipping();
-  };
+    return getTotal() + calculateShipping()
+  }
 
   const handlePurchaseIntent = () => {
-    if (cart.length === 0) return;
-    
+    if (cart.length === 0) return
+
     // Transformar em modelo de intermediação - "Solicitar Cotação"
     const quotationData = {
       buyer: {
@@ -82,38 +90,41 @@ const CartWidget = ({ isOpen, onClose, onCheckout }) => {
       },
       type: 'quotation', // Indicar que é uma cotação
       status: 'pending' // Status inicial da cotação
-    };
+    }
 
     if (onCheckout) {
-      onCheckout(quotationData);
+      onCheckout(quotationData)
     }
-  };
+  }
 
   const exportCart = () => {
-    cartService.exportCart();
-  };
+    cartService.exportCart()
+  }
 
-  const importCart = (event) => {
-    const file = event.target.files[0];
+  const importCart = event => {
+    const file = event.target.files[0]
     if (file) {
-      cartService.importCart(file).then(updatedCart => {
-        setCart(updatedCart);
-      }).catch(error => {
-        console.error('Erro ao importar carrinho:', error);
-      });
+      cartService
+        .importCart(file)
+        .then(updatedCart => {
+          setCart(updatedCart)
+        })
+        .catch(error => {
+          console.error('Erro ao importar carrinho:', error)
+        })
     }
-  };
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden">
+    <div className='fixed inset-0 z-50 overflow-hidden'>
       {/* Overlay */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className='absolute inset-0 bg-black/50 backdrop-blur-sm'
         onClick={onClose}
       />
 
@@ -123,87 +134,81 @@ const CartWidget = ({ isOpen, onClose, onCheckout }) => {
         animate={{ x: 0 }}
         exit={{ x: '100%' }}
         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-        className="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl"
+        className='absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl'
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-slate-200">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-xl flex items-center justify-center text-white">
-              <ShoppingCart className="w-5 h-5" />
+        <div className='flex items-center justify-between border-b border-slate-200 p-6'>
+          <div className='flex items-center space-x-3'>
+            <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-emerald-500 to-blue-500 text-white'>
+              <ShoppingCart className='h-5 w-5' />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-slate-800">Pedido de Cotação</h2>
-              <p className="text-sm text-slate-600">{getItemCount()} item(s) para cotação</p>
+              <h2 className='text-xl font-bold text-slate-800'>Pedido de Cotação</h2>
+              <p className='text-sm text-slate-600'>{getItemCount()} item(s) para cotação</p>
             </div>
           </div>
-          
+
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition-colors"
+            className='flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-slate-200'
           >
-            <X className="w-4 h-4" />
+            <X className='h-4 w-4' />
           </button>
         </div>
 
         {/* Conteúdo */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className='flex-1 overflow-y-auto p-6'>
           {cart.length === 0 ? (
-            <div className="text-center py-12">
-              <Package className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-slate-600 mb-2">Nenhum produto selecionado</h3>
-              <p className="text-slate-500">Adicione produtos para solicitar cotação</p>
+            <div className='py-12 text-center'>
+              <Package className='mx-auto mb-4 h-16 w-16 text-slate-300' />
+              <h3 className='mb-2 text-lg font-medium text-slate-600'>Nenhum produto selecionado</h3>
+              <p className='text-slate-500'>Adicione produtos para solicitar cotação</p>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className='space-y-4'>
               {/* Lista de produtos */}
-              {cart.map((item) => (
+              {cart.map(item => (
                 <motion.div
                   key={item.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="flex space-x-4 p-4 bg-slate-50 rounded-lg"
+                  className='flex space-x-4 rounded-lg bg-slate-50 p-4'
                 >
                   {/* Imagem */}
-                  <div className="w-16 h-16 bg-slate-200 rounded-lg overflow-hidden flex-shrink-0">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-full h-full object-cover"
-                    />
+                  <div className='h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg bg-slate-200'>
+                    <img src={item.image} alt={item.name} className='h-full w-full object-cover' />
                   </div>
 
                   {/* Informações */}
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-medium text-slate-800 truncate">{item.name}</h4>
-                    <p className="text-sm text-slate-600">{item.category}</p>
-                    <p className="text-lg font-bold text-emerald-600">
-                      R$ {item.price.toFixed(2).replace('.', ',')}
-                    </p>
+                  <div className='min-w-0 flex-1'>
+                    <h4 className='truncate font-medium text-slate-800'>{item.name}</h4>
+                    <p className='text-sm text-slate-600'>{item.category}</p>
+                    <p className='text-lg font-bold text-emerald-600'>R$ {item.price.toFixed(2).replace('.', ',')}</p>
                   </div>
 
                   {/* Controles */}
-                  <div className="flex flex-col items-end space-y-2">
-                    <div className="flex items-center space-x-2">
+                  <div className='flex flex-col items-end space-y-2'>
+                    <div className='flex items-center space-x-2'>
                       <button
                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-300 transition-colors"
+                        className='flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 text-slate-600 transition-colors hover:bg-slate-300'
                       >
-                        <Minus className="w-3 h-3" />
+                        <Minus className='h-3 w-3' />
                       </button>
-                      <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
+                      <span className='w-8 text-center text-sm font-medium'>{item.quantity}</span>
                       <button
                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-300 transition-colors"
+                        className='flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 text-slate-600 transition-colors hover:bg-slate-300'
                       >
-                        <Plus className="w-3 h-3" />
+                        <Plus className='h-3 w-3' />
                       </button>
                     </div>
-                    
+
                     <button
                       onClick={() => removeItem(item.id)}
-                      className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center text-red-600 hover:bg-red-200 transition-colors"
+                      className='flex h-6 w-6 items-center justify-center rounded-full bg-red-100 text-red-600 transition-colors hover:bg-red-200'
                     >
-                      <Trash className="w-3 h-3" />
+                      <Trash className='h-3 w-3' />
                     </button>
                   </div>
                 </motion.div>
@@ -213,43 +218,45 @@ const CartWidget = ({ isOpen, onClose, onCheckout }) => {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="p-4 bg-blue-50 rounded-lg border border-blue-200"
+                className='rounded-lg border border-blue-200 bg-blue-50 p-4'
               >
-                <div className="flex items-center space-x-2 mb-3">
-                  <Truck className="w-5 h-5 text-blue-600" />
-                  <h4 className="font-medium text-blue-800">Informações de Frete</h4>
+                <div className='mb-3 flex items-center space-x-2'>
+                  <Truck className='h-5 w-5 text-blue-600' />
+                  <h4 className='font-medium text-blue-800'>Informações de Frete</h4>
                 </div>
-                
-                <div className="space-y-2">
+
+                <div className='space-y-2'>
                   <input
-                    type="text"
-                    placeholder="Destino (ex: São Paulo, SP)"
+                    type='text'
+                    placeholder='Destino (ex: São Paulo, SP)'
                     value={shippingInfo.destination}
-                    onChange={(e) => setShippingInfo({...shippingInfo, destination: e.target.value})}
-                    className="w-full px-3 py-2 border border-blue-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                    onChange={e => setShippingInfo({ ...shippingInfo, destination: e.target.value })}
+                    className='w-full rounded-lg border border-blue-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'
                   />
-                  
+
                   {shippingInfo.destination && (
-                    <div className="text-sm text-blue-700">
+                    <div className='text-sm text-blue-700'>
                       <p>Frete: R$ {calculateShipping().toFixed(2).replace('.', ',')}</p>
-                      <p>Prazo estimado: {cartService.estimateDeliveryDays(shippingInfo.destination.split(', ')[1])} dias</p>
+                      <p>
+                        Prazo estimado: {cartService.estimateDeliveryDays(shippingInfo.destination.split(', ')[1])} dias
+                      </p>
                     </div>
                   )}
                 </div>
               </motion.div>
 
               {/* Resumo */}
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
+              <div className='space-y-2 text-sm'>
+                <div className='flex justify-between'>
                   <span>Subtotal:</span>
                   <span>R$ {getTotal().toFixed(2).replace('.', ',')}</span>
                 </div>
-                <div className="flex justify-between">
+                <div className='flex justify-between'>
                   <span>Frete:</span>
                   <span>R$ {calculateShipping().toFixed(2).replace('.', ',')}</span>
                 </div>
-                <div className="border-t border-slate-200 pt-2">
-                  <div className="flex justify-between font-bold text-lg">
+                <div className='border-t border-slate-200 pt-2'>
+                  <div className='flex justify-between text-lg font-bold'>
                     <span>Total:</span>
                     <span>R$ {getGrandTotal().toFixed(2).replace('.', ',')}</span>
                   </div>
@@ -261,54 +268,49 @@ const CartWidget = ({ isOpen, onClose, onCheckout }) => {
 
         {/* Footer */}
         {cart.length > 0 && (
-          <div className="border-t border-slate-200 p-6 space-y-4">
+          <div className='space-y-4 border-t border-slate-200 p-6'>
             {/* Ações */}
-            <div className="flex space-x-2">
+            <div className='flex space-x-2'>
               <button
                 onClick={exportCart}
-                className="flex-1 px-4 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition-colors flex items-center justify-center space-x-2"
+                className='flex flex-1 items-center justify-center space-x-2 rounded-lg bg-slate-100 px-4 py-2 text-slate-600 transition-colors hover:bg-slate-200'
               >
-                <Download className="w-4 h-4" />
+                <Download className='h-4 w-4' />
                 <span>Exportar</span>
               </button>
-              
-              <label className="flex-1 px-4 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition-colors flex items-center justify-center space-x-2 cursor-pointer">
-                <Upload className="w-4 h-4" />
+
+              <label className='flex flex-1 cursor-pointer items-center justify-center space-x-2 rounded-lg bg-slate-100 px-4 py-2 text-slate-600 transition-colors hover:bg-slate-200'>
+                <Upload className='h-4 w-4' />
                 <span>Importar</span>
-                <input
-                  type="file"
-                  accept=".json"
-                  onChange={importCart}
-                  className="hidden"
-                />
+                <input type='file' accept='.json' onChange={importCart} className='hidden' />
               </label>
             </div>
 
             {/* Botões principais */}
-            <div className="flex space-x-3">
+            <div className='flex space-x-3'>
               <button
                 onClick={clearCart}
-                className="px-4 py-3 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors flex items-center space-x-2"
+                className='flex items-center space-x-2 rounded-lg bg-red-100 px-4 py-3 text-red-600 transition-colors hover:bg-red-200'
               >
-                <Trash className="w-4 h-4" />
+                <Trash className='h-4 w-4' />
                 <span>Limpar</span>
               </button>
-              
+
               <button
                 onClick={handlePurchaseIntent}
                 disabled={!shippingInfo.destination}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-medium rounded-lg hover:from-emerald-600 hover:to-blue-600 transition-all duration-300 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className='flex flex-1 items-center justify-center space-x-2 rounded-lg bg-gradient-to-r from-emerald-500 to-blue-500 px-6 py-3 font-medium text-white transition-all duration-300 hover:from-emerald-600 hover:to-blue-600 disabled:cursor-not-allowed disabled:opacity-50'
               >
-                <MessageSquare className="w-4 h-4" />
+                <MessageSquare className='h-4 w-4' />
                 <span>Solicitar Cotação</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className='h-4 w-4' />
               </button>
             </div>
           </div>
         )}
       </motion.div>
     </div>
-  );
-};
+  )
+}
 
-export default CartWidget;
+export default CartWidget

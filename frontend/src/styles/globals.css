@@ -12,14 +12,14 @@
   --agro-bg-secondary: #0a0a0a;
   --agro-bg-card: #111111;
   --agro-bg-glass: rgba(17, 17, 17, 0.8);
-  
+
   /* Texto - Branco puro para máximo contraste */
   --agro-text: #ffffff;
   --agro-text-primary: #ffffff;
   --agro-text-secondary: #e5e7eb;
   --agro-text-tertiary: #9ca3af;
   --agro-text-muted: #6b7280;
-  
+
   /* Acentos modernos - Verde esmeralda vibrante */
   --agro-emerald: #00ff88;
   --agro-emerald-light: #00ffaa;
@@ -27,22 +27,22 @@
   --agro-accent-emerald: #00ff88;
   --agro-accent-emerald-light: #00ffaa;
   --agro-accent-emerald-dark: #00cc6a;
-  
+
   /* Azul ciano moderno */
   --agro-sky: #00d4ff;
   --agro-accent-sky: #00d4ff;
   --agro-accent-sky-light: #33ddff;
-  
+
   /* Dourado vibrante */
   --agro-amber: #ffd700;
   --agro-accent-amber: #ffd700;
   --agro-accent-amber-light: #ffe033;
-  
+
   /* Bordas sutis */
   --agro-border-primary: rgba(255, 255, 255, 0.1);
   --agro-border-secondary: rgba(255, 255, 255, 0.05);
   --agro-border-accent: rgba(0, 255, 136, 0.3);
-  
+
   /* Sombras modernas */
   --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.3);
   --shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.4);
@@ -60,7 +60,8 @@ body {
 }
 
 /* Garantir que o fundo seja aplicado em todas as páginas */
-#root, .App {
+#root,
+.App {
   background: var(--agro-bg);
   min-height: 100vh;
 }
@@ -69,105 +70,106 @@ body {
 @layer components {
   /* Botões modernos inspirados em Tesla/Solana */
   .btn-primary {
-    @apply px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 text-black font-bold rounded-xl hover:from-emerald-400 hover:to-emerald-500 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105;
+    @apply transform rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-8 py-4 font-bold text-black shadow-lg transition-all duration-300 hover:scale-105 hover:from-emerald-400 hover:to-emerald-500 hover:shadow-xl;
     box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
   }
-  
+
   .btn-primary:hover {
     box-shadow: 0 6px 25px rgba(0, 255, 136, 0.5);
   }
-  
+
   .btn-secondary {
-    @apply px-8 py-4 bg-transparent border-2 border-emerald-500 text-emerald-500 font-bold rounded-xl hover:bg-emerald-500 hover:text-black transition-all duration-300;
+    @apply rounded-xl border-2 border-emerald-500 bg-transparent px-8 py-4 font-bold text-emerald-500 transition-all duration-300 hover:bg-emerald-500 hover:text-black;
   }
-  
+
   /* Cards modernos com glass effect */
   .card {
-    @apply bg-agro-bg-card backdrop-blur-sm border border-agro-border-primary rounded-2xl shadow-card p-6;
+    @apply bg-agro-bg-card border-agro-border-primary shadow-card rounded-2xl border p-6 backdrop-blur-sm;
   }
-  
+
   .card-hover {
-    @apply bg-agro-bg-card backdrop-blur-sm border border-agro-border-primary rounded-2xl shadow-card p-6 hover:shadow-elevated hover:border-agro-border-accent transition-all duration-300 transform hover:scale-105;
+    @apply bg-agro-bg-card border-agro-border-primary shadow-card hover:shadow-elevated hover:border-agro-border-accent transform rounded-2xl border p-6 backdrop-blur-sm transition-all duration-300 hover:scale-105;
   }
-  
+
   /* Efeito glass moderno */
   .glass {
-    @apply bg-agro-bg-glass backdrop-blur-md border border-agro-border-primary rounded-2xl;
+    @apply bg-agro-bg-glass border-agro-border-primary rounded-2xl border backdrop-blur-md;
   }
-  
+
   /* Gradientes de texto modernos */
   .text-gradient-agro {
     @apply bg-gradient-to-r from-emerald-400 via-sky-400 to-amber-400 bg-clip-text text-transparent;
   }
-  
+
   .text-gradient-emerald {
     @apply bg-gradient-to-r from-emerald-400 to-emerald-600 bg-clip-text text-transparent;
   }
-  
+
   /* Animações suaves */
   .transition-agro {
     @apply transition-all duration-300 ease-out;
   }
-  
+
   /* Estados de hover modernos */
   .hover-agro {
-    @apply hover:shadow-glow hover:scale-105 transition-agro;
+    @apply hover:shadow-glow transition-agro hover:scale-105;
   }
-  
+
   /* Inputs modernos */
   .input-premium {
-    @apply w-full px-6 py-4 bg-agro-bg-card border border-agro-border-primary rounded-xl text-agro-text-primary placeholder-agro-text-tertiary focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300;
+    @apply bg-agro-bg-card border-agro-border-primary text-agro-text-primary placeholder-agro-text-tertiary w-full rounded-xl border px-6 py-4 transition-all duration-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20;
   }
-  
+
   /* Badges modernos */
   .badge-emerald {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-emerald-500/20 text-emerald-400 border border-emerald-500/30;
+    @apply inline-flex items-center rounded-full border border-emerald-500/30 bg-emerald-500/20 px-3 py-1 text-sm font-medium text-emerald-400;
   }
-  
+
   .badge-sky {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-sky-500/20 text-sky-400 border border-sky-500/30;
+    @apply inline-flex items-center rounded-full border border-sky-500/30 bg-sky-500/20 px-3 py-1 text-sm font-medium text-sky-400;
   }
-  
+
   .badge-amber {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-500/20 text-amber-400 border border-amber-500/30;
+    @apply inline-flex items-center rounded-full border border-amber-500/30 bg-amber-500/20 px-3 py-1 text-sm font-medium text-amber-400;
   }
-  
+
   /* Navegação moderna */
   .nav-link {
-    @apply px-4 py-2 text-agro-text-secondary hover:text-agro-text-primary transition-all duration-300 relative;
+    @apply text-agro-text-secondary hover:text-agro-text-primary relative px-4 py-2 transition-all duration-300;
   }
-  
+
   .nav-link::after {
     content: '';
-    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-emerald-500 transition-all duration-300;
+    @apply absolute bottom-0 left-0 h-0.5 w-0 bg-emerald-500 transition-all duration-300;
   }
-  
+
   .nav-link:hover::after {
     @apply w-full;
   }
-  
+
   /* Loading states modernos */
   .loading-spinner {
     @apply animate-spin rounded-full border-2 border-emerald-500 border-t-transparent;
   }
-  
+
   /* Status indicators */
   .status-online {
-    @apply bg-emerald-500/20 text-emerald-400 border border-emerald-500/30;
+    @apply border border-emerald-500/30 bg-emerald-500/20 text-emerald-400;
   }
 
   .status-offline {
-    @apply bg-red-500/20 text-red-400 border border-red-500/30;
+    @apply border border-red-500/30 bg-red-500/20 text-red-400;
   }
 
   .status-pending {
-    @apply bg-amber-500/20 text-amber-400 border border-amber-500/30;
+    @apply border border-amber-500/30 bg-amber-500/20 text-amber-400;
   }
 }
 
 /* Animações personalizadas */
 @keyframes glow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
   }
   50% {
@@ -176,7 +178,8 @@ body {
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -185,7 +188,8 @@ body {
 }
 
 @keyframes pulse-glow {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -207,10 +211,11 @@ body {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .btn-primary, .btn-secondary {
+  .btn-primary,
+  .btn-secondary {
     @apply px-6 py-3 text-sm;
   }
-  
+
   .card {
     @apply p-4;
   }
@@ -245,7 +250,7 @@ body {
   .card {
     border-width: 2px;
   }
-  
+
   .btn-primary {
     border: 2px solid currentColor;
   }
@@ -253,44 +258,87 @@ body {
 
 /* ANIMAÇÕES AVANÇADAS - INSPIRADAS EM TESLA/SOLANA/APPLE */
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 @keyframes slide-in-left {
-  from { transform: translateX(-100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 @keyframes slide-in-right {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 @keyframes fade-in-up {
-  from { transform: translateY(30px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 @keyframes scale-in {
-  from { transform: scale(0.8); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 @keyframes rotate-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes bounce-subtle {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
 @keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* Classes de animação utilitárias */
@@ -371,11 +419,11 @@ body {
 }
 
 .skeleton-text {
-  @apply h-4 bg-gray-700 rounded;
+  @apply h-4 rounded bg-gray-700;
 }
 
 .skeleton-circle {
-  @apply w-12 h-12 bg-gray-700 rounded-full;
+  @apply h-12 w-12 rounded-full bg-gray-700;
 }
 
 /* Micro-interações */
@@ -394,7 +442,9 @@ body {
   border-radius: 50%;
   background: rgba(0, 255, 136, 0.3);
   transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
+  transition:
+    width 0.6s,
+    height 0.6s;
 }
 
 .click-ripple:active::after {

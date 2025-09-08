@@ -1,57 +1,56 @@
-import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react'
 
-const ThemeContext = createContext();
+const ThemeContext = createContext()
 
 export const useTheme = () => {
-  const context = useContext(ThemeContext);
+  const context = useContext(ThemeContext)
   if (!context) {
-    throw new Error('useTheme must be used within a ThemeProvider');
+    throw new Error('useTheme must be used within a ThemeProvider')
   }
-  return context;
-};
+  return context
+}
 
 export const ThemeProvider = ({ children }) => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isLoading] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false)
+  const [isLoading] = useState(false)
 
   // Carregar tema salvo no localStorage
   useEffect(() => {
-    const savedTheme = localStorage.getItem('agrosync-theme');
+    const savedTheme = localStorage.getItem('agrosync-theme')
     if (savedTheme) {
-      setIsDarkMode(savedTheme === 'dark');
+      setIsDarkMode(savedTheme === 'dark')
     }
-  }, []);
+  }, [])
 
   const toggleTheme = useCallback(() => {
     setIsDarkMode(prev => {
-      const newTheme = !prev;
-      localStorage.setItem('agrosync-theme', newTheme ? 'dark' : 'light');
-      return newTheme;
-    });
-  }, []);
+      const newTheme = !prev
+      localStorage.setItem('agrosync-theme', newTheme ? 'dark' : 'light')
+      return newTheme
+    })
+  }, [])
 
-  const setTheme = useCallback((theme) => {
-    const isDark = theme === 'dark';
-    setIsDarkMode(isDark);
-    localStorage.setItem('agrosync-theme', theme);
-  }, []);
+  const setTheme = useCallback(theme => {
+    const isDark = theme === 'dark'
+    setIsDarkMode(isDark)
+    localStorage.setItem('agrosync-theme', theme)
+  }, [])
 
   // Aplicar tema ao documento
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
-    document.documentElement.classList.toggle('dark', isDarkMode);
-  }, [isDarkMode]);
+    document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light')
+    document.documentElement.classList.toggle('dark', isDarkMode)
+  }, [isDarkMode])
 
-  const theme = useMemo(() => ({
-    isDarkMode,
-    toggleTheme,
-    setTheme,
-    isLoading
-  }), [isDarkMode, toggleTheme, setTheme, isLoading]);
+  const theme = useMemo(
+    () => ({
+      isDarkMode,
+      toggleTheme,
+      setTheme,
+      isLoading
+    }),
+    [isDarkMode, toggleTheme, setTheme, isLoading]
+  )
 
-  return (
-    <ThemeContext.Provider value={theme}>
-      {children}
-    </ThemeContext.Provider>
-  );
-};
+  return <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>
+}

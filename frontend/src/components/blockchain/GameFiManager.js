@@ -1,66 +1,66 @@
-import React, { useState, // useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-';
-import { Gamepad2, Trophy, Loader2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
+import { Gamepad2, Loader2, CheckCircle, Clock, AlertCircle, DollarSign, Zap, ExternalLink } from 'lucide-react'
 
 const GameFiManager = ({ userId }) => {
-  const {  } = useTranslation();
-  const [games, setGames] = useState([]);
-  const [// loading, // setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [totalEarnings, setTotalEarnings] = useState(0);
-  const [activeGames, setActiveGames] = useState(0);
+  const { t } = useTranslation()
+  const [gameFi, setGameFi] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [totalValue, setTotalValue] = useState(0)
+  const [activeGameFi, setActiveGameFi] = useState(0)
 
-  // useEffect(() => {
-    // fetchGameFiData();
-  }, [userId]);
+  useEffect(() => {
+    fetchGameFiData()
+  }, [userId])
 
-  const // fetchGameFiData = async () => {
-    // setLoading(true);
+  const fetchGameFiData = async () => {
+    setLoading(true)
     try {
-      const response = await fetch(`/api/blockchain/gamefi?userId=${userId}`);
-      const data = await response.json();
-      
+      const response = await fetch(`/api/blockchain/gamefi?userId=${userId}`)
+      const data = await response.json()
+
       if (data.success) {
-        setGames(data.games);
-        setTotalEarnings(data.totalEarnings);
-        setActiveGames(data.activeGames);
+        setGameFi(data.gameFi)
+        setTotalValue(data.totalValue)
+        setActiveGameFi(data.activeGameFi)
       } else {
-        setError(data.message);
+        setError(data.message)
       }
     } catch (err) {
-      setError(// t('gamefi.error', 'Erro ao carregar dados de GameFi'));
+      setError(t('gamefi.error', 'Erro ao carregar dados de GameFi'))
     } finally {
-      // setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const getStatusIcon = (status) => {
     switch (status) {
       case 'active':
-        return <// CheckCircle className="w-5 h-5 text-green-600" />;
+        return <CheckCircle className="w-5 h-5 text-green-600" />
       case 'pending':
-        return <// Clock className="w-5 h-5 text-yellow-600" />;
+        return <Clock className="w-5 h-5 text-yellow-600" />
       case 'completed':
-        return <// CheckCircle className="w-5 h-5 text-blue-600" />;
+        return <CheckCircle className="w-5 h-5 text-blue-600" />
       default:
-        return <// Clock className="w-5 h-5 text-gray-600" />;
+        return <Clock className="w-5 h-5 text-gray-600" />
     }
-  };
+  }
 
-  if (// loading) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
         <Loader2 className="w-8 h-8 animate-spin text-agro-emerald" />
         <span className="ml-3 text-gray-600 dark:text-gray-300">
-          {// t('gamefi.// loading', 'Carregando dados de GameFi...')}
+          {t('gamefi.loading', 'Carregando dados de GameFi...')}
         </span>
       </div>
-    );
+    )
   }
 
   return (
-    <// motion.div
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
@@ -68,13 +68,13 @@ const GameFiManager = ({ userId }) => {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
           <Gamepad2 className="w-6 h-6 mr-2 text-agro-emerald" />
-          {// t('gamefi.title', 'GameFi Manager')}
+          {t('gamefi.title', 'GameFi Manager')}
         </h2>
       </div>
-      
+
       {error && (
         <div className="text-red-500 mb-4 flex items-center">
-          <// AlertCircle className="w-5 h-5 mr-2" />
+          <AlertCircle className="w-5 h-5 mr-2" />
           {error}
         </div>
       )}
@@ -85,38 +85,38 @@ const GameFiManager = ({ userId }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {// t('gamefi.totalEarnings', 'Total de Ganhos')}
+                {t('gamefi.totalValue', 'Valor Total')}
               </p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                ${totalEarnings.toFixed(2)}
+                ${totalValue.toFixed(2)}
               </p>
             </div>
-            <// Coins className="w-8 h-8 text-gray-400" />
+            <DollarSign className="w-8 h-8 text-gray-400" />
           </div>
         </div>
-        
+
         <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {// t('gamefi.activeGames', 'Jogos Ativos')}
+                {t('gamefi.activeGameFi', 'GameFi Ativos')}
               </p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                {activeGames}
+                {activeGameFi}
               </p>
             </div>
             <Gamepad2 className="w-8 h-8 text-gray-400" />
           </div>
         </div>
-        
+
         <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {// t('gamefi.totalGames', 'Total de Jogos')}
+                {t('gamefi.totalGameFi', 'Total de GameFi')}
               </p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                {games.length}
+                {gameFi.length}
               </p>
             </div>
             <Gamepad2 className="w-8 h-8 text-gray-400" />
@@ -124,88 +124,85 @@ const GameFiManager = ({ userId }) => {
         </div>
       </div>
 
-      {/* Jogos */}
-      {games.length === 0 ? (
+      {/* GameFi */}
+      {gameFi.length === 0 ? (
         <div className="text-center py-8">
           <Gamepad2 className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <p className="text-gray-600 dark:text-gray-400 mb-4">
-            {// t('gamefi.noGames', 'Nenhum jogo encontrado')}
+            {t('gamefi.noGameFi', 'Nenhum GameFi encontrado')}
           </p>
         </div>
       ) : (
         <div className="space-y-4">
-          {games.map((game) => (
-            <div key={game.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+          {gameFi.map((item) => (
+            <div key={item.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="font-semibold text-gray-900 dark:text-white">
-                    {game.name}
+                    {item.name}
                   </h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {game.description}
+                    {item.description}
                   </p>
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
-                  {getStatusIcon(game.status)}
+                  {getStatusIcon(item.status)}
                   <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {game.status}
+                    {item.status}
                   </span>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-4">
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {// t('gamefi.earnings', 'Ganhos')}:
+                    {t('gamefi.value', 'Valor')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
-                    ${game.earnings.toFixed(2)}
+                    ${item.value.toFixed(2)}
                   </p>
                 </div>
-                
+
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {// t('gamefi.level', 'Nível')}:
+                    {t('gamefi.transactions', 'Transações')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
-                    {game.level}
+                    {item.transactions}
                   </p>
                 </div>
-                
+
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {// t('gamefi.playTime', 'Tempo de Jogo')}:
+                    {t('gamefi.fee', 'Taxa')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
-                    {game.playTime}
+                    {item.fee}%
                   </p>
                 </div>
-                
+
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {// t('gamefi.rank', 'Ranking')}:
+                    {t('gamefi.speed', 'Velocidade')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
-                    #{game.rank}
+                    {item.speed}
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <div className="text-sm text-gray-500 dark:text-gray-400">
-                  {// t('gamefi.lastPlayed', 'Última Jogada')}: {game.lastPlayed}
+                  {t('gamefi.lastActivity', 'Última Atividade')}: {item.lastActivity}
                 </div>
-                
+
                 <div className="flex space-x-2">
                   <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                    <Trophy className="w-4 h-4" />
+                    <Zap className="w-4 h-4" />
                   </button>
                   <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                    <// Users className="w-4 h-4" />
-                  </button>
-                  <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                    <// ExternalLink className="w-4 h-4" />
+                    <ExternalLink className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -213,8 +210,8 @@ const GameFiManager = ({ userId }) => {
           ))}
         </div>
       )}
-    </// motion.div>
-  );
-};
+    </motion.div>
+  )
+}
 
-export default GameFiManager;
+export default GameFiManager

@@ -1,15 +1,15 @@
-import geolocationService from './geolocationService';
+import geolocationService from './geolocationService'
 
 class AgriculturalQuotesService {
   constructor() {
-    this.quotes = {};
-    this.lastUpdate = null;
-    this.updateInterval = null;
-    this.isLoading = false;
-    this.error = null;
-    this.apiBaseUrl = process.env.REACT_APP_AGROLINK_API_URL || 'https://api.agrolink.com.br';
-    this.apiKey = process.env.REACT_APP_AGROLINK_API_KEY;
-    
+    this.quotes = {}
+    this.lastUpdate = null
+    this.updateInterval = null
+    this.isLoading = false
+    this.error = null
+    this.apiBaseUrl = process.env.REACT_APP_AGROLINK_API_URL || 'https://api.agrolink.com.br'
+    this.apiKey = process.env.REACT_APP_AGROLINK_API_KEY
+
     // Configuração de commodities
     this.commodities = {
       soy: {
@@ -54,7 +54,7 @@ class AgriculturalQuotesService {
         icon: '🍯',
         category: 'açúcar'
       }
-    };
+    }
 
     // APIs disponíveis (fallback)
     this.apis = [
@@ -76,133 +76,133 @@ class AgriculturalQuotesService {
         priority: 3,
         active: false
       }
-    ];
+    ]
   }
 
   // Inicializar o serviço
   async initialize() {
     try {
       // Obter localização do usuário
-      await geolocationService.getLocation();
-      
+      await geolocationService.getLocation()
+
       // Carregar cotações iniciais
-      await this.loadQuotes();
-      
+      await this.loadQuotes()
+
       // Configurar atualização automática
-      this.startAutoUpdate();
-      
-      return true;
+      this.startAutoUpdate()
+
+      return true
     } catch (error) {
-      console.error('Erro ao inicializar serviço de cotações:', error);
-      this.error = error.message;
-      return false;
+      console.error('Erro ao inicializar serviço de cotações:', error)
+      this.error = error.message
+      return false
     }
   }
 
   // Carregar cotações de todas as commodities
   async loadQuotes() {
     try {
-      this.isLoading = true;
-      this.error = null;
+      this.isLoading = true
+      this.error = null
 
-      const location = geolocationService.getCurrentLocation();
+      const location = geolocationService.getCurrentLocation()
       if (!location) {
-        throw new Error('Localização não disponível');
+        throw new Error('Localização não disponível')
       }
 
       // Tentar buscar dados reais da API do AgroLink
-      let quotes;
+      let quotes
       try {
-        quotes = await this.fetchAgroLinkQuotes(location);
+        quotes = await this.fetchAgroLinkQuotes(location)
       } catch (apiError) {
-        console.warn('Erro na API do AgroLink, usando dados mockados:', apiError);
-        quotes = await this.getMockQuotes(location);
+        console.warn('Erro na API do AgroLink, usando dados mockados:', apiError)
+        quotes = await this.getMockQuotes(location)
       }
-      
-      this.quotes = quotes;
-      this.lastUpdate = new Date();
-      
-      return this.quotes;
+
+      this.quotes = quotes
+      this.lastUpdate = new Date()
+
+      return this.quotes
     } catch (error) {
-      console.error('Erro ao carregar cotações:', error);
-      this.error = error.message;
-      
+      console.error('Erro ao carregar cotações:', error)
+      this.error = error.message
+
       // Fallback para dados estáticos
-      this.quotes = this.getFallbackQuotes();
-      this.lastUpdate = new Date();
-      
-      return this.quotes;
+      this.quotes = this.getFallbackQuotes()
+      this.lastUpdate = new Date()
+
+      return this.quotes
     } finally {
-      this.isLoading = false;
+      this.isLoading = false
     }
   }
 
   // Buscar cotações da API do AgroLink
   async fetchAgroLinkQuotes(location) {
     if (!this.apiKey) {
-      throw new Error('API Key do AgroLink não configurada');
+      throw new Error('API Key do AgroLink não configurada')
     }
 
-    const { region, country } = location;
-    
+    const { region, country } = location
+
     // Mapear região para código do AgroLink
-    const regionCode = this.mapRegionToAgroLinkCode(region, country);
-    
+    const regionCode = this.mapRegionToAgroLinkCode(region, country)
+
     const response = await fetch(`${this.apiBaseUrl}/api/v1/quotes`, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${this.apiKey}`,
+        Authorization: `Bearer ${this.apiKey}`,
         'Content-Type': 'application/json',
         'X-Region': regionCode
       }
-    });
+    })
 
     if (!response.ok) {
-      throw new Error(`Erro na API do AgroLink: ${response.status}`);
+      throw new Error(`Erro na API do AgroLink: ${response.status}`)
     }
 
-    const data = await response.json();
-    return this.processAgroLinkData(data);
+    const data = await response.json()
+    return this.processAgroLinkData(data)
   }
 
   // Mapear região para código do AgroLink
   mapRegionToAgroLinkCode(region, country) {
     const regionMap = {
       'Mato Grosso': 'MT',
-      'Paraná': 'PR',
+      Paraná: 'PR',
       'Rio Grande do Sul': 'RS',
-      'Goiás': 'GO',
+      Goiás: 'GO',
       'Mato Grosso do Sul': 'MS',
       'Minas Gerais': 'MG',
       'São Paulo': 'SP',
-      'Bahia': 'BA',
-      'Maranhão': 'MA',
-      'Piauí': 'PI',
-      'Tocantins': 'TO'
-    };
+      Bahia: 'BA',
+      Maranhão: 'MA',
+      Piauí: 'PI',
+      Tocantins: 'TO'
+    }
 
-    return regionMap[region] || 'BR';
+    return regionMap[region] || 'BR'
   }
 
   // Processar dados da API do AgroLink
   processAgroLinkData(data) {
-    const quotes = {};
-    
+    const quotes = {}
+
     // Mapear dados da API para nosso formato
     const commodityMap = {
-      'SOJA': 'soy',
-      'MILHO': 'corn',
-      'CAFE': 'coffee',
-      'ALGODAO': 'cotton',
-      'TRIGO': 'wheat',
-      'ACUCAR': 'sugar',
-      'BOI': 'cattle',
-      'SUINO': 'hog'
-    };
+      SOJA: 'soy',
+      MILHO: 'corn',
+      CAFE: 'coffee',
+      ALGODAO: 'cotton',
+      TRIGO: 'wheat',
+      ACUCAR: 'sugar',
+      BOI: 'cattle',
+      SUINO: 'hog'
+    }
 
     if (data.quotes && Array.isArray(data.quotes)) {
       data.quotes.forEach(quote => {
-        const commodityKey = commodityMap[quote.commodity];
+        const commodityKey = commodityMap[quote.commodity]
         if (commodityKey && this.commodities[commodityKey]) {
           quotes[commodityKey] = {
             ...this.commodities[commodityKey],
@@ -213,25 +213,25 @@ class AgriculturalQuotesService {
             market: quote.market || 'Brasil',
             lastUpdate: new Date(quote.lastUpdate || Date.now()),
             source: 'AgroLink'
-          };
+          }
         }
-      });
+      })
     }
 
-    return quotes;
+    return quotes
   }
 
   // Obter cotações mockadas baseadas na localização
   async getMockQuotes(location) {
-    const { region, country } = location;
-    const basePrices = this.getBasePricesByRegion(region, country);
-    
-    const quotes = {};
-    
+    const { region, country } = location
+    const basePrices = this.getBasePricesByRegion(region, country)
+
+    const quotes = {}
+
     for (const [key, commodity] of Object.entries(this.commodities)) {
-      const basePrice = basePrices[key] || basePrices.default;
-      const variation = this.generatePriceVariation();
-      
+      const basePrice = basePrices[key] || basePrices.default
+      const variation = this.generatePriceVariation()
+
       quotes[key] = {
         ...commodity,
         currentPrice: basePrice * (1 + variation),
@@ -243,88 +243,88 @@ class AgriculturalQuotesService {
         country: country,
         source: 'AgroConecta (Simulado)',
         confidence: 'high'
-      };
+      }
     }
-    
-    return quotes;
+
+    return quotes
   }
 
   // Obter preços base por região
   getBasePricesByRegion(region, country) {
     if (country !== 'Brasil') {
       return {
-        soy: 120.00,
-        corn: 85.00,
-        coffee: 450.00,
-        cotton: 180.00,
-        wheat: 95.00,
-        sugar: 75.00,
-        default: 100.00
-      };
+        soy: 120.0,
+        corn: 85.0,
+        coffee: 450.0,
+        cotton: 180.0,
+        wheat: 95.0,
+        sugar: 75.0,
+        default: 100.0
+      }
     }
 
     // Preços base por região do Brasil (em reais)
     const regionalPrices = {
       'Centro-Oeste': {
-        soy: 135.50,
-        corn: 92.30,
-        coffee: 480.00,
-        cotton: 195.00,
-        wheat: 98.50,
-        sugar: 78.00
+        soy: 135.5,
+        corn: 92.3,
+        coffee: 480.0,
+        cotton: 195.0,
+        wheat: 98.5,
+        sugar: 78.0
       },
-      'Sul': {
-        soy: 128.00,
-        corn: 88.00,
-        coffee: 465.00,
-        cotton: 188.00,
-        wheat: 102.00,
-        sugar: 76.50
+      Sul: {
+        soy: 128.0,
+        corn: 88.0,
+        coffee: 465.0,
+        cotton: 188.0,
+        wheat: 102.0,
+        sugar: 76.5
       },
-      'Sudeste': {
-        soy: 132.00,
-        corn: 90.00,
-        coffee: 475.00,
-        cotton: 192.00,
-        wheat: 100.00,
-        sugar: 77.50
+      Sudeste: {
+        soy: 132.0,
+        corn: 90.0,
+        coffee: 475.0,
+        cotton: 192.0,
+        wheat: 100.0,
+        sugar: 77.5
       },
-      'Nordeste': {
-        soy: 125.00,
-        corn: 86.00,
-        coffee: 460.00,
-        cotton: 185.00,
-        wheat: 97.00,
-        sugar: 75.00
+      Nordeste: {
+        soy: 125.0,
+        corn: 86.0,
+        coffee: 460.0,
+        cotton: 185.0,
+        wheat: 97.0,
+        sugar: 75.0
       },
-      'Norte': {
-        soy: 130.00,
-        corn: 89.00,
-        coffee: 470.00,
-        cotton: 190.00,
-        wheat: 99.00,
-        sugar: 76.00
+      Norte: {
+        soy: 130.0,
+        corn: 89.0,
+        coffee: 470.0,
+        cotton: 190.0,
+        wheat: 99.0,
+        sugar: 76.0
       }
-    };
+    }
 
-    return regionalPrices[region] || regionalPrices['Centro-Oeste'];
+    return regionalPrices[region] || regionalPrices['Centro-Oeste']
   }
 
   // Gerar variação de preço realista
   generatePriceVariation() {
     // Variação entre -5% e +5%
-    return (Math.random() - 0.5) * 0.1;
+    return (Math.random() - 0.5) * 0.1
   }
 
   // Obter cotações de fallback
   getFallbackQuotes() {
-    const quotes = {};
-    
+    const quotes = {}
+
     for (const [key, commodity] of Object.entries(this.commodities)) {
       quotes[key] = {
         ...commodity,
-        currentPrice: 100.00,
-        previousPrice: 100.00,
+        currentPrice: 100.0,
+        previousPrice: 100.0,
         variation: 0,
         variationType: 'stable',
         lastUpdate: new Date(),
@@ -332,108 +332,107 @@ class AgriculturalQuotesService {
         country: 'Brasil',
         source: 'AgroConecta (Dados Estáticos)',
         confidence: 'low'
-      };
+      }
     }
-    
-    return quotes;
+
+    return quotes
   }
 
   // Obter cotações atuais
   getCurrentQuotes() {
-    return this.quotes;
+    return this.quotes
   }
 
   // Obter cotação de uma commodity específica
   getCommodityQuote(commodityKey) {
-    return this.quotes[commodityKey] || null;
+    return this.quotes[commodityKey] || null
   }
 
   // Obter cotações por categoria
   getQuotesByCategory(category) {
-    return Object.values(this.quotes).filter(
-      commodity => commodity.category === category
-    );
+    return Object.values(this.quotes).filter(commodity => commodity.category === category)
   }
 
   // Obter cotações por região
   getQuotesByRegion(region) {
-    return Object.values(this.quotes).filter(
-      commodity => commodity.region === region
-    );
+    return Object.values(this.quotes).filter(commodity => commodity.region === region)
   }
 
   // Atualizar cotações manualmente
   async refreshQuotes() {
-    return await this.loadQuotes();
+    return await this.loadQuotes()
   }
 
   // Iniciar atualização automática
   startAutoUpdate(intervalMinutes = 15) {
     if (this.updateInterval) {
-      clearInterval(this.updateInterval);
+      clearInterval(this.updateInterval)
     }
 
-    this.updateInterval = setInterval(async () => {
-      console.log('Atualizando cotações automaticamente...');
-      await this.loadQuotes();
-    }, intervalMinutes * 60 * 1000);
+    this.updateInterval = setInterval(
+      async () => {
+        console.log('Atualizando cotações automaticamente...')
+        await this.loadQuotes()
+      },
+      intervalMinutes * 60 * 1000
+    )
   }
 
   // Parar atualização automática
   stopAutoUpdate() {
     if (this.updateInterval) {
-      clearInterval(this.updateInterval);
-      this.updateInterval = null;
+      clearInterval(this.updateInterval)
+      this.updateInterval = null
     }
   }
 
   // Obter histórico de preços (simulado)
   async getPriceHistory(commodityKey, days = 30) {
-    const commodity = this.quotes[commodityKey];
-    if (!commodity) return [];
+    const commodity = this.quotes[commodityKey]
+    if (!commodity) return []
 
-    const history = [];
-    const basePrice = commodity.currentPrice;
-    
+    const history = []
+    const basePrice = commodity.currentPrice
+
     for (let i = days; i >= 0; i--) {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      
-      const variation = this.generatePriceVariation();
-      const price = basePrice * (1 + variation);
-      
+      const date = new Date()
+      date.setDate(date.getDate() - i)
+
+      const variation = this.generatePriceVariation()
+      const price = basePrice * (1 + variation)
+
       history.push({
         date: date.toISOString().split('T')[0],
         price: price,
         volume: Math.floor(Math.random() * 1000) + 100
-      });
+      })
     }
-    
-    return history;
+
+    return history
   }
 
   // Obter estatísticas de mercado
   getMarketStats() {
-    const commodities = Object.values(this.quotes);
-    
-    if (commodities.length === 0) return null;
-    
+    const commodities = Object.values(this.quotes)
+
+    if (commodities.length === 0) return null
+
     const totalVariation = commodities.reduce((sum, commodity) => {
-      return sum + commodity.variation;
-    }, 0);
-    
-    const avgVariation = totalVariation / commodities.length;
-    
+      return sum + commodity.variation
+    }, 0)
+
+    const avgVariation = totalVariation / commodities.length
+
     const topGainers = commodities
       .filter(c => c.variationType === 'up')
       .sort((a, b) => b.variation - a.variation)
-      .slice(0, 3);
-    
+      .slice(0, 3)
+
     const topLosers = commodities
       .filter(c => c.variationType === 'down')
       .sort((a, b) => a.variation - b.variation)
-      .slice(0, 3);
-    
+      .slice(0, 3)
+
     return {
       totalCommodities: commodities.length,
       averageVariation: avgVariation,
@@ -441,45 +440,45 @@ class AgriculturalQuotesService {
       topLosers,
       marketSentiment: avgVariation > 0 ? 'bullish' : 'bearish',
       lastUpdate: this.lastUpdate
-    };
+    }
   }
 
   // Converter preço para moeda local
   convertToLocalCurrency(price, fromCurrency = 'BRL') {
-    const location = geolocationService.getCurrentLocation();
-    if (!location) return { price, currency: fromCurrency };
-    
-    const localCurrency = location.currency;
-    
+    const location = geolocationService.getCurrentLocation()
+    if (!location) return { price, currency: fromCurrency }
+
+    const localCurrency = location.currency
+
     // Taxas de câmbio simplificadas (em produção, usar API de câmbio)
     const exchangeRates = {
-      'USD': 0.21,
-      'EUR': 0.19,
-      'GBP': 0.16,
-      'ARS': 58.50,
-      'CLP': 185.00,
-      'COP': 850.00,
-      'PEN': 0.78,
-      'UYU': 8.20
-    };
-    
+      USD: 0.21,
+      EUR: 0.19,
+      GBP: 0.16,
+      ARS: 58.5,
+      CLP: 185.0,
+      COP: 850.0,
+      PEN: 0.78,
+      UYU: 8.2
+    }
+
     if (fromCurrency === 'BRL' && exchangeRates[localCurrency]) {
       return {
         price: price * exchangeRates[localCurrency],
         currency: localCurrency
-      };
+      }
     }
-    
-    return { price, currency: fromCurrency };
+
+    return { price, currency: fromCurrency }
   }
 
   // Obter informações de mercado por região
   getRegionalMarketInfo() {
-    const location = geolocationService.getCurrentLocation();
-    if (!location) return null;
-    
-    const { region, country } = location;
-    
+    const location = geolocationService.getCurrentLocation()
+    if (!location) return null
+
+    const { region, country } = location
+
     if (country === 'Brasil') {
       const regionalInfo = {
         'Centro-Oeste': {
@@ -488,73 +487,73 @@ class AgriculturalQuotesService {
           season: 'Safra 2024/2025',
           weather: 'Favorável para plantio'
         },
-        'Sul': {
+        Sul: {
           description: 'Região tradicional na produção de grãos',
           mainProducts: ['Soja', 'Milho', 'Trigo'],
           season: 'Safra 2024/2025',
           weather: 'Estável'
         },
-        'Sudeste': {
+        Sudeste: {
           description: 'Diversificação agrícola e pecuária',
           mainProducts: ['Café', 'Cana-de-açúcar', 'Laranja'],
           season: 'Safra 2024/2025',
           weather: 'Adequado'
         },
-        'Nordeste': {
+        Nordeste: {
           description: 'Agricultura irrigada e fruticultura',
           mainProducts: ['Cana-de-açúcar', 'Frutas', 'Cacau'],
           season: 'Safra 2024/2025',
           weather: 'Variável'
         },
-        'Norte': {
+        Norte: {
           description: 'Agricultura familiar e extrativismo',
           mainProducts: ['Açaí', 'Castanha', 'Pimenta'],
           season: 'Safra 2024/2025',
           weather: 'Úmido'
         }
-      };
-      
-      return regionalInfo[region] || regionalInfo['Centro-Oeste'];
+      }
+
+      return regionalInfo[region] || regionalInfo['Centro-Oeste']
     }
-    
+
     return {
       description: 'Mercado internacional',
       mainProducts: ['Commodities globais'],
       season: 'Vigente',
       weather: 'N/A'
-    };
+    }
   }
 
   // Verificar se está carregando
   isLoading() {
-    return this.isLoading;
+    return this.isLoading
   }
 
   // Obter último erro
   getLastError() {
-    return this.error;
+    return this.error
   }
 
   // Obter última atualização
   getLastUpdate() {
-    return this.lastUpdate;
+    return this.lastUpdate
   }
 
   // Limpar dados
   clearData() {
-    this.quotes = {};
-    this.lastUpdate = null;
-    this.error = null;
-    this.stopAutoUpdate();
+    this.quotes = {}
+    this.lastUpdate = null
+    this.error = null
+    this.stopAutoUpdate()
   }
 
   // Destruir serviço
   destroy() {
-    this.stopAutoUpdate();
-    this.clearData();
+    this.stopAutoUpdate()
+    this.clearData()
   }
 }
 
 // Exportar instância singleton
-const agriculturalQuotesService = new AgriculturalQuotesService();
-export default agriculturalQuotesService;
+const agriculturalQuotesService = new AgriculturalQuotesService()
+export default agriculturalQuotesService

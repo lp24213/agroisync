@@ -1,7 +1,7 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React from 'react'
+import { motion } from 'framer-motion'
 
-const PageTransition = ({ children, className = "" }) => {
+const PageTransition = ({ children, className = '' }) => {
   const pageVariants = {
     initial: {
       opacity: 0,
@@ -18,26 +18,26 @@ const PageTransition = ({ children, className = "" }) => {
       y: -20,
       scale: 0.98
     }
-  };
+  }
 
   const pageTransition = {
-    type: "tween",
-    ease: "anticipate",
+    type: 'tween',
+    ease: 'anticipate',
     duration: 0.6
-  };
+  }
 
   return (
     <motion.div
-      initial="initial"
-      animate="in"
-      exit="out"
+      initial='initial'
+      animate='in'
+      exit='out'
       variants={pageVariants}
       transition={pageTransition}
       className={className}
     >
       {children}
     </motion.div>
-  );
-};
+  )
+}
 
-export default PageTransition;
+export default PageTransition

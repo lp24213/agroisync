@@ -1,184 +1,223 @@
-import React, { createContext, useContext, useState, // useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react'
 
-const FeatureFlagsContext = createContext();
+const FeatureFlagsContext = createContext()
 
 export const useFeatureFlags = () => {
-  const context = useContext(FeatureFlagsContext);
+  const context = useContext(FeatureFlagsContext)
   if (!context) {
-    throw new Error('useFeatureFlags deve ser usado dentro de um FeatureFlagsProvider');
+    throw new Error('useFeatureFlags deve ser usado dentro de um FeatureFlagsProvider')
   }
-  return context;
-};
+  return context
+}
 
 export const FeatureFlagsProvider = ({ children }) => {
-  const [flags, setFlags] = useState({});
-  const [// loading, // setLoading] = useState(true);
+  const [flags, setFlags] = useState({})
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-  // Feature flags padrão
-  const // defaultFlags = {
-    // Funcionalidades principais
-    'FEATURE_MARKETPLACE': true,
-    'FEATURE_AGROCONECTA': true,
-    'FEATURE_CRYPTO': true,
-    'FEATURE_MESSAGING': true,
-    'FEATURE_ADMIN_PANEL': true,
-    
-    // Funcionalidades avançadas
-    'FEATURE_AI_CHATBOT': true,
-    'FEATURE_VOICE_CHAT': true,
-    'FEATURE_IMAGE_ANALYSIS': true,
-    'FEATURE_REAL_TIME_QUOTES': true,
-    'FEATURE_WEATHER_WIDGET': true,
-    'FEATURE_NEWS_FEED': true,
-    
-    // Integrações
-    'FEATURE_STRIPE_PAYMENTS': true,
-    'FEATURE_METAMASK_INTEGRATION': true,
-    'FEATURE_NFT_MINTING': true,
-    'FEATURE_STAKING': true,
-    
-    // UI/UX
-    'FEATURE_DARK_MODE': true,
-    'FEATURE_ANIMATIONS': true,
-    'FEATURE_GLASSMORPHISM': true,
-    'FEATURE_NEON_EFFECTS': true,
-    
-    // Analytics
-    'FEATURE_ANALYTICS': true,
-    'FEATURE_USER_TRACKING': true,
-    'FEATURE_PERFORMANCE_MONITORING': true,
-    
-    // Segurança
-    'FEATURE_2FA': true,
-    'FEATURE_RATE_LIMITING': true,
-    'FEATURE_SECURITY_LOGS': true,
-    
-    // Experimentais
-    'FEATURE_BETA_FEATURES': false,
-    'FEATURE_EXPERIMENTAL_UI': false,
-    'FEATURE_ADVANCED_ANALYTICS': false,
-    
-    // Por ambiente
-    'FEATURE_DEBUG_MODE': process.env.NODE_ENV === 'development',
-    'FEATURE_MAINTENANCE_MODE': false
-  };
+  useEffect(() => {
+    loadFeatureFlags()
+  }, [])
 
-  // Carregar feature flags
-  // useEffect(() => {
-    const loadFeatureFlags = async () => {
-      try {
-        // Em produção, carregar flags do servidor
-        if (process.env.NODE_ENV === 'production') {
-          const response = await fetch('/api/feature-flags');
-          if (response.ok) {
-            const serverFlags = await response.json();
-            setFlags({ ...// defaultFlags, ...serverFlags });
-          } else {
-            setFlags(// defaultFlags);
-          }
-        } else {
-          // Em desenvolvimento, usar flags padrão
-          setFlags(// defaultFlags);
-        }
-      } catch (error) {
-        console.error('Erro ao carregar feature flags:', error);
-        setFlags(// defaultFlags);
-      } finally {
-        // setLoading(false);
-      }
-    };
-
-    loadFeatureFlags();
-  }, []);
-
-  // Verificar se uma feature está habilitada
-  const isEnabled = (flagName) => {
-    return flags[flagName] === true;
-  };
-
-  // Verificar se múltiplas features estão habilitadas
-  const areEnabled = (flagNames) => {
-    return flagNames.every(flagName => flags[flagName] === true);
-  };
-
-  // Verificar se pelo menos uma feature está habilitada
-  const isAnyEnabled = (flagNames) => {
-    return flagNames.some(flagName => flags[flagName] === true);
-  };
-
-  // Obter valor de uma feature flag
-  const getFlag = (flagName, defaultValue = false) => {
-    return flags[flagName] !== undefined ? flags[flagName] : defaultValue;
-  };
-
-  // Atualizar feature flag (apenas para admin)
-  const updateFlag = async (flagName, value) => {
+  const loadFeatureFlags = async () => {
     try {
-      const response = await fetch('/api/feature-flags', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-        },
-        body: JSON.stringify({
-          flagName,
-          value
-        })
-      });
+      setLoading(true)
+      setError(null)
 
-      if (response.ok) {
-        setFlags(prev => ({
-          ...prev,
-          [flagName]: value
-        }));
-        return true;
+      // Carregar flags do servidor
+      const response = await fetch('/api/feature-flags')
+      const data = await response.json()
+
+      if (data.success) {
+        setFlags(data.flags)
+      } else {
+        // Fallback para flags padrão
+        setFlags(getDefaultFlags())
       }
-      return false;
-    } catch (error) {
-      console.error('Erro ao atualizar feature flag:', error);
-      return false;
+    } catch (err) {
+      console.error('Erro ao carregar feature flags:', err)
+      setError(err.message)
+      // Usar flags padrão em caso de erro
+      setFlags(getDefaultFlags())
+    } finally {
+      setLoading(false)
     }
-  };
+  }
 
-  // Obter todas as flags
-  const getAllFlags = () => {
-    return flags;
-  };
+  const getDefaultFlags = () => ({
+    // Funcionalidades principais
+    blockchain: true,
+    cryptoPayments: true,
+    nftSupport: true,
+    yieldFarming: false,
+    defi: false,
+    
+    // Funcionalidades de negócio
+    marketplace: true,
+    freightTracking: true,
+    priceAlerts: true,
+    weatherIntegration: true,
+    newsFeed: true,
+    
+    // Funcionalidades de comunicação
+    messaging: true,
+    videoChat: false,
+    voiceMessages: false,
+    
+    // Funcionalidades de pagamento
+    stripePayments: true,
+    pixPayments: true,
+    escrowPayments: true,
+    cryptoPayments: true,
+    
+    // Funcionalidades de UI/UX
+    darkMode: true,
+    animations: true,
+    pwaSupport: true,
+    pushNotifications: true,
+    
+    // Funcionalidades experimentais
+    aiRecommendations: false,
+    pricePrediction: false,
+    smartContracts: false,
+    crossChain: false,
+    
+    // Funcionalidades de administração
+    adminPanel: true,
+    analytics: true,
+    userManagement: true,
+    contentModeration: true
+  })
 
-  // Obter flags por categoria
-  const getFlagsByCategory = (category) => {
-    const categories = {
-      'main': ['FEATURE_MARKETPLACE', 'FEATURE_AGROCONECTA', 'FEATURE_CRYPTO', 'FEATURE_MESSAGING'],
-      'advanced': ['FEATURE_AI_CHATBOT', 'FEATURE_VOICE_CHAT', 'FEATURE_IMAGE_ANALYSIS'],
-      'integrations': ['FEATURE_STRIPE_PAYMENTS', 'FEATURE_METAMASK_INTEGRATION', 'FEATURE_NFT_MINTING'],
-      'ui': ['FEATURE_DARK_MODE', 'FEATURE_ANIMATIONS', 'FEATURE_GLASSMORPHISM'],
-      'analytics': ['FEATURE_ANALYTICS', 'FEATURE_USER_TRACKING'],
-      'security': ['FEATURE_2FA', 'FEATURE_RATE_LIMITING'],
-      'experimental': ['FEATURE_BETA_FEATURES', 'FEATURE_EXPERIMENTAL_UI']
-    };
+  const isEnabled = (flagName) => {
+    return flags[flagName] === true
+  }
 
-    const categoryFlags = categories[category] || [];
-    return categoryFlags.reduce((acc, flagName) => {
-      acc[flagName] = flags[flagName];
-      return acc;
-    }, {});
-  };
+  const isDisabled = (flagName) => {
+    return flags[flagName] === false
+  }
+
+  const getFlag = (flagName, defaultValue = false) => {
+    return flags[flagName] ?? defaultValue
+  }
+
+  const setFlag = (flagName, value) => {
+    setFlags(prev => ({
+      ...prev,
+      [flagName]: value
+    }))
+  }
+
+  const toggleFlag = (flagName) => {
+    setFlags(prev => ({
+      ...prev,
+      [flagName]: !prev[flagName]
+    }))
+  }
+
+  const updateFlags = (newFlags) => {
+    setFlags(prev => ({
+      ...prev,
+      ...newFlags
+    }))
+  }
+
+  const resetFlags = () => {
+    setFlags(getDefaultFlags())
+  }
+
+  const getEnabledFlags = () => {
+    return Object.entries(flags)
+      .filter(([_, value]) => value === true)
+      .map(([key, _]) => key)
+  }
+
+  const getDisabledFlags = () => {
+    return Object.entries(flags)
+      .filter(([_, value]) => value === false)
+      .map(([key, _]) => key)
+  }
+
+  const getFlagCount = () => {
+    return {
+      total: Object.keys(flags).length,
+      enabled: getEnabledFlags().length,
+      disabled: getDisabledFlags().length
+    }
+  }
+
+  const exportFlags = () => {
+    const data = {
+      flags,
+      exportedAt: new Date().toISOString(),
+      version: '1.0.0'
+    }
+    
+    const blob = new Blob([JSON.stringify(data, null, 2)], {
+      type: 'application/json'
+    })
+    
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `feature-flags-${new Date().toISOString().split('T')[0]}.json`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
+
+  const importFlags = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target.result)
+          
+          if (data.flags && typeof data.flags === 'object') {
+            setFlags(data.flags)
+            resolve(data.flags)
+          } else {
+            reject(new Error('Formato de arquivo inválido'))
+          }
+        } catch (err) {
+          reject(new Error('Erro ao processar arquivo'))
+        }
+      }
+      
+      reader.onerror = () => {
+        reject(new Error('Erro ao ler arquivo'))
+      }
+      
+      reader.readAsText(file)
+    })
+  }
 
   const value = {
     flags,
-    // loading,
+    loading,
+    error,
     isEnabled,
-    areEnabled,
-    isAnyEnabled,
+    isDisabled,
     getFlag,
-    updateFlag,
-    getAllFlags,
-    getFlagsByCategory
-  };
+    setFlag,
+    toggleFlag,
+    updateFlags,
+    resetFlags,
+    getEnabledFlags,
+    getDisabledFlags,
+    getFlagCount,
+    exportFlags,
+    importFlags,
+    loadFeatureFlags
+  }
 
   return (
     <FeatureFlagsContext.Provider value={value}>
       {children}
     </FeatureFlagsContext.Provider>
-  );
-};
+  )
+}
+
+export default FeatureFlagsProvider

@@ -1,12 +1,12 @@
-import axios from 'axios';
+import axios from 'axios'
 
 // Configuração da API
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api'
 
 class AdminService {
   constructor() {
-    this.isAuthenticated = false;
-    this.adminToken = null;
+    this.isAuthenticated = false
+    this.adminToken = null
   }
 
   // Login administrativo
@@ -15,28 +15,28 @@ class AdminService {
       // Verificar credenciais fixas
       if (email === 'luispaulodeoliveira@agrotm.com.br' && password === 'Th@ys15221008') {
         // Gerar token admin simulado (em produção seria via backend)
-        const adminToken = btoa(`admin:${email}:${Date.now()}`);
-        
-        this.isAuthenticated = true;
-        this.adminToken = adminToken;
-        
+        const adminToken = btoa(`admin:${email}:${Date.now()}`)
+
+        this.isAuthenticated = true
+        this.adminToken = adminToken
+
         return {
           success: true,
           token: adminToken,
           message: 'Login administrativo realizado com sucesso'
-        };
+        }
       } else {
         return {
           success: false,
           error: 'Credenciais inválidas'
-        };
+        }
       }
     } catch (error) {
-      console.error('Erro no login administrativo:', error);
+      console.error('Erro no login administrativo:', error)
       return {
         success: false,
         error: 'Erro de conexão'
-      };
+      }
     }
   }
 
@@ -46,18 +46,18 @@ class AdminService {
       const response = await axios.post(`${API_BASE_URL}/admin/verify`, {
         userId,
         email: userEmail
-      });
-      
+      })
+
       if (response.data.success) {
-        this.isAuthenticated = true;
-        this.adminToken = response.data.token;
-        return { isAdmin: true, role: response.data.role };
+        this.isAuthenticated = true
+        this.adminToken = response.data.token
+        return { isAdmin: true, role: response.data.role }
       } else {
-        return { isAdmin: false, error: response.data.error };
+        return { isAdmin: false, error: response.data.error }
       }
     } catch (error) {
-      console.error('Erro ao verificar status de admin:', error);
-      return { isAdmin: false, error: 'Erro ao verificar permissões' };
+      console.error('Erro ao verificar status de admin:', error)
+      return { isAdmin: false, error: 'Erro ao verificar permissões' }
     }
   }
 
@@ -65,23 +65,23 @@ class AdminService {
   async loadDashboardData() {
     try {
       if (!this.isAuthenticated) {
-        throw new Error('Admin não autenticado');
+        throw new Error('Admin não autenticado')
       }
 
       const response = await axios.get(`${API_BASE_URL}/admin/dashboard`, {
         headers: {
-          'Authorization': `Bearer ${this.adminToken}`
+          Authorization: `Bearer ${this.adminToken}`
         }
-      });
+      })
 
       if (response.data.success) {
-        return response.data.data;
+        return response.data.data
       } else {
-        throw new Error(response.data.error || 'Erro ao carregar dados do dashboard');
+        throw new Error(response.data.error || 'Erro ao carregar dados do dashboard')
       }
     } catch (error) {
-      console.error('Erro ao carregar dados do dashboard:', error);
-      
+      console.error('Erro ao carregar dados do dashboard:', error)
+
       // Retornar dados vazios em caso de erro (conforme solicitado no prompt)
       return {
         metrics: {
@@ -97,7 +97,7 @@ class AdminService {
         users: [],
         recentActivity: [],
         systemStatus: 'operational'
-      };
+      }
     }
   }
 
@@ -105,24 +105,24 @@ class AdminService {
   async getAdminTransactions(filters = {}) {
     try {
       if (!this.isAuthenticated) {
-        throw new Error('Admin não autenticado');
+        throw new Error('Admin não autenticado')
       }
 
       const response = await axios.get(`${API_BASE_URL}/admin/transactions`, {
         headers: {
-          'Authorization': `Bearer ${this.adminToken}`
+          Authorization: `Bearer ${this.adminToken}`
         },
         params: filters
-      });
+      })
 
       if (response.data.success) {
-        return response.data.data;
+        return response.data.data
       } else {
-        throw new Error(response.data.error || 'Erro ao carregar transações');
+        throw new Error(response.data.error || 'Erro ao carregar transações')
       }
     } catch (error) {
-      console.error('Erro ao carregar transações:', error);
-      return [];
+      console.error('Erro ao carregar transações:', error)
+      return []
     }
   }
 
@@ -130,24 +130,24 @@ class AdminService {
   async getAdminUsers(filters = {}) {
     try {
       if (!this.isAuthenticated) {
-        throw new Error('Admin não autenticado');
+        throw new Error('Admin não autenticado')
       }
 
       const response = await axios.get(`${API_BASE_URL}/admin/users`, {
         headers: {
-          'Authorization': `Bearer ${this.adminToken}`
+          Authorization: `Bearer ${this.adminToken}`
         },
         params: filters
-      });
+      })
 
       if (response.data.success) {
-        return response.data.data;
+        return response.data.data
       } else {
-        throw new Error(response.data.error || 'Erro ao carregar usuários');
+        throw new Error(response.data.error || 'Erro ao carregar usuários')
       }
     } catch (error) {
-      console.error('Erro ao carregar usuários:', error);
-      return [];
+      console.error('Erro ao carregar usuários:', error)
+      return []
     }
   }
 
@@ -155,22 +155,22 @@ class AdminService {
   async getSystemStats() {
     try {
       if (!this.isAuthenticated) {
-        throw new Error('Admin não autenticado');
+        throw new Error('Admin não autenticado')
       }
 
       const response = await axios.get(`${API_BASE_URL}/admin/system/stats`, {
         headers: {
-          'Authorization': `Bearer ${this.adminToken}`
+          Authorization: `Bearer ${this.adminToken}`
         }
-      });
+      })
 
       if (response.data.success) {
-        return response.data.data;
+        return response.data.data
       } else {
-        throw new Error(response.data.error || 'Erro ao carregar estatísticas do sistema');
+        throw new Error(response.data.error || 'Erro ao carregar estatísticas do sistema')
       }
     } catch (error) {
-      console.error('Erro ao carregar estatísticas do sistema:', error);
+      console.error('Erro ao carregar estatísticas do sistema:', error)
       return {
         totalUsers: 0,
         activeUsers: 0,
@@ -179,7 +179,7 @@ class AdminService {
         totalProducts: 0,
         totalFreights: 0,
         totalTransactions: 0
-      };
+      }
     }
   }
 
@@ -187,25 +187,29 @@ class AdminService {
   async updateSystemStatus(status) {
     try {
       if (!this.isAuthenticated) {
-        throw new Error('Admin não autenticado');
+        throw new Error('Admin não autenticado')
       }
 
-      const response = await axios.put(`${API_BASE_URL}/admin/system/status`, {
-        status
-      }, {
-        headers: {
-          'Authorization': `Bearer ${this.adminToken}`
+      const response = await axios.put(
+        `${API_BASE_URL}/admin/system/status`,
+        {
+          status
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${this.adminToken}`
+          }
         }
-      });
+      )
 
       if (response.data.success) {
-        return response.data.data;
+        return response.data.data
       } else {
-        throw new Error(response.data.error || 'Erro ao atualizar status do sistema');
+        throw new Error(response.data.error || 'Erro ao atualizar status do sistema')
       }
     } catch (error) {
-      console.error('Erro ao atualizar status do sistema:', error);
-      throw error;
+      console.error('Erro ao atualizar status do sistema:', error)
+      throw error
     }
   }
 
@@ -213,23 +217,27 @@ class AdminService {
   async processPayment(paymentId) {
     try {
       if (!this.isAuthenticated) {
-        throw new Error('Admin não autenticado');
+        throw new Error('Admin não autenticado')
       }
 
-      const response = await axios.post(`${API_BASE_URL}/admin/payments/${paymentId}/process`, {}, {
-        headers: {
-          'Authorization': `Bearer ${this.adminToken}`
+      const response = await axios.post(
+        `${API_BASE_URL}/admin/payments/${paymentId}/process`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${this.adminToken}`
+          }
         }
-      });
+      )
 
       if (response.data.success) {
-        return response.data.data;
+        return response.data.data
       } else {
-        throw new Error(response.data.error || 'Erro ao processar pagamento');
+        throw new Error(response.data.error || 'Erro ao processar pagamento')
       }
     } catch (error) {
-      console.error('Erro ao processar pagamento:', error);
-      throw error;
+      console.error('Erro ao processar pagamento:', error)
+      throw error
     }
   }
 
@@ -237,23 +245,27 @@ class AdminService {
   async approveUser(userId) {
     try {
       if (!this.isAuthenticated) {
-        throw new Error('Admin não autenticado');
+        throw new Error('Admin não autenticado')
       }
 
-      const response = await axios.put(`${API_BASE_URL}/admin/users/${userId}/approve`, {}, {
-        headers: {
-          'Authorization': `Bearer ${this.adminToken}`
+      const response = await axios.put(
+        `${API_BASE_URL}/admin/users/${userId}/approve`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${this.adminToken}`
+          }
         }
-      });
+      )
 
       if (response.data.success) {
-        return response.data.data;
+        return response.data.data
       } else {
-        throw new Error(response.data.error || 'Erro ao aprovar usuário');
+        throw new Error(response.data.error || 'Erro ao aprovar usuário')
       }
     } catch (error) {
-      console.error('Erro ao aprovar usuário:', error);
-      throw error;
+      console.error('Erro ao aprovar usuário:', error)
+      throw error
     }
   }
 
@@ -261,25 +273,29 @@ class AdminService {
   async banUser(userId, reason) {
     try {
       if (!this.isAuthenticated) {
-        throw new Error('Admin não autenticado');
+        throw new Error('Admin não autenticado')
       }
 
-      const response = await axios.put(`${API_BASE_URL}/admin/users/${userId}/ban`, {
-        reason
-      }, {
-        headers: {
-          'Authorization': `Bearer ${this.adminToken}`
+      const response = await axios.put(
+        `${API_BASE_URL}/admin/users/${userId}/ban`,
+        {
+          reason
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${this.adminToken}`
+          }
         }
-      });
+      )
 
       if (response.data.success) {
-        return response.data.data;
+        return response.data.data
       } else {
-        throw new Error(response.data.error || 'Erro ao banir usuário');
+        throw new Error(response.data.error || 'Erro ao banir usuário')
       }
     } catch (error) {
-      console.error('Erro ao banir usuário:', error);
-      throw error;
+      console.error('Erro ao banir usuário:', error)
+      throw error
     }
   }
 
@@ -287,34 +303,34 @@ class AdminService {
   async getSystemLogs(filters = {}) {
     try {
       if (!this.isAuthenticated) {
-        throw new Error('Admin não autenticado');
+        throw new Error('Admin não autenticado')
       }
 
       const response = await axios.get(`${API_BASE_URL}/admin/system/logs`, {
         headers: {
-          'Authorization': `Bearer ${this.adminToken}`
+          Authorization: `Bearer ${this.adminToken}`
         },
         params: filters
-      });
+      })
 
       if (response.data.success) {
-        return response.data.data;
+        return response.data.data
       } else {
-        throw new Error(response.data.error || 'Erro ao carregar logs do sistema');
+        throw new Error(response.data.error || 'Erro ao carregar logs do sistema')
       }
     } catch (error) {
-      console.error('Erro ao carregar logs do sistema:', error);
-      return [];
+      console.error('Erro ao carregar logs do sistema:', error)
+      return []
     }
   }
 
   // Desconectar admin
   logout() {
-    this.isAuthenticated = false;
-    this.adminToken = null;
+    this.isAuthenticated = false
+    this.adminToken = null
   }
 }
 
 // Exportar instância única
-const adminService = new AdminService();
-export default adminService;
+const adminService = new AdminService()
+export default adminService

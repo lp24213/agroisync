@@ -1,80 +1,80 @@
-import React, { useState, // useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-';
-import { Globe, Loader2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
+import { Globe, Loader2, CheckCircle, Clock, AlertCircle, DollarSign, Zap, ExternalLink } from 'lucide-react'
 
 const MetaverseManager = ({ userId }) => {
-  const {  } = useTranslation();
-  const [worlds, setWorlds] = useState([]);
-  const [// loading, // setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [totalValue, setTotalValue] = useState(0);
-  const [activeWorlds, setActiveWorlds] = useState(0);
+  const { t } = useTranslation()
+  const [metaverses, setMetaverses] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [totalValue, setTotalValue] = useState(0)
+  const [activeMetaverses, setActiveMetaverses] = useState(0)
 
-  // useEffect(() => {
-    // fetchMetaverseData();
-  }, [userId]);
+  useEffect(() => {
+    fetchMetaverseData()
+  }, [userId])
 
-  const // fetchMetaverseData = async () => {
-    // setLoading(true);
+  const fetchMetaverseData = async () => {
+    setLoading(true)
     try {
-      const response = await fetch(`/api/blockchain/metaverse?userId=${userId}`);
-      const data = await response.json();
-      
+      const response = await fetch(`/api/blockchain/metaverses?userId=${userId}`)
+      const data = await response.json()
+
       if (data.success) {
-        setWorlds(data.worlds);
-        setTotalValue(data.totalValue);
-        setActiveWorlds(data.activeWorlds);
+        setMetaverses(data.metaverses)
+        setTotalValue(data.totalValue)
+        setActiveMetaverses(data.activeMetaverses)
       } else {
-        setError(data.message);
+        setError(data.message)
       }
     } catch (err) {
-      setError(// t('metaverse.error', 'Erro ao carregar dados do metaverso'));
+      setError(t('metaverse.error', 'Erro ao carregar dados de metaversos'))
     } finally {
-      // setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const getStatusIcon = (status) => {
     switch (status) {
       case 'active':
-        return <// CheckCircle className="w-5 h-5 text-green-600" />;
+        return <CheckCircle className="w-5 h-5 text-green-600" />
       case 'pending':
-        return <// Clock className="w-5 h-5 text-yellow-600" />;
+        return <Clock className="w-5 h-5 text-yellow-600" />
       case 'completed':
-        return <// CheckCircle className="w-5 h-5 text-blue-600" />;
+        return <CheckCircle className="w-5 h-5 text-blue-600" />
       default:
-        return <// Clock className="w-5 h-5 text-gray-600" />;
+        return <Clock className="w-5 h-5 text-gray-600" />
     }
-  };
+  }
 
-  if (// loading) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
         <Loader2 className="w-8 h-8 animate-spin text-agro-emerald" />
         <span className="ml-3 text-gray-600 dark:text-gray-300">
-          {// t('metaverse.// loading', 'Carregando dados do metaverso...')}
+          {t('metaverse.loading', 'Carregando dados de metaversos...')}
         </span>
       </div>
-    );
+    )
   }
 
   return (
-    <// motion.div
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
     >
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
-          <// Globe className="w-6 h-6 mr-2 text-agro-emerald" />
-          {// t('metaverse.title', 'Metaverse Manager')}
+          <Globe className="w-6 h-6 mr-2 text-agro-emerald" />
+          {t('metaverse.title', 'Metaverse Manager')}
         </h2>
       </div>
-      
+
       {error && (
         <div className="text-red-500 mb-4 flex items-center">
-          <// AlertCircle className="w-5 h-5 mr-2" />
+          <AlertCircle className="w-5 h-5 mr-2" />
           {error}
         </div>
       )}
@@ -85,127 +85,124 @@ const MetaverseManager = ({ userId }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {// t('metaverse.totalValue', 'Valor Total')}
+                {t('metaverse.totalValue', 'Valor Total')}
               </p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 ${totalValue.toFixed(2)}
               </p>
             </div>
-            <// DollarSign className="w-8 h-8 text-gray-400" />
+            <DollarSign className="w-8 h-8 text-gray-400" />
           </div>
         </div>
-        
+
         <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {// t('metaverse.activeWorlds', 'Mundos Ativos')}
+                {t('metaverse.activeMetaverses', 'Metaversos Ativos')}
               </p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                {activeWorlds}
+                {activeMetaverses}
               </p>
             </div>
-            <// Globe className="w-8 h-8 text-gray-400" />
+            <Globe className="w-8 h-8 text-gray-400" />
           </div>
         </div>
-        
+
         <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {// t('metaverse.totalWorlds', 'Total de Mundos')}
+                {t('metaverse.totalMetaverses', 'Total de Metaversos')}
               </p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                {worlds.length}
+                {metaverses.length}
               </p>
             </div>
-            <// Globe className="w-8 h-8 text-gray-400" />
+            <Globe className="w-8 h-8 text-gray-400" />
           </div>
         </div>
       </div>
 
-      {/* Mundos */}
-      {worlds.length === 0 ? (
+      {/* Metaversos */}
+      {metaverses.length === 0 ? (
         <div className="text-center py-8">
-          <// Globe className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <Globe className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <p className="text-gray-600 dark:text-gray-400 mb-4">
-            {// t('metaverse.noWorlds', 'Nenhum mundo encontrado')}
+            {t('metaverse.noMetaverses', 'Nenhum metaverso encontrado')}
           </p>
         </div>
       ) : (
         <div className="space-y-4">
-          {worlds.map((world) => (
-            <div key={world.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+          {metaverses.map((metaverse) => (
+            <div key={metaverse.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="font-semibold text-gray-900 dark:text-white">
-                    {world.name}
+                    {metaverse.name}
                   </h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {world.description}
+                    {metaverse.description}
                   </p>
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
-                  {getStatusIcon(world.status)}
+                  {getStatusIcon(metaverse.status)}
                   <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {world.status}
+                    {metaverse.status}
                   </span>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-4">
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {// t('metaverse.landValue', 'Valor do Terreno')}:
+                    {t('metaverse.value', 'Valor')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
-                    ${world.landValue.toFixed(2)}
+                    ${metaverse.value.toFixed(2)}
                   </p>
                 </div>
-                
+
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {// t('metaverse.players', 'Jogadores')}:
+                    {t('metaverse.transactions', 'Transações')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
-                    {world.players}
+                    {metaverse.transactions}
                   </p>
                 </div>
-                
+
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {// t('metaverse.landSize', 'Tamanho do Terreno')}:
+                    {t('metaverse.fee', 'Taxa')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
-                    {world.landSize} m²
+                    {metaverse.fee}%
                   </p>
                 </div>
-                
+
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {// t('metaverse.date', 'Data')}:
+                    {t('metaverse.speed', 'Velocidade')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
-                    {world.date}
+                    {metaverse.speed}
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <div className="text-sm text-gray-500 dark:text-gray-400">
-                  {// t('metaverse.coordinates', 'Coordenadas')}: {world.coordinates}
+                  {t('metaverse.lastActivity', 'Última Atividade')}: {metaverse.lastActivity}
                 </div>
-                
+
                 <div className="flex space-x-2">
                   <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                    <// MapPin className="w-4 h-4" />
+                    <Zap className="w-4 h-4" />
                   </button>
                   <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                    <// Users className="w-4 h-4" />
-                  </button>
-                  <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                    <// ExternalLink className="w-4 h-4" />
+                    <ExternalLink className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -213,8 +210,8 @@ const MetaverseManager = ({ userId }) => {
           ))}
         </div>
       )}
-    </// motion.div>
-  );
-};
+    </motion.div>
+  )
+}
 
-export default MetaverseManager;
+export default MetaverseManager

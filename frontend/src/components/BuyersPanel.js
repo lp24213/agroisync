@@ -1,17 +1,29 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { 
-  Search, Filter, MapPin, Calendar, DollarSign, 
-  TrendingUp, Eye, Heart, MessageSquare, Star,
-  Package, Truck, Shield, CheckCircle, Clock
-} from 'lucide-react';
+import React, { useState } from 'react'
+import { motion } from 'framer-motion'
+import {
+  Search,
+  Filter,
+  MapPin,
+  Calendar,
+  DollarSign,
+  TrendingUp,
+  Eye,
+  Heart,
+  MessageSquare,
+  Star,
+  Package,
+  Truck,
+  Shield,
+  CheckCircle,
+  Clock
+} from 'lucide-react'
 
 const BuyersPanel = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 100000 });
-  const [location, setLocation] = useState('');
-  const [sortBy, setSortBy] = useState('relevance');
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('')
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 100000 })
+  const [location, setLocation] = useState('')
+  const [sortBy, setSortBy] = useState('relevance')
 
   // Mock data para demonstração
   const buyers = [
@@ -66,92 +78,80 @@ const BuyersPanel = () => {
         email: 'vendas@agrofert.com.br'
       }
     }
-  ];
+  ]
 
-  const categories = [
-    'Todos',
-    'Cooperativas',
-    'Produtores',
-    'Distribuidores',
-    'Indústrias',
-    'Exportadores'
-  ];
+  const categories = ['Todos', 'Cooperativas', 'Produtores', 'Distribuidores', 'Indústrias', 'Exportadores']
 
-  const locations = [
-    'Todos os Estados',
-    'Mato Grosso',
-    'Paraná',
-    'São Paulo',
-    'Goiás',
-    'Rio Grande do Sul'
-  ];
+  const locations = ['Todos os Estados', 'Mato Grosso', 'Paraná', 'São Paulo', 'Goiás', 'Rio Grande do Sul']
 
   return (
-    <div className="space-y-8">
+    <div className='space-y-8'>
       {/* Header */}
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gradient-agro mb-4">
-          Painel de Compradores
-        </h2>
-        <p className="text-white/60 max-w-2xl mx-auto">
-          Encontre os melhores compradores do agronegócio brasileiro. 
-          Conecte-se diretamente com cooperativas, produtores e distribuidores verificados.
+      <div className='mb-8 text-center'>
+        <h2 className='text-gradient-agro mb-4 text-3xl font-bold'>Painel de Compradores</h2>
+        <p className='mx-auto max-w-2xl text-white/60'>
+          Encontre os melhores compradores do agronegócio brasileiro. Conecte-se diretamente com cooperativas,
+          produtores e distribuidores verificados.
         </p>
       </div>
 
       {/* Filters */}
-      <div className="card p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className='card p-6'>
+        <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4'>
           {/* Search */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/50" />
+          <div className='relative'>
+            <Search className='absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-white/50' />
             <input
-              type="text"
-              placeholder="Buscar compradores..."
+              type='text'
+              placeholder='Buscar compradores...'
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white placeholder-white/50 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
+              onChange={e => setSearchTerm(e.target.value)}
+              className='w-full rounded-xl border border-emerald-500/20 bg-black/50 py-3 pl-10 pr-4 text-white placeholder-white/50 transition-all duration-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20'
             />
           </div>
 
           {/* Category */}
           <select
             value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-4 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
+            onChange={e => setSelectedCategory(e.target.value)}
+            className='rounded-xl border border-emerald-500/20 bg-black/50 px-4 py-3 text-white transition-all duration-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20'
           >
-            {categories.map((category) => (
-              <option key={category} value={category}>{category}</option>
+            {categories.map(category => (
+              <option key={category} value={category}>
+                {category}
+              </option>
             ))}
           </select>
 
           {/* Location */}
           <select
             value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            className="px-4 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
+            onChange={e => setLocation(e.target.value)}
+            className='rounded-xl border border-emerald-500/20 bg-black/50 px-4 py-3 text-white transition-all duration-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20'
           >
-            {locations.map((loc) => (
-              <option key={loc} value={loc}>{loc}</option>
+            {locations.map(loc => (
+              <option key={loc} value={loc}>
+                {loc}
+              </option>
             ))}
           </select>
 
           {/* Sort */}
           <select
             value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="px-4 py-3 bg-black/50 border border-emerald-500/20 rounded-xl text-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300"
+            onChange={e => setSortBy(e.target.value)}
+            className='rounded-xl border border-emerald-500/20 bg-black/50 px-4 py-3 text-white transition-all duration-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20'
           >
-            <option value="relevance">Relevância</option>
-            <option value="rating">Melhor Avaliação</option>
-            <option value="products">Mais Produtos</option>
-            <option value="recent">Mais Recentes</option>
+            <option value='relevance'>Relevância</option>
+            <option value='rating'>Melhor Avaliação</option>
+            <option value='products'>Mais Produtos</option>
+            <option value='recent'>Mais Recentes</option>
           </select>
         </div>
       </div>
 
       {/* Buyers Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
         {buyers.map((buyer, index) => (
           <motion.div
             key={buyer.id}
@@ -159,54 +159,50 @@ const BuyersPanel = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: index * 0.1 }}
             whileHover={{ y: -5, scale: 1.02 }}
-            className="card p-6 hover-agro"
+            className='card hover-agro p-6'
           >
             {/* Header */}
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex-1">
-                <div className="flex items-center space-x-2 mb-2">
-                  <h3 className="text-lg font-bold text-white">{buyer.name}</h3>
-                  {buyer.verified && (
-                    <CheckCircle className="w-5 h-5 text-emerald-400" />
-                  )}
+            <div className='mb-4 flex items-start justify-between'>
+              <div className='flex-1'>
+                <div className='mb-2 flex items-center space-x-2'>
+                  <h3 className='text-lg font-bold text-white'>{buyer.name}</h3>
+                  {buyer.verified && <CheckCircle className='h-5 w-5 text-emerald-400' />}
                 </div>
-                <div className="flex items-center space-x-2 text-white/60 text-sm">
-                  <Package className="w-4 h-4" />
+                <div className='flex items-center space-x-2 text-sm text-white/60'>
+                  <Package className='h-4 w-4' />
                   <span>{buyer.type}</span>
                 </div>
               </div>
-              <div className="flex items-center space-x-1">
-                <Star className="w-4 h-4 text-amber-400 fill-current" />
-                <span className="text-white font-semibold">{buyer.rating}</span>
-                <span className="text-white/60 text-sm">({buyer.reviews})</span>
+              <div className='flex items-center space-x-1'>
+                <Star className='h-4 w-4 fill-current text-amber-400' />
+                <span className='font-semibold text-white'>{buyer.rating}</span>
+                <span className='text-sm text-white/60'>({buyer.reviews})</span>
               </div>
             </div>
 
             {/* Location and Activity */}
-            <div className="flex items-center space-x-4 mb-4 text-sm">
-              <div className="flex items-center space-x-1 text-white/60">
-                <MapPin className="w-4 h-4" />
+            <div className='mb-4 flex items-center space-x-4 text-sm'>
+              <div className='flex items-center space-x-1 text-white/60'>
+                <MapPin className='h-4 w-4' />
                 <span>{buyer.location}</span>
               </div>
-              <div className="flex items-center space-x-1 text-white/60">
-                <Clock className="w-4 h-4" />
+              <div className='flex items-center space-x-1 text-white/60'>
+                <Clock className='h-4 w-4' />
                 <span>{buyer.lastActive}</span>
               </div>
             </div>
 
             {/* Description */}
-            <p className="text-white/70 text-sm mb-4 line-clamp-2">
-              {buyer.description}
-            </p>
+            <p className='mb-4 line-clamp-2 text-sm text-white/70'>{buyer.description}</p>
 
             {/* Specialties */}
-            <div className="mb-4">
-              <h4 className="text-white font-semibold text-sm mb-2">Especialidades:</h4>
-              <div className="flex flex-wrap gap-2">
-                {buyer.specialties.map((specialty) => (
+            <div className='mb-4'>
+              <h4 className='mb-2 text-sm font-semibold text-white'>Especialidades:</h4>
+              <div className='flex flex-wrap gap-2'>
+                {buyer.specialties.map(specialty => (
                   <span
                     key={specialty}
-                    className="px-2 py-1 bg-emerald-500/20 text-emerald-400 text-xs rounded-full border border-emerald-500/30"
+                    className='rounded-full border border-emerald-500/30 bg-emerald-500/20 px-2 py-1 text-xs text-emerald-400'
                   >
                     {specialty}
                   </span>
@@ -215,40 +211,40 @@ const BuyersPanel = () => {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="text-center">
-                <div className="text-lg font-bold text-gradient-emerald">{buyer.products}</div>
-                <div className="text-xs text-white/60">Produtos</div>
+            <div className='mb-4 grid grid-cols-2 gap-4'>
+              <div className='text-center'>
+                <div className='text-gradient-emerald text-lg font-bold'>{buyer.products}</div>
+                <div className='text-xs text-white/60'>Produtos</div>
               </div>
-              <div className="text-center">
-                <div className="text-lg font-bold text-gradient-emerald">{buyer.reviews}</div>
-                <div className="text-xs text-white/60">Avaliações</div>
+              <div className='text-center'>
+                <div className='text-gradient-emerald text-lg font-bold'>{buyer.reviews}</div>
+                <div className='text-xs text-white/60'>Avaliações</div>
               </div>
             </div>
 
             {/* Actions */}
-            <div className="flex items-center space-x-2">
+            <div className='flex items-center space-x-2'>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="flex-1 bg-emerald-500 text-black font-semibold py-2 px-4 rounded-lg hover:bg-emerald-400 transition-colors duration-300"
+                className='flex-1 rounded-lg bg-emerald-500 px-4 py-2 font-semibold text-black transition-colors duration-300 hover:bg-emerald-400'
               >
-                <MessageSquare className="w-4 h-4 inline mr-2" />
+                <MessageSquare className='mr-2 inline h-4 w-4' />
                 Contatar
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="p-2 bg-black/50 border border-emerald-500/20 rounded-lg text-emerald-400 hover:bg-emerald-500/10 transition-colors duration-300"
+                className='rounded-lg border border-emerald-500/20 bg-black/50 p-2 text-emerald-400 transition-colors duration-300 hover:bg-emerald-500/10'
               >
-                <Eye className="w-4 h-4" />
+                <Eye className='h-4 w-4' />
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="p-2 bg-black/50 border border-emerald-500/20 rounded-lg text-emerald-400 hover:bg-emerald-500/10 transition-colors duration-300"
+                className='rounded-lg border border-emerald-500/20 bg-black/50 p-2 text-emerald-400 transition-colors duration-300 hover:bg-emerald-500/10'
               >
-                <Heart className="w-4 h-4" />
+                <Heart className='h-4 w-4' />
               </motion.button>
             </div>
           </motion.div>
@@ -256,31 +252,29 @@ const BuyersPanel = () => {
       </div>
 
       {/* Stats Section */}
-      <div className="card p-8">
-        <h3 className="text-2xl font-bold text-gradient-agro mb-6 text-center">
-          Estatísticas dos Compradores
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="text-center">
-            <div className="text-3xl font-bold text-gradient-emerald mb-2">2.5K</div>
-            <div className="text-white/60">Compradores Ativos</div>
+      <div className='card p-8'>
+        <h3 className='text-gradient-agro mb-6 text-center text-2xl font-bold'>Estatísticas dos Compradores</h3>
+        <div className='grid grid-cols-1 gap-6 md:grid-cols-4'>
+          <div className='text-center'>
+            <div className='text-gradient-emerald mb-2 text-3xl font-bold'>2.5K</div>
+            <div className='text-white/60'>Compradores Ativos</div>
           </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-gradient-emerald mb-2">15.8K</div>
-            <div className="text-white/60">Produtos Comprados</div>
+          <div className='text-center'>
+            <div className='text-gradient-emerald mb-2 text-3xl font-bold'>15.8K</div>
+            <div className='text-white/60'>Produtos Comprados</div>
           </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-gradient-emerald mb-2">R$ 45M</div>
-            <div className="text-white/60">Volume de Negócios</div>
+          <div className='text-center'>
+            <div className='text-gradient-emerald mb-2 text-3xl font-bold'>R$ 45M</div>
+            <div className='text-white/60'>Volume de Negócios</div>
           </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-gradient-emerald mb-2">98.5%</div>
-            <div className="text-white/60">Satisfação</div>
+          <div className='text-center'>
+            <div className='text-gradient-emerald mb-2 text-3xl font-bold'>98.5%</div>
+            <div className='text-white/60'>Satisfação</div>
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default BuyersPanel;
+export default BuyersPanel

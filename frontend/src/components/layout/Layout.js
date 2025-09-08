@@ -1,103 +1,109 @@
-import React, { useState, // useEffect } from 'react';
-import { motion } from 'framer-';
-import { useTheme } from '../../contexts/ThemeContext';
-import Navbar from '../Navbar';
-import Footer from '../Footer';
-import Chatbot from '../Chatbot';
-import AnimatedBackground from '../AnimatedBackground';
-import PagePreloader from '../PagePreloader';
-import PageTransition from '../PageTransition';
-import GlobalTicker from '../GlobalTicker';
-import GlobalWeatherWidget from '../GlobalWeatherWidget';
+import React, { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useLocation } from 'react-router-dom'
+import Header from './Header'
+import Sidebar from './Sidebar'
+import Footer from './Footer'
+import PagePreloader from './PagePreloader'
+import { useAuth } from '../../contexts/AuthContext'
+import { useTheme } from '../../contexts/ThemeContext'
 
 const Layout = ({ children }) => {
-  const {  } = // useTheme();
-  const [// isLoading, // setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { user } = useAuth()
+  const { theme } = useTheme()
+  const location = useLocation()
 
-  // useEffect(() => {
-    // Simular tempo de carregamento
+  useEffect(() => {
+    // Simular carregamento inicial
     const timer = setTimeout(() => {
-      // setIsLoading(false);
-    }, 2000);
+      setIsLoading(false)
+    }, 2000)
 
-    return () => clearTimeout(timer);
-  }, []);
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
+    // Fechar sidebar ao mudar de rota
+    setSidebarOpen(false)
+  }, [location])
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen)
+  }
+
+  const closeSidebar = () => {
+    setSidebarOpen(false)
+  }
+
+  if (isLoading) {
+    return <PagePreloader isLoading={isLoading} />
+  }
 
   return (
     <>
       {/* Preloader */}
-      <PagePreloader // isLoading={// isLoading} />
+      <PagePreloader isLoading={isLoading} />
+      
+      <div className={`min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 ${theme}`}>
+        {/* Header */}
+        <Header 
+          onMenuClick={toggleSidebar}
+          sidebarOpen={sidebarOpen}
+        />
 
-      <div className="min-h-screen relative overflow-hidden pt-16">
-        {/* Fundo animado de estrelas (removido das páginas internas) */}
-        {/* {// isDark && <AnimatedBackground />} */}
+        {/* Sidebar */}
+        <AnimatePresence>
+          {sidebarOpen && (
+            <motion.div
+              initial={{ x: -300, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -300, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-lg"
+            >
+              <Sidebar onClose={closeSidebar} />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        {/* Gradiente sutil sobre o fundo */}
-        <div className={`absolute inset-0 pointer-events-none z-0 ${
-          // isDark
-            ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-black'
-            : 'bg-gradient-to-br from-white via-gray-50 to-gray-100'
-        }`} />
+        {/* Overlay */}
+        <AnimatePresence>
+          {sidebarOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="fixed inset-0 z-40 bg-black bg-opacity-50"
+              onClick={closeSidebar}
+            />
+          )}
+        </AnimatePresence>
 
-        {/* Conteúdo principal */}
-        <div className="relative z-10">
-          {/* Ticker Global de Cotações - FIXO ACIMA DO MENU */}
-          <div className="fixed top-0 left-0 right-0 z-50">
-            <GlobalTicker />
-          </div>
-
-          {/* Header SEMPRE FIXO - NUNCA DESAPARECE */}
-          <// motion.header
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="fixed top-0 left-0 right-0 z-50 flex justify-center items-center" // Centralizado vertical e horizontalmente
-          >
-            <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <Navbar />
-            </div>
-          </// motion.header>
-
-          {/* Conteúdo principal */}
-          <// motion.main
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative z-10 pt-20" // pt-20 para compensar menu fixo no topo
-          >
-            <PageTransition>
+        {/* Main Content */}
+        <main className={`transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-0'}`}>
+          <div className="min-h-screen">
+            {/* Page Content */}
+            <motion.div
+              key={location.pathname}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="p-6"
+            >
               {children}
-            </PageTransition>
-          </// motion.main>
-
-          {/* Footer */}
-          <// motion.footer
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="relative z-10"
-          >
-            <Footer />
-          </// motion.footer>
-
-          {/* Chatbot IA - SEMPRE VISÍVEL */}
-          <// motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="fixed bottom-6 right-6 z-50" // SEMPRE fixo
-          >
-            <Chatbot />
-          </// motion.div>
-
-          {/* Widget de Clima Global - CANTO SUPERIOR DIREITO COM DRAG-AND-DROP */}
-          <div className="fixed top-5 right-5 z-40">
-            <GlobalWeatherWidget />
+            </motion.div>
           </div>
-        </div>
+        </main>
+
+        {/* Footer */}
+        <Footer />
       </div>
     </>
-  );
-};
+  )
+}
 
-export default Layout;
+export default Layout

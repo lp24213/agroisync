@@ -4,7 +4,7 @@ export const APP_CONFIG = {
   name: 'AGROSYNC',
   version: '1.0.0',
   environment: process.env.NODE_ENV || 'development',
-  
+
   // Configurações de autenticação
   auth: {
     cookieName: 'agrosync_auth_token',
@@ -12,19 +12,19 @@ export const APP_CONFIG = {
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict'
   },
-  
+
   // Configurações de admin
   admin: {
     email: 'luispaulodeoliveira@agrotm.com.br',
     password: 'Th@ys15221008'
   },
-  
+
   // Configurações de API
   api: {
     baseUrl: process.env.REACT_APP_API_URL || 'http://localhost:3001/api',
     timeout: 10000
   },
-  
+
   // Configurações de features
   features: {
     crypto: true,
@@ -32,19 +32,19 @@ export const APP_CONFIG = {
     notifications: true,
     analytics: true
   },
-  
+
   // Configurações de desenvolvimento
   development: {
     enableDebug: true,
     enableMockData: true,
     enableLogs: true
   }
-};
+}
 
 // Configurações específicas por ambiente
 export const getConfig = () => {
-  const env = process.env.NODE_ENV || 'development';
-  
+  const env = process.env.NODE_ENV || 'development'
+
   switch (env) {
     case 'production':
       return {
@@ -59,8 +59,8 @@ export const getConfig = () => {
           enableMockData: false,
           enableLogs: false
         }
-      };
-    
+      }
+
     case 'test':
       return {
         ...APP_CONFIG,
@@ -68,11 +68,11 @@ export const getConfig = () => {
           ...APP_CONFIG.development,
           enableMockData: true
         }
-      };
-    
-    default: // development
-      return APP_CONFIG;
-  }
-};
+      }
 
-export default getConfig();
+    default: // development
+      return APP_CONFIG
+  }
+}
+
+export default getConfig()

@@ -1,132 +1,132 @@
-import axios from 'axios';
+import axios from 'axios'
 
 // Configurações das APIs
-const BINANCE_API_URL = 'https://api.binance.com/api/v3';
-const COINGECKO_API_URL = 'https://api.coingecko.com/api/v3';
+const BINANCE_API_URL = 'https://api.binance.com/api/v3'
+const COINGECKO_API_URL = 'https://api.coingecko.com/api/v3'
 
 // Tipos de criptomoedas
 export const CRYPTO_TYPES = {
-  'BITCOIN': 'Bitcoin',
-  'ETHEREUM': 'Ethereum',
-  'BINANCE_COIN': 'Binance Coin',
-  'CARDANO': 'Cardano',
-  'SOLANA': 'Solana',
-  'POLKADOT': 'Polkadot',
-  'DOGECOIN': 'Dogecoin',
-  'AVALANCHE': 'Avalanche',
-  'CHAINLINK': 'Chainlink',
-  'POLYGON': 'Polygon'
-};
+  BITCOIN: 'Bitcoin',
+  ETHEREUM: 'Ethereum',
+  BINANCE_COIN: 'Binance Coin',
+  CARDANO: 'Cardano',
+  SOLANA: 'Solana',
+  POLKADOT: 'Polkadot',
+  DOGECOIN: 'Dogecoin',
+  AVALANCHE: 'Avalanche',
+  CHAINLINK: 'Chainlink',
+  POLYGON: 'Polygon'
+}
 
 // Estados de transação
 export const TRANSACTION_STATUS = {
-  'PENDING': 'Pendente',
-  'CONFIRMED': 'Confirmada',
-  'FAILED': 'Falhou',
-  'CANCELLED': 'Cancelada'
-};
+  PENDING: 'Pendente',
+  CONFIRMED: 'Confirmada',
+  FAILED: 'Falhou',
+  CANCELLED: 'Cancelada'
+}
 
 // Tipos de transação
 export const TRANSACTION_TYPES = {
-  'BUY': 'Compra',
-  'SELL': 'Venda',
-  'TRANSFER': 'Transferência',
-  'STAKE': 'Staking',
-  'UNSTAKE': 'Unstaking',
-  'REWARDS': 'Recompensas'
-};
+  BUY: 'Compra',
+  SELL: 'Venda',
+  TRANSFER: 'Transferência',
+  STAKE: 'Staking',
+  UNSTAKE: 'Unstaking',
+  REWARDS: 'Recompensas'
+}
 
 // Configurações de rede
 export const NETWORKS = {
-  'ETHEREUM': {
+  ETHEREUM: {
     name: 'Ethereum',
     symbol: 'ETH',
     chainId: 1,
     rpcUrl: 'https://mainnet.infura.io/v3/YOUR_PROJECT_ID',
     explorer: 'https://etherscan.io'
   },
-  'BINANCE_SMART_CHAIN': {
+  BINANCE_SMART_CHAIN: {
     name: 'Binance Smart Chain',
     symbol: 'BNB',
     chainId: 56,
     rpcUrl: 'https://bsc-dataseed.binance.org',
     explorer: 'https://bscscan.com'
   },
-  'POLYGON': {
+  POLYGON: {
     name: 'Polygon',
     symbol: 'MATIC',
     chainId: 137,
     rpcUrl: 'https://polygon-rpc.com',
     explorer: 'https://polygonscan.com'
   }
-};
+}
 
 class CryptoService {
   constructor() {
-    this.isConnected = false;
-    this.currentAccount = null;
-    this.currentNetwork = null;
-    this.prices = new Map();
-    this.priceUpdateInterval = null;
-    this.subscribers = new Set();
+    this.isConnected = false
+    this.currentAccount = null
+    this.currentNetwork = null
+    this.prices = new Map()
+    this.priceUpdateInterval = null
+    this.subscribers = new Set()
   }
 
   // Conectar à carteira Web3 (Metamask)
   async connectWallet() {
     try {
       if (typeof window.ethereum === 'undefined') {
-        throw new Error('Metamask não encontrado. Instale a extensão Metamask.');
+        throw new Error('Metamask não encontrado. Instale a extensão Metamask.')
       }
 
       // Solicitar conexão
       const accounts = await window.ethereum.request({
         method: 'eth_requestAccounts'
-      });
+      })
 
       if (accounts.length === 0) {
-        throw new Error('Nenhuma conta encontrada.');
+        throw new Error('Nenhuma conta encontrada.')
       }
 
-      this.currentAccount = accounts[0];
-      this.currentNetwork = await this.getCurrentNetwork();
-      this.isConnected = true;
+      this.currentAccount = accounts[0]
+      this.currentNetwork = await this.getCurrentNetwork()
+      this.isConnected = true
 
       // Escutar mudanças de conta
-      window.ethereum.on('accountsChanged', (accounts) => {
-        this.currentAccount = accounts[0] || null;
-        this.notifySubscribers();
-      });
+      window.ethereum.on('accountsChanged', accounts => {
+        this.currentAccount = accounts[0] || null
+        this.notifySubscribers()
+      })
 
       // Escutar mudanças de rede
-      window.ethereum.on('chainChanged', (chainId) => {
-        this.currentNetwork = this.getNetworkByChainId(chainId);
-        this.notifySubscribers();
-      });
+      window.ethereum.on('chainChanged', chainId => {
+        this.currentNetwork = this.getNetworkByChainId(chainId)
+        this.notifySubscribers()
+      })
 
       console.log('🔗 Carteira conectada:', {
         account: this.currentAccount,
         network: this.currentNetwork
-      });
+      })
 
       return {
         success: true,
         account: this.currentAccount,
         network: this.currentNetwork
-      };
+      }
     } catch (error) {
-      console.error('Erro ao conectar carteira:', error);
-      throw error;
+      console.error('Erro ao conectar carteira:', error)
+      throw error
     }
   }
 
   // Desconectar carteira
   disconnectWallet() {
-    this.isConnected = false;
-    this.currentAccount = null;
-    this.currentNetwork = null;
-    this.notifySubscribers();
-    
-    console.log('🔌 Carteira desconectada');
+    this.isConnected = false
+    this.currentAccount = null
+    this.currentNetwork = null
+    this.notifySubscribers()
+
+    console.log('🔌 Carteira desconectada')
   }
 
   // Obter rede atual
@@ -134,53 +134,53 @@ class CryptoService {
     try {
       const chainId = await window.ethereum.request({
         method: 'eth_chainId'
-      });
-      return this.getNetworkByChainId(chainId);
+      })
+      return this.getNetworkByChainId(chainId)
     } catch (error) {
-      console.error('Erro ao obter rede atual:', error);
-      return NETWORKS.ETHEREUM;
+      console.error('Erro ao obter rede atual:', error)
+      return NETWORKS.ETHEREUM
     }
   }
 
   // Obter rede por Chain ID
   getNetworkByChainId(chainId) {
-    const chainIdHex = typeof chainId === 'string' ? chainId : `0x${chainId.toString(16)}`;
-    
+    const chainIdHex = typeof chainId === 'string' ? chainId : `0x${chainId.toString(16)}`
+
     switch (chainIdHex) {
       case '0x1':
-        return NETWORKS.ETHEREUM;
+        return NETWORKS.ETHEREUM
       case '0x38':
-        return NETWORKS.BINANCE_SMART_CHAIN;
+        return NETWORKS.BINANCE_SMART_CHAIN
       case '0x89':
-        return NETWORKS.POLYGON;
+        return NETWORKS.POLYGON
       default:
-        return NETWORKS.ETHEREUM;
+        return NETWORKS.ETHEREUM
     }
   }
 
   // Obter saldo da carteira
   async getWalletBalance() {
     if (!this.isConnected || !this.currentAccount) {
-      throw new Error('Carteira não conectada');
+      throw new Error('Carteira não conectada')
     }
 
     try {
       const balance = await window.ethereum.request({
         method: 'eth_getBalance',
         params: [this.currentAccount, 'latest']
-      });
+      })
 
-      const balanceInEth = parseInt(balance, 16) / Math.pow(10, 18);
-      
+      const balanceInEth = parseInt(balance, 16) / Math.pow(10, 18)
+
       return {
         success: true,
         balance: balanceInEth,
         symbol: this.currentNetwork.symbol,
         account: this.currentAccount
-      };
+      }
     } catch (error) {
-      console.error('Erro ao obter saldo:', error);
-      throw error;
+      console.error('Erro ao obter saldo:', error)
+      throw error
     }
   }
 
@@ -189,9 +189,9 @@ class CryptoService {
     try {
       const response = await axios.get(
         `${COINGECKO_API_URL}/simple/price?ids=${symbols.join(',')}&vs_currencies=usd,brl&include_24hr_change=true&include_market_cap=true`
-      );
+      )
 
-      const prices = {};
+      const prices = {}
       symbols.forEach(symbol => {
         if (response.data[symbol]) {
           prices[symbol] = {
@@ -199,22 +199,22 @@ class CryptoService {
             brl: response.data[symbol].brl,
             change24h: response.data[symbol].usd_24h_change,
             marketCap: response.data[symbol].usd_market_cap
-          };
+          }
         }
-      });
+      })
 
       // Atualizar cache local
-      this.prices = new Map(Object.entries(prices));
-      this.notifySubscribers();
+      this.prices = new Map(Object.entries(prices))
+      this.notifySubscribers()
 
       return {
         success: true,
         prices: prices,
         timestamp: Date.now()
-      };
+      }
     } catch (error) {
-      console.error('Erro ao obter preços:', error);
-      throw error;
+      console.error('Erro ao obter preços:', error)
+      throw error
     }
   }
 
@@ -223,29 +223,29 @@ class CryptoService {
     try {
       const response = await axios.get(
         `${COINGECKO_API_URL}/coins/${coinId}/market_chart?vs_currency=${currency}&days=${days}`
-      );
+      )
 
       const prices = response.data.prices.map(([timestamp, price]) => ({
         timestamp,
         price,
         date: new Date(timestamp).toISOString()
-      }));
+      }))
 
       const volumes = response.data.total_volumes.map(([timestamp, volume]) => ({
         timestamp,
         volume,
         date: new Date(timestamp).toISOString()
-      }));
+      }))
 
       return {
         success: true,
         prices,
         volumes,
         marketCaps: response.data.market_caps
-      };
+      }
     } catch (error) {
-      console.error('Erro ao obter dados históricos:', error);
-      throw error;
+      console.error('Erro ao obter dados históricos:', error)
+      throw error
     }
   }
 
@@ -254,7 +254,7 @@ class CryptoService {
     try {
       const response = await axios.get(
         `${COINGECKO_API_URL}/coins/${coinId}?localization=false&tickers=false&market_data=true&community_data=true&developer_data=false&sparkline=false`
-      );
+      )
 
       return {
         success: true,
@@ -276,19 +276,17 @@ class CryptoService {
           totalSupply: response.data.market_data.total_supply,
           maxSupply: response.data.market_data.max_supply
         }
-      };
+      }
     } catch (error) {
-      console.error('Erro ao obter informações da cripto:', error);
-      throw error;
+      console.error('Erro ao obter informações da cripto:', error)
+      throw error
     }
   }
 
   // Obter dados do mercado via Binance
   async getBinanceMarketData(symbol = 'BTCUSDT') {
     try {
-      const response = await axios.get(
-        `${BINANCE_API_URL}/ticker/24hr?symbol=${symbol}`
-      );
+      const response = await axios.get(`${BINANCE_API_URL}/ticker/24hr?symbol=${symbol}`)
 
       return {
         success: true,
@@ -311,19 +309,17 @@ class CryptoService {
           closeTime: response.data.closeTime,
           count: response.data.count
         }
-      };
+      }
     } catch (error) {
-      console.error('Erro ao obter dados Binance:', error);
-      throw error;
+      console.error('Erro ao obter dados Binance:', error)
+      throw error
     }
   }
 
   // Obter ordem book da Binance
   async getBinanceOrderBook(symbol = 'BTCUSDT', limit = 20) {
     try {
-      const response = await axios.get(
-        `${BINANCE_API_URL}/depth?symbol=${symbol}&limit=${limit}`
-      );
+      const response = await axios.get(`${BINANCE_API_URL}/depth?symbol=${symbol}&limit=${limit}`)
 
       return {
         success: true,
@@ -338,10 +334,10 @@ class CryptoService {
           })),
           lastUpdateId: response.data.lastUpdateId
         }
-      };
+      }
     } catch (error) {
-      console.error('Erro ao obter order book:', error);
-      throw error;
+      console.error('Erro ao obter order book:', error)
+      throw error
     }
   }
 
@@ -359,17 +355,17 @@ class CryptoService {
         status: 'PENDING',
         timestamp: Date.now(),
         network: this.currentNetwork?.name || 'Unknown'
-      };
+      }
 
-      console.log('🔄 Simulando compra:', transaction);
-    
-    return {
+      console.log('🔄 Simulando compra:', transaction)
+
+      return {
         success: true,
         transaction
-      };
+      }
     } catch (error) {
-      console.error('Erro ao simular compra:', error);
-      throw error;
+      console.error('Erro ao simular compra:', error)
+      throw error
     }
   }
 
@@ -386,17 +382,17 @@ class CryptoService {
         status: 'PENDING',
         timestamp: Date.now(),
         network: this.currentNetwork?.name || 'Unknown'
-      };
+      }
 
-      console.log('🔄 Simulando venda:', transaction);
+      console.log('🔄 Simulando venda:', transaction)
 
       return {
         success: true,
         transaction
-      };
+      }
     } catch (error) {
-      console.error('Erro ao simular venda:', error);
-      throw error;
+      console.error('Erro ao simular venda:', error)
+      throw error
     }
   }
 
@@ -413,17 +409,17 @@ class CryptoService {
         status: 'PENDING',
         timestamp: Date.now(),
         network: this.currentNetwork?.name || 'Unknown'
-      };
+      }
 
-      console.log('🔒 Simulando staking:', transaction);
+      console.log('🔒 Simulando staking:', transaction)
 
       return {
         success: true,
         transaction
-      };
+      }
     } catch (error) {
-      console.error('Erro ao simular staking:', error);
-      throw error;
+      console.error('Erro ao simular staking:', error)
+      throw error
     }
   }
 
@@ -469,21 +465,22 @@ class CryptoService {
             allocation: 15
           }
         ]
-      };
+      }
 
       // Calcular totais
-      portfolio.totalValue = portfolio.assets.reduce((sum, asset) => sum + asset.value, 0);
-      portfolio.totalChange24h = portfolio.assets.reduce((sum, asset) => 
-        sum + (asset.value * asset.change24h / 100), 0
-      );
+      portfolio.totalValue = portfolio.assets.reduce((sum, asset) => sum + asset.value, 0)
+      portfolio.totalChange24h = portfolio.assets.reduce(
+        (sum, asset) => sum + (asset.value * asset.change24h) / 100,
+        0
+      )
 
       return {
         success: true,
         portfolio
-      };
+      }
     } catch (error) {
-      console.error('Erro ao obter portfólio:', error);
-      throw error;
+      console.error('Erro ao obter portfólio:', error)
+      throw error
     }
   }
 
@@ -527,48 +524,48 @@ class CryptoService {
           timestamp: Date.now() - 259200000, // 3 dias atrás
           network: 'Cardano'
         }
-      ];
+      ]
 
-    return {
+      return {
         success: true,
         transactions
-      };
+      }
     } catch (error) {
-      console.error('Erro ao obter histórico:', error);
-      throw error;
+      console.error('Erro ao obter histórico:', error)
+      throw error
     }
   }
 
   // Iniciar atualizações de preço em tempo real
   startPriceUpdates(intervalMs = 30000) {
     if (this.priceUpdateInterval) {
-      clearInterval(this.priceUpdateInterval);
+      clearInterval(this.priceUpdateInterval)
     }
 
     this.priceUpdateInterval = setInterval(async () => {
       try {
-        await this.getCryptoPrices();
+        await this.getCryptoPrices()
       } catch (error) {
-        console.error('Erro na atualização de preços:', error);
+        console.error('Erro na atualização de preços:', error)
       }
-    }, intervalMs);
+    }, intervalMs)
 
-    console.log('📊 Atualizações de preço iniciadas:', intervalMs + 'ms');
+    console.log('📊 Atualizações de preço iniciadas:', intervalMs + 'ms')
   }
 
   // Parar atualizações de preço
   stopPriceUpdates() {
     if (this.priceUpdateInterval) {
-      clearInterval(this.priceUpdateInterval);
-      this.priceUpdateInterval = null;
-      console.log('📊 Atualizações de preço paradas');
+      clearInterval(this.priceUpdateInterval)
+      this.priceUpdateInterval = null
+      console.log('📊 Atualizações de preço paradas')
     }
   }
 
   // Sistema de notificações para mudanças de preço
   subscribe(callback) {
-    this.subscribers.add(callback);
-    return () => this.subscribers.delete(callback);
+    this.subscribers.add(callback)
+    return () => this.subscribers.delete(callback)
   }
 
   notifySubscribers() {
@@ -579,24 +576,24 @@ class CryptoService {
           currentAccount: this.currentAccount,
           currentNetwork: this.currentNetwork,
           prices: Object.fromEntries(this.prices)
-        });
+        })
       } catch (error) {
-        console.error('Erro ao notificar subscriber:', error);
+        console.error('Erro ao notificar subscriber:', error)
       }
-    });
+    })
   }
 
   // Limpar dados de desenvolvimento
   clearDevelopmentData() {
-    this.prices.clear();
-    this.subscribers.clear();
-    this.stopPriceUpdates();
-    console.log('Dados de desenvolvimento limpos');
+    this.prices.clear()
+    this.subscribers.clear()
+    this.stopPriceUpdates()
+    console.log('Dados de desenvolvimento limpos')
   }
 
   // Verificar se Metamask está disponível
   isMetamaskAvailable() {
-    return typeof window.ethereum !== 'undefined';
+    return typeof window.ethereum !== 'undefined'
   }
 
   // Obter status da conexão
@@ -606,7 +603,7 @@ class CryptoService {
       currentAccount: this.currentAccount,
       currentNetwork: this.currentNetwork,
       metamaskAvailable: this.isMetamaskAvailable()
-    };
+    }
   }
 
   // Obter top criptomoedas
@@ -664,12 +661,12 @@ class CryptoService {
           volume: '3.2B',
           dominance: '2.4%'
         }
-      ];
+      ]
 
-      return topCryptos;
+      return topCryptos
     } catch (error) {
-      console.error('Erro ao obter top criptomoedas:', error);
-      throw error;
+      console.error('Erro ao obter top criptomoedas:', error)
+      throw error
     }
   }
 
@@ -677,35 +674,36 @@ class CryptoService {
   async getChartData(cryptoId, timeframe = '24h') {
     try {
       // Simular dados de gráfico baseados no timeframe
-      const dataPoints = timeframe === '24h' ? 24 : timeframe === '7d' ? 168 : 30;
-      const chartData = [];
-      
+      const dataPoints = timeframe === '24h' ? 24 : timeframe === '7d' ? 168 : 30
+      const chartData = []
+
       let basePrice = 45000; // Preço base do Bitcoin
-      if (cryptoId === 'ethereum') basePrice = 2800;
-      else if (cryptoId === 'binancecoin') basePrice = 320;
-      else if (cryptoId === 'cardano') basePrice = 0.45;
-      else if (cryptoId === 'solana') basePrice = 95;
+      if (cryptoId === 'ethereum') basePrice = 2800
+      else if (cryptoId === 'binancecoin') basePrice = 320
+      else if (cryptoId === 'cardano') basePrice = 0.45
+      else if (cryptoId === 'solana') basePrice = 95
 
       for (let i = 0; i < dataPoints; i++) {
-        const timestamp = Date.now() - (dataPoints - i) * (timeframe === '24h' ? 3600000 : timeframe === '7d' ? 3600000 : 86400000);
+        const timestamp =
+          Date.now() - (dataPoints - i) * (timeframe === '24h' ? 3600000 : timeframe === '7d' ? 3600000 : 86400000)
         const volatility = 0.02; // 2% de volatilidade
-        const change = (Math.random() - 0.5) * volatility;
-        basePrice = basePrice * (1 + change);
-        
+        const change = (Math.random() - 0.5) * volatility
+        basePrice = basePrice * (1 + change)
+
         chartData.push({
           timestamp,
           price: basePrice,
           volume: Math.random() * 1000000 + 500000
-        });
+        })
       }
 
-      return chartData;
+      return chartData
     } catch (error) {
-      console.error('Erro ao obter dados do gráfico:', error);
-      throw error;
+      console.error('Erro ao obter dados do gráfico:', error)
+      throw error
     }
   }
 }
 
-const cryptoService = new CryptoService();
-export default cryptoService;
+const cryptoService = new CryptoService()
+export default cryptoService

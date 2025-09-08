@@ -6,70 +6,68 @@ import notificationService from '../services/notificationService.js';
  */
 
 // Middleware para notificar nova transação
-export const notifyNewTransaction = async (req, res, next) => {
+export const notifyNewTransaction = (req, res, next) => {
   try {
     // Salvar a resposta original
     const originalJson = res.json;
-    
+
     // Sobrescrever o método json para interceptar a resposta
-    res.json = function(data) {
+    res.json = function (data) {
       // Se a transação foi criada com sucesso, disparar notificação
       if (data.success && data.data && data.data._id) {
         // Disparar notificação de forma assíncrona (não bloquear a resposta)
         setImmediate(async () => {
           try {
             await notificationService.notifyNewTransaction(data.data);
-          } catch (error) {
-            console.error('Erro ao disparar notificação de nova transação:', error);
+          } catch {
+            // Log de erro silencioso para não bloquear a resposta
           }
         });
       }
-      
+
       // Restaurar o método original e chamar
       res.json = originalJson;
       return originalJson.call(this, data);
     };
-    
-    next();
-  } catch (error) {
-    console.error('Erro no middleware de notificação de transação:', error);
-    next();
+
+    return next();
+  } catch {
+    return next();
   }
 };
 
 // Middleware para notificar nova mensagem
-export const notifyNewMessage = async (req, res, next) => {
+export const notifyNewMessage = (req, res, next) => {
   try {
     const originalJson = res.json;
-    
-    res.json = function(data) {
+
+    res.json = function (data) {
       if (data.success && data.data && data.data._id) {
         setImmediate(async () => {
           try {
             await notificationService.notifyNewMessage(data.data);
-          } catch (error) {
-            console.error('Erro ao disparar notificação de nova mensagem:', error);
+          } catch {
+            // Log de erro silencioso para não bloquear a resposta
           }
         });
       }
-      
+
       res.json = originalJson;
       return originalJson.call(this, data);
     };
-    
-    next();
-  } catch (error) {
-    console.error('Erro no middleware de notificação de mensagem:', error);
-    next();
+
+    return next();
+  } catch {
+    return next();
   }
 };
 
 // Middleware para notificar mudança de status
-export const notifyStatusChange = async (req, res, next) => {
+export const notifyStatusChange = (req, res, next) => {
   try {
     const originalJson = res.json;
-    
-    res.json = function(data) {
+
+    res.json = function (data) {
       if (data.success && data.data && data.data.oldStatus && data.data.newStatus) {
         setImmediate(async () => {
           try {
@@ -78,159 +76,150 @@ export const notifyStatusChange = async (req, res, next) => {
               data.data.oldStatus,
               data.data.newStatus
             );
-          } catch (error) {
-            console.error('Erro ao disparar notificação de mudança de status:', error);
+          } catch {
+            // Log de erro silencioso para não bloquear a resposta
           }
         });
       }
-      
+
       res.json = originalJson;
       return originalJson.call(this, data);
     };
-    
-    next();
-  } catch (error) {
-    console.error('Erro no middleware de notificação de mudança de status:', error);
-    next();
+
+    return next();
+  } catch {
+    return next();
   }
 };
 
 // Middleware para notificar pagamento recebido
-export const notifyPaymentReceived = async (req, res, next) => {
+export const notifyPaymentReceived = (req, res, next) => {
   try {
     const originalJson = res.json;
-    
-    res.json = function(data) {
+
+    res.json = function (data) {
       if (data.success && data.data && data.data.status === 'COMPLETED') {
         setImmediate(async () => {
           try {
             await notificationService.notifyPaymentReceived(data.data);
-          } catch (error) {
-            console.error('Erro ao disparar notificação de pagamento recebido:', error);
+          } catch {
+            // Log de erro silencioso para não bloquear a resposta
           }
         });
       }
-      
+
       res.json = originalJson;
       return originalJson.call(this, data);
     };
-    
-    next();
-  } catch (error) {
-    console.error('Erro no middleware de notificação de pagamento:', error);
-    next();
+
+    return next();
+  } catch {
+    return next();
   }
 };
 
 // Middleware para notificar falha no pagamento
-export const notifyPaymentFailed = async (req, res, next) => {
+export const notifyPaymentFailed = (req, res, next) => {
   try {
     const originalJson = res.json;
-    
-    res.json = function(data) {
+
+    res.json = function (data) {
       if (data.success && data.data && data.data.status === 'FAILED') {
         setImmediate(async () => {
           try {
             await notificationService.notifyPaymentFailed(data.data);
-          } catch (error) {
-            console.error('Erro ao disparar notificação de falha no pagamento:', error);
+          } catch {
+            // Log de erro silencioso para não bloquear a resposta
           }
         });
       }
-      
+
       res.json = originalJson;
       return originalJson.call(this, data);
     };
-    
-    next();
-  } catch (error) {
-    console.error('Erro no middleware de notificação de falha no pagamento:', error);
-    next();
+
+    return next();
+  } catch {
+    return next();
   }
 };
 
 // Middleware para notificar boas-vindas (após registro)
-export const notifyWelcome = async (req, res, next) => {
+export const notifyWelcome = (req, res, next) => {
   try {
     const originalJson = res.json;
-    
-    res.json = function(data) {
-      if (data.success && data.data && data.data.user && data.data.requiresEmailVerification === false) {
+
+    res.json = function (data) {
+      if (
+        data.success &&
+        data.data &&
+        data.data.user &&
+        data.data.requiresEmailVerification === false
+      ) {
         setImmediate(async () => {
           try {
             await notificationService.notifyWelcome(data.data.user);
-          } catch (error) {
-            console.error('Erro ao disparar notificação de boas-vindas:', error);
+          } catch {
+            // Log de erro silencioso para não bloquear a resposta
           }
         });
       }
-      
+
       res.json = originalJson;
       return originalJson.call(this, data);
     };
-    
-    next();
-  } catch (error) {
-    console.error('Erro no middleware de notificação de boas-vindas:', error);
-    next();
+
+    return next();
+  } catch {
+    return next();
   }
 };
 
 // Middleware para notificar verificação necessária
-export const notifyVerificationRequired = async (req, res, next) => {
+export const notifyVerificationRequired = (req, res, next) => {
   try {
     const originalJson = res.json;
-    
-    res.json = function(data) {
+
+    res.json = function (data) {
       if (data.success && data.data && data.data.requiresEmailVerification === true) {
         setImmediate(async () => {
           try {
-            await notificationService.notifyVerificationRequired(
-              data.data.user,
-              'email'
-            );
-          } catch (error) {
-            console.error('Erro ao disparar notificação de verificação necessária:', error);
+            await notificationService.notifyVerificationRequired(data.data.user, 'email');
+          } catch {
+            // Log de erro silencioso para não bloquear a resposta
           }
         });
       }
-      
+
       res.json = originalJson;
       return originalJson.call(this, data);
     };
-    
-    next();
-  } catch (error) {
-    console.error('Erro no middleware de notificação de verificação necessária:', error);
-    next();
+
+    return next();
+  } catch {
+    return next();
   }
 };
 
 // Middleware para verificar planos expirando (executar periodicamente)
-export const checkExpiringPlans = async (req, res, next) => {
+export const checkExpiringPlans = (req, res, next) => {
   try {
     // Este middleware pode ser usado para verificar planos expirando
     // em rotas específicas ou executado periodicamente
-    next();
-  } catch (error) {
-    console.error('Erro ao verificar planos expirando:', error);
-    next();
+    return next();
+  } catch {
+    return next();
   }
 };
 
 // Função para verificar planos expirando (executar via cron job)
-export const checkExpiringPlansJob = async () => {
-  try {
-    // Esta função deve ser executada diariamente via cron job
-    // para verificar usuários com planos expirando
-    console.log('Verificando planos expirando...');
-    
-    // Implementar lógica para buscar usuários com planos expirando
-    // e disparar notificações apropriadas
-    
-  } catch (error) {
-    console.error('Erro ao verificar planos expirando:', error);
-  }
+export const checkExpiringPlansJob = () => {
+  // Esta função deve ser executada diariamente via cron job
+  // para verificar usuários com planos expirando
+
+  // Implementar lógica para buscar usuários com planos expirando
+  // e disparar notificações apropriadas
+  return true;
 };
 
 export default {

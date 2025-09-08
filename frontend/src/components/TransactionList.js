@@ -1,257 +1,272 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import { 
-  MessageSquare, Eye, Clock, CheckCircle, XCircle, 
-  AlertTriangle, Calendar, DollarSign, Package, Truck 
-} from 'lucide-react';
-import { TRANSACTION_STATUS, TRANSACTION_TYPES } from '../services/transactionService';
-import EscrowBadge from './EscrowBadge';
+  Clock, 
+  MessageSquare, 
+  CheckCircle, 
+  XCircle, 
+  AlertCircle, 
+  DollarSign, 
+  Package, 
+  Truck, 
+  User,
+  Calendar,
+  MapPin,
+  Eye,
+  MoreVertical
+} from 'lucide-react'
 
-const TransactionList = ({ transactions, title, emptyMessage, onViewTransaction, onSendMessage }) => {
-  const [expandedTransaction, setExpandedTransaction] = useState(null);
+const TransactionList = ({ userId, onTransactionSelect }) => {
+  const [transactions, setTransactions] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [filter, setFilter] = useState('all')
+  const [sortBy, setSortBy] = useState('date')
 
-  const toggleExpanded = (transactionId) => {
-    setExpandedTransaction(expandedTransaction === transactionId ? null : transactionId);
-  };
+  useEffect(() => {
+    fetchTransactions()
+  }, [userId])
+
+  const fetchTransactions = async () => {
+    setLoading(true)
+    try {
+      const response = await fetch(`/api/transactions?userId=${userId}`)
+      const data = await response.json()
+
+      if (data.success) {
+        setTransactions(data.transactions)
+      }
+    } catch (error) {
+      console.error('Error fetching transactions:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const getStatusIcon = (status) => {
     switch (status) {
       case 'PENDING':
-        return <// Clock className="w-4 h-4" />;
+        return <Clock className="w-4 h-4" />
       case 'NEGOTIATING':
-        return <MessageSquare className="w-4 h-4" />;
+        return <MessageSquare className="w-4 h-4" />
       case 'AGREED':
-        return <// CheckCircle className="w-4 h-4" />;
-      case 'CANCELLED':
-        return <XCircle className="w-4 h-4" />;
+        return <CheckCircle className="w-4 h-4" />
       case 'COMPLETED':
-        return <// CheckCircle className="w-4 h-4" />;
+        return <CheckCircle className="w-4 h-4" />
+      case 'CANCELLED':
+        return <XCircle className="w-4 h-4" />
+      case 'DISPUTED':
+        return <AlertCircle className="w-4 h-4" />
       default:
-        return <// Clock className="w-4 h-4" />;
+        return <Clock className="w-4 h-4" />
     }
-  };
+  }
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('pt-BR', {
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'PENDING':
+        return 'text-yellow-600 dark:text-yellow-400'
+      case 'NEGOTIATING':
+        return 'text-blue-600 dark:text-blue-400'
+      case 'AGREED':
+        return 'text-green-600 dark:text-green-400'
+      case 'COMPLETED':
+        return 'text-green-600 dark:text-green-400'
+      case 'CANCELLED':
+        return 'text-red-600 dark:text-red-400'
+      case 'DISPUTED':
+        return 'text-orange-600 dark:text-orange-400'
+      default:
+        return 'text-gray-600 dark:text-gray-400'
+    }
+  }
+
+  const getStatusText = (status) => {
+    switch (status) {
+      case 'PENDING':
+        return 'Pendente'
+      case 'NEGOTIATING':
+        return 'Negociando'
+      case 'AGREED':
+        return 'Acordado'
+      case 'COMPLETED':
+        return 'Concluído'
+      case 'CANCELLED':
+        return 'Cancelado'
+      case 'DISPUTED':
+        return 'Em Disputa'
+      default:
+        return status
+    }
+  }
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(price)
+  }
+
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
-    });
-  };
+    })
+  }
 
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(value);
-  };
+  const filteredTransactions = transactions.filter(transaction => {
+    if (filter === 'all') return true
+    return transaction.status === filter
+  })
 
-  if (// transactions.length === 0) {
+  const sortedTransactions = [...filteredTransactions].sort((a, b) => {
+    switch (sortBy) {
+      case 'date':
+        return new Date(b.createdAt) - new Date(a.createdAt)
+      case 'price':
+        return b.totalPrice - a.totalPrice
+      case 'status':
+        return a.status.localeCompare(b.status)
+      default:
+        return 0
+    }
+  })
+
+  if (loading) {
     return (
-      <div className="text-center py-12">
-        <// Package className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-        <h3 className="text-lg font-medium text-slate-600 mb-2">
-          {emptyMessage || 'Nenhuma transação encontrada'}
-        </h3>
-        <p className="text-slate-500">
-          Suas transações aparecerão aqui quando você começar a negociar
-        </p>
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-agro-emerald"></div>
       </div>
-    );
+    )
   }
 
   return (
-    <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-slate-800">{title}</h3>
-      
-      {// transactions.map((transaction) => (
-        <// motion.div
-          key={transaction.id}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="card-premium overflow-hidden"
-        >
-          {/* Header da transação */}
-          <div className="p-4 border-b border-slate-200">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  TRANSACTION_STATUS[transaction.status]?.color || 'bg-slate-100 text-slate-800'
-                }`}>
-                  {getStatusIcon(transaction.status)}
-                </div>
-                <div>
-                  <h4 className="font-medium text-slate-800">
-                    {TRANSACTION_TYPES[transaction.type] || 'Transação'}
-                  </h4>
-                  <p className="text-sm text-slate-500">
-                    ID: {transaction.id}
-                  </p>
-                </div>
-              </div>
-              
-              <div className="text-right">
-                <p className="text-lg font-bold text-emerald-600">
-                  {formatCurrency(transaction.total)}
-                </p>
-                <p className="text-sm text-slate-500">
-                  {formatDate(transaction.createdAt)}
-                </p>
-              </div>
-            </div>
-          </div>
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+          Transações
+        </h2>
+        
+        <div className="flex items-center space-x-4">
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          >
+            <option value="all">Todas</option>
+            <option value="PENDING">Pendentes</option>
+            <option value="NEGOTIATING">Negociando</option>
+            <option value="AGREED">Acordadas</option>
+            <option value="COMPLETED">Concluídas</option>
+            <option value="CANCELLED">Canceladas</option>
+            <option value="DISPUTED">Em Disputa</option>
+          </select>
+          
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          >
+            <option value="date">Data</option>
+            <option value="price">Preço</option>
+            <option value="status">Status</option>
+          </select>
+        </div>
+      </div>
 
-          {/* Status e informações */}
-          <div className="p-4 bg-slate-50">
-            <div className="flex items-center justify-between mb-3">
-              <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                TRANSACTION_STATUS[transaction.status]?.color || 'bg-slate-100 text-slate-800'
-              }`}>
-                {TRANSACTION_STATUS[transaction.status]?.name || transaction.status}
-              </span>
-              
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() => toggleExpanded(transaction.id)}
-                  className="p-2 text-slate-600 hover:text-slate-800 hover:bg-slate-200 rounded-lg transition-colors"
-                >
-                  <// Eye className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => onSendMessage && onSendMessage(transaction)}
-                  className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-100 rounded-lg transition-colors"
-                >
-                  <MessageSquare className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-            
-            <p className="text-sm text-slate-600">
-              {TRANSACTION_STATUS[transaction.status]?.description || 'Status da transação'}
-            </p>
-          </div>
-
-          {/* Detalhes expandidos */}
-          {expandedTransaction === transaction.id && (
-            <// motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="border-// t border-slate-200"
+      {sortedTransactions.length === 0 ? (
+        <div className="text-center py-8">
+          <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <p className="text-gray-600 dark:text-gray-400">
+            Nenhuma transação encontrada
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {sortedTransactions.map((transaction) => (
+            <motion.div
+              key={transaction.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
-              <div className="p-4 space-y-4">
-                                 {/* Informações das partes */}
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                   {transaction.buyerId && (
-                     <div className="p-3 bg-blue-50 rounded-lg">
-                       <h5 className="font-medium text-blue-800 mb-2">Comprador</h5>
-                       <p className="text-sm text-blue-700">ID: {transaction.buyerId}</p>
-                       <p className="text-xs text-blue-600">Usuário do sistema</p>
-                     </div>
-                   )}
-                   
-                   {transaction.sellerId && (
-                     <div className="p-3 bg-green-50 rounded-lg">
-                       <h5 className="font-medium text-green-800 mb-2">Vendedor</h5>
-                       <p className="text-sm text-green-700">ID: {transaction.sellerId}</p>
-                       <p className="text-xs text-green-600">Usuário do sistema</p>
-                     </div>
-                   )}
-                 </div>
-
-                {/* Itens da transação */}
-                {transaction.items && transaction.items.length > 0 && (
-                  <div>
-                    <h5 className="font-medium text-slate-800 mb-2">Itens</h5>
-                    <div className="space-y-2">
-                      {transaction.items.map((item, index) => (
-                        <div key={index} className="flex items-center justify-between p-2 bg-slate-50 rounded">
-                          <div className="flex items-center space-x-3">
-                            <// Package className="w-4 h-4 text-slate-500" />
-                            <span className="text-sm font-medium">{item.name}</span>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-sm font-medium">{item.quantity} {item.unit}</p>
-                            <p className="text-xs text-slate-500">{formatCurrency(item.price)}</p>
-                          </div>
-                        </div>
-                      ))}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2">
+                    {getStatusIcon(transaction.status)}
+                    <div>
+                      <h3 className="font-semibold text-gray-900 dark:text-white">
+                        #{transaction.id}
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {transaction.product?.name || 'Produto'}
+                      </p>
                     </div>
                   </div>
-                )}
+                </div>
 
-                {/* Informações de frete */}
-                {transaction.shipping && (
-                  <div className="p-3 bg-blue-50 rounded-lg">
-                    <h5 className="font-medium text-blue-800 mb-2 flex items-center space-x-2">
-                      <// Truck className="w-4 h-4" />
-                      <span>Informações de Frete</span>
-                    </h5>
-                    <p className="text-sm text-blue-700">
-                      Destino: {transaction.shipping.destination}
+                <div className="flex items-center space-x-6">
+                  <div className="text-right">
+                    <p className="font-semibold text-gray-900 dark:text-white">
+                      {formatPrice(transaction.totalPrice)}
                     </p>
-                    {transaction.shipping.cost && (
-                      <p className="text-sm text-blue-700">
-                        Custo: {formatCurrency(transaction.shipping.cost)}
-                      </p>
+                    <p className={`text-sm ${getStatusColor(transaction.status)}`}>
+                      {getStatusText(transaction.status)}
+                    </p>
+                  </div>
+                  
+                  <div className="text-right">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {formatDate(transaction.createdAt)}
+                    </p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {transaction.quantity} unidades
+                    </p>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => onTransactionSelect?.(transaction)}
+                      className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </button>
+                    <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                      <MoreVertical className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {transaction.seller && (
+                <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <User className="w-4 h-4 text-gray-400" />
+                      <span className="text-sm text-gray-600 dark:text-gray-400">
+                        Vendedor: {transaction.seller.name}
+                      </span>
+                    </div>
+                    
+                    {transaction.shipping && (
+                      <div className="flex items-center space-x-2">
+                        <Truck className="w-4 h-4 text-gray-400" />
+                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                          {transaction.shipping}
+                        </span>
+                      </div>
                     )}
                   </div>
-                )}
-
-                {/* Histórico da transação */}
-                {transaction.history && transaction.history.length > 0 && (
-                  <div>
-                    <h5 className="font-medium text-slate-800 mb-2">Histórico</h5>
-                    <div className="space-y-2">
-                      {transaction.history.map((event, index) => (
-                        <div key={index} className="flex items-center space-x-3 p-2 bg-slate-50 rounded">
-                          <// Calendar className="w-4 h-4 text-slate-500" />
-                          <div className="flex-1">
-                            <p className="text-sm font-medium">{event.description}</p>
-                            <p className="text-xs text-slate-500">
-                              {formatDate(event.timestamp)}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Badge de Escrow */}
-                <div className="pt-4 border-// t border-slate-200">
-                  <div className="flex items-center justify-center">
-                    <EscrowBadge showInfo={true} size="small" />
-                  </div>
                 </div>
-
-                {/* Ações */}
-                <div className="flex space-x-3 pt-4 border-// t border-slate-200">
-                  <button
-                    onClick={() => onViewTransaction && onViewTransaction(transaction)}
-                    className="flex-1 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors flex items-center justify-center space-x-2"
-                  >
-                    <// Eye className="w-4 h-4" />
-                    <span>Ver Detalhes</span>
-                  </button>
-                  
-                  <button
-                    onClick={() => onSendMessage && onSendMessage(transaction)}
-                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2"
-                  >
-                    <MessageSquare className="w-4 h-4" />
-                    <span>Enviar Mensagem</span>
-                  </button>
-                </div>
-              </div>
-            </// motion.div>
-          )}
-        </// motion.div>
-      ))}
+              )}
+            </motion.div>
+          ))}
+        </div>
+      )}
     </div>
-  );
-};
+  )
+}
 
-export default TransactionList;
+export default TransactionList

@@ -1,366 +1,339 @@
-import React, { useState, // useEffect, useCallback } from 'react';
-import { motion } from 'framer-';
-import { Wallet, Link, Unlink, XCircle } from 'lucide-react';
-import cryptoService from '../services/cryptoService';
+import React, { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
+import { 
+  Wallet, 
+  Link, 
+  Copy, 
+  ExternalLink, 
+  RefreshCw, 
+  AlertCircle, 
+  CheckCircle, 
+  Eye, 
+  EyeOff,
+  Download,
+  Upload,
+  Settings,
+  Shield,
+  TrendingUp,
+  DollarSign,
+  Coins
+} from 'lucide-react'
 
-const Web3Wallet = () => {
-  const [connectionStatus, setConnectionStatus] = useState({});
-  const [walletBalance, setWalletBalance] = useState(null);
-  const [// loading, // setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+const Web3Wallet = ({ userId }) => {
+  const [wallet, setWallet] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [showPrivateKey, setShowPrivateKey] = useState(false)
+  const [activeTab, setActiveTab] = useState('overview')
 
-  // useEffect(() => {
-    // Verificar status inicial
-    updateConnectionStatus();
-    
-    // Inscrever para atualizações
-    const unsubscribe = cryptoService.subscribe(// handleStatusUpdate);
-    
-    return () => unsubscribe();
-  }, [// handleStatusUpdate]);
+  useEffect(() => {
+    loadWalletData()
+  }, [userId])
 
-  const updateConnectionStatus = () => {
-    const status = cryptoService.getConnectionStatus();
-    setConnectionStatus(status);
-  };
-
-  const // handleStatusUpdate = useCallback((status) => {
-    setConnectionStatus(status);
-    if (status.isConnected) {
-      loadWalletBalance();
-    } else {
-      setWalletBalance(null);
-    }
-  }, []);
-
-  const handleConnectWallet = async () => {
-    // setLoading(true);
-    setError('');
-    setSuccess('');
-
+  const loadWalletData = async () => {
     try {
-      const result = await cryptoService.connectWallet();
-      if (result.success) {
-        setSuccess('Carteira conectada com sucesso!');
-        await loadWalletBalance();
+      setLoading(true)
+      setError(null)
+      
+      const response = await fetch(`/api/wallet/${userId}`)
+      const data = await response.json()
+
+      if (data.success) {
+        setWallet(data.wallet)
+      } else {
+        setError(data.message)
       }
-    } catch (error) {
-      setError(error.message);
+    } catch (err) {
+      setError('Erro ao carregar dados da carteira')
     } finally {
-      // setLoading(false);
+      setLoading(false)
     }
-  };
-
-  const handleDisconnectWallet = () => {
-    cryptoService.disconnectWallet();
-    setSuccess('Carteira desconectada');
-    setWalletBalance(null);
-  };
-
-  const loadWalletBalance = async () => {
-    if (!connectionStatus.isConnected) return;
-
-    try {
-      const balance = await cryptoService.getWalletBalance();
-      if (balance.success) {
-        setWalletBalance(balance);
-      }
-    } catch (error) {
-      console.error('Erro ao carregar saldo:', error);
-    }
-  };
+  }
 
   const copyToClipboard = (text) => {
-    navigator.clipboard.writeText(text);
-    setSuccess('Copiado para a área de transferência!');
-    setTimeout(() => setSuccess(''), 2000);
-  };
-
-  const openExplorer = (address) => {
-    const network = connectionStatus.currentNetwork;
-    if (network && network.explorer) {
-      window.open(`${network.explorer}/address/${address}`, '_blank');
-    }
-  };
-
-  const getNetworkIcon = (networkName) => {
-    switch (networkName) {
-      case 'Ethereum':
-        return '🔵';
-      case 'Binance Smart Chain':
-        return '🟡';
-      case 'Polygon':
-        return '🟣';
-      default:
-        return '⚫';
-    }
-  };
-
-  const getNetworkColor = (networkName) => {
-    switch (networkName) {
-      case 'Ethereum':
-        return 'text-blue-600';
-      case 'Binance Smart Chain':
-        return 'text-yellow-600';
-      case 'Polygon':
-        return 'text-purple-600';
-      default:
-        return 'text-gray-600';
-    }
-  };
+    navigator.clipboard.writeText(text)
+    // Aqui você pode adicionar uma notificação de sucesso
+  }
 
   const formatAddress = (address) => {
-    if (!address) return '';
-    return `${address.slice(0, 6)}...${address.slice(-4)}`;
-  };
+    if (!address) return ''
+    return `${address.slice(0, 6)}...${address.slice(-4)}`
+  }
 
-  const formatBalance = (balance, symbol) => {
-    if (balance === null || balance === undefined) return '0.00';
-    return `${parseFloat(balance).toFixed(4)} ${symbol}`;
-  };
+  const formatBalance = (balance) => {
+    return new Intl.NumberFormat('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 6
+    }).format(balance)
+  }
 
-  const renderNotConnected = () => (
-    <// motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="text-center space-y-6"
-    >
-      <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto">
-        <Wallet className="w-12 h-12 text-gray-400" />
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-agro-emerald"></div>
       </div>
-      
-      <div>
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">
-          Conecte sua Carteira Web3
-        </h3>
-        <p className="text-gray-600">
-          Conecte sua carteira Metamask para acessar funcionalidades DeFi e cripto
-        </p>
-      </div>
+    )
+  }
 
-      {!connectionStatus.metamaskAvailable && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <div className="flex items-center space-x-2">
-            <// AlertTriangle className="w-5 h-5 text-yellow-600" />
-            <span className="text-yellow-800 font-medium">
-              Metamask não encontrado
-            </span>
-          </div>
-          <p className="text-yellow-700 text-sm mt-1">
-            Instale a extensão Metamask para continuar
-          </p>
-          <a
-            href="https://metamask.io/download/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center space-x-1 text-yellow-800 hover:text-yellow-900 text-sm mt-2"
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
+        <p className="text-red-600 dark:text-red-400">{error}</p>
+      </div>
+    )
+  }
+
+  if (!wallet) {
+    return (
+      <div className="text-center py-8">
+        <Wallet className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+        <p className="text-gray-600 dark:text-gray-400">Carteira não encontrada</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
+          <Wallet className="w-5 h-5 mr-2 text-agro-emerald" />
+          Carteira Web3
+        </h2>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={loadWalletData}
+            className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
           >
-            <span>Baixar Metamask</span>
-            <// ExternalLink className="w-4 h-4" />
-          </a>
+            <RefreshCw className="w-4 h-4" />
+          </button>
+          <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+            <Settings className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
+      {/* Status da carteira */}
+      <div className="flex items-center justify-between mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+        <div className="flex items-center space-x-3">
+          <div className={`w-3 h-3 rounded-full ${wallet.connected ? 'bg-green-500' : 'bg-red-500'}`}></div>
+          <span className="text-sm font-medium text-gray-900 dark:text-white">
+            {wallet.connected ? 'Conectada' : 'Desconectada'}
+          </span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <span className="text-sm text-gray-600 dark:text-gray-400">
+            {wallet.network || 'Ethereum'}
+          </span>
+          <Shield className="w-4 h-4 text-gray-400" />
+        </div>
+      </div>
+
+      {/* Endereço da carteira */}
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Endereço da Carteira
+        </label>
+        <div className="flex items-center space-x-2 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <span className="flex-1 text-sm font-mono text-gray-900 dark:text-white">
+            {formatAddress(wallet.address)}
+          </span>
+          <button
+            onClick={() => copyToClipboard(wallet.address)}
+            className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+          >
+            <Copy className="w-4 h-4" />
+          </button>
+          <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+            <ExternalLink className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div className="border-b border-gray-200 dark:border-gray-700 mb-6">
+        <nav className="flex space-x-8">
+          {['overview', 'tokens', 'transactions', 'settings'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                activeTab === tab
+                  ? 'border-agro-emerald text-agro-emerald'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+              }`}
+            >
+              {tab === 'overview' && 'Visão Geral'}
+              {tab === 'tokens' && 'Tokens'}
+              {tab === 'transactions' && 'Transações'}
+              {tab === 'settings' && 'Configurações'}
+            </button>
+          ))}
+        </nav>
+      </div>
+
+      {/* Conteúdo das tabs */}
+      {activeTab === 'overview' && (
+        <div className="space-y-6">
+          {/* Saldo total */}
+          <div className="bg-gradient-to-r from-agro-emerald to-emerald-600 rounded-lg p-6 text-white">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Saldo Total</h3>
+              <TrendingUp className="w-6 h-6" />
+            </div>
+            <p className="text-3xl font-bold">
+              ${formatBalance(wallet.totalBalance || 0)}
+            </p>
+            <p className="text-sm opacity-90 mt-2">
+              +2.5% nas últimas 24h
+            </p>
+          </div>
+
+          {/* Tokens principais */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              Tokens Principais
+            </h3>
+            <div className="space-y-3">
+              {wallet.tokens?.slice(0, 3).map((token) => (
+                <div key={token.symbol} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
+                      <Coins className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900 dark:text-white">
+                        {token.symbol}
+                      </p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {token.name}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold text-gray-900 dark:text-white">
+                      {formatBalance(token.balance)}
+                    </p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      ${formatBalance(token.usdValue)}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
 
-      <button
-        onClick={handleConnectWallet}
-        disabled={// loading || !connectionStatus.metamaskAvailable}
-        className="px-8 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2 mx-auto"
-      >
-        {// loading ? (
-          <// RefreshCw className="w-5 h-5 animate-spin" />
-        ) : (
-          <Link className="w-5 h-5" />
-        )}
-        <span>
-          {// loading ? 'Conectando...' : 'Conectar Carteira'}
-        </span>
-      </button>
-
-      <div className="bg-gray-50 rounded-lg p-4">
-        <h4 className="font-medium text-gray-900 mb-2">Funcionalidades disponíveis:</h4>
-        <ul className="text-sm text-gray-600 space-y-1">
-          <li>• Visualizar saldo da carteira</li>
-          <li>• Operações DeFi (compra, venda, staking)</li>
-          <li>• Integração com múltiplas redes</li>
-          <li>• Histórico de transações</li>
-        </ul>
-      </div>
-    </// motion.div>
-  );
-
-  const renderConnected = () => (
-    <// motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="space-y-6"
-    >
-      {/* Header da Carteira */}
-      <div className="bg-gradient-to-r from-emerald-600 to-blue-600 rounded-lg p-6 text-white">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-              <Wallet className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold">Carteira Conectada</h3>
-              <p className="text-emerald-100 text-sm">
-                {connectionStatus.currentNetwork?.name || 'Rede desconhecida'}
-              </p>
-            </div>
-          </div>
-          
-          <button
-            onClick={handleDisconnectWallet}
-            className="p-2 hover:bg-white hover:bg-opacity-20 rounded-lg transition-colors"
-            title="Desconectar"
-          >
-            <Unlink className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Saldo */}
-        {walletBalance && (
-          <div className="text-center">
-            <p className="text-emerald-100 text-sm mb-1">Saldo disponível</p>
-            <p className="text-2xl font-bold">
-              {formatBalance(walletBalance.balance, walletBalance.symbol)}
-            </p>
-          </div>
-        )}
-      </div>
-
-      {/* Informações da Conta */}
-      <div className="bg-white border border-gray-200 rounded-lg p-6">
-        <h4 className="font-semibold text-gray-900 mb-4">Informações da Conta</h4>
-        
+      {activeTab === 'tokens' && (
         <div className="space-y-4">
-          {/* Endereço */}
-          <div className="flex items-center justify-between">
-            <span className="text-gray-600">Endereço:</span>
-            <div className="flex items-center space-x-2">
-              <code className="bg-gray-100 px-3 py-1 rounded text-sm font-mono">
-                {formatAddress(connectionStatus.currentAccount)}
-              </code>
-              <button
-                onClick={() => copyToClipboard(connectionStatus.currentAccount)}
-                className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
-                title="Copiar endereço"
-              >
-                <// Copy className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => openExplorer(connectionStatus.currentAccount)}
-                className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
-                title="Ver no explorador"
-              >
-                <// ExternalLink className="w-4 h-4" />
-              </button>
+          {wallet.tokens?.map((token) => (
+            <div key={token.symbol} className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+              <div className="flex items-center space-x-4">
+                <div className="w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
+                  <Coins className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900 dark:text-white">
+                    {token.symbol}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {token.name}
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="font-semibold text-gray-900 dark:text-white">
+                  {formatBalance(token.balance)}
+                </p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  ${formatBalance(token.usdValue)}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {activeTab === 'transactions' && (
+        <div className="space-y-4">
+          {wallet.transactions?.map((transaction) => (
+            <div key={transaction.hash} className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+              <div className="flex items-center space-x-4">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                  transaction.type === 'send' ? 'bg-red-100 dark:bg-red-900' : 'bg-green-100 dark:bg-green-900'
+                }`}>
+                  {transaction.type === 'send' ? (
+                    <Upload className="w-5 h-5 text-red-600 dark:text-red-400" />
+                  ) : (
+                    <Download className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  )}
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900 dark:text-white">
+                    {transaction.type === 'send' ? 'Enviado' : 'Recebido'}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {formatAddress(transaction.hash)}
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="font-semibold text-gray-900 dark:text-white">
+                  {formatBalance(transaction.amount)}
+                </p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  {new Date(transaction.timestamp).toLocaleDateString('pt-BR')}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {activeTab === 'settings' && (
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              Configurações de Segurança
+            </h3>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                <div>
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    Chave Privada
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {showPrivateKey ? wallet.privateKey : '••••••••••••••••'}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowPrivateKey(!showPrivateKey)}
+                  className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                >
+                  {showPrivateKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+              
+              <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                <div>
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    Backup da Carteira
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Faça backup da sua carteira
+                  </p>
+                </div>
+                <button className="px-4 py-2 bg-agro-emerald text-white rounded-lg text-sm font-medium hover:bg-emerald-600 transition-colors">
+                  Backup
+                </button>
+              </div>
             </div>
           </div>
-
-          {/* Rede */}
-          <div className="flex items-center justify-between">
-            <span className="text-gray-600">Rede:</span>
-            <div className="flex items-center space-x-2">
-              <span className={`font-medium ${getNetworkColor(connectionStatus.currentNetwork?.name)}`}>
-                {getNetworkIcon(connectionStatus.currentNetwork?.name)}
-                {connectionStatus.currentNetwork?.name}
-              </span>
-            </div>
-          </div>
-
-          {/* Chain ID */}
-          <div className="flex items-center justify-between">
-            <span className="text-gray-600">Chain ID:</span>
-            <span className="font-mono text-sm bg-gray-100 px-2 py-1 rounded">
-              {connectionStatus.currentNetwork?.chainId || 'N/A'}
-            </span>
-          </div>
         </div>
-      </div>
-
-      {/* Ações Rápidas */}
-      <div className="bg-white border border-gray-200 rounded-lg p-6">
-        <h4 className="font-semibold text-gray-900 mb-4">Ações Rápidas</h4>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <button
-            onClick={loadWalletBalance}
-            className="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:border-emerald-300 hover:bg-emerald-50 transition-colors"
-          >
-            <// RefreshCw className="w-5 h-5 text-emerald-600" />
-            <div className="text-left">
-              <div className="font-medium text-gray-900">Atualizar Saldo</div>
-              <div className="text-sm text-gray-500">Sincronizar com a blockchain</div>
-            </div>
-          </button>
-
-          <button
-            onClick={() => window.open('https://metamask.io/', '_blank')}
-            className="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors"
-          >
-            <// Shield className="w-5 h-5 text-blue-600" />
-            <div className="text-left">
-              <div className="font-medium text-gray-900">Gerenciar Carteira</div>
-              <div className="text-sm text-gray-500">Abrir Metamask</div>
-            </div>
-          </button>
-        </div>
-      </div>
-
-      {/* Status de Segurança */}
-      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-        <div className="flex items-center space-x-2">
-          <// CheckCircle className="w-5 h-5 text-green-600" />
-          <span className="font-medium text-green-900">Carteira Segura</span>
-        </div>
-        <p className="text-green-700 text-sm mt-1">
-          Sua carteira está conectada e segura. As chaves privadas permanecem em seu dispositivo.
-        </p>
-      </div>
-    </// motion.div>
-  );
-
-  return (
-    <div className="max-w-2xl mx-auto">
-      {/* Mensagens de Status */}
-      <// AnimatePresence>
-        {error && (
-          <// motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4"
-          >
-            <div className="flex items-center space-x-2">
-              <XCircle className="w-5 h-5 text-red-600" />
-              <span className="text-red-800 font-medium">Erro</span>
-            </div>
-            <p className="text-red-700 text-sm mt-1">{error}</p>
-          </// motion.div>
-        )}
-
-        {success && (
-          <// motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4"
-          >
-            <div className="flex items-center space-x-2">
-              <// CheckCircle className="w-5 h-5 text-green-600" />
-              <span className="text-green-800 font-medium">Sucesso</span>
-            </div>
-            <p className="text-green-700 text-sm mt-1">{success}</p>
-          </// motion.div>
-        )}
-      </// AnimatePresence>
-
-      {/* Conteúdo Principal */}
-      {connectionStatus.isConnected ? renderConnected() : renderNotConnected()}
+      )}
     </div>
-  );
-};
+  )
+}
 
-export default Web3Wallet;
+export default Web3Wallet

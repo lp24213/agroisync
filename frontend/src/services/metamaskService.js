@@ -1,108 +1,107 @@
-import { ethers } from 'ethers';
+import { ethers } from 'ethers'
 
 class MetamaskService {
   constructor() {
-    this.provider = null;
-    this.signer = null;
-    this.account = null;
-    this.chainId = null;
+    this.provider = null
+    this.signer = null
+    this.account = null
+    this.chainId = null
   }
 
   // Obter contas conectadas
   async getAccounts() {
     try {
       if (!this.isMetamaskInstalled()) {
-        return [];
+        return []
       }
 
       const accounts = await window.ethereum.request({
         method: 'eth_accounts'
-      });
+      })
 
-      return accounts;
+      return accounts
     } catch (error) {
-      console.error('Erro ao obter contas:', error);
-      return [];
+      console.error('Erro ao obter contas:', error)
+      return []
     }
   }
 
   // Verificar se Metamask está instalado
   isMetamaskInstalled() {
-    return typeof window !== 'undefined' && window.ethereum;
+    return typeof window !== 'undefined' && window.ethereum
   }
 
   // Conectar ao Metamask
   async connect() {
     try {
       if (!this.isMetamaskInstalled()) {
-        throw new Error('Metamask não está instalado. Por favor, instale a extensão Metamask.');
+        throw new Error('Metamask não está instalado. Por favor, instale a extensão Metamask.')
       }
 
       // Solicitar conexão
       const accounts = await window.ethereum.request({
         method: 'eth_requestAccounts'
-      });
+      })
 
       if (accounts.length === 0) {
-        throw new Error('Nenhuma conta encontrada. Por favor, conecte uma conta no Metamask.');
+        throw new Error('Nenhuma conta encontrada. Por favor, conecte uma conta no Metamask.')
       }
 
-      this.account = accounts[0];
-      
+      this.account = accounts[0]
+
       // Obter provider e signer
-      this.provider = new ethers.BrowserProvider(window.ethereum);
-      this.signer = await this.provider.getSigner();
-      
+      this.provider = new ethers.BrowserProvider(window.ethereum)
+      this.signer = await this.provider.getSigner()
+
       // Obter chainId
-      const network = await this.provider.getNetwork();
-      this.chainId = network.chainId;
+      const network = await this.provider.getNetwork()
+      this.chainId = network.chainId
 
       // Escutar mudanças de conta
-      window.ethereum.on('accountsChanged', (accounts) => {
+      window.ethereum.on('accountsChanged', accounts => {
         if (accounts.length === 0) {
-          this.disconnect();
+          this.disconnect()
         } else {
-          this.account = accounts[0];
+          this.account = accounts[0]
         }
-      });
+      })
 
       // Escutar mudanças de rede
-      window.ethereum.on('chainChanged', (chainId) => {
-        this.chainId = parseInt(chainId, 16);
-      });
+      window.ethereum.on('chainChanged', chainId => {
+        this.chainId = parseInt(chainId, 16)
+      })
 
       return {
         account: this.account,
         chainId: this.chainId,
         provider: this.provider
-      };
-
+      }
     } catch (error) {
-      console.error('Erro ao conectar Metamask:', error);
-      throw error;
+      console.error('Erro ao conectar Metamask:', error)
+      throw error
     }
   }
 
   // Desconectar
   disconnect() {
-    this.provider = null;
-    this.signer = null;
-    this.account = null;
-    this.chainId = null;
+    this.provider = null
+    this.signer = null
+    this.account = null
+    this.chainId = null
   }
 
   // Obter saldo da conta
   async getBalance() {
     try {
       if (!this.provider || !this.account) {
-        throw new Error('Metamask não está conectado');
+        throw new Error('Metamask não está conectado')
       }
 
-      const balance = await this.provider.getBalance(this.account);
-      return ethers.formatEther(balance);
+      const balance = await this.provider.getBalance(this.account)
+      return ethers.formatEther(balance)
     } catch (error) {
-      console.error('Erro ao obter saldo:', error);
-      throw error;
+      console.error('Erro ao obter saldo:', error)
+      throw error
     }
   }
 
@@ -110,21 +109,21 @@ class MetamaskService {
   async sendPayment(toAddress, amount, planId) {
     try {
       if (!this.signer || !this.account) {
-        throw new Error('Metamask não está conectado');
+        throw new Error('Metamask não está conectado')
       }
 
       // Validar endereço de destino
       if (!ethers.isAddress(toAddress)) {
-        throw new Error('Endereço de destino inválido');
+        throw new Error('Endereço de destino inválido')
       }
 
       // Converter valor para wei
-      const amountWei = ethers.parseEther(amount.toString());
+      const amountWei = ethers.parseEther(amount.toString())
 
       // Verificar saldo
-      const balance = await this.provider.getBalance(this.account);
+      const balance = await this.provider.getBalance(this.account)
       if (balance < amountWei) {
-        throw new Error('Saldo insuficiente');
+        throw new Error('Saldo insuficiente')
       }
 
       // Criar transação
@@ -132,22 +131,21 @@ class MetamaskService {
         to: toAddress,
         value: amountWei,
         data: this.encodePlanData(planId)
-      };
+      }
 
       // Enviar transação
-      const transaction = await this.signer.sendTransaction(tx);
-      
+      const transaction = await this.signer.sendTransaction(tx)
+
       return {
         hash: transaction.hash,
         from: this.account,
         to: toAddress,
         value: amount,
         planId: planId
-      };
-
+      }
     } catch (error) {
-      console.error('Erro ao enviar pagamento:', error);
-      throw error;
+      console.error('Erro ao enviar pagamento:', error)
+      throw error
     }
   }
 
@@ -155,15 +153,13 @@ class MetamaskService {
   encodePlanData(planId) {
     try {
       // Criar uma interface simples para codificar os dados
-      const abi = [
-        "function activatePlan(string planId)"
-      ];
-      
-      const iface = new ethers.Interface(abi);
-      return iface.encodeFunctionData("activatePlan", [planId]);
+      const abi = ['function activatePlan(string planId)']
+
+      const iface = new ethers.Interface(abi)
+      return iface.encodeFunctionData('activatePlan', [planId])
     } catch (error) {
       // Se falhar a codificação, retornar dados vazios
-      return "0x";
+      return '0x'
     }
   }
 
@@ -171,33 +167,32 @@ class MetamaskService {
   async getTransactionStatus(hash) {
     try {
       if (!this.provider) {
-        throw new Error('Metamask não está conectado');
+        throw new Error('Metamask não está conectado')
       }
 
-      const receipt = await this.provider.getTransactionReceipt(hash);
-      
+      const receipt = await this.provider.getTransactionReceipt(hash)
+
       if (!receipt) {
-        return { status: 'pending', confirmations: 0 };
+        return { status: 'pending', confirmations: 0 }
       }
 
-      const confirmations = receipt.confirmations;
-      let status = 'pending';
+      const confirmations = receipt.confirmations
+      let status = 'pending'
 
       if (confirmations >= 12) {
-        status = 'confirmed';
+        status = 'confirmed'
       } else if (confirmations >= 1) {
-        status = 'processing';
+        status = 'processing'
       }
 
       return {
         status,
         confirmations,
         receipt
-      };
-
+      }
     } catch (error) {
-      console.error('Erro ao verificar status da transação:', error);
-      throw error;
+      console.error('Erro ao verificar status da transação:', error)
+      throw error
     }
   }
 
@@ -205,21 +200,20 @@ class MetamaskService {
   async getNetworkInfo() {
     try {
       if (!this.provider) {
-        throw new Error('Metamask não está conectado');
+        throw new Error('Metamask não está conectado')
       }
 
-      const network = await this.provider.getNetwork();
-      const gasPrice = await this.provider.getFeeData();
+      const network = await this.provider.getNetwork()
+      const gasPrice = await this.provider.getFeeData()
 
       return {
         chainId: network.chainId,
         name: network.name,
         gasPrice: gasPrice.gasPrice ? ethers.formatUnits(gasPrice.gasPrice, 'gwei') : null
-      };
-
+      }
     } catch (error) {
-      console.error('Erro ao obter informações da rede:', error);
-      throw error;
+      console.error('Erro ao obter informações da rede:', error)
+      throw error
     }
   }
 
@@ -227,17 +221,16 @@ class MetamaskService {
   async switchNetwork(chainId) {
     try {
       if (!this.isMetamaskInstalled()) {
-        throw new Error('Metamask não está instalado');
+        throw new Error('Metamask não está instalado')
       }
 
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: `0x${chainId.toString(16)}` }]
-      });
-
+      })
     } catch (error) {
-      console.error('Erro ao trocar rede:', error);
-      throw error;
+      console.error('Erro ao trocar rede:', error)
+      throw error
     }
   }
 
@@ -245,21 +238,20 @@ class MetamaskService {
   async signMessage(message) {
     try {
       if (!this.signer || !this.account) {
-        throw new Error('Metamask não está conectado');
+        throw new Error('Metamask não está conectado')
       }
 
-      const signature = await this.signer.signMessage(message);
-      return signature;
-
+      const signature = await this.signer.signMessage(message)
+      return signature
     } catch (error) {
-      console.error('Erro ao assinar mensagem:', error);
-      throw error;
+      console.error('Erro ao assinar mensagem:', error)
+      throw error
     }
   }
 
   // Verificar se está conectado
   isConnected() {
-    return !!this.account && !!this.provider;
+    return !!this.account && !!this.provider
   }
 
   // Obter estado atual
@@ -270,11 +262,11 @@ class MetamaskService {
       isConnected: this.isConnected(),
       provider: !!this.provider,
       signer: !!this.signer
-    };
+    }
   }
 }
 
 // Criar instância única
-const metamaskService = new MetamaskService();
+const metamaskService = new MetamaskService()
 
-export default metamaskService;
+export default metamaskService

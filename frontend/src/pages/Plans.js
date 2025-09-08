@@ -1,18 +1,6 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { 
-  Check, 
-  X, 
-  Star, 
-  Zap, 
-  Crown,
-  ArrowRight,
-  Users,
-  BarChart3,
-  Shield,
-  Globe,
-  TrendingUp
-} from 'lucide-react';
+import React, { useState } from 'react'
+import { motion } from 'framer-motion'
+import { Check, X, Star, Zap, Crown, ArrowRight, Users, BarChart3, Shield, Globe, TrendingUp } from 'lucide-react'
 
 const Plans = () => {
   const [billingCycle, setBillingCycle] = useState('monthly'); // 'monthly' or 'yearly'
@@ -31,11 +19,7 @@ const Plans = () => {
         'Relatórios básicos',
         '1 usuário'
       ],
-      limitations: [
-        'Sem acesso ao AgroConecta',
-        'Sem analytics avançados',
-        'Sem API personalizada'
-      ],
+      limitations: ['Sem acesso ao AgroConecta', 'Sem analytics avançados', 'Sem API personalizada'],
       popular: false,
       color: 'primary'
     },
@@ -54,10 +38,7 @@ const Plans = () => {
         'Até 5 usuários',
         'API básica'
       ],
-      limitations: [
-        'Sem integração personalizada',
-        'Suporte limitado a horário comercial'
-      ],
+      limitations: ['Sem integração personalizada', 'Suporte limitado a horário comercial'],
       popular: true,
       color: 'success'
     },
@@ -82,7 +63,7 @@ const Plans = () => {
       popular: false,
       color: 'warning'
     }
-  ];
+  ]
 
   const features = [
     {
@@ -105,88 +86,81 @@ const Plans = () => {
       title: 'Analytics Avançados',
       description: 'Dados em tempo real para decisões mais inteligentes'
     }
-  ];
+  ]
 
-  const formatPrice = (price) => {
+  const formatPrice = price => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
       minimumFractionDigits: 0
-    }).format(price);
-  };
+    }).format(price)
+  }
 
-  const getPlanColor = (color) => {
+  const getPlanColor = color => {
     const colors = {
       primary: 'border-primary bg-primary/5',
       success: 'border-success bg-success/5',
       warning: 'border-warning bg-warning/5'
-    };
-    return colors[color] || colors.primary;
-  };
+    }
+    return colors[color] || colors.primary
+  }
 
-  const getButtonColor = (color) => {
+  const getButtonColor = color => {
     const colors = {
       primary: 'btn-futuristic',
       success: 'bg-success-gradient text-white border-0',
       warning: 'bg-warning-gradient text-white border-0'
-    };
-    return colors[color] || colors.primary;
-  };
+    }
+    return colors[color] || colors.primary
+  }
 
   return (
-    <div className="min-h-screen bg-primary">
+    <div className='bg-primary min-h-screen'>
       {/* Hero Section */}
-      <section className="hero-section">
-        <div className="container-futuristic">
+      <section className='hero-section'>
+        <div className='container-futuristic'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center text-white"
+            className='text-center text-white'
           >
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              Escolha seu <span className="text-yellow-300">Plano</span>
+            <h1 className='mb-6 text-5xl font-bold md:text-6xl'>
+              Escolha seu <span className='text-yellow-300'>Plano</span>
             </h1>
-            <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Planos flexíveis para atender desde produtores individuais até 
-              grandes corporações do agronegócio
+            <p className='mx-auto mb-8 max-w-3xl text-xl leading-relaxed text-white/90'>
+              Planos flexíveis para atender desde produtores individuais até grandes corporações do agronegócio
             </p>
           </motion.div>
         </div>
       </section>
 
       {/* Billing Toggle */}
-      <section className="py-12 bg-secondary">
-        <div className="container-futuristic">
+      <section className='bg-secondary py-12'>
+        <div className='container-futuristic'>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="flex items-center justify-center mb-8"
+            className='mb-8 flex items-center justify-center'
           >
-            <div className="glass-card p-2 flex items-center gap-4">
+            <div className='glass-card flex items-center gap-4 p-2'>
               <button
                 onClick={() => setBillingCycle('monthly')}
-                className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-                  billingCycle === 'monthly'
-                    ? 'bg-primary text-white'
-                    : 'text-secondary hover:text-primary'
+                className={`rounded-lg px-6 py-3 font-medium transition-colors ${
+                  billingCycle === 'monthly' ? 'bg-primary text-white' : 'text-secondary hover:text-primary'
                 }`}
               >
                 Mensal
               </button>
               <button
                 onClick={() => setBillingCycle('yearly')}
-                className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-                  billingCycle === 'yearly'
-                    ? 'bg-primary text-white'
-                    : 'text-secondary hover:text-primary'
+                className={`rounded-lg px-6 py-3 font-medium transition-colors ${
+                  billingCycle === 'yearly' ? 'bg-primary text-white' : 'text-secondary hover:text-primary'
                 }`}
               >
                 Anual
-                <span className="ml-2 text-xs bg-success text-white px-2 py-1 rounded-full">
-                  -20%
-                </span>
+                <span className='bg-success ml-2 rounded-full px-2 py-1 text-xs text-white'>-20%</span>
               </button>
             </div>
           </motion.div>
@@ -194,9 +168,9 @@ const Plans = () => {
       </section>
 
       {/* Pricing Cards */}
-      <section className="py-20 bg-primary">
-        <div className="container-futuristic">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <section className='bg-primary py-20'>
+        <div className='container-futuristic'>
+          <div className='grid grid-cols-1 gap-8 md:grid-cols-3'>
             {plans.map((plan, index) => (
               <motion.div
                 key={plan.name}
@@ -204,57 +178,55 @@ const Plans = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className={`relative glass-card p-8 ${getPlanColor(plan.color)} ${
-                  plan.popular ? 'ring-2 ring-success scale-105' : ''
+                className={`glass-card relative p-8 ${getPlanColor(plan.color)} ${
+                  plan.popular ? 'ring-success scale-105 ring-2' : ''
                 }`}
               >
                 {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-success-gradient text-white px-6 py-2 rounded-full text-sm font-semibold flex items-center gap-2">
+                  <div className='absolute -top-4 left-1/2 -translate-x-1/2 transform'>
+                    <div className='bg-success-gradient flex items-center gap-2 rounded-full px-6 py-2 text-sm font-semibold text-white'>
                       <Star size={16} />
                       Mais Popular
                     </div>
                   </div>
                 )}
 
-                <div className="text-center mb-8">
-                  <div className="w-16 h-16 bg-primary-gradient rounded-xl mx-auto mb-4 flex items-center justify-center">
-                    <plan.icon size={32} className="text-white" />
+                <div className='mb-8 text-center'>
+                  <div className='bg-primary-gradient mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-xl'>
+                    <plan.icon size={32} className='text-white' />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
-                  <p className="text-white/80 mb-6">{plan.description}</p>
-                  
-                  <div className="mb-6">
-                    <div className="text-4xl font-bold text-white">
+                  <h3 className='mb-2 text-2xl font-bold text-white'>{plan.name}</h3>
+                  <p className='mb-6 text-white/80'>{plan.description}</p>
+
+                  <div className='mb-6'>
+                    <div className='text-4xl font-bold text-white'>
                       {formatPrice(billingCycle === 'monthly' ? plan.monthlyPrice : plan.yearlyPrice)}
                     </div>
-                    <div className="text-white/60">
-                      {billingCycle === 'monthly' ? 'por mês' : 'por ano'}
-                    </div>
+                    <div className='text-white/60'>{billingCycle === 'monthly' ? 'por mês' : 'por ano'}</div>
                     {billingCycle === 'yearly' && (
-                      <div className="text-success text-sm mt-1">
+                      <div className='text-success mt-1 text-sm'>
                         Economize {formatPrice(plan.monthlyPrice * 12 - plan.yearlyPrice)} por ano
                       </div>
                     )}
                   </div>
                 </div>
 
-                <div className="space-y-4 mb-8">
-                  <h4 className="text-lg font-semibold text-white mb-4">Incluído:</h4>
+                <div className='mb-8 space-y-4'>
+                  <h4 className='mb-4 text-lg font-semibold text-white'>Incluído:</h4>
                   {plan.features.map((feature, featureIndex) => (
-                    <div key={featureIndex} className="flex items-center gap-3">
-                      <Check size={20} className="text-success flex-shrink-0" />
-                      <span className="text-white/90">{feature}</span>
+                    <div key={featureIndex} className='flex items-center gap-3'>
+                      <Check size={20} className='text-success flex-shrink-0' />
+                      <span className='text-white/90'>{feature}</span>
                     </div>
                   ))}
-                  
+
                   {plan.limitations.length > 0 && (
                     <>
-                      <h4 className="text-lg font-semibold text-white mb-4 mt-6">Limitações:</h4>
+                      <h4 className='mb-4 mt-6 text-lg font-semibold text-white'>Limitações:</h4>
                       {plan.limitations.map((limitation, limitationIndex) => (
-                        <div key={limitationIndex} className="flex items-center gap-3">
-                          <X size={20} className="text-danger flex-shrink-0" />
-                          <span className="text-white/60">{limitation}</span>
+                        <div key={limitationIndex} className='flex items-center gap-3'>
+                          <X size={20} className='text-danger flex-shrink-0' />
+                          <span className='text-white/60'>{limitation}</span>
                         </div>
                       ))}
                     </>
@@ -276,24 +248,24 @@ const Plans = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-secondary">
-        <div className="container-futuristic">
+      <section className='bg-secondary py-20'>
+        <div className='container-futuristic'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className='mb-16 text-center'
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-              Por que escolher o <span className="text-gradient">AgroSync</span>?
+            <h2 className='text-primary mb-6 text-4xl font-bold md:text-5xl'>
+              Por que escolher o <span className='text-gradient'>AgroSync</span>?
             </h2>
-            <p className="text-xl text-secondary max-w-3xl mx-auto">
+            <p className='text-secondary mx-auto max-w-3xl text-xl'>
               Recursos avançados que fazem a diferença no seu negócio
             </p>
           </motion.div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+          <div className='grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4'>
             {features.map((feature, index) => (
               <motion.div
                 key={feature.title}
@@ -301,17 +273,13 @@ const Plans = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="glass-card p-6 text-center hover:scale-105 transition-transform"
+                className='glass-card p-6 text-center transition-transform hover:scale-105'
               >
-                <div className="w-16 h-16 bg-primary-gradient rounded-xl mx-auto mb-4 flex items-center justify-center">
-                  <feature.icon size={32} className="text-white" />
+                <div className='bg-primary-gradient mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-xl'>
+                  <feature.icon size={32} className='text-white' />
                 </div>
-                <h3 className="text-xl font-bold text-primary mb-3">
-                  {feature.title}
-                </h3>
-                <p className="text-secondary">
-                  {feature.description}
-                </p>
+                <h3 className='text-primary mb-3 text-xl font-bold'>{feature.title}</h3>
+                <p className='text-secondary'>{feature.description}</p>
               </motion.div>
             ))}
           </div>
@@ -319,44 +287,47 @@ const Plans = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-20 bg-primary">
-        <div className="container-futuristic">
+      <section className='bg-primary py-20'>
+        <div className='container-futuristic'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className='mb-16 text-center'
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Perguntas <span className="text-yellow-300">Frequentes</span>
+            <h2 className='mb-6 text-4xl font-bold text-white md:text-5xl'>
+              Perguntas <span className='text-yellow-300'>Frequentes</span>
             </h2>
-            <p className="text-xl text-white/80 max-w-3xl mx-auto">
-              Tire suas dúvidas sobre nossos planos e serviços
-            </p>
+            <p className='mx-auto max-w-3xl text-xl text-white/80'>Tire suas dúvidas sobre nossos planos e serviços</p>
           </motion.div>
-          
-          <div className="max-w-4xl mx-auto space-y-6">
+
+          <div className='mx-auto max-w-4xl space-y-6'>
             {[
               {
                 question: 'Posso mudar de plano a qualquer momento?',
-                answer: 'Sim! Você pode fazer upgrade ou downgrade do seu plano a qualquer momento. As alterações são aplicadas imediatamente e os valores são ajustados proporcionalmente.'
+                answer:
+                  'Sim! Você pode fazer upgrade ou downgrade do seu plano a qualquer momento. As alterações são aplicadas imediatamente e os valores são ajustados proporcionalmente.'
               },
               {
                 question: 'Há período de teste gratuito?',
-                answer: 'Oferecemos 14 dias de teste gratuito para todos os planos. Você pode experimentar todas as funcionalidades sem compromisso.'
+                answer:
+                  'Oferecemos 14 dias de teste gratuito para todos os planos. Você pode experimentar todas as funcionalidades sem compromisso.'
               },
               {
                 question: 'Quais formas de pagamento são aceitas?',
-                answer: 'Aceitamos cartões de crédito, débito, PIX, boleto bancário e transferência bancária. Para planos Enterprise, também oferecemos faturamento corporativo.'
+                answer:
+                  'Aceitamos cartões de crédito, débito, PIX, boleto bancário e transferência bancária. Para planos Enterprise, também oferecemos faturamento corporativo.'
               },
               {
                 question: 'O suporte está disponível em português?',
-                answer: 'Sim! Todo nosso suporte é oferecido em português, com equipe especializada no agronegócio brasileiro.'
+                answer:
+                  'Sim! Todo nosso suporte é oferecido em português, com equipe especializada no agronegócio brasileiro.'
               },
               {
                 question: 'Meus dados estão seguros?',
-                answer: 'Absolutamente! Utilizamos criptografia de nível bancário, servidores seguros e somos totalmente conformes com a LGPD.'
+                answer:
+                  'Absolutamente! Utilizamos criptografia de nível bancário, servidores seguros e somos totalmente conformes com a LGPD.'
               }
             ].map((faq, index) => (
               <motion.div
@@ -365,10 +336,10 @@ const Plans = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="glass-card p-6"
+                className='glass-card p-6'
               >
-                <h3 className="text-xl font-bold text-white mb-3">{faq.question}</h3>
-                <p className="text-white/80">{faq.answer}</p>
+                <h3 className='mb-3 text-xl font-bold text-white'>{faq.question}</h3>
+                <p className='text-white/80'>{faq.answer}</p>
               </motion.div>
             ))}
           </div>
@@ -376,25 +347,24 @@ const Plans = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-primary-gradient">
-        <div className="container-futuristic text-center">
+      <section className='bg-primary-gradient py-20'>
+        <div className='container-futuristic text-center'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Pronto para <span className="text-yellow-300">Começar</span>?
+            <h2 className='mb-6 text-4xl font-bold text-white md:text-5xl'>
+              Pronto para <span className='text-yellow-300'>Começar</span>?
             </h2>
-            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Junte-se a milhares de profissionais do agronegócio que já transformaram 
-              seus negócios com o AgroSync
+            <p className='mx-auto mb-8 max-w-2xl text-xl text-white/90'>
+              Junte-se a milhares de profissionais do agronegócio que já transformaram seus negócios com o AgroSync
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className='flex flex-col justify-center gap-4 sm:flex-row'>
               <motion.a
-                href="/cadastro"
-                className="bg-white text-primary px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white/90 transition-colors flex items-center justify-center gap-2"
+                href='/cadastro'
+                className='text-primary flex items-center justify-center gap-2 rounded-xl bg-white px-8 py-4 text-lg font-semibold transition-colors hover:bg-white/90'
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -402,8 +372,8 @@ const Plans = () => {
                 <ArrowRight size={20} />
               </motion.a>
               <motion.a
-                href="/contato"
-                className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-primary transition-colors"
+                href='/contato'
+                className='hover:text-primary rounded-xl border-2 border-white px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-white'
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -414,7 +384,7 @@ const Plans = () => {
         </div>
       </section>
     </div>
-  );
-};
+  )
+}
 
-export default Plans;
+export default Plans

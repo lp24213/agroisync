@@ -1,425 +1,341 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-';
-import { useTranslation } from 'react-i18next';
-import { useAuth } from '../../contexts/AuthContext';
-import { Send, MessageSquare, Paperclip, Loader } from 'lucide-react';
-import contactService from '../../services/contactService';
+import React, { useState } from 'react'
+import { motion } from 'framer-motion'
+import { 
+  Send, 
+  User, 
+  Mail, 
+  Phone, 
+  MessageSquare, 
+  AlertCircle, 
+  CheckCircle, 
+  Loader2,
+  FileText,
+  Star,
+  Clock,
+  Shield
+} from 'lucide-react'
 
-const ContactForm = ({ onSuccess, onError }) => {
-  const {  } = useTranslation();
-  const {  } = // useAuth();
+const ContactForm = ({ onFormSubmit }) => {
   const [formData, setFormData] = useState({
-    name: // user?.name || '',
-    email: // user?.email || '',
+    name: '',
+    email: '',
     phone: '',
     subject: '',
     message: '',
     type: 'general',
     priority: 'normal'
-  });
-  const [attachments, setAttachments] = useState([]);
-  const [// loading, // setLoading] = useState(false);
-  const [errors, setErrors] = useState({});
-  const [success, setSuccess] = useState(false);
+  })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
+
+  const contactTypes = [
+    { id: 'general', name: 'Geral', icon: MessageSquare },
+    { id: 'support', name: 'Suporte', icon: AlertCircle },
+    { id: 'business', name: 'Negócios', icon: FileText },
+    { id: 'partnership', name: 'Parceria', icon: Star }
+  ]
+
+  const priorities = [
+    { id: 'low', name: 'Baixa', color: 'green' },
+    { id: 'normal', name: 'Normal', color: 'blue' },
+    { id: 'high', name: 'Alta', color: 'yellow' },
+    { id: 'urgent', name: 'Urgente', color: 'red' }
+  ]
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setFormData(prev => ({
       ...prev,
       [name]: value
-    }));
-    
-    // Limpar erro do campo quando usuário começar a digitar
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: null
-      }));
-    }
-  };
-
-  const handleFileUpload = (e) => {
-    const files = Array.from(e.target.files);
-    const validFiles = files.filter(file => {
-      const maxSize = 10 * 1024 * 1024; // 10MB
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf', 'text/plain'];
-      
-      if (file.size > maxSize) {
-        alert(`Arquivo ${file.name} é muito grande. Máximo 10MB.`);
-        return false;
-      }
-      
-      if (!allowedTypes.includes(file.type)) {
-        alert(`Tipo de arquivo ${file.name} não é permitido.`);
-        return false;
-      }
-      
-      return true;
-    });
-    
-    setAttachments(prev => [...prev, ...validFiles]);
-  };
-
-  const removeAttachment = (index) => {
-    setAttachments(prev => prev.filter((_, i) => i !== index));
-  };
+    }))
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    // setLoading(true);
-    setErrors({});
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    setSuccess(false)
 
     try {
-      // Validar dados
-      const validation = contactService.validateContactData(formData);
-      if (!validation.isValid) {
-        setErrors(validation.errors);
-        // setLoading(false);
-        return;
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setSuccess(true)
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          subject: '',
+          message: '',
+          type: 'general',
+          priority: 'normal'
+        })
+        onFormSubmit?.(data.contact)
+      } else {
+        setError(data.message)
       }
-
-      // Upload de arquivos se houver
-      const uploadedFiles = [];
-      for (const file of attachments) {
-        try {
-          const uploadResult = await contactService.uploadAttachment(file);
-          uploadedFiles.push(uploadResult);
-        } catch (error) {
-          console.error('Erro ao fazer upload do arquivo:', error);
-        }
-      }
-
-      // Enviar mensagem
-      const result = await contactService.sendContactMessage({
-        ...formData,
-        attachments: uploadedFiles
-      });
-
-      setSuccess(true);
-      onSuccess && onSuccess(result);
-      
-      // Reset form
-      setFormData({
-        name: // user?.name || '',
-        email: // user?.email || '',
-        phone: '',
-        subject: '',
-        message: '',
-        type: 'general',
-        priority: 'normal'
-      });
-      setAttachments([]);
-
-    } catch (error) {
-      console.error('Erro ao enviar mensagem:', error);
-      setErrors({ submit: error.message || 'Erro ao enviar mensagem' });
-      onError && onError(error);
+    } catch (err) {
+      setError('Erro ao enviar mensagem')
     } finally {
-      // setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
-  const // getPriorityColor = (priority) => {
+  const getPriorityColor = (priority) => {
     switch (priority) {
-      case 'urgent':
-        return 'text-red-600 bg-red-100 dark:bg-red-900 dark:text-red-200';
-      case 'high':
-        return 'text-orange-600 bg-orange-100 dark:bg-orange-900 dark:text-orange-200';
-      case 'normal':
-        return 'text-blue-600 bg-blue-100 dark:bg-blue-900 dark:text-blue-200';
       case 'low':
-        return 'text-green-600 bg-green-100 dark:bg-green-900 dark:text-green-200';
+        return 'text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/20'
+      case 'normal':
+        return 'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/20'
+      case 'high':
+        return 'text-yellow-600 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900/20'
+      case 'urgent':
+        return 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/20'
       default:
-        return 'text-slate-600 bg-slate-100 dark:bg-slate-700 dark:text-slate-200';
+        return 'text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-900/20'
     }
-  };
-
-  const // getTypeIcon = (type) => {
-    switch (type) {
-      case 'support':
-        return <// AlertTriangle className="w-4 h-4" />;
-      case 'sales':
-        return <// Star className="w-4 h-4" />;
-      case 'partnership':
-        return <// User className="w-4 h-4" />;
-      default:
-        return <MessageSquare className="w-4 h-4" />;
-    }
-  };
+  }
 
   if (success) {
     return (
-      <// motion.div
-        className="text-center py-12"
+      <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.3 }}
+        className="text-center py-12"
       >
-        <div className="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-6">
-          <// CheckCircle className="w-8 h-8 text-green-600 dark:text-green-400" />
-        </div>
-        <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2">
-          {// t('contact.success', 'Mensagem Enviada!')}
+        <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+          Mensagem Enviada!
         </h3>
-        <p className="text-slate-600 dark:text-slate-400 mb-6">
-          {// t('contact.successDescription', 'Sua mensagem foi enviada com sucesso. Entraremos em contato em breve.')}
+        <p className="text-gray-600 dark:text-gray-400 mb-6">
+          Sua mensagem foi enviada com sucesso. Entraremos em contato em breve.
         </p>
         <button
           onClick={() => setSuccess(false)}
-          className="px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+          className="px-6 py-3 bg-agro-emerald text-white rounded-lg font-medium hover:bg-emerald-600 transition-colors"
         >
-          {// t('contact.sendAnother', 'Enviar Outra Mensagem')}
+          Enviar Nova Mensagem
         </button>
-      </// motion.div>
-    );
+      </motion.div>
+    )
   }
 
   return (
-    <// motion.form
-      onSubmit={handleSubmit}
-      className="space-y-6"
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
     >
-      {/* Informações Pessoais */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-            {// t('contact.name', 'Nome')} *
-          </label>
-          <div className="relative">
-            <// User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white ${
-                errors.name 
-                  ? 'border-red-300 dark:border-red-600' 
-                  : 'border-slate-300 dark:border-slate-600'
-              }`}
-              placeholder={// t('contact.namePlaceholder', 'Seu nome completo')}
-            />
-          </div>
-          {errors.name && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.name}</p>
-          )}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-            {// t('contact.email', 'Email')} *
-          </label>
-          <div className="relative">
-            <// Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white ${
-                errors.email 
-                  ? 'border-red-300 dark:border-red-600' 
-                  : 'border-slate-300 dark:border-slate-600'
-              }`}
-              placeholder={// t('contact.emailPlaceholder', 'seu@email.com')}
-            />
-          </div>
-          {errors.email && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email}</p>
-          )}
-        </div>
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          Entre em Contato
+        </h2>
+        <p className="text-gray-600 dark:text-gray-400">
+          Envie sua mensagem e entraremos em contato o mais rápido possível.
+        </p>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-          {// t('contact.phone', 'Telefone')}
-        </label>
-        <div className="relative">
-          <// Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
-          <input
-            type="tel"
-            name="phone"
-            value={formData.phone}
-            onChange={handleInputChange}
-            className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white ${
-              errors.phone 
-                ? 'border-red-300 dark:border-red-600' 
-                : 'border-slate-300 dark:border-slate-600'
-            }`}
-            placeholder={// t('contact.phonePlaceholder', '(11) 99999-9999')}
-          />
-        </div>
-        {errors.phone && (
-          <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.phone}</p>
-        )}
-      </div>
-
-      {/* Tipo e Prioridade */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-            {// t('contact.type', 'Tipo de Contato')}
-          </label>
-          <select
-            name="type"
-            value={formData.type}
-            onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
-          >
-            <option value="general">{// t('contact.typeGeneral', 'Geral')}</option>
-            <option value="support">{// t('contact.typeSupport', 'Suporte')}</option>
-            <option value="sales">{// t('contact.typeSales', 'Vendas')}</option>
-            <option value="partnership">{// t('contact.typePartnership', 'Parceria')}</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-            {// t('contact.priority', 'Prioridade')}
-          </label>
-          <select
-            name="priority"
-            value={formData.priority}
-            onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
-          >
-            <option value="low">{// t('contact.priorityLow', 'Baixa')}</option>
-            <option value="normal">{// t('contact.priorityNormal', 'Normal')}</option>
-            <option value="high">{// t('contact.priorityHigh', 'Alta')}</option>
-            <option value="urgent">{// t('contact.priorityUrgent', 'Urgente')}</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Assunto */}
-      <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-          {// t('contact.subject', 'Assunto')} *
-        </label>
-        <input
-          type="text"
-          name="subject"
-          value={formData.subject}
-          onChange={handleInputChange}
-          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white ${
-            errors.subject 
-              ? 'border-red-300 dark:border-red-600' 
-              : 'border-slate-300 dark:border-slate-600'
-          }`}
-          placeholder={// t('contact.subjectPlaceholder', 'Resumo da sua mensagem')}
-        />
-        {errors.subject && (
-          <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.subject}</p>
-        )}
-      </div>
-
-      {/* Mensagem */}
-      <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-          {// t('contact.message', 'Mensagem')} *
-        </label>
-        <textarea
-          name="message"
-          value={formData.message}
-          onChange={handleInputChange}
-          rows="6"
-          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white resize-none ${
-            errors.message 
-              ? 'border-red-300 dark:border-red-600' 
-              : 'border-slate-300 dark:border-slate-600'
-          }`}
-          placeholder={// t('contact.messagePlaceholder', 'Descreva sua mensagem em detalhes...')}
-        />
-        {errors.message && (
-          <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.message}</p>
-        )}
-      </div>
-
-      {/* Anexos */}
-      <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-          {// t('contact.attachments', 'Anexos')}
-        </label>
-        <div className="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg p-6 text-center">
-          <input
-            type="file"
-            multiple
-            onChange={handleFileUpload}
-            className="hidden"
-            id="file-upload"
-            accept="image/*,.pdf,.txt"
-          />
-          <label
-            htmlFor="file-upload"
-            className="cursor-pointer flex flex-col items-center gap-2"
-          >
-            <Paperclip className="w-8 h-8 text-slate-400" />
-            <span className="text-slate-600 dark:text-slate-400">
-              {// t('contact.uploadFiles', 'Clique para anexar arquivos')}
-            </span>
-            <span className="text-sm text-slate-500 dark:text-slate-500">
-              {// t('contact.uploadLimit', 'Máximo 10MB por arquivo')}
-            </span>
-          </label>
-        </div>
-        
-        {attachments.length > 0 && (
-          <div className="mt-4 space-y-2">
-            {attachments.map((file, index) => (
-              <div key={index} className="flex items-center justify-between bg-slate-50 dark:bg-slate-700 rounded-lg p-3">
-                <div className="flex items-center gap-3">
-                  <// FileText className="w-5 h-5 text-slate-400" />
-                  <span className="text-sm text-slate-700 dark:text-slate-300">
-                    {file.name}
-                  </span>
-                  <span className="text-xs text-slate-500 dark:text-slate-500">
-                    ({(file.size / 1024 / 1024).toFixed(2)} MB)
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => removeAttachment(index)}
-                  className="text-red-500 hover:text-red-600 transition-colors"
-                >
-                  ×
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Erro de envio */}
-      {errors.submit && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-          <div className="flex items-center gap-2">
-            <// AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
-            <p className="text-red-600 dark:text-red-400">{errors.submit}</p>
+      {error && (
+        <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+          <div className="flex items-center">
+            <AlertCircle className="w-5 h-5 text-red-500 mr-2" />
+            <span className="text-red-700 dark:text-red-400">{error}</span>
           </div>
         </div>
       )}
 
-      {/* Botão de envio */}
-      <button
-        type="submit"
-        disabled={// loading}
-        className="w-full px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
-      >
-        {// loading ? (
-          <Loader className="w-5 h-5 animate-spin" />
-        ) : (
-          <Send className="w-5 h-5" />
-        )}
-        {// loading 
-          ? // t('contact.sending', 'Enviando...') 
-          : // t('contact.send', 'Enviar Mensagem')
-        }
-      </button>
-    </// motion.form>
-  );
-};
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Informações pessoais */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Nome *
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+                className="w-full px-4 py-3 pl-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-agro-emerald focus:border-transparent"
+                placeholder="Seu nome completo"
+              />
+              <User className="absolute left-3 top-3.5 w-4 h-4 text-gray-400" />
+            </div>
+          </div>
 
-export default ContactForm;
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Email *
+            </label>
+            <div className="relative">
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+                className="w-full px-4 py-3 pl-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-agro-emerald focus:border-transparent"
+                placeholder="seu@email.com"
+              />
+              <Mail className="absolute left-3 top-3.5 w-4 h-4 text-gray-400" />
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Telefone
+          </label>
+          <div className="relative">
+            <input
+              type="tel"
+              name="phone"
+              value={formData.phone}
+              onChange={handleInputChange}
+              className="w-full px-4 py-3 pl-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-agro-emerald focus:border-transparent"
+              placeholder="(11) 99999-9999"
+            />
+            <Phone className="absolute left-3 top-3.5 w-4 h-4 text-gray-400" />
+          </div>
+        </div>
+
+        {/* Tipo de contato */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Tipo de Contato
+          </label>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {contactTypes.map((type) => (
+              <button
+                key={type.id}
+                type="button"
+                onClick={() => setFormData(prev => ({ ...prev, type: type.id }))}
+                className={`p-3 border-2 rounded-lg transition-colors ${
+                  formData.type === type.id
+                    ? 'border-agro-emerald bg-agro-emerald/10'
+                    : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                }`}
+              >
+                <div className="text-center">
+                  <type.icon className="w-6 h-6 mx-auto mb-2 text-gray-600 dark:text-gray-400" />
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">
+                    {type.name}
+                  </p>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Prioridade */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Prioridade
+          </label>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {priorities.map((priority) => (
+              <button
+                key={priority.id}
+                type="button"
+                onClick={() => setFormData(prev => ({ ...prev, priority: priority.id }))}
+                className={`p-3 border-2 rounded-lg transition-colors ${
+                  formData.priority === priority.id
+                    ? 'border-agro-emerald bg-agro-emerald/10'
+                    : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                }`}
+              >
+                <div className="text-center">
+                  <div className={`w-3 h-3 rounded-full mx-auto mb-2 ${
+                    priority.color === 'green' ? 'bg-green-500' :
+                    priority.color === 'blue' ? 'bg-blue-500' :
+                    priority.color === 'yellow' ? 'bg-yellow-500' :
+                    'bg-red-500'
+                  }`}></div>
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">
+                    {priority.name}
+                  </p>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Assunto *
+          </label>
+          <input
+            type="text"
+            name="subject"
+            value={formData.subject}
+            onChange={handleInputChange}
+            required
+            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-agro-emerald focus:border-transparent"
+            placeholder="Resumo da sua mensagem"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Mensagem *
+          </label>
+          <textarea
+            name="message"
+            value={formData.message}
+            onChange={handleInputChange}
+            required
+            rows={6}
+            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-agro-emerald focus:border-transparent resize-none"
+            placeholder="Descreva sua mensagem em detalhes..."
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full px-6 py-3 bg-agro-emerald text-white rounded-lg font-medium hover:bg-emerald-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+        >
+          {loading ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span>Enviando...</span>
+            </>
+          ) : (
+            <>
+              <Send className="w-4 h-4" />
+              <span>Enviar Mensagem</span>
+            </>
+          )}
+        </button>
+      </form>
+
+      {/* Informações de segurança */}
+      <div className="mt-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+        <div className="flex items-start space-x-3">
+          <Shield className="w-5 h-5 text-green-500 mt-0.5" />
+          <div>
+            <h4 className="font-medium text-green-800 dark:text-green-200 mb-1">
+              Privacidade e Segurança
+            </h4>
+            <p className="text-sm text-green-700 dark:text-green-300">
+              Suas informações são protegidas e não serão compartilhadas com terceiros.
+            </p>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+export default ContactForm

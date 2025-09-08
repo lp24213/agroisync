@@ -1,13 +1,13 @@
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom'
 
 // Mock localStorage
 const localStorageMock = {
   getItem: jest.fn(),
   setItem: jest.fn(),
   removeItem: jest.fn(),
-  clear: jest.fn(),
-};
-global.localStorage = localStorageMock;
+  clear: jest.fn()
+}
+global.localStorage = localStorageMock
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -20,9 +20,9 @@ Object.defineProperty(window, 'matchMedia', {
     removeListener: jest.fn(), // deprecated
     addEventListener: jest.fn(),
     removeEventListener: jest.fn(),
-    dispatchEvent: jest.fn(),
-  })),
-});
+    dispatchEvent: jest.fn()
+  }))
+})
 
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
@@ -30,7 +30,7 @@ global.IntersectionObserver = class IntersectionObserver {
   disconnect() {}
   observe() {}
   unobserve() {}
-};
+}
 
 // Mock ResizeObserver
 global.ResizeObserver = class ResizeObserver {
@@ -38,18 +38,18 @@ global.ResizeObserver = class ResizeObserver {
   disconnect() {}
   observe() {}
   unobserve() {}
-};
+}
 
 // Mock fetch
-global.fetch = jest.fn();
+global.fetch = jest.fn()
 
 // Mock console methods to reduce noise in tests
 global.console = {
-  ...console,
+  ...console
   // Uncomment to ignore a specific log level
   // log: jest.fn(),
   // debug: jest.fn(),
   // info: jest.fn(),
   // warn: jest.fn(),
   // error: jest.fn(),
-};
+}

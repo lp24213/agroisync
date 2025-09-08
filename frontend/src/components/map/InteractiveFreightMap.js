@@ -1,56 +1,46 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  MapPin, 
-  Truck, 
-  Navigation, 
-  Clock, 
-  Eye, 
-  EyeOff,
-  Maximize2,
-  Minimize2,
-  RefreshCw
-} from 'lucide-react';
-import { useAnalytics } from '../../hooks/useAnalytics';
-import { useTheme } from '../../contexts/ThemeContext';
+import React, { useState, useEffect, useRef, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
+import { motion, AnimatePresence } from 'framer-motion'
+import { MapPin, Truck, Navigation, Clock, Eye, EyeOff, Maximize2, Minimize2, RefreshCw } from 'lucide-react'
+import { useAnalytics } from '../../hooks/useAnalytics'
+import { useTheme } from '../../contexts/ThemeContext'
 
-const InteractiveFreightMap = ({ 
-  freightId, 
-  driverId, 
-  origin, 
-  destination, 
+const InteractiveFreightMap = ({
+  freightId,
+  driverId,
+  origin,
+  destination,
   isRealTime = true,
   showControls = true,
   height = '500px'
 }) => {
-  const { t } = useTranslation();
-  const analytics = useAnalytics();
-  const { isDark } = useTheme();
-  const mapRef = useRef(null);
-  const [map, setMap] = useState(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isTracking, setIsTracking] = useState(isRealTime);
-  const [driverLocation, setDriverLocation] = useState(null);
-  const [, setRoutePolyline] = useState(null);
-  const [estimatedArrival, setEstimatedArrival] = useState(null);
-  const [driverInfo, setDriverInfo] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
+  const { t } = useTranslation()
+  const analytics = useAnalytics()
+  const { isDark } = useTheme()
+  const mapRef = useRef(null)
+  const [map, setMap] = useState(null)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+  const [isTracking, setIsTracking] = useState(isRealTime)
+  const [driverLocation, setDriverLocation] = useState(null)
+  const [, setRoutePolyline] = useState(null)
+  const [estimatedArrival, setEstimatedArrival] = useState(null)
+  const [driverInfo, setDriverInfo] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState('')
 
   const initializeMap = useCallback(async () => {
     try {
       // Carregar Leaflet dinamicamente
-      const L = await import('leaflet');
-      await import('leaflet/dist/leaflet.css');
+      const L = await import('leaflet')
+      await import('leaflet/dist/leaflet.css')
 
       // Configurar ícones padrão
-      delete L.Icon.Default.prototype._getIconUrl;
+      delete L.Icon.Default.prototype._getIconUrl
       L.Icon.Default.mergeOptions({
         iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
         iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-      });
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png'
+      })
 
       // Criar mapa
       const mapInstance = L.map(mapRef.current, {
@@ -58,156 +48,166 @@ const InteractiveFreightMap = ({
         zoom: 6,
         zoomControl: false,
         attributionControl: false
-      });
+      })
 
       // Adicionar camadas de mapa
       const lightTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
-      });
+      })
 
       const darkTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
         attribution: '© CARTO'
-      });
+      })
 
       // Adicionar camada base
       if (isDark) {
-        darkTileLayer.addTo(mapInstance);
+        darkTileLayer.addTo(mapInstance)
       } else {
-        lightTileLayer.addTo(mapInstance);
+        lightTileLayer.addTo(mapInstance)
       }
 
       // Controles de zoom
-      L.control.zoom({
-        position: 'topright'
-      }).addTo(mapInstance);
+      L.control
+        .zoom({
+          position: 'topright'
+        })
+        .addTo(mapInstance)
 
       // Controle de atribuição
-      L.control.attribution({
-        position: 'bottomright',
-        prefix: false
-      }).addTo(mapInstance);
+      L.control
+        .attribution({
+          position: 'bottomright',
+          prefix: false
+        })
+        .addTo(mapInstance)
 
-      setMap(mapInstance);
-      setIsLoading(false);
+      setMap(mapInstance)
+      setIsLoading(false)
 
       analytics.trackEvent('map_initialized', {
         freight_id: freightId,
         is_dark_mode: isDark
-      });
-
+      })
     } catch (error) {
-      console.error('Error initializing map:', error);
-      setError('Erro ao carregar o mapa');
-      setIsLoading(false);
+      console.error('Error initializing map:', error)
+      setError('Erro ao carregar o mapa')
+      setIsLoading(false)
     }
-  }, [isDark, freightId, analytics]);
+  }, [isDark, freightId, analytics])
 
-  const addMarkersToMap = useCallback(async (freightData) => {
-    if (!map) return;
+  const addMarkersToMap = useCallback(
+    async freightData => {
+      if (!map) return
 
-    // Carregar Leaflet dinamicamente
-    const L = await import('leaflet');
+      // Carregar Leaflet dinamicamente
+      const L = await import('leaflet')
 
-    // Limpar marcadores existentes
-    map.eachLayer((layer) => {
-      if (layer instanceof L.Marker) {
-        map.removeLayer(layer);
-      }
-    });
+      // Limpar marcadores existentes
+      map.eachLayer(layer => {
+        if (layer instanceof L.Marker) {
+          map.removeLayer(layer)
+        }
+      })
 
-    // Marcador de origem
-    const originIcon = L.divIcon({
-      className: 'custom-marker origin-marker',
-      html: '<div class="marker-content"><MapPin className="w-5 h-5" /></div>',
-      iconSize: [30, 30],
-      iconAnchor: [15, 30]
-    });
+      // Marcador de origem
+      const originIcon = L.divIcon({
+        className: 'custom-marker origin-marker',
+        html: '<div class="marker-content"><MapPin className="w-5 h-5" /></div>',
+        iconSize: [30, 30],
+        iconAnchor: [15, 30]
+      })
 
-    const originMarker = L.marker([freightData.origin.lat, freightData.origin.lng], {
-      icon: originIcon
-    }).addTo(map);
+      const originMarker = L.marker([freightData.origin.lat, freightData.origin.lng], {
+        icon: originIcon
+      }).addTo(map)
 
-    originMarker.bindPopup(`
+      originMarker.bindPopup(`
       <div class="marker-popup">
         <h3>Origem</h3>
         <p>${freightData.origin.address}</p>
       </div>
-    `);
+    `)
 
-    // Marcador de destino
-    const destinationIcon = L.divIcon({
-      className: 'custom-marker destination-marker',
-      html: '<div class="marker-content"><MapPin className="w-5 h-5" /></div>',
-      iconSize: [30, 30],
-      iconAnchor: [15, 30]
-    });
+      // Marcador de destino
+      const destinationIcon = L.divIcon({
+        className: 'custom-marker destination-marker',
+        html: '<div class="marker-content"><MapPin className="w-5 h-5" /></div>',
+        iconSize: [30, 30],
+        iconAnchor: [15, 30]
+      })
 
-    const destinationMarker = L.marker([freightData.destination.lat, freightData.destination.lng], {
-      icon: destinationIcon
-    }).addTo(map);
+      const destinationMarker = L.marker([freightData.destination.lat, freightData.destination.lng], {
+        icon: destinationIcon
+      }).addTo(map)
 
-    destinationMarker.bindPopup(`
+      destinationMarker.bindPopup(`
       <div class="marker-popup">
         <h3>Destino</h3>
         <p>${freightData.destination.address}</p>
       </div>
-    `);
+    `)
 
-    // Ajustar visualização para mostrar ambos os marcadores
-    const group = new L.featureGroup([originMarker, destinationMarker]);
-    map.fitBounds(group.getBounds().pad(0.1));
+      // Ajustar visualização para mostrar ambos os marcadores
+      const group = new L.featureGroup([originMarker, destinationMarker])
+      map.fitBounds(group.getBounds().pad(0.1))
+    },
+    [map]
+  )
 
-  }, [map]);
+  const calculateRoute = useCallback(
+    async (origin, destination) => {
+      try {
+        // Carregar Leaflet dinamicamente
+        const L = await import('leaflet')
 
-  const calculateRoute = useCallback(async (origin, destination) => {
-    try {
-      // Carregar Leaflet dinamicamente
-      const L = await import('leaflet');
-      
-      // Simular cálculo de rota (em produção, usar serviço de roteamento)
-      const routeCoordinates = [
-        [origin.lat, origin.lng],
-        [-23.2000, -46.5000],
-        [-22.8000, -45.0000],
-        [-22.5000, -44.0000],
-        [destination.lat, destination.lng]
-      ];
+        // Simular cálculo de rota (em produção, usar serviço de roteamento)
+        const routeCoordinates = [
+          [origin.lat, origin.lng],
+          [-23.2, -46.5],
+          [-22.8, -45.0],
+          [-22.5, -44.0],
+          [destination.lat, destination.lng]
+        ]
 
-      const routePolyline = L.polyline(routeCoordinates, {
-        color: '#00ffbf',
-        weight: 4,
-        opacity: 0.8
-      }).addTo(map);
+        const routePolyline = L.polyline(routeCoordinates, {
+          color: '#00ffbf',
+          weight: 4,
+          opacity: 0.8
+        }).addTo(map)
 
-      setRoutePolyline(routePolyline);
+        setRoutePolyline(routePolyline)
 
-      analytics.trackEvent('route_calculated', {
-        freight_id: freightId,
-        route_points: routeCoordinates.length
-      });
+        analytics.trackEvent('route_calculated', {
+          freight_id: freightId,
+          route_points: routeCoordinates.length
+        })
+      } catch (error) {
+        console.error('Error calculating route:', error)
+      }
+    },
+    [map, freightId, analytics]
+  )
 
-    } catch (error) {
-      console.error('Error calculating route:', error);
-    }
-  }, [map, freightId, analytics]);
+  const updateEstimatedArrival = useCallback(
+    location => {
+      if (!estimatedArrival) return
 
-  const updateEstimatedArrival = useCallback((location) => {
-    if (!estimatedArrival) return;
+      // Simular recálculo do tempo estimado
+      const remainingDistance = Math.random() * 100; // km
+      const averageSpeed = 60; // km/h
+      const remainingTime = (remainingDistance / averageSpeed) * 60; // minutos
 
-    // Simular recálculo do tempo estimado
-    const remainingDistance = Math.random() * 100; // km
-    const averageSpeed = 60; // km/h
-    const remainingTime = (remainingDistance / averageSpeed) * 60; // minutos
-
-    const newArrival = new Date(Date.now() + remainingTime * 60 * 1000);
-    setEstimatedArrival(newArrival);
-  }, [estimatedArrival]);
+      const newArrival = new Date(Date.now() + remainingTime * 60 * 1000)
+      setEstimatedArrival(newArrival)
+    },
+    [estimatedArrival]
+  )
 
   const updateDriverLocation = useCallback(async () => {
     try {
       // Carregar Leaflet dinamicamente
-      const L = await import('leaflet');
-      
+      const L = await import('leaflet')
+
       // Simular atualização de localização (em produção, viria da API)
       const newLocation = {
         lat: -22.9068 + (Math.random() - 0.5) * 0.01,
@@ -215,17 +215,17 @@ const InteractiveFreightMap = ({
         timestamp: new Date(),
         speed: Math.floor(Math.random() * 80) + 20,
         heading: Math.floor(Math.random() * 360)
-      };
+      }
 
-      setDriverLocation(newLocation);
+      setDriverLocation(newLocation)
 
       if (map) {
         // Remover marcador anterior do motorista
-        map.eachLayer((layer) => {
+        map.eachLayer(layer => {
           if (layer.options && layer.options.className === 'driver-marker') {
-            map.removeLayer(layer);
+            map.removeLayer(layer)
           }
-        });
+        })
 
         // Adicionar novo marcador do motorista
         const driverIcon = L.divIcon({
@@ -238,11 +238,11 @@ const InteractiveFreightMap = ({
           `,
           iconSize: [30, 30],
           iconAnchor: [15, 30]
-        });
+        })
 
         const driverMarker = L.marker([newLocation.lat, newLocation.lng], {
           icon: driverIcon
-        }).addTo(map);
+        }).addTo(map)
 
         driverMarker.bindPopup(`
           <div class="marker-popup driver">
@@ -252,21 +252,20 @@ const InteractiveFreightMap = ({
             <p><strong>Velocidade:</strong> ${newLocation.speed} km/h</p>
             <p><strong>Última atualização:</strong> ${newLocation.timestamp.toLocaleTimeString()}</p>
           </div>
-        `);
+        `)
 
         // Atualizar rota estimada
-        updateEstimatedArrival(newLocation);
+        updateEstimatedArrival(newLocation)
       }
-
     } catch (error) {
-      console.error('Error updating driver location:', error);
+      console.error('Error updating driver location:', error)
     }
-  }, [map, driverInfo, updateEstimatedArrival]);
+  }, [map, driverInfo, updateEstimatedArrival])
 
   const loadFreightData = useCallback(async () => {
     try {
-      setIsLoading(true);
-      
+      setIsLoading(true)
+
       // Simular dados do frete (em produção, viria da API)
       const freightData = {
         id: freightId,
@@ -289,218 +288,209 @@ const InteractiveFreightMap = ({
         },
         status: 'in_transit',
         estimatedArrival: new Date(Date.now() + 4 * 60 * 60 * 1000) // 4 horas
-      };
+      }
 
-      setDriverInfo(freightData.driver);
-      setEstimatedArrival(freightData.estimatedArrival);
+      setDriverInfo(freightData.driver)
+      setEstimatedArrival(freightData.estimatedArrival)
 
       // Adicionar marcadores ao mapa
       if (map) {
-        addMarkersToMap(freightData);
-        calculateRoute(freightData.origin, freightData.destination);
+        addMarkersToMap(freightData)
+        calculateRoute(freightData.origin, freightData.destination)
       }
 
       analytics.trackEvent('freight_data_loaded', {
         freight_id: freightId,
         origin: freightData.origin.address,
         destination: freightData.destination.address
-      });
-
+      })
     } catch (error) {
-      console.error('Error loading freight data:', error);
-      setError('Erro ao carregar dados do frete');
+      console.error('Error loading freight data:', error)
+      setError('Erro ao carregar dados do frete')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  }, [freightId, driverId, map, analytics, addMarkersToMap, calculateRoute]);
+  }, [freightId, driverId, map, analytics, addMarkersToMap, calculateRoute])
 
   // Inicializar mapa
   useEffect(() => {
     if (mapRef.current && !map) {
-      initializeMap();
+      initializeMap()
     }
-  }, [map, initializeMap]);
+  }, [map, initializeMap])
 
   // Carregar dados do frete
   useEffect(() => {
     if (freightId) {
-      loadFreightData();
+      loadFreightData()
     }
-  }, [freightId, loadFreightData]);
+  }, [freightId, loadFreightData])
 
   // Rastreamento em tempo real
   useEffect(() => {
-    let interval;
+    let interval
     if (isTracking && driverId) {
       interval = setInterval(updateDriverLocation, 5000); // Atualizar a cada 5 segundos
     }
     return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [isTracking, driverId, updateDriverLocation]);
+      if (interval) clearInterval(interval)
+    }
+  }, [isTracking, driverId, updateDriverLocation])
 
   const toggleTracking = useCallback(() => {
-    setIsTracking(!isTracking);
+    setIsTracking(!isTracking)
     analytics.trackEvent('tracking_toggled', {
       freight_id: freightId,
       is_tracking: !isTracking
-    });
-  }, [isTracking, freightId, analytics]);
+    })
+  }, [isTracking, freightId, analytics])
 
   const toggleFullscreen = useCallback(() => {
-    setIsFullscreen(!isFullscreen);
+    setIsFullscreen(!isFullscreen)
     analytics.trackEvent('map_fullscreen_toggled', {
       freight_id: freightId,
       is_fullscreen: !isFullscreen
-    });
-  }, [isFullscreen, freightId, analytics]);
+    })
+  }, [isFullscreen, freightId, analytics])
 
   const refreshLocation = useCallback(() => {
     if (isTracking) {
-      updateDriverLocation();
-      analytics.trackEvent('location_refreshed', { freight_id: freightId });
+      updateDriverLocation()
+      analytics.trackEvent('location_refreshed', { freight_id: freightId })
     }
-  }, [isTracking, updateDriverLocation, freightId, analytics]);
+  }, [isTracking, updateDriverLocation, freightId, analytics])
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center" style={{ height }}>
-        <div className="text-center">
-          <div className="w-16 h-16 bg-agro-emerald rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+      <div className='flex items-center justify-center' style={{ height }}>
+        <div className='text-center'>
+          <div className='bg-agro-emerald mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl shadow-lg'>
+            <div className='h-8 w-8 animate-spin rounded-full border-b-2 border-white'></div>
           </div>
-          <p className="text-gray-600 dark:text-gray-300 text-xl">
-            {t('map.loading', 'Carregando mapa...')}
-          </p>
+          <p className='text-xl text-gray-600 dark:text-gray-300'>{t('map.loading', 'Carregando mapa...')}</p>
         </div>
       </div>
-    );
+    )
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center" style={{ height }}>
-        <div className="text-center">
-          <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <MapPin className="w-8 h-8 text-red-600" />
+      <div className='flex items-center justify-center' style={{ height }}>
+        <div className='text-center'>
+          <div className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-red-100'>
+            <MapPin className='h-8 w-8 text-red-600' />
           </div>
-          <p className="text-red-600 text-xl">{error}</p>
+          <p className='text-xl text-red-600'>{error}</p>
         </div>
       </div>
-    );
+    )
   }
 
   return (
     <div className={`relative ${isFullscreen ? 'fixed inset-0 z-50' : ''}`}>
       {/* Controles do mapa */}
       {showControls && (
-        <div className="absolute top-4 right-4 z-10 flex flex-col space-y-2">
+        <div className='absolute right-4 top-4 z-10 flex flex-col space-y-2'>
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={toggleTracking}
-            className={`p-3 rounded-lg shadow-lg transition-colors ${
-              isTracking 
-                ? 'bg-green-600 hover:bg-green-700 text-white' 
-                : 'bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
+            className={`rounded-lg p-3 shadow-lg transition-colors ${
+              isTracking
+                ? 'bg-green-600 text-white hover:bg-green-700'
+                : 'bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
             }`}
-            title={isTracking ? t('map.stopTracking', 'Parar rastreamento') : t('map.startTracking', 'Iniciar rastreamento')}
+            title={
+              isTracking ? t('map.stopTracking', 'Parar rastreamento') : t('map.startTracking', 'Iniciar rastreamento')
+            }
           >
-            {isTracking ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
+            {isTracking ? <Eye className='h-5 w-5' /> : <EyeOff className='h-5 w-5' />}
           </motion.button>
 
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={refreshLocation}
-            className="p-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg shadow-lg transition-colors"
+            className='rounded-lg bg-white p-3 text-gray-700 shadow-lg transition-colors hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
             title={t('map.refresh', 'Atualizar localização')}
           >
-            <RefreshCw className="w-5 h-5" />
+            <RefreshCw className='h-5 w-5' />
           </motion.button>
 
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={toggleFullscreen}
-            className="p-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg shadow-lg transition-colors"
+            className='rounded-lg bg-white p-3 text-gray-700 shadow-lg transition-colors hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
             title={isFullscreen ? t('map.exitFullscreen', 'Sair da tela cheia') : t('map.fullscreen', 'Tela cheia')}
           >
-            {isFullscreen ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
+            {isFullscreen ? <Minimize2 className='h-5 w-5' /> : <Maximize2 className='h-5 w-5' />}
           </motion.button>
         </div>
       )}
 
       {/* Informações do frete */}
-      <div className="absolute top-4 left-4 z-10 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 max-w-sm">
-        <div className="flex items-center mb-3">
-          <Truck className="w-5 h-5 text-blue-600 mr-2" />
-          <h3 className="font-semibold text-gray-900 dark:text-white">
+      <div className='absolute left-4 top-4 z-10 max-w-sm rounded-lg bg-white p-4 shadow-lg dark:bg-gray-800'>
+        <div className='mb-3 flex items-center'>
+          <Truck className='mr-2 h-5 w-5 text-blue-600' />
+          <h3 className='font-semibold text-gray-900 dark:text-white'>
             {t('map.freightInfo', 'Informações do Frete')}
           </h3>
         </div>
 
         {driverInfo && (
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">{t('map.driver', 'Motorista')}:</span>
-              <span className="text-gray-900 dark:text-white">{driverInfo.name}</span>
+          <div className='space-y-2 text-sm'>
+            <div className='flex justify-between'>
+              <span className='text-gray-600 dark:text-gray-400'>{t('map.driver', 'Motorista')}:</span>
+              <span className='text-gray-900 dark:text-white'>{driverInfo.name}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">{t('map.vehicle', 'Veículo')}:</span>
-              <span className="text-gray-900 dark:text-white">{driverInfo.vehicle}</span>
+            <div className='flex justify-between'>
+              <span className='text-gray-600 dark:text-gray-400'>{t('map.vehicle', 'Veículo')}:</span>
+              <span className='text-gray-900 dark:text-white'>{driverInfo.vehicle}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">{t('map.plate', 'Placa')}:</span>
-              <span className="text-gray-900 dark:text-white">{driverInfo.plate}</span>
+            <div className='flex justify-between'>
+              <span className='text-gray-600 dark:text-gray-400'>{t('map.plate', 'Placa')}:</span>
+              <span className='text-gray-900 dark:text-white'>{driverInfo.plate}</span>
             </div>
           </div>
         )}
 
         {driverLocation && (
-          <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
-            <div className="flex items-center mb-2">
-              <Navigation className="w-4 h-4 text-green-600 mr-2" />
-              <span className="text-sm font-medium text-gray-900 dark:text-white">
+          <div className='mt-3 border-t border-gray-200 pt-3 dark:border-gray-700'>
+            <div className='mb-2 flex items-center'>
+              <Navigation className='mr-2 h-4 w-4 text-green-600' />
+              <span className='text-sm font-medium text-gray-900 dark:text-white'>
                 {t('map.currentLocation', 'Localização Atual')}
               </span>
             </div>
-            <div className="space-y-1 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">{t('map.speed', 'Velocidade')}:</span>
-                <span className="text-gray-900 dark:text-white">{driverLocation.speed} km/h</span>
+            <div className='space-y-1 text-sm'>
+              <div className='flex justify-between'>
+                <span className='text-gray-600 dark:text-gray-400'>{t('map.speed', 'Velocidade')}:</span>
+                <span className='text-gray-900 dark:text-white'>{driverLocation.speed} km/h</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">{t('map.lastUpdate', 'Última atualização')}:</span>
-                <span className="text-gray-900 dark:text-white">
-                  {driverLocation.timestamp.toLocaleTimeString()}
-                </span>
+              <div className='flex justify-between'>
+                <span className='text-gray-600 dark:text-gray-400'>{t('map.lastUpdate', 'Última atualização')}:</span>
+                <span className='text-gray-900 dark:text-white'>{driverLocation.timestamp.toLocaleTimeString()}</span>
               </div>
             </div>
           </div>
         )}
 
         {estimatedArrival && (
-          <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
-            <div className="flex items-center mb-2">
-              <Clock className="w-4 h-4 text-orange-600 mr-2" />
-              <span className="text-sm font-medium text-gray-900 dark:text-white">
+          <div className='mt-3 border-t border-gray-200 pt-3 dark:border-gray-700'>
+            <div className='mb-2 flex items-center'>
+              <Clock className='mr-2 h-4 w-4 text-orange-600' />
+              <span className='text-sm font-medium text-gray-900 dark:text-white'>
                 {t('map.estimatedArrival', 'Chegada Estimada')}
               </span>
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              {estimatedArrival.toLocaleString('pt-BR')}
-            </p>
+            <p className='text-sm text-gray-600 dark:text-gray-400'>{estimatedArrival.toLocaleString('pt-BR')}</p>
           </div>
         )}
       </div>
 
       {/* Mapa */}
-      <div 
-        ref={mapRef} 
-        className="w-full rounded-lg shadow-lg"
-        style={{ height: isFullscreen ? '100vh' : height }}
-      />
+      <div ref={mapRef} className='w-full rounded-lg shadow-lg' style={{ height: isFullscreen ? '100vh' : height }} />
 
       {/* Status de rastreamento */}
       <AnimatePresence>
@@ -509,12 +499,10 @@ const InteractiveFreightMap = ({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="absolute bottom-4 left-4 z-10 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg flex items-center"
+            className='absolute bottom-4 left-4 z-10 flex items-center rounded-lg bg-green-600 px-4 py-2 text-white shadow-lg'
           >
-            <div className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></div>
-            <span className="text-sm font-medium">
-              {t('map.trackingActive', 'Rastreamento ativo')}
-            </span>
+            <div className='mr-2 h-2 w-2 animate-pulse rounded-full bg-white'></div>
+            <span className='text-sm font-medium'>{t('map.trackingActive', 'Rastreamento ativo')}</span>
           </motion.div>
         )}
       </AnimatePresence>
@@ -522,74 +510,74 @@ const InteractiveFreightMap = ({
       {/* Estilos CSS para marcadores */}
       <style jsx>{`
         .custom-marker {
-          background: transparent;
-          border: none;
+          background: transparent
+          border: none
         }
-        
+
         .marker-content {
-          width: 30px;
-          height: 30px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: white;
-          font-weight: bold;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+          width: 30px
+          height: 30px
+          border-radius: 50%
+          display: flex
+          align-items: center
+          justify-content: center
+          color: white
+          font-weight: bold
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3)
         }
-        
+
         .origin-marker .marker-content {
-          background: #3b82f6;
+          background: #3b82f6
         }
-        
+
         .destination-marker .marker-content {
-          background: #ef4444;
+          background: #ef4444
         }
-        
+
         .driver-marker .marker-content {
-          background: #10b981;
-          position: relative;
+          background: #10b981
+          position: relative
         }
-        
+
         .driver-marker .pulse-ring {
-          position: absolute;
-          top: -5px;
-          left: -5px;
-          right: -5px;
-          bottom: -5px;
-          border: 2px solid #10b981;
-          border-radius: 50%;
-          animation: pulse 2s infinite;
+          position: absolute
+          top: -5px
+          left: -5px
+          right: -5px
+          bottom: -5px
+          border: 2px solid #10b981
+          border-radius: 50%
+          animation: pulse 2s infinite
         }
-        
+
         @keyframes pulse {
           0% {
-            transform: scale(1);
-            opacity: 1;
+            transform: scale(1)
+            opacity: 1
           }
           100% {
-            transform: scale(1.4);
-            opacity: 0;
+            transform: scale(1.4)
+            opacity: 0
           }
         }
-        
+
         .marker-popup {
-          min-width: 200px;
+          min-width: 200px
         }
-        
+
         .marker-popup h3 {
-          margin: 0 0 8px 0;
-          font-size: 14px;
-          font-weight: 600;
+          margin: 0 0 8px 0
+          font-size: 14px
+          font-weight: 600
         }
-        
+
         .marker-popup p {
-          margin: 4px 0;
-          font-size: 12px;
+          margin: 4px 0
+          font-size: 12px
         }
       `}</style>
     </div>
-  );
-};
+  )
+}
 
-export default InteractiveFreightMap;
+export default InteractiveFreightMap

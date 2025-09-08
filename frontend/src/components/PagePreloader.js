@@ -1,38 +1,38 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { useTheme } from '../contexts/ThemeContext';
+import React from 'react'
+import { motion } from 'framer-motion'
+import { useTheme } from '../contexts/ThemeContext'
 
 const PagePreloader = ({ isLoading = true }) => {
-  const { isDark } = useTheme();
+  const { isDark } = useTheme()
 
-  if (!isLoading) return null;
+  if (!isLoading) return null
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center"
+      className='fixed inset-0 z-50 flex items-center justify-center'
       style={{
-        background: isDark 
+        background: isDark
           ? 'radial-gradient(circle, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.95) 100%)'
           : 'radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.95) 100%)'
       }}
     >
-      <div className="text-center">
+      <div className='text-center'>
         {/* Logo animado */}
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="mb-8"
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+          className='mb-8'
         >
-          <div className={`w-24 h-24 mx-auto rounded-2xl ${
-            isDark 
-              ? 'bg-gradient-to-br from-cyan-400 to-purple-500' 
-              : 'bg-gradient-to-br from-green-600 to-blue-600'
-          } flex items-center justify-center shadow-2xl`}>
-            <span className="text-3xl font-bold text-white">A</span>
+          <div
+            className={`mx-auto h-24 w-24 rounded-2xl ${
+              isDark ? 'bg-gradient-to-br from-cyan-400 to-purple-500' : 'bg-gradient-to-br from-green-600 to-blue-600'
+            } flex items-center justify-center shadow-2xl`}
+          >
+            <span className='text-3xl font-bold text-white'>A</span>
           </div>
         </motion.div>
 
@@ -41,9 +41,7 @@ const PagePreloader = ({ isLoading = true }) => {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className={`text-2xl font-bold mb-4 ${
-            isDark ? 'text-white' : 'text-gray-900'
-          }`}
+          className={`mb-4 text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}
         >
           AgroSync
         </motion.h2>
@@ -53,17 +51,15 @@ const PagePreloader = ({ isLoading = true }) => {
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="relative w-16 h-16 mx-auto"
+          className='relative mx-auto h-16 w-16'
         >
-          <div className={`w-16 h-16 border-4 rounded-full ${
-            isDark ? 'border-gray-700' : 'border-gray-200'
-          }`} />
+          <div className={`h-16 w-16 rounded-full border-4 ${isDark ? 'border-gray-700' : 'border-gray-200'}`} />
           <motion.div
-            className={`absolute top-0 left-0 w-16 h-16 border-4 rounded-full border-t-transparent ${
+            className={`absolute left-0 top-0 h-16 w-16 rounded-full border-4 border-t-transparent ${
               isDark ? 'border-cyan-400' : 'border-green-500'
             }`}
             animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
           />
         </motion.div>
 
@@ -72,9 +68,7 @@ const PagePreloader = ({ isLoading = true }) => {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.6 }}
-          className={`mt-6 text-sm ${
-            isDark ? 'text-gray-400' : 'text-gray-600'
-          }`}
+          className={`mt-6 text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}
         >
           Carregando...
         </motion.p>
@@ -84,14 +78,12 @@ const PagePreloader = ({ isLoading = true }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.8 }}
-          className="flex justify-center space-x-1 mt-4"
+          className='mt-4 flex justify-center space-x-1'
         >
-          {[0, 1, 2].map((i) => (
+          {[0, 1, 2].map(i => (
             <motion.div
               key={i}
-              className={`w-2 h-2 rounded-full ${
-                isDark ? 'bg-cyan-400' : 'bg-green-500'
-              }`}
+              className={`h-2 w-2 rounded-full ${isDark ? 'bg-cyan-400' : 'bg-green-500'}`}
               animate={{
                 scale: [1, 1.5, 1],
                 opacity: [0.5, 1, 0.5]
@@ -106,7 +98,7 @@ const PagePreloader = ({ isLoading = true }) => {
         </motion.div>
       </div>
     </motion.div>
-  );
-};
+  )
+}
 
-export default PagePreloader;
+export default PagePreloader

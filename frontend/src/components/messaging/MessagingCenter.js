@@ -1,107 +1,130 @@
-import React, { useState, // useEffect } from 'react';
-import { motion } from 'framer-';
-import { useTranslation } from 'react-i18next';
-import { useAuth } from '../../contexts/AuthContext';
-import { MessageSquare } from 'lucide-react';
-import ChatList from './ChatList';
-import PrivateChat from './PrivateChat';
+import React, { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ArrowLeft, MessageCircle, Search, Filter, MoreVertical } from 'lucide-react'
+import ChatList from './ChatList'
+import ChatWindow from './ChatWindow'
 
-const MessagingCenter = () => {
-  const {  } = useTranslation();
-  const {  } = // useAuth();
-  const [selectedChat, setSelectedChat] = useState(null);
-  const [isMobile, setIsMobile] = useState(false);
-  const [showChatList, setShowChatList] = useState(true);
+const MessagingCenter = ({ userId }) => {
+  const [selectedChat, setSelectedChat] = useState(null)
+  const [showChatList, setShowChatList] = useState(true)
+  const [isMobile, setIsMobile] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [filter, setFilter] = useState('all')
 
-  // useEffect(() => {
+  useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+      setIsMobile(window.innerWidth < 768)
+    }
 
-  // useEffect(() => {
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  useEffect(() => {
     if (isMobile && selectedChat) {
-      setShowChatList(false);
+      setShowChatList(false)
     } else {
-      setShowChatList(true);
+      setShowChatList(true)
     }
-  }, [selectedChat, isMobile]);
+  }, [isMobile, selectedChat])
 
-  const handleSelectChat = (chat) => {
-    setSelectedChat(chat);
-  };
-
-  const handleCloseChat = () => {
-    setSelectedChat(null);
+  const handleChatSelect = (chat) => {
+    setSelectedChat(chat)
     if (isMobile) {
-      setShowChatList(true);
+      setShowChatList(false)
     }
-  };
+  }
 
-  const // handleBackToList = () => {
-    setSelectedChat(null);
-    setShowChatList(true);
-  };
+  const handleBackToList = () => {
+    setShowChatList(true)
+    setSelectedChat(null)
+  }
+
+  const handleNewMessage = () => {
+    // Implementar criação de nova mensagem
+    console.log('Nova mensagem')
+  }
 
   return (
-    <div className="h-full bg-white dark:bg-slate-800">
-      <div className="flex h-full">
-        {/* Chat List - Desktop: Always visible, Mobile: Conditional */}
-        <// AnimatePresence>
-          {showChatList && (
-            <// motion.div
-              className={`${
-                isMobile 
-                  ? 'absolute inset-0 z-10' 
-                  : 'w-1/3 border-r border-slate-200 dark:border-slate-700'
-              }`}
-              initial={{ x: isMobile ? -320 : 0 }}
-              animate={{ x: 0 }}
-              exit={{ x: isMobile ? -320 : 0 }}
-              transition={{ duration: 0.3 }}
+    <div className="h-full flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center space-x-3">
+          {isMobile && !showChatList && (
+            <button
+              onClick={handleBackToList}
+              className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
             >
-              <ChatList 
-                onSelectChat={handleSelectChat}
-                selectedChatId={selectedChat?.id}
-              />
-            </// motion.div>
+              <ArrowLeft className="w-5 h-5" />
+            </button>
           )}
-        </// AnimatePresence>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
+            <MessageCircle className="w-5 h-5 mr-2 text-agro-emerald" />
+            Mensagens
+          </h2>
+        </div>
+        
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={handleNewMessage}
+            className="px-4 py-2 bg-agro-emerald text-white rounded-lg text-sm font-medium hover:bg-emerald-600 transition-colors"
+          >
+            Nova Mensagem
+          </button>
+          <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+            <MoreVertical className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
 
-        {/* Chat Area */}
+      {/* Main Content */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Chat List */}
+        <AnimatePresence>
+          {showChatList && (
+            <motion.div
+              initial={{ x: -300, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -300, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className={`${isMobile ? 'absolute inset-0 z-10' : 'w-1/3'} border-r border-gray-200 dark:border-gray-700`}
+            >
+              <ChatList
+                onChatSelect={handleChatSelect}
+                selectedChatId={selectedChat?.id}
+                searchTerm={searchTerm}
+                filter={filter}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Chat Window */}
         <div className={`${isMobile ? 'w-full' : 'w-2/3'} flex flex-col`}>
           {selectedChat ? (
-            <PrivateChat
-              chatId={selectedChat.id}
-              otherUser={selectedChat.otherUser}
-              onClose={handleCloseChat}
-              context={selectedChat.context}
+            <ChatWindow
+              chat={selectedChat}
+              onBack={handleBackToList}
+              isMobile={isMobile}
             />
           ) : (
-            <div className="flex-1 flex items-center justify-center p-8">
+            <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
-                <MessageSquare className="w-24 h-24 text-slate-400 mx-auto mb-6" />
-                <h2 className="text-2xl font-bold text-slate-600 dark:text-slate-400 mb-4">
-                  {// t('messaging.welcome', 'Bem-vindo ao Centro de Mensagens')}
-                </h2>
-                <p className="text-slate-500 dark:text-slate-500 mb-6 max-w-md">
-                  {// t('messaging.description', 'Selecione uma conversa para começar a conversar ou inicie uma nova conversa.')}
+                <MessageCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                  Selecione uma conversa
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Escolha uma conversa da lista para começar a conversar
                 </p>
-                <button className="px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2 mx-auto">
-                  <// Plus className="w-5 h-5" />
-                  {// t('messaging.newConversation', 'Nova Conversa')}
-                </button>
               </div>
             </div>
           )}
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MessagingCenter;
+export default MessagingCenter

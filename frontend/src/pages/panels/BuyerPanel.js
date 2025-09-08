@@ -1,396 +1,333 @@
-import React, { useState, // useEffect } from 'react';
-import { motion } from 'framer-';
-import { useTranslation } from 'react-i18next';
-import { useAuth } from '../../contexts/AuthContext';
-import { ShoppingCart, MessageSquare, Bell, LogOut } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
+import { ShoppingCart, MessageSquare, Bell, LogOut, DollarSign, Package } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../contexts/AuthContext'
 
 const BuyerPanel = () => {
-  const {  } = useTranslation();
-  const { logout } = // useAuth();
-  const navigate = useNavigate();
-  
-  const [// activeTab, // setActiveTab] = useState('orders');
-  const [// loading, // setLoading] = useState(false);
-  const [orders, setOrders] = useState([]);
-  const [favorites, setFavorites] = useState([]);
-  const [// notifications, setNotifications] = useState([]);
+  const { t } = useTranslation()
+  const { logout } = useAuth()
+  const navigate = useNavigate()
 
-  // useEffect(() => {
-    loadBuyerData();
-  }, []);
+  const [activeTab, setActiveTab] = useState('orders')
+  const [loading, setLoading] = useState(false)
+  const [orders, setOrders] = useState([])
+  const [messages, setMessages] = useState([])
+  const [notifications, setNotifications] = useState([])
+  const [stats, setStats] = useState({})
+
+  useEffect(() => {
+    loadBuyerData()
+  }, [])
 
   const loadBuyerData = async () => {
-    // setLoading(true);
+    setLoading(true)
     try {
-      // Simular carregamento de dados
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Dados mockados
-      setOrders([
-        {
-          id: 'ORD-001',
-          product: 'Soja Premium',
-          seller: 'Fazenda São José',
-          amount: 15000,
-          status: 'pending',
-          date: '2024-01-15',
-          delivery: '2024-01-20'
-        },
-        {
-          id: 'ORD-002',
-          product: 'Milho Orgânico',
-          seller: 'Agro Verde Ltda',
-          amount: 8500,
-          status: 'delivered',
-          date: '2024-01-10',
-          delivery: '2024-01-12'
-        }
-      ]);
+      const response = await fetch('/api/buyer/dashboard')
+      const data = await response.json()
 
-      setFavorites([
-        {
-          id: 'FAV-001',
-          product: 'Trigo Premium',
-          seller: 'Cereal Brasil',
-          price: 1200,
-          rating: 4.8
-        }
-      ]);
-
-      setNotifications([
-        {
-          id: 'NOT-001',
-          type: 'order_update',
-          message: 'Seu pedido ORD-001 foi confirmado',
-          date: '2024-01-15T10:30:00Z',
-          read: false
-        }
-      ]);
+      if (data.success) {
+        setOrders(data.orders)
+        setMessages(data.messages)
+        setNotifications(data.notifications)
+        setStats(data.stats)
+      }
     } catch (error) {
-      console.error('Erro ao carregar dados:', error);
+      console.error('Erro ao carregar dados do comprador:', error)
     } finally {
-      // setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
+  const handleLogout = async () => {
+    try {
+      await logout()
+      navigate('/login')
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error)
+    }
+  }
 
-  const tabs = [
-    { id: 'orders', label: // t('buyerPanel.orders', 'Pedidos'), icon: // Package },
-    { id: 'favorites', label: // t('buyerPanel.favorites', 'Favoritos'), icon: // Heart },
-    { id: '// messages', label: // t('buyerPanel.// messages', 'Mensagens'), icon: MessageSquare },
-    { id: '// notifications', label: // t('buyerPanel.// notifications', 'Notificações'), icon: Bell },
-    { id: 'settings', label: // t('buyerPanel.settings', 'Configurações'), icon: // Settings }
-  ];
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(value)
+  }
 
-  const renderOrders = () => (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-          {// t('buyerPanel.myOrders', 'Meus Pedidos')}
-        </h3>
-        <Link
-          to="/store"
-          className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2"
-        >
-          <// Plus className="w-4 h-4" />
-          {// t('buyerPanel.newOrder', 'Novo Pedido')}
-        </Link>
-      </div>
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    })
+  }
 
-      <div className="grid gap-4">
-        {orders.map((order) => (
-          <// motion.div
-            key={order.id}
-            className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className="flex justify-between items-start">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <h4 className="font-semibold text-slate-800 dark:text-slate-200">
-                    {order.product}
-                  </h4>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    order.status === 'pending' 
-                      ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-                      : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                  }`}>
-                    {// t(`orderStatus.${order.status}`, order.status)}
-                  </span>
-                </div>
-                <p className="text-slate-600 dark:text-slate-400 text-sm mb-2">
-                  {// t('buyerPanel.seller', 'Vendedor')}: {order.seller}
-                </p>
-                <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
-                  <div className="flex items-center gap-1">
-                    <// DollarSign className="w-4 h-4" />
-                    {new Intl.NumberFormat('pt-BR', { 
-                      style: 'currency', 
-                      currency: 'BRL' 
-                    }).format(order.amount)}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <// Calendar className="w-4 h-4" />
-                    {new Date(order.date).toLocaleDateString('pt-BR')}
-                  </div>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <Link
-                  to={`/// messages?order=${order.id}`}
-                  className="p-2 text-slate-500 hover:text-emerald-600 transition-colors"
-                  title={// t('buyerPanel.contactSeller', 'Contatar Vendedor')}
-                >
-                  <MessageSquare className="w-5 h-5" />
-                </Link>
-                <button
-                  className="p-2 text-slate-500 hover:text-emerald-600 transition-colors"
-                  title={// t('buyerPanel.viewDetails', 'Ver Detalhes')}
-                >
-                  <// TrendingUp className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-          </// motion.div>
-        ))}
-      </div>
-    </div>
-  );
-
-  const renderFavorites = () => (
-    <div className="space-y-4">
-      <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-        {// t('buyerPanel.favoriteProducts', 'Produtos Favoritos')}
-      </h3>
-      
-      <div className="grid gap-4">
-        {favorites.map((favorite) => (
-          <// motion.div
-            key={favorite.id}
-            className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className="flex justify-between items-start">
-              <div className="flex-1">
-                <h4 className="font-semibold text-slate-800 dark:text-slate-200 mb-2">
-                  {favorite.product}
-                </h4>
-                <p className="text-slate-600 dark:text-slate-400 text-sm mb-2">
-                  {// t('buyerPanel.seller', 'Vendedor')}: {favorite.seller}
-                </p>
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-1">
-                    <// DollarSign className="w-4 h-4 text-emerald-600" />
-                    <span className="font-semibold text-emerald-600">
-                      {new Intl.NumberFormat('pt-BR', { 
-                        style: 'currency', 
-                        currency: 'BRL' 
-                      }).format(favorite.price)}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <// Star className="w-4 h-4 text-yellow-500" />
-                    <span className="text-sm text-slate-600 dark:text-slate-400">
-                      {favorite.rating}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <button className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
-                  {// t('buyerPanel.buyNow', 'Comprar Agora')}
-                </button>
-                <button className="p-2 text-red-500 hover:text-red-600 transition-colors">
-                  <// Heart className="w-5 h-5 fill-current" />
-                </button>
-              </div>
-            </div>
-          </// motion.div>
-        ))}
-      </div>
-    </div>
-  );
-
-  const renderContent = () => {
-    switch (// activeTab) {
-      case 'orders':
-        return renderOrders();
-      case 'favorites':
-        return renderFavorites();
-      case '// messages':
-        return (
-          <div className="text-center py-12">
-            <MessageSquare className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-slate-600 dark:text-slate-400 mb-2">
-              {// t('buyerPanel.noMessages', 'Nenhuma mensagem')}
-            </h3>
-            <p className="text-slate-500 dark:text-slate-500">
-              {// t('buyerPanel.noMessagesDesc', 'Suas conversas com vendedores aparecerão aqui')}
-            </p>
-          </div>
-        );
-      case '// notifications':
-        return (
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-              {// t('buyerPanel.// notifications', 'Notificações')}
-            </h3>
-            {// notifications.map((notification) => (
-              <div key={notification.id} className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
-                <p className="text-slate-800 dark:text-slate-200">{notification.message}</p>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                  {new Date(notification.date).toLocaleString('pt-BR')}
-                </p>
-              </div>
-            ))}
-          </div>
-        );
-      case 'settings':
-        return (
-          <div className="space-y-6">
-            <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-              {// t('buyerPanel.settings', 'Configurações')}
-            </h3>
-            
-            <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-              <h4 className="font-semibold text-slate-800 dark:text-slate-200 mb-4">
-                {// t('buyerPanel.accountSettings', 'Configurações da Conta')}
-              </h4>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                    {// t('buyerPanel.email', 'Email')}
-                  </label>
-                  <input
-                    type="email"
-                    value={// user?.email || ''}
-                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
-                    readOnly
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                    {// t('buyerPanel.name', 'Nome')}
-                  </label>
-                  <input
-                    type="text"
-                    value={// user?.name || ''}
-                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
-                  />
-                </div>
-              </div>
-              
-              <div className="mt-6 pt-6 border-// t border-slate-200 dark:border-slate-700">
-                <button
-                  onClick={handleLogout}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
-                >
-                  <LogOut className="w-4 h-4" />
-                  {// t('buyerPanel.logout', 'Sair')}
-                </button>
-              </div>
-            </div>
-          </div>
-        );
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'pending':
+        return 'text-yellow-600 dark:text-yellow-400'
+      case 'confirmed':
+        return 'text-blue-600 dark:text-blue-400'
+      case 'shipped':
+        return 'text-purple-600 dark:text-purple-400'
+      case 'delivered':
+        return 'text-green-600 dark:text-green-400'
+      case 'cancelled':
+        return 'text-red-600 dark:text-red-400'
       default:
-        return null;
+        return 'text-gray-600 dark:text-gray-400'
     }
-  };
+  }
 
-  if (// loading) {
+  if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-          <p className="text-slate-600 dark:text-slate-400">
-            {// t('buyerPanel.// loading', 'Carregando painel...')}
-          </p>
-        </div>
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-agro-emerald"></div>
       </div>
-    );
+    )
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      {/* Header */}
-      <div className="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
+          <ShoppingCart className="w-5 h-5 mr-2 text-agro-emerald" />
+          Painel do Comprador
+        </h2>
+        <button
+          onClick={handleLogout}
+          className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+        >
+          <LogOut className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Estatísticas */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-                {// t('buyerPanel.title', 'Painel do Comprador')}
-              </h1>
-              <p className="text-slate-600 dark:text-slate-400">
-                {// t('buyerPanel.welcome', 'Bem-vindo')}, {// user?.name || // user?.email}
+              <p className="text-sm text-gray-600 dark:text-gray-400">Pedidos</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {stats.totalOrders || 0}
               </p>
             </div>
-            <div className="flex items-center gap-4">
-              <Link
-                to="/store"
-                className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2"
-              >
-                <// ShoppingCart className="w-4 h-4" />
-                {// t('buyerPanel.goToStore', 'Ir para Loja')}
-              </Link>
+            <ShoppingCart className="w-8 h-8 text-gray-400" />
+          </div>
+        </div>
+
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Mensagens</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {stats.unreadMessages || 0}
+              </p>
             </div>
+            <MessageSquare className="w-8 h-8 text-gray-400" />
+          </div>
+        </div>
+
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Notificações</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {stats.unreadNotifications || 0}
+              </p>
+            </div>
+            <Bell className="w-8 h-8 text-gray-400" />
+          </div>
+        </div>
+
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Total Gasto</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {formatCurrency(stats.totalSpent || 0)}
+              </p>
+            </div>
+            <DollarSign className="w-8 h-8 text-gray-400" />
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex gap-8">
-          {/* Sidebar */}
-          <div className="w-64 flex-shrink-0">
-            <nav className="space-y-2">
-              {tabs.map((tab) => {
-                const Icon = tab.icon;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => // setActiveTab(tab.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
-                      // activeTab === tab.id
-                        ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200'
-                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-                    }`}
-                  >
-                    <Icon className="w-5 h-5" />
-                    {tab.label}
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
+      {/* Tabs */}
+      <div className="border-b border-gray-200 dark:border-gray-700 mb-6">
+        <nav className="flex space-x-8">
+          {[
+            { id: 'orders', name: 'Pedidos', icon: ShoppingCart },
+            { id: 'messages', name: 'Mensagens', icon: MessageSquare },
+            { id: 'notifications', name: 'Notificações', icon: Bell }
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center space-x-2 ${
+                activeTab === tab.id
+                  ? 'border-agro-emerald text-agro-emerald'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+              }`}
+            >
+              <tab.icon className="w-4 h-4" />
+              <span>{tab.name}</span>
+            </button>
+          ))}
+        </nav>
+      </div>
 
-          {/* Content */}
-          <div className="flex-1">
-            <// AnimatePresence mode="wait">
-              <// motion.div
-                key={// activeTab}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                {renderContent()}
-              </// motion.div>
-            </// AnimatePresence>
-          </div>
+      {/* Conteúdo das tabs */}
+      {activeTab === 'orders' && (
+        <div className="space-y-4">
+          {orders.map((order) => (
+            <motion.div
+              key={order.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-gray-300 dark:bg-gray-600 rounded-lg flex items-center justify-center">
+                    <Package className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 dark:text-white">
+                      {order.product?.name || 'Produto'}
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Quantidade: {order.quantity}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <div className="text-right">
+                    <p className="font-semibold text-gray-900 dark:text-white">
+                      {formatCurrency(order.total)}
+                    </p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {formatDate(order.createdAt)}
+                    </p>
+                  </div>
+                  <div className={`flex items-center space-x-1 ${getStatusColor(order.status)}`}>
+                    <span className="text-sm font-medium">
+                      {order.status}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      )}
+
+      {activeTab === 'messages' && (
+        <div className="space-y-4">
+          {messages.map((message) => (
+            <motion.div
+              key={message.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div className="w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {message.sender?.name?.charAt(0) || 'S'}
+                    </span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 dark:text-white">
+                      {message.sender?.name || 'Remetente'}
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {message.subject}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {formatDate(message.createdAt)}
+                  </p>
+                  {!message.read && (
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-1"></div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      )}
+
+      {activeTab === 'notifications' && (
+        <div className="space-y-4">
+          {notifications.map((notification) => (
+            <motion.div
+              key={notification.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div className="p-2 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
+                    <Bell className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 dark:text-white">
+                      {notification.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {notification.message}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {formatDate(notification.createdAt)}
+                  </p>
+                  {!notification.read && (
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-1"></div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      )}
+
+      {/* Ações rápidas */}
+      <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+        <h3 className="font-semibold text-gray-900 dark:text-white mb-3">
+          Ações Rápidas
+        </h3>
+        <div className="flex flex-wrap gap-3">
+          <Link
+            to="/marketplace"
+            className="px-4 py-2 bg-agro-emerald text-white rounded-lg text-sm font-medium hover:bg-emerald-600 transition-colors"
+          >
+            Ver Produtos
+          </Link>
+          <Link
+            to="/messages"
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+          >
+            Mensagens
+          </Link>
+          <Link
+            to="/profile"
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+          >
+            Perfil
+          </Link>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default BuyerPanel;
+export default BuyerPanel

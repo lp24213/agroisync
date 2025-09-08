@@ -1,87 +1,151 @@
-import React, { useState, // useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-';
-import { FileText, Loader2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
+import { FileText, Loader2, CheckCircle, Clock, AlertCircle, DollarSign, Zap, ExternalLink } from 'lucide-react'
 
 const SmartContractManager = ({ userId }) => {
-  const {  } = useTranslation();
-  const [contracts, setContracts] = useState([]);
-  const [// loading, // setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const { t } = useTranslation()
+  const [contracts, setContracts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [totalValue, setTotalValue] = useState(0)
+  const [activeContracts, setActiveContracts] = useState(0)
 
-  // useEffect(() => {
-    // fetchContracts();
-  }, [userId]);
+  useEffect(() => {
+    fetchContractData()
+  }, [userId])
 
-  const // fetchContracts = async () => {
-    // setLoading(true);
+  const fetchContractData = async () => {
+    setLoading(true)
     try {
-      const response = await fetch(`/api/blockchain/contracts?userId=${userId}`);
-      const data = await response.json();
-      
+      const response = await fetch(`/api/blockchain/contracts?userId=${userId}`)
+      const data = await response.json()
+
       if (data.success) {
-        setContracts(data.contracts);
+        setContracts(data.contracts)
+        setTotalValue(data.totalValue)
+        setActiveContracts(data.activeContracts)
       } else {
-        setError(data.message);
+        setError(data.message)
       }
     } catch (err) {
-      setError(// t('contracts.error', 'Erro ao carregar contratos'));
+      setError(t('contract.error', 'Erro ao carregar dados de contratos'))
     } finally {
-      // setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const getStatusIcon = (status) => {
     switch (status) {
       case 'active':
-        return <// CheckCircle className="w-5 h-5 text-green-600" />;
+        return <CheckCircle className="w-5 h-5 text-green-600" />
       case 'pending':
-        return <// Clock className="w-5 h-5 text-yellow-600" />;
-      case 'expired':
-        return <// AlertCircle className="w-5 h-5 text-red-600" />;
+        return <Clock className="w-5 h-5 text-yellow-600" />
+      case 'completed':
+        return <CheckCircle className="w-5 h-5 text-blue-600" />
       default:
-        return <// Clock className="w-5 h-5 text-gray-600" />;
+        return <Clock className="w-5 h-5 text-gray-600" />
     }
-  };
+  }
 
-  if (// loading) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
         <Loader2 className="w-8 h-8 animate-spin text-agro-emerald" />
         <span className="ml-3 text-gray-600 dark:text-gray-300">
-          {// t('contracts.// loading', 'Carregando contratos...')}
+          {t('contract.loading', 'Carregando dados de contratos...')}
         </span>
       </div>
-    );
+    )
   }
 
   return (
-    <// motion.div
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
     >
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
-        <// FileText className="w-6 h-6 mr-2 text-agro-emerald" />
-        {// t('contracts.title', 'Contratos Inteligentes')}
-      </h2>
-      
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+          <FileText className="w-6 h-6 mr-2 text-agro-emerald" />
+          {t('contract.title', 'Smart Contract Manager')}
+        </h2>
+      </div>
+
       {error && (
-        <div className="text-red-500 mb-4">{error}</div>
+        <div className="text-red-500 mb-4 flex items-center">
+          <AlertCircle className="w-5 h-5 mr-2" />
+          {error}
+        </div>
       )}
 
+      {/* Resumo */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {t('contract.totalValue', 'Valor Total')}
+              </p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                ${totalValue.toFixed(2)}
+              </p>
+            </div>
+            <DollarSign className="w-8 h-8 text-gray-400" />
+          </div>
+        </div>
+
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {t('contract.activeContracts', 'Contratos Ativos')}
+              </p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {activeContracts}
+              </p>
+            </div>
+            <FileText className="w-8 h-8 text-gray-400" />
+          </div>
+        </div>
+
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {t('contract.totalContracts', 'Total de Contratos')}
+              </p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {contracts.length}
+              </p>
+            </div>
+            <FileText className="w-8 h-8 text-gray-400" />
+          </div>
+        </div>
+      </div>
+
+      {/* Contratos */}
       {contracts.length === 0 ? (
-        <p className="text-gray-600 dark:text-gray-400">
-          {// t('contracts.noContracts', 'Nenhum contrato encontrado')}
-        </p>
+        <div className="text-center py-8">
+          <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            {t('contract.noContracts', 'Nenhum contrato encontrado')}
+          </p>
+        </div>
       ) : (
         <div className="space-y-4">
           {contracts.map((contract) => (
-            <div key={contract.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="font-semibold text-gray-900 dark:text-white">
-                  {contract.title}
-                </h3>
+            <div key={contract.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">
+                    {contract.name}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {contract.description}
+                  </p>
+                </div>
+
                 <div className="flex items-center space-x-2">
                   {getStatusIcon(contract.status)}
                   <span className="text-sm text-gray-600 dark:text-gray-400">
@@ -89,25 +153,56 @@ const SmartContractManager = ({ userId }) => {
                   </span>
                 </div>
               </div>
-              
-              <p className="text-gray-600 dark:text-gray-400 mb-3">
-                {contract.description}
-              </p>
-              
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-4">
+                <div>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {t('contract.value', 'Valor')}:
+                  </p>
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    ${contract.value.toFixed(2)}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {t('contract.transactions', 'Transações')}:
+                  </p>
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    {contract.transactions}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {t('contract.fee', 'Taxa')}:
+                  </p>
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    {contract.fee}%
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {t('contract.speed', 'Velocidade')}:
+                  </p>
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    {contract.speed}
+                  </p>
+                </div>
+              </div>
+
               <div className="flex items-center justify-between">
                 <div className="text-sm text-gray-500 dark:text-gray-400">
-                  {// t('contracts.created', 'Criado em')}: {contract.createdAt}
+                  {t('contract.lastActivity', 'Última Atividade')}: {contract.lastActivity}
                 </div>
-                
+
                 <div className="flex space-x-2">
                   <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                    <// Eye className="w-4 h-4" />
+                    <Zap className="w-4 h-4" />
                   </button>
                   <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                    <// Copy className="w-4 h-4" />
-                  </button>
-                  <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                    <// Download className="w-4 h-4" />
+                    <ExternalLink className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -115,8 +210,8 @@ const SmartContractManager = ({ userId }) => {
           ))}
         </div>
       )}
-    </// motion.div>
-  );
-};
+    </motion.div>
+  )
+}
 
-export default SmartContractManager;
+export default SmartContractManager

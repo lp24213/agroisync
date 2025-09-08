@@ -1,4 +1,4 @@
-import { environment } from './environment.js';
+import { environment } from './environment.js'
 
 // Configuração da aplicação
 export const config = {
@@ -47,6 +47,6 @@ export const config = {
     reconnectInterval: 5000,
     maxReconnectAttempts: 10
   }
-};
+}
 
-export default config;
+export default config

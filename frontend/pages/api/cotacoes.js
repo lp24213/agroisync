@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   }
 
   const { regiao } = req.query;
-  
+
   if (!regiao) {
     return res.status(400).json({ error: 'Parâmetro "regiao" é obrigatório' });
   }
@@ -48,7 +48,7 @@ export default async function handler(req, res) {
 
     // Buscar cotações para a região específica
     let cotacoes = cotacoesPorRegiao[regiao];
-    
+
     // Se não encontrar a região específica, usar dados genéricos do Brasil
     if (!cotacoes) {
       cotacoes = [
@@ -72,7 +72,7 @@ export default async function handler(req, res) {
     res.status(200).json(response);
   } catch (error) {
     console.error('Erro ao obter cotações:', error);
-    
+
     // Dados de fallback em caso de erro
     const fallbackData = {
       regiao: regiao,
@@ -85,7 +85,7 @@ export default async function handler(req, res) {
       ],
       totalProdutos: 3
     };
-    
+
     res.status(200).json(fallbackData);
   }
 }

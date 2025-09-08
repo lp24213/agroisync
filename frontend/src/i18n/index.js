@@ -1,13 +1,13 @@
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
-import Backend from 'i18next-http-backend';
+import i18n from 'i18next'
+import { initReactI18next } from 'react-i18next'
+import LanguageDetector from 'i18next-browser-languagedetector'
+import Backend from 'i18next-http-backend'
 
 // Import translations
-import ptTranslations from './locales/pt.json';
-import enTranslations from './locales/en.json';
-import esTranslations from './locales/es.json';
-import zhTranslations from './locales/zh.json';
+import ptTranslations from './locales/pt.json'
+import enTranslations from './locales/en.json'
+import esTranslations from './locales/es.json'
+import zhTranslations from './locales/zh.json'
 
 const resources = {
   pt: {
@@ -22,7 +22,7 @@ const resources = {
   zh: {
     translation: zhTranslations
   }
-};
+}
 
 i18n
   .use(Backend)
@@ -32,7 +32,7 @@ i18n
     resources,
     fallbackLng: 'pt',
     debug: process.env.NODE_ENV === 'development',
-    
+
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],
@@ -43,19 +43,20 @@ i18n
       escapeValue: false,
       format: (value, format, lng) => {
         if (format === 'currency') {
-          return new Intl.NumberFormat(lng === 'pt' ? 'pt-BR' : 
-                                      lng === 'es' ? 'es-ES' :
-                                      lng === 'zh' ? 'zh-CN' : 'en-US', {
-            style: 'currency',
-            currency: 'BRL'
-          }).format(value);
+          return new Intl.NumberFormat(
+            lng === 'pt' ? 'pt-BR' : lng === 'es' ? 'es-ES' : lng === 'zh' ? 'zh-CN' : 'en-US',
+            {
+              style: 'currency',
+              currency: 'BRL'
+            }
+          ).format(value)
         }
         if (format === 'date') {
-          return new Intl.DateTimeFormat(lng === 'pt' ? 'pt-BR' : 
-                                        lng === 'es' ? 'es-ES' :
-                                        lng === 'zh' ? 'zh-CN' : 'en-US').format(new Date(value));
+          return new Intl.DateTimeFormat(
+            lng === 'pt' ? 'pt-BR' : lng === 'es' ? 'es-ES' : lng === 'zh' ? 'zh-CN' : 'en-US'
+          ).format(new Date(value))
         }
-        return value;
+        return value
       }
     },
 
@@ -66,6 +67,6 @@ i18n
     react: {
       useSuspense: false
     }
-  });
+  })
 
-export default i18n;
+export default i18n

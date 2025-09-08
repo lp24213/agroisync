@@ -1,18 +1,16 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom';
-import Navbar from './Navbar';
-import Footer from './Footer';
+import React from 'react'
+import { Outlet } from 'react-router-dom'
+import Navbar from './Navbar'
+import Footer from './Footer'
 
 const Layout = ({ children }) => {
   return (
-    <div className="min-h-screen bg-primary">
+    <div className='bg-primary min-h-screen'>
       <Navbar />
-      <main className="relative">
-        {children || <Outlet />}
-      </main>
+      <main className='relative'>{children || <Outlet />}</main>
       <Footer />
     </div>
-  );
-};
+  )
+}
 
-export default Layout;
+export default Layout

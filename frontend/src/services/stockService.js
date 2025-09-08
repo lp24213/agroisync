@@ -1,33 +1,33 @@
-import axios from 'axios';
+import axios from 'axios'
 
 class StockService {
   constructor() {
-    this.alphaVantageApiKey = process.env.REACT_APP_ALPHA_VANTAGE_API_KEY || 'your_alpha_vantage_api_key';
-    this.iexApiKey = process.env.REACT_APP_IEX_API_KEY || 'your_iex_api_key';
-    this.baseUrl = 'https://www.alphavantage.co/query';
-    this.iexUrl = 'https://cloud.iexapis.com/stable';
+    this.alphaVantageApiKey = process.env.REACT_APP_ALPHA_VANTAGE_API_KEY || 'your_alpha_vantage_api_key'
+    this.iexApiKey = process.env.REACT_APP_IEX_API_KEY || 'your_iex_api_key'
+    this.baseUrl = 'https://www.alphavantage.co/query'
+    this.iexUrl = 'https://cloud.iexapis.com/stable'
   }
 
   // Obter cotações em tempo real
   async getRealTimeQuotes(symbols = ['PETR4', 'VALE3', 'ITUB4', 'BBDC4', 'ABEV3']) {
     try {
-      const quotes = [];
-      
+      const quotes = []
+
       for (const symbol of symbols) {
         try {
-          const quote = await this.getQuote(symbol);
+          const quote = await this.getQuote(symbol)
           if (quote) {
-            quotes.push(quote);
+            quotes.push(quote)
           }
         } catch (error) {
-          console.error(`Erro ao obter cotação para ${symbol}:`, error);
+          console.error(`Erro ao obter cotação para ${symbol}:`, error)
         }
       }
-      
-      return quotes;
+
+      return quotes
     } catch (error) {
-      console.error('Erro ao obter cotações:', error);
-      throw new Error('Não foi possível obter cotações em tempo real');
+      console.error('Erro ao obter cotações:', error)
+      throw new Error('Não foi possível obter cotações em tempo real')
     }
   }
 
@@ -40,17 +40,17 @@ class StockService {
           symbol: symbol,
           apikey: this.alphaVantageApiKey
         }
-      });
+      })
 
       if (response.data['Global Quote']) {
-        const data = response.data['Global Quote'];
-        return this.formatQuote(data, symbol);
+        const data = response.data['Global Quote']
+        return this.formatQuote(data, symbol)
       } else {
-        throw new Error('Dados de cotação não encontrados');
+        throw new Error('Dados de cotação não encontrados')
       }
     } catch (error) {
-      console.error(`Erro ao obter cotação para ${symbol}:`, error);
-      return null;
+      console.error(`Erro ao obter cotação para ${symbol}:`, error)
+      return null
     }
   }
 
@@ -65,16 +65,16 @@ class StockService {
           outputsize: outputsize,
           apikey: this.alphaVantageApiKey
         }
-      });
+      })
 
       if (response.data['Time Series (1min)']) {
-        return this.formatHistoricalData(response.data['Time Series (1min)']);
+        return this.formatHistoricalData(response.data['Time Series (1min)'])
       } else {
-        throw new Error('Dados históricos não encontrados');
+        throw new Error('Dados históricos não encontrados')
       }
     } catch (error) {
-      console.error(`Erro ao obter dados históricos para ${symbol}:`, error);
-      throw error;
+      console.error(`Erro ao obter dados históricos para ${symbol}:`, error)
+      throw error
     }
   }
 
@@ -128,7 +128,7 @@ class StockService {
           volume: 78901200,
           marketCap: 23400000000
         }
-      ];
+      ]
 
       // Simular variações em tempo real
       return brazilianStocks.map(stock => ({
@@ -137,10 +137,10 @@ class StockService {
         change: this.simulateChange(stock.change),
         changePercent: this.simulateChangePercent(stock.changePercent),
         volume: this.simulateVolume(stock.volume)
-      }));
+      }))
     } catch (error) {
-      console.error('Erro ao obter dados do mercado brasileiro:', error);
-      throw error;
+      console.error('Erro ao obter dados do mercado brasileiro:', error)
+      throw error
     }
   }
 
@@ -153,7 +153,7 @@ class StockService {
           name: 'Soja',
           price: 125.67,
           change: 2.34,
-          changePercent: 1.90,
+          changePercent: 1.9,
           unit: 'USD/bushel',
           exchange: 'CBOT'
         },
@@ -162,7 +162,7 @@ class StockService {
           name: 'Milho',
           price: 4.89,
           change: -0.12,
-          changePercent: -2.40,
+          changePercent: -2.4,
           unit: 'USD/bushel',
           exchange: 'CBOT'
         },
@@ -193,7 +193,7 @@ class StockService {
           unit: 'USD/lb',
           exchange: 'ICE'
         }
-      ];
+      ]
 
       // Simular variações em tempo real
       return commodities.map(commodity => ({
@@ -201,10 +201,10 @@ class StockService {
         price: this.simulatePriceChange(commodity.price, commodity.changePercent),
         change: this.simulateChange(commodity.change),
         changePercent: this.simulateChangePercent(commodity.changePercent)
-      }));
+      }))
     } catch (error) {
-      console.error('Erro ao obter dados de commodities:', error);
-      throw error;
+      console.error('Erro ao obter dados de commodities:', error)
+      throw error
     }
   }
 
@@ -233,7 +233,7 @@ class StockService {
           change: -0.05,
           changePercent: -0.77
         }
-      ];
+      ]
 
       // Simular variações em tempo real
       return rates.map(rate => ({
@@ -241,10 +241,10 @@ class StockService {
         rate: this.simulatePriceChange(rate.rate, rate.changePercent),
         change: this.simulateChange(rate.change),
         changePercent: this.simulateChangePercent(rate.changePercent)
-      }));
+      }))
     } catch (error) {
-      console.error('Erro ao obter taxas de câmbio:', error);
-      throw error;
+      console.error('Erro ao obter taxas de câmbio:', error)
+      throw error
     }
   }
 
@@ -261,15 +261,15 @@ class StockService {
       high: parseFloat(data['03. high']) || 0,
       low: parseFloat(data['04. low']) || 0,
       timestamp: new Date()
-    };
+    }
   }
 
   // Formatar dados históricos
   formatHistoricalData(timeSeriesData) {
-    const formattedData = [];
-    
+    const formattedData = []
+
     Object.keys(timeSeriesData).forEach(timestamp => {
-      const data = timeSeriesData[timestamp];
+      const data = timeSeriesData[timestamp]
       formattedData.push({
         timestamp: new Date(timestamp),
         open: parseFloat(data['1. open']),
@@ -277,34 +277,34 @@ class StockService {
         low: parseFloat(data['3. low']),
         close: parseFloat(data['4. close']),
         volume: parseInt(data['5. volume'])
-      });
-    });
+      })
+    })
 
-    return formattedData.sort((a, b) => a.timestamp - b.timestamp);
+    return formattedData.sort((a, b) => a.timestamp - b.timestamp)
   }
 
   // Simular variação de preço
   simulatePriceChange(basePrice, changePercent) {
     const variation = (Math.random() - 0.5) * 0.02; // ±1%
-    return parseFloat((basePrice * (1 + variation)).toFixed(2));
+    return parseFloat((basePrice * (1 + variation)).toFixed(2))
   }
 
   // Simular variação
   simulateChange(baseChange) {
     const variation = (Math.random() - 0.5) * 0.1; // ±5%
-    return parseFloat((baseChange * (1 + variation)).toFixed(2));
+    return parseFloat((baseChange * (1 + variation)).toFixed(2))
   }
 
   // Simular percentual de variação
   simulateChangePercent(baseChangePercent) {
     const variation = (Math.random() - 0.5) * 0.2; // ±10%
-    return parseFloat((baseChangePercent * (1 + variation)).toFixed(2));
+    return parseFloat((baseChangePercent * (1 + variation)).toFixed(2))
   }
 
   // Simular volume
   simulateVolume(baseVolume) {
     const variation = (Math.random() - 0.5) * 0.15; // ±7.5%
-    return Math.round(baseVolume * (1 + variation));
+    return Math.round(baseVolume * (1 + variation))
   }
 
   // Obter dados completos do mercado
@@ -314,17 +314,17 @@ class StockService {
         this.getBrazilianMarketData(),
         this.getAgriculturalCommodities(),
         this.getExchangeRates()
-      ]);
+      ])
 
       return {
         stocks,
         commodities,
         rates,
         timestamp: new Date()
-      };
+      }
     } catch (error) {
-      console.error('Erro ao obter visão geral do mercado:', error);
-      throw error;
+      console.error('Erro ao obter visão geral do mercado:', error)
+      throw error
     }
   }
 
@@ -337,7 +337,7 @@ class StockService {
           keywords: query,
           apikey: this.alphaVantageApiKey
         }
-      });
+      })
 
       if (response.data.bestMatches) {
         return response.data.bestMatches.map(match => ({
@@ -349,16 +349,16 @@ class StockService {
           marketClose: match['6. marketClose'],
           timezone: match['7. timezone'],
           currency: match['8. currency']
-        }));
+        }))
       }
 
-      return [];
+      return []
     } catch (error) {
-      console.error('Erro na busca de símbolos:', error);
-      return [];
+      console.error('Erro na busca de símbolos:', error)
+      return []
     }
   }
 }
 
-const stockService = new StockService();
-export default stockService;
+const stockService = new StockService()
+export default stockService

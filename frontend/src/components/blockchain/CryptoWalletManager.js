@@ -1,79 +1,66 @@
-import React, { useState, // useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-';
-import { Wallet, Send, Receive, Loader2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
+import { Wallet, Loader2, CheckCircle, Clock, AlertCircle, DollarSign, Zap, ExternalLink } from 'lucide-react'
 
 const CryptoWalletManager = ({ userId }) => {
-  const {  } = useTranslation();
-  const [wallets, setWallets] = useState([]);
-  const [// loading, // setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [showPrivateKeys, setShowPrivateKeys] = useState(false);
-  const [// selectedWallet, // setSelectedWallet] = useState(null);
+  const { t } = useTranslation()
+  const [wallets, setWallets] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [totalValue, setTotalValue] = useState(0)
+  const [activeWallets, setActiveWallets] = useState(0)
 
-  // useEffect(() => {
-    fetchWallets();
-  }, [userId]);
+  useEffect(() => {
+    fetchWalletData()
+  }, [userId])
 
-  const fetchWallets = async () => {
-    // setLoading(true);
+  const fetchWalletData = async () => {
+    setLoading(true)
     try {
-      const response = await fetch(`/api/blockchain/wallets?userId=${userId}`);
-      const data = await response.json();
-      
+      const response = await fetch(`/api/blockchain/wallets?userId=${userId}`)
+      const data = await response.json()
+
       if (data.success) {
-        setWallets(data.wallets);
+        setWallets(data.wallets)
+        setTotalValue(data.totalValue)
+        setActiveWallets(data.activeWallets)
       } else {
-        setError(data.message);
+        setError(data.message)
       }
     } catch (err) {
-      setError(// t('wallets.error', 'Erro ao carregar carteiras'));
+      setError(t('wallet.error', 'Erro ao carregar dados de carteiras'))
     } finally {
-      // setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
-  const createWallet = async (currency) => {
-    try {
-      const response = await fetch('/api/blockchain/wallets', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        },
-        body: JSON.stringify({ currency, userId })
-      });
-      
-      const data = await response.json();
-      
-      if (data.success) {
-        setWallets([...wallets, data.wallet]);
-      } else {
-        setError(data.message);
-      }
-    } catch (err) {
-      setError(// t('wallets.createError', 'Erro ao criar carteira'));
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case 'active':
+        return <CheckCircle className="w-5 h-5 text-green-600" />
+      case 'pending':
+        return <Clock className="w-5 h-5 text-yellow-600" />
+      case 'completed':
+        return <CheckCircle className="w-5 h-5 text-blue-600" />
+      default:
+        return <Clock className="w-5 h-5 text-gray-600" />
     }
-  };
+  }
 
-  const copyToClipboard = (text) => {
-    navigator.clipboard.writeText(text);
-    // Show success message
-  };
-
-  if (// loading) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
         <Loader2 className="w-8 h-8 animate-spin text-agro-emerald" />
         <span className="ml-3 text-gray-600 dark:text-gray-300">
-          {// t('wallets.// loading', 'Carregando carteiras...')}
+          {t('wallet.loading', 'Carregando dados de carteiras...')}
         </span>
       </div>
-    );
+    )
   }
 
   return (
-    <// motion.div
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
@@ -81,125 +68,150 @@ const CryptoWalletManager = ({ userId }) => {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
           <Wallet className="w-6 h-6 mr-2 text-agro-emerald" />
-          {// t('wallets.title', 'Carteiras Cripto')}
+          {t('wallet.title', 'Crypto Wallet Manager')}
         </h2>
-        
-        <button
-          onClick={() => createWallet('SOL')}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
-        >
-          <// Plus className="w-4 h-4" />
-          <span>{// t('wallets.create', 'Criar Carteira')}</span>
-        </button>
       </div>
-      
+
       {error && (
         <div className="text-red-500 mb-4 flex items-center">
-          <// AlertCircle className="w-5 h-5 mr-2" />
+          <AlertCircle className="w-5 h-5 mr-2" />
           {error}
         </div>
       )}
 
+      {/* Resumo */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {t('wallet.totalValue', 'Valor Total')}
+              </p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                ${totalValue.toFixed(2)}
+              </p>
+            </div>
+            <DollarSign className="w-8 h-8 text-gray-400" />
+          </div>
+        </div>
+
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {t('wallet.activeWallets', 'Carteiras Ativas')}
+              </p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {activeWallets}
+              </p>
+            </div>
+            <Wallet className="w-8 h-8 text-gray-400" />
+          </div>
+        </div>
+
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {t('wallet.totalWallets', 'Total de Carteiras')}
+              </p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {wallets.length}
+              </p>
+            </div>
+            <Wallet className="w-8 h-8 text-gray-400" />
+          </div>
+        </div>
+      </div>
+
+      {/* Carteiras */}
       {wallets.length === 0 ? (
         <div className="text-center py-8">
           <Wallet className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <p className="text-gray-600 dark:text-gray-400 mb-4">
-            {// t('wallets.noWallets', 'Nenhuma carteira encontrada')}
+            {t('wallet.noWallets', 'Nenhuma carteira encontrada')}
           </p>
-          <button
-            onClick={() => createWallet('SOL')}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg"
-          >
-            {// t('wallets.createFirst', 'Criar Primeira Carteira')}
-          </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="space-y-4">
           {wallets.map((wallet) => (
             <div key={wallet.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-gray-900 dark:text-white">
-                  {wallet.currency} Wallet
-                </h3>
+                <div>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">
+                    {wallet.name}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {wallet.description}
+                  </p>
+                </div>
+
                 <div className="flex items-center space-x-2">
-                  <button
-                    onClick={() => setShowPrivateKeys(!showPrivateKeys)}
-                    className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                  >
-                    {showPrivateKeys ? <// EyeOff className="w-4 h-4" /> : <// Eye className="w-4 h-4" />}
+                  {getStatusIcon(wallet.status)}
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    {wallet.status}
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-4">
+                <div>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {t('wallet.value', 'Valor')}:
+                  </p>
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    ${wallet.value.toFixed(2)}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {t('wallet.transactions', 'Transações')}:
+                  </p>
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    {wallet.transactions}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {t('wallet.fee', 'Taxa')}:
+                  </p>
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    {wallet.fee}%
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {t('wallet.speed', 'Velocidade')}:
+                  </p>
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    {wallet.speed}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  {t('wallet.lastActivity', 'Última Atividade')}: {wallet.lastActivity}
+                </div>
+
+                <div className="flex space-x-2">
+                  <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    <Zap className="w-4 h-4" />
+                  </button>
+                  <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    <ExternalLink className="w-4 h-4" />
                   </button>
                 </div>
-              </div>
-              
-              <div className="space-y-3">
-                <div>
-                  <label className="text-sm text-gray-600 dark:text-gray-400">
-                    {// t('wallets.address', 'Endereço')}:
-                  </label>
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="text"
-                      value={wallet.address}
-                      readOnly
-                      className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
-                    />
-                    <button
-                      onClick={() => copyToClipboard(wallet.address)}
-                      className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                    >
-                      <// Copy className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-                
-                {showPrivateKeys && (
-                  <div>
-                    <label className="text-sm text-gray-600 dark:text-gray-400">
-                      {// t('wallets.privateKey', 'Chave Privada')}:
-                    </label>
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="text"
-                        value={wallet.privateKey}
-                        readOnly
-                        className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
-                      />
-                      <button
-                        onClick={() => copyToClipboard(wallet.privateKey)}
-                        className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                      >
-                        <// Copy className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                )}
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {// t('wallets.balance', 'Saldo')}:
-                  </span>
-                  <span className="font-semibold text-gray-900 dark:text-white">
-                    {wallet.balance} {wallet.currency}
-                  </span>
-                </div>
-              </div>
-              
-              <div className="flex space-x-2 mt-4">
-                <button className="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center justify-center space-x-2">
-                  <Receive className="w-4 h-4" />
-                  <span>{// t('wallets.receive', 'Receber')}</span>
-                </button>
-                <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center justify-center space-x-2">
-                  <Send className="w-4 h-4" />
-                  <span>{// t('wallets.send', 'Enviar')}</span>
-                </button>
               </div>
             </div>
           ))}
         </div>
       )}
-    </// motion.div>
-  );
-};
+    </motion.div>
+  )
+}
 
-export default CryptoWalletManager;
+export default CryptoWalletManager

@@ -1,7 +1,7 @@
-import axios from 'axios';
+import axios from 'axios'
 
 // Configuração da API
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api'
 
 // Configuração do axios com interceptors
 const api = axios.create({
@@ -10,34 +10,34 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json'
   }
-});
+})
 
 // Interceptor para adicionar token de autenticação
 api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
+  config => {
+    const token = localStorage.getItem('token')
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers.Authorization = `Bearer ${token}`
     }
-    return config;
+    return config
   },
-  (error) => {
-    return Promise.reject(error);
+  error => {
+    return Promise.reject(error)
   }
-);
+)
 
 // Interceptor para tratamento de erros
 api.interceptors.response.use(
-  (response) => response,
-  (error) => {
+  response => response,
+  error => {
     if (error.response?.status === 401) {
       // Token expirado ou inválido
-      localStorage.removeItem('token');
-      window.location.href = '/login';
+      localStorage.removeItem('token')
+      window.location.href = '/login'
     }
-    return Promise.reject(error);
+    return Promise.reject(error)
   }
-);
+)
 
 // Constantes para badges e conquistas
 export const BADGE_CATEGORIES = {
@@ -46,28 +46,28 @@ export const BADGE_CATEGORIES = {
   FREIGHT: 'FREIGHT',
   COMMUNITY: 'COMMUNITY',
   SPECIAL: 'SPECIAL'
-};
+}
 
 export const BADGE_RARITY = {
   COMMON: 'COMMON',
   RARE: 'RARE',
   EPIC: 'EPIC',
   LEGENDARY: 'LEGENDARY'
-};
+}
 
 export const BADGE_RARITY_COLORS = {
   COMMON: 'text-gray-600 bg-gray-100',
   RARE: 'text-blue-600 bg-blue-100',
   EPIC: 'text-purple-600 bg-purple-100',
   LEGENDARY: 'text-yellow-600 bg-yellow-100'
-};
+}
 
 export const BADGE_RARITY_NAMES = {
   COMMON: 'Comum',
   RARE: 'Raro',
   EPIC: 'Épico',
   LEGENDARY: 'Lendário'
-};
+}
 
 // Ações que geram pontos
 export const POINT_ACTIONS = {
@@ -121,99 +121,99 @@ export const POINT_ACTIONS = {
     points: 500,
     description: 'Atividade mensal'
   }
-};
+}
 
 class GamificationService {
   constructor() {
-    this.cache = new Map();
+    this.cache = new Map()
     this.cacheTimeout = 5 * 60 * 1000; // 5 minutos
   }
 
   // Limpar cache
   clearCache() {
-    this.cache.clear();
+    this.cache.clear()
   }
 
   // Verificar se cache é válido
   isCacheValid(key) {
-    const cached = this.cache.get(key);
-    if (!cached) return false;
-    
-    return Date.now() - cached.timestamp < this.cacheTimeout;
+    const cached = this.cache.get(key)
+    if (!cached) return false
+
+    return Date.now() - cached.timestamp < this.cacheTimeout
   }
 
   // Obter perfil de reputação do usuário
   async getUserProfile() {
     try {
-      const cacheKey = 'userProfile';
+      const cacheKey = 'userProfile'
       if (this.isCacheValid(cacheKey)) {
-        return this.cache.get(cacheKey).data;
+        return this.cache.get(cacheKey).data
       }
 
-      const response = await api.get('/gamification/profile');
-      const data = response.data;
+      const response = await api.get('/gamification/profile')
+      const data = response.data
 
       // Cachear resultado
       this.cache.set(cacheKey, {
         data,
         timestamp: Date.now()
-      });
+      })
 
-      return data;
+      return data
     } catch (error) {
-      console.error('Erro ao buscar perfil de reputação:', error);
-      throw error;
+      console.error('Erro ao buscar perfil de reputação:', error)
+      throw error
     }
   }
 
   // Obter ranking global
   async getLeaderboard(page = 1, limit = 20, category = 'global', region = null) {
     try {
-      const cacheKey = `leaderboard_${category}_${region}_${page}_${limit}`;
+      const cacheKey = `leaderboard_${category}_${region}_${page}_${limit}`
       if (this.isCacheValid(cacheKey)) {
-        return this.cache.get(cacheKey).data;
+        return this.cache.get(cacheKey).data
       }
 
-      const params = { page, limit, category };
-      if (region) params.region = region;
+      const params = { page, limit, category }
+      if (region) params.region = region
 
-      const response = await api.get('/gamification/leaderboard', { params });
-      const data = response.data;
+      const response = await api.get('/gamification/leaderboard', { params })
+      const data = response.data
 
       // Cachear resultado
       this.cache.set(cacheKey, {
         data,
         timestamp: Date.now()
-      });
+      })
 
-      return data;
+      return data
     } catch (error) {
-      console.error('Erro ao buscar ranking:', error);
-      throw error;
+      console.error('Erro ao buscar ranking:', error)
+      throw error
     }
   }
 
   // Obter badges do usuário
   async getUserBadges() {
     try {
-      const cacheKey = 'userBadges';
+      const cacheKey = 'userBadges'
       if (this.isCacheValid(cacheKey)) {
-        return this.cache.get(cacheKey).data;
+        return this.cache.get(cacheKey).data
       }
 
-      const response = await api.get('/gamification/badges');
-      const data = response.data;
+      const response = await api.get('/gamification/badges')
+      const data = response.data
 
       // Cachear resultado
       this.cache.set(cacheKey, {
         data,
         timestamp: Date.now()
-      });
+      })
 
-      return data;
+      return data
     } catch (error) {
-      console.error('Erro ao buscar badges:', error);
-      throw error;
+      console.error('Erro ao buscar badges:', error)
+      throw error
     }
   }
 
@@ -225,39 +225,39 @@ class GamificationService {
         points,
         description,
         metadata
-      });
+      })
 
       // Limpar cache relacionado ao usuário
-      this.clearCache();
+      this.clearCache()
 
-      return response.data;
+      return response.data
     } catch (error) {
-      console.error('Erro ao adicionar pontos:', error);
-      throw error;
+      console.error('Erro ao adicionar pontos:', error)
+      throw error
     }
   }
 
   // Obter estatísticas do usuário
   async getUserStats() {
     try {
-      const cacheKey = 'userStats';
+      const cacheKey = 'userStats'
       if (this.isCacheValid(cacheKey)) {
-        return this.cache.get(cacheKey).data;
+        return this.cache.get(cacheKey).data
       }
 
-      const response = await api.get('/gamification/stats');
-      const data = response.data;
+      const response = await api.get('/gamification/stats')
+      const data = response.data
 
       // Cachear resultado
       this.cache.set(cacheKey, {
         data,
         timestamp: Date.now()
-      });
+      })
 
-      return data;
+      return data
     } catch (error) {
-      console.error('Erro ao buscar estatísticas:', error);
-      throw error;
+      console.error('Erro ao buscar estatísticas:', error)
+      throw error
     }
   }
 
@@ -266,36 +266,36 @@ class GamificationService {
     try {
       const response = await api.put('/gamification/notifications', {
         notifications
-      });
+      })
 
-      return response.data;
+      return response.data
     } catch (error) {
-      console.error('Erro ao atualizar notificações:', error);
-      throw error;
+      console.error('Erro ao atualizar notificações:', error)
+      throw error
     }
   }
 
   // Obter conquistas disponíveis
   async getAchievements() {
     try {
-      const cacheKey = 'achievements';
+      const cacheKey = 'achievements'
       if (this.isCacheValid(cacheKey)) {
-        return this.cache.get(cacheKey).data;
+        return this.cache.get(cacheKey).data
       }
 
-      const response = await api.get('/gamification/achievements');
-      const data = response.data;
+      const response = await api.get('/gamification/achievements')
+      const data = response.data
 
       // Cachear resultado
       this.cache.set(cacheKey, {
         data,
         timestamp: Date.now()
-      });
+      })
 
-      return data;
+      return data
     } catch (error) {
-      console.error('Erro ao buscar conquistas:', error);
-      throw error;
+      console.error('Erro ao buscar conquistas:', error)
+      throw error
     }
   }
 
@@ -306,7 +306,7 @@ class GamificationService {
       POINT_ACTIONS.TRANSACTION_COMPLETED.points,
       POINT_ACTIONS.TRANSACTION_COMPLETED.description,
       { transactionId, amount }
-    );
+    )
   }
 
   async addProductPoints(productId) {
@@ -315,7 +315,7 @@ class GamificationService {
       POINT_ACTIONS.PRODUCT_CREATED.points,
       POINT_ACTIONS.PRODUCT_CREATED.description,
       { productId }
-    );
+    )
   }
 
   async addFreightPoints(freightId) {
@@ -324,59 +324,52 @@ class GamificationService {
       POINT_ACTIONS.FREIGHT_CREATED.points,
       POINT_ACTIONS.FREIGHT_CREATED.description,
       { freightId }
-    );
+    )
   }
 
   async addReviewPoints(reviewId, isPositive) {
-    const action = isPositive ? 
-      POINT_ACTIONS.POSITIVE_REVIEW : 
-      POINT_ACTIONS.NEGATIVE_REVIEW;
-    
-    return this.addPoints(
-      action.action,
-      action.points,
-      action.description,
-      { reviewId, isPositive }
-    );
+    const action = isPositive ? POINT_ACTIONS.POSITIVE_REVIEW : POINT_ACTIONS.NEGATIVE_REVIEW
+
+    return this.addPoints(action.action, action.points, action.description, { reviewId, isPositive })
   }
 
   // Calcular progresso para o próximo nível
   calculateLevelProgress(experience, experienceToNextLevel) {
-    const percentage = Math.round((experience / experienceToNextLevel) * 100);
+    const percentage = Math.round((experience / experienceToNextLevel) * 100)
     return {
       current: experience,
       required: experienceToNextLevel,
       percentage: Math.min(percentage, 100)
-    };
+    }
   }
 
   // Formatar pontuação
   formatScore(score) {
     if (score >= 1000000) {
-      return `${(score / 1000000).toFixed(1)}M`;
+      return `${(score / 1000000).toFixed(1)}M`
     } else if (score >= 1000) {
-      return `${(score / 1000).toFixed(1)}K`;
+      return `${(score / 1000).toFixed(1)}K`
     }
-    return score.toString();
+    return score.toString()
   }
 
   // Verificar se usuário subiu de nível
   checkLevelUp(oldLevel, newLevel) {
-    return newLevel > oldLevel;
+    return newLevel > oldLevel
   }
 
   // Obter cor da raridade do badge
   getBadgeRarityColor(rarity) {
-    return BADGE_RARITY_COLORS[rarity] || BADGE_RARITY_COLORS.COMMON;
+    return BADGE_RARITY_COLORS[rarity] || BADGE_RARITY_COLORS.COMMON
   }
 
   // Obter nome da raridade do badge
   getBadgeRarityName(rarity) {
-    return BADGE_RARITY_NAMES[rarity] || BADGE_RARITY_NAMES.COMMON;
+    return BADGE_RARITY_NAMES[rarity] || BADGE_RARITY_NAMES.COMMON
   }
 }
 
 // Instância única do serviço
-const gamificationService = new GamificationService();
+const gamificationService = new GamificationService()
 
-export default gamificationService;
+export default gamificationService

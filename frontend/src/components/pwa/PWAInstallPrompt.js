@@ -1,203 +1,225 @@
-import React, { useState, // useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-';
-import { Download, Smartphone, Monitor, WifiOff } from 'lucide-react';
-import { usePWA } from '../../hooks/usePWA';
-import { useAnalytics } from '../../hooks/useAnalytics';
+import React, { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { 
+  Download, 
+  X, 
+  Smartphone, 
+  Monitor, 
+  CheckCircle, 
+  AlertCircle, 
+  Loader2,
+  Shield,
+  Zap,
+  Star
+} from 'lucide-react'
 
-const PWAInstallPrompt = () => {
-  const {  } = useTranslation();
-  const pwa = usePWA();
-  const analytics = useAnalytics();
-  const [isVisible, setIsVisible] = useState(false);
-  const [isInstalling, setIsInstalling] = useState(false);
-  const [showIOSInstructions, setShowIOSInstructions] = useState(false);
+const PWAInstallPrompt = ({ onInstall, onDismiss }) => {
+  const [isVisible, setIsVisible] = useState(false)
+  const [isInstalling, setIsInstalling] = useState(false)
+  const [isInstalled, setIsInstalled] = useState(false)
+  const [deferredPrompt, setDeferredPrompt] = useState(null)
+  const [platform, setPlatform] = useState('desktop')
 
-  // Mostrar prompt de instalação
-  // useEffect(() => {
-    if (pwa.isInstallable && !pwa.isInstalled) {
-      // Verificar se já foi mostrado recentemente
-      const lastShown = localStorage.getItem('pwa-install-prompt-last-shown');
-      const now = Date.now();
-      const oneDay = 24 * 60 * 60 * 1000;
-
-      if (!lastShown || (now - parseInt(lastShown)) > oneDay) {
-        setIsVisible(true);
-        analytics.trackEvent('pwa_install_prompt_shown');
-      }
+  useEffect(() => {
+    // Detectar plataforma
+    const userAgent = navigator.userAgent.toLowerCase()
+    if (userAgent.includes('android')) {
+      setPlatform('android')
+    } else if (userAgent.includes('iphone') || userAgent.includes('ipad')) {
+      setPlatform('ios')
+    } else {
+      setPlatform('desktop')
     }
-  }, [pwa.isInstallable, pwa.isInstalled, analytics]);
 
-  // Instalar PWA
+    // Verificar se já está instalado
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setIsInstalled(true)
+      return
+    }
+
+    // Escutar evento de instalação
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault()
+      setDeferredPrompt(e)
+      setIsVisible(true)
+    }
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+
+    // Escutar evento de instalação concluída
+    const handleAppInstalled = () => {
+      setIsInstalled(true)
+      setIsVisible(false)
+      onInstall?.()
+    }
+
+    window.addEventListener('appinstalled', handleAppInstalled)
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+      window.removeEventListener('appinstalled', handleAppInstalled)
+    }
+  }, [onInstall])
+
   const handleInstall = async () => {
-    setIsInstalling(true);
-    analytics.trackEvent('pwa_install_attempted');
+    if (!deferredPrompt) return
+
+    setIsInstalling(true)
 
     try {
-      const success = await pwa.installPWA();
-      if (success) {
-        setIsVisible(false);
-        localStorage.setItem('pwa-install-prompt-last-shown', Date.now().toString());
+      // Mostrar prompt de instalação
+      deferredPrompt.prompt()
+      
+      // Aguardar resposta do usuário
+      const { outcome } = await deferredPrompt.userChoice
+      
+      if (outcome === 'accepted') {
+        console.log('PWA instalado com sucesso')
+      } else {
+        console.log('Instalação do PWA rejeitada')
       }
     } catch (error) {
-      console.error('Installation failed:', error);
+      console.error('Erro ao instalar PWA:', error)
     } finally {
-      setIsInstalling(false);
+      setIsInstalling(false)
+      setDeferredPrompt(null)
+      setIsVisible(false)
     }
-  };
+  }
 
-  // Fechar prompt
-  const handleClose = () => {
-    setIsVisible(false);
-    localStorage.setItem('pwa-install-prompt-last-shown', Date.now().toString());
-    analytics.trackEvent('pwa_install_prompt_dismissed');
-  };
+  const handleDismiss = () => {
+    setIsVisible(false)
+    onDismiss?.()
+  }
 
-  // Mostrar instruções para iOS
-  const handleIOSInstall = () => {
-    setShowIOSInstructions(true);
-    analytics.trackEvent('pwa_ios_install_instructions_shown');
-  };
+  const getPlatformIcon = () => {
+    switch (platform) {
+      case 'android':
+        return <Smartphone className="w-6 h-6" />
+      case 'ios':
+        return <Smartphone className="w-6 h-6" />
+      default:
+        return <Monitor className="w-6 h-6" />
+    }
+  }
 
-  // Detectar iOS
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-  const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches;
+  const getPlatformText = () => {
+    switch (platform) {
+      case 'android':
+        return 'Android'
+      case 'ios':
+        return 'iOS'
+      default:
+        return 'Desktop'
+    }
+  }
 
-  if (!isVisible || pwa.isInstalled) {
-    return null;
+  if (isInstalled) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="fixed bottom-4 right-4 z-50 bg-green-500 text-white p-4 rounded-lg shadow-lg max-w-sm"
+      >
+        <div className="flex items-center space-x-3">
+          <CheckCircle className="w-6 h-6" />
+          <div>
+            <p className="font-semibold">PWA Instalado!</p>
+            <p className="text-sm opacity-90">
+              O AgroSync foi instalado com sucesso
+            </p>
+          </div>
+        </div>
+      </motion.div>
+    )
   }
 
   return (
-    <// AnimatePresence>
-      <// motion.div
-        initial={{ opacity: 0, y: 100 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 100 }}
-        className="fixed bottom-4 left-4 right-4 z-50 max-w-md mx-auto"
-      >
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-4">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-lg flex items-center justify-center mr-3">
-                <// Download className="w-5 h-5 text-white" />
+    <AnimatePresence>
+      {isVisible && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          className="fixed bottom-4 right-4 z-50 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg max-w-sm p-6"
+        >
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-agro-emerald/10 rounded-lg">
+                {getPlatformIcon()}
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-                  {// t('pwa.installTitle', 'Instalar AgroSync')}
+                <h3 className="font-semibold text-gray-900 dark:text-white">
+                  Instalar App
                 </h3>
-                <p className="text-xs text-gray-600 dark:text-gray-400">
-                  {// t('pwa.installSubtitle', 'Acesso rápido e offline')}
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Para {getPlatformText()}
                 </p>
               </div>
             </div>
             <button
-              onClick={handleClose}
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              onClick={handleDismiss}
+              className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
             >
-              <// X className="w-4 h-4" />
+              <X className="w-4 h-4" />
             </button>
           </div>
 
-          {/* Benefícios */}
-          <div className="space-y-2 mb-4">
-            <div className="flex items-center text-xs text-gray-600 dark:text-gray-400">
-              <Smartphone className="w-3 h-3 mr-2" />
-              {// t('pwa.benefit1', 'Acesso como app nativo')}
+          <div className="space-y-3 mb-4">
+            <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+              <Zap className="w-4 h-4" />
+              <span>Acesso rápido e offline</span>
             </div>
-            <div className="flex items-center text-xs text-gray-600 dark:text-gray-400">
-              <WifiOff className="w-3 h-3 mr-2" />
-              {// t('pwa.benefit2', 'Funciona offline')}
+            <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+              <Shield className="w-4 h-4" />
+              <span>Seguro e confiável</span>
             </div>
-            <div className="flex items-center text-xs text-gray-600 dark:text-gray-400">
-              <Monitor className="w-3 h-3 mr-2" />
-              {// t('pwa.benefit3', 'Notificações push')}
+            <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+              <Star className="w-4 h-4" />
+              <span>Experiência nativa</span>
             </div>
           </div>
 
-          {/* Status de conectividade */}
-          {!pwa.isOnline && (
-            <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-2 mb-3">
-              <div className="flex items-center">
-                <WifiOff className="w-4 h-4 text-yellow-600 mr-2" />
-                <span className="text-xs text-yellow-800 dark:text-yellow-200">
-                  {// t('pwa.offlineMode', 'Modo offline ativo')}
-                </span>
-              </div>
-            </div>
-          )}
-
-          {/* Botões de ação */}
           <div className="flex space-x-2">
-            {isIOS && !isInStandaloneMode ? (
-              <button
-                onClick={handleIOSInstall}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center"
-              >
-                <// Download className="w-4 h-4 mr-2" />
-                {// t('pwa.installIOS', 'Instalar')}
-              </button>
-            ) : (
-              <button
-                onClick={handleInstall}
-                disabled={isInstalling}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center"
-              >
-                {isInstalling ? (
-                  <div className="w-4 h-4 border-2 border-white border-// t-transparent rounded-full animate-spin mr-2" />
-                ) : (
-                  <// Download className="w-4 h-4 mr-2" />
-                )}
-                {// t('pwa.install', 'Instalar App')}
-              </button>
-            )}
             <button
-              onClick={handleClose}
-              className="px-3 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              onClick={handleInstall}
+              disabled={isInstalling}
+              className="flex-1 px-4 py-2 bg-agro-emerald text-white rounded-lg font-medium hover:bg-emerald-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
             >
-              {// t('pwa.later', 'Depois')}
+              {isInstalling ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Instalando...</span>
+                </>
+              ) : (
+                <>
+                  <Download className="w-4 h-4" />
+                  <span>Instalar</span>
+                </>
+              )}
+            </button>
+            <button
+              onClick={handleDismiss}
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              Agora não
             </button>
           </div>
-        </div>
 
-        {/* Instruções para iOS */}
-        <// AnimatePresence>
-          {showIOSInstructions && (
-            <// motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              className="mt-3 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-4"
-            >
-              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-                {// t('pwa.iosInstructionsTitle', 'Como instalar no iOS')}
-              </h4>
-              <div className="space-y-2 text-xs text-gray-600 dark:text-gray-400">
-                <div className="flex items-start">
-                  <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full w-5 h-5 flex items-center justify-center text-xs font-medium mr-2 mt-0.5">1</span>
-                  <span>{// t('pwa.iosStep1', 'Toque no botão de compartilhar na parte inferior da tela')}</span>
-                </div>
-                <div className="flex items-start">
-                  <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full w-5 h-5 flex items-center justify-center text-xs font-medium mr-2 mt-0.5">2</span>
-                  <span>{// t('pwa.iosStep2', 'Role para baixo e toque em "Adicionar à Tela de Início"')}</span>
-                </div>
-                <div className="flex items-start">
-                  <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full w-5 h-5 flex items-center justify-center text-xs font-medium mr-2 mt-0.5">3</span>
-                  <span>{// t('pwa.iosStep3', 'Toque em "Adicionar" para confirmar')}</span>
-                </div>
+          <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+            <div className="flex items-start space-x-2">
+              <AlertCircle className="w-4 h-4 text-blue-500 mt-0.5" />
+              <div>
+                <p className="text-sm text-blue-700 dark:text-blue-400">
+                  <strong>Dica:</strong> Adicione o AgroSync à sua tela inicial para acesso rápido e funcionalidades offline.
+                </p>
               </div>
-              <button
-                onClick={() => setShowIOSInstructions(false)}
-                className="mt-3 w-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
-              >
-                {// t('pwa.gotIt', 'Entendi')}
-              </button>
-            </// motion.div>
-          )}
-        </// AnimatePresence>
-      </// motion.div>
-    </// AnimatePresence>
-  );
-};
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
+}
 
-export default PWAInstallPrompt;
+export default PWAInstallPrompt

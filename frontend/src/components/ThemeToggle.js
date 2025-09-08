@@ -1,15 +1,15 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Sun, Moon } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
+import React from 'react'
+import { motion } from 'framer-motion'
+import { Sun, Moon } from 'lucide-react'
+import { useTheme } from '../contexts/ThemeContext'
 
 const ThemeToggle = () => {
-  const { isDarkMode, toggleTheme } = useTheme();
+  const { isDarkMode, toggleTheme } = useTheme()
 
   return (
     <motion.button
       onClick={toggleTheme}
-      className="theme-toggle"
+      className='theme-toggle'
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       initial={false}
@@ -19,7 +19,7 @@ const ThemeToggle = () => {
       }}
     >
       <motion.div
-        className="theme-toggle-icon"
+        className='theme-toggle-icon'
         initial={false}
         animate={{
           opacity: isDarkMode ? 0 : 1,
@@ -29,9 +29,9 @@ const ThemeToggle = () => {
       >
         <Sun size={20} />
       </motion.div>
-      
+
       <motion.div
-        className="theme-toggle-icon"
+        className='theme-toggle-icon'
         initial={false}
         animate={{
           opacity: isDarkMode ? 1 : 0,
@@ -43,7 +43,7 @@ const ThemeToggle = () => {
         <Moon size={20} />
       </motion.div>
     </motion.button>
-  );
-};
+  )
+}
 
-export default ThemeToggle;
+export default ThemeToggle

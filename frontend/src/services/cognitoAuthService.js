@@ -1,15 +1,15 @@
-import Cookies from 'js-cookie';
-import { jwtDecode } from 'jwt-decode';
-import { getConfig } from '../config/app.config';
+import Cookies from 'js-cookie'
+import { jwtDecode } from 'jwt-decode'
+import { getConfig } from '../config/app.config'
 
 class CognitoAuthService {
   constructor() {
-    this.currentUser = null;
-    this.config = getConfig();
+    this.currentUser = null
+    this.config = getConfig()
     this.adminCredentials = {
       email: this.config.admin.email,
       password: this.config.admin.password
-    };
+    }
   }
 
   // Login com email e senha
@@ -26,8 +26,8 @@ class CognitoAuthService {
               sub: 'admin-user-id',
               'cognito:groups': ['admin'],
               email_verified: true,
-              exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60) // 24 horas
-            });
+              exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60 // 24 horas
+            })
 
             // Configurar usuário admin
             this.currentUser = {
@@ -38,10 +38,10 @@ class CognitoAuthService {
               groups: ['admin'],
               sub: 'admin-user-id',
               email_verified: true
-            };
+            }
 
             // Salvar token nos cookies
-            this.setAuthCookies(adminToken, adminToken, 'refresh-token-admin');
+            this.setAuthCookies(adminToken, adminToken, 'refresh-token-admin')
 
             resolve({
               success: true,
@@ -52,7 +52,7 @@ class CognitoAuthService {
                 idToken: adminToken,
                 refreshToken: 'refresh-token-admin'
               }
-            });
+            })
           } else {
             // Usuário comum - verificar se email existe (simulação)
             if (email && password && password.length >= 6) {
@@ -62,8 +62,8 @@ class CognitoAuthService {
                 sub: 'user-' + Date.now(),
                 'cognito:groups': ['user'],
                 email_verified: true,
-                exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60) // 24 horas
-              });
+                exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60 // 24 horas
+              })
 
               // Configurar usuário comum
               this.currentUser = {
@@ -74,10 +74,10 @@ class CognitoAuthService {
                 groups: ['user'],
                 sub: 'user-' + Date.now(),
                 email_verified: true
-              };
+              }
 
               // Salvar token nos cookies
-              this.setAuthCookies(userToken, userToken, 'refresh-token-user');
+              this.setAuthCookies(userToken, userToken, 'refresh-token-user')
 
               resolve({
                 success: true,
@@ -88,13 +88,13 @@ class CognitoAuthService {
                   idToken: userToken,
                   refreshToken: 'refresh-token-user'
                 }
-              });
+              })
             } else {
               reject({
                 success: false,
                 message: 'Email ou senha incorretos',
                 code: 'NotAuthorizedException'
-              });
+              })
             }
           }
         } catch (error) {
@@ -102,28 +102,28 @@ class CognitoAuthService {
             success: false,
             message: 'Erro interno do sistema',
             code: 'InternalError'
-          });
+          })
         }
       }, 1000); // Simular delay de 1 segundo
-    });
+    })
   }
 
   // Verificar se o usuário está autenticado
   async checkAuthStatus() {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       try {
-        const accessToken = Cookies.get(this.config.auth.cookieName);
-        
+        const accessToken = Cookies.get(this.config.auth.cookieName)
+
         if (!accessToken) {
-          resolve({ isAuthenticated: false, user: null, isAdmin: false });
-          return;
+          resolve({ isAuthenticated: false, user: null, isAdmin: false })
+          return
         }
 
         // Verificar se o token é válido
         if (this.isTokenValid(accessToken)) {
           // Decodificar token para obter informações do usuário
-          const decodedToken = jwtDecode(accessToken);
-          const isAdmin = decodedToken['cognito:groups']?.includes('admin') || false;
+          const decodedToken = jwtDecode(accessToken)
+          const isAdmin = decodedToken['cognito:groups']?.includes('admin') || false
 
           this.currentUser = {
             id: decodedToken.sub,
@@ -133,44 +133,44 @@ class CognitoAuthService {
             groups: decodedToken['cognito:groups'] || [],
             sub: decodedToken.sub,
             email_verified: decodedToken.email_verified
-          };
+          }
 
-          resolve({ 
-            isAuthenticated: true, 
+          resolve({
+            isAuthenticated: true,
             user: this.currentUser,
             isAdmin: isAdmin
-          });
+          })
         } else {
           // Token expirado
-          this.clearAuthCookies();
-          resolve({ isAuthenticated: false, user: null, isAdmin: false });
+          this.clearAuthCookies()
+          resolve({ isAuthenticated: false, user: null, isAdmin: false })
         }
       } catch (error) {
-        console.error('Erro ao verificar status de autenticação:', error);
-        this.clearAuthCookies();
-        resolve({ isAuthenticated: false, user: null, isAdmin: false });
+        console.error('Erro ao verificar status de autenticação:', error)
+        this.clearAuthCookies()
+        resolve({ isAuthenticated: false, user: null, isAdmin: false })
       }
-    });
+    })
   }
 
   // Logout
   async logout() {
-    return new Promise((resolve) => {
-      this.clearAuthCookies();
-      this.currentUser = null;
-      resolve({ success: true });
-    });
+    return new Promise(resolve => {
+      this.clearAuthCookies()
+      this.currentUser = null
+      resolve({ success: true })
+    })
   }
 
   // Renovar token
   async refreshToken() {
     return new Promise((resolve, reject) => {
       try {
-        const refreshToken = Cookies.get('agrosync_refresh_token');
-        
+        const refreshToken = Cookies.get('agrosync_refresh_token')
+
         if (!refreshToken) {
-          reject(new Error('Refresh token não encontrado'));
-          return;
+          reject(new Error('Refresh token não encontrado'))
+          return
         }
 
         // Simular renovação de token
@@ -179,36 +179,36 @@ class CognitoAuthService {
           sub: this.currentUser?.sub || 'unknown-user',
           'cognito:groups': this.currentUser?.groups || ['user'],
           email_verified: true,
-          exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60) // 24 horas
-        });
+          exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60 // 24 horas
+        })
 
         // Atualizar cookies
-        this.setAuthCookies(newToken, newToken, refreshToken);
+        this.setAuthCookies(newToken, newToken, refreshToken)
 
-        resolve({ success: true, token: newToken });
+        resolve({ success: true, token: newToken })
       } catch (error) {
-        reject(error);
+        reject(error)
       }
-    });
+    })
   }
 
   // Verificar se o token é válido
   isTokenValid(token) {
-    if (!token) return false;
-    
+    if (!token) return false
+
     try {
-      const decoded = jwtDecode(token);
-      const currentTime = Date.now() / 1000;
-      
-      return decoded.exp > currentTime;
+      const decoded = jwtDecode(token)
+      const currentTime = Date.now() / 1000
+
+      return decoded.exp > currentTime
     } catch (error) {
-      return false;
+      return false
     }
   }
 
   // Verificar se o usuário é admin
   isUserAdmin(user) {
-    return user && user.isAdmin === true;
+    return user && user.isAdmin === true
   }
 
   // Configurar cookies de autenticação
@@ -217,36 +217,36 @@ class CognitoAuthService {
       expires: this.config.auth.cookieExpiry,
       secure: this.config.auth.secure,
       sameSite: this.config.auth.sameSite
-    });
+    })
 
     Cookies.set('agrosync_id_token', idToken, {
       expires: this.config.auth.cookieExpiry,
       secure: this.config.auth.secure,
       sameSite: this.config.auth.sameSite
-    });
+    })
 
     Cookies.set('agrosync_refresh_token', refreshToken, {
       expires: this.config.auth.cookieExpiry,
       secure: this.config.auth.secure,
       sameSite: this.config.auth.sameSite
-    });
+    })
   }
 
   // Limpar cookies de autenticação
   clearAuthCookies() {
-    Cookies.remove(this.config.auth.cookieName);
-    Cookies.remove('agrosync_id_token');
-    Cookies.remove('agrosync_refresh_token');
+    Cookies.remove(this.config.auth.cookieName)
+    Cookies.remove('agrosync_id_token')
+    Cookies.remove('agrosync_refresh_token')
   }
 
   // Obter token atual dos cookies
   getCurrentToken() {
-    return Cookies.get(this.config.auth.cookieName);
+    return Cookies.get(this.config.auth.cookieName)
   }
 
   // Obter usuário atual
   getCurrentUser() {
-    return this.currentUser;
+    return this.currentUser
   }
 
   // Criar JWT mock para simulação
@@ -254,51 +254,51 @@ class CognitoAuthService {
     const header = {
       alg: 'HS256',
       typ: 'JWT'
-    };
+    }
 
-    const encodedHeader = btoa(JSON.stringify(header));
-    const encodedPayload = btoa(JSON.stringify(payload));
-    
+    const encodedHeader = btoa(JSON.stringify(header))
+    const encodedPayload = btoa(JSON.stringify(payload))
+
     // Simular assinatura (em produção seria uma assinatura real)
-    const signature = btoa('mock-signature-' + Date.now());
-    
-    return `${encodedHeader}.${encodedPayload}.${signature}`;
+    const signature = btoa('mock-signature-' + Date.now())
+
+    return `${encodedHeader}.${encodedPayload}.${signature}`
   }
 
   // Mensagens de erro personalizadas
   getErrorMessage(code) {
     const errorMessages = {
-      'UserNotFoundException': 'Usuário não encontrado',
-      'NotAuthorizedException': 'Email ou senha incorretos',
-      'UserNotConfirmedException': 'Usuário não confirmado',
-      'PasswordResetRequiredException': 'Redefinição de senha necessária',
-      'TooManyRequestsException': 'Muitas tentativas. Tente novamente em alguns minutos',
-      'UserLambdaValidationException': 'Erro de validação',
-      'InvalidPasswordException': 'Senha inválida',
-      'UsernameExistsException': 'Usuário já existe',
-      'CodeMismatchException': 'Código de verificação incorreto',
-      'ExpiredCodeException': 'Código de verificação expirado',
-      'LimitExceededException': 'Limite excedido',
-      'InvalidParameterException': 'Parâmetro inválido',
-      'ResourceNotFoundException': 'Recurso não encontrado',
-      'NetworkError': 'Erro de conexão. Verifique sua internet',
-      'InternalError': 'Erro interno do sistema',
-      'default': 'Erro inesperado. Tente novamente'
-    };
+      UserNotFoundException: 'Usuário não encontrado',
+      NotAuthorizedException: 'Email ou senha incorretos',
+      UserNotConfirmedException: 'Usuário não confirmado',
+      PasswordResetRequiredException: 'Redefinição de senha necessária',
+      TooManyRequestsException: 'Muitas tentativas. Tente novamente em alguns minutos',
+      UserLambdaValidationException: 'Erro de validação',
+      InvalidPasswordException: 'Senha inválida',
+      UsernameExistsException: 'Usuário já existe',
+      CodeMismatchException: 'Código de verificação incorreto',
+      ExpiredCodeException: 'Código de verificação expirado',
+      LimitExceededException: 'Limite excedido',
+      InvalidParameterException: 'Parâmetro inválido',
+      ResourceNotFoundException: 'Recurso não encontrado',
+      NetworkError: 'Erro de conexão. Verifique sua internet',
+      InternalError: 'Erro interno do sistema',
+      default: 'Erro inesperado. Tente novamente'
+    }
 
-    return errorMessages[code] || errorMessages.default;
+    return errorMessages[code] || errorMessages.default
   }
 
   // Verificar se o usuário está em um grupo específico
   isUserInGroup(user, groupName) {
-    return user && user.groups && user.groups.includes(groupName);
+    return user && user.groups && user.groups.includes(groupName)
   }
 
   // Obter todos os grupos do usuário
   getUserGroups(user) {
-    return user ? user.groups || [] : [];
+    return user ? user.groups || [] : []
   }
 }
 
-const cognitoAuthService = new CognitoAuthService();
-export default cognitoAuthService;
+const cognitoAuthService = new CognitoAuthService()
+export default cognitoAuthService

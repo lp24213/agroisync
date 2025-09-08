@@ -1,17 +1,7 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { 
-  ArrowRight, 
-  Shield, 
-  Zap, 
-  Globe, 
-  Users, 
-  TrendingUp,
-  Smartphone,
-  Truck,
-  BarChart3
-} from 'lucide-react';
+import React from 'react'
+import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
+import { ArrowRight, Shield, Zap, Globe, Users, TrendingUp, Smartphone, Truck, BarChart3 } from 'lucide-react'
 
 const Home = () => {
   const features = [
@@ -35,7 +25,7 @@ const Home = () => {
       title: 'Comunidade Ativa',
       description: 'Rede de produtores, compradores e transportadores em constante crescimento'
     }
-  ];
+  ]
 
   const services = [
     {
@@ -56,87 +46,81 @@ const Home = () => {
       description: 'Dados em tempo real sobre preços, tendências e oportunidades',
       link: '/analytics'
     }
-  ];
+  ]
 
   const stats = [
     { number: '10K+', label: 'Usuários Ativos' },
     { number: 'R$ 50M+', label: 'Volume Transacionado' },
     { number: '99.9%', label: 'Uptime Garantido' },
     { number: '24/7', label: 'Suporte Premium' }
-  ];
+  ]
 
   return (
-    <div className="min-h-screen bg-primary">
+    <div className='bg-primary min-h-screen'>
       {/* Hero Section */}
-      <section className="hero-section">
-        <div className="container-futuristic">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <section className='hero-section'>
+        <div className='container-futuristic'>
+          <div className='grid grid-cols-1 items-center gap-12 lg:grid-cols-2'>
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
-              className="text-white"
+              className='text-white'
             >
               <motion.h1
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="text-5xl md:text-6xl font-bold mb-6"
+                className='mb-6 text-5xl font-bold md:text-6xl'
               >
-                O Futuro do{' '}
-                <span className="text-white">Agronegócio</span>{' '}
-                é <span className="text-yellow-300">Agora</span>
+                O Futuro do <span className='text-white'>Agronegócio</span> é{' '}
+                <span className='text-yellow-300'>Agora</span>
               </motion.h1>
-              
+
               <motion.p
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="text-xl text-white/90 mb-8 leading-relaxed"
+                className='mb-8 text-xl leading-relaxed text-white/90'
               >
-                A plataforma mais avançada e futurista do mundo para conectar produtores, 
-                compradores e transportadores. Tecnologia de ponta, segurança máxima e 
-                performance extrema.
+                A plataforma mais avançada e futurista do mundo para conectar produtores, compradores e transportadores.
+                Tecnologia de ponta, segurança máxima e performance extrema.
               </motion.p>
-              
+
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="flex flex-col sm:flex-row gap-4"
+                className='flex flex-col gap-4 sm:flex-row'
               >
                 <Link
-                  to="/cadastro"
-                  className="bg-white text-primary px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white/90 transition-colors flex items-center justify-center gap-2"
+                  to='/cadastro'
+                  className='text-primary flex items-center justify-center gap-2 rounded-xl bg-white px-8 py-4 text-lg font-semibold transition-colors hover:bg-white/90'
                 >
                   Começar Agora
                   <ArrowRight size={20} />
                 </Link>
                 <Link
-                  to="/sobre"
-                  className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-primary transition-colors"
+                  to='/sobre'
+                  className='hover:text-primary rounded-xl border-2 border-white px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-white'
                 >
                   Saiba Mais
                 </Link>
               </motion.div>
             </motion.div>
-            
+
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative"
+              className='relative'
             >
-              <div className="glass-card p-8 text-center">
-                <div className="w-32 h-32 bg-primary-gradient rounded-full mx-auto mb-6 flex items-center justify-center">
-                  <TrendingUp size={48} className="text-white" />
+              <div className='glass-card p-8 text-center'>
+                <div className='bg-primary-gradient mx-auto mb-6 flex h-32 w-32 items-center justify-center rounded-full'>
+                  <TrendingUp size={48} className='text-white' />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-4">
-                  Performance em Tempo Real
-                </h3>
-                <p className="text-white/80">
-                  Dados atualizados a cada segundo para decisões mais inteligentes
-                </p>
+                <h3 className='mb-4 text-2xl font-bold text-white'>Performance em Tempo Real</h3>
+                <p className='text-white/80'>Dados atualizados a cada segundo para decisões mais inteligentes</p>
               </div>
             </motion.div>
           </div>
@@ -144,14 +128,14 @@ const Home = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-secondary">
-        <div className="container-futuristic">
+      <section className='bg-secondary py-20'>
+        <div className='container-futuristic'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8"
+            className='grid grid-cols-2 gap-8 md:grid-cols-4'
           >
             {stats.map((stat, index) => (
               <motion.div
@@ -160,14 +144,10 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="text-center"
+                className='text-center'
               >
-                <div className="text-4xl md:text-5xl font-bold text-gradient mb-2">
-                  {stat.number}
-                </div>
-                <div className="text-secondary font-medium">
-                  {stat.label}
-                </div>
+                <div className='text-gradient mb-2 text-4xl font-bold md:text-5xl'>{stat.number}</div>
+                <div className='text-secondary font-medium'>{stat.label}</div>
               </motion.div>
             ))}
           </motion.div>
@@ -175,24 +155,24 @@ const Home = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-primary">
-        <div className="container-futuristic">
+      <section className='bg-primary py-20'>
+        <div className='container-futuristic'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className='mb-16 text-center'
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Tecnologia que <span className="text-yellow-300">Impressiona</span>
+            <h2 className='mb-6 text-4xl font-bold text-white md:text-5xl'>
+              Tecnologia que <span className='text-yellow-300'>Impressiona</span>
             </h2>
-            <p className="text-xl text-white/80 max-w-3xl mx-auto">
+            <p className='mx-auto max-w-3xl text-xl text-white/80'>
               Recursos avançados que colocam o AgroSync anos à frente da concorrência
             </p>
           </motion.div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+          <div className='grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4'>
             {features.map((feature, index) => (
               <motion.div
                 key={feature.title}
@@ -200,17 +180,13 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="glass-card p-6 text-center hover:scale-105 transition-transform"
+                className='glass-card p-6 text-center transition-transform hover:scale-105'
               >
-                <div className="w-16 h-16 bg-primary-gradient rounded-xl mx-auto mb-4 flex items-center justify-center">
-                  <feature.icon size={32} className="text-white" />
+                <div className='bg-primary-gradient mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-xl'>
+                  <feature.icon size={32} className='text-white' />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">
-                  {feature.title}
-                </h3>
-                <p className="text-white/80">
-                  {feature.description}
-                </p>
+                <h3 className='mb-3 text-xl font-bold text-white'>{feature.title}</h3>
+                <p className='text-white/80'>{feature.description}</p>
               </motion.div>
             ))}
           </div>
@@ -218,24 +194,24 @@ const Home = () => {
       </section>
 
       {/* Services Section */}
-      <section className="py-20 bg-secondary">
-        <div className="container-futuristic">
+      <section className='bg-secondary py-20'>
+        <div className='container-futuristic'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className='mb-16 text-center'
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-              Nossos <span className="text-gradient">Serviços</span>
+            <h2 className='text-primary mb-6 text-4xl font-bold md:text-5xl'>
+              Nossos <span className='text-gradient'>Serviços</span>
             </h2>
-            <p className="text-xl text-secondary max-w-3xl mx-auto">
+            <p className='text-secondary mx-auto max-w-3xl text-xl'>
               Soluções completas para todas as necessidades do agronegócio moderno
             </p>
           </motion.div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+          <div className='grid grid-cols-1 gap-8 md:grid-cols-3'>
             {services.map((service, index) => (
               <motion.div
                 key={service.title}
@@ -243,23 +219,16 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="product-card group"
+                className='product-card group'
               >
-                <div className="w-16 h-16 bg-primary-gradient rounded-xl mb-6 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <service.icon size={32} className="text-white" />
+                <div className='bg-primary-gradient mb-6 flex h-16 w-16 items-center justify-center rounded-xl transition-transform group-hover:scale-110'>
+                  <service.icon size={32} className='text-white' />
                 </div>
-                <h3 className="text-2xl font-bold text-primary mb-4">
-                  {service.title}
-                </h3>
-                <p className="text-secondary mb-6">
-                  {service.description}
-                </p>
-                <Link
-                  to={service.link}
-                  className="btn-futuristic w-full text-center"
-                >
+                <h3 className='text-primary mb-4 text-2xl font-bold'>{service.title}</h3>
+                <p className='text-secondary mb-6'>{service.description}</p>
+                <Link to={service.link} className='btn-futuristic w-full text-center'>
                   Conhecer
-                  <ArrowRight size={16} className="ml-2" />
+                  <ArrowRight size={16} className='ml-2' />
                 </Link>
               </motion.div>
             ))}
@@ -268,32 +237,31 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-primary-gradient">
-        <div className="container-futuristic text-center">
+      <section className='bg-primary-gradient py-20'>
+        <div className='container-futuristic text-center'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Pronto para o <span className="text-yellow-300">Futuro</span>?
+            <h2 className='mb-6 text-4xl font-bold text-white md:text-5xl'>
+              Pronto para o <span className='text-yellow-300'>Futuro</span>?
             </h2>
-            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Junte-se a milhares de profissionais do agronegócio que já descobriram 
-              o poder da tecnologia AgroSync
+            <p className='mx-auto mb-8 max-w-2xl text-xl text-white/90'>
+              Junte-se a milhares de profissionais do agronegócio que já descobriram o poder da tecnologia AgroSync
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className='flex flex-col justify-center gap-4 sm:flex-row'>
               <Link
-                to="/cadastro"
-                className="bg-white text-primary px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white/90 transition-colors flex items-center justify-center gap-2"
+                to='/cadastro'
+                className='text-primary flex items-center justify-center gap-2 rounded-xl bg-white px-8 py-4 text-lg font-semibold transition-colors hover:bg-white/90'
               >
                 Começar Gratuitamente
                 <ArrowRight size={20} />
               </Link>
               <Link
-                to="/contato"
-                className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-primary transition-colors"
+                to='/contato'
+                className='hover:text-primary rounded-xl border-2 border-white px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-white'
               >
                 Falar com Especialista
               </Link>
@@ -302,7 +270,7 @@ const Home = () => {
         </div>
       </section>
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home

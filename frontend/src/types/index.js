@@ -94,4 +94,4 @@
  */
 
 // Exportar vazio para compatibilidade
-export {};
+export {}
