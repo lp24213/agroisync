@@ -40,7 +40,6 @@ const PriceAlerts = () => {
   }, [cryptoPrices, alerts]);
 
   const loadAlerts = () => {
-Em produção, buscar do backend
     const savedAlerts = JSON.parse(localStorage.getItem('cryptoPriceAlerts') || '[]');
     setAlerts(savedAlerts);
   };

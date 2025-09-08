@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { MessageCircle, Send, Mic, MicOff, Camera, Image, Bot, Loader2, Brain, Lightbulb } from 'lucide-react';
+import { Send, Mic, MicOff, Image, Bot, Loader2, Brain, Lightbulb, DollarSign, Settings, X } from 'lucide-react';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useTheme } from '../../contexts/ThemeContext';
 
@@ -17,12 +17,12 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
   const [showImageUpload, setShowImageUpload] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
-  const [aiMode, setAiMode] = useState('general'); 'general', 'pricing', 'recommendations'
+  const [aiMode, setAiMode] = useState('general');
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
   const synthesisRef = useRef(null);
 
-Inicializar mensagens
+  // Inicializar mensagens
   useEffect(() => {
     const welcomeMessage = {
       id: Date.now(),
@@ -39,12 +39,12 @@ Inicializar mensagens
     }
   }, [initialMessage, t]);
 
-Scroll para última mensagem
+  // Scroll para última mensagem
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-Inicializar reconhecimento de voz
+  // Inicializar reconhecimento de voz
   useEffect(() => {
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -59,23 +59,12 @@ Inicializar reconhecimento de voz
         setIsListening(false);
       };
 
-      recognitionRef.current.onerror = (event) => {
-        console.error('Speech recognition error:', event.error);
+      recognitionRef.current.onerror = () => {
         setIsListening(false);
       };
-
-      recognitionRef.current.onend = () => {
-        setIsListening(false);
-      };
-    }
-
-Inicializar síntese de voz
-    if ('speechSynthesis' in window) {
-      synthesisRef.current = window.speechSynthesis;
     }
   }, []);
 
-Enviar mensagem
   const handleSendMessage = useCallback(async (message = inputMessage) => {
     if (!message.trim()) return;
 
@@ -90,133 +79,86 @@ Enviar mensagem
     setMessages(prev => [...prev, userMessage]);
     setInputMessage('');
     setSelectedImage(null);
-setIsLoading(true);
+    setIsLoading(true);
 
     try {
-      const response = await fetch('/api/ai/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        },
-        body: JSON.stringify({
-          message: message,
-          mode: aiMode,
-          image: selectedImage,
-          conversationHistory: messages.slice(-10) Últimas 10 mensagens
-        })
-      });
-
-      const data = await response.json();
-
-      const aiMessage = {
+      // Simular resposta da IA
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const aiResponse = {
         id: Date.now() + 1,
         type: 'ai',
-        content: data.response,
+        content: t('ai.response', 'Esta é uma resposta simulada da IA. Em produção, aqui viria a resposta real da API.'),
         timestamp: new Date(),
-        mode: aiMode,
-        suggestions: data.suggestions || [],
-        data: data.data || null
+        mode: aiMode
       };
 
-      setMessages(prev => [...prev, aiMessage]);
-
-Falar resposta se habilitado
-      if (data.speak && synthesisRef.current) {
-        speakText(data.response);
-      }
-
-      analytics.trackEvent('ai_chat_message', {
-        mode: aiMode,
-        has_image: !!selectedImage,
-        response_length: data.response.length
-      });
-
+      setMessages(prev => [...prev, aiResponse]);
     } catch (error) {
-      console.error('Error sending message:', error);
-      const errorMessage = {
-        id: Date.now() + 1,
-        type: 'ai',
-        content: t('ai.error', 'Desculpe, ocorreu um erro. Tente novamente.'),
-        timestamp: new Date(),
-        mode: 'error'
-      };
-      setMessages(prev => [...prev, errorMessage]);
+      console.error('Erro ao enviar mensagem:', error);
     } finally {
-setIsLoading(false);
+      setIsLoading(false);
     }
-  }, [inputMessage, selectedImage, aiMode, messages, analytics, t]);
+  }, [inputMessage, selectedImage, aiMode, t]);
 
-Iniciar/parar reconhecimento de voz
-  const toggleVoiceInput = useCallback(() => {
-    if (!recognitionRef.current) {
-      alert(t('ai.voiceNotSupported', 'Reconhecimento de voz não é suportado neste navegador'));
-      return;
-    }
-
+  const handleVoiceInput = () => {
     if (isListening) {
-      recognitionRef.current.stop();
+      recognitionRef.current?.stop();
       setIsListening(false);
     } else {
-      recognitionRef.current.start();
+      recognitionRef.current?.start();
       setIsListening(true);
     }
-  }, [isListening, t]);
+  };
 
-Falar texto
-  const speakText = useCallback((text) => {
-    if (!synthesisRef.current) return;
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'pt-BR';
-    utterance.rate = 0.9;
-    utterance.pitch = 1;
-
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
-
-    synthesisRef.current.speak(utterance);
-  }, []);
-
-Parar fala
-  const stopSpeaking = useCallback(() => {
-    if (synthesisRef.current) {
-      synthesisRef.current.cancel();
-      setIsSpeaking(false);
-    }
-  }, []);
-
-Upload de imagem
   const handleImageUpload = useCallback((event) => {
     const file = event.target.files[0];
     if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setSelectedImage(e.target.result);
+      setSelectedImage(file);
         setShowImageUpload(false);
-      };
-      reader.readAsDataURL(file);
     }
   }, []);
 
-Sugestões rápidas
-  const quickSuggestions = [
-    { text: t('ai.suggestions.pricing', 'Previsão de preços'), mode: 'pricing' },
-    { text: t('ai.suggestions.recommendations', 'Recomendações'), mode: 'recommendations' },
-    { text: t('ai.suggestions.weather', 'Previsão do tempo'), mode: 'general' },
-    { text: t('ai.suggestions.market', 'Análise de mercado'), mode: 'general' }
-  ];
+  const handleTextToSpeech = (text) => {
+    if ('speechSynthesis' in window) {
+      setIsSpeaking(true);
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'pt-BR';
+      utterance.onend = () => setIsSpeaking(false);
+      utterance.onerror = () => setIsSpeaking(false);
+      speechSynthesis.speak(utterance);
+    }
+  };
 
-  const handleQuickSuggestion = useCallback((suggestion) => {
-    setAiMode(suggestion.mode);
-    handleSendMessage(suggestion.text);
-  }, [handleSendMessage]);
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
 
-Limpar conversa
-  const clearConversation = useCallback(() => {
-    setMessages([]);
-    analytics.trackEvent('ai_chat_cleared');
-  }, [analytics]);
+  const formatTime = (date) => {
+    return new Intl.DateTimeFormat('pt-BR', {
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(date);
+  };
+
+  const getModeIcon = (mode) => {
+    switch (mode) {
+      case 'pricing': return <DollarSign className="w-4 h-4" />;
+      case 'recommendations': return <Lightbulb className="w-4 h-4" />;
+      default: return <Brain className="w-4 h-4" />;
+    }
+  };
+
+  const getModeColor = (mode) => {
+    switch (mode) {
+      case 'pricing': return 'text-green-600';
+      case 'recommendations': return 'text-yellow-600';
+      default: return 'text-blue-600';
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -225,214 +167,178 @@ Limpar conversa
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
-      className="fixed bottom-4 right-4 w-96 h-[600px] bg-white dark:bg-gray-800 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 z-50 flex flex-col"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+    >
+      <motion.div
+        initial={{ scale: 0.9 }}
+        animate={{ scale: 1 }}
+        exit={{ scale: 0.9 }}
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl h-[80vh] flex flex-col"
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-            <Bot className="w-5 h-5 text-white" />
+        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          <div className="flex items-center gap-3">
+            <div className="bg-gray-900 p-2 rounded-lg">
+              <Bot className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h3 className="font-semibold text-gray-900 dark:text-white">
-              {t('ai.assistant', 'Assistente IA')}
-            </h3>
-            <p className="text-xs text-gray-600 dark:text-gray-400">
-              {t('ai.mode', 'Modo')}: {t(`ai.modes.${aiMode}`, aiMode)}
-            </p>
+              <h2 className="text-xl font-semibold text-gray-900">Assistente IA</h2>
+              <p className="text-sm text-gray-600">AgroSync</p>
+            </div>
           </div>
-        </div>
-        <div className="flex items-center space-x-2">
+          
+          <div className="flex items-center gap-2">
           <button
             onClick={() => setShowSettings(!showSettings)}
-            className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+              className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
           >
-            <Settings className="w-4 h-4" />
+              <Settings className="w-5 h-5" />
           </button>
           <button
             onClick={onClose}
-            className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+              className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
           >
-            <X className="w-4 h-4" />
+              <X className="w-5 h-5" />
           </button>
         </div>
       </div>
 
-      {/* Configurações */}
-      <AnimatePresence>
+        {/* Settings Panel */}
         {showSettings && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900"
-          >
-            <div className="space-y-3">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  {t('ai.mode', 'Modo')}
-                </label>
-                <select
-                  value={aiMode}
-                  onChange={(e) => setAiMode(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-sm"
-                >
-                  <option value="general">{t('ai.modes.general', 'Geral')}</option>
-                  <option value="pricing">{t('ai.modes.pricing', 'Previsão de Preços')}</option>
-                  <option value="recommendations">{t('ai.modes.recommendations', 'Recomendações')}</option>
-                </select>
+          <div className="p-4 bg-gray-50 border-b border-gray-200">
+            <div className="flex items-center gap-4">
+              <span className="text-sm font-medium text-gray-700">Modo:</span>
+              <div className="flex gap-2">
+                {[
+                  { id: 'general', label: 'Geral', icon: Brain },
+                  { id: 'pricing', label: 'Preços', icon: DollarSign },
+                  { id: 'recommendations', label: 'Recomendações', icon: Lightbulb }
+                ].map(mode => (
+                  <button
+                    key={mode.id}
+                    onClick={() => setAiMode(mode.id)}
+                    className={`flex items-center gap-2 px-3 py-1 rounded-lg text-sm transition-colors ${
+                      aiMode === mode.id
+                        ? 'bg-gray-900 text-white'
+                        : 'bg-white text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    <mode.icon className="w-4 h-4" />
+                    {mode.label}
+                  </button>
+                ))}
               </div>
-              <button
-                onClick={clearConversation}
-                className="w-full px-3 py-2 bg-red-100 hover:bg-red-200 dark:bg-red-900 dark:hover:bg-red-800 text-red-700 dark:text-red-300 rounded-lg text-sm font-medium transition-colors"
-              >
-                {t('ai.clearConversation', 'Limpar conversa')}
-              </button>
             </div>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
 
-      {/* Mensagens */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((message) => (
-          <motion.div
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          {messages.map((message) => (
+            <div
             key={message.id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-          >
-            <div className={`flex items-start space-x-2 max-w-[80%] ${
-              message.type === 'user' ? 'flex-row-reverse space-x-reverse' : ''
-            }`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                message.type === 'user' 
-                  ? 'bg-blue-600' 
-                  : message.mode === 'pricing' 
-                    ? 'bg-green-600' 
-                    : message.mode === 'recommendations' 
-                      ? 'bg-purple-600' 
-                      : 'bg-gray-600'
-              }`}>
-                {message.type === 'user' ? (
-                  <User className="w-4 h-4 text-white" />
-                ) : (
-                  <Bot className="w-4 h-4 text-white" />
+              className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+            >
+              <div
+                className={`max-w-[80%] rounded-2xl p-4 ${
+                  message.type === 'user'
+                    ? 'bg-gray-900 text-white'
+                    : 'bg-gray-100 text-gray-900'
+                }`}
+              >
+                {message.type === 'ai' && (
+                  <div className="flex items-center gap-2 mb-2">
+                    <Bot className="w-4 h-4" />
+                    <span className="text-xs font-medium">Assistente IA</span>
+                    <div className={`flex items-center gap-1 ${getModeColor(message.mode)}`}>
+                      {getModeIcon(message.mode)}
+                      <span className="text-xs">{message.mode}</span>
+                    </div>
+                  </div>
                 )}
-              </div>
-              <div className={`rounded-lg p-3 ${
-                message.type === 'user'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
-              }`}>
+                
+                <p className="text-sm leading-relaxed">{message.content}</p>
+                
                 {message.image && (
+                  <div className="mt-2">
                   <img 
-                    src={message.image} 
+                      src={URL.createObjectURL(message.image)}
                     alt="Uploaded" 
-                    className="w-32 h-32 object-cover rounded-lg mb-2"
-                  />
-                )}
-                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                {message.suggestions && message.suggestions.length > 0 && (
-                  <div className="mt-2 space-y-1">
-                    {message.suggestions.map((suggestion, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handleSendMessage(suggestion)}
-                        className="block w-full text-left px-2 py-1 text-xs bg-white dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-50 dark:hover:bg-gray-500"
-                      >
-                        {suggestion}
-                      </button>
-                    ))}
+                      className="max-w-full h-auto rounded-lg"
+                    />
                   </div>
                 )}
-                {message.data && (
-                  <div className="mt-2 p-2 bg-white dark:bg-gray-600 rounded text-xs">
-                    <pre className="whitespace-pre-wrap">{JSON.stringify(message.data, null, 2)}</pre>
+                
+                <div className="flex items-center justify-between mt-2">
+                  <span className="text-xs opacity-70">
+                    {formatTime(message.timestamp)}
+                  </span>
+                  
+                  {message.type === 'ai' && (
+                    <button
+                      onClick={() => handleTextToSpeech(message.content)}
+                      disabled={isSpeaking}
+                      className="p-1 hover:bg-white hover:bg-opacity-20 rounded transition-colors"
+                    >
+                      {isSpeaking ? (
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                      ) : (
+                        <Mic className="w-3 h-3" />
+                      )}
+                    </button>
+                  )}
                   </div>
-                )}
               </div>
             </div>
-          </motion.div>
-        ))}
-        
-        {isLoading && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex justify-start"
-          >
-            <div className="flex items-start space-x-2">
-              <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center">
-                <Bot className="w-4 h-4 text-white" />
-              </div>
-              <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-3">
-                <div className="flex items-center space-x-2">
+          ))}
+          
+          {isLoading && (
+            <div className="flex justify-start">
+              <div className="bg-gray-100 rounded-2xl p-4">
+                <div className="flex items-center gap-2">
+                  <Bot className="w-4 h-4" />
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {t('ai.thinking', 'Pensando...')}
-                  </span>
+                  <span className="text-sm text-gray-600">Digitando...</span>
                 </div>
               </div>
             </div>
-          </motion.div>
         )}
         
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Sugestões rápidas */}
-      {messages.length === 1 && (
-        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-          <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
-            {t('ai.quickSuggestions', 'Sugestões rápidas')}:
-          </p>
-          <div className="grid grid-cols-2 gap-2">
-            {quickSuggestions.map((suggestion, index) => (
+        {/* Input */}
+        <div className="p-6 border-t border-gray-200">
+          {selectedImage && (
+            <div className="mb-4 flex items-center gap-2">
+              <img
+                src={URL.createObjectURL(selectedImage)}
+                alt="Preview"
+                className="w-12 h-12 object-cover rounded-lg"
+              />
+              <span className="text-sm text-gray-600">{selectedImage.name}</span>
               <button
-                key={index}
-                onClick={() => handleQuickSuggestion(suggestion)}
-                className="p-2 text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors"
+                onClick={() => setSelectedImage(null)}
+                className="p-1 text-gray-400 hover:text-gray-600"
               >
-                {suggestion.text}
+                <X className="w-4 h-4" />
               </button>
-            ))}
-          </div>
         </div>
       )}
 
-      {/* Input */}
-      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-        {selectedImage && (
-          <div className="mb-3 relative">
-            <img 
-              src={selectedImage} 
-              alt="Selected" 
-              className="w-20 h-20 object-cover rounded-lg"
-            />
-            <button
-              onClick={() => setSelectedImage(null)}
-              className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600"
-            >
-              <X className="w-3 h-3" />
-            </button>
-          </div>
-        )}
-        
-        <div className="flex items-center space-x-2">
+          <div className="flex items-end gap-3">
           <div className="flex-1 relative">
-            <input
-              type="text"
+              <textarea
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-              placeholder={t('ai.placeholder', 'Digite sua mensagem...')}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-sm"
-              disabled={isLoading}
-            />
-          </div>
-          
-          <div className="flex items-center space-x-1">
+                onKeyPress={handleKeyPress}
+                placeholder="Digite sua mensagem..."
+                className="w-full p-3 pr-12 border border-gray-300 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                rows={1}
+                style={{ minHeight: '48px', maxHeight: '120px' }}
+              />
+              
+              <div className="absolute right-2 bottom-2 flex gap-1">
             <input
               type="file"
               accept="image/*"
@@ -442,41 +348,38 @@ Limpar conversa
             />
             <label
               htmlFor="image-upload"
-              className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                  className="p-2 text-gray-400 hover:text-gray-600 cursor-pointer transition-colors"
             >
-              <Camera className="w-4 h-4" />
+                  <Image className="w-4 h-4" />
             </label>
             
             <button
-              onClick={toggleVoiceInput}
-              className={`p-2 rounded-lg transition-colors ${
+                  onClick={handleVoiceInput}
+                  className={`p-2 transition-colors ${
                 isListening 
-                  ? 'bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-400' 
-                  : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                      ? 'text-red-600 hover:text-red-700'
+                      : 'text-gray-400 hover:text-gray-600'
               }`}
             >
               {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
             </button>
-            
-            {isSpeaking && (
-              <button
-                onClick={stopSpeaking}
-                className="p-2 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-400 rounded-lg"
-              >
-                <VolumeX className="w-4 h-4" />
-              </button>
-            )}
+              </div>
+            </div>
             
             <button
               onClick={() => handleSendMessage()}
               disabled={!inputMessage.trim() || isLoading}
-              className="p-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-lg transition-colors"
+              className="p-3 bg-gray-900 text-white rounded-xl hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              <Send className="w-4 h-4" />
+              {isLoading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <Send className="w-5 h-5" />
+              )}
             </button>
           </div>
         </div>
-      </div>
+      </motion.div>
     </motion.div>
   );
 };
