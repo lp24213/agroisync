@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
-import { Truck, MessageSquare, Bell, LogOut, XCircle, Navigation } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Truck, MessageSquare, Bell, LogOut, Navigation } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const DriverPanel = () => {
   const { t } = useTranslation();
@@ -149,7 +148,7 @@ const DriverPanel = () => {
       <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
         {t('driverPanel.availableFreights', 'Fretes Disponíveis')}
       </h3>
-      
+
       <div className="grid gap-4">
         {availableFreights.map((freight) => (
           <div key={freight.id} className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
@@ -157,24 +156,24 @@ const DriverPanel = () => {
               <div>
                 <h4 className="font-semibold text-slate-900 dark:text-slate-100">
                   {freight.origin} → {freight.destination}
-                </h4>
+                  </h4>
                 <p className="text-sm text-slate-600 dark:text-slate-400">
                   {freight.client} • {freight.type}
                 </p>
               </div>
               <span className="text-lg font-bold text-emerald-600">
                 R$ {freight.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-              </span>
-            </div>
-            
+                  </span>
+                </div>
+                
             <div className="grid grid-cols-2 gap-4 text-sm text-slate-600 dark:text-slate-400 mb-4">
-              <div>
+                    <div>
                 <span className="font-medium">Distância:</span> {freight.distance} km
-              </div>
+                    </div>
               <div>
                 <span className="font-medium">Peso:</span> {freight.weight.toLocaleString()} kg
-              </div>
-              <div>
+                  </div>
+                    <div>
                 <span className="font-medium">Data:</span> {freight.date}
               </div>
               <div>
@@ -207,59 +206,59 @@ const DriverPanel = () => {
               <div>
                 <h4 className="font-semibold text-slate-900 dark:text-slate-100">
                   {freight.origin} → {freight.destination}
-                </h4>
+                  </h4>
                 <p className="text-sm text-slate-600 dark:text-slate-400">
                   {freight.client} • {freight.type}
                 </p>
               </div>
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                 freight.status === 'completed' ? 'bg-green-100 text-green-800' :
                 freight.status === 'in_transit' ? 'bg-blue-100 text-blue-800' :
                 'bg-yellow-100 text-yellow-800'
               }`}>
                 {freight.status === 'completed' ? 'Concluído' :
                  freight.status === 'in_transit' ? 'Em Trânsito' : 'Aceito'}
-              </span>
-            </div>
-            
+                  </span>
+                </div>
+                
             <div className="grid grid-cols-2 gap-4 text-sm text-slate-600 dark:text-slate-400 mb-4">
-              <div>
+                    <div>
                 <span className="font-medium">Distância:</span> {freight.distance} km
-              </div>
+                    </div>
               <div>
                 <span className="font-medium">Peso:</span> {freight.weight.toLocaleString()} kg
-              </div>
-              <div>
+                  </div>
+                    <div>
                 <span className="font-medium">Data:</span> {freight.date}
-              </div>
+                    </div>
               <div>
                 <span className="font-medium">Valor:</span> R$ {freight.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-              </div>
-            </div>
-            
-            {freight.status === 'in_transit' && (
-              <div className="mb-4">
-                <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400 mb-1">
+                  </div>
+                </div>
+
+                {freight.status === 'in_transit' && (
+                  <div className="mb-4">
+                    <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400 mb-1">
                   <span>Progresso</span>
-                  <span>{freight.progress}%</span>
-                </div>
-                <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                  <div 
+                      <span>{freight.progress}%</span>
+                    </div>
+                    <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                      <div 
                     className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${freight.progress}%` }}
-                  ></div>
-                </div>
-              </div>
-            )}
-            
-            <div className="flex gap-2">
+                        style={{ width: `${freight.progress}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex gap-2">
               <button className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                 Ver Detalhes
-              </button>
+                  </button>
               {freight.status === 'in_transit' && (
                 <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
                   Atualizar Status
-                </button>
+                  </button>
               )}
             </div>
           </div>
@@ -283,7 +282,7 @@ const DriverPanel = () => {
             R$ {earnings.thisMonth.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
           </p>
         </div>
-        
+
         <div className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
           <h4 className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
             Mês Passado
@@ -292,7 +291,7 @@ const DriverPanel = () => {
             R$ {earnings.lastMonth.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
           </p>
         </div>
-        
+
         <div className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
           <h4 className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
             Total
@@ -302,7 +301,7 @@ const DriverPanel = () => {
           </p>
         </div>
       </div>
-      
+
       <div className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-slate-200 dark:border-slate-700">
         <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
           Estatísticas
@@ -326,26 +325,26 @@ const DriverPanel = () => {
   );
 
   const renderMessages = () => (
-    <div className="space-y-4">
-      <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
         {t('driverPanel.messages', 'Mensagens')}
-      </h3>
+            </h3>
       
       <div className="text-center py-8">
         <MessageSquare className="w-12 h-12 text-slate-400 mx-auto mb-4" />
         <p className="text-slate-600 dark:text-slate-400">
           {t('driverPanel.noMessages', 'Nenhuma mensagem ainda.')}
-        </p>
-      </div>
-    </div>
-  );
+                </p>
+              </div>
+          </div>
+        );
 
   const renderNotifications = () => (
     <div className="space-y-4">
-      <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
+            <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
         {t('driverPanel.notifications', 'Notificações')}
-      </h3>
-      
+            </h3>
+            
       <div className="space-y-3">
         {notifications.map((notification) => (
           <div key={notification.id} className={`p-4 rounded-lg border ${
@@ -357,7 +356,7 @@ const DriverPanel = () => {
               <div>
                 <h4 className="font-semibold text-slate-900 dark:text-slate-100">
                   {notification.title}
-                </h4>
+              </h4>
                 <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
                   {notification.message}
                 </p>
@@ -368,9 +367,9 @@ const DriverPanel = () => {
             </div>
           </div>
         ))}
-      </div>
-    </div>
-  );
+            </div>
+          </div>
+        );
 
   if (loading) {
     return (
@@ -398,8 +397,8 @@ const DriverPanel = () => {
       {/* Tabs */}
       <div className="flex space-x-1 mb-6 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
         {tabs.map((tab) => (
-          <button
-            key={tab.id}
+                  <button
+                    key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               activeTab === tab.id
@@ -408,12 +407,12 @@ const DriverPanel = () => {
             }`}
           >
             <tab.icon className="w-4 h-4" />
-            {tab.label}
-          </button>
+                    {tab.label}
+                  </button>
         ))}
-      </div>
+          </div>
 
-      {/* Content */}
+          {/* Content */}
       <div className="min-h-[400px]">
         {activeTab === 'freights' && renderAvailableFreights()}
         {activeTab === 'myFreights' && renderMyFreights()}

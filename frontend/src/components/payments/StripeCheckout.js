@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
@@ -13,18 +13,16 @@ const StripeCheckout = ({
 }) => {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const [loading, setLoading] = useState(false);
   const [step, setStep] = useState('details');
   const [paymentIntent, setPaymentIntent] = useState(null);
-  const [paymentMethod, setPaymentMethod] = useState(null);
   const [error, setError] = useState(null);
   const [fees, setFees] = useState(null);
 
   useEffect(() => {
     calculateFees();
-  }, [orderData]);
+  }, [orderData, calculateFees]);
 
-  const calculateFees = async () => {
+  const calculateFees = useCallback(async () => {
     try {
       const feesData = await paymentService.calculateFees(
         orderData.amount,
@@ -35,10 +33,9 @@ const StripeCheckout = ({
     } catch (error) {
       console.error('Erro ao calcular taxas:', error);
     }
-  };
+  }, [orderData.amount]);
 
   const handlePayment = async () => {
-    setLoading(true);
     setStep('processing');
     setError(null);
 
@@ -72,7 +69,7 @@ const StripeCheckout = ({
       setStep('error');
       onError(error);
     } finally {
-      setLoading(false);
+      // Payment processing completed
     }
   };
 
@@ -217,10 +214,10 @@ const StripeCheckout = ({
       exit={{ opacity: 0, scale: 0.95 }}
       className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4"
     >
-      {step === 'details' && renderDetails()}
-      {step === 'processing' && renderProcessing()}
-      {step === 'success' && renderSuccess()}
-      {step === 'error' && renderError()}
+        {step === 'details' && renderDetails()}
+        {step === 'processing' && renderProcessing()}
+        {step === 'success' && renderSuccess()}
+        {step === 'error' && renderError()}
     </motion.div>
   );
 };

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { ShoppingCart, MessageSquare, Bell, LogOut, Heart, Settings, Plus } from 'lucide-react';
@@ -302,19 +301,19 @@ const BuyerPanel = () => {
       {/* Tabs */}
       <div className="flex space-x-1 mb-6 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
         {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-              activeTab === tab.id
+                activeTab === tab.id
                 ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 shadow-sm'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
-            }`}
-          >
-            <tab.icon className="w-4 h-4" />
+              }`}
+            >
+              <tab.icon className="w-4 h-4" />
             {tab.label}
-          </button>
-        ))}
+            </button>
+          ))}
       </div>
 
       {/* Content */}
