@@ -11,7 +11,6 @@ import ChatbotWidget from './components/ChatbotWidget'
 import StockTicker from './components/StockTicker'
 import GrainQuotes from './components/GrainQuotes'
 import WeatherWidget from './components/WeatherWidget'
-import NewsFeed from './components/NewsFeed'
 
 // Importar estilos futuristas
 import './styles/futuristic-theme.css'
@@ -69,12 +68,11 @@ function App() {
                   <StockTicker />
 
                   {/* Barra de Informações */}
-                  <div className='bg-secondary border-light border-b py-2'>
+                  <div className='bg-gray-50 border-gray-200 border-b py-2'>
                     <div className='container-futuristic'>
                       <div className='flex flex-col items-center justify-between gap-4 text-sm md:flex-row'>
                         <GrainQuotes />
                         <WeatherWidget />
-                        <NewsFeed />
                       </div>
                     </div>
                   </div>

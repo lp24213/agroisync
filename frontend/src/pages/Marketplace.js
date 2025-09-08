@@ -37,7 +37,7 @@ const Marketplace = () => {
   ]
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-dark-primary via-dark-secondary to-dark-tertiary p-8'>
+    <div className='min-h-screen bg-gray-50 p-8'>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className='mx-auto max-w-7xl'>
         {/* Hero Section */}
         <div className='mb-16 text-center'>
@@ -45,9 +45,9 @@ const Marketplace = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className='mb-6 text-5xl font-bold text-white md:text-6xl'
+            className='heading-1 mb-6 text-gray-900'
           >
-            <span className='text-gradient'>Intermediação</span> Inteligente
+            <span className='text-gray-700'>Intermediação</span> Inteligente
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 30 }}

@@ -231,20 +231,20 @@ const Store = () => {
   }
 
   return (
-    <div className='bg-primary min-h-screen'>
+    <div className='bg-white min-h-screen'>
       {/* Hero Section */}
-      <section className='hero-section'>
+      <section className='bg-gray-50 py-24'>
         <div className='container-futuristic'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className='text-center text-white'
+            className='text-center text-gray-900'
           >
-            <h1 className='mb-6 text-5xl font-bold md:text-6xl'>
-              Intermediação <span className='text-yellow-300'>AgroSync</span>
+            <h1 className='heading-1 mb-8'>
+              Loja <span className='text-gray-700'>Agroisync</span>
             </h1>
-            <p className='mx-auto mb-8 max-w-3xl text-xl leading-relaxed text-white/90'>
+            <p className='subtitle mx-auto mb-8 max-w-3xl text-gray-600'>
               Plataforma de intermediação inteligente. Conectamos produtores, compradores e fornecedores do agronegócio
               com segurança total e transparência.
             </p>
@@ -253,13 +253,13 @@ const Store = () => {
       </section>
 
       {/* Search and Filters */}
-      <section className='bg-secondary py-12'>
+      <section className='bg-white py-12'>
         <div className='container-futuristic'>
-          <div className='glass-card p-6'>
+          <div className='card-futuristic p-6'>
             <div className='flex flex-col items-center gap-6 lg:flex-row'>
               {/* Search */}
               <div className='relative flex-1'>
-                <Search size={20} className='text-muted absolute left-3 top-1/2 -translate-y-1/2 transform' />
+                <Search size={20} className='text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 transform' />
                 <input
                   type='text'
                   placeholder='Buscar produtos, serviços ou fornecedores...'
@@ -277,8 +277,8 @@ const Store = () => {
                     onClick={() => setSelectedCategory(category.id)}
                     className={`flex items-center gap-2 rounded-lg px-4 py-2 font-medium transition-colors ${
                       selectedCategory === category.id
-                        ? 'bg-primary text-white'
-                        : 'bg-secondary text-secondary hover:bg-primary hover:text-white'
+                        ? 'bg-gray-900 text-white'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900'
                     }`}
                   >
                     <category.icon size={16} />
@@ -293,8 +293,8 @@ const Store = () => {
                   onClick={() => setViewMode('grid')}
                   className={`rounded-lg p-2 transition-colors ${
                     viewMode === 'grid'
-                      ? 'bg-primary text-white'
-                      : 'bg-secondary text-secondary hover:bg-primary hover:text-white'
+                      ? 'bg-gray-900 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900'
                   }`}
                 >
                   <Grid size={20} />
@@ -303,8 +303,8 @@ const Store = () => {
                   onClick={() => setViewMode('list')}
                   className={`rounded-lg p-2 transition-colors ${
                     viewMode === 'list'
-                      ? 'bg-primary text-white'
-                      : 'bg-secondary text-secondary hover:bg-primary hover:text-white'
+                      ? 'bg-gray-900 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900'
                   }`}
                 >
                   <List size={20} />
@@ -316,12 +316,12 @@ const Store = () => {
       </section>
 
       {/* Products Grid */}
-      <section className='bg-primary py-20'>
+      <section className='bg-gray-50 py-20'>
         <div className='container-futuristic'>
           <div className='mb-8 flex items-center justify-between'>
-            <h2 className='text-3xl font-bold text-white'>Produtos Disponíveis ({filteredProducts.length})</h2>
+            <h2 className='heading-3 text-gray-900'>Produtos Disponíveis ({filteredProducts.length})</h2>
             <div className='flex items-center gap-4'>
-              <span className='text-white/80'>Ordenar por:</span>
+              <span className='text-gray-600'>Ordenar por:</span>
               <select className='input-futuristic'>
                 <option>Relevância</option>
                 <option>Preço: Menor para Maior</option>
@@ -341,53 +341,53 @@ const Store = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                   viewport={{ once: true }}
-                  className='product-card group relative'
+                  className='card-futuristic group relative p-6 transition-all duration-300 hover:shadow-medium'
                 >
                   {product.featured && (
-                    <div className='bg-success absolute left-4 top-4 rounded-full px-3 py-1 text-sm font-semibold text-white'>
+                    <div className='bg-gray-900 absolute left-4 top-4 rounded-full px-3 py-1 text-sm font-semibold text-white'>
                       Destaque
                     </div>
                   )}
 
                   <div className='mb-4 flex items-start justify-between'>
                     <div className='text-4xl'>{product.image}</div>
-                    <button className='text-muted hover:text-danger p-2 transition-colors'>
+                    <button className='text-gray-400 hover:text-gray-600 p-2 transition-colors'>
                       <Heart size={20} />
                     </button>
                   </div>
 
-                  <h3 className='text-primary group-hover:text-primary-dark mb-2 text-xl font-bold transition-colors'>
+                  <h3 className='heading-4 mb-2 text-gray-900 group-hover:text-gray-700 transition-colors'>
                     {product.name}
                   </h3>
 
-                  <p className='text-secondary mb-4 line-clamp-2'>{product.description}</p>
+                  <p className='body-text mb-4 text-gray-600 line-clamp-2'>{product.description}</p>
 
                   <div className='mb-4 flex items-center gap-2'>
                     <div className='flex items-center gap-1'>
-                      <Star size={16} className='text-warning fill-current' />
-                      <span className='text-primary text-sm font-medium'>{product.rating}</span>
+                      <Star size={16} className='text-yellow-500 fill-current' />
+                      <span className='text-gray-900 text-sm font-medium'>{product.rating}</span>
                     </div>
-                    <span className='text-muted text-sm'>({product.reviews} avaliações)</span>
+                    <span className='text-gray-500 text-sm'>({product.reviews} avaliações)</span>
                   </div>
 
-                  <div className='text-muted mb-4 flex items-center gap-2 text-sm'>
+                  <div className='text-gray-500 mb-4 flex items-center gap-2 text-sm'>
                     <MapPin size={16} />
                     <span>{product.location}</span>
                   </div>
 
-                  <div className='text-muted mb-4 flex items-center gap-2 text-sm'>
+                  <div className='text-gray-500 mb-4 flex items-center gap-2 text-sm'>
                     <User size={16} />
                     <span>{product.seller}</span>
                   </div>
 
                   <div className='mb-6 flex items-center justify-between'>
                     <div>
-                      <div className='text-primary text-2xl font-bold'>{formatPrice(product.price)}</div>
-                      <div className='text-muted text-sm'>{product.unit}</div>
+                      <div className='text-gray-900 text-2xl font-bold'>{formatPrice(product.price)}</div>
+                      <div className='text-gray-500 text-sm'>{product.unit}</div>
                     </div>
                     <div className='text-right'>
-                      <div className='text-muted text-sm'>Disponível:</div>
-                      <div className='text-primary font-medium'>{product.quantity.toLocaleString()}</div>
+                      <div className='text-gray-500 text-sm'>Disponível:</div>
+                      <div className='text-gray-900 font-medium'>{product.quantity.toLocaleString()}</div>
                     </div>
                   </div>
 
@@ -401,7 +401,7 @@ const Store = () => {
                     </button>
                     <button
                       onClick={() => handleIntermediation(product)}
-                      className='btn-futuristic flex items-center justify-center gap-2'
+                      className='btn-primary flex items-center justify-center gap-2'
                     >
                       Solicitar Intermediação
                       <ArrowRight size={16} />
@@ -419,7 +419,7 @@ const Store = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                   viewport={{ once: true }}
-                  className='glass-card p-6'
+                  className='card-futuristic p-6'
                 >
                   <div className='flex gap-6'>
                     <div className='text-6xl'>{product.image}</div>
@@ -427,32 +427,32 @@ const Store = () => {
                     <div className='flex-1'>
                       <div className='mb-4 flex items-start justify-between'>
                         <div>
-                          <h3 className='text-primary mb-2 text-2xl font-bold'>{product.name}</h3>
-                          <p className='text-secondary mb-4'>{product.description}</p>
+                          <h3 className='heading-4 mb-2 text-gray-900'>{product.name}</h3>
+                          <p className='body-text mb-4 text-gray-600'>{product.description}</p>
                         </div>
                         {product.featured && (
-                          <div className='bg-success rounded-full px-3 py-1 text-sm font-semibold text-white'>
+                          <div className='bg-gray-900 rounded-full px-3 py-1 text-sm font-semibold text-white'>
                             Destaque
                           </div>
                         )}
                       </div>
 
                       <div className='mb-6 grid grid-cols-1 gap-4 md:grid-cols-4'>
-                        <div className='text-muted flex items-center gap-2'>
+                        <div className='text-gray-500 flex items-center gap-2'>
                           <MapPin size={16} />
                           <span>{product.location}</span>
                         </div>
-                        <div className='text-muted flex items-center gap-2'>
+                        <div className='text-gray-500 flex items-center gap-2'>
                           <User size={16} />
                           <span>{product.seller}</span>
                         </div>
-                        <div className='text-muted flex items-center gap-2'>
-                          <Star size={16} className='text-warning fill-current' />
+                        <div className='text-gray-500 flex items-center gap-2'>
+                          <Star size={16} className='text-yellow-500 fill-current' />
                           <span>
                             {product.rating} ({product.reviews} avaliações)
                           </span>
                         </div>
-                        <div className='text-muted flex items-center gap-2'>
+                        <div className='text-gray-500 flex items-center gap-2'>
                           <Package size={16} />
                           <span>{product.quantity.toLocaleString()} disponíveis</span>
                         </div>
@@ -460,8 +460,8 @@ const Store = () => {
 
                       <div className='flex items-center justify-between'>
                         <div>
-                          <div className='text-primary text-3xl font-bold'>{formatPrice(product.price)}</div>
-                          <div className='text-muted text-sm'>{product.unit}</div>
+                          <div className='text-gray-900 text-3xl font-bold'>{formatPrice(product.price)}</div>
+                          <div className='text-gray-500 text-sm'>{product.unit}</div>
                         </div>
 
                         <div className='flex gap-3'>
@@ -478,7 +478,7 @@ const Store = () => {
                           </button>
                           <button
                             onClick={() => handleIntermediation(product)}
-                            className='btn-futuristic flex items-center gap-2'
+                            className='btn-primary flex items-center gap-2'
                           >
                             Solicitar Intermediação
                             <ArrowRight size={16} />
@@ -495,7 +495,7 @@ const Store = () => {
       </section>
 
       {/* Features Section */}
-      <section className='bg-secondary py-20'>
+      <section className='bg-white py-20'>
         <div className='container-futuristic'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -504,10 +504,10 @@ const Store = () => {
             viewport={{ once: true }}
             className='mb-16 text-center'
           >
-            <h2 className='text-primary mb-6 text-4xl font-bold md:text-5xl'>
-              Por que escolher nossa <span className='text-gradient'>Intermediação</span>?
+            <h2 className='heading-2 mb-6 text-gray-900'>
+              Por que escolher nossa <span className='text-gray-700'>Intermediação</span>?
             </h2>
-            <p className='text-secondary mx-auto max-w-3xl text-xl'>
+            <p className='subtitle mx-auto max-w-3xl text-gray-600'>
               Conectamos compradores e vendedores com segurança total e transparência
             </p>
           </motion.div>
@@ -518,13 +518,13 @@ const Store = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               viewport={{ once: true }}
-              className='glass-card p-8 text-center'
+              className='card-futuristic p-8 text-center transition-all duration-300 hover:shadow-medium'
             >
-              <div className='bg-primary-gradient mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-xl'>
-                <CheckCircle size={32} className='text-white' />
+              <div className='bg-gray-100 mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-xl'>
+                <CheckCircle size={32} className='text-gray-700' />
               </div>
-              <h3 className='text-primary mb-4 text-2xl font-bold'>Intermediação Segura</h3>
-              <p className='text-secondary'>
+              <h3 className='heading-4 mb-4 text-gray-900'>Intermediação Segura</h3>
+              <p className='body-text text-gray-600'>
                 Garantimos a segurança de todas as transações com proteção completa para compradores e vendedores.
               </p>
             </motion.div>
@@ -534,13 +534,13 @@ const Store = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
               viewport={{ once: true }}
-              className='glass-card p-8 text-center'
+              className='card-futuristic p-8 text-center transition-all duration-300 hover:shadow-medium'
             >
-              <div className='bg-primary-gradient mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-xl'>
-                <TrendingUp size={32} className='text-white' />
+              <div className='bg-gray-100 mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-xl'>
+                <TrendingUp size={32} className='text-gray-700' />
               </div>
-              <h3 className='text-primary mb-4 text-2xl font-bold'>Preços Competitivos</h3>
-              <p className='text-secondary'>
+              <h3 className='heading-4 mb-4 text-gray-900'>Preços Competitivos</h3>
+              <p className='body-text text-gray-600'>
                 Conectamos você aos melhores preços do mercado com transparência total e sem taxas ocultas.
               </p>
             </motion.div>
@@ -550,13 +550,13 @@ const Store = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
               viewport={{ once: true }}
-              className='glass-card p-8 text-center'
+              className='card-futuristic p-8 text-center transition-all duration-300 hover:shadow-medium'
             >
-              <div className='bg-primary-gradient mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-xl'>
-                <Truck size={32} className='text-white' />
+              <div className='bg-gray-100 mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-xl'>
+                <Truck size={32} className='text-gray-700' />
               </div>
-              <h3 className='text-primary mb-4 text-2xl font-bold'>Logística Integrada</h3>
-              <p className='text-secondary'>
+              <h3 className='heading-4 mb-4 text-gray-900'>Logística Integrada</h3>
+              <p className='body-text text-gray-600'>
                 Soluções completas de transporte e logística para garantir a entrega segura dos seus produtos.
               </p>
             </motion.div>
@@ -565,7 +565,7 @@ const Store = () => {
       </section>
 
       {/* CTA Section */}
-      <section className='bg-primary-gradient py-20'>
+      <section className='bg-gray-900 py-20'>
         <div className='container-futuristic text-center'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -573,16 +573,16 @@ const Store = () => {
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className='mb-6 text-4xl font-bold text-white md:text-5xl'>
-              Pronto para <span className='text-yellow-300'>Comercializar</span>?
+            <h2 className='heading-2 mb-6 text-white'>
+              Pronto para <span className='text-gray-300'>Comercializar</span>?
             </h2>
-            <p className='mx-auto mb-8 max-w-2xl text-xl text-white/90'>
+            <p className='subtitle mx-auto mb-8 max-w-2xl text-gray-300'>
               Cadastre-se gratuitamente e comece a vender ou comprar produtos do agronegócio com segurança total
             </p>
             <div className='flex flex-col justify-center gap-4 sm:flex-row'>
               <motion.a
                 href='/cadastro'
-                className='text-primary flex items-center justify-center gap-2 rounded-xl bg-white px-8 py-4 text-lg font-semibold transition-colors hover:bg-white/90'
+                className='btn-primary flex items-center justify-center gap-2 px-8 py-4 text-lg'
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -591,7 +591,7 @@ const Store = () => {
               </motion.a>
               <motion.a
                 href='/contato'
-                className='hover:text-primary rounded-xl border-2 border-white px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-white'
+                className='btn-secondary px-8 py-4 text-lg'
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -608,13 +608,13 @@ const Store = () => {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className='glass-card max-h-[90vh] w-full max-w-2xl overflow-y-auto p-8'
+            className='card-futuristic max-h-[90vh] w-full max-w-2xl overflow-y-auto p-8'
           >
             <div className='mb-6 flex items-center justify-between'>
-              <h3 className='text-primary text-2xl font-bold'>Acesso às Informações Privilegiadas</h3>
+              <h3 className='heading-3 text-gray-900'>Acesso às Informações Privilegiadas</h3>
               <button
                 onClick={() => setShowPaymentModal(false)}
-                className='text-muted hover:text-primary transition-colors'
+                className='text-gray-400 hover:text-gray-600 transition-colors'
               >
                 <X size={24} />
               </button>

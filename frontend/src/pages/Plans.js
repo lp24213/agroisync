@@ -115,20 +115,20 @@ const Plans = () => {
   }
 
   return (
-    <div className='bg-primary min-h-screen'>
+    <div className='bg-white min-h-screen'>
       {/* Hero Section */}
-      <section className='hero-section'>
+      <section className='bg-gray-50 py-24'>
         <div className='container-futuristic'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className='text-center text-white'
+            className='text-center text-gray-900'
           >
-            <h1 className='mb-6 text-5xl font-bold md:text-6xl'>
-              Escolha seu <span className='text-yellow-300'>Plano</span>
+            <h1 className='heading-1 mb-8'>
+              Escolha seu <span className='text-gray-700'>Plano</span>
             </h1>
-            <p className='mx-auto mb-8 max-w-3xl text-xl leading-relaxed text-white/90'>
+            <p className='subtitle mx-auto mb-8 max-w-3xl text-gray-600'>
               Planos flexíveis para atender desde produtores individuais até grandes corporações do agronegócio
             </p>
           </motion.div>
@@ -136,7 +136,7 @@ const Plans = () => {
       </section>
 
       {/* Billing Toggle */}
-      <section className='bg-secondary py-12'>
+      <section className='bg-white py-12'>
         <div className='container-futuristic'>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -168,7 +168,7 @@ const Plans = () => {
       </section>
 
       {/* Pricing Cards */}
-      <section className='bg-primary py-20'>
+      <section className='bg-gray-50 py-20'>
         <div className='container-futuristic'>
           <div className='grid grid-cols-1 gap-8 md:grid-cols-3'>
             {plans.map((plan, index) => (
@@ -287,7 +287,7 @@ const Plans = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className='bg-primary py-20'>
+      <section className='bg-gray-50 py-20'>
         <div className='container-futuristic'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}

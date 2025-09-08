@@ -87,23 +87,23 @@ const Register = () => {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-12 dark:from-gray-900 dark:to-gray-800'>
+    <div className='min-h-screen bg-gray-50 py-12'>
       <div className='mx-auto max-w-4xl px-6'>
         {/* Header */}
         <div className='mb-12 text-center'>
-          <h1 className='mb-4 text-4xl font-bold text-gray-900 dark:text-white'>Criar Conta no AgroSync</h1>
-          <p className='text-xl text-gray-600 dark:text-gray-300'>
+          <h1 className='heading-1 mb-4 text-gray-900'>Criar Conta no AgroSync</h1>
+          <p className='subtitle text-gray-600'>
             Junte-se à maior plataforma de agronegócio do Brasil
           </p>
         </div>
 
         {/* Formulário */}
-        <div className='rounded-2xl bg-white p-8 shadow-xl dark:bg-gray-800'>
+        <div className='card-futuristic p-8'>
           <form onSubmit={handleSubmit} className='space-y-8'>
             {/* Campos básicos */}
             <div className='grid gap-6 md:grid-cols-2'>
               <div>
-                <label className='mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300'>
+                <label className='mb-2 block text-sm font-medium text-gray-700'>
                   Nome Completo *
                 </label>
                 <div className='relative'>
@@ -113,13 +113,13 @@ const Register = () => {
                     name='name'
                     value={formData.name}
                     onChange={handleInputChange}
-                    className='w-full rounded-lg border border-gray-300 py-3 pl-10 pr-4 transition-colors focus:border-transparent focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white'
+                    className='input-futuristic w-full pl-10'
                     placeholder='Seu nome completo'
                   />
                 </div>
               </div>
               <div>
-                <label className='mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300'>Email *</label>
+                <label className='mb-2 block text-sm font-medium text-gray-700'>Email *</label>
                 <div className='relative'>
                   <Mail className='absolute left-3 top-3 h-5 w-5 text-gray-400' />
                   <input
@@ -127,25 +127,25 @@ const Register = () => {
                     name='email'
                     value={formData.email}
                     onChange={handleInputChange}
-                    className='w-full rounded-lg border border-gray-300 py-3 pl-10 pr-4 transition-colors focus:border-transparent focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white'
+                    className='input-futuristic w-full pl-10'
                     placeholder='seu@email.com'
                   />
                 </div>
-                {errors.email && <p className='mt-1 text-sm text-red-600 dark:text-red-400'>{errors.email}</p>}
+                {errors.email && <p className='mt-1 text-sm text-red-600'>{errors.email}</p>}
               </div>
             </div>
 
             {/* Senhas */}
             <div className='grid gap-6 md:grid-cols-2'>
               <div>
-                <label className='mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300'>Senha *</label>
+                <label className='mb-2 block text-sm font-medium text-gray-700'>Senha *</label>
                 <div className='relative'>
                   <input
                     type={showPassword ? 'text' : 'password'}
                     name='password'
                     value={formData.password}
                     onChange={handleInputChange}
-                    className='w-full rounded-lg border border-gray-300 px-4 py-3 pr-10 transition-colors focus:border-transparent focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white'
+                    className='input-futuristic w-full pr-10'
                     placeholder='Mínimo 8 caracteres'
                   />
                   <button
@@ -165,13 +165,13 @@ const Register = () => {
                         </p>
                       ))
                     ) : (
-                      <p className='text-sm text-red-600 dark:text-red-400'>{errors.password}</p>
+                        <p className='text-sm text-red-600'>{errors.password}</p>
                     )}
                   </div>
                 )}
               </div>
               <div>
-                <label className='mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300'>
+                <label className='mb-2 block text-sm font-medium text-gray-700'>
                   Confirmar Senha *
                 </label>
                 <div className='relative'>
@@ -180,7 +180,7 @@ const Register = () => {
                     name='confirmPassword'
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
-                    className='w-full rounded-lg border border-gray-300 px-4 py-3 pr-10 transition-colors focus:border-transparent focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white'
+                    className='input-futuristic w-full pr-10'
                     placeholder='Digite a senha novamente'
                   />
                   <button
@@ -192,7 +192,7 @@ const Register = () => {
                   </button>
                 </div>
                 {errors.confirmPassword && (
-                  <p className='mt-1 text-sm text-red-600 dark:text-red-400'>{errors.confirmPassword}</p>
+                  <p className='mt-1 text-sm text-red-600'>{errors.confirmPassword}</p>
                 )}
               </div>
             </div>
@@ -207,18 +207,18 @@ const Register = () => {
                   onChange={handleInputChange}
                   className='mt-1 text-primary-600 focus:ring-primary-500'
                 />
-                <span className='text-sm text-gray-700 dark:text-gray-300'>
+                <span className='text-sm text-gray-700'>
                   Eu aceito os{' '}
                   <button
                     type='button'
-                    className='text-primary-600 underline hover:text-primary-700 dark:text-primary-400'
+                    className='text-gray-900 underline hover:text-gray-700'
                   >
                     Termos de Uso
                   </button>{' '}
                   e a{' '}
                   <button
                     type='button'
-                    className='text-primary-600 underline hover:text-primary-700 dark:text-primary-400'
+                    className='text-gray-900 underline hover:text-gray-700'
                   >
                     Política de Privacidade
                   </button>{' '}
@@ -226,16 +226,16 @@ const Register = () => {
                 </span>
               </label>
               {errors.acceptTerms && (
-                <p className='mt-1 text-sm text-red-600 dark:text-red-400'>{errors.acceptTerms}</p>
+                <p className='mt-1 text-sm text-red-600'>{errors.acceptTerms}</p>
               )}
             </div>
 
             {/* Erro de submissão */}
             {errors.submit && (
-              <div className='rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/20'>
+              <div className='rounded-lg border border-red-200 bg-red-50 p-4'>
                 <div className='flex items-center space-x-2'>
-                  <AlertCircle className='h-5 w-5 text-red-600 dark:text-red-400' />
-                  <p className='text-sm text-red-600 dark:text-red-400'>{errors.submit}</p>
+                  <AlertCircle className='h-5 w-5 text-red-600' />
+                        <p className='text-sm text-red-600'>{errors.submit}</p>
                 </div>
               </div>
             )}
@@ -244,7 +244,7 @@ const Register = () => {
             <button
               type='submit'
               disabled={isSubmitting}
-              className='flex w-full items-center justify-center space-x-2 rounded-lg bg-primary-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-primary-700 disabled:bg-primary-400'
+              className='btn-primary flex w-full items-center justify-center space-x-2'
             >
               {isSubmitting ? (
                 <>
@@ -263,9 +263,9 @@ const Register = () => {
 
         {/* Login */}
         <div className='mt-8 text-center'>
-          <p className='text-gray-600 dark:text-gray-300'>
+          <p className='text-gray-600'>
             Já tem uma conta?{' '}
-            <a href='/login' className='font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400'>
+            <a href='/login' className='font-medium text-gray-900 hover:text-gray-700'>
               Faça login
             </a>
           </p>

@@ -45,7 +45,7 @@ const Login = () => {
   }
 
   return (
-    <div className='flex min-h-screen items-center justify-center bg-gradient-to-br from-dark-primary via-dark-secondary to-dark-tertiary p-8'>
+    <div className='flex min-h-screen items-center justify-center bg-gray-50 p-8'>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className='w-full max-w-md'>
         <div className='card-futuristic p-8'>
           <div className='mb-8 text-center'>
@@ -53,14 +53,14 @@ const Login = () => {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.2 }}
-              className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-r from-neon-blue to-neon-purple'
+              className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-gray-900'
             >
               <span className='text-2xl'>🌾</span>
             </motion.div>
-            <h1 className='mb-2 text-3xl font-bold text-white'>
-              <span className='text-gradient'>Bem-vindo de volta</span>
+            <h1 className='heading-2 mb-2 text-gray-900'>
+              Bem-vindo de volta
             </h1>
-            <p className='text-gray-400'>Faça login na sua conta AgroSync</p>
+            <p className='text-gray-600'>Faça login na sua conta AgroSync</p>
           </div>
 
           {error && (
@@ -76,7 +76,7 @@ const Login = () => {
 
           <form onSubmit={handleSubmit} className='space-y-6'>
             <div>
-              <label className='mb-2 block text-sm font-medium text-white'>E-mail</label>
+              <label className='mb-2 block text-sm font-medium text-gray-700'>E-mail</label>
               <div className='relative'>
                 <Mail className='absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-gray-400' />
                 <input
@@ -92,7 +92,7 @@ const Login = () => {
             </div>
 
             <div>
-              <label className='mb-2 block text-sm font-medium text-white'>Senha</label>
+              <label className='mb-2 block text-sm font-medium text-gray-700'>Senha</label>
               <div className='relative'>
                 <Lock className='absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-gray-400' />
                 <input
@@ -120,9 +120,9 @@ const Login = () => {
                   type='checkbox'
                   className='h-4 w-4 rounded border-gray-600 bg-transparent text-neon-blue focus:ring-2 focus:ring-neon-blue'
                 />
-                <span className='ml-2 text-sm text-gray-400'>Lembrar de mim</span>
+                <span className='ml-2 text-sm text-gray-600'>Lembrar de mim</span>
               </label>
-              <Link to='/forgot-password' className='text-sm text-neon-blue transition-colors hover:text-neon-purple'>
+              <Link to='/forgot-password' className='text-sm text-gray-600 transition-colors hover:text-gray-900'>
                 Esqueceu a senha?
               </Link>
             </div>
@@ -146,9 +146,9 @@ const Login = () => {
           </form>
 
           <div className='mt-8 text-center'>
-            <p className='text-sm text-gray-400'>
+            <p className='text-sm text-gray-600'>
               Não tem uma conta?{' '}
-              <Link to='/register' className='font-medium text-neon-blue transition-colors hover:text-neon-purple'>
+              <Link to='/register' className='font-medium text-gray-900 transition-colors hover:text-gray-700'>
                 Cadastre-se aqui
               </Link>
             </p>

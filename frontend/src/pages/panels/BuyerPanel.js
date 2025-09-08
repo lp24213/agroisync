@@ -90,10 +90,10 @@ const BuyerPanel = () => {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+    <div className="card-futuristic p-6">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
-          <ShoppingCart className="w-5 h-5 mr-2 text-agro-emerald" />
+        <h2 className="heading-3 text-gray-900 flex items-center">
+          <ShoppingCart className="w-5 h-5 mr-2 text-gray-700" />
           Painel do Comprador
         </h2>
         <button

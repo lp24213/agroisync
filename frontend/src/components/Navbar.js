@@ -20,7 +20,7 @@ const Navbar = () => {
       name: 'Serviços',
       href: '#',
       submenu: [
-        { name: 'Loja/Intermediação', href: '/loja' },
+        { name: 'Loja Agroisync', href: '/loja' },
         { name: 'AgroConecta', href: '/agroconecta' },
         { name: 'Marketplace', href: '/marketplace' }
       ]
@@ -35,18 +35,18 @@ const Navbar = () => {
   }
 
   return (
-    <nav className='nav-futuristic'>
+    <nav className='bg-white border-b border-gray-200 sticky top-0 z-50'>
       <div className='container-futuristic'>
-        <div className='flex h-20 items-center justify-between'>
+        <div className='flex h-16 items-center justify-between'>
           {/* Logo */}
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
             <Link to='/' className='flex items-center gap-3'>
-              <div className='bg-primary-gradient flex h-12 w-12 items-center justify-center rounded-xl'>
-                <span className='text-xl font-bold text-white'>A</span>
+              <div className='bg-gray-900 flex h-10 w-10 items-center justify-center rounded-lg'>
+                <span className='text-lg font-bold text-white'>A</span>
               </div>
               <div className='flex flex-col'>
-                <span className='text-gradient text-xl font-bold'>AgroSync</span>
-                <span className='text-muted text-xs'>Futurista</span>
+                <span className='text-gray-900 text-xl font-bold'>AgroSync</span>
+                <span className='text-gray-500 text-xs'>Agronegócio</span>
               </div>
             </Link>
           </motion.div>
@@ -67,7 +67,7 @@ const Navbar = () => {
                     onMouseEnter={() => setIsServicesOpen(true)}
                     onMouseLeave={() => setIsServicesOpen(false)}
                   >
-                    <button className='text-primary hover:text-primary-dark flex items-center gap-1 font-medium transition-colors'>
+                    <button className='text-gray-700 hover:text-gray-900 flex items-center gap-1 font-medium transition-colors'>
                       {item.name}
                       <ChevronDown size={16} />
                     </button>
@@ -78,13 +78,13 @@ const Navbar = () => {
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: 10 }}
-                          className='glass-card absolute left-0 top-full z-50 mt-2 w-48 p-2'
+                          className='bg-white border border-gray-200 shadow-lg absolute left-0 top-full z-50 mt-2 w-48 p-2 rounded-lg'
                         >
                           {item.submenu.map(subItem => (
                             <Link
                               key={subItem.name}
                               to={subItem.href}
-                              className='text-primary hover:bg-primary block rounded-lg px-4 py-2 text-sm transition-colors hover:text-white'
+                              className='text-gray-700 hover:bg-gray-50 block rounded-lg px-4 py-2 text-sm transition-colors hover:text-gray-900'
                             >
                               {subItem.name}
                             </Link>
@@ -97,7 +97,7 @@ const Navbar = () => {
                   <Link
                     to={item.href}
                     className={`font-medium transition-colors ${
-                      isActive(item.href) ? 'text-primary' : 'text-secondary hover:text-primary'
+                      isActive(item.href) ? 'text-gray-900' : 'text-gray-600 hover:text-gray-900'
                     }`}
                   >
                     {item.name}
@@ -112,17 +112,17 @@ const Navbar = () => {
             <ThemeToggle />
 
             <div className='hidden items-center gap-3 md:flex'>
-              <Link to='/login' className='text-primary hover:text-primary-dark font-medium transition-colors'>
+              <Link to='/login' className='text-gray-600 hover:text-gray-900 font-medium transition-colors'>
                 Login
               </Link>
-              <Link to='/cadastro' className='btn-futuristic'>
+              <Link to='/cadastro' className='btn-primary'>
                 Cadastrar
               </Link>
             </div>
 
             {/* Mobile Menu Button */}
             <button
-              className='text-primary hover:text-primary-dark p-2 transition-colors md:hidden'
+              className='text-gray-600 hover:text-gray-900 p-2 transition-colors md:hidden'
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -137,20 +137,20 @@ const Navbar = () => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className='glass-card mt-4 p-4 md:hidden'
+              className='bg-white border border-gray-200 shadow-lg mt-4 p-4 rounded-lg md:hidden'
             >
               <div className='flex flex-col gap-4'>
                 {navigation.map(item => (
                   <div key={item.name}>
                     {item.submenu ? (
                       <div>
-                        <div className='text-primary mb-2 font-medium'>{item.name}</div>
+                        <div className='text-gray-900 mb-2 font-medium'>{item.name}</div>
                         <div className='ml-4 flex flex-col gap-2'>
                           {item.submenu.map(subItem => (
                             <Link
                               key={subItem.name}
                               to={subItem.href}
-                              className='text-secondary hover:text-primary text-sm transition-colors'
+                              className='text-gray-600 hover:text-gray-900 text-sm transition-colors'
                               onClick={() => setIsMenuOpen(false)}
                             >
                               {subItem.name}
@@ -162,7 +162,7 @@ const Navbar = () => {
                       <Link
                         to={item.href}
                         className={`block font-medium transition-colors ${
-                          isActive(item.href) ? 'text-primary' : 'text-secondary hover:text-primary'
+                          isActive(item.href) ? 'text-gray-900' : 'text-gray-600 hover:text-gray-900'
                         }`}
                         onClick={() => setIsMenuOpen(false)}
                       >
@@ -172,15 +172,15 @@ const Navbar = () => {
                   </div>
                 ))}
 
-                <div className='border-light flex flex-col gap-3 border-t pt-4'>
+                <div className='border-gray-200 flex flex-col gap-3 border-t pt-4'>
                   <Link
                     to='/login'
-                    className='text-primary hover:text-primary-dark font-medium transition-colors'
+                    className='text-gray-600 hover:text-gray-900 font-medium transition-colors'
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Login
                   </Link>
-                  <Link to='/cadastro' className='btn-futuristic text-center' onClick={() => setIsMenuOpen(false)}>
+                  <Link to='/cadastro' className='btn-primary text-center' onClick={() => setIsMenuOpen(false)}>
                     Cadastrar
                   </Link>
                 </div>

@@ -75,20 +75,20 @@ const Contact = () => {
   ]
 
   return (
-    <div className='bg-primary min-h-screen'>
+    <div className='bg-white min-h-screen'>
       {/* Hero Section */}
-      <section className='hero-section'>
+      <section className='bg-gray-50 py-24'>
         <div className='container-futuristic'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className='text-center text-white'
+            className='text-center text-gray-900'
           >
-            <h1 className='mb-6 text-5xl font-bold md:text-6xl'>
-              Entre em <span className='text-yellow-300'>Contato</span>
+            <h1 className='heading-1 mb-8'>
+              Entre em <span className='text-gray-700'>Contato</span>
             </h1>
-            <p className='mx-auto mb-8 max-w-3xl text-xl leading-relaxed text-white/90'>
+            <p className='subtitle mx-auto mb-8 max-w-3xl text-gray-600'>
               Estamos aqui para ajudar! Entre em contato conosco através do formulário abaixo ou use nossos canais
               diretos de comunicação.
             </p>
@@ -97,7 +97,7 @@ const Contact = () => {
       </section>
 
       {/* Contact Info */}
-      <section className='bg-secondary py-20'>
+      <section className='bg-white py-20'>
         <div className='container-futuristic'>
           <div className='mb-16 grid grid-cols-1 gap-8 md:grid-cols-3'>
             {contactInfo.map((info, index) => (
@@ -129,7 +129,7 @@ const Contact = () => {
       </section>
 
       {/* Contact Form */}
-      <section className='bg-primary py-20'>
+      <section className='bg-gray-50 py-20'>
         <div className='container-futuristic'>
           <div className='grid grid-cols-1 gap-12 lg:grid-cols-2'>
             {/* Form */}

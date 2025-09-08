@@ -155,20 +155,20 @@ const AgroConecta = () => {
   }
 
   return (
-    <div className='bg-primary min-h-screen'>
+    <div className='bg-white min-h-screen'>
       {/* Hero Section */}
-      <section className='hero-section'>
+      <section className='bg-gray-50 py-24'>
         <div className='container-futuristic relative z-10'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className='text-center text-white'
+            className='text-center text-gray-900'
           >
-            <h1 className='mb-6 text-5xl font-bold md:text-6xl'>
-              <span className='text-yellow-300'>AgroConecta</span> Fretes
+            <h1 className='heading-1 mb-8'>
+              <span className='text-gray-700'>AgroConecta</span> Fretes
             </h1>
-            <p className='mx-auto mb-8 max-w-3xl text-xl leading-relaxed text-white/90'>
+            <p className='subtitle mx-auto mb-8 max-w-3xl text-gray-600'>
               Plataforma de intermediação de fretes agrícolas. Conectamos anunciantes de cargas com transportadores
               qualificados. <strong>Mais acessível que o Fretebrás!</strong>
             </p>
@@ -177,7 +177,7 @@ const AgroConecta = () => {
       </section>
 
       {/* Tabs de Navegação */}
-      <section className='bg-secondary py-8'>
+      <section className='bg-white py-8'>
         <div className='container-futuristic'>
           <div className='mb-8 flex justify-center'>
             <div className='glass-card flex gap-2 p-2'>

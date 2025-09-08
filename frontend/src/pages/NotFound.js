@@ -5,14 +5,14 @@ import { Home, ArrowLeft } from 'lucide-react'
 
 const NotFound = () => {
   return (
-    <div className='flex min-h-screen items-center justify-center bg-gradient-to-br from-dark-primary via-dark-secondary to-dark-tertiary p-8'>
+    <div className='flex min-h-screen items-center justify-center bg-gray-50 p-8'>
       <div className='mx-auto max-w-2xl text-center'>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className='space-y-8'>
-          <div className='text-gradient text-8xl font-bold'>404</div>
+          <div className='text-gray-900 text-8xl font-bold'>404</div>
 
           <div>
-            <h1 className='mb-4 text-4xl font-bold text-white'>Página não encontrada</h1>
-            <p className='text-lg leading-relaxed text-gray-400'>
+            <h1 className='heading-1 mb-4 text-gray-900'>Página não encontrada</h1>
+            <p className='subtitle text-gray-600'>
               A página que você está procurando não existe ou foi movida.
             </p>
           </div>

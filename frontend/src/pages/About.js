@@ -54,21 +54,21 @@ const About = () => {
   ]
 
   return (
-    <div className='bg-primary min-h-screen'>
+    <div className='bg-white min-h-screen'>
       {/* Hero Section */}
-      <section className='hero-section'>
+      <section className='bg-gray-50 py-24'>
         <div className='container-futuristic'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className='text-center text-white'
+            className='text-center text-gray-900'
           >
-            <h1 className='mb-6 text-5xl font-bold md:text-6xl'>
-              Sobre o <span className='text-yellow-300'>AgroSync</span>
+            <h1 className='heading-1 mb-8'>
+              Sobre o <span className='text-gray-700'>AgroSync</span>
             </h1>
-            <p className='mx-auto mb-8 max-w-3xl text-xl leading-relaxed text-white/90'>
-              A plataforma mais avançada e futurista do mundo para conectar produtores, compradores e transportadores do
+            <p className='subtitle mx-auto mb-8 max-w-3xl text-gray-600'>
+              A plataforma mais avançada do mundo para conectar produtores, compradores e transportadores do
               agronegócio. Tecnologia de ponta, segurança máxima e performance extrema.
             </p>
           </motion.div>
@@ -76,7 +76,7 @@ const About = () => {
       </section>
 
       {/* Mission & Vision */}
-      <section className='bg-secondary py-20'>
+      <section className='bg-white py-20'>
         <div className='container-futuristic'>
           <div className='grid grid-cols-1 gap-12 lg:grid-cols-2'>
             <motion.div
@@ -84,12 +84,12 @@ const About = () => {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className='glass-card p-8'
+              className='card-futuristic p-8'
             >
-              <div className='bg-primary-gradient mb-6 flex h-16 w-16 items-center justify-center rounded-xl'>
-                <Target size={32} className='text-white' />
+              <div className='bg-gray-100 mb-6 flex h-16 w-16 items-center justify-center rounded-xl'>
+                <Target size={32} className='text-gray-700' />
               </div>
-              <h2 className='text-primary mb-4 text-3xl font-bold'>Nossa Missão</h2>
+              <h2 className='heading-3 mb-4 text-gray-900'>Nossa Missão</h2>
               <p className='text-secondary leading-relaxed'>
                 Revolucionar o agronegócio através da tecnologia, conectando todos os elos da cadeia produtiva em uma
                 plataforma única, segura e eficiente. Democratizar o acesso às melhores oportunidades do mercado
@@ -102,9 +102,9 @@ const About = () => {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className='glass-card p-8'
+              className='card-futuristic p-8'
             >
-              <div className='bg-primary-gradient mb-6 flex h-16 w-16 items-center justify-center rounded-xl'>
+              <div className='bg-gray-100 mb-6 flex h-16 w-16 items-center justify-center rounded-xl'>
                 <Award size={32} className='text-white' />
               </div>
               <h2 className='text-primary mb-4 text-3xl font-bold'>Nossa Visão</h2>
@@ -118,7 +118,7 @@ const About = () => {
       </section>
 
       {/* Values */}
-      <section className='bg-primary py-20'>
+      <section className='bg-gray-50 py-20'>
         <div className='container-futuristic'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -157,7 +157,7 @@ const About = () => {
       </section>
 
       {/* Team */}
-      <section className='bg-secondary py-20'>
+      <section className='bg-white py-20'>
         <div className='container-futuristic'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -233,7 +233,7 @@ const About = () => {
       </section>
 
       {/* Contact Info */}
-      <section className='bg-secondary py-20'>
+      <section className='bg-white py-20'>
         <div className='container-futuristic'>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
