@@ -10,8 +10,10 @@ import {
   TrendingUp,
   Smartphone,
   Truck,
-  BarChart3
+  BarChart3,
+  // CheckCircle
 } from 'lucide-react';
+import NewsFeed from '../components/NewsFeed';
 
 const Home = () => {
   const features = [
@@ -68,35 +70,34 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-primary">
       {/* Hero Section */}
-      <section className="hero-section">
-        <div className="container-futuristic">
+      <section className="hero">
+        <div className="container">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
-              className="text-white"
             >
               <motion.h1
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="text-5xl md:text-6xl font-bold mb-6"
+                className="hero-title"
               >
                 O Futuro do{' '}
-                <span className="text-white">Agronegócio</span>{' '}
-                é <span className="text-yellow-300">Agora</span>
+                <span className="text-primary">Agronegócio</span>{' '}
+                é <span className="text-accent-primary">Agora</span>
               </motion.h1>
               
               <motion.p
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="text-xl text-white/90 mb-8 leading-relaxed"
+                className="hero-subtitle"
               >
-                A plataforma mais avançada e futurista do mundo para conectar produtores, 
-                compradores e transportadores. Tecnologia de ponta, segurança máxima e 
-                performance extrema.
+                A plataforma mais elegante e sofisticada do mundo para conectar produtores, 
+                compradores e transportadores. Design minimalista, tecnologia de ponta e 
+                performance excepcional.
               </motion.p>
               
               <motion.div
@@ -106,15 +107,15 @@ const Home = () => {
                 className="flex flex-col sm:flex-row gap-4"
               >
                 <Link
-                  to="/cadastro"
-                  className="bg-white text-primary px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white/90 transition-colors flex items-center justify-center gap-2"
+                  to="/register"
+                  className="btn btn-primary btn-lg"
                 >
                   Começar Agora
                   <ArrowRight size={20} />
                 </Link>
                 <Link
-                  to="/sobre"
-                  className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-primary transition-colors"
+                  to="/about"
+                  className="btn btn-secondary btn-lg"
                 >
                   Saiba Mais
                 </Link>
@@ -127,14 +128,14 @@ const Home = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="relative"
             >
-              <div className="glass-card p-8 text-center">
-                <div className="w-32 h-32 bg-primary-gradient rounded-full mx-auto mb-6 flex items-center justify-center">
+              <div className="card card-elevated text-center">
+                <div className="w-32 h-32 bg-accent-primary rounded-full mx-auto mb-6 flex items-center justify-center">
                   <TrendingUp size={48} className="text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-4">
+                <h3 className="text-2xl font-bold text-primary mb-4">
                   Performance em Tempo Real
                 </h3>
-                <p className="text-white/80">
+                <p className="text-secondary">
                   Dados atualizados a cada segundo para decisões mais inteligentes
                 </p>
               </div>
@@ -144,8 +145,8 @@ const Home = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-secondary">
-        <div className="container-futuristic">
+      <section className="section bg-secondary">
+        <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -162,7 +163,7 @@ const Home = () => {
                 viewport={{ once: true }}
                 className="text-center"
               >
-                <div className="text-4xl md:text-5xl font-bold text-gradient mb-2">
+                <div className="text-4xl md:text-5xl font-bold text-accent-primary mb-2">
                   {stat.number}
                 </div>
                 <div className="text-secondary font-medium">
@@ -175,8 +176,8 @@ const Home = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-primary">
-        <div className="container-futuristic">
+      <section className="section bg-primary">
+        <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -184,10 +185,10 @@ const Home = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Tecnologia que <span className="text-yellow-300">Impressiona</span>
+            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
+              Tecnologia que <span className="text-accent-primary">Impressiona</span>
             </h2>
-            <p className="text-xl text-white/80 max-w-3xl mx-auto">
+            <p className="text-xl text-secondary max-w-3xl mx-auto">
               Recursos avançados que colocam o AgroSync anos à frente da concorrência
             </p>
           </motion.div>
@@ -200,15 +201,15 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="glass-card p-6 text-center hover:scale-105 transition-transform"
+                className="card text-center hover:scale-105 transition-transform"
               >
-                <div className="w-16 h-16 bg-primary-gradient rounded-xl mx-auto mb-4 flex items-center justify-center">
+                <div className="w-16 h-16 bg-accent-primary rounded-xl mx-auto mb-4 flex items-center justify-center">
                   <feature.icon size={32} className="text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">
+                <h3 className="text-xl font-bold text-primary mb-3">
                   {feature.title}
                 </h3>
-                <p className="text-white/80">
+                <p className="text-secondary">
                   {feature.description}
                 </p>
               </motion.div>
@@ -218,8 +219,8 @@ const Home = () => {
       </section>
 
       {/* Services Section */}
-      <section className="py-20 bg-secondary">
-        <div className="container-futuristic">
+      <section className="section bg-secondary">
+        <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -228,7 +229,7 @@ const Home = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-              Nossos <span className="text-gradient">Serviços</span>
+              Nossos <span className="text-accent-primary">Serviços</span>
             </h2>
             <p className="text-xl text-secondary max-w-3xl mx-auto">
               Soluções completas para todas as necessidades do agronegócio moderno
@@ -243,9 +244,9 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="product-card group"
+                className="card group"
               >
-                <div className="w-16 h-16 bg-primary-gradient rounded-xl mb-6 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <div className="w-16 h-16 bg-accent-primary rounded-xl mb-6 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <service.icon size={32} className="text-white" />
                 </div>
                 <h3 className="text-2xl font-bold text-primary mb-4">
@@ -256,7 +257,7 @@ const Home = () => {
                 </p>
                 <Link
                   to={service.link}
-                  className="btn-futuristic w-full text-center"
+                  className="btn btn-primary w-full text-center"
                 >
                   Conhecer
                   <ArrowRight size={16} className="ml-2" />
@@ -267,9 +268,33 @@ const Home = () => {
         </div>
       </section>
 
+      {/* News Section - Discreta e elegante */}
+      <section className="section bg-tertiary">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
+              Notícias do <span className="text-accent-primary">Agronegócio</span>
+            </h2>
+            <p className="text-lg text-secondary max-w-2xl mx-auto">
+              Mantenha-se atualizado com as últimas novidades do setor
+            </p>
+          </motion.div>
+          
+          <div className="max-w-4xl mx-auto">
+            <NewsFeed />
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
-      <section className="py-20 bg-primary-gradient">
-        <div className="container-futuristic text-center">
+      <section className="section bg-accent-primary">
+        <div className="container text-center">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -277,7 +302,7 @@ const Home = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Pronto para o <span className="text-yellow-300">Futuro</span>?
+              Pronto para o <span className="text-white">Futuro</span>?
             </h2>
             <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
               Junte-se a milhares de profissionais do agronegócio que já descobriram 
@@ -285,15 +310,15 @@ const Home = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                to="/cadastro"
-                className="bg-white text-primary px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white/90 transition-colors flex items-center justify-center gap-2"
+                to="/register"
+                className="bg-white text-accent-primary px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white/90 transition-colors flex items-center justify-center gap-2"
               >
                 Começar Gratuitamente
                 <ArrowRight size={20} />
               </Link>
               <Link
-                to="/contato"
-                className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-primary transition-colors"
+                to="/contact"
+                className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-accent-primary transition-colors"
               >
                 Falar com Especialista
               </Link>

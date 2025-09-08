@@ -87,18 +87,18 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-primary">
       {/* Hero Section */}
-      <section className="hero-section">
-        <div className="container-futuristic">
+      <section className="hero">
+        <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center text-white"
+            className="text-center"
           >
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              Entre em <span className="text-yellow-300">Contato</span>
+            <h1 className="hero-title">
+              Entre em <span className="text-accent-primary">Contato</span>
             </h1>
-            <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
+            <p className="hero-subtitle">
               Estamos aqui para ajudar! Entre em contato conosco através do formulário 
               abaixo ou use nossos canais diretos de comunicação.
             </p>
@@ -107,8 +107,8 @@ const Contact = () => {
       </section>
 
       {/* Contact Info */}
-      <section className="py-20 bg-secondary">
-        <div className="container-futuristic">
+      <section className="section bg-secondary">
+        <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             {contactInfo.map((info, index) => (
               <motion.div
@@ -117,9 +117,9 @@ const Contact = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="glass-card p-8 text-center"
+                className="card text-center"
               >
-                <div className="w-16 h-16 bg-primary-gradient rounded-xl mx-auto mb-6 flex items-center justify-center">
+                <div className="w-16 h-16 bg-accent-primary rounded-xl mx-auto mb-6 flex items-center justify-center">
                   <info.icon size={32} className="text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-primary mb-4">{info.title}</h3>
@@ -127,7 +127,7 @@ const Contact = () => {
                   href={info.link}
                   target={info.link.startsWith('http') ? '_blank' : '_self'}
                   rel={info.link.startsWith('http') ? 'noopener noreferrer' : ''}
-                  className="text-secondary hover:text-primary transition-colors block mb-3"
+                  className="text-secondary hover:text-accent-primary transition-colors block mb-3"
                 >
                   {info.value}
                 </a>
@@ -141,8 +141,8 @@ const Contact = () => {
       </section>
 
       {/* Contact Form */}
-      <section className="py-20 bg-primary">
-        <div className="container-futuristic">
+      <section className="section bg-primary">
+        <div className="container">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Form */}
             <motion.div
@@ -151,9 +151,9 @@ const Contact = () => {
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <div className="glass-card p-8">
-                <h2 className="text-3xl font-bold text-white mb-6">
-                  Envie sua <span className="text-yellow-300">Mensagem</span>
+              <div className="card">
+                <h2 className="text-3xl font-bold text-primary mb-6">
+                  Envie sua <span className="text-accent-primary">Mensagem</span>
                 </h2>
                 
                 {isSubmitted ? (
@@ -182,7 +182,7 @@ const Contact = () => {
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label className="block text-white font-medium mb-2">
+                        <label className="form-label">
                           Nome Completo *
                         </label>
                         <div className="relative">
@@ -193,14 +193,14 @@ const Contact = () => {
                             value={formData.name}
                             onChange={handleInputChange}
                             required
-                            className="input-futuristic pl-10"
+                            className="form-input pl-10"
                             placeholder="Seu nome completo"
                           />
                         </div>
                       </div>
                       
                       <div>
-                        <label className="block text-white font-medium mb-2">
+                        <label className="form-label">
                           Email *
                         </label>
                         <div className="relative">
@@ -211,7 +211,7 @@ const Contact = () => {
                             value={formData.email}
                             onChange={handleInputChange}
                             required
-                            className="input-futuristic pl-10"
+                            className="form-input pl-10"
                             placeholder="seu@email.com"
                           />
                         </div>
@@ -220,7 +220,7 @@ const Contact = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label className="block text-white font-medium mb-2">
+                        <label className="form-label">
                           Telefone
                         </label>
                         <div className="relative">
@@ -230,14 +230,14 @@ const Contact = () => {
                             name="phone"
                             value={formData.phone}
                             onChange={handleInputChange}
-                            className="input-futuristic pl-10"
+                            className="form-input pl-10"
                             placeholder="(66) 99999-9999"
                           />
                         </div>
                       </div>
                       
                       <div>
-                        <label className="block text-white font-medium mb-2">
+                        <label className="form-label">
                           Empresa
                         </label>
                         <div className="relative">
@@ -247,7 +247,7 @@ const Contact = () => {
                             name="company"
                             value={formData.company}
                             onChange={handleInputChange}
-                            className="input-futuristic pl-10"
+                            className="form-input pl-10"
                             placeholder="Nome da sua empresa"
                           />
                         </div>
@@ -255,7 +255,7 @@ const Contact = () => {
                     </div>
 
                     <div>
-                      <label className="block text-white font-medium mb-2">
+                      <label className="form-label">
                         Assunto *
                       </label>
                       <select
@@ -263,7 +263,7 @@ const Contact = () => {
                         value={formData.subject}
                         onChange={handleInputChange}
                         required
-                        className="input-futuristic"
+                        className="form-input form-select"
                       >
                         <option value="">Selecione um assunto</option>
                         {subjects.map((subject) => (
@@ -275,7 +275,7 @@ const Contact = () => {
                     </div>
 
                     <div>
-                      <label className="block text-white font-medium mb-2">
+                      <label className="form-label">
                         Mensagem *
                       </label>
                       <div className="relative">
@@ -286,7 +286,7 @@ const Contact = () => {
                           onChange={handleInputChange}
                           required
                           rows={6}
-                          className="input-futuristic pl-10 resize-none"
+                          className="form-input form-textarea pl-10"
                           placeholder="Descreva sua mensagem aqui..."
                         />
                       </div>
@@ -295,7 +295,7 @@ const Contact = () => {
                     <motion.button
                       type="submit"
                       disabled={isSubmitting}
-                      className="btn-futuristic w-full flex items-center justify-center gap-2"
+                      className="btn btn-primary w-full flex items-center justify-center gap-2"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >

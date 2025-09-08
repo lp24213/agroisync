@@ -20,7 +20,7 @@ const Navbar = () => {
       name: 'Serviços', 
       href: '#',
       submenu: [
-        { name: 'Loja/Intermediação', href: '/loja' },
+        { name: 'Loja Agroisync', href: '/loja' },
         { name: 'AgroConecta', href: '/agroconecta' },
         { name: 'Marketplace', href: '/marketplace' }
       ]

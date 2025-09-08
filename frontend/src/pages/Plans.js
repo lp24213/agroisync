@@ -136,18 +136,18 @@ const Plans = () => {
   return (
     <div className="min-h-screen bg-primary">
       {/* Hero Section */}
-      <section className="hero-section">
-        <div className="container-futuristic">
+      <section className="hero">
+        <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center text-white"
+            className="text-center"
           >
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              Escolha seu <span className="text-yellow-300">Plano</span>
+            <h1 className="hero-title">
+              Escolha seu <span className="text-accent-primary">Plano</span>
             </h1>
-            <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
+            <p className="hero-subtitle">
               Planos flexíveis para atender desde produtores individuais até 
               grandes corporações do agronegócio
             </p>
@@ -156,21 +156,21 @@ const Plans = () => {
       </section>
 
       {/* Billing Toggle */}
-      <section className="py-12 bg-secondary">
-        <div className="container-futuristic">
+      <section className="section-sm bg-secondary">
+        <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="flex items-center justify-center mb-8"
           >
-            <div className="glass-card p-2 flex items-center gap-4">
+            <div className="card p-2 flex items-center gap-4">
               <button
                 onClick={() => setBillingCycle('monthly')}
                 className={`px-6 py-3 rounded-lg font-medium transition-colors ${
                   billingCycle === 'monthly'
-                    ? 'bg-primary text-white'
-                    : 'text-secondary hover:text-primary'
+                    ? 'bg-accent-primary text-white'
+                    : 'text-secondary hover:text-accent-primary'
                 }`}
               >
                 Mensal
@@ -179,12 +179,12 @@ const Plans = () => {
                 onClick={() => setBillingCycle('yearly')}
                 className={`px-6 py-3 rounded-lg font-medium transition-colors ${
                   billingCycle === 'yearly'
-                    ? 'bg-primary text-white'
-                    : 'text-secondary hover:text-primary'
+                    ? 'bg-accent-primary text-white'
+                    : 'text-secondary hover:text-accent-primary'
                 }`}
               >
                 Anual
-                <span className="ml-2 text-xs bg-success text-white px-2 py-1 rounded-full">
+                <span className="ml-2 text-xs bg-accent-primary text-white px-2 py-1 rounded-full">
                   -20%
                 </span>
               </button>

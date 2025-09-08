@@ -10,10 +10,10 @@ import ChatbotWidget from './components/ChatbotWidget';
 import StockTicker from './components/StockTicker';
 import GrainQuotes from './components/GrainQuotes';
 import WeatherWidget from './components/WeatherWidget';
-import NewsFeed from './components/NewsFeed';
+// import NewsFeed from './components/NewsFeed'; // Removido do topo, agora está no Home
 
-// Importar estilos futuristas
-import './styles/futuristic-theme.css';
+// Importar estilos minimalistas
+import './styles/minimalist-theme.css';
 
 // Pages
 import Home from './pages/Home';
@@ -66,13 +66,12 @@ function App() {
                 {/* Ticker de Ações */}
                 <StockTicker />
                 
-                {/* Barra de Informações */}
+                {/* Barra de Informações - Apenas cotações e clima */}
                 <div className="bg-secondary border-b border-light py-2">
-                  <div className="container-futuristic">
+                  <div className="container">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
                       <GrainQuotes />
                       <WeatherWidget />
-                      <NewsFeed />
                     </div>
                   </div>
                 </div>
