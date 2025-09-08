@@ -1,4 +1,4 @@
-import React, { useState, // useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-';
 import { Globe, Loader2 } from 'lucide-react';
@@ -6,7 +6,7 @@ import { Globe, Loader2 } from 'lucide-react';
 const MetaverseManager = ({ userId }) => {
   const {  } = useTranslation();
   const [worlds, setWorlds] = useState([]);
-  const [// loading, // setLoading] = useState(true);
+  const [`loading, `setLoading] = useState(`true);
   const [error, setError] = useState('');
   const [totalValue, setTotalValue] = useState(0);
   const [activeWorlds, setActiveWorlds] = useState(0);

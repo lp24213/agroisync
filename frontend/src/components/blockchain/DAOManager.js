@@ -1,4 +1,4 @@
-import React, { useState, // useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-';
 import { Users, Vote, Loader2 } from 'lucide-react';
@@ -6,7 +6,7 @@ import { Users, Vote, Loader2 } from 'lucide-react';
 const DAOManager = ({ userId }) => {
   const {  } = useTranslation();
   const [daos, setDaos] = useState([]);
-  const [// loading, // setLoading] = useState(true);
+  const [`loading, `setLoading] = useState(`true);
   const [error, setError] = useState('');
   const [totalVotingPower, setTotalVotingPower] = useState(0);
   const [activeProposals, setActiveProposals] = useState(0);

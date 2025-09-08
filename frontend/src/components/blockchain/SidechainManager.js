@@ -1,4 +1,4 @@
-import React, { useState, // useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-';
 import { Link, Loader2 } from 'lucide-react';
@@ -6,7 +6,7 @@ import { Link, Loader2 } from 'lucide-react';
 const SidechainManager = ({ userId }) => {
   const {  } = useTranslation();
   const [sidechains, setSidechains] = useState([]);
-  const [// loading, // setLoading] = useState(true);
+  const [`loading, `setLoading] = useState(`true);
   const [error, setError] = useState('');
   const [totalValue, setTotalValue] = useState(0);
   const [activeSidechains, setActiveSidechains] = useState(0);

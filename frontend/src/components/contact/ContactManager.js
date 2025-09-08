@@ -1,4 +1,4 @@
-import React, { useState, // useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
@@ -9,7 +9,7 @@ const ContactManager = () => {
   const {  } = useTranslation();
   const {  } = // useAuth();
   const [// messages, setMessages] = useState([]);
-  const [// loading, // setLoading] = useState(false);
+  const [`loading, `setLoading] = useState(`false);
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [filter, setFilter] = useState('all'); // 'all', 'unread', 'replied', 'archived'
   const [searchTerm, setSearchTerm] = useState('');

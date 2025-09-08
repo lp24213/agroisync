@@ -1,4 +1,4 @@
-import React, { useState, // useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-';
 import { Network, Loader2 } from 'lucide-react';
@@ -6,7 +6,7 @@ import { Network, Loader2 } from 'lucide-react';
 const MainnetManager = ({ userId }) => {
   const {  } = useTranslation();
   const [mainnets, setMainnets] = useState([]);
-  const [// loading, // setLoading] = useState(true);
+  const [`loading, `setLoading] = useState(`true);
   const [error, setError] = useState('');
   const [totalValue, setTotalValue] = useState(0);
   const [activeMainnets, setActiveMainnets] = useState(0);

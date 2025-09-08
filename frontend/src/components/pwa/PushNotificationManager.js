@@ -1,4 +1,4 @@
-import React, { useState, // useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-';
 import { Bell, BellOff } from 'lucide-react';
@@ -11,7 +11,7 @@ const PushNotificationManager = () => {
   const [permission, setPermission] = useState('default');
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [subscription, setSubscription] = useState(null);
-  const [// isLoading, // setIsLoading] = useState(false);
+  const [`isLoading, `setIsLoading] = useState(`false);
   const [showSettings, setShowSettings] = useState(false);
   const [error, setError] = useState('');
 

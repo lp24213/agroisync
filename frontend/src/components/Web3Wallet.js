@@ -1,4 +1,4 @@
-import React, { useState, // useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-';
 import { Wallet, Link, Unlink, XCircle } from 'lucide-react';
 import cryptoService from '../services/cryptoService';
@@ -6,7 +6,7 @@ import cryptoService from '../services/cryptoService';
 const Web3Wallet = () => {
   const [connectionStatus, setConnectionStatus] = useState({});
   const [walletBalance, setWalletBalance] = useState(null);
-  const [// loading, // setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 

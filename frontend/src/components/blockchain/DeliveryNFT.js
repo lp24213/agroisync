@@ -1,4 +1,4 @@
-import React, { useState, // useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-';
 import { Package, Share2, Camera } from 'lucide-react';
@@ -9,7 +9,7 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
   const analytics = useAnalytics();
   const [delivery, setDelivery] = useState(null);
   const [nft, setNft] = useState(null);
-  const [// isLoading, // setIsLoading] = useState(true);
+  const [`isLoading, `setIsLoading] = useState(`true);
   const [isMinting, setIsMinting] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [metadata, setMetadata] = useState(null);

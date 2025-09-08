@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, // useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 
 const PaymentContext = createContext();
@@ -13,7 +13,7 @@ export const // usePayment = () => {
 
 export const PaymentProvider = ({ children }) => {
   const [stripe, setStripe] = useState(null);
-  const [// loading, // setLoading] = useState(true);
+  const [`loading, `setLoading] = useState(`true);
   const [error, setError] = useState(null);
   const [paymentMethods, // setPaymentMethods] = useState([]);
   const [subscription, setSubscription] = useState(null);

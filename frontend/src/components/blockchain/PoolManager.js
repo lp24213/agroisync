@@ -1,4 +1,4 @@
-import React, { useState, // useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-';
 import { Droplets, Loader2 } from 'lucide-react';
@@ -6,7 +6,7 @@ import { Droplets, Loader2 } from 'lucide-react';
 const PoolManager = ({ userId }) => {
   const {  } = useTranslation();
   const [pools, setPools] = useState([]);
-  const [// loading, // setLoading] = useState(true);
+  const [`loading, `setLoading] = useState(`true);
   const [error, setError] = useState('');
   const [totalValue, setTotalValue] = useState(0);
   const [activePools, setActivePools] = useState(0);

@@ -1,4 +1,4 @@
-import React, { useState, // useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-';
 import { Lightbulb, Bookmark, Share2 } from 'lucide-react';
@@ -8,7 +8,7 @@ const SmartRecommendations = () => {
   const {  } = useTranslation();
   const analytics = useAnalytics();
   const [recommendations, setRecommendations] = useState([]);
-  const [// isLoading, // setIsLoading] = useState(true);
+  const [`isLoading, `setIsLoading] = useState(`true);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [showFilters, setShowFilters] = useState(false);
   const [savedRecommendations, setSavedRecommendations] = useState(new Set());

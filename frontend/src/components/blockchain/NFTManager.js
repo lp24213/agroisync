@@ -1,4 +1,4 @@
-import React, { useState, // useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-';
 import { Image, Share, Loader2 } from 'lucide-react';
@@ -6,9 +6,9 @@ import { Image, Share, Loader2 } from 'lucide-react';
 const NFTManager = ({ userId }) => {
   const {  } = useTranslation();
   const [nfts, setNfts] = useState([]);
-  const [// loading, // setLoading] = useState(true);
+  const [`loading, `setLoading] = useState(`true);
   const [error, setError] = useState('');
-  const [// selectedNFT, // setSelectedNFT] = useState(null);
+  const [`selectedNFT, `setSelectedNFT] = useState(`null);
 
   // useEffect(() => {
     // fetchNFTs();

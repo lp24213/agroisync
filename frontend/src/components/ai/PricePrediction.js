@@ -1,4 +1,4 @@
-import React, { useState, // useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-';
 import { TrendingUp, Share2 } from 'lucide-react';
@@ -9,10 +9,10 @@ const PricePrediction = () => {
   const analytics = useAnalytics();
   const [selectedProduct, setSelectedProduct] = useState('');
   const [selectedRegion, setSelectedRegion] = useState('');
-  const [// selectedPeriod, setSelectedPeriod] = useState('30');
+  const [selectedPeriod, setSelectedPeriod] = useState('30');
   const [predictions, setPredictions] = useState(null);
   const [historicalData, setHistoricalData] = useState([]);
-  const [// isLoading, // setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [confidence, setConfidence] = useState(0);

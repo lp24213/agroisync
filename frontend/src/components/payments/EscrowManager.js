@@ -1,4 +1,4 @@
-import React, { useState, // useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
@@ -9,7 +9,7 @@ const EscrowManager = () => {
   const {  } = useTranslation();
   const {  } = // useAuth();
   const [// transactions, setTransactions] = useState([]);
-  const [// loading, // setLoading] = useState(false);
+  const [`loading, `setLoading] = useState(`false);
   const [// selectedTransaction, setSelectedTransaction] = useState(null);
   const [filter, setFilter] = useState('all'); // 'all', 'pending', 'completed', 'cancelled'
   const [stats, setStats] = useState({});

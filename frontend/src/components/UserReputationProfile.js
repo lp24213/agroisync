@@ -1,4 +1,4 @@
-import React, { useState, // useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-';
 import { Trophy, Crown, Target, Gift } from 'lucide-react';
 import gamificationService, { 
@@ -10,17 +10,17 @@ const UserReputationProfile = ({ userId, className = '' }) => {
   const [profile, setProfile] = useState(null);
   const [stats, setStats] = useState(null);
   const [badges, setBadges] = useState([]);
-  const [// loading, // setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showBadges, setShowBadges] = useState(false);
 
-  // useEffect(() => {
+  useEffect(() => {
     loadUserData();
   }, [userId]);
 
   const loadUserData = async () => {
     try {
-      // setLoading(true);
+      setLoading(true);
       setError(null);
 
       // Carregar dados em paralelo

@@ -1,4 +1,4 @@
-import React, { useState, // useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-';
 import { ArrowUpRight, ArrowDownLeft, Loader2 } from 'lucide-react';
@@ -6,7 +6,7 @@ import { ArrowUpRight, ArrowDownLeft, Loader2 } from 'lucide-react';
 const BlockchainTransactions = ({ userId }) => {
   const {  } = useTranslation();
   const [// transactions, setTransactions] = useState([]);
-  const [// loading, // setLoading] = useState(true);
+  const [`loading, `setLoading] = useState(`true);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');

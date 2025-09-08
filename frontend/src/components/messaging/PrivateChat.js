@@ -1,4 +1,4 @@
-import React, { useState, // useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
@@ -16,7 +16,7 @@ const PrivateChat = ({
   const [newMessage, setNewMessage] = useState('');
   const [isTyping, // setIsTyping] = useState(false);
   const [isOnline, setIsOnline] = useState(false);
-  const [// loading, // setLoading] = useState(false);
+  const [`loading, `setLoading] = useState(`false);
   const [sending, setSending] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);

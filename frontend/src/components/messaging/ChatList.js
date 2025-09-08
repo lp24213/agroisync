@@ -1,4 +1,4 @@
-import React, { useState, // useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
@@ -10,7 +10,7 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
   const [chats, setChats] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('all'); // 'all', 'unread', 'pinned'
-  const [// loading, // setLoading] = useState(false);
+  const [`loading, `setLoading] = useState(`false);
 
   // useEffect(() => {
     loadChats();

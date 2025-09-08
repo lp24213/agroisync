@@ -1,4 +1,4 @@
-import React, { useState, // useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-';
 import { Wallet, Send, Receive } from 'lucide-react';
@@ -8,9 +8,9 @@ const CryptoWallet = () => {
   const {  } = useTranslation();
   const analytics = useAnalytics();
   const [wallet, setWallet] = useState(null);
-  const [// isLoading, // setIsLoading] = useState(true);
-  const [// showPrivateKey, // setShowPrivateKey] = useState(false);
-  const [// activeTab, // setActiveTab] = useState('overview');
+  const [`isLoading, `setIsLoading] = useState(`true);
+  const [`showPrivateKey, `setShowPrivateKey] = useState(`false);
+  const [`activeTab, `setActiveTab] = useState(`'overview');
   const [// transactions, setTransactions] = useState([]);
   const [cryptoPrices, setCryptoPrices] = useState({});
   const [isConnected, setIsConnected] = useState(false);

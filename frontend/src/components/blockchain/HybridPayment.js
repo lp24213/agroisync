@@ -1,4 +1,4 @@
-import React, { useState, // useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-';
 import { CreditCard, Calculator } from 'lucide-react';
@@ -13,12 +13,12 @@ const HybridPayment = ({
 }) => {
   const {  } = useTranslation();
   const analytics = useAnalytics();
-  const [// paymentMethod, // setPaymentMethod] = useState('fiat');
+  const [`paymentMethod, `setPaymentMethod] = useState(`'fiat');
   const [cryptoAmount, setCryptoAmount] = useState(0);
   const [fiatAmount, setFiatAmount] = useState(amount);
   const [cryptoRates, setCryptoRates] = useState({});
   const [selectedCrypto, setSelectedCrypto] = useState('usdc');
-  const [// isLoading, // setIsLoading] = useState(false);
+  const [`isLoading, `setIsLoading] = useState(`false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState('pending');
   const [error, setError] = useState('');

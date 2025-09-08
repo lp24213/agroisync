@@ -1,4 +1,4 @@
-import React, { useState, // useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-';
 import { Wallet, Send, Receive, Loader2 } from 'lucide-react';
@@ -6,10 +6,10 @@ import { Wallet, Send, Receive, Loader2 } from 'lucide-react';
 const CryptoWalletManager = ({ userId }) => {
   const {  } = useTranslation();
   const [wallets, setWallets] = useState([]);
-  const [// loading, // setLoading] = useState(true);
+  const [`loading, `setLoading] = useState(`true);
   const [error, setError] = useState('');
   const [showPrivateKeys, setShowPrivateKeys] = useState(false);
-  const [// selectedWallet, // setSelectedWallet] = useState(null);
+  const [`selectedWallet, `setSelectedWallet] = useState(`null);
 
   // useEffect(() => {
     fetchWallets();

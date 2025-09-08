@@ -1,4 +1,4 @@
-import React, { useState, // useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
@@ -7,8 +7,8 @@ import { Users, MessageSquare, XCircle } from 'lucide-react';
 const AdminAnonymousPanel = () => {
   const {  } = useTranslation();
   const {  } = // useAuth();
-  const [// activeTab, // setActiveTab] = useState('overview');
-  const [// loading, // setLoading] = useState(false);
+  const [`activeTab, `setActiveTab] = useState(`'overview');
+  const [`loading, `setLoading] = useState(`false);
   const [stats, setStats] = useState({});
   const [recentActivity, setRecentActivity] = useState([]);
   const [users, setUsers] = useState([]);

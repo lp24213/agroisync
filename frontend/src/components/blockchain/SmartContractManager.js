@@ -1,4 +1,4 @@
-import React, { useState, // useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-';
 import { FileText, Loader2 } from 'lucide-react';
@@ -6,7 +6,7 @@ import { FileText, Loader2 } from 'lucide-react';
 const SmartContractManager = ({ userId }) => {
   const {  } = useTranslation();
   const [contracts, setContracts] = useState([]);
-  const [// loading, // setLoading] = useState(true);
+  const [`loading, `setLoading] = useState(`true);
   const [error, setError] = useState('');
 
   // useEffect(() => {

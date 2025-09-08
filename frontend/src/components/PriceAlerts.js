@@ -1,15 +1,13 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Bell, Plus, Trash, Edit, TrendingUp, TrendingDown,
-  DollarSign, AlertTriangle, CheckCircle, XCircle
+  Bell, Plus, Trash, CheckCircle, XCircle
 } from 'lucide-react';
 import cryptoService from '../services/cryptoService';
 
 const PriceAlerts = () => {
   const [alerts, setAlerts] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [cryptoPrices, setCryptoPrices] = useState({});
   const [formData, setFormData] = useState({
     cryptoId: '',
@@ -19,59 +17,21 @@ const PriceAlerts = () => {
     enabled: true
   });
 
-  const popularCryptos = [
+  const popularCryptos = useMemo(() => [
     { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin', icon: '₿' },
     { id: 'ethereum', symbol: 'ETH', name: 'Ethereum', icon: 'Ξ' },
     { id: 'binancecoin', symbol: 'BNB', name: 'BNB', icon: '🟡' },
     { id: 'cardano', symbol: 'ADA', name: 'Cardano', icon: '₳' },
     { id: 'solana', symbol: 'SOL', name: 'Solana', icon: '◎' },
     { id: 'polkadot', symbol: 'DOT', name: 'Polkadot', icon: '●' }
-  ];
-
-  useEffect(() => {
-    loadAlerts();
-    loadCryptoPrices();
-    const interval = setInterval(loadCryptoPrices, 30000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    checkAlerts();
-  }, [cryptoPrices, alerts]);
+  ], []);
 
   const loadAlerts = () => {
     const savedAlerts = JSON.parse(localStorage.getItem('cryptoPriceAlerts') || '[]');
     setAlerts(savedAlerts);
   };
 
-  const loadCryptoPrices = useCallback(async () => {
-    try {
-      const symbols = popularCryptos.map(crypto => crypto.id);
-      const result = await cryptoService.getCryptoPrices(symbols);
-      setCryptoPrices(result.prices || {});
-    } catch (error) {
-      console.error('Erro ao carregar preços:', error);
-    }
-  }, []);
-
-  const checkAlerts = () => {
-    alerts.forEach(alert => {
-      if (!alert.enabled) return;
-      
-      const currentPrice = cryptoPrices[alert.cryptoId];
-      if (!currentPrice) return;
-
-      const shouldTrigger = alert.condition === 'above' 
-        ? currentPrice >= parseFloat(alert.price)
-        : currentPrice <= parseFloat(alert.price);
-
-      if (shouldTrigger && !alert.triggered) {
-        triggerAlert(alert, currentPrice);
-      }
-    });
-  };
-
-  const triggerAlert = (alert, currentPrice) => {
+  const triggerAlert = useCallback((alert, currentPrice) => {
     // Marcar como acionado
     const updatedAlerts = alerts.map(a => 
       a.id === alert.id ? { ...a, triggered: true, triggeredAt: new Date() } : a
@@ -86,7 +46,45 @@ const PriceAlerts = () => {
         icon: '/favicon.ico'
       });
     }
-  };
+  }, [alerts]);
+
+  const checkAlerts = useCallback(() => {
+    alerts.forEach(alert => {
+      if (!alert.enabled) return;
+      
+      const currentPrice = cryptoPrices[alert.cryptoId];
+      if (!currentPrice) return;
+
+      const shouldTrigger = alert.condition === 'above' 
+        ? currentPrice >= parseFloat(alert.price)
+        : currentPrice <= parseFloat(alert.price);
+
+      if (shouldTrigger && !alert.triggered) {
+        triggerAlert(alert, currentPrice);
+      }
+    });
+  }, [alerts, cryptoPrices, triggerAlert]);
+
+  const loadCryptoPrices = useCallback(async () => {
+    try {
+      const symbols = popularCryptos.map(crypto => crypto.id);
+      const result = await cryptoService.getCryptoPrices(symbols);
+      setCryptoPrices(result.prices || {});
+    } catch (error) {
+      console.error('Erro ao carregar preços:', error);
+    }
+  }, [popularCryptos]);
+
+  useEffect(() => {
+    loadAlerts();
+    loadCryptoPrices();
+    const interval = setInterval(loadCryptoPrices, 30000);
+    return () => clearInterval(interval);
+  }, [loadCryptoPrices]);
+
+  useEffect(() => {
+    checkAlerts();
+  }, [cryptoPrices, alerts, checkAlerts]);
 
   const saveAlert = () => {
     if (!formData.cryptoId || !formData.price) return;

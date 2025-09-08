@@ -1,4 +1,4 @@
-import React, { useState, // useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-';
 import { Database, Loader2 } from 'lucide-react';
@@ -6,7 +6,7 @@ import { Database, Loader2 } from 'lucide-react';
 const OracleManager = ({ userId }) => {
   const {  } = useTranslation();
   const [oracles, setOracles] = useState([]);
-  const [// loading, // setLoading] = useState(true);
+  const [`loading, `setLoading] = useState(`true);
   const [error, setError] = useState('');
   const [totalDataPoints, setTotalDataPoints] = useState(0);
   const [activeOracles, setActiveOracles] = useState(0);

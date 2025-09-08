@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, // useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const FeatureFlagsContext = createContext();
 
@@ -12,7 +12,7 @@ export const useFeatureFlags = () => {
 
 export const FeatureFlagsProvider = ({ children }) => {
   const [flags, setFlags] = useState({});
-  const [// loading, // setLoading] = useState(true);
+  const [`loading, `setLoading] = useState(`true);
 
   // Feature flags padrão
   const // defaultFlags = {

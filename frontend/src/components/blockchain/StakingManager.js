@@ -1,4 +1,4 @@
-import React, { useState, // useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-';
 import { Lock, Loader2 } from 'lucide-react';
@@ -6,7 +6,7 @@ import { Lock, Loader2 } from 'lucide-react';
 const StakingManager = ({ userId }) => {
   const {  } = useTranslation();
   const [stakes, setStakes] = useState([]);
-  const [// loading, // setLoading] = useState(true);
+  const [`loading, `setLoading] = useState(`true);
   const [error, setError] = useState('');
   const [totalStaked, setTotalStaked] = useState(0);
   const [totalRewards, setTotalRewards] = useState(0);

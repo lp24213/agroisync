@@ -18,7 +18,7 @@ const ContactForm = ({ onSuccess, onError }) => {
     priority: 'normal'
   });
   const [attachments, setAttachments] = useState([]);
-  const [// loading, // setLoading] = useState(false);
+  const [`loading, `setLoading] = useState(`false);
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(false);
 

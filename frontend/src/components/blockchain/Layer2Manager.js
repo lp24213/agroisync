@@ -1,4 +1,4 @@
-import React, { useState, // useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-';
 import { Layers, Loader2 } from 'lucide-react';
@@ -6,7 +6,7 @@ import { Layers, Loader2 } from 'lucide-react';
 const Layer2Manager = ({ userId }) => {
   const {  } = useTranslation();
   const [solutions, setSolutions] = useState([]);
-  const [// loading, // setLoading] = useState(true);
+  const [`loading, `setLoading] = useState(`true);
   const [error, setError] = useState('');
   const [totalValue, setTotalValue] = useState(0);
   const [activeSolutions, setActiveSolutions] = useState(0);

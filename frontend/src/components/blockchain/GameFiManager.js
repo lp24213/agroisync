@@ -1,4 +1,4 @@
-import React, { useState, // useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-';
 import { Gamepad2, Trophy, Loader2 } from 'lucide-react';
@@ -6,7 +6,7 @@ import { Gamepad2, Trophy, Loader2 } from 'lucide-react';
 const GameFiManager = ({ userId }) => {
   const {  } = useTranslation();
   const [games, setGames] = useState([]);
-  const [// loading, // setLoading] = useState(true);
+  const [`loading, `setLoading] = useState(`true);
   const [error, setError] = useState('');
   const [totalEarnings, setTotalEarnings] = useState(0);
   const [activeGames, setActiveGames] = useState(0);

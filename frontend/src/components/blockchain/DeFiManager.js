@@ -1,4 +1,4 @@
-import React, { useState, // useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-';
 import { TrendingUp, ArrowUpRight, ArrowDownLeft, Loader2 } from 'lucide-react';
@@ -6,7 +6,7 @@ import { TrendingUp, ArrowUpRight, ArrowDownLeft, Loader2 } from 'lucide-react';
 const DeFiManager = ({ userId }) => {
   const {  } = useTranslation();
   const [positions, setPositions] = useState([]);
-  const [// loading, // setLoading] = useState(true);
+  const [`loading, `setLoading] = useState(`true);
   const [error, setError] = useState('');
   const [totalValue, setTotalValue] = useState(0);
   const [dailyChange, setDailyChange] = useState(0);
