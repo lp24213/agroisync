@@ -21,7 +21,7 @@ const AgroSyncLogo = ({ className = "", variant = "default", size = "medium" }) 
     return (
       <div className={`flex items-center space-x-3 ${className}`}>
         <img 
-          src="/agroisync-main-logo.png" 
+          src="/agroisync-logo.svg" 
           alt="AGROISYNC" 
           className={`${getLogoSize()} object-contain`}
         />
@@ -36,7 +36,7 @@ const AgroSyncLogo = ({ className = "", variant = "default", size = "medium" }) 
     return (
       <div className={`flex items-center space-x-4 ${className}`}>
         <img 
-          src="/agroisync-main-logo.png" 
+          src="/agroisync-logo.svg" 
           alt="AGROISYNC" 
           className={`${size === "small" ? "w-8 h-8" : size === "large" ? "w-12 h-12" : "w-10 h-10"} object-contain`}
         />
@@ -54,7 +54,7 @@ const AgroSyncLogo = ({ className = "", variant = "default", size = "medium" }) 
 
   return (
     <img 
-      src="/agroisync-main-logo.png" 
+      src="/agroisync-logo.svg" 
       alt="AGROISYNC" 
       className={`${getLogoSize()} object-contain ${className}`}
     />

@@ -220,7 +220,7 @@ const Contact = () => {
                             name="phone"
                             value={formData.phone}
                             onChange={handleInputChange}
-                            className="form-input pl-10"
+                            className="w-full px-4 py-3 pl-10 border border-border-light rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all bg-panel text-primary placeholder-muted"
                             placeholder="(66) 99999-9999"
                           />
                         </div>
@@ -237,7 +237,7 @@ const Contact = () => {
                             name="company"
                             value={formData.company}
                             onChange={handleInputChange}
-                            className="form-input pl-10"
+                            className="w-full px-4 py-3 pl-10 border border-border-light rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all bg-panel text-primary placeholder-muted"
                             placeholder="Nome da sua empresa"
                           />
                         </div>
@@ -253,7 +253,7 @@ const Contact = () => {
                         value={formData.subject}
                         onChange={handleInputChange}
                         required
-                        className="form-input form-select"
+                        className="w-full px-4 py-3 border border-border-light rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all bg-panel text-primary"
                       >
                         <option value="">Selecione um assunto</option>
                         {subjects.map((subject) => (
@@ -276,7 +276,7 @@ const Contact = () => {
                           onChange={handleInputChange}
                           required
                           rows={6}
-                          className="form-input form-textarea pl-10"
+                          className="w-full px-4 py-3 pl-10 border border-border-light rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all bg-panel text-primary placeholder-muted resize-none"
                           placeholder="Descreva sua mensagem aqui..."
                         />
                       </div>
