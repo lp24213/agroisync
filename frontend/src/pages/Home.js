@@ -7,7 +7,6 @@ import {
   Zap, 
   Globe, 
   Users, 
-  TrendingUp,
   Smartphone,
   Truck,
   BarChart3
@@ -43,19 +42,29 @@ const Home = () => {
       icon: Smartphone,
       title: 'Marketplace Digital',
       description: 'Plataforma completa para compra e venda de produtos agrícolas',
-      link: '/marketplace'
+      link: '/marketplace',
+      status: 'Projeto em andamento futuro'
     },
     {
       icon: Truck,
       title: 'AgroConecta',
       description: 'Intermediação inteligente de fretes agrícolas',
-      link: '/agroconecta'
+      link: '/agroconecta',
+      status: 'Disponível'
     },
     {
       icon: BarChart3,
       title: 'Analytics Avançado',
       description: 'Dados em tempo real sobre preços, tendências e oportunidades',
-      link: '/analytics'
+      link: '/analytics',
+      status: 'Disponível'
+    },
+    {
+      icon: Globe,
+      title: 'Notícias',
+      description: 'Fique por dentro das últimas notícias do agronegócio',
+      link: '/news',
+      status: 'Disponível'
     }
   ];
 
@@ -68,114 +77,63 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-primary">
-      {/* Hero Section */}
-      <section className="hero-futuristic">
-        <div className="container">
-          <div className="grid-futuristic grid-cols-1 lg:grid-cols-2 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <motion.h1
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="hero-title"
-              >
-                O Futuro do{' '}
-                <span className="text-primary">Agronegócio</span>{' '}
-                é <span className="text-primary">Agora</span>
-              </motion.h1>
-              
-              <motion.p
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="hero-subtitle"
-              >
-                A plataforma mais futurista e sofisticada do mundo para conectar produtores, 
-                compradores e transportadores. Design premium, tecnologia de ponta e 
-                performance excepcional.
-              </motion.p>
-              
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-                className="flex flex-col sm:flex-row gap-4"
-              >
-                <Link
-                  to="/register"
-                  className="btn-futuristic btn-primary btn-lg"
-                >
-                  Começar Agora
-                  <ArrowRight size={20} />
-                </Link>
-                <Link
-                  to="/about"
-                  className="btn-futuristic btn-secondary btn-lg"
-                >
-                  Saiba Mais
-                </Link>
-              </motion.div>
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative"
-            >
-              <div className="card-futuristic card-elevated text-center">
-                <div className="w-32 h-32 bg-primary rounded-full mx-auto mb-6 flex items-center justify-center">
-                  <TrendingUp size={48} className="text-white" />
-                </div>
-                <h3 className="text-2xl font-bold text-primary mb-4">
-                  Performance em Tempo Real
-                </h3>
-                <p className="text-secondary">
-                  Dados atualizados a cada segundo para decisões mais inteligentes
-                </p>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="section bg-secondary">
+      {/* Hero Section - Centralizado e Premium */}
+      <section className="hero-futuristic bg-gradient-hero">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="grid-futuristic grid-cols-2 md:grid-cols-4"
+            className="text-center max-w-5xl mx-auto"
           >
-            {stats.map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="text-center"
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-5xl md:text-7xl font-bold text-primary mb-8 leading-tight"
+            >
+              O Futuro do{' '}
+              <span className="text-gradient">Agronegócio</span>{' '}
+              é <span className="text-gradient">Agora</span>
+            </motion.h1>
+            
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="text-xl md:text-2xl text-muted mb-12 max-w-4xl mx-auto leading-relaxed"
+            >
+              A plataforma mais futurista e sofisticada do mundo para conectar produtores, 
+              compradores e transportadores. Design premium, tecnologia de ponta e 
+              performance excepcional.
+            </motion.p>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="flex flex-col sm:flex-row gap-6 justify-center items-center"
+            >
+              <Link
+                to="/register"
+                className="btn-premium px-8 py-4 text-lg font-semibold flex items-center gap-3"
               >
-                <div className="text-4xl md:text-5xl font-extrabold text-primary mb-2">
-                  {stat.number}
-                </div>
-                <div className="text-secondary font-medium">
-                  {stat.label}
-                </div>
-              </motion.div>
-            ))}
+                Começar Agora
+                <ArrowRight size={20} />
+              </Link>
+              <Link
+                to="/about"
+                className="btn-premium-secondary px-8 py-4 text-lg font-semibold"
+              >
+                Saiba Mais
+              </Link>
+            </motion.div>
           </motion.div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="section bg-primary">
+      {/* Stats Section - Cards Organizados em Grid */}
+      <section className="py-20 bg-secondary">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -185,14 +143,54 @@ const Home = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-              Tecnologia que <span className="text-primary">Impressiona</span>
+              Nossos <span className="text-gradient">Números</span>
             </h2>
-            <p className="text-xl text-secondary max-w-3xl mx-auto">
-              Recursos avançados que colocam o AgroSync anos à frente da concorrência
+            <p className="text-xl text-muted max-w-3xl mx-auto">
+              Resultados que comprovam nossa excelência e impacto no agronegócio
             </p>
           </motion.div>
           
-          <div className="grid-futuristic grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {stats.map((stat, index) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="card-premium text-center p-8 hover:scale-105 transition-transform"
+              >
+                <div className="text-4xl md:text-5xl font-extrabold text-gradient mb-4">
+                  {stat.number}
+                </div>
+                <div className="text-muted font-semibold text-lg">
+                  {stat.label}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Performance em Tempo Real */}
+      <section className="py-20 bg-gradient-accent">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
+              Performance em <span className="text-gradient">Tempo Real</span>
+            </h2>
+            <p className="text-xl text-muted max-w-3xl mx-auto">
+              Dados atualizados a cada segundo para decisões mais inteligentes
+            </p>
+          </motion.div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
               <motion.div
                 key={feature.title}
@@ -200,15 +198,15 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="card-futuristic text-center hover:scale-105 transition-transform"
+                className="card-premium text-center p-8 hover:scale-105 transition-transform"
               >
-                <div className="w-16 h-16 bg-primary rounded-xl mx-auto mb-4 flex items-center justify-center">
+                <div className="w-16 h-16 bg-gradient-primary rounded-xl mx-auto mb-6 flex items-center justify-center">
                   <feature.icon size={32} className="text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-primary mb-3">
+                <h3 className="text-xl font-bold text-primary mb-4">
                   {feature.title}
                 </h3>
-                <p className="text-secondary">
+                <p className="text-muted leading-relaxed">
                   {feature.description}
                 </p>
               </motion.div>
@@ -217,8 +215,8 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Services Section */}
-      <section className="section bg-secondary">
+      {/* Services Section - Cards Uniformes com Gradientes */}
+      <section className="py-20 bg-secondary">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -228,14 +226,14 @@ const Home = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-              Nossos <span className="text-primary">Serviços</span>
+              Nossos <span className="text-gradient">Serviços</span>
             </h2>
-            <p className="text-xl text-secondary max-w-3xl mx-auto">
+            <p className="text-xl text-muted max-w-3xl mx-auto">
               Soluções completas para todas as necessidades do agronegócio moderno
             </p>
           </motion.div>
           
-          <div className="grid-futuristic grid-cols-1 md:grid-cols-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {services.map((service, index) => (
               <motion.div
                 key={service.title}
@@ -243,24 +241,30 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="card-futuristic group"
+                className="card-premium group p-8 text-center hover:scale-105 transition-transform"
               >
-                <div className="w-16 h-16 bg-primary rounded-xl mb-6 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <div className="w-16 h-16 bg-gradient-primary rounded-xl mb-6 flex items-center justify-center group-hover:scale-110 transition-transform mx-auto">
                   <service.icon size={32} className="text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-primary mb-4">
+                <h3 className="text-xl font-bold text-primary mb-4">
                   {service.title}
                 </h3>
-                <p className="text-secondary mb-6">
+                <p className="text-muted mb-6 leading-relaxed">
                   {service.description}
                 </p>
-                <Link
-                  to={service.link}
-                  className="btn-futuristic btn-primary w-full text-center"
-                >
-                  Conhecer
-                  <ArrowRight size={16} className="ml-2" />
-                </Link>
+                {service.status === 'Projeto em andamento futuro' ? (
+                  <div className="bg-gradient-warning text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                    {service.status}
+                  </div>
+                ) : (
+                  <Link
+                    to={service.link}
+                    className="btn-premium w-full text-center flex items-center justify-center gap-2"
+                  >
+                    Conhecer
+                    <ArrowRight size={16} />
+                  </Link>
+                )}
               </motion.div>
             ))}
           </div>
@@ -270,8 +274,8 @@ const Home = () => {
       {/* News Section - Discreta e elegante */}
       <Noticias />
 
-      {/* CTA Section */}
-      <section className="section bg-primary">
+      {/* CTA Section - Premium */}
+      <section className="py-20 bg-gradient-hero">
         <div className="container text-center">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -280,23 +284,23 @@ const Home = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-              Pronto para o <span className="text-primary">Futuro</span>?
+              Pronto para o <span className="text-gradient">Futuro</span>?
             </h2>
-            <p className="text-xl text-secondary mb-8 max-w-2xl mx-auto">
+            <p className="text-xl text-muted mb-12 max-w-3xl mx-auto leading-relaxed">
               Junte-se a milhares de profissionais do agronegócio que já descobriram 
-              o poder da tecnologia AgroSync
+              o poder da tecnologia AgroSync. Transforme seu negócio hoje mesmo.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
               <Link
                 to="/register"
-                className="btn-futuristic btn-primary btn-lg"
+                className="btn-premium px-8 py-4 text-lg font-semibold flex items-center gap-3"
               >
                 Começar Gratuitamente
                 <ArrowRight size={20} />
               </Link>
               <Link
                 to="/contact"
-                className="btn-futuristic btn-secondary btn-lg"
+                className="btn-premium-secondary px-8 py-4 text-lg font-semibold"
               >
                 Falar com Especialista
               </Link>

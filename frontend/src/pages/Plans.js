@@ -104,10 +104,10 @@ const Plans = () => {
             transition={{ duration: 0.8 }}
             className="text-center"
           >
-            <h1 className="hero-title">
-              Planos que <span className="text-primary">Impressionam</span>
+            <h1 className="text-5xl md:text-6xl font-bold text-primary mb-6">
+              Planos que <span className="text-gradient">Impressionam</span>
             </h1>
-            <p className="hero-subtitle">
+            <p className="text-xl text-muted max-w-3xl mx-auto leading-relaxed">
               Escolha o plano perfeito para transformar seu agronegócio com tecnologia de ponta
             </p>
           </motion.div>
@@ -163,13 +163,13 @@ const Plans = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className={`card-futuristic relative ${
+                className={`card-premium relative p-8 ${
                   plan.popular ? 'ring-2 ring-primary scale-105' : ''
                 }`}
               >
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-primary text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-1">
+                    <div className="bg-gradient-primary text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-1">
                       <Star size={16} />
                       Mais Popular
                     </div>
@@ -209,15 +209,15 @@ const Plans = () => {
                   ))}
                 </div>
 
-                <Link
-                  to={plan.ctaLink}
-                  className={`btn-futuristic w-full text-center ${
-                    plan.popular ? 'btn-primary' : 'btn-secondary'
-                  }`}
-                >
-                  {plan.cta}
-                  <ArrowRight size={16} className="ml-2" />
-                </Link>
+                  <Link
+                    to={plan.ctaLink}
+                    className={`w-full text-center py-3 px-6 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 ${
+                      plan.popular ? 'btn-premium' : 'btn-premium-secondary'
+                    }`}
+                  >
+                    {plan.cta}
+                    <ArrowRight size={16} />
+                  </Link>
               </motion.div>
             ))}
           </div>
@@ -235,7 +235,7 @@ const Plans = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-              Por que escolher o <span className="text-primary">AgroSync</span>?
+              Por que escolher o <span className="text-gradient">Agroisync</span>?
             </h2>
             <p className="text-xl text-secondary max-w-3xl mx-auto">
               Recursos avançados que fazem a diferença no seu agronegócio
@@ -250,9 +250,9 @@ const Plans = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="card-futuristic text-center"
+                className="card-premium text-center p-8 hover:scale-105 transition-transform"
               >
-                <div className="w-16 h-16 bg-primary rounded-xl mx-auto mb-4 flex items-center justify-center">
+                <div className="w-16 h-16 bg-gradient-primary rounded-xl mx-auto mb-6 flex items-center justify-center">
                   <feature.icon size={32} className="text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-primary mb-3">
@@ -278,7 +278,7 @@ const Plans = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-              Perguntas <span className="text-primary">Frequentes</span>
+              Perguntas <span className="text-gradient">Frequentes</span>
             </h2>
             <p className="text-xl text-secondary max-w-3xl mx-auto">
               Tire suas dúvidas sobre nossos planos e serviços
@@ -287,41 +287,41 @@ const Plans = () => {
           
           <div className="max-w-4xl mx-auto">
             <div className="grid-futuristic grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="card-futuristic">
+              <div className="card-premium p-6">
                 <h3 className="text-xl font-bold text-primary mb-3">
                   Posso mudar de plano a qualquer momento?
                 </h3>
-                <p className="text-secondary">
+                <p className="text-muted leading-relaxed">
                   Sim! Você pode fazer upgrade ou downgrade do seu plano a qualquer momento. 
                   As mudanças são aplicadas imediatamente.
                 </p>
               </div>
               
-              <div className="card-futuristic">
+              <div className="card-premium p-6">
                 <h3 className="text-xl font-bold text-primary mb-3">
                   Há período de teste gratuito?
                 </h3>
-                <p className="text-secondary">
+                <p className="text-muted leading-relaxed">
                   Oferecemos 14 dias de teste gratuito para todos os planos. 
                   Sem compromisso, sem cartão de crédito necessário.
                 </p>
               </div>
               
-              <div className="card-futuristic">
+              <div className="card-premium p-6">
                 <h3 className="text-xl font-bold text-primary mb-3">
                   Que tipos de suporte vocês oferecem?
                 </h3>
-                <p className="text-secondary">
+                <p className="text-muted leading-relaxed">
                   Oferecemos suporte por email, chat e telefone. Planos superiores 
                   incluem suporte prioritário e dedicado.
                 </p>
               </div>
               
-              <div className="card-futuristic">
+              <div className="card-premium p-6">
                 <h3 className="text-xl font-bold text-primary mb-3">
                   Meus dados estão seguros?
                 </h3>
-                <p className="text-secondary">
+                <p className="text-muted leading-relaxed">
                   Absolutamente! Utilizamos criptografia de nível bancário e 
                   seguimos todas as normas de segurança internacionais.
                 </p>
@@ -341,7 +341,7 @@ const Plans = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-              Pronto para <span className="text-primary">Começar</span>?
+              Pronto para <span className="text-gradient">Começar</span>?
             </h2>
             <p className="text-xl text-secondary mb-8 max-w-2xl mx-auto">
               Junte-se a milhares de empresas que já transformaram seu agronegócio
@@ -349,14 +349,14 @@ const Plans = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 to="/register"
-                className="btn-futuristic btn-primary btn-lg"
+                className="btn-premium px-8 py-4 text-lg font-semibold flex items-center gap-3"
               >
                 Começar Teste Grátis
                 <ArrowRight size={20} />
               </Link>
               <Link
                 to="/contact"
-                className="btn-futuristic btn-secondary btn-lg"
+                className="btn-premium-secondary px-8 py-4 text-lg font-semibold"
               >
                 Falar com Vendas
               </Link>

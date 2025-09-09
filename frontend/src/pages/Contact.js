@@ -57,48 +57,48 @@ const Contact = () => {
     {
       icon: Mail,
       title: t('contact.email'),
-      details: ['contato@agrosync.com', 'suporte@agrosync.com'],
+      details: ['contato@agroisync.com', 'suporte@agroisync.com'],
       description: t('contact.responseTime')
     },
     {
       icon: Phone,
       title: t('contact.phone'),
-      details: [t('contact.phoneNumber')],
+      details: ['(66) 99236-2830'],
       description: t('contact.workingHours')
     },
     {
       icon: MapPin,
       title: t('contact.location'),
-      details: [t('contact.address')],
+      details: ['Sinop - MT'],
       description: t('contact.visitInfo')
     }
   ];
 
   return (
     <div className="min-h-screen bg-primary">
-      {/* Hero Section */}
-      <section className="hero-futuristic">
+      {/* Hero Section - Premium */}
+      <section className="hero-futuristic bg-gradient-hero">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center"
+            className="text-center max-w-4xl mx-auto"
           >
-            <h1 className="hero-title">
+            <h1 className="text-5xl md:text-6xl font-bold text-primary mb-6">
               {t('contact.title')}
             </h1>
-            <p className="hero-subtitle">
+            <p className="text-xl text-muted max-w-3xl mx-auto leading-relaxed">
               {t('contact.subtitle')}
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Contact Info */}
-      <section className="section bg-secondary">
+      {/* Contact Info - Premium */}
+      <section className="py-20 bg-secondary">
         <div className="container">
-          <div className="grid-futuristic grid-cols-1 md:grid-cols-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {contactInfo.map((info, index) => (
               <motion.div
                 key={info.title}
@@ -106,22 +106,22 @@ const Contact = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="card-futuristic text-center"
+                className="card-premium text-center p-8 hover:scale-105 transition-transform"
               >
-                <div className="w-16 h-16 bg-primary rounded-xl mx-auto mb-4 flex items-center justify-center">
+                <div className="w-16 h-16 bg-gradient-primary rounded-xl mx-auto mb-6 flex items-center justify-center">
                   <info.icon size={32} className="text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-primary mb-3">
+                <h3 className="text-xl font-bold text-primary mb-4">
                   {info.title}
                 </h3>
-                <div className="space-y-1 mb-3">
+                <div className="space-y-2">
                   {info.details.map((detail, idx) => (
-                    <p key={idx} className="text-secondary font-medium">
+                    <p key={idx} className="text-muted font-medium">
                       {detail}
                     </p>
                   ))}
                 </div>
-                <p className="text-sm text-muted">
+                <p className="text-muted text-sm mt-4">
                   {info.description}
                 </p>
               </motion.div>
@@ -130,10 +130,10 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* Contact Form */}
-      <section className="section bg-primary">
+      {/* Contact Form - Premium */}
+      <section className="py-20 bg-primary">
         <div className="container">
-          <div className="grid-futuristic grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Form */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
@@ -141,9 +141,9 @@ const Contact = () => {
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <div className="card-futuristic">
+              <div className="card-premium p-8">
                 <h2 className="text-3xl font-bold text-primary mb-6">
-                  Envie sua <span className="text-primary">Mensagem</span>
+                  Envie sua <span className="text-gradient">Mensagem</span>
                 </h2>
                 
                 {isSubmitted ? (
@@ -183,7 +183,7 @@ const Contact = () => {
                             value={formData.name}
                             onChange={handleInputChange}
                             required
-                            className="form-input pl-10"
+                            className="w-full px-4 py-3 pl-10 border border-border-light rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all bg-panel text-primary placeholder-muted"
                             placeholder="Seu nome completo"
                           />
                         </div>
@@ -201,7 +201,7 @@ const Contact = () => {
                             value={formData.email}
                             onChange={handleInputChange}
                             required
-                            className="form-input pl-10"
+                            className="w-full px-4 py-3 pl-10 border border-border-light rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all bg-panel text-primary placeholder-muted"
                             placeholder="seu@email.com"
                           />
                         </div>
@@ -285,7 +285,7 @@ const Contact = () => {
                     <motion.button
                       type="submit"
                       disabled={isSubmitting}
-                      className="btn-futuristic btn-primary w-full flex items-center justify-center gap-2"
+                      className="btn-premium w-full flex items-center justify-center gap-2 py-4 text-lg font-semibold"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
@@ -314,13 +314,13 @@ const Contact = () => {
               viewport={{ once: true }}
               className="space-y-8"
             >
-              <div className="card-futuristic">
+              <div className="card-premium p-8">
                 <h3 className="text-2xl font-bold text-primary mb-6">
-                  Por que escolher o AgroSync?
+                  Por que escolher o <span className="text-gradient">Agroisync</span>?
                 </h3>
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
+                    <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center flex-shrink-0">
                       <CheckCircle size={16} className="text-white" />
                     </div>
                     <div>
@@ -334,7 +334,7 @@ const Contact = () => {
                   </div>
                   
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
+                    <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center flex-shrink-0">
                       <CheckCircle size={16} className="text-white" />
                     </div>
                     <div>
@@ -348,7 +348,7 @@ const Contact = () => {
                   </div>
                   
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
+                    <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center flex-shrink-0">
                       <CheckCircle size={16} className="text-white" />
                     </div>
                     <div>

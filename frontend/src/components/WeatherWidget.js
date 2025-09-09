@@ -1,29 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Thermometer, Droplets, Wind, Eye } from 'lucide-react';
+import { MapPin, Thermometer, Cloud } from 'lucide-react';
 
 const WeatherWidget = () => {
   const [weather, setWeather] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [location] = useState('Sinop - MT');
+  const [userLocation, setUserLocation] = useState('Sinop - MT');
+
+  useEffect(() => {
+    const detectLocationByIP = async () => {
+      try {
+        // Detectar localização por IP
+        const ipResponse = await fetch('https://ipapi.co/json/');
+        const ipData = await ipResponse.json();
+        
+        if (ipData.city && ipData.region) {
+          setUserLocation(`${ipData.city} - ${ipData.region}`);
+        }
+      } catch (error) {
+        console.log('Não foi possível detectar localização por IP, usando padrão');
+        setUserLocation('Sinop - MT');
+      }
+    };
+
+    detectLocationByIP();
+  }, []);
 
   useEffect(() => {
     // Dados mockados do clima (em produção, usar API real)
     const mockWeather = {
-      location: 'Sinop - MT',
-      temperature: 28,
-      condition: 'Ensolarado',
-      humidity: 65,
-      windSpeed: 12,
-      visibility: 10,
-      icon: '☀️',
-      description: 'Parcialmente nublado'
+      location: userLocation,
+      temperature: Math.floor(Math.random() * 15) + 20, // 20-35°C
+      condition: ['Ensolarado', 'Parcialmente nublado', 'Nublado'][Math.floor(Math.random() * 3)],
+      icon: ['☀️', '⛅', '☁️'][Math.floor(Math.random() * 3)],
+      description: 'Clima atualizado automaticamente'
     };
 
     const loadWeather = async () => {
       try {
-        // Em produção, usar API real de clima
-        // const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${API_KEY}`);
+        // Em produção, usar API real de clima com localização detectada
+        // const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${userLocation}&appid=${API_KEY}`);
         // const data = await response.json();
         
         // Por enquanto, usar dados mockados
@@ -44,12 +60,12 @@ const WeatherWidget = () => {
     const interval = setInterval(loadWeather, 600000);
     
     return () => clearInterval(interval);
-  }, [location]);
+  }, [userLocation]);
 
   if (isLoading) {
     return (
       <div className="weather-widget">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 px-4 py-2 bg-gradient-card rounded-lg border border-border-light">
           <div className="animate-pulse bg-gray-200 rounded h-4 w-4"></div>
           <div className="animate-pulse bg-gray-200 rounded h-4 w-20"></div>
           <div className="animate-pulse bg-gray-200 rounded h-4 w-16"></div>
@@ -67,33 +83,23 @@ const WeatherWidget = () => {
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="flex items-center gap-4 text-sm">
+      <div className="flex items-center gap-4 text-sm px-4 py-2 bg-gradient-card rounded-lg border border-border-light shadow-sm hover:shadow-md transition-all">
         <div className="flex items-center gap-2">
           <MapPin size={14} className="text-primary" />
-          <span className="font-medium text-primary">{weather.location}</span>
+          <span className="font-medium text-primary text-xs">{weather.location}</span>
         </div>
         
         <div className="flex items-center gap-2">
-          <span className="text-2xl">{weather.icon}</span>
+          <span className="text-lg">{weather.icon}</span>
           <div className="flex items-center gap-1">
-            <Thermometer size={14} className="text-secondary" />
-            <span className="font-semibold text-primary">{weather.temperature}°C</span>
+            <Thermometer size={14} className="text-muted" />
+            <span className="font-semibold text-primary text-xs">{weather.temperature}°C</span>
           </div>
         </div>
         
         <div className="flex items-center gap-1">
-          <Droplets size={14} className="text-secondary" />
-          <span className="text-secondary">{weather.humidity}%</span>
-        </div>
-        
-        <div className="flex items-center gap-1">
-          <Wind size={14} className="text-secondary" />
-          <span className="text-secondary">{weather.windSpeed} km/h</span>
-        </div>
-        
-        <div className="flex items-center gap-1">
-          <Eye size={14} className="text-secondary" />
-          <span className="text-secondary">{weather.visibility} km</span>
+          <Cloud size={14} className="text-muted" />
+          <span className="text-muted text-xs">{weather.condition}</span>
         </div>
       </div>
     </motion.div>

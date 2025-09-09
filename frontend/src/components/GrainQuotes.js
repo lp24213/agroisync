@@ -9,7 +9,7 @@ const GrainQuotes = () => {
   const { t } = useLanguage();
 
   useEffect(() => {
-    // Dados mockados de grãos (em produção, usar API do AgroLink)
+    // Dados mockados de grãos (em produção, usar API de cotações)
     const mockQuotes = [
       {
         name: t('quotations.soy'),
@@ -40,7 +40,7 @@ const GrainQuotes = () => {
       },
       {
         name: t('quotations.cotton'),
-        symbol: 'ALGODAO',
+        symbol: 'ALGODÃO',
         price: 4.25,
         change: -0.15,
         changePercent: -3.41,
@@ -51,8 +51,8 @@ const GrainQuotes = () => {
 
     const loadQuotes = async () => {
       try {
-        // Em produção, fazer chamada para API do AgroLink
-        // const response = await fetch('https://api.agrolink.com.br/...');
+        // Em produção, fazer chamada para API de cotações
+        // const response = await fetch('https://api.cotacoes.com.br/...');
         // const data = await response.json();
         
         // Por enquanto, usar dados mockados
@@ -73,7 +73,7 @@ const GrainQuotes = () => {
     const interval = setInterval(loadQuotes, 300000);
     
     return () => clearInterval(interval);
-  }, []);
+  }, [t]);
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -88,10 +88,6 @@ const GrainQuotes = () => {
     return `${sign}${change.toFixed(2)}`;
   };
 
-  const formatChangePercent = (changePercent) => {
-    const sign = changePercent >= 0 ? '+' : '';
-    return `${sign}${changePercent.toFixed(2)}%`;
-  };
 
   if (isLoading) {
     return (
@@ -106,8 +102,8 @@ const GrainQuotes = () => {
 
   return (
     <div className="grain-quotes">
-      <div className="flex items-center justify-center gap-6 text-sm flex-wrap">
-        <span className="font-semibold text-primary flex items-center gap-2">
+      <div className="flex items-center justify-center gap-8 text-sm flex-wrap">
+        <span className="font-semibold text-primary flex items-center gap-2 text-base">
           <Circle size={16} />
           {t('quotations.title')}
         </span>
@@ -119,18 +115,18 @@ const GrainQuotes = () => {
           return (
             <motion.div 
               key={quote.symbol}
-              className="flex items-center gap-2"
+              className="flex items-center gap-3 px-4 py-2 bg-gradient-card rounded-lg border border-border-light shadow-sm hover:shadow-md transition-all"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
               <IconComponent size={14} className="text-primary" />
-              <span className="font-medium text-primary">{quote.symbol}</span>
-              <span className="text-secondary">{formatPrice(quote.price)}</span>
+              <span className="font-semibold text-primary text-xs">{quote.symbol}</span>
+              <span className="text-muted text-xs font-medium">{formatPrice(quote.price)}</span>
               <div className={`flex items-center gap-1 ${isPositive ? 'text-success' : 'text-danger'}`}>
-                {isPositive ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-                <span className="font-medium">
-                  {formatChange(quote.change)} ({formatChangePercent(quote.changePercent)})
+                {isPositive ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
+                <span className="text-xs font-medium">
+                  {formatChange(quote.change)}
                 </span>
               </div>
             </motion.div>

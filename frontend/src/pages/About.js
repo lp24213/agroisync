@@ -77,7 +77,7 @@ const About = () => {
             className="text-center text-white"
           >
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              Sobre o <span className="text-yellow-300">AgroSync</span>
+              Sobre o <span className="text-gradient">Agroisync</span>
             </h1>
             <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
               A plataforma mais avançada e futurista do mundo para conectar produtores, 
@@ -97,9 +97,9 @@ const About = () => {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="glass-card p-8"
+              className="card-premium p-8"
             >
-              <div className="w-16 h-16 bg-primary-gradient rounded-xl mb-6 flex items-center justify-center">
+              <div className="w-16 h-16 bg-gradient-primary rounded-xl mb-6 flex items-center justify-center">
                 <Target size={32} className="text-white" />
               </div>
               <h2 className="text-3xl font-bold text-primary mb-4">Nossa Missão</h2>
@@ -115,9 +115,9 @@ const About = () => {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="glass-card p-8"
+              className="card-premium p-8"
             >
-              <div className="w-16 h-16 bg-primary-gradient rounded-xl mb-6 flex items-center justify-center">
+              <div className="w-16 h-16 bg-gradient-primary rounded-xl mb-6 flex items-center justify-center">
                 <Award size={32} className="text-white" />
               </div>
               <h2 className="text-3xl font-bold text-primary mb-4">Nossa Visão</h2>
@@ -142,7 +142,7 @@ const About = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Nossos <span className="text-yellow-300">Valores</span>
+              Nossos <span className="text-gradient">Valores</span>
             </h2>
             <p className="text-xl text-white/80 max-w-3xl mx-auto">
               Os princípios que guiam nossa missão de transformar o agronegócio
@@ -157,9 +157,9 @@ const About = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="glass-card p-6 text-center hover:scale-105 transition-transform"
+                className="card-premium p-6 text-center hover:scale-105 transition-transform"
               >
-                <div className="w-16 h-16 bg-primary-gradient rounded-xl mx-auto mb-4 flex items-center justify-center">
+                <div className="w-16 h-16 bg-gradient-primary rounded-xl mx-auto mb-4 flex items-center justify-center">
                   <value.icon size={32} className="text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">
@@ -200,9 +200,9 @@ const About = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="glass-card p-8 text-center"
+                className="card-premium p-8 text-center"
               >
-                <div className="w-24 h-24 bg-primary-gradient rounded-full mx-auto mb-6 flex items-center justify-center">
+                <div className="w-24 h-24 bg-gradient-primary rounded-full mx-auto mb-6 flex items-center justify-center">
                   <Users size={40} className="text-white" />
                 </div>
                 <h3 className="text-2xl font-bold text-primary mb-2">
@@ -231,7 +231,7 @@ const About = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Nossos <span className="text-yellow-300">Números</span>
+              Nossos <span className="text-gradient">Números</span>
             </h2>
             <p className="text-xl text-white/90 max-w-3xl mx-auto">
               Resultados que comprovam nossa excelência e impacto no agronegócio
@@ -284,9 +284,9 @@ const About = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               viewport={{ once: true }}
-              className="glass-card p-8 text-center"
+                className="card-premium p-8 text-center"
             >
-              <div className="w-16 h-16 bg-primary-gradient rounded-xl mx-auto mb-6 flex items-center justify-center">
+              <div className="w-16 h-16 bg-gradient-primary rounded-xl mx-auto mb-6 flex items-center justify-center">
                 <Mail size={32} className="text-white" />
               </div>
               <h3 className="text-xl font-bold text-primary mb-4">Email</h3>
@@ -303,9 +303,9 @@ const About = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
               viewport={{ once: true }}
-              className="glass-card p-8 text-center"
+                className="card-premium p-8 text-center"
             >
-              <div className="w-16 h-16 bg-primary-gradient rounded-xl mx-auto mb-6 flex items-center justify-center">
+              <div className="w-16 h-16 bg-gradient-primary rounded-xl mx-auto mb-6 flex items-center justify-center">
                 <Phone size={32} className="text-white" />
               </div>
               <h3 className="text-xl font-bold text-primary mb-4">Telefone</h3>
@@ -324,9 +324,9 @@ const About = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
               viewport={{ once: true }}
-              className="glass-card p-8 text-center"
+                className="card-premium p-8 text-center"
             >
-              <div className="w-16 h-16 bg-primary-gradient rounded-xl mx-auto mb-6 flex items-center justify-center">
+              <div className="w-16 h-16 bg-gradient-primary rounded-xl mx-auto mb-6 flex items-center justify-center">
                 <MapPin size={32} className="text-white" />
               </div>
               <h3 className="text-xl font-bold text-primary mb-4">Localização</h3>
@@ -348,7 +348,7 @@ const About = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Pronto para o <span className="text-yellow-300">Futuro</span>?
+              Pronto para o <span className="text-gradient">Futuro</span>?
             </h2>
             <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
               Junte-se a milhares de profissionais do agronegócio que já descobriram 
