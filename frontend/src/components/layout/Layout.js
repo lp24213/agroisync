@@ -34,8 +34,8 @@ const Layout = ({ children }) => {
         {/* Gradiente sutil sobre o fundo */}
         <div className={`absolute inset-0 pointer-events-none z-0 ${
 isDark
-            ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-black'
-            : 'bg-gradient-to-br from-white via-gray-50 to-gray-100'
+            ? 'bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900'
+            : 'bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300'
         }`} />
 
         {/* Conteúdo principal */}

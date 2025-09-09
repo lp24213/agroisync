@@ -5,17 +5,18 @@
 
 :root {
   /* ===== FUTURISTIC COLOR PALETTE ===== */
-  /* Fundo principal: branco suave e cinza muito claro */
-  --bg-primary: #f9f9f9;
-  --bg-secondary: #f5f5f5;
-  --bg-tertiary: #ffffff;
+  /* Fundo principal: gradiente cinza elegante */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f2f2f2;
+  --bg-tertiary: #e6e6e6;
   --bg-card: #ffffff;
   --bg-glass: rgba(255, 255, 255, 0.95);
   --bg-glass-hover: rgba(255, 255, 255, 0.98);
+  --bg-gradient: linear-gradient(135deg, #f2f2f2 0%, #e6e6e6 50%, #ffffff 100%);
 
   /* Textos: preto puro e cinza escuro */
-  --text-primary: #111111;
-  --text-secondary: #444444;
+  --text-primary: #000000;
+  --text-secondary: #333333;
   --text-tertiary: #666666;
   --text-muted: #888888;
   --text-inverse: #ffffff;
@@ -79,6 +80,50 @@
   --shadow-glow: 0 0 40px rgba(0, 0, 0, 0.1);
 }
 
+/* ===== DARK THEME ===== */
+[data-theme="dark"] {
+  /* Fundo principal: gradiente cinza escuro elegante */
+  --bg-primary: #1c1c1c;
+  --bg-secondary: #2a2a2a;
+  --bg-tertiary: #1c1c1c;
+  --bg-card: #2a2a2a;
+  --bg-glass: rgba(28, 28, 28, 0.95);
+  --bg-glass-hover: rgba(28, 28, 28, 0.98);
+  --bg-gradient: linear-gradient(135deg, #1c1c1c 0%, #2a2a2a 50%, #1c1c1c 100%);
+
+  /* Textos: branco puro e cinza claro */
+  --text-primary: #ffffff;
+  --text-secondary: #e0e0e0;
+  --text-tertiary: #cccccc;
+  --text-muted: #aaaaaa;
+  --text-inverse: #000000;
+
+  /* Navbar/Menu futurista: gradiente cinza escuro metálico */
+  --navbar-gradient: linear-gradient(135deg, #2a2a2a 0%, #1c1c1c 100%);
+  --navbar-shadow: 0 2px 20px rgba(255, 255, 255, 0.1);
+  --navbar-border: 1px solid rgba(255, 255, 255, 0.1);
+
+  /* Cards e painéis: fundo cinza escuro, bordas arredondadas, sombra premium */
+  --card-bg: #2a2a2a;
+  --card-border: 1px solid rgba(255, 255, 255, 0.1);
+  --card-shadow: 0 8px 32px rgba(255, 255, 255, 0.1);
+  --card-shadow-hover: 0 12px 48px rgba(255, 255, 255, 0.15);
+
+  /* Botões: branco/cinza claro com hover em gradiente */
+  --btn-primary: #ffffff;
+  --btn-primary-hover: linear-gradient(135deg, #e0e0e0 0%, #cccccc 100%);
+  --btn-secondary: #2a2a2a;
+  --btn-secondary-hover: #1c1c1c;
+  --btn-border: 1px solid rgba(255, 255, 255, 0.2);
+
+  /* Sombras ajustadas para dark mode */
+  --shadow-sm: 0 2px 8px rgba(255, 255, 255, 0.1);
+  --shadow-md: 0 4px 16px rgba(255, 255, 255, 0.1);
+  --shadow-lg: 0 8px 32px rgba(255, 255, 255, 0.1);
+  --shadow-xl: 0 16px 64px rgba(255, 255, 255, 0.1);
+  --shadow-glow: 0 0 40px rgba(255, 255, 255, 0.1);
+}
+
 /* ===== GLOBAL RESET & BASE STYLES ===== */
 * {
   margin: 0;
@@ -96,10 +141,44 @@ body {
   font-weight: var(--font-weight-normal);
   line-height: 1.6;
   color: var(--text-primary);
-  background-color: var(--bg-primary);
+  background: var(--bg-gradient);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+/* ===== ESTRELAS SUTIS NO FUNDO ===== */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 20px 20px, rgba(150,150,150,0.2) 1px, transparent 1px),
+    radial-gradient(circle at 60px 60px, rgba(150,150,150,0.15) 1px, transparent 1px),
+    radial-gradient(circle at 100px 20px, rgba(150,150,150,0.2) 1px, transparent 1px),
+    radial-gradient(circle at 140px 60px, rgba(150,150,150,0.1) 1px, transparent 1px),
+    radial-gradient(circle at 180px 20px, rgba(150,150,150,0.2) 1px, transparent 1px),
+    radial-gradient(circle at 220px 60px, rgba(150,150,150,0.15) 1px, transparent 1px),
+    radial-gradient(circle at 260px 20px, rgba(150,150,150,0.1) 1px, transparent 1px),
+    radial-gradient(circle at 300px 60px, rgba(150,150,150,0.2) 1px, transparent 1px),
+    radial-gradient(circle at 340px 20px, rgba(150,150,150,0.15) 1px, transparent 1px),
+    radial-gradient(circle at 380px 60px, rgba(150,150,150,0.1) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: 0 0, 20px 20px, 40px 0, 60px 20px, 80px 0, 100px 20px, 120px 0, 140px 20px, 160px 0, 180px 20px;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.6;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Ajustar opacidade das estrelas no dark mode */
+[data-theme="dark"] body::before {
+  opacity: 0.3;
 }
 
 /* ===== TYPOGRAPHY SYSTEM ===== */
