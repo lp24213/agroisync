@@ -38,7 +38,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className={`navbar ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-amber-50 border-gray-200'}`}>
+    <nav className="navbar bg-nav-bg border-light">
       <div className="navbar-container">
         {/* Logo */}
         <motion.div
@@ -46,7 +46,7 @@ const Navbar = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Link to="/" className="navbar-brand">
+          <Link to="/" className="navbar-brand text-primary">
             Agroisync
           </Link>
         </motion.div>
@@ -63,7 +63,7 @@ const Navbar = () => {
             >
               {item.submenu ? (
                 <div
-                  className="navbar-link flex items-center gap-1"
+                  className="navbar-link flex items-center gap-1 text-primary hover:text-primary-hover"
                   onMouseEnter={() => setIsServicesOpen(true)}
                   onMouseLeave={() => setIsServicesOpen(false)}
                 >
@@ -73,7 +73,7 @@ const Navbar = () => {
               ) : (
                 <Link
                   to={item.href}
-                  className={`navbar-link ${isActive(item.href) ? 'active' : ''}`}
+                  className={`navbar-link text-primary hover:text-primary-hover ${isActive(item.href) ? 'active' : ''}`}
                 >
                   {item.name}
                 </Link>
@@ -87,7 +87,7 @@ const Navbar = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute top-full left-0 mt-2 w-48 card-futuristic z-50"
+                    className="absolute top-full left-0 mt-2 w-48 card-premium z-50"
                     onMouseEnter={() => setIsServicesOpen(true)}
                     onMouseLeave={() => setIsServicesOpen(false)}
                   >
@@ -96,7 +96,7 @@ const Navbar = () => {
                         <Link
                           key={subItem.name}
                           to={subItem.href}
-                          className="block px-4 py-2 text-sm text-secondary hover:text-primary hover:bg-gray-50 transition-colors rounded-lg mx-2"
+                          className="block px-4 py-2 text-sm text-muted hover:text-primary hover:bg-panel transition-colors rounded-lg mx-2"
                         >
                           {subItem.name}
                         </Link>
@@ -115,13 +115,13 @@ const Navbar = () => {
           <ThemeToggle />
           <Link
             to="/login"
-            className="btn-futuristic btn-secondary btn-sm"
+            className="btn btn-secondary"
           >
             {t('navigation.login')}
           </Link>
           <Link
             to="/register"
-            className="btn-futuristic btn-primary btn-sm"
+            className="btn btn-primary"
           >
             {t('navigation.register')}
           </Link>
@@ -144,7 +144,7 @@ const Navbar = () => {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden card-futuristic mx-4 mt-2"
+            className="md:hidden card-premium mx-4 mt-2"
           >
             <div className="py-4 space-y-2">
               {navigation.map((item) => (
@@ -157,7 +157,7 @@ const Navbar = () => {
                           <Link
                             key={subItem.name}
                             to={subItem.href}
-                            className="block py-1 text-sm text-secondary hover:text-primary transition-colors"
+                            className="block py-1 text-sm text-muted hover:text-primary transition-colors"
                             onClick={() => setIsMenuOpen(false)}
                           >
                             {subItem.name}

@@ -23,7 +23,7 @@
     "register": "注册"
   },
   "home": {
-    "title": "AgroSync",
+    "title": "Agroisync",
     "subtitle": "世界上最未来主义的农业平台",
     "description": "通过区块链技术、人工智能和智能市场连接农业的未来。",
     "getStarted": "立即开始",
@@ -50,7 +50,7 @@
     },
     "testimonials": {
       "title": "我们用户怎么说",
-      "subtitle": "数千名生产者、买家和运输商已经信任AgroSync"
+      "subtitle": "数千名生产者、买家和运输商已经信任Agroisync"
     },
     "cta": {
       "title": "准备好迎接未来？",
@@ -135,7 +135,7 @@
     "title": "AI助手",
     "status": "在线",
     "placeholder": "输入您的消息...",
-    "welcome": "您好！我是AgroSync的AI助手。今天我能为您做些什么？",
+    "welcome": "您好！我是Agroisync的AI助手。今天我能为您做些什么？",
     "thinking": "思考中...",
     "suggestions": {
       "intermediation": "中介如何工作？",

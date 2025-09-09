@@ -23,7 +23,7 @@
     "register": "Register"
   },
   "home": {
-    "title": "AgroSync",
+    "title": "Agroisync",
     "subtitle": "The Most Futuristic Agribusiness Platform in the World",
     "description": "Connect to the future of agribusiness with blockchain technology, AI and intelligent marketplace.",
     "getStarted": "Get Started",
@@ -50,7 +50,7 @@
     },
     "testimonials": {
       "title": "What our users say",
-      "subtitle": "Thousands of producers, buyers and transporters already trust AgroSync"
+      "subtitle": "Thousands of producers, buyers and transporters already trust Agroisync"
     },
     "cta": {
       "title": "Ready for the Future?",
@@ -135,7 +135,7 @@
     "title": "AI Assistant",
     "status": "Online",
     "placeholder": "Type your message...",
-    "welcome": "Hello! I'm AgroSync's AI assistant. How can I help you today?",
+    "welcome": "Hello! I'm Agroisync's AI assistant. How can I help you today?",
     "thinking": "Thinking...",
     "suggestions": {
       "intermediation": "How does intermediation work?",

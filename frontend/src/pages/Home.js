@@ -78,9 +78,9 @@ const Home = () => {
   ];
 
   return (
-    <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900' : 'bg-amber-50'}`}>
+    <div className="min-h-screen bg-primary">
       {/* Hero Section - Centralizado e Premium */}
-      <section className={`py-20 ${isDarkMode ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900' : 'bg-gradient-to-br from-amber-50 via-orange-50 to-amber-50'}`}>
+      <section className="py-20 bg-gradient-hero">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -92,18 +92,18 @@ const Home = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className={`text-5xl md:text-7xl font-bold mb-8 leading-tight ${isDarkMode ? 'text-white' : 'text-gray-900'}`}
+              className="text-5xl md:text-7xl font-bold mb-8 leading-tight text-primary"
             >
               O Futuro do{' '}
-              <span className="bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">Agronegócio</span>{' '}
-              é <span className="bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">Agora</span>
+              <span className="text-gradient">Agronegócio</span>{' '}
+              é <span className="text-gradient">Agora</span>
             </motion.h1>
             
             <motion.p
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className={`text-xl md:text-2xl mb-12 max-w-4xl mx-auto leading-relaxed ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}
+              className="text-xl md:text-2xl mb-12 max-w-4xl mx-auto leading-relaxed text-muted"
             >
               A plataforma mais futurista e sofisticada do mundo para conectar produtores, 
               compradores e transportadores. Design premium, tecnologia de ponta e 
@@ -118,14 +118,14 @@ const Home = () => {
             >
               <Link
                 to="/register"
-                className="bg-black text-white px-8 py-4 text-lg font-semibold rounded-lg hover:bg-gradient-to-r hover:from-green-600 hover:to-green-500 transition-all duration-200 flex items-center gap-3"
+                className="btn-premium px-8 py-4 text-lg font-semibold flex items-center gap-3"
               >
                 Começar Agora
                 <ArrowRight size={20} />
               </Link>
               <Link
                 to="/about"
-                className="bg-gradient-to-r from-gray-800 to-gray-700 text-white px-8 py-4 text-lg font-semibold rounded-lg hover:from-gray-700 hover:to-gray-600 transition-all duration-200"
+                className="btn-premium-secondary px-8 py-4 text-lg font-semibold"
               >
                 Saiba Mais
               </Link>
@@ -135,7 +135,7 @@ const Home = () => {
       </section>
 
       {/* Stats Section - Cards Organizados em Grid */}
-      <section className={`py-20 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+      <section className="py-20 bg-panel">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -144,10 +144,10 @@ const Home = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-              Nossos <span className="bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">Números</span>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-primary">
+              Nossos <span className="text-gradient">Números</span>
             </h2>
-            <p className={`text-xl max-w-3xl mx-auto ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+            <p className="text-xl max-w-3xl mx-auto text-muted">
               Resultados que comprovam nossa excelência e impacto no agronegócio
             </p>
           </motion.div>
@@ -160,12 +160,12 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className={`text-center p-8 rounded-2xl shadow-lg hover:scale-105 transition-transform ${isDarkMode ? 'bg-gray-700 border border-gray-600' : 'bg-white border border-gray-200'}`}
+                className="text-center p-8 rounded-2xl shadow-lg hover:scale-105 transition-transform card-premium"
               >
-                <div className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent mb-4">
+                <div className="text-4xl md:text-5xl font-extrabold text-gradient mb-4">
                   {stat.number}
                 </div>
-                <div className={`font-semibold text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                <div className="font-semibold text-lg text-muted">
                   {stat.label}
                 </div>
               </motion.div>

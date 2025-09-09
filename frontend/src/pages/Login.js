@@ -47,13 +47,13 @@ const Login = () => {
   };
 
   return (
-    <div className={`min-h-screen flex items-center justify-center p-8 ${isDarkMode ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900' : 'bg-gradient-to-br from-amber-50 via-orange-50 to-amber-50'}`}>
+    <div className="min-h-screen flex items-center justify-center p-8 bg-gradient-hero">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md"
       >
-        <div className={`rounded-2xl p-8 shadow-2xl ${isDarkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'}`}>
+        <div className="rounded-2xl p-8 shadow-2xl bg-panel border border-light">
           <div className="text-center mb-8">
             <motion.div
               initial={{ scale: 0 }}
@@ -63,10 +63,10 @@ const Login = () => {
             >
               <span className="text-2xl">🌾</span>
             </motion.div>
-            <h1 className={`text-3xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+            <h1 className="text-3xl font-bold mb-2 text-primary">
               Bem-vindo de volta
             </h1>
-            <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+            <p className="text-muted">
               Faça login na sua conta Agroisync
             </p>
           </div>
@@ -84,7 +84,7 @@ const Login = () => {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              <label className="block text-sm font-medium mb-2 text-primary">
                 E-mail
               </label>
               <div className="relative">
@@ -95,14 +95,14 @@ const Login = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className={`w-full pl-10 pr-4 py-3 rounded-lg border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'}`}
+                  className="w-full pl-10 pr-4 py-3 rounded-lg border border-light bg-panel text-primary placeholder-text-light transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   placeholder="seu@email.com"
                 />
               </div>
             </div>
 
             <div>
-              <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              <label className="block text-sm font-medium mb-2 text-primary">
                 Senha
               </label>
               <div className="relative">
@@ -113,7 +113,7 @@ const Login = () => {
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  className={`w-full pl-10 pr-10 py-3 rounded-lg border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'}`}
+                  className="w-full pl-10 pr-10 py-3 rounded-lg border border-light bg-panel text-primary placeholder-text-light transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   placeholder="Sua senha"
                 />
                 <button
@@ -132,11 +132,11 @@ const Login = () => {
                   type="checkbox"
                   className="w-4 h-4 text-green-500 bg-transparent border-gray-600 rounded focus:ring-green-500 focus:ring-2"
                 />
-                <span className={`ml-2 text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Lembrar de mim</span>
+                <span className="ml-2 text-sm text-muted">Lembrar de mim</span>
               </label>
               <Link
                 to="/forgot-password"
-                className="text-sm text-green-500 hover:text-green-600 transition-colors"
+                className="text-sm text-primary hover:text-primary-hover transition-colors"
               >
                 Esqueceu a senha?
               </Link>
@@ -147,7 +147,7 @@ const Login = () => {
               whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={isLoading}
-              className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gradient-to-r hover:from-green-600 hover:to-green-500 transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full btn-premium flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <>
@@ -161,11 +161,11 @@ const Login = () => {
           </form>
 
           <div className="mt-8 text-center">
-            <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+            <p className="text-sm text-muted">
               Não tem uma conta?{' '}
               <Link
                 to="/register"
-                className="text-green-500 hover:text-green-600 transition-colors font-medium"
+                className="text-primary hover:text-primary-hover transition-colors font-medium"
               >
                 Cadastre-se aqui
               </Link>

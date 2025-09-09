@@ -1,13 +1,13 @@
-// Configuração da aplicação AGROSYNC
+// Configuração da aplicação AGROISYNC
 export const APP_CONFIG = {
   // Configurações básicas
-  name: 'AGROSYNC',
+  name: 'AGROISYNC',
   version: '1.0.0',
   environment: process.env.NODE_ENV || 'development',
   
   // Configurações de autenticação
   auth: {
-    cookieName: 'agrosync_auth_token',
+    cookieName: 'agroisync_auth_token',
     cookieExpiry: 7, // dias
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict'

@@ -7,8 +7,8 @@
   /* ===== VARIÁVEIS DE COR PREMIUM AGROISYNC ===== */
   --bg: #F5E9DC;                    /* fundo principal - bege claro */
   --panel-bg: #ffffff;              /* cards/painéis */
-  --muted: #333333;                 /* texto secundário */
-  --text: #000000;                  /* texto principal - preto */
+  --muted: #333333;                 /* texto secundário - cinza escuro */
+  --text: #1C1C1C;                  /* texto principal - preto escuro */
   --nav-bg: #F5E9DC;               /* fundo navbar - bege claro */
   --shadow: rgba(0, 0, 0, 0.08);
   --accent-metal: linear-gradient(135deg, #F5E9DC 0%, #ffffff 100%);
@@ -20,6 +20,7 @@
   --text-inverse: #ffffff;
   --primary: #4A6737;               /* verde da logo */
   --primary-dark: #3a5a2a;
+  --primary-hover: #6B8F50;         /* verde mais claro para hover */
   --secondary: #1C1C1C;             /* cinza grafite */
   --success: #4A6737;               /* verde da logo */
   --warning: #f59e0b;               /* amarelo vibrante */
@@ -53,10 +54,10 @@
 
 /* ===== TEMA DARK ===== */
 [data-theme="dark"] {
-  --bg: #0D0D0D;                    /* fundo principal - preto absoluto fosco */
-  --panel-bg: #1C1C1C;             /* cards/painéis - cinza grafite */
-  --muted: #E0E0E0;                 /* texto secundário */
-  --text: #ffffff;                  /* texto principal - branco */
+  --bg: #0D0D0D;                    /* fundo principal - preto absoluto */
+  --panel-bg: #2A2A2A;             /* cards/painéis - cinza grafite */
+  --muted: #E0E0E0;                 /* texto secundário - cinza claro */
+  --text: #FFFFFF;                  /* texto principal - branco */
   --nav-bg: #1C1C1C;               /* fundo navbar - cinza grafite */
   --shadow: rgba(255,255,255,0.1);
   --accent-metal: linear-gradient(135deg, #1C1C1C 0%, #2A2A2A 100%);
@@ -68,6 +69,7 @@
   --text-inverse: #000000;
   --primary: #4A6737;               /* verde da logo */
   --primary-dark: #3a5a2a;
+  --primary-hover: #6B8F50;         /* verde mais claro para hover */
   --secondary: #1C1C1C;             /* cinza grafite */
   --success: #4A6737;               /* verde da logo */
   --warning: #f59e0b;               /* amarelo vibrante */
@@ -80,7 +82,7 @@
   --gradient-success: linear-gradient(135deg, #4A6737 0%, #6B8F50 100%);
   --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
   --gradient-hero-dark: linear-gradient(135deg, #0D0D0D 0%, #1C1C1C 100%);
-  --gradient-card-dark: linear-gradient(135deg, #1C1C1C 0%, #2A2A2A 100%);
+  --gradient-card-dark: linear-gradient(135deg, #2A2A2A 0%, #1C1C1C 100%);
   --gradient-accent-dark: linear-gradient(135deg, #1C1C1C 0%, #2A2A2A 100%);
 }
 
@@ -513,6 +515,32 @@ body::before {
   background: var(--gradient-primary);
   transform: translateY(-1px);
   box-shadow: 0 4px 8px var(--shadow);
+}
+
+/* Botão de troca de tema centralizado */
+.theme-toggle {
+  position: fixed;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  z-index: 1000;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition);
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+.theme-toggle:hover {
+  background: var(--primary-hover);
+  transform: translateY(-50%) scale(1.1);
 }
 
 .btn-premium-secondary {

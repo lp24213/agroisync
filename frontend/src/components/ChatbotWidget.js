@@ -122,11 +122,7 @@ const ChatbotWidget = () => {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => toggleChatbot()}
-        className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
-          isOpen 
-            ? 'bg-green-600 shadow-lg' 
-            : 'bg-green-600 shadow-lg hover:bg-green-700'
-        }`}
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 bg-primary shadow-lg hover:bg-primary-hover"
       >
         <AnimatePresence mode="wait">
           {isOpen ? (
@@ -157,16 +153,16 @@ const ChatbotWidget = () => {
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className={`fixed bottom-24 right-6 z-40 w-80 h-96 rounded-lg shadow-xl flex flex-col ${isDarkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'}`}
+            className="fixed bottom-24 right-6 z-40 w-80 h-96 rounded-lg shadow-xl flex flex-col bg-secondary border border-light"
           >
-            <div className={`flex items-center justify-between p-4 border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+            <div className="flex items-center justify-between p-4 border-b border-light">
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                   <Bot className="w-4 h-4 text-white" />
                 </div>
                 <div>
-                  <h3 className={`font-semibold text-sm ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Agroisync Assistant</h3>
-                  <p className="text-green-600 text-xs">Online</p>
+                  <h3 className="font-semibold text-sm text-primary">Agroisync Assistant</h3>
+                  <p className="text-primary text-xs">Online</p>
                 </div>
               </div>
               
@@ -192,11 +188,11 @@ const ChatbotWidget = () => {
               </div>
             </div>
 
-            <div className={`flex-1 overflow-y-auto p-4 space-y-4 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-primary">
               {chatHistory.length === 0 && (
                 <div className="text-center">
-                  <Bot className={`w-8 h-8 mx-auto mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`} />
-                  <p className={`text-sm mb-4 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  <Bot className="w-8 h-8 mx-auto mb-2 text-white" />
+                  <p className="text-sm mb-4 text-white">
                     Olá! Como posso ajudá-lo hoje?
                   </p>
                   <div className="space-y-2">
@@ -204,7 +200,7 @@ const ChatbotWidget = () => {
                       <button
                         key={index}
                         onClick={() => setMessage(suggestion)}
-                        className={`block w-full text-left p-2 text-xs rounded transition-colors ${isDarkMode ? 'text-gray-300 hover:text-white hover:bg-gray-700' : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'}`}
+                        className="block w-full text-left p-2 text-xs rounded transition-colors text-white hover:text-white hover:bg-secondary"
                       >
                         {suggestion}
                       </button>
@@ -223,8 +219,8 @@ const ChatbotWidget = () => {
                   <div className={`flex items-start space-x-2 max-w-[80%] ${msg.type === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
                     <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
                       msg.type === 'user' 
-                        ? 'bg-gray-800' 
-                        : 'bg-gray-700'
+                        ? 'bg-secondary' 
+                        : 'bg-primary'
                     }`}>
                       {msg.type === 'user' ? (
                         <User className="w-3 h-3 text-white" />
@@ -234,8 +230,8 @@ const ChatbotWidget = () => {
                     </div>
                     <div className={`p-3 rounded-lg ${
                       msg.type === 'user'
-                        ? 'bg-gray-800 text-white'
-                        : isDarkMode ? 'bg-gray-700 text-white border border-gray-600' : 'bg-white text-gray-800 border border-gray-200'
+                        ? 'bg-secondary text-white'
+                        : 'bg-panel text-primary border border-light'
                     }`}>
                       <p className="text-sm">{msg.content}</p>
                       <p className="text-xs opacity-60 mt-1">
@@ -269,7 +265,7 @@ const ChatbotWidget = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            <div className={`p-4 border-t ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+            <div className="p-4 border-t border-light">
               <div className="flex items-center space-x-2">
                 <input
                   type="text"
@@ -277,7 +273,7 @@ const ChatbotWidget = () => {
                   onChange={(e) => setMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Digite sua mensagem..."
-                  className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'}`}
+                  className="flex-1 px-3 py-2 border border-light rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-sm bg-panel text-primary placeholder-text-light"
                   disabled={mode !== 'text'}
                 />
                 <motion.button
@@ -285,7 +281,7 @@ const ChatbotWidget = () => {
                   whileTap={{ scale: 0.95 }}
                   onClick={handleSendMessage}
                   disabled={!message.trim() || isTyping}
-                  className="p-2 bg-green-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-green-700"
+                  className="p-2 bg-primary text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary-hover"
                 >
                   <Send className="w-4 h-4" />
                 </motion.button>

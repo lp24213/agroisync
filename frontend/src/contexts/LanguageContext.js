@@ -37,7 +37,7 @@ export const LanguageProvider = ({ children }) => {
       setLanguage(langCode);
       
       // Salvar preferência no localStorage
-      localStorage.setItem('agrosync-language', langCode);
+      localStorage.setItem('agroisync-language', langCode);
       
       // Atualizar atributo lang do HTML
       document.documentElement.lang = langCode;

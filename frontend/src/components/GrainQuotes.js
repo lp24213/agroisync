@@ -105,8 +105,8 @@ const GrainQuotes = () => {
   return (
     <div className="grain-quotes">
       <div className="flex items-center justify-center gap-6 text-sm flex-wrap">
-        <span className={`font-semibold flex items-center gap-2 text-base ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-          <Circle size={16} className="text-green-600" />
+        <span className="font-semibold flex items-center gap-2 text-base text-primary">
+          <Circle size={16} className="text-primary" />
           Cotações
         </span>
         
@@ -117,15 +117,15 @@ const GrainQuotes = () => {
           return (
             <motion.div 
               key={quote.symbol}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg border shadow-sm hover:shadow-md transition-all ${isDarkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'}`}
+              className="flex items-center gap-3 px-3 py-2 rounded-lg border border-light shadow-sm hover:shadow-md transition-all bg-panel"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
-              <IconComponent size={12} className="text-green-600" />
-              <span className={`font-semibold text-xs ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{quote.symbol}</span>
-              <span className={`text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>{formatPrice(quote.price)}</span>
-              <div className={`flex items-center gap-1 ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+              <IconComponent size={12} className="text-primary" />
+              <span className="font-semibold text-xs text-primary">{quote.symbol}</span>
+              <span className="text-xs font-medium text-muted">{formatPrice(quote.price)}</span>
+              <div className={`flex items-center gap-1 ${isPositive ? 'text-primary' : 'text-danger'}`}>
                 {isPositive ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
                 <span className="text-xs font-medium">
                   {formatChange(quote.change)}

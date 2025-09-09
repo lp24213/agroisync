@@ -23,7 +23,7 @@
     "register": "Cadastrar"
   },
   "home": {
-    "title": "AgroSync",
+    "title": "Agroisync",
     "subtitle": "A Plataforma de Agronegócio Mais Futurista do Mundo",
     "description": "Conecte-se ao futuro do agronegócio com tecnologia blockchain, IA e marketplace inteligente.",
     "getStarted": "Começar Agora",
@@ -50,7 +50,7 @@
     },
     "testimonials": {
       "title": "O que nossos usuários dizem",
-      "subtitle": "Milhares de produtores, compradores e transportadores já confiam no AgroSync"
+      "subtitle": "Milhares de produtores, compradores e transportadores já confiam no Agroisync"
     },
     "cta": {
       "title": "Pronto para o Futuro?",
@@ -135,7 +135,7 @@
     "title": "Assistente IA",
     "status": "Online",
     "placeholder": "Digite sua mensagem...",
-    "welcome": "Olá! Sou o assistente IA do AgroSync. Como posso ajudá-lo hoje?",
+    "welcome": "Olá! Sou o assistente IA do Agroisync. Como posso ajudá-lo hoje?",
     "thinking": "Pensando...",
     "suggestions": {
       "intermediation": "Como funciona a intermediação?",
