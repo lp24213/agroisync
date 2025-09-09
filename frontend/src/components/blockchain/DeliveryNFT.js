@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-';
+import { motion } from 'framer-motion';
 import { Package, Share2, Camera } from 'lucide-react';
 import { useAnalytics } from '../../hooks/useAnalytics';
 
 const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
-  const {  } = useTranslation();
+  const { t } = useTranslation();
   const analytics = useAnalytics();
   const [delivery, setDelivery] = useState(null);
   const [nft, setNft] = useState(null);
-  const [`isLoading, `setIsLoading] = useState(`true);
+  const [isLoading, setIsLoading] = useState(true);
   const [isMinting, setIsMinting] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [metadata, setMetadata] = useState(null);
@@ -18,7 +18,7 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
   const loadDelivery = useCallback(async () => {
     if (!deliveryId) return;
 
-    // setIsLoading(true);
+    setIsLoading(true);
     
     try {
       const response = await fetch(`/api/deliveries/${deliveryId}`, {
@@ -32,21 +32,21 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
       if (data.success) {
         setDelivery(data.delivery);
         
-        // Verificar se já existe NFT
+Verificar se já existe NFT
         if (data.delivery.nft) {
           setNft(data.delivery.nft);
-          // loadNFTMetadata(data.delivery.nft.tokenId);
+loadNFTMetadata(data.delivery.nft.tokenId);
         }
       }
     } catch (error) {
-      console.error('Error // loading delivery:', error);
+      console.error('Error loading delivery:', error);
     } finally {
-      // setIsLoading(false);
+setIsLoading(false);
     }
   }, [deliveryId]);
 
-  // Carregar metadados do NFT
-  const // loadNFTMetadata = useCallback(async (tokenId) => {
+Carregar metadados do NFT
+  const loadNFTMetadata = useCallback(async (tokenId) => {
     try {
       const response = await fetch(`/api/blockchain/nft/${tokenId}/metadata`);
       const data = await response.json();
@@ -55,11 +55,11 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
         setMetadata(data.metadata);
       }
     } catch (error) {
-      console.error('Error // loading NFT metadata:', error);
+      console.error('Error loading NFT metadata:', error);
     }
   }, []);
 
-  // Cunhar NFT
+Cunhar NFT
   const mintNFT = useCallback(async () => {
     if (!delivery) return;
 
@@ -113,13 +113,13 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
     }
   }, [delivery, analytics, onMint]);
 
-  // Compartilhar NFT
+Compartilhar NFT
   const shareNFT = useCallback(async () => {
     if (!nft) return;
 
     const shareData = {
-      title: // t('nft.shareTitle', 'NFT de Entrega - AgroSync'),
-      text: // t('nft.shareText', 'Confira meu NFT de comprovante de entrega'),
+      title: t('nft.shareTitle', 'NFT de Entrega - AgroSync'),
+      text: t('nft.shareText', 'Confira meu NFT de comprovante de entrega'),
       url: `${window.location.origin}/nft/${nft.tokenId}`
     };
 
@@ -134,11 +134,11 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
       }
     } else {
       navigator.clipboard.writeText(shareData.url);
-      alert(// t('nft.linkCopied', 'Link copiado para a área de transferência'));
+      alert(t('nft.linkCopied', 'Link copiado para a área de transferência'));
     }
-  }, [nft, // t, analytics]);
+  }, [nft, t, analytics]);
 
-  // Copiar endereço do contrato
+Copiar endereço do contrato
   const copyContractAddress = useCallback(() => {
     if (nft?.contractAddress) {
       navigator.clipboard.writeText(nft.contractAddress);
@@ -146,12 +146,12 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
     }
   }, [nft, analytics]);
 
-  // Carregar dados iniciais
-  // useEffect(() => {
+Carregar dados iniciais
+useEffect(() => {
     loadDelivery();
   }, [loadDelivery]);
 
-  if (// isLoading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
@@ -159,7 +159,7 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
           </div>
           <p className="text-gray-600 dark:text-gray-300 text-xl">
-            {// t('nft.// loading', 'Carregando dados da entrega...')}
+            {t('nft.loading', 'Carregando dados da entrega...')}
           </p>
         </div>
       </div>
@@ -169,12 +169,12 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
   if (!delivery) {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8 text-center">
-        <// Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+        <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
         <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-          {// t('nft.deliveryNotFound', 'Entrega não encontrada')}
+          {t('nft.deliveryNotFound', 'Entrega não encontrada')}
         </h3>
         <p className="text-gray-600 dark:text-gray-400">
-          {// t('nft.deliveryNotFoundDescription', 'A entrega especificada não foi encontrada')}
+          {t('nft.deliveryNotFoundDescription', 'A entrega especificada não foi encontrada')}
         </p>
       </div>
     );
@@ -186,10 +186,10 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            {// t('nft.deliveryNFT', 'NFT de Entrega')}
+            {t('nft.deliveryNFT', 'NFT de Entrega')}
           </h2>
           <p className="text-gray-600 dark:text-gray-400">
-            {// t('nft.deliveryNFTSubtitle', 'Comprovante digital de entrega na blockchain')}
+            {t('nft.deliveryNFTSubtitle', 'Comprovante digital de entrega na blockchain')}
           </p>
         </div>
 
@@ -198,7 +198,7 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
             <button
               onClick={shareNFT}
               className="p-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-lg transition-colors"
-              title={// t('nft.share', 'Compartilhar')}
+              title={t('nft.share', 'Compartilhar')}
             >
               <Share2 className="w-5 h-5" />
             </button>
@@ -206,9 +206,9 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
             <button
               onClick={() => setShowDetails(!showDetails)}
               className="p-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-lg transition-colors"
-              title={// t('nft.details', 'Detalhes')}
+              title={t('nft.details', 'Detalhes')}
             >
-              <// Eye className="w-5 h-5" />
+              <Eye className="w-5 h-5" />
             </button>
           </div>
         )}
@@ -218,14 +218,14 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
       <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
         <div className="flex items-center space-x-3 mb-4">
           <div className="p-2 bg-green-100 dark:bg-green-900 rounded-lg">
-            <// CheckCircle className="w-5 h-5 text-green-600" />
+            <CheckCircle className="w-5 h-5 text-green-600" />
           </div>
           <div>
             <h3 className="font-semibold text-gray-900 dark:text-white">
-              {// t('nft.deliveryInfo', 'Informações da Entrega')}
+              {t('nft.deliveryInfo', 'Informações da Entrega')}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              {// t('nft.deliveryId', 'ID da Entrega')}: #{delivery.id}
+              {t('nft.deliveryId', 'ID da Entrega')}: #{delivery.id}
             </p>
           </div>
         </div>
@@ -234,21 +234,21 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                {// t('nft.product', 'Produto')}
+                {t('nft.product', 'Produto')}
               </label>
               <p className="text-gray-900 dark:text-white">{delivery.productName}</p>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                {// t('nft.quantity', 'Quantidade')}
+                {t('nft.quantity', 'Quantidade')}
               </label>
               <p className="text-gray-900 dark:text-white">{delivery.quantity}</p>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                {// t('nft.destination', 'Destino')}
+                {t('nft.destination', 'Destino')}
               </label>
               <p className="text-gray-900 dark:text-white">{delivery.destination}</p>
             </div>
@@ -257,7 +257,7 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                {// t('nft.deliveryDate', 'Data de Entrega')}
+                {t('nft.deliveryDate', 'Data de Entrega')}
               </label>
               <p className="text-gray-900 dark:text-white">
                 {new Date(delivery.deliveryDate).toLocaleDateString('pt-BR')}
@@ -266,14 +266,14 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                {// t('nft.driver', 'Motorista')}
+                {t('nft.driver', 'Motorista')}
               </label>
               <p className="text-gray-900 dark:text-white">{delivery.driverName}</p>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                {// t('nft.value', 'Valor')}
+                {t('nft.value', 'Valor')}
               </label>
               <p className="text-gray-900 dark:text-white">R$ {delivery.value.toFixed(2)}</p>
             </div>
@@ -284,7 +284,7 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
         {delivery.proofImage && (
           <div className="mt-6">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              {// t('nft.proofImage', 'Comprovante de Entrega')}
+              {t('nft.proofImage', 'Comprovante de Entrega')}
             </label>
             <div className="relative">
               <img
@@ -305,14 +305,14 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
         <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center space-x-3 mb-4">
             <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
-              <// Coins className="w-5 h-5 text-purple-600" />
+              <Coins className="w-5 h-5 text-purple-600" />
             </div>
             <div>
               <h3 className="font-semibold text-gray-900 dark:text-white">
-                {// t('nft.nftInfo', 'Informações do NFT')}
+                {t('nft.nftInfo', 'Informações do NFT')}
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {// t('nft.tokenId', 'Token ID')}: #{nft.tokenId}
+                {t('nft.tokenId', 'Token ID')}: #{nft.tokenId}
               </p>
             </div>
           </div>
@@ -329,7 +329,7 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <// Package className="w-16 h-16 text-gray-400" />
+                    <Package className="w-16 h-16 text-gray-400" />
                   </div>
                 )}
               </div>
@@ -342,14 +342,14 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
                   {metadata?.name || `Entrega #${delivery.id}`}
                 </h4>
                 <p className="text-gray-600 dark:text-gray-400">
-                  {metadata?.description || // t('nft.defaultDescription', 'Comprovante de entrega digital')}
+                  {metadata?.description || t('nft.defaultDescription', 'Comprovante de entrega digital')}
                 </p>
               </div>
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {// t('nft.network', 'Rede')}:
+                    {t('nft.network', 'Rede')}:
                   </span>
                   <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-xs font-medium">
                     {nft.network.toUpperCase()}
@@ -358,7 +358,7 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
 
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {// t('nft.contractAddress', 'Contrato')}:
+                    {t('nft.contractAddress', 'Contrato')}:
                   </span>
                   <div className="flex items-center space-x-2">
                     <span className="font-mono text-xs text-gray-900 dark:text-white">
@@ -368,14 +368,14 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
                       onClick={copyContractAddress}
                       className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                     >
-                      <// Copy className="w-3 h-3" />
+                      <Copy className="w-3 h-3" />
                     </button>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {// t('nft.mintedAt', 'Cunhado em')}:
+                    {t('nft.mintedAt', 'Cunhado em')}:
                   </span>
                   <span className="text-sm text-gray-900 dark:text-white">
                     {new Date(nft.mintedAt).toLocaleDateString('pt-BR')}
@@ -390,8 +390,8 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
                   rel="noopener noreferrer"
                   className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center space-x-2"
                 >
-                  <// ExternalLink className="w-4 h-4" />
-                  <span>{// t('nft.viewOnExplorer', 'Ver no Explorer')}</span>
+                  <ExternalLink className="w-4 h-4" />
+                  <span>{t('nft.viewOnExplorer', 'Ver no Explorer')}</span>
                 </a>
               </div>
             </div>
@@ -401,7 +401,7 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
           {metadata?.attributes && (
             <div className="mt-6">
               <h4 className="font-medium text-gray-900 dark:text-white mb-3">
-                {// t('nft.attributes', 'Atributos')}
+                {t('nft.attributes', 'Atributos')}
               </h4>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {metadata.attributes.map((attr, index) => (
@@ -422,13 +422,13 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
         /* Botão para cunhar NFT */
         <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8 text-center">
           <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-4">
-            <// Coins className="w-8 h-8 text-purple-600" />
+            <Coins className="w-8 h-8 text-purple-600" />
           </div>
           <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-            {// t('nft.mintNFT', 'Cunhar NFT de Entrega')}
+            {t('nft.mintNFT', 'Cunhar NFT de Entrega')}
           </h3>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
-            {// t('nft.mintNFTDescription', 'Crie um NFT único como comprovante de entrega na blockchain')}
+            {t('nft.mintNFTDescription', 'Crie um NFT único como comprovante de entrega na blockchain')}
           </p>
           <button
             onClick={mintNFT}
@@ -436,33 +436,33 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
             className="px-6 py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white rounded-lg font-medium transition-colors flex items-center space-x-2 mx-auto"
           >
             {isMinting ? (
-              <div className="w-4 h-4 border-2 border-white border-// t-transparent rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
-              <// Zap className="w-4 h-4" />
+              <Zap className="w-4 h-4" />
             )}
             <span>
-              {isMinting ? // t('nft.minting', 'Cunhando...') : // t('nft.mint', 'Cunhar NFT')}
+              {isMinting ? t('nft.minting', 'Cunhando...') : t('nft.mint', 'Cunhar NFT')}
             </span>
           </button>
         </div>
       )}
 
-      {/* Detalhes // técnicos */}
-      <// AnimatePresence>
+      {/* Detalhes técnicos */}
+      <AnimatePresence>
         {showDetails && nft && (
-          <// motion.div
+          <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
           >
             <h3 className="font-semibold text-gray-900 dark:text-white mb-4">
-              {// t('nft.technicalDetails', 'Detalhes Técnicos')}
+              {t('nft.technicalDetails', 'Detalhes Técnicos')}
             </h3>
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600 dark:text-gray-400">
-                  {// t('nft.tokenId', 'Token ID')}:
+                  {t('nft.tokenId', 'Token ID')}:
                 </span>
                 <span className="font-mono text-sm text-gray-900 dark:text-white">
                   {nft.tokenId}
@@ -470,7 +470,7 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600 dark:text-gray-400">
-                  {// t('nft.contractAddress', 'Endereço do Contrato')}:
+                  {t('nft.contractAddress', 'Endereço do Contrato')}:
                 </span>
                 <span className="font-mono text-sm text-gray-900 dark:text-white">
                   {nft.contractAddress}
@@ -478,7 +478,7 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600 dark:text-gray-400">
-                  {// t('nft.transactionHash', '// Hash da Transação')}:
+                  {t('nft.transactionHash', 'Hash da Transação')}:
                 </span>
                 <span className="font-mono text-sm text-gray-900 dark:text-white">
                   {nft.transactionHash}
@@ -486,16 +486,16 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600 dark:text-gray-400">
-                  {// t('nft.blockNumber', 'Número do Bloco')}:
+                  {t('nft.blockNumber', 'Número do Bloco')}:
                 </span>
                 <span className="font-mono text-sm text-gray-900 dark:text-white">
                   {nft.blockNumber}
                 </span>
               </div>
             </div>
-          </// motion.div>
+          </motion.div>
         )}
-      </// AnimatePresence>
+      </AnimatePresence>
     </div>
   );
 };

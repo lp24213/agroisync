@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
-import { Wallet, Link, Unlink, XCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Wallet, Link, Unlink, XCircle, AlertTriangle, ExternalLink, RefreshCw, Shield, CheckCircle, Copy } from 'lucide-react';
 import cryptoService from '../services/cryptoService';
 
 const Web3Wallet = () => {
@@ -11,10 +11,10 @@ const Web3Wallet = () => {
   const [success, setSuccess] = useState('');
 
   useEffect(() => {
-Verificar status inicial
+    // Verificar status inicial
     updateConnectionStatus();
     
-Inscrever para atualizações
+    // Inscrever para atualizações
     const unsubscribe = cryptoService.subscribe(handleStatusUpdate);
     
     return () => unsubscribe();

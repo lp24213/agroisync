@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lightbulb, Bookmark, Share2, BarChart3, Package, Truck, DollarSign, TrendingUp, TrendingDown, MapPin, RefreshCw, Filter, Heart, Star, Clock, Eye } from 'lucide-react';
+import { Lightbulb, Share2, BarChart3, Package, Truck, DollarSign, TrendingUp, TrendingDown, MapPin, RefreshCw, Filter, Heart, Star, Clock, Eye } from 'lucide-react';
 import { useAnalytics } from '../../hooks/useAnalytics';
 
 const SmartRecommendations = () => {

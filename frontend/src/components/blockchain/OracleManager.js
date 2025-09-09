@@ -6,17 +6,17 @@ import { Database, Loader2 } from 'lucide-react';
 const OracleManager = ({ userId }) => {
   const {  } = useTranslation();
   const [oracles, setOracles] = useState([]);
-  const [`loading, `setLoading] = useState(`true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [totalDataPoints, setTotalDataPoints] = useState(0);
   const [activeOracles, setActiveOracles] = useState(0);
 
-  // useEffect(() => {
-    // fetchOracleData();
+  useEffect(() => {
+fetchOracleData();
   }, [userId]);
 
-  const // fetchOracleData = async () => {
-    // setLoading(true);
+  const fetchOracleData = async () => {
+setLoading(true);
     try {
       const response = await fetch(`/api/blockchain/oracles?userId=${userId}`);
       const data = await response.json();
@@ -29,47 +29,47 @@ const OracleManager = ({ userId }) => {
         setError(data.message);
       }
     } catch (err) {
-      setError(// t('oracle.error', 'Erro ao carregar dados de oráculos'));
+      setError(t('oracle.error', 'Erro ao carregar dados de oráculos'));
     } finally {
-      // setLoading(false);
+setLoading(false);
     }
   };
 
   const getStatusIcon = (status) => {
     switch (status) {
       case 'active':
-        return <// CheckCircle className="w-5 h-5 text-green-600" />;
+        return <CheckCircle className="w-5 h-5 text-green-600" />;
       case 'pending':
-        return <// Clock className="w-5 h-5 text-yellow-600" />;
+        return <Clock className="w-5 h-5 text-yellow-600" />;
       case 'failed':
-        return <// AlertCircle className="w-5 h-5 text-red-600" />;
+        return <AlertCircle className="w-5 h-5 text-red-600" />;
       default:
-        return <// Clock className="w-5 h-5 text-gray-600" />;
+        return <Clock className="w-5 h-5 text-gray-600" />;
     }
   };
 
   const getChangeIcon = (change) => {
     if (change > 0) {
-      return <// TrendingUp className="w-5 h-5 text-green-600" />;
+      return <TrendingUp className="w-5 h-5 text-green-600" />;
     } else if (change < 0) {
-      return <// TrendingDown className="w-5 h-5 text-red-600" />;
+      return <TrendingDown className="w-5 h-5 text-red-600" />;
     }
-    return <// Clock className="w-5 h-5 text-gray-600" />;
+    return <Clock className="w-5 h-5 text-gray-600" />;
   };
 
-  if (// loading) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
         <Loader2 className="w-8 h-8 animate-spin text-agro-emerald" />
         <span className="ml-3 text-gray-600 dark:text-gray-300">
-          {// t('oracle.// loading', 'Carregando dados de oráculos...')}
+          {t('oracle.loading', 'Carregando dados de oráculos...')}
         </span>
       </div>
     );
   }
 
   return (
-    <// motion.div
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
@@ -77,20 +77,20 @@ const OracleManager = ({ userId }) => {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
           <Database className="w-6 h-6 mr-2 text-agro-emerald" />
-          {// t('oracle.title', 'Oracle Manager')}
+          {t('oracle.title', 'Oracle Manager')}
         </h2>
         
         <button
-          onClick={// fetchOracleData}
+          onClick={fetchOracleData}
           className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
         >
-          <// RefreshCw className="w-5 h-5" />
+          <RefreshCw className="w-5 h-5" />
         </button>
       </div>
       
       {error && (
         <div className="text-red-500 mb-4 flex items-center">
-          <// AlertCircle className="w-5 h-5 mr-2" />
+          <AlertCircle className="w-5 h-5 mr-2" />
           {error}
         </div>
       )}
@@ -101,7 +101,7 @@ const OracleManager = ({ userId }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {// t('oracle.totalDataPoints', 'Total de Pontos de Dados')}
+                {t('oracle.totalDataPoints', 'Total de Pontos de Dados')}
               </p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 {totalDataPoints.toLocaleString()}
@@ -115,13 +115,13 @@ const OracleManager = ({ userId }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {// t('oracle.activeOracles', 'Oráculos Ativos')}
+                {t('oracle.activeOracles', 'Oráculos Ativos')}
               </p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 {activeOracles}
               </p>
             </div>
-            <// CheckCircle className="w-8 h-8 text-gray-400" />
+            <CheckCircle className="w-8 h-8 text-gray-400" />
           </div>
         </div>
         
@@ -129,7 +129,7 @@ const OracleManager = ({ userId }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {// t('oracle.totalOracles', 'Total de Oráculos')}
+                {t('oracle.totalOracles', 'Total de Oráculos')}
               </p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 {oracles.length}
@@ -145,7 +145,7 @@ const OracleManager = ({ userId }) => {
         <div className="text-center py-8">
           <Database className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <p className="text-gray-600 dark:text-gray-400 mb-4">
-            {// t('oracle.noOracles', 'Nenhum oráculo encontrado')}
+            {t('oracle.noOracles', 'Nenhum oráculo encontrado')}
           </p>
         </div>
       ) : (
@@ -173,7 +173,7 @@ const OracleManager = ({ userId }) => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-4">
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {// t('oracle.currentValue', 'Valor Atual')}:
+                    {t('oracle.currentValue', 'Valor Atual')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
                     {oracle.currentValue}
@@ -182,7 +182,7 @@ const OracleManager = ({ userId }) => {
                 
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {// t('oracle.change', 'Mudança')}:
+                    {t('oracle.change', 'Mudança')}:
                   </p>
                   <div className="flex items-center space-x-1">
                     {getChangeIcon(oracle.change)}
@@ -194,7 +194,7 @@ const OracleManager = ({ userId }) => {
                 
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {// t('oracle.updateFrequency', 'Frequência de Atualização')}:
+                    {t('oracle.updateFrequency', 'Frequência de Atualização')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
                     {oracle.updateFrequency}
@@ -203,28 +203,28 @@ const OracleManager = ({ userId }) => {
                 
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {// t('oracle.// lastUpdate', 'Última Atualização')}:
+                    {t('oracle.lastUpdate', 'Última Atualização')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
-                    {oracle.// lastUpdate}
+                    {oracle.lastUpdate}
                   </p>
                 </div>
               </div>
               
               <div className="flex items-center justify-between">
                 <div className="text-sm text-gray-500 dark:text-gray-400">
-                  {// t('oracle.dataSource', 'Fonte de Dados')}: {oracle.dataSource}
+                  {t('oracle.dataSource', 'Fonte de Dados')}: {oracle.dataSource}
                 </div>
                 
                 <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                  <// ExternalLink className="w-4 h-4" />
+                  <ExternalLink className="w-4 h-4" />
                 </button>
               </div>
             </div>
           ))}
         </div>
       )}
-    </// motion.div>
+    </motion.div>
   );
 };
 

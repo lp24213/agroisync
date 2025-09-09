@@ -11,20 +11,20 @@ const HybridPayment = ({
   onPaymentError,
   allowedMethods = ['fiat', 'crypto', 'hybrid']
 }) => {
-  const {  } = useTranslation();
+  const { t } = useTranslation();
   const analytics = useAnalytics();
-  const [`paymentMethod, `setPaymentMethod] = useState(`'fiat');
+  const [paymentMethod, setPaymentMethod] = useState('fiat');
   const [cryptoAmount, setCryptoAmount] = useState(0);
   const [fiatAmount, setFiatAmount] = useState(amount);
   const [cryptoRates, setCryptoRates] = useState({});
   const [selectedCrypto, setSelectedCrypto] = useState('usdc');
-  const [`isLoading, `setIsLoading] = useState(`false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState('pending');
   const [error, setError] = useState('');
   const [showCalculator, setShowCalculator] = useState(false);
 
-  // Criptomoedas suportadas
+Criptomoedas suportadas
   const supportedCryptos = [
     { id: 'usdc', name: 'USD Coin', symbol: 'USDC', icon: '🔵', stablecoin: true },
     { id: 'usdt', name: 'Tether', symbol: 'USDT', icon: '🟡', stablecoin: true },
@@ -32,7 +32,7 @@ const HybridPayment = ({
     { id: 'matic', name: 'Polygon', symbol: 'MATIC', icon: '🟣', stablecoin: false }
   ];
 
-  // Carregar taxas de câmbio
+Carregar taxas de câmbio
   const loadExchangeRates = useCallback(async () => {
     try {
       const response = await fetch('/api/blockchain/exchange-rates');
@@ -41,45 +41,45 @@ const HybridPayment = ({
       if (data.success) {
         setCryptoRates(data.rates);
         
-        // Calcular valor em cripto baseado na moeda selecionada
+Calcular valor em cripto baseado na moeda selecionada
         const rate = data.rates[selectedCrypto];
         if (rate) {
           setCryptoAmount(fiatAmount / rate);
         }
       }
     } catch (error) {
-      console.error('Error // loading exchange rates:', error);
+      console.error('Error loading exchange rates:', error);
     }
   }, [fiatAmount, selectedCrypto]);
 
-  // Carregar taxas quando moeda ou valor mudarem
-  // useEffect(() => {
+Carregar taxas quando moeda ou valor mudarem
+useEffect(() => {
     loadExchangeRates();
   }, [loadExchangeRates]);
 
-  // Calcular valores
-  const // calculateAmounts = useCallback(() => {
+Calcular valores
+  const calculateAmounts = useCallback(() => {
     const rate = cryptoRates[selectedCrypto];
     if (rate) {
-      if (// paymentMethod === 'crypto') {
+      if (paymentMethod === 'crypto') {
         setFiatAmount(cryptoAmount * rate);
-      } else if (// paymentMethod === 'fiat') {
+      } else if (paymentMethod === 'fiat') {
         setCryptoAmount(fiatAmount / rate);
-      } else if (// paymentMethod === 'hybrid') {
-        // No modo híbrido, manter os valores independentes
-        // O usuário pode ajustar manualmente
+      } else if (paymentMethod === 'hybrid') {
+No modo híbrido, manter os valores independentes
+O usuário pode ajustar manualmente
       }
     }
-  }, [// paymentMethod, cryptoAmount, fiatAmount, selectedCrypto, cryptoRates]);
+  }, [paymentMethod, cryptoAmount, fiatAmount, selectedCrypto, cryptoRates]);
 
-  // Processar pagamento
+Processar pagamento
   const processPayment = useCallback(async () => {
     setIsProcessing(true);
     setError('');
 
     try {
       const paymentData = {
-        method: // paymentMethod,
+        method: paymentMethod,
         fiatAmount: fiatAmount,
         cryptoAmount: cryptoAmount,
         cryptoCurrency: selectedCrypto,
@@ -101,7 +101,7 @@ const HybridPayment = ({
         setPaymentStatus('completed');
         
         analytics.trackEvent('hybrid_payment_completed', {
-          method: // paymentMethod,
+          method: paymentMethod,
           fiat_amount: fiatAmount,
           crypto_amount: cryptoAmount,
           crypto_currency: selectedCrypto
@@ -111,7 +111,7 @@ const HybridPayment = ({
           onPaymentComplete(data.payment);
         }
       } else {
-        setError(data.message || // t('payment.error', 'Erro no pagamento'));
+        setError(data.message || t('payment.error', 'Erro no pagamento'));
         setPaymentStatus('failed');
         
         if (onPaymentError) {
@@ -120,7 +120,7 @@ const HybridPayment = ({
       }
     } catch (error) {
       console.error('Error processing payment:', error);
-      setError(// t('payment.networkError', 'Erro de conexão'));
+      setError(t('payment.networkError', 'Erro de conexão'));
       setPaymentStatus('failed');
       
       if (onPaymentError) {
@@ -129,24 +129,24 @@ const HybridPayment = ({
     } finally {
       setIsProcessing(false);
     }
-  }, [// paymentMethod, fiatAmount, cryptoAmount, selectedCrypto, amount, analytics, onPaymentComplete, onPaymentError, // t]);
+  }, [paymentMethod, fiatAmount, cryptoAmount, selectedCrypto, amount, analytics, onPaymentComplete, onPaymentError, t]);
 
-  // Obter ícone do método de pagamento
-  const // getPaymentMethodIcon = (method) => {
+Obter ícone do método de pagamento
+  const getPaymentMethodIcon = (method) => {
     switch (method) {
       case 'fiat':
         return <CreditCard className="w-5 h-5" />;
       case 'crypto':
-        return <// Coins className="w-5 h-5" />;
+        return <Coins className="w-5 h-5" />;
       case 'hybrid':
-        return <// Zap className="w-5 h-5" />;
+        return <Zap className="w-5 h-5" />;
       default:
-        return <// DollarSign className="w-5 h-5" />;
+        return <DollarSign className="w-5 h-5" />;
     }
   };
 
-  // Obter cor do método de pagamento
-  const // getPaymentMethodColor = (method) => {
+Obter cor do método de pagamento
+  const getPaymentMethodColor = (method) => {
     switch (method) {
       case 'fiat':
         return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
@@ -159,17 +159,17 @@ const HybridPayment = ({
     }
   };
 
-  // Obter status do pagamento
+Obter status do pagamento
   const getPaymentStatusIcon = (status) => {
     switch (status) {
       case 'completed':
-        return <// CheckCircle className="w-5 h-5 text-green-600" />;
+        return <CheckCircle className="w-5 h-5 text-green-600" />;
       case 'failed':
-        return <// AlertCircle className="w-5 h-5 text-red-600" />;
+        return <AlertCircle className="w-5 h-5 text-red-600" />;
       case 'processing':
-        return <// Clock className="w-5 h-5 text-yellow-600" />;
+        return <Clock className="w-5 h-5 text-yellow-600" />;
       default:
-        return <// Clock className="w-5 h-5 text-gray-600" />;
+        return <Clock className="w-5 h-5 text-gray-600" />;
     }
   };
 
@@ -178,94 +178,94 @@ const HybridPayment = ({
       {/* Header */}
       <div className="text-center">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-          {// t('payment.title', 'Pagamento Híbrido')}
+          {t('payment.title', 'Pagamento Híbrido')}
         </h2>
         <p className="text-gray-600 dark:text-gray-400">
-          {// t('payment.subtitle', 'Escolha entre pagamento tradicional ou criptomoedas')}
+          {t('payment.subtitle', 'Escolha entre pagamento tradicional ou criptomoedas')}
         </p>
       </div>
 
       {/* Métodos de pagamento */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {allowedMethods.includes('fiat') && (
-          <// motion.button
+          <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => // setPaymentMethod('fiat')}
+            onClick={() => setPaymentMethod('fiat')}
             className={`p-6 rounded-lg border-2 transition-all ${
-              // paymentMethod === 'fiat'
+paymentMethod === 'fiat'
                 ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                 : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
             }`}
           >
             <div className="text-center">
               <div className={`w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center ${
-                // paymentMethod === 'fiat' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600'
+paymentMethod === 'fiat' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600'
               }`}>
                 <CreditCard className="w-6 h-6" />
               </div>
               <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
-                {// t('payment.fiat', 'Pagamento Tradicional')}
+                {t('payment.fiat', 'Pagamento Tradicional')}
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {// t('payment.fiatDescription', 'Cartão de crédito, PIX, boleto')}
+                {t('payment.fiatDescription', 'Cartão de crédito, PIX, boleto')}
               </p>
             </div>
-          </// motion.button>
+          </motion.button>
         )}
 
         {allowedMethods.includes('crypto') && (
-          <// motion.button
+          <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => // setPaymentMethod('crypto')}
+            onClick={() => setPaymentMethod('crypto')}
             className={`p-6 rounded-lg border-2 transition-all ${
-              // paymentMethod === 'crypto'
+paymentMethod === 'crypto'
                 ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
                 : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
             }`}
           >
             <div className="text-center">
               <div className={`w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center ${
-                // paymentMethod === 'crypto' ? 'bg-purple-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600'
+paymentMethod === 'crypto' ? 'bg-purple-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600'
               }`}>
-                <// Coins className="w-6 h-6" />
+                <Coins className="w-6 h-6" />
               </div>
               <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
-                {// t('payment.crypto', 'Criptomoedas')}
+                {t('payment.crypto', 'Criptomoedas')}
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {// t('payment.cryptoDescription', 'Bitcoin, Ethereum, Solana')}
+                {t('payment.cryptoDescription', 'Bitcoin, Ethereum, Solana')}
               </p>
             </div>
-          </// motion.button>
+          </motion.button>
         )}
 
         {allowedMethods.includes('hybrid') && (
-          <// motion.button
+          <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => // setPaymentMethod('hybrid')}
+            onClick={() => setPaymentMethod('hybrid')}
             className={`p-6 rounded-lg border-2 transition-all ${
-              // paymentMethod === 'hybrid'
+paymentMethod === 'hybrid'
                 ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
                 : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
             }`}
           >
             <div className="text-center">
               <div className={`w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center ${
-                // paymentMethod === 'hybrid' ? 'bg-green-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600'
+paymentMethod === 'hybrid' ? 'bg-green-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600'
               }`}>
-                <// Zap className="w-6 h-6" />
+                <Zap className="w-6 h-6" />
               </div>
               <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
-                {// t('payment.hybrid', 'Híbrido')}
+                {t('payment.hybrid', 'Híbrido')}
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {// t('payment.hybridDescription', 'Combinação de FIAT + Crypto')}
+                {t('payment.hybridDescription', 'Combinação de FIAT + Crypto')}
               </p>
             </div>
-          </// motion.button>
+          </motion.button>
         )}
       </div>
 
@@ -273,7 +273,7 @@ const HybridPayment = ({
       <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-            {// t('payment.details', 'Detalhes do Pagamento')}
+            {t('payment.details', 'Detalhes do Pagamento')}
           </h3>
           <button
             onClick={() => setShowCalculator(!showCalculator)}
@@ -287,7 +287,7 @@ const HybridPayment = ({
           {/* Valor total */}
           <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
             <span className="text-gray-600 dark:text-gray-400">
-              {// t('payment.totalAmount', 'Valor Total')}:
+              {t('payment.totalAmount', 'Valor Total')}:
             </span>
             <span className="text-xl font-bold text-gray-900 dark:text-white">
               R$ {amount.toFixed(2)}
@@ -295,10 +295,10 @@ const HybridPayment = ({
           </div>
 
           {/* Pagamento FIAT */}
-          {// paymentMethod !== 'crypto' && (
+          {paymentMethod !== 'crypto' && (
             <div className="space-y-3">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                {// t('payment.fiatAmount', 'Valor em FIAT')}
+                {t('payment.fiatAmount', 'Valor em FIAT')}
               </label>
               <div className="flex items-center space-x-3">
                 <div className="flex-1">
@@ -316,10 +316,10 @@ const HybridPayment = ({
           )}
 
           {/* Pagamento Crypto */}
-          {// paymentMethod !== 'fiat' && (
+          {paymentMethod !== 'fiat' && (
             <div className="space-y-3">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                {// t('payment.cryptoAmount', 'Valor em Cripto')}
+                {t('payment.cryptoAmount', 'Valor em Cripto')}
               </label>
               <div className="flex items-center space-x-3">
                 <div className="flex-1">
@@ -347,28 +347,28 @@ const HybridPayment = ({
               {/* Taxa de câmbio */}
               {cryptoRates[selectedCrypto] && (
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  {// t('payment.exchangeRate', 'Taxa de câmbio')}: 1 {selectedCrypto.toUpperCase()} = R$ {cryptoRates[selectedCrypto].toFixed(2)}
+                  {t('payment.exchangeRate', 'Taxa de câmbio')}: 1 {selectedCrypto.toUpperCase()} = R$ {cryptoRates[selectedCrypto].toFixed(2)}
                 </div>
               )}
             </div>
           )}
 
           {/* Calculadora */}
-          <// AnimatePresence>
+          <AnimatePresence>
             {showCalculator && (
-              <// motion.div
+              <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
                 className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4"
               >
                 <h4 className="font-medium text-gray-900 dark:text-white mb-3">
-                  {// t('payment.calculator', 'Calculadora')}
+                  {t('payment.calculator', 'Calculadora')}
                 </h4>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <span className="text-gray-600 dark:text-gray-400">
-                      {// t('payment.fiatTotal', 'Total FIAT')}:
+                      {t('payment.fiatTotal', 'Total FIAT')}:
                     </span>
                     <span className="ml-2 font-medium text-gray-900 dark:text-white">
                       R$ {fiatAmount.toFixed(2)}
@@ -376,7 +376,7 @@ const HybridPayment = ({
                   </div>
                   <div>
                     <span className="text-gray-600 dark:text-gray-400">
-                      {// t('payment.cryptoTotal', 'Total Crypto')}:
+                      {t('payment.cryptoTotal', 'Total Crypto')}:
                     </span>
                     <span className="ml-2 font-medium text-gray-900 dark:text-white">
                       {cryptoAmount.toFixed(6)} {selectedCrypto.toUpperCase()}
@@ -384,7 +384,7 @@ const HybridPayment = ({
                   </div>
                   <div>
                     <span className="text-gray-600 dark:text-gray-400">
-                      {// t('payment.remaining', 'Restante')}:
+                      {t('payment.remaining', 'Restante')}:
                     </span>
                     <span className="ml-2 font-medium text-gray-900 dark:text-white">
                       R$ {(amount - fiatAmount - (cryptoAmount * (cryptoRates[selectedCrypto] || 0))).toFixed(2)}
@@ -392,16 +392,16 @@ const HybridPayment = ({
                   </div>
                   <div>
                     <span className="text-gray-600 dark:text-gray-400">
-                      {// t('payment.percentage', 'Percentual')}:
+                      {t('payment.percentage', 'Percentual')}:
                     </span>
                     <span className="ml-2 font-medium text-gray-900 dark:text-white">
                       {((fiatAmount + (cryptoAmount * (cryptoRates[selectedCrypto] || 0))) / amount * 100).toFixed(1)}%
                     </span>
                   </div>
                 </div>
-              </// motion.div>
+              </motion.div>
             )}
-          </// AnimatePresence>
+          </AnimatePresence>
         </div>
       </div>
 
@@ -419,9 +419,9 @@ const HybridPayment = ({
               paymentStatus === 'failed' ? 'text-red-800 dark:text-red-200' :
               'text-yellow-800 dark:text-yellow-200'
             }`}>
-              {paymentStatus === 'completed' ? // t('payment.completed', 'Pagamento realizado com sucesso!') :
-               paymentStatus === 'failed' ? // t('payment.failed', 'Erro no pagamento') :
-               // t('payment.processing', 'Processando pagamento...')}
+              {paymentStatus === 'completed' ? t('payment.completed', 'Pagamento realizado com sucesso!') :
+               paymentStatus === 'failed' ? t('payment.failed', 'Erro no pagamento') :
+t('payment.processing', 'Processando pagamento...')}
             </span>
           </div>
           {error && (
@@ -440,12 +440,12 @@ const HybridPayment = ({
           className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
         >
           {isProcessing ? (
-            <div className="w-4 h-4 border-2 border-white border-// t-transparent rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
           ) : (
-            <// Shield className="w-4 h-4" />
+            <Shield className="w-4 h-4" />
           )}
           <span>
-            {isProcessing ? // t('payment.processing', 'Processando...') : // t('payment.payNow', 'Pagar Agora')}
+            {isProcessing ? t('payment.processing', 'Processando...') : t('payment.payNow', 'Pagar Agora')}
           </span>
         </button>
       </div>
@@ -453,13 +453,13 @@ const HybridPayment = ({
       {/* Informações de segurança */}
       <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
         <div className="flex items-start">
-          <// Info className="w-5 h-5 text-blue-600 mr-2 mt-0.5" />
+          <Info className="w-5 h-5 text-blue-600 mr-2 mt-0.5" />
           <div>
             <h4 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-1">
-              {// t('payment.security', 'Segurança')}
+              {t('payment.security', 'Segurança')}
             </h4>
             <p className="text-sm text-blue-700 dark:text-blue-300">
-              {// t('payment.securityDescription', 'Todos os pagamentos são processados com criptografia de ponta a ponta e protegidos por blockchain quando aplicável.')}
+              {t('payment.securityDescription', 'Todos os pagamentos são processados com criptografia de ponta a ponta e protegidos por blockchain quando aplicável.')}
             </p>
           </div>
         </div>

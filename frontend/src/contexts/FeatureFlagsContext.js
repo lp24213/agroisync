@@ -12,59 +12,59 @@ export const useFeatureFlags = () => {
 
 export const FeatureFlagsProvider = ({ children }) => {
   const [flags, setFlags] = useState({});
-  const [`loading, `setLoading] = useState(`true);
-
-  // Feature flags padrão
-  const // defaultFlags = {
-    // Funcionalidades principais
-    'FEATURE_MARKETPLACE': true,
-    'FEATURE_AGROCONECTA': true,
-    'FEATURE_CRYPTO': true,
-    'FEATURE_MESSAGING': true,
-    'FEATURE_ADMIN_PANEL': true,
-    
-    // Funcionalidades avançadas
-    'FEATURE_AI_CHATBOT': true,
-    'FEATURE_VOICE_CHAT': true,
-    'FEATURE_IMAGE_ANALYSIS': true,
-    'FEATURE_REAL_TIME_QUOTES': true,
-    'FEATURE_WEATHER_WIDGET': true,
-    'FEATURE_NEWS_FEED': true,
-    
-    // Integrações
-    'FEATURE_STRIPE_PAYMENTS': true,
-    'FEATURE_METAMASK_INTEGRATION': true,
-    'FEATURE_NFT_MINTING': true,
-    'FEATURE_STAKING': true,
-    
-    // UI/UX
-    'FEATURE_DARK_MODE': true,
-    'FEATURE_ANIMATIONS': true,
-    'FEATURE_GLASSMORPHISM': true,
-    'FEATURE_NEON_EFFECTS': true,
-    
-    // Analytics
-    'FEATURE_ANALYTICS': true,
-    'FEATURE_USER_TRACKING': true,
-    'FEATURE_PERFORMANCE_MONITORING': true,
-    
-    // Segurança
-    'FEATURE_2FA': true,
-    'FEATURE_RATE_LIMITING': true,
-    'FEATURE_SECURITY_LOGS': true,
-    
-    // Experimentais
-    'FEATURE_BETA_FEATURES': false,
-    'FEATURE_EXPERIMENTAL_UI': false,
-    'FEATURE_ADVANCED_ANALYTICS': false,
-    
-    // Por ambiente
-    'FEATURE_DEBUG_MODE': process.env.NODE_ENV === 'development',
-    'FEATURE_MAINTENANCE_MODE': false
-  };
+  const [loading, setLoading] = useState(true);
 
   // Carregar feature flags
-  // useEffect(() => {
+  useEffect(() => {
+    // Feature flags padrão
+    const defaultFlags = {
+      // Funcionalidades principais
+      'FEATURE_MARKETPLACE': true,
+      'FEATURE_AGROCONECTA': true,
+      'FEATURE_CRYPTO': true,
+      'FEATURE_MESSAGING': true,
+      'FEATURE_ADMIN_PANEL': true,
+      
+      // Funcionalidades avançadas
+      'FEATURE_AI_CHATBOT': true,
+      'FEATURE_VOICE_CHAT': true,
+      'FEATURE_IMAGE_ANALYSIS': true,
+      'FEATURE_REAL_TIME_QUOTES': true,
+      'FEATURE_WEATHER_WIDGET': true,
+      'FEATURE_NEWS_FEED': true,
+      
+      // Integrações
+      'FEATURE_STRIPE_PAYMENTS': true,
+      'FEATURE_METAMASK_INTEGRATION': true,
+      'FEATURE_NFT_MINTING': true,
+      'FEATURE_STAKING': true,
+      
+      // UI/UX
+      'FEATURE_DARK_MODE': true,
+      'FEATURE_ANIMATIONS': true,
+      'FEATURE_GLASSMORPHISM': true,
+      'FEATURE_NEON_EFFECTS': true,
+      
+      // Analytics
+      'FEATURE_ANALYTICS': true,
+      'FEATURE_USER_TRACKING': true,
+      'FEATURE_PERFORMANCE_MONITORING': true,
+      
+      // Segurança
+      'FEATURE_2FA': true,
+      'FEATURE_RATE_LIMITING': true,
+      'FEATURE_SECURITY_LOGS': true,
+      
+      // Experimentais
+      'FEATURE_BETA_FEATURES': false,
+      'FEATURE_EXPERIMENTAL_UI': false,
+      'FEATURE_ADVANCED_ANALYTICS': false,
+      
+      // Por ambiente
+      'FEATURE_DEBUG_MODE': process.env.NODE_ENV === 'development',
+      'FEATURE_MAINTENANCE_MODE': false
+    };
+
     const loadFeatureFlags = async () => {
       try {
         // Em produção, carregar flags do servidor
@@ -72,19 +72,19 @@ export const FeatureFlagsProvider = ({ children }) => {
           const response = await fetch('/api/feature-flags');
           if (response.ok) {
             const serverFlags = await response.json();
-            setFlags({ ...// defaultFlags, ...serverFlags });
+            setFlags({ ...defaultFlags, ...serverFlags });
           } else {
-            setFlags(// defaultFlags);
+            setFlags(defaultFlags);
           }
         } else {
           // Em desenvolvimento, usar flags padrão
-          setFlags(// defaultFlags);
+          setFlags(defaultFlags);
         }
       } catch (error) {
         console.error('Erro ao carregar feature flags:', error);
-        setFlags(// defaultFlags);
+        setFlags(defaultFlags);
       } finally {
-        // setLoading(false);
+        setLoading(false);
       }
     };
 
@@ -166,7 +166,7 @@ export const FeatureFlagsProvider = ({ children }) => {
 
   const value = {
     flags,
-    // loading,
+loading,
     isEnabled,
     areEnabled,
     isAnyEnabled,

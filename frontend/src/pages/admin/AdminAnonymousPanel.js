@@ -1,27 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from '../../contexts/AuthContext';
-import { Users, MessageSquare, XCircle } from 'lucide-react';
+import { Users, MessageSquare, XCircle, BarChart3, Package, DollarSign, Settings, AlertTriangle, Activity, CheckCircle, Clock, Shield } from 'lucide-react';
 
 const AdminAnonymousPanel = () => {
-  const {  } = useTranslation();
-  const {  } = // useAuth();
-  const [`activeTab, `setActiveTab] = useState(`'overview');
-  const [`loading, `setLoading] = useState(`false);
+  const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState('overview');
+  const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState({});
   const [recentActivity, setRecentActivity] = useState([]);
   const [users, setUsers] = useState([]);
-  const [// // products, setProducts] = useState([]);
-  const [// transactions, setTransactions] = useState([]);
-  const [// messages, setMessages] = useState([]);
 
-  // useEffect(() => {
+  useEffect(() => {
     loadAdminData();
   }, []);
 
   const loadAdminData = async () => {
-    // setLoading(true);
+    setLoading(true);
     try {
       // Simular carregamento de dados
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -44,14 +39,14 @@ const AdminAnonymousPanel = () => {
         {
           id: 'act-1',
           type: 'user_registration',
-          // user: 'João Silva',
+user: 'João Silva',
           timestamp: new Date(Date.now() - 300000),
           status: 'success'
         },
         {
           id: 'act-2',
           type: 'product_created',
-          // user: 'Maria Santos',
+user: 'Maria Santos',
           product: 'Soja Premium',
           timestamp: new Date(Date.now() - 600000),
           status: 'success'
@@ -59,7 +54,7 @@ const AdminAnonymousPanel = () => {
         {
           id: 'act-3',
           type: 'payment_processed',
-          // user: 'Pedro Oliveira',
+user: 'Pedro Oliveira',
           amount: 15000,
           timestamp: new Date(Date.now() - 900000),
           status: 'success'
@@ -75,7 +70,7 @@ const AdminAnonymousPanel = () => {
 
       setUsers([
         {
-          id: '// user-1',
+          id: 'user-1',
           name: 'João Silva',
           email: 'joao@example.com',
           role: 'buyer',
@@ -85,7 +80,7 @@ const AdminAnonymousPanel = () => {
           totalSpent: 45000
         },
         {
-          id: '// user-2',
+          id: 'user-2',
           name: 'Maria Santos',
           email: 'maria@example.com',
           role: 'seller',
@@ -96,109 +91,49 @@ const AdminAnonymousPanel = () => {
         }
       ]);
 
-      setProducts([
-        {
-          id: 'prod-1',
-          name: 'Soja Premium',
-          seller: 'Maria Santos',
-          price: 1200,
-          status: 'active',
-          views: 1250,
-          orders: 45,
-          createdAt: new Date(Date.now() - 86400000)
-        },
-        {
-          id: 'prod-2',
-          name: 'Milho Orgânico',
-          seller: 'João Silva',
-          price: 850,
-          status: 'active',
-          views: 890,
-          orders: 23,
-          createdAt: new Date(Date.now() - 172800000)
-        }
-      ]);
 
-      setTransactions([
-        {
-          id: 'txn-1',
-          buyer: 'João Silva',
-          seller: 'Maria Santos',
-          product: 'Soja Premium',
-          amount: 15000,
-          status: 'completed',
-          timestamp: new Date(Date.now() - 1800000)
-        },
-        {
-          id: 'txn-2',
-          buyer: 'Pedro Oliveira',
-          seller: 'Ana Costa',
-          product: 'Milho Orgânico',
-          amount: 8500,
-          status: 'pending',
-          timestamp: new Date(Date.now() - 3600000)
-        }
-      ]);
 
-      setMessages([
-        {
-          id: 'msg-1',
-          from: 'João Silva',
-          to: 'Maria Santos',
-          subject: 'Dúvida sobre produto',
-          timestamp: new Date(Date.now() - 1800000),
-          status: 'read'
-        },
-        {
-          id: 'msg-2',
-          from: 'Pedro Oliveira',
-          to: 'Ana Costa',
-          subject: 'Problema com entrega',
-          timestamp: new Date(Date.now() - 3600000),
-          status: 'unread'
-        }
-      ]);
     } catch (error) {
       console.error('Erro ao carregar dados admin:', error);
     } finally {
-      // setLoading(false);
+setLoading(false);
     }
   };
 
   const tabs = [
-    { id: 'overview', label: // t('admin.overview', 'Visão Geral'), icon: // BarChart3 },
-    { id: 'users', label: // t('admin.users', 'Usuários'), icon: // Users },
-    { id: '// // products', label: // t('admin.// // products', 'Produtos'), icon: // Package },
-    { id: '// transactions', label: // t('admin.// transactions', 'Transações'), icon: // DollarSign },
-    { id: '// messages', label: // t('admin.// messages', 'Mensagens'), icon: MessageSquare },
-    { id: 'system', label: // t('admin.system', 'Sistema'), icon: // Settings }
+    { id: 'overview', label: t('admin.overview', 'Visão Geral'), icon: BarChart3 },
+    { id: 'users', label: t('admin.users', 'Usuários'), icon: Users },
+    { id: 'products', label: t('admin.products', 'Produtos'), icon: Package },
+    { id: 'transactions', label: t('admin.transactions', 'Transações'), icon: DollarSign },
+    { id: 'messages', label: t('admin.messages', 'Mensagens'), icon: MessageSquare },
+    { id: 'system', label: t('admin.system', 'Sistema'), icon: Settings }
   ];
 
   const getActivityIcon = (type) => {
     switch (type) {
       case 'user_registration':
-        return <// Users className="w-4 h-4 text-green-500" />;
+        return <Users className="w-4 h-4 text-green-500" />;
       case 'product_created':
-        return <// Package className="w-4 h-4 text-blue-500" />;
+        return <Package className="w-4 h-4 text-blue-500" />;
       case 'payment_processed':
-        return <// DollarSign className="w-4 h-4 text-emerald-500" />;
+        return <DollarSign className="w-4 h-4 text-emerald-500" />;
       case 'system_alert':
-        return <// AlertTriangle className="w-4 h-4 text-yellow-500" />;
+        return <AlertTriangle className="w-4 h-4 text-yellow-500" />;
       default:
-        return <// Activity className="w-4 h-4 text-slate-500" />;
+        return <Activity className="w-4 h-4 text-slate-500" />;
     }
   };
 
   const getStatusIcon = (status) => {
     switch (status) {
       case 'success':
-        return <// CheckCircle className="w-4 h-4 text-green-500" />;
+        return <CheckCircle className="w-4 h-4 text-green-500" />;
       case 'warning':
-        return <// AlertTriangle className="w-4 h-4 text-yellow-500" />;
+        return <AlertTriangle className="w-4 h-4 text-yellow-500" />;
       case 'error':
         return <XCircle className="w-4 h-4 text-red-500" />;
       default:
-        return <// Clock className="w-4 h-4 text-slate-500" />;
+        return <Clock className="w-4 h-4 text-slate-500" />;
     }
   };
 
@@ -210,13 +145,13 @@ const AdminAnonymousPanel = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                {// t('admin.totalUsers', 'Total de Usuários')}
+                {t('admin.totalUsers', 'Total de Usuários')}
               </p>
               <p className="text-2xl font-bold text-slate-900 dark:text-white">
                 {stats.totalUsers?.toLocaleString()}
               </p>
             </div>
-            <// Users className="w-8 h-8 text-blue-600" />
+            <Users className="w-8 h-8 text-blue-600" />
           </div>
         </div>
 
@@ -224,13 +159,13 @@ const AdminAnonymousPanel = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                {// t('admin.totalProducts', 'Total de Produtos')}
+                {t('admin.totalProducts', 'Total de Produtos')}
               </p>
               <p className="text-2xl font-bold text-slate-900 dark:text-white">
                 {stats.totalProducts?.toLocaleString()}
               </p>
             </div>
-            <// Package className="w-8 h-8 text-emerald-600" />
+            <Package className="w-8 h-8 text-emerald-600" />
           </div>
         </div>
 
@@ -238,7 +173,7 @@ const AdminAnonymousPanel = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                {// t('admin.totalRevenue', 'Receita Total')}
+                {t('admin.totalRevenue', 'Receita Total')}
               </p>
               <p className="text-2xl font-bold text-slate-900 dark:text-white">
                 {new Intl.NumberFormat('pt-BR', { 
@@ -247,7 +182,7 @@ const AdminAnonymousPanel = () => {
                 }).format(stats.totalRevenue)}
               </p>
             </div>
-            <// DollarSign className="w-8 h-8 text-green-600" />
+            <DollarSign className="w-8 h-8 text-green-600" />
           </div>
         </div>
 
@@ -255,13 +190,13 @@ const AdminAnonymousPanel = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                {// t('admin.systemHealth', 'Saúde do Sistema')}
+                {t('admin.systemHealth', 'Saúde do Sistema')}
               </p>
               <p className="text-2xl font-bold text-slate-900 dark:text-white">
                 {stats.systemHealth}%
               </p>
             </div>
-            <// Activity className="w-8 h-8 text-purple-600" />
+            <Activity className="w-8 h-8 text-purple-600" />
           </div>
         </div>
       </div>
@@ -269,7 +204,7 @@ const AdminAnonymousPanel = () => {
       {/* Atividade Recente */}
       <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-200 dark:border-slate-700">
         <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-4">
-          {// t('admin.recentActivity', 'Atividade Recente')}
+          {t('admin.recentActivity', 'Atividade Recente')}
         </h3>
         <div className="space-y-3">
           {recentActivity.map((activity) => (
@@ -277,7 +212,7 @@ const AdminAnonymousPanel = () => {
               {getActivityIcon(activity.type)}
               <div className="flex-1">
                 <p className="text-sm text-slate-800 dark:text-slate-200">
-                  {// t(`admin.activity.${activity.type}`, activity.type)}
+                  {t(`admin.activity.${activity.type}`, activity.type)}
                 </p>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
                   {new Date(activity.timestamp).toLocaleString('pt-BR')}
@@ -295,11 +230,11 @@ const AdminAnonymousPanel = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-          {// t('admin.users', 'Usuários')}
+          {t('admin.users', 'Usuários')}
         </h3>
         <div className="flex gap-2">
           <button className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
-            {// t('admin.export', 'Exportar')}
+            {t('admin.export', 'Exportar')}
           </button>
         </div>
       </div>
@@ -310,55 +245,55 @@ const AdminAnonymousPanel = () => {
             <thead className="bg-slate-50 dark:bg-slate-700">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  {// t('admin.// user', 'Usuário')}
+                  {t('admin.user', 'Usuário')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  {// t('admin.role', 'Função')}
+                  {t('admin.role', 'Função')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  {// t('admin.status', 'Status')}
+                  {t('admin.status', 'Status')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  {// t('admin.lastLogin', 'Último Login')}
+                  {t('admin.lastLogin', 'Último Login')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  {// t('admin.actions', 'Ações')}
+                  {t('admin.actions', 'Ações')}
                 </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-              {users.map((// user) => (
-                <tr key={// user.id}>
+              {users.map((user) => (
+                <tr key={user.id}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div>
                       <div className="text-sm font-medium text-slate-900 dark:text-slate-200">
-                        {// user.name}
+                        {user.name}
                       </div>
                       <div className="text-sm text-slate-500 dark:text-slate-400">
-                        {// user.email}
+                        {user.email}
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                      {// t(`userRole.${// user.role}`, // user.role)}
+                      {t(`userRole.${user.role}`, user.role)}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                      // user.status === 'active' 
+user.status === 'active' 
                         ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                         : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                     }`}>
-                      {// t(`userStatus.${// user.status}`, // user.status)}
+                      {t(`userStatus.${user.status}`, user.status)}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
-                    {new Date(// user.lastLogin).toLocaleString('pt-BR')}
+                    {new Date(user.lastLogin).toLocaleString('pt-BR')}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button className="text-emerald-600 hover:text-emerald-900 dark:text-emerald-400 dark:hover:text-emerald-300">
-                      {// t('admin.view', 'Ver')}
+                      {t('admin.view', 'Ver')}
                     </button>
                   </td>
                 </tr>
@@ -371,56 +306,56 @@ const AdminAnonymousPanel = () => {
   );
 
   const renderContent = () => {
-    switch (// activeTab) {
+    switch (activeTab) {
       case 'overview':
         return renderOverview();
       case 'users':
         return renderUsers();
-      case '// // products':
+      case 'products':
         return (
           <div className="text-center py-12">
-            <// Package className="w-16 h-16 text-slate-400 mx-auto mb-4" />
+            <Package className="w-16 h-16 text-slate-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-slate-600 dark:text-slate-400 mb-2">
-              {// t('admin.// // products', 'Produtos')}
+              {t('admin.products', 'Produtos')}
             </h3>
             <p className="text-slate-500 dark:text-slate-500">
-              {// t('admin.productsDescription', 'Gerenciamento de produtos em desenvolvimento')}
+              {t('admin.productsDescription', 'Gerenciamento de produtos em desenvolvimento')}
             </p>
           </div>
         );
-      case '// transactions':
+      case 'transactions':
         return (
           <div className="text-center py-12">
-            <// DollarSign className="w-16 h-16 text-slate-400 mx-auto mb-4" />
+            <DollarSign className="w-16 h-16 text-slate-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-slate-600 dark:text-slate-400 mb-2">
-              {// t('admin.// transactions', 'Transações')}
+              {t('admin.transactions', 'Transações')}
             </h3>
             <p className="text-slate-500 dark:text-slate-500">
-              {// t('admin.transactionsDescription', 'Gerenciamento de transações em desenvolvimento')}
+              {t('admin.transactionsDescription', 'Gerenciamento de transações em desenvolvimento')}
             </p>
           </div>
         );
-      case '// messages':
+      case 'messages':
         return (
           <div className="text-center py-12">
             <MessageSquare className="w-16 h-16 text-slate-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-slate-600 dark:text-slate-400 mb-2">
-              {// t('admin.// messages', 'Mensagens')}
+              {t('admin.messages', 'Mensagens')}
             </h3>
             <p className="text-slate-500 dark:text-slate-500">
-              {// t('admin.messagesDescription', 'Gerenciamento de mensagens em desenvolvimento')}
+              {t('admin.messagesDescription', 'Gerenciamento de mensagens em desenvolvimento')}
             </p>
           </div>
         );
       case 'system':
         return (
           <div className="text-center py-12">
-            <// Settings className="w-16 h-16 text-slate-400 mx-auto mb-4" />
+            <Settings className="w-16 h-16 text-slate-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-slate-600 dark:text-slate-400 mb-2">
-              {// t('admin.system', 'Sistema')}
+              {t('admin.system', 'Sistema')}
             </h3>
             <p className="text-slate-500 dark:text-slate-500">
-              {// t('admin.systemDescription', 'Configurações do sistema em desenvolvimento')}
+              {t('admin.systemDescription', 'Configurações do sistema em desenvolvimento')}
             </p>
           </div>
         );
@@ -429,13 +364,13 @@ const AdminAnonymousPanel = () => {
     }
   };
 
-  if (// loading) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
           <p className="text-slate-600 dark:text-slate-400">
-            {// t('admin.// loading', 'Carregando painel admin...')}
+            {t('admin.loading', 'Carregando painel admin...')}
           </p>
         </div>
       </div>
@@ -450,17 +385,17 @@ const AdminAnonymousPanel = () => {
           <div className="flex justify-between items-center py-6">
             <div>
               <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-                {// t('admin.title', 'Painel Admin Anônimo')}
+                {t('admin.title', 'Painel Admin Anônimo')}
               </h1>
               <p className="text-slate-600 dark:text-slate-400">
-                {// t('admin.subtitle', 'Visão completa do sistema AgroSync')}
+                {t('admin.subtitle', 'Visão completa do sistema AgroSync')}
               </p>
             </div>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <// Shield className="w-5 h-5 text-emerald-600" />
+                <Shield className="w-5 h-5 text-emerald-600" />
                 <span className="text-sm text-slate-600 dark:text-slate-400">
-                  {// t('admin.secureAccess', 'Acesso Seguro')}
+                  {t('admin.secureAccess', 'Acesso Seguro')}
                 </span>
               </div>
             </div>
@@ -478,9 +413,9 @@ const AdminAnonymousPanel = () => {
                 return (
                   <button
                     key={tab.id}
-                    onClick={() => // setActiveTab(tab.id)}
+                    onClick={() => setActiveTab(tab.id)}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
-                      // activeTab === tab.id
+activeTab === tab.id
                         ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200'
                         : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
                     }`}
@@ -495,17 +430,17 @@ const AdminAnonymousPanel = () => {
 
           {/* Content */}
           <div className="flex-1">
-            <// AnimatePresence mode="wait">
-              <// motion.div
-                key={// activeTab}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
                 {renderContent()}
-              </// motion.div>
-            </// AnimatePresence>
+              </motion.div>
+            </AnimatePresence>
           </div>
         </div>
       </div>

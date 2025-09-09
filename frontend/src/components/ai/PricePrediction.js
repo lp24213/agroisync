@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { TrendingUp, Share2, Filter, Download, AlertCircle, CheckCircle, BarChart3 } from 'lucide-react';
+import { Share2, Filter, Download, AlertCircle, CheckCircle, BarChart3 } from 'lucide-react';
 import { useAnalytics } from '../../hooks/useAnalytics';
 
 const PricePrediction = () => {
@@ -18,33 +18,33 @@ const PricePrediction = () => {
   const [confidence, setConfidence] = useState(0);
 
   // Produtos disponíveis
-  const products = [
+  const products = React.useMemo(() => [
     { id: 'soja', name: 'Soja', unit: 'sc' },
     { id: 'milho', name: 'Milho', unit: 'sc' },
     { id: 'trigo', name: 'Trigo', unit: 'sc' },
     { id: 'cafe', name: 'Café', unit: 'sc' },
     { id: 'algodao', name: 'Algodão', unit: 'kg' },
     { id: 'acucar', name: 'Açúcar', unit: 'kg' }
-  ];
+  ], []);
 
   // Regiões disponíveis
-  const regions = [
+  const regions = React.useMemo(() => [
     { id: 'sp', name: 'São Paulo' },
     { id: 'pr', name: 'Paraná' },
     { id: 'rs', name: 'Rio Grande do Sul' },
     { id: 'mg', name: 'Minas Gerais' },
     { id: 'mt', name: 'Mato Grosso' },
     { id: 'go', name: 'Goiás' }
-  ];
+  ], []);
 
   // Períodos disponíveis
-  const periods = [
+  const periods = React.useMemo(() => [
     { id: '7', name: '7 dias' },
     { id: '30', name: '30 dias' },
     { id: '90', name: '90 dias' },
     { id: '180', name: '180 dias' },
     { id: '365', name: '1 ano' }
-  ];
+  ], []);
 
   // Carregar previsões
   const loadPredictions = useCallback(async () => {
@@ -126,7 +126,7 @@ const PricePrediction = () => {
       product: selectedProduct,
       region: selectedRegion
     });
-  }, [predictions, historicalData, confidence, selectedProduct, selectedRegion, products, regions, periods, analytics]);
+  }, [predictions, historicalData, confidence, selectedProduct, selectedRegion, selectedPeriod, products, regions, periods, analytics]);
 
   // Compartilhar previsão
   const sharePrediction = useCallback(async () => {
@@ -158,12 +158,6 @@ const PricePrediction = () => {
     }
   }, [predictions, selectedProduct, selectedRegion, products, regions, t, analytics]);
 
-  // Calcular tendência
-  const getTrend = (current, previous) => {
-    if (current > previous) return 'up';
-    if (current < previous) return 'down';
-    return 'stable';
-  };
 
   // Calcular cor da confiança
   const getConfidenceColor = (confidence) => {

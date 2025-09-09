@@ -1,11 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-// Google Analytics 4
-const // GA_MEASUREMENT_ID = process.env.REACT_APP_GA_MEASUREMENT_ID;
-
 // Plausible Analytics
-const // PLAUSIBLE_DOMAIN = process.env.REACT_APP_PLAUSIBLE_DOMAIN || 'agroisync.com';
+export const PLAUSIBLE_DOMAIN = process.env.REACT_APP_PLAUSIBLE_DOMAIN || 'agroisync.com';
 
 const AnalyticsContext = createContext();
 
@@ -22,12 +19,12 @@ export const AnalyticsProvider = ({ children }) => {
   const [isInitialized, setIsInitialized] = useState(false);
 
   // Inicializar Google Analytics
-  // useEffect(() => {
-    if (// GA_MEASUREMENT_ID && !isInitialized) {
+  useEffect(() => {
+    if (process.env.REACT_APP_GA_MEASUREMENT_ID && !isInitialized) {
       // Carregar script do Google Analytics
       const script = document.createElement('script');
       script.async = true;
-      script.src = `https://www.googletagmanager.com/gtag/js?id=${// GA_MEASUREMENT_ID}`;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${process.env.REACT_APP_GA_MEASUREMENT_ID}`;
       document.head.appendChild(script);
 
       // Configurar gtag
@@ -38,7 +35,7 @@ export const AnalyticsProvider = ({ children }) => {
       window.gtag = gtag;
 
       gtag('js', new Date());
-      gtag('config', // GA_MEASUREMENT_ID, {
+      gtag('config', process.env.REACT_APP_GA_MEASUREMENT_ID, {
         page_title: document.title,
         page_location: window.location.href,
         custom_map: {
@@ -49,18 +46,18 @@ export const AnalyticsProvider = ({ children }) => {
 
       setIsInitialized(true);
     }
-  }, [// GA_MEASUREMENT_ID, isInitialized]);
+  }, [isInitialized]);
 
   // Inicializar Plausible Analytics
-  // useEffect(() => {
-    if (// PLAUSIBLE_DOMAIN && !window.plausible) {
+  useEffect(() => {
+    if (process.env.REACT_APP_PLAUSIBLE_DOMAIN && !window.plausible) {
       const script = document.createElement('script');
       script.defer = true;
-      script.setAttribute('data-domain', // PLAUSIBLE_DOMAIN);
+      script.setAttribute('data-domain', process.env.REACT_APP_PLAUSIBLE_DOMAIN);
       script.src = 'https://plausible.io/js/script.js';
       document.head.appendChild(script);
     }
-  }, [// PLAUSIBLE_DOMAIN]);
+  }, []);
 
   // Função para rastrear eventos
   const trackEvent = (eventName, parameters = {}) => {
@@ -95,7 +92,7 @@ export const AnalyticsProvider = ({ children }) => {
     try {
       // Google Analytics
       if (window.gtag) {
-        window.gtag('config', // GA_MEASUREMENT_ID, {
+        window.gtag('config', process.env.REACT_APP_GA_MEASUREMENT_ID, {
           page_title: pageName,
           page_location: window.location.origin + pagePath,
           page_path: pagePath,

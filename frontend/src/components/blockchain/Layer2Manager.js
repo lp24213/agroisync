@@ -6,17 +6,17 @@ import { Layers, Loader2 } from 'lucide-react';
 const Layer2Manager = ({ userId }) => {
   const {  } = useTranslation();
   const [solutions, setSolutions] = useState([]);
-  const [`loading, `setLoading] = useState(`true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [totalValue, setTotalValue] = useState(0);
   const [activeSolutions, setActiveSolutions] = useState(0);
 
-  // useEffect(() => {
-    // fetchLayer2Data();
+  useEffect(() => {
+fetchLayer2Data();
   }, [userId]);
 
-  const // fetchLayer2Data = async () => {
-    // setLoading(true);
+  const fetchLayer2Data = async () => {
+setLoading(true);
     try {
       const response = await fetch(`/api/blockchain/layer2?userId=${userId}`);
       const data = await response.json();
@@ -29,38 +29,38 @@ const Layer2Manager = ({ userId }) => {
         setError(data.message);
       }
     } catch (err) {
-      setError(// t('layer2.error', 'Erro ao carregar dados de Layer 2'));
+      setError(t('layer2.error', 'Erro ao carregar dados de Layer 2'));
     } finally {
-      // setLoading(false);
+setLoading(false);
     }
   };
 
   const getStatusIcon = (status) => {
     switch (status) {
       case 'active':
-        return <// CheckCircle className="w-5 h-5 text-green-600" />;
+        return <CheckCircle className="w-5 h-5 text-green-600" />;
       case 'pending':
-        return <// Clock className="w-5 h-5 text-yellow-600" />;
+        return <Clock className="w-5 h-5 text-yellow-600" />;
       case 'completed':
-        return <// CheckCircle className="w-5 h-5 text-blue-600" />;
+        return <CheckCircle className="w-5 h-5 text-blue-600" />;
       default:
-        return <// Clock className="w-5 h-5 text-gray-600" />;
+        return <Clock className="w-5 h-5 text-gray-600" />;
     }
   };
 
-  if (// loading) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
         <Loader2 className="w-8 h-8 animate-spin text-agro-emerald" />
         <span className="ml-3 text-gray-600 dark:text-gray-300">
-          {// t('layer2.// loading', 'Carregando dados de Layer 2...')}
+          {t('layer2.loading', 'Carregando dados de Layer 2...')}
         </span>
       </div>
     );
   }
 
   return (
-    <// motion.div
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
@@ -68,13 +68,13 @@ const Layer2Manager = ({ userId }) => {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
           <Layers className="w-6 h-6 mr-2 text-agro-emerald" />
-          {// t('layer2.title', 'Layer 2 Manager')}
+          {t('layer2.title', 'Layer 2 Manager')}
         </h2>
       </div>
       
       {error && (
         <div className="text-red-500 mb-4 flex items-center">
-          <// AlertCircle className="w-5 h-5 mr-2" />
+          <AlertCircle className="w-5 h-5 mr-2" />
           {error}
         </div>
       )}
@@ -85,13 +85,13 @@ const Layer2Manager = ({ userId }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {// t('layer2.totalValue', 'Valor Total')}
+                {t('layer2.totalValue', 'Valor Total')}
               </p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 ${totalValue.toFixed(2)}
               </p>
             </div>
-            <// DollarSign className="w-8 h-8 text-gray-400" />
+            <DollarSign className="w-8 h-8 text-gray-400" />
           </div>
         </div>
         
@@ -99,7 +99,7 @@ const Layer2Manager = ({ userId }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {// t('layer2.activeSolutions', 'Soluções Ativas')}
+                {t('layer2.activeSolutions', 'Soluções Ativas')}
               </p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 {activeSolutions}
@@ -113,7 +113,7 @@ const Layer2Manager = ({ userId }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {// t('layer2.totalSolutions', 'Total de Soluções')}
+                {t('layer2.totalSolutions', 'Total de Soluções')}
               </p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 {solutions.length}
@@ -129,7 +129,7 @@ const Layer2Manager = ({ userId }) => {
         <div className="text-center py-8">
           <Layers className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <p className="text-gray-600 dark:text-gray-400 mb-4">
-            {// t('layer2.noSolutions', 'Nenhuma solução encontrada')}
+            {t('layer2.noSolutions', 'Nenhuma solução encontrada')}
           </p>
         </div>
       ) : (
@@ -157,7 +157,7 @@ const Layer2Manager = ({ userId }) => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-4">
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {// t('layer2.value', 'Valor')}:
+                    {t('layer2.value', 'Valor')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
                     ${solution.value.toFixed(2)}
@@ -166,16 +166,16 @@ const Layer2Manager = ({ userId }) => {
                 
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {// t('layer2.// transactions', 'Transações')}:
+                    {t('layer2.transactions', 'Transações')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
-                    {solution.// transactions}
+                    {solution.transactions}
                   </p>
                 </div>
                 
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {// t('layer2.fee', 'Taxa')}:
+                    {t('layer2.fee', 'Taxa')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
                     {solution.fee}%
@@ -184,7 +184,7 @@ const Layer2Manager = ({ userId }) => {
                 
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {// t('layer2.speed', 'Velocidade')}:
+                    {t('layer2.speed', 'Velocidade')}:
                   </p>
                   <p className="font-medium text-gray-900 dark:text-white">
                     {solution.speed}
@@ -194,15 +194,15 @@ const Layer2Manager = ({ userId }) => {
               
               <div className="flex items-center justify-between">
                 <div className="text-sm text-gray-500 dark:text-gray-400">
-                  {// t('layer2.lastActivity', 'Última Atividade')}: {solution.lastActivity}
+                  {t('layer2.lastActivity', 'Última Atividade')}: {solution.lastActivity}
                 </div>
                 
                 <div className="flex space-x-2">
                   <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                    <// Zap className="w-4 h-4" />
+                    <Zap className="w-4 h-4" />
                   </button>
                   <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                    <// ExternalLink className="w-4 h-4" />
+                    <ExternalLink className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -210,7 +210,7 @@ const Layer2Manager = ({ userId }) => {
           ))}
         </div>
       )}
-    </// motion.div>
+    </motion.div>
   );
 };
 

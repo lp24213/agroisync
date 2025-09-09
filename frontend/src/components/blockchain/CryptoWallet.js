@@ -1,17 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-';
-import { Wallet, Send, Receive } from 'lucide-react';
+import { Wallet, Send, Receive, Copy, ExternalLink, TrendingUp, TrendingDown } from 'lucide-react';
 import { useAnalytics } from '../../hooks/useAnalytics';
 
 const CryptoWallet = () => {
-  const {  } = useTranslation();
+  const { t } = useTranslation();
   const analytics = useAnalytics();
   const [wallet, setWallet] = useState(null);
-  const [`isLoading, `setIsLoading] = useState(`true);
-  const [`showPrivateKey, `setShowPrivateKey] = useState(`false);
-  const [`activeTab, `setActiveTab] = useState(`'overview');
-  const [// transactions, setTransactions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [transactions, setTransactions] = useState([]);
   const [cryptoPrices, setCryptoPrices] = useState({});
   const [isConnected, setIsConnected] = useState(false);
   const [network, setNetwork] = useState('solana'); // 'solana' ou 'polygon'
@@ -26,18 +23,10 @@ const CryptoWallet = () => {
     { id: 'eth', name: 'Ethereum', symbol: 'ETH', icon: '🔷', network: 'ethereum', commissionRate: 0.05 }
   ];
 
-  // Carteira principal do AgroSync para recebimento de comissões
-  const // agroSyncWallet = {
-    address: 'AgroSyncWallet_MAIN_2024',
-    privateKey: 'ENCRYPTED_MASTER_KEY',
-    balance: 0,
-    totalCommissions: 0,
-    monthlyEarnings: 0
-  };
 
   // Carregar carteira
   const loadWallet = useCallback(async () => {
-    // setIsLoading(true);
+    setIsLoading(true);
     
     try {
       const response = await fetch('/api/blockchain/wallet', {
@@ -59,14 +48,14 @@ const CryptoWallet = () => {
         });
       }
     } catch (error) {
-      console.error('Error // loading wallet:', error);
+      console.error('Error loading wallet:', error);
     } finally {
-      // setIsLoading(false);
+      setIsLoading(false);
     }
   }, [analytics]);
 
   // Carregar preços das criptomoedas
-  const // loadCryptoPrices = useCallback(async () => {
+  const loadCryptoPrices = useCallback(async () => {
     try {
       const response = await fetch('/api/blockchain/prices');
       const data = await response.json();
@@ -75,14 +64,14 @@ const CryptoWallet = () => {
         setCryptoPrices(data.prices);
       }
     } catch (error) {
-      console.error('Error // loading crypto prices:', error);
+      console.error('Error loading crypto prices:', error);
     }
   }, []);
 
   // Carregar transações
   const loadTransactions = useCallback(async () => {
     try {
-      const response = await fetch('/api/blockchain/// transactions', {
+      const response = await fetch('/api/blockchain/transactions', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
         }
@@ -91,10 +80,10 @@ const CryptoWallet = () => {
       const data = await response.json();
 
       if (data.success) {
-        setTransactions(data.// transactions);
+        setTransactions(data.transactions);
       }
     } catch (error) {
-      console.error('Error // loading // transactions:', error);
+      console.error('Error loading transactions:', error);
     }
   }, []);
 
@@ -130,13 +119,13 @@ const CryptoWallet = () => {
           });
         }
       } else {
-        alert(// t('crypto.phantomNotFound', 'Phantom wallet não encontrado. Instale a extensão Phantom.'));
+        alert(t('crypto.phantomNotFound', 'Phantom wallet não encontrado. Instale a extensão Phantom.'));
       }
     } catch (error) {
       console.error('Error connecting wallet:', error);
-      alert(// t('crypto.connectionError', 'Erro ao conectar carteira'));
+      alert(t('crypto.connectionError', 'Erro ao conectar carteira'));
     }
-  }, [analytics, // t]);
+  }, [analytics, t]);
 
   // Desconectar carteira
   const disconnectWallet = useCallback(async () => {
@@ -157,43 +146,6 @@ const CryptoWallet = () => {
     }
   }, [analytics]);
 
-  // Enviar transação
-  const // sendTransaction = useCallback(async (to, amount, currency) => {
-    try {
-      const response = await fetch('/api/blockchain/send', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        },
-        body: JSON.stringify({
-          to,
-          amount,
-          currency,
-          network
-        })
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        // Recarregar carteira e transações
-        loadWallet();
-        loadTransactions();
-        
-        analytics.trackEvent('crypto_transaction_sent', {
-          currency,
-          amount,
-          network
-        });
-      }
-
-      return data;
-    } catch (error) {
-      console.error('Error sending transaction:', error);
-      return { success: false, error: error.message };
-    }
-  }, [network, loadWallet, loadTransactions, analytics]);
 
   // Trocar rede
   const switchNetwork = useCallback(async (newNetwork) => {
@@ -231,19 +183,19 @@ const CryptoWallet = () => {
   }, [analytics]);
 
   // Carregar dados iniciais
-  // useEffect(() => {
+  useEffect(() => {
     loadWallet();
-    // loadCryptoPrices();
+    loadCryptoPrices();
     loadTransactions();
-  }, [loadWallet, // loadCryptoPrices, loadTransactions]);
+  }, [loadWallet, loadCryptoPrices, loadTransactions]);
 
   // Atualizar preços periodicamente
-  // useEffect(() => {
-    const interval = setInterval(// loadCryptoPrices, 30000); // 30 segundos
+  useEffect(() => {
+    const interval = setInterval(loadCryptoPrices, 30000); // 30 segundos
     return () => clearInterval(interval);
-  }, [// loadCryptoPrices]);
+  }, [loadCryptoPrices]);
 
-  if (// isLoading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
@@ -251,7 +203,7 @@ const CryptoWallet = () => {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
           </div>
           <p className="text-gray-600 dark:text-gray-300 text-xl">
-            {// t('crypto.// loading', 'Carregando carteira...')}
+            {t('crypto.loading', 'Carregando carteira...')}
           </p>
         </div>
       </div>
@@ -264,10 +216,10 @@ const CryptoWallet = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            {// t('crypto.wallet', 'Carteira Cripto')}
+            {t('crypto.wallet', 'Carteira Cripto')}
           </h2>
           <p className="text-gray-600 dark:text-gray-400">
-            {// t('crypto.walletSubtitle', 'Gerencie suas criptomoedas e NFTs')}
+            {t('crypto.walletSubtitle', 'Gerencie suas criptomoedas e NFTs')}
           </p>
         </div>
 
@@ -287,14 +239,14 @@ const CryptoWallet = () => {
               onClick={disconnectWallet}
               className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors"
             >
-              {// t('crypto.disconnect', 'Desconectar')}
+              {t('crypto.disconnect', 'Desconectar')}
             </button>
           ) : (
             <button
               onClick={connectWallet}
               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
             >
-              {// t('crypto.connect', 'Conectar Carteira')}
+              {t('crypto.connect', 'Conectar Carteira')}
             </button>
           )}
         </div>
@@ -305,16 +257,16 @@ const CryptoWallet = () => {
         <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8 text-center">
           <Wallet className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-            {// t('crypto.connectWallet', 'Conecte sua carteira')}
+            {t('crypto.connectWallet', 'Conecte sua carteira')}
           </h3>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
-            {// t('crypto.connectWalletDescription', 'Conecte sua carteira Phantom ou MetaMask para começar a usar criptomoedas')}
+            {t('crypto.connectWalletDescription', 'Conecte sua carteira Phantom ou MetaMask para começar a usar criptomoedas')}
           </p>
           <button
             onClick={connectWallet}
             className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
           >
-            {// t('crypto.connectNow', 'Conectar Agora')}
+            {t('crypto.connectNow', 'Conectar Agora')}
           </button>
         </div>
       ) : (
@@ -324,11 +276,11 @@ const CryptoWallet = () => {
           <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {// t('crypto.walletOverview', 'Visão Geral')}
+                {t('crypto.walletOverview', 'Visão Geral')}
               </h3>
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-600 dark:text-gray-400">
-                  {// t('crypto.network', 'Rede')}:
+                  {t('crypto.network', 'Rede')}:
                 </span>
                 <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-xs font-medium">
                   {network.toUpperCase()}
@@ -342,7 +294,7 @@ const CryptoWallet = () => {
                   R$ {wallet?.totalValue?.toFixed(2) || '0.00'}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  {// t('crypto.totalValue', 'Valor Total')}
+                  {t('crypto.totalValue', 'Valor Total')}
                 </div>
               </div>
 
@@ -351,7 +303,7 @@ const CryptoWallet = () => {
                   {wallet?.balance?.length || 0}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  {// t('crypto.currencies', 'Moedas')}
+                  {t('crypto.currencies', 'Moedas')}
                 </div>
               </div>
 
@@ -360,7 +312,7 @@ const CryptoWallet = () => {
                   {wallet?.nfts?.length || 0}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  {// t('crypto.nfts', 'NFTs')}
+                  {t('crypto.nfts', 'NFTs')}
                 </div>
               </div>
             </div>
@@ -370,7 +322,7 @@ const CryptoWallet = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                    {// t('crypto.walletAddress', 'Endereço da Carteira')}
+                    {t('crypto.walletAddress', 'Endereço da Carteira')}
                   </p>
                   <p className="font-mono text-sm text-gray-900 dark:text-white">
                     {wallet?.address ? `${wallet.address.slice(0, 8)}...${wallet.address.slice(-8)}` : ''}
@@ -381,7 +333,7 @@ const CryptoWallet = () => {
                     onClick={() => copyAddress(wallet?.address)}
                     className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600"
                   >
-                    <// Copy className="w-4 h-4" />
+                    <Copy className="w-4 h-4" />
                   </button>
                   <a
                     href={`https://explorer.solana.com/address/${wallet?.address}`}
@@ -389,7 +341,7 @@ const CryptoWallet = () => {
                     rel="noopener noreferrer"
                     className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600"
                   >
-                    <// ExternalLink className="w-4 h-4" />
+                    <ExternalLink className="w-4 h-4" />
                   </a>
                 </div>
               </div>
@@ -400,7 +352,7 @@ const CryptoWallet = () => {
           <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
             <div className="p-6 border-b border-gray-200 dark:border-gray-700">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {// t('crypto.balances', 'Saldos')}
+                {t('crypto.balances', 'Saldos')}
               </h3>
             </div>
             <div className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -437,7 +389,7 @@ const CryptoWallet = () => {
                         <div className={`text-xs flex items-center ${
                           change >= 0 ? 'text-green-600' : 'text-red-600'
                         }`}>
-                          {change >= 0 ? <// TrendingUp className="w-3 h-3 mr-1" /> : <// TrendingDown className="w-3 h-3 mr-1" />}
+                          {change >= 0 ? <TrendingUp className="w-3 h-3 mr-1" /> : <TrendingDown className="w-3 h-3 mr-1" />}
                           {change.toFixed(2)}%
                         </div>
                       </div>
@@ -453,7 +405,7 @@ const CryptoWallet = () => {
             <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
               <div className="p-6 border-b border-gray-200 dark:border-gray-700">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  {// t('crypto.nfts', 'NFTs')}
+                  {t('crypto.nfts', 'NFTs')}
                 </h3>
               </div>
               <div className="p-6">
@@ -486,11 +438,11 @@ const CryptoWallet = () => {
           <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
             <div className="p-6 border-b border-gray-200 dark:border-gray-700">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {// t('crypto.recentTransactions', 'Transações Recentes')}
+                {t('crypto.recentTransactions', 'Transações Recentes')}
               </h3>
             </div>
             <div className="divide-y divide-gray-200 dark:divide-gray-700">
-              {// transactions.slice(0, 5).map((transaction) => (
+              {transactions.slice(0, 5).map((transaction) => (
                 <div key={transaction.id} className="p-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
@@ -505,7 +457,7 @@ const CryptoWallet = () => {
                       </div>
                       <div>
                         <h4 className="font-medium text-gray-900 dark:text-white">
-                          {transaction.type === 'send' ? // t('crypto.sent', 'Enviado') : // t('crypto.received', 'Recebido')}
+                          {transaction.type === 'send' ? t('crypto.sent', 'Enviado') : t('crypto.received', 'Recebido')}
                         </h4>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
                           {transaction.currency.toUpperCase()}

@@ -3,23 +3,23 @@ import { loadStripe } from '@stripe/stripe-js';
 
 const PaymentContext = createContext();
 
-export const // usePayment = () => {
+export const usePayment = () => {
   const context = useContext(PaymentContext);
   if (!context) {
-    throw new Error('// usePayment deve ser usado dentro de um PaymentProvider');
+    throw new Error('usePayment deve ser usado dentro de um PaymentProvider');
   }
   return context;
 };
 
 export const PaymentProvider = ({ children }) => {
   const [stripe, setStripe] = useState(null);
-  const [`loading, `setLoading] = useState(`true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [paymentMethods, // setPaymentMethods] = useState([]);
+  const [paymentMethods] = useState([]);
   const [subscription, setSubscription] = useState(null);
 
   // Inicializar Stripe
-  // useEffect(() => {
+  useEffect(() => {
     const initializeStripe = async () => {
       try {
         const stripeInstance = await loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
@@ -28,7 +28,7 @@ export const PaymentProvider = ({ children }) => {
         console.error('Erro ao inicializar Stripe:', error);
         setError('Erro ao inicializar sistema de pagamentos');
       } finally {
-        // setLoading(false);
+setLoading(false);
       }
     };
 
@@ -209,7 +209,7 @@ export const PaymentProvider = ({ children }) => {
 
   const value = {
     stripe,
-    // loading,
+loading,
     error,
     paymentMethods,
     subscription,

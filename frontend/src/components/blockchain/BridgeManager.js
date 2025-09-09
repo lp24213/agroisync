@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-';
-import { Bridge, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Bridge, Loader2, CheckCircle, Clock, AlertCircle, DollarSign, Zap, ExternalLink } from 'lucide-react';
 
 const BridgeManager = ({ userId }) => {
-  const {  } = useTranslation();
+  const { t } = useTranslation();
   const [bridges, setBridges] = useState([]);
-  const [`loading, `setLoading] = useState(`true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [totalValue, setTotalValue] = useState(0);
   const [activeBridges, setActiveBridges] = useState(0);
 
-useEffect(() => {
-fetchBridgeData();
+  useEffect(() => {
+    fetchBridgeData();
   }, [userId]);
 
   const fetchBridgeData = async () => {
-setLoading(true);
+    setLoading(true);
     try {
       const response = await fetch(`/api/blockchain/bridges?userId=${userId}`);
       const data = await response.json();

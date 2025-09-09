@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
-import { Search, MessageSquare, CheckCheck } from 'lucide-react';
+import { Search, MessageSquare, CheckCheck, Check, AlertCircle, Pin, MoreVertical } from 'lucide-react';
 
 const ChatList = ({ onSelectChat, selectedChatId }) => {
-  const {  } = useTranslation();
-  const {  } = // useAuth();
+  const { t } = useTranslation();
+  const { user } = useAuth();
   const [chats, setChats] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('all'); // 'all', 'unread', 'pinned'
-  const [`loading, `setLoading] = useState(`false);
+  const [loading, setLoading] = useState(false);
 
-  // useEffect(() => {
+  useEffect(() => {
     loadChats();
   }, []);
 
   const loadChats = async () => {
-    // setLoading(true);
+    setLoading(true);
     try {
       // Simular carregamento de conversas
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -27,7 +27,7 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
         {
           id: 'chat-1',
           otherUser: {
-            id: '// user-1',
+            id: 'user-1',
             name: 'João Silva',
             email: 'joao@example.com',
             avatar: null
@@ -35,7 +35,7 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
           lastMessage: {
             content: 'Obrigado pela negociação!',
             timestamp: new Date(Date.now() - 300000),
-            senderId: '// user-1',
+            senderId: 'user-1',
             status: 'read'
           },
           unreadCount: 0,
@@ -47,7 +47,7 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
         {
           id: 'chat-2',
           otherUser: {
-            id: '// user-2',
+            id: 'user-2',
             name: 'Maria Santos',
             email: 'maria@example.com',
             avatar: null
@@ -55,7 +55,7 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
           lastMessage: {
             content: 'Qual o prazo de entrega?',
             timestamp: new Date(Date.now() - 1800000),
-            senderId: '// user-2',
+            senderId: 'user-2',
             status: 'delivered'
           },
           unreadCount: 2,
@@ -67,7 +67,7 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
         {
           id: 'chat-3',
           otherUser: {
-            id: '// user-3',
+            id: 'user-3',
             name: 'Pedro Oliveira',
             email: 'pedro@example.com',
             avatar: null
@@ -75,7 +75,7 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
           lastMessage: {
             content: 'Preciso de mais informações sobre o produto.',
             timestamp: new Date(Date.now() - 3600000),
-            senderId: '// user-3',
+            senderId: 'user-3',
             status: 'read'
           },
           unreadCount: 0,
@@ -90,7 +90,7 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
     } catch (error) {
       console.error('Erro ao carregar conversas:', error);
     } finally {
-      // setLoading(false);
+setLoading(false);
     }
   };
 
@@ -115,7 +115,7 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
     return new Date(b.lastMessage.timestamp) - new Date(a.lastMessage.timestamp);
   });
 
-  const // formatTime = (timestamp) => {
+  const formatTime = (timestamp) => {
     const now = new Date();
     const messageTime = new Date(timestamp);
     const diffInHours = (now - messageTime) / (1000 * 60 * 60);
@@ -140,11 +140,11 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
   const getMessageStatusIcon = (status) => {
     switch (status) {
       case 'delivered':
-        return <// Check className="w-3 h-3 text-slate-400" />;
+        return <Check className="w-3 h-3 text-slate-400" />;
       case 'read':
         return <CheckCheck className="w-3 h-3 text-blue-500" />;
       case 'error':
-        return <// AlertCircle className="w-3 h-3 text-red-500" />;
+        return <AlertCircle className="w-3 h-3 text-red-500" />;
       default:
         return null;
     }
@@ -153,21 +153,21 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
   const getContextBadge = (context) => {
     switch (context) {
       case 'order':
-        return { label: // t('chat.order', 'Pedido'), color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' };
+        return { label: t('chat.order', 'Pedido'), color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' };
       case 'freight':
-        return { label: // t('chat.freight', 'Frete'), color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' };
+        return { label: t('chat.freight', 'Frete'), color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' };
       default:
-        return { label: // t('chat.general', 'Geral'), color: 'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-200' };
+        return { label: t('chat.general', 'Geral'), color: 'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-200' };
     }
   };
 
   const renderChatItem = (chat) => {
     const isSelected = selectedChatId === chat.id;
-    const isLastMessageFromOther = chat.lastMessage.senderId !== // user.id;
+    const isLastMessageFromOther = chat.lastMessage.senderId !== user.id;
     const contextBadge = getContextBadge(chat.context);
     
     return (
-      <// motion.div
+      <motion.div
         key={chat.id}
         className={`p-4 cursor-pointer border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors ${
           isSelected ? 'bg-emerald-50 dark:bg-emerald-900/20' : ''
@@ -202,12 +202,12 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
                   {chat.otherUser.name}
                 </h3>
                 {chat.isPinned && (
-                  <// Pin className="w-4 h-4 text-slate-400" />
+                  <Pin className="w-4 h-4 text-slate-400" />
                 )}
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xs text-slate-500 dark:text-slate-400">
-                  {// formatTime(chat.lastMessage.timestamp)}
+                  {formatTime(chat.lastMessage.timestamp)}
                 </span>
                 {!isLastMessageFromOther && getMessageStatusIcon(chat.lastMessage.status)}
               </div>
@@ -235,17 +235,17 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
             </div>
           </div>
         </div>
-      </// motion.div>
+      </motion.div>
     );
   };
 
-  if (// loading) {
+  if (loading) {
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600 mx-auto mb-4"></div>
           <p className="text-slate-600 dark:text-slate-400">
-            {// t('chat.loadingChats', 'Carregando conversas...')}
+            {t('chat.loadingChats', 'Carregando conversas...')}
           </p>
         </div>
       </div>
@@ -258,19 +258,19 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
       <div className="p-4 border-b border-slate-200 dark:border-slate-700">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-slate-800 dark:text-slate-200">
-            {// t('chat.// messages', 'Mensagens')}
+            {t('chat.messages', 'Mensagens')}
           </h2>
           <button className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors">
-            <// MoreVertical className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+            <MoreVertical className="w-5 h-5 text-slate-600 dark:text-slate-400" />
           </button>
         </div>
 
-        {/* // Search */}
+        {/* Search */}
         <div className="relative mb-4">
-          <// Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
             type="text"
-            placeholder={// t('chat.search', 'Buscar conversas...')}
+            placeholder={t('chat.search', 'Buscar conversas...')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
@@ -287,7 +287,7 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
                 : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
             }`}
           >
-            {// t('chat.all', 'Todas')}
+            {t('chat.all', 'Todas')}
           </button>
           <button
             onClick={() => setFilter('unread')}
@@ -297,7 +297,7 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
                 : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
             }`}
           >
-            {// t('chat.unread', 'Não lidas')}
+            {t('chat.unread', 'Não lidas')}
           </button>
           <button
             onClick={() => setFilter('pinned')}
@@ -307,14 +307,14 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
                 : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
             }`}
           >
-            {// t('chat.pinned', 'Fixadas')}
+            {t('chat.pinned', 'Fixadas')}
           </button>
         </div>
       </div>
 
       {/* Chat List */}
       <div className="flex-1 overflow-y-auto">
-        <// AnimatePresence>
+        <AnimatePresence>
           {sortedChats.length > 0 ? (
             sortedChats.map(renderChatItem)
           ) : (
@@ -322,15 +322,15 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
               <div className="text-center">
                 <MessageSquare className="w-16 h-16 text-slate-400 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-slate-600 dark:text-slate-400 mb-2">
-                  {// t('chat.noConversations', 'Nenhuma conversa')}
+                  {t('chat.noConversations', 'Nenhuma conversa')}
                 </h3>
                 <p className="text-slate-500 dark:text-slate-500">
-                  {// t('chat.noConversationsDesc', 'Suas conversas aparecerão aqui')}
+                  {t('chat.noConversationsDesc', 'Suas conversas aparecerão aqui')}
                 </p>
               </div>
             </div>
           )}
-        </// AnimatePresence>
+        </AnimatePresence>
       </div>
     </div>
   );
