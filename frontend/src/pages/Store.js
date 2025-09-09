@@ -2,243 +2,224 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Search, 
-  Grid, 
-  List, 
+  ShoppingCart, 
   Star, 
   Heart,
   Truck,
-  Package,
-  TrendingUp,
-  MapPin,
-  User,
-  ArrowRight,
-  CheckCircle,
   Shield,
-  X
+  Zap,
+  ArrowRight,
+  Grid,
+  List
 } from 'lucide-react';
 
 const Store = () => {
   const [viewMode, setViewMode] = useState('grid');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [showIntermediation, setShowIntermediation] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [intermediationData, setIntermediationData] = useState({
-    quantity: '',
-    message: '',
-    contactPhone: '',
-    contactEmail: ''
-  });
 
   const categories = [
-    { id: 'all', name: 'Todos os Produtos', icon: Package },
-    { id: 'grains', name: 'Grãos', icon: Package },
-    { id: 'machinery', name: 'Maquinário', icon: Truck },
-    { id: 'inputs', name: 'Insumos', icon: Package },
-    { id: 'services', name: 'Serviços', icon: TrendingUp }
+    { id: 'all', name: 'Todos os Produtos' },
+    { id: 'seeds', name: 'Sementes' },
+    { id: 'fertilizers', name: 'Fertilizantes' },
+    { id: 'equipment', name: 'Equipamentos' },
+    { id: 'technology', name: 'Tecnologia' },
+    { id: 'services', name: 'Serviços' }
   ];
 
   const products = [
     {
       id: 1,
-      name: 'Soja Premium - Safra 2024',
-      category: 'grains',
-      price: 185.50,
-      unit: 'R$/sc',
-      location: 'Sorriso - MT',
-      seller: 'Fazenda São José',
+      name: 'Sementes Premium Soja',
+      category: 'seeds',
+      price: 89.90,
+      originalPrice: 120.00,
       rating: 4.8,
       reviews: 124,
-      image: '🌾',
-      description: 'Soja de alta qualidade, certificada e pronta para exportação',
-      quantity: 5000,
-      available: true,
-      featured: true
+      image: '/api/placeholder/300/200',
+      badge: 'Mais Vendido',
+      inStock: true,
+      description: 'Sementes de soja de alta qualidade para máxima produtividade'
     },
     {
       id: 2,
-      name: 'Trator John Deere 6110J',
-      category: 'machinery',
-      price: 285000,
-      unit: 'R$',
-      location: 'Campo Grande - MS',
-      seller: 'Agro Máquinas',
-      rating: 4.9,
+      name: 'Fertilizante NPK 20-10-10',
+      category: 'fertilizers',
+      price: 45.50,
+      originalPrice: 60.00,
+      rating: 4.6,
       reviews: 89,
-      image: '🚜',
-      description: 'Trator 0km com garantia de 2 anos e assistência técnica',
-      quantity: 1,
-      available: true,
-      featured: true
+      image: '/api/placeholder/300/200',
+      badge: 'Oferta',
+      inStock: true,
+      description: 'Fertilizante balanceado para todas as culturas'
     },
     {
       id: 3,
-      name: 'Milho Híbrido Pioneer',
-      category: 'grains',
-      price: 89.75,
-      unit: 'R$/sc',
-      location: 'Lucas do Rio Verde - MT',
-      seller: 'Cooperativa Agro Norte',
-      rating: 4.7,
-      reviews: 203,
-      image: '🌽',
-      description: 'Sementes de milho híbrido de alta produtividade',
-      quantity: 2000,
-      available: true,
-      featured: false
+      name: 'Drone Agrícola DJI Agras',
+      category: 'technology',
+      price: 15990.00,
+      originalPrice: 18990.00,
+      rating: 4.9,
+      reviews: 23,
+      image: '/api/placeholder/300/200',
+      badge: 'Novidade',
+      inStock: true,
+      description: 'Drone profissional para pulverização e monitoramento'
     },
     {
       id: 4,
-      name: 'Fertilizante NPK 20-10-10',
-      category: 'inputs',
-      price: 1250,
-      unit: 'R$/ton',
-      location: 'Rondonópolis - MT',
-      seller: 'Agro Fertilizantes',
-      rating: 4.6,
-      reviews: 156,
-      image: '🌱',
-      description: 'Fertilizante balanceado para diversas culturas',
-      quantity: 100,
-      available: true,
-      featured: false
+      name: 'Trator John Deere 6110J',
+      category: 'equipment',
+      price: 185000.00,
+      originalPrice: 210000.00,
+      rating: 4.7,
+      reviews: 15,
+      image: '/api/placeholder/300/200',
+      badge: 'Premium',
+      inStock: false,
+      description: 'Trator de alta performance para grandes propriedades'
     },
     {
       id: 5,
-      name: 'Serviço de Colheita Mecanizada',
-      category: 'services',
-      price: 45,
-      unit: 'R$/ha',
-      location: 'Sinop - MT',
-      seller: 'Agro Serviços Premium',
-      rating: 4.9,
+      name: 'Sistema de Irrigação Inteligente',
+      category: 'technology',
+      price: 2500.00,
+      originalPrice: 3200.00,
+      rating: 4.5,
       reviews: 67,
-      image: '⚙️',
-      description: 'Colheita mecanizada com equipamentos modernos',
-      quantity: 1000,
-      available: true,
-      featured: true
+      image: '/api/placeholder/300/200',
+      badge: 'Eco',
+      inStock: true,
+      description: 'Controle automático de irrigação com IoT'
     },
     {
       id: 6,
-      name: 'Algodão Premium',
-      category: 'grains',
-      price: 4.25,
-      unit: 'R$/kg',
-      location: 'Chapadão do Sul - MS',
-      seller: 'Fazenda Algodão Dourado',
-      rating: 4.5,
-      reviews: 98,
-      image: '☁️',
-      description: 'Algodão de fibra longa, ideal para exportação',
-      quantity: 15000,
-      available: true,
-      featured: false
+      name: 'Consultoria Agronômica Premium',
+      category: 'services',
+      price: 500.00,
+      originalPrice: 750.00,
+      rating: 4.9,
+      reviews: 45,
+      image: '/api/placeholder/300/200',
+      badge: 'Especialista',
+      inStock: true,
+      description: 'Consultoria especializada para otimização da produção'
     }
   ];
 
-  const filteredProducts = products.filter(product => {
-    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.description.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+  const filteredProducts = selectedCategory === 'all' 
+    ? products 
+    : products.filter(product => product.category === selectedCategory);
 
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-      minimumFractionDigits: 2
-    }).format(price);
-  };
-
-  const handleIntermediation = (product) => {
-    setSelectedProduct(product);
-    setShowIntermediation(true);
-  };
-
-  const handleIntermediationSubmit = () => {
-    // Simular envio da solicitação de intermediação
-    alert('Solicitação de intermediação enviada! O vendedor será notificado e entrará em contato em breve.');
-    setShowIntermediation(false);
-    setIntermediationData({
-      quantity: '',
-      message: '',
-      contactPhone: '',
-      contactEmail: ''
-    });
-  };
-
-  const handleContactSeller = (product) => {
-    // Abrir WhatsApp ou email direto com o vendedor
-    const message = `Olá! Tenho interesse no produto: ${product.name}`;
-    const whatsappUrl = `https://wa.me/5566992362830?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
-  };
+  const features = [
+    {
+      icon: Truck,
+      title: 'Entrega Rápida',
+      description: 'Entrega em até 48h para todo o Brasil'
+    },
+    {
+      icon: Shield,
+      title: 'Garantia Total',
+      description: 'Garantia de 30 dias em todos os produtos'
+    },
+    {
+      icon: Zap,
+      title: 'Suporte 24/7',
+      description: 'Atendimento especializado sempre disponível'
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-primary">
       {/* Hero Section */}
-      <section className="hero-section">
-        <div className="container-futuristic">
+      <section className="hero-futuristic">
+        <div className="container">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center text-white"
+            className="text-center"
           >
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              Intermediação <span className="text-yellow-300">AgroSync</span>
+            <h1 className="hero-title">
+              Loja <span className="text-primary">Agroisync</span>
             </h1>
-            <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Plataforma de intermediação inteligente. Conectamos produtores, 
-              compradores e fornecedores do agronegócio com segurança total e transparência.
+            <p className="hero-subtitle">
+              Produtos e serviços de alta qualidade para o agronegócio moderno. 
+              Tecnologia, inovação e excelência em cada item.
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Search and Filters */}
-      <section className="py-12 bg-secondary">
-        <div className="container-futuristic">
-          <div className="glass-card p-6">
-            <div className="flex flex-col lg:flex-row gap-6 items-center">
+      {/* Features */}
+      <section className="section-sm bg-secondary">
+        <div className="container">
+          <div className="grid-futuristic grid-cols-1 md:grid-cols-3">
+            {features.map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="card-futuristic text-center"
+              >
+                <div className="w-16 h-16 bg-primary rounded-xl mx-auto mb-4 flex items-center justify-center">
+                  <feature.icon size={32} className="text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-primary mb-2">
+                  {feature.title}
+                </h3>
+                <p className="text-secondary">
+                  {feature.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Store Content */}
+      <section className="section bg-primary">
+        <div className="container">
+          {/* Filters and Search */}
+          <div className="card-futuristic mb-8">
+            <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
               {/* Search */}
-              <div className="flex-1 relative">
-                <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" />
-                <input
-                  type="text"
-                  placeholder="Buscar produtos, serviços ou fornecedores..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="input-futuristic pl-10 w-full"
-                />
+              <div className="flex-1 max-w-md">
+                <div className="relative">
+                  <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" />
+                  <input
+                    type="text"
+                    placeholder="Buscar produtos..."
+                    className="form-input pl-10 w-full"
+                  />
+                </div>
               </div>
 
-              {/* Category Filter */}
-              <div className="flex gap-2 flex-wrap">
+              {/* Categories */}
+              <div className="flex flex-wrap gap-2">
                 {categories.map((category) => (
                   <button
                     key={category.id}
                     onClick={() => setSelectedCategory(category.id)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                       selectedCategory === category.id
                         ? 'bg-primary text-white'
-                        : 'bg-secondary text-secondary hover:bg-primary hover:text-white'
+                        : 'bg-gray-100 text-secondary hover:bg-gray-200'
                     }`}
                   >
-                    <category.icon size={16} />
                     {category.name}
                   </button>
                 ))}
               </div>
 
               {/* View Mode */}
-              <div className="flex gap-2">
+              <div className="flex items-center gap-2">
                 <button
                   onClick={() => setViewMode('grid')}
                   className={`p-2 rounded-lg transition-colors ${
-                    viewMode === 'grid' ? 'bg-primary text-white' : 'bg-secondary text-secondary hover:bg-primary hover:text-white'
+                    viewMode === 'grid' ? 'bg-primary text-white' : 'text-secondary hover:bg-gray-100'
                   }`}
                 >
                   <Grid size={20} />
@@ -246,7 +227,7 @@ const Store = () => {
                 <button
                   onClick={() => setViewMode('list')}
                   className={`p-2 rounded-lg transition-colors ${
-                    viewMode === 'list' ? 'bg-primary text-white' : 'bg-secondary text-secondary hover:bg-primary hover:text-white'
+                    viewMode === 'list' ? 'bg-primary text-white' : 'text-secondary hover:bg-gray-100'
                   }`}
                 >
                   <List size={20} />
@@ -254,436 +235,137 @@ const Store = () => {
               </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Products Grid */}
-      <section className="py-20 bg-primary">
-        <div className="container-futuristic">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold text-white">
-              Produtos Disponíveis ({filteredProducts.length})
-            </h2>
-            <div className="flex items-center gap-4">
-              <span className="text-white/80">Ordenar por:</span>
-              <select className="input-futuristic">
-                <option>Relevância</option>
-                <option>Preço: Menor para Maior</option>
-                <option>Preço: Maior para Menor</option>
-                <option>Avaliação</option>
-                <option>Mais Recentes</option>
-              </select>
-            </div>
-          </div>
-
-          {viewMode === 'grid' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredProducts.map((product, index) => (
-                <motion.div
-                  key={product.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  className="product-card group relative"
-                >
-                  {product.featured && (
-                    <div className="absolute top-4 left-4 bg-success text-white px-3 py-1 rounded-full text-sm font-semibold">
-                      Destaque
-                    </div>
-                  )}
+          {/* Products Grid */}
+          <div className={`grid-futuristic ${
+            viewMode === 'grid' 
+              ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' 
+              : 'grid-cols-1'
+          }`}>
+            {filteredProducts.map((product, index) => (
+              <motion.div
+                key={product.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className={`card-futuristic group ${
+                  viewMode === 'list' ? 'flex flex-row items-center gap-6' : ''
+                }`}
+              >
+                {/* Product Image */}
+                <div className={`relative ${
+                  viewMode === 'list' ? 'w-48 h-32 flex-shrink-0' : 'w-full h-48'
+                }`}>
+                  <div className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center">
+                    <span className="text-muted">Imagem do Produto</span>
+                  </div>
                   
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="text-4xl">{product.image}</div>
-                    <button className="p-2 text-muted hover:text-danger transition-colors">
-                      <Heart size={20} />
-                    </button>
+                  {/* Badge */}
+                  <div className="absolute top-3 left-3">
+                    <span className="bg-primary text-white px-2 py-1 rounded-full text-xs font-semibold">
+                      {product.badge}
+                    </span>
                   </div>
 
-                  <h3 className="text-xl font-bold text-primary mb-2 group-hover:text-primary-dark transition-colors">
-                    {product.name}
-                  </h3>
-                  
-                  <p className="text-secondary mb-4 line-clamp-2">
+                  {/* Wishlist */}
+                  <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:scale-110 transition-transform">
+                    <Heart size={16} className="text-muted hover:text-red-500" />
+                  </button>
+
+                  {/* Out of Stock */}
+                  {!product.inStock && (
+                    <div className="absolute inset-0 bg-black bg-opacity-50 rounded-lg flex items-center justify-center">
+                      <span className="text-white font-semibold">Fora de Estoque</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Product Info */}
+                <div className={`${viewMode === 'list' ? 'flex-1' : ''}`}>
+                  <div className="flex items-start justify-between mb-2">
+                    <h3 className="text-lg font-bold text-primary group-hover:text-primary transition-colors">
+                      {product.name}
+                    </h3>
+                    <div className="flex items-center gap-1">
+                      <Star size={16} className="text-yellow-400 fill-current" />
+                      <span className="text-sm text-secondary">
+                        {product.rating} ({product.reviews})
+                      </span>
+                    </div>
+                  </div>
+
+                  <p className="text-secondary text-sm mb-4 line-clamp-2">
                     {product.description}
                   </p>
 
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="flex items-center gap-1">
-                      <Star size={16} className="text-warning fill-current" />
-                      <span className="text-sm font-medium text-primary">{product.rating}</span>
-                    </div>
-                    <span className="text-muted text-sm">({product.reviews} avaliações)</span>
+                    <span className="text-2xl font-bold text-primary">
+                      R$ {product.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    </span>
+                    {product.originalPrice > product.price && (
+                      <span className="text-sm text-muted line-through">
+                        R$ {product.originalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </span>
+                    )}
                   </div>
 
-                  <div className="flex items-center gap-2 mb-4 text-sm text-muted">
-                    <MapPin size={16} />
-                    <span>{product.location}</span>
-                  </div>
-
-                  <div className="flex items-center gap-2 mb-4 text-sm text-muted">
-                    <User size={16} />
-                    <span>{product.seller}</span>
-                  </div>
-
-                  <div className="flex justify-between items-center mb-6">
-                    <div>
-                      <div className="text-2xl font-bold text-primary">
-                        {formatPrice(product.price)}
-                      </div>
-                      <div className="text-sm text-muted">{product.unit}</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-sm text-muted">Disponível:</div>
-                      <div className="font-medium text-primary">{product.quantity.toLocaleString()}</div>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-3">
+                  <div className="flex gap-2">
                     <button 
-                      onClick={() => handleContactSeller(product)}
-                      className="flex-1 btn-secondary flex items-center justify-center gap-2"
+                      className={`btn-futuristic flex-1 ${
+                        product.inStock ? 'btn-primary' : 'btn-secondary opacity-50 cursor-not-allowed'
+                      }`}
+                      disabled={!product.inStock}
                     >
-                      <User size={16} />
-                      Contatar Vendedor
+                      <ShoppingCart size={16} />
+                      {product.inStock ? 'Adicionar' : 'Indisponível'}
                     </button>
-                    <button 
-                      onClick={() => handleIntermediation(product)}
-                      className="btn-futuristic flex items-center justify-center gap-2"
-                    >
-                      Solicitar Intermediação
-                      <ArrowRight size={16} />
+                    <button className="btn-futuristic btn-secondary">
+                      Ver Detalhes
                     </button>
                   </div>
-                </motion.div>
-              ))}
-            </div>
-          ) : (
-            <div className="space-y-6">
-              {filteredProducts.map((product, index) => (
-                <motion.div
-                  key={product.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  className="glass-card p-6"
-                >
-                  <div className="flex gap-6">
-                    <div className="text-6xl">{product.image}</div>
-                    
-                    <div className="flex-1">
-                      <div className="flex justify-between items-start mb-4">
-                        <div>
-                          <h3 className="text-2xl font-bold text-primary mb-2">
-                            {product.name}
-                          </h3>
-                          <p className="text-secondary mb-4">
-                            {product.description}
-                          </p>
-                        </div>
-                        {product.featured && (
-                          <div className="bg-success text-white px-3 py-1 rounded-full text-sm font-semibold">
-                            Destaque
-                          </div>
-                        )}
-                      </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                        <div className="flex items-center gap-2 text-muted">
-                          <MapPin size={16} />
-                          <span>{product.location}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-muted">
-                          <User size={16} />
-                          <span>{product.seller}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-muted">
-                          <Star size={16} className="text-warning fill-current" />
-                          <span>{product.rating} ({product.reviews} avaliações)</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-muted">
-                          <Package size={16} />
-                          <span>{product.quantity.toLocaleString()} disponíveis</span>
-                        </div>
-                      </div>
-
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <div className="text-3xl font-bold text-primary">
-                            {formatPrice(product.price)}
-                          </div>
-                          <div className="text-sm text-muted">{product.unit}</div>
-                        </div>
-                        
-                        <div className="flex gap-3">
-                          <button className="btn-secondary flex items-center gap-2">
-                            <Heart size={16} />
-                            Favoritar
-                          </button>
-                          <button 
-                            onClick={() => handleContactSeller(product)}
-                            className="btn-secondary flex items-center gap-2"
-                          >
-                            <User size={16} />
-                            Contatar Vendedor
-                          </button>
-                          <button 
-                            onClick={() => handleIntermediation(product)}
-                            className="btn-futuristic flex items-center gap-2"
-                          >
-                            Solicitar Intermediação
-                            <ArrowRight size={16} />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-20 bg-secondary">
-        <div className="container-futuristic">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-              Por que escolher nossa <span className="text-gradient">Intermediação</span>?
-            </h2>
-            <p className="text-xl text-secondary max-w-3xl mx-auto">
-              Conectamos compradores e vendedores com segurança total e transparência
-            </p>
-          </motion.div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              viewport={{ once: true }}
-              className="glass-card p-8 text-center"
-            >
-              <div className="w-16 h-16 bg-primary-gradient rounded-xl mx-auto mb-6 flex items-center justify-center">
-                <CheckCircle size={32} className="text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-primary mb-4">
-                Intermediação Segura
-              </h3>
-              <p className="text-secondary">
-                Garantimos a segurança de todas as transações com proteção 
-                completa para compradores e vendedores.
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              viewport={{ once: true }}
-              className="glass-card p-8 text-center"
-            >
-              <div className="w-16 h-16 bg-primary-gradient rounded-xl mx-auto mb-6 flex items-center justify-center">
-                <TrendingUp size={32} className="text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-primary mb-4">
-                Preços Competitivos
-              </h3>
-              <p className="text-secondary">
-                Conectamos você aos melhores preços do mercado com 
-                transparência total e sem taxas ocultas.
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              viewport={{ once: true }}
-              className="glass-card p-8 text-center"
-            >
-              <div className="w-16 h-16 bg-primary-gradient rounded-xl mx-auto mb-6 flex items-center justify-center">
-                <Truck size={32} className="text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-primary mb-4">
-                Logística Integrada
-              </h3>
-              <p className="text-secondary">
-                Soluções completas de transporte e logística para 
-                garantir a entrega segura dos seus produtos.
-              </p>
-            </motion.div>
+          {/* Load More */}
+          <div className="text-center mt-12">
+            <button className="btn-futuristic btn-secondary btn-lg">
+              Carregar Mais Produtos
+              <ArrowRight size={20} />
+            </button>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-primary-gradient">
-        <div className="container-futuristic text-center">
+      <section className="section bg-secondary">
+        <div className="container text-center">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Pronto para <span className="text-yellow-300">Comercializar</span>?
+            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
+              Não encontrou o que procura?
             </h2>
-            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Cadastre-se gratuitamente e comece a vender ou comprar 
-              produtos do agronegócio com segurança total
+            <p className="text-xl text-secondary mb-8 max-w-2xl mx-auto">
+              Nossa equipe especializada pode ajudar você a encontrar exatamente o que precisa
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.a
-                href="/cadastro"
-                className="bg-white text-primary px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white/90 transition-colors flex items-center justify-center gap-2"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Cadastrar-se Gratuitamente
-                <ArrowRight size={20} />
-              </motion.a>
-              <motion.a
-                href="/contato"
-                className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-primary transition-colors"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
+              <button className="btn-futuristic btn-primary btn-lg">
                 Falar com Especialista
-              </motion.a>
+                <ArrowRight size={20} />
+              </button>
+              <button className="btn-futuristic btn-secondary btn-lg">
+                Solicitar Produto
+              </button>
             </div>
           </motion.div>
         </div>
       </section>
-
-      {/* Modal de Intermediação */}
-      {showIntermediation && selectedProduct && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="glass-card p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
-          >
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold text-primary">
-                Solicitar Intermediação
-              </h3>
-              <button
-                onClick={() => setShowIntermediation(false)}
-                className="text-muted hover:text-primary transition-colors"
-              >
-                <X size={24} />
-              </button>
-            </div>
-
-            <div className="mb-6 p-4 bg-secondary/20 rounded-lg">
-              <h4 className="font-semibold text-primary mb-2">{selectedProduct.name}</h4>
-              <div className="flex justify-between items-center">
-                <span className="text-2xl font-bold text-primary">
-                  {formatPrice(selectedProduct.price)}
-                </span>
-                <span className="text-secondary">{selectedProduct.unit}</span>
-              </div>
-              <p className="text-muted text-sm mt-2">{selectedProduct.description}</p>
-            </div>
-
-            <form onSubmit={(e) => { e.preventDefault(); handleIntermediationSubmit(); }} className="space-y-6">
-              <div>
-                <label className="block text-primary font-medium mb-2">
-                  Quantidade Desejada *
-                </label>
-                <input
-                  type="number"
-                  value={intermediationData.quantity}
-                  onChange={(e) => setIntermediationData(prev => ({ ...prev, quantity: e.target.value }))}
-                  required
-                  className="input-futuristic w-full"
-                  placeholder="Digite a quantidade desejada"
-                />
-                <p className="text-muted text-sm mt-1">
-                  Disponível: {selectedProduct.quantity.toLocaleString()} {selectedProduct.unit}
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-primary font-medium mb-2">
-                  Telefone para Contato *
-                </label>
-                <input
-                  type="tel"
-                  value={intermediationData.contactPhone}
-                  onChange={(e) => setIntermediationData(prev => ({ ...prev, contactPhone: e.target.value }))}
-                  required
-                  className="input-futuristic w-full"
-                  placeholder="(66) 99999-9999"
-                />
-              </div>
-
-              <div>
-                <label className="block text-primary font-medium mb-2">
-                  Email para Contato
-                </label>
-                <input
-                  type="email"
-                  value={intermediationData.contactEmail}
-                  onChange={(e) => setIntermediationData(prev => ({ ...prev, contactEmail: e.target.value }))}
-                  className="input-futuristic w-full"
-                  placeholder="seu@email.com"
-                />
-              </div>
-
-              <div>
-                <label className="block text-primary font-medium mb-2">
-                  Mensagem Adicional
-                </label>
-                <textarea
-                  value={intermediationData.message}
-                  onChange={(e) => setIntermediationData(prev => ({ ...prev, message: e.target.value }))}
-                  rows={4}
-                  className="input-futuristic w-full resize-none"
-                  placeholder="Informações adicionais sobre sua solicitação..."
-                />
-              </div>
-
-              <div className="bg-primary/10 p-4 rounded-lg">
-                <div className="flex items-center gap-3 mb-2">
-                  <Shield size={20} className="text-success" />
-                  <span className="font-semibold text-primary">Intermediação Segura</span>
-                </div>
-                <p className="text-muted text-sm">
-                  Nossa equipe entrará em contato com o vendedor e facilitará a negociação. 
-                  Garantimos transparência total e segurança na transação.
-                </p>
-              </div>
-
-              <div className="flex gap-4">
-                <button
-                  type="button"
-                  onClick={() => setShowIntermediation(false)}
-                  className="flex-1 btn-secondary"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 btn-futuristic flex items-center justify-center gap-2"
-                >
-                  <CheckCircle size={20} />
-                  Solicitar Intermediação
-                </button>
-              </div>
-            </form>
-          </motion.div>
-        </div>
-      )}
     </div>
   );
 };

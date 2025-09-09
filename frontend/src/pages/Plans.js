@@ -1,155 +1,114 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { 
   Check, 
-  X, 
   Star, 
   Zap, 
-  Crown,
-  ArrowRight,
-  Users,
+  Shield, 
+  Users, 
   BarChart3,
-  Shield,
-  Globe,
-  TrendingUp
+  ArrowRight
 } from 'lucide-react';
 
 const Plans = () => {
-  const [billingCycle, setBillingCycle] = useState('monthly'); // 'monthly' or 'yearly'
+  const [billingCycle, setBillingCycle] = useState('monthly');
 
   const plans = [
     {
       name: 'Starter',
-      description: 'Perfeito para produtores individuais',
-      icon: Users,
+      description: 'Perfeito para começar',
       monthlyPrice: 29,
       yearlyPrice: 290,
       features: [
-        'Até 10 anúncios por mês',
-        'Acesso ao marketplace básico',
+        'Até 100 transações/mês',
         'Suporte por email',
-        'Relatórios básicos',
+        'Dashboard básico',
+        'Relatórios simples',
         '1 usuário'
       ],
-      limitations: [
-        'Sem acesso ao AgroConecta',
-        'Sem analytics avançados',
-        'Sem API personalizada'
-      ],
       popular: false,
-      color: 'primary'
+      cta: 'Começar Grátis',
+      ctaLink: '/register'
     },
     {
       name: 'Professional',
-      description: 'Ideal para empresas em crescimento',
-      icon: BarChart3,
-      monthlyPrice: 79,
-      yearlyPrice: 790,
+      description: 'Para empresas em crescimento',
+      monthlyPrice: 99,
+      yearlyPrice: 990,
       features: [
-        'Anúncios ilimitados',
-        'Acesso completo ao marketplace',
-        'AgroConecta básico',
-        'Analytics avançados',
-        'Suporte prioritário',
-        'Até 5 usuários',
-        'API básica'
-      ],
-      limitations: [
-        'Sem integração personalizada',
-        'Suporte limitado a horário comercial'
+        'Transações ilimitadas',
+        'Suporte prioritário 24/7',
+        'Dashboard avançado',
+        'Relatórios detalhados',
+        'Até 10 usuários',
+        'API completa',
+        'Integrações premium'
       ],
       popular: true,
-      color: 'success'
+      cta: 'Testar Grátis',
+      ctaLink: '/register'
     },
     {
       name: 'Enterprise',
-      description: 'Para grandes corporações',
-      icon: Crown,
-      monthlyPrice: 199,
-      yearlyPrice: 1990,
+      description: 'Solução completa para grandes empresas',
+      monthlyPrice: 299,
+      yearlyPrice: 2990,
       features: [
         'Tudo do Professional',
-        'AgroConecta premium',
-        'Integrações personalizadas',
-        'Suporte 24/7',
+        'Suporte dedicado',
+        'Dashboard personalizado',
+        'Relatórios customizados',
         'Usuários ilimitados',
-        'API completa',
-        'Consultoria especializada',
         'SLA garantido',
-        'Treinamento personalizado'
+        'Treinamento personalizado',
+        'Consultoria especializada'
       ],
-      limitations: [],
       popular: false,
-      color: 'warning'
+      cta: 'Falar com Vendas',
+      ctaLink: '/contact'
     }
   ];
 
   const features = [
     {
-      icon: Shield,
-      title: 'Segurança Máxima',
-      description: 'Criptografia de nível bancário e conformidade total com LGPD'
-    },
-    {
       icon: Zap,
       title: 'Performance Extrema',
-      description: '99.9% de uptime garantido com tecnologia de ponta'
+      description: 'Tecnologia de ponta para máxima velocidade'
     },
     {
-      icon: Globe,
-      title: 'Conectividade Global',
-      description: 'Acesso a mercados internacionais e parceiros estratégicos'
+      icon: Shield,
+      title: 'Segurança Avançada',
+      description: 'Proteção de nível bancário para seus dados'
     },
     {
-      icon: TrendingUp,
-      title: 'Analytics Avançados',
-      description: 'Dados em tempo real para decisões mais inteligentes'
+      icon: Users,
+      title: 'Suporte Premium',
+      description: 'Equipe especializada sempre disponível'
+    },
+    {
+      icon: BarChart3,
+      title: 'Analytics Avançado',
+      description: 'Insights profundos para decisões inteligentes'
     }
   ];
-
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-      minimumFractionDigits: 0
-    }).format(price);
-  };
-
-  const getPlanColor = (color) => {
-    const colors = {
-      primary: 'border-primary bg-primary/5',
-      success: 'border-success bg-success/5',
-      warning: 'border-warning bg-warning/5'
-    };
-    return colors[color] || colors.primary;
-  };
-
-  const getButtonColor = (color) => {
-    const colors = {
-      primary: 'btn-futuristic',
-      success: 'bg-success-gradient text-white border-0',
-      warning: 'bg-warning-gradient text-white border-0'
-    };
-    return colors[color] || colors.primary;
-  };
 
   return (
     <div className="min-h-screen bg-primary">
       {/* Hero Section */}
-      <section className="hero">
+      <section className="hero-futuristic">
         <div className="container">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="text-center"
           >
             <h1 className="hero-title">
-              Escolha seu <span className="text-accent-primary">Plano</span>
+              Planos que <span className="text-primary">Impressionam</span>
             </h1>
             <p className="hero-subtitle">
-              Planos flexíveis para atender desde produtores individuais até 
-              grandes corporações do agronegócio
+              Escolha o plano perfeito para transformar seu agronegócio com tecnologia de ponta
             </p>
           </motion.div>
         </div>
@@ -164,13 +123,13 @@ const Plans = () => {
             transition={{ duration: 0.6 }}
             className="flex items-center justify-center mb-8"
           >
-            <div className="card p-2 flex items-center gap-4">
+            <div className="card-futuristic p-2 flex items-center gap-4">
               <button
                 onClick={() => setBillingCycle('monthly')}
                 className={`px-6 py-3 rounded-lg font-medium transition-colors ${
                   billingCycle === 'monthly'
-                    ? 'bg-accent-primary text-white'
-                    : 'text-secondary hover:text-accent-primary'
+                    ? 'bg-primary text-white'
+                    : 'text-secondary hover:text-primary'
                 }`}
               >
                 Mensal
@@ -179,12 +138,12 @@ const Plans = () => {
                 onClick={() => setBillingCycle('yearly')}
                 className={`px-6 py-3 rounded-lg font-medium transition-colors ${
                   billingCycle === 'yearly'
-                    ? 'bg-accent-primary text-white'
-                    : 'text-secondary hover:text-accent-primary'
+                    ? 'bg-primary text-white'
+                    : 'text-secondary hover:text-primary'
                 }`}
               >
                 Anual
-                <span className="ml-2 text-xs bg-accent-primary text-white px-2 py-1 rounded-full">
+                <span className="ml-2 text-xs bg-primary text-white px-2 py-1 rounded-full">
                   -20%
                 </span>
               </button>
@@ -195,8 +154,8 @@ const Plans = () => {
 
       {/* Pricing Cards */}
       <section className="py-20 bg-primary">
-        <div className="container-futuristic">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="container">
+          <div className="grid-futuristic grid-cols-1 md:grid-cols-3 gap-8">
             {plans.map((plan, index) => (
               <motion.div
                 key={plan.name}
@@ -204,71 +163,61 @@ const Plans = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className={`relative glass-card p-8 ${getPlanColor(plan.color)} ${
-                  plan.popular ? 'ring-2 ring-success scale-105' : ''
+                className={`card-futuristic relative ${
+                  plan.popular ? 'ring-2 ring-primary scale-105' : ''
                 }`}
               >
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-success-gradient text-white px-6 py-2 rounded-full text-sm font-semibold flex items-center gap-2">
+                    <div className="bg-primary text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-1">
                       <Star size={16} />
                       Mais Popular
                     </div>
                   </div>
                 )}
-
+                
                 <div className="text-center mb-8">
-                  <div className="w-16 h-16 bg-primary-gradient rounded-xl mx-auto mb-4 flex items-center justify-center">
-                    <plan.icon size={32} className="text-white" />
+                  <h3 className="text-2xl font-bold text-primary mb-2">
+                    {plan.name}
+                  </h3>
+                  <p className="text-secondary mb-4">
+                    {plan.description}
+                  </p>
+                  <div className="mb-4">
+                    <span className="text-4xl font-extrabold text-primary">
+                      R$ {billingCycle === 'monthly' ? plan.monthlyPrice : plan.yearlyPrice}
+                    </span>
+                    <span className="text-secondary">
+                      /{billingCycle === 'monthly' ? 'mês' : 'ano'}
+                    </span>
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
-                  <p className="text-white/80 mb-6">{plan.description}</p>
-                  
-                  <div className="mb-6">
-                    <div className="text-4xl font-bold text-white">
-                      {formatPrice(billingCycle === 'monthly' ? plan.monthlyPrice : plan.yearlyPrice)}
-                    </div>
-                    <div className="text-white/60">
-                      {billingCycle === 'monthly' ? 'por mês' : 'por ano'}
-                    </div>
-                    {billingCycle === 'yearly' && (
-                      <div className="text-success text-sm mt-1">
-                        Economize {formatPrice(plan.monthlyPrice * 12 - plan.yearlyPrice)} por ano
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="space-y-4 mb-8">
-                  <h4 className="text-lg font-semibold text-white mb-4">Incluído:</h4>
-                  {plan.features.map((feature, featureIndex) => (
-                    <div key={featureIndex} className="flex items-center gap-3">
-                      <Check size={20} className="text-success flex-shrink-0" />
-                      <span className="text-white/90">{feature}</span>
-                    </div>
-                  ))}
-                  
-                  {plan.limitations.length > 0 && (
-                    <>
-                      <h4 className="text-lg font-semibold text-white mb-4 mt-6">Limitações:</h4>
-                      {plan.limitations.map((limitation, limitationIndex) => (
-                        <div key={limitationIndex} className="flex items-center gap-3">
-                          <X size={20} className="text-danger flex-shrink-0" />
-                          <span className="text-white/60">{limitation}</span>
-                        </div>
-                      ))}
-                    </>
+                  {billingCycle === 'yearly' && (
+                    <p className="text-sm text-muted">
+                      Economize R$ {(plan.monthlyPrice * 12) - plan.yearlyPrice}/ano
+                    </p>
                   )}
                 </div>
 
-                <motion.button
-                  className={`w-full ${getButtonColor(plan.color)} flex items-center justify-center gap-2`}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                <div className="space-y-4 mb-8">
+                  {plan.features.map((feature, idx) => (
+                    <div key={idx} className="flex items-center gap-3">
+                      <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                        <Check size={12} className="text-white" />
+                      </div>
+                      <span className="text-secondary">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <Link
+                  to={plan.ctaLink}
+                  className={`btn-futuristic w-full text-center ${
+                    plan.popular ? 'btn-primary' : 'btn-secondary'
+                  }`}
                 >
-                  {plan.name === 'Enterprise' ? 'Falar com Vendas' : 'Começar Agora'}
-                  <ArrowRight size={20} />
-                </motion.button>
+                  {plan.cta}
+                  <ArrowRight size={16} className="ml-2" />
+                </Link>
               </motion.div>
             ))}
           </div>
@@ -276,8 +225,8 @@ const Plans = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-secondary">
-        <div className="container-futuristic">
+      <section className="section bg-secondary">
+        <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -286,14 +235,14 @@ const Plans = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-              Por que escolher o <span className="text-gradient">AgroSync</span>?
+              Por que escolher o <span className="text-primary">AgroSync</span>?
             </h2>
             <p className="text-xl text-secondary max-w-3xl mx-auto">
-              Recursos avançados que fazem a diferença no seu negócio
+              Recursos avançados que fazem a diferença no seu agronegócio
             </p>
           </motion.div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid-futuristic grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
             {features.map((feature, index) => (
               <motion.div
                 key={feature.title}
@@ -301,9 +250,9 @@ const Plans = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="glass-card p-6 text-center hover:scale-105 transition-transform"
+                className="card-futuristic text-center"
               >
-                <div className="w-16 h-16 bg-primary-gradient rounded-xl mx-auto mb-4 flex items-center justify-center">
+                <div className="w-16 h-16 bg-primary rounded-xl mx-auto mb-4 flex items-center justify-center">
                   <feature.icon size={32} className="text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-primary mb-3">
@@ -319,8 +268,8 @@ const Plans = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-20 bg-primary">
-        <div className="container-futuristic">
+      <section className="section bg-primary">
+        <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -328,87 +277,89 @@ const Plans = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Perguntas <span className="text-yellow-300">Frequentes</span>
+            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
+              Perguntas <span className="text-primary">Frequentes</span>
             </h2>
-            <p className="text-xl text-white/80 max-w-3xl mx-auto">
+            <p className="text-xl text-secondary max-w-3xl mx-auto">
               Tire suas dúvidas sobre nossos planos e serviços
             </p>
           </motion.div>
           
-          <div className="max-w-4xl mx-auto space-y-6">
-            {[
-              {
-                question: 'Posso mudar de plano a qualquer momento?',
-                answer: 'Sim! Você pode fazer upgrade ou downgrade do seu plano a qualquer momento. As alterações são aplicadas imediatamente e os valores são ajustados proporcionalmente.'
-              },
-              {
-                question: 'Há período de teste gratuito?',
-                answer: 'Oferecemos 14 dias de teste gratuito para todos os planos. Você pode experimentar todas as funcionalidades sem compromisso.'
-              },
-              {
-                question: 'Quais formas de pagamento são aceitas?',
-                answer: 'Aceitamos cartões de crédito, débito, PIX, boleto bancário e transferência bancária. Para planos Enterprise, também oferecemos faturamento corporativo.'
-              },
-              {
-                question: 'O suporte está disponível em português?',
-                answer: 'Sim! Todo nosso suporte é oferecido em português, com equipe especializada no agronegócio brasileiro.'
-              },
-              {
-                question: 'Meus dados estão seguros?',
-                answer: 'Absolutamente! Utilizamos criptografia de nível bancário, servidores seguros e somos totalmente conformes com a LGPD.'
-              }
-            ].map((faq, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="glass-card p-6"
-              >
-                <h3 className="text-xl font-bold text-white mb-3">{faq.question}</h3>
-                <p className="text-white/80">{faq.answer}</p>
-              </motion.div>
-            ))}
+          <div className="max-w-4xl mx-auto">
+            <div className="grid-futuristic grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="card-futuristic">
+                <h3 className="text-xl font-bold text-primary mb-3">
+                  Posso mudar de plano a qualquer momento?
+                </h3>
+                <p className="text-secondary">
+                  Sim! Você pode fazer upgrade ou downgrade do seu plano a qualquer momento. 
+                  As mudanças são aplicadas imediatamente.
+                </p>
+              </div>
+              
+              <div className="card-futuristic">
+                <h3 className="text-xl font-bold text-primary mb-3">
+                  Há período de teste gratuito?
+                </h3>
+                <p className="text-secondary">
+                  Oferecemos 14 dias de teste gratuito para todos os planos. 
+                  Sem compromisso, sem cartão de crédito necessário.
+                </p>
+              </div>
+              
+              <div className="card-futuristic">
+                <h3 className="text-xl font-bold text-primary mb-3">
+                  Que tipos de suporte vocês oferecem?
+                </h3>
+                <p className="text-secondary">
+                  Oferecemos suporte por email, chat e telefone. Planos superiores 
+                  incluem suporte prioritário e dedicado.
+                </p>
+              </div>
+              
+              <div className="card-futuristic">
+                <h3 className="text-xl font-bold text-primary mb-3">
+                  Meus dados estão seguros?
+                </h3>
+                <p className="text-secondary">
+                  Absolutamente! Utilizamos criptografia de nível bancário e 
+                  seguimos todas as normas de segurança internacionais.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-primary-gradient">
-        <div className="container-futuristic text-center">
+      <section className="section bg-secondary">
+        <div className="container text-center">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Pronto para <span className="text-yellow-300">Começar</span>?
+            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
+              Pronto para <span className="text-primary">Começar</span>?
             </h2>
-            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Junte-se a milhares de profissionais do agronegócio que já transformaram 
-              seus negócios com o AgroSync
+            <p className="text-xl text-secondary mb-8 max-w-2xl mx-auto">
+              Junte-se a milhares de empresas que já transformaram seu agronegócio
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.a
-                href="/cadastro"
-                className="bg-white text-primary px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white/90 transition-colors flex items-center justify-center gap-2"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <Link
+                to="/register"
+                className="btn-futuristic btn-primary btn-lg"
               >
-                Teste Grátis por 14 Dias
+                Começar Teste Grátis
                 <ArrowRight size={20} />
-              </motion.a>
-              <motion.a
-                href="/contato"
-                className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-primary transition-colors"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              </Link>
+              <Link
+                to="/contact"
+                className="btn-futuristic btn-secondary btn-lg"
               >
-                Falar com Especialista
-              </motion.a>
+                Falar com Vendas
+              </Link>
             </div>
           </motion.div>
         </div>

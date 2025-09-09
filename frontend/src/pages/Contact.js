@@ -5,11 +5,11 @@ import {
   Phone, 
   MapPin, 
   Send, 
+  Clock, 
+  User, 
+  Building, 
   CheckCircle,
-  MessageSquare,
-  Clock,
-  User,
-  Building
+  MessageSquare
 } from 'lucide-react';
 
 const Contact = () => {
@@ -24,6 +24,14 @@ const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  const subjects = [
+    'Suporte Técnico',
+    'Vendas e Comercial',
+    'Parcerias',
+    'Feedback',
+    'Outros'
+  ];
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -36,71 +44,50 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simular envio do formulário
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSubmitted(true);
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        company: '',
-        subject: '',
-        message: ''
-      });
-    }, 2000);
+    // Simular envio
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    setIsSubmitting(false);
+    setIsSubmitted(true);
   };
 
   const contactInfo = [
     {
       icon: Mail,
       title: 'Email',
-      value: 'contato@agroisync.com',
-      link: 'mailto:contato@agroisync.com',
-      description: 'Envie-nos um email e responderemos em até 24 horas'
+      details: ['contato@agrosync.com', 'suporte@agrosync.com'],
+      description: 'Resposta em até 2 horas'
     },
     {
       icon: Phone,
-      title: 'Telefone/WhatsApp',
-      value: '(66) 99236-2830',
-      link: 'https://wa.me/5566992362830',
-      description: 'Ligue ou envie uma mensagem no WhatsApp'
+      title: 'Telefone',
+      details: ['+55 (11) 99999-9999', '+55 (11) 3333-3333'],
+      description: 'Segunda a Sexta, 8h às 18h'
     },
     {
       icon: MapPin,
-      title: 'Localização',
-      value: 'Sinop - MT, Brasil',
-      link: '#',
-      description: 'Nossa sede está localizada no coração do agronegócio brasileiro'
+      title: 'Endereço',
+      details: ['Rua das Inovações, 123', 'São Paulo - SP, 01234-567'],
+      description: 'Visitas com agendamento'
     }
-  ];
-
-  const subjects = [
-    'Suporte Técnico',
-    'Vendas e Comercial',
-    'Parcerias',
-    'Imprensa e Mídia',
-    'Trabalhe Conosco',
-    'Outros'
   ];
 
   return (
     <div className="min-h-screen bg-primary">
       {/* Hero Section */}
-      <section className="hero">
+      <section className="hero-futuristic">
         <div className="container">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="text-center"
           >
             <h1 className="hero-title">
-              Entre em <span className="text-accent-primary">Contato</span>
+              Entre em <span className="text-primary">Contato</span>
             </h1>
             <p className="hero-subtitle">
-              Estamos aqui para ajudar! Entre em contato conosco através do formulário 
-              abaixo ou use nossos canais diretos de comunicação.
+              Estamos aqui para ajudar você a transformar seu agronegócio com tecnologia de ponta
             </p>
           </motion.div>
         </div>
@@ -109,7 +96,7 @@ const Contact = () => {
       {/* Contact Info */}
       <section className="section bg-secondary">
         <div className="container">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          <div className="grid-futuristic grid-cols-1 md:grid-cols-3">
             {contactInfo.map((info, index) => (
               <motion.div
                 key={info.title}
@@ -117,21 +104,22 @@ const Contact = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="card text-center"
+                className="card-futuristic text-center"
               >
-                <div className="w-16 h-16 bg-accent-primary rounded-xl mx-auto mb-6 flex items-center justify-center">
+                <div className="w-16 h-16 bg-primary rounded-xl mx-auto mb-4 flex items-center justify-center">
                   <info.icon size={32} className="text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-primary mb-4">{info.title}</h3>
-                <a 
-                  href={info.link}
-                  target={info.link.startsWith('http') ? '_blank' : '_self'}
-                  rel={info.link.startsWith('http') ? 'noopener noreferrer' : ''}
-                  className="text-secondary hover:text-accent-primary transition-colors block mb-3"
-                >
-                  {info.value}
-                </a>
-                <p className="text-muted text-sm">
+                <h3 className="text-xl font-bold text-primary mb-3">
+                  {info.title}
+                </h3>
+                <div className="space-y-1 mb-3">
+                  {info.details.map((detail, idx) => (
+                    <p key={idx} className="text-secondary font-medium">
+                      {detail}
+                    </p>
+                  ))}
+                </div>
+                <p className="text-sm text-muted">
                   {info.description}
                 </p>
               </motion.div>
@@ -143,7 +131,7 @@ const Contact = () => {
       {/* Contact Form */}
       <section className="section bg-primary">
         <div className="container">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="grid-futuristic grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Form */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
@@ -151,9 +139,9 @@ const Contact = () => {
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <div className="card">
+              <div className="card-futuristic">
                 <h2 className="text-3xl font-bold text-primary mb-6">
-                  Envie sua <span className="text-accent-primary">Mensagem</span>
+                  Envie sua <span className="text-primary">Mensagem</span>
                 </h2>
                 
                 {isSubmitted ? (
@@ -162,18 +150,18 @@ const Contact = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     className="text-center py-12"
                   >
-                    <div className="w-20 h-20 bg-success-gradient rounded-full mx-auto mb-6 flex items-center justify-center">
+                    <div className="w-20 h-20 bg-primary rounded-full mx-auto mb-6 flex items-center justify-center">
                       <CheckCircle size={40} className="text-white" />
                     </div>
-                    <h3 className="text-2xl font-bold text-white mb-4">
+                    <h3 className="text-2xl font-bold text-primary mb-4">
                       Mensagem Enviada!
                     </h3>
-                    <p className="text-white/80 mb-6">
+                    <p className="text-secondary mb-6">
                       Obrigado pelo seu contato. Responderemos em breve!
                     </p>
                     <button
                       onClick={() => setIsSubmitted(false)}
-                      className="btn-futuristic"
+                      className="btn-futuristic btn-primary"
                     >
                       Enviar Nova Mensagem
                     </button>
@@ -295,7 +283,7 @@ const Contact = () => {
                     <motion.button
                       type="submit"
                       disabled={isSubmitting}
-                      className="btn btn-primary w-full flex items-center justify-center gap-2"
+                      className="btn-futuristic btn-primary w-full flex items-center justify-center gap-2"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
@@ -324,73 +312,81 @@ const Contact = () => {
               viewport={{ once: true }}
               className="space-y-8"
             >
-              {/* Business Hours */}
-              <div className="glass-card p-8">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 bg-primary-gradient rounded-lg flex items-center justify-center">
-                    <Clock size={24} className="text-white" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-white">Horário de Funcionamento</h3>
-                </div>
-                
+              <div className="card-futuristic">
+                <h3 className="text-2xl font-bold text-primary mb-6">
+                  Por que escolher o AgroSync?
+                </h3>
                 <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-secondary">Segunda - Sexta</span>
-                    <span className="text-white font-medium">08:00 - 18:00</span>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
+                      <CheckCircle size={16} className="text-white" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-primary mb-1">
+                        Suporte 24/7
+                      </h4>
+                      <p className="text-secondary text-sm">
+                        Nossa equipe está sempre disponível para ajudar
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-secondary">Sábado</span>
-                    <span className="text-white font-medium">09:00 - 14:00</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-secondary">Domingo</span>
-                    <span className="text-white font-medium">Fechado</span>
-                  </div>
-                </div>
-                
-                <div className="mt-6 p-4 bg-primary/10 rounded-lg">
-                  <p className="text-white/80 text-sm">
-                    <strong>Suporte 24/7:</strong> Para emergências técnicas, 
-                    nosso suporte está disponível 24 horas por dia.
-                  </p>
-                </div>
-              </div>
-
-              {/* Map Placeholder */}
-              <div className="glass-card p-8">
-                <h3 className="text-2xl font-bold text-white mb-6">Nossa Localização</h3>
-                <div className="bg-secondary rounded-lg h-64 flex items-center justify-center">
-                  <div className="text-center">
-                    <MapPin size={48} className="text-primary mx-auto mb-4" />
-                    <p className="text-secondary font-medium">Sinop - MT, Brasil</p>
-                    <p className="text-muted text-sm mt-2">
-                      Mapa interativo será implementado aqui
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Quick Contact */}
-              <div className="glass-card p-8">
-                <h3 className="text-2xl font-bold text-white mb-6">Contato Rápido</h3>
-                <div className="space-y-4">
-                  <a
-                    href="https://wa.me/5566992362830"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-4 bg-success/10 rounded-lg hover:bg-success/20 transition-colors"
-                  >
-                    <Phone size={20} className="text-success" />
-                    <span className="text-white">WhatsApp: (66) 99236-2830</span>
-                  </a>
                   
-                  <a
-                    href="mailto:contato@agroisync.com"
-                    className="flex items-center gap-3 p-4 bg-primary/10 rounded-lg hover:bg-primary/20 transition-colors"
-                  >
-                    <Mail size={20} className="text-primary" />
-                    <span className="text-white">contato@agroisync.com</span>
-                  </a>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
+                      <CheckCircle size={16} className="text-white" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-primary mb-1">
+                        Tecnologia Avançada
+                      </h4>
+                      <p className="text-secondary text-sm">
+                        Soluções de ponta para o agronegócio moderno
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
+                      <CheckCircle size={16} className="text-white" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-primary mb-1">
+                        Segurança Garantida
+                      </h4>
+                      <p className="text-secondary text-sm">
+                        Proteção total dos seus dados e transações
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="card-futuristic">
+                <h3 className="text-2xl font-bold text-primary mb-4">
+                  Horário de Funcionamento
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <Clock size={20} className="text-muted" />
+                    <div>
+                      <p className="font-medium text-primary">Segunda a Sexta</p>
+                      <p className="text-secondary text-sm">8h às 18h</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Clock size={20} className="text-muted" />
+                    <div>
+                      <p className="font-medium text-primary">Sábado</p>
+                      <p className="text-secondary text-sm">8h às 12h</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Clock size={20} className="text-muted" />
+                    <div>
+                      <p className="font-medium text-primary">Domingo</p>
+                      <p className="text-secondary text-sm">Fechado</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </motion.div>

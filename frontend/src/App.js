@@ -12,8 +12,8 @@ import GrainQuotes from './components/GrainQuotes';
 import WeatherWidget from './components/WeatherWidget';
 // import NewsFeed from './components/NewsFeed'; // Removido do topo, agora está no Home
 
-// Importar estilos minimalistas
-import './styles/minimalist-theme.css';
+// Importar estilos futuristas globais
+import './styles/futuristic-global.css';
 
 // Pages
 import Home from './pages/Home';

@@ -10,8 +10,7 @@ import {
   TrendingUp,
   Smartphone,
   Truck,
-  BarChart3,
-  // CheckCircle
+  BarChart3
 } from 'lucide-react';
 import NewsFeed from '../components/NewsFeed';
 
@@ -70,9 +69,9 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-primary">
       {/* Hero Section */}
-      <section className="hero">
+      <section className="hero-futuristic">
         <div className="container">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid-futuristic grid-cols-1 lg:grid-cols-2 items-center">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
@@ -86,7 +85,7 @@ const Home = () => {
               >
                 O Futuro do{' '}
                 <span className="text-primary">Agronegócio</span>{' '}
-                é <span className="text-accent-primary">Agora</span>
+                é <span className="text-primary">Agora</span>
               </motion.h1>
               
               <motion.p
@@ -95,8 +94,8 @@ const Home = () => {
                 transition={{ delay: 0.4 }}
                 className="hero-subtitle"
               >
-                A plataforma mais elegante e sofisticada do mundo para conectar produtores, 
-                compradores e transportadores. Design minimalista, tecnologia de ponta e 
+                A plataforma mais futurista e sofisticada do mundo para conectar produtores, 
+                compradores e transportadores. Design premium, tecnologia de ponta e 
                 performance excepcional.
               </motion.p>
               
@@ -108,14 +107,14 @@ const Home = () => {
               >
                 <Link
                   to="/register"
-                  className="btn btn-primary btn-lg"
+                  className="btn-futuristic btn-primary btn-lg"
                 >
                   Começar Agora
                   <ArrowRight size={20} />
                 </Link>
                 <Link
                   to="/about"
-                  className="btn btn-secondary btn-lg"
+                  className="btn-futuristic btn-secondary btn-lg"
                 >
                   Saiba Mais
                 </Link>
@@ -128,8 +127,8 @@ const Home = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="relative"
             >
-              <div className="card card-elevated text-center">
-                <div className="w-32 h-32 bg-accent-primary rounded-full mx-auto mb-6 flex items-center justify-center">
+              <div className="card-futuristic card-elevated text-center">
+                <div className="w-32 h-32 bg-primary rounded-full mx-auto mb-6 flex items-center justify-center">
                   <TrendingUp size={48} className="text-white" />
                 </div>
                 <h3 className="text-2xl font-bold text-primary mb-4">
@@ -152,7 +151,7 @@ const Home = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8"
+            className="grid-futuristic grid-cols-2 md:grid-cols-4"
           >
             {stats.map((stat, index) => (
               <motion.div
@@ -163,7 +162,7 @@ const Home = () => {
                 viewport={{ once: true }}
                 className="text-center"
               >
-                <div className="text-4xl md:text-5xl font-bold text-accent-primary mb-2">
+                <div className="text-4xl md:text-5xl font-extrabold text-primary mb-2">
                   {stat.number}
                 </div>
                 <div className="text-secondary font-medium">
@@ -186,14 +185,14 @@ const Home = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-              Tecnologia que <span className="text-accent-primary">Impressiona</span>
+              Tecnologia que <span className="text-primary">Impressiona</span>
             </h2>
             <p className="text-xl text-secondary max-w-3xl mx-auto">
               Recursos avançados que colocam o AgroSync anos à frente da concorrência
             </p>
           </motion.div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid-futuristic grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
             {features.map((feature, index) => (
               <motion.div
                 key={feature.title}
@@ -201,9 +200,9 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="card text-center hover:scale-105 transition-transform"
+                className="card-futuristic text-center hover:scale-105 transition-transform"
               >
-                <div className="w-16 h-16 bg-accent-primary rounded-xl mx-auto mb-4 flex items-center justify-center">
+                <div className="w-16 h-16 bg-primary rounded-xl mx-auto mb-4 flex items-center justify-center">
                   <feature.icon size={32} className="text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-primary mb-3">
@@ -229,14 +228,14 @@ const Home = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-              Nossos <span className="text-accent-primary">Serviços</span>
+              Nossos <span className="text-primary">Serviços</span>
             </h2>
             <p className="text-xl text-secondary max-w-3xl mx-auto">
               Soluções completas para todas as necessidades do agronegócio moderno
             </p>
           </motion.div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid-futuristic grid-cols-1 md:grid-cols-3">
             {services.map((service, index) => (
               <motion.div
                 key={service.title}
@@ -244,9 +243,9 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="card group"
+                className="card-futuristic group"
               >
-                <div className="w-16 h-16 bg-accent-primary rounded-xl mb-6 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <div className="w-16 h-16 bg-primary rounded-xl mb-6 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <service.icon size={32} className="text-white" />
                 </div>
                 <h3 className="text-2xl font-bold text-primary mb-4">
@@ -257,7 +256,7 @@ const Home = () => {
                 </p>
                 <Link
                   to={service.link}
-                  className="btn btn-primary w-full text-center"
+                  className="btn-futuristic btn-primary w-full text-center"
                 >
                   Conhecer
                   <ArrowRight size={16} className="ml-2" />
@@ -279,7 +278,7 @@ const Home = () => {
             className="text-center mb-12"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-              Notícias do <span className="text-accent-primary">Agronegócio</span>
+              Notícias do <span className="text-primary">Agronegócio</span>
             </h2>
             <p className="text-lg text-secondary max-w-2xl mx-auto">
               Mantenha-se atualizado com as últimas novidades do setor
@@ -293,7 +292,7 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="section bg-accent-primary">
+      <section className="section bg-primary">
         <div className="container text-center">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -301,24 +300,24 @@ const Home = () => {
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Pronto para o <span className="text-white">Futuro</span>?
+            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
+              Pronto para o <span className="text-primary">Futuro</span>?
             </h2>
-            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+            <p className="text-xl text-secondary mb-8 max-w-2xl mx-auto">
               Junte-se a milhares de profissionais do agronegócio que já descobriram 
               o poder da tecnologia AgroSync
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 to="/register"
-                className="bg-white text-accent-primary px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white/90 transition-colors flex items-center justify-center gap-2"
+                className="btn-futuristic btn-primary btn-lg"
               >
                 Começar Gratuitamente
                 <ArrowRight size={20} />
               </Link>
               <Link
                 to="/contact"
-                className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-accent-primary transition-colors"
+                className="btn-futuristic btn-secondary btn-lg"
               >
                 Falar com Especialista
               </Link>
