@@ -25,7 +25,7 @@ html {
 
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #f1f5f9 100%);
+  /* Background será controlado pelo animated-starfield-universe.css */
   color: #1e293b;
   min-height: 100vh;
   overflow-x: hidden;
@@ -34,7 +34,7 @@ body {
 
 /* Dark mode styles */
 .dark body {
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2a2a2a 100%);
+  /* Background será controlado pelo animated-starfield-universe.css */
   color: #ffffff;
 }
 
