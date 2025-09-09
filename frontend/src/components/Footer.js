@@ -10,6 +10,7 @@ import {
   Instagram, 
   Linkedin
 } from 'lucide-react';
+import AgroSyncLogo from './AgroSyncLogo';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -18,7 +19,7 @@ const Footer = () => {
     <footer className="footer">
       <div className="container">
         <div className="footer-content">
-          {/* Coluna 1: Contato */}
+          {/* Coluna 1: Logo e Contato */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -26,6 +27,9 @@ const Footer = () => {
               viewport={{ once: true }}
             className="footer-column"
           >
+            <div className="footer-logo mb-4">
+              <AgroSyncLogo variant="text" size="medium" />
+            </div>
             <h3 className="footer-title">Contato</h3>
             <div className="footer-contact">
               <div className="contact-item">
@@ -80,16 +84,16 @@ const Footer = () => {
             <div className="footer-social">
               <h4 className="social-title">Redes Sociais</h4>
               <div className="social-links">
-                <a href="#" className="social-link" aria-label="Facebook">
+                <a href="https://facebook.com" className="social-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
                   <Facebook size={18} />
                 </a>
-                <a href="#" className="social-link" aria-label="Twitter">
+                <a href="https://twitter.com" className="social-link" aria-label="Twitter" target="_blank" rel="noopener noreferrer">
                   <Twitter size={18} />
                 </a>
-                <a href="#" className="social-link" aria-label="Instagram">
+                <a href="https://instagram.com" className="social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
                   <Instagram size={18} />
                 </a>
-                <a href="#" className="social-link" aria-label="LinkedIn">
+                <a href="https://linkedin.com" className="social-link" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
                   <Linkedin size={18} />
                 </a>
               </div>
@@ -123,9 +127,12 @@ const Footer = () => {
           viewport={{ once: true }}
           className="footer-bottom"
         >
-          <p className="copyright">
-            © {currentYear} AgroSync. Todos os direitos reservados.
-          </p>
+          <div className="flex items-center justify-center space-x-4">
+            <AgroSyncLogo variant="text" size="small" />
+            <p className="copyright">
+              © {currentYear} Agroisync. Todos os direitos reservados.
+            </p>
+          </div>
             </motion.div>
           </div>
       

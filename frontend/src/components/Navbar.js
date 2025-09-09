@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import LanguageSelector from './LanguageSelector';
-import { useTheme } from '../contexts/ThemeContext';
+import AgroSyncLogo from './AgroSyncLogo';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Navbar = () => {
@@ -12,7 +12,6 @@ const Navbar = () => {
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const location = useLocation();
   const { t } = useLanguage();
-  const { isDarkMode } = useTheme();
 
   const navigation = [
     { name: t('navigation.home'), href: '/' },
@@ -46,8 +45,8 @@ const Navbar = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Link to="/" className="navbar-brand text-primary">
-            Agroisync
+          <Link to="/" className="navbar-brand">
+            <AgroSyncLogo variant="text" size="medium" />
           </Link>
         </motion.div>
 
