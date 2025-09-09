@@ -35,7 +35,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar-futuristic">
+    <nav className="navbar">
       <div className="navbar-container">
         {/* Logo */}
         <motion.div

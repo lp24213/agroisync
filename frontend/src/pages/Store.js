@@ -141,11 +141,11 @@ const Store = () => {
             className="text-center"
           >
             <h1 className="hero-title">
-              Loja <span className="text-primary">Agroisync</span>
+              Loja Agroisync
             </h1>
             <p className="hero-subtitle">
-              Produtos e serviços de alta qualidade para o agronegócio moderno. 
-              Tecnologia, inovação e excelência em cada item.
+              Intermediação inteligente para o agronegócio. Conectamos produtores, 
+              compradores e transportadores com tecnologia de ponta.
             </p>
           </motion.div>
         </div>
@@ -188,9 +188,9 @@ const Store = () => {
               {/* Search */}
               <div className="flex-1 max-w-md">
                 <div className="relative">
-                  <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" />
-                  <input
-                    type="text"
+                <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" />
+                <input
+                  type="text"
                     placeholder="Buscar produtos..."
                     className="form-input pl-10 w-full"
                   />
@@ -236,19 +236,19 @@ const Store = () => {
             </div>
           </div>
 
-          {/* Products Grid */}
+      {/* Products Grid */}
           <div className={`grid-futuristic ${
             viewMode === 'grid' 
               ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' 
               : 'grid-cols-1'
           }`}>
-            {filteredProducts.map((product, index) => (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
+              {filteredProducts.map((product, index) => (
+                <motion.div
+                  key={product.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  viewport={{ once: true }}
                 className={`card-futuristic group ${
                   viewMode === 'list' ? 'flex flex-row items-center gap-6' : ''
                 }`}
@@ -260,7 +260,7 @@ const Store = () => {
                   <div className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center">
                     <span className="text-muted">Imagem do Produto</span>
                   </div>
-                  
+
                   {/* Badge */}
                   <div className="absolute top-3 left-3">
                     <span className="bg-primary text-white px-2 py-1 rounded-full text-xs font-semibold">
@@ -271,15 +271,15 @@ const Store = () => {
                   {/* Wishlist */}
                   <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:scale-110 transition-transform">
                     <Heart size={16} className="text-muted hover:text-red-500" />
-                  </button>
+                    </button>
 
                   {/* Out of Stock */}
                   {!product.inStock && (
                     <div className="absolute inset-0 bg-black bg-opacity-50 rounded-lg flex items-center justify-center">
                       <span className="text-white font-semibold">Fora de Estoque</span>
-                    </div>
-                  )}
-                </div>
+                          </div>
+                        )}
+                      </div>
 
                 {/* Product Info */}
                 <div className={`${viewMode === 'list' ? 'flex-1' : ''}`}>
@@ -292,8 +292,8 @@ const Store = () => {
                       <span className="text-sm text-secondary">
                         {product.rating} ({product.reviews})
                       </span>
-                    </div>
-                  </div>
+                        </div>
+                      </div>
 
                   <p className="text-secondary text-sm mb-4 line-clamp-2">
                     {product.description}
@@ -308,26 +308,25 @@ const Store = () => {
                         R$ {product.originalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </span>
                     )}
-                  </div>
-
+                        </div>
+                        
                   <div className="flex gap-2">
-                    <button 
-                      className={`btn-futuristic flex-1 ${
+                          <button 
+                      className={`btn flex-1 ${
                         product.inStock ? 'btn-primary' : 'btn-secondary opacity-50 cursor-not-allowed'
                       }`}
                       disabled={!product.inStock}
                     >
-                      <ShoppingCart size={16} />
-                      {product.inStock ? 'Adicionar' : 'Indisponível'}
-                    </button>
-                    <button className="btn-futuristic btn-secondary">
+                      {product.inStock ? 'Contato / Negociar' : 'Indisponível'}
+                          </button>
+                    <button className="btn btn-secondary">
                       Ver Detalhes
-                    </button>
+                          </button>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+                </motion.div>
+              ))}
+            </div>
 
           {/* Load More */}
           <div className="text-center mt-12">

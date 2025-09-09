@@ -7,13 +7,13 @@ import { LanguageProvider } from './contexts/LanguageContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import Layout from './components/Layout';
 import ChatbotWidget from './components/ChatbotWidget';
-import StockTicker from './components/StockTicker';
+import Ticker from './components/Ticker';
 import GrainQuotes from './components/GrainQuotes';
 import WeatherWidget from './components/WeatherWidget';
 // import NewsFeed from './components/NewsFeed'; // Removido do topo, agora está no Home
 
-// Importar estilos futuristas globais
-import './styles/futuristic-global.css';
+// Importar theme global
+import './styles/theme.css';
 
 // Pages
 import Home from './pages/Home';
@@ -63,13 +63,13 @@ function App() {
           <LanguageProvider>
             <Router>
               <div className="App">
-                {/* Ticker de Ações */}
-                <StockTicker />
+                {/* Ticker fixo no topo */}
+                <Ticker />
                 
                 {/* Barra de Informações - Apenas cotações e clima */}
-                <div className="bg-secondary border-b border-light py-2">
+                <div className="info-bar">
                   <div className="container">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
+                    <div className="info-content">
                       <GrainQuotes />
                       <WeatherWidget />
                     </div>

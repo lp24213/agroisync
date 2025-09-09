@@ -1,197 +1,268 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import { 
   Mail, 
   Phone, 
   MapPin, 
+  MessageSquare,
   Facebook, 
   Twitter, 
   Instagram, 
-  Linkedin,
-  ArrowUp
+  Linkedin
 } from 'lucide-react';
 
 const Footer = () => {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const footerLinks = {
-    empresa: [
-      { name: 'Sobre Nós', href: '/sobre' },
-      { name: 'Nossa História', href: '/sobre#historia' },
-      { name: 'Equipe', href: '/sobre#equipe' },
-      { name: 'Carreiras', href: '/carreiras' }
-    ],
-    servicos: [
-      { name: 'Marketplace', href: '/marketplace' },
-      { name: 'AgroConecta', href: '/agroconecta' },
-      { name: 'Analytics', href: '/analytics' },
-      { name: 'API', href: '/api' }
-    ],
-    suporte: [
-      { name: 'Central de Ajuda', href: '/help' },
-      { name: 'FAQ', href: '/faq' },
-      { name: 'Contato', href: '/contato' },
-      { name: 'Status', href: '/status' }
-    ],
-    legal: [
-      { name: 'Termos de Uso', href: '/terms' },
-      { name: 'Política de Privacidade', href: '/privacy' },
-      { name: 'Cookies', href: '/cookies' },
-      { name: 'LGPD', href: '/lgpd' }
-    ]
-  };
-
-  const socialLinks = [
-    { name: 'Facebook', icon: Facebook, href: 'https://facebook.com/agrosync' },
-    { name: 'Twitter', icon: Twitter, href: 'https://twitter.com/agrosync' },
-    { name: 'Instagram', icon: Instagram, href: 'https://instagram.com/agrosync' },
-    { name: 'LinkedIn', icon: Linkedin, href: 'https://linkedin.com/company/agrosync' }
-  ];
+  const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="footer-futuristic">
-      <div className="container-futuristic">
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
-          {/* Company Info */}
-          <div className="lg:col-span-2">
+    <footer className="footer">
+      <div className="container">
+        <div className="footer-content">
+          {/* Coluna 1: Contato */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-            >
-              <Link to="/" className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 bg-primary-gradient rounded-xl flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">A</span>
+            className="footer-column"
+          >
+            <h3 className="footer-title">Contato</h3>
+            <div className="footer-contact">
+              <div className="contact-item">
+                <Mail size={16} />
+                <span>contato@agrosync.com</span>
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-2xl font-bold text-gradient">AgroSync</span>
-                  <span className="text-sm text-muted">Futurista</span>
+              <div className="contact-item">
+                <Phone size={16} />
+                <span>+55 (11) 99999-9999</span>
                 </div>
-              </Link>
-              
-              <p className="text-secondary mb-6 leading-relaxed">
-                A plataforma mais avançada e futurista do mundo para conectar 
-                produtores, compradores e transportadores do agronegócio.
-              </p>
-              
-              {/* Contact Info */}
-              <div className="space-y-3">
-                <div className="flex items-center gap-3 text-secondary">
-                  <Mail size={16} className="text-primary" />
-                  <a 
-                    href="mailto:contato@agroisync.com"
-                    className="hover:text-primary transition-colors"
-                  >
-                    contato@agroisync.com
-                  </a>
-                </div>
-                
-                <div className="flex items-center gap-3 text-secondary">
-                  <Phone size={16} className="text-primary" />
-                  <a 
-                    href="https://wa.me/5566992362830"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-primary transition-colors"
-                  >
-                    (66) 99236-2830
-                  </a>
-                </div>
-                
-                <div className="flex items-center gap-3 text-secondary">
-                  <MapPin size={16} className="text-primary" />
-                  <span>Sinop - MT, Brasil</span>
+              <div className="contact-item">
+                <MapPin size={16} />
+                <span>São Paulo - SP, Brasil</span>
                 </div>
               </div>
             </motion.div>
-          </div>
           
-          {/* Footer Links */}
-          {Object.entries(footerLinks).map(([category, links], index) => (
+          {/* Coluna 2: Empresa / Serviços */}
             <motion.div
-              key={category}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
               viewport={{ once: true }}
-            >
-              <h3 className="text-lg font-semibold text-primary mb-4 capitalize">
-                {category}
-              </h3>
-              <ul className="space-y-3">
-                {links.map((link) => (
-                  <li key={link.name}>
-                    <Link
-                      to={link.href}
-                      className="text-secondary hover:text-primary transition-colors"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+            className="footer-column"
+          >
+            <h3 className="footer-title">Empresa</h3>
+            <div className="footer-links">
+              <a href="/about" className="footer-link">Sobre Nós</a>
+              <a href="/marketplace" className="footer-link">Marketplace</a>
+              <a href="/agroconecta" className="footer-link">AgroConecta</a>
+              <a href="/loja" className="footer-link">Loja Agroisync</a>
+              <a href="/plans" className="footer-link">Planos</a>
+            </div>
             </motion.div>
-          ))}
-        </div>
         
-        {/* Social Links & Copyright */}
-        <div className="border-t border-light pt-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          {/* Coluna 3: Suporte / Legal / Redes */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
-              className="flex items-center gap-4"
-            >
-              <span className="text-secondary">Siga-nos:</span>
-              {socialLinks.map((social, index) => (
-                <motion.a
-                  key={social.name}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center text-secondary hover:bg-primary hover:text-white transition-colors"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  <social.icon size={18} />
-                </motion.a>
-              ))}
-            </motion.div>
+            className="footer-column"
+          >
+            <h3 className="footer-title">Suporte</h3>
+            <div className="footer-links">
+              <a href="/help" className="footer-link">Central de Ajuda</a>
+              <a href="/contact" className="footer-link">Fale Conosco</a>
+              <a href="/terms" className="footer-link">Termos de Uso</a>
+              <a href="/privacy" className="footer-link">Privacidade</a>
+            </div>
             
+            <div className="footer-social">
+              <h4 className="social-title">Redes Sociais</h4>
+              <div className="social-links">
+                <a href="#" className="social-link" aria-label="Facebook">
+                  <Facebook size={18} />
+                </a>
+                <a href="#" className="social-link" aria-label="Twitter">
+                  <Twitter size={18} />
+                </a>
+                <a href="#" className="social-link" aria-label="Instagram">
+                  <Instagram size={18} />
+                </a>
+                <a href="#" className="social-link" aria-label="LinkedIn">
+                  <Linkedin size={18} />
+                </a>
+              </div>
+            </div>
+            </motion.div>
+        </div>
+            
+        {/* Call to Action */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
               viewport={{ once: true }}
-              className="flex items-center gap-4"
-            >
-              <p className="text-secondary text-sm">
-                © 2024 AgroSync. Todos os direitos reservados.
-              </p>
-              
-              <motion.button
-                onClick={scrollToTop}
-                className="w-10 h-10 bg-primary-gradient rounded-lg flex items-center justify-center text-white hover:scale-110 transition-transform"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <ArrowUp size={18} />
-              </motion.button>
+          className="footer-cta"
+        >
+          <div className="cta-content">
+            <h4>Precisa de ajuda especializada?</h4>
+            <p>Nossa equipe está pronta para ajudar você a encontrar a melhor solução.</p>
+            <button className="btn btn-primary btn-sm">
+              <MessageSquare size={16} />
+              Falar com Especialista
+            </button>
+          </div>
+        </motion.div>
+
+        {/* Copyright */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          viewport={{ once: true }}
+          className="footer-bottom"
+        >
+          <p className="copyright">
+            © {currentYear} AgroSync. Todos os direitos reservados.
+          </p>
             </motion.div>
           </div>
-        </div>
-      </div>
+      
+      <style jsx>{`
+        .footer {
+          background: var(--panel-bg);
+          border-top: 1px solid var(--border-light);
+          padding: var(--spacing-xl) 0 var(--spacing-lg);
+          margin-top: var(--spacing-xl);
+        }
+        
+        .footer-content {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: var(--spacing-xl);
+          margin-bottom: var(--spacing-xl);
+        }
+        
+        .footer-column {
+          display: flex;
+          flex-direction: column;
+        }
+        
+        .footer-title {
+          font-size: 1.125rem;
+          font-weight: 600;
+          color: var(--text);
+          margin-bottom: var(--spacing-md);
+        }
+        
+        .footer-contact {
+          display: flex;
+          flex-direction: column;
+          gap: var(--spacing-sm);
+        }
+        
+        .contact-item {
+          display: flex;
+          align-items: center;
+          gap: var(--spacing-sm);
+          color: var(--muted);
+          font-size: 0.875rem;
+        }
+        
+        .footer-links {
+          display: flex;
+          flex-direction: column;
+          gap: var(--spacing-sm);
+        }
+        
+        .footer-link {
+          color: var(--muted);
+          font-size: 0.875rem;
+          transition: color var(--transition);
+        }
+        
+        .footer-link:hover {
+          color: var(--text);
+        }
+        
+        .footer-social {
+          margin-top: var(--spacing-md);
+        }
+        
+        .social-title {
+          font-size: 0.875rem;
+          font-weight: 500;
+          color: var(--text);
+          margin-bottom: var(--spacing-sm);
+        }
+        
+        .social-links {
+          display: flex;
+          gap: var(--spacing-sm);
+        }
+        
+        .social-link {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 36px;
+          height: 36px;
+          background: var(--bg);
+          border-radius: var(--radius-sm);
+          color: var(--muted);
+          transition: all var(--transition);
+        }
+        
+        .social-link:hover {
+          background: var(--accent-metal);
+          color: var(--text);
+          transform: translateY(-2px);
+        }
+        
+        .footer-cta {
+          background: var(--bg);
+          border-radius: var(--radius-lg);
+          padding: var(--spacing-lg);
+          margin-bottom: var(--spacing-lg);
+          text-align: center;
+        }
+        
+        .cta-content h4 {
+          font-size: 1.125rem;
+          font-weight: 600;
+          color: var(--text);
+          margin-bottom: var(--spacing-sm);
+        }
+        
+        .cta-content p {
+          color: var(--muted);
+          margin-bottom: var(--spacing-md);
+          font-size: 0.875rem;
+        }
+        
+        .footer-bottom {
+          text-align: center;
+          padding-top: var(--spacing-lg);
+          border-top: 1px solid var(--border-light);
+        }
+        
+        .copyright {
+          color: var(--muted);
+          font-size: 0.875rem;
+        }
+        
+        @media (max-width: 768px) {
+          .footer-content {
+            grid-template-columns: 1fr;
+            gap: var(--spacing-lg);
+          }
+          
+          .footer {
+            padding: var(--spacing-lg) 0;
+          }
+        }
+      `}</style>
     </footer>
   );
 };

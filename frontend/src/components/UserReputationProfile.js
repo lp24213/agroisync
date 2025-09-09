@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-';
+import { motion } from 'framer-motion';
 import { Trophy, Crown, Target, Gift } from 'lucide-react';
 import gamificationService, { 
   BADGE_RARITY_COLORS, 
@@ -52,24 +52,24 @@ const UserReputationProfile = ({ userId, className = '' }) => {
 
   const getLevelIcon = (level) => {
     if (level >= 50) return <Crown className="w-5 h-5" />;
-    if (level >= 30) return <// Shield className="w-5 h-5" />;
-    if (level >= 20) return <// Star className="w-5 h-5" />;
-    if (level >= 10) return <// Award className="w-5 h-5" />;
+    if (level >= 30) return <Shield className="w-5 h-5" />;
+    if (level >= 20) return <Star className="w-5 h-5" />;
+    if (level >= 10) return <Award className="w-5 h-5" />;
     return <Target className="w-5 h-5" />;
   };
 
-  const // getBadgeIcon = (badge) => {
+  const getBadgeIcon = (badge) => {
     const iconMap = {
       'FIRST_TRANSACTION': <Target className="w-4 h-4" />,
-      'ACTIVE_SELLER': <// ShoppingCart className="w-4 h-4" />,
-      'TRANSPORTER': <// Truck className="w-4 h-4" />,
-      'TRUSTED_USER': <// Star className="w-4 h-4" />,
+      'ACTIVE_SELLER': <ShoppingCart className="w-4 h-4" />,
+      'TRANSPORTER': <Truck className="w-4 h-4" />,
+      'TRUSTED_USER': <Star className="w-4 h-4" />,
       'TOP_SELLER': <Crown className="w-4 h-4" />
     };
-    return iconMap[badge.id] || <// Award className="w-4 h-4" />;
+    return iconMap[badge.id] || <Award className="w-4 h-4" />;
   };
 
-  if (// loading) {
+  if (loading) {
     return (
       <div className={`bg-white rounded-lg shadow-premium p-6 ${className}`}>
         <div className="animate-pulse">
@@ -130,7 +130,7 @@ const UserReputationProfile = ({ userId, className = '' }) => {
           onClick={() => setShowBadges(!showBadges)}
           className="p-2 text-premium-gray hover:text-premium-dark-gray hover:bg-premium-platinum rounded-lg transition-premium"
         >
-          <// Award className="w-5 h-5" />
+          <Award className="w-5 h-5" />
         </button>
       </div>
 
