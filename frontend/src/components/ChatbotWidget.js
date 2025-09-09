@@ -161,7 +161,7 @@ const ChatbotWidget = () => {
                   <Bot className="w-4 h-4 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-sm text-primary">Agroisync Assistant</h3>
+                  <h3 className="font-semibold text-sm text-primary">AGROISYNC Assistant</h3>
                   <p className="text-primary text-xs">Online</p>
                 </div>
               </div>

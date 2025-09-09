@@ -116,7 +116,7 @@ const AuthForm = ({
       agroconecta: 'AgroConecta',
       loja: 'Loja AgroSync'
     };
-    return moduleNames[module] || 'AgroSync';
+    return moduleNames[module] || 'AGROISYNC';
   };
 
   const getModuleDescription = () => {

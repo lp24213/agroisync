@@ -20,7 +20,7 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
     const welcomeMessage = {
       id: Date.now(),
       type: 'ai',
-      content: t('ai.welcome', 'Olá! Sou o assistente IA da Agroisync. Como posso ajudá-lo hoje?'),
+      content: t('ai.welcome', 'Olá! Sou o assistente IA da AGROISYNC. Como posso ajudá-lo hoje?'),
       timestamp: new Date()
     };
     setMessages([welcomeMessage]);
@@ -153,7 +153,7 @@ const AIChatbot = ({ isOpen, onClose, initialMessage = null }) => {
           </div>
           <div>
             <h3 className="font-semibold text-gray-900">Assistente IA</h3>
-            <p className="text-sm text-gray-600">Agroisync</p>
+            <p className="text-sm text-gray-600">AGROISYNC</p>
           </div>
         </div>
         <div className="flex items-center gap-2">

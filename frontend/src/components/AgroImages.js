@@ -108,7 +108,7 @@ const AgroImages = () => {
     <div className="space-y-12">
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-gradient-agro mb-4">
-          Galeria de Imagens AgroSync
+          Galeria de Imagens AGROISYNC
         </h2>
         <p className="text-white/60 max-w-2xl mx-auto">
           Explore nossa coleção de imagens que representam a inovação e tecnologia no agronegócio

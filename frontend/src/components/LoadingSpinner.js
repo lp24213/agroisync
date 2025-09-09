@@ -53,7 +53,7 @@ const LoadingSpinner = ({ size = 'large', message = 'Carregando...' }) => {
           className="space-y-2"
         >
           <h2 className={`${textSizeClasses[size]} font-semibold text-white`}>
-            AgroSync
+            AGROISYNC
           </h2>
           <p className="text-gray-400 text-sm">
             {message}

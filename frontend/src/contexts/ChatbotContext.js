@@ -23,7 +23,7 @@ export const ChatbotProvider = ({ children }) => {
     const welcomeMessage = {
       id: 1,
       type: 'bot',
-      content: 'Olá! Sou o assistente virtual do AgroSync. Como posso ajudá-lo hoje?',
+      content: 'Olá! Sou o assistente virtual do AGROISYNC. Como posso ajudá-lo hoje?',
       timestamp: new Date(),
       mode: 'text'
     };
@@ -165,7 +165,7 @@ export const ChatbotProvider = ({ children }) => {
     }
     
     if (input.includes('cripto') || input.includes('blockchain') || input.includes('nft')) {
-      return 'O AgroSync oferece pagamentos em criptomoedas, staking e NFTs agrícolas. Acesse a seção Crypto para mais informações.';
+      return 'O AGROISYNC oferece pagamentos em criptomoedas, staking e NFTs agrícolas. Acesse a seção Crypto para mais informações.';
     }
     
     if (input.includes('conta') || input.includes('perfil') || input.includes('cadastro')) {
@@ -173,11 +173,11 @@ export const ChatbotProvider = ({ children }) => {
     }
     
     if (input.includes('ajuda') || input.includes('suporte')) {
-      return 'Estou aqui para ajudar! Você pode me fazer perguntas sobre qualquer funcionalidade do AgroSync ou acessar a seção de ajuda para mais informações.';
+      return 'Estou aqui para ajudar! Você pode me fazer perguntas sobre qualquer funcionalidade do AGROISYNC ou acessar a seção de ajuda para mais informações.';
     }
     
     if (input.includes('planos') || input.includes('assinatura') || input.includes('premium')) {
-      return 'O AgroSync oferece planos gratuitos e premium. Os planos premium incluem recursos avançados como mensageria, analytics e suporte prioritário.';
+      return 'O AGROISYNC oferece planos gratuitos e premium. Os planos premium incluem recursos avançados como mensageria, analytics e suporte prioritário.';
     }
     
     // Resposta padrão

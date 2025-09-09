@@ -445,13 +445,13 @@ class ChatbotService {
     // Respostas baseadas em palavras-chave
     if (lowerMessage.includes('cadastro') || lowerMessage.includes('registro')) {
       return {
-        content: 'Para fazer seu cadastro no AgroSync, clique em "Cadastrar" no menu superior. Você precisará fornecer: nome completo, e-mail, telefone e CPF/CNPJ. Após o cadastro, faremos a verificação dos dados com a Receita Federal.',
+        content: 'Para fazer seu cadastro no AGROISYNC, clique em "Cadastrar" no menu superior. Você precisará fornecer: nome completo, e-mail, telefone e CPF/CNPJ. Após o cadastro, faremos a verificação dos dados com a Receita Federal.',
         suggestions: ['Como verificar CPF/CNPJ?', 'Preciso de ajuda com o cadastro', 'Quais documentos são necessários?'],
         category: 'registration'
       };
     } else if (lowerMessage.includes('intermediação') || lowerMessage.includes('como funciona')) {
       return {
-        content: 'O AgroSync funciona como uma plataforma de intermediação. Quando você tem interesse em um produto ou frete, registramos sua intenção e abrimos um canal de comunicação direto com o vendedor/anunciante. A plataforma não realiza vendas diretas, apenas conecta compradores e vendedores.',
+        content: 'O AGROISYNC funciona como uma plataforma de intermediação. Quando você tem interesse em um produto ou frete, registramos sua intenção e abrimos um canal de comunicação direto com o vendedor/anunciante. A plataforma não realiza vendas diretas, apenas conecta compradores e vendedores.',
         suggestions: ['Como negociar preços?', 'Quanto tempo leva para fechar um negócio?', 'Posso cancelar uma intenção?'],
         category: 'intermediation'
       };

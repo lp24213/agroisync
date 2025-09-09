@@ -24,10 +24,10 @@ const SEOHead = ({
   
   // Títulos e descrições padrão por idioma
   const defaultTitles = {
-    pt: 'AgroSync - O Hub Completo do Agronegócio Brasileiro',
-    en: 'AgroSync - The Complete Brazilian Agribusiness Hub',
-    es: 'AgroSync - El Hub Completo del Agronegocio Brasileño',
-    zh: 'AgroSync - 巴西农业综合企业完整中心'
+    pt: 'AGROISYNC - O Hub Completo do Agronegócio Brasileiro',
+    en: 'AGROISYNC - The Complete Brazilian Agribusiness Hub',
+    es: 'AGROISYNC - El Hub Completo del Agronegocio Brasileño',
+    zh: 'AGROISYNC - 巴西农业综合企业完整中心'
   };
   
   const defaultDescriptions = {
@@ -62,7 +62,7 @@ const SEOHead = ({
       <title>{pageTitle}</title>
       <meta name="description" content={pageDescription} />
       <meta name="keywords" content={pageKeywords} />
-      <meta name="author" content="AgroSync" />
+      <meta name="author" content="AGROISYNC" />
       <meta name="robots" content={noindex ? 'noindex,nofollow' : 'index,follow'} />
       <meta name="language" content={currentLang} />
       
@@ -74,7 +74,7 @@ const SEOHead = ({
       <meta property="og:image" content={ogImage} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
-      <meta property="og:site_name" content="AgroSync" />
+      <meta property="og:site_name" content="AGROISYNC" />
       <meta property="og:locale" content={currentLang === 'pt' ? 'pt_BR' : currentLang === 'en' ? 'en_US' : currentLang === 'es' ? 'es_ES' : 'zh_CN'} />
       
       {/* Twitter */}
@@ -108,7 +108,7 @@ const SEOHead = ({
         {JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Organization",
-          "name": "AgroSync",
+          "name": "AGROISYNC",
           "url": baseUrl,
           "logo": `${baseUrl}/images/agroisync-logo.png`,
           "description": pageDescription,

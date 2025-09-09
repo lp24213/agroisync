@@ -118,7 +118,7 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
     if (!nft) return;
 
     const shareData = {
-      title: t('nft.shareTitle', 'NFT de Entrega - AgroSync'),
+      title: t('nft.shareTitle', 'NFT de Entrega - AGROISYNC'),
       text: t('nft.shareText', 'Confira meu NFT de comprovante de entrega'),
       url: `${window.location.origin}/nft/${nft.tokenId}`
     };

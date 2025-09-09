@@ -1,6 +1,6 @@
 {
-  "short_name": "AgroSync",
-  "name": "AgroSync - Futuro do Agronegócio",
+  "short_name": "AGROISYNC",
+  "name": "AGROISYNC - Futuro do Agronegócio",
   "description": "A plataforma de agronegócio mais futurista do mundo",
   "icons": [
     {
@@ -21,8 +21,8 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#00D4FF",
-  "background_color": "#0F0F23",
+  "theme_color": "#2F4F2F",
+  "background_color": "#F5F5DC",
   "orientation": "portrait-primary",
   "categories": ["business", "productivity", "utilities"],
   "lang": "pt-BR",

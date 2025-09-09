@@ -42,7 +42,7 @@ const Footer = () => {
                 </div>
               <div className="contact-item">
                 <MapPin size={16} />
-                <span>Sinop - MT, Brasil</span>
+E                <span>Sinop - MT, Brasil</span>
                 </div>
               </div>
             </motion.div>
@@ -130,7 +130,7 @@ const Footer = () => {
           <div className="flex items-center justify-center space-x-4">
             <AgroSyncLogo variant="text" size="small" />
             <p className="copyright">
-              © {currentYear} Agroisync. Todos os direitos reservados.
+              © {currentYear} AGROISYNC. Todos os direitos reservados.
             </p>
           </div>
             </motion.div>

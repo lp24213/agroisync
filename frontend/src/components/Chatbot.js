@@ -265,7 +265,7 @@ const Chatbot = () => {
     }
     
     if (input.includes('frete') || input.includes('transport')) {
-      return 'O AgroSync oferece o AgroConecta para conectar produtores com transportadores. Você pode anunciar fretes ou encontrar transportes disponíveis. Gostaria de saber mais sobre como usar?';
+      return 'O AGROISYNC oferece o AgroConecta para conectar produtores com transportadores. Você pode anunciar fretes ou encontrar transportes disponíveis. Gostaria de saber mais sobre como usar?';
     }
     
     if (input.includes('pagamento') || input.includes('payment')) {
@@ -285,7 +285,7 @@ const Chatbot = () => {
     }
 
     // Resposta padrão
-    return 'Interessante! No AgroSync, você pode encontrar informações sobre produtos agrícolas, conectar-se com transportadores, acompanhar o mercado e muito mais. Como posso ajudar especificamente?';
+    return 'Interessante! No AGROISYNC, você pode encontrar informações sobre produtos agrícolas, conectar-se com transportadores, acompanhar o mercado e muito mais. Como posso ajudar especificamente?';
   };
 
   const toggleVoiceRecognition = () => {

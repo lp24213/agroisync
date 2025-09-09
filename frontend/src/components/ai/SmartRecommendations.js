@@ -91,7 +91,7 @@ setIsLoading(false);
   // Compartilhar recomendação
   const shareRecommendation = useCallback(async (recommendation) => {
     const shareData = {
-      title: t('recommendations.shareTitle', 'Recomendação AgroSync'),
+      title: t('recommendations.shareTitle', 'Recomendação AGROISYNC'),
       text: recommendation.title,
       url: window.location.href
     };

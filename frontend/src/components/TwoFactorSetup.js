@@ -97,7 +97,7 @@ const TwoFactorSetup = ({ userId, onComplete, onCancel }) => {
   };
 
   const downloadBackupCodes = () => {
-    const content = `Códigos de Backup AgroSync\n\n${backupCodes.join('\n')}\n\nGuarde estes códigos em local seguro.`;
+    const content = `Códigos de Backup AGROISYNC\n\n${backupCodes.join('\n')}\n\nGuarde estes códigos em local seguro.`;
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

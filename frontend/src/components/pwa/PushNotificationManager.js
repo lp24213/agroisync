@@ -153,8 +153,8 @@ setIsLoading(true);
   // Testar notificação
   const testNotification = useCallback(() => {
     if (permission === 'granted') {
-      new Notification(t('notifications.testTitle', 'Teste AgroSync'), {
-        body: t('notifications.testBody', 'Esta é uma notificação de teste do AgroSync'),
+      new Notification(t('notifications.testTitle', 'Teste AGROISYNC'), {
+        body: t('notifications.testBody', 'Esta é uma notificação de teste do AGROISYNC'),
         icon: '/icons/icon-192x192.png',
         badge: '/icons/badge-72x72.png',
         tag: 'test-notification',

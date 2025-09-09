@@ -45,7 +45,7 @@ const PagePreloader = ({ isLoading = true }) => {
             isDark ? 'text-white' : 'text-gray-900'
           }`}
         >
-          AgroSync
+          AGROISYNC
         </motion.h2>
 
         {/* Spinner animado */}

@@ -84,7 +84,7 @@ const PWAInstallPrompt = () => {
               </div>
               <div>
                 <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-                  {t('pwa.installTitle', 'Instalar AgroSync')}
+                  {t('pwa.installTitle', 'Instalar AGROISYNC')}
                 </h3>
                 <p className="text-xs text-gray-600 dark:text-gray-400">
                   {t('pwa.installSubtitle', 'Acesso rápido e offline')}

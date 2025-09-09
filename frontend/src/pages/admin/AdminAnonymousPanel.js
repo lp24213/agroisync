@@ -388,7 +388,7 @@ user.status === 'active'
                 {t('admin.title', 'Painel Admin Anônimo')}
               </h1>
               <p className="text-slate-600 dark:text-slate-400">
-                {t('admin.subtitle', 'Visão completa do sistema AgroSync')}
+                {t('admin.subtitle', 'Visão completa do sistema AGROISYNC')}
               </p>
             </div>
             <div className="flex items-center gap-4">

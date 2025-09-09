@@ -133,7 +133,7 @@ const PricePrediction = () => {
     if (!predictions) return;
 
     const shareData = {
-      title: t('ai.shareTitle', 'Previsão de Preços - AgroSync'),
+      title: t('ai.shareTitle', 'Previsão de Preços - AGROISYNC'),
       text: t('ai.shareText', 'Confira a previsão de preços para {product} em {region}', {
         product: products.find(p => p.id === selectedProduct)?.name,
         region: regions.find(r => r.id === selectedRegion)?.name

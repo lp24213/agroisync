@@ -92,7 +92,7 @@ setLoading(false);
         </h2>
         
         <button
-          onClick={() => mintNFT({ name: 'Novo NFT', description: 'NFT criado no AgroSync' })}
+          onClick={() => mintNFT({ name: 'Novo NFT', description: 'NFT criado no AGROISYNC' })}
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
         >
           <Plus className="w-4 h-4" />
@@ -114,7 +114,7 @@ setLoading(false);
             {t('nfts.noNFTs', 'Nenhum NFT encontrado')}
           </p>
           <button
-            onClick={() => mintNFT({ name: 'Primeiro NFT', description: 'Meu primeiro NFT no AgroSync' })}
+            onClick={() => mintNFT({ name: 'Primeiro NFT', description: 'Meu primeiro NFT no AGROISYNC' })}
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg"
           >
             {t('nfts.mintFirst', 'Criar Primeiro NFT')}

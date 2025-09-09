@@ -24,9 +24,13 @@ const AgroSyncLogo = ({ className = "", variant = "default", size = "medium" }) 
           src="/agroisync-logo.svg" 
           alt="AGROISYNC" 
           className={`${getLogoSize()} object-contain`}
+          onError={(e) => {
+            console.log('Erro ao carregar logo:', e.target.src);
+            e.target.style.display = 'none';
+          }}
         />
         <span className={`font-semibold text-gray-800 dark:text-gray-200 ${getTextSize()}`}>
-          Agroisync
+          AGROISYNC
         </span>
       </div>
     );
@@ -42,7 +46,7 @@ const AgroSyncLogo = ({ className = "", variant = "default", size = "medium" }) 
         />
         <div className="flex flex-col">
           <span className={`font-semibold text-gray-800 dark:text-gray-200 ${size === "small" ? "text-xl" : size === "large" ? "text-3xl" : "text-2xl"}`}>
-            Agroisync
+            AGROISYNC
           </span>
           <span className={`text-gray-600 dark:text-gray-400 ${size === "small" ? "text-xs" : size === "large" ? "text-sm" : "text-xs"} -mt-1`}>
             Agronegócio Inteligente
