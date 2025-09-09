@@ -45,14 +45,14 @@
 
 /* ===== NAVBAR STYLES ===== */
 .navbar-elegant-light {
-  background: rgba(255, 255, 255, 0.95);
+  background: linear-gradient(135deg, #f2f2f2 0%, #e6e6e6 100%);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
 }
 
 .navbar-elegant-dark {
-  background: rgba(28, 28, 28, 0.95);
+  background: linear-gradient(135deg, #1c1c1c 0%, #2a2a2a 100%);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 2px 20px rgba(255, 255, 255, 0.1);

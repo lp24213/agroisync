@@ -22,7 +22,7 @@
   --text-inverse: #ffffff;
 
   /* Navbar/Menu futurista: gradiente cinza metálico */
-  --navbar-gradient: linear-gradient(135deg, #e5e5e5 0%, #cccccc 100%);
+  --navbar-gradient: linear-gradient(135deg, #f2f2f2 0%, #e6e6e6 100%);
   --navbar-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
   --navbar-border: 1px solid rgba(0, 0, 0, 0.05);
 
@@ -99,7 +99,7 @@
   --text-inverse: #000000;
 
   /* Navbar/Menu futurista: gradiente cinza escuro metálico */
-  --navbar-gradient: linear-gradient(135deg, #2a2a2a 0%, #1c1c1c 100%);
+  --navbar-gradient: linear-gradient(135deg, #1c1c1c 0%, #2a2a2a 100%);
   --navbar-shadow: 0 2px 20px rgba(255, 255, 255, 0.1);
   --navbar-border: 1px solid rgba(255, 255, 255, 0.1);
 

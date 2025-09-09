@@ -10,7 +10,7 @@
   --panel-bg: #ffffff;              /* cards/painéis */
   --muted: #333333;                 /* texto secundário - cinza escuro */
   --text: #000000;                  /* texto principal - preto puro */
-  --nav-bg: rgba(255, 255, 255, 0.95); /* fundo navbar - branco translúcido */
+  --nav-bg: linear-gradient(135deg, #f2f2f2 0%, #e6e6e6 100%); /* fundo navbar - gradiente cinza */
   --shadow: rgba(0, 0, 0, 0.08);
   --accent-metal: linear-gradient(135deg, #f2f2f2 0%, #ffffff 100%);
   
@@ -60,7 +60,7 @@
   --panel-bg: #2A2A2A;             /* cards/painéis - cinza grafite */
   --muted: #E0E0E0;                 /* texto secundário - cinza claro */
   --text: #FFFFFF;                  /* texto principal - branco */
-  --nav-bg: rgba(28, 28, 28, 0.95); /* fundo navbar - cinza escuro translúcido */
+  --nav-bg: linear-gradient(135deg, #1c1c1c 0%, #2a2a2a 100%); /* fundo navbar - gradiente cinza escuro */
   --shadow: rgba(255,255,255,0.1);
   --accent-metal: linear-gradient(135deg, #1C1C1C 0%, #2A2A2A 100%);
   

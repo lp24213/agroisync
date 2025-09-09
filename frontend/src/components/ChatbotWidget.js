@@ -153,42 +153,42 @@ const ChatbotWidget = () => {
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className="fixed bottom-24 right-6 z-40 w-80 h-96 rounded-lg shadow-xl flex flex-col bg-secondary border border-light"
+            className="fixed bottom-24 right-6 z-40 w-80 h-96 rounded-lg shadow-xl flex flex-col bg-black border border-gray-600"
           >
-            <div className="flex items-center justify-between p-4 border-b border-light">
+            <div className="flex items-center justify-between p-4 border-b border-gray-600">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                   <Bot className="w-4 h-4 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-sm text-primary">AGROISYNC Assistant</h3>
-                  <p className="text-primary text-xs">Online</p>
+                  <h3 className="font-semibold text-sm text-white">AGROISYNC Assistant</h3>
+                  <p className="text-gray-300 text-xs">Online</p>
                 </div>
               </div>
               
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setMode('text')}
-                  className={`p-1 rounded ${mode === 'text' ? 'bg-gray-200 text-gray-700' : 'text-gray-400'}`}
+                  className={`p-1 rounded ${mode === 'text' ? 'bg-gray-600 text-white' : 'text-gray-400'}`}
                 >
                   <MessageCircle className="w-4 h-4" />
                 </button>
                 <button
                   onClick={toggleVoiceMode}
-                  className={`p-1 rounded ${mode === 'voice' ? 'bg-gray-200 text-gray-700' : 'text-gray-400'}`}
+                  className={`p-1 rounded ${mode === 'voice' ? 'bg-gray-600 text-white' : 'text-gray-400'}`}
                 >
                   {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
                 </button>
                 <button
                   onClick={() => setMode('image')}
-                  className={`p-1 rounded ${mode === 'image' ? 'bg-gray-200 text-gray-700' : 'text-gray-400'}`}
+                  className={`p-1 rounded ${mode === 'image' ? 'bg-gray-600 text-white' : 'text-gray-400'}`}
                 >
                   <Image className="w-4 h-4" />
                 </button>
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-primary">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-black">
               {chatHistory.length === 0 && (
                 <div className="text-center">
                   <Bot className="w-8 h-8 mx-auto mb-2 text-white" />
@@ -200,7 +200,7 @@ const ChatbotWidget = () => {
                       <button
                         key={index}
                         onClick={() => setMessage(suggestion)}
-                        className="block w-full text-left p-2 text-xs rounded transition-colors text-white hover:text-white hover:bg-secondary"
+                        className="block w-full text-left p-2 text-xs rounded transition-colors text-white hover:text-white hover:bg-gray-800"
                       >
                         {suggestion}
                       </button>
@@ -219,8 +219,8 @@ const ChatbotWidget = () => {
                   <div className={`flex items-start space-x-2 max-w-[80%] ${msg.type === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
                     <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
                       msg.type === 'user' 
-                        ? 'bg-secondary' 
-                        : 'bg-primary'
+                        ? 'bg-gray-600' 
+                        : 'bg-gray-700'
                     }`}>
                       {msg.type === 'user' ? (
                         <User className="w-3 h-3 text-white" />
@@ -230,8 +230,8 @@ const ChatbotWidget = () => {
                     </div>
                     <div className={`p-3 rounded-lg ${
                       msg.type === 'user'
-                        ? 'bg-secondary text-white'
-                        : 'bg-panel text-primary border border-light'
+                        ? 'bg-gray-600 text-white'
+                        : 'bg-gray-800 text-white border border-gray-600'
                     }`}>
                       <p className="text-sm">{msg.content}</p>
                       <p className="text-xs opacity-60 mt-1">
@@ -252,10 +252,10 @@ const ChatbotWidget = () => {
                     <div className="w-6 h-6 bg-gray-500 rounded-full flex items-center justify-center">
                       <Bot className="w-3 h-3 text-white" />
                     </div>
-                    <div className="p-3 rounded-lg bg-white border border-gray-200">
+                    <div className="p-3 rounded-lg bg-gray-800 border border-gray-600">
                       <div className="flex items-center space-x-1">
-                        <Loader2 className="w-4 h-4 animate-spin text-gray-600" />
-                        <span className="text-sm text-gray-600">{t('chatbot.thinking')}</span>
+                        <Loader2 className="w-4 h-4 animate-spin text-gray-300" />
+                        <span className="text-sm text-gray-300">{t('chatbot.thinking')}</span>
                       </div>
                     </div>
                   </div>
@@ -265,7 +265,7 @@ const ChatbotWidget = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            <div className="p-4 border-t border-light">
+            <div className="p-4 border-t border-gray-600">
               <div className="flex items-center space-x-2">
                 <input
                   type="text"
@@ -273,7 +273,7 @@ const ChatbotWidget = () => {
                   onChange={(e) => setMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Digite sua mensagem..."
-                  className="flex-1 px-3 py-2 border border-light rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-sm bg-panel text-primary placeholder-text-light"
+                  className="flex-1 px-3 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-sm bg-gray-800 text-white placeholder-gray-400"
                   disabled={mode !== 'text'}
                 />
                 <motion.button
