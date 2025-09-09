@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-';
-import { Lock, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Lock, Loader2, CheckCircle, Clock, Unlock, AlertCircle, TrendingUp, Plus, Minus } from 'lucide-react';
 
 const StakingManager = ({ userId }) => {
-  const {  } = useTranslation();
+  const { t } = useTranslation();
   const [stakes, setStakes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -263,3 +263,5 @@ setLoading(false);
 };
 
 export default StakingManager;
+
+

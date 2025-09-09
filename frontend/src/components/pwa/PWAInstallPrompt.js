@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-';
-import { Download, Smartphone, Monitor, WifiOff } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Download, Smartphone, Monitor, WifiOff, X } from 'lucide-react';
 import { usePWA } from '../../hooks/usePWA';
 import { useAnalytics } from '../../hooks/useAnalytics';
 
 const PWAInstallPrompt = () => {
-  const {  } = useTranslation();
+  const { t } = useTranslation();
   const pwa = usePWA();
   const analytics = useAnalytics();
   const [isVisible, setIsVisible] = useState(false);
@@ -28,7 +28,7 @@ const PWAInstallPrompt = () => {
     }
   }, [pwa.isInstallable, pwa.isInstalled, analytics]);
 
-Instalar PWA
+  // Instalar PWA
   const handleInstall = async () => {
     setIsInstalling(true);
     analytics.trackEvent('pwa_install_attempted');
@@ -46,20 +46,20 @@ Instalar PWA
     }
   };
 
-Fechar prompt
+  // Fechar prompt
   const handleClose = () => {
     setIsVisible(false);
     localStorage.setItem('pwa-install-prompt-last-shown', Date.now().toString());
     analytics.trackEvent('pwa_install_prompt_dismissed');
   };
 
-Mostrar instruções para iOS
+  // Mostrar instruções para iOS
   const handleIOSInstall = () => {
     setShowIOSInstructions(true);
     analytics.trackEvent('pwa_ios_install_instructions_shown');
   };
 
-Detectar iOS
+  // Detectar iOS
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
   const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches;
 

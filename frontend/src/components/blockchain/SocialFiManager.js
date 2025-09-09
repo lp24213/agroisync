@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-';
-import { Users, Share, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Users, Loader2, CheckCircle, Clock, AlertCircle, Heart, MessageCircle, ExternalLink, Share } from 'lucide-react';
 
 const SocialFiManager = ({ userId }) => {
-  const {  } = useTranslation();
+  const { t } = useTranslation();
   const [platforms, setPlatforms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -221,3 +221,5 @@ setLoading(false);
 };
 
 export default SocialFiManager;
+
+

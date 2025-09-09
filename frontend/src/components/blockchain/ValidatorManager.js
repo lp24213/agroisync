@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-';
-import { Shield, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Shield, Loader2, CheckCircle, Clock, AlertCircle, DollarSign, Zap, ExternalLink } from 'lucide-react';
 
 const ValidatorManager = ({ userId }) => {
-  const {  } = useTranslation();
+  const { t } = useTranslation();
   const [validators, setValidators] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -215,3 +215,5 @@ setLoading(false);
 };
 
 export default ValidatorManager;
+
+

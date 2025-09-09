@@ -19,12 +19,12 @@ const EscrowManager = () => {
   }, []);
 
   const loadEscrowData = async () => {
-setLoading(true);
+    setLoading(true);
     try {
-Simular carregamento de dados
+      // Simular carregamento de dados
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-Dados mockados
+      // Dados mockados
       const mockTransactions = [
         {
           id: 'escrow-001',
@@ -43,7 +43,7 @@ Dados mockados
             'Documentação completa'
           ],
           documents: ['invoice.pdf', 'quality_cert.pdf'],
-          estimatedRelease: new Date(Date.now() + 172800000) 2 dias
+          estimatedRelease: new Date(Date.now() + 172800000) // 2 dias
         },
         {
           id: 'escrow-002',
@@ -64,7 +64,7 @@ Dados mockados
 
       setTransactions(mockTransactions);
 
-Estatísticas mockadas
+      // Estatísticas mockadas
       setStats({
         totalTransactions: 24,
         pendingAmount: 125000,
@@ -87,10 +87,10 @@ user.id,
         'Pagamento liberado após confirmação de entrega'
       );
       
-Atualizar status local
+      // Atualizar status local
       setTransactions(prev => 
         prev.map(t => 
-t.id === transactionId 
+          t.id === transactionId 
             ? { ...t, status: 'completed', completedAt: new Date() }
             : t
         )

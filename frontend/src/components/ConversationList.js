@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   MessageSquare, Clock, User, Search, Filter,
-  MoreVertical, Archive, Trash, Pin, Volume2, VolumeX
+  Archive, Trash
 } from 'lucide-react';
-import messagingService, { MESSAGE_TYPES } from '../services/messagingService';
+import messagingService from '../services/messagingService';
 
 const ConversationList = ({ userId, onSelectConversation, selectedTransactionId }) => {
   const [conversations, setConversations] = useState([]);
@@ -241,7 +241,7 @@ const ConversationList = ({ userId, onSelectConversation, selectedTransactionId 
                               {formatDate(conversation.lastMessage?.createdAt || conversation.lastMessage?.timestamp || '')}
                             </span>
                             <span className="text-emerald-600">
-                              {MESSAGE_TYPES[conversation.lastMessage?.type || 'text']}
+                              {conversation.lastMessage?.type || 'text'}
                             </span>
                           </div>
                         </div>

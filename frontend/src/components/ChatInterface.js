@@ -2,10 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Send, Paperclip, Image, File, MapPin, 
-  Smile, MoreVertical, Phone, Video, 
-  Search, Archive, Trash, Eye, EyeOff
+  Search
 } from 'lucide-react';
-import messagingService, { MESSAGE_TYPES } from '../services/messagingService';
+import messagingService from '../services/messagingService';
 
 const ChatInterface = ({ 
   transactionId, 

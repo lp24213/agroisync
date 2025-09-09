@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-';
-import { Database, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Database, Loader2, CheckCircle, Clock, AlertCircle, TrendingUp, TrendingDown, RefreshCw, ExternalLink } from 'lucide-react';
 
 const OracleManager = ({ userId }) => {
-  const {  } = useTranslation();
+  const { t } = useTranslation();
   const [oracles, setOracles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -229,3 +229,5 @@ setLoading(false);
 };
 
 export default OracleManager;
+
+

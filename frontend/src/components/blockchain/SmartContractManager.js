@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-';
-import { FileText, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { FileCode, Loader2, CheckCircle, Clock, AlertCircle, Eye, Copy, Download, FileText } from 'lucide-react';
 
 const SmartContractManager = ({ userId }) => {
-  const {  } = useTranslation();
+  const { t } = useTranslation();
   const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -120,3 +120,5 @@ setLoading(false);
 };
 
 export default SmartContractManager;
+
+

@@ -32,20 +32,20 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
       if (data.success) {
         setDelivery(data.delivery);
         
-Verificar se já existe NFT
+        // Verificar se já existe NFT
         if (data.delivery.nft) {
           setNft(data.delivery.nft);
-loadNFTMetadata(data.delivery.nft.tokenId);
+          loadNFTMetadata(data.delivery.nft.tokenId);
         }
       }
     } catch (error) {
       console.error('Error loading delivery:', error);
     } finally {
-setIsLoading(false);
+      setIsLoading(false);
     }
   }, [deliveryId]);
 
-Carregar metadados do NFT
+  // Carregar metadados do NFT
   const loadNFTMetadata = useCallback(async (tokenId) => {
     try {
       const response = await fetch(`/api/blockchain/nft/${tokenId}/metadata`);
@@ -59,7 +59,7 @@ Carregar metadados do NFT
     }
   }, []);
 
-Cunhar NFT
+  // Cunhar NFT
   const mintNFT = useCallback(async () => {
     if (!delivery) return;
 
@@ -113,7 +113,7 @@ Cunhar NFT
     }
   }, [delivery, analytics, onMint]);
 
-Compartilhar NFT
+  // Compartilhar NFT
   const shareNFT = useCallback(async () => {
     if (!nft) return;
 
@@ -501,3 +501,4 @@ useEffect(() => {
 };
 
 export default DeliveryNFT;
+

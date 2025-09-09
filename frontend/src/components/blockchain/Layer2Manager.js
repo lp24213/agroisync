@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-';
-import { Layers, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Layers, Loader2, CheckCircle, Clock, AlertCircle, DollarSign, Zap, ExternalLink } from 'lucide-react';
 
 const Layer2Manager = ({ userId }) => {
-  const {  } = useTranslation();
+  const { t } = useTranslation();
   const [solutions, setSolutions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -215,3 +215,4 @@ setLoading(false);
 };
 
 export default Layer2Manager;
+

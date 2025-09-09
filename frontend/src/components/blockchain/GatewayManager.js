@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-';
+import { motion } from 'framer-motion';
 import { Gateway, Loader2, CheckCircle, Clock, AlertCircle, DollarSign, Zap, ExternalLink } from 'lucide-react';
 
 const GatewayManager = ({ userId }) => {
@@ -215,3 +215,4 @@ setLoading(false);
 };
 
 export default GatewayManager;
+

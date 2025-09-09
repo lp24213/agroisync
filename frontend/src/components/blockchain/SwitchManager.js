@@ -215,3 +215,4 @@ const SwitchManager = ({ userId }) => {
 };
 
 export default SwitchManager;
+

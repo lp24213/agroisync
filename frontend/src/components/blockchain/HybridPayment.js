@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-';
+import { motion } from 'framer-motion';
 import { CreditCard, Calculator } from 'lucide-react';
 import { useAnalytics } from '../../hooks/useAnalytics';
 
@@ -24,7 +24,7 @@ const HybridPayment = ({
   const [error, setError] = useState('');
   const [showCalculator, setShowCalculator] = useState(false);
 
-Criptomoedas suportadas
+  // Criptomoedas suportadas
   const supportedCryptos = [
     { id: 'usdc', name: 'USD Coin', symbol: 'USDC', icon: '🔵', stablecoin: true },
     { id: 'usdt', name: 'Tether', symbol: 'USDT', icon: '🟡', stablecoin: true },
@@ -32,7 +32,7 @@ Criptomoedas suportadas
     { id: 'matic', name: 'Polygon', symbol: 'MATIC', icon: '🟣', stablecoin: false }
   ];
 
-Carregar taxas de câmbio
+  // Carregar taxas de câmbio
   const loadExchangeRates = useCallback(async () => {
     try {
       const response = await fetch('/api/blockchain/exchange-rates');
@@ -41,7 +41,7 @@ Carregar taxas de câmbio
       if (data.success) {
         setCryptoRates(data.rates);
         
-Calcular valor em cripto baseado na moeda selecionada
+        // Calcular valor em cripto baseado na moeda selecionada
         const rate = data.rates[selectedCrypto];
         if (rate) {
           setCryptoAmount(fiatAmount / rate);
@@ -52,12 +52,12 @@ Calcular valor em cripto baseado na moeda selecionada
     }
   }, [fiatAmount, selectedCrypto]);
 
-Carregar taxas quando moeda ou valor mudarem
-useEffect(() => {
+  // Carregar taxas quando moeda ou valor mudarem
+  useEffect(() => {
     loadExchangeRates();
   }, [loadExchangeRates]);
 
-Calcular valores
+  // Calcular valores
   const calculateAmounts = useCallback(() => {
     const rate = cryptoRates[selectedCrypto];
     if (rate) {
@@ -469,3 +469,4 @@ t('payment.processing', 'Processando pagamento...')}
 };
 
 export default HybridPayment;
+

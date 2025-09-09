@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-';
-import { Link, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { GitBranch, Loader2, CheckCircle, Clock, AlertCircle, DollarSign, Zap, ExternalLink, Link } from 'lucide-react';
 
 const SidechainManager = ({ userId }) => {
-  const {  } = useTranslation();
+  const { t } = useTranslation();
   const [sidechains, setSidechains] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -215,3 +215,5 @@ setLoading(false);
 };
 
 export default SidechainManager;
+
+

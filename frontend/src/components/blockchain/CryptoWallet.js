@@ -487,3 +487,4 @@ const CryptoWallet = () => {
 };
 
 export default CryptoWallet;
+

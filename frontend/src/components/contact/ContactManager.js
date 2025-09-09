@@ -1,31 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-';
+import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
-import { Mail, MessageSquare } from 'lucide-react';
+import { Mail, MessageSquare, AlertCircle, CheckCircle, Reply, Archive, Clock, Star, User, Search, FileText, Eye, Trash } from 'lucide-react';
 import contactService from '../../services/contactService';
 
 const ContactManager = () => {
-  const {  } = useTranslation();
-  const {  } = useAuth();
+  const { t } = useTranslation();
+  const { user } = useAuth();
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState(null);
-  const [filter, setFilter] = useState('all'); 'all', 'unread', 'replied', 'archived'
+  const [filter, setFilter] = useState('all'); // 'all', 'unread', 'replied', 'archived'
   const [searchTerm, setSearchTerm] = useState('');
   const [stats, setStats] = useState({});
 
-useEffect(() => {
+  useEffect(() => {
     loadContactData();
   }, []);
 
   const loadContactData = async () => {
-setLoading(true);
+    setLoading(true);
     try {
-Simular carregamento de dados
+      // Simular carregamento de dados
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-Dados mockados
+      // Dados mockados
       const mockMessages = [
         {
           id: 'msg-001',
@@ -84,7 +84,7 @@ Dados mockados
 
       setMessages(mockMessages);
 
-Estatísticas mockadas
+      // Estatísticas mockadas
       setStats({
         total: 24,
         unread: 8,

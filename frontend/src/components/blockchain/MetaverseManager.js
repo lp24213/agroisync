@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-';
-import { Globe, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Globe, Loader2, CheckCircle, Clock, AlertCircle, DollarSign, MapPin, Users, ExternalLink } from 'lucide-react';
 
 const MetaverseManager = ({ userId }) => {
-  const {  } = useTranslation();
+  const { t } = useTranslation();
   const [worlds, setWorlds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -218,3 +218,4 @@ setLoading(false);
 };
 
 export default MetaverseManager;
+
