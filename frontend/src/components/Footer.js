@@ -38,11 +38,11 @@ const Footer = () => {
                 </div>
               <div className="contact-item">
                 <Phone size={16} />
-                <span>+55 (11) 99999-9999</span>
+                <span>+55 (66) 99236-2830</span>
                 </div>
               <div className="contact-item">
                 <MapPin size={16} />
-                <span>São Paulo - SP, Brasil</span>
+                <span>Sinop - MT, Brasil</span>
                 </div>
               </div>
             </motion.div>

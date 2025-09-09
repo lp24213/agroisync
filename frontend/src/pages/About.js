@@ -315,10 +315,10 @@ const About = () => {
               </div>
               <h3 className="text-xl font-bold text-primary mb-4">Email</h3>
               <a 
-                href="mailto:contato@agroisync.com"
+                href="mailto:contato@agrosync.com"
                 className="text-secondary hover:text-primary transition-colors"
               >
-                contato@agroisync.com
+                contato@agrosync.com
               </a>
             </motion.div>
 

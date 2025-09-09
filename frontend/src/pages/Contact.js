@@ -57,19 +57,19 @@ const Contact = () => {
     {
       icon: Mail,
       title: t('contact.email'),
-      details: ['contato@agroisync.com', 'suporte@agroisync.com'],
+      details: ['contato@agrosync.com', 'suporte@agrosync.com'],
       description: t('contact.responseTime')
     },
     {
       icon: Phone,
       title: t('contact.phone'),
-      details: ['(66) 99236-2830'],
+      details: ['+55 (66) 99236-2830'],
       description: t('contact.workingHours')
     },
     {
       icon: MapPin,
       title: t('contact.location'),
-      details: ['Sinop - MT'],
+      details: ['Sinop - MT, Brasil'],
       description: t('contact.visitInfo')
     }
   ];
@@ -78,7 +78,7 @@ const Contact = () => {
     <div className="min-h-screen bg-primary">
       {/* Hero Section - Premium */}
       <section className="hero-futuristic bg-gradient-hero">
-        <div className="container">
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -97,7 +97,7 @@ const Contact = () => {
 
       {/* Contact Info - Premium */}
       <section className="py-20 bg-secondary">
-        <div className="container">
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {contactInfo.map((info, index) => (
               <motion.div
@@ -132,7 +132,7 @@ const Contact = () => {
 
       {/* Contact Form - Premium */}
       <section className="py-20 bg-primary">
-        <div className="container">
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Form */}
             <motion.div
