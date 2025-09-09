@@ -1,0 +1,96 @@
+/* ===== CHATBOT PRETO FORÇADO ===== */
+/* CSS específico para garantir que o chatbot seja sempre preto */
+
+.chatbot-widget {
+  background-color: #000000 !important;
+  background: #000000 !important;
+}
+
+.chatbot-widget * {
+  background-color: inherit !important;
+}
+
+.chatbot-widget .chatbot-container {
+  background-color: #000000 !important;
+  background: #000000 !important;
+}
+
+.chatbot-widget .chatbot-messages {
+  background-color: #000000 !important;
+  background: #000000 !important;
+}
+
+.chatbot-widget .chatbot-input {
+  background-color: #333333 !important;
+  background: #333333 !important;
+  color: #ffffff !important;
+}
+
+.chatbot-widget .chatbot-button {
+  background-color: #333333 !important;
+  background: #333333 !important;
+}
+
+/* Forçar todas as divs dentro do chatbot a serem pretas */
+.chatbot-widget div {
+  background-color: #000000 !important;
+  background: #000000 !important;
+}
+
+/* Exceções para elementos específicos */
+.chatbot-widget .chatbot-user-message {
+  background-color: #333333 !important;
+  background: #333333 !important;
+}
+
+.chatbot-widget .chatbot-bot-message {
+  background-color: #1a1a1a !important;
+  background: #1a1a1a !important;
+}
+
+.chatbot-widget .chatbot-input-area {
+  background-color: #000000 !important;
+  background: #000000 !important;
+}
+
+.chatbot-widget .chatbot-header {
+  background-color: #000000 !important;
+  background: #000000 !important;
+  border-bottom: 1px solid #333333 !important;
+}
+
+/* Garantir que textos sejam brancos */
+.chatbot-widget p,
+.chatbot-widget span,
+.chatbot-widget h1,
+.chatbot-widget h2,
+.chatbot-widget h3,
+.chatbot-widget h4,
+.chatbot-widget h5,
+.chatbot-widget h6 {
+  color: #ffffff !important;
+}
+
+/* Garantir que inputs tenham fundo escuro */
+.chatbot-widget input,
+.chatbot-widget textarea {
+  background-color: #333333 !important;
+  background: #333333 !important;
+  color: #ffffff !important;
+  border: 1px solid #555555 !important;
+}
+
+/* Garantir que botões tenham fundo escuro */
+.chatbot-widget button {
+  background-color: #333333 !important;
+  background: #333333 !important;
+  color: #ffffff !important;
+  border: 1px solid #555555 !important;
+}
+
+/* Garantir que botões ativos tenham fundo mais escuro */
+.chatbot-widget button.active,
+.chatbot-widget button:hover {
+  background-color: #444444 !important;
+  background: #444444 !important;
+}

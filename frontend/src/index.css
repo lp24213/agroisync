@@ -12,6 +12,9 @@
 /* Import Animated Starfield Universe */
 @import './styles/animated-starfield-universe.css';
 
+/* Import Chatbot Black CSS */
+@import './styles/chatbot-black.css';
+
 /* Base styles */
 * {
   margin: 0;

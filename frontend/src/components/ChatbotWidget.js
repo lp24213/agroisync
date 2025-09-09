@@ -153,7 +153,7 @@ const ChatbotWidget = () => {
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className="fixed bottom-24 right-6 z-40 w-80 h-96 rounded-lg shadow-xl flex flex-col !bg-black border border-gray-600"
+            className="chatbot-widget fixed bottom-24 right-6 z-40 w-80 h-96 rounded-lg shadow-xl flex flex-col !bg-black border border-gray-600"
           >
             <div className="flex items-center justify-between p-4 border-b border-gray-600">
               <div className="flex items-center space-x-3">
