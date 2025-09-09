@@ -6,14 +6,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
 
-/* Import Elegant Gray Theme */
-@import './styles/elegant-gray-theme.css';
-
-/* Import Animated Starfield Universe */
-@import './styles/animated-starfield-universe.css';
-
-/* Import Chatbot Black CSS */
-@import './styles/chatbot-black.css';
+/* Import Complete Theme Fix - RESOLVE TUDO */
+@import './styles/complete-theme-fix.css';
 
 /* Base styles */
 * {
@@ -28,7 +22,7 @@ html {
 
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  /* Background será controlado pelo animated-starfield-universe.css */
+  /* Background controlado pelo complete-theme-fix.css */
   color: #1e293b;
   min-height: 100vh;
   overflow-x: hidden;
@@ -37,7 +31,7 @@ body {
 
 /* Dark mode styles */
 .dark body {
-  /* Background será controlado pelo animated-starfield-universe.css */
+  /* Background controlado pelo complete-theme-fix.css */
   color: #ffffff;
 }
 

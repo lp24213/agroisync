@@ -1,0 +1,301 @@
+/* ===== AGROISYNC COMPLETE THEME FIX ===== */
+/* CSS completo que resolve chatbot preto, gradiente global e estrelas animadas */
+
+/* ===== VARIÁVEIS GLOBAIS ===== */
+:root {
+  /* Gradiente cinza elegante - Light Mode */
+  --bg-gradient-light: linear-gradient(180deg, #f2f2f2, #e6e6e6);
+  --star-color-light: rgba(200, 200, 200, 0.3);
+  --star-glow-light: rgba(255, 255, 255, 0.4);
+  
+  /* Cores do chatbot */
+  --chatbot-bg: #000000;
+  --chatbot-text: #ffffff;
+  --chatbot-border: #444444;
+  --chatbot-user-bubble: #1c1c1c;
+  --chatbot-ai-bubble: #000000;
+}
+
+[data-theme="dark"] {
+  /* Gradiente cinza escuro - Dark Mode */
+  --bg-gradient-dark: linear-gradient(180deg, #1c1c1c, #2a2a2a);
+  --star-color-dark: rgba(255, 255, 255, 0.2);
+  --star-glow-dark: rgba(255, 255, 255, 0.3);
+}
+
+/* ===== FUNDO GLOBAL COM GRADIENTE ===== */
+body {
+  background: var(--bg-gradient-light) !important;
+  transition: background 0.4s ease !important;
+  position: relative !important;
+  min-height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+[data-theme="dark"] body {
+  background: var(--bg-gradient-dark) !important;
+}
+
+/* Garantir que #root e #__next também tenham o gradiente */
+#root,
+#__next {
+  background: var(--bg-gradient-light) !important;
+  transition: background 0.4s ease !important;
+}
+
+[data-theme="dark"] #root,
+[data-theme="dark"] #__next {
+  background: var(--bg-gradient-dark) !important;
+}
+
+/* ===== FUNDO ESTRELADO ANIMADO ===== */
+body::before {
+  content: '' !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background-image: 
+    /* Estrelas pequenas */
+    radial-gradient(circle at 10px 10px, var(--star-color-light) 1px, transparent 1px),
+    radial-gradient(circle at 30px 30px, var(--star-color-light) 0.8px, transparent 0.8px),
+    radial-gradient(circle at 50px 10px, var(--star-color-light) 1.2px, transparent 1.2px),
+    radial-gradient(circle at 70px 30px, var(--star-color-light) 0.6px, transparent 0.6px),
+    radial-gradient(circle at 90px 10px, var(--star-color-light) 1px, transparent 1px),
+    radial-gradient(circle at 110px 30px, var(--star-color-light) 0.9px, transparent 0.9px),
+    radial-gradient(circle at 130px 10px, var(--star-color-light) 1.1px, transparent 1.1px),
+    radial-gradient(circle at 150px 30px, var(--star-color-light) 0.7px, transparent 0.7px),
+    
+    /* Estrelas médias */
+    radial-gradient(circle at 20px 20px, var(--star-color-light) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 60px 20px, var(--star-color-light) 1.3px, transparent 1.3px),
+    radial-gradient(circle at 100px 20px, var(--star-color-light) 1.4px, transparent 1.4px),
+    radial-gradient(circle at 140px 20px, var(--star-color-light) 1.2px, transparent 1.2px),
+    
+    /* Estrelas grandes (brilhantes) */
+    radial-gradient(circle at 40px 40px, var(--star-glow-light) 2px, transparent 2px),
+    radial-gradient(circle at 120px 40px, var(--star-glow-light) 1.8px, transparent 1.8px);
+    
+  background-size: 40px 40px !important;
+  background-position: 0 0 !important;
+  
+  pointer-events: none !important;
+  z-index: 0 !important;
+  opacity: 0.8 !important;
+  
+  animation: 
+    starfield-move 20s linear infinite,
+    starfield-glow 3s ease-in-out infinite alternate !important;
+    
+  transition: opacity 0.4s ease !important;
+}
+
+/* ===== ANIMAÇÕES DAS ESTRELAS ===== */
+@keyframes starfield-move {
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  25% {
+    transform: translateX(-10px) translateY(-5px);
+  }
+  50% {
+    transform: translateX(-20px) translateY(-10px);
+  }
+  75% {
+    transform: translateX(-10px) translateY(-15px);
+  }
+  100% {
+    transform: translateX(0) translateY(-20px);
+  }
+}
+
+@keyframes starfield-glow {
+  0% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}
+
+/* ===== DARK MODE PARA ESTRELAS ===== */
+[data-theme="dark"] body::before {
+  background-image: 
+    /* Estrelas pequenas - Dark Mode */
+    radial-gradient(circle at 10px 10px, var(--star-color-dark) 1px, transparent 1px),
+    radial-gradient(circle at 30px 30px, var(--star-color-dark) 0.8px, transparent 0.8px),
+    radial-gradient(circle at 50px 10px, var(--star-color-dark) 1.2px, transparent 1.2px),
+    radial-gradient(circle at 70px 30px, var(--star-color-dark) 0.6px, transparent 0.6px),
+    radial-gradient(circle at 90px 10px, var(--star-color-dark) 1px, transparent 1px),
+    radial-gradient(circle at 110px 30px, var(--star-color-dark) 0.9px, transparent 0.9px),
+    radial-gradient(circle at 130px 10px, var(--star-color-dark) 1.1px, transparent 1.1px),
+    radial-gradient(circle at 150px 30px, var(--star-color-dark) 0.7px, transparent 0.7px),
+    
+    /* Estrelas médias - Dark Mode */
+    radial-gradient(circle at 20px 20px, var(--star-color-dark) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 60px 20px, var(--star-color-dark) 1.3px, transparent 1.3px),
+    radial-gradient(circle at 100px 20px, var(--star-color-dark) 1.4px, transparent 1.4px),
+    radial-gradient(circle at 140px 20px, var(--star-color-dark) 1.2px, transparent 1.2px),
+    
+    /* Estrelas grandes (brilhantes) - Dark Mode */
+    radial-gradient(circle at 40px 40px, var(--star-glow-dark) 2px, transparent 2px),
+    radial-gradient(circle at 120px 40px, var(--star-glow-dark) 1.8px, transparent 1.8px);
+    
+  opacity: 0.6 !important;
+}
+
+/* ===== CONTEÚDO PRINCIPAL ACIMA DAS ESTRELAS ===== */
+body > * {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Garantir que containers principais fiquem acima */
+.container,
+.max-w-7xl,
+.max-w-6xl,
+.max-w-5xl,
+.max-w-4xl,
+.max-w-3xl,
+.max-w-2xl,
+.max-w-xl,
+.max-w-lg,
+.max-w-md,
+.max-w-sm {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* ===== CHATBOT PRETO COMPLETO ===== */
+.chatbot-widget {
+  background-color: var(--chatbot-bg) !important;
+  background: var(--chatbot-bg) !important;
+  border: 1px solid var(--chatbot-border) !important;
+  color: var(--chatbot-text) !important;
+}
+
+/* Fundo do chatbot */
+.chatbot-widget,
+.chatbot-widget > div {
+  background-color: var(--chatbot-bg) !important;
+  background: var(--chatbot-bg) !important;
+}
+
+/* Textos do chatbot */
+.chatbot-widget p,
+.chatbot-widget span,
+.chatbot-widget h1,
+.chatbot-widget h2,
+.chatbot-widget h3,
+.chatbot-widget h4,
+.chatbot-widget h5,
+.chatbot-widget h6,
+.chatbot-widget div {
+  color: var(--chatbot-text) !important;
+}
+
+/* Bolhas de mensagem do usuário */
+.chatbot-widget .user-message,
+.chatbot-widget [class*="user"] {
+  background-color: var(--chatbot-user-bubble) !important;
+  background: var(--chatbot-user-bubble) !important;
+  color: var(--chatbot-text) !important;
+}
+
+/* Bolhas da IA */
+.chatbot-widget .ai-message,
+.chatbot-widget [class*="bot"],
+.chatbot-widget [class*="ai"] {
+  background-color: var(--chatbot-ai-bubble) !important;
+  background: var(--chatbot-ai-bubble) !important;
+  color: var(--chatbot-text) !important;
+}
+
+/* Inputs do chatbot */
+.chatbot-widget input,
+.chatbot-widget textarea {
+  background-color: var(--chatbot-user-bubble) !important;
+  background: var(--chatbot-user-bubble) !important;
+  color: var(--chatbot-text) !important;
+  border: 1px solid var(--chatbot-border) !important;
+}
+
+.chatbot-widget input::placeholder,
+.chatbot-widget textarea::placeholder {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Botões do chatbot */
+.chatbot-widget button {
+  background-color: var(--chatbot-border) !important;
+  background: var(--chatbot-border) !important;
+  color: var(--chatbot-text) !important;
+  border: 1px solid var(--chatbot-border) !important;
+}
+
+.chatbot-widget button:hover,
+.chatbot-widget button.active {
+  background-color: var(--chatbot-text) !important;
+  background: var(--chatbot-text) !important;
+  color: var(--chatbot-bg) !important;
+}
+
+/* Ícones do chatbot */
+.chatbot-widget svg,
+.chatbot-widget [class*="icon"] {
+  color: var(--chatbot-text) !important;
+}
+
+/* Bordas do chatbot */
+.chatbot-widget .border,
+.chatbot-widget [class*="border"] {
+  border-color: var(--chatbot-border) !important;
+}
+
+/* ===== TRANSIÇÕES SUAVES ===== */
+* {
+  transition: 
+    background-color 0.4s ease,
+    color 0.4s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease !important;
+}
+
+/* ===== OTIMIZAÇÕES DE PERFORMANCE ===== */
+body::before {
+  will-change: transform, opacity !important;
+  transform: translateZ(0) !important;
+  backface-visibility: hidden !important;
+}
+
+/* Reduzir animações em dispositivos com preferência por movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none !important;
+    opacity: 0.3 !important;
+  }
+  
+  * {
+    transition: none !important;
+  }
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 768px) {
+  body::before {
+    background-size: 30px 30px !important;
+    animation-duration: 15s, 2s !important;
+  }
+}
+
+@media (max-width: 480px) {
+  body::before {
+    background-size: 25px 25px !important;
+    animation-duration: 12s, 1.5s !important;
+  }
+}

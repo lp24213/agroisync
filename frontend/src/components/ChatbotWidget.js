@@ -153,7 +153,7 @@ const ChatbotWidget = () => {
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className="chatbot-widget fixed bottom-24 right-6 z-40 w-80 h-96 rounded-lg shadow-xl flex flex-col !bg-black border border-gray-600"
+            className="chatbot-widget fixed bottom-24 right-6 z-40 w-80 h-96 rounded-lg shadow-xl flex flex-col"
           >
             <div className="flex items-center justify-between p-4 border-b border-gray-600">
               <div className="flex items-center space-x-3">
@@ -230,8 +230,8 @@ const ChatbotWidget = () => {
                     </div>
                     <div className={`p-3 rounded-lg ${
                       msg.type === 'user'
-                        ? 'bg-gray-600 text-white'
-                        : 'bg-gray-800 text-white border border-gray-600'
+                        ? 'user-message bg-gray-800 text-white'
+                        : 'ai-message bg-black text-white border border-gray-600'
                     }`}>
                       <p className="text-sm">{msg.content}</p>
                       <p className="text-xs opacity-60 mt-1">
