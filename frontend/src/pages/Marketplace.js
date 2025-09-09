@@ -7,7 +7,7 @@ const Marketplace = () => {
   const { t } = useLanguage();
   
   return (
-    <div className="min-h-screen bg-primary">
+    <div className="min-h-screen">
       <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

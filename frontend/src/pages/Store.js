@@ -130,7 +130,7 @@ const Store = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-primary">
+    <div className="min-h-screen">
       {/* Hero Section */}
       <section className="hero-futuristic">
         <div className="container">

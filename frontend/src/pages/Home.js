@@ -78,7 +78,7 @@ const Home = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-primary">
+    <div className="min-h-screen">
       {/* Hero Section - Centralizado e Premium */}
       <section className="py-20 bg-gradient-hero">
         <div className="container">

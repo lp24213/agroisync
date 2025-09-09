@@ -51,7 +51,7 @@ const About = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-primary">
+    <div className="min-h-screen">
       {/* Hero Section */}
       <section className="hero-section">
         <div className="container-futuristic">

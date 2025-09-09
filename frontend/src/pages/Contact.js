@@ -75,7 +75,7 @@ const Contact = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-primary">
+    <div className="min-h-screen">
       {/* Hero Section - Premium */}
       <section className="hero-futuristic bg-gradient-hero">
         <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

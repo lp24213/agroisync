@@ -40,7 +40,7 @@ const AgroConecta = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen">
       <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
