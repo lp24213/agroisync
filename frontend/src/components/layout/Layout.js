@@ -28,15 +28,7 @@ const Layout = ({ children }) => {
       <PagePreloader isLoading={isLoading} />
 
       <div className="min-h-screen relative overflow-hidden pt-16">
-        {/* Fundo animado de estrelas (removido das páginas internas) */}
-        {/* {isDark && <AnimatedBackground />} */}
-
-        {/* Gradiente sutil sobre o fundo */}
-        <div className={`absolute inset-0 pointer-events-none z-0 ${
-isDark
-            ? 'bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900'
-            : 'bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300'
-        }`} />
+        {/* Universo estrelado animado é aplicado globalmente via CSS */}
 
         {/* Conteúdo principal */}
         <div className="relative z-10">

@@ -9,6 +9,9 @@
 /* Import Elegant Gray Theme */
 @import './styles/elegant-gray-theme.css';
 
+/* Import Animated Starfield Universe */
+@import './styles/animated-starfield-universe.css';
+
 /* Base styles */
 * {
   margin: 0;
