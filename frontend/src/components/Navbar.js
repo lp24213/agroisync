@@ -3,26 +3,29 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
+import LanguageSelector from './LanguageSelector';
 import { useTheme } from '../contexts/ThemeContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const location = useLocation();
+  const { t } = useLanguage();
   useTheme();
 
   const navigation = [
-    { name: 'Home', href: '/' },
-    { name: 'Sobre', href: '/about' },
-    { name: 'Contato', href: '/contact' },
-    { name: 'Planos', href: '/plans' },
+    { name: t('navigation.home'), href: '/' },
+    { name: t('navigation.about'), href: '/about' },
+    { name: t('navigation.contact'), href: '/contact' },
+    { name: t('navigation.plans'), href: '/plans' },
     { 
-      name: 'Serviços', 
+      name: t('navigation.services'), 
       href: '#',
       submenu: [
-        { name: 'Loja Agroisync', href: '/loja' },
-        { name: 'AgroConecta', href: '/agroconecta' },
-        { name: 'Marketplace', href: '/marketplace' }
+        { name: t('navigation.store'), href: '/loja' },
+        { name: t('navigation.agroconecta'), href: '/agroconecta' },
+        { name: t('navigation.marketplace'), href: '/marketplace' }
       ]
     }
   ];
@@ -107,19 +110,20 @@ const Navbar = () => {
         </div>
 
         {/* Right Side */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-3">
+          <LanguageSelector />
           <ThemeToggle />
           <Link
             to="/login"
             className="btn-futuristic btn-secondary btn-sm"
           >
-            Entrar
+            {t('navigation.login')}
           </Link>
           <Link
             to="/register"
             className="btn-futuristic btn-primary btn-sm"
           >
-            Cadastrar
+            {t('navigation.register')}
           </Link>
         </div>
 
@@ -178,6 +182,7 @@ const Navbar = () => {
               ))}
               <div className="px-4 py-2 border-t border-gray-200 mt-4">
                 <div className="flex items-center justify-between mb-2">
+                  <LanguageSelector />
                   <ThemeToggle />
                 </div>
                 <div className="space-y-2">
@@ -186,14 +191,14 @@ const Navbar = () => {
                     className="block w-full text-center py-2 text-sm font-medium text-secondary hover:text-primary transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    Entrar
+                    {t('navigation.login')}
                   </Link>
                   <Link
                     to="/register"
                     className="block w-full text-center py-2 text-sm font-medium btn-futuristic btn-primary"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    Cadastrar
+                    {t('navigation.register')}
                   </Link>
                 </div>
               </div>

@@ -2,7 +2,25 @@
   "common": {
     "loading": "Loading...",
     "error": "Error",
-    "success": "Success"
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "close": "Close"
+  },
+  "navigation": {
+    "home": "Home",
+    "about": "About",
+    "contact": "Contact",
+    "plans": "Plans",
+    "services": "Services",
+    "store": "Agroisync Store",
+    "agroconecta": "AgroConecta",
+    "marketplace": "Marketplace",
+    "login": "Login",
+    "register": "Register"
   },
   "home": {
     "title": "AgroSync",
@@ -19,7 +37,7 @@
       },
       "freights": {
         "title": "Freight Intermediation",
-        "description": "We connect cargo and transporters with real-time tracking"
+        "description": "We connect loads and transporters with real-time tracking"
       },
       "crypto": {
         "title": "Crypto & DeFi",
@@ -39,6 +57,91 @@
       "subtitle": "Join the agribusiness revolution and transform your way of working",
       "startFree": "Start Free",
       "talkExpert": "Talk to Expert"
+    }
+  },
+  "quotations": {
+    "title": "Quotations",
+    "soy": "Soy",
+    "corn": "Corn",
+    "wheat": "Wheat",
+    "cotton": "Cotton"
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "subtitle": "We are here to help you transform your agribusiness with cutting-edge technology",
+    "email": "Email",
+    "phone": "Phone",
+    "location": "Location",
+    "address": "Sinop - MT",
+    "phoneNumber": "(66) 99236-2830",
+    "responseTime": "Response within 2 hours",
+    "workingHours": "Monday to Friday, 8am to 6pm",
+    "visitInfo": "Visits by appointment"
+  },
+  "marketplace": {
+    "title": "Marketplace",
+    "subtitle": "Our marketplace is under development to bring you the best experience in buying and selling agricultural products.",
+    "status": "Future Project in Progress",
+    "description": "We are working hard to create a revolutionary platform that will connect producers and buyers in an intelligent and secure way.",
+    "features": {
+      "technology": "Advanced Technology",
+      "technologyDesc": "AI, blockchain and automation to facilitate business",
+      "launch": "Upcoming Launch",
+      "launchDesc": "Soon you will be able to access all features",
+      "development": "Active Development",
+      "developmentDesc": "Our team works 24/7 to deliver the best"
+    },
+    "notify": {
+      "title": "Want to be notified of the launch?",
+      "subtitle": "Sign up to receive updates on marketplace development",
+      "placeholder": "Your best email",
+      "button": "Notify me"
+    }
+  },
+  "agroconecta": {
+    "title": "AgroConecta",
+    "subtitle": "Intelligent agricultural freight intermediation. We connect loads with transporters through our platform. We don't transport, we facilitate connections.",
+    "features": {
+      "freight": "Freight Intermediation",
+      "freightDesc": "We connect loads with transporters through our intelligent platform",
+      "tracking": "Real-time Tracking",
+      "trackingDesc": "Track your load from start to finish with advanced GPS technology",
+      "network": "Transporter Network",
+      "networkDesc": "Thousands of transporters registered throughout Brazil",
+      "ai": "Intelligent AI",
+      "aiDesc": "Our AI finds the best matches between loads and transporters",
+      "security": "Guaranteed Security",
+      "securityDesc": "Secure transactions with guarantees for both parties",
+      "fast": "Fast Process",
+      "fastDesc": "From agreement to delivery in hours, not days"
+    },
+    "howItWorks": {
+      "title": "How Our Freight Intermediation Works",
+      "step1": "Publish the Load",
+      "step1Desc": "Advertisers register their loads with origin, destination, weight and deadline",
+      "step2": "AI Connects",
+      "step2Desc": "Our AI finds available transporters on the route and sends proposals",
+      "step3": "Freight Closed",
+      "step3Desc": "Advertiser and transporter negotiate directly through our private messaging"
+    },
+    "cta": {
+      "title": "Ready to Intermediate Your Freights?",
+      "subtitle": "Whether you are an advertiser or transporter, our platform connects you with the best freight partners. You negotiate directly, we just facilitate the connection!",
+      "haveLoad": "I Have Load",
+      "transporter": "I'm a Transporter"
+    }
+  },
+  "chatbot": {
+    "title": "AI Assistant",
+    "status": "Online",
+    "placeholder": "Type your message...",
+    "welcome": "Hello! I'm AgroSync's AI assistant. How can I help you today?",
+    "thinking": "Thinking...",
+    "suggestions": {
+      "intermediation": "How does intermediation work?",
+      "plans": "What plans are available?",
+      "product": "How to publish a product?",
+      "freight": "How to hire freight?"
     }
   }
 }

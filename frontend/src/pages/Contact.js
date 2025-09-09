@@ -11,8 +11,10 @@ import {
   CheckCircle,
   MessageSquare
 } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const Contact = () => {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -54,21 +56,21 @@ const Contact = () => {
   const contactInfo = [
     {
       icon: Mail,
-      title: 'Email',
+      title: t('contact.email'),
       details: ['contato@agrosync.com', 'suporte@agrosync.com'],
-      description: 'Resposta em até 2 horas'
+      description: t('contact.responseTime')
     },
     {
       icon: Phone,
-      title: 'Telefone',
-      details: ['+55 (11) 99999-9999', '+55 (11) 3333-3333'],
-      description: 'Segunda a Sexta, 8h às 18h'
+      title: t('contact.phone'),
+      details: [t('contact.phoneNumber')],
+      description: t('contact.workingHours')
     },
     {
       icon: MapPin,
-      title: 'Endereço',
-      details: ['Rua das Inovações, 123', 'São Paulo - SP, 01234-567'],
-      description: 'Visitas com agendamento'
+      title: t('contact.location'),
+      details: [t('contact.address')],
+      description: t('contact.visitInfo')
     }
   ];
 
@@ -84,10 +86,10 @@ const Contact = () => {
             className="text-center"
           >
             <h1 className="hero-title">
-              Entre em <span className="text-primary">Contato</span>
+              {t('contact.title')}
             </h1>
             <p className="hero-subtitle">
-              Estamos aqui para ajudar você a transformar seu agronegócio com tecnologia de ponta
+              {t('contact.subtitle')}
             </p>
           </motion.div>
         </div>

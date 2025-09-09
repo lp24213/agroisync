@@ -2,7 +2,25 @@
   "common": {
     "loading": "Cargando...",
     "error": "Error",
-    "success": "Éxito"
+    "success": "Éxito",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "confirm": "Confirmar",
+    "close": "Cerrar"
+  },
+  "navigation": {
+    "home": "Inicio",
+    "about": "Acerca de",
+    "contact": "Contacto",
+    "plans": "Planes",
+    "services": "Servicios",
+    "store": "Tienda Agroisync",
+    "agroconecta": "AgroConecta",
+    "marketplace": "Marketplace",
+    "login": "Iniciar Sesión",
+    "register": "Registrarse"
   },
   "home": {
     "title": "AgroSync",
@@ -39,6 +57,91 @@
       "subtitle": "Únete a la revolución del agronegocio y transforma tu forma de trabajar",
       "startFree": "Comenzar Gratis",
       "talkExpert": "Hablar con Experto"
+    }
+  },
+  "quotations": {
+    "title": "Cotizaciones",
+    "soy": "Soja",
+    "corn": "Maíz",
+    "wheat": "Trigo",
+    "cotton": "Algodón"
+  },
+  "contact": {
+    "title": "Ponte en Contacto",
+    "subtitle": "Estamos aquí para ayudarte a transformar tu agronegocio con tecnología de vanguardia",
+    "email": "Email",
+    "phone": "Teléfono",
+    "location": "Ubicación",
+    "address": "Sinop - MT",
+    "phoneNumber": "(66) 99236-2830",
+    "responseTime": "Respuesta en hasta 2 horas",
+    "workingHours": "Lunes a Viernes, 8h a 18h",
+    "visitInfo": "Visitas con cita previa"
+  },
+  "marketplace": {
+    "title": "Marketplace",
+    "subtitle": "Nuestro marketplace está en desarrollo para brindarte la mejor experiencia de compra y venta de productos agrícolas.",
+    "status": "Proyecto Futuro en Progreso",
+    "description": "Estamos trabajando duro para crear una plataforma revolucionaria que conectará productores y compradores de manera inteligente y segura.",
+    "features": {
+      "technology": "Tecnología Avanzada",
+      "technologyDesc": "IA, blockchain y automatización para facilitar negocios",
+      "launch": "Lanzamiento Próximo",
+      "launchDesc": "Pronto podrás acceder a todas las funcionalidades",
+      "development": "Desarrollo Activo",
+      "developmentDesc": "Nuestro equipo trabaja 24/7 para entregar lo mejor"
+    },
+    "notify": {
+      "title": "¿Quieres ser notificado del lanzamiento?",
+      "subtitle": "Regístrate para recibir actualizaciones sobre el desarrollo del marketplace",
+      "placeholder": "Tu mejor email",
+      "button": "Notificarme"
+    }
+  },
+  "agroconecta": {
+    "title": "AgroConecta",
+    "subtitle": "Intermediación inteligente de fletes agrícolas. Conectamos cargas con transportistas a través de nuestra plataforma. No transportamos, facilitamos conexiones.",
+    "features": {
+      "freight": "Intermediación de Fletes",
+      "freightDesc": "Conectamos cargas con transportistas a través de nuestra plataforma inteligente",
+      "tracking": "Seguimiento en Tiempo Real",
+      "trackingDesc": "Rastrea tu carga de principio a fin con tecnología GPS avanzada",
+      "network": "Red de Transportistas",
+      "networkDesc": "Miles de transportistas registrados en todo Brasil",
+      "ai": "IA Inteligente",
+      "aiDesc": "Nuestra IA encuentra las mejores coincidencias entre cargas y transportistas",
+      "security": "Seguridad Garantizada",
+      "securityDesc": "Transacciones seguras con garantías para ambas partes",
+      "fast": "Proceso Rápido",
+      "fastDesc": "De acuerdo a entrega en cuestión de horas, no días"
+    },
+    "howItWorks": {
+      "title": "Cómo Funciona Nuestra Intermediación de Fletes",
+      "step1": "Publica la Carga",
+      "step1Desc": "Los anunciantes registran sus cargas con origen, destino, peso y plazo",
+      "step2": "IA Conecta",
+      "step2Desc": "Nuestra IA encuentra transportistas disponibles en la ruta y envía propuestas",
+      "step3": "Flete Cerrado",
+      "step3Desc": "Anunciante y transportista negocian directamente a través de nuestra mensajería privada"
+    },
+    "cta": {
+      "title": "¿Listo para Intermediar Tus Fletes?",
+      "subtitle": "Ya seas anunciante o transportista, nuestra plataforma te conecta con los mejores socios de flete. ¡Ustedes negocian directamente, nosotros solo facilitamos la conexión!",
+      "haveLoad": "Tengo Carga",
+      "transporter": "Soy Transportista"
+    }
+  },
+  "chatbot": {
+    "title": "Asistente IA",
+    "status": "En Línea",
+    "placeholder": "Escribe tu mensaje...",
+    "welcome": "¡Hola! Soy el asistente IA de AgroSync. ¿Cómo puedo ayudarte hoy?",
+    "thinking": "Pensando...",
+    "suggestions": {
+      "intermediation": "¿Cómo funciona la intermediación?",
+      "plans": "¿Qué planes están disponibles?",
+      "product": "¿Cómo publicar un producto?",
+      "freight": "¿Cómo contratar un flete?"
     }
   }
 }

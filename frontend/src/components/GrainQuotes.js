@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Circle, Square, Triangle } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const GrainQuotes = () => {
   const [quotes, setQuotes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { t } = useLanguage();
 
   useEffect(() => {
     // Dados mockados de grãos (em produção, usar API do AgroLink)
     const mockQuotes = [
       {
-        name: 'Soja',
+        name: t('quotations.soy'),
         symbol: 'SOJA',
         price: 185.50,
         change: 2.30,
@@ -19,7 +21,7 @@ const GrainQuotes = () => {
         unit: 'R$/sc'
       },
       {
-        name: 'Milho',
+        name: t('quotations.corn'),
         symbol: 'MILHO',
         price: 89.75,
         change: -1.20,
@@ -28,7 +30,7 @@ const GrainQuotes = () => {
         unit: 'R$/sc'
       },
       {
-        name: 'Trigo',
+        name: t('quotations.wheat'),
         symbol: 'TRIGO',
         price: 125.80,
         change: 0.85,
@@ -37,7 +39,7 @@ const GrainQuotes = () => {
         unit: 'R$/sc'
       },
       {
-        name: 'Algodão',
+        name: t('quotations.cotton'),
         symbol: 'ALGODAO',
         price: 4.25,
         change: -0.15,
@@ -104,10 +106,10 @@ const GrainQuotes = () => {
 
   return (
     <div className="grain-quotes">
-      <div className="flex items-center gap-6 text-sm">
+      <div className="flex items-center justify-center gap-6 text-sm flex-wrap">
         <span className="font-semibold text-primary flex items-center gap-2">
           <Circle size={16} />
-          Cotações AgroLink
+          {t('quotations.title')}
         </span>
         
         {quotes.map((quote, index) => {

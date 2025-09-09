@@ -2,7 +2,25 @@
   "common": {
     "loading": "加载中...",
     "error": "错误",
-    "success": "成功"
+    "success": "成功",
+    "cancel": "取消",
+    "save": "保存",
+    "edit": "编辑",
+    "delete": "删除",
+    "confirm": "确认",
+    "close": "关闭"
+  },
+  "navigation": {
+    "home": "首页",
+    "about": "关于",
+    "contact": "联系",
+    "plans": "计划",
+    "services": "服务",
+    "store": "Agroisync商店",
+    "agroconecta": "AgroConecta",
+    "marketplace": "市场",
+    "login": "登录",
+    "register": "注册"
   },
   "home": {
     "title": "AgroSync",
@@ -15,30 +33,115 @@
       "subtitle": "尖端技术革命化农业",
       "products": {
         "title": "产品中介",
-        "description": "我们通过中介平台连接生产者和买家"
+        "description": "我们通过我们的中介平台连接生产者和买家"
       },
       "freights": {
         "title": "货运中介",
-        "description": "我们连接货物和运输商，提供实时跟踪"
+        "description": "我们通过实时跟踪连接货物和运输商"
       },
       "crypto": {
         "title": "加密货币和DeFi",
         "description": "加密货币支付、质押和农业NFT"
       },
       "messaging": {
-        "title": "消息传递",
+        "title": "消息",
         "description": "用户之间的实时通信"
       }
     },
     "testimonials": {
-      "title": "用户评价",
+      "title": "我们用户怎么说",
       "subtitle": "数千名生产者、买家和运输商已经信任AgroSync"
     },
     "cta": {
-      "title": "准备好迎接未来了吗？",
-      "subtitle": "加入农业革命，改变您的工作方式",
+      "title": "准备好迎接未来？",
+      "subtitle": "加入农业革命，改变你的工作方式",
       "startFree": "免费开始",
       "talkExpert": "与专家交谈"
+    }
+  },
+  "quotations": {
+    "title": "报价",
+    "soy": "大豆",
+    "corn": "玉米",
+    "wheat": "小麦",
+    "cotton": "棉花"
+  },
+  "contact": {
+    "title": "联系我们",
+    "subtitle": "我们在这里帮助您用尖端技术改变您的农业",
+    "email": "电子邮件",
+    "phone": "电话",
+    "location": "位置",
+    "address": "西诺普 - 马托格罗索州",
+    "phoneNumber": "(66) 99236-2830",
+    "responseTime": "2小时内回复",
+    "workingHours": "周一至周五，上午8点至下午6点",
+    "visitInfo": "预约访问"
+  },
+  "marketplace": {
+    "title": "市场",
+    "subtitle": "我们的市场正在开发中，为您带来最佳的农产品买卖体验。",
+    "status": "未来项目进行中",
+    "description": "我们正在努力创建一个革命性的平台，以智能和安全的方式连接生产者和买家。",
+    "features": {
+      "technology": "先进技术",
+      "technologyDesc": "人工智能、区块链和自动化促进业务",
+      "launch": "即将推出",
+      "launchDesc": "很快您就可以访问所有功能",
+      "development": "积极开发",
+      "developmentDesc": "我们的团队24/7工作以提供最佳服务"
+    },
+    "notify": {
+      "title": "想收到发布通知？",
+      "subtitle": "注册以接收市场开发更新",
+      "placeholder": "您的最佳电子邮件",
+      "button": "通知我"
+    }
+  },
+  "agroconecta": {
+    "title": "AgroConecta",
+    "subtitle": "智能农业货运中介。我们通过我们的平台连接货物和运输商。我们不运输，我们促进连接。",
+    "features": {
+      "freight": "货运中介",
+      "freightDesc": "我们通过我们的智能平台连接货物和运输商",
+      "tracking": "实时跟踪",
+      "trackingDesc": "使用先进的GPS技术从头到尾跟踪您的货物",
+      "network": "运输商网络",
+      "networkDesc": "巴西各地注册的数千名运输商",
+      "ai": "智能AI",
+      "aiDesc": "我们的AI找到货物和运输商之间的最佳匹配",
+      "security": "保证安全",
+      "securityDesc": "安全交易，为双方提供保障",
+      "fast": "快速流程",
+      "fastDesc": "从协议到交付只需几小时，不是几天"
+    },
+    "howItWorks": {
+      "title": "我们的货运中介如何工作",
+      "step1": "发布货物",
+      "step1Desc": "广告商注册他们的货物，包括起点、终点、重量和期限",
+      "step2": "AI连接",
+      "step2Desc": "我们的AI找到路线上的可用运输商并发送提案",
+      "step3": "货运成交",
+      "step3Desc": "广告商和运输商通过我们的私人消息直接谈判"
+    },
+    "cta": {
+      "title": "准备好中介您的货运？",
+      "subtitle": "无论您是广告商还是运输商，我们的平台都将您与最佳的货运合作伙伴连接。您直接谈判，我们只是促进连接！",
+      "haveLoad": "我有货物",
+      "transporter": "我是运输商"
+    }
+  },
+  "chatbot": {
+    "title": "AI助手",
+    "status": "在线",
+    "placeholder": "输入您的消息...",
+    "welcome": "您好！我是AgroSync的AI助手。今天我能为您做些什么？",
+    "thinking": "思考中...",
+    "suggestions": {
+      "intermediation": "中介如何工作？",
+      "plans": "有哪些可用的计划？",
+      "product": "如何发布产品？",
+      "freight": "如何雇佣货运？"
     }
   }
 }
