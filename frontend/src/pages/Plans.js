@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { 
   Check, 
@@ -8,11 +8,16 @@ import {
   Shield, 
   Users, 
   BarChart3,
-  ArrowRight
+  ArrowRight,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 
 const Plans = () => {
   const [billingCycle, setBillingCycle] = useState('monthly');
+  const [openFAQ, setOpenFAQ] = useState(null);
+  const { isDarkMode } = useTheme();
 
   const plans = [
     {
@@ -93,6 +98,33 @@ const Plans = () => {
     }
   ];
 
+  const faqItems = [
+    {
+      question: 'Posso mudar de plano a qualquer momento?',
+      answer: 'Sim! Você pode fazer upgrade ou downgrade do seu plano a qualquer momento. As mudanças são aplicadas imediatamente e você só paga a diferença proporcional.'
+    },
+    {
+      question: 'Há período de teste gratuito?',
+      answer: 'Oferecemos 14 dias de teste gratuito para todos os planos. Sem compromisso, sem cartão de crédito necessário. Teste todas as funcionalidades antes de decidir.'
+    },
+    {
+      question: 'Que tipos de suporte vocês oferecem?',
+      answer: 'Oferecemos suporte por email, chat e telefone. Planos superiores incluem suporte prioritário e dedicado. Nossa equipe está sempre disponível para ajudar.'
+    },
+    {
+      question: 'Meus dados estão seguros?',
+      answer: 'Absolutamente! Utilizamos criptografia de nível bancário, seguimos todas as normas de segurança internacionais e somos totalmente compatíveis com a LGPD.'
+    },
+    {
+      question: 'Posso cancelar a qualquer momento?',
+      answer: 'Sim, você pode cancelar sua assinatura a qualquer momento. Não há taxas de cancelamento e você continuará tendo acesso até o final do período pago.'
+    },
+    {
+      question: 'Há desconto para pagamento anual?',
+      answer: 'Sim! Oferecemos 20% de desconto para pagamentos anuais. É uma ótima forma de economizar e garantir acesso contínuo à plataforma.'
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-primary">
       {/* Hero Section */}
@@ -163,13 +195,15 @@ const Plans = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className={`card-premium relative p-8 ${
-                  plan.popular ? 'ring-2 ring-primary scale-105' : ''
-                }`}
+                className={`relative p-8 rounded-2xl shadow-lg ${
+                  plan.popular 
+                    ? 'ring-2 ring-green-500 scale-105' 
+                    : ''
+                } ${isDarkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'}`}
               >
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-gradient-primary text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-1">
+                    <div className="bg-gradient-to-r from-green-600 to-green-500 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-1">
                       <Star size={16} />
                       Mais Popular
                     </div>
@@ -177,22 +211,22 @@ const Plans = () => {
                 )}
                 
                 <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold text-primary mb-2">
+                  <h3 className={`text-2xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                     {plan.name}
                   </h3>
-                  <p className="text-secondary mb-4">
+                  <p className={`mb-4 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                     {plan.description}
                   </p>
                   <div className="mb-4">
-                    <span className="text-4xl font-extrabold text-primary">
+                    <span className={`text-4xl font-extrabold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                       R$ {billingCycle === 'monthly' ? plan.monthlyPrice : plan.yearlyPrice}
                     </span>
-                    <span className="text-secondary">
+                    <span className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
                       /{billingCycle === 'monthly' ? 'mês' : 'ano'}
                     </span>
                   </div>
                   {billingCycle === 'yearly' && (
-                    <p className="text-sm text-muted">
+                    <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                       Economize R$ {(plan.monthlyPrice * 12) - plan.yearlyPrice}/ano
                     </p>
                   )}
@@ -201,10 +235,10 @@ const Plans = () => {
                 <div className="space-y-4 mb-8">
                   {plan.features.map((feature, idx) => (
                     <div key={idx} className="flex items-center gap-3">
-                      <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                      <div className="w-5 h-5 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
                         <Check size={12} className="text-white" />
                       </div>
-                      <span className="text-secondary">{feature}</span>
+                      <span className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>{feature}</span>
                     </div>
                   ))}
                 </div>
@@ -212,7 +246,9 @@ const Plans = () => {
                   <Link
                     to={plan.ctaLink}
                     className={`w-full text-center py-3 px-6 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 ${
-                      plan.popular ? 'btn-premium' : 'btn-premium-secondary'
+                      plan.popular 
+                        ? 'bg-black text-white hover:bg-gradient-to-r hover:from-green-600 hover:to-green-500' 
+                        : 'bg-gradient-to-r from-gray-800 to-gray-700 text-white hover:from-gray-700 hover:to-gray-600'
                     }`}
                   >
                     {plan.cta}
@@ -268,7 +304,7 @@ const Plans = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="section bg-primary">
+      <section className={`py-20 ${isDarkMode ? 'bg-gray-900' : 'bg-amber-50'}`}>
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -277,55 +313,58 @@ const Plans = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-              Perguntas <span className="text-gradient">Frequentes</span>
+            <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              Perguntas <span className="bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">Frequentes</span>
             </h2>
-            <p className="text-xl text-secondary max-w-3xl mx-auto">
+            <p className={`text-xl max-w-3xl mx-auto ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
               Tire suas dúvidas sobre nossos planos e serviços
             </p>
           </motion.div>
           
           <div className="max-w-4xl mx-auto">
-            <div className="grid-futuristic grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="card-premium p-6">
-                <h3 className="text-xl font-bold text-primary mb-3">
-                  Posso mudar de plano a qualquer momento?
-                </h3>
-                <p className="text-muted leading-relaxed">
-                  Sim! Você pode fazer upgrade ou downgrade do seu plano a qualquer momento. 
-                  As mudanças são aplicadas imediatamente.
-                </p>
-              </div>
-              
-              <div className="card-premium p-6">
-                <h3 className="text-xl font-bold text-primary mb-3">
-                  Há período de teste gratuito?
-                </h3>
-                <p className="text-muted leading-relaxed">
-                  Oferecemos 14 dias de teste gratuito para todos os planos. 
-                  Sem compromisso, sem cartão de crédito necessário.
-                </p>
-              </div>
-              
-              <div className="card-premium p-6">
-                <h3 className="text-xl font-bold text-primary mb-3">
-                  Que tipos de suporte vocês oferecem?
-                </h3>
-                <p className="text-muted leading-relaxed">
-                  Oferecemos suporte por email, chat e telefone. Planos superiores 
-                  incluem suporte prioritário e dedicado.
-                </p>
-              </div>
-              
-              <div className="card-premium p-6">
-                <h3 className="text-xl font-bold text-primary mb-3">
-                  Meus dados estão seguros?
-                </h3>
-                <p className="text-muted leading-relaxed">
-                  Absolutamente! Utilizamos criptografia de nível bancário e 
-                  seguimos todas as normas de segurança internacionais.
-                </p>
-              </div>
+            <div className="space-y-4">
+              {faqItems.map((item, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  className={`rounded-lg border ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}
+                >
+                  <button
+                    onClick={() => setOpenFAQ(openFAQ === index ? null : index)}
+                    className={`w-full px-6 py-4 text-left flex items-center justify-between transition-colors ${
+                      isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'
+                    }`}
+                  >
+                    <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                      {item.question}
+                    </h3>
+                    {openFAQ === index ? (
+                      <ChevronUp className={`w-5 h-5 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`} />
+                    ) : (
+                      <ChevronDown className={`w-5 h-5 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`} />
+                    )}
+                  </button>
+                  
+                  <AnimatePresence>
+                    {openFAQ === index && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="overflow-hidden"
+                      >
+                        <div className={`px-6 pb-4 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                          {item.answer}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              ))}
             </div>
           </div>
         </div>

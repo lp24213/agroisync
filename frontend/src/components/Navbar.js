@@ -12,7 +12,7 @@ const Navbar = () => {
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const location = useLocation();
   const { t } = useLanguage();
-  useTheme();
+  const { isDarkMode } = useTheme();
 
   const navigation = [
     { name: t('navigation.home'), href: '/' },
@@ -38,7 +38,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-amber-50 border-gray-200'}`}>
       <div className="navbar-container">
         {/* Logo */}
         <motion.div
@@ -47,7 +47,7 @@ const Navbar = () => {
           transition={{ duration: 0.5 }}
         >
           <Link to="/" className="navbar-brand">
-            AgroSync
+            Agroisync
           </Link>
         </motion.div>
 

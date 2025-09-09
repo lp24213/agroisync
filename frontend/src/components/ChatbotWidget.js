@@ -12,6 +12,7 @@ import {
   User
 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
 import useStore from '../store/useStore';
 
 const ChatbotWidget = () => {
@@ -23,6 +24,7 @@ const ChatbotWidget = () => {
   const messagesEndRef = useRef(null);
   
   const { t } = useLanguage();
+  const { isDarkMode } = useTheme();
   const { chatbotOpen, toggleChatbot, chatHistory, addChatMessage } = useStore();
 
   const scrollToBottom = () => {
@@ -122,8 +124,8 @@ const ChatbotWidget = () => {
         onClick={() => toggleChatbot()}
         className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
           isOpen 
-            ? 'bg-gray-600 shadow-lg' 
-            : 'bg-gray-700 shadow-lg hover:bg-gray-600'
+            ? 'bg-green-600 shadow-lg' 
+            : 'bg-green-600 shadow-lg hover:bg-green-700'
         }`}
       >
         <AnimatePresence mode="wait">
@@ -155,16 +157,16 @@ const ChatbotWidget = () => {
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className="fixed bottom-24 right-6 z-40 w-80 h-96 bg-white border border-gray-200 rounded-lg shadow-xl flex flex-col"
+            className={`fixed bottom-24 right-6 z-40 w-80 h-96 rounded-lg shadow-xl flex flex-col ${isDarkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'}`}
           >
-            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+            <div className={`flex items-center justify-between p-4 border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center">
                   <Bot className="w-4 h-4 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-gray-800 font-semibold text-sm">{t('chatbot.title')}</h3>
-                  <p className="text-green-600 text-xs">{t('chatbot.status')}</p>
+                  <h3 className={`font-semibold text-sm ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Agroisync Assistant</h3>
+                  <p className="text-green-600 text-xs">Online</p>
                 </div>
               </div>
               
@@ -190,19 +192,19 @@ const ChatbotWidget = () => {
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+            <div className={`flex-1 overflow-y-auto p-4 space-y-4 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
               {chatHistory.length === 0 && (
                 <div className="text-center">
-                  <Bot className="w-8 h-8 text-gray-600 mx-auto mb-2" />
-                  <p className="text-gray-600 text-sm mb-4">
-                    {t('chatbot.welcome')}
+                  <Bot className={`w-8 h-8 mx-auto mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`} />
+                  <p className={`text-sm mb-4 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    Olá! Como posso ajudá-lo hoje?
                   </p>
                   <div className="space-y-2">
                     {suggestions.map((suggestion, index) => (
                       <button
                         key={index}
                         onClick={() => setMessage(suggestion)}
-                        className="block w-full text-left p-2 text-xs text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded transition-colors"
+                        className={`block w-full text-left p-2 text-xs rounded transition-colors ${isDarkMode ? 'text-gray-300 hover:text-white hover:bg-gray-700' : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'}`}
                       >
                         {suggestion}
                       </button>
@@ -221,8 +223,8 @@ const ChatbotWidget = () => {
                   <div className={`flex items-start space-x-2 max-w-[80%] ${msg.type === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
                     <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
                       msg.type === 'user' 
-                        ? 'bg-gray-600' 
-                        : 'bg-gray-500'
+                        ? 'bg-gray-800' 
+                        : 'bg-gray-700'
                     }`}>
                       {msg.type === 'user' ? (
                         <User className="w-3 h-3 text-white" />
@@ -232,8 +234,8 @@ const ChatbotWidget = () => {
                     </div>
                     <div className={`p-3 rounded-lg ${
                       msg.type === 'user'
-                        ? 'bg-gray-600 text-white'
-                        : 'bg-white text-gray-800 border border-gray-200'
+                        ? 'bg-gray-800 text-white'
+                        : isDarkMode ? 'bg-gray-700 text-white border border-gray-600' : 'bg-white text-gray-800 border border-gray-200'
                     }`}>
                       <p className="text-sm">{msg.content}</p>
                       <p className="text-xs opacity-60 mt-1">
@@ -267,15 +269,15 @@ const ChatbotWidget = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            <div className="p-4 border-t border-gray-200">
+            <div className={`p-4 border-t ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
               <div className="flex items-center space-x-2">
                 <input
                   type="text"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder={t('chatbot.placeholder')}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-sm"
+                  placeholder="Digite sua mensagem..."
+                  className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'}`}
                   disabled={mode !== 'text'}
                 />
                 <motion.button
@@ -283,7 +285,7 @@ const ChatbotWidget = () => {
                   whileTap={{ scale: 0.95 }}
                   onClick={handleSendMessage}
                   disabled={!message.trim() || isTyping}
-                  className="p-2 bg-gray-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-700"
+                  className="p-2 bg-green-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-green-700"
                 >
                   <Send className="w-4 h-4" />
                 </motion.button>

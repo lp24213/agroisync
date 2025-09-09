@@ -11,9 +11,11 @@ import {
   Truck,
   BarChart3
 } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 import Noticias from '../components/Noticias';
 
 const Home = () => {
+  const { isDarkMode } = useTheme();
   const features = [
     {
       icon: Shield,
@@ -76,9 +78,9 @@ const Home = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-primary">
+    <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900' : 'bg-amber-50'}`}>
       {/* Hero Section - Centralizado e Premium */}
-      <section className="hero-futuristic bg-gradient-hero">
+      <section className={`py-20 ${isDarkMode ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900' : 'bg-gradient-to-br from-amber-50 via-orange-50 to-amber-50'}`}>
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -90,18 +92,18 @@ const Home = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-5xl md:text-7xl font-bold text-primary mb-8 leading-tight"
+              className={`text-5xl md:text-7xl font-bold mb-8 leading-tight ${isDarkMode ? 'text-white' : 'text-gray-900'}`}
             >
               O Futuro do{' '}
-              <span className="text-gradient">Agronegócio</span>{' '}
-              é <span className="text-gradient">Agora</span>
+              <span className="bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">Agronegócio</span>{' '}
+              é <span className="bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">Agora</span>
             </motion.h1>
             
             <motion.p
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="text-xl md:text-2xl text-muted mb-12 max-w-4xl mx-auto leading-relaxed"
+              className={`text-xl md:text-2xl mb-12 max-w-4xl mx-auto leading-relaxed ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}
             >
               A plataforma mais futurista e sofisticada do mundo para conectar produtores, 
               compradores e transportadores. Design premium, tecnologia de ponta e 
@@ -116,14 +118,14 @@ const Home = () => {
             >
               <Link
                 to="/register"
-                className="btn-premium px-8 py-4 text-lg font-semibold flex items-center gap-3"
+                className="bg-black text-white px-8 py-4 text-lg font-semibold rounded-lg hover:bg-gradient-to-r hover:from-green-600 hover:to-green-500 transition-all duration-200 flex items-center gap-3"
               >
                 Começar Agora
                 <ArrowRight size={20} />
               </Link>
               <Link
                 to="/about"
-                className="btn-premium-secondary px-8 py-4 text-lg font-semibold"
+                className="bg-gradient-to-r from-gray-800 to-gray-700 text-white px-8 py-4 text-lg font-semibold rounded-lg hover:from-gray-700 hover:to-gray-600 transition-all duration-200"
               >
                 Saiba Mais
               </Link>
@@ -133,7 +135,7 @@ const Home = () => {
       </section>
 
       {/* Stats Section - Cards Organizados em Grid */}
-      <section className="py-20 bg-secondary">
+      <section className={`py-20 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -142,10 +144,10 @@ const Home = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-              Nossos <span className="text-gradient">Números</span>
+            <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              Nossos <span className="bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">Números</span>
             </h2>
-            <p className="text-xl text-muted max-w-3xl mx-auto">
+            <p className={`text-xl max-w-3xl mx-auto ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
               Resultados que comprovam nossa excelência e impacto no agronegócio
             </p>
           </motion.div>
@@ -158,12 +160,12 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="card-premium text-center p-8 hover:scale-105 transition-transform"
+                className={`text-center p-8 rounded-2xl shadow-lg hover:scale-105 transition-transform ${isDarkMode ? 'bg-gray-700 border border-gray-600' : 'bg-white border border-gray-200'}`}
               >
-                <div className="text-4xl md:text-5xl font-extrabold text-gradient mb-4">
+                <div className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent mb-4">
                   {stat.number}
                 </div>
-                <div className="text-muted font-semibold text-lg">
+                <div className={`font-semibold text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                   {stat.label}
                 </div>
               </motion.div>
@@ -286,9 +288,9 @@ const Home = () => {
             <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
               Pronto para o <span className="text-gradient">Futuro</span>?
             </h2>
-            <p className="text-xl text-muted mb-12 max-w-3xl mx-auto leading-relaxed">
+            <p className={`text-xl mb-12 max-w-3xl mx-auto leading-relaxed ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
               Junte-se a milhares de profissionais do agronegócio que já descobriram 
-              o poder da tecnologia AgroSync. Transforme seu negócio hoje mesmo.
+              o poder da tecnologia Agroisync. Transforme seu negócio hoje mesmo.
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
               <Link

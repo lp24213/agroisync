@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Circle, Square, Triangle } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 const GrainQuotes = () => {
   const [quotes, setQuotes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { t } = useLanguage();
+  const { isDarkMode } = useTheme();
 
   useEffect(() => {
     // Dados mockados de grãos (em produção, usar API de cotações)
@@ -102,10 +104,10 @@ const GrainQuotes = () => {
 
   return (
     <div className="grain-quotes">
-      <div className="flex items-center justify-center gap-8 text-sm flex-wrap">
-        <span className="font-semibold text-primary flex items-center gap-2 text-base">
-          <Circle size={16} />
-          {t('quotations.title')}
+      <div className="flex items-center justify-center gap-6 text-sm flex-wrap">
+        <span className={`font-semibold flex items-center gap-2 text-base ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+          <Circle size={16} className="text-green-600" />
+          Cotações
         </span>
         
         {quotes.map((quote, index) => {
@@ -115,15 +117,15 @@ const GrainQuotes = () => {
           return (
             <motion.div 
               key={quote.symbol}
-              className="flex items-center gap-3 px-4 py-2 bg-gradient-card rounded-lg border border-border-light shadow-sm hover:shadow-md transition-all"
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg border shadow-sm hover:shadow-md transition-all ${isDarkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'}`}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
-              <IconComponent size={14} className="text-primary" />
-              <span className="font-semibold text-primary text-xs">{quote.symbol}</span>
-              <span className="text-muted text-xs font-medium">{formatPrice(quote.price)}</span>
-              <div className={`flex items-center gap-1 ${isPositive ? 'text-success' : 'text-danger'}`}>
+              <IconComponent size={12} className="text-green-600" />
+              <span className={`font-semibold text-xs ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{quote.symbol}</span>
+              <span className={`text-xs font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>{formatPrice(quote.price)}</span>
+              <div className={`flex items-center gap-1 ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
                 {isPositive ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
                 <span className="text-xs font-medium">
                   {formatChange(quote.change)}

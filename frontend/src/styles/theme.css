@@ -1,30 +1,30 @@
-/* ===== AGROSYNC THEME GLOBAL ===== */
+/* ===== AGROISYNC THEME GLOBAL ===== */
 /* Variáveis e estilos obrigatórios - todas as páginas devem importar este arquivo */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* ===== VARIÁVEIS DE COR PREMIUM ===== */
-  --bg: #fafafa;                    /* fundo principal - branco elegante */
+  /* ===== VARIÁVEIS DE COR PREMIUM AGROISYNC ===== */
+  --bg: #F5E9DC;                    /* fundo principal - bege claro */
   --panel-bg: #ffffff;              /* cards/painéis */
-  --muted: #64748b;                 /* texto secundário - cinza neutro */
-  --text: #0f172a;                  /* texto principal - preto fosco */
-  --nav-bg: #f8fafc;               /* fundo navbar - cinza grafite claro */
-  --shadow: rgba(15, 23, 42, 0.08);
-  --accent-metal: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  --muted: #333333;                 /* texto secundário */
+  --text: #000000;                  /* texto principal - preto */
+  --nav-bg: #F5E9DC;               /* fundo navbar - bege claro */
+  --shadow: rgba(0, 0, 0, 0.08);
+  --accent-metal: linear-gradient(135deg, #F5E9DC 0%, #ffffff 100%);
   
   /* Cores auxiliares */
   --border: #e2e8f0;
   --border-light: #f1f5f9;
-  --text-light: #64748b;
+  --text-light: #333333;
   --text-inverse: #ffffff;
-  --primary: #0ea5e9;               /* azul neon vibrante */
-  --primary-dark: #0284c7;
-  --secondary: #64748b;             /* cinza grafite */
-  --success: #10b981;               /* verde vibrante */
+  --primary: #4A6737;               /* verde da logo */
+  --primary-dark: #3a5a2a;
+  --secondary: #1C1C1C;             /* cinza grafite */
+  --success: #4A6737;               /* verde da logo */
   --warning: #f59e0b;               /* amarelo vibrante */
   --danger: #ef4444;                /* vermelho vibrante */
-  --info: #06b6d4;                  /* ciano vibrante */
+  --info: #4A6737;                  /* verde da logo */
   
   /* Espaçamento */
   --spacing-xs: 0.5rem;
@@ -41,47 +41,47 @@
   /* Transições */
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
-  /* ===== GRADIENTES PREMIUM ===== */
-  --gradient-primary: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
-  --gradient-secondary: linear-gradient(135deg, #64748b 0%, #475569 100%);
-  --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  /* ===== GRADIENTES PREMIUM AGROISYNC ===== */
+  --gradient-primary: linear-gradient(135deg, #4A6737 0%, #6B8F50 100%);
+  --gradient-secondary: linear-gradient(135deg, #1C1C1C 0%, #2A2A2A 100%);
+  --gradient-success: linear-gradient(135deg, #4A6737 0%, #6B8F50 100%);
   --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-  --gradient-hero-light: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
-  --gradient-card-light: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-  --gradient-accent-light: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  --gradient-hero-light: linear-gradient(135deg, #F5E9DC 0%, #ffffff 100%);
+  --gradient-card-light: linear-gradient(135deg, #ffffff 0%, #F5E9DC 100%);
+  --gradient-accent-light: linear-gradient(135deg, #F5E9DC 0%, #ffffff 100%);
 }
 
 /* ===== TEMA DARK ===== */
 [data-theme="dark"] {
-  --bg: #000000;                    /* fundo principal - preto absoluto fosco */
-  --panel-bg: #1a1a1a;             /* cards/painéis */
-  --muted: #e2e8f0;                 /* texto secundário */
-  --text: #ffffff;                  /* texto principal */
-  --nav-bg: #1e293b;               /* fundo navbar - cinza grafite escuro */
+  --bg: #0D0D0D;                    /* fundo principal - preto absoluto fosco */
+  --panel-bg: #1C1C1C;             /* cards/painéis - cinza grafite */
+  --muted: #E0E0E0;                 /* texto secundário */
+  --text: #ffffff;                  /* texto principal - branco */
+  --nav-bg: #1C1C1C;               /* fundo navbar - cinza grafite */
   --shadow: rgba(255,255,255,0.1);
-  --accent-metal: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  --accent-metal: linear-gradient(135deg, #1C1C1C 0%, #2A2A2A 100%);
   
   /* Cores auxiliares */
-  --border: #334155;
-  --border-light: #1e293b;
-  --text-light: #94a3b8;
+  --border: #2A2A2A;
+  --border-light: #1C1C1C;
+  --text-light: #E0E0E0;
   --text-inverse: #000000;
-  --primary: #0ea5e9;               /* azul neon vibrante */
-  --primary-dark: #0284c7;
-  --secondary: #64748b;             /* cinza grafite */
-  --success: #10b981;               /* verde vibrante */
+  --primary: #4A6737;               /* verde da logo */
+  --primary-dark: #3a5a2a;
+  --secondary: #1C1C1C;             /* cinza grafite */
+  --success: #4A6737;               /* verde da logo */
   --warning: #f59e0b;               /* amarelo vibrante */
   --danger: #ef4444;                /* vermelho vibrante */
-  --info: #06b6d4;                  /* ciano vibrante */
+  --info: #4A6737;                  /* verde da logo */
   
-  /* ===== GRADIENTES DARK PREMIUM ===== */
-  --gradient-primary: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
-  --gradient-secondary: linear-gradient(135deg, #64748b 0%, #475569 100%);
-  --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  /* ===== GRADIENTES DARK PREMIUM AGROISYNC ===== */
+  --gradient-primary: linear-gradient(135deg, #4A6737 0%, #6B8F50 100%);
+  --gradient-secondary: linear-gradient(135deg, #1C1C1C 0%, #2A2A2A 100%);
+  --gradient-success: linear-gradient(135deg, #4A6737 0%, #6B8F50 100%);
   --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-  --gradient-hero-dark: linear-gradient(135deg, #000000 0%, #1e293b 100%);
-  --gradient-card-dark: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
-  --gradient-accent-dark: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  --gradient-hero-dark: linear-gradient(135deg, #0D0D0D 0%, #1C1C1C 100%);
+  --gradient-card-dark: linear-gradient(135deg, #1C1C1C 0%, #2A2A2A 100%);
+  --gradient-accent-dark: linear-gradient(135deg, #1C1C1C 0%, #2A2A2A 100%);
 }
 
 /* ===== RESET E BASE ===== */
@@ -155,7 +155,7 @@ a:hover {
   color: var(--muted);
 }
 
-/* ===== ANIMAÇÃO DE FUNDO SUTIL ===== */
+/* ===== ANIMAÇÃO DE FUNDO SUTIL AGROISYNC ===== */
 body::before {
   content: '';
   position: fixed;
@@ -165,16 +165,27 @@ body::before {
   height: 100%;
   background: linear-gradient(
     45deg,
-    rgba(249, 249, 249, 0.8) 0%,
-    rgba(245, 245, 245, 0.9) 25%,
-    rgba(249, 249, 249, 0.8) 50%,
-    rgba(245, 245, 245, 0.9) 75%,
-    rgba(249, 249, 249, 0.8) 100%
+    rgba(245, 233, 220, 0.8) 0%,
+    rgba(255, 255, 255, 0.9) 25%,
+    rgba(245, 233, 220, 0.8) 50%,
+    rgba(255, 255, 255, 0.9) 75%,
+    rgba(245, 233, 220, 0.8) 100%
   );
   background-size: 400% 400%;
   animation: gradientShift 20s ease infinite;
   z-index: -1;
   pointer-events: none;
+}
+
+[data-theme="dark"] body::before {
+  background: linear-gradient(
+    45deg,
+    rgba(13, 13, 13, 0.8) 0%,
+    rgba(28, 28, 28, 0.9) 25%,
+    rgba(13, 13, 13, 0.8) 50%,
+    rgba(28, 28, 28, 0.9) 75%,
+    rgba(13, 13, 13, 0.8) 100%
+  );
 }
 
 @keyframes gradientShift {
@@ -486,12 +497,12 @@ body::before {
   box-shadow: 0 10px 15px -3px var(--shadow);
 }
 
-/* ===== BOTÕES PREMIUM ===== */
+/* ===== BOTÕES PREMIUM AGROISYNC ===== */
 .btn-premium {
-  background: var(--gradient-primary);
+  background: #000000;
   color: white;
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   padding: var(--spacing-sm) var(--spacing-lg);
   font-weight: 600;
   transition: all var(--transition);
@@ -499,6 +510,7 @@ body::before {
 }
 
 .btn-premium:hover {
+  background: var(--gradient-primary);
   transform: translateY(-1px);
   box-shadow: 0 4px 8px var(--shadow);
 }
@@ -507,7 +519,7 @@ body::before {
   background: var(--gradient-secondary);
   color: white;
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   padding: var(--spacing-sm) var(--spacing-lg);
   font-weight: 600;
   transition: all var(--transition);

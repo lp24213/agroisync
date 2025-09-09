@@ -13,8 +13,10 @@ import {
   Globe,
   ArrowRight
 } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 
 const About = () => {
+  const { isDarkMode } = useTheme();
   const values = [
     {
       icon: Shield,
@@ -38,23 +40,6 @@ const About = () => {
     }
   ];
 
-  const team = [
-    {
-      name: 'Luis Paulo Oliveira',
-      role: 'CEO & Fundador',
-      description: 'Especialista em tecnologia e agronegócio com mais de 10 anos de experiência'
-    },
-    {
-      name: 'Equipe de Desenvolvimento',
-      role: 'Engenheiros de Software',
-      description: 'Profissionais especializados em tecnologias de ponta e desenvolvimento ágil'
-    },
-    {
-      name: 'Consultores Agrícolas',
-      role: 'Especialistas do Campo',
-      description: 'Profissionais com vasta experiência no agronegócio brasileiro e internacional'
-    }
-  ];
 
   const achievements = [
     { number: '10K+', label: 'Usuários Ativos' },
@@ -174,9 +159,9 @@ const About = () => {
         </div>
       </section>
 
-      {/* Team */}
-      <section className="py-20 bg-secondary">
-        <div className="container-futuristic">
+      {/* Team Section - Fale com nosso time */}
+      <section className={`py-20 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+        <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -184,38 +169,77 @@ const About = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-              Nossa <span className="text-gradient">Equipe</span>
+            <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              Fale com nosso <span className="bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">time de especialistas</span>
             </h2>
-            <p className="text-xl text-secondary max-w-3xl mx-auto">
-              Profissionais apaixonados por tecnologia e agronegócio
+            <p className={`text-xl max-w-3xl mx-auto ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              Nossa equipe de especialistas está pronta para ajudá-lo a transformar seu negócio no agronegócio
             </p>
           </motion.div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {team.map((member, index) => (
-              <motion.div
-                key={member.name}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="card-premium p-8 text-center"
-              >
-                <div className="w-24 h-24 bg-gradient-primary rounded-full mx-auto mb-6 flex items-center justify-center">
-                  <Users size={40} className="text-white" />
-                </div>
-                <h3 className="text-2xl font-bold text-primary mb-2">
-                  {member.name}
-                </h3>
-                <p className="text-secondary font-semibold mb-4">
-                  {member.role}
-                </p>
-                <p className="text-secondary">
-                  {member.description}
-                </p>
-              </motion.div>
-            ))}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              viewport={{ once: true }}
+              className={`p-8 text-center rounded-2xl shadow-lg ${isDarkMode ? 'bg-gray-700 border border-gray-600' : 'bg-white border border-gray-200'}`}
+            >
+              <div className="w-24 h-24 bg-gradient-to-r from-green-600 to-green-500 rounded-full mx-auto mb-6 flex items-center justify-center">
+                <Users size={40} className="text-white" />
+              </div>
+              <h3 className={`text-2xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                Especialistas em Tecnologia
+              </h3>
+              <p className={`font-semibold mb-4 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                Engenheiros de Software
+              </p>
+              <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                Profissionais especializados em tecnologias de ponta e desenvolvimento ágil
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              viewport={{ once: true }}
+              className={`p-8 text-center rounded-2xl shadow-lg ${isDarkMode ? 'bg-gray-700 border border-gray-600' : 'bg-white border border-gray-200'}`}
+            >
+              <div className="w-24 h-24 bg-gradient-to-r from-green-600 to-green-500 rounded-full mx-auto mb-6 flex items-center justify-center">
+                <Target size={40} className="text-white" />
+              </div>
+              <h3 className={`text-2xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                Consultores Agrícolas
+              </h3>
+              <p className={`font-semibold mb-4 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                Especialistas do Campo
+              </p>
+              <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                Profissionais com vasta experiência no agronegócio brasileiro e internacional
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              viewport={{ once: true }}
+              className={`p-8 text-center rounded-2xl shadow-lg ${isDarkMode ? 'bg-gray-700 border border-gray-600' : 'bg-white border border-gray-200'}`}
+            >
+              <div className="w-24 h-24 bg-gradient-to-r from-green-600 to-green-500 rounded-full mx-auto mb-6 flex items-center justify-center">
+                <Award size={40} className="text-white" />
+              </div>
+              <h3 className={`text-2xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                Suporte Premium
+              </h3>
+              <p className={`font-semibold mb-4 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                24/7 Disponível
+              </p>
+              <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                Suporte especializado disponível 24 horas por dia, 7 dias por semana
+              </p>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -352,7 +376,7 @@ const About = () => {
             </h2>
             <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
               Junte-se a milhares de profissionais do agronegócio que já descobriram 
-              o poder da tecnologia AgroSync
+              o poder da tecnologia Agroisync
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <motion.a

@@ -16,7 +16,7 @@ export const ThemeProvider = ({ children }) => {
 
   // Carregar tema salvo no localStorage
   useEffect(() => {
-    const savedTheme = localStorage.getItem('agrosync-theme');
+    const savedTheme = localStorage.getItem('agroisync-theme');
     if (savedTheme) {
       setIsDarkMode(savedTheme === 'dark');
     }
@@ -25,7 +25,7 @@ export const ThemeProvider = ({ children }) => {
   const toggleTheme = useCallback(() => {
     setIsDarkMode(prev => {
       const newTheme = !prev;
-      localStorage.setItem('agrosync-theme', newTheme ? 'dark' : 'light');
+      localStorage.setItem('agroisync-theme', newTheme ? 'dark' : 'light');
       return newTheme;
     });
   }, []);
@@ -33,7 +33,7 @@ export const ThemeProvider = ({ children }) => {
   const setTheme = useCallback((theme) => {
     const isDark = theme === 'dark';
     setIsDarkMode(isDark);
-    localStorage.setItem('agrosync-theme', theme);
+    localStorage.setItem('agroisync-theme', theme);
   }, []);
 
   // Aplicar tema ao documento
