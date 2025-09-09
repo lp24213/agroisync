@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { GitBranch, Loader2, CheckCircle, Clock, AlertCircle, DollarSign, Zap, ExternalLink, Link } from 'lucide-react';
+import { Loader2, CheckCircle, Clock, AlertCircle, DollarSign, Zap, ExternalLink, Link } from 'lucide-react';
 
 const SidechainManager = ({ userId }) => {
   const { t } = useTranslation();
@@ -11,12 +11,8 @@ const SidechainManager = ({ userId }) => {
   const [totalValue, setTotalValue] = useState(0);
   const [activeSidechains, setActiveSidechains] = useState(0);
 
-useEffect(() => {
-fetchSidechainData();
-  }, [userId]);
-
-  const fetchSidechainData = async () => {
-setLoading(true);
+  const fetchSidechainData = useCallback(async () => {
+    setLoading(true);
     try {
       const response = await fetch(`/api/blockchain/sidechains?userId=${userId}`);
       const data = await response.json();
@@ -31,9 +27,13 @@ setLoading(true);
     } catch (err) {
       setError(t('sidechain.error', 'Erro ao carregar dados de sidechains'));
     } finally {
-setLoading(false);
+    setLoading(false);
     }
-  };
+  }, [userId, t]);
+
+  useEffect(() => {
+    fetchSidechainData();
+  }, [userId, fetchSidechainData]);
 
   const getStatusIcon = (status) => {
     switch (status) {

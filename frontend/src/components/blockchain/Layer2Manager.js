@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { Layers, Loader2, CheckCircle, Clock, AlertCircle, DollarSign, Zap, ExternalLink } from 'lucide-react';
+import { Layers, Loader2, CheckCircle, Clock, AlertCircle, DollarSign, Zap, ExternalLink, Shield, Info } from 'lucide-react';
 
 const Layer2Manager = ({ userId }) => {
   const { t } = useTranslation();

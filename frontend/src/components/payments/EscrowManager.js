@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-';
+import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
-import { Shield, XCircle } from 'lucide-react';
+import { Shield, XCircle, Clock, CheckCircle, AlertTriangle, DollarSign, Calendar, FileText, Eye } from 'lucide-react';
 import paymentService from '../../services/paymentService';
 
 const EscrowManager = () => {
-  const {  } = useTranslation();
-  const {  } = useAuth();
+  const { t } = useTranslation();
+  const { user } = useAuth();
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [selectedTransaction, setSelectedTransaction] = useState(null);
-  const [filter, setFilter] = useState('all'); 'all', 'pending', 'completed', 'cancelled'
+  const [filter, setFilter] = useState('all'); // 'all', 'pending', 'completed', 'cancelled'
   const [stats, setStats] = useState({});
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
 
   useEffect(() => {
     loadEscrowData();
@@ -83,7 +83,7 @@ setLoading(false);
     try {
       await paymentService.releaseEscrowPayment(
         transactionId,
-user.id,
+        user.id,
         'Pagamento liberado após confirmação de entrega'
       );
       
@@ -107,10 +107,10 @@ user.id,
         'Transação cancelada por solicitação do admin'
       );
       
-Atualizar status local
+      // Atualizar status local
       setTransactions(prev => 
         prev.map(t => 
-t.id === transactionId 
+          t.id === transactionId 
             ? { ...t, status: 'cancelled', cancelledAt: new Date() }
             : t
         )
@@ -125,18 +125,6 @@ t.id === transactionId
     return transaction.status === filter;
   });
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'pending':
-        return <Clock className="w-5 h-5 text-yellow-500" />;
-      case 'completed':
-        return <CheckCircle className="w-5 h-5 text-green-500" />;
-      case 'cancelled':
-        return <XCircle className="w-5 h-5 text-red-500" />;
-      default:
-        return <AlertTriangle className="w-5 h-5 text-slate-500" />;
-    }
-  };
 
   const getStatusColor = (status) => {
     switch (status) {

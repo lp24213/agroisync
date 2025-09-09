@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
-import { CreditCard, Calculator } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CreditCard, Calculator, Coins, Zap, DollarSign, CheckCircle, AlertCircle, Clock, Shield, Info } from 'lucide-react';
 import { useAnalytics } from '../../hooks/useAnalytics';
 
 const HybridPayment = ({ 
@@ -66,13 +66,13 @@ const HybridPayment = ({
       } else if (paymentMethod === 'fiat') {
         setCryptoAmount(fiatAmount / rate);
       } else if (paymentMethod === 'hybrid') {
-No modo híbrido, manter os valores independentes
-O usuário pode ajustar manualmente
+        // No modo híbrido, manter os valores independentes
+        // O usuário pode ajustar manualmente
       }
     }
   }, [paymentMethod, cryptoAmount, fiatAmount, selectedCrypto, cryptoRates]);
 
-Processar pagamento
+  // Processar pagamento
   const processPayment = useCallback(async () => {
     setIsProcessing(true);
     setError('');
@@ -131,7 +131,7 @@ Processar pagamento
     }
   }, [paymentMethod, fiatAmount, cryptoAmount, selectedCrypto, amount, analytics, onPaymentComplete, onPaymentError, t]);
 
-Obter ícone do método de pagamento
+  // Obter ícone do método de pagamento
   const getPaymentMethodIcon = (method) => {
     switch (method) {
       case 'fiat':
@@ -145,7 +145,7 @@ Obter ícone do método de pagamento
     }
   };
 
-Obter cor do método de pagamento
+  // Obter cor do método de pagamento
   const getPaymentMethodColor = (method) => {
     switch (method) {
       case 'fiat':
@@ -159,7 +159,7 @@ Obter cor do método de pagamento
     }
   };
 
-Obter status do pagamento
+  // Obter status do pagamento
   const getPaymentStatusIcon = (status) => {
     switch (status) {
       case 'completed':

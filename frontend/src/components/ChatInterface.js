@@ -27,6 +27,35 @@ const ChatInterface = ({
   const imageInputRef = useRef(null);
 
   useEffect(() => {
+    const loadMessages = async () => {
+      try {
+        setLoading(true);
+        const messagesData = await messagingService.getTransactionMessages(transactionId);
+        setMessages(messagesData);
+        
+        // Marcar mensagens como lidas
+        await messagingService.markMessagesAsRead(transactionId, currentUserId);
+      } catch (error) {
+        console.error('Error loading messages:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const subscribeToMessages = () => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+      
+      const newSubscription = messagingService.subscribeToTransactionMessages(
+        transactionId,
+        (newMessage) => {
+          setMessages(prev => [...prev, newMessage]);
+        }
+      );
+      setSubscription(newSubscription);
+    };
+
     if (isOpen && transactionId) {
       loadMessages();
       subscribeToMessages();
@@ -37,38 +66,13 @@ const ChatInterface = ({
         subscription.unsubscribe();
       }
     };
-  }, [isOpen, transactionId]);
+  }, [isOpen, transactionId, currentUserId, subscription]);
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
-  const loadMessages = async () => {
-    try {
-      setLoading(true);
-      const messagesData = await messagingService.getTransactionMessages(transactionId);
-      setMessages(messagesData);
-      
-      // Marcar mensagens como lidas
-      await messagingService.markTransactionAsRead(transactionId, currentUserId);
-    } catch (error) {
-      console.error('Erro ao carregar mensagens:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  const subscribeToMessages = async () => {
-    try {
-      const sub = await messagingService.subscribeToTransaction(
-        transactionId,
-        handleNewMessage
-      );
-      setSubscription(sub);
-    } catch (error) {
-      console.error('Erro ao inscrever para mensagens:', error);
-    }
-  };
 
   const handleNewMessage = (message) => {
     setMessages(prev => [...prev, message]);

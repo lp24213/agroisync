@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Lock, Loader2, CheckCircle, Clock, Unlock, AlertCircle, TrendingUp, Plus, Minus } from 'lucide-react';
@@ -11,12 +11,8 @@ const StakingManager = ({ userId }) => {
   const [totalStaked, setTotalStaked] = useState(0);
   const [totalRewards, setTotalRewards] = useState(0);
 
-useEffect(() => {
-fetchStakingData();
-  }, [userId]);
-
-  const fetchStakingData = async () => {
-setLoading(true);
+  const fetchStakingData = useCallback(async () => {
+    setLoading(true);
     try {
       const response = await fetch(`/api/blockchain/staking?userId=${userId}`);
       const data = await response.json();
@@ -31,9 +27,13 @@ setLoading(true);
     } catch (err) {
       setError(t('staking.error', 'Erro ao carregar dados de staking'));
     } finally {
-setLoading(false);
+    setLoading(false);
     }
-  };
+  }, [userId, t]);
+
+  useEffect(() => {
+    fetchStakingData();
+  }, [userId, fetchStakingData]);
 
   const stakeTokens = async (amount, currency) => {
     try {

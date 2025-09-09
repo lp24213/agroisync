@@ -12,29 +12,30 @@ const ConversationList = ({ userId, onSelectConversation, selectedTransactionId 
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('all'); // all, unread, archived
   const [showFilters, setShowFilters] = useState(false);
+  const [stats, setStats] = useState({});
 
   useEffect(() => {
+    const loadConversations = async () => {
+      setLoading(true);
+      try {
+        const userConversations = await messagingService.getUserConversations(userId);
+        setConversations(userConversations);
+        
+        // Carregar estatísticas
+        const stats = await messagingService.getConversationStats(userId);
+        setStats(stats);
+      } catch (error) {
+        console.error('Error loading conversations:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (userId) {
       loadConversations();
     }
   }, [userId]);
 
-  const loadConversations = async () => {
-    setLoading(true);
-    try {
-      const userConversations = await messagingService.getUserConversations(userId);
-      setConversations(userConversations);
-      
-      // Se não houver conversas, mostrar mensagem
-      if (userConversations.length === 0) {
-        console.log('Nenhuma conversa encontrada');
-      }
-    } catch (error) {
-      console.error('Erro ao carregar conversas:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleConversationSelect = (conversation) => {
     if (onSelectConversation) {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
-import { Package, Share2, Camera } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Package, Share2, Camera, Eye, CheckCircle, Coins, Copy, ExternalLink, Zap } from 'lucide-react';
 import { useAnalytics } from '../../hooks/useAnalytics';
 
 const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
@@ -138,7 +138,7 @@ const DeliveryNFT = ({ deliveryId, onMint, onView }) => {
     }
   }, [nft, t, analytics]);
 
-Copiar endereço do contrato
+  // Copiar endereço do contrato
   const copyContractAddress = useCallback(() => {
     if (nft?.contractAddress) {
       navigator.clipboard.writeText(nft.contractAddress);
@@ -146,8 +146,8 @@ Copiar endereço do contrato
     }
   }, [nft, analytics]);
 
-Carregar dados iniciais
-useEffect(() => {
+  // Carregar dados iniciais
+  useEffect(() => {
     loadDelivery();
   }, [loadDelivery]);
 
