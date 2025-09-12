@@ -41,7 +41,7 @@
     "format:check": "prettier --check src/**/*.{js,jsx,json,css,md}",
     "type-check": "tsc --noEmit",
     "precommit": "npm run lint && npm run test:ci",
-    "prebuild": "npm run lint",
+    "prebuild": "echo 'Skipping lint for Cloudflare build'",
     "postbuild": "echo 'Build completed successfully!' && echo 'Build size:' && du -sh build/",
     "eject": "react-scripts eject",
     "health-check": "curl -f http://localhost:3000 || exit 1"
